@@ -1,4 +1,4 @@
-<p>The benchmark performance is input to calculate several statistics on your algorithm, including <a href='/docs/v2/writing-algorithms/key-concepts/glossary#02-alpha'>alpha</a> and <a href='/docs/v2/writing-algorithms/key-concepts/glossary#07-beta'>beta</a>. To set a benchmark for your algorithm, call the <code>SetBenchmark</code> method. You can set the benchmark to a security, a constant value, or a value from a <a href="/docs/v2/writing-algorithms/importing-data/key-concepts">custom data source</a>. If you don't set a <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts">brokerage model</a>, the default benchmark is SPY. If you set a brokerage model, the model defines the default benchmark.</p>
+<p>The benchmark performance is input to calculate several statistics on your algorithm, including <a href='/docs/v2/writing-algorithms/key-concepts/glossary#02-alpha'>alpha</a> and <a href='/docs/v2/writing-algorithms/key-concepts/glossary#07-beta'>beta</a>. To set a benchmark for your algorithm, call the <code class="csharp">SetBenchmark</code><code class="python">set_benchmark</code> method. You can set the benchmark to a security, a constant value, or a value from a <a href="/docs/v2/writing-algorithms/importing-data/key-concepts">custom data source</a>. If you don't set a <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts">brokerage model</a>, the default benchmark is SPY. If you set a brokerage model, the model defines the default benchmark.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// Set the benchmark to IBM
@@ -11,14 +11,14 @@ SetBenchmark(x =&gt; 0);
 var symbol = AddData&lt;CustomData&gt;("CustomData", Resolution.Hour).Symbol;
 SetBenchmark(symbol);</pre>
 <pre class="python"># Set the benchmark to IBM
-self.SetBenchmark("IBM")
+self.set_benchmark("IBM")
 
 # Set the benchmark to a constant value of 0
-self.SetBenchmark(lambda x: 0)
+self.set_benchmark(lambda x: 0)
 
 # Set the benchmark to a value from a custom data source
-self.symbol = self.AddData(CustomData, "CustomData", Resolution.Hour).Symbol
-self.SetBenchmark(self.symbol)</pre>
+symbol = self.add_data(CustomData, "CustomData", Resolution.HOUR).symbol
+self.set_benchmark(symbol)</pre>
 </div>
 
-<p>If you pass a ticker to the <code>SetBenchmark</code> method, LEAN checks if you have a subscription for it. If you have a subscription for it, LEAN uses the security subscription. If you don't have a subscription for it, LEAN creates a US Equity subscription with the ticker. Since the ticker you pass may not reference a US Equity, we recommend you subscribe to the benchmark security before you call the <code>SetBenchmark</code> method.</p>
+<p>If you pass a ticker to the <code class="csharp">SetBenchmark</code><code class="python">set_benchmark</code> method, LEAN checks if you have a subscription for it. If you have a subscription for it, LEAN uses the security subscription. If you don't have a subscription for it, LEAN creates a US Equity subscription with the ticker. Since the ticker you pass may not reference a US Equity, we recommend you subscribe to the benchmark security before you call the <code class="csharp">SetBenchmark</code><code class="python">set_benchmark</code> method.</p>

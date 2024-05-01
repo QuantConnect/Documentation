@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the long strangle strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -15,17 +15,17 @@ public override void Initialize()
     _symbol = option.Symbol;
     option.SetFilter(-5, 5, 0, 30);
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2017, 4, 1)
-    self.SetEndDate(2017, 4, 30)
-    self.SetCash(100000)
-    self.UniverseSettings.Asynchronous = True
-    option = self.AddOption("GOOG")
-    self.symbol = option.Symbol
-    option.SetFilter(-5, 5, 0, 30)</pre>
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 4, 1)
+    self.set_end_date(2017, 4, 30)
+    self.set_cash(100000)
+    self.universe_settings.asynchronous = True
+    option = self.add_option("GOOG")
+    self._symbol = option.symbol
+    option.set_filter(-5, 5, 0, 30)</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, select the expiration date and strike prices of the contracts in the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiration date and strike prices of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -56,11 +56,11 @@ public override void Initialize()
     var callStrike = callContracts[0].Strike;
     var putStrike = putContracts[0].Strike;
 }</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.Portfolio.Invested:
         return
 
-    chain = slice.OptionChains.get(self.symbol)
+    chain = slice.OptionChains.get(self._symbol)
     if not chain:
         return
 
@@ -88,12 +88,12 @@ public override void Initialize()
     put_strike = put_contracts[0].Strike</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.Strangle</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.Strangle</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var longStrangle = OptionStrategies.Strangle(_symbol, callStrike, putStrike, expiry);
 Buy(longStrangle, 1);</pre>
-        <pre class="python">long_strangle = OptionStrategies.Strangle(self.symbol, call_strike, put_strike, expiry)
-self.Buy(long_strangle, 1)</pre>
+        <pre class="python">long_strangle = OptionStrategies.strangle(self._symbol, call_strike, put_strike, expiry)
+self.buy(long_strangle, 1)</pre>
     </div>
 
 <?

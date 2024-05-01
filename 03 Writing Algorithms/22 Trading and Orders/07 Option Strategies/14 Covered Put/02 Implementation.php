@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the covered put strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, end date, starting cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, starting cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _put, _symbol;
 
@@ -15,18 +15,18 @@ public override void Initialize()
     _symbol = option.Symbol;
     option.SetFilter(-3, 3, 0, 31);
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2014, 1, 1)
-    self.SetEndDate(2014, 3, 1)
-    self.SetCash(100000)
-    self.UniverseSettings.Asynchronous = True
-    option = self.AddOption("IBM")
-    self.symbol = option.Symbol
-    option.SetFilter(-3, 3, 0, 31)
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2014, 1, 1)
+    self.set_end_date(2014, 3, 1)
+    self.set_cash(100000)
+    self.universe_settings.asynchronous = True
+    option = self.add_option("IBM")
+    self._symbol = option.symbol
+    option.set_filter(-3, 3, 0, 31)
     self.put = None</pre>
     </div>
   
-    <li>In the <code>OnData</code> method, select the Option contract.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the Option contract.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -40,19 +40,19 @@ public override void Initialize()
         .Where(x =&gt; x.Right == OptionRight.Put &amp;&amp; x.Expiry == expiry)
         .OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price))
         .FirstOrDefault();</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.put and self.Portfolio[self.put].Invested:
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.put and self.portfolio[self.put].invested:
         return
 
-    chain = slice.OptionChains.get(self.symbol)
+    chain = slice.option_chains.get(self._symbol)
     if not chain:
         return
 
     # Find ATM put with the farthest expiry
-    expiry = max([x.Expiry for x in chain])
+    expiry = max([x.expiry for x in chain])
     put_contracts = sorted([x for x in chain
-        if x.Right == OptionRight.Put and x.Expiry == expiry],
-        key=lambda x: abs(chain.Underlying.Price - x.Strike))
+        if x.right == Optionright.put and x.expiry == expiry],
+        key=lambda x: abs(chain.underlying.price - x.strike))
 
     if not put_contracts:
         return
@@ -60,16 +60,16 @@ public override void Initialize()
     atm_put = put_contracts[0]</pre>
 </div>
 
-    <li>In the <code>OnData</code> method, put the <code>OptionStrategies.CoveredPut</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, put the <code>OptionStrategies.CoveredPut</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var coveredput = OptionStrategies.CoveredPut(_symbol, atmput.Strike, expiry);
 Buy(coveredput, 1);
 
 _put = atmput.Symbol;</pre>
-        <pre class="python">covered_put = OptionStrategies.CoveredPut(self.symbol, atm_put.Strike, expiry)
-self.Buy(covered_put, 1)
+        <pre class="python">covered_put = OptionStrategies.covered_put(self._symbol, atm_put.strike, expiry)
+self.buy(covered_put, 1)
 
-self.put = atm_put.Symbol</pre>
+self.put = atm_put.symbol</pre>
     </div>
 <?php 
 $methodNames = array("Buy");

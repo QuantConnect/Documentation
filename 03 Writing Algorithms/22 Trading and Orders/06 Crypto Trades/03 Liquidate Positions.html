@@ -1,4 +1,4 @@
-<p>If you use the <code>Liquidate</code> method to liquidate a Crypto position, it only liquidates the quantity of the virtual pair. Since the virtual pair BTCUSDT may not represent all of your BTC holdings, don't use the <code>Liquidate</code> method to liquidate Crypto positions. Instead, calculate the order quantity based on the currency amounts in your cash book and place manual orders. The following code snippet demonstrates how to liquidate a BTCUSDT position.</p>
+<p>If you use the <code class="csharp">Liquidate</code><code class="python">liquidate</code> method to liquidate a Crypto position, it only liquidates the quantity of the virtual pair. Since the virtual pair BTCUSDT may not represent all of your BTC holdings, don't use the <code class="csharp">Liquidate</code><code class="python">liquidate</code> method to liquidate Crypto positions. Instead, calculate the order quantity based on the currency amounts in your cash book and place manual orders. The following code snippet demonstrates how to liquidate a BTCUSDT position.</p>
 
 <div class="section-example-container">
 <pre class="csharp">public override void OnData(Slice data)
@@ -23,22 +23,22 @@ private void LiquidateCrypto(Symbol symbol)
         MarketOrder(symbol, -quantity);
     }
 }</pre>
-<pre class="python">def OnData(self, data: Slice):
-    self.liquidate_crypto(self.symbol)
+<pre class="python">def on_data(self, data: Slice):
+    self.liquidate_crypto(self._symbol)
 
 def liquidate_crypto(self, symbol):
-    crypto = self.Securities[symbol]
-    base_currency = crypto.BaseCurrency
+    crypto = self.securities[symbol]
+    base_currency = crypto.base_currency
 
     # Avoid negative amount after liquidate
-    quantity = min(crypto.Holdings.Quantity, base_currency.Amount)
+    quantity = min(crypto.holdings.quantity, base_currency.amount)
         
     # Round down to observe the lot size
-    lot_size = crypto.SymbolProperties.LotSize;
+    lot_size = crypto.symbol_properties.lot_size;
     quantity = (round(quantity / lot_size) - 1) * lot_size
 
-    if self.IsValidOrderSize(crypto, quantity):
-        self.MarketOrder(symbol, -quantity)</pre>
+    if self.is_valid_order_size(crypto, quantity):
+        self.market_order(symbol, -quantity)</pre>
 </div>
 
 <p>The order fees don't respect the lot size. When you try to liquidate a position, the absolute value of the base currency quantity can be less than the lot size and greater than zero. In this case, your algorithm holds a position that you can't liquidate and <code class="python">self.</code><code>Portfolio[symbol].Invested</code> is <code class="python">True</code><code class="csharp">true</code>. The following code snippet demonstrates how to determine if you can liquidate a position:</p>
@@ -51,8 +51,8 @@ def liquidate_crypto(self, symbol):
         LiquidateCrypto(_symbol);
     }
 }</pre>
-    <pre class="python">def OnData(self, data: Slice):
-    crypto = self.Securities[self.symbol]
-    if abs(crypto.Holdings.Quantity) > crypto.SymbolProperties.LotSize:
-        self.liquidate_crypto(self.symbol)</pre>
+    <pre class="python">def on_data(self, data: Slice):
+    crypto = self.securities[self._symbol]
+    if abs(crypto.holdings.quantity) > crypto.symbol_properties.lot_size:
+        self.liquidate_crypto(self._symbol)</pre>
 </div>

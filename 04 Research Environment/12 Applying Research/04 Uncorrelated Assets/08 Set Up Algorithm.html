@@ -33,22 +33,22 @@ public override void Initialize()
         TimeRules.BeforeMarketClose("SHY", 5),
         EveryDayBeforeMarketClose);
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
 
     #1. Required: Five years of backtest history
-    self.SetStartDate(2014, 1, 1)
+    self.set_start_date(2014, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
 
     #3. Required: Significant AUM Capacity
-    self.SetCash(1000000)
+    self.set_cash(1000000)
 
     #4. Required: Benchmark to SPY
-    self.SetBenchmark("SPY")
+    self.set_benchmark("SPY")
     
-    self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
-    self.SetExecution(ImmediateExecutionModel())
+    self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+    self.set_execution(ImmediateExecutionModel())
 
     self.assets = ["SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
                     "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
@@ -56,12 +56,12 @@ public override void Initialize()
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.AddEquity(self.assets[i], Resolution.Minute)
+        self.add_equity(self.assets[i], Resolution.MINUTE)
     
     # Set Scheduled Event Method For Our Model. In this example, we'll rebalance every month.
-    self.Schedule.On(self.DateRules.MonthStart(), 
-        self.TimeRules.BeforeMarketClose("SHY", 5), 
-        self.EveryDayBeforeMarketClose)</pre>
+    self.schedule.on(self.date_rules.month_start(), 
+        self.time_rules.before_market_close("SHY", 5), 
+        self.every_day_before_market_close)</pre>
 </div>
 
 <p class="csharp">Now we export our model into the scheduled event method. We will remove <code>qb</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
@@ -128,10 +128,10 @@ public override void Initialize()
         EmitInsights(insight);
     }
 }</pre>
-    <pre class="python">def EveryDayBeforeMarketClose(self) -&gt; None:
+    <pre class="python">def every_day_before_market_close(self) -&gt; None:
     qb = self
     # Fetch history on our universe
-    history = qb.History(qb.Securities.Keys, 252*2, Resolution.Daily)
+    history = qb.history(qb.securities.keys, 252*2, Resolution.DAILY)
     if history.empty: return
 
     # Select the close column and then call the unstack method, then call pct_change to compute the daily return.
@@ -154,7 +154,7 @@ public override void Initialize()
     insights = []
     
     for symbol in selected:
-        insights.append( Insight.Price(symbol, Expiry.EndOfMonth, InsightDirection.Up) )
+        insights.append( Insight.price(symbol, Expiry.END_OF_MONTH, InsightDirection.UP) )
 
-    self.EmitInsights(insights)</pre>
+    self.emit_insights(insights)</pre>
 </div>

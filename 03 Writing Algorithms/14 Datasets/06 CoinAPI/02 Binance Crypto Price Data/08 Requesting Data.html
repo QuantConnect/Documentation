@@ -1,0 +1,42 @@
+<p>To add Binance Crypto Price data to your algorithm, call the <b class="csharp">AddCrypto</b><b class="python">add_crypto</b> method. Save a reference to the Crypto <b>Symbol</b> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class CoinAPIDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 6, 1)
+        self.set_end_date(2021, 6, 1)
+
+        # Set Account Currency to Binance Stable Coin for USD
+        self.set_account_currency("BUSD")
+        self.set_cash(100000)
+
+        # Binance accepts both Cash and Margin account types.
+        self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
+        
+        self.btcbusd = self.add_crypto("BTCBUSD", Resolution.MINUTE, Market.BINANCE).symbol</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class CoinAPIDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
+
+            // Set Account Currency to Binance Stable Coin for USD
+            SetAccountCurrency("BUSD");
+            SetCash(100000);
+
+            // Binance accepts both Cash and Margin account types.
+            SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+            
+            _symbol = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol;
+        }
+    }
+}</pre>
+</div>
+
+<p>For more information about creating Crypto subscriptions, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/crypto/requesting-data">Requesting Data</a>.</p>

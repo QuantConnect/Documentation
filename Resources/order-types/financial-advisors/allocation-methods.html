@@ -1,4 +1,4 @@
-<p>LEAN supports several allocation methods for FA group orders. If you intend to use the same group allocation method for every order, set the <code>DefaultOrderProperties</code> of your algorithm, which sets the order properties for all of your orders.</p>
+<p>LEAN supports several allocation methods for FA group orders. If you intend to use the same group allocation method for every order, set the <code class="csharp">DefaultOrderProperties</code><code class="python">default_order_properties</code> of your algorithm, which sets the order properties for all of your orders.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
@@ -17,24 +17,24 @@ public override void OnData(Slice slice)
     // Use default order order properties
     LimitOrder(_symbol, quantity, limitPrice);  
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = InteractiveBrokersOrderProperties()
-    self.DefaultOrderProperties.FaGroup = "TestGroupEQ"
-    self.DefaultOrderProperties.FaMethod = "EqualQuantity"
-    self.DefaultOrderProperties.Account = "DU123456"
+    self.default_order_properties = InteractiveBrokersOrderProperties()
+    self.default_order_properties.fa_group = "TestGroupEQ"
+    self.default_order_properties.fa_method = "EqualQuantity"
+    self.default_order_properties.account = "DU123456"
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
     LimitOrder(_symbol, quantity, limitPrice);</pre>
 </div>
 
-<p>To adjust the order properties of an order, change the <code>DefaultOrderProperties</code> or pass an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>order properties object</a> to the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order method</a>. The following sections explain the FA group allocation methods.</p>
+<p>To adjust the order properties of an order, change the <code class="csharp">DefaultOrderProperties</code><code class="python">default_order_properties</code> or pass an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>order properties object</a> to the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order method</a>. The following sections explain the FA group allocation methods.</p>
 
 <h4>Equal Quantity</h4>
 <p>This group allocation method distributes shares equally between all accounts in the group. When you use this method, you need to specify an order quantity.</p>
 
-<p>For example, say your Account Group includes four accounts and you place an order to buy 400 shares of a stock. In this case, each account receives 100 shares. If your Account Group includes six accounts, each account receives 66 shares, and then 1 share is allocated to each account until all are distributed. After you submit the order, your algorithm receives <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> to track the order progress. When all the shares are bought, the order status is <code>OrderStatus.Filled</code>. If one of the accounts in the group can't afford 10 of the shares it needs to buy, 10 shares are cancelled and you'll only end up buying 390 shares in total.</p>
+<p>For example, say your Account Group includes four accounts and you place an order to buy 400 shares of a stock. In this case, each account receives 100 shares. If your Account Group includes six accounts, each account receives 66 shares, and then 1 share is allocated to each account until all are distributed. After you submit the order, your algorithm receives <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> to track the order progress. When all the shares are bought, the order status is <code class="csharp">OrderStatus.Filled</code><code class="python">OrderStatus.FILLED</code>. If one of the accounts in the group can't afford 10 of the shares it needs to buy, 10 shares are cancelled and you'll only end up buying 390 shares in total.</p>
 
 <div class="section-example-container">
     <pre class="csharp">LimitOrder(
@@ -45,8 +45,8 @@ def OnData(self, slice: Slice) -&gt; None:
     }
 );</pre>
     <pre class="python">order_properties = InteractiveBrokersOrderProperties()
-order_properties.FaMethod = "EqualQuantity"
-self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+order_properties.fa_method = "EqualQuantity"
+self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 
 <h4>Net Liquidation Value</h4>
@@ -62,8 +62,8 @@ self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_proper
     }
 );</pre>
     <pre class="python">order_properties = InteractiveBrokersOrderProperties()
-order_properties.FaMethod = "NetLiq"
-self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+order_properties.fa_method = "NetLiq"
+self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 
 <h4>Available Equity</h4>
@@ -79,8 +79,8 @@ self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_proper
     }
 );</pre>
     <pre class="python">order_properties = InteractiveBrokersOrderProperties()
-order_properties.FaMethod = "AvailableEquity"
-self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+order_properties.fa_method = "AvailableEquity"
+self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 
 

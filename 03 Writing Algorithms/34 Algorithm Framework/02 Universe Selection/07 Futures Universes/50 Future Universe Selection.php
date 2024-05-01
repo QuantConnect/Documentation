@@ -8,11 +8,13 @@ AddUniverseSelection(
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
     )
 );</pre>
-	<pre class="python">self.universe_settings.asynchronous = True
+	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+self.universe_settings.asynchronous = True
 self.add_universe_selection(
     FutureUniverseSelectionModel(
         timedelta(1), 
-        lambda _: [Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)]
+        lambda _: [Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>
@@ -38,14 +40,14 @@ self.add_universe_selection(
         <tr>
             <td><code class="csharp">futureChainSymbolSelector</code><code class="python">future_chain_symbol_selector</code></td>
 	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
-            <td>A function that selects the Future symbols for a given Coordinated Universal Time (UTC). To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#07-Supported-Assets'>Supported Assets</a>.</td>
+            <td>A function that selects the Future symbols for a given Coordinated Universal Time (UTC). To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#08-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
             <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
-            <td><code>UniverseSettings</code></td>
-            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td><code class='python'>None</code><code class="csharp">null</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code class="csharp">algorithm.UniverseSettings</code><code class="python">algorithm.universe_settings</code> by default.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
@@ -67,14 +69,16 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
     };
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    self.add_universe_selection(
+    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+def initialize(self) -&gt; None:
+    self.set_universe_selection(
         FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)
     )
 
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ 
-        Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
+        Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
         Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
     ]</pre>
 </div>
@@ -122,8 +126,8 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
 
     def select_future_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
         return [ 
-            Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
-            Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
+            Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
+            Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX) 
         ]
 
     def filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:

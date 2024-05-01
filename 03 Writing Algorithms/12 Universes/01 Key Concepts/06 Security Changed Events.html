@@ -1,4 +1,4 @@
-<p>When your universe adds and removes assets, LEAN notifies your algorithm through the <code>OnSecuritiesChanged</code> event handler. The event handler receives a <code>SecurityChanges</code> object, which contains references to the added and removed securities. To access the added securities, check the <code>changes.AddedSecurities</code> property. To access the removed securities, check the <code>changes.RemovedSecurities</code> property.</p> 
+<p>When your universe adds and removes assets, LEAN notifies your algorithm through the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> event handler. The event handler receives a <code>SecurityChanges</code> object, which contains references to the added and removed securities. To access the added securities, check the <code class="csharp">changes.AddedSecurities</code><code class="python">changes.added_securities</code> method property. To access the removed securities, check the <code class="csharp">changes.RemovedSecurities</code><code class="python">changes.removed_securities</code> method property.</p> 
 
 <div class="section-example-container">
 <pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -17,21 +17,21 @@
         }
     }
 }</pre>
-<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
-    for security in changes.AddedSecurities:
-        self.Debug(f"{self.Time}: Added {security.Symbol}")
+<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -> None:
+    for security in changes.added_securities::
+        self.debug(f"{self.time}: Added {security.symbol}")
 
-    for security in changes.RemovedSecurities:
-        self.Debug(f"{self.Time}: Removed {security.Symbol}")
+    for security in changes.removed_securities:
+        self.debug(f"{self.time}: Removed {security.symbol}")
         
-        if security.Invested:
-            self.Liquidate(security.Symbol, "Removed from Universe")</pre>
+        if security.invested:
+            self.liquidate(security.symbol, "Removed from Universe")</pre>
 </div>
 
 <p>The preceding example <a href='/docs/v2/writing-algorithms/trading-and-orders/liquidating-positions'>liquidates</a> securities that leave the universe. In this case, LEAN creates a <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>market on open order</a> and frees up buying power when the market opens.</p>
 
 <p class="csharp">A convenient way to track the securities that are currently in the universe is to use the <code>NotifiedSecurityChanges</code> class.</p>
-<p class="python">A convenient way to track the securities that are currently in the universe is to maintain a <code>self.securities</code> list.</p>
+<p class="python">A convenient way to track the securities that are currently in the universe is to maintain a <code>self._securities</code> list.</p>
 
 <div class="section-example-container">
 <pre class="csharp">private readonly HashSet&lt;Security&gt; _securities = new();
@@ -41,14 +41,12 @@ public override void OnSecuritiesChanged(SecurityChanges changes)
     NotifiedSecurityChanges.UpdateCollection(_securities, changes);
 }</pre>
 <pre class="python"># In Initialize
-self.securities = []
+self._securities = []
 
-def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
-    for security in changes.RemovedSecurities:
-        if security in self.securities:
-            self.securities.remove(security)
+def on_securities_changed(self, changes: SecurityChanges) -> None:
+    for security in changes.removed_securities:
+        if security in self._securities:
+            self._securities.remove(security)
             
-    self.securities.extend(changes.AddedSecurities)</pre>
+    self._securities.extend(changes.added_securities)</pre>
 </div>
-
-

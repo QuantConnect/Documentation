@@ -1,6 +1,6 @@
-<p>To receive your custom data in the <code>OnData</code> method, create a custom type and then create a data subscription. The custom data type tells LEAN where to get your data and how to read it.</p>
+<p>To receive your custom data in the <code class="csharp">OnData</code><code class="python">on_data</code> method, create a custom type and then create a data subscription. The custom data type tells LEAN where to get your data and how to read it.</p>
 
-<p>All custom data types must extend the <code class='csharp'>BaseData</code><code class='python'>PythonData</code> class and override the <code>GetSource</code> and <code>Reader</code> methods</p>
+<p>All custom data types must extend the <code class='csharp'>BaseData</code><code class='python'>PythonData</code> class and override the <code class="csharp">GetSource</code><code class="python">get_source</code> and <code class="csharp">Reader</code><code class="python">reader</code> methods</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class MyCustomDataType : BaseData
@@ -41,13 +41,13 @@
     }
 }</pre>
     <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self,
+    def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.RemoteFile)
+        return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
@@ -59,9 +59,9 @@
          data = line.split(',')
 
         custom = MyCustomDataType()
-        custom.Time = datetime.strptime(data[0], '%Y%m%d')
-        custom.EndTime = custom.Time + timedelta(1)
-        custom.Value = float(data[1])
+        custom.time = datetime.strptime(data[0], '%Y%m%d')
+        custom.end_time = custom.time + timedelta(1)
+        custom.value = float(data[1])
         custom["Property1"] = float(data[2])
         return custom</pre>
 </div>

@@ -20,14 +20,14 @@
         DeregisterIndicator((security as dynamic).Indicator);
     }
 }</pre>
-<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
-    for security in changes.AddedSecurities:
+<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -> None:
+    for security in changes.added_securities:
         # Create an indicator
-        security.indicator = self.SMA(security.Symbol, 10)
+        security.indicator = self.sma(security.Symbol, 10)
 
         # Warm up the indicator
-        self.WarmUpIndicator(security.Symbol, security.indicator)
+        self.warm_up_indicator(security.symbol, security.indicator)
 
-    for security in changes.RemovedSecurities:
-        self.DeregisterIndicator(security.indicator)</pre>
+    for security in changes.removed_securities:
+        self.deregister_indicator(security.indicator)</pre>
 </div>

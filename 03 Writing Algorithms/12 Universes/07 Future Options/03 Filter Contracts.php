@@ -2,13 +2,13 @@
 
 <? $annotation = "weeklies and non-standard contracts are not available"; include(DOCS_RESOURCES."/universes/option/default-filter.php"); ?>
 
-<p>To adjust the universe of contracts, set a filter. The filter usually runs at every <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">time step</a> in your algorithm. When the filter selects a contract that isn't currently in your universe, LEAN adds the new contract data to the next <code>Slice</code> that it passes to the <code>OnData</code> method.</p>
+<p>To adjust the universe of contracts, set a filter. The filter usually runs at every <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">time step</a> in your algorithm. When the filter selects a contract that isn't currently in your universe, LEAN adds the new contract data to the next <code>Slice</code> that it passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
-<p>To set a contract filter, in the <code>Initialize</code> method, pass a filter function to the <code>AddFutureOption</code> method. The following table describes the available filter techniques:</p>
+<p>To set a contract filter, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, pass a filter function to the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method. The following table describes the available filter techniques:</p>
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureOption(future.Symbol, optionFilterUniverse => optionFilterUniverse.Strikes(-1, 1));</pre>
-    <pre class="python">self.AddFutureOption(future.Symbol, lambda option_filter_universe: option_filter_universe.Strikes(-1, 1))</pre>
+    <pre class="python">self.add_future_option(future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1))</pre>
 </div>
 
 
@@ -20,7 +20,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureOption(future.Symbol, optionFilterUniverse => optionFilterUniverse.Strikes(-1, 1).CallsOnly());</pre>
-    <pre class="python">self.AddFutureOption(future.Symbol, lambda option_filter_universe: option_filter_universe.Strikes(-1, 1).CallsOnly())</pre>
+    <pre class="python">self.add_future_option(future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1).calls_only())</pre>
 </div>
 
 

@@ -2,7 +2,8 @@ import os
 import pathlib
 import shutil
 from urllib.request import urlopen
-
+from bs4 import BeautifulSoup
+        
 def metadata_content(vendor, dataset):
     vendor_ = vendor.lower().replace(" ", "-")
     dataset_ = dataset.lower().replace(" ", "-")
@@ -37,6 +38,7 @@ response = url.read().decode("utf-8") \
     .replace("null", "None")
 doc = eval(response)
 
+languages = {"language-python": "python", "language-cs": "csharp"}
 vendor_count = 2
 vendors = {}
 product_count = {}
@@ -71,32 +73,35 @@ for dataset in doc:
     all_sections = {**{item["title"]: item["content"] for item in dataset["about"] if item["title"]},
                     **{item["title"]: item["content"] for item in dataset["documentation"] if item["title"]}}
 
-    for title, content in all_sections.items():
+    for title, content in all_sections.items():        
         content = content.replace("\/", "/") \
                     .replace("https://www.quantconnect.com/docs/v2/", "/docs/v2/") \
                     .replace("https://www.quantconnect.com/datasets/", "/datasets/") \
                     .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                             '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"')
-        if title.lower() != "supported assets":
-            content = content.replace('</code>','') \
-                    .replace('<pre><code class="language-cs">','<pre class="csharp">') \
-                    .replace('<pre><code class="language-python">', '<pre class="python">')
+        soup = BeautifulSoup(content, 'html.parser')
+        for code_section in soup.find_all("div", class_="section-example-container"):
+            for pre_code_section in soup.find_all("pre"):
+                for old, new in languages.items():
+                    for code_snippet in pre_code_section.find_all('code', {'class' : old}):
+                        converted = f'{code_snippet}'.replace('code', 'pre').replace(old, new)
+                        content = content.replace(f'{pre_code_section}', converted)
 
         if title.lower() == "example applications":
-            with open(destination_folder / f'99 {title.strip()}.html', "w", encoding="utf-8") as html_file:
-                start, end = 0, content.find("<div")
-                text, content = content[:end], content[end:]
-                ids = {}
-                for language in ['python', 'cs']:
-                    start = content.find("qc-embed-frame", start+1)
-                    end = content.find("html", start) - 1
-                    substring = content[start:end]
-                    if substring.find(language) > 0:
-                        text += f"\n<div class='{language}'><div class='qc-embed-frame' style='display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;'><div class='qc-embed-dummy' style='padding-top: 56.25%;'></div><div class='qc-embed-element' style='position: absolute; top: 0; bottom: 0; left: 0; right: 0;'><iframe class='qc-embed-backtest' src='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_{substring[-32:]}.html' style='max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;' scrolling='no' width='100%' height='100%'></iframe></div></div></div>"
-                html_file.write(text.replace("div class='cs'", "div class='csharp'"))
-            continue
+            start = content.find('<div class="dataset-embeds">')
+            if start > 0:
+                text = ''
+                for old, new in languages.items():
+                    for code_section in soup.find_all("div", class_=f"qc-embed-frame {old}"):
+                        text += f"\n<div class='{new}'><div class='qc-embed-frame' style='display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;'><div class='qc-embed-dummy' style='padding-top: 56.25%;'></div><div class='qc-embed-element' style='position: absolute; top: 0; bottom: 0; left: 0; right: 0;'><iframe class='qc-embed-backtest' src='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest{str(code_section)[-61:-28]}.html' style='max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;' scrolling='no' width='100%' height='100%'></iframe></div></div></div>"
+                end = start + len(str(soup.find_all("div", class_="dataset-embeds")))
+                content = content.replace(content[start:end], text)
 
+            with open(destination_folder / f'99 {title.strip()}.html', "w", encoding="utf-8") as html_file:
+                html_file.write(content)
         else:
+            for old, new in languages.items():
+                content = content.replace(old, new)
             if title.lower() == "introduction":
                 backslash = '\\'
                 content += f"""

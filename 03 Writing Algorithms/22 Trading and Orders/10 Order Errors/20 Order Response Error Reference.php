@@ -25,11 +25,11 @@
 
 <p>To avoid this order response error for non-Option trades, <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#13-Get-Initial-Margin-Requirements'>ensure you have enough margin remaining to cover the initial margin requirements</a> of the order before placing it.</p>
 
-<p>This error also commonly occurs when you place a market on open order with daily data. If you place the order with <code>SetHoldings</code> or use <code>CalculateOrderQuantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
+<p>This error also commonly occurs when you place a market on open order with daily data. If you place the order with <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> or use <code class="csharp">CalculateOrderQuantity</code><code class="python">calculate_order_quantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
 
 <a id='brokerage-model-refused-to-submit-order'></a><div class="section-example-container">
 <pre class="csharp">Settings.FreePortfolioValuePercentage = 0.05m;</pre>
-<pre class="python">self.Settings.FreePortfolioValuePercentage = 0.05</pre>
+<pre class="python">self.settings.free_portfolio_value_percentage = 0.05</pre>
 </div>
 
 <h4>Brokerage Model Refused to Submit Order</h4>
@@ -67,7 +67,7 @@
 
 
 <h4>Invalid Order Status</h4>
-<p>The <code>OrderResponseErrorCode.InvalidOrderStatus</code> (-9) error occurs when you try to update or cancel an order but the order is already complete. An order is complete if it has <code>OrderStatus.Filled</code>, <code>OrderStatus.Canceled</code>, or <code>OrderStatus.Invalid</code>.</p>
+<p>The <code>OrderResponseErrorCode.InvalidOrderStatus</code> (-9) error occurs when you try to update or cancel an order but the order is already complete. An order is complete if it has <code class="csharp">OrderStatus.Filled</code><code class="python">OrderStatus.FILLED</code>, <code>OrderStatus.Canceled</code>, or <code>OrderStatus.Invalid</code>.</p>
 
 <p>To avoid this order response error, check <code>Status</code> of an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> or <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> before you update or cancel the order.</p>
 
@@ -76,8 +76,8 @@
 {
     _orderTicket.Cancel();
 }</pre>
-<pre class="python">if not OrderExtensions.IsClosed(order_ticket.Status):
-    order_ticket.Cancel()</pre>
+<pre class="python">if not OrderExtensions.is_closed(order_ticket.status):
+    order_ticket.cancel()</pre>
 </div>
 
 
@@ -90,7 +90,7 @@
 <h4>Order Quantity Zero</h4>
 <p>The <code>OrderResponseErrorCode.OrderQuantityZero</code> (-11) error occurs when you place an order that has zero quantity or when you update an order to have a zero quantity. This error commonly occurs if you use the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing'>SetHoldings</a> method but the portfolio weight you provide to the method is too small to translate into a non-zero order quantity.</p>
 
-<p>To avoid this order response error, check if the quantity of the order is non-zero before you place the order. If you use the <code>SetHoldings</code> method, replace it with a combination of the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#04-Calculate-Order-Quantities'>CalculateOrderQuantity</a> and <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a> methods.</p>
+<p>To avoid this order response error, check if the quantity of the order is non-zero before you place the order. If you use the <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> method, replace it with a combination of the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#04-Calculate-Order-Quantities'>CalculateOrderQuantity</a> and <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a> methods.</p>
 
 <a id='unsupported-request-type'></a><div class="section-example-container">
 <pre class="csharp">var quantity = CalculateOrderQuantity(_symbol, 0.05);
@@ -98,9 +98,9 @@ if (quantity != 0)
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-<pre class="python">quantity = self.CalculateOrderQuantity(self.symbol, 0.05)
+<pre class="python">quantity = self.calculate_order_quantity(self._symbol, 0.05)
 if quantity:
-    self.MarketOrder(self.symbol, quantity)</pre>
+    self.market_order(self._symbol, quantity)</pre>
 </div>
 
 
@@ -145,8 +145,8 @@ if holding_quantity > 0:
 {
     ExerciseOption(_contractSymbol, quantity);
 }</pre>
-    <pre class="python">if self.IsMarketOpen(self.contract_symbol):
-    self.ExerciseOption(self.contract_symbol, quantity)</pre>
+    <pre class="python">if self.is_market_open(self.contract_symbol):
+    self.exercise_option(self.contract_symbol, quantity)</pre>
     </div>
     
     <li>When you try to place a market on open order for a Futures contract or a Future Option contract</li>
@@ -216,11 +216,11 @@ if holding_quantity > 0:
     <li>When the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders#06-Option-Assignments'>Option assignment simulator</a> assigns you to an Option during the warm-up period</li>
 </ul>
 
-<p>To avoid this order response error, only manage orders after the warm-up period ends. To avoid trading during the warm-up period, add an <code>IsWarmingUp</code> guard to the top of the <code>OnData</code> method.</p>
+<p>To avoid this order response error, only manage orders after the warm-up period ends. To avoid trading during the warm-up period, add an <code class="csharp">IsWarmingUp</code><code class="python">is_warming_up</code> guard to the top of the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
 <a id='brokerage-model-refused-to-update-order'></a><div class="section-example-container">
 <pre class="csharp">if (IsWarmingUp) return;</pre>
-<pre class="python">if self.IsWarmingUp: return</pre>
+<pre class="python">if self.is_warming_up: return</pre>
 </div>
 
 
@@ -249,8 +249,8 @@ if holding_quantity > 0:
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-    <pre class="python">if self.Securities[self.symbol].IsTradable:
-    self.MarketOrder(self.symbol, quantity)</pre>
+    <pre class="python">if self.securities[self._symbol].is_tradable:
+    self.market_order(self._symbol, quantity)</pre>
 </div>
 
 
@@ -268,9 +268,9 @@ if (quantity >= lotSize)
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-    <pre class="python">lot_size = self.Securities[self.symbol].SymbolProperties.LotSize
+    <pre class="python">lot_size = self.Securities[self._symbol].SymbolProperties.LotSize
 if quantity >= lot_size:
-    self.MarketOrder(self.symbol, quantity)</pre>
+    self.MarketOrder(self._symbol, quantity)</pre>
 </div>
 
 
@@ -285,9 +285,9 @@ if (availableToBorrow == null || quantityToBorrow <= availableToBorrow)
 {
     MarketOrder(_symbol, -quantityToBorrow);
 }</pre>
-    <pre class="python">available_to_borrow = self.BrokerageModel.GetShortableProvider().ShortableQuantity(self.symbol, self.Time)
+    <pre class="python">available_to_borrow = self.BrokerageModel.GetShortableProvider().ShortableQuantity(self._symbol, self.Time)
 if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
-    self.MarketOrder(self.symbol, -quantity_to_borrow)</pre>
+    self.MarketOrder(self._symbol, -quantity_to_borrow)</pre>
 </div>
 
 
@@ -301,8 +301,8 @@ if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
 {
     _orderTicket.Cancel();
 }</pre>
-    <pre class="python">if self.order_ticket.Status != OrderStatus.New:
-    self.order_ticket.Cancel()</pre>
+    <pre class="python">if self.order_ticket.status != OrderStatus.NEW:
+    self.order_ticket.cancel()</pre>
 </div>
 
 <h4>European Option Not Expired on Exercise</h4>
@@ -330,6 +330,6 @@ if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
 {
     MarketOrder(_contractSymbol, quantity);
 }</pre>
-    <pre class="python">if self.contract_symbol.Underlying not in slice.Splits:
-    self.MarketOrder(self.contract_symbol, quantity)</pre>
+    <pre class="python">if self.contract_symbol.underlying not in slice.splits:
+    self.market_order(self.contract_symbol, quantity)</pre>
 </div>

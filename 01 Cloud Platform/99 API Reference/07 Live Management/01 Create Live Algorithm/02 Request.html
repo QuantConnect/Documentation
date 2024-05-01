@@ -21,7 +21,10 @@ Project, compile and brokerage login information for deploying a live algorithm.
 <td width="20%">nodeId</td> <td> <code>string</code> <br/> Id of the node that will run the algorithm.</td>
 </tr>
 <tr>
-<td width="20%">brokerage</td> <td> <code>BaseLiveAlgorithmSettings object</code> <br/> Base class for settings that must be configured per Brokerage to create new algorithms via the API.</td>
+<td width="20%">brokerage</td> <td> <code>object Enum</code> <br/> Brokerage configurations to be used in the live algorithm. Options : ['QuantConnectSettings', 'InteractiveBrokersSettings', 'BinanceSettings', 'BinanceFuturesUSDMSettings', 'BinanceFuturesCOINSettings', 'BinanceUSSettings', 'TradierSettings', 'BitfinexSettings', 'CoinbaseSettings', 'KrakenSettings', 'BybitSettings', 'OandaSettings', 'ZerodhaSettings', 'SamcoSettings', 'WolverineSettings', 'TDAmeritradeSettings', 'TradingTechnologiesSettings', 'RBIBrokerageSettings', 'TerminalLinkSettings']</td>
+</tr>
+<tr>
+<td width="20%">dataProviders</td> <td> <code>object</code> <br/> Dictionary of data provider configurations to be used in the live algorithm.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -33,12 +36,9 @@ Project, compile and brokerage login information for deploying a live algorithm.
   "compileId": "string",
   "nodeId": "string",
   "brokerage": {
-    "id": "Default",
-    "user": "",
-    "password": "",
-    "environment": "live",
-    "account": ""
-  }
+    "id": "string"
+  },
+  "dataProviders": 
 }</pre>
 </div>
 </td>
@@ -46,34 +46,1074 @@ Project, compile and brokerage login information for deploying a live algorithm.
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BaseLiveAlgorithmSettings</code> Model - Base class for settings that must be configured per Brokerage to create new algorithms via the API.</th>
+<th colspan="2"><code>QuantConnectSettings</code> Model - QuantConnect settings for using it as a brokerage or data provider.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">id</td> <td> <code>string<br/><i><sub>example: Default</sub></i></code> <br/> 'Interactive' / 'FXCM' / 'Oanda' / 'Tradier' /'PaperTrading'.</td>
-</tr>
-<tr>
-<td width="20%">user</td> <td> <code>string<br/><i><sub>example: </sub></i></code> <br/> Username associated with brokerage.</td>
-</tr>
-<tr>
-<td width="20%">password</td> <td> <code>string<br/><i><sub>example: </sub></i></code> <br/> Password associated with brokerage.</td>
-</tr>
-<tr>
-<td width="20%">environment</td> <td> <code>string Enum</code> <br/> Represents the types of environments supported by brokerages for trading. Options : ['live', 'paper']</td>
-</tr>
-<tr>
-<td width="20%">account</td> <td> <code>string<br/><i><sub>example: </sub></i></code> <br/> Account of the associated brokerage.</td>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of QuantConnect, this is QuantConnectBrokerage.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "id": "Default",
-  "user": "",
-  "password": "",
-  "environment": "live",
-  "account": ""
+  "id": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>InteractiveBrokersSettings</code> Model - Settings for using Interactive Brokers as brokerage or data provider.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of InteractiveBrokers, this is InteractiveBrokersBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">ib-user-name</td> <td> <code>string</code> <br/> Your Interactive Brokers username.</td>
+</tr>
+<tr>
+<td width="20%">ib-password</td> <td> <code>string</code> <br/> Your Interactive Brokers password.</td>
+</tr>
+<tr>
+<td width="20%">ib-trading-mode</td> <td> <code>string Enum</code> <br/> Represents the types of environments supported by Interactive Brokers for trading. Options : ['live', 'paper']</td>
+</tr>
+<tr>
+<td width="20%">ib-account</td> <td> <code>string</code> <br/> Your Interactive Brokers account id.</td>
+</tr>
+<tr>
+<td width="20%">ib-weekly-restart-utc-time</td> <td> <code>string($date)</code> <br/> Weekly restart UTC time (hh:mm:ss).</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "ib-user-name": "string",
+  "ib-password": "string",
+  "ib-trading-mode": "live",
+  "ib-account": "string",
+  "ib-weekly-restart-utc-time": "2021-11-26T15:18:27.693Z",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>BinanceSettings</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, BinanceBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">binance-exchange-name</td> <td> <code>string</code> <br/> Binance exchange, this is, Binance.</td>
+</tr>
+<tr>
+<td width="20%">binance-api-secret</td> <td> <code>string</code> <br/> Your Binance API secret.</td>
+</tr>
+<tr>
+<td width="20%">binance-api-key</td> <td> <code>string</code> <br/> Your Binance API key.</td>
+</tr>
+<tr>
+<td width="20%">binance-api-url</td> <td> <code>string</code> <br/> Binance configuration for spot/margin. The value for this property is https://api.binance.com.</td>
+</tr>
+<tr>
+<td width="20%">binance-websocket-url</td> <td> <code>string</code> <br/> Binance configuration for spot/margin. The value for this property is wss://stream.binance.com:9443/ws.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">description</td> <td> <code>object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "binance-exchange-name": "string",
+  "binance-api-secret": "string",
+  "binance-api-key": "string",
+  "binance-api-url": "string",
+  "binance-websocket-url": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ],
+  "description": 
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>BinanceFuturesUSDMSettings</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, BinanceBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">binance-exchange-name</td> <td> <code>string</code> <br/> Binance exchange, this is, Binance-USDM-Futures.</td>
+</tr>
+<tr>
+<td width="20%">binance-api-secret</td> <td> <code>string</code> <br/> Your Binance API secret.</td>
+</tr>
+<tr>
+<td width="20%">binance-api-key</td> <td> <code>string</code> <br/> Your Binance API key.</td>
+</tr>
+<tr>
+<td width="20%">binance-fapi-url</td> <td> <code>string</code> <br/> Binance Futures configuration for spot/margin. The value for this property is https://fapi.binance.com.</td>
+</tr>
+<tr>
+<td width="20%">binance-fwebsocket-url</td> <td> <code>string</code> <br/> Binance Futures configuration for spot/margin. The value for this property is wss://fstream.binance.com/ws.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">description</td> <td> <code>object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "binance-exchange-name": "string",
+  "binance-api-secret": "string",
+  "binance-api-key": "string",
+  "binance-fapi-url": "string",
+  "binance-fwebsocket-url": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ],
+  "description": 
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>BinanceFuturesCOINSettings</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, BinanceBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">binance-exchange-name</td> <td> <code>string</code> <br/> Binance exchange, this is, Binance-COIN-Futures.</td>
+</tr>
+<tr>
+<td width="20%">binance-api-secret</td> <td> <code>string</code> <br/> Your Binance API secret.</td>
+</tr>
+<tr>
+<td width="20%">binance-api-key</td> <td> <code>string</code> <br/> Your Binance API key.</td>
+</tr>
+<tr>
+<td width="20%">binance-dapi-url</td> <td> <code>string</code> <br/> Binance Futures configuration for spot/margin. The value for this property is https://dapi.binance.com.</td>
+</tr>
+<tr>
+<td width="20%">binance-dwebsocket-url</td> <td> <code>string</code> <br/> Binance Futures configuration for spot/margin. The value for this property is wss://dstream.binance.com/ws.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">description</td> <td> <code>object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "binance-exchange-name": "string",
+  "binance-api-secret": "string",
+  "binance-api-key": "string",
+  "binance-dapi-url": "string",
+  "binance-dwebsocket-url": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ],
+  "description": 
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>BinanceUSSettings</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, BinanceBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">binance-exchange-name</td> <td> <code>string</code> <br/> Binance exchange, this is, BinanceUS.</td>
+</tr>
+<tr>
+<td width="20%">binanceus-api-secret</td> <td> <code>string</code> <br/> Your Binance US API secret.</td>
+</tr>
+<tr>
+<td width="20%">binanceus-api-key</td> <td> <code>string</code> <br/> Your Binance US API key.</td>
+</tr>
+<tr>
+<td width="20%">binanceus-api-url</td> <td> <code>string</code> <br/> Binance US configuration for spot/margin. The value for this property is https://api.binance.us.</td>
+</tr>
+<tr>
+<td width="20%">binanceus-websocket-url</td> <td> <code>string</code> <br/> Binance US configuration for spot/margin. The value for this property is wss://stream.binance.us:9443/ws.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">description</td> <td> <code>object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "binance-exchange-name": "string",
+  "binanceus-api-secret": "string",
+  "binanceus-api-key": "string",
+  "binanceus-api-url": "string",
+  "binanceus-websocket-url": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ],
+  "description": 
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>TradierSettings</code> Model - Settings for using Tradier as a data provider.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, TradierBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">tradier-account-id</td> <td> <code>string</code> <br/> Your Tradier account id.</td>
+</tr>
+<tr>
+<td width="20%">tradier-access-token</td> <td> <code>string</code> <br/> Your Tradier access token.</td>
+</tr>
+<tr>
+<td width="20%">tradier-environment</td> <td> <code>string Enum</code> <br/> Whether the developer sandbox should be used. Options : ['live', 'paper']</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "tradier-account-id": "string",
+  "tradier-access-token": "string",
+  "tradier-environment": "live",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>BitfinexSettings</code> Model - Settings for using Bitfinex as a data provider or brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, BitfinexBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">bitfinex-api-key</td> <td> <code>string</code> <br/> Your Bitfinex API key.</td>
+</tr>
+<tr>
+<td width="20%">bitfinex-api-secret</td> <td> <code>string</code> <br/> Your Bitfinex API secret.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "bitfinex-api-key": "string",
+  "bitfinex-api-secret": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>CoinbaseSettings</code> Model - Settings for using Coinbase as a data provider or brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, CoinbaseBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">coinbase-api-key</td> <td> <code>string</code> <br/> Your Coinbase Advanced Trade API key.</td>
+</tr>
+<tr>
+<td width="20%">coinbase-api-secret</td> <td> <code>string</code> <br/> Your Coinbase Advanced Trade API secret.</td>
+</tr>
+<tr>
+<td width="20%">coinbase-url</td> <td> <code>string</code> <br/> Coinbase URL, this is, wss://advanced-trade-ws.coinbase.com.</td>
+</tr>
+<tr>
+<td width="20%">coinbase-rest-api</td> <td> <code>string</code> <br/> Coinbase REST API, this is, https://api.coinbase.com.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "coinbase-api-key": "string",
+  "coinbase-api-secret": "string",
+  "coinbase-url": "string",
+  "coinbase-rest-api": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>KrakenSettings</code> Model - Settings for using Kraken as a data provider.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, KrakenBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">kraken-api-key</td> <td> <code>string</code> <br/> Your Kraken API key.</td>
+</tr>
+<tr>
+<td width="20%">kraken-api-secret</td> <td> <code>string</code> <br/> Your Kraken API secret.</td>
+</tr>
+<tr>
+<td width="20%">kraken-verification-tier</td> <td> <code>string</code> <br/> Your Kraken Verification Tier.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "kraken-api-key": "string",
+  "kraken-api-secret": "string",
+  "kraken-verification-tier": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>BybitSettings</code> Model - Settings for using Bybit as a data provider or brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, BybitBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">bybit-api-key</td> <td> <code>string</code> <br/> Your Bybit API key.</td>
+</tr>
+<tr>
+<td width="20%">bybit-api-secret</td> <td> <code>string</code> <br/> Your Bybit API secret.</td>
+</tr>
+<tr>
+<td width="20%">bybit-vip-level</td> <td> <code>string</code> <br/> Your Bybit VIP Level.</td>
+</tr>
+<tr>
+<td width="20%">bybit-use-testnet</td> <td> <code>string Enum</code> <br/> Whether the testnet should be used. Options : ['live', 'paper']</td>
+</tr>
+<tr>
+<td width="20%">bybit-api-url</td> <td> <code>string</code> <br/> Bybit API URL, this is, https://api-testnet.bybit.com.</td>
+</tr>
+<tr>
+<td width="20%">bybit-websocket-url</td> <td> <code>string</code> <br/> Bybit Websocket URL, this is, wss://stream.bybit.com.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>Holding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "bybit-api-key": "string",
+  "bybit-api-secret": "string",
+  "bybit-vip-level": "string",
+  "bybit-use-testnet": "live",
+  "bybit-api-url": "string",
+  "bybit-websocket-url": "string",
+  "holdings": [
+    {
+      "Symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "Type": "Base",
+      "CurrencySymbol": "$",
+      "AveragePrice": 0,
+      "Quantity": 0,
+      "MarketPrice": 0,
+      "ConversionRate": 0,
+      "MarketValue": 0,
+      "UnrealizedPnl": 0
+    }
+  ],
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OandaSettings</code> Model - Settings for using Oanda as a data provider or brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> ID of the brokerage, this is, OandaBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">oanda-account-id</td> <td> <code>string</code> <br/> Your OANDA account id can be found on your OANDA Account Statement page (https://www.oanda.com/account/statement/). It follows the following format '###-###-######-###'.</td>
+</tr>
+<tr>
+<td width="20%">oanda-access-token</td> <td> <code>string</code> <br/> Your OANDA API token. You can generate an API token from the Manage API Access page (https://www.oanda.com/account/tpa/personal_token).</td>
+</tr>
+<tr>
+<td width="20%">oanda-environment</td> <td> <code>string Enum</code> <br/> The environment to run in, Practice for fxTrade Practice, Trade for fxTrade. Options : ['Practice', 'Trade']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "oanda-account-id": "string",
+  "oanda-access-token": "string",
+  "oanda-environment": "Practice"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ZerodhaSettings</code> Model - Settings for using Zerodha as a data provider or brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Brokerage ID, this is, ZerodhaBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">zerodha-api-key</td> <td> <code>string</code> <br/> Your Kite Connect API key.</td>
+</tr>
+<tr>
+<td width="20%">zerodha-access-token</td> <td> <code>string</code> <br/> Your Kite Connect access token.</td>
+</tr>
+<tr>
+<td width="20%">zerodha-product-type</td> <td> <code>string Enum</code> <br/> The product type must be set to MIS if you are targeting intraday products, CNC if you are targeting delivery products or NRML if you are targeting carry forward products. Options : ['mis', 'cnc', 'nrml']</td>
+</tr>
+<tr>
+<td width="20%">zerodha-trading-segment</td> <td> <code>string Enum</code> <br/> The trading segment must be set to 'equity' if you are trading equities on NSE or BSE, or 'commodity' if you are trading commodities on MCX. Options : ['equity', 'commodity']</td>
+</tr>
+<tr>
+<td width="20%">zerodha-history-subscription</td> <td> <code>bool</code> <br/> Whether you have a history API subscription for Zerodha.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "zerodha-api-key": "string",
+  "zerodha-access-token": "string",
+  "zerodha-product-type": "mis",
+  "zerodha-trading-segment": "equity",
+  "zerodha-history-subscription": 
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>SamcoSettings</code> Model - Settings for using Samco as a data provider or brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Brokerage ID, this is, SamcoBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">samco-client-id</td> <td> <code>string</code> <br/> Your Samco account Client ID.</td>
+</tr>
+<tr>
+<td width="20%">samco-client-password</td> <td> <code>string</code> <br/> Your Samco account password.</td>
+</tr>
+<tr>
+<td width="20%">samco-year-of-birth</td> <td> <code>int</code> <br/> Your year of birth (YYYY) registered with Samco.</td>
+</tr>
+<tr>
+<td width="20%">samco-product-type</td> <td> <code>string Enum</code> <br/> MIS if you are targeting intraday products, CNC if you are targeting delivery products, NRML if you are targeting carry forward products. Options : ['mis', 'cnc', 'nrml']</td>
+</tr>
+<tr>
+<td width="20%">samco-trading-segment</td> <td> <code>string Enum</code> <br/> \'equity\' if you are trading equities on NSE or BSE, commodity if you are trading \'commodities\' on MCX. Options : ['equity', 'commodity']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "samco-client-id": "string",
+  "samco-client-password": "string",
+  "samco-year-of-birth": ,
+  "samco-product-type": "mis",
+  "samco-trading-segment": "equity"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>WolverineSettings</code> Model - Settings for using Wolverine Execution Services as a brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Brokerage ID, this is, WolverineBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">wolverine-on-behalf-of-comp-id</td> <td> <code>string</code> <br/> Value used to identify the trading firm.</td>
+</tr>
+<tr>
+<td width="20%">wolverine-account</td> <td> <code>string</code> <br/> Wolverine Execution Services account name.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "wolverine-on-behalf-of-comp-id": "string",
+  "wolverine-account": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>TDAmeritradeSettings</code> Model - Settings for using TDAmeritrade as a data provider or brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Brokerage ID, this is, TDAmeritradeBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">tdameritrade-api-key</td> <td> <code>string</code> <br/> Your TDAmeritrade API key.</td>
+</tr>
+<tr>
+<td width="20%">tdameritrade-access-token</td> <td> <code>string</code> <br/> Your TDAmeritrade OAuth Access Token.</td>
+</tr>
+<tr>
+<td width="20%">tdameritrade-account-number</td> <td> <code>string</code> <br/> Your TDAmeritrade account number.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "tdameritrade-api-key": "string",
+  "tdameritrade-access-token": "string",
+  "tdameritrade-account-number": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>TradingTechnologiesSettings</code> Model - Settings for using Trading Technologies as a brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Brokerage ID, this is, TradingTechnologiesBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">tt-user-name</td> <td> <code>string</code> <br/> Trading Technologies user name.</td>
+</tr>
+<tr>
+<td width="20%">tt-session-password</td> <td> <code>string</code> <br/> Trading Technologies session password.</td>
+</tr>
+<tr>
+<td width="20%">tt-account-name</td> <td> <code>string</code> <br/> Trading Technologies account name.</td>
+</tr>
+<tr>
+<td width="20%">tt-rest-app-key</td> <td> <code>string</code> <br/> Trading Technologies App key.</td>
+</tr>
+<tr>
+<td width="20%">tt-rest-app-secret</td> <td> <code>string</code> <br/> Trading Technologies App secret.</td>
+</tr>
+<tr>
+<td width="20%">tt-rest-environment</td> <td> <code>string Enum</code> <br/> Environment in which the brokerage Trading Technologies will be used. Options : ['live', 'uat']</td>
+</tr>
+<tr>
+<td width="20%">tt-order-routing-sender-comp-id</td> <td> <code>string</code> <br/> Trading Technologies routing sender.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "tt-user-name": "string",
+  "tt-session-password": "string",
+  "tt-account-name": "string",
+  "tt-rest-app-key": "string",
+  "tt-rest-app-secret": "string",
+  "tt-rest-environment": "live",
+  "tt-order-routing-sender-comp-id": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>RBIBrokerageSettings</code> Model - Settings for using RBI as a brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Brokerage ID, this is, RBIBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">rbi-on-behalf-of-comp-id</td> <td> <code>string</code> <br/> Value used to identify the trading firm.</td>
+</tr>
+<tr>
+<td width="20%">rbi-account</td> <td> <code>string</code> <br/> RBI account name.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "rbi-on-behalf-of-comp-id": "string",
+  "rbi-account": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>TerminalLinkSettings</code> Model - Settings for using TerminalLink as a brokerage.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Brokerage ID, this is TerminalLinkBrokerage.</td>
+</tr>
+<tr>
+<td width="20%">terminal-link-connection-type</td> <td> <code>string Enum</code> <br/> Terminal Link Connection Type [DAPI, SAPI]. Options : ['DAPI', 'SAPI']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "terminal-link-connection-type": "DAPI"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Holding</code> Model - Live results object class for packaging live result data.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
+</tr>
+<tr>
+<td width="20%">Type</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
+</tr>
+<tr>
+<td width="20%">CurrencySymbol</td> <td> <code>string<br/><i><sub>example: $</sub></i></code> <br/> The currency symbol of the holding.</td>
+</tr>
+<tr>
+<td width="20%">AveragePrice</td> <td> <code>number</code> <br/> Average Price of our Holding in the currency the symbol is traded in.</td>
+</tr>
+<tr>
+<td width="20%">Quantity</td> <td> <code>number</code> <br/> Quantity of the Symbol we hold.</td>
+</tr>
+<tr>
+<td width="20%">MarketPrice</td> <td> <code>number</code> <br/> Current Market Price of the Asset in the currency the symbol is traded in.</td>
+</tr>
+<tr>
+<td width="20%">ConversionRate</td> <td> <code>number</code> <br/> Current market conversion rate into the account currency.</td>
+</tr>
+<tr>
+<td width="20%">MarketValue</td> <td> <code>number</code> <br/> Current market value of the holding.</td>
+</tr>
+<tr>
+<td width="20%">UnrealizedPnl</td> <td> <code>number</code> <br/> Current unrealized P/L of the holding.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "Symbol": {
+    "value": "string",
+    "id": "string",
+    "permtick": "string"
+  },
+  "Type": "Base",
+  "CurrencySymbol": "$",
+  "AveragePrice": 0,
+  "Quantity": 0,
+  "MarketPrice": 0,
+  "ConversionRate": 0,
+  "MarketValue": 0,
+  "UnrealizedPnl": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Symbol</code> Model - Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">value</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
+</tr>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> The security identifier for this symbol.</td>
+</tr>
+<tr>
+<td width="20%">permtick</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "value": "string",
+  "id": "string",
+  "permtick": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>SecurityType</code> Model - Type of tradable security / underlying asset.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "SecurityType": "Base"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>CashAmount</code> Model - Represents a cash amount which can be converted to account currency using a currency converter.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">amount</td> <td> <code>number</code> <br/> The amount of cash.</td>
+</tr>
+<tr>
+<td width="20%">currency</td> <td> <code>string</code> <br/> The currency in which the cash amount is denominated.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "amount": 0,
+  "currency": "string"
 }</pre>
 </div>
 </td>

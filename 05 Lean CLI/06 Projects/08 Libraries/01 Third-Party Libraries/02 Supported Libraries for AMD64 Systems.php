@@ -5,4 +5,7 @@
     The following libraries are available on AMD64-based systems:
 </p>
 
-<? include(DOCS_RESOURCES."/libraries/supported-libraries.php"); ?>
+<?
+$cloudPlatform = false; 
+include(DOCS_RESOURCES."/libraries/supported-libraries.php"); 
+?>

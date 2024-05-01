@@ -41,9 +41,9 @@
 <p><?= $writingAlgorithms ? "The <code>TDAmeritradeBrokerageModel</code> supports" : "We model the TD Ameritrade API by supporting" ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 
 <ul>
-    <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
-    <li><code>GoodTilDate</code></li>
+    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
 </ul>
 
 <?php if ($writingAlgorithms) { ?>
@@ -71,21 +71,21 @@ public override void OnData(Slice slice)
                    TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day))
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = TDAmeritradeOrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+    order_properties.time_in_force = TimeInForce.DAY
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

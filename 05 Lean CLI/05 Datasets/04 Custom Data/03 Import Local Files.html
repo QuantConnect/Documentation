@@ -7,7 +7,7 @@
 <ol>
     <li>Copy the data file that you want to use to the <span class="public-directory-name">data</span> directory in your <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a>.</li>
     <li>Open the source file containing your custom data class in an editor.</li>
-    <li>Update your <code>GetSource</code> method to load data from the local file in your <span class="public-directory-name">data</span> directory. Make sure you only use forward slashes. Backward slashes as path separators don't work. For the <a href="https://www.quantconnect.com/docs/v1/algorithm-reference/importing-custom-data#Importing-Custom-Data-Creating-and-Reading-Custom-Data">Weather</a> example in the LEAN documentation, that is done like this:
+    <li>Update your <code class="csharp">GetSource</code><code class="python">get_source</code> method to load data from the local file in your <span class="public-directory-name">data</span> directory. Make sure you only use forward slashes. Backward slashes as path separators don't work. For the <a href="https://www.quantconnect.com/docs/v1/algorithm-reference/importing-custom-data#Importing-Custom-Data-Creating-and-Reading-Custom-Data">Weather</a> example in the LEAN documentation, that is done like this:
 <div class="section-example-container">
 <pre class="csharp">using System;
 using System.IO;
@@ -38,15 +38,15 @@ from QuantConnect.Python import PythonData
 
 
 class Weather(PythonData):
-    def GetSource(self, config: SubscriptionDataConfig, date: datetime, is_live: bool) -&gt; SubscriptionDataSource:
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live: bool) -&gt; SubscriptionDataSource:
         # Old:
         # source = "https://www.dropbox.com/s/8v6z949n25hyk9o/custom_weather_data.csv?dl=1"
-        # return SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile)
+        # return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
 
         # New:
         # Replace custom_weather_data.csv with the path to your data file in the data directory
-        source = os.path.join(Globals.DataFolder, "custom_weather_data.csv")
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.LocalFile)</pre>
+        source = os.path.join(Globals.DATA_FOLDER, "custom_weather_data.csv")
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.LOCAL_FILE)</pre>
 </div>
     </li>
     <li>Save the source file.</li>

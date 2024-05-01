@@ -22,18 +22,18 @@ $pythonPrefix = $research ? "qb." : "self.";
 {
     // Read data
 }</pre>
-    <pre class='python'>if <?=$pythonPrefix?>ObjectStore.ContainsKey(key):
+    <pre class='python'>if <?=$pythonPrefix?>object_store.contains_key(key):
     # Read data</pre>
 </div>
 
 
 <h4>Strings</h4>
 
-<p>To read a <code>string</code> object, call the <code>Read</code> or <code>ReadString</code> method.</p>
+<p>To read a <code>string</code> object, call the <code class='csharp'>Read</code><code class='python'>read</code> or <code class='csharp'>ReadString</code><code class='python'>read_string</code> method.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>var stringData = <?=$cSharpPrefix?>ObjectStore.Read($"{<?=$cSharpPrefix?>ProjectId}/stringKey");</pre>
-    <pre class='python'>string_data = <?=$pythonPrefix?>ObjectStore.Read(f"{<?=$pythonPrefix?>ProjectId}/string_key")</pre>
+    <pre class='python'>string_data = <?=$pythonPrefix?>object_store.read(f"{<?=$pythonPrefix?>project_id}/string_key")</pre>
 </div>
 
 <h4 class='csharp'>JSON</h4>
@@ -55,9 +55,9 @@ $pythonPrefix = $research ? "qb." : "self.";
 
 <h4>Bytes</h4>
 
-<p>To read a <code>Bytes</code> object, call the <code>ReadBytes</code> method.</p>
+<p>To read a <code>Bytes</code> object, call the <code class='csharp'>ReadBytes</code><code class='python'>read_bytes</code> method.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>var bytesData = <?=$cSharpPrefix?>ObjectStore.ReadBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey");</pre>
-    <pre class='python'>byte_data = <?=$pythonPrefix?>ObjectStore.ReadBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key")</pre>
+    <pre class='python'>byte_data = <?=$pythonPrefix?>object_store.read_bytes(f"{<?=$pythonPrefix?>project_id}/bytes_key")</pre>
 </div>

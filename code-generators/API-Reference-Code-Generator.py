@@ -329,13 +329,28 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
               
         if "enum" in properties:
             type_ += " Enum"
-            description_ += f' Options : {properties["enum"]}'
+            def parse_properties(properties):
+                ref_properties = [x.get("$ref", x).split('/')[1:] for x in properties if isinstance(x, dict)]
+                for ref in ref_properties:
+                    item_list.append(ref)
+                return [x[-1] for x in ref_properties] if ref_properties else properties
+            description_ += f' Options : {parse_properties(properties["enum"])}'
             
+            property = properties["enum"][0]
+            ref = property.get("$ref") if isinstance(property, dict) else None
+            if ref:
+                request_object_ = doc
+                for item in ref.split("/")[1:]:
+                    request_object_ = request_object_[item]
+                    
+                if "properties" in request_object_:
+                    request_object_properties_ = request_object_["properties"]
+                    property, __, __ = ExampleWriting(request_object_properties_, item_list, order=order+1)
+                    
             if "string" in type_:
-                example_ = tab + f'  "{name}": "{properties["enum"][0]}"'
-                
+                example_ = tab + f'  "{name}": "{property}"'
             else:
-                example_ = tab + f'  "{name}": {properties["enum"][0]}'
+                example_ = tab + f'  "{name}": {property}'
             
         if "example" in properties:
             eg = properties["example"]

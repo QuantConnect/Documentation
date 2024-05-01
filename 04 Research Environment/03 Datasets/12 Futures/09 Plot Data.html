@@ -7,7 +7,7 @@
 <ol>
     <li>Get some <a href="#04-Get-Historical-Data">historical data</a>.</li>
     <div class="section-example-container">
-        <pre class="python">history = qb.History(contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.Daily)</pre>
+        <pre class="python">history = qb.history(contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.DAILY)</pre>
         <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(contractSymbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31), Resolution.Daily);</pre>
     </div>
 
@@ -42,7 +42,7 @@ using Plotly.NET.LayoutObjects;</pre>
 
     <li>Create a <code>Layout</code>.<br></li>
     <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{contract_symbol.Value} OHLC'),
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{contract_symbol.value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
@@ -85,7 +85,7 @@ layout.SetValue("title", title);</pre>
 <ol>
     <li>Get some historical data.</li>
 	<div class="section-example-container">
-        <pre class="python">history = qb.History(symbols, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.Daily)</pre>
+        <pre class="python">history = qb.history(symbols, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.DAILY)</pre>
         <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(contractSymbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));</pre>
     </div>
 
@@ -101,7 +101,7 @@ layout.SetValue("title", title);</pre>
 
 	<li class="python">Rename the columns to be the <code>Symbol</code> of each contract.</li>
     <div class="python section-example-container">
-        <pre class="python">closing_prices.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x)) for x in closing_prices.columns]</pre>
+        <pre class="python">closing_prices.columns = [Symbol.get_alias(SecurityIdentifier.parse(x)) for x in closing_prices.columns]</pre>
     </div>
 
     <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>

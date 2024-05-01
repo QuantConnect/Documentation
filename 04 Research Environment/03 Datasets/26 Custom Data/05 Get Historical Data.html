@@ -1,32 +1,32 @@
 <p>You need a <a href="#04-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
-<p>Before you request data, call <code>SetStartDate</code> method with a <code class="python">datetime</code><code class="csharp">DateTime </code> to reduce the risk of <a href="/docs/v2/writing-algorithms/key-concepts/glossary#17-look-ahead-bias">look-ahead bias</a>.</p>
+<p>Before you request data, call <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> method with a <code class="python">datetime</code><code class="csharp">DateTime </code> to reduce the risk of <a href="/docs/v2/writing-algorithms/key-concepts/glossary#17-look-ahead-bias">look-ahead bias</a>.</p>
 <div class="section-example-container">
-    <pre class="csharp">qb.SetStartDate(2014, 7, 29);</pre>
-    <pre class="python">qb.SetStartDate(2014, 7, 29)</pre>
+    <pre class="csharp">qb.set_start_date(2014, 7, 29);</pre>
+    <pre class="python">qb.set_start_date(2014, 7, 29)</pre>
 </div>
 
-<p>If you call the <code>SetStartDate</code> method, the date that you pass to the method is the latest date for which your history requests will return data.</p>
+<p>If you call the <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> method, the date that you pass to the method is the latest date for which your history requests will return data.</p>
 
 
 <h4>Trailing Number of Bars<br></h4>
-<p>Call the <code>History</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
+<p>Call the <code class="csharp">History</code><code class="python">history</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, 10);</pre>
-    <pre class="python">history = qb.History(symbol, 10)</pre>
+    <pre class="csharp">var history = qb.history(symbol, 10);</pre>
+    <pre class="python">history = qb.history(symbol, 10)</pre>
 </div>
 <p>This method returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, <code class="csharp">TimeSpan</code><code class="python">timedelta</code>, and resolution to request historical data based on the given trailing period of time and resolution.</p>
+<p>Call the <code class="csharp">History</code><code class="python">history</code> method with a symbol, <code class="csharp">TimeSpan</code><code class="python">timedelta</code>, and resolution to request historical data based on the given trailing period of time and resolution.</p>
 <div class="section-example-container">
     <pre class="csharp">var history = qb.History(symbol, TimeSpan.FromDays(10));</pre>
-    <pre class="python">history = qb.History(symbol, timedelta(days=10))</pre>
+    <pre class="python">history = qb.history(symbol, timedelta(days=10))</pre>
 </div>
 <p>This method returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution. The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
+<p>Call the <code class="csharp">History</code><code class="python">history</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution. The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var startTime = new DateTime(2013, 7, 29);
@@ -34,21 +34,21 @@ var endTime = new DateTime(2014, 7, 29);
 var history = qb.History(symbol, startTime, endTime);</pre>
     <pre class="python">start_time = datetime(2013, 7, 29)
 end_time = datetime(2014, 7, 29)
-history = qb.History(symbol, start_time, end_time)</pre>
+history = qb.history(symbol, start_time, end_time)</pre>
 </div>
 <p>This method returns the bars that are timestamped within the defined period of time.</p>
 
-<p class="python">In all of the cases above, the <code>History</code> method returns a <code>DataFrame</code> with a <code>MultiIndex</code>.</p>
+<p class="python">In all of the cases above, the <code class="csharp">History</code><code class="python">history</code> method returns a <code>DataFrame</code> with a <code>MultiIndex</code>.</p>
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-custom-full.png" alt="Dataframe of custom NIFTY data from history call">
 
-<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;Nifty&gt;</code> for single-security requests.</p>
+<p class="csharp">In all of the cases above, the <code class="csharp">History</code><code class="python">history</code> method returns an <code>IEnumerable&lt;Nifty&gt;</code> for single-security requests.</p>
 
 <h4>Download Method<br></h4>
-<p>To download the data directly from the remote file location instead of using your custom data class, call the <code>Download</code> method with the data URL.</p>
+<p>To download the data directly from the remote file location instead of using your custom data class, call the <code class="csharp">Download</code><code class="python">download</code> method with the data URL.</p>
 <div class="section-example-container">
-    <pre class="csharp">var content = qb.Download("http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv");</pre>
-<pre class="python">content = qb.Download("http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv")</pre>
+    <pre class="csharp">var content = qb.download("http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv");</pre>
+<pre class="python">content = qb.download("http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv")</pre>
 </div>
 
 <p class="python">Follow these steps to convert the content to a <code>DataFrame</code>:</p>

@@ -47,11 +47,11 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>TimeInForce</code></td>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The <code>GoodTilCanceled</code> <code>TimeInForce</code> is supported.</td>
         </tr>
         <tr>
-            <td><code>PostOnly</code></td>
+            <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
             <td>A flag that signals the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
         </tr>
     </tbody>
@@ -82,21 +82,21 @@ public override void OnData(Slice slice)
                    PostOnly = true
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = CoinbaseOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.PostOnly = False
+    self.default_order_properties = CoinbaseOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.post_only = False
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = CoinbaseOrderProperties()
-    order_properties.TimeInForce = TimeInForce.GoodTilCanceled
-    order_properties.PostOnly = True
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    order_properties.post_only = True
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

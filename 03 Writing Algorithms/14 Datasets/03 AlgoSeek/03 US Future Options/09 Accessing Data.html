@@ -1,0 +1,54 @@
+<p>To get the current Future Options data, iterate through the <b class="csharp">OptionChains</b><b class="python">option_chains</b> of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your Future Options at every time step.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for canonical_fop_symbol, chain in slice.option_chains.items():
+        for contract in chain:
+            self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.OptionChains)
+    {
+        var canonicalFOPSymbol = kvp.Key;
+        var chain = kvp.Value;
+        foreach (var contract in chain)
+        {
+            Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
+        }
+    }
+}</pre>
+</div>
+
+<p>You can also iterate through the <b class="csharp">FuturesChains</b><b class="python">futures_chains</b> in the current <b>Slice</b> first.</p>
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for continuous_future_symbol, futures_chain in slice.futures_chains.items():
+        # Select a Future Contract and create its canonical FOP Symbol
+        futures_contract = [contract for contract in futures_chain][0]
+        canonical_fop_symbol = Symbol.create_canonical_option(futures_contract.symbol)
+        option_chain = slice.option_chains.get(canonical_fop_symbol)
+        if option_chain:
+            for fop_contract in option_chain:
+                 self.log(f"{fop_contract.symbol} price at {slice.time}: {fop_contract.last_price}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.FuturesChains)
+    {
+        var continuousContractSymbol = kvp.Key;
+        var futuresChain = kvp.Value;
+        
+        // Select a Future Contract and create its canonical FOP Symbol
+        var futuresContract = futuresChain.First();
+        var canonicalFOPSymbol = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
+        {
+            foreach (var fopContract in optionChain)
+            {
+                Log($"{fopContract.Symbol} price at {slice.Time}: {fopContract.LastPrice}");
+            }
+        }
+    }
+}</pre>
+</div>
+
+<p>For more information about accessing Future Options data, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data">Handling Data</a>.</p>

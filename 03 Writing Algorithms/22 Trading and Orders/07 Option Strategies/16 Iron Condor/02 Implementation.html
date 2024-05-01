@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the long iron condor strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -15,17 +15,17 @@ public override void Initialize()
     _symbol = option.Symbol;
     option.SetFilter(universe =&gt; universe.IncludeWeeklys().Strikes(-15, 15).Expiration(0, 40));
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2017, 2, 1)
-    self.SetEndDate(2017, 3, 1)
-    self.SetCash(500000)
-    self.UniverseSettings.Asynchronous = True
-    option = self.AddOption("GOOG")
-    self.symbol = option.Symbol
-    option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(-15, 15).Expiration(0, 40))</pre>
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 2, 1)
+    self.set_end_date(2017, 3, 1)
+    self.set_cash(500000)
+    self.universe_settings.asynchronous = True
+    option = self.add_option("GOOG")
+    self._symbol = option.symbol
+    option.set_filter(lambda universe: universe.include_weeklys().strikes(-15, 15).expiration(0, 40))</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, select the contracts in the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -52,35 +52,35 @@ public override void Initialize()
     var nearPut = putContracts[10].Strike;
     var nearCall = callContracts[^10].Strike;
     var farCall = callContracts[^1].Strike;</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.Portfolio[self.symbol.Underlying].Invested:
-        self.Liquidate()
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.portfolio[self.symbol.underlying].invested:
+        self.liquidate()
 
-    if self.Portfolio.Invested or not self.IsMarketOpen(self.symbol):
+    if self.portfolio.invested or not self.is_market_open(self._symbol):
         return
 
-    chain = slice.OptionChains.get(self.symbol)
+    chain = slice.option_chains.get(self._symbol)
     if not chain:
         return
 
     # Find put and call contracts with the farthest expiry       
-    expiry = max([x.Expiry for x in chain])
-    chain = sorted([x for x in chain if x.Expiry == expiry], key = lambda x: x.Strike)
+    expiry = max([x.expiry for x in chain])
+    chain = sorted([x for x in chain if x.expiry == expiry], key = lambda x: x.strike)
 
-    put_contracts = [x for x in chain if x.Right == OptionRight.Put]
-    call_contracts = [x for x in chain if x.Right == OptionRight.Call]
+    put_contracts = [x for x in chain if x.right == OptionRight.PUT]
+    call_contracts = [x for x in chain if x.right == OptionRight.CALL]
 
     if len(call_contracts) &lt; 10 or len(put_contracts) &lt; 10:
         return
 
     # Select the strikes in the strategy legs
-    far_put = put_contracts[0].Strike
-    near_put = put_contracts[10].Strike
-    near_call = call_contracts[-10].Strike
-    far_call = call_contracts[-1].Strike</pre>
+    far_put = put_contracts[0].strike
+    near_put = put_contracts[10].strike
+    near_call = call_contracts[-10].strike
+    far_call = call_contracts[-1].strike</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.IronCondor</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.IronCondor</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var ironCondor = OptionStrategies.IronCondor(
     _symbol, 
@@ -91,7 +91,7 @@ public override void Initialize()
     expiry);
 
 Buy(ironCondor, 2);</pre>
-        <pre class="python">iron_condor = OptionStrategies.IronCondor(
+        <pre class="python">iron_condor = OptionStrategies.iron_condor(
     self.symbol, 
     far_put,
     near_put,
@@ -99,6 +99,6 @@ Buy(ironCondor, 2);</pre>
     far_call,
     expiry)
 
-self.Buy(iron_condor, 2)</pre>
+self.buy(iron_condor, 2)</pre>
     </div>
 </ol>

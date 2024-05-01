@@ -38,8 +38,8 @@
 
 <p><?= $cloudPlatform ? "TT" : "The <code>TradingTechnologiesBrokerageModel</code>" ?> enforces the following order rules:</p>
 <ul>
-    <li>If you are buying (selling) with a <code>StopMarketOrder</code> or a <code>StopLimitOrder</code>, the stop price of the order must be greater (less) than the current security price.</li>
-    <li>If you are buying (selling) with a <code>StopLimitOrder</code>, the limit price of the order must be greater (less) than the stop price.</li>
+    <li>If you are buying (selling) with a <code class="csharp">StopMarketOrder</code><code class="python">stop_market_order</code> or a <code class="csharp">StopLimitOrder</code><code class="python">stop_limit_order</code>, the stop price of the order must be greater (less) than the current security price.</li>
+    <li>If you are buying (selling) with a <code class="csharp">StopLimitOrder</code><code class="python">stop_limit_order</code>, the limit price of the order must be greater (less) than the stop price.</li>
 </ul>
 
 <h4>Time In Force</h4>
@@ -65,18 +65,18 @@ public override void OnData(Slice slice)
                    TimeInForce = TimeInForce.Day 
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = OrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.DAY
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

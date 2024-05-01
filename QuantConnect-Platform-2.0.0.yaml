@@ -18,6 +18,28 @@ servers:
 security:
 - nonceTokenAuth: []
 paths:
+  /account/read:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 12 Account
+      description: Will read the organization account status.
+      responses:
+        "200":
+          description: Account information for an organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /projects/create:
     post:
       tags:
@@ -58,7 +80,7 @@ paths:
       - 02 Read Project
       summary: List details of all projects, or the project matched the passed project ID if the project ID property passed.
       requestBody:
-        description: The projectId for the project to read, or nothing to get a list of all projects.
+        description: The projectId for the project to read, or nothing to get a details list of all projects.
         content:
           application/json:
             schema:
@@ -216,7 +238,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectFilesResponse'
+                $ref: '#/components/schemas/RestResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -413,9 +435,9 @@ paths:
       - 05 Backtest Management
       - 02 Read Backtest
       - 01 Backtest Statistics
-      summary: If a backtest Id is provided, read out that backtest from the project, otherwise list all the backtests for the project.
+      summary: Read out that backtest from the project (optionally with the charts included).
       requestBody:
-        description: Fetch the results for the project Id and backtest Id provided.
+        description: Fetch the results for the project Id and backtest Id provided (and optional chart name provided).
         content:
           application/json:
             schema:
@@ -427,7 +449,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/BacktestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/list:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 05 Backtest Management
+      - 02 Read Backtest
+      - 01 Backtest Statistics
+      summary: List all the backtests for the project.
+      requestBody:
+        description: Fetch the results for the project Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListBacktestRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestSummaryResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -588,6 +641,49 @@ paths:
               explode: false
               schema:
                 type: string
+  /backtests/tags/update:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 05 Backtest Management
+      summary: Updates the tags collection for a backtest
+      requestBody:
+        description: Information required to update the tags collection for a backtest.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBacktestTagsRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /lean/versions/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 13 Lean Version
+      summary: Returns a list of lean versions with basic information for each version.
+      responses:
+        "200":
+          description: List of LEAN versions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeanVersionsResponse'
   /live/create:
     post:
       tags:
@@ -1053,9 +1149,6 @@ paths:
       requestBody:
         description: Upload files to the Object Store.
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SetObjectStoreRequest'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/ObjectStoreBinaryFile'
@@ -1081,14 +1174,14 @@ paths:
       - 01 Cloud Platform
       - 99 API Reference
       - 09 Object Store Management
-      - 02 Get Object Store Metadata
-      summary: Get Object Store metadata of a specific organization and key.
+      - 03 Get Object Store File
+      summary: Get Object Store file of a specific organization and key.
       requestBody:
-        description: Get Object Store metadata of a specific organization and key.
+        description: Get Object Store files of a specific organization and key.
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GetObjectStoreRequest'
+              $ref: '#/components/schemas/get_object_store'
         required: true
       responses:
         "200":
@@ -1105,13 +1198,43 @@ paths:
               explode: false
               schema:
                 type: string
+  /object/properties:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 09 Object Store Management
+      - 02 Get Object Store Metadata
+      summary: Get Object Store properties of a specific organization and key. It does not work if the object store is a directory.
+      requestBody:
+        description: Get Object Store properties of a specific organization and key.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetObjectStorePropertiesRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetObjectStorePropertiesResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /object/delete:
     post:
       tags:
       - 01 Cloud Platform
       - 99 API Reference
       - 09 Object Store Management
-      - 03 Delete Object Store File
+      - 04 Delete Object Store File
       summary: Delete the Object Store file of a specific organization and key.
       requestBody:
         description: Delete the Object Store file of a specific organization and key.
@@ -1141,7 +1264,7 @@ paths:
       - 01 Cloud Platform
       - 99 API Reference
       - 09 Object Store Management
-      - 04 List Object Store Files
+      - 05 List Object Store Files
       summary: List the Object Store files of a specific organization and path.
       requestBody:
         description: List the Object Store files of a specific organization and path.
@@ -1203,6 +1326,20 @@ components:
           type: string
           description: Optimization ID we want to abort.
       description: Abort an optimization.
+    AccountResponse:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: The organization Id.
+        creditBalance:
+          type: number
+          description: The current account balance.
+        card:
+          type: object
+          description: The current organizations credit card.
+          $ref: '#/components/schemas/Card'
+      description: Account information for an organization.
     AlgorithmPerformance:
       type: object
       properties:
@@ -1316,7 +1453,10 @@ components:
       type: object
       properties:
         backtest:
-          $ref: '#/components/schemas/BacktestResult'
+          type: array
+          description: Collection of backtests for a project.
+          items:
+            $ref: '#/components/schemas/BacktestResult'
         debugging:
           type: boolean
           description: Indicates if the backtest is run under debugging mode.
@@ -1328,7 +1468,27 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Packet container for carrying Backtest results.
+      description: Collection container for a list of backtests for a project.
+    BacktestSummaryResponse:
+      type: object
+      properties:
+        backtest:
+          type: array
+          description: Collection of backtest summaries for a project.
+          items:
+            $ref: '#/components/schemas/BacktestSummaryResult'
+        count:
+          type: int
+          description: Number of backtest summaries retrieved in the response.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Collection container for a list of backtest summaries for a project.
     BacktestList:
       type: object
       properties:
@@ -1391,15 +1551,17 @@ components:
           description: Boolean true when the backtest is completed.
         optimizationId:
           type: string
-          description: Optimization task ID, if the backtest is part of an optimization
+          description: Optimization task ID, if the backtest is part of an optimization.
         backtestId:
           type: string
-          description: Assigned backtest ID
+          description: Assigned backtest ID.
         tradeableDates:
           type: integer
-          description: Number of traadeable days
+          description: Number of traadeable days.
         researchGuide:
+          type: object
           $ref: '#/components/schemas/ResearchGuide'
+          description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
         backtestStart:
           type: string
           description: The starting time of the backtest
@@ -1432,9 +1594,6 @@ components:
           type: number
           description: Progress of the backtest in percent 0-1.
           format: float
-        profitLoss:
-          type: object
-          description: time-PnL pairs of profit/loss at a timestamp.
         hasInitializeError:
           type: boolean
           description: Indicates if the backtest has error during initialization.
@@ -1444,12 +1603,10 @@ components:
             $ref: '#/components/schemas/Chart'
           description: Charts updates for the live algorithm since the last result packet.
         parameterSet:
-          type: array
+          type: object
           description: Parameters used in the backtest.
-          items:
+          additionalProperties:
             $ref: '#/components/schemas/ParameterSet'
-        alphaRuntimeStatistics:
-          $ref: '#/components/schemas/AlphaRuntimeStatistics'
         rollingWindow:
           type: object
           additionalProperties:
@@ -1466,10 +1623,10 @@ components:
             $ref: '#/components/schemas/TradeStatistics'
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
-          $ref: '#/components/schemas/AlgorithmPerformance'
-        signals:
-          type: string
-          description:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AlgorithmPerformance'
+          description: The algorithm performance statistics.
         nodeName:
           type: string
           description: The backtest node name.
@@ -1481,6 +1638,92 @@ components:
           type: integer
           description: Number of days of out of sample days.
       description: Results object class. Results are exhaust from backtest or live algorithms running in LEAN.
+    BacktestSummaryResult:
+      type: object
+      properties:
+        backtestId:
+          type: string
+          description: Assigned backtest ID
+        status:
+          type: string
+          description: Status of the backtest.
+          enum:
+          - Completed.
+          - In Queue...
+          - '''Running: _%'''
+        name:
+          type: string
+          description: Name of the backtest.
+        created:
+          type: string
+          description: Backtest creation date and time.
+          format: date-time
+        progress:
+          type: number
+          description: Progress of the backtest in percent 0-1.
+          format: float
+        optimizationId:
+          type: string
+          description: Optimization task ID, if the backtest is part of an optimization.
+        tradeableDates:
+          type: integer
+          description: Number of traadeable days
+        parameterSet:
+          type: object
+          description: Parameters used in the backtest.
+          additionalProperties:
+            $ref: '#/components/schemas/ParameterSet'
+        snapshotId:
+          type: integer
+          description: Snapshot id of this backtest result.
+        tags:
+          type: array
+          description: Collection of tags for the backtest.
+          items:
+            type: string
+        sharpeRatio:
+          type: float
+          description: Sharpe ratio with respect to risk free rate; measures excess of return per unit of risk.
+        alpha:
+          type: float
+          description: Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.
+        beta:
+          type: float
+          description: Algorithm "beta" statistic - the covariance between the algorithm and benchmark performance, divided by benchmark's variance.
+        compoundingAnnualReturn:
+          type: float
+          description: Annual compounded returns statistic based on the final-starting capital and years.
+        drawdown:
+          type: float
+          description: Drawdown maximum percentage.
+        lossRate:
+          type: float
+          description: The ratio of the number of losing trades to the total number of trades.
+        netProfit:
+          type: float
+          description: Net profit percentage.
+        parameters:
+          type: int
+          description: Number of parameters in the backtest.
+        psr:
+          type: float
+          description: Price-to-sales ratio.
+        securityTypes:
+          type: string
+          description: SecurityTypes present in the backtest.
+        sortinoRatio:
+          type: float
+          description: Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.
+        trades:
+          type: int
+          description: Number of trades in the backtest.
+        treynorRatio:
+          type: float
+          description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
+        winRate:
+          type: float
+          description: The ratio of the number of winning trades to the total number of trades.
+      description: Result object class for the List Backtest response from the API.
     BaseLiveAlgorithmSettings:
       type: object
       properties:
@@ -1507,6 +1750,157 @@ components:
           description: Account of the associated brokerage.
           example: ""
       description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
+    BinanceSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, Binance.
+        binance-api-secret:
+          type: string
+          description: Your Binance API secret.
+        binance-api-key:
+          type: string
+          description: Your Binance API key.
+        binance-api-url:
+          type: string
+          description: Binance configuration for spot/margin. The value for this property is https://api.binance.com
+        binance-websocket-url:
+          type: string
+          description: Binance configuration for spot/margin. The value for this property is wss://stream.binance.com:9443/ws
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        description: Settings for using Binance as a data provider or brokerage.
+    BinanceFuturesUSDMSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, Binance-USDM-Futures.
+        binance-api-secret:
+          type: string
+          description: Your Binance API secret.
+        binance-api-key:
+          type: string
+          description: Your Binance API key.
+        binance-fapi-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is https://fapi.binance.com
+        binance-fwebsocket-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is wss://fstream.binance.com/ws
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        description: Settings for using Binance Futures USDM as a data provider or brokerage.
+    BinanceFuturesCOINSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, Binance-COIN-Futures.
+        binance-api-secret:
+          type: string
+          description: Your Binance API secret.
+        binance-api-key:
+          type: string
+          description: Your Binance API key.
+        binance-dapi-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is https://dapi.binance.com
+        binance-dwebsocket-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is wss://dstream.binance.com/ws
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        description: Settings for using Binance Futures COIN as a data provider or brokerage.
+    BinanceUSSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage.
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, BinanceUS.
+        binanceus-api-secret:
+          type: string
+          description: Your Binance US API secret.
+        binanceus-api-key:
+          type: string
+          description: Your Binance US API key.
+        binanceus-api-url:
+          type: string
+          description: Binance US configuration for spot/margin. The value for this property is https://api.binance.us
+        binanceus-websocket-url:
+          type: string
+          description: Binance US configuration for spot/margin. The value for this property is wss://stream.binance.us:9443/ws
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        description: Settings for using Binance US as a data provider or brokerage.
+    BitfinexSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BitfinexBrokerage.
+        bitfinex-api-key:
+          type: string
+          description: Your Bitfinex API key.
+        bitfinex-api-secret:
+          type: string
+          description: Your Bitfinex API secret.
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+      description: Settings for using Bitfinex as a data provider or brokerage.
     BrokerageData:
       type: object
       properties:
@@ -1522,6 +1916,58 @@ components:
           type: string
           description: The ID of the brokerage.
       description: Brokerage Id.
+    BybitSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BybitBrokerage.
+        bybit-api-key:
+          type: string
+          description: Your Bybit API key.
+        bybit-api-secret:
+          type: string
+          description: Your Bybit API secret.
+        bybit-vip-level:
+          type: string
+          description: Your Bybit VIP Level.
+        bybit-use-testnet:
+          type: string
+          description: Whether the testnet should be used.
+          enum:
+            - live
+            - paper
+        bybit-api-url:
+          type: string
+          description: Bybit API URL, this is, https://api-testnet.bybit.com
+        bybit-websocket-url:
+          type: string
+          description: Bybit Websocket URL, this is, wss://stream.bybit.com
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+      description: Settings for using Bybit as a data provider or brokerage.
+    Card:
+      type: object
+      properties:
+        brand:
+          type: string
+          description: Credit card brand.
+        expiration:
+          type: string
+          description: The credit card expiration.
+          format: date-time
+        last4:
+          type: string
+          description: The last 4 digits of the card.
+      description: Credit card information.
     Cash:
       type: object
       properties:
@@ -1545,11 +1991,11 @@ components:
       description: Represents a holding of a currency in cash.
     CashAmount:
       properties:
-        Amount:
+        amount:
           type: number
           description: The amount of cash.
           format: float
-        Currency:
+        currency:
           type: string
           description: The currency in which the cash amount is denominated.
       description: Represents a cash amount which can be converted to account currency using a currency converter.
@@ -1602,12 +2048,41 @@ components:
           type: integer
           description: Project Id we wish to compile.
       description: Request to compile a project.
+    CoinbaseSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, CoinbaseBrokerage
+        coinbase-api-key:
+          type: string
+          description: Your Coinbase Advanced Trade API key.
+        coinbase-api-secret:
+          type: string
+          description: Your Coinbase Advanced Trade API secret.
+        coinbase-url:
+          type: string
+          description: Coinbase URL, this is, wss://advanced-trade-ws.coinbase.com
+        coinbase-rest-api:
+          type: string
+          description: Coinbase REST API, this is, https://api.coinbase.com
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+      description: Settings for using Coinbase as a data provider or brokerage.
     Collaborator:
       type: object
       properties:
         uid:
           type: integer
-          description: User id.
+          description: User ID.
         liveControl:
           type: boolean
           description: Indicate if the user have live control.
@@ -1617,6 +2092,9 @@ components:
           enum:
           - read
           - write
+        publicId:
+          type: string
+          description: The user public ID.
         profileImage:
           type: string
           description: The url of the user profile image.
@@ -1665,11 +2143,6 @@ components:
           - InQueue
           - BuildSuccess
           - BuildError
-        parameters:
-          type: array
-          description: Optimization parameters.
-          items:
-            $ref: '#/components/schemas/OptimizationParameter'
         projectId:
           type: integer
           description: Project Id we sent for compile.
@@ -1680,7 +2153,7 @@ components:
           type: array
           description: Signature order of files to be compiled.
           items:
-          - string
+            type: string
         logs:
           type: array
           description: Logs of the compilation request.
@@ -1725,14 +2198,78 @@ components:
           type: string
           description: Id of the node that will run the algorithm.
         brokerage:
-          $ref: '#/components/schemas/BaseLiveAlgorithmSettings'
+          type: object
+          description: Brokerage configurations to be used in the live algorithm.
+          enum:
+            - $ref: '#/components/schemas/QuantConnectSettings'
+            - $ref: '#/components/schemas/InteractiveBrokersSettings'
+            - $ref: '#/components/schemas/BinanceSettings'
+            - $ref: '#/components/schemas/BinanceFuturesUSDMSettings'
+            - $ref: '#/components/schemas/BinanceFuturesCOINSettings'
+            - $ref: '#/components/schemas/BinanceUSSettings'
+            - $ref: '#/components/schemas/TradierSettings'
+            - $ref: '#/components/schemas/BitfinexSettings'
+            - $ref: '#/components/schemas/CoinbaseSettings'
+            - $ref: '#/components/schemas/KrakenSettings'
+            - $ref: '#/components/schemas/BybitSettings'
+            - $ref: '#/components/schemas/OandaSettings'
+            - $ref: '#/components/schemas/ZerodhaSettings'
+            - $ref: '#/components/schemas/SamcoSettings'
+            - $ref: '#/components/schemas/WolverineSettings'
+            - $ref: '#/components/schemas/TDAmeritradeSettings'
+            - $ref: '#/components/schemas/TradingTechnologiesSettings'
+            - $ref: '#/components/schemas/RBIBrokerageSettings'
+            - $ref: '#/components/schemas/TerminalLinkSettings'
+        dataProviders:
+          type: object
+          description: Dictionary of data provider configurations to be used in the live algorithm.
+          key:
+            type: string
+            description: Data provider ID.
+            enum:
+              - QuantConnectBrokerage
+              - InteractiveBrokersBrokerage
+              - Polygon
+              - BinanceBrokerage
+              - TradierBrokerage
+              - OandaBrokerage
+              - BitfinexBrokerage
+              - CoinbaseBrokerage
+              - ZerodhaBrokerage
+              - SamcoBrokerage
+              - KrakenBrokerage
+              - TDAmeritradeBrokerage
+              - BybitBrokerage
+              - IEXDataFeed
+            example: InteractiveBrokersBrokerage
+          value:
+            type: object
+            description: Data provider configuration.
+            enum:
+              - $ref: '#/components/schemas/QuantConnectSettings'
+              - $ref: '#/components/schemas/InteractiveBrokersSettings'
+              - $ref: '#/components/schemas/PolygonSettings'
+              - $ref: '#/components/schemas/BinanceSettings'
+              - $ref: '#/components/schemas/BinanceFuturesUSDMSettings'
+              - $ref: '#/components/schemas/BinanceFuturesCOINSettings'
+              - $ref: '#/components/schemas/BinanceUSSettings'
+              - $ref: '#/components/schemas/TradierSettings'
+              - $ref: '#/components/schemas/BitfinexSettings'
+              - $ref: '#/components/schemas/CoinbaseSettings'
+              - $ref: '#/components/schemas/KrakenSettings'
+              - $ref: '#/components/schemas/BybitSettings'
+              - $ref: '#/companents/schemas/OandaSettings'
+              - $ref: '#/components/schemas/ZerodhaSettings'
+              - $ref: '#/components/schemas/SamcoSettings'
+              - $ref: '#/components/schemas/TDAmeritradeSettings'
+              - $ref: '#/components/schemas/IEXDataFeedSettings'
       description: Request to create a live algorithm.
     CreateLiveAlgorithmResponse:
       type: object
       properties:
         responseCode:
           type: string
-          description: Response code
+          description: HTTP status response code.
           example: "200 OK"
         versionId:
           type: string
@@ -1748,8 +2285,6 @@ components:
           type: string
           description: Id of the node that will run the algorithm.
           example: "api-v2"
-        queueHandler:
-          type: string
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -1845,6 +2380,9 @@ components:
       description: Response received when launching an optimization job.
     CreateProjectRequest:
       type: object
+      required:
+        - name
+        - language
       properties:
         name:
           type: string
@@ -1855,7 +2393,10 @@ components:
           enum:
           - C#
           - Py
-      description: Request to create a project.
+        organizationId:
+          type: string
+          description: Optional parameter for specifying organization to create project under. If none provided web defaults to preferred.
+      description: Request to create a project with the specified name and language via QuantConnect.com API.
     CreateProjectFileRequest:
       type: object
       properties:
@@ -1874,20 +2415,15 @@ components:
       type: object
       properties:
         format:
+          type: string
           description: Format for returning data, link or download.
           example: link
-        ticker:
+        filePath:
           type: string
-        type:
-          $ref: '#/components/schemas/SecurityType'
-        resolution:
-          $ref: '#/components/schemas/Resolution'
-        market:
-          $ref: '#/components/schemas/Market'
-        date:
+          description: File path representing the data requested.
+        organizationId:
           type: string
-          description: Date of the data requested yyyyMMdd.
-          example: yyyyMMdd
+          description: Organization to download from.
       description: Request for a link to downloadable data.
     DeleteFileRequest:
       type: object
@@ -2009,21 +2545,47 @@ components:
           items:
             type: string
       description: Response received when estimating the cost of an optimization.
-    GetObjectStoreRequest:
+    GetObjectStoreJobIdRequest:
       type: object
       properties:
         organizationId:
           type: string
-          description: Organization ID we'd like to get the Object Store metadata from.
+          description: Organization ID we would like to get the Object Store files from.
+        keys:
+          type: array
+          description: Keys to the Object Store files.
+          items:
+            type: string
+      description: Request to get JobId for the requested Object Store files.
+    GetObjectStoreURLRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization ID we would like to get the Object Store files from.
+        jobId:
+          type: string
+          description: Job ID for getting a download URL for.
+      description: Request to get a download URL for certain Object Store files.
+    GetObjectStorePropertiesRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization ID we would like to get the Object Store properties from.
         key:
           type: string
-          description: Key to the Object Store file
-      description: Request to get Object Store metadata of a specific organization and key.
+          description: Key to the Object Store.
+      description: Request to get Object Store properties of a specific organization and keys.
     GetObjectStoreResponse:
       type: object
       properties:
-        metadata:
-          $ref: '#/components/schemas/ObjectStoreMetadata'
+        jobId:
+          type: string
+          description: Job ID which can be used for querying state or packaging.
+        url:
+          type: string
+          description: The URL to download the object. This can also be null.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2032,33 +2594,76 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response received when fetching Object Store metadata.
+      description: Response received when fetching Object Store file.
+    GetObjectStorePropertiesResponse:
+      type: object
+      properties:
+        metadata:
+          type: object
+          description: Object Store properties.
+          $ref: '#/components/schemas/ObjectStoreProperties'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when fetching Object Store file properties.
+    ObjectStoreProperties:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Object Store key.
+        modified:
+          type: string
+          description: Last time it was modified.
+          format: date
+        created:
+          type: string
+          description: Date this project was created.
+        size:
+          type: float
+          description: Object Store file size.
+          example: 24
+        md5:
+          type: string
+          description: MD5 (hashing algorithm) hash authentication code.
+        mime:
+          type: string
+          description: MIME type.
+        preview:
+          type: string
+          description: Preview of the Object Store file content.
+      description: Object Store file properties.
     Grid:
       type: object
       properties:
         xs:
           type: array
-          description: List of chart in the xs position
+          description: List of chart in the xs (Extra small) position.
           items:
             $ref: '#/components/schemas/GridChart'
         sm:
           type: array
-          description: List of chart in the sm position
+          description: List of chart in the sm (Small) position.
           items:
             $ref: '#/components/schemas/GridChart'
         md:
           type: array
-          description: List of chart in the md position
+          description: List of chart in the md (Medium) position.
           items:
             $ref: '#/components/schemas/GridChart'
         lg:
           type: array
-          description: List of chart in the lg position
+          description: List of chart in the lg (Large) position.
           items:
             $ref: '#/components/schemas/GridChart'
         xl:
           type: array
-          description: List of chart in the xl position
+          description: List of chart in the xl (Extra large) position.
           items:
             $ref: '#/components/schemas/GridChart'
       description: The grid arrangement of charts.
@@ -2084,6 +2689,30 @@ components:
           type: integer
           description: Sort of the chart.
       description: The chart display properties.
+    GroupOrderManager:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique order group Id.
+        quantity:
+          type: number
+          description: The group order quantity.
+        count:
+          type: integer
+          description: The total order count associated with this order group.
+        limitPrice:
+          type: number
+          description: The limit price associated with this order group if any.
+        orderIds:
+          type: array
+          description: The order Ids in this group.
+          items:
+            type: integer
+        direction:
+          type: integer
+          description: Order Direction Property based off Quantity.
+      description: Manager of a group of orders.
     Holding:
       type: object
       properties:
@@ -2120,6 +2749,23 @@ components:
           description: Current unrealized P/L of the holding.
           format: float
       description: Live results object class for packaging live result data.
+    IEXDataFeedSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Data provider ID, this is, IEXDataFeed.
+        iex-cloud-api-key:
+          type: string
+          description: Your iexcloud.io API token publishable key.
+        iex-price-plan:
+          type: string
+          description: Your IEX Cloud Price plan.
+          enum:
+            - Launch
+            - Grow
+            - Enterprise
+      description: Settings for using IEX Cloud as a data provider.
     Insight:
       type: object
       properties:
@@ -2182,6 +2828,78 @@ components:
           type: boolean
           description: Is the insight past its expiry time and score can be finalized.
       description: Defines the scores given to a particular insight
+    KrakenSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, KrakenBrokerage.
+        kraken-api-key:
+          type: string
+          description: Your Kraken API key.
+        kraken-api-secret:
+          type: string
+          description: Your Kraken API secret.
+        kraken-verification-tier:
+          type: string
+          description: Your Kraken Verification Tier.
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+      description: Settings for using Kraken as a data provider.
+    LeanVersionsResponse:
+      type: object
+      properties:
+        versions:
+          type: array
+          description: List of LEAN versions with their basic descriptions.
+          items:
+            type: object
+            $ref: '#/components/schemas/LeanVersion'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Contains the LEAN versions with their basic descriptions.
+    LeanVersion:
+      type: object
+      properties:
+        id:
+          type: int
+          description: ID of the LEAN version.
+        created:
+          type: string
+          description: Date when this version was created.
+          format: date-time
+        description:
+          type: string
+          description: Description of the LEAN version.
+        leanHash:
+          type: string
+          description: Commit Hash in the LEAN repository.
+        leanCloudHash:
+          type: string
+          description: Commit Hash in the LEAN Cloud repository.
+        name:
+          type: string
+          description: Name of the branch where the commit is.
+        ref:
+          type: string
+          description: Reference to the branch where the commit is.
+        public:
+          type: int
+          description: Indicates if the version is available for the public (1) or not (0).
     Library:
       type: object
       properties:
@@ -2278,60 +2996,57 @@ components:
           enum:
           - "true"
           - "false"
-    LiveResult:
+    LiveAlgorithmResults:
       type: object
       properties:
-        Holdings:
+        message:
+          type: string
+          description: Error message.
+        status:
+          type: string
+          description: Indicates the status of the algorihtm, i.e. 'Running', 'Stopped'.
+        deployId:
+          type: string
+          description: Algorithm deployment ID.
+        cloneId:
+          type: int
+          description: The snapshot project ID for cloning the live development's source code.
+        launched:
+          type: string
+          description: Date the live algorithm was launched.
+        stopped:
+          type: string
+          description: Date the live algorithm was stopped.
+        brokerage:
+          type: string
+          description: Brokerage used in the live algorithm.
+        securityTypes:
+          type: string
+          description: Security types present in the live algorithm.
+        projectName:
+          type: string
+          description: Name of the project the live algorithm is in.
+        dataCenter:
+          type: string
+          description: Name of the data center where the algorithm is physically located.
+        public:
+          type: bool
+          description: Indicates if the algorithm is being live shared.
+        files:
+          type: array
+          description: Files present in the project in which the algorithm is.
+          items:
+            $ref: '#/components/schemas/ProjectFile'
+        runtimeStatistics:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/Holding'
-          description: Dictionary of algorithm holdings information.
-        Cash:
-          $ref: '#/components/schemas/Cash'
-        AlphaRuntimeStatistics:
-          $ref: '#/components/schemas/AlphaRuntimeStatistics'
-        Charts:
+            $ref: '#/components/schemas/RuntimeStatistics'
+          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
+        charts:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Chart'
           description: Charts updates for the live algorithm since the last result packet.
-        Orders:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Order'
-          description: Order updates since the last result packet.
-        OrderEvents:
-          type: array
-          description: OrderEvent updates since the last result packet.
-          items:
-            $ref: '#/components/schemas/OrderEvent'
-        ProfitLoss:
-          type: object
-          additionalProperties:
-            type: number
-            format: float
-          description: Trade profit and loss information since the last algorithm result packet.
-        Statistics:
-          type: object
-          additionalProperties:
-            type: string
-          description: Statistics information sent during the algorithm operations.
-        RuntimeStatistics:
-          type: object
-          additionalProperties:
-            type: string
-          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
-        ServerStatistics:
-          type: object
-          additionalProperties:
-            type: string
-          description: Server status information, including CPU and RAM usage.
-      description: Live results object class for packaging live result data.
-    LiveAlgorithmResults:
-      type: object
-      properties:
-        LiveResults:
-          $ref: '#/components/schemas/LiveResultsData'
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2390,8 +3105,8 @@ components:
           description: Organization ID we'd like to list the Object Store files from.
         path:
           type: string
-          description: Path to the Object Store files
-      description: Request to list Object Store files of a specific organization and key.   
+          description: Path to the Object Store files.
+      description: Request to list Object Store files of a specific organization and path.
     ListObjectStoreResponse:
       type: object
       properties:
@@ -2401,9 +3116,15 @@ components:
           example: Mia
         objects:
           type: array
-          description: Indicate if the API request was successful.
+          description: List of objects stored.
           items:
             $ref: '#/components/schemas/ObjectStoreSummary'
+        objectStorageUsed:
+          type: int
+          description: Size of all objects stored in bytes.
+        objectStorageUsedHuman:
+          type: string
+          description: Size of all the objects stored in human-readable format.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2412,7 +3133,7 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response received when listing Object of a project.
+      description: Response received containing a list of stored objects metadata, as well as the total size of all of them.
     ListOptimizationRequest:
       type: object
       properties:
@@ -2468,12 +3189,17 @@ components:
           description: Collection of orders.
           items:
             $ref: '#/components/schemas/Order'
-        Length:
+        length:
           type: integer
           description: Total number of returned orders
-        latestOrderTimestamp:
-          type: integer
-          description: Timestamp of the latest order event.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
       description: Contains orders and the number of orders of the live algorithm in the request criteria.
     LiveInsightsResponse:
       type: object
@@ -2490,17 +3216,6 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Contains insights and the number of insights of the live algorithm in the request criteria.
-    LiveResultsData:
-      type: object
-      properties:
-        version:
-          type: integer
-          description: Results version.
-        resolution:
-          $ref: '#/components/schemas/ChartResolution'
-        results:
-          $ref: '#/components/schemas/LiveResult'
-      description: Holds information about the state and operation of the live running algorithm.
     Market:
       type: string
       description: Fungible market of the underlying security.
@@ -2553,10 +3268,13 @@ components:
           description: Node type identifier for configuration.
         description:
           type: string
-          description: String description of the node.
+          description: Description of the node.
         usedBy:
           type: string
           description: User currently using the node.
+        userProfile:
+          type: string
+          description: URL of the user using the node.
         projectName:
           type: string
           description: Project the node is being used for.
@@ -2578,7 +3296,29 @@ components:
         active:
           type: boolean
           description: Indicate if this is the active node. The project will use this node if it's not busy.
+        hasGpu:
+          type: int
+          description: Indicate if the node has GPU (1) or not (0).
       description: Contains all relevant information on a Node to interact through API endpoints.
+    OandaSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, OandaBrokerage.
+        oanda-account-id:
+          type: string
+          description: Your OANDA account id can be found on your OANDA Account Statement page (https://www.oanda.com/account/statement/). It follows the following format '###-###-######-###'.
+        oanda-access-token:
+          type: string
+          description: Your OANDA API token. You can generate an API token from the Manage API Access page (https://www.oanda.com/account/tpa/personal_token).
+        oanda-environment:
+          type: string
+          description: The environment to run in, Practice for fxTrade Practice, Trade for fxTrade.
+          enum:
+            - Practice
+            - Trade
+      description: Settings for using Oanda as a data provider or brokerage.
     ObjectStoreBinaryFile:
       type: object
       properties:
@@ -2586,38 +3326,6 @@ components:
           type: string
           format: binary
       description: Represents a binary file we we'd like to upload the file to upload to the Object Store.
-    ObjectStoreMetadata:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Object Store key.
-          example: "Mia/Test"
-        created:
-          type: string
-          description: Time the file was created.
-          format: date-time
-        modified:
-          type: string
-          description: Time the file was modified.
-          format: date-time
-        size:
-          type: float
-          description: File size.
-          example: 13
-        md5:
-          type: string
-          description: MD5 Hash of the file.
-          example: 5d41402abc4b2a76b9719d911017c592
-        mime: 
-          type: string
-          description: MIME type.
-          example: "text/plain"
-        preview:
-          type: string
-          description: Preview of the file content.
-          example: Hello, world!
-      description: Metadata of the Object Store file.
     ObjectStoreSummary:
       type: object
       properties:
@@ -2628,12 +3336,20 @@ components:
         name:
           type: string
           description: File or folder name.
+        modified:
+          type: string
+          description: Last time it was modified.
+          format: date-time
+        mime:
+          type: string
+          description: MIME type.
+          example: application/json
         folder:
           type: boolean
-          description: True if it is a folder.
+          description: True if it is a folder, false otherwise.
         size:
           type: float
-          description: File size.
+          description: Object Store file size.
           example: 13
       description: Summary information of the Object Store.
     OptimizationConstraint:
@@ -2689,69 +3405,6 @@ components:
           type: float
           description: The value of the property we want to track
           example: 1
-    ProjectLiveResult:
-      type: object
-      properties:
-        eStatus:
-          type: string
-          description:
-        sDeployID:
-          type: string
-          description: The live deployment id.
-        sServerType:
-          type: string
-          description: The live server node type.
-        dtLaunched:
-          type: string
-          description: The datetime of live deployment launched.
-          format: date-time
-        dtStopped:
-          type: string
-          description: The datetime of live deployment stopped.
-          format: date-time
-        sBrokerage:
-          type: string
-          description: The broker chosen for the live deployment instance.
-        sSecurityTypes:
-          type: array
-          description: The security types involved in the live deployment instance.
-          items:
-            type: string
-        dUnrealized:
-          type: number
-          description: The unrealized profit or loss.
-          format: float
-        dfees:
-          type: number
-          description: The transaction fee generated.
-          format: float
-        dnetprofit:
-          type: number
-          description: The net profit or loss.
-          format: float
-        dEquity:
-          type: number
-          description: The total portfolio value.
-          format: float
-        dHoldings:
-          type: number
-          description: The holding equity's value.
-          format: float
-        dCapital:
-          type: number
-          description: The free cash value.
-          format: float
-        dVolume:
-          type: number
-          description: The holding equity's value.
-          format: float
-        iTrades:
-          type: number
-          description:
-          format: float
-        sErrorMessage:
-          type: string
-          description: The error message last generated.
     ProjectNodes:
       type: object
       properties:
@@ -2880,148 +3533,249 @@ components:
     Order:
       type: object
       properties:
-        Id:
+        id:
           type: integer
           description: Order ID.
-        ContingentId:
+        contingentId:
           type: integer
           description: Order Id to process before processing this order.
-        BrokerId:
+        brokerId:
           type: array
           description: Brokerage Id for this order for when the brokerage splits orders into multiple pieces.
           items:
             type: string
-        Symbol:
+        symbol:
+          type: object
+          description: Symbol of the asset.
           $ref: '#/components/schemas/Symbol'
-        Price:
+        limitPrice:
+          type: nummber
+          description: Limit price of the Order.
+        stopPrice:
+          type: number
+          description: Stop price of the Order.
+        stopTriggered:
+          type: bool
+          description: Indicates if the stop price has been reached, so the limit order has been triggered.
+        price:
           type: number
           description: Price of the Order.
           format: float
-        PriceCurrency:
+        priceCurrency:
           type: string
           description: Currency for the order price.
-        Time:
+        time:
           type: string
           description: Gets the utc time the order was created.
           format: date-time
-        CreatedTime:
+        createdTime:
           type: string
           description: Gets the utc time this order was created. Alias for Time.
           format: date-time
-        LastFillTime:
+        lastFillTime:
           type: string
           description: Gets the utc time the last fill was received, or null if no fills have been received.
           format: date-time
-        LastUpdateTime:
+        lastUpdateTime:
           type: string
           description: Gets the utc time this order was last updated, or null if the order has not been updated.
           format: date-time
-        CanceledTime:
+        canceledTime:
           type: string
           description: Gets the utc time this order was canceled, or null if the order was not canceled.
           format: date-time
-        Quantity:
+        quantity:
           type: number
           description: Number of shares to execute.
           format: float
-        Type:
-          type: string
+        type:
+          type: integer
           description: Order type.
           enum:
-          - Market
-          - Limit
-          - StopMarket
-          - StopLimit
-          - MarketOnOpen
-          - MarketOnClose
-          - OptionExercise
-        Status:
-          type: string
+          - 0 = Market
+          - 1 = Limit
+          - 2 = StopMarket
+          - 3 = StopLimit
+          - 4 = MarketOnOpen
+          - 5 = MarketOnClose
+          - 6 = OptionExercise
+          - 7 = LimitIfTouched
+          - 8 = ComboMarket
+          - 9 = ComboLimit
+          - 10 = ComboLegLimit
+          - 11 = TrailingStop
+        status:
+          type: integer
           description: Status of the Order.
           enum:
-          - New
-          - Submitted
-          - PartiallyFilled
-          - Filled
-          - Canceled
-          - None
-          - Invalid
-          - CancelPending
-          - UpdateSubmitted
-        Tag:
+          - 0 = New
+          - 1 = Submitted
+          - 2 = PartiallyFilled
+          - 3 = Filled
+          - 5 = Canceled
+          - 6 = None
+          - 7 = Invalid
+          - 8 = CancelPending
+          - 9 = UpdateSubmitted
+        tag:
           type: string
           description: Tag the order with some custom data.
-        SecurityType:
-          $ref: '#/components/schemas/SecurityType'
-        Direction:
-          $ref: '#/components/schemas/OrderDirection'
-        Value:
+        securityType:
+          type: integer
+          description: Type of tradable security / underlying asset.
+          enum:
+            - 0 = Base
+            - 1 = Equity
+            - 2 = Option
+            - 3 = Commodity
+            - 4 = Forex
+            - 5 = Future
+            - 6 = Cfd
+            - 7 = Crypto
+        direction:
+          type: integer
+          description: Order Direction Property based off Quantity. 
+          enum:
+            - 0 = Buy
+            - 1 = Sell
+            - 2 = Hold
+        value:
           type: number
           description: Gets the executed value of this order. If the order has not yet filled, then this will return zero.
           format: float
-        OrderSubmissionData:
+        orderSubmissionData:
+          type: object
+          description: Gets the price data at the time the order was submitted.
           $ref: '#/components/schemas/OrderSubmissionData'
-        IsMarketable:
+        isMarketable:
           type: boolean
           description: Returns true if the order is a marketable order.
+        properties:
+          type: object
+          description: Additional properties of the order.
+          $ref: '#/components/schemas/OrderProperties'
+        events:
+          type: array
+          description: The order events.
+          items:
+            $ref : '#/components/schemas/OrderEvent'
+        trailingAmount:
+          type: number
+          description: Trailing amount for a trailing stop order.
+        trailingPercentage:
+          type: bool
+          description: Determines whether the trailingAmount is a percentage or an absolute currency value.
+        groupOrderManager:
+          type: object
+          description: Manager for the orders in the group if this is a combo order.
+          $ref: '#/components/schemas/GroupOrderManager'
+        triggerPrice:
+          type: number
+          description: The price which, when touched, will trigger the setting of a limit order at limitPrice.
+        triggerTouched:
+          type: bool
+          description: Whether or not the triggerPrice has been touched.
       description: Order struct for placing new trade.
+    OrderProperties:
+      type: object
+      properties:
+        timeInForce:
+          type: object
+          description: Defines the length of time over which an order will continue working before it is cancelled.
+          enum:
+            - 0 = GoodTilCanceled
+            - 1 = Day
+            - 2 = GoodTilDate
+      description: Additional properties of the order.
     OrderDirection:
       type: string
       description: Direction of the order.
       enum:
-      - Buy
-      - Sell
-      - Hold
+      - buy
+      - sell
+      - hold
     OrderEvent:
       type: object
       properties:
-        OrderId:
+        algorithmId:
+          type: string
+          description: Algorithm Id, BacktestId or DeployId.
+        symbolValue:
+          type: string
+          description: The current symbol for this ticker; It is a user friendly symbol representation.
+        symbolPermtick:
+          type: string
+          description: The original symbol used to generate this symbol.
+        orderId:
           type: integer
           description: Id of the order this event comes from.
-        Id:
+        orderEventId:
+          type: integer
+          description: The unique order event id for each order.
+        id:
           type: integer
           description: The unique order event Id for each order.
-        Symbol:
+        symbol:
           $ref: '#/components/schemas/Symbol'
-        UtcTime:
+        status:
           type: string
-          description: The date and time of this event (UTC).
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/OrderStatus'
-        OrderFee:
+          description: Status of the Order.
+          enum:
+            - new
+            - submitted
+            - partiallyFilled
+            - filled
+            - canceled
+            - none
+            - invalid
+            - cancelPending
+            - updateSubmitted
+        orderFeeAmount:
+          type: integer
+          description: The fee amount associated with the order.
           $ref: '#/components/schemas/OrderFee'
-        FillPrice:
+        orderFeeCurrency:
+          type: string
+          description: The fee currency associated with the order.
+        fillPrice:
           type: number
           description: Fill price information about the order.
           format: float
-        FillPriceCurrency:
+        fillPriceCurrency:
           type: string
           description: Currency for the fill price.
-        FillQuantity:
+        fillQuantity:
           type: number
           description: Number of shares of the order that was filled in this event.
           format: float
-        Direction:
+        direction:
+          type: string
+          description: Order direction.
           $ref: '#/components/schemas/OrderDirection'
-        Message:
+        message:
           type: string
           description: Any message from the exchange.
-        IsAssignment:
+        isAssignment:
           type: boolean
           description: True if the order event is an assignment.
-        StopPrice:
+        stopPrice:
           type: number
           description: The current stop price.
           format: float
-        LimitPrice:
+        limitPrice:
           type: number
           description: The current limit price.
           format: float
-        Quantity:
+        quantity:
           type: number
           description: The current order quantity.
           format: float
+        time:
+          type: integer
+          description: The time of this event in unix timestamp.
+        isInTheMoney:
+          type: bool
+          description: True if the order event's option is In-The-Money (ITM).
       description: Change in an order state applied to user algorithm portfolio
     OrderFee:
       type: object
@@ -3032,68 +3786,19 @@ components:
     OrderSubmissionData:
       type: object
       properties:
-        BidPrice:
+        bidPrice:
           type: number
           description: The bid price at an order submission time.
           format: float
-        AskPrice:
+        askPrice:
           type: number
           description: The ask price at an order submission time.
           format: float
-        LastPrice:
+        lastPrice:
           type: number
           description: The current price at an order submission time.
           format: float
       description: Stores time and price information available at the time an order was submitted.
-    OrderStatus:
-      type: object
-      properties:
-        OrderId:
-          type: integer
-          description: Id of the order this event comes from.
-        Id:
-          type: integer
-          description: The unique order event Id for this order.
-        Symbol:
-          $ref: '#/components/schemas/Symbol'
-        UtcTime:
-          type: string
-          description: The date and time of this event.
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/Order/properties/Status'
-        FillPrice:
-          type: number
-          description: Fill price information about the order.
-          format: float
-        FillPriceCurrency:
-          type: string
-          description: Currency for the fill price.
-        FillQuantity:
-          type: number
-          description: Number of shares of the order that was filled in this event.
-          format: float
-        Direction:
-          $ref: '#/components/schemas/OrderDirection'
-        Message:
-          type: string
-          description: Any message from the exchange.
-        IsAssignment:
-          type: boolean
-          description: Order event is an allocation of trades from ITM option assignment.
-        StopPrice:
-          type: number
-          description: The current stop price.
-          format: float
-        LimitPrice:
-          type: number
-          description: The current limit price.
-          format: float
-        Quantity:
-          type: number
-          description: The current order quantity.
-          format: float
-      description: Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.
     ParameterSet:
       type: object
       properties:
@@ -3104,6 +3809,16 @@ components:
           type: number
           description: Value of parameter.
       description: Parameter set.
+    PolygonSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, PolygonDataFeed.
+        polygon-api-key:
+          type: string
+          description: Your Polygon.io API Key.
+      description: Settings for using Polygon as a data provider.
     Portfolio:
       type: object
       properties:
@@ -3168,23 +3883,19 @@ components:
           description: Optimization parameters.
           items:
             $ref: '#/components/schemas/ParameterSet'
-        liveResults:
-          $ref: '#/components/schemas/ProjectLiveResult'
         libraries:
           type: array
-          description: The library projects
+          description: The library projects.
           items:
             $ref: '#/components/schemas/Library'
-        isAlphaStreamDeployment:
-          type: integer
-          description: Indicate if the project is an alpha stream deployment
         grid:
+          type: string
           $ref: '#/components/schemas/Grid'
+          description: Configuration of the backtest view grid.
         liveGrid:
+          type: string
           $ref: '#/components/schemas/Grid'
-        builder:
-          type: integer
-          description:
+          description: Configuration of the live view grid.
         paperEquity:
           type: number
           description: The equity value of the last paper trading instance.
@@ -3195,21 +3906,29 @@ components:
           format: date-time
         liveForm:
           type: object
+          description: The last live wizard content used.
         encrypted:
           type: boolean
           description: Indicates if the project is encrypted.
         codeRunning:
           type: boolean
-          description:
+          description: Indicates if the project is running or not.
         leanEnvironment:
           type: integer
           description: LEAN environment of the project running on.
         encryptionKey:
           $ref: '#/components/schemas/EncryptionKey'
+          description: Text file with at least 32 characters to be used to encrypt the project.
       description: Response from reading a project by id.
     ProjectFile:
       type: object
       properties:
+        id:
+          type: int
+          description: ID of the project file. This can also be null.
+        projectId:
+          type: int
+          description: ID of the project.
         name:
           type: string
           description: Name of a project file.
@@ -3220,6 +3939,12 @@ components:
           type: string
           description: DateTime project file was modified.
           format: date-time
+        open:
+          type: boolean
+          description: Indicates if the project file is open or not.
+        isLibrary:
+          type: boolean
+          description: Indicates if the project file is a library or not. It's always false in live/read and backtest/read.
       description: File for a project.
     ProjectFilesResponse:
       type: object
@@ -3246,6 +3971,11 @@ components:
           description: List of projects for the authenticated user.
           items:
             $ref: '#/components/schemas/Project'
+        versions:
+          type: array
+          description: List of LEAN versions.
+          items:
+            $ref: '#/components/schemas/LeanVersion'
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -3353,6 +4083,19 @@ components:
           description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
           format: float
       description: Represents a set of statistics calculated from equity and benchmark samples.
+    RBIBrokerageSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, RBIBrokerage.
+        rbi-on-behalf-of-comp-id:
+          type: string
+          description: Value used to identify the trading firm.
+        rbi-account:
+          type: string
+          description: RBI account name.
+      description: Settings for using RBI as a brokerage.
     ReadFilesRequest:
       required:
       - projectId
@@ -3361,13 +4104,10 @@ components:
         projectId:
           type: integer
           description: Project Id to which the file belongs.
-        includeLibraries:
-          type: boolean
-          description: Optional. Indicates if files from library projects should be read.
         name:
           type: string
-          description: Optional. The name of the file that should be updated.
-      description: Request to read all files from a project.
+          description: Optional. The name of the file that will be read.
+      description: Request to read all files from a project or just one (if the name is provided).
     ReadCompileRequest:
       type: object
       properties:
@@ -3384,6 +4124,12 @@ components:
         link:
           type: string
           description: Link to the data.
+        balance:
+          type: number
+          description: Remaining QCC balance on account after this transaction.
+        cost:
+          type: number
+          description: QCC Cost for this data link.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -3420,6 +4166,12 @@ components:
           description: List of logs from the live algorithm.
           items:
             type: string
+        start:
+          type: integer
+          description: Time when the first log was generated.
+        end:
+          type: integer
+          description: Time of the last log retrieved.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -3434,8 +4186,8 @@ components:
       properties:
         projectId:
           type: integer
-          description: Id of the project.
-      description: Request to get details about a specific project.
+          description: Id of the project. If not provided the API will return a details list of all projects.
+      description: Request to get details about a specific project or a details list of all projects.
     ReadProjectNodesRequest:
       type: object
       properties:
@@ -3464,6 +4216,7 @@ components:
       description: Request to read the portfolio state from a live algorithm.
     ReadLiveOrdersRequest:
       required:
+      - start
       - end
       - projectId
       type: object
@@ -3511,6 +4264,7 @@ components:
     ReadBacktestRequest:
       required:
       - projectId
+      - backtestId
       type: object
       properties:
         projectId:
@@ -3519,7 +4273,65 @@ components:
         backtestId:
           type: string
           description: When provided, specific backtest Id to read.
+        chart:
+          type: string
+          description: Optional. If provided, the API will return the backtests charts.
       description: Request to read a single backtest from a project.
+    ListBacktestRequest:
+      required:
+      - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project from which to read one or multiple backtests.
+        includeStatistics:
+          type: boolean
+          description: If true, the backtests summaries from the response will contain the statistics with their corresponding values.
+      description: Request to list the backtests from a project.
+    QuantConnectSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of QuantConnect, this is QuantConnectBrokerage.
+      description: QuantConnect settings for using it as a brokerage or data provider.
+    InteractiveBrokersSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of InteractiveBrokers, this is InteractiveBrokersBrokerage.
+        ib-user-name:
+          type: string
+          description: Your Interactive Brokers username.
+        ib-password:
+          type: string
+          description: Your Interactive Brokers password.
+        ib-trading-mode:
+          type: string
+          description: Represents the types of environments supported by Interactive Brokers for trading.
+          enum:
+            - live
+            - paper
+        ib-account:
+          type: string
+          description: Your Interactive Brokers account id.
+        ib-weekly-restart-utc-time:
+          type: string
+          description: Weekly restart UTC time (hh:mm:ss).
+          format: date
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+      description: Settings for using Interactive Brokers as brokerage or data provider.
     ReadBacktestPortfolioRequest:
       required:
       - projectId
@@ -3597,11 +4409,11 @@ components:
           description: Number of minutes used in developing the current backtest.
         backtestCount:
           type: integer
-          description: Backtest count of the current backtest in the project.
+          description: The quantity of backtests run in the project.
         parameters:
           type: integer
           description: Number of parameters detected.
-      description: The API method call could not be completed as requested.
+      description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
     RestResponse:
       type: object
       properties:
@@ -3665,6 +4477,35 @@ components:
       - 10minute
       - minute
       - second
+    SamcoSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, SamcoBrokerage.
+        samco-client-id:
+          type: string
+          description: Your Samco account Client ID.
+        samco-client-password:
+          type: string
+          description: Your Samco account password.
+        samco-year-of-birth:
+          type: int
+          description: Your year of birth (YYYY) registered with Samco.
+        samco-product-type:
+          type: string
+          description: MIS if you are targeting intraday products, CNC if you are targeting delivery products, NRML if you are targeting carry forward products.
+          enum:
+            - mis
+            - cnc
+            - nrml
+        samco-trading-segment:
+          type: string
+          description: \'equity\' if you are trading equities on NSE or BSE, commodity if you are trading \'commodities\' on MCX.
+          enum:
+            - equity
+            - commodity
+      description: Settings for using Samco as a data provider or brokerage.
     SecurityType:
       type: string
       description: Type of tradable security / underlying asset.
@@ -3740,16 +4581,45 @@ components:
     Symbol:
       type: object
       properties:
-        Value:
+        value:
           type: string
           description: The current symbol for this ticker.
-        ID:
+        id:
           type: string
           description: The security identifier for this symbol.
-        Permtick:
+        permtick:
           type: string
           description: The current symbol for this ticker.
       description: Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.
+    TDAmeritradeSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, TDAmeritradeBrokerage.
+        tdameritrade-api-key:
+          type: string
+          description: Your TDAmeritrade API key.
+        tdameritrade-access-token:
+          type: string
+          description: Your TDAmeritrade OAuth Access Token.
+        tdameritrade-account-number:
+          type: string
+          description: Your TDAmeritrade account number.
+      description: Settings for using TDAmeritrade as a data provider or brokerage.
+    TerminalLinkSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is TerminalLinkBrokerage.
+        terminal-link-connection-type:
+          type: string
+          description: Terminal Link Connection Type [DAPI, SAPI].
+          enum:
+            - DAPI
+            - SAPI
+      description: Settings for using TerminalLink as a brokerage.
     Trade:
       type: object
       properties:
@@ -3963,6 +4833,66 @@ components:
           description: The sum of fees for all trades.
           format: float
       description: A set of statistics calculated from a list of closed trades.
+    TradierSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, TradierBrokerage
+        tradier-account-id:
+          type: string
+          description: Your Tradier account id.
+        tradier-access-token:
+          type: string
+          description: Your Tradier access token.
+        tradier-environment:
+          type: string
+          description: Whether the developer sandbox should be used.
+          enum:
+            - live
+            - paper
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+      description: Settings for using Tradier as a data provider.
+    TradingTechnologiesSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, TradingTechnologiesBrokerage.
+        tt-user-name:
+          type: string
+          description: Trading Technologies user name.
+        tt-session-password:
+          type: string
+          description: Trading Technologies session password.
+        tt-account-name:
+          type: string
+          description: Trading Technologies account name.
+        tt-rest-app-key:
+          type: string
+          description: Trading Technologies App key.
+        tt-rest-app-secret:
+          type: string
+          description: Trading Technologies App secret.
+        tt-rest-environment:
+          type: string
+          description: Environment in which the brokerage Trading Technologies will be used.
+          enum:
+            - live
+            - uat
+        tt-order-routing-sender-comp-id:
+          type: string
+          description: Trading Technologies routing sender.
+      description: Settings for using Trading Technologies as a brokerage.
     UpdateBacktestRequest:
       required:
       - backtestId
@@ -3977,7 +4907,7 @@ components:
           description: Backtest Id we want to update.
         name:
           type: string
-          description: Name we'd like to assign to the backtest.
+          description: Name we would like to assign to the backtest.
         note:
           type: string
           description: Note attached to the backtest.
@@ -3990,8 +4920,8 @@ components:
           description: Project Id to which the file belongs.
         oldFileName:
           type: string
-          description: The current name of the new file.
-        newFileName:
+          description: The current name of the file.
+        newName:
           type: string
           description: The new name for the file.
       description: Request to update the name of a file.
@@ -4001,10 +4931,10 @@ components:
         projectId:
           type: integer
           description: Project Id to which the file belongs.
-        fileName:
+        name:
           type: string
           description: The name of the file that should be updated.
-        newFileContents:
+        content:
           type: string
           description: The new contents of the file.
       description: Request to update the contents of a file.
@@ -4042,6 +4972,20 @@ components:
           items:
             type: string
       description: Request to update the nodes of a project.
+    UpdateBacktestTagsRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id for the backtest we want to update.
+        backtestId:
+          type: Backtest Id we want to update.
+        tags:
+          type: array
+          description: Array of the new backtest tags.
+          items:
+            type: string
+      description: Updates the tags collection for a backtest.
     Version:
       type: object
       properties:
@@ -4129,10 +5073,56 @@ components:
           format: float
       additionalProperties:
         $ref: '#/components/schemas/Version'
+    WolverineSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, WolverineBrokerage.
+        wolverine-on-behalf-of-comp-id:
+          type: string
+          description: Value used to identify the trading firm.
+        wolverine-account:
+          type: string
+          description: Wolverine Execution Services account name.
+      description: Settings for using Wolverine Execution Services as a brokerage.
+    ZerodhaSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, ZerodhaBrokerage.
+        zerodha-api-key:
+          type: string
+          description: Your Kite Connect API key.
+        zerodha-access-token:
+          type: string
+          description: Your Kite Connect access token.
+        zerodha-product-type:
+          type: string
+          description: The product type must be set to MIS if you are targeting intraday products, CNC if you are targeting delivery products or NRML if you are targeting carry forward products.
+          enum:
+            - mis
+            - cnc
+            - nrml
+        zerodha-trading-segment:
+          type: string
+          description: The trading segment must be set to 'equity' if you are trading equities on NSE or BSE, or 'commodity' if you are trading commodities on MCX.
+          enum:
+            - equity
+            - commodity
+        zerodha-history-subscription:
+          type: bool
+          description: Whether you have a history API subscription for Zerodha.
+      description: Settings for using Zerodha as a data provider or brokerage.
     files_update_body:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
       - $ref: '#/components/schemas/UpdateFileContentsRequest'
+    get_object_store:
+      oneOf:
+      - $ref: '#/components/schemas/GetObjectStoreJobIdRequest'
+      - $ref: '#/components/schemas/GetObjectStoreURLRequest'
     inline_response_200:
       oneOf:
       - $ref: '#/components/responses/BacktestResponse'

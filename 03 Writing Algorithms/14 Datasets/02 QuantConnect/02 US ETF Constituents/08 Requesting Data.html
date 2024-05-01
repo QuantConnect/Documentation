@@ -1,0 +1,29 @@
+<p>To add US ETF Constituents data to your algorithm, call the <b class="csharp">AddUniverse</b><b class="python">add_universe</b> and <b class="csharp">Universe.ETF</b><b class="python">universe.etf</b> methods. To select which constituents occupy the universe, provide the ETF <b>Symbol</b> and a selection function.
+</p>
+
+<div class="section-example-container">
+<pre class="python">class ETFConstituentUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2020, 8, 25)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        self._universe = self.add_universe(self.universe.etf("SPY", self.universe_settings, self.etf_constituents_filter))</pre>
+<pre class="csharp">namespace QuantConnect
+{
+   public class ETFConstituentUniverseAlgorithm : QCAlgorithm
+   {
+       public override void Initialize()
+       {
+           SetStartDate(2018, 1, 1);
+           SetEndDate(2020, 8, 25);
+           SetCash(100000);
+           UniverseSettings.Asynchronous = True;
+           _universe = AddUniverse(Universe.ETF("SPY", UniverseSettings, ETFConstituentsFilter));
+       }
+    }
+}
+</pre>
+</div>
+<p>For more information about universe settings, see <a href="/docs/v2/writing-algorithms/universes/settings">Settings</a>.</p>

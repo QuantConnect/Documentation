@@ -1,4 +1,4 @@
-<p>You can add a Portfolio Construction model to your classic algorithm and have it place orders without returning <code>Insight</code> objects from an Alpha model. To emit insights without an Alpha model, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">EmitInsights</code><code class="python">emit_insights</code> method.</p>
+<p>You can add a Portfolio Construction model to your classic algorithm and have it place orders without returning <code>Insight</code> objects from an Alpha model. To emit insights without an Alpha model, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>EmitInsights</code> method.</p>
 
 <p>The following example uses a Portfolio Construction Framework model with <code>EmitInsights</code> method in a classic algorithm:</p>
 
@@ -16,13 +16,13 @@ public override void OnData(Slice slice)
 		new Insight("MSFT", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up)
 	});
 }</pre>
-	<pre class="python">def Initialize(self):
+	<pre class="python">def initialize(self):
     self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
 def on_data(self, slice):
-	self.emit_insights(Insight("GOOG", timedelta(minutes=20), InsightType.PRICE, InsightDirection.UP))
+	self.emit_insights(Insight("GOOG", TimeSpan.from_minutes(20), InsightType.PRICE, InsightDirection.UP))
 	self.emit_insights([
-		Insight("AAPL", timedelta(minutes=20), InsightType.PRICE, InsightDirection.UP),
-		Insight("MSFT", timedelta(minutes=20), InsightType.PRICE, InsightDirection.UP)
+		Insight("AAPL", TimeSpan.from_minutes(20), InsightType.PRICE, InsightDirection.UP),
+		Insight("MSFT", TimeSpan.from_minutes(20), InsightType.PRICE, InsightDirection.UP)
 	])</pre>
 </div>

@@ -2,7 +2,7 @@
 
 <ol>
     <li><a href='<?=$projectLink?>'>Open a project</a>.</li>
-    <li>Type the first few characters of a variable, function, class, or class member that you want to autocomplete (for example, <code class='python'>self.Set</code><code class='csharp'>Set</code> or <code>SimpleMovingAverage.Upda</code>).</li>
+    <li>Type the first few characters of a variable, function, class, or class member that you want to autocomplete (for example, <code class='python'>self.set</code><code class='csharp'>Set</code> or <code>SimpleMovingAverage.Upda</code>).</li>
     <li>Press <span class='key-combinations'>CTRL+Space</span>.</li>
     <p>If there are class members that match the characters you provided, a list of class members displays.</p>
     <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/auto-complete.jpg' alt='Autocomplete helper'>

@@ -5,7 +5,7 @@ var sma = new SimpleMovingAverage(10);
 var smaOfRsi = IndicatorExtensions.Of(sma, rsi);</pre>
         <pre class="python">rsi = RelativeStrengthIndex(10)
 sma = SimpleMovingAverage(10)
-sma_of_rsi = IndicatorExtensions.Of(sma, rsi)</pre>
+sma_of_rsi = IndicatorExtensions.of(sma, rsi)</pre>
     </div>
 
 <p>Follow these steps to create an indicator timeseries:</p>
@@ -14,7 +14,7 @@ sma_of_rsi = IndicatorExtensions.Of(sma, rsi)</pre>
     <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
+        <pre class="python">history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
     </div>
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
     <p>In this example, save 50 data points.</p>
@@ -39,13 +39,13 @@ window["rollingsum"] = RollingWindow[float](50)
     window["SMA Of RSI"].Add(updated);
     window["rollingsum"].Add(indicator.RollingSum);
 };</pre>
-        <pre class="python">def UpdateSmaOfRsiWindow(sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python">def update_sma_of_rsi_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
     indicator = sender
-    window['time'].Add(updated.EndTime)
-    window["SMA Of RSI"].Add(updated.Value)
-    window["rollingsum"].Add(indicator.RollingSum.Current.Value)
+    window['time'].add(updated.end_time)
+    window["SMA Of RSI"].add(updated.value)
+    window["rollingsum"].add(indicator.rolling_sum.current.value)
 
-sma_of_rsi.Updated += UpdateSmaOfRsiWindow</pre>
+sma_of_rsi.updated += UpdateSmaOfRsiWindow</pre>
     </div>
     <p>When the indicator receives new data, the preceding handler method adds the new <code>IndicatorDataPoint</code> values into the respective <code>RollingWindow</code>.</p>
 
@@ -57,7 +57,7 @@ sma_of_rsi.Updated += UpdateSmaOfRsiWindow</pre>
     rsi.Update(bar.EndTime, bar.Close);
 }</pre>
         <pre class="python">for bar in history:
-    rsi.Update(bar.EndTime, bar.Close)</pre>
+    rsi.update(bar.end_time, bar.close)</pre>
     </div>
     <li class="csharp">Display the data.</li>
     <div class="csharp section-example-container">

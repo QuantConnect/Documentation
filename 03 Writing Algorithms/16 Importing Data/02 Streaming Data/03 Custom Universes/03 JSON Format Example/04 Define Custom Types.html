@@ -1,11 +1,11 @@
 <p>To define a custom data type, inherit the <code class="csharp">BaseData</code><code class="python">PythonData</code> class and override the <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources">GetSource</a> and <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#05-Parse-Custom-Data">Reader</a> methods.</p>
 
 
-<p>If you need to create multiple objects in your <code>Reader</code> method from a single <code>line</code>, follow these steps:</p>
+<p>If you need to create multiple objects in your <code class="csharp">Reader</code><code class="python">reader</code> method from a single <code>line</code>, follow these steps:</p>
 
 <ol>
-    <li>In the <code>GetSource</code> method, pass <code>FileFormat.UnfoldingCollection</code> as the third argument to the <code>SubscriptionDataSource</code> constructor.</li>
-    <li>In the <code>Reader</code> method, order the objects by their timestamp and then return a <code>BaseDataCollection(endTime, config.Symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</li>
+    <li>In the <code class="csharp">GetSource</code><code class="python">get_source</code> method, pass <code class="csharp">FileFormat.UnfoldingCollection</code><code class="python">FileFormat.UNFOLDING_COLLECTION</code> as the third argument to the <code>SubscriptionDataSource</code> constructor.</li>
+    <li>In the <code class="csharp">Reader</code><code class="python">reader</code> method, order the objects by their timestamp and then return a <code class="csharp">BaseDataCollection(endTime, config.Symbol, objects)</code><code class="python">BaseDataCollection(end_time, config.symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</li>
 </ol>
 
 <div class="section-example-container">
@@ -46,17 +46,17 @@ public class StockDataSource : BaseData
 }</pre>
 <pre class="python">class StockDataSource(PythonData):
 
-    def GetSource(self,
+    def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
         if not isLive:
-            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv)
+            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
         return SubscriptionDataSource("https://www.dropbox.com/s/7xe7lfac52mdfpe/custom-universe.json?dl=1", 
-                                      SubscriptionTransportMedium.RemoteFile,
-                                      FileFormat.UnfoldingCollection)
+                                      SubscriptionTransportMedium.REMOTE_FILE,
+                                      FileFormat.UNFOLDING_COLLECTION)
 
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
@@ -67,12 +67,12 @@ public class StockDataSource : BaseData
 
         for datum in data:
             stocks = StockDataSource()
-            stocks.Symbol = config.Symbol
+            stocks.symbol = config.symbol
 
-            stocks.Time = datetime.strptime(datum["Date"], "%Y%m%d")
-            stocks.EndTime = stocks.Time + timedelta(1)
+            stocks.time = datetime.strptime(datum["Date"], "%Y%m%d")
+            stocks.end_time = stocks.time + timedelta(1)
             stocks["Symbols"] = datum["Symbols"]
             objects.append(stocks)
 
-        return BaseDataCollection(objects[-1].EndTime, config.Symbol, objects)</pre>
+        return BaseDataCollection(objects[-1].end_time, config.symbol, objects)</pre>
 </div>

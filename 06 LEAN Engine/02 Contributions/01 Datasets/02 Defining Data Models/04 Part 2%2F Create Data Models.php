@@ -30,16 +30,16 @@
     <pre class='csharp'>AddData&lt;Fred&gt;(Fred.LIBOR.OneWeekBasedOnUSD);
 // Instead of
 // AddData&lt;Fred&gt;("USD1WKD156N");</pre>
-    <pre class='python'>self.AddData(Fred, Fred.LIBOR.OneWeekBasedOnUSD)
+    <pre class='python'>self.add_data(Fred, Fred.LIBOR.one_week_based_on_usd)
 # Instead of
-# self.AddData(Fred, "USD1WKD156N")</pre>
+# self.add_data(Fred, "USD1WKD156N")</pre>
     </div>
 
     <li>Define the <a href="/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">GetSource</a> method to point to the path of your dataset file(s).</li>
     <p>If your dataset is organized across multiple <span class="public-file-name">CSV</span> files, use the <code>config.Symbol.Value</code> string to build the file path. <code>config.Symbol.Value</code> is the string value of the argument you pass to the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/initialization#08-Add-Data'>AddData</a> method when you subscribe to the dataset. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / dal.csv</span>.</p>
-    <li>Define the <code>Reader</code> method to return instances of your dataset class.</li>
-    <p>Set <code>Symbol = config.Symbol</code> and set <code>EndTime</code> to the time that the datapoint first became available for consumption.</p>
-    <p>Your data class inherits from the <code>BaseData</code> class, which has <code>Value</code> and <code>Time</code> properties. Set the <code>Value</code> property to one of the factors in your dataset. If you don't set the <code>Time</code> property, its default value is the value of <code>EndTime</code>. For more information about the <code>Time</code> and <code>EndTime</code> properties, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/periods'>Periods</a>.</p>
+    <li>Define the <code class="csharp">Reader</code><code class="python">reader</code> method to return instances of your dataset class.</li>
+    <p>Set <code>Symbol = config.Symbol</code> and set <code class="csharp">EndTime</code><code class="python">end_time</code> to the time that the datapoint first became available for consumption.</p>
+    <p>Your data class inherits from the <code>BaseData</code> class, which has <code>Value</code> and <code class="csharp">Time</code><code class="python">time</code> properties. Set the <code>Value</code> property to one of the factors in your dataset. If you don't set the <code class="csharp">Time</code><code class="python">time</code> property, its default value is the value of <code class="csharp">EndTime</code><code class="python">end_time</code>. For more information about the <code class="csharp">Time</code><code class="python">time</code> and <code class="csharp">EndTime</code><code class="python">end_time</code> properties, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/periods'>Periods</a>.</p>
 
     <?php 
     $classNameEnding = "";

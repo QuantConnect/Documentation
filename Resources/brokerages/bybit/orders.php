@@ -52,22 +52,22 @@
    </thead>
    <tbody>
       <tr>
-         <td><code>TimeInForce</code></td>
+         <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
          <td>
              A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
              <ul>
-                 <li><code>Day</code></li>
-                 <li><code>GoodTilCanceled</code></li>
-                 <li><code>GoodTilDate</code></li>
+                 <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+                 <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+                 <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
              </ul>
          </td>
       </tr>
       <tr>
-         <td><code>PostOnly</code></td>
+         <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
          <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled. This order property is only available for limit orders.</td>
       </tr>
       <tr>
-         <td><code>ReduceOnly</code></td>
+         <td><code class="csharp">ReduceOnly</code><code class="python">reduce_only</code></td>
          <td>A flag to signal that the order must only reduce your current position size. For more information about this order property, see <a href='https://www.bybit.com/en-US/help-center/s/article/What-is-a-Reduce-Only-Order' rel='nofollow' target='_blank'>Reduce-Only Order</a> on the Bybit website.</td>
       </tr>
    </tbody>
@@ -107,28 +107,28 @@ public override void OnData(Slice slice)
                    ReduceOnly = true
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = BybitOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.PostOnly = False
-    self.DefaultOrderProperties.ReduceOnly = False
+    self.default_order_properties = BybitOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.post_only = False
+    self.default_order_properties.reduce_only = False
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = BybitOrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    order_properties.PostOnly = True
-    self.DefaultOrderProperties.ReduceOnly = False
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+    order_properties.time_in_force = TimeInForce.DAY
+    order_properties.post_only = True
+    self.default_order_properties.reduce_only = False
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
-    order_properties.PostOnly = False
-    self.DefaultOrderProperties.ReduceOnly = True
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.post_only = False
+    self.default_order_properties.reduce_only = True
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

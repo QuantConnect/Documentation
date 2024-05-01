@@ -11,7 +11,46 @@ The <code>/live/read</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
-<td width="20%">LiveResults</td> <td> <code>LiveResultsData object</code> <br/> Holds information about the state and operation of the live running algorithm.</td>
+<td width="20%">message</td> <td> <code>string</code> <br/> Error message.</td>
+</tr>
+<tr>
+<td width="20%">status</td> <td> <code>string</code> <br/> Indicates the status of the algorihtm, i.e. 'Running', 'Stopped'.</td>
+</tr>
+<tr>
+<td width="20%">deployId</td> <td> <code>string</code> <br/> Algorithm deployment ID.</td>
+</tr>
+<tr>
+<td width="20%">cloneId</td> <td> <code>int</code> <br/> The snapshot project ID for cloning the live development's source code.</td>
+</tr>
+<tr>
+<td width="20%">launched</td> <td> <code>string</code> <br/> Date the live algorithm was launched.</td>
+</tr>
+<tr>
+<td width="20%">stopped</td> <td> <code>string</code> <br/> Date the live algorithm was stopped.</td>
+</tr>
+<tr>
+<td width="20%">brokerage</td> <td> <code>string</code> <br/> Brokerage used in the live algorithm.</td>
+</tr>
+<tr>
+<td width="20%">securityTypes</td> <td> <code>string</code> <br/> Security types present in the live algorithm.</td>
+</tr>
+<tr>
+<td width="20%">projectName</td> <td> <code>string</code> <br/> Name of the project the live algorithm is in.</td>
+</tr>
+<tr>
+<td width="20%">dataCenter</td> <td> <code>string</code> <br/> Name of the data center where the algorithm is physically located.</td>
+</tr>
+<tr>
+<td width="20%">public</td> <td> <code>bool</code> <br/> Indicates if the algorithm is being live shared.</td>
+</tr>
+<tr>
+<td width="20%">files</td> <td> <code>ProjectFile Array</code> <br/> Files present in the project in which the algorithm is.</td>
+</tr>
+<tr>
+<td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI.</td>
+</tr>
+<tr>
+<td width="20%">charts</td> <td> <code>Chart object</code> <br/> Charts updates for the live algorithm since the last result packet.</td>
 </tr>
 <tr>
 <td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
@@ -24,162 +63,54 @@ The <code>/live/read</code> API provides a response in the following format:
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "LiveResults": {
-    "version": 0,
-    "resolution": "10minute",
-    "results": {
-      "Holdings": {
-        "Symbol": {
-          "Value": "string",
-          "ID": "string",
-          "Permtick": "string"
-        },
-        "Type": "Base",
-        "CurrencySymbol": "$",
-        "AveragePrice": 0,
-        "Quantity": 0,
-        "MarketPrice": 0,
-        "ConversionRate": 0,
-        "MarketValue": 0,
-        "UnrealizedPnl": 0
-      },
-      "Cash": {
-        "Symbol": "string",
-        "Amount": 0,
-        "ConversionRate": 0,
-        "CurrencySymbol": ,
-        "ValueInAccountCurrency": 0
-      },
-      "AlphaRuntimeStatistics": {
-        "MeanPopulationScore": {
-          "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-          "Direction": 0,
-          "Magnitude": 0,
-          "IsFinalScore": true
-        },
-        "RollingAveragedPopulationScore": {
-          "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-          "Direction": 0,
-          "Magnitude": 0,
-          "IsFinalScore": true
-        },
-        "LongCount": "string",
-        "ShortCount": "string",
-        "LongShortRatio": 0,
-        "TotalAccumulatedEstimatedAlphaValue": 0,
-        "KellyCriterionEstimate": 0,
-        "KellyCriterionProbabilityValue": 0,
-        "FitnessScore": 0,
-        "PortfolioTurnover": 0,
-        "ReturnOverMaxDrawdown": 0,
-        "SortinoRatio": 0,
-        "EstimatedMonthlyAlphaValue": 0,
-        "TotalInsightsGenerated": "string",
-        "TotalInsightsClosed": "string",
-        "TotalInsightsAnalysisCompleted": "string",
-        "MeanPopulationEstimatedInsightValue": 0
-      },
-      "Charts": {
-        "Name": "string",
-        "ChartType": "Overlay",
-        "Series": {
-          "Name": "string",
-          "Unit": "string",
-          "Index": 0,
-          "Values": [
-            {
-              "x": "string",
-              "y": 0
-            }
-          ],
-          "SeriesType": "Line",
-          "Color": "string",
-          "ScatterMarkerSymbol": "none"
-        }
-      },
-      "Orders": {
-        "Id": 0,
-        "ContingentId": 0,
-        "BrokerId": [
-          "string"
-        ],
-        "Symbol": {
-          "Value": "string",
-          "ID": "string",
-          "Permtick": "string"
-        },
-        "Price": 0,
-        "PriceCurrency": "string",
-        "Time": "2021-11-26T15:18:27.693Z",
-        "CreatedTime": "2021-11-26T15:18:27.693Z",
-        "LastFillTime": "2021-11-26T15:18:27.693Z",
-        "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-        "CanceledTime": "2021-11-26T15:18:27.693Z",
-        "Quantity": 0,
-        "Type": "Market",
-        "Status": "New",
-        "Tag": "string",
-        "SecurityType": "Base",
-        "Direction": "Buy",
-        "Value": 0,
-        "OrderSubmissionData": {
-          "BidPrice": 0,
-          "AskPrice": 0,
-          "LastPrice": 0
-        },
-        "IsMarketable": true
-      },
-      "OrderEvents": [
+  "message": "string",
+  "status": "string",
+  "deployId": "string",
+  "cloneId": ,
+  "launched": "string",
+  "stopped": "string",
+  "brokerage": "string",
+  "securityTypes": "string",
+  "projectName": "string",
+  "dataCenter": "string",
+  "public": ,
+  "files": [
+    {
+      "id": ,
+      "projectId": ,
+      "name": "string",
+      "content": "string",
+      "modified": "2021-11-26T15:18:27.693Z",
+      "open": true,
+      "isLibrary": true
+    }
+  ],
+  "runtimeStatistics": {
+    "Equity": "$100.00",
+    "Fees": "-$100.00",
+    "Holdings": "$100.00",
+    "Net Profit": "$100.00",
+    "Probabilistic Sharpe Ratio": "50.00%",
+    "Return": "50.00%",
+    "Unrealized": "$100.00",
+    "Volume": "$100.00"
+  },
+  "charts": {
+    "Name": "string",
+    "ChartType": "Overlay",
+    "Series": {
+      "Name": "string",
+      "Unit": "string",
+      "Index": 0,
+      "Values": [
         {
-          "OrderId": 0,
-          "Id": 0,
-          "Symbol": {
-            "Value": "string",
-            "ID": "string",
-            "Permtick": "string"
-          },
-          "UtcTime": "2021-11-26T15:18:27.693Z",
-          "Status": {
-            "OrderId": 0,
-            "Id": 0,
-            "Symbol": {
-              "Value": "string",
-              "ID": "string",
-              "Permtick": "string"
-            },
-            "UtcTime": "2021-11-26T15:18:27.693Z",
-            "Status": "New",
-            "FillPrice": 0,
-            "FillPriceCurrency": "string",
-            "FillQuantity": 0,
-            "Direction": "Buy",
-            "Message": "string",
-            "IsAssignment": true,
-            "StopPrice": 0,
-            "LimitPrice": 0,
-            "Quantity": 0
-          },
-          "OrderFee": {
-            "Value": {
-              "Amount": 0,
-              "Currency": "string"
-            }
-          },
-          "FillPrice": 0,
-          "FillPriceCurrency": "string",
-          "FillQuantity": 0,
-          "Direction": "Buy",
-          "Message": "string",
-          "IsAssignment": true,
-          "StopPrice": 0,
-          "LimitPrice": 0,
-          "Quantity": 0
+          "x": "string",
+          "y": 0
         }
       ],
-      "ProfitLoss": "number",
-      "Statistics": "string",
-      "RuntimeStatistics": "string",
-      "ServerStatistics": "string"
+      "SeriesType": "Line",
+      "Color": "string",
+      "ScatterMarkerSymbol": "none"
     }
   },
   "success": true,
@@ -237,179 +168,42 @@ The <code>/live/read</code> API provides a response in the following format:
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>LiveResultsData</code> Model - Holds information about the state and operation of the live running algorithm.</th>
+<th colspan="2"><code>ProjectFile</code> Model - File for a project.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">version</td> <td> <code>integer</code> <br/> Results version.</td>
+<td width="20%">id</td> <td> <code>int</code> <br/> ID of the project file. This can also be null.</td>
 </tr>
 <tr>
-<td width="20%">resolution</td> <td> <code>string Enum</code> <br/> Storage format of the charting data. Options : ['10minute', 'minute', 'second']</td>
+<td width="20%">projectId</td> <td> <code>int</code> <br/> ID of the project.</td>
 </tr>
 <tr>
-<td width="20%">results</td> <td> <code>LiveResult object</code> <br/> Live results object class for packaging live result data.</td>
+<td width="20%">name</td> <td> <code>string</code> <br/> Name of a project file.</td>
+</tr>
+<tr>
+<td width="20%">content</td> <td> <code>string</code> <br/> Contents of the project file.</td>
+</tr>
+<tr>
+<td width="20%">modified</td> <td> <code>string($date-time)</code> <br/> DateTime project file was modified.</td>
+</tr>
+<tr>
+<td width="20%">open</td> <td> <code>boolean</code> <br/> Indicates if the project file is open or not.</td>
+</tr>
+<tr>
+<td width="20%">isLibrary</td> <td> <code>boolean</code> <br/> Indicates if the project file is a library or not. It's always false in live/read and backtest/read.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "version": 0,
-  "resolution": "10minute",
-  "results": {
-    "Holdings": {
-      "Symbol": {
-        "Value": "string",
-        "ID": "string",
-        "Permtick": "string"
-      },
-      "Type": "Base",
-      "CurrencySymbol": "$",
-      "AveragePrice": 0,
-      "Quantity": 0,
-      "MarketPrice": 0,
-      "ConversionRate": 0,
-      "MarketValue": 0,
-      "UnrealizedPnl": 0
-    },
-    "Cash": {
-      "Symbol": "string",
-      "Amount": 0,
-      "ConversionRate": 0,
-      "CurrencySymbol": ,
-      "ValueInAccountCurrency": 0
-    },
-    "AlphaRuntimeStatistics": {
-      "MeanPopulationScore": {
-        "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-        "Direction": 0,
-        "Magnitude": 0,
-        "IsFinalScore": true
-      },
-      "RollingAveragedPopulationScore": {
-        "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-        "Direction": 0,
-        "Magnitude": 0,
-        "IsFinalScore": true
-      },
-      "LongCount": "string",
-      "ShortCount": "string",
-      "LongShortRatio": 0,
-      "TotalAccumulatedEstimatedAlphaValue": 0,
-      "KellyCriterionEstimate": 0,
-      "KellyCriterionProbabilityValue": 0,
-      "FitnessScore": 0,
-      "PortfolioTurnover": 0,
-      "ReturnOverMaxDrawdown": 0,
-      "SortinoRatio": 0,
-      "EstimatedMonthlyAlphaValue": 0,
-      "TotalInsightsGenerated": "string",
-      "TotalInsightsClosed": "string",
-      "TotalInsightsAnalysisCompleted": "string",
-      "MeanPopulationEstimatedInsightValue": 0
-    },
-    "Charts": {
-      "Name": "string",
-      "ChartType": "Overlay",
-      "Series": {
-        "Name": "string",
-        "Unit": "string",
-        "Index": 0,
-        "Values": [
-          {
-            "x": "string",
-            "y": 0
-          }
-        ],
-        "SeriesType": "Line",
-        "Color": "string",
-        "ScatterMarkerSymbol": "none"
-      }
-    },
-    "Orders": {
-      "Id": 0,
-      "ContingentId": 0,
-      "BrokerId": [
-        "string"
-      ],
-      "Symbol": {
-        "Value": "string",
-        "ID": "string",
-        "Permtick": "string"
-      },
-      "Price": 0,
-      "PriceCurrency": "string",
-      "Time": "2021-11-26T15:18:27.693Z",
-      "CreatedTime": "2021-11-26T15:18:27.693Z",
-      "LastFillTime": "2021-11-26T15:18:27.693Z",
-      "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-      "CanceledTime": "2021-11-26T15:18:27.693Z",
-      "Quantity": 0,
-      "Type": "Market",
-      "Status": "New",
-      "Tag": "string",
-      "SecurityType": "Base",
-      "Direction": "Buy",
-      "Value": 0,
-      "OrderSubmissionData": {
-        "BidPrice": 0,
-        "AskPrice": 0,
-        "LastPrice": 0
-      },
-      "IsMarketable": true
-    },
-    "OrderEvents": [
-      {
-        "OrderId": 0,
-        "Id": 0,
-        "Symbol": {
-          "Value": "string",
-          "ID": "string",
-          "Permtick": "string"
-        },
-        "UtcTime": "2021-11-26T15:18:27.693Z",
-        "Status": {
-          "OrderId": 0,
-          "Id": 0,
-          "Symbol": {
-            "Value": "string",
-            "ID": "string",
-            "Permtick": "string"
-          },
-          "UtcTime": "2021-11-26T15:18:27.693Z",
-          "Status": "New",
-          "FillPrice": 0,
-          "FillPriceCurrency": "string",
-          "FillQuantity": 0,
-          "Direction": "Buy",
-          "Message": "string",
-          "IsAssignment": true,
-          "StopPrice": 0,
-          "LimitPrice": 0,
-          "Quantity": 0
-        },
-        "OrderFee": {
-          "Value": {
-            "Amount": 0,
-            "Currency": "string"
-          }
-        },
-        "FillPrice": 0,
-        "FillPriceCurrency": "string",
-        "FillQuantity": 0,
-        "Direction": "Buy",
-        "Message": "string",
-        "IsAssignment": true,
-        "StopPrice": 0,
-        "LimitPrice": 0,
-        "Quantity": 0
-      }
-    ],
-    "ProfitLoss": "number",
-    "Statistics": "string",
-    "RuntimeStatistics": "string",
-    "ServerStatistics": "string"
-  }
+  "id": ,
+  "projectId": ,
+  "name": "string",
+  "content": "string",
+  "modified": "2021-11-26T15:18:27.693Z",
+  "open": true,
+  "isLibrary": true
 }</pre>
 </div>
 </td>
@@ -417,475 +211,46 @@ The <code>/live/read</code> API provides a response in the following format:
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>ChartResolution</code> Model - Storage format of the charting data</th>
+<th colspan="2"><code>RuntimeStatistics</code> Model</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">ChartResolution</td> <td> <code>string Enum</code> <br/> Storage format of the charting data. Options : ['10minute', 'minute', 'second']</td>
+<td width="20%">Equity</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total portfolio value.</td>
+</tr>
+<tr>
+<td width="20%">Fees</td> <td> <code>string<br/><i><sub>example: -$100.00</sub></i></code> <br/> Transaction fee.</td>
+</tr>
+<tr>
+<td width="20%">Holdings</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Equity value of security holdings.</td>
+</tr>
+<tr>
+<td width="20%">Net Profit</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Net profit.</td>
+</tr>
+<tr>
+<td width="20%">Probabilistic Sharpe Ratio</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Probabilistic Sharpe Ratio.</td>
+</tr>
+<tr>
+<td width="20%">Return</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Return.</td>
+</tr>
+<tr>
+<td width="20%">Unrealized</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Unrealized profit/loss.</td>
+</tr>
+<tr>
+<td width="20%">Volume</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total transaction volume.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "ChartResolution": "10minute"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>LiveResult</code> Model - Live results object class for packaging live result data.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Holdings</td> <td> <code>Holding object</code> <br/> Dictionary of algorithm holdings information.</td>
-</tr>
-<tr>
-<td width="20%">Cash</td> <td> <code>Cash object</code> <br/> Represents a holding of a currency in cash.</td>
-</tr>
-<tr>
-<td width="20%">AlphaRuntimeStatistics</td> <td> <code>AlphaRuntimeStatistics object</code> <br/> Contains insight population run time statistics.</td>
-</tr>
-<tr>
-<td width="20%">Charts</td> <td> <code>Chart object</code> <br/> Charts updates for the live algorithm since the last result packet.</td>
-</tr>
-<tr>
-<td width="20%">Orders</td> <td> <code>Order object</code> <br/> Order updates since the last result packet.</td>
-</tr>
-<tr>
-<td width="20%">OrderEvents</td> <td> <code>OrderEvent Array</code> <br/> OrderEvent updates since the last result packet.</td>
-</tr>
-<tr>
-<td width="20%">ProfitLoss</td> <td> <code>number object</code> <br/> Trade profit and loss information since the last algorithm result packet.</td>
-</tr>
-<tr>
-<td width="20%">Statistics</td> <td> <code>string object</code> <br/> Statistics information sent during the algorithm operations.</td>
-</tr>
-<tr>
-<td width="20%">RuntimeStatistics</td> <td> <code>string object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI.</td>
-</tr>
-<tr>
-<td width="20%">ServerStatistics</td> <td> <code>string object</code> <br/> Server status information, including CPU and RAM usage.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Holdings": {
-    "Symbol": {
-      "Value": "string",
-      "ID": "string",
-      "Permtick": "string"
-    },
-    "Type": "Base",
-    "CurrencySymbol": "$",
-    "AveragePrice": 0,
-    "Quantity": 0,
-    "MarketPrice": 0,
-    "ConversionRate": 0,
-    "MarketValue": 0,
-    "UnrealizedPnl": 0
-  },
-  "Cash": {
-    "Symbol": "string",
-    "Amount": 0,
-    "ConversionRate": 0,
-    "CurrencySymbol": ,
-    "ValueInAccountCurrency": 0
-  },
-  "AlphaRuntimeStatistics": {
-    "MeanPopulationScore": {
-      "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-      "Direction": 0,
-      "Magnitude": 0,
-      "IsFinalScore": true
-    },
-    "RollingAveragedPopulationScore": {
-      "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-      "Direction": 0,
-      "Magnitude": 0,
-      "IsFinalScore": true
-    },
-    "LongCount": "string",
-    "ShortCount": "string",
-    "LongShortRatio": 0,
-    "TotalAccumulatedEstimatedAlphaValue": 0,
-    "KellyCriterionEstimate": 0,
-    "KellyCriterionProbabilityValue": 0,
-    "FitnessScore": 0,
-    "PortfolioTurnover": 0,
-    "ReturnOverMaxDrawdown": 0,
-    "SortinoRatio": 0,
-    "EstimatedMonthlyAlphaValue": 0,
-    "TotalInsightsGenerated": "string",
-    "TotalInsightsClosed": "string",
-    "TotalInsightsAnalysisCompleted": "string",
-    "MeanPopulationEstimatedInsightValue": 0
-  },
-  "Charts": {
-    "Name": "string",
-    "ChartType": "Overlay",
-    "Series": {
-      "Name": "string",
-      "Unit": "string",
-      "Index": 0,
-      "Values": [
-        {
-          "x": "string",
-          "y": 0
-        }
-      ],
-      "SeriesType": "Line",
-      "Color": "string",
-      "ScatterMarkerSymbol": "none"
-    }
-  },
-  "Orders": {
-    "Id": 0,
-    "ContingentId": 0,
-    "BrokerId": [
-      "string"
-    ],
-    "Symbol": {
-      "Value": "string",
-      "ID": "string",
-      "Permtick": "string"
-    },
-    "Price": 0,
-    "PriceCurrency": "string",
-    "Time": "2021-11-26T15:18:27.693Z",
-    "CreatedTime": "2021-11-26T15:18:27.693Z",
-    "LastFillTime": "2021-11-26T15:18:27.693Z",
-    "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-    "CanceledTime": "2021-11-26T15:18:27.693Z",
-    "Quantity": 0,
-    "Type": "Market",
-    "Status": "New",
-    "Tag": "string",
-    "SecurityType": "Base",
-    "Direction": "Buy",
-    "Value": 0,
-    "OrderSubmissionData": {
-      "BidPrice": 0,
-      "AskPrice": 0,
-      "LastPrice": 0
-    },
-    "IsMarketable": true
-  },
-  "OrderEvents": [
-    {
-      "OrderId": 0,
-      "Id": 0,
-      "Symbol": {
-        "Value": "string",
-        "ID": "string",
-        "Permtick": "string"
-      },
-      "UtcTime": "2021-11-26T15:18:27.693Z",
-      "Status": {
-        "OrderId": 0,
-        "Id": 0,
-        "Symbol": {
-          "Value": "string",
-          "ID": "string",
-          "Permtick": "string"
-        },
-        "UtcTime": "2021-11-26T15:18:27.693Z",
-        "Status": "New",
-        "FillPrice": 0,
-        "FillPriceCurrency": "string",
-        "FillQuantity": 0,
-        "Direction": "Buy",
-        "Message": "string",
-        "IsAssignment": true,
-        "StopPrice": 0,
-        "LimitPrice": 0,
-        "Quantity": 0
-      },
-      "OrderFee": {
-        "Value": {
-          "Amount": 0,
-          "Currency": "string"
-        }
-      },
-      "FillPrice": 0,
-      "FillPriceCurrency": "string",
-      "FillQuantity": 0,
-      "Direction": "Buy",
-      "Message": "string",
-      "IsAssignment": true,
-      "StopPrice": 0,
-      "LimitPrice": 0,
-      "Quantity": 0
-    }
-  ],
-  "ProfitLoss": "number",
-  "Statistics": "string",
-  "RuntimeStatistics": "string",
-  "ServerStatistics": "string"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Holding</code> Model - Live results object class for packaging live result data.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
-</tr>
-<tr>
-<td width="20%">Type</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
-</tr>
-<tr>
-<td width="20%">CurrencySymbol</td> <td> <code>string<br/><i><sub>example: $</sub></i></code> <br/> The currency symbol of the holding.</td>
-</tr>
-<tr>
-<td width="20%">AveragePrice</td> <td> <code>number</code> <br/> Average Price of our Holding in the currency the symbol is traded in.</td>
-</tr>
-<tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> Quantity of the Symbol we hold.</td>
-</tr>
-<tr>
-<td width="20%">MarketPrice</td> <td> <code>number</code> <br/> Current Market Price of the Asset in the currency the symbol is traded in.</td>
-</tr>
-<tr>
-<td width="20%">ConversionRate</td> <td> <code>number</code> <br/> Current market conversion rate into the account currency.</td>
-</tr>
-<tr>
-<td width="20%">MarketValue</td> <td> <code>number</code> <br/> Current market value of the holding.</td>
-</tr>
-<tr>
-<td width="20%">UnrealizedPnl</td> <td> <code>number</code> <br/> Current unrealized P/L of the holding.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
-  },
-  "Type": "Base",
-  "CurrencySymbol": "$",
-  "AveragePrice": 0,
-  "Quantity": 0,
-  "MarketPrice": 0,
-  "ConversionRate": 0,
-  "MarketValue": 0,
-  "UnrealizedPnl": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Symbol</code> Model - Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Value</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
-</tr>
-<tr>
-<td width="20%">ID</td> <td> <code>string</code> <br/> The security identifier for this symbol.</td>
-</tr>
-<tr>
-<td width="20%">Permtick</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Value": "string",
-  "ID": "string",
-  "Permtick": "string"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>SecurityType</code> Model - Type of tradable security / underlying asset.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "SecurityType": "Base"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Cash</code> Model - Represents a holding of a currency in cash.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Symbol</td> <td> <code>string</code> <br/> Gets the symbol used to represent this cash.</td>
-</tr>
-<tr>
-<td width="20%">Amount</td> <td> <code>number</code> <br/> Gets or sets the amount of cash held.</td>
-</tr>
-<tr>
-<td width="20%">ConversionRate</td> <td> <code>number</code> <br/> The currency conversion rate to the account base currency.</td>
-</tr>
-<tr>
-<td width="20%">CurrencySymbol</td> <td> <code>object</code> <br/> The symbol of the currency, such as $.</td>
-</tr>
-<tr>
-<td width="20%">ValueInAccountCurrency</td> <td> <code>number</code> <br/> The value of the currency cash in the account base currency.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Symbol": "string",
-  "Amount": 0,
-  "ConversionRate": 0,
-  "CurrencySymbol": ,
-  "ValueInAccountCurrency": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>AlphaRuntimeStatistics</code> Model - Contains insight population run time statistics.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">MeanPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
-</tr>
-<tr>
-<td width="20%">RollingAveragedPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
-</tr>
-<tr>
-<td width="20%">LongCount</td> <td> <code>string</code> <br/> Gets the total number of insights with an up direction.</td>
-</tr>
-<tr>
-<td width="20%">ShortCount</td> <td> <code>string</code> <br/> Gets the total number of insights with a down direction.</td>
-</tr>
-<tr>
-<td width="20%">LongShortRatio</td> <td> <code>number</code> <br/> The ratio of InsightDirection.Up over InsightDirection.Down.</td>
-</tr>
-<tr>
-<td width="20%">TotalAccumulatedEstimatedAlphaValue</td> <td> <code>number</code> <br/> The total accumulated estimated value of trading all insights.</td>
-</tr>
-<tr>
-<td width="20%">KellyCriterionEstimate</td> <td> <code>number</code> <br/> Score of the strategy's insights predictive power.</td>
-</tr>
-<tr>
-<td width="20%">KellyCriterionProbabilityValue</td> <td> <code>number</code> <br/> The p-value or probability value of the KellyCriterionEstimate.</td>
-</tr>
-<tr>
-<td width="20%">FitnessScore</td> <td> <code>number</code> <br/> Score of the strategy's performance, and suitability for the Alpha Stream Market.</td>
-</tr>
-<tr>
-<td width="20%">PortfolioTurnover</td> <td> <code>number</code> <br/> Measurement of the strategies trading activity with respect to the portfolio value. Calculated as the sales volume with respect to the average total portfolio value.</td>
-</tr>
-<tr>
-<td width="20%">ReturnOverMaxDrawdown</td> <td> <code>number</code> <br/> Provides a risk adjusted way to factor in the returns and drawdown of the strategy. It is calculated by dividing the Portfolio Annualized Return by the Maximum Drawdown seen during the backtest.</td>
-</tr>
-<tr>
-<td width="20%">SortinoRatio</td> <td> <code>number</code> <br/> Gives a relative picture of the strategy volatility. It is calculated by taking a portfolio's annualized rate of return and subtracting the risk free rate of return.</td>
-</tr>
-<tr>
-<td width="20%">EstimatedMonthlyAlphaValue</td> <td> <code>number</code> <br/> Suggested Value of the Alpha On A Monthly Basis For Licensing.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsGenerated</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsClosed</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsAnalysisCompleted</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">MeanPopulationEstimatedInsightValue</td> <td> <code>number</code> <br/> Gets the mean estimated insight value.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "MeanPopulationScore": {
-    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-    "Direction": 0,
-    "Magnitude": 0,
-    "IsFinalScore": true
-  },
-  "RollingAveragedPopulationScore": {
-    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-    "Direction": 0,
-    "Magnitude": 0,
-    "IsFinalScore": true
-  },
-  "LongCount": "string",
-  "ShortCount": "string",
-  "LongShortRatio": 0,
-  "TotalAccumulatedEstimatedAlphaValue": 0,
-  "KellyCriterionEstimate": 0,
-  "KellyCriterionProbabilityValue": 0,
-  "FitnessScore": 0,
-  "PortfolioTurnover": 0,
-  "ReturnOverMaxDrawdown": 0,
-  "SortinoRatio": 0,
-  "EstimatedMonthlyAlphaValue": 0,
-  "TotalInsightsGenerated": "string",
-  "TotalInsightsClosed": "string",
-  "TotalInsightsAnalysisCompleted": "string",
-  "MeanPopulationEstimatedInsightValue": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>InsightScore</code> Model - Defines the scores given to a particular insight</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">UpdatedTimeUtc</td> <td> <code>string($date-time)</code> <br/> The time these scores were last updated.</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>number</code> <br/> The direction score.</td>
-</tr>
-<tr>
-<td width="20%">Magnitude</td> <td> <code>number</code> <br/> The magnitude score.</td>
-</tr>
-<tr>
-<td width="20%">IsFinalScore</td> <td> <code>boolean</code> <br/> Is the insight past its expiry time and score can be finalized.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-  "Direction": 0,
-  "Magnitude": 0,
-  "IsFinalScore": true
+  "Equity": "$100.00",
+  "Fees": "-$100.00",
+  "Holdings": "$100.00",
+  "Net Profit": "$100.00",
+  "Probabilistic Sharpe Ratio": "50.00%",
+  "Return": "50.00%",
+  "Unrealized": "$100.00",
+  "Volume": "$100.00"
 }</pre>
 </div>
 </td>
@@ -997,399 +362,6 @@ The <code>/live/read</code> API provides a response in the following format:
 {
   "x": "string",
   "y": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Order</code> Model - Order struct for placing new trade.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Id</td> <td> <code>integer</code> <br/> Order ID.</td>
-</tr>
-<tr>
-<td width="20%">ContingentId</td> <td> <code>integer</code> <br/> Order Id to process before processing this order.</td>
-</tr>
-<tr>
-<td width="20%">BrokerId</td> <td> <code>string Array</code> <br/> Brokerage Id for this order for when the brokerage splits orders into multiple pieces.</td>
-</tr>
-<tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
-</tr>
-<tr>
-<td width="20%">Price</td> <td> <code>number</code> <br/> Price of the Order.</td>
-</tr>
-<tr>
-<td width="20%">PriceCurrency</td> <td> <code>string</code> <br/> Currency for the order price.</td>
-</tr>
-<tr>
-<td width="20%">Time</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the order was created.</td>
-</tr>
-<tr>
-<td width="20%">CreatedTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was created. Alias for Time.</td>
-</tr>
-<tr>
-<td width="20%">LastFillTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the last fill was received, or null if no fills have been received.</td>
-</tr>
-<tr>
-<td width="20%">LastUpdateTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was last updated, or null if the order has not been updated.</td>
-</tr>
-<tr>
-<td width="20%">CanceledTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was canceled, or null if the order was not canceled.</td>
-</tr>
-<tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> Number of shares to execute.</td>
-</tr>
-<tr>
-<td width="20%">Type</td> <td> <code>string Enum</code> <br/> Order type. Options : ['Market', 'Limit', 'StopMarket', 'StopLimit', 'MarketOnOpen', 'MarketOnClose', 'OptionExercise']</td>
-</tr>
-<tr>
-<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
-</tr>
-<tr>
-<td width="20%">Tag</td> <td> <code>string</code> <br/> Tag the order with some custom data.</td>
-</tr>
-<tr>
-<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Value</td> <td> <code>number</code> <br/> Gets the executed value of this order. If the order has not yet filled, then this will return zero.</td>
-</tr>
-<tr>
-<td width="20%">OrderSubmissionData</td> <td> <code>OrderSubmissionData object</code> <br/> Stores time and price information available at the time an order was submitted.</td>
-</tr>
-<tr>
-<td width="20%">IsMarketable</td> <td> <code>boolean</code> <br/> Returns true if the order is a marketable order.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Id": 0,
-  "ContingentId": 0,
-  "BrokerId": [
-    "string"
-  ],
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
-  },
-  "Price": 0,
-  "PriceCurrency": "string",
-  "Time": "2021-11-26T15:18:27.693Z",
-  "CreatedTime": "2021-11-26T15:18:27.693Z",
-  "LastFillTime": "2021-11-26T15:18:27.693Z",
-  "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-  "CanceledTime": "2021-11-26T15:18:27.693Z",
-  "Quantity": 0,
-  "Type": "Market",
-  "Status": "New",
-  "Tag": "string",
-  "SecurityType": "Base",
-  "Direction": "Buy",
-  "Value": 0,
-  "OrderSubmissionData": {
-    "BidPrice": 0,
-    "AskPrice": 0,
-    "LastPrice": 0
-  },
-  "IsMarketable": true
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderDirection</code> Model - Direction of the order.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OrderDirection</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OrderDirection": "Buy"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderSubmissionData</code> Model - Stores time and price information available at the time an order was submitted.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">BidPrice</td> <td> <code>number</code> <br/> The bid price at an order submission time.</td>
-</tr>
-<tr>
-<td width="20%">AskPrice</td> <td> <code>number</code> <br/> The ask price at an order submission time.</td>
-</tr>
-<tr>
-<td width="20%">LastPrice</td> <td> <code>number</code> <br/> The current price at an order submission time.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "BidPrice": 0,
-  "AskPrice": 0,
-  "LastPrice": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderEvent</code> Model - Change in an order state applied to user algorithm portfolio</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OrderId</td> <td> <code>integer</code> <br/> Id of the order this event comes from.</td>
-</tr>
-<tr>
-<td width="20%">Id</td> <td> <code>integer</code> <br/> The unique order event Id for each order.</td>
-</tr>
-<tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
-</tr>
-<tr>
-<td width="20%">UtcTime</td> <td> <code>string($date-time)</code> <br/> The date and time of this event (UTC).</td>
-</tr>
-<tr>
-<td width="20%">Status</td> <td> <code>OrderStatus object</code> <br/> Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.</td>
-</tr>
-<tr>
-<td width="20%">OrderFee</td> <td> <code>OrderFee object</code> <br/> The order fee associated with the specified order.</td>
-</tr>
-<tr>
-<td width="20%">FillPrice</td> <td> <code>number</code> <br/> Fill price information about the order.</td>
-</tr>
-<tr>
-<td width="20%">FillPriceCurrency</td> <td> <code>string</code> <br/> Currency for the fill price.</td>
-</tr>
-<tr>
-<td width="20%">FillQuantity</td> <td> <code>number</code> <br/> Number of shares of the order that was filled in this event.</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Message</td> <td> <code>string</code> <br/> Any message from the exchange.</td>
-</tr>
-<tr>
-<td width="20%">IsAssignment</td> <td> <code>boolean</code> <br/> True if the order event is an assignment.</td>
-</tr>
-<tr>
-<td width="20%">StopPrice</td> <td> <code>number</code> <br/> The current stop price.</td>
-</tr>
-<tr>
-<td width="20%">LimitPrice</td> <td> <code>number</code> <br/> The current limit price.</td>
-</tr>
-<tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> The current order quantity.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OrderId": 0,
-  "Id": 0,
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
-  },
-  "UtcTime": "2021-11-26T15:18:27.693Z",
-  "Status": {
-    "OrderId": 0,
-    "Id": 0,
-    "Symbol": {
-      "Value": "string",
-      "ID": "string",
-      "Permtick": "string"
-    },
-    "UtcTime": "2021-11-26T15:18:27.693Z",
-    "Status": "New",
-    "FillPrice": 0,
-    "FillPriceCurrency": "string",
-    "FillQuantity": 0,
-    "Direction": "Buy",
-    "Message": "string",
-    "IsAssignment": true,
-    "StopPrice": 0,
-    "LimitPrice": 0,
-    "Quantity": 0
-  },
-  "OrderFee": {
-    "Value": {
-      "Amount": 0,
-      "Currency": "string"
-    }
-  },
-  "FillPrice": 0,
-  "FillPriceCurrency": "string",
-  "FillQuantity": 0,
-  "Direction": "Buy",
-  "Message": "string",
-  "IsAssignment": true,
-  "StopPrice": 0,
-  "LimitPrice": 0,
-  "Quantity": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderStatus</code> Model - Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OrderId</td> <td> <code>integer</code> <br/> Id of the order this event comes from.</td>
-</tr>
-<tr>
-<td width="20%">Id</td> <td> <code>integer</code> <br/> The unique order event Id for this order.</td>
-</tr>
-<tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
-</tr>
-<tr>
-<td width="20%">UtcTime</td> <td> <code>string($date-time)</code> <br/> The date and time of this event.</td>
-</tr>
-<tr>
-<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
-</tr>
-<tr>
-<td width="20%">FillPrice</td> <td> <code>number</code> <br/> Fill price information about the order.</td>
-</tr>
-<tr>
-<td width="20%">FillPriceCurrency</td> <td> <code>string</code> <br/> Currency for the fill price.</td>
-</tr>
-<tr>
-<td width="20%">FillQuantity</td> <td> <code>number</code> <br/> Number of shares of the order that was filled in this event.</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Message</td> <td> <code>string</code> <br/> Any message from the exchange.</td>
-</tr>
-<tr>
-<td width="20%">IsAssignment</td> <td> <code>boolean</code> <br/> Order event is an allocation of trades from ITM option assignment.</td>
-</tr>
-<tr>
-<td width="20%">StopPrice</td> <td> <code>number</code> <br/> The current stop price.</td>
-</tr>
-<tr>
-<td width="20%">LimitPrice</td> <td> <code>number</code> <br/> The current limit price.</td>
-</tr>
-<tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> The current order quantity.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OrderId": 0,
-  "Id": 0,
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
-  },
-  "UtcTime": "2021-11-26T15:18:27.693Z",
-  "Status": "New",
-  "FillPrice": 0,
-  "FillPriceCurrency": "string",
-  "FillQuantity": 0,
-  "Direction": "Buy",
-  "Message": "string",
-  "IsAssignment": true,
-  "StopPrice": 0,
-  "LimitPrice": 0,
-  "Quantity": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Status</code> Model - Status of the Order.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Status": "New"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderFee</code> Model - The order fee associated with the specified order.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Value</td> <td> <code>CashAmount object</code> <br/> Represents a cash amount which can be converted to account currency using a currency converter.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Value": {
-    "Amount": 0,
-    "Currency": "string"
-  }
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>CashAmount</code> Model - Represents a cash amount which can be converted to account currency using a currency converter.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Amount</td> <td> <code>number</code> <br/> The amount of cash.</td>
-</tr>
-<tr>
-<td width="20%">Currency</td> <td> <code>string</code> <br/> The currency in which the cash amount is denominated.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Amount": 0,
-  "Currency": "string"
 }</pre>
 </div>
 </td>

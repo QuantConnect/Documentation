@@ -1,13 +1,13 @@
-<p>To add a universe of Cryptocurrencies, in the <code>Initialize</code> method, pass a <code>CryptoUniverse</code> to the <code>AddUniverse</code> method.</p> 
+<p>To add a universe of Cryptocurrencies, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, pass a <code>CryptoUniverse</code> to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method.</p> 
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.Asynchronous = True
-    self.UniverseSettings.Resolution = Resolution.Daily
-    self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
+    <pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True
+    self.universe_settings.resolution = Resolution.DAILY
+    self.set_brokerage_model(BrokerageName.COINBASE, AccountType.CASH)
     
     # Add crypto universe selection
-    self.universe = self.AddUniverse(CryptoUniverse.Coinbase(lambda universe_day: [c.Symbol for c in universe_day]))</pre>
+    self._universe = self.add_universe(CryptoUniverse.coinbase(lambda universe_day: [c.symbol for c in universe_day]))</pre>
     <pre class="csharp">private Universe _universe;
 public override void Initialize()
 {
@@ -31,33 +31,33 @@ public override void Initialize()
     </thead>
     <tbody>
         <tr>
-            <td><code>BrokerageName.Binance</code></td>
-	        <td><code>CryptoUniverse.Binance</code></td>
+            <td><code>BrokerageName.</code><code class="csharp">Binance</code><code class="python">BINANCE</code></td>
+	        <td><code>CryptoUniverse.</code><code class="csharp">Binance</code><code class="python">binance</code></td>
             <td><a href="/datasets/binance-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
-            <td><code>BrokerageName.BinanceUS</code></td>
-	        <td><code>CryptoUniverse.BinanceUS</code></td>
+            <td><code>BrokerageName.</code><code class="csharp">BinanceUS</code><code class="python">BINANCE_US</code></td>
+	        <td><code>CryptoUniverse.</code><code class="csharp">BinanceUS</code><code class="python">binance_us</code></td>
             <td><a href="/datasets/binance-us-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
-            <td><code>BrokerageName.Bitfinex</code></td>
-	        <td><code>CryptoUniverse.Bitfinex</code></td>
+            <td><code>BrokerageName.</code><code class="csharp">Bitfinex</code><code class="python">BITFINEX</code></td>
+	        <td><code>CryptoUniverse.</code><code class="csharp">Bitfinex</code><code class="python">bitfinex</code></td>
             <td><a href="/datasets/bitfinex-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
-            <td><code>BrokerageName.Bybit</code></td>
-	        <td><code>CryptoUniverse.Bybit</code></td>
+            <td><code>BrokerageName.</code><code class="csharp">Bybit</code><code class="python">BYBIT</code></td>
+	        <td><code>CryptoUniverse.</code><code class="csharp">Bybit</code><code class="python">bybit</code></td>
             <td><a href="/datasets/bybit-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
-            <td><code>BrokerageName.Coinbase</code></td>
-	        <td><code>CryptoUniverse.Coinbase</code></td>
+            <td><code>BrokerageName.</code><code class="csharp">Coinbase</code><code class="python">COINBASE</code></td>
+	        <td><code>CryptoUniverse.</code><code class="csharp">Coinbase</code><code class="python">coinbase</code></td>
             <td><a href="/datasets/coinbase-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
-            <td><code>BrokerageName.Kraken</code></td>
-	        <td><code>CryptoUniverse.Kraken</code></td>
+            <td><code>BrokerageName.</code><code class="csharp">Kraken</code><code class="python">KRAKEN</code></td>
+	        <td><code>CryptoUniverse.</code><code class="csharp">Kraken</code><code class="python">kraken</code></td>
             <td><a href="/datasets/kraken-crypto-price-data">Learn more</a></td>
         </tr>
     </tbody>
@@ -83,7 +83,7 @@ public override void Initialize()
             <td></td>
         </tr>
         <tr>
-            <td><code>universeSettings</code></td>
+            <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
 	        <td><code>UniverseSettings</code></td>
             <td>The <a href="/docs/v2/writing-algorithms/universes/settings">universe settings</a>.</td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
@@ -97,17 +97,17 @@ public override void Initialize()
 <p>To perform thorough filtering on the <code>CryptoUniverse</code> objects, define an isolated filter method.</p>
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.Asynchronous = True
-    self.UniverseSettings.Resolution = Resolution.Daily
-    self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
+<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True
+    self.universe_settings.resolution = Resolution.DAILY
+    self.set_brokerage_model(BrokerageName.COINBASE, AccountType.CASH)
 
     # Add crypto universe selection
-    self.universe = self.AddUniverse(CryptoUniverse.Coinbase(self.universe_filter))<br>
+    self._universe = self.add_universe(CryptoUniverse.coinbase(self.universe_filter))<br>
 
 def universe_filter(self, universe_day):
     # Define the universe selection function
-    return [cf.Symbol for cf in universe_day if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
+    return [cf.symbol for cf in universe_day if cf.volume &gt;= 100 and cf.volume_in_usd &gt; 10000]</pre>
 <pre class="csharp">private Universe _universe;
 public override void Initialize()
 {

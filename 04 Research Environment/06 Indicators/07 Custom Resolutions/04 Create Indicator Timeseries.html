@@ -6,7 +6,7 @@
     <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
+        <pre class="python">history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
     </div>
 
 	<li>Create a data-point indicator.</li>
@@ -57,19 +57,19 @@ window["price"] = RollingWindow[float](50)
     window["standarddeviation"].Add(indicator.StandardDeviation);
     window["price"].Add(indicator.Price);
 };</pre>
-        <pre class="python">def UpdateBollingerBandWindow(sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python">def update_bollinger_band_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
     indicator = sender
-    window['time'].Add(updated.EndTime)
-    window["bollingerbands"].Add(updated.Value)
-    window["lowerband"].Add(indicator.LowerBand.Current.Value)
-    window["middleband"].Add(indicator.MiddleBand.Current.Value)
-    window["upperband"].Add(indicator.UpperBand.Current.Value)
-    window["bandwidth"].Add(indicator.BandWidth.Current.Value)
-    window["percentb"].Add(indicator.PercentB.Current.Value)
-    window["standarddeviation"].Add(indicator.StandardDeviation.Current.Value)
-    window["price"].Add(indicator.Price.Current.Value)
+    window['time'].add(updated.end_time)
+    window["bollingerbands"].add(updated.value)
+    window["lowerband"].add(indicator.lower_band.current.value)
+    window["middleband"].add(indicator.middle_band.current.value)
+    window["upperband"].add(indicator.upper_band.current.value)
+    window["bandwidth"].add(indicator.band_width.current.value)
+    window["percentb"].add(indicator.percent_b.current.value)
+    window["standarddeviation"].add(indicator.standard_deviation.current.value)
+    window["price"].add(indicator.price.current.value)
 
-bb.Updated += UpdateBollingerBandWindow</pre>
+bb.updated += UpdateBollingerBandWindow</pre>
     </div>
     <p>When the indicator receives new data, the preceding handler method adds the new <code>IndicatorDataPoint</code> values into the respective <code>RollingWindow</code>.</p>
 
@@ -85,7 +85,7 @@ bb.Updated += UpdateBollingerBandWindow</pre>
 {
     bb.Update(consolidated.EndTime, consolidated.Close);
 };</pre>
-        <pre class="python">consolidator.DataConsolidated += lambda sender, consolidated: bb.Update(consolidated.EndTime, consolidated.Close)</pre>
+        <pre class="python">consolidator.data_consolidated += lambda sender, consolidated: bb.update(consolidated.end_time, consolidated.close)</pre>
     </div>
     <p>When the consolidator receives 7 days of data, the handler generates a 7-day <code>TradeBar</code> and update the indicator.</p>
     
@@ -96,7 +96,7 @@ bb.Updated += UpdateBollingerBandWindow</pre>
     consolidator.Update(bar);
 }</pre>
         <pre class="python">for bar in history:
-    consolidator.Update(bar)</pre>
+    consolidator.update(bar)</pre>
     </div>
 
     <li class="csharp">Display the data.</li>

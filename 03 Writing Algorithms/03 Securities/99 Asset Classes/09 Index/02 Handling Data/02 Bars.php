@@ -3,7 +3,7 @@
 <p><code>TradeBar</code> objects have the following properties:</p>    
 <div data-tree='QuantConnect.Data.Market.TradeBar'></div>  
   
-<p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code>Bars</code> property of the <code>Slice</code> with the Index <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code> at every time step. To avoid issues, check if the <code>Slice</code> contains data for your Index before you index the <code>Slice</code> with the Index <code>Symbol</code>.</p>
+<p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code class="csharp">Bars</code><code class="python">bars</code> property of the <code>Slice</code> with the Index <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code> at every time step. To avoid issues, check if the <code>Slice</code> contains data for your Index before you index the <code>Slice</code> with the Index <code>Symbol</code>.</p>
     
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -14,8 +14,8 @@
         var value = tradeBar.Value;
     }
 }</pre>
-<pre class='python'>def OnData(self, slice: Slice) -&gt; None:
-    if self.symbol in slice.Bars:
-        trade_bar = slice.Bars[self.symbol]
-        value = trade_bar.Value</pre>
+<pre class='python'>def on_data(self, slice: Slice) -&gt; None:
+    if self._symbol in slice.bars:
+        trade_bar = slice.bars[self._symbol]
+        value = trade_bar.value</pre>
 </div>

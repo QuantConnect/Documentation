@@ -11,7 +11,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
-    <li>Call the <code>AddEquity</code> method with a ticker and then save a reference to the Equity <code>Symbol</code>.</li>
+    <li>Call the <code class="csharp">AddEquity</code><code class="python">add_equity</code> method with a ticker and then save a reference to the Equity <code>Symbol</code>.</li>
 
 <div class="section-example-container">
     <pre class="csharp">var symbols = new [] 
@@ -26,7 +26,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 }
 .Select(ticker =&gt; qb.AddEquity(ticker, Resolution.Daily).Symbol);</pre>
     <pre class="python">symbols = [
-    qb.AddEquity(ticker, Resolution.Daily).Symbol
+    qb.add_equity(ticker, Resolution.DAILY).symbol
     for ticker in [
         "AAL",   # American Airlines Group, Inc.
         "ALGT",  # Allegiant Travel Company

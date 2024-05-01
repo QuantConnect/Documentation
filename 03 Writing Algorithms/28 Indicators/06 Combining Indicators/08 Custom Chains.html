@@ -1,9 +1,9 @@
-<p>The <code>Of</code> extension feeds an indicator's <code>.Current.Value</code> into the input of another indicator. The first argument of the <code>IndicatorExtensions.Of</code> method must be a <a href="/docs/v2/writing-algorithms/indicators/manual-indicators">manual indicator</a> with no automatic updates. If you pass an indicator that has automatic updates as the argument, that first indicator is updated twice. The first update is from the security data and the second update is from the <code>IndicatorExtensions</code> class.</p>
+<p>The <code class="csharp">Of</code><code class="python">of</code> extension feeds an indicator's <code class="csharp">Current.Value</code><code class="python">current.value</code> property into the input of another indicator. The first argument of the <code>IndicatorExtensions.Of</code> method must be a <a href="/docs/v2/writing-algorithms/indicators/manual-indicators">manual indicator</a> with no automatic updates. If you pass an indicator that has automatic updates as the argument, that first indicator is updated twice. The first update is from the security data and the second update is from the <code>IndicatorExtensions</code> class.</p>
 <div class="section-example-container">
 <pre class="csharp">var rsi = RSI("SPY", 14);
 var rsiSMA = (new SimpleMovingAverage(10)).Of(rsi); // 10-period SMA of the 14-period RSI</pre>
-<pre class="python">rsi = self.RSI("SPY", 14)
-rsi_sma = IndicatorExtensions.Of(SimpleMovingAverage(10), rsi) # 10-period SMA of the 14-period RSI</pre>
+<pre class="python">rsi = self.rsi("SPY", 14)
+rsi_sma = IndicatorExtensions.of(SimpleMovingAverage(10), rsi) # 10-period SMA of the 14-period RSI</pre>
 </div>
 
-<p>If you pass a manual indicator as the second argument, to update the indicator chain, <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#04-Manual-Updates">update</a> the second indicator. If you call the <code>Update</code> method of the entire indicator chain, it won't update the chain properly.</p>
+<p>If you pass a manual indicator as the second argument, to update the indicator chain, <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#04-Manual-Updates">update</a> the second indicator. If you call the <code class="csharp">Update</code><code class="python">update</code> method of the entire indicator chain, it won't update the chain properly.</p>

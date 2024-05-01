@@ -1,6 +1,6 @@
-<?php 
+<? 
 $securityName = "CFD";
-$pythonVariable = "self.symbol";
+$pythonVariable = "self._symbol";
 $cSharpVariable = "_symbol";
 include(DOCS_RESOURCES."/securities/quotebar.php"); 
 ?>

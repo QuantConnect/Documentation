@@ -1,0 +1,23 @@
+<p>To select a dynamic universe of US Equities based on Wikipedia Page Views data, call the <b class="csharp">AddUniverse</b><b class="python">add_universe</b> method with the <b>QuiverWikipediaUniverse</b> class and a selection function.</p> 
+
+<div class="section-example-container">
+<pre class="python">def initialize(self) -&gt; None:
+    self._universe = self.add_universe(QuiverWikipediaUniverse, self.universe_selection)
+
+def universe_selection(self, alt_coarse: List[QuiverWikipediaUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in alt_coarse \
+                if d.page_views &gt; 100 \
+                and d.week_percent_change &lt; 0.2]</pre>
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
+{
+    _universe = AddUniverse&lt;QuiverWikipediaUniverse&gt;(altCoarse =&gt;
+    {
+        return from d in altCoarse
+                where d.PageViews &gt; 100m &amp;&amp; d.MonthPercentChange &gt; 0.2m
+                select d.Symbol;
+    });
+}</pre>
+</div>
+
+<p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

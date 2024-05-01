@@ -1,0 +1,54 @@
+<p>To get the current Brain Sentiment Indicator data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.dataset_7day_symbol):
+        data_point = slice[self.dataset_7day_symbol]
+        self.log(f"{self.dataset_7day_symbol} sentiment at {slice.time}: {data_point.sentiment}")
+
+    if slice.contains_key(self.dataset_30day_symbol):
+        data_point = slice[self.dataset_30day_symbol]
+        self.log(f"{self.dataset_30day_symbol} sentiment at {slice.time}: {data_point.sentiment}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_dataset7DaySymbol))
+    {
+        var dataPoint = slice[_dataset7DaySymbol];
+        Log($"{_dataset7DaySymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}");
+    }
+
+    if (slice.ContainsKey(_dataset30DaySymbol))
+    {
+        var dataPoint = slice[_dataset30DaySymbol];
+        Log($"{_dataset30DaySymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}");
+    }
+}
+</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b class="csharp">Get</b><b class="python">get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(BrainSentimentIndicator7Day).items():
+        self.log(f"{dataset_symbol} sentiment at {slice.time}: {data_point.sentiment}")
+
+    for dataset_symbol, data_point in slice.get(BrainSentimentIndicator30Day).items():
+        self.log(f"{dataset_symbol} sentiment at {slice.time}: {data_point.sentiment}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;BrainSentimentIndicator7Day&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}");
+    }
+
+    foreach (var kvp in slice.Get&lt;BrainSentimentIndicator30Day&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}");
+    }
+}</pre>
+</div>

@@ -1,0 +1,37 @@
+<p>To get the current Binance Crypto Margin Rate data, index the <b class="csharp">MarginInterestRates</b><b class="python">margin_interest_rates</b> property of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the Crypto Future <b>Symbol</b>. <b>Slice</b> objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your security at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.btcbusd in slice.margin_interest_rates:
+        interest_rate = slice.margin_interest_rates[self.btcbusd].interest_rate
+        self.log(f"{self.btcbusd} close at {slice.time}: {interest_rate}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.MarginInterestRates.ContainsKey(_symbol))
+    {
+        var interestRate = slice.MarginInterestRates[_symbol].InterestRate;
+        Log($"{_symbol} price at {slice.Time}: {interestRate}");
+    }
+}</pre>
+</div>
+
+<p>You can also iterate through all of the data objects in the current <b>Slice</b>.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for symbol, margin_interest_rate in slice.margin_interest_rates.items():
+        interest_rate = margin_interest_rate.interest_rate
+        self.log(f"{symbol} close at {slice.time}: {interest_rate}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.MarginInterestRates)
+    {
+        var symbol = kvp.Key;
+        var marginInterestRate = kvp.Value;
+        var interestRate = marginInterestRate.InterestRate;
+        Log($"{symbol} price at {slice.Time}: {interestRate}");
+    }
+}</pre>
+</div>
+
+<p>For more information about accessing Crypto Future data, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/crypto-futures/handling-data">Handling Data</a>.</p>

@@ -101,7 +101,7 @@ namespace QuantConnect.Algorithm.CSharp
 }</pre>
 	<pre class="python">from AlgorithmImports import *
 
-class ChainedUniverseAlgorithm(QCAlgorithm):
+    class ChainedUniverseAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2023, 2, 2)
         self.set_cash(100000)

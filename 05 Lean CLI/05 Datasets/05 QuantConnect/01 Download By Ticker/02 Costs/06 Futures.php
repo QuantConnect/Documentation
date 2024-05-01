@@ -63,14 +63,14 @@
 }
 </pre>
 <pre class="python">class USFuturesDataAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.SetStartDate(2020, 1, 1)
-        self.SetEndDate(2021, 1, 1)
-        future = self.AddFuture(Futures.Indices.SP500EMini,
-                                dataNormalizationMode = DataNormalizationMode.BackwardsRatio,
-                                dataMappingMode = DataMappingMode.OpenInterest,
-                                contractDepthOffset = 0)
-        future.SetFilter(0, 90)</pre>
+    def initialize(self):
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        future = self.add_future(Futures.Indices.SP500E_MINI,
+                                data_normalization_mode = DataNormalizationMode.BACKWARDS_RATIO,
+                                data_mapping_mode = DataMappingMode.OPEN_INTEREST,
+                                contract_depth_offset = 0)
+        future.set_filter(0, 90)</pre>
 </div>
 
 <p>The following table shows the data cost of the preceding algorithm on the Quant Researcher tier:</p>

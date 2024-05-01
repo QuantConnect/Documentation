@@ -10,7 +10,7 @@ AddUniverseSelection(
     )
 );</pre>
 	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-self.universe_settings.Asynchronous = True
+self.universe_settings.asynchronous = True
 self.add_universe_selection(
     OptionChainedUniverseSelectionModel(
         self.add_universe(self.universe.dollar_volume.top(10)),
@@ -47,9 +47,9 @@ self.add_universe_selection(
         </tr>
         <tr>
             <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
-            <td><code>UniverseSettings</code></td>
-            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td><code class='python'>None</code><code class="csharp">null</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code class="csharp">algorithm.UniverseSettings</code><code class="python">algorithm.universe_settings</code> by default.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
@@ -78,7 +78,7 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
     self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-    self.universe_settings.Asynchronous = True
+    self.universe_settings.asynchronous = True
     self.add_universe_selection(
         OptionChainedUniverseSelectionModel(
             self.add_universe(self.universe.dollar_volume.top(10)), self.option_filter_function

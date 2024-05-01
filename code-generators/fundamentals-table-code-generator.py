@@ -50,46 +50,46 @@ exchange_ids = {
     'NEOE': "NEO Exchange"
 }
 
-html = """<p>The US Fundamentals dataset provides Fundamental objects. To filter Fundamental objects, you can use the MorningstarSectorCode, MorningstarIndustryGroupCode, and MorningstarIndustryCode enumeration values.</p>
+html = """<p>The US Fundamentals dataset provides Fundamental objects. To filter Fundamental objects, you can use the <code>MorningstarSectorCode</code>, <code>MorningstarIndustryGroupCode</code>, and <code>MorningstarIndustryCode</code> enumeration values.</p>
 
 <h4>Fundamentals Attributes</h4>
 <p>Fundamentals objects have the following attributes:</p>
 <div data-tree="QuantConnect.Data.Fundamental.Fundamental"></div>
 
 <h4>MorningstarSectorCode Enumeration</h4>
-<p>Sectors are large super categories of data. To access the sector of an Equity, use the <b>MorningstarSectorCode</b> property.</p>
+<p>Sectors are large super categories of data. To access the sector of an Equity, use the <b class="csharp">MorningstarSectorCode</b><b class="python">morningstar_sector_code</b> property.</p>
 <div class="section-example-container">
     <pre class="csharp">filtered = fundamental.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
-    <pre class="python">filtered = [x for x in fundamental if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]</pre>
+    <pre class="python">filtered = [x for x in fundamental if x.asset_classification.morningstar_sector_code == MorningstarSectorCode.TECHNOLOGY]</pre>
 </div>
 <p>The <b>MorningstarSectorCode</b> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Data.Fundamental.MorningstarSectorCode"></div>
 
 
 <h4>MorningstarIndustryGroupCode Enumeration</h4>
-<p>Industry groups are clusters of related industries which tie together.  To access the industry group of an Equity, use the <b>MorningstarIndustryGroupCode</b> property.</p>
+<p>Industry groups are clusters of related industries which tie together.  To access the industry group of an Equity, use the <b class="csharp">MorningstarIndustryGroupCode</b><b class="python">morningstar_industry_group_code</b> property.</p>
 <div class="section-example-container">
     <pre class="csharp">filtered = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware);</pre>
-    <pre class="python">filtered = [x for x in fundamental if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware]</pre>
+    <pre class="python">filtered = [x for x in fundamental if x.asset_classification.morningstar_industry_group_code == MorningstarIndustryGroupCode.APPLICATION_SOFTWARE]</pre>
 </div>
 <p>The <b>MorningstarIndustryGroupCode</b> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Data.Fundamental.MorningstarIndustryGroupCode"></div>
 
 
 <h4>MorningstarIndustryCode Enumeration</h4>
-<p>Industries are the finest level of classification available and are the individual industries according to the Morningstar classification system.  To access the industry group of an Equity, use the <b>MorningstarIndustryCode</b> property:</p>
+<p>Industries are the finest level of classification available and are the individual industries according to the Morningstar classification system.  To access the industry group of an Equity, use the <b class="csharp">MorningstarIndustryCode</b><b class="python">morningstar_industry_code</b> property:</p>
 <div class="section-example-container">
     <pre class="csharp">filtered = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.SoftwareApplication);</pre>
-    <pre class="python">filtered = [x for x in fundamental if x.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.SoftwareApplication]</pre>
+    <pre class="python">filtered = [x for x in fundamental if x.asset_classification.morningstar_industry_code == MorningstarIndustryCode.SOFTWARE_APPLICATION]</pre>
 </div>
 <p>The <b>MorningstarIndustryCode</b> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Data.Fundamental.MorningstarIndustryCode"></div>
 
 <h4>Exchange Id Values</h4>
-<p>Exchange Id is mapped to represent the exchange that lists the Equity.  To access the exchange Id of an Equity, use the <b>PrimaryExchangeID</b> property.</p>
+<p>Exchange Id is mapped to represent the exchange that lists the Equity.  To access the exchange Id of an Equity, use the <b class="csharp">PrimaryExchangeID</b><b class="python">primary_exchange_id</b> property.</p>
 <div class="section-example-container">
     <pre class="csharp">filtered = fundamental.Where(x =&gt; x.CompanyReference.PrimaryExchangeID == "NAS");</pre>
-    <pre class="python">filtered = [x for x in fundamental if x.CompanyReference.PrimaryExchangeID == "NAS"]</pre>
+    <pre class="python">filtered = [x for x in fundamental if x.company_reference.primary_exchange_id == "NAS"]</pre>
 </div>
 <p>The exchanges are represented by the following string values:</p>
 <table class="table qc-table table-reflow">

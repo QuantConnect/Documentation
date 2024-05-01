@@ -27,7 +27,7 @@ using QuantConnect.Data.Fundamental;</pre>
     </div>
 
     <li>Define a universe.</li>
-    <p>The following example defines a dynamic universe that contains the 10 Equities with the lowest PE ratios in the market. To see all the <code>Fundamental</code> attributes you can use to define a filter function for a Fundamental universe, see <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>Data Point Attributes</a>. To create the universe, call the <code>AddUniverse</code> method with the filter function.</p>
+    <p>The following example defines a dynamic universe that contains the 10 Equities with the lowest PE ratios in the market. To see all the <code>Fundamental</code> attributes you can use to define a filter function for a Fundamental universe, see <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#06-Data-Point-Attributes'>Data Point Attributes</a>. To create the universe, call the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method with the filter function.</p>
     <div class="section-example-container">
     <pre class="csharp">var universe = qb.AddUniverse(fundamentals =&gt;
 {
@@ -39,23 +39,23 @@ using QuantConnect.Data.Fundamental;</pre>
 });</pre>
     <pre class="python">def filter_function(fundamentals):
     sorted_by_pe_ratio = sorted(
-        [f for f in fundamentals if not np.isnan(f.ValuationRatios.PERatio)], 
-        key=lambda fundamental: fundamental.ValuationRatios.PERatio
+        [f for f in fundamentals if not np.isnan(f.valuation_ratios.pe_ratio)], 
+        key=lambda fundamental: fundamental.valuation_ratios.pe_ratio
     )
-    return [fundamental.Symbol for fundamental in sorted_by_pe_ratio[:10]]
+    return [fundamental.symbol for fundamental in sorted_by_pe_ratio[:10]]
 
-universe = qb.AddUniverse(filter_function)</pre>
+universe = qb.add_universe(filter_function)</pre>
     </div>
 
-    <li>Call the <code class='csharp'>UniverseHistory</code><code class='python'>UniverseHistory</code> method with the universe, a start date, and an end date.</li>
+    <li>Call the <code class='csharp'>UniverseHistory</code><code class='python'>universe_history</code> method with the universe, a start date, and an end date.</li>
     <div class="section-example-container">
         <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
-        <pre class="python">universe_history = qb.UniverseHistory(universe, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
+        <pre class="python">universe_history = qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
     </div>
 
     <p>The end date arguments is optional. If you omit it, the method returns <code>Fundamental</code> data between the start date and the current day.</p>
 
-    <p class='python'>The <code>UniverseHistory</code> method returns a Series where the multi-index is the universe <code>Symbol</code> and the time when universe selection would occur in a backtest. Each row in the data column contains a list of <code>Fundamental</code> objects. The following image shows the first 5 rows of an example Series:</p>
+    <p class='python'>The <code>universe_history</code> method returns a Series where the multi-index is the universe <code>Symbol</code> and the time when universe selection would occur in a backtest. Each row in the data column contains a list of <code>Fundamental</code> objects. The following image shows the first 5 rows of an example Series:</p>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/universe-selection-history-dataframe-python.png" alt="Historical fundamental universe dataframe">
     <p class='csharp'>The <code>UniverseHistory</code> method returns an <code>IEnumerable&lt;IEnumerable&lt;Fundamental&gt;&gt;</code> object. </p>
 
@@ -66,10 +66,10 @@ universe = qb.AddUniverse(filter_function)</pre>
     <pre class="python">universe_history = universe_history.droplevel('symbol', axis=0)
 for date, fundamentals in universe_history.items():
     for fundamental in fundamentals:
-        symbol = fundamental.Symbol
-        price = fundamental.Price
-        if fundamental.HasFundamentalData:
-            pe_ratio = fundamental.ValuationRatios.PERatio</pre>
+        symbol = fundamental.symbol
+        price = fundamental.price
+        if fundamental.has_fundamental_data:
+            pe_ratio = fundamental.valuation_ratios.pe_ratio</pre>
     <pre class="csharp">foreach (var fundamentals in universeHistory)
 {
     foreach (Fundamental fundamental in fundamentals)

@@ -5,12 +5,12 @@ var security = AddEquity("SPY");
 // Set a delayed settlement model that settles 7 days after the trade at 8 AM
 security.SetSettlementModel(new DelayedSettlementModel(7, TimeSpan.FromHours(8)));</pre>
     <pre class="python"># In Initialize
-security = self.AddEquity("SPY")
+security = self.add_equity("SPY")
 # Set a delayed settlement model that settles 7 days after the trade at 8 AM
-security.SetSettlementModel(DelayedSettlementModel(7, timedelta(hours=8)))</pre>
+security.set_settlement_model(DelayedSettlementModel(7, timedelta(hours=8)))</pre>
 </div>
 
-<p>You can also set the settlement model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+<p>You can also set the settlement model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
 
 <?php
 $overwriteCodePy = "security.SetSettlementModel(DelayedSettlementModel(7, timedelta(hours=8)))";

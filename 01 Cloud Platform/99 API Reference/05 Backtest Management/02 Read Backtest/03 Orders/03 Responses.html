@@ -22,36 +22,85 @@ The <code>/backtests/read/orders</code> API provides a response in the following
 <div class="cli section-example-container"><pre>
 {
   "Orders": {
-    "Id": 0,
-    "ContingentId": 0,
-    "BrokerId": [
+    "id": 0,
+    "contingentId": 0,
+    "brokerId": [
       "string"
     ],
-    "Symbol": {
-      "Value": "string",
-      "ID": "string",
-      "Permtick": "string"
+    "symbol": {
+      "value": "string",
+      "id": "string",
+      "permtick": "string"
     },
-    "Price": 0,
-    "PriceCurrency": "string",
-    "Time": "2021-11-26T15:18:27.693Z",
-    "CreatedTime": "2021-11-26T15:18:27.693Z",
-    "LastFillTime": "2021-11-26T15:18:27.693Z",
-    "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-    "CanceledTime": "2021-11-26T15:18:27.693Z",
-    "Quantity": 0,
-    "Type": "Market",
-    "Status": "New",
-    "Tag": "string",
-    "SecurityType": "Base",
-    "Direction": "Buy",
-    "Value": 0,
-    "OrderSubmissionData": {
-      "BidPrice": 0,
-      "AskPrice": 0,
-      "LastPrice": 0
+    "limitPrice": ,
+    "stopPrice": 0,
+    "stopTriggered": ,
+    "price": 0,
+    "priceCurrency": "string",
+    "time": "2021-11-26T15:18:27.693Z",
+    "createdTime": "2021-11-26T15:18:27.693Z",
+    "lastFillTime": "2021-11-26T15:18:27.693Z",
+    "lastUpdateTime": "2021-11-26T15:18:27.693Z",
+    "canceledTime": "2021-11-26T15:18:27.693Z",
+    "quantity": 0,
+    "type": 0 = Market,
+    "status": 0 = New,
+    "tag": "string",
+    "securityType": 0 = Base,
+    "direction": 0 = Buy,
+    "value": 0,
+    "orderSubmissionData": {
+      "bidPrice": 0,
+      "askPrice": 0,
+      "lastPrice": 0
     },
-    "IsMarketable": true
+    "isMarketable": true,
+    "properties": {
+      "timeInForce": 0 = GoodTilCanceled
+    },
+    "events": [
+      {
+        "algorithmId": "string",
+        "symbolValue": "string",
+        "symbolPermtick": "string",
+        "orderId": 0,
+        "orderEventId": 0,
+        "id": 0,
+        "symbol": {
+          "value": "string",
+          "id": "string",
+          "permtick": "string"
+        },
+        "status": "new",
+        "orderFeeAmount": 0,
+        "orderFeeCurrency": "string",
+        "fillPrice": 0,
+        "fillPriceCurrency": "string",
+        "fillQuantity": 0,
+        "direction": "string",
+        "message": "string",
+        "isAssignment": true,
+        "stopPrice": 0,
+        "limitPrice": 0,
+        "quantity": 0,
+        "time": 0,
+        "isInTheMoney": 
+      }
+    ],
+    "trailingAmount": 0,
+    "trailingPercentage": ,
+    "groupOrderManager": {
+      "id": 0,
+      "quantity": 0,
+      "count": 0,
+      "limitPrice": 0,
+      "orderIds": [
+        "integer"
+      ],
+      "direction": 0
+    },
+    "triggerPrice": 0,
+    "triggerTouched": 
   },
   "Length": 0
 }</pre>
@@ -65,100 +114,179 @@ The <code>/backtests/read/orders</code> API provides a response in the following
 </tr>
 </thead>
 <tr>
-<td width="20%">Id</td> <td> <code>integer</code> <br/> Order ID.</td>
+<td width="20%">id</td> <td> <code>integer</code> <br/> Order ID.</td>
 </tr>
 <tr>
-<td width="20%">ContingentId</td> <td> <code>integer</code> <br/> Order Id to process before processing this order.</td>
+<td width="20%">contingentId</td> <td> <code>integer</code> <br/> Order Id to process before processing this order.</td>
 </tr>
 <tr>
-<td width="20%">BrokerId</td> <td> <code>string Array</code> <br/> Brokerage Id for this order for when the brokerage splits orders into multiple pieces.</td>
+<td width="20%">brokerId</td> <td> <code>string Array</code> <br/> Brokerage Id for this order for when the brokerage splits orders into multiple pieces.</td>
 </tr>
 <tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
+<td width="20%">symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
 </tr>
 <tr>
-<td width="20%">Price</td> <td> <code>number</code> <br/> Price of the Order.</td>
+<td width="20%">limitPrice</td> <td> <code>nummber</code> <br/> Limit price of the Order.</td>
 </tr>
 <tr>
-<td width="20%">PriceCurrency</td> <td> <code>string</code> <br/> Currency for the order price.</td>
+<td width="20%">stopPrice</td> <td> <code>number</code> <br/> Stop price of the Order.</td>
 </tr>
 <tr>
-<td width="20%">Time</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the order was created.</td>
+<td width="20%">stopTriggered</td> <td> <code>bool</code> <br/> Indicates if the stop price has been reached, so the limit order has been triggered.</td>
 </tr>
 <tr>
-<td width="20%">CreatedTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was created. Alias for Time.</td>
+<td width="20%">price</td> <td> <code>number</code> <br/> Price of the Order.</td>
 </tr>
 <tr>
-<td width="20%">LastFillTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the last fill was received, or null if no fills have been received.</td>
+<td width="20%">priceCurrency</td> <td> <code>string</code> <br/> Currency for the order price.</td>
 </tr>
 <tr>
-<td width="20%">LastUpdateTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was last updated, or null if the order has not been updated.</td>
+<td width="20%">time</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the order was created.</td>
 </tr>
 <tr>
-<td width="20%">CanceledTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was canceled, or null if the order was not canceled.</td>
+<td width="20%">createdTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was created. Alias for Time.</td>
 </tr>
 <tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> Number of shares to execute.</td>
+<td width="20%">lastFillTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the last fill was received, or null if no fills have been received.</td>
 </tr>
 <tr>
-<td width="20%">Type</td> <td> <code>string Enum</code> <br/> Order type. Options : ['Market', 'Limit', 'StopMarket', 'StopLimit', 'MarketOnOpen', 'MarketOnClose', 'OptionExercise']</td>
+<td width="20%">lastUpdateTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was last updated, or null if the order has not been updated.</td>
 </tr>
 <tr>
-<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
+<td width="20%">canceledTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was canceled, or null if the order was not canceled.</td>
 </tr>
 <tr>
-<td width="20%">Tag</td> <td> <code>string</code> <br/> Tag the order with some custom data.</td>
+<td width="20%">quantity</td> <td> <code>number</code> <br/> Number of shares to execute.</td>
 </tr>
 <tr>
-<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
+<td width="20%">type</td> <td> <code>integer Enum</code> <br/> Order type. Options : ['0 = Market', '1 = Limit', '2 = StopMarket', '3 = StopLimit', '4 = MarketOnOpen', '5 = MarketOnClose', '6 = OptionExercise', '7 = LimitIfTouched', '8 = ComboMarket', '9 = ComboLimit', '10 = ComboLegLimit', '11 = TrailingStop']</td>
 </tr>
 <tr>
-<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
+<td width="20%">status</td> <td> <code>integer Enum</code> <br/> Status of the Order. Options : ['0 = New', '1 = Submitted', '2 = PartiallyFilled', '3 = Filled', '5 = Canceled', '6 = None', '7 = Invalid', '8 = CancelPending', '9 = UpdateSubmitted']</td>
 </tr>
 <tr>
-<td width="20%">Value</td> <td> <code>number</code> <br/> Gets the executed value of this order. If the order has not yet filled, then this will return zero.</td>
+<td width="20%">tag</td> <td> <code>string</code> <br/> Tag the order with some custom data.</td>
 </tr>
 <tr>
-<td width="20%">OrderSubmissionData</td> <td> <code>OrderSubmissionData object</code> <br/> Stores time and price information available at the time an order was submitted.</td>
+<td width="20%">securityType</td> <td> <code>integer Enum</code> <br/> Type of tradable security / underlying asset. Options : ['0 = Base', '1 = Equity', '2 = Option', '3 = Commodity', '4 = Forex', '5 = Future', '6 = Cfd', '7 = Crypto']</td>
 </tr>
 <tr>
-<td width="20%">IsMarketable</td> <td> <code>boolean</code> <br/> Returns true if the order is a marketable order.</td>
+<td width="20%">direction</td> <td> <code>integer Enum</code> <br/> Order Direction Property based off Quantity. Options : ['0 = Buy', '1 = Sell', '2 = Hold']</td>
+</tr>
+<tr>
+<td width="20%">value</td> <td> <code>number</code> <br/> Gets the executed value of this order. If the order has not yet filled, then this will return zero.</td>
+</tr>
+<tr>
+<td width="20%">orderSubmissionData</td> <td> <code>OrderSubmissionData object</code> <br/> Stores time and price information available at the time an order was submitted.</td>
+</tr>
+<tr>
+<td width="20%">isMarketable</td> <td> <code>boolean</code> <br/> Returns true if the order is a marketable order.</td>
+</tr>
+<tr>
+<td width="20%">properties</td> <td> <code>OrderProperties object</code> <br/> Additional properties of the order.</td>
+</tr>
+<tr>
+<td width="20%">events</td> <td> <code>OrderEvent Array</code> <br/> The order events.</td>
+</tr>
+<tr>
+<td width="20%">trailingAmount</td> <td> <code>number</code> <br/> Trailing amount for a trailing stop order.</td>
+</tr>
+<tr>
+<td width="20%">trailingPercentage</td> <td> <code>bool</code> <br/> Determines whether the trailingAmount is a percentage or an absolute currency value.</td>
+</tr>
+<tr>
+<td width="20%">groupOrderManager</td> <td> <code>GroupOrderManager object</code> <br/> Manager of a group of orders.</td>
+</tr>
+<tr>
+<td width="20%">triggerPrice</td> <td> <code>number</code> <br/> The price which, when touched, will trigger the setting of a limit order at limitPrice.</td>
+</tr>
+<tr>
+<td width="20%">triggerTouched</td> <td> <code>bool</code> <br/> Whether or not the triggerPrice has been touched.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "Id": 0,
-  "ContingentId": 0,
-  "BrokerId": [
+  "id": 0,
+  "contingentId": 0,
+  "brokerId": [
     "string"
   ],
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
+  "symbol": {
+    "value": "string",
+    "id": "string",
+    "permtick": "string"
   },
-  "Price": 0,
-  "PriceCurrency": "string",
-  "Time": "2021-11-26T15:18:27.693Z",
-  "CreatedTime": "2021-11-26T15:18:27.693Z",
-  "LastFillTime": "2021-11-26T15:18:27.693Z",
-  "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-  "CanceledTime": "2021-11-26T15:18:27.693Z",
-  "Quantity": 0,
-  "Type": "Market",
-  "Status": "New",
-  "Tag": "string",
-  "SecurityType": "Base",
-  "Direction": "Buy",
-  "Value": 0,
-  "OrderSubmissionData": {
-    "BidPrice": 0,
-    "AskPrice": 0,
-    "LastPrice": 0
+  "limitPrice": ,
+  "stopPrice": 0,
+  "stopTriggered": ,
+  "price": 0,
+  "priceCurrency": "string",
+  "time": "2021-11-26T15:18:27.693Z",
+  "createdTime": "2021-11-26T15:18:27.693Z",
+  "lastFillTime": "2021-11-26T15:18:27.693Z",
+  "lastUpdateTime": "2021-11-26T15:18:27.693Z",
+  "canceledTime": "2021-11-26T15:18:27.693Z",
+  "quantity": 0,
+  "type": 0 = Market,
+  "status": 0 = New,
+  "tag": "string",
+  "securityType": 0 = Base,
+  "direction": 0 = Buy,
+  "value": 0,
+  "orderSubmissionData": {
+    "bidPrice": 0,
+    "askPrice": 0,
+    "lastPrice": 0
   },
-  "IsMarketable": true
+  "isMarketable": true,
+  "properties": {
+    "timeInForce": 0 = GoodTilCanceled
+  },
+  "events": [
+    {
+      "algorithmId": "string",
+      "symbolValue": "string",
+      "symbolPermtick": "string",
+      "orderId": 0,
+      "orderEventId": 0,
+      "id": 0,
+      "symbol": {
+        "value": "string",
+        "id": "string",
+        "permtick": "string"
+      },
+      "status": "new",
+      "orderFeeAmount": 0,
+      "orderFeeCurrency": "string",
+      "fillPrice": 0,
+      "fillPriceCurrency": "string",
+      "fillQuantity": 0,
+      "direction": "string",
+      "message": "string",
+      "isAssignment": true,
+      "stopPrice": 0,
+      "limitPrice": 0,
+      "quantity": 0,
+      "time": 0,
+      "isInTheMoney": 
+    }
+  ],
+  "trailingAmount": 0,
+  "trailingPercentage": ,
+  "groupOrderManager": {
+    "id": 0,
+    "quantity": 0,
+    "count": 0,
+    "limitPrice": 0,
+    "orderIds": [
+      "integer"
+    ],
+    "direction": 0
+  },
+  "triggerPrice": 0,
+  "triggerTouched": 
 }</pre>
 </div>
 </td>
@@ -170,60 +298,22 @@ The <code>/backtests/read/orders</code> API provides a response in the following
 </tr>
 </thead>
 <tr>
-<td width="20%">Value</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
+<td width="20%">value</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
 </tr>
 <tr>
-<td width="20%">ID</td> <td> <code>string</code> <br/> The security identifier for this symbol.</td>
+<td width="20%">id</td> <td> <code>string</code> <br/> The security identifier for this symbol.</td>
 </tr>
 <tr>
-<td width="20%">Permtick</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Value": "string",
-  "ID": "string",
-  "Permtick": "string"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>SecurityType</code> Model - Type of tradable security / underlying asset.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
+<td width="20%">permtick</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "SecurityType": "Base"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderDirection</code> Model - Direction of the order.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OrderDirection</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OrderDirection": "Buy"
+  "value": "string",
+  "id": "string",
+  "permtick": "string"
 }</pre>
 </div>
 </td>
@@ -235,22 +325,185 @@ The <code>/backtests/read/orders</code> API provides a response in the following
 </tr>
 </thead>
 <tr>
-<td width="20%">BidPrice</td> <td> <code>number</code> <br/> The bid price at an order submission time.</td>
+<td width="20%">bidPrice</td> <td> <code>number</code> <br/> The bid price at an order submission time.</td>
 </tr>
 <tr>
-<td width="20%">AskPrice</td> <td> <code>number</code> <br/> The ask price at an order submission time.</td>
+<td width="20%">askPrice</td> <td> <code>number</code> <br/> The ask price at an order submission time.</td>
 </tr>
 <tr>
-<td width="20%">LastPrice</td> <td> <code>number</code> <br/> The current price at an order submission time.</td>
+<td width="20%">lastPrice</td> <td> <code>number</code> <br/> The current price at an order submission time.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "BidPrice": 0,
-  "AskPrice": 0,
-  "LastPrice": 0
+  "bidPrice": 0,
+  "askPrice": 0,
+  "lastPrice": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OrderProperties</code> Model - Additional properties of the order.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">timeInForce</td> <td> <code>object Enum</code> <br/> Defines the length of time over which an order will continue working before it is cancelled. Options : ['0 = GoodTilCanceled', '1 = Day', '2 = GoodTilDate']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "timeInForce": 0 = GoodTilCanceled
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OrderEvent</code> Model - Change in an order state applied to user algorithm portfolio</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">algorithmId</td> <td> <code>string</code> <br/> Algorithm Id, BacktestId or DeployId.</td>
+</tr>
+<tr>
+<td width="20%">symbolValue</td> <td> <code>string</code> <br/> The current symbol for this ticker; It is a user friendly symbol representation.</td>
+</tr>
+<tr>
+<td width="20%">symbolPermtick</td> <td> <code>string</code> <br/> The original symbol used to generate this symbol.</td>
+</tr>
+<tr>
+<td width="20%">orderId</td> <td> <code>integer</code> <br/> Id of the order this event comes from.</td>
+</tr>
+<tr>
+<td width="20%">orderEventId</td> <td> <code>integer</code> <br/> The unique order event id for each order.</td>
+</tr>
+<tr>
+<td width="20%">id</td> <td> <code>integer</code> <br/> The unique order event Id for each order.</td>
+</tr>
+<tr>
+<td width="20%">symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
+</tr>
+<tr>
+<td width="20%">status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['new', 'submitted', 'partiallyFilled', 'filled', 'canceled', 'none', 'invalid', 'cancelPending', 'updateSubmitted']</td>
+</tr>
+<tr>
+<td width="20%">orderFeeAmount</td> <td> <code>integer</code> <br/> The fee amount associated with the order.</td>
+</tr>
+<tr>
+<td width="20%">orderFeeCurrency</td> <td> <code>string</code> <br/> The fee currency associated with the order.</td>
+</tr>
+<tr>
+<td width="20%">fillPrice</td> <td> <code>number</code> <br/> Fill price information about the order.</td>
+</tr>
+<tr>
+<td width="20%">fillPriceCurrency</td> <td> <code>string</code> <br/> Currency for the fill price.</td>
+</tr>
+<tr>
+<td width="20%">fillQuantity</td> <td> <code>number</code> <br/> Number of shares of the order that was filled in this event.</td>
+</tr>
+<tr>
+<td width="20%">direction</td> <td> <code>string</code> <br/> Order direction.</td>
+</tr>
+<tr>
+<td width="20%">message</td> <td> <code>string</code> <br/> Any message from the exchange.</td>
+</tr>
+<tr>
+<td width="20%">isAssignment</td> <td> <code>boolean</code> <br/> True if the order event is an assignment.</td>
+</tr>
+<tr>
+<td width="20%">stopPrice</td> <td> <code>number</code> <br/> The current stop price.</td>
+</tr>
+<tr>
+<td width="20%">limitPrice</td> <td> <code>number</code> <br/> The current limit price.</td>
+</tr>
+<tr>
+<td width="20%">quantity</td> <td> <code>number</code> <br/> The current order quantity.</td>
+</tr>
+<tr>
+<td width="20%">time</td> <td> <code>integer</code> <br/> The time of this event in unix timestamp.</td>
+</tr>
+<tr>
+<td width="20%">isInTheMoney</td> <td> <code>bool</code> <br/> True if the order event's option is In-The-Money (ITM).</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "algorithmId": "string",
+  "symbolValue": "string",
+  "symbolPermtick": "string",
+  "orderId": 0,
+  "orderEventId": 0,
+  "id": 0,
+  "symbol": {
+    "value": "string",
+    "id": "string",
+    "permtick": "string"
+  },
+  "status": "new",
+  "orderFeeAmount": 0,
+  "orderFeeCurrency": "string",
+  "fillPrice": 0,
+  "fillPriceCurrency": "string",
+  "fillQuantity": 0,
+  "direction": "string",
+  "message": "string",
+  "isAssignment": true,
+  "stopPrice": 0,
+  "limitPrice": 0,
+  "quantity": 0,
+  "time": 0,
+  "isInTheMoney": 
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>GroupOrderManager</code> Model - Manager of a group of orders.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>integer</code> <br/> The unique order group Id.</td>
+</tr>
+<tr>
+<td width="20%">quantity</td> <td> <code>number</code> <br/> The group order quantity.</td>
+</tr>
+<tr>
+<td width="20%">count</td> <td> <code>integer</code> <br/> The total order count associated with this order group.</td>
+</tr>
+<tr>
+<td width="20%">limitPrice</td> <td> <code>number</code> <br/> The limit price associated with this order group if any.</td>
+</tr>
+<tr>
+<td width="20%">orderIds</td> <td> <code>integer Array</code> <br/> The order Ids in this group.</td>
+</tr>
+<tr>
+<td width="20%">direction</td> <td> <code>integer</code> <br/> Order Direction Property based off Quantity.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": 0,
+  "quantity": 0,
+  "count": 0,
+  "limitPrice": 0,
+  "orderIds": [
+    "integer"
+  ],
+  "direction": 0
 }</pre>
 </div>
 </td>

@@ -1,9 +1,9 @@
 <p><code>OptionContract</code> objects represent the data of a single Option contract in the market. They have the following properties:</p>
 <div data-tree='QuantConnect.Data.Market.OptionContract'></div>
 
-<p>To get the Option contracts in the <code>Slice</code>, use the <code>Contracts</code> property of the <code>OptionChain</code>.</p>
+<p>To get the Option contracts in the <code>Slice</code>, use the <code class="csharp">Contracts</code><code class="python">contracts</code> property of the <code>OptionChain</code>.</p>
 
-<?php
+<?
 if ($isFutureOptions) 
 {
 ?>
@@ -20,15 +20,15 @@ if ($isFutureOptions)
     }
 }
 </pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get(self.option_contract_symbol.Canonical)
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    chain = slice.option_chains.get(self.option_contract_symbol.canonical)
     if chain:
-        contract = chain.Contracts.get(self.option_contract_symbol)
+        contract = chain.contracts.get(self.option_contract_symbol)
         if contract:
-            price = contract.Price</pre>
+            price = contract.price</pre>
 </div>  
 
-<p>You can also iterate through the <code>FuturesChains</code> first.</p>
+<p>You can also iterate through the <code class="csharp">FuturesChains</code><code class="python">futures_chains</code> first.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -50,24 +50,18 @@ if ($isFutureOptions)
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for continuous_future_symbol, futures_chain in slice.FuturesChains.items():
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    for continuous_future_symbol, futures_chain in slice.futures_chains.items():
         # Select a Future Contract and create its canonical FOP Symbol
         futures_contract = [contract for contract in futures_chain][0]
-        canonical_fop_symbol = Symbol.CreateCanonicalOption(futures_contract.Symbol)
-        option_chain = slice.OptionChains.get(canonical_fop_symbol)
+        canonical_fop_symbol = Symbol.create_canonical_option(futures_contract.symbol)
+        option_chain = slice.option_chains.get(canonical_fop_symbol)
         if option_chain:
-            option_contract = option_chain.Contracts.get(self.option_contract_symbol)
+            option_contract = option_chain.contracts.get(self.option_contract_symbol)
             if option_contract:
-                price = option_contract.Price</pre>
+                price = option_contract.price</pre>
 </div> 
-
-<?php
-}
-else 
-{
-?>
-
+<? } else { ?>
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
@@ -79,23 +73,23 @@ else
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get(self.contract_symbol.Canonical)
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    chain = slice.option_chains.get(self.contract_symbol.canonical)
     if chain:
-        contract = chain.Contracts.get(self.contract_symbol)
+        contract = chain.contracts.get(self.contract_symbol)
         if contract:
-            price = contract.Price</pre>
+            price = contract.price</pre>
 </div>
 
-<?php
+<?
 }
 ?>
 
 <h4>Greeks and Implied Volatility</h4>
 
-<p>To get the Greeks and implied volatility of an Option contract, use the <code>Greeks</code> and <code>ImpliedVolatility</code> members.</p>
+<p>To get the Greeks and implied volatility of an Option contract, use the <code class="csharp">Greeks</code><code class="python">greeks</code> and <code>implied_volatility</code> members.</p>
 
-<?php
+<?
 if ($isFutureOptions) 
 {
 ?>
@@ -112,21 +106,15 @@ if ($isFutureOptions)
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get(self.option_contract_symbol.Canonical)
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    chain = slice.option_chains.get(self.option_contract_symbol.canonical)
     if chain:
-        contract = chain.Contracts.get(self.option_contract_symbol)
+        contract = chain.contracts.get(self.option_contract_symbol)
         if contract:
-            delta = contract.Greeks.Delta
-            iv = contract.ImpliedVolatility</pre>
+            delta = contract.greeks.delta
+            iv = contract.implied_volatility</pre>
 </div>
-
-<?php
-}
-else 
-{
-?>
-
+<? } else { ?>
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
@@ -139,20 +127,19 @@ else
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get(self.contract_symbol.Canonical)
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    chain = slice.option_chains.get(self.contract_symbol.canonical)
     if chain:
-        contract = chain.Contracts.get(self.contract_symbol)
+        contract = chain.contracts.get(self.contract_symbol)
         if contract:
-            delta = contract.Greeks.Delta
-            iv = contract.ImpliedVolatility</pre>
+            delta = contract.greeks.delta
+            iv = contract.implied_volatility</pre>
 </div>
 
-<?php
+<?
 }
 ?>
 
-<p>LEAN only calculates Greeks and implied volatility when you request them because they are expensive operations. If you invoke the <code>Greeks</code> member, the Greeks aren't calculated. However, if you invoke the <code>Greeks.Delta</code> member, LEAN calculates the delta. To avoid unecessary computation in your algorithm, only request the Greeks and implied volatility when you need them. For more information about the Greeks and implied volatility, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>Options Pricing</a>.</p>
-
+<p>LEAN only calculates Greeks and implied volatility when you request them because they are expensive operations. If you invoke the <code class="csharp">Greeks</code><code class="python">greeks</code> property, the Greeks aren't calculated. However, if you invoke the <code class="csharp">Greeks.Delta</code><code class="python">greeks.delta</code>, LEAN calculates the delta. To avoid unecessary computation in your algorithm, only request the Greeks and implied volatility when you need them. For more information about the Greeks and implied volatility, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>Options Pricing</a>.</p>
 
 <h4>Open Interest</h4>

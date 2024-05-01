@@ -1,0 +1,49 @@
+<p>To get the current US Regulatory Alerts data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. <b>Slice</b> objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.dataset_symbol):
+        data_points = slice[self.dataset_symbol]
+        for data_point in data_points:
+            self.log(f"{self.dataset_symbol} title at {slice.time}: {data_point.title}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_datasetSymbol))
+    {
+        var dataPoints = slice[_datasetSymbol];
+        foreach (var dataPoint in dataPoints)
+        {
+            Log($"{_datasetSymbol} title at {slice.Time}: {dataPoint.Title}");
+        }
+    }
+}
+</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b class="csharp">Get</b><b class="python">get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    data = slice.get(RegalyticsRegulatoryArticles)
+    if data:
+        for articles in data.values():
+            self.log(f"{self.time} {articles.to_string()}")
+            
+            for article in articles:
+                self.log(f"{self.dataset_symbol} article title at {slice.time}: {article.title}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var data = slice.Get&lt;RegalyticsRegulatoryArticles&gt;();
+    if (!data.IsNullOrEmpty())
+    {
+        foreach (var articles in data.Values)
+        {
+            Log($"{Time} {articles.ToString()}");
+            foreach (RegalyticsRegulatoryArticle article in articles)
+            {
+                Log($"{_datasetSymbol} article title at {slice.Time}: {article.Title}");
+            }
+        }
+    }
+}</pre>
+</div>

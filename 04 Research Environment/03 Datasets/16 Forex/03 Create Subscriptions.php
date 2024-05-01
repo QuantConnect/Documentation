@@ -13,16 +13,16 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     </div>
     <li><span class='qualifier'>(Optional)</span> <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>Set the time zone</a> to the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">qb.SetTimeZone(TimeZones.Utc);</pre>
-        <pre class="python">qb.SetTimeZone(TimeZones.Utc)</pre>
+        <pre class="csharp">qb.set_time_zone(TimeZones.UTC);</pre>
+        <pre class="python">qb.set_time_zone(TimeZones.UTC)</pre>
     </div>
-    <li>Call the <code>AddForex</code> method with a ticker and then save a reference to the Forex <code>Symbol</code>.</li>
+    <li>Call the <code class="csharp">AddForex</code><code class="python">add_forex</code> method with a ticker and then save a reference to the Forex <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var eurusd = qb.AddForex("EURUSD").Symbol;
 var gbpusd = qb.AddForex("GBPUSD").Symbol;</pre>
-        <pre class="python">eurusd = qb.AddForex("EURUSD").Symbol
-gbpusd = qb.AddForex("GBPUSD").Symbol</pre>
+        <pre class="python">eurusd = qb.add_forex("EURUSD").symbol
+gbpusd = qb.add_forex("GBPUSD").symbol</pre>
     </div>
 </ol>
 
-<p>To view all of the available Forex pairs, see <a href='/docs/v2/writing-algorithms/datasets/oanda/forex-data#06-Supported-Assets'>Supported Assets</a>.</p>
+<p>To view all of the available Forex pairs, see <a href='/docs/v2/writing-algorithms/datasets/oanda/forex-data#07-Supported-Assets'>Supported Assets</a>.</p>

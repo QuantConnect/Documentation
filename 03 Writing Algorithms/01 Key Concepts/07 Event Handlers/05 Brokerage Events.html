@@ -10,13 +10,22 @@
 public override void OnBrokerageDisconnect()
 {
     Log($"Brokerage disconnection detected at {Time}.");
-}</pre>
-<pre class="python">def OnBrokerageMessage(self, message: BrokerageMessageEvent) -&gt; None: 
-    if message.Type == BrokerageMessageType.Reconnect:
-        self.Log(f"{self.Time}: {message.Type}: Message: {message.Message}")
+}
 
-def OnBrokerageDisconnect(self) -&gt; None:
-    self.Log("Brokerage disconnection detected")</pre>
+public override void OnBrokerageReconnect()
+{
+    Log($"Brokerage reconnected at {Time}.");
+}</pre>
+<pre class="python">def on_brokerage_message(self, message: BrokerageMessageEvent) -&gt; None: 
+    if message.type == BrokerageMessageType.RECONNECT:
+        self.log(f"{self.time}: {message.type}: Message: {message.message}")
+
+def on_brokerage_disconnect(self) -&gt; None:
+    self.log(f"Brokerage disconnection detected at {self.time}")
+
+def on_brokerage_reconnect(self) -&gt; None:
+    self.log(f"Brokerage reconnected at {self.time}")
+</pre>
 </div>
-<p>The <code>OnBrokerageDisconnect</code> and <code>OnBrokerageReconnect</code> event handlers pass information to the algorithm about the brokerage connection status. This can be helpful for considering when to place a trade when a brokerage API is unreliable or under maintenance. The <code>OnBrokerageMessage</code> event handler provides information from the brokerages, including the disconnect and reconnect messages. Message content varies with each brokerage.</p>
+<p>The <code class="csharp">OnBrokerageDisconnect</code><code class="python">on_brokerage_disconnect</code> and <code class="csharp">OnBrokerageReconnect</code><code class="python">on_brokerage_reconnect</code> event handlers pass information to the algorithm about the brokerage connection status. This can be helpful for considering when to place a trade when a brokerage API is unreliable or under maintenance. The <code class="csharp">OnBrokerageMessage</code><code class="python">on_brokerage_message</code> event handler provides information from the brokerages, including the disconnect and reconnect messages. Message content varies with each brokerage.</p>
 <p>Brokerage events are triggered asynchronously in live trading, and are not created in backtesting.</p>

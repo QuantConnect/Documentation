@@ -1,13 +1,18 @@
-<p>Implied Volatility, <script type="math/tex">\sigma</script>, is often interpreted as the market's expectation for the future volatility of a stock and is implied by the price of the stock's options. It is not observable in the market but can be derived from the price of an option.</p>
+<p>
+    Implied volatility, <script type="math/tex">\sigma</script>, is the market's expectation for the future volatility of an asset and is implied by the price of the assets's Options contracts. 
+    You can't observe it in the market but you can derive it from the price of an Option.
+    For more information about implied volatility, see <a href='/learning/articles/introduction-to-options/historical-volatility-and-implied-volatility#implied-volatility'>Implied Volatility</a>.
+</p>
 
-<h4>Automatic Indicator</h4>
+<h4>Automatic Indicators</h4>
 <?
+$name = "implied volatility";
 $typeName = "ImpliedVolatility";
 $helperMethod = "IV";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>Note that the <code>IV</code> method has extra arguments.</p>
+<p>The follow table describes the arguments that the <code class="csharp">IV</code><code class="python">iv</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#02-Parameters'>standard parameters</a>:</p>
 
 <table class="qc-table table">
     <thead>
@@ -22,21 +27,29 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
         <tr>
             <td><code>period</code></td>
             <td><code>int</code></td>
-            <td>The number of periods used to calculate the historical volatility for comparison.</td>
+            <td>The number of periods to use when calculating the historical volatility for comparison.</td>
             <td>252</td>
         </tr>
     </tbody>
 </table>
 
-<h4>Manual Indicator</h4>
+<p>For more information about the <code class="csharp">IV</code><code class="python">iv</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
+
+<h4>Manual Indicators</h4>
 <?
+$name = "implied volatility";
 $typeName = "ImpliedVolatility";
 $indicatorPage = "implied-volatility";
+$helperMethod = "IV";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
 <h4>Volatility Smoothing</h4>
-<p>To perform <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a>, you can call the <code>SetSmoothingFunction</code> method of the <code>ImpliedVolatility</code> object. Note that you must use the mirror-contract constructor. Belows shows the arguments you should have for the custom function:</p>
+<p>
+    The default <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a> method uses the one contract in the pair that's at-the-money or out-of-money to calculate the IV.
+    To change the smoothing function, pass a <code class="csharp">mirrorOption</code><code class="python">mirror_option</code> argument to the <code class="csharp">IV</code><code class="python">iv</code> method or <code>ImpliedVolatility</code> constructor and then call the <code class="csharp">SetSmoothingFunction</code><code class="python">set_smoothing_function</code> method of the resulting <code>ImpliedVolatility</code> object.
+    The follow table describes the arguments of the custom function:
+</p>
 
 <table class="qc-table table">
     <thead>
@@ -50,16 +63,17 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
         <tr>
             <td><code>iv</code></td>
             <td><code class="csharp">decimal</code><code class="python">float</code></td>
-            <td>The calculated IV of the option contract.</td>
+            <td>The IV of the Option contract.</td>
         </tr>
         <tr>
-            <td><code>mirrorIv</code></td>
+            <td><code class="csharp">mirrorIv</code><code class="python">mirror_iv</code></td>
             <td><code class="csharp">decimal</code><code class="python">float</code></td>
-            <td>The calculated IV of the mirror option contract.</td>
+            <td>The IV of the mirror Option contract.</td>
         </tr>
     </tbody>
 </table>
-<p>The method should return a <code class="csharp">decimal</code><code class="python">float</code> as the smoothened IV.</p>
+
+<p>The method must return a <code class="csharp">decimal</code><code class="python">float</code> as the smoothened IV.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private ImpliedVolatility _iv;
@@ -76,17 +90,15 @@ public override void Initialize()
     // example: take average of the call-put pair
     _iv.SetSmoothingFunction((iv, mirrorIv) => (iv + mirrorIv) * 0.5m);
 }</pre>
-    <pre class="python">def Initialize(self):
-    option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Put, 505, datetime(2014, 6, 27))
-    self.AddOptionContract(option)
+    <pre class="python">def initialize(self):
+    option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 505, datetime(2014, 6, 27))
+    self.add_option_contract(option)
 
-    mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27))
-    AddOptionContract(mirror_option)
+    mirrorOption = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
+    self.add_option_contract(mirrorOption)
 
-    self.iv = self.IV(option, mirror_option)
-    # example: take average of the call-put pair
-    self.iv.SetSmoothingFunction(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
+    self.iv = self.IV(option, mirrorOption)
+    # Example: The average of the call-put pair.
+    self.iv.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
 </pre>
 </div>
-
-<p>The default smoothing function is using the IV from the ATM/OTM contract from the call-put pair.</p>

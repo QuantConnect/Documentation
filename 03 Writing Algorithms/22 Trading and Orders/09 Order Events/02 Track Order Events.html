@@ -1,4 +1,4 @@
-<p>Each order generates events over its life as its status changes. Your algorithm receives these events through the <code>OnOrderEvent</code> and <code>OnAssignmentOrderEvent</code> methods. The <code>OnOrderEvent</code> event handler receives all order events. The <code>OnAssignmentOrderEvent</code> receives order events for Option assignments. The event handlers receive an <code>OrderEvent</code> object, which contains information about the order status.</p>
+<p>Each order generates events over its life as its status changes. Your algorithm receives these events through the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> and <code class="csharp">OnAssignmentOrderEvent</code><code class="python">on_assignment_order_event</code> methods. The <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> event handler receives all order events. The <code class="csharp">OnAssignmentOrderEvent</code><code class="python">on_assignment_order_event</code> receives order events for Option assignments. The event handlers receive an <code>OrderEvent</code> object, which contains information about the order status.</p>
 
 <div class="section-example-container">
 <pre class="csharp">public override void OnOrderEvent(OrderEvent orderEvent)
@@ -14,20 +14,20 @@ public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
 {
     Log(assignmentEvent.ToString());
 }</pre>
-<pre class="python">def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
-    order = self.Transactions.GetOrderById(orderEvent.OrderId)
-    if orderEvent.Status == OrderStatus.Filled:
-        self.Debug(f"{self.Time}: {order.Type}: {orderEvent}")
+<pre class="python">def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    order = self.transactions.get_order_by_id(order_event.order_id)
+    if order_event.status == OrderStatus.FILLED:
+        self.debug(f"{self.time}: {order.type}: {order_event}")
 
-def OnAssignmentOrderEvent(self, assignmentEvent: OrderEvent) -&gt; None:
-    self.Log(str(assignmentEvent))</pre>
+def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
+    self.log(str(assignment_event))</pre>
 </div>
 
-<p>To get a list of all <code>OrderEvent</code> objects for an order, call the <code>OrderEvents</code> method of the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets">order ticket</a>.
+<p>To get a list of all <code>OrderEvent</code> objects for an order, call the <code class="csharp">OrderEvents</code><code class="python">order_events</code> method of the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets">order ticket</a>.
 
 </p><div class="section-example-container">
 <pre class="csharp">var orderEvents = orderTicket.OrderEvents();</pre>
-<pre class="python">order_events = order_ticket.OrderEvents()</pre>
+<pre class="python">order_events = order_ticket.order_events()</pre>
 </div>
 
 <p>If you don't have the order ticket, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager#03-Get-Order-Tickets">get the order ticket from the TransactionManager</a>.</p>

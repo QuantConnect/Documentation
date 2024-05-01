@@ -1,48 +1,48 @@
 <p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into backtest is to create a scheduled event which uses our model to predict the expected return. If we predict the price will go up, we long SPY, else, we short it.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
 
     #1. Required: Five years of backtest history
-    self.SetStartDate(2016, 1, 1)
+    self.set_start_date(2016, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
 
     #3. Required: Significant AUM Capacity
-    self.SetCash(1000000)
+    self.set_cash(1000000)
 
     #4. Required: Benchmark to SPY
-    self.SetBenchmark("SPY")
+    self.set_benchmark("SPY")
 
     self.asset = "SPY"
     
     # Add Equity ------------------------------------------------ 
-    self.AddEquity(self.asset, Resolution.Minute)
+    self.add_equity(self.asset, Resolution.MINUTE)
         
     # Initialize the LSTM model
-    self.BuildModel()
+    self.build_model()
     
     # Set Scheduled Event Method For Our Model
-    self.Schedule.On(self.DateRules.EveryDay(), 
-        self.TimeRules.BeforeMarketClose("SPY", 5), 
-        self.EveryDayBeforeMarketClose)
+    self.schedule.on(self.date_rules.every_day(), 
+        self.time_rules.before_market_close("SPY", 5), 
+        self.every_day_before_market_close)
     
     # Set Scheduled Event Method For Our Model Retraining every month
-    self.Schedule.On(self.DateRules.MonthStart(), 
-        self.TimeRules.At(0, 0), 
-        self.BuildModel)</pre>
+    self.schedule.on(self.date_rules.month_start(), 
+        self.time_rules.at(0, 0), 
+        self.build_model)</pre>
 </div>
 
 <p>We'll also need to create a function to train and update our model from time to time.</p>
 
 <div class="section-example-container">
-    <pre class="python">def BuildModel(self) -&gt; None:
+    <pre class="python">def build_model(self) -&gt; None:
     qb = self
     
     ### Preparing Data
     # Get historical data
-    history = qb.History(qb.Securities.Keys, 252*2, Resolution.Daily)
+    history = qb.history(qb.securities.keys, 252*2, Resolution.DAILY)
     
     # Select the close column and then call the unstack method.
     close = history['close'].unstack(level=0)

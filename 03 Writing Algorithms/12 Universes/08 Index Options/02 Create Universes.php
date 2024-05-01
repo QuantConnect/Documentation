@@ -1,17 +1,17 @@
-<p>To add a universe of Index Option contracts, in the <code>Initialize</code> method, call the <code>AddIndexOption</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains'>OptionChain</a> that LEAN passes to the <code>OnData</code> method. The method to create the universe depends on if the Index Options you want require a target ticker.</p>
+<p>To add a universe of Index Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code class="csharp">Symbol</code><code class="python">symbol</code>. You can't trade with the canonical Option <code class="csharp">Symbol</code><code class="python">symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. The method to create the universe depends on if the Index Options you want require a target ticker.</p>
 
 <h4>Create Standard Universes</h4>
 
-<p>To create a universe of Index Options based on an index like VIX, SPX, or NDX, pass the index ticker to the <code>AddIndexOption</code> method.</p>
+<p>To create a universe of Index Options based on an index like VIX, SPX, or NDX, pass the index ticker to the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddIndexOption("VIX");
 _symbol = option.Symbol;</pre>
-    <pre class="python">option = self.AddIndexOption("VIX")
-self.symbol = option.Symbol</pre>
+    <pre class="python">option = self.add_index_option("VIX")
+self._symbol = option.symbol</pre>
 </div>
 
-<p>The following table describes the <code>AddIndexOption</code> method arguments for standard universes:</p>
+<p>The following table describes the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method arguments for standard universes:</p>
 <table class="qc-table table">
     <thead>
         <tr>
@@ -25,7 +25,7 @@ self.symbol = option.Symbol</pre>
         <tr>
             <td><code>ticker</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The underlying Index ticker. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#06-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The underlying Index ticker. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
@@ -41,7 +41,7 @@ self.symbol = option.Symbol</pre>
             <td><code>Market.USA</code></td>
         </tr>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
@@ -52,18 +52,18 @@ self.symbol = option.Symbol</pre>
 
 <h4>Create Non-Standard Universes</h4>
 
-<p>To create a universe of non-standard Index Options like weekly VIX contracts, pass the index Symbol and target Option ticker to the <code>AddIndexOption</code> method.</p>
+<p>To create a universe of non-standard Index Options like weekly VIX contracts, pass the index Symbol and target Option ticker to the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var indexSymbol = AddIndex("VIX").Symbol;
 var option = AddIndexOption(indexSymbol, "VIXW");
 _symbol = option.Symbol;</pre>
-    <pre class="python">index_symbol = self.AddIndex("VIX").Symbol
-option = self.AddIndexOption(index_symbol, "VIXW")
-self.symbol = option.Symbol</pre>
+    <pre class="python">index_symbol = self.add_index("VIX").symbol
+option = self.add_index_option(index_symbol, "VIXW")
+self._symbol = option.symbol</pre>
 </div>
 
-<p>The following table describes the <code>AddIndexOption</code> method arguments for non-standard universes:</p>
+<p>The following table describes the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method arguments for non-standard universes:</p>
 <table class="qc-table table">
     <thead>
         <tr>
@@ -77,13 +77,13 @@ self.symbol = option.Symbol</pre>
         <tr>
             <td><code>underlying</code></td>
 	        <td><code>Symbol</code></td>
-            <td>The underlying Index <code>Symbol</code>. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#06-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The underlying Index <code>Symbol</code>. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>targetOption</code></td>
+            <td><code class="csharp">targetOption</code><code class="python">target_option</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The target Option ticker. To view the supported target Options, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#06-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The target Option ticker. To view the supported target Options, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
@@ -99,7 +99,7 @@ self.symbol = option.Symbol</pre>
             <td><code>Market.USA</code></td>
         </tr>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
@@ -114,8 +114,8 @@ self.symbol = option.Symbol</pre>
 <p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
-    <pre class="python">option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
+    <pre class="csharp">option.price_model = OptionPriceModels.crank_nicolson_fd();</pre>
+    <pre class="python">option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>

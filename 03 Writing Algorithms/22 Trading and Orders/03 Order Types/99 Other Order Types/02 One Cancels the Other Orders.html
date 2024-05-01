@@ -1,6 +1,6 @@
 <p>One cancels the other (OCO) orders are a set of orders that when one fills, it cancels the rest of the orders in the set. An example is to set a take-profit and a stop-loss order right after you enter a position. In this example, when either the take-profit or stop-loss order fills, you cancel the other order. OCO orders usually create an upper and lower bound on the exit price of a trade. </p>
 
-<p>When you place OCO orders, their price levels are usually relative to the fill price of an entry trade. If your entry trade is a synchronous market order, you can immediately get the fill price from the order ticket. If your entry trade doesn't execute immediately, you can get the fill price in the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events#02-Track-Order-Events">OnOrderEvents</a> event handler. Once you have the entry fill price, you can calculate the price levels for the OCO orders.</p> 
+<p>When you place OCO orders, their price levels are usually relative to the fill price of an entry trade. If your entry trade is a synchronous market order, you can immediately get the fill price from the order ticket. If your entry trade doesn't execute immediately, you can get the fill price in the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events#02-Track-Order-Events"><span class="csharp">OnOrderEvents</span><span class="python">on_order_events</span></a> event handler. Once you have the entry fill price, you can calculate the price levels for the OCO orders.</p> 
 
 <div class="section-example-container">
 <pre class="csharp">// Get the fill price from the order ticket of a sync market order
@@ -16,20 +16,20 @@ public override void OnOrderEvent(OrderEvent orderEvent)
     }
 }</pre>
 <pre class="python"># Get the fill price from the order ticket of a sync market order
-self.ticket = self.MarketOrder("SPY", 1)
-fill_price = self.ticket.AverageFillPrice
+self.ticket = self.market_order("SPY", 1)
+fill_price = self.ticket.average_fill_price
 
 # Get the fill price from the OnOrderEvent event handler
-def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
-    if orderEvent.Status == OrderStatus.Filled and self.ticket.OrderId == orderEvent.OrderId:
-        fill_price = orderEvent.FillPrice</pre>
+def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    if order_event.status == OrderStatus.FILLED and self.ticket.order_id == order_event.order_id:
+        fill_price = order_event.fill_price</pre>
 </div>
 
 <p>After you have the target price levels, to implement the OCO orders, you can place active orders or track the security price to simulate the orders.</p>
 
 <h4>Place Active Orders</h4>
 
-<p>To place active orders for the OCO orders, use a combination of <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">limit orders</a> and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders">stop limit orders</a>. Place these orders so that their price levels that are far enough apart from each other. If their price levels are too close, several of the orders can fill in a single time step. When one of the orders fills, in the <code>OnOrderEvent</code> event handler, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel</a> the other orders in the OCO order set.<br></p>
+<p>To place active orders for the OCO orders, use a combination of <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">limit orders</a> and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders">stop limit orders</a>. Place these orders so that their price levels that are far enough apart from each other. If their price levels are too close, several of the orders can fill in a single time step. When one of the orders fills, in the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> event handler, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel</a> the other orders in the OCO order set.<br></p>
 
 <div class="section-example-container">
 <pre class="csharp">OrderTicket _stopLoss = null;
@@ -58,22 +58,22 @@ public override void OnOrderEvent(OrderEvent orderEvent)
 <pre class="python">self.stop_loss = None
 self.take_profit = None
 
-def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
-    if orderEvent.Status == OrderStatus.Filled:
-        if orderEvent.OrderId == self.ticket.OrderId:
-            self.stop_loss = self.StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.95)
-            self.take_profit = self.LimitOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*1.10)
+def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    if order_event.status == OrderStatus.FILLED:
+        if order_event.order_id == self.ticket.order_id:
+            self.stop_loss = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.95)
+            self.take_profit = self.limit_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*1.10)
 
-        elif self.stop_loss is not None and orderEvent.OrderId == self.stop_loss.OrderId:
-            self.take_profit.Cancel()
+        elif self.stop_loss is not None and order_event.order_id == self.stop_loss.order_id:
+            self.take_profit.cancel()
 
-        elif self.take_profit is not None and orderEvent.OrderId == self.take_profit.OrderId:
-            self.stop_loss.Cancel()
+        elif self.take_profit is not None and order_event.order_id == self.take_profit.order_id:
+            self.stop_loss.cancel()
 </pre>
 </div>
 
 <h4>Simulate Orders</h4>
-<p>To simulate OCO orders, track the asset price in the <code>OnData</code> method and place <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders">market</a> or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">limit orders</a> when asset price reaches the take-profit or stop-loss level. The benefit of manually simulating the OCO orders is that both of the orders can't fill in the same time step.</p>
+<p>To simulate OCO orders, track the asset price in the <code class="csharp">OnData</code><code class="python">on_data</code> method and place <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders">market</a> or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">limit orders</a> when asset price reaches the take-profit or stop-loss level. The benefit of manually simulating the OCO orders is that both of the orders can't fill in the same time step.</p>
 
 <div class="section-example-container">
 <pre class="csharp">decimal _entryPrice;
@@ -98,15 +98,16 @@ public override void OnData(Slice slice)
     }
 }
 </pre>
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if not self.Portfolio.Invested:
-        ticket = self.MarketOrder("SPY", 1)
-        self.entry_price = ticket.AverageFillPrice
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if not self.portfolio.invested:
+        ticket = self.market_order("SPY", 1)
+        self.entry_price = ticket.average_fill_price
 
-    if slice.Bars.ContainsKey("SPY"):
-        if slice.Bars["SPY"].Price >= self.entry_price * 1.10:
-            self.Liquidate("SPY", -1, "take profit")
+    bar = slice.get("SPY")
+    if bar:
+        if bar.price >= self.entry_price * 1.10:
+            self.liquidate("SPY", -1, "take profit")
 
-        elif slice.Bars["SPY"].Price <= self.entry_price * 0.95:
-            self.Liquidate("SPY", -1, "stop loss")</pre>
+        elif bar.price <= self.entry_price * 0.95:
+            self.liquidate("SPY", -1, "stop loss")</pre>
 </div>

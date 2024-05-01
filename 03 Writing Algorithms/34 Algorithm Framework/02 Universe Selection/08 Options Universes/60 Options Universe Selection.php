@@ -8,8 +8,10 @@ AddUniverseSelection(
         _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
     )
 );</pre>
-	<pre class="python">self.universe_settings.asynchronous = True
-self.add_universe_selection(
+	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
+
+self.universe_settings.asynchronous = True
+self.set_universe_selection(
     OptionUniverseSelectionModel(
         timedelta(1), lambda _: [Symbol.create("SPY", SecurityType.OPTION, Market.USA)]
     )
@@ -42,9 +44,9 @@ self.add_universe_selection(
         </tr>
         <tr>
             <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
-            <td><code>UniverseSettings</code></td>
-            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td><code class='python'>None</code><code class="csharp">null</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code class="csharp">algorithm.UniverseSettings</code><code class="python">algorithm.universe_settings</code> by default.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
@@ -77,7 +79,9 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
         yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
+	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
+
+def initialize(self) -&gt; None:
     self.add_universe_selection(
         OptionUniverseSelectionModel(timedelta(days=1), self.select_option_chain_symbols)
     )
@@ -92,7 +96,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
     # Future Options example:
-    future_symbol = Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)
+    future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
     future_contract_symbols = self.future_chain_provider.get_future_contract_list(future_symbol, self.time)
     return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]</pre>
 </div>
@@ -161,11 +165,11 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
         # Future Options example:
-        future_symbol = Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)
+        future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
         future_contract_symbols = self.algo.future_chain_provider.get_future_contract_list(future_symbol, self.algo.time)
         return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]
 
-    def filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
+    def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
         return option_filter_universe.strikes(-1, -1).expiration(0, 7).calls_only()</pre>
 </div>
 

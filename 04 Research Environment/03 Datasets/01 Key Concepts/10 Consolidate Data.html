@@ -2,10 +2,10 @@
 
 <div class="section-example-container">
     <pre class="python">qb = QuantBook()
-symbol = qb.AddEquity("SPY").Symbol
+symbol = qb.add_equity("SPY").symbol
 start_date = datetime(2018, 4, 1)
 end_date = datetime(2018, 7, 15)
-history = qb.History(symbol, start_date, end_date, Resolution.Minute)</pre>
+history = qb.history(symbol, start_date, end_date, Resolution.MINUTE)</pre>
     <pre class="csharp">var qb = new QuantBook();
 var symbol = qb.AddEquity("SPY").Symbol;
 var startDate = new DateTime(2018, 4, 1);
@@ -51,17 +51,17 @@ consolidator = TradeBarConsolidator(timedelta(7))
 window = RollingWindow[TradeBar](20)
 
 # Attach a consolidation handler method that saves the consolidated bars in the RollingWindow   
-consolidator.DataConsolidated += lambda _, bar: window.Add(bar)
+consolidator.data_consolidated += lambda _, bar: window.add(bar)
 
 # Iterate the historical market data and feed each bar into the consolidator
 for bar in history.itertuples():
-    tradebar = TradeBar(bar.Index[1], bar.Index[0], bar.open, bar.high, bar.low, bar.close, bar.volume)
-    consolidator.Update(tradebar)</pre>
+    tradebar = TradeBar(bar.index[1], bar.index[0], bar.open, bar.high, bar.low, bar.close, bar.volume)
+    consolidator.update(tradebar)</pre>
 </div>
 
 <h4 class="python">Resample Method</h4>
 
-<p class="python">The <code>resample</code> method converts the frequency of a time series DataFrame into a custom frequency. The method only works on DataFrame objects that have a <code>datetime</code> index. The <code>History</code> method returns a DataFrame with a multi-index. The first index is a <code>Symbol</code> index for each security and the second index is a time index for the timestamps of each row of data. To make the DataFrame compatible with the <code>resample</code> method, call the <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.reset_index.html">reset_index</a> method to drop the <code>Symbol</code> index.</p>
+<p class="python">The <code>resample</code> method converts the frequency of a time series DataFrame into a custom frequency. The method only works on DataFrame objects that have a <code>datetime</code> index. The <code class="csharp">History</code><code class="python">history</code> method returns a DataFrame with a multi-index. The first index is a <code>Symbol</code> index for each security and the second index is a time index for the timestamps of each row of data. To make the DataFrame compatible with the <code>resample</code> method, call the <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.reset_index.html">reset_index</a> method to drop the <code>Symbol</code> index.</p>
 
 <div class="python">
 <div class="section-example-container">

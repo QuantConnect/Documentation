@@ -1,8 +1,8 @@
-<p>LEAN groups all of the India Equity exchanges under <code>Market.India</code>. To set the market for a security, pass a <code>market</code> argument to the <code>AddEquity</code> method.</p>
+<p>LEAN groups all of the India Equity exchanges under <code class="csharp">Market.India</code><code class="python">Market.INDIA</code>. To set the market for a security, pass a <code>market</code> argument to the <code class="csharp">AddEquity</code><code class="python">add_equity</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("YESBANK", market: Market.India).Symbol;</pre>
-    <pre class="python">self.symbol = self.AddEquity("YESBANK", market=Market.India).Symbol</pre>
+    <pre class="python">self._symbol = self.add_equity("YESBANK", market=Market.INDIA).symbol</pre>
 </div>
 
 

@@ -1,4 +1,4 @@
-<p>To add an <code>ETFConstituentsUniverseSelectionModel</code> to your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddUniverseSelection</code><code class="python">add_universe_selection</code> method. The <code>ETFConstituentsUniverseSelectionModel</code> constructor expects an ETF ticker.</p>
+<p>To add an <code>ETFConstituentsUniverseSelectionModel</code> to your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>AddUniverseSelection</code> method. The <code>ETFConstituentsUniverseSelectionModel</code> constructor expects an ETF ticker.</p>
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("SPY"));</pre>
@@ -21,14 +21,14 @@ self.add_universe_selection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
         <tr>
             <td><code class="csharp">etfTicker</code><code class="python">etf_ticker</code></td>
 	        <td><code>string</code></td>
-            <td>Ticker of the ETF to get constituents for. To view the available ETFs, see <a href='/docs/v2/writing-algorithms/datasets/quantconnect/us-etf-constituents#06-Supported-ETFs'>Supported ETFs</a>.</td>
+            <td>Ticker of the ETF to get constituents for. To view the available ETFs, see <a href='/docs/v2/writing-algorithms/datasets/quantconnect/us-etf-constituents#07-Supported-ETFs'>Supported ETFs</a>.</td>
             <td></td>
         </tr>
         <tr>
             <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
-            <td><code>UniverseSettings</code></td>
-            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td><code class="python">None</code><code class="csharp">null</code></td>
+	        <td><code>UniverseSettings</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code class="csharp">algorithm.UniverseSettings</code><code class="python">algorithm.universe_settings</code> by default.</td>
+            <td><code class="python">None</code></td>
         </tr>
         <tr>
             <td><code class="csharp">universeFilterFunc</code><code class="python">universe_filter_func</code></td>
@@ -69,7 +69,7 @@ def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&
         [c for c in constituents if c.weight],
         key=lambda c: c.weight, reverse=True
     )[:10]
-    return [c.Symbol for c in selected]</pre>
+    return [c.symbol for c in selected]</pre>
 </div>
 
 <p>To move the ETF <code>Symbol</code> and the selection function outside of the algorithm class, create a universe selection model that inherits the <code>ETFConstituentsUniverseSelectionModel</code> class.</p>
@@ -93,7 +93,7 @@ class LargestWeightSPYETFUniverseSelectionModel : ETFConstituentsUniverseSelecti
         return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
     }
 }</pre>
-	<pre class="python"># In initialize
+	<pre class="python"># In Initialize
 self.universe_settings.asynchronous = True
 self.add_universe_selection(LargestWeightSPYETFUniverseSelectionModel())
 
@@ -107,7 +107,7 @@ class LargestWeightSPYETFUniverseSelectionModel(ETFConstituentsUniverseSelection
             [c for c in constituents if c.weight],
             key=lambda c: c.weight, reverse=True
         )[:10]
-        return [c.Symbol for c in selected]</pre>
+        return [c.symbol for c in selected]</pre>
 </div>
 
 <p>To return the current universe constituents from the selection function, return <code>Universe.<span class="csharp">Unchanged</span><span class="python">UNCHANGED</span></code>.</p>

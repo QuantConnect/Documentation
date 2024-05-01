@@ -1,0 +1,17 @@
+<p>To get the current VIX Central Contango data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.dataset_symbol):
+        data_point = slice[self.dataset_symbol]
+        self.log(f"{self.dataset_symbol} front month at {slice.time}: {data_point.front_month}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_datasetSymbol))
+    {
+        var dataPoint = slice[_datasetSymbol];
+        Log($"{_datasetSymbol} front month at {slice.Time}: {dataPoint.FrontMonth}");
+    }
+}
+</pre>
+</div>

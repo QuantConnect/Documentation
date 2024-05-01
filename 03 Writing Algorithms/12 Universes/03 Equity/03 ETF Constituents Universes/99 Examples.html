@@ -83,27 +83,26 @@ namespace QuantConnect.Algorithm.CSharp
 <pre class="python">from AlgorithmImports import * 
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-
     symbol_data_by_symbol = {}
-
-    def Initialize(self):
-        self.SetCash(100000)
-        self.SetStartDate(2023, 6, 1)
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.Universe.ETF("QQQ"), self.FundamentalSelection)
-
-    def FundamentalSelection(self, fundamental: List[Fundamental]) -> List[Symbol]:
+    
+    def initialize(self):
+        self.set_cash(100000)
+        self.set_start_date(2023, 6, 1)
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.universe.etf("QQQ"), self.fundamental_selection)
+    
+    def fundamental_selection(self, fundamental: List[Fundamental]) -> List[Symbol]:
         # Create/Update the indicator for each asset in the ETF
         universe_symbols = []
         for f in fundamental:
-            universe_symbols.append(f.Symbol)
-            if f.Symbol not in self.symbol_data_by_symbol:
+            universe_symbols.append(f.symbol)
+            if f.symbol not in self.symbol_data_by_symbol:
                 # Create an indicator for each asset that enters the ETF
-                self.symbol_data_by_symbol[f.Symbol] = SymbolData(self, f.Symbol)
-            
+                self.symbol_data_by_symbol[f.symbol] = SymbolData(self, f.symbol)
+                
             # Update each indicator
-            self.symbol_data_by_symbol[f.Symbol].Update(self.Time, f.AdjustedPrice)
-
+            self.symbol_data_by_symbol[f.symbol].update(self.time, f.adjusted_price)
+    
         # Remove indicators for assets that are no longer in the ETF
         symbols_to_remove = [symbol for symbol in self.symbol_data_by_symbol.keys() if symbol not in universe_symbols]
         for symbol in symbols_to_remove:
@@ -111,22 +110,22 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
 
         # Select a subset of the ETF constituents based on the indicator value
         universe = [symbol for symbol, symbol_data in self.symbol_data_by_symbol.items() if symbol_data.is_above_sma]
-        
+            
         # Plot the results
-        self.Plot("Universe", "Possible", len(list(fundamental)))
-        self.Plot("Universe", "Selected", len(universe))
-
+        self.plot("Universe", "Possible", len(list(fundamental)))
+        self.plot("Universe", "Selected", len(universe))
+    
         # Return the selected assets
         return universe
-
-
+    
+    
 class SymbolData(object):
     def __init__(self, algorithm, symbol, period=200):
-        self.sma = SimpleMovingAverage(period)
-        algorithm.WarmUpIndicator(symbol, self.sma, Resolution.Daily)
-
-    def Update(self, time, value):
-        self.is_above_sma = self.sma.Update(time, value) and value > self.sma.Current.Value</pre>
+        self._sma = SimpleMovingAverage(period)
+        algorithm.warm_up_indicator(symbol, self._sma, Resolution.DAILY)
+    
+    def update(self, time, value):
+        self.is_above_sma = self._sma.update(time, value) and value > self._sma.current.value</pre>
 </div>
 
 

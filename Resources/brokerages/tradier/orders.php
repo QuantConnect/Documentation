@@ -46,7 +46,7 @@
 <p><?= $writingAlgorithms ? "The <code>TradierBrokerageModel</code> supports" : "We model the Tradier API by supporting" ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 
 <ul>
-    <li><code>Day</code></li>
+    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
     <li><code>GoodTilCanceled</code> (not available for short selling)</li>
 </ul>
 
@@ -70,18 +70,18 @@ public override void OnData(Slice slice)
                    TimeInForce = TimeInForce.Day 
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = OrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.DAY
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

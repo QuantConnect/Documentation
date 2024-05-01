@@ -1,4 +1,4 @@
-<p>To get the <code>OptionChain</code>, loop through the <code>OptionChains</code> property. After you get the <code>OptionChain</code>, you can sort and filter the Option contracts in the chain.</p>
+<p>To get the <code>OptionChain</code>, loop through the <code class="csharp">OptionChains</code><code class="python">option_chains</code> property. After you get the <code>OptionChain</code>, you can sort and filter the Option contracts in the chain.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -18,20 +18,20 @@
     }
 }
 </pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for _, option_chain in slice.OptionChains.items():
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    for _, option_chain in slice.option_chains.items():
         # Example: Find 5 put contracts that are closest to at-the-money (ATM) and have the farthest expiration
-        contracts = [x for x in option_chain if x.Right == OptionRight.Put]
+        contracts = [x for x in option_chain if x.right == OptionRight.PUT]
         contracts = sorted(sorted(contracts, \
-            key = lambda x: abs(option_chain.Underlying.Price - x.Strike)), \
+            key = lambda x: abs(option_chain.Underlying.price - x.strike)), \
             key = lambda x: x.Expiry, reverse=True)[:5]
 
         # Select the contract with the delta closest to -0.5
-        contract = sorted(contracts, key=lambda x: abs(-0.5 - x.Greeks.Delta))[0]</pre>
+        contract = sorted(contracts, key=lambda x: abs(-0.5 - x.greeks.delta))[0]</pre>
 </div>
 
 
-<p>You can also iterate through the <code>FuturesChains</code> first.</p>
+<p>You can also iterate through the <code class="csharp">FuturesChains</code><code class="python">futures_chains</code> first.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -52,15 +52,14 @@
             }
         }
     }
-}
-</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for continuous_future_symbol, futures_chain in slice.FuturesChains.items():
+}</pre>
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    for continuous_future_symbol, futures_chain in slice.futures_chains.items():
         # Select a Future Contract and create its canonical FOP Symbol
         futures_contract = [contract for contract in futures_chain][0]
-        canonical_fop_symbol = Symbol.CreateCanonicalOption(futures_contract.Symbol)
-        fop_chain = slice.OptionChains.get(canonical_fop_symbol)
+        canonical_fop_symbol = Symbol.create_canonical_option(futures_contract.symbol)
+        fop_chain = slice.option_chains.get(canonical_fop_symbol)
         if fop_chain:
             for contract in fop_chain:
                 pass</pre>
-</div> 
+</div>

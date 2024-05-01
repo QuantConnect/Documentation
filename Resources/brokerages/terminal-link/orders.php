@@ -64,12 +64,12 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>TimeInForce</code></td>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
-                    <li><code>Day</code></li>
-                    <li><code>GoodTilCanceled</code></li>
-                    <li><code>GoodTilDate</code></li>
+                    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+                    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+                    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
                 </ul>
             </td>
         </tr>
@@ -159,33 +159,33 @@ public override void OnData(Slice slice)
                    Account = "account2"
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = TerminalLinkOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.Strategy = TerminalLinkOrderProperties.StrategyParameters(
+    self.default_order_properties = TerminalLinkOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.strategy = TerminalLinkOrderProperties.strategy_parameters(
         "VWAP",
         [
-            TerminalLinkOrderProperties.StrategyField("09:30:00"),
-            TerminalLinkOrderProperties.StrategyField("10:30:00"),
-            TerminalLinkOrderProperties.StrategyField(),
-            TerminalLinkOrderProperties.StrategyField()
+            TerminalLinkOrderProperties.strategy_field("09:30:00"),
+            TerminalLinkOrderProperties.strategy_field("10:30:00"),
+            TerminalLinkOrderProperties.strategy_field(),
+            TerminalLinkOrderProperties.strategy_field()
         ]
     )
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = TerminalLinkOrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    order_properties.Account = "account1"
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+    order_properties.time_in_force = TimeInForce.DAY
+    order_properties.account = "account1"
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
-    order_properties.Account = "account2"
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.account = "account2"
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <? } ?>
 

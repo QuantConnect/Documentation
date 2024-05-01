@@ -2,7 +2,7 @@
 
 <div data-tree='QuantConnect.Data.Market.MarginInterestRate'></div>
 
-<p>To get the <code>MarginInterestRate</code> objects in the <code>Slice</code>, index the <code>MarginInterestRate</code> property of the <code>Slice</code> with the Crypto Future <code>Symbol</code>. The <code>MarginInterestRate</code> property of the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the property contains data for your Crypto Future before you index it with the Crypto Future <code>Symbol</code>.</p>
+<p>To get the <code class="csharp">MarginInterestRate</code><code class="python">margin_interest_rate</code> objects in the <code>Slice</code>, index the <code class="csharp">MarginInterestRate</code><code class="python">margin_interest_rate</code> property of the <code>Slice</code> with the Crypto Future <code>Symbol</code>. The <code class="csharp">MarginInterestRate</code><code class="python">margin_interest_rate</code> property of the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the property contains data for your Crypto Future before you index it with the Crypto Future <code>Symbol</code>.</p>
     
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -12,11 +12,12 @@
         var interestRate = slice.MarginInterestRates[_symbol].InterestRate;
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    if self.symbol in slice.MarginInterestRates:
-        interest_rate = slice.MarginInterestRates[self.symbol].InterestRate</pre>
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    margin_interest_rate = slice.margin_interest_rate.get(self._symbol)
+    if margin_interest_rate:
+        interest_rate = margin_interest_rate.interest_rate</pre>
 </div>
-<p>You can also iterate through the <code>MarginInterestRates</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>MarginInterestRate</code> objects.</p>
+<p>You can also iterate through the <code class="csharp">MarginInterestRate</code><code class="python">margin_interest_rate</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code class="csharp">MarginInterestRate</code><code class="python">margin_interest_rate</code> objects.</p>
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
@@ -27,7 +28,7 @@
         var interestRate = marginInterestRate.InterestRate;
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     for symbol, margin_interest_rate in slice.MarginInterestRates.items():
-        interest_rate = margin_interest_rate.InterestRate</pre>
+        interest_rate = margin_interest_rate.interest_rate</pre>
 </div>

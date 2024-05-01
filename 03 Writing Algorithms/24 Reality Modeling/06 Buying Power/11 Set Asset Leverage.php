@@ -8,7 +8,7 @@ AddEquity("SPY", leverage: 3);</pre>
 AddEquity("SPY", leverage=3)</pre>
 </div>
 
-<p>You can also set the asset leverage in a security initializer. In order to set the leverage of securities in the security initializer, call <code>SetSecurityInitializer</code> before you create security subscriptions and before you call <code>SetBrokerageModel</code>. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the <code>SetLeverage</code> call in the security initializer.<br></p>
+<p>You can also set the asset leverage in a security initializer. In order to set the leverage of securities in the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create security subscriptions and before you call <code class="csharp">SetBrokerageModel</code><code class="python">set_brokerage_model</code>. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the <code>SetLeverage</code> call in the security initializer.<br></p>
 
 
 <?php
@@ -26,7 +26,7 @@ include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 	<pre class="csharp">// In Initialize
 UniverseSettings.Leverage = 3;</pre>
 	<pre class="python"># In Initialize
-self.UniverseSettings.Leverage = 3</pre>
+self.universe_settings.leverage = 3</pre>
 </div>
 
 <p>In live trading, LEAN doesn't ignore the leverage you set. However, if you set a different leverage from what your brokerage provides, it creates a mismatch between the buying power in your algorithm and the buying power the brokerage gives you. In this case, orders can pass the validations in LEAN but your brokerage may reject them.</p>

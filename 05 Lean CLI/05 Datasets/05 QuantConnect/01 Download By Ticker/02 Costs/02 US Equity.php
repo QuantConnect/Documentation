@@ -85,11 +85,11 @@
     }
 }</pre>
 <pre class="python">class USEquityDataAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2020, 1, 1)
-        self.SetEndDate(2021, 1, 1)
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.Universe.DollarVolume.Top(100))</pre>
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.universe.dollar_volume.top(100))</pre>
 </div>
 
 <p>The following table shows the data cost of the preceding algorithm on the Quant Researcher tier:</p>

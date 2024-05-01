@@ -1,4 +1,4 @@
-<p>When you place Crypto trades, don't use the <code>CalculateOrderQuantity</code> or <code>SetHoldings</code> methods. Instead, calculate the order quantity based on the currency amounts in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a> and place manual orders.</p>
+<p>When you place Crypto trades, don't use the <code class="csharp">CalculateOrderQuantity</code><code class="python">calculate_order_quantity</code> or <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> methods. Instead, calculate the order quantity based on the currency amounts in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a> and place manual orders.</p>
 
 <p>The following code snippet demonstrates how to allocate 90% of your portfolio to BTC.</p>
 
@@ -33,29 +33,28 @@ private bool IsValidOrderSize(Crypto crypto, decimal quantity)
 {
     return Math.Abs(crypto.Price * quantity) > crypto.SymbolProperties.MinimumOrderSize;
 }</pre>
-<pre class="python">def OnData(self, data: Slice):
-    self.set_crypto_holdings(self.symbol, .9)
+<pre class="python">def on_data(self, data: Slice):
+    self.set_crypto_holdings(self._symbol, .9)
 
 def set_crypto_holdings(self, symbol, percentage):
-    crypto = self.Securities[symbol]
-    base_currency = crypto.BaseCurrency
+    crypto = self.securities[symbol]
+    base_currency = crypto.base_currency
 
     # Calculate the target quantity in the base currency
-    target_quantity = percentage * (self.Portfolio.TotalPortfolioValue - self.Settings.FreePortfolioValue) / base_currency.ConversionRate    
-    quantity = target_quantity - base_currency.Amount
+    target_quantity = percentage * (self.portfolio.total_portfolio_value - self.settings.free_portfolio_value) / base_currency.conversion_rate    
+    quantity = target_quantity - base_currency.amount
 
     # Round down to observe the lot size
-    lot_size = crypto.SymbolProperties.LotSize
+    lot_size = crypto.symbol_properties.lot_size
     quantity = round(quantity / lot_size) * lot_size
 
     if self.is_valid_order_size(crypto, quantity):
-        self.MarketOrder(symbol, quantity)
+        self.market_order(symbol, quantity)
 
 # Brokerages have different order size rules
 # Binance considers the minimum volume (price x quantity):
 def is_valid_order_size(self, crypto, quantity):
-    return abs(crypto.Price * quantity) > crypto.SymbolProperties.MinimumOrderSize
-</pre>
+    return abs(crypto.price * quantity) > crypto.symbol_properties.minimum_order_size</pre>
 </div>
 
 <p>The preceding example doesn't take into account order fees. You can add a 0.1% buffer to accommodate it.</p>
@@ -73,13 +72,13 @@ public override void OnData(Slice data)
     }
 }</pre>
 <pre class="python">
-def OnData(self, data: Slice):
-    percentage = (1 - self.Settings.FreePortfolioValuePercentage) / len(self.symbols);
+def on_data(self, data: Slice):
+    percentage = (1 - self.settings.free_portfolio_value_percentage) / len(self.symbols);
     for symbol in self.symbols:
         self.set_crypto_holdings(symbol, percentage)</pre>
 </div>
 
-<p>You can replace the <code class="python">self.</code><code>Settings.FreePortfolioValuePercentage</code> for a class variable (e.g. <code class="python">self.cash_buffer</code><code class="csharp">_cashBuffer</code>).</p>
+<p>You can replace the <code class="csharp">Settings.FreePortfolioValuePercentage</code><code class="python">settings.free_portfolio_value_percentage</code> for a class variable (e.g. <code class="python">self.cash_buffer</code><code class="csharp">_cashBuffer</code>).</p>
 
 <? echo file_get_contents(DOCS_RESOURCES."/order-types/crypto-insufficient-buying-power.html"); ?>
 

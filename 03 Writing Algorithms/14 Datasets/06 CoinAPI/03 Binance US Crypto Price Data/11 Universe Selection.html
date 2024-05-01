@@ -1,0 +1,29 @@
+<p>To select a dynamic universe of Binance US Crypto pairs, call the <b class="csharp">AddUniverse</b><b class="python">add_universe</b> method with a <b>CryptoUniverse</b> object. A <a href="/docs/v2/writing-algorithms/universes/crypto">Crypto universe</a> uses a selection function to select Crypto pairs based on their OHLCV and dollar volume of the previous day as of midnight Coordinated Universal Time (UTC).</p>
+
+<div class="section-example-container">
+<pre class="python">from QuantConnect.Data.universe_selection import *
+
+def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True
+    self.set_brokerage_model(BrokerageName.BINANCE_US, AccountType.CASH)
+    self._universe = self.add_universe(CryptoUniverse.binance_us(self.universe_selection_filter))
+
+def universe_selection_filter(self, universe_day):
+    return [c.symbol for c in universe_day if c.volume &gt;= 100 and c.volume_in_usd &gt; 10000]</pre>
+<pre class="csharp">using QuantConnect.Data.UniverseSelection;
+
+public override void Initialize()
+{
+    UniverseSettings.Asynchronous = True;
+    SetBrokerageModel(BrokerageName.BinanceUS, AccountType.Cash);
+    _universe = AddUniverse(CryptoUniverse.BinanceUS(UniverseSelectionFilter));
+}
+
+private IEnumerable&lt;Symol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+{
+    return from c in universeDay
+           where c.Volume &gt;= 100m &amp;&amp; c.VolumeInUsd &gt; 10000m
+           select c.Symbol;
+}</pre>
+</div>
+<p>For more information about universe settings, see <a href="/docs/v2/writing-algorithms/universes/settings">Settings</a>.</p>

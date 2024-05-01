@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
 <pre class="csharp">security.SetFillModel(new EquityFillModel());</pre>
-<pre class="python">security.SetFillModel(EquityFillModel())</pre>
+<pre class="python">security.set_fill_model(EquityFillModel())</pre>
 </div>
 
 <p>The fill logic of each order depends on the order type, the data format of the security subscription, and the order direction. The following sections explain the fill logic of each order given these factors.</p>

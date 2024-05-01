@@ -1,13 +1,12 @@
-<p>
-To add a dataless scheduled universe, in the <code>Initialize</code> method, call the <code>AddUniverse</code> method with a <code>ScheduledUniverse</code> object.
-</p>
+<p>To add a dataless scheduled universe, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method with a <code>ScheduledUniverse</code> object.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
+    private Universe _universe;
     public override void Initialize()
     {
         UniverseSettings.Asynchronous = true;
-        AddUniverse(new ScheduledUniverse(DateRules.MonthStart(), TimeRules.At(8, 0), SelectSymbols));
+        _universe = AddUniverse(new ScheduledUniverse(DateRules.MonthStart(), TimeRules.At(8, 0), SelectSymbols));
     }
 
         
@@ -17,18 +16,18 @@ To add a dataless scheduled universe, in the <code>Initialize</code> method, cal
     }
 }</pre>
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self) -> None:
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(
+    def initialize(self) -> None:
+        self.universe_settings.asynchronous = True
+        self._universe = self.add_universe(
             ScheduledUniverse(
-                self.DateRules.MonthStart(), 
-                self.TimeRules.At(8, 0), 
+                self.date_rules.month_start(), 
+                self.time_rules.at(8, 0), 
                 self.select_symbols
             )
         )
-    
+        
     def select_symbols(self, dt):
-        return [Symbol.Create("SPY", SecurityType.Equity, Market.USA)]</pre>
+        return [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -45,13 +44,13 @@ To add a dataless scheduled universe, in the <code>Initialize</code> method, cal
     </thead>
     <tbody>
         <tr>
-            <td><code>dateRule</code></td>
+            <td><code class="csharp">dateRule</code><code class="python">date_rule</code></td>
             <td><code>IDateRule</code></td>
             <td>Date rule that defines what days the universe selection function runs</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>timeRule</code></td>
+            <td><code class="csharp">timeRule</code><code class="python">time_rule</code></td>
             <td><code>ITimeRule</code></td>
             <td>Time rule that defines what times on each day selected by date rule the universe selection function runs</td>
             <td></td>
@@ -68,10 +67,8 @@ To add a dataless scheduled universe, in the <code>Initialize</code> method, cal
         <tr>
             <td><code>settings</code></td>
             <td><code>UniverseSettings</code></td>
-            <td>The <a href='/docs/v2/writing-algorithms/universes/settings'>universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td>
-                <code class='csharp'>null</code>
-                <code class='python'>None</code>
+            <td>The <a href='/docs/v2/writing-algorithms/universes/settings'>universe settings</a>. If you don't provide an argument, the model uses the <code class="csharp">algorithm.UniverseSettings</code><code class="python">algorithm.universe_settings</code> by default.</td>
+            <td><code class='csharp'>null</code><code class='python'>None</code>
             </td>
         </tr>
     </tbody>

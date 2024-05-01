@@ -1,19 +1,19 @@
 <p>Avoid the following common mistakes when you use automatic indicators.</p>
 
 <h4>Using Indicator Values Before the Indicator Is Warmed Up</h4>
-<p>Indicators can provide inaccurate output values before they are warmed up. To avoid issues, always check the <code>IsReady</code> flag before you use indicator output values.</p>
+<p>Indicators can provide inaccurate output values before they are warmed up. To avoid issues, always check the <code class="csharp">IsReady</code><code class="python">is_ready</code> flag before you use indicator output values.</p>
 
 <div class="section-example-container">
     <pre class="csharp">if (_indicator.IsReady)
 {
     var value = _indicator.Current.Value;
 }</pre>
-    <pre class="python">if self.indicator.IsReady:
-    value = self.indicator.Current.Value</pre>
+    <pre class="python">if self.indicator.is_ready:
+    value = self.indicator.current.value</pre>
 </div>
 
 <h4>Manually Registering an Automatic Indicator for Updates</h4>
-<p>If you create an automatic indicator and then register it for automatics updates or call the <code>Update</code> method, the indicator receives multiple input values during each update cycle. To avoid issues, <a href="/docs/v2/writing-algorithms/indicators/automatic-indicators#03-Create-Automatic-Indicators">create automatic indicators</a> but don't register them for <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#05-Automatic-Updates">automatic updates</a> or call the <code>Update</code> method.</p>
+<p>If you create an automatic indicator and then register it for automatics updates or call the <code class="csharp">Update</code><code class="python">update</code> method, the indicator receives multiple input values during each update cycle. To avoid issues, <a href="/docs/v2/writing-algorithms/indicators/automatic-indicators#03-Create-Automatic-Indicators">create automatic indicators</a> but don't register them for <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#05-Automatic-Updates">automatic updates</a> or call the <code class="csharp">Update</code><code class="python">update</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// Create automatic indicators
@@ -22,10 +22,10 @@ _indicator = SMA(_symbol, 5);
 // Don't do this:
 RegisterIndicator(_symbol, _indicator, Resolution.Daily)</pre>
     <pre class="python"># Create automatic indicators
-self.indicator = self.SMA(self.symbol, 5)
+self.indicator = self.sma(self._symbol, 5)
 
 # Don't do this:
-self.RegisterIndicator(self.symbol, self.indicator, Resolution.Daily)</pre>
+self.register_indicator(self._symbol, self.indicator, Resolution.DAILY)</pre>
 </div>
 
 

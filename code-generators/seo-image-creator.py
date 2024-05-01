@@ -37,6 +37,7 @@ if __name__ == '__main__':
     now = dt.now()
     location = f"Resources/social/"
     fonts = [ ImageFont.FreeTypeFont(f'{location}Inter-Bold.ttf', size) for size in [ 62, 50, 42 ] ]
+    missing_metadata = []
     
     for product in PRODUCTS:
         name = '-'.join(product.lower().split(' ')[1:])
@@ -45,8 +46,11 @@ if __name__ == '__main__':
             continue
 
         image_generator = ImageGenerator(fonts, template)
-        for dir,_,files in os.walk(product):
+        for dir, subdirs, files in os.walk(product):
             if dir == product or 'metadata.json' not in files:
+                # metadata file should only be a must in the tree-leaf dir
+                if not subdirs:
+                    missing_metadata.append(dir)
                 continue
             
             lines = [' '.join(line.split(' ')[1:]) for line in dir.split(os.path.sep)]
@@ -71,3 +75,5 @@ if __name__ == '__main__':
                 fp.writelines(lines)
 
     print(f'{counter} images generated in {dt.now()-now}')
+    if missing_metadata:
+        print(f"Found {len(missing_metadata)} missing metatdata.json files in: [" + "\n" + "\n".join(str(x) for x in missing_metadata) + "\n]")

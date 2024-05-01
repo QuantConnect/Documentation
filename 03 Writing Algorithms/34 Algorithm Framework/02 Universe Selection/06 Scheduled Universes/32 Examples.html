@@ -81,82 +81,82 @@ private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
 }      
 </pre>
     <pre class="python"># Select the universe on a specific date at a specific time 
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.On(2013, 10, 7), 
-    self.TimeRules.At(13, 0),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.on(2013, 10, 7), 
+    self.time_rules.at(13, 0),
     self.select_symbols))
     
 # Select the universe 10 minutes after SPY starts trading each day
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.EveryDay("SPY"), 
-    self.TimeRules.AfterMarketOpen("SPY", 10),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.every_day("SPY"), 
+    self.time_rules.after_market_open("SPY", 10),
     self.select_symbols))
 
 # Select the universe 10 minutes before SPY stops trading each day
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.EveryDay("SPY"),
-    self.TimeRules.BeforeMarketClose("SPY", 10),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.every_day("SPY"),
+    self.time_rules.before_market_close("SPY", 10),
     self.select_symbols))
 
 # Select the universe on Monday and Friday at noon
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Friday),
-    self.TimeRules.At(12, 0),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.every(DayOfWeek.MONDAY, DayOfWeek.FRIDAY),
+    self.time_rules.at(12, 0),
     self.select_symbols))
 
 # Select the universe now
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.Today,
-    self.TimeRules.Now,
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.today,
+    self.time_rules.now,
     self.select_symbols))
 
 # Select the universe tomorrow at midnight
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.Tomorrow,
-    self.TimeRules.Midnight,
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.tomorrow,
+    self.time_rules.midnight,
     self.select_symbols))
     
 # Select the universe today at noon
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.Today,
-    self.TimeRules.Noon,
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.today,
+    self.time_rules.noon,
     self.select_symbols))
 
 # Select the universe every 10 minutes on everyday 
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.EveryDay(), 
-    self.TimeRules.Every(timedelta(minutes=10)),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.every_day(), 
+    self.time_rules.every(timedelta(minutes=10)),
     self.select_symbols))
 
 # Select the universe at the market open on the first day of the month the SPY starts trading
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.MonthStart("SPY"),
-    self.TimeRules.AfterMarketOpen("SPY"),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.month_start("SPY"),
+    self.time_rules.after_market_open("SPY"),
     self.select_symbols))
 
 # Select the universe at the market close on the last day of the month the SPY trades
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.MonthEnd("SPY"),
-    self.TimeRules.BeforeMarketClose("SPY"),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.month_end("SPY"),
+    self.time_rules.before_market_close("SPY"),
     self.select_symbols))
 
 # Select the universe 5 minutes after SPY starts trading each week
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.WeekStart("SPY"),
-    self.TimeRules.AfterMarketOpen("SPY", 5),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.week_start("SPY"),
+    self.time_rules.after_market_open("SPY", 5),
     self.select_symbols))
 
 # Select the universe 5 minutes before the SPY stops trading each week
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.WeekEnd("SPY"),
-    self.TimeRules.BeforeMarketClose("SPY", 5),
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.week_end("SPY"),
+    self.time_rules.before_market_close("SPY", 5),
     self.select_symbols))
 
 
 # Define a selection function that returns Symbol objects
 def select_symbols(self, date_time: datetime) -&gt; List[Symbol]:
     tickers = ['SPY', 'AAPL', 'IBM']
-    return [Symbol.Create(ticker, SecurityType.Equity, Market.USA)
+    return [Symbol.create(ticker, SecurityType.EQUITY, Market.USA)
         for ticker in tickers]
 </pre>
 </div>

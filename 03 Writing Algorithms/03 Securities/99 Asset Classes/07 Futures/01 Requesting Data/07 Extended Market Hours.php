@@ -1,6 +1,6 @@
 <?
 $cCode = "AddFutureContract(_contractSymbol, extendedMarketHours: true);";
-$pyCode = "self.AddFutureContract(self.contract_symbol, extendedMarketHours=True)";
+$pyCode = "self.add_future_contract(self.contract_symbol, extended_market_hours=True)";
 $supportedIntradayData = true;
 $marketHoursLink = "/docs/v2/writing-algorithms/securities/asset-classes/futures/market-hours";
 include(DOCS_RESOURCES."/securities/extended-market-hours.php"); 

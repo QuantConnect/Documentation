@@ -19,11 +19,11 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>TimeInForce</code></td>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
-                    <li><code>Day</code></li>
-                    <li><code>GoodTilCanceled</code></li>
+                    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+                    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
                 </ul>
             </td>
         </tr>
@@ -50,11 +50,11 @@
         ExchangePostFix = "-INCA-TX"
     };
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = WolverineOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.Exchange = Exchange.SMART
-    self.DefaultOrderProperties.ExchangePostFix = "-INCA-TX"</pre>
+    self.default_order_properties = WolverineOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.exchange = Exchange.SMART
+    self.default_order_properties.exchange_post_fix = "-INCA-TX"</pre>
 </div>
 <? } ?>

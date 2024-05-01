@@ -5,10 +5,10 @@
 <p>If you only have one security in your algorithm, you can create indicators for it during <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>.</p>
 
 <div class="section-example-container">
-	<pre class="python">def Initialize(self):
-    self.symbol = self.AddEquity("SPY").Symbol
-    self.EnableAutomaticIndicatorWarmUp = True
-    self.sma = self.SMA(self.symbol, 20, Resolution.Daily)</pre>
+	<pre class="python">def initialize(self):
+    self._symbol = self.add_equity("SPY").symbol
+    self.enable_automatic_indicator_warm_up = True
+    self._sma = self.sma(self._symbol, 20, Resolution.DAILY)</pre>
 	<pre class="csharp">private Symbol _symbol;
 private SimpleMovingAverage _sma;
 
@@ -23,8 +23,8 @@ public override void Initialize()
 
 <h4>Multiple Assets or a Dynamic Universe</h4>
 
-<p class='python'>If your algorithm has multiple assets or a dynamic universe of assets, add custom members to the <code>Security</code> objects as you receive them in <code>OnSecuritiesChanged</code>.</p>
-<p class='csharp'>If your algorithm has multiple assets or a dynamic universe of assets, as you receive new <code>Security</code> objects in <code>OnSecuritiesChanged</code>, cast them to <code>dynamic</code> objects and add custom members to them.</p>
+<p class='python'>If your algorithm has multiple assets or a dynamic universe of assets, add custom members to the <code>Security</code> objects as you receive them in <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code>.</p>
+<p class='csharp'>If your algorithm has multiple assets or a dynamic universe of assets, as you receive new <code>Security</code> objects in <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code>, cast them to <code>dynamic</code> objects and add custom members to them.</p>
 
 <div class="section-example-container">
 <pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -45,14 +45,14 @@ public override void Initialize()
         DeregisterIndicator((security as dynamic).Indicator);
     }
 }</pre>
-<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
-    for security in changes.AddedSecurities:
+<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -> None:
+    for security in changes.added_securities:
         # Create an indicator
-        security.indicator = self.SMA(security.Symbol, 10)
+        security.indicator = self.sma(security.Symbol, 10)
 
         # Warm up the indicator
-        self.WarmUpIndicator(security.Symbol, security.indicator)
+        self.warm_up_indicator(security.symbol, security.indicator)
 
-    for security in changes.RemovedSecurities:
-        self.DeregisterIndicator(security.indicator)</pre>
+    for security in changes.removed_securities:
+        self.deregister_indicator(security.indicator)</pre>
 </div>

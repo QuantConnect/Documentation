@@ -15,18 +15,18 @@
         }
     }
 }</pre>
-<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
-    for security in changes.AddedSecurities:
-        self.Debug(f"{self.Time}: Added {security.Symbol}")
+<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -> None:
+    for security in changes.added_securities::
+        self.debug(f"{self.time}: Added {security.symbol}")
 
-    for security in changes.RemovedSecurities:
-        self.Debug(f"{self.Time}: Removed {security.Symbol}")
+    for security in changes.removed_securities:
+        self.debug(f"{self.time}: Removed {security.symbol}")
         
-        if security.Invested:
-            self.Liquidate(security.Symbol, "Removed from Universe")</pre>
+        if security.invested:
+            self.liquidate(security.symbol, "Removed from Universe")</pre>
 </div>
 <p>
-The <code>OnSecuritiesChanged</code> event notifies the algorithm when assets are added or removed from the universe. This can be due to changes in the <a href="/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events">Universe constituents</a>, or an explicit call to the <a href="/docs/v2/writing-algorithms/securities/requesting-data#07-Remove-Subscriptions">RemoveSecurity</a> method.
+The <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> event notifies the algorithm when assets are added or removed from the universe. This can be due to changes in the <a href="/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events">Universe constituents</a>, or an explicit call to the <a href="/docs/v2/writing-algorithms/securities/requesting-data#07-Remove-Subscriptions"><span class="csharp">RemoveSecurity</span><span class="python">remove_security</span></a> method.
 </p>
 <p>The event is triggered immediately when the asset is removed from the universe; however the data feed for the asset may remain active if the algorithm has open orders.</p>
 <p>For more information, see how to use <a href="/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events">Security Changed Events</a>.</p>

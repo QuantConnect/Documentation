@@ -15,14 +15,14 @@ foreach (var kvp in universeMembers)
     var security = kvp.Value;
 }</pre>
 <pre class="python"># In Initialize
-self.UniverseSettings.Asynchronous = True
-self.universe = self.AddUniverse(self.MyFundamentalFilterFunction)
+self.universe_settings.asynchronous = True
+self._universe = self.add_universe(self.my_fundamental_filter_function)
 
 # In OnData
-universe_members = self.UniverseManager[self.universe.Configuration.Symbol].Members
+universe_members = self.universe_manager[self._universe.configuration.symbol].members
 for kvp in universe_members:
-    symbol = kvp.Key
-    security = kvp.Value</pre>
+    symbol = kvp.key
+    security = kvp.value</pre>
 </div>
 
 <p>
@@ -32,7 +32,7 @@ However, it won't remove the security in any of the following situations:
 <ul>
     <li>You own the security.</li>
     <li>You have an open order for the security.</li>
-    <li>The security wasn't in the universe long enough to meet the <code>MinimumTimeInUniverse</code> setting.</li>
+    <li>The security wasn't in the universe long enough to meet the <code class="csharp">MinimumTimeInUniverse</code><code class="python">minimum_time_in_universe</code> setting.</li>
 </ul>
 
 <p>To get only the assets that are currently in the universe, see <a href='/docs/v2/writing-algorithms/universes/key-concepts#11-Selected-Securities'>Selected Securities</a>.</p>

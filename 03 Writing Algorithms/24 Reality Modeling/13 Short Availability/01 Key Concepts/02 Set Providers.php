@@ -6,11 +6,11 @@
 var security = AddEquity("SPY");
 security.SetShortableProvider(new LocalDiskShortableProvider("axos"));</pre>
     <pre class="python"># In Initialize
-security = self.AddEquity("SPY")
-security.SetShortableProvider(LocalDiskShortableProvider("axos"))</pre>
+security = self.add_equity("SPY")
+security.set_shortable_provider(LocalDiskShortableProvider("axos"))</pre>
 </div>
 
-<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
 <pre class="csharp" style="">// In Initialize
@@ -23,11 +23,11 @@ private void CustomSecurityInitializer(Security security)
 }
 </pre>
 <pre class="python"># In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
-self.AddEquity("SPY")
+self.set_security_initializer(self.custom_security_initializer)
+self.add_equity("SPY")
 
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    security.SetShortableProvider(LocalDiskShortableProvider("axos"))
+def custom_security_initializer(self, security: Security) -&gt; None:
+    security.set_shortable_provider(LocalDiskShortableProvider("axos"))
 </pre>
 </div>
 

@@ -1,18 +1,18 @@
-<p>To add a universe of Future Option contracts, in the <code>Initialize</code> method, <a href="/docs/v2/writing-algorithms/universes/futures#11-Create-Universes">define a Future universe</a> and then pass the canonical <code>Symbol</code> to the <code>AddFutureOption</code> method.<br></p>
+<p>To add a universe of Future Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, <a href="/docs/v2/writing-algorithms/universes/futures#11-Create-Universes">define a Future universe</a> and then pass the canonical <code class="csharp">Symbol</code><code class="python">symbol</code> to the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method.<br></p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Asynchronous = true;
 var future = AddFuture(Futures.Metals.Gold);
 future.SetFilter(0, 90);
 AddFutureOption(future.Symbol);</pre>
-    <pre class="python">self.UniverseSettings.Asynchronous = True
-future = self.AddFuture(Futures.Metals.Gold)
-future.SetFilter(0, 90)
-self.AddFutureOption(future.Symbol)</pre>
+    <pre class="python">self.universe_settings.asynchronous = True
+future = self.add_future(Futures.Metals.GOLD)
+future.set_filter(0, 90)
+self.add_future_option(future.symbol)</pre>
 </div>
 
 
-<p>The following table describes the <code>AddFutureOption</code> method arguments:</p>
+<p>The following table describes the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method arguments:</p>
 
 <table class="qc-table table">
     <thead>
@@ -27,11 +27,11 @@ self.AddFutureOption(future.Symbol)</pre>
         <tr>
             <td><code>symbol</code></td>
 	        <td><code>Symbol</code></td>
-            <td>The continuous Future contract Symbol. To view the supported assets in the US Future Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#06-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The continuous Future contract Symbol. To view the supported assets in the US Future Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>optionFilter</code></td>
+            <td><code class="csharp">optionFilter</code><code class="python">option_filter</code></td>
 	        <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">Callable[[OptionFilterUniverse], OptionFilterUniverse]</code></td>
             <td>A function that selects Future Option contracts</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
@@ -72,8 +72,8 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     }
 }</pre>
     <pre class="python"># In Initialize
-seeder = SecuritySeeder.Null
-self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder, self))
+seeder = SecuritySeeder.NULL
+self.set_security_initializer(MySecurityInitializer(self.brokerage_model, seeder, self))
 
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
@@ -82,14 +82,14 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         super().__init__(brokerage_model, security_seeder)
         self.algorithm = algorithm
 
-    def Initialize(self, security: Security) -&gt; None:
+    def initialize(self, security: Security) -&gt; None:
         # First, call the superclass definition
         # This method sets the reality models of each security using the default reality models of the brokerage model
-        super().Initialize(security)
+        super().initialize(security)
 
         # Next, set the price model
-        if security.Type == SecurityType.FutureOption: # Option type
-            security.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
+        if security.type == SecurityType.FUTURE_OPTION: # Option type
+            security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>

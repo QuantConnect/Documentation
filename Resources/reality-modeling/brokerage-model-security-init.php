@@ -50,15 +50,14 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     }
 }</pre>
-<pre class='python'># In initialize
-self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_price)<?=$extraArgsPy?>))
+<pre class='python'># In Initialize
+self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
 
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
     def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder<?=$extraParamsPy?>) -> None:
         super().__init__(brokerage_model, security_seeder)<?=$contructorBodyPy?>
-
 
     def initialize(self, security: Security) -> None:
         # First, call the superclass definition

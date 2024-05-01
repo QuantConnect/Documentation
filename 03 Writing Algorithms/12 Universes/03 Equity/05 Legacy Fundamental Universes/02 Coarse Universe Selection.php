@@ -1,4 +1,4 @@
-<p>A coarse universe enables you pick a set of stocks based on their trading volume, price, or whether they have fundamental data. To add a coarse universe, in the <code>Initialize</code> method, pass a filter function to the <code>AddUniverse</code> method. The coarse filter function receives a list of <code>CoarseFundamental</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the universe and LEAN automatically creates subscriptions for them. Don't call <code>AddEquity</code> in the filter function.</p>
+<p>A coarse universe enables you pick a set of stocks based on their trading volume, price, or whether they have fundamental data. To add a coarse universe, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, pass a filter function to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method. The coarse filter function receives a list of <code>CoarseFundamental</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the universe and LEAN automatically creates subscriptions for them. Don't call <code class="csharp">AddEquity</code><code class="python">add_equity</code> in the filter function.</p>
 
 <div class="section-example-container">
 <pre class="csharp">public class MyCoarseUniverseAlgorithm : QCAlgorithm
@@ -17,13 +17,13 @@
     }
 }</pre>
 <pre class="python">class MyCoarseUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.CoarseFilterFunction)
+    def initialize(self) -&gt; None:
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.coarse_filter_function)
 
-    def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True) 
-        return [c.Symbol for c in sorted_by_dollar_volume[:100]]</pre>
+    def coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.dollar_volume, reverse=True) 
+        return [c.symbol for c in sorted_by_dollar_volume[:100]]</pre>
 </div>
 
 <p><code>CoarseFundamental</code> objects have the following attributes:</p>

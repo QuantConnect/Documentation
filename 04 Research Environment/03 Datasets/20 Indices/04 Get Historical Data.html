@@ -2,7 +2,7 @@
 
 
 <h4>Trailing Number of Bars<br></h4>
-<p>To get historical data for a number of trailing bars, call the <code>History</code> method with the <code>Symbol</code> object(s) and an integer.</p>
+<p>To get historical data for a number of trailing bars, call the <code class="csharp">History</code><code class="python">history</code> method with the <code>Symbol</code> object(s) and an integer.</p>
 <div class="section-example-container">
     <pre class="csharp">// Slice objects
 var singleHistorySlice = qb.History(spx, 10);
@@ -14,25 +14,25 @@ var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(spx, 10);
 var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {spx, vix}, 10);
 var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(qb.Securities.Keys, 10);</pre>
     <pre class="python"># DataFrame
-single_history_df = qb.History(spx, 10)
-single_history_trade_bar_df = qb.History(TradeBar, spx, 10)
-subset_history_df = qb.History([spx, vix], 10)
-subset_history_trade_bar_df = qb.History(TradeBar, [spx, vix], 10)
-all_history_df = qb.History(qb.Securities.Keys, 10)
-all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, 10)
+single_history_df = qb.history(spx, 10)
+single_history_trade_bar_df = qb.history(TradeBar, spx, 10)
+subset_history_df = qb.history([spx, vix], 10)
+subset_history_trade_bar_df = qb.history(TradeBar, [spx, vix], 10)
+all_history_df = qb.history(qb.securities.keys, 10)
+all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys, 10)
 
 # Slice objects
-all_history_slice = qb.History(10)
+all_history_slice = qb.history(10)
 
 # TradeBar objects
-single_history_trade_bars = qb.History[TradeBar](spx, 10)
-subset_history_trade_bars = qb.History[TradeBar]([spx, vix], 10)
-all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, 10)</pre>
+single_history_trade_bars = qb.history[TradeBar](spx, 10)
+subset_history_trade_bars = qb.history[TradeBar]([spx, vix], 10)
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, 10)</pre>
 </div>
 <p>The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
-<p>To get historical data for a trailing period of time, call the <code>History</code> method with the&nbsp;<code style="font-size: 15px; background-color: rgb(255, 255, 255);">Symbol</code>&nbsp;object(s) and a&nbsp;<code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
+<p>To get historical data for a trailing period of time, call the <code class="csharp">History</code><code class="python">history</code> method with the&nbsp;<code style="font-size: 15px; background-color: rgb(255, 255, 255);">Symbol</code>&nbsp;object(s) and a&nbsp;<code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">// Slice objects
 var singleHistorySlice = qb.History(spx, TimeSpan.FromDays(3));
@@ -48,32 +48,32 @@ var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(TimeSpan.FromDays(3));
 var singleHistoryTicks = qb.History&lt;Tick&gt;(spx, TimeSpan.FromDays(3), Resolution.Tick);
 var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {spx, vix}, TimeSpan.FromDays(3), Resolution.Tick);<br>var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Tick);<br></pre>
     <pre class="python"># DataFrame of trade data (indices don't have quote data)
-single_history_df = qb.History(spx, timedelta(days=3))
-subset_history_df = qb.History([spx, vix], timedelta(days=3))
-all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
+single_history_df = qb.history(spx, timedelta(days=3))
+subset_history_df = qb.history([spx, vix], timedelta(days=3))
+all_history_df = qb.history(qb.securities.keys, timedelta(days=3))
 
 # DataFrame of tick data
-single_history_tick_df = qb.History(spx, timedelta(days=3), Resolution.Tick)
-subset_history_tick_df = qb.History([spx, usb], timedelta(days=3), Resolution.Tick)
-all_history_tick_df = qb.History(qb.Securities.Keys, timedelta(days=3), Resolution.Tick)
+single_history_tick_df = qb.history(spx, timedelta(days=3), Resolution.TICK)
+subset_history_tick_df = qb.history([spx, usb], timedelta(days=3), Resolution.TICK)
+all_history_tick_df = qb.history(qb.securities.keys, timedelta(days=3), Resolution.TICK)
 
 # Slice objects
-all_history_slice = qb.History(timedelta(days=3))
+all_history_slice = qb.history(timedelta(days=3))
 
 # TradeBar objects
-single_history_trade_bars = qb.History[TradeBar](spx, timedelta(days=3))
-subset_history_trade_bars = qb.History[TradeBar]([spx, vix], timedelta(days=3))
-all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, timedelta(days=3))
+single_history_trade_bars = qb.history[TradeBar](spx, timedelta(days=3))
+subset_history_trade_bars = qb.history[TradeBar]([spx, vix], timedelta(days=3))
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, timedelta(days=3))
 
 # Tick objects
-single_history_ticks = qb.History[Tick](spx, timedelta(days=3), Resolution.Tick)
-subset_history_ticks = qb.History[Tick]([spx, vix], timedelta(days=3), Resolution.Tick)
-all_history_ticks = qb.History[Tick](qb.Securities.Keys, timedelta(days=3), Resolution.Tick)</pre>
+single_history_ticks = qb.history[Tick](spx, timedelta(days=3), Resolution.TICK)
+subset_history_ticks = qb.history[Tick]([spx, vix], timedelta(days=3), Resolution.TICK)
+all_history_ticks = qb.history[Tick](qb.securities.keys, timedelta(days=3), Resolution.TICK)</pre>
 </div>
 <p>The preceding calls return the most recent bars or ticks, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
-<p>To get historical data for a specific period of time, call the&nbsp;<code>History</code>&nbsp;method with the&nbsp;<code>Symbol</code>&nbsp;object(s), a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end  <code class="csharp">DateTime</code><code class="python">datetime</code>. The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
+<p>To get historical data for a specific period of time, call the <code class="csharp">History</code><code class="python">history</code> method with the&nbsp;<code>Symbol</code>&nbsp;object(s), a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end  <code class="csharp">DateTime</code><code class="python">datetime</code>. The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
@@ -97,24 +97,24 @@ var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, startTime, endT
 end_time = datetime(2021, 2, 1)
 
 # DataFrame of trade data (indices don't have quote data)
-single_history_df = qb.History(spx, start_time, end_time)
-subset_history_df = qb.History([spx, vix], start_time, end_time)
-all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
+single_history_df = qb.history(spx, start_time, end_time)
+subset_history_df = qb.history([spx, vix], start_time, end_time)
+all_history_df = qb.history(qb.securities.keys, start_time, end_time)
 
 # DataFrame of tick data
-single_history_tick_df = qb.History(spx, start_time, end_time, Resolution.Tick)
-subset_history_tick_df = qb.History([spx, vix], start_time, end_time, Resolution.Tick)
-all_history_tick_df = qb.History(qb.Securities.Keys, start_time, end_time, Resolution.Tick)
+single_history_tick_df = qb.history(spx, start_time, end_time, Resolution.TICK)
+subset_history_tick_df = qb.history([spx, vix], start_time, end_time, Resolution.TICK)
+all_history_tick_df = qb.history(qb.securities.keys, start_time, end_time, Resolution.TICK)
 
 # TradeBar objects
-single_history_trade_bars = qb.History[TradeBar](spx, start_time, end_time)
-subset_history_trade_bars = qb.History[TradeBar]([spx, vix], start_time, end_time)
-all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, start_time, end_time)
+single_history_trade_bars = qb.history[TradeBar](spx, start_time, end_time)
+subset_history_trade_bars = qb.history[TradeBar]([spx, vix], start_time, end_time)
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, start_time, end_time)
 
 # Tick objects
-single_history_ticks = qb.History[Tick](spx, start_time, end_time, Resolution.Tick)
-subset_history_ticks = qb.History[Tick]([spx, vix], start_time, end_time, Resolution.Tick)
-all_history_ticks = qb.History[Tick](qb.Securities.Keys, start_time, end_time, Resolution.Tick)</pre>
+single_history_ticks = qb.history[Tick](spx, start_time, end_time, Resolution.TICK)
+subset_history_ticks = qb.history[Tick]([spx, vix], start_time, end_time, Resolution.TICK)
+all_history_ticks = qb.history[Tick](qb.securities.keys, start_time, end_time, Resolution.TICK)</pre>
 </div>
 
 <p>The preceding calls return the bars or ticks that have a timestamp within the defined period of time.</p>

@@ -5,12 +5,12 @@
 var underlyingSecurity= AddEquity("SPY");
 underlyingSecurity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);</pre>
     <pre class="python"># In Initialize
-underlying_security = self.AddEquity("SPY")
-underlying_security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)</pre>
+underlying_security = self.add_equity("SPY")
+underlying_security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)</pre>
 </div>
 
 
-<p>You can also set the volatility model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe of underlying assets, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+<p>You can also set the volatility model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe of underlying assets, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
 
 <?
 $overwriteCodePy = "if security.Type == SecurityType.Equity:

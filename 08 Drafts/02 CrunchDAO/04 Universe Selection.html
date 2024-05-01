@@ -5,18 +5,18 @@
     <div class="section-example-container">
     <pre class="python">class CrunchDaoSkeleton(PythonData):
     
-    def GetSource(self, config, date, isLive):
-        return SubscriptionDataSource("https://tournament.crunchdao.com/data/skeleton.csv", SubscriptionTransportMedium.RemoteFile)
+    def get_source(self, config, date, isLive):
+        return SubscriptionDataSource("https://tournament.crunchdao.com/data/skeleton.csv", SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self, config, line, date, isLive):
+    def reader(self, config, line, date, isLive):
         if not line[0].isdigit(): return None
         skeleton = CrunchDaoSkeleton()
-        skeleton.Symbol = config.Symbol
+        skeleton.symbol = config.symbol
 
         try:
             csv = line.split(',')
-            skeleton.EndTime = (datetime.strptime(csv[0], "%Y-%m-%d")).date() 
-            skeleton.Symbol =  Symbol(SecurityIdentifier.GenerateEquity(csv[1], Market.USA, mappingResolveDate=skeleton.Time), csv[1])
+            skeleton.end_time = (datetime.strptime(csv[0], "%Y-%m-%d")).date() 
+            skeleton.symbol =  Symbol(SecurityIdentifier.generate_equity(csv[1], Market.USA, mapping_resolve_date=skeleton.time), csv[1])
             skeleton["Ticker"] = csv[1]
 
         except ValueError:
@@ -26,10 +26,10 @@
         return skeleton</pre>
     </div>
 
-    <li>In the <code>Initialize</code> method, <a href='/docs/v2/writing-algorithms/universes/custom-universes#04-Initialize-Custom-Universes'>initialize the universe</a>.</li>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, <a href='/docs/v2/writing-algorithms/universes/custom-universes#04-Initialize-Custom-Universes'>initialize the universe</a>.</li>
 
     <div class="section-example-container">
-        <pre class="python">self.AddUniverse(CrunchDaoSkeleton, "CrunchDaoSkeleton", Resolution.Daily, self.select_symbols)</pre>
+        <pre class="python">self.add_universe(CrunchDaoSkeleton, "CrunchDaoSkeleton", Resolution.DAILY, self.select_symbols)</pre>
     </div>
 
     <li>In the algorithm class, define the selector function to select all of the securities in the skeleton file.</li>

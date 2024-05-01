@@ -1,6 +1,6 @@
 <p>With manual updates, you control what data you use to update the indicator. For instance, you can use the 3:30 PM price in your daily moving average instead of the daily closing price or you can use the maximum temperature of the past 10 cloudy days.</p>
 
-<p>To update an indicator, call the <code>Update</code> method. The <code>Update</code>  method expects one of the following arguments:</p>
+<p>To update an indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The <code class="csharp">Update</code><code class="python">update</code>  method expects one of the following arguments:</p>
 <ul>
     <li>Time/decimal pair</li>
     <li><code>IndicatorDataPoint</code></li>
@@ -10,29 +10,29 @@
 </ul>
 <p>To view what data type you should use to update an indicator, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators'>Supported Indicators</a>.</p>
 
-<p>You can update indicators at any point in your algorithm, but the most common places are during the <code>OnData</code> event handler or during a consolidation event handler.</p><p></p>
+<p>You can update indicators at any point in your algorithm, but the most common places are during the <code class="csharp">OnData</code><code class="python">on_data</code> event handler or during a consolidation event handler.</p><p></p>
 
 
 
 <div class="section-example-container">
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+	<pre class="python">def initialize(self) -&gt; None:
+    self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
-    self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+    self._rsi = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)
     self.ad = AccumulationDistribution()
 
     self.consolidator = TradeBarConsolidator(timedelta(days=3))
     self.consolidator = QuoteBarConsolidator(timedelta(days=3))
     self.consolidator = RenkoBarConsolidator(1)     # Renko consolidator that emits a bar when the price moves $1
     # Update the AD indicator with the consolidated bar
-    self.consolidator.DataConsolidated += (lambda _, bar : self.ad.Update(bar))
-    self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
+    self.consolidator.data_consolidated += (lambda _, bar : self.ad.update(bar))
+    self.subscription_manager.add_consolidator(self._symbol, self.consolidator)
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Update the RSI indicator value with the new input close price every day
-    if slice.Bars.ContainsKey(self.symbol):
-        bar = slice.Bars[self.symbol]
-        self.rsi.Update(bar.EndTime, bar.Close)
+    if slice.bars.contains_key(self._symbol):
+        bar = slice.bars[self._symbol]
+        self.rsi.update(bar.end_time, bar.close)
 </pre>
 	<pre class="csharp">private Symbol _symbol;
 private RelativeStrengthIndex _rsi;

@@ -11,7 +11,7 @@
 			<pre class='python'>self.consolidator = <?=$consolidatorClassName?>(timedelta(<?=$this->timeDeltaPeriod?>))
 # Aliases:
 # self.consolidator = self.CreateConsolidator(timedelta(<?=$this->timeDeltaPeriod?>), <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)
-# self.consolidator = self.ResolveConsolidator(self.symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
+# self.consolidator = self.ResolveConsolidator(self._symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
 	</div>
 
 	<?php include(DOCS_RESOURCES."/consolidators/time-period-start-time.html");?>
@@ -23,10 +23,10 @@
 
 	<div class='section-example-container'>
 		<pre class='csharp'><?=$this->resolutionArgExtraExamplesC?>_consolidator = ResolveConsolidator(_symbol, Resolution.<?=$this->resolutionPeriod?>);</pre>
-		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self.consolidator = self.ResolveConsolidator(self.symbol, Resolution.<?=$this->resolutionPeriod?>)</pre>
+		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self.consolidator = self.ResolveConsolidator(self._symbol, Resolution.<?=$this->resolutionPeriod?>)</pre>
 	</div>
 </ul>
 
-<?php if ($typeOf == "TradeBar" || $typeOf == "QuoteBar") { ?><p>If the security subscription in your algorithm provides <code>TradeBar</code> and <code>QuoteBar</code> data, <code>ResolveConsolidator</code> returns a <code>TradeBarConsolidator</code>.</p><?php } ?>
+<?php if ($typeOf == "TradeBar" || $typeOf == "QuoteBar") { ?><p>If the security subscription in your algorithm provides <code>TradeBar</code> and <code>QuoteBar</code> data, <code class="csharp">ResolveConsolidator</code><code class="python">resolve_consolidator</code> returns a <code>TradeBarConsolidator</code>.</p><?php } ?>
 
 <?php include(DOCS_RESOURCES."/consolidators/time-period-end-time.html"); ?>

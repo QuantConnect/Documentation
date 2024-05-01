@@ -1,4 +1,4 @@
-<p>The <code>Reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but the following table describes the properties you must set. When there is no useable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>. LEAN repeatedly calls the <code>Reader</code> method until the date/time advances or it reaches the end of the file.</p>
+<p>The <code class="csharp">Reader</code><code class="python">reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but the following table describes the properties you must set. When there is no useable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>. LEAN repeatedly calls the <code class="csharp">Reader</code><code class="python">reader</code> method until the date/time advances or it reaches the end of the file.</p>
 
 <table class="qc-table table">
     <thead>
@@ -9,25 +9,25 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>Symbol</code></td>
-            <td>You can set this property to <code>config.Symbol</code>.</td>
+            <td><code class="csharp">Symbol</code><code class="python">symbol</code></td>
+            <td>You can set this property to <code>config.</code><code class="csharp">Symbol</code><code class="python">symbol</code>.</td>
         </tr>
         <tr>
-            <td><code>Time</code></td>
+            <td><code class="csharp">Time</code><code class="python">time</code></td>
             <td>The time when the data sample starts.</td>
         </tr>
         <tr>
-            <td><code>EndTime</code></td>
+            <td><code class="csharp">EndTime</code><code class="python">end_time</code></td>
             <td>The time when the data sample ends and when LEAN should add the sample to a <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a>.</td>
         </tr>
         <tr>
-            <td><code>Value</code></td>
-            <td>The default data point value.<br></td>
+            <td><code class="csharp">Value</code><code class="python">value</code></td>
+            <td>The default data point value (<code class="csharp">decimal</code><code class="python">float</code>).</td>
         </tr>
     </tbody>
 </table>
 
-<p>The following table describes the arguments the <code>Reader</code> method accepts:</p>
+<p>The following table describes the arguments the <code class="csharp">Reader</code><code class="python">reader</code> method accepts:</p>
 
 <table class="qc-table table">
     <thead>
@@ -54,7 +54,7 @@
             <td>Date of this source file</td>
         </tr>
         <tr>
-            <td><code>isLiveMode</code></td>
+            <td><code class="csharp">isLiveMode</code><code class="python">is_live_mode</code></td>
             <td><code>bool</code></td>
             <td><code class="csharp">true</code><code class="python">True</code> if algorithm is running in live mode</td>
         </tr>
@@ -102,30 +102,30 @@
 }
 </pre>
 <pre class="python">class MyCustomDataType(PythonData):
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
-         isLiveMode: bool) -&gt; BaseData:
+         is_live_mode: bool) -&gt; BaseData:
 
         if not line.strip():
             return None
 
         custom = MyCustomDataType()
-        custom.Symbol = config.Symbol
+        custom.symbol = config.symbol
 
         if isLiveMode:
             data = json.loads(line)
-            custom.EndTime =  Extensions.ConvertFromUtc(datetime.utcnow(), config.ExchangeTimeZone)
-            custom.Value = data["value"]
+            custom.end_time =  Extensions.convert_from_utc(datetime.utcnow(), config.exchange_time_zone)
+            custom.value = data["value"]
             return custom
 
         if not line[0].isdigit():
             return None
 
         data = line.split(',')
-        custom.EndTime = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
-        custom.Value = float(data[1])
+        custom.end_time = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
+        custom.value = float(data[1])
         return custom
 </pre>
 </div>

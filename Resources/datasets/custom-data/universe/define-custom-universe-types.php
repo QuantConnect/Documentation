@@ -1,8 +1,8 @@
-<p>Custom universes should extend the <code class="csharp">BaseData</code><code class="python">PythonData</code> class. Extensions of the <code class="csharp">BaseData</code><code class="python">PythonData</code> class must implement a <code>GetSource</code> and <code>Reader</code> method. <br></p>
+<p>Custom universes should extend the <code class="csharp">BaseData</code><code class="python">PythonData</code> class. Extensions of the <code class="csharp">BaseData</code><code class="python">PythonData</code> class must implement a <code class="csharp">GetSource</code><code class="python">get_source</code> and <code class="csharp">Reader</code><code class="python">reader</code> method. <br></p>
 
-<p>The <code>GetSource</code> method in your custom data class instructs LEAN where to find the data. This method must return a <code>SubscriptionDataSource</code> object, which contains the data location and format (<code>SubscriptionTransportMedium</code>). You can even change source locations for backtesting and live modes. We support many different data sources.</p>
+<p>The <code class="csharp">GetSource</code><code class="python">get_source</code> method in your custom data class instructs LEAN where to find the data. This method must return a <code>SubscriptionDataSource</code> object, which contains the data location and format (<code>SubscriptionTransportMedium</code>). You can even change source locations for backtesting and live modes. We support many different data sources.</p>
 
-<p>The <code>Reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but must set <code>Symbol</code> and <code>EndTime</code> properties. When there is no useable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>. LEAN repeatedly calls the <code>Reader</code> method until the date/time advances or it reaches the end of the file. <br></p>
+<p>The <code class="csharp">Reader</code><code class="python">reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but must set <code class="csharp">Symbol</code><code class="python">symbol</code> and <code class="csharp">EndTime</code><code class="python">end_time</code> properties. When there is no useable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>. LEAN repeatedly calls the <code class="csharp">Reader</code><code class="python">reader</code> method until the date/time advances or it reaches the end of the file. <br></p>
 <div class="section-example-container">
 <pre class="csharp">//Example custom universe data; it is virtually identical to other custom data types.
 public class MyCustomUniverseDataClass : BaseData 
@@ -39,18 +39,18 @@ public class MyCustomUniverseDataClass : BaseData
 <pre class="python"># Example custom universe data; it is virtually identical to other custom data types.
 class MyCustomUniverseDataClass(PythonData):
 
-    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.RemoteFile)
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -&gt; SubscriptionDataSource:
+        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -&gt; BaseData:
         items = line.split(",")
     
         # Generate required data, then return an instance of your class.
         data = MyCustomUniverseDataClass()
-        data.EndTime = datetime.strptime(items[0], "%Y-%m-%d")
+        data.end_time = datetime.strptime(items[0], "%Y-%m-%d")
         # define Time as exactly 1 day earlier Time
-        data.Time = data.EndTime - timedelta(1)
-        data.Symbol = Symbol.Create(items[1], SecurityType.Crypto, Market.Bitfinex)
+        data.time = data.end_time - timedelta(1)
+        data.symbol = Symbol.create(items[1], SecurityType.CRYPTO, Market.BITFINEX)
         data["CustomAttribute1"] = int(items[2])
         data["CustomAttribute2"] = float(items[3])
         return data
@@ -108,24 +108,24 @@ class MyCustomUniverseDataClass(PythonData):
 }</pre>
 <pre class="python">class MyCustomUniverseDataClass(PythonData):
     
-    def GetSource(self, config, date, isLive):
-        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+    def get_source(self, config, date, isLive):
+        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.REMOTE_FILE, FileFormat.UNFOLDING_COLLECTION)
 
-    def Reader(self, config, line, date, isLive):
+    def reader(self, config, line, date, isLive):
         json_response = json.loads(line)
         
-        endTime = datetime.strptime(json_response[-1]["date"], '%Y-%m-%d') + timedelta(1)
+        end_time = datetime.strptime(json_response[-1]["date"], '%Y-%m-%d') + timedelta(1)
 
         data = list()
 
         for json_datum in json_response:
             datum = MyCustomUniverseDataClass()
-            datum.Symbol = Symbol.Create(json_datum["Ticker"], SecurityType.Equity, Market.USA)
-            datum.Time = datetime.strptime(json_datum["date"], '%Y-%m-%d') 
-            datum.EndTime = datum.Time + timedelta(1)
+            datum.symbol = Symbol.create(json_datum["Ticker"], SecurityType.EQUITY, Market.USA)
+            datum.time = datetime.strptime(json_datum["date"], '%Y-%m-%d') 
+            datum.end_time = datum.time + timedelta(1)
             datum['CustomAttribute1'] = int(json_datum['Attr1'])
-            datum.Value = float(json_datum['Attr1'])
+            datum.value = float(json_datum['Attr1'])
             data.append(datum)
 
-        return BaseDataCollection(endTime, config.Symbol, data)</pre>
+        return BaseDataCollection(end_time, config.symbol, data)</pre>
 </div>

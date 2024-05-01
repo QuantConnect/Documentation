@@ -51,26 +51,26 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>TimeInForce</code></td>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
-                    <li><code>Day</code></li>
-                    <li><code>GoodTilCanceled</code></li>
-                    <li><code>GoodTilDate</code></li>
+                    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+                    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+                    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
                 </ul>
             </td>
         </tr>
         <tr>
-            <td><code>PostOnly</code></td>
+            <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
             <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
         </tr>
         <tr>
-            <td><code>FeeInBase</code></td>
-            <td>A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code>FeeInQuote</code> flag.</td>
+            <td><code class="csharp">FeeInBase</code><code class="python">fee_in_base</code></td>
+            <td>A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code class="csharp">FeeInQuote</code><code class="python">fee_in_quote</code> flag.</td>
         </tr>
         <tr>
-            <td><code>FeeInQuote</code></td>
-            <td>A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code>FeeInBase</code> flag.</td>
+            <td><code class="csharp">FeeInQuote</code><code class="python">fee_in_quote</code></td>
+            <td>A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code class="csharp">FeeInBase</code><code class="python">fee_in_base</code> flag.</td>
         </tr>
         <tr>
             <td><code>NoMarketPriceProtection</code></td>
@@ -124,35 +124,35 @@ public override void OnData(Slice slice)
                    ConditionalOrder = StopLimitOrder(_symbol, -quantity, stopLimitPrice, stopPrice)
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = KrakenOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.PostOnly = False
-    self.DefaultOrderProperties.FeeInBase = True
-    self.DefaultOrderProperties.FeeInQuote = False
-    self.DefaultOrderProperties.NoMarketPriceProtection = True
+    self.default_order_properties = KrakenOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.post_only = False
+    self.default_order_properties.fee_in_base = True
+    self.default_order_properties.fee_in_quote = False
+    self.default_order_properties.no_market_price_protection = True
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = KrakenOrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    order_properties.PostOnly = True
-    order_properties.FeeInBase = False
-    order_properties.FeeInQuote = True
-    order_properties.NoMarketPriceProtection = True
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+    order_properties.time_in_force = TimeInForce.DAY
+    order_properties.post_only = True
+    order_properties.fee_in_base = False
+    order_properties.fee_in_quote = True
+    order_properties.no_market_price_protection = True
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
-    order_properties.PostOnly = False
-    order_properties.FeeInBase = True
-    order_properties.FeeInQuote = False
-    order_properties.NoMarketPriceProtection = False
-    order_properties.ConditionalOrder = StopLimitOrder(self.symbol, -quantity, stop_limit_price, stop_price)
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.post_only = False
+    order_properties.fee_in_base = True
+    order_properties.fee_in_quote = False
+    order_properties.no_market_price_protection = False
+    order_properties.conditional_order = StopLimitOrder(self._symbol, -quantity, stop_limit_price, stop_price)
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

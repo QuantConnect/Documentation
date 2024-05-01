@@ -1,0 +1,27 @@
+<p>To add US Equities Short Availability data to your algorithm, set the <a href="/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts">shortable provider</a> of each US Equity in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class ShortAvailabilityDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        security = self.add_equity("AAPL")
+        security.set_shortable_provider(InteractiveBrokersShortableProvider())
+        self._symbol = security.symbol</pre>
+
+<pre class="csharp">using QuantConnect.Data.Shortable;
+namespace QuantConnect
+{
+    public class ShortAvailabilityDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            var security = AddEquity("AAPL");
+            security.SetShortableProvider(new InteractiveBrokersShortableProvider());
+            _symbol = security.Symbol;
+        }
+    }
+}</pre>
+</div>

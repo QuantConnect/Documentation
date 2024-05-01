@@ -52,21 +52,21 @@ namespace QuantConnect.Algorithm.CSharp
 <pre class="python">from AlgorithmImports import * 
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.SetStartDate(2023, 2, 2)
-        self.SetCash(100000)
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter), self.FundamentalSelection)
+    def initialize(self):
+        self.set_start_date(2023, 2, 2)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.universe.etf("QQQ", Market.USA, self.universe_settings, self.etf_constituents_filter), self.fundamental_selection)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
-        return [c.Symbol for c in constituents]
+    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        return [c.symbol for c in constituents]
 
-    def FundamentalSelection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        filtered = [f for f in fundamental if not np.isnan(f.ValuationRatios.PERatio)]
-        sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.ValuationRatios.PERatio)
-        return [f.Symbol for f in sorted_by_pe_ratio[:10]]
+    def fundamental_selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        filtered = [f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio)]
+        sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
+        return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def OnData(self, data):
-        for symbol in data.Keys:
-            self.Debug(f"{symbol} PE Ratio: {self.Securities[symbol].Fundamentals.ValuationRatios.PERatio}")</pre>
+    def on_data(self, data):
+        for symbol in data.keys:
+            self.debug(f"{symbol} PE Ratio: {self.securities[symbol].fundamentals.valuation_ratios.pe_ratio}")</pre>
 </div>

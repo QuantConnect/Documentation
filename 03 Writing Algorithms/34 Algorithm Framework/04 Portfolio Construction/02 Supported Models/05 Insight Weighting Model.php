@@ -22,7 +22,7 @@
             <td><code class="python">rebalance</code><code class="csharp">resolution</code></td>
 	    <td><code>Resolution</code></td>
 	    <td>Rebalancing frequency</td>
-            <td><code>Resolution.<span class="csharp">Daily</span><span class="python">DAILY</span></code></td>
+            <td><code class="csharp">Resolution.Daily</code><code class="python">Resolution.DAILY</code></td>
         </tr>
         <tr>
             <td><code class="csharp">portfolioBias</code><code class="python">portfolio_bias</code></td>

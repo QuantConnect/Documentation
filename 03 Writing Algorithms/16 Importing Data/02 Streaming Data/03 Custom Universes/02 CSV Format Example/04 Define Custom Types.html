@@ -36,13 +36,13 @@
 }</pre>
 <pre class="python">class StockDataSource(PythonData):
 
-    def GetSource(self,
+    def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource("https://www.dropbox.com/s/ae1couew5ir3z9y/daily-stock-picker-backtest.csv?dl=1", SubscriptionTransportMedium.RemoteFile)
+        return SubscriptionDataSource("https://www.dropbox.com/s/ae1couew5ir3z9y/daily-stock-picker-backtest.csv?dl=1", SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
@@ -51,12 +51,12 @@
         if not (line.strip() and line[0].isdigit()): return None
         
         stocks = StockDataSource()
-        stocks.Symbol = config.Symbol
+        stocks.symbol = config.symbol
 
         try:
             csv = line.split(',')
-            stocks.Time = datetime.strptime(csv[0], "%Y%m%d")
-            stocks.EndTime = stocks.Time + timedelta(days=1)
+            stocks.time = datetime.strptime(csv[0], "%Y%m%d")
+            stocks.end_time = stocks.time + timedelta(days=1)
             stocks["Symbols"] = csv[1:]
 
         except ValueError:

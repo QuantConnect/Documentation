@@ -1,4 +1,4 @@
-<p>To cancel an order, call the <code>Cancel</code> method on the <code>OrderTicket</code>. The method returns an <code>OrderResponse</code> object to signal the success or failure of the cancel request.</p>
+<p>To cancel an order, call the <code class="csharp">Cancel</code><code class="python">cancel</code> method on the <code>OrderTicket</code>. The method returns an <code>OrderResponse</code> object to signal the success or failure of the cancel request.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// Create an order and save its ticket
@@ -13,14 +13,14 @@ if (response.IsSuccess)
     Debug("Order successfully canceled");
 }</pre>
 <pre class="python"> # Create an order and save its ticket
-ticket = self.LimitOrder("SPY", 100, 221.05, False, "SPY Trade to Cancel")
+ticket = self.limit_order("SPY", 100, 221.05, False, "SPY Trade to Cancel")
 
 # Cancel the order
-response = ticket.Cancel("Canceled SPY Trade")
+response = ticket.cancel("Canceled SPY Trade")
 
 # Use the order response object to read the status
-if response.IsSuccess:
-    self.Debug("Order successfully canceled")</pre>
+if response.is_success:
+    self.debug("Order successfully canceled")</pre>
 </div>
 
 <p>You can't cancel market orders because they are immediately transmitted to the brokerage. You also can't cancel any orders during <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up</a> and <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>.</p>
@@ -28,9 +28,9 @@ if response.IsSuccess:
 <p>When you cancel an order, LEAN creates a <code>CancelOrderRequest</code>, which have the following attributes:</p>
 <div data-tree='QuantConnect.Orders.CancelOrderRequest'></div>
 
-<p>To get the <code>CancelOrderRequest</code> for an order, call the <code>CancelRequest</code> method. The method returns <code class='csharp'>null</code><code class='python'>None</code> if the order hasn't been cancelled.</p>
+<p>To get the <code>CancelOrderRequest</code> for an order, call the <code class="csharp">CancelRequest</code><code class="python">cancel_order_request</code> method. The method returns <code class='csharp'>null</code><code class='python'>None</code> if the order hasn't been cancelled.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var request = ticket.CancelOrderRequest();</pre>
-<pre class="python">request = ticket.CancelOrderRequest()</pre>
+<pre class="csharp">var request = ticket.cancel_order_request();</pre>
+<pre class="python">request = ticket.cancel_order_request()</pre>
 </div>

@@ -1,15 +1,15 @@
-<p>When the margin call model of your portfolio issues a margin call warning, we notify your algorithm through the <code>OnMarginCallWarning</code> event handler.</p>
+<p>When the margin call model of your portfolio issues a margin call warning, we notify your algorithm through the <code class="csharp">OnMarginCallWarning</code><code class="python">on_margin_call_warning</code> event handler.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">public override void OnMarginCallWarning()
 {
     Debug("Warning: Close to margin call");
 }</pre>
-	<pre class="python">def OnMarginCallWarning(self) -&gt; None:
-    self.Debug(f"Warning: Close to margin call")</pre>
+	<pre class="python">def on_margin_call_warning(self) -&gt; None:
+    self.debug(f"Warning: Close to margin call")</pre>
 </div>
 
-<p>Before we send the orders that the margin call model produces, we notify your algorithm through the <code>OnMarginCall</code> event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. To modify the orders, adjust the list of <code>SubmitOrderRequest</code> objects the event handler receives.</p>
+<p>Before we send the orders that the margin call model produces, we notify your algorithm through the <code class="csharp">OnMarginCall</code><code class="python">on_margin_call</code> event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. To modify the orders, adjust the list of <code>SubmitOrderRequest</code> objects the event handler receives.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">public override void OnMarginCall(List&lt;SubmitOrderRequest&gt; requests)
@@ -24,12 +24,12 @@
                                             order.LimitPrice, 0, Time, "OnMarginCall");
     }
 }</pre>
-	<pre class="python">def OnMarginCall(self, requests: List[SubmitOrderRequest]) -&gt; List[SubmitOrderRequest]:
+	<pre class="python">def on_margin_call(self, requests: List[SubmitOrderRequest]) -&gt; List[SubmitOrderRequest]:
     for i, order in enumerate(requests):
         # liquidate an extra 10% each time you get a margin call to give yourself more padding
-        new_quantity = int(order.Quantity * 1.1)
-        requests[i] = SubmitOrderRequest(order.OrderType, order.SecurityType, 
-                                        order.Symbol, new_quantity, order.StopPrice, 
-                                        order.LimitPrice, 0, self.Time, "OnMarginCall")
+        new_quantity = int(order.quantity * 1.1)
+        requests[i] = SubmitOrderRequest(order.order_type, order.security_type, 
+                                        order.symbol, new_quantity, order.stop_price, 
+                                        order.limit_price, 0, self.time, "OnMarginCall")
     return requests</pre>
 </div>

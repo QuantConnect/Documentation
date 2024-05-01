@@ -41,20 +41,20 @@ public class MyCustomDataType : BaseData
     }
 }</pre>
 <pre class="python">class MyCustomDataTypeAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    def initialize(self):
         MyCustomDataType.ALGORITHM = self
-        self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol
+        self._symbol = self.add_data(MyCustomDataType, "&lt;name&gt;", Resolution.DAILY).Symbol
 
 class MyCustomDataType(PythonData):
-    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -> BaseData:
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -> BaseData:
         if not line[0].isdigit():
             # Display the line with the header
             MyCustomDataType.ALGORITHM.Debug(f"HEADER: {line}");
             return None
         data = line.split(',')
         custom = MyCustomDataType()
-        custom.Symbol = config.Symbol
-        custom.EndTime = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
-        custom.Value = float(data[1])
+        custom.symbol = config.symbol
+        custom.end_time = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
+        custom.value = float(data[1])
         return custom</pre>
 </div>

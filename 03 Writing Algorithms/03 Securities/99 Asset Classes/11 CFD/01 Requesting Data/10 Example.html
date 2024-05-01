@@ -37,23 +37,23 @@
 }</pre>
     <pre class="python">class EtfCfdSwapMovingAverageCrossAlgorithm(QCAlgorithm):
 
-    def Initialize(self):
-        self.SetStartDate(2022, 9, 28)
-        self.SetCash(100000)
+    def initialize(self):
+        self.set_start_date(2022, 9, 28)
+        self.set_cash(100000)
 
         tickers = ["SPY", "BND", "GLD", "QQQ"]
-        security_type = SecurityType.Cfd if self.LiveMode else SecurityType.Equity
+        security_type = SecurityType.CFD if self.live_mode else SecurityType.EQUITY
         for ticker in tickers:
-            equity = self.AddEquity(ticker, Resolution.Daily)
-            equity.sma_fast = self.SMA(equity.Symbol, 50)
-            equity.sma_slow = self.SMA(equity.Symbol, 200)
-            equity.target_vehicle = self.AddCfd(ticker, Resolution.Daily, market=Market.InteractiveBrokers).Symbol if self.LiveMode else equity.Symbol
+            equity = self.add_equity(ticker, Resolution.DAILY)
+            equity.sma_fast = self.sma(equity.symbol, 50)
+            equity.sma_slow = self.sma(equity.symbol, 200)
+            equity.target_vehicle = self.add_cfd(ticker, Resolution.DAILY, market=Market.INTERACTIVE_BROKERS).symbol if self.live_mode else equity.symbol
 
-    def OnData(self, data: Slice):
-        for security in self.Securities.Values:
+    def on_data(self, data: Slice):
+        for security in self.securities.values:
             if security.sma_fast &gt; security.sma_slow:
-                self.SetHoldings(security.target_vehicle, 0.25)
+                self.set_holdings(security.target_vehicle, 0.25)
             else:
-                self.SetHoldings(security.target_vehicle, 0)
+                self.set_holdings(security.target_vehicle, 0)
     </pre>
 </div>

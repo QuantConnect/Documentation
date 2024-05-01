@@ -1,46 +1,46 @@
 <p>Pairs trading is exactly a 2-asset version of statistical arbitrage. Thus, we can just modify the algorithm from <a href="/docs/v2/research-environment/applying-research/kalman-filters-and-stat-arb#10-Set-Up-Algorithm">the Kalman Filter and Statistical Arbitrage tutorial</a>, except we're using only a single cointegrating unit vector so no optimization of cointegration subspace is needed.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self):
 
     #1. Required: Five years of backtest history
-    self.SetStartDate(2014, 1, 1)
+    self.set_start_date(2014, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
 
     #3. Required: Significant AUM Capacity
-    self.SetCash(1000000)
+    self.set_cash(1000000)
 
     #4. Required: Benchmark to SPY
-    self.SetBenchmark("SPY")
+    self.set_benchmark("SPY")
 
     self.assets = ["SCHO", "SHY"]
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.AddEquity(self.assets[i], Resolution.Minute)
+        self.add_equity(self.assets[i], Resolution.MINUTE).symbol
         
     # Instantiate our model
-    self.Recalibrate()
+    self.recalibrate()
     
     # Set a variable to indicate the trading bias of the portfolio
     self.state = 0
     
     # Set Scheduled Event Method For Kalman Filter updating.
-    self.Schedule.On(self.DateRules.WeekStart(), 
-        self.TimeRules.At(0, 0), 
-        self.Recalibrate)
+    self.schedule.on(self.date_rules.week_start(), 
+        self.time_rules.at(0, 0), 
+        self.recalibrate)
     
     # Set Scheduled Event Method For Kalman Filter updating.
-    self.Schedule.On(self.DateRules.EveryDay(), 
-        self.TimeRules.BeforeMarketClose("SHY"), 
-        self.EveryDayBeforeMarketClose)
+    self.schedule.on(self.date_rules.every_day(), 
+        self.time_rules.before_market_close("SHY"), 
+        self.every_day_before_market_close)
         
         
-def Recalibrate(self) -&gt; None:
+def recalibrate(self):
     qb = self
-    history = qb.History(self.assets, 252*2, Resolution.Daily)
+    history = qb.history(self.assets, 252*2, Resolution.DAILY)
     if history.empty: return
     
     # Select the close column and then call the unstack method
@@ -59,27 +59,27 @@ def Recalibrate(self) -&gt; None:
     
     ### Kalman Filter
     # Initialize a Kalman Filter. Using the first 20 data points to optimize its initial state. We assume the market has no regime change so that the transitional matrix and observation matrix is [1].
-    self.kalmanFilter = KalmanFilter(transition_matrices = [1],
+    self.kalman_filter = KalmanFilter(transition_matrices = [1],
                         observation_matrices = [1],
                         initial_state_mean = spread.iloc[:20].mean(),
                         observation_covariance = spread.iloc[:20].var(),
                         em_vars=['transition_covariance', 'initial_state_covariance'])
-    self.kalmanFilter = self.kalmanFilter.em(spread.iloc[:20], n_iter=5)
-    (filtered_state_means, filtered_state_covariances) = self.kalmanFilter.filter(spread.iloc[:20])
+    self.kalman_filter = self.kalman_filter.em(spread.iloc[:20], n_iter=5)
+    (filtered_state_means, filtered_state_covariances) = self.kalman_filter.filter(spread.iloc[:20])
     
     # Obtain the current Mean and Covariance Matrix expectations.
-    self.currentMean = filtered_state_means[-1, :]
-    self.currentCov = filtered_state_covariances[-1, :]
+    self.current_mean = filtered_state_means[-1, :]
+    self.current_cov = filtered_state_covariances[-1, :]
     
     # Initialize a mean series for spread normalization using the Kalman Filter's results.
     mean_series = np.array([None]*(spread.shape[0]-20))
     
     # Roll over the Kalman Filter to obtain the mean series.
     for i in range(20, spread.shape[0]):
-        (self.currentMean, self.currentCov) = self.kalmanFilter.filter_update(filtered_state_mean = self.currentMean,
-                                                                filtered_state_covariance = self.currentCov,
+        (self.current_mean, self.current_cov) = self.kalman_filter.filter_update(filtered_state_mean = self.current_mean,
+                                                                filtered_state_covariance = self.current_cov,
                                                                 observation = spread.iloc[i])
-        mean_series[i-20] = float(self.currentMean)
+        mean_series[i-20] = float(self.current_mean)
     
     # Obtain the normalized spread series.
     normalized_spread = (spread.iloc[20:] - mean_series)
@@ -91,8 +91,7 @@ def Recalibrate(self) -&gt; None:
     # Calculate the profit levels using the 50 set levels.
     f_bar = np.array([None]*50)
     for i in range(50):
-        f_bar[i] = len(normalized_spread.values[normalized_spread.values > s0[i]]) \
-            / normalized_spread.shape[0]
+        f_bar[i] = len(normalized_spread.values[normalized_spread.values > s0[i]])               / normalized_spread.shape[0]
         
     # Set trading frequency matrix.
     D = np.zeros((49, 50))
@@ -112,24 +111,24 @@ def Recalibrate(self) -&gt; None:
     self.trading_weight = coint_vector / np.sum(abs(coint_vector))
     
         
-def EveryDayBeforeMarketClose(self) -&gt; None:
+def every_day_before_market_close(self):
     qb = self
     
     # Get the real-time log close price for all assets and store in a Series
     series = pd.Series()
-    for symbol in qb.Securities.Keys:
-        series[symbol] = np.log(qb.Securities[symbol].Close)
+    for symbol in qb.securities.Keys:
+        series[symbol] = np.log(qb.securities[symbol].close)
         
     # Get the spread
     spread = np.sum(series * self.trading_weight)
     
     # Update the Kalman Filter with the Series
-    (self.currentMean, self.currentCov) = self.kalmanFilter.filter_update(filtered_state_mean = self.currentMean,
-                                                                        filtered_state_covariance = self.currentCov,
+    (self.current_mean, self.current_cov) = self.kalman_filter.filter_update(filtered_state_mean = self.current_mean,
+                                                                        filtered_state_covariance = self.current_cov,
                                                                         observation = spread)
         
     # Obtain the normalized spread.
-    normalized_spread = spread - self.currentMean
+    normalized_spread = spread - self.current_mean
 
     # ==============================
     
@@ -138,7 +137,7 @@ def EveryDayBeforeMarketClose(self) -&gt; None:
         orders = []
         for i in range(len(self.assets)):
             orders.append(PortfolioTarget(self.assets[i], self.trading_weight[i]))
-            self.SetHoldings(orders)
+            self.set_holdings(orders)
             
         self.state = 1
             
@@ -146,13 +145,13 @@ def EveryDayBeforeMarketClose(self) -&gt; None:
         orders = []
         for i in range(len(self.assets)):
             orders.append(PortfolioTarget(self.assets[i], -1 * self.trading_weight[i]))
-            self.SetHoldings(orders)
+            self.set_holdings(orders)
             
         self.state = -1
             
     # Out of position if spread recovered
     elif self.state == 1 and normalized_spread > -self.threshold or self.state == -1 and normalized_spread < self.threshold:
-        self.Liquidate()
+        self.liquidate()
         
         self.state = 0</pre>
 </div>

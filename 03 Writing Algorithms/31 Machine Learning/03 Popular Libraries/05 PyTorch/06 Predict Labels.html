@@ -1,4 +1,4 @@
-<p>To predict the labels of new data, in the <code>OnData</code> method, get the most recent set of features and pass it to the model.</p>
+<p>To predict the labels of new data, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, get the most recent set of features and pass it to the model.</p>
 <div class="section-example-container">
     <pre class="python">features, __ = self.get_features_and_labels()
 prediction = self.model(features[-1].reshape(1, -1))
@@ -7,8 +7,8 @@ prediction = float(prediction.detach().numpy()[-1])</pre>
 
 <p>You can use the label prediction to place orders.</p>
 <div class="section-example-container">
-    <pre class="python">if prediction > slice[self.symbol].Price:
-    self.SetHoldings(self.symbol, 1)
-elif prediction < slice[self.symbol].Price:            
-    self.SetHoldings(self.symbol, -1)</pre>
+    <pre class="python">if prediction > slice[self._symbol].Price:
+    self.SetHoldings(self._symbol, 1)
+elif prediction < slice[self._symbol].Price:            
+    self.SetHoldings(self._symbol, -1)</pre>
 </div>

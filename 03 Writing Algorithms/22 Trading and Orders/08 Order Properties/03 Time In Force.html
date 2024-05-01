@@ -1,4 +1,4 @@
-<p>The <code>TimeInForce</code> property determines how long an order should remain open if it doesn't fill. This property doesn't apply to market orders since they usually fill immediately. Time in force is useful to automatically cancel old trades. The following table describes the available&nbsp;<span style="color: rgb(220, 67, 67);">TimeInForce&nbsp;</span>options:</p>
+<p>The <code class="csharp">TimeInForce</code><code class="python">time_in_force</code> property determines how long an order should remain open if it doesn't fill. This property doesn't apply to market orders since they usually fill immediately. Time in force is useful to automatically cancel old trades. The following table describes the available&nbsp;<span style="color: rgb(220, 67, 67);">TimeInForce&nbsp;</span>options:</p>
 
 <table class="qc-table table">
     <thead>
@@ -10,18 +10,18 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>GoodTilCanceled</code></td>
-            <td><code>TimeInForce.GoodTilCanceled</code></td>
+            <td><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></td>
+            <td><code>TimeInForce.</code><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></td>
             <td>Order is valid until filled (default)</td>
         </tr>
         <tr>
-            <td><code>Day</code></td>
-            <td><code>TimeInForce.Day</code></td>
+            <td><code class="csharp">Day</code><code class="python">DAY</code></td>
+            <td><code>TimeInForce.</code><code class="csharp">Day</code><code class="python">DAY</code></td>
             <td>Order is valid until filled or the market closes</td>
         </tr>
         <tr>
-            <td><code class="csharp">GoodTilDate(DateTime expiry)</code><code class="python">GoodTilDate(expiry: datetime)</code></td>
-            <td><code class="csharp">TimeInForce.GoodTilDate(new DateTime(2019, 6, 19, 12, 0, 0))</code><code class="python">GoodTilDate(datetime(2019, 6, 19, 12, 0, 0))</code></td>
+            <td><code class="csharp">GoodTilDate(DateTime expiry)</code><code class="python">GOOD_TIL_DATE(expiry: datetime)</code></td>
+            <td><code class="csharp">TimeInForce.GoodTilDate(new DateTime(2019, 6, 19, 12, 0, 0))</code><code class="python">time_in_force.GOOD_TIL_DATE(datetime(2019, 6, 19, 12, 0, 0))</code></td>
             <td>Order is valid until filled or the specified expiration time</td>
         </tr>
     </tbody>
@@ -29,8 +29,8 @@
 
 
 <p>
-    By default, orders remain open until they are canceled (<code>TimeInForce.GoodTilCanceled</code>). 
-To update the value, set the <code>DefaultOrderProperties.TimeInForce</code> before you place an order or pass an <code>orderProperties</code> argument to the order method.</p>
+    By default, orders remain open until they are canceled (<code>TimeInForce.</code><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code>). 
+To update the value, set the <code class="csharp">DefaultOrderProperties.TimeInForce</code><code class="python">default_order_properties.time_in_force</code> before you place an order or pass an <code class="csharp">orderProperties</code><code class="python">order_properties</code> argument to the order method.</p>
 <div class="section-example-container">
         <pre class="csharp">// Set a Limit Order to be good until market close
 DefaultOrderProperties.TimeInForce = TimeInForce.Day;
@@ -42,17 +42,17 @@ LimitOrder("IBM", 100, 120, orderProperties: new OrderProperties
     TimeInForce = TimeInForce.GoodTilDate(new DateTime(2019, 6, 19, 12, 0, 0))
 });</pre>
         <pre class="python"># Set a Limit Order to be good until market close
-self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
-self.LimitOrder("IBM", 100, 120)
+self.default_order_properties.time_in_force = TimeInForce.DAY
+self.limit_order("IBM", 100, 120)
 
 # Set a Limit Order to be good until noon
 order_properties = OrderProperties()
-order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(2019, 6, 19, 12, 0, 0))
-self.LimitOrder("IBM", 100, 120, orderProperties=order_properties)</pre>
+order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(2019, 6, 19, 12, 0, 0))
+self.limit_order("IBM", 100, 120, order_properties=order_properties)</pre>
     </div>
 
-<p>If you trade a market that's open 24 hours a day with daily data, <code>TimeInForce.Day</code> won't work because the order cancels at the market close time but your algorithm receives daily data at midnight.</p>
+<p>If you trade a market that's open 24 hours a day with daily data, <code class="csharp">TimeInForce.Day</code><code class="python">TimeInForce.DAY</code> won't work because the order cancels at the market close time but your algorithm receives daily data at midnight.</p>
 
-<p>Market on open (MOO) and market on close (MOC) orders don't support the <code>GoodTilDate</code> time in force. If you submit a MOO or MOC order with the <code>GoodTilDate</code> time in force, LEAN automatically adjusts the time in force to be <code>GoodTilCanceled</code>.</p>
+<p>Market on open (MOO) and market on close (MOC) orders don't support the <code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code> time in force. If you submit a MOO or MOC order with the <code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code> time in force, LEAN automatically adjusts the time in force to be <code>GoodTilCanceled</code>.</p>
 
 <p>The brokerage you use may not support all of the <code>TimeInForce</code> options. To see the options that your brokerage supports, see the <span class="page-section-name">Orders</span> section of the <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models">brokerage model documentation</a>.</p>

@@ -1,4 +1,4 @@
-<p>The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and a <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/cnbc-trading#09-Universe-Selection'>QuiverCNBCsUniverse alternative universe</a>. It first selects the 100 most liquid US Equities and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.</p>
+<p>The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and a <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/cnbc-trading#10-Universe-Selection'>QuiverCNBCsUniverse alternative universe</a>. It first selects the 100 most liquid US Equities and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.</p>
 <div class="section-example-container">
     <pre class="csharp">#region imports
     using System.Collections.Generic;
@@ -58,36 +58,39 @@ namespace QuantConnect.Algorithm.CSharp
     from AlgorithmImports import * 
 #endregion
 
+from AlgorithmImports import *
+
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
     fundamental = []
 
-    def Initialize(self):
-        self.SetStartDate(2023, 1, 2)
-        self.SetCash(100000)
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.FundamentalFilterFunction)
-        self.AddUniverse(QuiverCNBCsUniverse, self.MadMoneySelection)
+    def initialize(self):
+        self.set_start_date(2023, 1, 2)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.fundamental_filter_function)
+        self.add_universe(QuiverCNBCsUniverse, self.mad_money_selection)
     
-    def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -> List[Symbol]:
-        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.DollarVolume, reverse=True) 
-        self.fundamental = [c.Symbol for c in sorted_by_dollar_volume[:100]]
-        return Universe.Unchanged
+    def fundamental_filter_function(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
+        self.fundamental = [c.symbol for c in sorted_by_dollar_volume[:100]]
+        return Universe.UNCHANGED
     
-    def MadMoneySelection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
-        madmoney = [d.Symbol for d in alt_coarse if 'Cramer' in d.Traders]
+    def mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
+        madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
         return list(set(self.fundamental) & set(madmoney))
     
-    def OnSecuritiesChanged(self, changes):
-        for added in changes.AddedSecurities:
-            self.AddData(QuiverCNBCs, added.Symbol)
+    def on_securities_changed(self, changes):
+        for added in changes.added_securities:
+            self.add_data(QuiverCNBCs, added.symbol)
     
-    def OnData(self, data):
+    def on_data(self, data):
         # Prices in the slice from the universe selection
         # Alternative data in slice from OnSecuritiesChanged Addition
-        # for ticker,bar in data.Bars.items():
+        # for ticker,bar in data.bars.items():
         #     pass
-        for dataset_symbol, data_points in data.Get(QuiverCNBCs).items():
+        for dataset_symbol, data_points in data.get(QuiverCNBCs).items():
             for data_point in data_points:
-                self.Debug(f"{dataset_symbol} traders at {data.Time}: {data_point.Traders}")</pre>
+                self.debug(f"{dataset_symbol} traders at {data.time}: {data_point.traders}")
+</pre>
 </div>

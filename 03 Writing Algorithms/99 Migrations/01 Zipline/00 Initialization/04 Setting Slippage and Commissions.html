@@ -26,11 +26,11 @@ from zipline.finance.slippage import FixedSlippage
 </p>
 <div class="section-example-container">
     <pre class="python">class MyAlgorithm(QCAlgorithm)
-    def Initialize(self) -&gt; None:
-        spy = self.AddEquity("SPY", Resolution.Minute)
+    def initialize(self) -&gt; None:
+        spy = self.add_equity("SPY", Resolution.MINUTE)
         # `ConstantSlippageModel` is the same as `FixedSlippage` on Quantopian.
         # This will set slippage only for the "SPY" security.
-        spy.SlippageModel = ConstantSlippageModel(0.01)</pre>
+        spy.slippage_model = ConstantSlippageModel(0.01)</pre>
 </div>
 
 <h4>Commissions</h4>
@@ -59,16 +59,16 @@ from zipline.finance.commission import PerShare
 </p>
 <div class="section-example-container">
     <pre class="python">class MyAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-       aapl = self.AddEquity("AAPL", Resolution.Minute)
-       spy = self.AddEquity("SPY", Resolution.Minute)
+    def initialize(self) -&gt; None:
+       aapl = self.add_equity("AAPL", Resolution.MINUTE)
+       spy = self.add_equity("SPY", Resolution.MINUTE)
 
        # Sets the fee model to the IB fee model, which simulates
        # the fees we would encounter in live trading.
-       spy.FeeModel = InteractiveBrokersFeeModel()
+       spy.fee_model = InteractiveBrokersFeeModel()
 
        # Sets the fee model to a constant fee model
-       aapl.FeeModel = ConstantFeeModel(0.01, "USD")</pre>
+       aapl.fee_model = ConstantFeeModel(0.01, "USD")</pre>
 </div>
 <p>
     You can read more about Securities and their attributes at the <a class="docs-internal-link" href="/docs/algorithm-reference/securities-and-portfolio" target="_blank" rel="noopener noreferrer">Securities and Portfolio</a> and 

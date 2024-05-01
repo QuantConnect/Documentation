@@ -1,10 +1,10 @@
 <p>To define a custom data type, inherit the <code class="csharp">BaseData</code><code class="python">PythonData</code> class and override the <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources">GetSource</a> and <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#05-Parse-Custom-Data">Reader</a> methods.</p>
 
-<p>If you need to create multiple objects in your <code>Reader</code> method from a single <code>line</code>, follow these steps:</p>
+<p>If you need to create multiple objects in your <code class="csharp">Reader</code><code class="python">reader</code> method from a single <code>line</code>, follow these steps:</p>
 
 <ol>
-    <li>In the <code>GetSource</code> method, pass <code>FileFormat.UnfoldingCollection</code> as the third argument to the <code>SubscriptionDataSource</code> constructor.</li>
-    <li>In the <code>Reader</code> method, order the objects by their timestamp and then return a <code>BaseDataCollection(endTime, config.Symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</li>
+    <li>In the <code class="csharp">GetSource</code><code class="python">get_source</code> method, pass <code class="csharp">FileFormat.UnfoldingCollection</code><code class="python">FileFormat.UNFOLDING_COLLECTION</code> as the third argument to the <code>SubscriptionDataSource</code> constructor.</li>
+    <li>In the <code class="csharp">Reader</code><code class="python">reader</code> method, order the objects by their timestamp and then return a <code class="csharp">BaseDataCollection(endTime, config.Symbol, objects)</code><code class="python">BaseDataCollection(end_time, config.symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</li>
 </ol>
 
 <div class="section-example-container">
@@ -56,15 +56,15 @@ public class MyCustomDataType : BaseData
     }
 }</pre>
     <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self,
+    def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
         if not isLive:
-            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv)
-        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.REMOTE_FILE, FileFormat.UNFOLDING_COLLECTION)
 
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
@@ -78,15 +78,15 @@ public class MyCustomDataType : BaseData
 
         for datum in data:
             index = MyCustomDataType()
-            index.Symbol = config.Symbol
-            index.Time = datetime.strptime(datum["Date"], "%Y-%m-%d")
-            index.EndTime = index.Time + timedelta(1)
+            index.symbol = config.symbol
+            index.time = datetime.strptime(datum["Date"], "%Y-%m-%d")
+            index.end_time = index.time + timedelta(1)
             index["Open"] = float(datum["Open"])
             index["High"] = float(datum["High"])
             index["Low"] = float(datum["Low"])
             index["Close"] = float(datum["Close"])
-            index.Value = index["Close"]
+            index.value = index["Close"]
             objects.append(index)
 
-        return BaseDataCollection(objects[-1].EndTime, config.Symbol, objects)</pre>
+        return BaseDataCollection(objects[-1].end_time, config.symbol, objects)</pre>
 </div>

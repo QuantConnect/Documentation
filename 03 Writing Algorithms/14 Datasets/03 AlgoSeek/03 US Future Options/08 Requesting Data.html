@@ -1,0 +1,37 @@
+<p>To add US Future Options data to your algorithm, call the <b class="csharp">AddFutureOption</b><b class="python">add_future_option</b> method.</p>
+
+
+<div class="section-example-container">
+<pre class="python">class FutureOptionDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 28)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        future = self.add_future(Futures.metals.gold, Resolution.MINUTE)
+        future.set_filter(0, 90)
+        self.add_future_option(future.symbol, lambda universe: universe.strikes(-5, +5))</pre>
+
+
+<pre class="csharp">namespace QuantConnect
+{
+    public class FutureOptionDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 28);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+            UniverseSettings.Asynchronous = True;
+            var future = AddFuture(Futures.Metals.Gold, Resolution.Minute);
+            future.SetFilter(0, 90);
+            AddFutureOption(future.Symbol, universe =&gt; universe.Strikes(-5, +5));
+        }
+    }
+}</pre>
+</div>
+
+<p>The Future resolution must be less than or equal to the Future Option resolution. For example, if you set the Future resolution to minute, then the Future Option resolution must be minute, hour, or daily.</p>
+
+<p>For more information about creating Future Options subscriptions, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/requesting-data">Requesting Data</a> or <a href="/docs/v2/writing-algorithms/universes/future-options">Future Options Universes</a>.</p>

@@ -95,7 +95,7 @@
 
 <h4>Update Methods</h4>
 
-<p>To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method. The method returns an <code>OrderResponse</code> to signal the success or failure of the update request. 
+<p>To update an order, pass an <code>UpdateOrderFields</code> object to the <code class="csharp">Update</code><code class="python">update</code> method. The method returns an <code>OrderResponse</code> to signal the success or failure of the update request. 
 </p>
 
 <div class="section-example-container">
@@ -115,17 +115,17 @@ if (response.IsSuccess)
     Debug("Order updated successfully");
 }</pre>
 <pre class="python"> # Create an order 
-ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
+ticket = self.limit_order("SPY", 100, 221.05, False, "New SPY trade")
 
 # Update the order tag and limit price
 updateSettings = UpdateOrderFields()
-updateSettings.LimitPrice = 222.00
-updateSettings.Tag = "Limit Price Updated for SPY Trade"
-response = ticket.Update(updateSettings)
+updateSettings.limit_price = 222.00
+updateSettings.tag = "Limit Price Updated for SPY Trade"
+response = ticket.update(updateSettings)
 
 # Check the OrderResponse
-if response.IsSuccess:
-    self.Debug("Order updated successfully")</pre>
+if response.is_success:
+    self.debug("Order updated successfully")</pre>
 </div>
 
 <?
@@ -162,16 +162,15 @@ public override void OnOrderEvent(OrderEvent orderEvent)
         _ticket = LimitOrder(_ticket.Symbol, quantity, limitPrice);
     }
 }</pre>
-<pre class="python">def OnData(self, slice: Slice) -> None:
+<pre class="python">def on_data(self, slice: Slice) -> None:
     # Cancel the order
-    self.ticket.Cancel()
+    self.ticket.cancel()
 
-def OnOrderEvent(self, orderEvent: OrderEvent) -> None:
-    if self.ticket is not None \
-        and orderEvent.OrderId == self.ticket.OrderId \
-        and orderEvent.Status == OrderStatus.Canceled:
+def on_order_event(self, order_event: OrderEvent) -> None:
+    if self.ticket and order_event.order_id == self.ticket.order_id \
+        and order_event.status == OrderStatus.CANCELED:
         # Place a new order
-        quantity = self.ticket.Quantity - self.ticket.QuantityFilled
-        limit_price = self.Securities[self.ticket.Symbol].Price + 1
-        self.ticket = self.LimitOrder(self.ticket.Symbol, quantity, limit_price)</pre>
+        quantity = self.ticket.quantity - self.ticket.quantity_filled
+        limit_price = self.securities[self.ticket.symbol].price + 1
+        self.ticket = self.limit_order(self.ticket.symbol, quantity, limit_price)</pre>
 </div>
