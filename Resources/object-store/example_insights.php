@@ -14,10 +14,10 @@
     }
 }</pre>
     <pre class='python'>class ObjectStoreChartingAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.insight_key = f"{self.ProjectId}/insights"
-        self.SetUniverseSelection(ManualUniverseSelectionModel([ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]))
-        self.SetAlpha(ConstantAlphaModel(InsightType.Price, InsightDirection.Up, timedelta(5), 0.025, None))</pre>
+    def initialize(self):
+        self.insight_key = f"{self.project_id}/insights"
+        self.set_universe_selection(ManualUniverseSelectionModel([ Symbol.create("SPY", SecurityType.EQUITY, Market.USA) ]))
+        self.set_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(5), 0.025, None))</pre>
     </div>
     
     <li class='python'>At the top of the algorithm file, add the following imports:</li>
@@ -29,29 +29,29 @@ from System.Collections.Generic import List</pre>
     
     <p class='python'><code>Insight</code> objects are a C# objects, so you need the preceding C# libraries to serialize and deserialize them.</p>
 
-    <li>In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>OnEndOfAlgorithm</a> event handler of the algorithm, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#04-Get-Insights'>get the Insight objects</a> and save them in the Object Store as a JSON object.</li>
+    <li>In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'><span class="csharp">OnEndOfAlgorithm</span><span class="python">on_end_of_algorithm</span></a> event handler of the algorithm, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#04-Get-Insights'>get the Insight objects</a> and save them in the Object Store as a JSON object.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public override void OnEndOfAlgorithm()
 {
     var insights = Insights.GetInsights(x => x.IsActive(UtcTime));
     ObjectStore.SaveJson(_insightKey, insights);
 }</pre>
-    <pre class='python'>def OnEndOfAlgorithm(self):
-    insights = self.Insights.GetInsights(lambda x: x.IsActive(self.UtcTime))
+    <pre class='python'>def on_end_of_algorithm(self):
+    insights = self.insights.get_insights(lambda x: x.is_active(self.utc_time))
     content = ','.join([JsonConvert.SerializeObject(x) for x in insights])
-    self.ObjectStore.Save(self.insight_key, f'[{content}]')</pre>
+    self.object_store.save(self.insight_key, f'[{content}]')</pre>
     </div>
 
-    <li>At the bottom of the <code>Initialize</code> method, read the Insight objects from the Object Store and <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#02-Add-Insights'>add them to the Insight Manager</a>.</li>
+    <li>At the bottom of the <code class="csharp">Initialize</code><code class="python">initialize</code> method, read the Insight objects from the Object Store and <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#02-Add-Insights'>add them to the Insight Manager</a>.</li>
     <div class='section-example-container'>
     <pre class='csharp'>if (ObjectStore.ContainsKey(_insightKey))
 {
     var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;(_insightKey);
     Insights.AddRange(insights);
 }</pre>
-    <pre class='python'>if self.ObjectStore.ContainsKey(self.insight_key):
-    insights = self.ObjectStore.ReadJson[List[Insight]](self.insight_key)
-    self.Insights.AddRange(insights)</pre>
+    <pre class='python'>if self.object_store.contains_key(self.insight_key):
+    insights = self.object_store.read_json[List[Insight]](self.insight_key)
+    self.insights.add_range(insights)</pre>
     </div>
 </ol>
 

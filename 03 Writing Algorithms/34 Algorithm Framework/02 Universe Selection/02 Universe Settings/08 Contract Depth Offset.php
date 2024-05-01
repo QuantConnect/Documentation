@@ -1,4 +1,4 @@
-<? include(DOCS_RESOURCES."/universes/settings/contract-depth-offset.php"); ?> adjust the algorithm's <code>UniverseSettings</code> before you create the Universe Selection model.</p>
+<? include(DOCS_RESOURCES."/universes/settings/contract-depth-offset.php"); ?> adjust the algorithm's <code class="csharp">UniverseSettings</code><code class="python">universe_settings</code> before you create the Universe Selection model.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.ContractDepthOffset = 1;

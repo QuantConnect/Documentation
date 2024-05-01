@@ -50,8 +50,8 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     }
 }</pre>
-<pre class='python'># In Initialize
-self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)<?=$extraArgsPy?>))
+<pre class='python'># In initialize
+self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_price)<?=$extraArgsPy?>))
 
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
@@ -60,10 +60,10 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         super().__init__(brokerage_model, security_seeder)<?=$contructorBodyPy?>
 
 
-    def Initialize(self, security: Security) -> None:
+    def initialize(self, security: Security) -> None:
         # First, call the superclass definition
         # This method sets the reality models of each security using the default reality models of the brokerage model
-        super().Initialize(security)
+        super().initialize(security)
 
         # Next, overwrite <?=$comment?>
         

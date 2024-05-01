@@ -7,10 +7,10 @@ option.SetFilter(optionFilterUniverse => optionFilterUniverse.CallsOnly().FrontM
 // Example 2: Select the contracts (including weeklys) that expire in the next 90 days
 option.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().Strikes(-20, 20).Expiration(0, 90));</pre>
     <pre class="python"># Example 1: Select the front month call contracts
-option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly().FrontMonth())
+option.set_filter(lambda option_filter_universe: option_filter_universe.calls_only().front_month())
 
 # Example 2: Select the contracts (including weeklys) that expire in the next 90 days
-option.SetFilter(lambda option_filter_universe: option_filter_universe.IncludeWeeklys().Strikes(-20, 20).Expiration(0, 90))</pre>
+option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().strikes(-20, 20).expiration(0, 90))</pre>
 </div>
 
 <p>To perform thorough filtering on the <code>OptionFilterUniverse</code>, define an isolated filter method.</p>
@@ -25,12 +25,12 @@ private OptionFilterUniverse Selector(OptionFilterUniverse optionFilterUniverse)
     symbols = symbols.Where(symbol => symbol.ID.StrikePrice == strike);
     return optionFilterUniverse.Contracts(symbols);
 }</pre>
-    <pre class="python"># In Initialize
-option.SetFilter(self.contract_selector)
+    <pre class="python"># In initialize
+option.set_filter(self.contract_selector)
     
 def contract_selector(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
-    symbols = option_filter_universe.PutsOnly()
-    strike = min([symbol.ID.StrikePrice for symbol in symbols])
-    symbols = [symbol for symbol in symbols if symbol.ID.StrikePrice == strike]
-    return option_filter_universe.Contracts(symbols)</pre>
+    symbols = option_filter_universe.puts_only()
+    strike = min([symbol.id.strike_price for symbol in symbols])
+    symbols = [symbol for symbol in symbols if symbol.id.strike_price == strike]
+    return option_filter_universe.contracts(symbols)</pre>
 </div>

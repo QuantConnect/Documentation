@@ -10,10 +10,10 @@ AddUniverseSelection(
 );</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
-self.UniverseSettings.FillForward = False
-self.AddUniverseSelection(
+self.universe_settings.fill_forward = False
+self.add_universe_selection(
     OptionUniverseSelectionModel(
-        timedelta(1), lambda _: [Symbol.Create("SPY", SecurityType.Option, Market.USA)]
+        timedelta(1), lambda _: [Symbol.create("SPY", SecurityType.OPTION, Market.USA)]
     )
 )</pre>
 </div>
