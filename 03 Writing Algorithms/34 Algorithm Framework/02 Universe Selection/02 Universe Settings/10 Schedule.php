@@ -1,14 +1,14 @@
 <p>
 The <code>Schedule</code> setting defines the selection schedule of the universe. 
 Most universes run on a daily schedule.
-To change the selection schedule, call the <code>UniverseSettings.Schedule.On</code> method with an <code>IDateRule</code> object before you create the Universe Selection model.
+To change the selection schedule, call the <code class="csharp">UniverseSettings.Schedule.On</code><code class="python">universe_settings.schedule.on</code> method with an <code>IDateRule</code> object before you create the Universe Selection model.
 </p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Schedule.On(DateRules.MonthStart());
 AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("QQQ"));</pre>
-    <pre class="python">self.UniverseSettings.Schedule.On(self.DateRules.MonthStart())
-self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel("QQQ"))</pre>
+    <pre class="python">self.universe_settings.schedule.on(self.date_rules.month_start())
+self.add_universe_selection(ETFConstituentsUniverseSelectionModel("QQQ"))</pre>
 </div>
 
 <? include(DOCS_RESOURCES."/scheduled-events/date-rules.html"); ?>

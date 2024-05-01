@@ -1,8 +1,8 @@
-<p>The <code>ConfidenceWeightedPortfolioConstructionModel</code> generates target portfolio weights based on the <code>Insight.Confidence</code> for the last Insight of each Symbol. If the Insight has a direction of <code>InsightDirection.Up</code>, the model generates long targets. If the Insight has a direction of <code>InsightDirection.Down</code>, the model generates short targets. If the sum of all the last active Insight per Symbol is greater than 1, the model factors down each target percent holdings proportionally so the sum is 1. The model ignores <code>Insight</code> objects that have no <code>Confidence</code> value.</p>
+<p>The <code>ConfidenceWeightedPortfolioConstructionModel</code> generates target portfolio weights based on the <code>Insight.<span class="csharp">Confidence</span><span class="python">confidence</span></code> for the last Insight of each Symbol. If the Insight has a direction of <code>InsightDirection.<span class="csharp">Up</span><span class="python">UP</span></code>, the model generates long targets. If the Insight has a direction of <code>InsightDirection.<span class="csharp">Down</span><span class="python">DOWN</span></code>, the model generates short targets. If the sum of all the last active Insight per Symbol is greater than 1, the model factors down each target percent holdings proportionally so the sum is 1. The model ignores <code>Insight</code> objects that have no <code>Confidence</code> value.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">SetPortfolioConstruction(new ConfidenceWeightedPortfolioConstructionModel());</pre>
-	<pre class="python">self.SetPortfolioConstruction(ConfidenceWeightedPortfolioConstructionModel())</pre>
+	<pre class="python">self.set_portfolio_construction(ConfidenceWeightedPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -19,15 +19,15 @@
     <tbody>
         <tr>
             <td><code class="python">rebalance</code><code class="csharp">resolution</code></td>
-	    <td><code>Resolution</code></td>
-	    <td>Rebalancing frequency</td>
-            <td><code>Resolution.Daily</code></td>
+            <td><code>Resolution</code></td>
+            <td>Rebalancing frequency</td>
+            <td><code>Resolution.<span class="csharp">Daily</span><span class="python">DAILY</span></code></td>
         </tr>
         <tr>
-            <td><code>portfolioBias</code></td>
-	    <td><code>PortfolioBias</code></td>
+            <td><code class="csharp">portfolioBias</code><code class="python">portfolio_bias</code></td>
+	        <td><code>PortfolioBias</code></td>
             <td>The bias of the portfolio</td>
-            <td><code>PortfolioBias.LongShort</code></td>
+            <td><code>PortfolioBias.<span class="csharp">LongShort</span><span class="python">LONG_SHORT</span></code></td>
         </tr>
     </tbody>
 </table>

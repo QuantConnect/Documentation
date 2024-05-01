@@ -3,6 +3,6 @@
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Resolution = Resolution.Daily;
 AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("SPY"));</pre>
-    <pre class="python">self.UniverseSettings.Resolution = Resolution.Daily
-self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
+    <pre class="python">self.universe_settings.resolution = Resolution.DAILY
+self.add_universe_selection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
 </div>

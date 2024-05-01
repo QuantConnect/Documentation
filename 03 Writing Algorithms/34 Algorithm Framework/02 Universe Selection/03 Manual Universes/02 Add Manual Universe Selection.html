@@ -1,12 +1,12 @@
 
-<p>To add a <code>ManualUniverseSelectionModel</code> to your algorithm, in the <code>Initialize</code> method, call the <code>AddUniverseSelection</code> method. The <code>ManualUniverseSelectionModel</code> constructor expects a list of <code>Symbol</code> objects that represent the universe constituents.</p>
+<p>To add a <code>ManualUniverseSelectionModel</code> to your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddUniverseSelection</code><code class="python">add_universe_selection</code> method. The <code>ManualUniverseSelectionModel</code> constructor expects a list of <code>Symbol</code> objects that represent the universe constituents.</p>
 <div class="section-example-container">
 	<pre class="csharp">var tickers = new[] {"SPY", "QQQ", "IWM"};
 var symbols = tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 AddUniverseSelection(new ManualUniverseSelectionModel(symbols));</pre>
 	<pre class="python">tickers = ["SPY", "QQQ", "IWM"]
-symbols = [ Symbol.Create(ticker, SecurityType.Equity, Market.USA) for ticker in tickers]
-self.AddUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
+symbols = [ Symbol.create(ticker, SecurityType.EQUITY, Market.USA) for ticker in tickers]
+self.add_universe_selection(ManualUniverseSelectionModel(symbols))</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -28,7 +28,7 @@ self.AddUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
             <td></td>
         </tr>
         <tr>
-            <td><code>universeSettings</code></td>
+            <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
             <td><code>UniverseSettings</code></td>
             <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
             <td><code class='python'>None</code></td>
@@ -54,14 +54,14 @@ class IndexUniverseSelectionModel : ManualUniverseSelectionModel
         return tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
     }
 }</pre>
-	<pre class="python"># In Initialize
-self.AddUniverseSelection(IndexUniverseSelectionModel())
+	<pre class="python"># In initialize
+self.add_universe_selection(IndexUniverseSelectionModel())
 
 # Outside of the algorithm class
 class IndexUniverseSelectionModel(ManualUniverseSelectionModel):
     def __init__(self):
         tickers = ["SPY", "QQQ", "IWM"]
-        symbols = [Symbol.Create(ticker, SecurityType.Equity, Market.USA) for ticker in tickers]
+        symbols = [Symbol.create(ticker, SecurityType.EQUITY, Market.USA) for ticker in tickers]
         super().__init__(symbols)</pre>
 </div>
 

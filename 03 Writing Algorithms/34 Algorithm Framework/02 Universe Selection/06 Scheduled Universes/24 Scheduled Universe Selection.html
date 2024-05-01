@@ -11,12 +11,12 @@ AddUniverseSelection(
         }
     )
 );</pre>
-	<pre class="python">self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(
+	<pre class="python">self.universe_settings.asynchronous = True
+self.add_universe_selection(
     ScheduledUniverseSelectionModel(
-        self.DateRules.MonthStart(), 
-        self.TimeRules.Midnight, 
-        lambda dt: [Symbol.Create("SPY" if dt.month == 10 else "QQQ", SecurityType.Equity, Market.USA)]
+        self.date_rules.month_start(), 
+        self.time_rules.MIDNIGHT, 
+        lambda dt: [Symbol.create("SPY" if dt.month == 10 else "QQQ", SecurityType.EQUITY, Market.USA)]
     )
 )</pre>
 </div>
@@ -34,13 +34,13 @@ self.AddUniverseSelection(
     </thead>
     <tbody>
         <tr>
-            <td><code>dateRule</code></td>
+            <td><code class="csharp">dateRule</code><code class="python">date_rule</code></td>
 	    <td><code>IDateRule</code></td>
             <td>Date rule defines what days the universe selection function will be invoked</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>timeRule</code></td>
+            <td><code class="csharp">timeRule</code><code class="python">time_rule</code></td>
 	    <td><code>ITimeRule</code></td>
             <td>Time rule defines what times on each day selected by date rule the universe selection function will be invoked</td>
             <td></td>
@@ -54,15 +54,15 @@ self.AddUniverseSelection(
         <tr>
             <td><code>settings</code></td>
 	        <td><code>UniverseSettings</code></td>
-            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.<span class="csharp">UniverseSettings</span><span class="python">universe_settings</span></code> by default.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
     </tbody>
 </table>
 
-<p>The model assumes the <code>timeRule</code> argument is in Coordinated Universal Time (UTC). To use a different timezone, pass a <code>timeZone</code> argument of type <code>DateTimeZone</code> before the <code>dateRule</code> argument.</p>
+<p>The model assumes the <code class="csharp">timeRule</code><code class="python">time_rule</code> argument is in Coordinated Universal Time (UTC). To use a different timezone, pass a <code class="csharp">timeZone</code><code class="python">time_zone</code> argument of type <code>DateTimeZone</code> before the <code class="csharp">dateRule</code><code class="python">date_rule</code> argument.</p>
 
-<p>To return the current universe constituents from the selector function, return <code>Universe.Unchanged</code>.</p>
+<p>To return the current universe constituents from the selector function, return <code>Universe.<span class="csharp">Unchanged</span><span class="python">UNCHANGED</span></code>.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
@@ -81,16 +81,16 @@ private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
 }
 </pre>
 	<pre class="python"># Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
-    self.TimeRules.Every(timedelta(hours = 6)),
-    self.SelectSymbols # selection function in algorithm.
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.every(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY),
+    self.time_rules.every(timedelta(hours = 6)),
+    self.select_symbols # selection function in algorithm.
 ))
 
 # Create selection function which returns symbol objects.
-def SelectSymbols(self, dateTime: datetime) -> List[Symbol]:
+def select_symbols(self, dateTime: datetime) -> List[Symbol]:
     tickers = ['SPY', 'AAPL', 'IBM']
-    return [Symbol.Create(ticker, SecurityType.Equity, Market.USA)
+    return [Symbol.create(ticker, SecurityType.EQUITY, Market.USA)
         for ticker in tickers]</pre>
 </div>
 

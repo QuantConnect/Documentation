@@ -1,5 +1,5 @@
 <p>
-Risk Management models should extend the <code>RiskManagementModel</code> class. Extensions of the <code>RiskManagementModel</code> class must implement the <code>ManageRisk</code> method, which receives an array of <code>PortfolioTarget</code> objects from the Portfolio Construction model at every <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a> and should return an array of risk-adjusted <code>PortfolioTarget</code> objects. The method should only return the adjusted targets, not all of targets. If the method creates a <code>PortfolioTarget</code> object to liquidate a security, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#10-Cancel-Insights'>cancel the security's insights</a> to avoid re-entering the position.
+Risk Management models should extend the <code>RiskManagementModel</code> class. Extensions of the <code>RiskManagementModel</code> class must implement the <code class="csharp">ManageRisk</code><code class="python">manage_risk</code> method, which receives an array of <code>PortfolioTarget</code> objects from the Portfolio Construction model at every <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a> and should return an array of risk-adjusted <code>PortfolioTarget</code> objects. The method should only return the adjusted targets, not all of targets. If the method creates a <code>PortfolioTarget</code> object to liquidate a security, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#10-Cancel-Insights'>cancel the security's insights</a> to avoid re-entering the position.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">class MyRiskManagementModel : RiskManagementModel
@@ -21,15 +21,15 @@ Risk Management models should extend the <code>RiskManagementModel</code> class.
 }</pre>
 	<pre class="python">class MyRiskManagementModel(RiskManagementModel):
     # Adjust the portfolio targets and return them. If no changes emit nothing.
-    def ManageRisk(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; List[PortfolioTarget]:
+    def manage_risk(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; List[PortfolioTarget]:
         return []
 
     # Optional: Be notified when securities change
-    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         # Security additions and removals are pushed here.
         # This can be used for setting up algorithm state.
-        # changes.AddedSecurities
-        # changes.RemovedSecurities
+        # changes.added_securities
+        # changes.removed_securities
         pass
 </pre>
 </div>

@@ -1,4 +1,4 @@
-<p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options, Index Options, and Future Options you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
+<p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options, Index Options, and Future Options you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -8,12 +8,10 @@ AddUniverseSelection(
         _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
     )
 );</pre>
-	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
-self.UniverseSettings.Asynchronous = True
-self.SetUniverseSelection(
+	<pre class="python">self.universe_settings.asynchronous = True
+self.add_universe_selection(
     OptionUniverseSelectionModel(
-        timedelta(1), lambda _: [Symbol.Create("SPY", SecurityType.Option, Market.USA)]
+        timedelta(1), lambda _: [Symbol.create("SPY", SecurityType.OPTION, Market.USA)]
     )
 )</pre>
 </div>
@@ -31,22 +29,22 @@ self.SetUniverseSelection(
     </thead>
     <tbody>
         <tr>
-            <td><code>refreshInterval</code></td>
+            <td><code class="csharp">refreshInterval</code><code class="python">refresh_interval</code></td>
 	    <td><code class="csharp">TimeSpan</code><code class="python">timedelta</code></td>
             <td>Time interval between universe refreshes</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>optionChainSymbolSelector</code></td>
+            <td><code class="csharp">optionChainSymbolSelector</code><code class="python">option_chain_symbol_selector</code></td>
 	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
             <td>A function that selects the Option symbols<br></td>
             <td></td>
         </tr>
         <tr>
-            <td><code>universeSettings</code></td>
-	    <td><code>UniverseSettings</code></td>
+            <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
+            <td><code>UniverseSettings</code></td>
             <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td><code class="csharp">null</code><code class="python">None</code></td>
+            <td><code class='python'>None</code><code class="csharp">null</code></td>
         </tr>
     </tbody>
 </table>
@@ -79,29 +77,27 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
         yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
     }
 }</pre>
-	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
-def Initialize(self) -&gt; None:
-    self.AddUniverseSelection(
+	<pre class="python">def initialize(self) -&gt; None:
+    self.add_universe_selection(
         OptionUniverseSelectionModel(timedelta(days=1), self.select_option_chain_symbols)
     )
 
 def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     # Equity Options example:
     #tickers = ["SPY", "QQQ", "TLT"]
-    #return [Symbol.Create(ticker, SecurityType.Option, Market.USA) for ticker in tickers]
+    #return [Symbol.create(ticker, SecurityType.OPTION, Market.USA) for ticker in tickers]
 
     # Index Options example:
     #tickers = ["VIX", "SPX"]
-    #return [Symbol.Create(ticker, SecurityType.IndexOption, Market.USA) for ticker in tickers]
+    #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
     # Future Options example:
-    future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-    future_contract_symbols = self.FutureChainProvider.GetFutureContractList(future_symbol, self.Time)
-    return [Symbol.CreateCanonicalOption(symbol) for symbol in future_contract_symbols]</pre>
+    future_symbol = Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)
+    future_contract_symbols = self.future_chain_provider.get_future_contract_list(future_symbol, self.time)
+    return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]</pre>
 </div>
 
-<p>This model uses the default Option filter, which selects all of the available Option contracts at the current time step. To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns an <code>OptionFilterUniverse</code> object to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
+<p>This model uses the default Option filter, which selects all of the available Option contracts at the current time step. To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code class="csharp">Filter</code><code class="csharp">filter</code> method. The <code class="csharp">Filter</code><code class="csharp">filter</code> method accepts and returns an <code>OptionFilterUniverse</code> object to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
@@ -145,11 +141,9 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
     }
 }
 </pre>
-	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
-# In Initialize
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
+	<pre class="python"># In initialize
+self.universe_settings.asynchronous = True
+self.add_universe_settings(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
 
 # Outside of the algorithm class
 class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseSelectionModel):
@@ -160,19 +154,19 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
     def select_option_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
         # Equity Options example:
         #tickers = ["SPY", "QQQ", "TLT"]
-        #return [Symbol.Create(ticker, SecurityType.Option, Market.USA) for ticker in tickers]
+        #return [Symbol.create(ticker, SecurityType.OPTION, Market.USA) for ticker in tickers]
 
         # Index Options example:
         #tickers = ["VIX", "SPX"]
-        #return [Symbol.Create(ticker, SecurityType.IndexOption, Market.USA) for ticker in tickers]
+        #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
         # Future Options example:
-        future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-        future_contract_symbols = self.algo.FutureChainProvider.GetFutureContractList(future_symbol, self.algo.Time)
-        return [Symbol.CreateCanonicalOption(symbol) for symbol in future_contract_symbols]
+        future_symbol = Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)
+        future_contract_symbols = self.algo.future_chain_provider.get_future_contract_list(future_symbol, self.algo.time)
+        return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]
 
-    def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
-        return option_filter_universe.Strikes(-1, -1).Expiration(0, 7).CallsOnly()</pre>
+    def filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
+        return option_filter_universe.strikes(-1, -1).expiration(0, 7).calls_only()</pre>
 </div>
 
 <?

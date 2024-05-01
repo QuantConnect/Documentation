@@ -9,12 +9,12 @@ AddUniverseSelection(
         optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
     )
 );</pre>
-	<pre class="python">self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(
+	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+self.universe_settings.Asynchronous = True
+self.add_universe_selection(
     OptionChainedUniverseSelectionModel(
-        self.AddUniverse(self.Universe.DollarVolume.Top(10)),
-        lambda option_filter_universe: option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
+        self.add_universe(self.universe.dollar_volume.top(10)),
+        lambda option_filter_universe: option_filter_universe.strikes(-2, +2).front_month().calls_only()
     )
 )</pre>
 
@@ -40,21 +40,21 @@ self.AddUniverseSelection(
             <td></td>
         </tr>
         <tr>
-            <td><code>optionFilter</code></td>
+            <td><code class="csharp">optionFilter</code><code class="python">option_filter</code></td>
 	    <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">Callable[[OptionFilterUniverse], OptionFilterUniverse]</code></td>
             <td>The Option filter universe to use</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>universeSettings</code></td>
-	    <td><code>UniverseSettings</code></td>
+            <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
+            <td><code>UniverseSettings</code></td>
             <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td><code class="csharp">null</code><code class="python">None</code></td>
+            <td><code class='python'>None</code><code class="csharp">null</code></td>
         </tr>
     </tbody>
 </table>
 
-<p>The <code>optionFilter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
+<p>The <code class="csharp">optionFilter</code><code class="python">option_filter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
@@ -76,17 +76,17 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
 {
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-    self.UniverseSettings.Asynchronous = True
-    self.AddUniverseSelection(
+	<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+    self.universe_settings.Asynchronous = True
+    self.add_universe_selection(
         OptionChainedUniverseSelectionModel(
-            self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction
+            self.add_universe(self.universe.dollar_volume.top(10)), self.option_filter_function
         )
     )
 
-def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-    return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
+def option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+    return option_filter_universe.strikes(-2, +2).front_month().calls_only()</pre>
 </div>
 
 <?

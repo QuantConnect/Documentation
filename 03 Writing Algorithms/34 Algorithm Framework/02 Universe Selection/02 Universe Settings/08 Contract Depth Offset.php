@@ -10,11 +10,11 @@ AddUniverseSelection(
 );</pre>
 	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
-self.UniverseSettings.ContractDepthOffset = 1
-self.AddUniverseSelection(
+self.universe_settings.contract_depth_offset = 1
+self.add_universe_selection(
     FutureUniverseSelectionModel(
         timedelta(1), 
-        lambda _: [Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)]
+        lambda _: [Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>

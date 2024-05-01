@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
 	<pre class="csharp">SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());</pre>
-	<pre class="python">self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())</pre>
+	<pre class="python">self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -21,7 +21,7 @@
             <td><code class="python">rebalance</code><code class="csharp">resolution</code></td>
 	    <td><code>Resolution</code></td>
 	    <td>Rebalancing frequency</td>
-            <td><code>Resolution.Daily</code></td>
+            <td><code>Resolution.<span class="csharp">Daily</span><span class="python">DAILY</span></code></td>
         </tr>
     </tbody>
 </table>

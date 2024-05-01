@@ -1,4 +1,4 @@
-<p>Execution models should extend the <code>ExecutionModel</code> class. Extensions of the <code>ExecutionModel</code> must implement the <code>Execute</code> method, which receives an array of <code>PortfolioTarget</code> objects at every <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a> and is responsible for reaching the target portfolio as efficiently as possible. The <a href="https://www.quantconnect.com/docs/algorithm-framework/portfolio-construction" class="docs-internal-link">Portfolio Construction model</a> creates the <code>PortfolioTarget</code>  objects, the <a href="https://www.quantconnect.com/docs/algorithm-framework/risk-management" class="docs-internal-link">Risk Management model</a> may adjust them, and then the Execution model places the orders to fulfill them.
+<p>Execution models should extend the <code>ExecutionModel</code> class. Extensions of the <code>ExecutionModel</code> must implement the <code class="csharp">Execute</code><code class="python">execute</code> method, which receives an array of <code>PortfolioTarget</code> objects at every <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a> and is responsible for reaching the target portfolio as efficiently as possible. The <a href="https://www.quantconnect.com/docs/algorithm-framework/portfolio-construction" class="docs-internal-link">Portfolio Construction model</a> creates the <code>PortfolioTarget</code>  objects, the <a href="https://www.quantconnect.com/docs/algorithm-framework/risk-management" class="docs-internal-link">Risk Management model</a> may adjust them, and then the Execution model places the orders to fulfill them.
 </p>
 <div class="section-example-container">
 	<pre class="csharp"> // Basic Execution Model Scaffolding Structure Example
@@ -23,15 +23,15 @@ class MyExecutionModel : ExecutionModel {
 class MyExecutionModel(ExecutionModel):
 
     # Fill the supplied portfolio targets efficiently
-    def Execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
         pass
 
     # Optional: Securities changes event for handling new securities.
-    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         # Security additions and removals are pushed here.
         # This can be used for setting up algorithm state.
-        # changes.AddedSecurities
-        # changes.RemovedSecurities
+        # changes.added_securities
+        # changes.removed_securities
         pass</pre>
 </div>
 <p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
@@ -48,12 +48,12 @@ class MyExecutionModel(ExecutionModel):
     </thead>
     <tbody>
         <tr>
-            <td><code>Symbol</code></td>
+            <td><code class="csharp">Symbol</code><code class="python">symbol</code></td>
 	    <td><code>Symbol</code></td>
             <td>Asset to trade</td>
         </tr>
         <tr>
-            <td><code>Quantity</code></td>
+            <td><code class="csharp">Quantity</code><code class="python">quantity</code></td>
             <td><code class="csharp">decimal</code><code class="python">float</code></td>
             <td>Number of units to hold</td>
         </tr>

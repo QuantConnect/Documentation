@@ -1,4 +1,4 @@
-<p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
+<p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -8,13 +8,11 @@ AddUniverseSelection(
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
     )
 );</pre>
-	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(
+	<pre class="python">self.universe_settings.asynchronous = True
+self.add_universe_selection(
     FutureUniverseSelectionModel(
         timedelta(1), 
-        lambda _: [Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)]
+        lambda _: [Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>
@@ -32,22 +30,22 @@ self.AddUniverseSelection(
     </thead>
     <tbody>
         <tr>
-            <td><code>refreshInterval</code></td>
+            <td><code class="csharp">refreshInterval</code><code class="python">refresh_interval</code></td>
 	    <td><code class="csharp">TimeSpan</code><code class="python">timedelta</code></td>
             <td>Time interval between universe refreshes</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>futureChainSymbolSelector</code></td>
+            <td><code class="csharp">futureChainSymbolSelector</code><code class="python">future_chain_symbol_selector</code></td>
 	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
             <td>A function that selects the Future symbols for a given Coordinated Universal Time (UTC). To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>universeSettings</code></td>
-	    <td><code>UniverseSettings</code></td>
+            <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
+            <td><code>UniverseSettings</code></td>
             <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
-            <td><code class="csharp">null</code><code class="python">None</code></td>
+            <td><code class='python'>None</code><code class="csharp">null</code></td>
         </tr>
     </tbody>
 </table>
@@ -69,21 +67,19 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
     };
 }</pre>
-    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
-def Initialize(self) -&gt; None:
-    self.SetUniverseSelection(
+    <pre class="python">def initialize(self) -&gt; None:
+    self.add_universe_selection(
         FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)
     )
 
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ 
-        Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
-        Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
+        Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
+        Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
     ]</pre>
 </div>
 
-<p>This model uses the default Future contract filter, which doesn't select any Futures contracts. To use a different filter, subclass the <code>FutureUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns a <code>FutureFilterUniverse</code> object to select the Futures contracts. The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
+<p>This model uses the default Future contract filter, which doesn't select any Futures contracts. To use a different filter, subclass the <code>FutureUniverseSelectionModel</code> and define a <code class="csharp">Filter</code><code class="python">filter</code> method. The <code class="csharp">Filter</code><code class="python">filter</code> method accepts and returns a <code>FutureFilterUniverse</code> object to select the Futures contracts. The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
 
 <? echo file_get_contents(DOCS_RESOURCES."/universes/future/future-filter-universe.html");?>
 	
@@ -115,11 +111,9 @@ class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
         return filter.FrontMonth();
     }
 }</pre>
-	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
-# In Initialize
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(FrontMonthFutureUniverseSelectionModel())
+	<pre class="python"># In initialize
+self.universe_settings.asynchronous = True
+self.add_universe_selection(FrontMonthFutureUniverseSelectionModel())
 
 # Outside of the algorithm class
 class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
@@ -128,12 +122,12 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
 
     def select_future_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
         return [ 
-            Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
-            Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) 
+            Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
+            Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
         ]
 
-    def Filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
-        return filter.FrontMonth()</pre>
+    def filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
+        return filter.front_month()</pre>
 </div>
 
 <?
