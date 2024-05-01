@@ -1,8 +1,8 @@
-<p>Margin call models must extend the <code>DefaultMarginCallModel</code> class. Extensions of the <code>DefaultMarginCallModel</code> class can override the <code>GetMarginCallOrders</code> and <code>ExecuteMarginCall</code> methods.</p>
+<p>Margin call models must extend the <code>DefaultMarginCallModel</code> class. Extensions of the <code>DefaultMarginCallModel</code> class can override the <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> and <code class="csharp">ExecuteMarginCall</code><code class="python">execute_margin_call</code> methods.</p>
 
-<p>The <code>GetMarginCallOrders</code> method scans the portfolio and the updated data for a potential margin call situation that may get the holdings below zero. The method must return a list of <code>SubmitOrderRequest</code> objects that represent the margin call orders. To issue a margin call warning during this method, set the <code>issueMarginCallWarning</code> argument of the method to true. </p>
+<p>The <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> method scans the portfolio and the updated data for a potential margin call situation that may get the holdings below zero. The method must return a list of <code>SubmitOrderRequest</code> objects that represent the margin call orders. To issue a margin call warning during this method, set the <code>issueMarginCallWarning</code> argument of the method to true. </p>
 
-<p>The <code>ExecuteMarginCall</code> method receives the list of <code>SubmitOrderRequest</code> objects from the <code>GetMarginCallOrders</code> method, executes some of them, and returns a list of <code>OrderTicket</code> objects.</p>
+<p>The <code class="csharp">ExecuteMarginCall</code><code class="python">execute_margin_call</code> method receives the list of <code>SubmitOrderRequest</code> objects from the <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> method, executes some of them, and returns a list of <code>OrderTicket</code> objects.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In the Initialize method, set the margin call model
@@ -30,22 +30,23 @@ public class MyMarginCallModel : DefaultMarginCallModel
     }
 }</submitorderrequest></pre>
     <pre class="python"># In the Initialize method, set the margin call model
-self.Portfolio.MarginCallModel = MyMarginCallModel(self.Portfolio, self.DefaultOrderProperties)
+self.portfolio.margin_call_model = MyMarginCallModel(self.portfolio, self.default_order_properties)
         
 # Define the custom margin call model        
 class MyMarginCallModel(DefaultMarginCallModel):
     def __init__(self,
          portfolio: SecurityPortfolioManager,
-         defaultOrderProperties: IOrderProperties):
-        super().__init__(portfolio, defaultOrderProperties)
+         default_order_properties: IOrderProperties):
+        super().__init__(portfolio, default_order_properties)
 
-    def ExecuteMarginCall(self,
-         generatedMarginCallOrders: List[SubmitOrderRequest]) -&gt; List[OrderTicket]:
-        return super().ExecuteMarginCall(generatedMarginCallOrders)
+    def execute_margin_call(self,
+         generatedMarginCallOrders: List[SubmitOrderRequest]) -> List[OrderTicket]:
+        return super().execute_margin_call(generatedMarginCallOrders)
 
-    def GetMarginCallOrders(self,
-         issueMarginCallWarning: bool) -&gt; List[SubmitOrderRequest]:
-        return super().GetMarginCallOrders(issueMarginCallWarning)<br></pre>
+    def get_margin_call_orders(self,
+         issue_margin_call_warning: bool) -> List[SubmitOrderRequest]:
+        return super().get_margin_call_orders(issue_margin_call_warning)
+<br></pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_769aebdef2735928e516e3f36fa48c52.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_d9fb9673344eb8c6a2073b74fc70070a.html'>this backtest</a></span>.</p>

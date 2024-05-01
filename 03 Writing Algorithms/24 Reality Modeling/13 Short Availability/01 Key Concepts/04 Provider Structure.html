@@ -1,10 +1,10 @@
 <p>
     Shortable providers must implement the <code>IShortableProvider</code> interface. 
-    Shortable providers that implement the <code>IShortableProvider</code> interface must implement the <code>FeeRate</code>, <code>RebateRate</code>, and <code>ShortableQuantity</code> methods. 
+    Shortable providers that implement the <code>IShortableProvider</code> interface must implement the <code class="csharp">FeeRate</code><code class="python">fee_rate</code>, <code class="csharp">RebateRate</code><code class="python">rebate_rate</code>, and <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> methods. 
     These methods receives a Symbol and the local time of the algorithm. 
-    The <code>FeeRate</code> method returns the borrow fee rate. 
-    The <code>RebateRate</code> method returns the borrow rebate rate. 
-    The <code>ShortableQuantity</code> returns the shortable quantity.
+    The <code class="csharp">FeeRate</code><code class="python">fee_rate</code> method returns the borrow fee rate. 
+    The <code class="csharp">RebateRate</code><code class="python">rebate_rate</code> method returns the borrow rebate rate. 
+    The <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> returns the shortable quantity.
 </p>
 
 <div class="section-example-container">
@@ -30,19 +30,20 @@ class MyShortableProvider : IShortableProvider
     }
 }</pre>
 <pre class="python"># In the Initialize method, set the shortable provider
-security.SetShortableProvider(MyShortableProvider())
+security.set_shortable_provider(MyShortableProvider())
 
 # Define the custom shortable provider 
 class MyShortableProvider(NullShortableProvider):
 
-    def FeeRate(self, symbol: Symbol, localTime: datetime) -> float:
+    def fee_rate(self, symbol: Symbol, local_time: datetime) -> float:
         return 0.0025
 
-    def RebateRate(self, symbol: Symbol, localTime: datetime) -> float:
+    def rebate_rate(self, symbol: Symbol, local_time: datetime) -> float:
         return 0.0507
     
-    def ShortableQuantity(self, symbol: Symbol, localTime: datetime) -> float:
-        return 10000</pre>
+    def shortable_quantity(self, symbol: Symbol, local_time: datetime) -> float:
+        return 10000
+</pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_3b08573ceb12aba5e9e559eaab9d2b5c.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_edc3e83fbb02e12fcd25d6835a36ca78.html'>this backtest</a></span>.</p>

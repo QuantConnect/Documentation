@@ -1,5 +1,5 @@
-<p class='csharp'>Option assignment models should implement the <code>IOptionAssignmentModel</code> interface. Extensions of the <code>IOptionAssignmentModel</code> interface must implement the <code>GetAssignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
-<p class='python'>Option assignment models should extend the <code>NullOptionAssignmentModel</code> class. Extensions of the <code>NullOptionAssignmentModel</code> class must implement the <code>GetAssignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
+<p class='csharp'>Option assignment models should implement the <code>IOptionAssignmentModel</code> interface. Extensions of the <code>IOptionAssignmentModel</code> interface must implement the <code class="csharp">GetAssignment</code><code class="python">get_assignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
+<p class='python'>Option assignment models should extend the <code>NullOptionAssignmentModel</code> class. Extensions of the <code>NullOptionAssignmentModel</code> class must implement the <code class="csharp">GetAssignment</code><code class="python">get_assignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In the security initializer, set the custom Option assignment model
@@ -21,18 +21,18 @@ public class MyOptionAssignmentModel : IOptionAssignmentModel
     }
 }</pre>
     <pre class="python"># In the security initializer, set the custom Option assignment model
-security.SetOptionAssignmentModel(MyOptionAssignmentModel())
+security.set_option_assignment_model(MyOptionAssignmentModel())
 
 # Define the custom Option assignment model outside of the algorithm
 class MyOptionAssignmentModel(NullOptionAssignmentModel):
 
-    def GetAssignment(self, parameters: OptionAssignmentParameters) -> OptionAssignmentResult:
-        option = parameters.Option
+    def get_assignment(self, parameters: OptionAssignmentParameters) -> OptionAssignmentResult:
+        option = parameters.option
         # Check if the contract is ITM
-        if option.Right == OptionRight.Call and option.Underlying.Price > option.StrikePrice \
-            or option.Right == OptionRight.Put and option.Underlying.Price < option.StrikePrice:
-            return OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "MyTag")
-        return OptionAssignmentResult.Null</pre>
+        if option.right == OptionRight.CALL and option.underlying.price > option.strike_price
+            or option.right == OptionRight.PUT and option.underlying.price < option.strike_price:
+            return OptionAssignmentResult(option.holdings.absolute_quantity, "MyTag")
+        return OptionAssignmentResult.NULL</pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_2508628c593236c7426c0c0d5e48feba.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_f34015bb1349159cd3ff789ade1e004f.html'>this backtest</a></span>.</p>

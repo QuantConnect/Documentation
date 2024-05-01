@@ -1,4 +1,4 @@
-<p>The brokerage model of your algorithm automatically sets the settlement model for each security, but you can override it. To manually set the settlement model of a security, call the <code>SetSettlementModel</code> method on the <code>Security</code> object.</p>
+<p>The brokerage model of your algorithm automatically sets the settlement model for each security, but you can override it. To manually set the settlement model of a security, call the <code class="csharp">SetSettlementModel</code><code class="python">set_settlement_model</code> method on the <code>Security</code> object.</p>
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 var security = AddEquity("SPY");
@@ -13,7 +13,7 @@ security.set_settlement_model(DelayedSettlementModel(7, timedelta(hours=8)))</pr
 <p>You can also set the settlement model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
 
 <?php
-$overwriteCodePy = "security.SetSettlementModel(DelayedSettlementModel(7, timedelta(hours=8)))";
+$overwriteCodePy = "security.set_settlement_model(DelayedSettlementModel(7, timedelta(hours=8)))";
 $overwriteCodeC = "security.SetSettlementModel(new DelayedSettlementModel(7, TimeSpan.FromHours(8)));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>

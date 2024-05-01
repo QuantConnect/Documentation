@@ -1,4 +1,4 @@
-<p>To set the pricing model of an Option, set its <code>PriceModel</code> property.</p>
+<p>To set the pricing model of an Option, set its <code class="csharp">PriceModel</code><code class="python">price_model</code> property.</p>
 
 <p>If you have access to the <code>Option</code> object when you subscribe to the Option universe or contract, you can set the price model immediately after you create the subscription.</p>
 
@@ -17,8 +17,8 @@ option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 
 <?php
 
-$overwriteCodePy = "if security.Type == SecurityType.Option: # Option type
-            security.PriceModel = OptionPriceModels.CrankNicolsonFD()";
+$overwriteCodePy = "if security.type == SecurityType.OPTION: # Option type
+            security.price_model = OptionPriceModels.CrankNicolsonFD()";
 $overwriteCodeC = "if (security.Type == SecurityType.Option) // Option type
         {
             security.PriceModel = OptionPriceModels.CrankNicolsonFD();

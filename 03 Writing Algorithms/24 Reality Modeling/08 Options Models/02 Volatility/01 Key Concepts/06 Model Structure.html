@@ -1,4 +1,4 @@
-<p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code class="csharp">Update</code><code class="python">update</code> and <code>GetHistoryRequirements</code> methods and a <code>Volatility</code> property. The <code class="csharp">Update</code><code class="python">update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code>Volatility</code>. The <code>GetHistoryRequirements</code> method receives <code>Security</code> and <code class="csharp">DateTime</code><code class="python">datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
+<p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code class="csharp">Update</code><code class="python">update</code> and <code class="csharp">GetHistoryRequirements</code><code class="python">get_history_requirements</code> methods and a <code class="csharp">Volatility</code><code class="python">volatility</code> property. The <code class="csharp">Update</code><code class="python">update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code class="csharp">Volatility</code><code class="python">volatility</code>. The <code class="csharp">GetHistoryRequirements</code><code class="python">get_history_requirements</code> method receives <code>Security</code> and <code class="csharp">DateTime</code><code class="python">datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
 
 <div class="section-example-container">
     <pre class="csharp">// In the Initialize method, set the custom volatility model of the underlying security
@@ -40,21 +40,21 @@ underlying_security.volatility_model = MyVolatilityModel()
 
 # Define the custom volatility model outside of the algorithm
 class MyVolatilityModel(BaseVolatilityModel):
-    Volatility: float = 0
+    volatility: float = 0
 
     def set_subscription_data_config_provider(self,
-         subscriptionDataConfigProvider: Isubscription_data_config_provider) -&gt; None:
-        subscription_data_config_provider = subscriptionDataConfigProvider
+        subscription_data_config_provider: ISubscriptionDataConfigProvider) -&gt; None:
+        super().set_subscription_data_config_provider(subscription_data_config_provider)
 
     def update(self, security: Security, data: BaseData) -&gt; None:
         pass
 
     def get_history_requirements(self,
          security: Security,
-         utcTime: datetime,
+         utc_time: datetime,
          resolution: resolution = None,
-         barCount: int = None) -&gt; List[HistoryRequest]:
-        return super().get_history_requirements(security, utcTime, resolution, barCount)</pre>
+         bar_count: int = None) -&gt; List[HistoryRequest]:
+        return super().get_history_requirements(security, utc_time, resolution, bar_count)</pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_3b7de3817c33cdba298834453f0b6e9a.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_37271f7c266582fdf6cb69659765e2e9.html'>this backtest</a></span>.</p>

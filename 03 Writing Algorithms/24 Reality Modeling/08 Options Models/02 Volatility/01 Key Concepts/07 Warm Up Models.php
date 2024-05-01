@@ -19,11 +19,11 @@ if self.is_warming_up:
 
 <?php
 
-$overwriteCodePy = "if security.Type == SecurityType.Equity:  # Underlying asset type
-            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-            trade_bars = self.algorithm.History[TradeBar](security.Symbol, 30, Resolution.Daily)
+$overwriteCodePy = "if security.type == SecurityType.EQUITY:  # Underlying asset type
+            security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)
+            trade_bars = self.algorithm.History[TradeBar](security.symbol, 30, Resolution.DAILY)
             for trade_bar in trade_bars:
-                security.VolatilityModel.Update(security, trade_bar)";
+                security.volatility_model.update(security, trade_bar)";
 $overwriteCodeC = "if (security.Type == SecurityType.Equity) // Underlying asset type
         {
             security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);

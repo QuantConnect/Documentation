@@ -3,7 +3,11 @@
   The <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default position group buying power models</a> are helpful for Option trading strategies. 
   However, it can be counterproductive if it's not a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies'>supported Option strategy</a>. 
   To disable the validations of the default position group buying power model, use the <code>NullSecurityPositionGroupModel</code>.
+<<<<<<< Updated upstream
   To set the <code>NullSecurityPositionGroupModel</code> for the portfolio, during <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>, call the <code class="csharp">SetPositions</code><code class="python">set_positions</code> method with the <code>SecurityPositionGroupModel.<span class="csharp">Null</span><span class="python">NULL</span></code> argument.
+=======
+  To set the <code>NullSecurityPositionGroupModel</code> for the portfolio, during <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>, call the <code class="csharp">SetPositions</code><code class="python">set_positions</code> method with the <code class="csharp">SecurityPositionGroupModel.Null</code><code class="python">SecurityPositionGroupModel.NULL</code> argument.
+>>>>>>> Stashed changes
 </p>
 
 <div class="section-example-container">

@@ -1,4 +1,4 @@
-<p>Margin interest rate models should implement the <code>IMarginInterestRateModel</code> interface. Extensions of the <code>IMarginInterestRateModel</code> interface must implement the <code>ApplyMarginInterestRate</code> method, which applies margin interest payments to the portfolio.</p>
+<p>Margin interest rate models should implement the <code>IMarginInterestRateModel</code> interface. Extensions of the <code>IMarginInterestRateModel</code> interface must implement the <code class="csharp">ApplyMarginInterestRate</code><code class="python">apply_margin_interest_rate</code> method, which applies margin interest payments to the portfolio.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In the Initialize method, set the margin interest rate model
@@ -20,12 +20,12 @@ security.set_margin_interest_rate_model(MyMarginInterestRateModel())
 # Define the custom margin interest rate model
 class MyMarginInterestRateModel:
 
-    def apply_margin_interest_rate(self, marginInterestRateParameters: MarginInterestRateParameters) -&gt; None:
-        holdings = marginInterestRateParameters.security.holdings
+    def apply_margin_interest_rate(self, margin_interest_rate_parameters: MarginInterestRateParameters) -&gt; None:
+        holdings = margin_interest_rate_parameters.security.holdings
         position_value = holdings.get_quantity_value(holdings.quantity)
         position_value.cash.add_amount(-1)</pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_832b1e7a15fdd672de6a1d0a23fd2564.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_3c545930c9b3e5095c591e9f6a7d402c.html'>this backtest</a></span>.</p>
 
-<p>The <code>ApplyMarginInterestRate</code> method is automatically called at the top of each hour.</p>
+<p>The <code class="csharp">ApplyMarginInterestRate</code><code class="python">apply_margin_interest_rate</code> method is automatically called at the top of each hour.</p>

@@ -32,7 +32,7 @@ self.securities["IBM"].set_fee_model(ConstantFeeModel(1))</pre>
 <p>You can also set the security-specific models inside a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 
 <?php
-$overwriteCodePy = "security.SetFeeModel(ConstantFeeModel(1))";
+$overwriteCodePy = "security.set_fee_model(ConstantFeeModel(1))";
 $overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(1));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>

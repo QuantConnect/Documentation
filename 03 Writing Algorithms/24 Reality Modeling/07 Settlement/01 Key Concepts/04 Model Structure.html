@@ -1,4 +1,4 @@
-<p>Settlement models must extend the <code>ISettlementModel</code> interface. Extensions of the <code>ISettlementModel</code> interface must implement the <code>Scan</code> and <code>ApplyFunds</code> methods. The <code>Scan</code> method is automatically called at the top of each hour and it receives a <code>ScanSettlementModelParameters</code> object. The <code>ApplyFunds</code> method receives an <code>ApplyFundsSettlementModelParameters</code> object and applies the settlement rules. The <code>ApplyFunds</code> method is also automatically called, but its frequency depends on the security type. The <code>ApplyFunds</code> method is automatically called when you fill an order for the following security types:</p>
+<p>Settlement models must extend the <code>ISettlementModel</code> interface. Extensions of the <code>ISettlementModel</code> interface must implement the <code class="csharp">Scan</code><code class="python">scan</code> and <code class="csharp">ApplyFunds</code><code class="python">apply_funds</code> methods. The <code class="csharp">Scan</code><code class="python">scan</code> method is automatically called at the top of each hour and it receives a <code>ScanSettlementModelParameters</code> object. The <code class="csharp">ApplyFunds</code><code class="python">apply_funds</code> method receives an <code>ApplyFundsSettlementModelParameters</code> object and applies the settlement rules. The <code class="csharp">ApplyFunds</code><code class="python">apply_funds</code> method is also automatically called, but its frequency depends on the security type. The <code class="csharp">ApplyFunds</code><code class="python">apply_funds</code> method is automatically called when you fill an order for the following security types:</p>
 
 <ul>
     <li>Equity</li>
@@ -9,7 +9,7 @@
     <li>Index Options</li>
 </ul>
 
-<p>The <code>ApplyFunds</code> method is automatically called when you close a position for the following security types:</p>
+<p>The <code class="csharp">ApplyFunds</code><code class="python">apply_funds</code> method is automatically called when you close a position for the following security types:</p>
 
 <ul>
     <li>Futures</li>
@@ -41,20 +41,21 @@ public class MySettlementModel : ISettlementModel
     }
 }</pre>
 <pre class='python'># In the Initialize method, set the custom settlement model
-security.SetSettlementModel(MySettlementModel())
+security.set_settlement_model(MySettlementModel())
 
 # Define the custom settlement model outside of the algorithm
 class MySettlementModel:
-    def ApplyFunds(self, applyFundsParameters: ApplyFundsSettlementModelParameters) -> None:
-        currency = applyFundsParameters.CashAmount.Currency
-        amount = applyFundsParameters.CashAmount.Amount
-        applyFundsParameters.Portfolio.CashBook[currency].AddAmount(amount)
+    def apply_funds(self, applyFundsParameters: ApplyFundsSettlementModelParameters) -> None:
+        currency = applyFundsParameters.cash_amount.currency
+        amount = applyFundsParameters.cash_amount.amount
+        applyFundsParameters.portfolio.cash_book[currency].add_amount(amount)
 
-    def Scan(self, settlementParameters: ScanSettlementModelParameters) -> None:
+    def scan(self, settlementParameters: ScanSettlementModelParameters) -> None:
         pass
     
-    def GetUnsettledCash(self) -> CashAmount:
-        return CashAmount(0, 'USD')</pre>
+    def get_unsettled_cash(self) -> CashAmount:
+        return CashAmount(0, 'USD')
+</pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_74ae936e73f26d7c28f5b4342f0f4aa5.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_698e230e7b1d51ea228e09093ed6e8c9.html'>this backtest</a></span>.</p>

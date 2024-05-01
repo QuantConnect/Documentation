@@ -5,22 +5,22 @@
 <pre class="csharp">// In Initialize
 AddEquity("SPY", leverage: 3);</pre>
 <pre class="python"># In Initialize
-AddEquity("SPY", leverage=3)</pre>
+self.add_equity("SPY", leverage=3)</pre>
 </div>
 
-<p>You can also set the asset leverage in a security initializer. In order to set the leverage of securities in the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create security subscriptions and before you call <code class="csharp">SetBrokerageModel</code><code class="python">set_brokerage_model</code>. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the <code>SetLeverage</code> call in the security initializer.<br></p>
+<p>You can also set the asset leverage in a security initializer. In order to set the leverage of securities in the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create security subscriptions and before you call <code class="csharp">SetBrokerageModel</code><code class="python">set_brokerage_model</code>. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the <code class="csharp">SetLeverage</code><code class="python">set_leverage</code> call in the security initializer.<br></p>
 
 
 <?php
 
-$overwriteCodePy = "security.SetLeverage(3)";
+$overwriteCodePy = "security.set_leverage(3)";
 $overwriteCodeC = "security.SetLeverage(3);";
 $comment = "the security leverage";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
 
-<p>To set the leverage for all securities in a universe, set the <code>UniverseSettings.Leverage</code> property.</p>
+<p>To set the leverage for all securities in a universe, set the <code class="csharp">UniverseSettings.Leverage</code><code class="python">universe_settings.leverage</code> property.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize

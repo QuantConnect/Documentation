@@ -1,1 +1,1 @@
-<p>Crypto Futures are currently only available on <code>Market.Binance</code>.</p>
+<p>Crypto Futures are currently only available on <code class="csharp">Market.Binance</code><code class="python">Market.BINANCE</code>.</p>
