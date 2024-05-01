@@ -1,6 +1,6 @@
 <? include(DOCS_RESOURCES."/universes/settings/extended-market-hours.php"); ?> 
 
-<p>To enable extended market hours, in the <a href='/docs/v2/writing-algorithms/initialization'>Initialize</a> method, adjust the algorithm's <code>UniverseSettings</code> before you create the Universe Selection model.</p> 
+<p>To enable extended market hours, in the <a href='/docs/v2/writing-algorithms/initialization'><span class="csharp">Initialize</span><span class="python">initialize</span></a> method, adjust the algorithm's <code>UniverseSettings</code> before you create the Universe Selection model.</p> 
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.ExtendedMarketHours = true;

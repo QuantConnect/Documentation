@@ -1,4 +1,4 @@
-<p>The <code>InsightWeightingPortfolioConstructionModel</code> generates target portfolio weights based on the <code>Insight.Weight </code>for the last Insight of each Symbol. If the Insight has a direction of <code>InsightDirection.Up</code>, the model generates long targets. If the Insight has a direction of <code>InsightDirection.Down</code>, the model generates short targets. If the sum of all the last active Insight per Symbol is greater than 1, the model factors down each target percent holdings proportionally so the sum is 1. The model takes the absolute value of the <code>Weight</code> of each <code>Insight</code> object and ignores <code>Insight</code> objects that have no <code>Weight</code> value.</p>
+<p>The <code>InsightWeightingPortfolioConstructionModel</code> generates target portfolio weights based on the <code>Insight.<span class="csharp">Weight</span><span class="python">weight</span></code> for the last Insight of each Symbol. If the Insight has a direction of <code>InsightDirection.<span class="csharp">Up</span><span class="python">UP</span></code>, the model generates long targets. If the Insight has a direction of <code>InsightDirection.<span class="csharp">Down</span><span class="python">DOWN</span></code>, the model generates short targets. If the sum of all the last active Insight per Symbol is greater than 1, the model factors down each target percent holdings proportionally so the sum is 1. The model takes the absolute value of the <code>Weight</code> of each <code>Insight</code> object and ignores <code>Insight</code> objects that have no <code>Weight</code> value.</p>
 
 
 <div class="section-example-container">
@@ -25,10 +25,10 @@
             <td><code class="csharp">Resolution.Daily</code><code class="python">Resolution.DAILY</code></td>
         </tr>
         <tr>
-            <td><code>portfolioBias</code></td>
-	    <td><code>PortfolioBias</code></td>
+            <td><code class="csharp">portfolioBias</code><code class="python">portfolio_bias</code></td>
+	        <td><code>PortfolioBias</code></td>
             <td>The bias of the portfolio</td>
-            <td><code>PortfolioBias.LongShort</code></td>
+            <td><code>PortfolioBias.<span class="csharp">LongShort</span><span class="python">LONG_SHORT</span></code></td>
         </tr>
     </tbody>
 </table>

@@ -1,4 +1,4 @@
-<p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
+<p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -32,13 +32,13 @@ self.add_universe_selection(
     </thead>
     <tbody>
         <tr>
-            <td><code>refreshInterval</code></td>
+            <td><code class="csharp">refreshInterval</code><code class="python">refresh_interval</code></td>
 	    <td><code class="csharp">TimeSpan</code><code class="python">timedelta</code></td>
             <td>Time interval between universe refreshes</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>futureChainSymbolSelector</code></td>
+            <td><code class="csharp">futureChainSymbolSelector</code><code class="python">future_chain_symbol_selector</code></td>
 	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
             <td>A function that selects the Future symbols for a given Coordinated Universal Time (UTC). To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#08-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
@@ -83,7 +83,7 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     ]</pre>
 </div>
 
-<p>This model uses the default Future contract filter, which doesn't select any Futures contracts. To use a different filter, subclass the <code>FutureUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns a <code>FutureFilterUniverse</code> object to select the Futures contracts. The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
+<p>This model uses the default Future contract filter, which doesn't select any Futures contracts. To use a different filter, subclass the <code>FutureUniverseSelectionModel</code> and define a <code class="csharp">Filter</code><code class="python">filter</code> method. The <code class="csharp">Filter</code><code class="python">filter</code> method accepts and returns a <code>FutureFilterUniverse</code> object to select the Futures contracts. The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
 
 <? echo file_get_contents(DOCS_RESOURCES."/universes/future/future-filter-universe.html");?>
 	
@@ -115,11 +115,9 @@ class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
         return filter.FrontMonth();
     }
 }</pre>
-	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
-# In Initialize
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(FrontMonthFutureUniverseSelectionModel())
+	<pre class="python"># In initialize
+self.universe_settings.asynchronous = True
+self.add_universe_selection(FrontMonthFutureUniverseSelectionModel())
 
 # Outside of the algorithm class
 class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
@@ -132,8 +130,8 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
             Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX) 
         ]
 
-    def Filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
-        return filter.FrontMonth()</pre>
+    def filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
+        return filter.front_month()</pre>
 </div>
 
 <?

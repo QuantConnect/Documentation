@@ -1,4 +1,4 @@
-<p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options, Index Options, and Future Options you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
+<p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options, Index Options, and Future Options you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -31,13 +31,13 @@ self.set_universe_selection(
     </thead>
     <tbody>
         <tr>
-            <td><code>refreshInterval</code></td>
+            <td><code class="csharp">refreshInterval</code><code class="python">refresh_interval</code></td>
 	    <td><code class="csharp">TimeSpan</code><code class="python">timedelta</code></td>
             <td>Time interval between universe refreshes</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>optionChainSymbolSelector</code></td>
+            <td><code class="csharp">optionChainSymbolSelector</code><code class="python">option_chain_symbol_selector</code></td>
 	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
             <td>A function that selects the Option symbols<br></td>
             <td></td>
@@ -101,7 +101,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]</pre>
 </div>
 
-<p>This model uses the default Option filter, which selects all of the available Option contracts at the current time step. To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns an <code>OptionFilterUniverse</code> object to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
+<p>This model uses the default Option filter, which selects all of the available Option contracts at the current time step. To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code class="csharp">Filter</code><code class="csharp">filter</code> method. The <code class="csharp">Filter</code><code class="csharp">filter</code> method accepts and returns an <code>OptionFilterUniverse</code> object to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
@@ -145,11 +145,9 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
     }
 }
 </pre>
-	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
-# In Initialize
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
+	<pre class="python"># In initialize
+self.universe_settings.asynchronous = True
+self.add_universe_settings(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
 
 # Outside of the algorithm class
 class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseSelectionModel):

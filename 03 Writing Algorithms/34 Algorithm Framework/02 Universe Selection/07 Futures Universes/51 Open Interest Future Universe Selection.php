@@ -36,7 +36,7 @@ self.add_universe_selection(
             <td></td>
         </tr>
         <tr>
-            <td><code>futureChainSymbolSelector</code></td>
+            <td><code class="csharp">futureChainSymbolSelector</code><code class="python">future_chain_symbol_selector</code></td>
 	    <td>
 		    <code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code>
 		    <code class="python">Callable[[datetime], List[Symbol]]</code>
@@ -45,19 +45,19 @@ self.add_universe_selection(
             <td></td>
         </tr>
         <tr>
-            <td><code>chainContractsLookupLimit</code></td>
+            <td><code class="csharp">chainContractsLookupLimit</code><code class="python">chain_contracts_lookup_limit</code></td>
 	    <td>
 		    <code class='csharp'>int?</code>
-		    <code class='python'>int/NoneType</code>
+		    <code class='python'>int/None</code>
 	    </td>
             <td>Limit on how many contracts to query for open interest</td>
             <td>6</td>
         </tr>
         <tr>
-            <td><code>resultsLimit</code></td>
+            <td><code class="csharp">resultsLimit</code><code class="python">results_limit</code></td>
 	    <td>
 		    <code class='csharp'>int?</code>
-		    <code class='python'>int/NoneType</code>
+		    <code class='python'>int/None</code>
 	    </td>
             <td>Limit on how many contracts will be part of the universe</td>
             <td>1</td>
@@ -126,17 +126,17 @@ class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseS
         };
     }
 }</pre>
-    <pre class='python'># In Initialize
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(GoldOpenInterestFutureUniverseSelectionModel(self))
+    <pre class='python'># In initialize
+self.universe_settings.asynchronous = True
+self.add_universe_selection(GoldOpenInterestFutureUniverseSelectionModel(self))
     
 # Outside of the algorithm class
 class GoldOpenInterestFutureUniverseSelectionModel(OpenInterestFutureUniverseSelectionModel):
-    def __init__(self, algorithm: QCAlgorithm, chainContractsLookupLimit: int = 6, resultsLimit: int = 1):
-        super().__init__(algorithm, self.select_future_chain_symbols, chainContractsLookupLimit, resultsLimit)
+    def __init__(self, algorithm: QCAlgorithm, chain_contracts_lookup_limit: int = 6, results_limit: int = 1):
+        super().__init__(algorithm, self.select_future_chain_symbols, chain_contracts_lookup_limit, results_limit)
 
     def select_future_chain_symbols(self, utcTime: datetime) -> List[Symbol]:
-        return [Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)]</pre>
+        return [Symbol.Create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)]</pre>
 </div>
 
 <?
