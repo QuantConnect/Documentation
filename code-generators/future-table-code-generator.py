@@ -1,5 +1,13 @@
 from pathlib import Path
 from _code_generation_helpers import *
+TICKERS_BY_MARKET = {
+    "CBOT" : ["10Y","2YY","30Y","5YY","AW","BCF","BWF","EH","F1U","KE","MYM","TN","UB","YM","ZB","ZC","ZF","ZL","ZM","ZN","ZO","ZS","ZT","ZW"],
+    "CFE" : ["VX"],
+    "CME" : ["6A","6B","6C","6E","6J","6L","6M","6N","6R","6S","6Z","ACD","AJY","ANE","BIO","BTC","CB","CJY","CNH","CSC","DC","DY","E7","EAD","ECD","EI","EMD","ES","ESK","ETH","GD","GDK","GE","GF","GNF","HE","IBV","J7","LBR","LBS","LE","M2K","M6A","M6B","M6C","M6E","M6J","M6S","MBT","MCD","MES","MET","MIB","MIR","MJY","MNH","MNQ","MRB","MSF","NIY","NKD","NQ","RS1","RTY","RX","SDA","TPY"],
+    "COMEX" : ["AUP","EDP","GC","HG","MGC","MGT","SI","SIL"],
+    "ICE" : ["SB"],
+    "NYMEX" : ["A0D","A0F","A1R","A3G","A7E","A7Q","A8K","A9N","AA6","AA8","AC0","AD0","ADB","AE5","AGA","AJL","AJS","AKL","APS","ARE","AYV","AYX","AZ1","B0","B7H","BK","BOO","BZ","CL","CRB","CSW","CSX","CU","D1N","DCB","EN","EPN","EVC","EWG","EWN","EXR","FO","FRC","FSS","GCU","HCL","HH","HO","HP","HRC","HTT","M1B","MAF","MCL","MEF","NG","PA","PAM","PL","R5O","RB","S5O","YO"]
+    }
 
 class FutureProperties:
     def __init__(self, ticker, market, name):
@@ -29,8 +37,10 @@ if __name__ == '__main__':
     for line in spdb.split('\n'):
         csv = line.split(',')
         if len(csv) > 2 and csv[2] == 'future':
-            ticker = csv[1].upper()
-            properties[csv[1].upper()] = FutureProperties(ticker, csv[0].upper(), csv[3])
+            market, ticker = csv[0].upper(), csv[1].upper()
+            if ticker not in TICKERS_BY_MARKET.get(market, []):
+                continue
+            properties[csv[1].upper()] = FutureProperties(ticker, market, csv[3])
 
     category = ""
 
