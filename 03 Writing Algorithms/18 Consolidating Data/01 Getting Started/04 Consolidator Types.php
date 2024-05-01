@@ -274,22 +274,22 @@
       <tr>
          <td><code>TradeBar</code></td>
          <td><code>TradeBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#02-Consolidate-Trade-Bars'>RangeConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators/range-consolidators#02-Consolidate-Trade-Bars'>RangeConsolidator</a></td>
       </tr>
       <tr>
          <td><code>QuoteBar</code></td>
          <td><code>QuoteBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#03-Consolidate-Quote-Bars'>RangeConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators/range-consolidators#03-Consolidate-Quote-Bars'>RangeConsolidator</a></td>
       </tr>
       <tr>
          <td><code>Tick</code></td>
          <td><code>TradeBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#04-Consolidate-Trade-Ticks'>RangeConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators/range-consolidators#04-Consolidate-Trade-Ticks'>RangeConsolidator</a></td>
       </tr>
       <tr>
          <td><code>Tick</code></td>
          <td><code>QuoteBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#05-Consolidate-Quote-Ticks'>RangeConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators/range-consolidators#05-Consolidate-Quote-Ticks'>RangeConsolidator</a></td>
       </tr>
    </tbody>
 </table>
