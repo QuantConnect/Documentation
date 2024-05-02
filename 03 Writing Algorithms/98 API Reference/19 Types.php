@@ -5,10 +5,12 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/brokerage-name.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/cfd.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/chart.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/correlation-type.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/crypto.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/crypto-future.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/delistings.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/deployment-target.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/derivative-oscillator.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/dividends.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/equity.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/forex.html"); ?>
@@ -17,7 +19,9 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/history-request.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/index.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/insight.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/moving-average-type.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/option.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/option-pricing-model-type.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/option-strategy.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/order-event.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/order-ticket.html"); ?>
@@ -31,12 +35,14 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/slice.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/splits.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/submit-order-request.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/swiss-army-knife-tool.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/symbol.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/symbol-changed-events.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/symbol-properties.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/trade-bar.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/universe.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/universe-settings.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/float-exponential-moving-average.html"); ?>
 
 <style>
 .code-source        { color: grey; float: right }
