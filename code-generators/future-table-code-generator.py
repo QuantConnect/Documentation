@@ -64,20 +64,15 @@ if __name__ == '__main__':
     path.mkdir(parents=True, exist_ok=True)
 
     with open(f'{path}/supported-contracts.html', 'w', encoding='utf-8') as fp:
-        html = '''<table class="table qc-table table-reflow">
-    <thead>
-    <tr><th colspan="3" style="width: 100%;">Name</th></tr>
-    <tr><th style="width: 15%;">Symbol</th><th style="width: 15%;">Market</th><th style="width: 70%;">Accessor Code</th></tr>
-    </thead>
-    <tbody>
+        html = '''<ul>
     '''
+        count = 0
         for x in sorted(properties.values(), key=lambda x: (x.category, x.ticker)):
             if not x.category: continue
-            html += f'''<tr><td colspan="3" style="width: 100%;">{x.name}</td></tr>
-    <tr><td style="width: 15%;">{x.ticker}</td><td style="width: 15%;">{x.market}</td><td style="width: 70%;"><code>{x.full_accessor}</code></td></tr>
+            count +=1
+            html += f'''<li><b>{x.full_accessor}</b>: {x.name} ({x.market}: {x.ticker})</li>
     '''
-        fp.write(html + '''</tbody>
-    </table>''')
+        fp.write(f"<p>The following list shows the available ({count}) Futures:</p>{html}</ul>")
 
     ###
     ### Write Future Option Table
@@ -101,17 +96,13 @@ if __name__ == '__main__':
 
     with open(f'{path}/supported-contracts.html', 'w', encoding='utf-8') as fp:
 
-        html = '''<table class="table qc-table table-reflow">
-    <thead>
-    <tr><th colspan="4" style="width: 100%;">Name</th></tr>
-    <tr><th style="width: 15%;">Symbol</th><th style="width: 15%;">Underlying</th><th style="width: 15%;">Market</th><th style="width: 70%;">Accessor Code</th></tr>
-    </thead>
-    <tbody>
+        html = '''<ul>
     '''
+        count = 0
         for x in sorted(properties.values(), key=lambda x: (x.category, x.ticker)):
             if not x.category: continue
-            html += f'''<tr><td colspan="4" style="width: 100%;">{x.name}</td></tr>
-    <tr><td style="width: 15%;">{x.option_ticker}</td><td style="width: 15%;">{x.ticker}</td><td style="width: 15%;">{x.market}</td><td style="width: 70%;"><code>{x.full_accessor}</code></td></tr>
+            count += 1
+            underlying = '' if x.option_ticker == x.ticker else f' | Underlying: {x.ticker}'
+            html += f'''<li><b>{x.full_accessor}</b>: {x.name} ({x.market}: {x.option_ticker}{underlying})</li>
     '''
-        fp.write(html + '''</tbody>
-    </table>''')
+        fp.write(f"<p>The following list shows the available ({count}) Futures Options:</p>{html}</ul>")
