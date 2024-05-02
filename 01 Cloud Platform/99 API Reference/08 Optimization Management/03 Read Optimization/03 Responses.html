@@ -26,6 +26,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 {
   "optimization": {
     "optimizationId": "string",
+    "snapshotId": "string",
     "projectId": "string",
     "name": "string",
     "status": "New",
@@ -41,7 +42,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
       {
         "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
         "operator": "greater",
-        "target-value": 1
+        "targetValue": 1
       }
     ],
     "parameters": [
@@ -50,22 +51,18 @@ The <code>/optimizations/read</code> API provides a response in the following fo
         "min": 10,
         "max": 20,
         "step": 1,
-        "min-step": 1
+        "minStep": 1
       }
     ],
-    "backtests": [
-      {
-        "name": "string",
-        "id": "string",
-        "progress": "string",
-        "exitCode": 0,
-        "statistics": "string",
-        "parameterSet": "string",
-        "equity": "string"
-      }
-    ],
+    "backtests": ,
     "strategy": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy",
-    "requested": "2021-11-26T15:18:27.693Z"
+    "requested": "2021-11-26T15:18:27.693Z",
+    "optimizationTarget": "string",
+    "gridLayout": [
+      "object"
+    ],
+    "outOfSampleMaxEndDate": "string",
+    "outOfSampleDays": 0
   },
   "success": true,
   "errors": [
@@ -83,6 +80,9 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </thead>
 <tr>
 <td width="20%">optimizationId</td> <td> <code>string</code> <br/> Optimization ID.</td>
+</tr>
+<tr>
+<td width="20%">snapshotId</td> <td> <code>string</code> <br/> Snapshot iD of this optimization.</td>
 </tr>
 <tr>
 <td width="20%">projectId</td> <td> <code>string</code> <br/> Project ID of the project the optimization belongs to.</td>
@@ -103,7 +103,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 <td width="20%">criterion</td> <td> <code>OptimizationTarget object</code> <br/> /.</td>
 </tr>
 <tr>
-<td width="20%">runtimeStatistics</td> <td> <code>string object</code> <br/> Runtime banner/updating statistics for the optimization.</td>
+<td width="20%">runtimeStatistics</td> <td> <code>string object</code> <br/> Dictionary representing a runtime banner/updating statistics for the optimization.</td>
 </tr>
 <tr>
 <td width="20%">constraints</td> <td> <code>OptimizationConstraint Array</code> <br/> Optimization constraints.</td>
@@ -112,7 +112,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 <td width="20%">parameters</td> <td> <code>OptimizationParameter Array</code> <br/> Optimization parameters.</td>
 </tr>
 <tr>
-<td width="20%">backtests</td> <td> <code>OptimizationBacktest Array</code> <br/> Optimization constraints.</td>
+<td width="20%">backtests</td> <td> <code>object</code> <br/> Dictionary of optimization backtests.</td>
 </tr>
 <tr>
 <td width="20%">strategy</td> <td> <code>string<br/><i><sub>example: QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy</sub></i></code> <br/> Optimization strategy.</td>
@@ -121,11 +121,24 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 <td width="20%">requested</td> <td> <code>string($date-time)</code> <br/> Optimization requested date and time.</td>
 </tr>
 <tr>
+<td width="20%">optimizationTarget</td> <td> <code>string</code> <br/> Statistic to be optimized.</td>
+</tr>
+<tr>
+<td width="20%">gridLayout</td> <td> <code>object Array</code> <br/> List with grid charts representing the grid layout.</td>
+</tr>
+<tr>
+<td width="20%">outOfSampleMaxEndDate</td> <td> <code>string</code> <br/> End date of out of sample data.</td>
+</tr>
+<tr>
+<td width="20%">outOfSampleDays</td> <td> <code>integer</code> <br/> Number of days of out of sample days.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
   "optimizationId": "string",
+  "snapshotId": "string",
   "projectId": "string",
   "name": "string",
   "status": "New",
@@ -141,7 +154,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
     {
       "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
       "operator": "greater",
-      "target-value": 1
+      "targetValue": 1
     }
   ],
   "parameters": [
@@ -150,22 +163,18 @@ The <code>/optimizations/read</code> API provides a response in the following fo
       "min": 10,
       "max": 20,
       "step": 1,
-      "min-step": 1
+      "minStep": 1
     }
   ],
-  "backtests": [
-    {
-      "name": "string",
-      "id": "string",
-      "progress": "string",
-      "exitCode": 0,
-      "statistics": "string",
-      "parameterSet": "string",
-      "equity": "string"
-    }
-  ],
+  "backtests": ,
   "strategy": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy",
-  "requested": "2021-11-26T15:18:27.693Z"
+  "requested": "2021-11-26T15:18:27.693Z",
+  "optimizationTarget": "string",
+  "gridLayout": [
+    "object"
+  ],
+  "outOfSampleMaxEndDate": "string",
+  "outOfSampleDays": 0
 }</pre>
 </div>
 </td>
@@ -210,7 +219,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 <td width="20%">operator</td> <td> <code>string<br/><i><sub>example: greater</sub></i></code> <br/> The target comparison operation.</td>
 </tr>
 <tr>
-<td width="20%">target-value</td> <td> <code>float<br/><i><sub>example: 1</sub></i></code> <br/> The value of the property we want to track.</td>
+<td width="20%">targetValue</td> <td> <code>float<br/><i><sub>example: 1</sub></i></code> <br/> The value of the property we want to track.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -219,7 +228,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 {
   "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
   "operator": "greater",
-  "target-value": 1
+  "targetValue": 1
 }</pre>
 </div>
 </td>
@@ -243,7 +252,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 <td width="20%">step</td> <td> <code>float<br/><i><sub>example: 1</sub></i></code> <br/> Movement, should be positive.</td>
 </tr>
 <tr>
-<td width="20%">min-step</td> <td> <code>float<br/><i><sub>example: 1</sub></i></code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
+<td width="20%">minStep</td> <td> <code>float<br/><i><sub>example: 1</sub></i></code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -254,50 +263,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
   "min": 10,
   "max": 20,
   "step": 1,
-  "min-step": 1
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OptimizationBacktest</code> Model</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">name</td> <td> <code>string</code> <br/> The backtest name.</td>
-</tr>
-<tr>
-<td width="20%">id</td> <td> <code>string</code> <br/> The backtest id.</td>
-</tr>
-<tr>
-<td width="20%">progress</td> <td> <code>string</code> <br/> Progress of the backtest as a percentage from 0-1 based on the days lapsed from start-finish.</td>
-</tr>
-<tr>
-<td width="20%">exitCode</td> <td> <code>integer</code> <br/> The exit code of this backtest.</td>
-</tr>
-<tr>
-<td width="20%">statistics</td> <td> <code>string object</code> <br/> The backtest statistics results.</td>
-</tr>
-<tr>
-<td width="20%">parameterSet</td> <td> <code>string</code> <br/> Represent a combination as key value of parameters, i.e. order doesn't matter.</td>
-</tr>
-<tr>
-<td width="20%">equity</td> <td> <code>string</code> <br/> The backtest equity chart series.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "name": "string",
-  "id": "string",
-  "progress": "string",
-  "exitCode": 0,
-  "statistics": "string",
-  "parameterSet": "string",
-  "equity": "string"
+  "minStep": 1
 }</pre>
 </div>
 </td>

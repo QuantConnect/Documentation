@@ -7,6 +7,58 @@ The <code>/optimizations/create</code> API provides a response in the following 
 <table class="table qc-table">
 <thead>
 <tr>
+<th colspan="2"><code>ListOptimizationResponse</code> Model - Response received when listing optimizations of a project.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">optimizations</td> <td> <code>CreateOptimizationResponse Array</code> <br/> Collection of summarized optimization objects.</td>
+</tr>
+<tr>
+<td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
+</tr>
+<tr>
+<td width="20%">errors</td> <td> <code>string Array</code> <br/> List of errors with the API call.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "optimizations": [
+    {
+      "optimizationId": "string",
+      "projectId": "string",
+      "name": "string",
+      "status": "New",
+      "nodeType": "O2-8",
+      "criterion": {
+        "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
+        "extremum": "max or min",
+        "target-value": 1
+      },
+      "created": "2021-11-26T15:18:27.693Z",
+      "psr": 0,
+      "sharpeRatio": 0,
+      "trades": 0,
+      "cloneId": 0,
+      "outOfSampleDays": 0,
+      "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
+      "parameters": [
+        "object"
+      ]
+    }
+  ],
+  "success": true,
+  "errors": [
+    "string"
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
 <th colspan="2"><code>CreateOptimizationResponse</code> Model - Response received when launching an optimization job.</th>
 </tr>
 </thead>
@@ -29,6 +81,30 @@ The <code>/optimizations/create</code> API provides a response in the following 
 <td width="20%">criterion</td> <td> <code>OptimizationTarget object</code> <br/> /.</td>
 </tr>
 <tr>
+<td width="20%">created</td> <td> <code>string($date-time)</code> <br/> Date when this optimization was created.</td>
+</tr>
+<tr>
+<td width="20%">psr</td> <td> <code>number</code> <br/> Price-sales ratio stastic.</td>
+</tr>
+<tr>
+<td width="20%">sharpeRatio</td> <td> <code>number</code> <br/> Sharpe ratio statistic.</td>
+</tr>
+<tr>
+<td width="20%">trades</td> <td> <code>integer</code> <br/> Number of trades.</td>
+</tr>
+<tr>
+<td width="20%">cloneId</td> <td> <code>integer</code> <br/> ID of project, were this current project was originally cloned.</td>
+</tr>
+<tr>
+<td width="20%">outOfSampleDays</td> <td> <code>integer</code> <br/> Number of days of out of sample days.</td>
+</tr>
+<tr>
+<td width="20%">outOfSampleMaxEndDate</td> <td> <code>string($date-time)</code> <br/> End date of out of sample data.</td>
+</tr>
+<tr>
+<td width="20%">parameters</td> <td> <code>object Array</code> <br/> Parameters used in this optimization.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
@@ -42,7 +118,17 @@ The <code>/optimizations/create</code> API provides a response in the following 
     "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
     "extremum": "max or min",
     "target-value": 1
-  }
+  },
+  "created": "2021-11-26T15:18:27.693Z",
+  "psr": 0,
+  "sharpeRatio": 0,
+  "trades": 0,
+  "cloneId": 0,
+  "outOfSampleDays": 0,
+  "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
+  "parameters": [
+    "object"
+  ]
 }</pre>
 </div>
 </td>
