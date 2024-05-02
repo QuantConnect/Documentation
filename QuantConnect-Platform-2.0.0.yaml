@@ -1314,11 +1314,11 @@ components:
     AlgorithmPerformance:
       type: object
       properties:
-        TradeStatistics:
+        tradeStatistics:
           $ref: '#/components/schemas/TradeStatistics'
-        PortfolioStatistics:
+        portfolioStatistics:
           $ref: '#/components/schemas/PortfolioStatistics'
-        ClosedTrades:
+        closedTrades:
           type: array
           description: The algorithm statistics on portfolio.
           items:
@@ -1412,11 +1412,11 @@ components:
     BacktestOrdersResponse:
       type: object
       properties:
-        Orders:
+        orders:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Order'
-        Length:
+        length:
           type: integer
           description: Total number of returned orders
       description: Contains orders and the number of orders of the backtest in the request criteria.
@@ -1591,7 +1591,7 @@ components:
         statistics:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/TradeStatistics'
+            $ref: '#/components/schemas/StatisticsResult'
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
           type: object
@@ -1942,20 +1942,20 @@ components:
     Cash:
       type: object
       properties:
-        Symbol:
+        symbol:
           type: string
           description: Gets the symbol used to represent this cash.
-        Amount:
+        amount:
           type: number
           description: Gets or sets the amount of cash held.
           format: float
-        ConversionRate:
+        conversionRate:
           type: number
           description: The currency conversion rate to the account base currency.
           format: float
-        CurrencySymbol:
+        currencySymbol:
           description: The symbol of the currency, such as $.
-        ValueInAccountCurrency:
+        valueInAccountCurrency:
           type: number
           description: The value of the currency cash in the account base currency.
           format: float
@@ -1986,16 +1986,16 @@ components:
     Chart:
       type: object
       properties:
-        Name:
+        name:
           type: string
           description: Name of the Chart.
-        ChartType:
+        chartType:
           type: string
           description: Type of the Chart, Overlayed or Stacked.
           enum:
           - Overlay
           - Stacked
-        Series:
+        series:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Series'
@@ -2689,35 +2689,35 @@ components:
     Holding:
       type: object
       properties:
-        Symbol:
+        symbol:
           $ref: '#/components/schemas/Symbol'
-        Type:
+        type:
           $ref: '#/components/schemas/SecurityType'
-        CurrencySymbol:
+        currencySymbol:
           type: string
           description: The currency symbol of the holding.
           example: $
-        AveragePrice:
+        averagePrice:
           type: number
           description: Average Price of our Holding in the currency the symbol is traded in.
           format: float
-        Quantity:
+        quantity:
           type: number
           description: Quantity of the Symbol we hold.
           format: float
-        MarketPrice:
+        marketPrice:
           type: number
           description: Current Market Price of the Asset in the currency the symbol is traded in.
           format: float
-        ConversionRate:
+        conversionRate:
           type: number
           description: Current market conversion rate into the account currency.
           format: float
-        MarketValue:
+        marketValue:
           type: number
           description: Current market value of the holding.
           format: float
-        UnrealizedPnl:
+        unrealizedPnl:
           type: number
           description: Current unrealized P/L of the holding.
           format: float
@@ -2742,42 +2742,42 @@ components:
     Insight:
       type: object
       properties:
-        Id:
+        id:
           type: string
           description: Insight ID.
-        Time:
+        time:
           type: number
           description: Gets the utc unixtime this insight was created.
           format: float
-        SignalDirection:
+        signalDirection:
           type: string
           description: Gets the predicted direction, down, flat or up.
           enum:
           - Down
           - Flat
           - Up
-        Type:
+        type:
           type: string
           description: Gets the type of insight, for example, price or volatility
           enum:
           - Price
           - Volatility
-        Symbol:
+        symbol:
           type: string
           description: Gets the symbol this insight is for
-        Direction:
+        direction:
           type: number
           description: Gets the direction score
           format: float
-        Magnitude:
+        magnitude:
           type: number
           description: Gets the magnitude score
           format: float
-        Period:
+        period:
           type: number
           description: Gets the period, in seconds, over which this insight is expected to come to fruition
           format: float
-        Weight:
+        weight:
           type: number
           description: Gets the portfolio weight of this insight
           format: float
@@ -3831,12 +3831,12 @@ components:
     Portfolio:
       type: object
       properties:
-        Holdings:
+        holdings:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Holding'
           description: Dictionary of algorithm holdings information.
-        Cash:
+        cash:
           $ref: '#/components/schemas/Cash'
     Project:
       type: object
@@ -4015,79 +4015,79 @@ components:
     PortfolioStatistics:
       type: object
       properties:
-        RiskFreeRate:
+        riskFreeRate:
           type: number
           description: The current defined risk free annual return rate.
           format: float
-        AverageWinRate:
+        averageWinRate:
           type: number
           description: The average rate of return for winning trades.
           format: float
-        AverageLossRate:
+        averageLossRate:
           type: number
           description: The average rate of return for losing trades.
           format: float
-        ProfitLossRatio:
+        profitLossRatio:
           type: number
           description: The ratio of the average win rate to the average loss rate.
           format: float
-        WinRate:
+        winRate:
           type: number
           description: The ratio of the number of winning trades to the total number of trades.
           format: float
-        LossRate:
+        lossRate:
           type: number
           description: The ratio of the number of losing trades to the total number of trades.
           format: float
-        Expectancy:
+        expectancy:
           type: number
           description: The expected value of the rate of return.
           format: float
-        CompoundingAnnualReturn:
+        compoundingAnnualReturn:
           type: number
           description: Annual compounded returns statistic based on the final-starting capital and years.
           format: float
-        Drawdown:
+        drawdown:
           type: number
           description: Drawdown maximum percentage.
           format: float
-        TotalNetProfit:
+        totalNetProfit:
           type: number
           description: The total net profit percentage.
           format: float
-        SharpeRatio:
+        sharpeRatio:
           type: number
           description: 'Sharpe ratio with respect to risk free rate: measures excess of return per unit of risk.'
           format: float
-        ProbabilisticSharpeRatio:
+        probabilisticSharpeRatio:
           type: number
           description: Probabilistic Sharpe Ratio is a probability measure associated with the Sharpe ratio. It informs us of the probability that the estimated Sharpe ratio is greater than a chosen benchmark.
           format: float
-        Alpha:
+        alpha:
           type: number
           description: Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.
           format: float
-        Beta:
+        beta:
           type: number
           description: Algorithm beta statistic - the covariance between the algorithm and benchmark performance, divided by benchmark variance.
           format: float
-        AnnualStandardDeviation:
+        annualStandardDeviation:
           type: number
           description: Annualized standard deviation
           format: float
-        AnnualVariance:
+        annualVariance:
           type: number
           description: Annualized variance statistic calculation using the daily performance variance and trading days per year.
           format: float
-        InformationRatio:
+        informationRatio:
           type: number
           description: Information ratio - risk adjusted return.
           format: float
-        TrackingError:
+        trackingError:
           type: number
           description: Tracking error volatility (TEV) statistic - a measure of how closely a portfolio follows the index to which it is benchmarked.
           format: float
-        TreynorRatio:
+        treynorRatio:
           type: number
           description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
           format: float
@@ -4510,21 +4510,21 @@ components:
     Series:
       type: object
       properties:
-        Name:
+        name:
           type: string
           description: Name of the series.
-        Unit:
+        unit:
           type: string
           description: Axis for the chart series.
-        Index:
+        index:
           type: integer
           description: Index/position of the series on the chart.
-        Values:
+        values:
           type: array
           description: Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest)
           items:
             $ref: '#/components/schemas/ChartPoint'
-        SeriesType:
+        seriesType:
           type: string
           description: Chart type for the series.
           enum:
@@ -4536,10 +4536,10 @@ components:
           - StackedArea
           - Pie
           - Treemap
-        Color:
+        color:
           type: string
           description: Color the series.
-        ScatterMarkerSymbol:
+        scatterMarkerSymbol:
           type: string
           description: Shape or symbol for the marker in a scatter plot.
           enum:
@@ -4560,6 +4560,88 @@ components:
           type: string
           description: Key to the Object Store file.
       description: Request to upload a file to an Object Store of a specific organization and key.
+    StatisticsResult:
+      type: object
+      properties:
+        Total Orders:
+          type: string
+          description: Total nuber of orders.
+        Average Win:
+          type: string
+          description: The average rate of return for winning trades.
+        Average Loss:
+          type: string
+          description: The average rate of return for losing trades.
+        Compounding Annual Return:
+          type: string
+          description: Annual compounded returns statistic based on the final-starting capital and years.
+        Drawdown:
+          type: string
+          description: Drawdown maximum percentage.
+        Expectancy:
+          type: string
+          description: The expected value of the rate of return.
+        Start Equity:
+          type: string
+          description: Initial Equity Total Value.
+        End Equity:
+          type: string
+          description: Final Equity Total Value.
+        Net Profit:
+          type: string
+          description: The total net profit percentage.
+        Sharpe Ratio:
+          type: string
+          description: Sharpe ratio with respect to risk free rate; measures excess of return per unit of risk.
+        Sortino Ratio:
+          type: string
+          description: Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.
+        Probabilistic Sharpe Ratio:
+          type: string
+          description: Is a probability measure associated with the Sharpe ratio. It informs us of the probability that the estimated Sharpe ratio is greater than a chosen benchmark.
+        Loss Rate:
+          type: string
+          description: The ratio of the number of losing trades to the total number of trades.
+        Win Rate:
+          type: string
+          description: The ratio of the number of winning trades to the total number of trades.
+        Profit-Loss Ratio:
+          type: string
+          description: The ratio of the average win rate to the average loss rate.
+        Alpha:
+          type: string
+          description: Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.
+        Beta:
+          type: string
+          description: Algorithm "beta" statistic - the covariance between the algorithm and benchmark performance, divided by benchmark's variance.
+        Annual Standard Deviation:
+          type: string
+          description: Annualized standard deviation.
+        Annual Variance:
+          type: string
+          description: Annualized variance statistic calculation using the daily performance variance and trading days per year.
+        Information Ratio:
+          type: string
+          description: Information ratio - risk adjusted return.
+        Tracking Error:
+          type: string
+          description: Tracking error volatility (TEV) statistic - a measure of how closely a portfolio follows the index to which it is benchmarked.
+        Treynor Ratio:
+          type: string
+          description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
+        Total Fees:
+          type: string
+          description: Total amount of fees.
+        Estimated Strategy Capacity:
+          type: string
+          description: The estimated total capacity of the strategy at a point in time.
+        Lowest Capacity Asset:
+          type: string
+          description: Provide a reference to the lowest capacity symbol used in scaling down the capacity for debugging.
+        Portfolio Turnover:
+          type: string
+          description: The average Portfolio Turnover
+      description: Statistics information sent during the algorithm operations.
     StopLiveAlgorithmRequest:
       type: object
       properties:
@@ -4612,50 +4694,50 @@ components:
     Trade:
       type: object
       properties:
-        Symbol:
+        symbol:
           $ref: '#/components/schemas/Symbol'
-        EntryTime:
+        entryTime:
           type: string
           description: The date and time the trade was opened.
           format: date-time
-        EntryPrice:
+        entryPrice:
           type: number
           description: The price at which the trade was opened (or the average price if multiple entries).
           format: float
-        Direction:
+        direction:
           $ref: '#/components/schemas/TradeDirection'
-        Quantity:
+        quantity:
           type: number
           description: The total unsigned quantity of the trade.
           format: float
-        ExitTime:
+        exitTime:
           type: string
           description: The date and time the trade was closed.
           format: date-time
-        ExitPrice:
+        exitPrice:
           type: number
           description: The price at which the trade was closed (or the average price if multiple exits).
           format: float
-        ProfitLoss:
+        profitLoss:
           type: number
           description: The gross profit/loss of the trade (as account currency).
           format: float
-        TotalFees:
+        totalFees:
           type: number
           description: The total fees associated with the trade (always positive value) (as account currency).
           format: float
-        MAE:
+        mae:
           type: number
           description: The Maximum Adverse Excursion (as account currency).
           format: float
-        MFE:
+        mfe:
           type: number
           description: The Maximum Favorable Excursion (as account currency).
           format: float
-        Duration:
+        duration:
           type: string
           description: The duration of the trade.
-        EndTradeDrawdown:
+        endTradeDrawdown:
           type: number
           description: The amount of profit given back before the trade was closed.
           format: float
@@ -4669,155 +4751,155 @@ components:
     TradeStatistics:
       type: object
       properties:
-        StartDateTime:
+        startDateTime:
           type: string
           description: The entry date/time of the first trade
           format: date-time
-        EndDateTime:
+        endDateTime:
           type: string
           description: The exit date/time of the first trade.
           format: date-time
-        TotalNumberOfTrades:
+        totalNumberOfTrades:
           type: integer
           description: The total number of trades.
-        NumberOfWinningTrades:
+        numberOfWinningTrades:
           type: integer
           description: The total number of winning trades.
-        NumberOfLosingTrades:
+        numberOfLosingTrades:
           type: integer
           description: The total number of losing trades.
-        TotalProfitLoss:
+        totalProfitLoss:
           type: number
           description: The total profit/loss for all trades (as symbol currency).
           format: float
-        TotalProfit:
+        totalProfit:
           type: number
           description: The total profit for all winning trades (as symbol currency).
           format: float
-        TotalLoss:
+        totalLoss:
           type: number
           description: The total loss for all losing trades (as symbol currency).
           format: float
-        LargestProfit:
+        largestProfit:
           type: number
           description: The largest profit in a single trade (as symbol currency).
           format: float
-        LargestLoss:
+        largestLoss:
           type: number
           description: The largest loss in a single trade (as symbol currency).
           format: float
-        AverageProfitLoss:
+        averageProfitLoss:
           type: number
           description: The average profit/loss (a.k.a. Expectancy or Average Trade) for all trades (as symbol currency).
           format: float
-        AverageProfit:
+        averageProfit:
           type: number
           description: The average profit for all winning trades (as symbol currency).
           format: float
-        AverageLoss:
+        averageLoss:
           type: number
           description: The average loss for all winning trades (as symbol currency).
           format: float
-        AverageTradeDuration:
+        averageTradeDuration:
           type: string
           description: The average duration for all trades.
-        AverageWinningTradeDuration:
+        averageWinningTradeDuration:
           type: string
           description: The average duration for all winning trades.
-        AverageLosingTradeDuration:
+        averageLosingTradeDuration:
           type: string
           description: The average duration for all losing trades.
-        MedianTradeDuration:
+        medianTradeDuration:
           type: string
           description: The median duration for all trades.
-        MedianWinningTradeDuration:
+        medianWinningTradeDuration:
           type: string
           description: The median duration for all winning trades.
-        MedianLosingTradeDuration:
+        medianLosingTradeDuration:
           type: string
           description: The median duration for all losing trades.
-        MaxConsecutiveWinningTrades:
+        maxConsecutiveWinningTrades:
           type: integer
           description: The maximum number of consecutive winning trades.
-        MaxConsecutiveLosingTrades:
+        maxConsecutiveLosingTrades:
           type: integer
           description: The maximum number of consecutive losing trades.
-        ProfitLossRatio:
+        profitLossRatio:
           type: number
           description: The ratio of the average profit per trade to the average loss per trade.
           format: float
-        WinLossRatio:
+        winLossRatio:
           type: number
           description: The ratio of the number of winning trades to the number of losing trades.
           format: float
-        WinRate:
+        winRate:
           type: number
           description: The ratio of the number of winning trades to the total number of trades.
           format: float
-        LossRate:
+        lossRate:
           type: number
           description: The ratio of the number of losing trades to the total number of trades.
           format: float
-        AverageMAE:
+        averageMAE:
           type: number
           description: The average Maximum Adverse Excursion for all trades.
           format: float
-        AverageMFE:
+        averageMFE:
           type: number
           description: The average Maximum Adverse Excursion for all trades.
           format: float
-        LargestMAE:
+        largestMAE:
           type: number
           description: The average Maximum Favorable Excursion for all trades.
           format: float
-        LargestMFE:
+        largestMFE:
           type: number
           description: The largest Maximum Adverse Excursion in a single trade (as symbol currency).
           format: float
-        MaximumClosedTradeDrawdown:
+        maximumClosedTradeDrawdown:
           type: number
           description: The maximum closed-trade drawdown for all trades (as symbol currency).
           format: float
-        MaximumIntraTradeDrawdown:
+        maximumIntraTradeDrawdown:
           type: number
           description: The maximum intra-trade drawdown for all trades (as symbol currency).
           format: float
-        ProfitLossStandardDeviation:
+        profitLossStandardDeviation:
           type: number
           description: The standard deviation of the profits/losses for all trades (as symbol currency).
           format: float
-        ProfitLossDownsideDeviation:
+        profitLossDownsideDeviation:
           type: number
           description: The downside deviation of the profits/losses for all trades (as symbol currency).
           format: float
-        ProfitFactor:
+        profitFactor:
           type: number
           description: The ratio of the total profit to the total loss.
           format: float
-        SharpeRatio:
+        sharpeRatio:
           type: number
           description: The ratio of the average profit/loss to the standard deviation.
           format: float
-        SortinoRatio:
+        sortinoRatio:
           type: number
           description: The ratio of the average profit/loss to the downside deviation.
           format: float
-        ProfitToMaxDrawdownRatio:
+        profitToMaxDrawdownRatio:
           type: number
           description: The ratio of the total profit/loss to the maximum closed trade drawdown.
           format: float
-        MaximumEndTradeDrawdown:
+        maximumEndTradeDrawdown:
           type: number
           description: The maximum amount of profit given back by a single trade before exit (as symbol currency).
           format: float
-        AverageEndTradeDrawdown:
+        averageEndTradeDrawdown:
           type: number
           description: The average amount of profit given back by all trades before exit (as symbol currency).
           format: float
-        MaximumDrawdownDuration:
+        maximumDrawdownDuration:
           type: string
           description: The maximum amount of time to recover from a drawdown (longest time between new equity highs or peaks).
-        TotalFees:
+        totalFees:
           type: number
           description: The sum of fees for all trades.
           format: float
