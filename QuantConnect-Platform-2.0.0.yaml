@@ -952,7 +952,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateOptimizationResponse'
+                $ref: '#/components/schemas/ListOptimizationResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -1280,35 +1280,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListObjectStoreResponse'
-        "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
-  /data/read:
-    post:
-      tags:
-      - 01 Cloud Platform
-      - 99 API Reference
-      - 10 Downloading Data
-      - 01 Read Downloaded Data
-      summary: Get the link to the downloadable data.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DataDownloadRequest'
-        required: true
-      responses:
-        "200":
-          description: Response from reading purchased data.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReadDataLinkResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -2267,24 +2238,9 @@ components:
     CreateLiveAlgorithmResponse:
       type: object
       properties:
-        responseCode:
-          type: string
-          description: HTTP status response code.
-          example: "200 OK"
-        versionId:
-          type: string
-          description: The version of the Lean used to run the algorithm.
-          example: "15753"
-        projectId:
-          type: integer
-          description: Project Id.
-        deployId:
-          type: string
-          description: Deployment Id.
-        source:
-          type: string
-          description: Id of the node that will run the algorithm.
-          example: "api-v2"
+        live:
+          type: object
+          description: Live response object
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2376,7 +2332,38 @@ components:
           - O4-12
           - O8-16 
         criterion:
+          type: object
+          description: Optimization statistical target
           $ref: '#/components/schemas/OptimizationTarget'
+        created:
+          type: string
+          description: Date when this optimization was created.
+          format: date-time
+        psr:
+          type: number
+          description: Price-sales ratio stastic.
+        sharpeRatio:
+          type: number
+          description: Sharpe ratio statistic.
+        trades:
+          type: integer
+          description: Number of trades.
+        cloneId:
+          type: integer
+          description: ID of project, were this current project was originally cloned.
+        outOfSampleDays:
+          type: integer
+          description: Number of days of out of sample days.
+        outOfSampleMaxEndDate:
+          type: string
+          description: End date of out of sample data.
+          format: date-time
+        parameters:
+          type: array
+          description: Parameters used in this optimization.
+          items:
+            type: object
+            $ref:  '#/components/schemas/OptimizationParameter'
       description: Response received when launching an optimization job.
     CreateProjectRequest:
       type: object
@@ -2411,20 +2398,6 @@ components:
           type: string
           description: The content of the new file.
       description: Request to add a file to a project.
-    DataDownloadRequest:
-      type: object
-      properties:
-        format:
-          type: string
-          description: Format for returning data, link or download.
-          example: link
-        filePath:
-          type: string
-          description: File path representing the data requested.
-        organizationId:
-          type: string
-          description: Organization to download from.
-      description: Request for a link to downloadable data.
     DeleteFileRequest:
       type: object
       properties:
@@ -3363,7 +3336,7 @@ components:
           type: string
           description: The target comparison operation
           example: greater
-        target-value:
+        targetValue:
           type: float
           description: The value of the property we want to track
           example: 1
@@ -3386,7 +3359,7 @@ components:
           type: float
           description: Movement, should be positive
           example: 1
-        min-step:
+        minStep:
           type: float
           description: Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.
           example: 1
@@ -3447,6 +3420,9 @@ components:
         optimizationId:
           type: string
           description: Optimization ID.
+        snapshotId:
+          type: string
+          description: Snapshot iD of this optimization.
         projectId:
           type: string
           description: Project ID of the project the optimization belongs to.
@@ -3474,12 +3450,14 @@ components:
           description: Number of parallel nodes for optimization.
           example: 4
         criterion:
+          type: object
+          description: Optimization statistical target.
           $ref: '#/components/schemas/OptimizationTarget'
         runtimeStatistics:
           type: object
           additionalProperties:
             type: string
-          description: Runtime banner/updating statistics for the optimization.
+          description: Dictionary representing a runtime banner/updating statistics for the optimization.
         constraints:
           type: array
           description: Optimization constraints.
@@ -3491,8 +3469,8 @@ components:
           items:
             $ref: '#/components/schemas/OptimizationParameter'
         backtests:
-          type: array
-          description: Optimization constraints.
+          type: object
+          description: Dictionary of optimization backtests.
           items:
             $ref: '#/components/schemas/OptimizationBacktest'
         strategy:
@@ -3502,7 +3480,22 @@ components:
         requested:
           type: string
           description: Optimization requested date and time.
-          format: date-time    
+          format: date-time
+        optimizationTarget:
+          type: string
+          description: Statistic to be optimized.
+        gridLayout:
+          type: array
+          description: List with grid charts representing the grid layout.
+          items:
+            type: object
+            $ref: '#/components/schemas/GridChart'
+        outOfSampleMaxEndDate:
+          type: string
+          description: End date of out of sample data.
+        outOfSampleDays:
+          type: integer
+          description: Number of days of out of sample days.
       description: Response received when launching an optimization job.
     OptimizationBacktest:
       type: object
@@ -3520,16 +3513,32 @@ components:
           type: integer
           description: The exit code of this backtest
         statistics:
-          type: object
-          additionalProperties:
-            type: string
+          type: array
           description: The backtest statistics results.
+          items:
+            type: number
         parameterSet:
-          type: string
-          description: Represent a combination as key value of parameters, i.e. order doesn't matter.
+          type: object
+          description: Dictionary representing a combination as key value of parameters, i.e. order doesn't matter.
         equity:
-          type: string
+          type: array
           description: The backtest equity chart series.
+          items:
+            type: integer
+        startDate:
+          type: string
+          description: The backtest start date.
+          format: date-time
+        endDate:
+          type: string
+          description: The backtest end date.
+          format: date-time
+        outOfSampleDays:
+          type: integer
+          description: The backtest out of sample day count.
+        outOfSampleMaxEndDate:
+          type: string
+          description: Backtest maximum end date.
     Order:
       type: object
       properties:
@@ -4118,27 +4127,6 @@ components:
           type: string
           description: Compile Id returned during the creation request.
       description: Request to read a compile packet job.
-    ReadDataLinkResponse:
-      type: object
-      properties:
-        link:
-          type: string
-          description: Link to the data.
-        balance:
-          type: number
-          description: Remaining QCC balance on account after this transaction.
-        cost:
-          type: number
-          description: QCC Cost for this data link.
-        success:
-          type: boolean
-          description: Indicate if the API request was successful.
-        errors:
-          type: array
-          description: List of errors with the API call.
-          items:
-            type: string
-      description: Response from reading purchased data.
     ReadLiveLogsRequest:
       type: object
       properties:
@@ -4380,6 +4368,7 @@ components:
       properties:
         optimization:
           $ref: '#/components/schemas/Optimization'
+          description: Optimization object requested to read.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -4940,6 +4929,8 @@ components:
       description: Request to update the contents of a file.
     UpdateOptimizationRequest:
       type: object
+      required:
+        - optimizationId
       properties:
         optimizationId:
           type: string
@@ -5206,12 +5197,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ProjectFilesResponse'
-    ReadDataLinkResponse:
-      description: Response from reading purchased data.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReadDataLinkResponse'
     ReadLiveLogsResponse:
       description: Logs from a live algorithm.
       content:
