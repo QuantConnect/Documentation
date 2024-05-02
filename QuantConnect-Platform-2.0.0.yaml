@@ -3896,10 +3896,6 @@ components:
     PortfolioStatistics:
       type: object
       properties:
-        riskFreeRate:
-          type: number
-          description: The current defined risk free annual return rate.
-          format: float
         averageWinRate:
           type: number
           description: The average rate of return for winning trades.
@@ -3924,6 +3920,14 @@ components:
           type: number
           description: The expected value of the rate of return.
           format: float
+        startEquity:
+          type: number
+          description: Initial Equity Total Value.
+          format: float
+        endEquity:
+          type: number
+          description: Final Equity Total Value
+          format: float
         compoundingAnnualReturn:
           type: number
           description: Annual compounded returns statistic based on the final-starting capital and years.
@@ -3943,6 +3947,10 @@ components:
         probabilisticSharpeRatio:
           type: number
           description: Probabilistic Sharpe Ratio is a probability measure associated with the Sharpe ratio. It informs us of the probability that the estimated Sharpe ratio is greater than a chosen benchmark.
+          format: float
+        sortinoRatio:
+          type: number
+          description: Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.
           format: float
         alpha:
           type: number
@@ -3972,6 +3980,17 @@ components:
           type: number
           description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
           format: float
+        portfolioTurnover:
+          type: number
+          description: The average Portfolio Turnover.
+          format: float
+        valueAtRisk99:
+          type: number
+          description: The 1-day VaR for the portfolio, using the Variance-covariance approach. Assumes a 99% confidence level, 1 year lookback period, and that the returns are normally distributed.
+          format: float
+        valueAtRisk95:
+          type: number
+          description: The 1-day VaR for the portfolio, using the Variance-covariance approach. Assumes a 95% confidence level, 1 year lookback period, and that the returns are normally distributed.
       description: Represents a set of statistics calculated from equity and benchmark samples.
     RBIBrokerageSettings:
       type: object
@@ -5124,12 +5143,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/LiveAlgorithm'
-    LiveAlgorithmLog:
-      description: Logs from a live algorithm.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LiveAlgorithmLogs'
     LiveAlgorithmList:
       description: List of the live algorithms running which match the requested status.
       content:
