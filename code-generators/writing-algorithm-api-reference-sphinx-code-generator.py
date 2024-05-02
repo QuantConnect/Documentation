@@ -1,5 +1,6 @@
 import copy
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -8,6 +9,7 @@ from urllib.request import urlopen
 LEAN = "https://github.com/QuantConnect/Lean/blob/master"
 RAW_LEAN = "https://raw.githubusercontent.com/QuantConnect/Lean/master"
 LEAN_SERVICE = "https://www.quantconnect.com/services/inspector?language=%s&type=T:%s"
+TARGET = "/docs/v2/writing-algorithms/api-reference"
 
 WRITE_PATH = Path("03 Writing Algorithms/98 API Reference/")
 RESOURCE = Path("Resources/qcalgorithm-api")
@@ -38,6 +40,9 @@ EXTRAS = {}
 DONE = []
 INDICATORS = {}
 SOURCE_CODES = {}
+
+SUPPORTED_INDICATORS = [''.join(name.split(' ')[1:]) for name in os.listdir("03 Writing Algorithms/28 Indicators/01 Supported Indicators") 
+                        if os.path.isdir("03 Writing Algorithms/28 Indicators/01 Supported Indicators/" + name)]
 
 def render_docs():
     if WRITE_PATH.exists():
@@ -99,19 +104,20 @@ def render_docs():
         file.write(STYLE)
         
     # clean up non-inclusive jump links
-    for path in Path.glob(WRITE_PATH, "*.html"):
-        with open(path, 'r', encoding="utf-8") as file:
-            content = file.read().replace(f"an list", "a list").replace(f"an dictionary", "a dictionary")
+    for dir in [WRITE_PATH, RESOURCE, INDICATOR_RESOURCE]:
+        for path in Path.glob(dir, "*.html"):
+            with open(path, 'r', encoding="utf-8") as file:
+                content = file.read().replace(f"an list", "a list").replace(f"an dictionary", "a dictionary")
 
-            pattern = r"<a href=\"#(\w+)\">"
-            matches = re.findall(pattern, content)
-            
-            to_remove = [x for x in matches if x.strip().lower() not in DONE]
-            for match in to_remove:
-                content = content.replace(f'<a href=\"#{match}\">{match.replace("[]", "")}</a>', match)
+                pattern = fr"<a href=\"{TARGET}#(\w+)\">"
+                matches = re.findall(pattern, content)
+                
+                to_remove = [x for x in matches if x.strip().lower() not in DONE]
+                for match in to_remove:
+                    content = content.replace(f'<a href=\"#{match}\">{match}</a>', match).replace(f'<a href=\"#{match}\">{match}[]</a>', f"{match}[]")
 
-        with open(path, 'w', encoding="utf-8") as file:
-            file.write(content)
+            with open(path, 'w', encoding="utf-8") as file:
+                file.write(content)
             
     # handle indicator references
     for html_filename, type_name in sorted(INDICATORS.items(), key=lambda x: x[0]):
@@ -463,22 +469,25 @@ def _get_hyperlinked_type(type_raw_name, language):
         if _type[0] == "I" and _type[1].isupper():
             return _type
         
+        plain_type = _type.replace('[]', '')
+        
         if language == "python":
-            i_name = title_to_dash_linked_lower_case(_type).replace('_', '-')
+            i_name = title_to_dash_linked_lower_case(plain_type).replace('_', '-')
         else:
-            i_name = title_to_dash_linked_lower_case(_type)
+            i_name = title_to_dash_linked_lower_case(plain_type)
         
         if split_type_name[1] == "Indicators":
             if "Indicator" in split_type_name[2]:
                 return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/\">{_type}</a>"
-            INDICATORS[i_name] = type_name
-            return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/{title_to_dash_linked_lower_case(_type)}\">{_type}</a>"
+            elif plain_type in SUPPORTED_INDICATORS:
+                INDICATORS[i_name] = type_name.replace('[]', '')
+                return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/{title_to_dash_linked_lower_case(plain_type)}\">{_type}</a>"
         elif _type == "CandlestickPatterns":
             INDICATORS[i_name] = type_name
             return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/candlestick-patterns\">{_type}</a>"
         
         EXTRAS[_type.replace('[]', '')] = type_raw_name.replace('[]', '')
-        return f"<a href=\"#{_type.replace('[]', '')}\">{_type}</a>"
+        return f"<a href=\"{TARGET}#{_type.replace('[]', '')}\">{_type}</a>"
     
     return _type
                 
