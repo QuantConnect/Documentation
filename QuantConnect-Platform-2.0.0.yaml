@@ -1324,22 +1324,6 @@ components:
           items:
             $ref: '#/components/schemas/Trade'
       description: The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.
-    AlgorithmStatus:
-      type: string
-      description: States of a live deployment.
-      enum:
-      - DeployError
-      - InQueue
-      - Running
-      - Stopped
-      - Liquidated
-      - Deleted
-      - Completed
-      - RuntimeError
-      - Invalid
-      - LoggingIn
-      - Initializing
-      - History
     BacktestPortfolioResponse:
       type: object
       properties:
@@ -2258,7 +2242,7 @@ components:
           - O8-16 
         criterion:
           type: object
-          description: Optimization statistical target
+          description: Optimization statistical target.
           $ref: '#/components/schemas/OptimizationTarget'
         created:
           type: string
@@ -2617,7 +2601,17 @@ components:
         symbol:
           $ref: '#/components/schemas/Symbol'
         type:
-          $ref: '#/components/schemas/SecurityType'
+          type: string
+          description: Type of tradable security / underlying asset.
+          enum:
+            - Base
+            - Equity
+            - Option
+            - Commodity
+            - Forex
+            - Future
+            - Cfd
+            - Crypto
         currencySymbol:
           type: string
           description: The currency symbol of the holding.
@@ -2804,7 +2798,21 @@ components:
           type: string
           description: Unique live algorithm deployment identifier (similar to a backtest id).
         status:
-          $ref: '#/components/schemas/AlgorithmStatus'
+          type: string
+          description: States of a live deployment.
+          enum:
+            - DeployError
+            - InQueue
+            - Running
+            - Stopped
+            - Liquidated
+            - Deleted
+            - Completed
+            - RuntimeError
+            - Invalid
+            - LoggingIn
+            - Initializing
+            - History
         launched:
           type: string
           description: Datetime the algorithm was launched in UTC.
@@ -3187,6 +3195,7 @@ components:
         objectData:
           type: string
           format: binary
+          description: Object data to be stored.
       description: Represents a binary file we we'd like to upload the file to upload to the Object Store.
     ObjectStoreSummary:
       type: object
@@ -3263,7 +3272,7 @@ components:
           type: string
           description: Defines the direction of optimization.
           example: max or min
-        target-value:
+        targetValue:
           type: float
           description: The value of the property we want to track
           example: 1
@@ -4140,7 +4149,21 @@ components:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/AlgorithmStatus'
+          type: string
+          description: States of a live deployment.
+          enum:
+            - DeployError
+            - InQueue
+            - Running
+            - Stopped
+            - Liquidated
+            - Deleted
+            - Completed
+            - RuntimeError
+            - Invalid
+            - LoggingIn
+            - Initializing
+            - History
         start:
           type: string
           description: Earliest launched time of the algorithms
@@ -4396,18 +4419,6 @@ components:
             - equity
             - commodity
       description: Settings for using Samco as a data provider or brokerage.
-    SecurityType:
-      type: string
-      description: Type of tradable security / underlying asset.
-      enum:
-      - Base
-      - Equity
-      - Option
-      - Commodity
-      - Forex
-      - Future
-      - Cfd
-      - Crypto
     Series:
       type: object
       properties:
@@ -4606,7 +4617,11 @@ components:
           description: The price at which the trade was opened (or the average price if multiple entries).
           format: float
         direction:
-          $ref: '#/components/schemas/TradeDirection'
+          type: string
+          description: Direction of a trade.
+          enum:
+            - Long
+            - Short
         quantity:
           type: number
           description: The total unsigned quantity of the trade.
@@ -4643,12 +4658,6 @@ components:
           description: The amount of profit given back before the trade was closed.
           format: float
       description: Represents a closed trade.
-    TradeDirection:
-      type: string
-      description: Direction of a trade.
-      enum:
-      - Long
-      - Short
     TradeStatistics:
       type: object
       properties:
