@@ -306,6 +306,27 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
                     properties = request_object_properties_ = request_object_
                     type_ = request_object_["type"]
                     description_ = request_object_["description"] if "description" in request_object_ else "/"
+                    
+            elif "key" in properties and "value" in properties:
+                key_ = properties["key"]
+                value_ = properties["value"]
+                
+                if "example" in key_:
+                    key_ = key_["example"]
+                elif "enum" in key_:
+                    key_ = key_["enum"][0]
+                else:
+                    key_ = key_["type"]
+                    
+                if "example" in value_:
+                    value_ = value_["example"]
+                elif "enum" in value_:
+                    value_ = value_["enum"][0]
+                else:
+                    value_ = value_["type"]
+                
+                write_up, __, item_list = ExampleWriting({key_: value_}, item_list, order=order+1)
+                example_ += write_up
             
         elif type_ == "integer" or type_ == "number":
             example_ += "0"
