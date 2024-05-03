@@ -42,26 +42,26 @@
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
-    def Initialize(self) -> None:
-        self._symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 <? if($hasReference) { ?>
-        self.reference = self.AddEquity("QQQ", Resolution.Daily).Symbol
+        self.reference = self.add_equity("QQQ", Resolution.DAILY).symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
+        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.option, Resolution.DAILY)
+        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
-        if self.<?=strtolower($helperName)?>.IsReady:
-            # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
-            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
+        if self.<?=strtolower($helperName)?>.is_ready:
+            # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.current.value
+            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.current.value)
             <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.current.value)
 <? } ?>
 <? foreach ($otherProperties as $property) { ?>
             self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
@@ -109,17 +109,17 @@
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
-    def Initialize(self) -> None:
-        self._symbol = self.AddEquity("SPY", Resolution.Hour).Symbol
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.HOUR).Symbol
 <? if($hasReference) { ?>
-        self.reference = self.AddEquity("QQQ", Resolution.Hour).Symbol
+        self.reference = self.add_equity("QQQ", Resolution.HOUR).Symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
+        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.option, Resolution.HOUR)
+        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.mirror_option, Resolution.HOUR)
 <?}?>
-        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.Daily)
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
 </pre>
 </div>
 <? } ?>
@@ -191,41 +191,41 @@
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
-    def Initialize(self) -> None:
-        self._symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 <? if($hasReference) { ?>
-        self.reference = self.AddEquity("QQQ", Resolution.Daily).Symbol
+        self.reference = self.add_equity("QQQ", Resolution.DAILY).symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
+        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.option, Resolution.DAILY)
+        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
-        bar = slice.Bars.get(self._symbol)
+        bar = slice.bars.get(self._symbol)
         if bar:
-            self.<?=strtolower($helperName)?>.Update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self._symbol, bar.EndTime, bar.Close)<? } else { ?><?=$updateParameterValue?><? } ?>)
+            self.<?=strtolower($helperName)?>.update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self._symbol, bar.end_time, bar.close)<? } else { ?><?=$updateParameterValue?><? } ?>)
 <? if($hasReference) { ?>
-        bar = slice.Bars.get(self.referece)
+        bar = slice.bars.get(self.referece)
         if bar:
-            self.<?=strtolower($helperName)?>.Update(<?=$updateParameterValue?>)
+            self.<?=strtolower($helperName)?>.update(<?=$updateParameterValue?>)
 <?} else if($isOptionIndicator) { ?>
-        bar = slice.QuoteBars.get(self.option)
+        bar = slice.quote_bars.get(self.option)
         if bar:
-            self.<?=strtolower($helperName)?>.Update(IndicatorDataPoint(self.option, bar.EndTime, bar.Close))
-        bar = slice.QuoteBars.get(self.mirrorOption)
+            self.<?=strtolower($helperName)?>.update(IndicatorDataPoint(self.option, bar.end_time, bar.close))
+        bar = slice.quote_bars.get(self.mirror_option)
         if bar:
-            self.<?=strtolower($helperName)?>.Update(IndicatorDataPoint(self.mirrorOption, bar.EndTime, bar.Close))
+            self.<?=strtolower($helperName)?>.update(IndicatorDataPoint(self.mirror_option, bar.end_time, bar.close))
 <?}?>
-        if self.<?=strtolower($helperName)?>.IsReady:
-            # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
-            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
+        if self.<?=strtolower($helperName)?>.is_ready:
+            # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.current.value
+            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.current.value)
             <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.current.value)
 <? } ?>
 <? foreach ($otherProperties as $property) { ?>
             self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
@@ -283,33 +283,33 @@
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
-    def Initialize(self) -> None:
-        self._symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 <? if($hasReference) { ?>
-        self.reference = self.AddEquity("QQQ", Resolution.Daily).Symbol
+        self.reference = self.add_equity("QQQ", Resolution.DAILY).symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
+        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.option, Resolution.DAILY)
+        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
-        self.RegisterIndicator(self._symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self.register_indicator(self._symbol, self.<?=strtolower($helperName)?>, Resolution.DAILY)
 <? if($hasReference) { ?>
-        self.RegisterIndicator(reference, self.<?=strtolower($helperName)?>, Resolution.Daily)
+        self.register_indicator(reference, self.<?=strtolower($helperName)?>, Resolution.DAILY)
 <?} else if($isOptionIndicator) { ?>
-        self.RegisterIndicator(self.option, self.<?=strtolower($helperName)?>, Resolution.Daily)
-        self.RegisterIndicator(self.mirrorOption, self.<?=strtolower($helperName)?>, Resolution.Daily)
+        self.register_indicator(self.option, self.<?=strtolower($helperName)?>, Resolution.DAILY)
+        self.register_indicator(self.mirror_option, self.<?=strtolower($helperName)?>, Resolution.DAILY)
 <?}?>
 
     def on_data(self, slice: Slice) -> None:
-        if self.<?=strtolower($helperName)?>.IsReady:
-            # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
-            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
+        if self.<?=strtolower($helperName)?>.is_ready:
+            # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.current.value
+            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.current.value)
             <? if (count($properties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.current.value)
 <? } ?>
 </pre>
 </div>
