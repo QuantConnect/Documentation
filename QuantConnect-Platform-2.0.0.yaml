@@ -489,38 +489,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /backtests/read/portfolio:
-    post:
-      tags:
-      - 01 Cloud Platform
-      - 99 API Reference
-      - 05 Backtest Management
-      - 02 Read Backtest
-      - 02 Portfolio
-      summary: Read out the portfolio state of a backtest.
-      requestBody:
-        description: Fetch the portfolio state of a backtest for the project Id and backtest Id.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReadBacktestPortfolioRequest'
-        required: true
-      responses:
-        "200":
-          description: Portfolio state of the backtest instance.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BacktestPortfolioResponse'
-        "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
-  /backtests/read/orders:
+  /backtests/orders/read:
     post:
       tags:
       - 01 Cloud Platform
@@ -745,7 +714,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /live/read/log:
+  /live/log/read:
     post:
       tags:
       - 01 Cloud Platform
@@ -776,7 +745,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /live/read/portfolio:
+  /live/portfolio/read:
     post:
       tags:
       - 01 Cloud Platform
@@ -807,7 +776,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /live/read/orders:
+  /live/orders/read:
     post:
       tags:
       - 01 Cloud Platform
@@ -838,7 +807,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /live/read/insights:
+  /live/insights/read:
     post:
       tags:
       - 01 Cloud Platform
@@ -1324,12 +1293,6 @@ components:
           items:
             $ref: '#/components/schemas/Trade'
       description: The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.
-    BacktestPortfolioResponse:
-      type: object
-      properties:
-        portfolio:
-          $ref: '#/components/schemas/Portfolio'
-      description: Contains holdings and cash of the backtest instance.
     BacktestOrdersResponse:
       type: object
       properties:
@@ -1897,17 +1860,6 @@ components:
         name:
           type: string
           description: Name of the Chart.
-        chartType:
-          type: string
-          description: Type of the Chart, Overlayed or Stacked.
-          enum:
-          - Overlay
-          - Stacked
-        series:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Series'
-          description: List of Series Objects for this Chart.
       description: Single Parent Chart Object for Custom Charting.
     ChartPoint:
       type: object
@@ -2928,7 +2880,7 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/RuntimeStatistics'
-          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
+          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.
         charts:
           type: object
           additionalProperties:
@@ -4049,27 +4001,27 @@ components:
         algorithmId:
           type: string
           description: Deploy Id (Algorithm Id) of the live running algorithm.
-        start:
+        startLine:
           type: integer
-          description: No logs will be returned before this unixtime.
-        end:
+          description: Start line of logs to read.
+        endLine:
           type: integer
-          description: No logs will be returned after this unixtime.
-      description: Request to read the logs of a specific algorithm.
+          description: End line of logs to read.
+      description: Request to read the logs of a specific algorithm. The difference between 'startLine' and 'endLine' must be smaller than 250, else an error will be thrown.
     ReadLiveLogsResponse:
       type: object
       properties:
-        liveLogs:
+        logs:
           type: array
           description: List of logs from the live algorithm.
           items:
             type: string
-        start:
+        length:
           type: integer
-          description: Time when the first log was generated.
-        end:
+          description: Total amount of rows in the logs.
+        deploymentOffset:
           type: integer
-          description: Time of the last log retrieved.
+          description: Amount of log rows before the current deployment.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -4244,19 +4196,6 @@ components:
           items:
             $ref: '#/components/schemas/CashAmount'
       description: Settings for using Interactive Brokers as brokerage or data provider.
-    ReadBacktestPortfolioRequest:
-      required:
-      - projectId
-      - backtestId
-      type: object
-      properties:
-        projectId:
-          type: integer
-          description: Id of the project from which to read the backtest.
-        backtestId:
-          type: string
-          description: Id of the backtest from which to read the portfolio state.
-      description: Request to read the portfolio state from a backtest in a project.
     ReadBacktestOrdersRequest:
       required:
       - start
