@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import shutil
 from urllib.request import urlopen
+from _code_generation_helpers import _type_conversion, extract_xml_content, title_to_dash_linked_lower_case
 
 LEAN = "https://github.com/QuantConnect/Lean/blob/master"
 RAW_LEAN = "https://raw.githubusercontent.com/QuantConnect/Lean/master"
@@ -38,11 +39,14 @@ STYLE = '''
 DOCS_ATTR = {}
 EXTRAS = {}
 DONE = []
-INDICATORS = {}
 SOURCE_CODES = {}
 
 SUPPORTED_INDICATORS = [''.join(name.split(' ')[1:]) for name in os.listdir("03 Writing Algorithms/28 Indicators/01 Supported Indicators") 
                         if os.path.isdir("03 Writing Algorithms/28 Indicators/01 Supported Indicators/" + name)]
+SUPPORTED_CANDLES = [x.group(1) for x in 
+                     re.finditer(r"public (\w+) \1\(", urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Algorithm/CandlestickPatterns.cs").read().decode('utf-8'))]
+
+INDICATORS = {title_to_dash_linked_lower_case(candle): f"QuantConnect.Indicators.CandlestickPatterns.{candle}" for candle in SUPPORTED_CANDLES}
 
 def render_docs():
     if WRITE_PATH.exists():
@@ -206,7 +210,7 @@ def _render_type_heading(type_name, type_base_type, type_description, type_full_
     return f'''<h4 id=\"{type_name}\">{type_name}</h4>
 <div class=\"code-snippet\"><span class=\"object-type\">{base_type}</span> <code>{type_full_name}</code><a class=\"code-source\" href=\"https://github.com/search?q=repo%3AQuantConnect%2FLean+{type_name}&type=code\">[source]</a>
 </div>
-<p>{extract_xml_content(type_description)}</p>
+<p>{extract_xml_content(type_description, XML_REGEX_PATTERNS)}</p>
 '''
 
 def _render_types(type_, type_list, language):
@@ -226,7 +230,7 @@ def _render_type(type_, type_dict, language, type_ret="short-type-name", line_ar
         type_return = eval(f'_get_{type_}_return(type_name, type_dict["{type_}-description"], source_url, line, language)')
     else:
         type_return = ""
-    type_description = extract_xml_content(type_dict[f"{type_}-description"])
+    type_description = extract_xml_content(type_dict[f"{type_}-description"], XML_REGEX_PATTERNS)
     source_html = f"<a class=\"code-source\" href=\"{LEAN}/{source_url}\">[source]</a>" if source_url else ""
     
     type_html = f'''<div class=\"code-snippet\">{"" if type_ == "method" else '<span class="object-type">' + type_ + "</span> "}<code>{type_dict[f"{type_}-name"]}{line_arg}</code>{source_html}</div>
@@ -400,11 +404,11 @@ def _get_param_description(source_url, line_num, arg_num):
         arg_num -= 1
     
     description = ' '.join(x.replace('/', '').strip() for x in substr.split("</param>")[0].split(">")[-1].split('\n'))
-    return extract_xml_content(description)
+    return extract_xml_content(description, XML_REGEX_PATTERNS)
 
 def _get_return(type_, return_type_name, description, source_url, line_num, language):
     return_description = _get_return_description(source_url, line_num) \
-        if source_url and type_ == "method" else extract_xml_content(description) \
+        if source_url and type_ == "method" else extract_xml_content(description, XML_REGEX_PATTERNS) \
         if type_ != "method" else ""
     description_html = ""
     if return_description:
@@ -434,7 +438,7 @@ def _get_return_description(source_url, line_num):
         return None
     
     description = ' '.join(x.replace('/', '').strip() for x in substr[description_char+9:].split("</returns>")[0].split('\n'))
-    return extract_xml_content(description)
+    return extract_xml_content(description, XML_REGEX_PATTERNS)
 
 def _get_method_return(return_type_name, description, source_url, line_num, language):
     def no_ret(name):
@@ -482,8 +486,7 @@ def _get_hyperlinked_type(type_raw_name, language):
             elif plain_type in SUPPORTED_INDICATORS:
                 INDICATORS[i_name] = type_name.replace('[]', '')
                 return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/{title_to_dash_linked_lower_case(plain_type)}\">{_type}</a>"
-        elif _type == "CandlestickPatterns":
-            INDICATORS[i_name] = type_name
+        elif "CandlestickPatterns" in type_raw_name:
             return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/candlestick-patterns\">{_type}</a>"
         
         EXTRAS[_type.replace('[]', '')] = type_raw_name.replace('[]', '')
@@ -508,74 +511,6 @@ def _render_field(field_dict, language):
 
 def _get_field_return(return_type_name, description, source_url, line_num, language):
     return _get_return("field", return_type_name, description, source_url, line_num, language)
-
-def _type_conversion(type, language):
-    if language == "csharp":
-        return type.replace('<', '&lt;').replace('>', '&gt;')
-
-    type_replacement = {
-        "IEnumerable<KeyValuePair": "Dict",
-        "ConcurrentDictionary": "Dict",
-        "IExtendedDictionary": "Dict",
-        "IReadOnlyDict": "Dict",
-        "IDictionary": "Dict",
-        "ConcurrentQueue": "List",
-        "IReadOnlyList": "List",
-        "IEnumerable": "List",
-        "ICollection": "List",
-        "Nullable": "Optional",
-        "Func": "Callable",
-        "Array": "List",
-        "KeyValuePair": "Dict",
-        "DataDictionary": "Dict",
-        "Dictionary": "Dict",
-        "<": "[",
-        ">": "]",
-        "String": "str",
-        "Decimal": "float",
-        "Double": "float",
-        "Single": "float",
-        "Int8": "int",
-        "Int16": "int",
-        "Int32": "int",
-        "Int64": "int",
-        "Uint": "int",
-        "Long": "int",
-        "Short": "int",
-        "Boolean": "bool",
-        "DateTime": "datetime",
-        "TimeSpan": "timedelta",
-        "Void": "None",
-    }
-
-    for i, (t, py_t) in enumerate(type_replacement.items()):
-        if t in type or t.lower() in type:
-            type = type.replace(t, py_t).replace(t.lower(), py_t)
-            if i == 0:
-                type = type[:-1]
-    
-    return type
-
-def extract_xml_content(xml_string):
-    output = xml_string
-    
-    for pattern, replacement in XML_REGEX_PATTERNS.items():
-        content = re.search(pattern, xml_string)
-        if content:
-            output = output.replace(content.group(0), replacement % ((content.group(1).split('.')[-1].split('`')[0], ) * replacement.count("%s")))
-    
-    return output
-
-def title_to_dash_linked_lower_case(title):
-    if title.isupper():
-        return title.lower()
-    
-    lower_case = ""
-    for i, char in enumerate(title):
-        if i > 0 and char.isupper():
-            lower_case += "-"
-        lower_case += char.lower()
-    return lower_case
 
     
 if __name__ == '__main__':
