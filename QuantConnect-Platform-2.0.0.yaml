@@ -714,7 +714,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /live/log/read:
+  /live/logs/read:
     post:
       tags:
       - 01 Cloud Platform
@@ -1860,7 +1860,31 @@ components:
         name:
           type: string
           description: Name of the Chart.
+        chartType:
+          type: string
+          description: Type of the Chart, Overlayed or Stacked.
+          enum:
+            - Overlay
+            - Stacked
+        series:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Series'
+          description: List of Series Objects for this Chart.
       description: Single Parent Chart Object for Custom Charting.
+    ChartObject:
+      type: object
+      description:
+        Chart Name:
+          type: object
+          description: Name of this chart.
+          $ref: '#/components/schemas/ChartName'
+    ChartName:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the Chart.
     ChartPoint:
       type: object
       properties:
@@ -2883,9 +2907,8 @@ components:
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.
         charts:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Chart'
-          description: Charts updates for the live algorithm since the last result packet.
+          description: Chart updates for the live algorithm since the last result packet.
+          $ref: '#/components/schemas/ChartObject'
         success:
           type: boolean
           description: Indicate if the API request was successful.
