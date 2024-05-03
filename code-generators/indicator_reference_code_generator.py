@@ -100,7 +100,9 @@ def Generate_Indicators_Reference():
                 indicator['description'] = _format_introduction(type_name, indicator.get('description'))
 
                 start = content.find('https://github.com/QuantConnect/Lean/blob/master/Indicators/')   
-                indicator['source'] = content[start: 3 + content.find('.cs', start)].strip()
+                indicator['source'] = f"https://github.com/QuantConnect/Lean/tree/master/Indicators/{indicator['type-name']}.cs" \
+                    if not "CandlestickPatterns" in indicator["full-type-name"] else \
+                    f"https://github.com/QuantConnect/Lean/tree/master/Indicators/CandlestickPatterns/{indicator['type-name']}.cs"
 
                 helper = helpers.get(file.stem, {
                     'method': indicator['type-name'], 
