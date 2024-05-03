@@ -58,12 +58,12 @@
         if self.<?=strtolower($helperName)?>.is_ready:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.current.value
             self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.current.value)
-            <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
+            <? if (count($pyProperties) + count($otherPyProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
-<? foreach ($properties as $property) { ?>
+<? foreach ($pyProperties as $property) { ?>
             self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.current.value)
 <? } ?>
-<? foreach ($otherProperties as $property) { ?>
+<? foreach ($otherPyProperties as $property) { ?>
             self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
 <? } ?>
 </pre>
@@ -222,12 +222,12 @@
         if self.<?=strtolower($helperName)?>.is_ready:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.current.value
             self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.current.value)
-            <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
+            <? if (count($pyProperties) + count($otherPyProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
-<? foreach ($properties as $property) { ?>
+<? foreach ($pyProperties as $property) { ?>
             self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.current.value)
 <? } ?>
-<? foreach ($otherProperties as $property) { ?>
+<? foreach ($otherPyProperties as $property) { ?>
             self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
 <? } ?>
 </pre>
@@ -306,9 +306,9 @@
         if self.<?=strtolower($helperName)?>.is_ready:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.current.value
             self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.current.value)
-            <? if (count($properties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
+            <? if (count($pyProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
-<? foreach ($properties as $property) { ?>
+<? foreach ($pyProperties as $property) { ?>
             self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.current.value)
 <? } ?>
 </pre>

@@ -37,7 +37,9 @@ def _format_introduction(type_name: str, text: str) -> str:
 
 PROPERTIES_EXCEPTIONS = ['MovingAverageType', 'IsReady', 'WarmUpPeriod', 'Name', 'Period', 'Samples', 
                 'Current', "Consolidators", "Previous", "Window", "[System.Int32]", "Strike", "Right", 
-                "Style", "Expiry", "UseMirrorContract"]
+                "Style", "Expiry", "UseMirrorContract", "moving_average_type", "is_ready", "warmup_period",
+                "name", "period", "samples", "current", "consolidators", "previous", "window", "int", "strike",
+                "right", "style", "expiry", "use_mirror_contract", "warm_up_period", "item"]
 
 def _extract_properties(properties: list):
     numerical_properties = ''
@@ -86,35 +88,42 @@ def Generate_Indicators_Reference():
     path = Path('Resources/indicators/constructors')
     for file in path.iterdir():
                 
-        with open(file, mode='r') as fp:
-            content = fp.read()
-            start = content.find('QuantConnect')
-            type_name = content[start: content.find('(', start)].strip()
+        with open(file, mode='r', encoding="utf-8") as fp:
+            try:
+                content = fp.read()
+                start = content.find('QuantConnect')
+                type_name = content[start: content.find('(', start)].split("</code>")[0].strip()
+                
+                indicator = get_type(type_name, "csharp")
+                py_indicator = get_type(type_name, "python")
+                key = " ".join(re.findall('[a-zA-Z][^A-Z]*', indicator['type-name']))
+                indicator['description'] = _format_introduction(type_name, indicator.get('description'))
+
+                start = content.find('https://github.com/QuantConnect/Lean/blob/master/Indicators/')   
+                indicator['source'] = content[start: 3 + content.find('.cs', start)].strip()
+
+                helper = helpers.get(file.stem, {
+                    'method': indicator['type-name'], 
+                    'arguments': "symbol",
+                    'constructor-arguments': None
+                } )
+
+                arguments = helper['arguments']
+                indicator['helper-name'] = helper['method'] 
+                indicator['helper-arguments'] = arguments
+                start = arguments.find(',')
+                if start > 0:
+                    arguments = arguments[1 + start:].strip()
+                indicator['constructor-arguments'] = helper['constructor-arguments']
+                indicator['has-moving-average-type-parameter'] = 'MovingAverageType' in content
+                indicator['properties'] = _extract_properties(indicator['properties'])
+                indicator['py_properties'] = _extract_properties(py_indicator['properties'])
+
+                indicators[key] = indicator
             
-            indicator = get_type(type_name)
-            key = " ".join(re.findall('[a-zA-Z][^A-Z]*', indicator['type-name']))
-            indicator['description'] = _format_introduction(type_name, indicator.get('description'))
-
-            start = content.find('https://github.com/QuantConnect/Lean/blob/master/Indicators/')   
-            indicator['source'] = content[start: 3 + content.find('.cs', start)].strip()
-
-            helper = helpers.get(file.stem, {
-                'method': indicator['type-name'], 
-                'arguments': "symbol",
-                'constructor-arguments': None
-            } )
-
-            arguments = helper['arguments']
-            indicator['helper-name'] = helper['method'] 
-            indicator['helper-arguments'] = arguments
-            start = arguments.find(',')
-            if start > 0:
-                arguments = arguments[1 + start:].strip()
-            indicator['constructor-arguments'] = helper['constructor-arguments']
-            indicator['has-moving-average-type-parameter'] = 'MovingAverageType' in content
-            indicator['properties'] = _extract_properties(indicator['properties'])
-
-            indicators[key] = indicator
+            except Exception as e:
+                print(f"Cannot generate {file.stem} - {e}")
+                continue
 
     types = {
         'Indicator': {
@@ -143,7 +152,7 @@ def Generate_Indicators_Reference():
             if f'QuantConnect.Indicators.{k}' in base_type:
                 return v
         key = ' '.join(re.findall('[a-zA-Z][^A-Z]*', base_type.split('.')[-1]))
-        base = indicators.get(key, get_type(base_type))
+        base = indicators.get(key, get_type(base_type, "csharp"))
         return find_indicator_type(base['base-type-full-name'])
 
     for key, indicator in indicators.items():
@@ -206,7 +215,9 @@ $typeName = '{type_name}';
 $helperName = '{helper_name}';
 $helperArguments = '{indicator['helper-arguments']}';
 $properties = {indicator['properties'][0]};
+$pyProperties = {indicator['py_properties'][0]};
 $otherProperties = {indicator['properties'][1]};
+$otherPyProperties = {indicator['py_properties'][1]};
 $updateParameterType = '{indicator['update-parameter-type']}';
 $constructorArguments = '{indicator['constructor-arguments'] if indicator['constructor-arguments'] else ''}';
 $updateParameterValue = '{indicator['update-parameter-value']}';
