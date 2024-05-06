@@ -50,7 +50,7 @@ The <code>/live/read</code> API provides a response in the following format:
 <td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.</td>
 </tr>
 <tr>
-<td width="20%">charts</td> <td> <code>Chart object</code> <br/> Chart updates for the live algorithm since the last result packet.</td>
+<td width="20%">charts</td> <td> <code>ChartSummary object</code> <br/> Chart updates for the live algorithm since the last result packet.</td>
 </tr>
 <tr>
 <td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
@@ -96,21 +96,13 @@ The <code>/live/read</code> API provides a response in the following format:
     "Volume": "$100.00"
   },
   "charts": {
-    "name": "string",
-    "chartType": "Overlay",
-    "series": {
-      "name": "string",
-      "unit": "string",
-      "index": 0,
-      "values": [
-        {
-          "x": "string",
-          "y": 0
-        }
-      ],
-      "seriesType": "Line",
-      "color": "string",
-      "scatterMarkerSymbol": "none"
+    "Chart Name":
+    {
+      "name": "string"
+    },
+    "Chart Name 2":
+    {
+      "name": "string"
     }
   },
   "success": true,
@@ -258,110 +250,22 @@ The <code>/live/read</code> API provides a response in the following format:
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>Chart</code> Model - Single Parent Chart Object for Custom Charting.</th>
+<th colspan="2"><code>ChartSummary</code> Model - Contains the names of all charts</th>
 </tr>
 </thead>
-<tr>
-<td width="20%">name</td> <td> <code>string</code> <br/> Name of the Chart.</td>
-</tr>
-<tr>
-<td width="20%">chartType</td> <td> <code>string Enum</code> <br/> Type of the Chart, Overlayed or Stacked. Options : ['Overlay', 'Stacked']</td>
-</tr>
-<tr>
-<td width="20%">series</td> <td> <code>Series object</code> <br/> List of Series Objects for this Chart.</td>
-</tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "name": "string",
-  "chartType": "Overlay",
-  "series": {
-    "name": "string",
-    "unit": "string",
-    "index": 0,
-    "values": [
-      {
-        "x": "string",
-        "y": 0
-      }
-    ],
-    "seriesType": "Line",
-    "color": "string",
-    "scatterMarkerSymbol": "none"
-  }
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Series</code> Model - Chart Series Object - Series data and properties for a chart.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">name</td> <td> <code>string</code> <br/> Name of the series.</td>
-</tr>
-<tr>
-<td width="20%">unit</td> <td> <code>string</code> <br/> Axis for the chart series.</td>
-</tr>
-<tr>
-<td width="20%">index</td> <td> <code>integer</code> <br/> Index/position of the series on the chart.</td>
-</tr>
-<tr>
-<td width="20%">values</td> <td> <code>ChartPoint Array</code> <br/> Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest).</td>
-</tr>
-<tr>
-<td width="20%">seriesType</td> <td> <code>string Enum</code> <br/> Chart type for the series. Options : ['Line', 'Scatter', 'Candle', 'Bar', 'Flag', 'StackedArea', 'Pie', 'Treemap']</td>
-</tr>
-<tr>
-<td width="20%">color</td> <td> <code>string</code> <br/> Color the series.</td>
-</tr>
-<tr>
-<td width="20%">scatterMarkerSymbol</td> <td> <code>string Enum</code> <br/> Shape or symbol for the marker in a scatter plot. Options : ['none', 'circle', 'square', 'diamond', 'triangle', 'triangle-down']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "name": "string",
-  "unit": "string",
-  "index": 0,
-  "values": [
+    "Chart Name":
     {
-      "x": "string",
-      "y": 0
+      "name": "string"
+    },
+    "Chart Name 2":
+    {
+      "name": "string"
     }
-  ],
-  "seriesType": "Line",
-  "color": "string",
-  "scatterMarkerSymbol": "none"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>ChartPoint</code> Model - Location on a chart containing the X-Y location</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">x</td> <td> <code>string</code> <br/> Time of this chart point: lower case for javascript encoding simplicty.</td>
-</tr>
-<tr>
-<td width="20%">y</td> <td> <code>number</code> <br/> Value of this chart point:  lower case for javascript encoding simplicty.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "x": "string",
-  "y": 0
 }</pre>
 </div>
 </td>
