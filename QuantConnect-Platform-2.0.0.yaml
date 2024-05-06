@@ -549,6 +549,36 @@ paths:
               explode: false
               schema:
                 type: string
+  /backtests/chart/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+      summary: Read chart from a backtest.
+      requestBody:
+        description: Request body to obtain a chart from a backtest.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadBacktestChartRequest'
+        required: true
+      responses:
+        "200":
+          description: Response with the chart requested object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadChartResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /backtests/update:
     post:
       tags:
@@ -652,6 +682,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LeanVersionsResponse'
+  /live/chart/read:
+    tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 07 Live Management
+      - 02 Read Live Algorithm
+    summary: Read a chart from a live algorithm
+      requestBody:
+        description: Request body to obtain a chart from a live algorithm.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadLiveChartRequest'
+        required: true
+      responses:
+        "200":
+          description: Response with the requested chart from a live algorithm.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadChartResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /live/create:
     post:
       tags:
@@ -4227,6 +4286,28 @@ components:
           items:
             $ref: '#/components/schemas/CashAmount'
       description: Settings for using Interactive Brokers as brokerage or data provider.
+    ReadBacktestChartRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project ID of the request.
+        name:
+          type: string
+          description: The requested chart name.
+        start:
+          type: integer
+          description: The Utc start seconds timestamp of the request.
+        end:
+          type: integer
+          description: The Utc end seconds timestamp of the request.
+        count:
+          type: integer
+          description: The number of data points to request.
+        backtestId:
+          type: string
+          description: Associated Backtest ID for this chart request.
+      description: Request body to obtain a chart from a backtest.
     ReadBacktestOrdersRequest:
       required:
       - start
@@ -4248,6 +4329,41 @@ components:
           type: string
           description: Id of the backtest from which to read the orders.
       description: Request to read orders from a backtest.
+    ReadLiveChartRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project ID of the request.
+        name:
+          type: string
+          description: The requested chart name.
+        start:
+          type: integer
+          description: The Utc start seconds timestamp of the request.
+        end:
+          type: integer
+          description: The Utc end seconds timestamp of the request.
+        count:
+          type: integer
+          description: The number of data points to request.
+      description: Request to body to obtain a chart from a live algorithm.
+    ReadChartResponse:
+      type: object
+      properties:
+        chart:
+          type: object
+          properties: Chart object requested.
+          $ref: '#/components/schemas/Chart'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response with the requested chart from a live algorithm or backtest.
     ReadOptimizationRequest:
       required:
       - optimizationId
@@ -4405,7 +4521,8 @@ components:
           type: array
           description: Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest)
           items:
-            $ref: '#/components/schemas/ChartPoint'
+            type: object
+            description: The type of the values depends on the series type.
         seriesType:
           type: string
           description: Chart type for the series.
