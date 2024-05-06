@@ -570,7 +570,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadChartResponse'
+                $ref: '#/components/schemas/inline_response_200_3'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -683,12 +683,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/LeanVersionsResponse'
   /live/chart/read:
-    tags:
-      - 01 Cloud Platform
-      - 99 API Reference
-      - 07 Live Management
-      - 02 Read Live Algorithm
-    summary: Read a chart from a live algorithm
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 07 Live Management
+        - 02 Read Live Algorithm
+      summary: Read a chart from a live algorithm
       requestBody:
         description: Request body to obtain a chart from a live algorithm.
         content:
@@ -702,7 +703,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadChartResponse'
+                $ref: '#/components/schemas/inline_response_200_3'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -3127,6 +3128,20 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Contains insights and the number of insights of the live algorithm in the request criteria.
+    LoadingChartResponse:
+      type: object
+      properties:
+        progress:
+          type: number
+          description: Loading percentage of the chart generation process.
+        status:
+          type: string
+          description: Status of the chart generation process.
+          example: loading
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+      description: Response when the requested chart is being generated.
     Market:
       type: string
       description: Fungible market of the underlying security.
@@ -5209,6 +5224,10 @@ components:
       oneOf:
       - $ref: '#/components/responses/LiveAlgorithmResults'
       - $ref: '#/components/responses/LiveList'
+    inline_response_200_3:
+      oneOf:
+      - $ref: '#/components/responses/LoadingChartResponse'
+      - $ref: '#/components/responses/ReadChartResponse'
   responses:
     BacktestResponse:
       description: Backtest read response packet.
