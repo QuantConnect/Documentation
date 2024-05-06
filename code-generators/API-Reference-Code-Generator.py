@@ -115,7 +115,11 @@ def ResponseTable(requestBody, type="application/json"):
     while i < len(item_list):
         request_object = doc
         for item in item_list[i]:
-            request_object = request_object[item]
+            request_object = request_object.get(item)
+            if not request_object:
+                request_object = doc.get('components').get('schemas').get(item)
+                if not request_object:
+                    continue
             
         if "items" in request_object and "oneOf" in request_object["items"]:
             prop = request_object["items"]["oneOf"]
