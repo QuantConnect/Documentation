@@ -758,7 +758,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/live_read_body'
+              $ref: '#/components/schemas/ReadLiveAlgorithmRequest'
         required: true
       responses:
         "200":
@@ -766,7 +766,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_2'
+                $ref: '#/components/schemas/LiveAlgorithmResults'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/list:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 07 Live Management
+      - 02 Read Live Algorithm
+      summary: Returns a list of live running algorithms.
+      requestBody:
+        description: Request body to obtain a list of live running algorithms.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListLiveAlgorithmsRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveAlgorithmListResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -2873,7 +2903,7 @@ components:
           - FXCM
           - Oanda
           - Tradier
-          - PaperTrading
+          - PaperBrokerage
           - Alpaca
           - Bitfinex
           - Binance
@@ -2987,7 +3017,7 @@ components:
           items:
             type: string
       description: Details a live algorithm from the live/read API endpoint.
-    LiveAlgorithmList:
+    LiveAlgorithmListResponse:
       type: object
       properties:
         live:
@@ -3072,23 +3102,6 @@ components:
           items:
             type: string
       description: Response received when listing optimizations of a project.
-    LiveList:
-      type: object
-      properties:
-        live:
-          type: array
-          description: Algorithm list matching the requested status.
-          items:
-            $ref: '#/components/schemas/LiveAlgorithm'
-        success:
-          type: boolean
-          description: Indicate if the API request was successful.
-        errors:
-          type: array
-          description: List of errors with the API call.
-          items:
-            type: string
-      description: List of the live algorithms running which match the requested status.
     LivePortfolioResponse:
       type: object
       properties:
@@ -4224,13 +4237,11 @@ components:
             - Initializing
             - History
         start:
-          type: string
-          description: Earliest launched time of the algorithms
-          format: date-time
+          type: number
+          description: Earliest launched time of the algorithms in UNIX timestamp.
         end:
-          type: string
-          description: Latest launched time of the algorithms
-          format: date-time
+          type: number
+          description: Latest launched time of the algorithms in UNIX timestamp.
       description: Request for a list of live running algorithms.
     ReadBacktestRequest:
       required:
@@ -5218,14 +5229,6 @@ components:
       oneOf:
       - $ref: '#/components/responses/BacktestReport'
       - $ref: '#/components/responses/RequestFailedError'
-    live_read_body:
-      oneOf:
-      - $ref: '#/components/schemas/ReadLiveAlgorithmRequest'
-      - $ref: '#/components/schemas/ListLiveAlgorithmsRequest'
-    inline_response_200_2:
-      oneOf:
-      - $ref: '#/components/responses/LiveAlgorithmResults'
-      - $ref: '#/components/responses/LiveList'
     inline_response_200_3:
       oneOf:
       - $ref: '#/components/responses/LoadingChartResponse'
@@ -5261,24 +5264,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/LiveAlgorithm'
-    LiveAlgorithmList:
+    LiveAlgorithmListResponse:
       description: List of the live algorithms running which match the requested status.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/LiveAlgorithmList'
+            $ref: '#/components/schemas/LiveAlgorithmListResponse'
     LiveAlgorithmResults:
       description: Details a live algorithm from the live/read API endpoint.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/LiveAlgorithmResults'
-    LiveList:
-      description: List of the live algorithms running which match the requested status.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/LiveList'
     ProjectListResponse:
       description: Project list response.
       content:
