@@ -246,17 +246,23 @@ def _render_type(type_, type_dict, language, type_ret="short-type-name", line_ar
 </div>
 '''
     if doc_attr or (type_name and type_name.split('.')[-1] in SUPPORTED_CANDLES):
-        if language == "python":
-            filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"].split(".")[-1]).replace("_", "-")}.html'
-        else:
-            filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"])}.html'
-        
         if doc_attr:
+            if language == "python":
+                filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"].split(".")[-1]).replace("_", "-")}.html'
+            else:
+                filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"])}.html'
+        
             if doc_attr["tag"] not in DOCS_ATTR:
                 DOCS_ATTR[doc_attr["tag"]] = []
             
             if not (RESOURCE / filename).exists():
                 DOCS_ATTR[doc_attr["tag"]].append(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>")
+                
+        else:
+            if language == "python":
+                filename = f'qcalgorithm-{type_dict[f"{type_}-name"].split(".")[-1].replace("_", "").lower()}.html'
+            else:
+                filename = f'qcalgorithm-{type_dict[f"{type_}-name"].lower()}.html'
             
         with open(RESOURCE / filename, 'a', encoding="utf-8") as file:
             html = f"<div class=\"{language}\">\n"
