@@ -75,7 +75,11 @@ def render_docs():
     INDICATOR_RESOURCE.mkdir(parents=True, exist_ok=True)
 
     for i, (h3, type_json_url) in enumerate(DOCS_SECTION.items()):
-        _render_section_docs(i, h3, type_json_url, write=False)
+        if i == 0:
+            write = False
+        else:
+            write = "partial"
+        _render_section_docs(i, h3, type_json_url, write=write)
         DONE.append(h3.strip().lower())
     
     for j, (tag, html_list) in enumerate(sorted(DOCS_ATTR.items(), key=lambda x: x[0])):
@@ -95,7 +99,7 @@ def render_docs():
         EXTRAS.clear()
         
         for h3, type_json_url in sorted(extra_copy.items(), key=lambda x: x[0]):
-            _render_section_docs(i, h3, type_json_url, write=True)
+            _render_section_docs(i, h3, type_json_url, write="full")
             DONE.append(h3.strip().lower())
         
         for x in list(EXTRAS.keys()):
@@ -176,9 +180,10 @@ def _render_section_docs_by_language(i, h3, type_json_url, language, write=False
             filename = title_to_dash_linked_lower_case(h3)
         filename += ".html"
             
-        if not (RESOURCE / filename).exists():
-            with open(WRITE_PATH / f"{i+1:02} Types.php", 'a', encoding="utf-8") as file:
-                file.write(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>\n")
+        if write == "full":
+            if not (RESOURCE / filename).exists():
+                with open(WRITE_PATH / f"{i+1:02} Types.php", 'a', encoding="utf-8") as file:
+                    file.write(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>\n")
             
         with open(RESOURCE / filename, 'a', encoding="utf-8") as file:
             html = f"<div class=\"{language}\">\n"
