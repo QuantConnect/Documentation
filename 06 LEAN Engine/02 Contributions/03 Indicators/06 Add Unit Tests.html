@@ -1,0 +1,88 @@
+<p>
+ Unit tests ensure your indicator functions correctly and produces accurate values. 
+ Follow these steps to add unit tests for your indicator:
+</p>
+
+<ol>
+ <li>Save the <a href='/docs/v2/lean-engine/contributions/indicators#02-Get-Third-Party-Values'>third-party values</a> in the <span class='public-file-name'>Lean / Tests / TestData</span> directory as a <span class='public-file-name'>CSV</span> file.</li>
+ <li>Compile the data file in <span class='public-file-name'>Lean / Tests / QuantConnect.Tests.csproj</span>.</li>
+ <li>
+  Create a <span class='public-directory-name'>Lean / Tests / Indicators / &lt;IndicatorName&gt;Tests.cs</span> file with the following content:
+  <div class="section-example-container">
+    <pre class=”csharp”>namespace QuantConnect.Tests.Indicators
+{
+    [TestFixture]
+    public class CustomIndicatorTests : CommonIndicatorTests&lt;T&gt;
+    {
+        protected override IndicatorBase&lt;T&gt; CreateIndicator()
+        {
+            return new CustomIndicator();
+        }
+
+        protected override string TestFileName =&gt; "custom_3rd_party_data.csv";
+
+        protected override string TestColumnName =&gt; "CustomIndicatorValueColumn";
+
+        // How do you compare the values
+        protected override Action&lt;IndicatorBase&lt;T&gt;, double&gt; Assertion
+        {
+            get { return (indicator, expected) =&gt; Assert.AreEqual(expected, (double)indicator.Current.Value, 1e-4); }        // allow 0.0001 error margin of indicator values
+        }
+    </pre>
+  </div>
+ </li>
+
+ <li>Override the preceding <code>TestFileName</code> and <code>TestColumnName</code> attribute with the <span class='public-file-name'>CSV</span> file name and the column name of the testing values in the CSV file of third-party values.</li>
+
+ <li>Add test cases.</li>
+ <p>Test if the constructor, <code>IsReady</code> flag, and <code>Reset</code> method work. If there are other custom calculation methods in your indicator class, add a tests for them.</p>
+ 
+</ol>
+
+<p>The following example shows the testing class structure:</p>
+<div class="section-example-container">
+    <pre class=”csharp”>namespace QuantConnect.Tests.Indicators
+{
+    [TestFixture]
+    public class CustomIndicatorTests : CommonIndicatorTests&lt;T&gt;
+    {
+        protected override IndicatorBase&lt;T&gt; CreateIndicator()
+        {
+            return new CustomIndicator();
+        }
+
+        protected override string TestFileName =&gt; "custom_3rd_party_data.csv";
+
+        protected override string TestColumnName =&gt; "CustomIndicatorValueColumn";
+
+        // How do you compare the values
+        protected override Action&lt;IndicatorBase&lt;T&gt;, double&gt; Assertion
+        {
+            get { return (indicator, expected) =&gt; Assert.AreEqual(expected, (double)indicator.Current.Value, 1e-4); }        // allow 0.0001 error margin of indicator values
+        }
+
+        [Test]
+        public void IsReadyAfterPeriodUpdates()
+        {
+            var ci = CreateIndicator();
+
+            Assert.IsFalse(ci.IsReady);
+            ci.Update(DateTime.UtcNow, 1m);
+            Assert.IsTrue(ci.IsReady);
+        }
+
+        [Test]
+        public override void ResetsProperly()
+        {
+            var ci = CreateIndicator();
+
+            ci.Update(DateTime.UtcNow, 1m);
+            Assert.IsTrue(ci.IsReady);
+            
+            ci.Reset();
+
+            TestHelper.AssertIndicatorIsInDefaultState(ci);
+        }
+    }
+}</pre>
+</div>    
