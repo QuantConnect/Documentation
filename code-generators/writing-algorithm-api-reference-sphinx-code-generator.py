@@ -17,7 +17,8 @@ RESOURCE = Path("Resources/qcalgorithm-api")
 INDICATOR_RESOURCE = Path("Resources/indicators/constructors")
 METADATA = WRITE_PATH / "metadata.json"
 DOCS_SECTION = {
-    "QCAlgorithm API": "QuantConnect.Algorithm.QCAlgorithm"
+    "QCAlgorithm API": "QuantConnect.Algorithm.QCAlgorithm",
+    "Candlestick Patterns": "QuantConnect.Algorithm.CandlestickPatterns"
 }
 MAX_RECURSION = 1
 XML_REGEX_PATTERNS = {
@@ -76,7 +77,6 @@ def render_docs():
     for i, (h3, type_json_url) in enumerate(DOCS_SECTION.items()):
         _render_section_docs(i, h3, type_json_url, write=False)
         DONE.append(h3.strip().lower())
-    i += 1
     
     for j, (tag, html_list) in enumerate(sorted(DOCS_ATTR.items(), key=lambda x: x[0])):
         with open(WRITE_PATH/ f"{i+j+1:02} {tag}.php", "a", encoding="utf-8") as file:
@@ -240,17 +240,18 @@ def _render_type(type_, type_dict, language, type_ret="short-type-name", line_ar
 {type_return}
 </div>
 '''
-    if doc_attr:
-        if doc_attr["tag"] not in DOCS_ATTR:
-            DOCS_ATTR[doc_attr["tag"]] = []
-        
+    if doc_attr or (type_name and type_name.split('.')[-1] in SUPPORTED_CANDLES):
         if language == "python":
             filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"].split(".")[-1]).replace("_", "-")}.html'
         else:
             filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"])}.html'
         
-        if not (RESOURCE / filename).exists():
-            DOCS_ATTR[doc_attr["tag"]].append(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>")
+        if doc_attr:
+            if doc_attr["tag"] not in DOCS_ATTR:
+                DOCS_ATTR[doc_attr["tag"]] = []
+            
+            if not (RESOURCE / filename).exists():
+                DOCS_ATTR[doc_attr["tag"]].append(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>")
             
         with open(RESOURCE / filename, 'a', encoding="utf-8") as file:
             html = f"<div class=\"{language}\">\n"

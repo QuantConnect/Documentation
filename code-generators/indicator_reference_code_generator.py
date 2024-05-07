@@ -208,8 +208,6 @@ def Generate_Indicators_Reference():
         with open(f'{folder}/02 Using {helper_name} Indicator.php', 'w', encoding='utf-8') as fp:
             fp.write(f"""{TAG}
 <? 
-include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
-
 $hasReference = { 'true' if 'reference' in indicator['helper-arguments'] else 'false' };
 $hasAutomaticIndicatorHelper = {'true' if type_name != 'Delay' else 'false'};
 $helperPrefix = '{'CandlestickPatterns.' if 'CandlestickPatterns' in source else ''}';
