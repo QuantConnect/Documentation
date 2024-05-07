@@ -1,0 +1,175 @@
+<p>
+ You can classify an indicator as either a data point, bar, or <code>TradeBar</code> indicator. 
+ Their classification depends on the type of data they receive. 
+ The following sections explain how to implement each type.
+ Regardless of the indicator type, the class must define the following properties:
+</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>WarmUpPeriod</code></td>
+            <td><code>int</code></td>
+            <td>The minimum number of data entries required to calculate an accurate indicator value.</td>
+        </tr>
+        <tr>
+            <td><code>IsReady</code></td>
+            <td><code>bool</code></td>
+            <td>A flag that states whether the indicator has sufficient data to generate values.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+ The class must also define a <code>ComputeNextValue</code> method, which accepts some data and returns the indicator value. 
+ As shown in the following sections, the data/arguments that this method receives depends on the indicator type.
+</p>
+
+<p>
+ On rare occassions, some indicators can produce invalid values. 
+ For example, a moving average can produce unexpected values due to extreme quotes.
+ In cases like these, override the <code>ValidateAndComputeNextValue</code> method to return an <code>IndicatorResult</code> with an <code>IndicatorStatus</code> enumeration.
+ If the <code>IndicatorStatus</code> states the value is invalid, it won't be passed to the main algorithm.
+ The <code>IndicatorStatus</code>  enumeration has the following members:
+</p>
+
+<div data-tree="QuantConnect.Indicators.IndicatorStatus"></div>
+
+<p>To enable the algorithm to warm up the indicator with the <code>WarmUpIndicator</code> method, inherit the <code>IIndicatorWarmUpPeriodProvider</code> interface.</p>
+
+<h4>Data Point Indicators</h4>
+<p>
+ Data point indicators use <code>IndicatorDataPoint</code> objects to compute their value. 
+ These types of indicators can inherit the <code>IndicatorBase&lt;IndicatorDataPoint&gt;</code> or <code>WindowIndicator&lt;IndicatorDataPoint&gt;</code> class.
+ The <code>WindowIndicator&lt;IndicatorDataPoint&gt;</code> class has several members to help you compute indicator values over multiple periods.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CustomPointIndicator : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicatorWarmUpPeriodProvider
+{
+    public int WarmUpPeriod = 2;
+    public override bool IsReady => Samples >= WarmUpPeriod;
+
+    protected override decimal ComputeNextValue(IndicatorDataPoint input)
+    {
+        return 1m;
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(IndicatorDataPoint input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.ValueNotReady);
+    }
+}</pre>
+</div>
+
+<p>To view some example data point indicators that inherit the <code>IndicatorBase&lt;IndicatorDataPoint&gt;</code> class, see the implementation of the following indicators in the LEAN repository:</p>
+<ul>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/SharpeRatio.cs" rel='nofollow' target='_blank'>SharpeRatio.cs</a></li>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/DetrendedPriceOscillator.cs" rel='nofollow' target='_blank'>DetrendedPriceOscillator</a></li>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/HullMovingAverage.cs" rel='nofollow' target='_blank'>HullMovingAverage</a></li>
+</ul>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CustomWindowIndicator : WindowIndicator&lt;IndicatorDataPoint&gt;
+{
+    public int WarmUpPeriod => base.WarmUpPeriod;
+    public override bool IsReady => base.IsReady;
+
+    protected override decimal ComputeNextValue(IReadOnlyWindow&lt;T&gt; window, IndicatorDataPoint input)
+    {
+        return window.Average();
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(IndicatorDataPoint input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.InvalidInput);
+    }
+}</pre>
+</div>
+
+<p>To view some example data point indicators that inherit the <code>WindowIndicator&lt;IndicatorDataPoint&gt;</code> class, see the implementation of the following indicators in the LEAN repository:</p>
+<ul>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/SimpleMovingAverage.cs" rel='nofollow' target='_blank'>SimpleMovingAverage</a></li>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/Momentum.cs" rel='nofollow' target='_blank'>Momentum</a></li>
+ <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/Maximum.cs" rel='nofollow' target='_blank'>Maximum</a></li>
+</ul>
+
+<h4>Bar Indicators</h4>
+<p>Bar indicators use <code>QuoteBar</code> or <code>TradeBar</code> objects to compute their value. Since Forex and CFD securities don't have <code>TradeBar</code> data, they use bar indicators. Candlestick patterns are examples of bar indicators.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CustomBarIndicator : BarIndicator, IIndicatorWarmUpPeriodProvider
+{
+    public int WarmUpPeriod = 2;
+    public override bool IsReady => Samples >= WarmUpPeriod;
+
+    protected override decimal ComputeNextValue(IBaseDataBar input)
+    {
+        return 1m;
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(IBaseDataBar input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.ValueNotReady);
+    }
+}</pre>
+</div>
+
+<p>To view some example bar indicators, see the implementation of the following indicators in the LEAN repository:</p>
+<ul>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/WilliamsPercentR.cs" rel='nofollow' target='_blank'>WilliamsPercentR</a></li>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/AverageTrueRange.cs" rel='nofollow' target='_blank'>AverageTrueRange</a></li>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/Stochastics.cs" rel='nofollow' target='_blank'>Stochastics</a></li>
+</ul>
+
+<h4>TradeBar Indicators</h4>
+<p><code>TradeBar</code> indicators use <code>TradeBar</code> objects to compute their value. Some <code>TradeBar</code> indicators use the volume property of the <code>TradeBar</code> to compute their value.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CustomTradeBarIndicator : TradeBarIndicator, IIndicatorWarmUpPeriodProvider
+{
+    public int WarmUpPeriod = 2;
+    public override bool IsReady => Samples >= WarmUpPeriod;
+
+    protected override decimal ComputeNextValue(TradeBar input)
+    {
+        return 1m;
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(TradeBar input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.ValueNotReady);
+    }
+}</pre>
+</div>
+
+<p>To view some example <code>TradeBar</code> indicators, see the implementation of the following indicators in the LEAN repository:</p>
+<ul>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/Beta.cs" rel='nofollow' target='_blank'>Beta</a></li>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/AdvanceDeclineIndicator.cs" rel='nofollow' target='_blank'>AdvanceDeclineIndicator</a></li>
+    <li><a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/MassIndex.cs" rel='nofollow' target='_blank'>MassIndex</a></li>
+</ul>
+
+
+
+
+
