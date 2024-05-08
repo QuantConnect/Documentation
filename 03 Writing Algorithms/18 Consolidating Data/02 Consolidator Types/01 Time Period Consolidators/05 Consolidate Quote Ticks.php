@@ -8,7 +8,8 @@ $timeDeltaPeriod = "milliseconds=100";
 $resolutionPeriodC = "Second";
 $resolutionPeriodPy = "SECOND";
 $typeOf = "Tick";
-$createConsolidatorExtraArgs = ", TickType.Quote";
+$createConsolidatorExtraArgsC = ", TickType.Quote";
+$createConsolidatorExtraArgsPy = ", TickType.QUOTE";
 $resolveConsolidatorExtraArgsC = ", typeof(QuoteBar)";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "";
@@ -23,7 +24,8 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$timeDeltaPeriod, 
 	$resolutionPeriodC, 
 	$resolutionPeriodPy,
-	$createConsolidatorExtraArgs,
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,
