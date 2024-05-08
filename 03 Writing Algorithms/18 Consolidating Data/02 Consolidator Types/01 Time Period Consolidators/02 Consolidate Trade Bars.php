@@ -5,7 +5,8 @@ $dataFormatInfo = new TradeBarConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
-$resolutionPeriod = "Daily";
+$resolutionPeriodC = "Daily";
+$resolutionPeriodPy = "DAILY";
 $createConsolidatorExtraArgs = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
@@ -22,7 +23,8 @@ $shortCutTickTypeArg = "";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
 	$timeDeltaPeriod, 
-	$resolutionPeriod, 
+	$resolutionPeriodC, 
+	$resolutionPeriodPy, 
 	$createConsolidatorExtraArgs,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
