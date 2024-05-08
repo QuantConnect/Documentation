@@ -14,7 +14,7 @@
         _algorithm = algorithm;
     }";
         $contructorBodyPy = "
-        self.algorithm = algorithm";
+        self._algorithm = algorithm";
     }
     else
     {
