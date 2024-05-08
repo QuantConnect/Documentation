@@ -44,14 +44,14 @@
     def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
-         isLive: bool) -&gt; SubscriptionDataSource:
+         is_live: bool) -&gt; SubscriptionDataSource:
         return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.REMOTE_FILE)
 
     def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
-         isLive: bool) -&gt; BaseData:
+         is_live: bool) -&gt; BaseData:
 
          if not (line.strip() and line[0].isdigit()):
             return None
