@@ -9,7 +9,7 @@
 		<pre class='csharp'>_consolidator.DataConsolidated += ConsolidationHandler;</pre>
 		<pre class='python'>self._consolidator.data_consolidated += self._consolidation_handler</pre>
 	</div>
-	<p>LEAN passes consolidated bars to the consolidator event handler in your algorithm. The most common error when creating consolidators is to put parenthesis <code>()</code> at the end of your method name when setting the event handler of the consolidator. If you use parenthesis, the method executes and the result is passed as the event handler instead of the method itself. Remember to pass the name of your method to the event system. Specifically, it should be <code class='csharp'>ConsolidationHandler</code><code class='python'>self.consolidation_handler</code>, not <code class='csharp'>ConsolidationHandler()</code><code class='python'>self.consolidation_handler()</code>.</p>
+	<p>LEAN passes consolidated bars to the consolidator event handler in your algorithm. The most common error when creating consolidators is to put parenthesis <code>()</code> at the end of your method name when setting the event handler of the consolidator. If you use parenthesis, the method executes and the result is passed as the event handler instead of the method itself. Remember to pass the name of your method to the event system. Specifically, it should be <code class='csharp'>ConsolidationHandler</code><code class='python'>self._consolidation_handler</code>, not <code class='csharp'>ConsolidationHandler()</code><code class='python'>self._consolidation_handler()</code>.</p>
 
 
 	<li>Define the consolidation handler.</li>
