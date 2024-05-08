@@ -4,7 +4,8 @@ $dataFormatInfo = new QuoteBarConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
-$resolutionPeriod = "Daily";
+$resolutionPeriodC = "Daily";
+$resolutionPeriodPy = "DAILY";
 $createConsolidatorExtraArgs = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
@@ -17,7 +18,8 @@ $shortCutTickTypeArg = "TickType.Quote, ";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
 	$timeDeltaPeriod, 
-	$resolutionPeriod, 
+	$resolutionPeriodC, 
+	$resolutionPeriodPy,
 	$createConsolidatorExtraArgs,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
