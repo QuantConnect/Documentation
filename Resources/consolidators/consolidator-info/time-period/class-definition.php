@@ -8,7 +8,8 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 {
 	public $timeSpanPeriod, 
 		$timeDeltaPeriod, 
-		$resolutionPeriod, 
+		$resolutionPeriodC, 
+	        $resolutionPeriodPy, 
 		$createConsolidatorExtraArgs,
 		$resolveConsolidatorExtraArgsC,
 		$resolveConsolidatorExtraArgsPy,
@@ -20,7 +21,8 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 
 	function __construct($timeSpanPeriod, 
 		$timeDeltaPeriod, 
-		$resolutionPeriod, 
+		$resolutionPeriodC, 
+		$resolutionPeriodPy, 
 		$createConsolidatorExtraArgs,
 		$resolveConsolidatorExtraArgsC,
 		$resolveConsolidatorExtraArgsPy,
@@ -34,7 +36,8 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 		parent::__construct();
 		$this->timeSpanPeriod = $timeSpanPeriod;
 		$this->timeDeltaPeriod = $timeDeltaPeriod;
-		$this->resolutionPeriod = $resolutionPeriod;
+		$this->resolutionPeriodC = $resolutionPeriodC;
+		$this->resolutionPeriodPy = $resolutionPeriodPy;
 		$this->createConsolidatorExtraArgs = $createConsolidatorExtraArgs;
 		$this->resolveConsolidatorExtraArgsC = $resolveConsolidatorExtraArgsC;
 		$this->resolveConsolidatorExtraArgsPy = $resolveConsolidatorExtraArgsPy;
