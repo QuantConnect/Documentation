@@ -2,7 +2,7 @@
 
 <div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>
 
-<p>To get the <code>SymbolChangedEvent</code>, use the <code>SymbolChangedEvents</code> property of the <code>Slice</code>. You can use <code>SymbolChangedEvents</code> to roll over contracts.</p>
+<p>To get the <code>SymbolChangedEvent</code>, use the <code class='csharp'>SymbolChangedEvents</code><code class='csharp'>symbol_changed_events</code> property of the <code>Slice</code>. You can use <code>SymbolChangedEvents</code> to roll over contracts.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void OnData(Slice slice)
@@ -20,16 +20,16 @@
     }
 }</pre>
     <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    for symbol, changed_event in  slice.SymbolChangedEvents.items():
-        old_symbol = changed_event.OldSymbol
-        new_symbol = changed_event.NewSymbol
-        tag = f"Rollover - Symbol changed at {self.Time}: {old_symbol} -> {new_symbol}"
-        quantity = self.Portfolio[old_symbol].Quantity
+    for symbol, changed_event in  slice.symbol_changed_events.items():
+        old_symbol = changed_event.old_symbol
+        new_symbol = changed_event.new_symbol
+        tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
+        quantity = self.portfolio[old_symbol].quantity
 
         # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-        self.Liquidate(old_symbol, tag = tag)
-        if quantity != 0: self.MarketOrder(new_symbol, quantity, tag = tag)
-        self.Log(tag)</pre>
+        self.liquidate(old_symbol, tag=tag)
+        if quantity: self.market_order(new_symbol, quantity, tag=tag)
+        self.log(tag)</pre>
 </div>
 
 <p>In backtesting, the <code>SymbolChangedEvent</code> occurs at midnight Eastern Time (ET). In live trading, the live data for continuous contract mapping arrives at 6/7 AM ET, so that's when it occurs.</p>
