@@ -1,14 +1,12 @@
 <p>The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and a <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/cnbc-trading#10-Universe-Selection'>QuiverCNBCsUniverse alternative universe</a>. It first selects the 100 most liquid US Equities and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.</p>
 <div class="section-example-container">
-    <pre class="csharp">#region imports
-    using System.Collections.Generic;
-    using System.Linq;
-    using QuantConnect.Util;
-    using QuantConnect.Data;
-    using QuantConnect.DataSource;
-    using QuantConnect.Data.UniverseSelection;
-    using QuantConnect.Securities;
-#endregion
+    <pre class="csharp">using System.Collections.Generic;
+using System.Linq;
+using QuantConnect.Util;
+using QuantConnect.Data;
+using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Securities;
     
 namespace QuantConnect.Algorithm.CSharp
 {
@@ -54,29 +52,25 @@ namespace QuantConnect.Algorithm.CSharp
         }
     }
 }</pre>
-    <pre class="python"># region imports
-    from AlgorithmImports import * 
-#endregion
-
-from AlgorithmImports import *
+    <pre class="python">from AlgorithmImports import *
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
-    fundamental = []
+    _fundamental = []
 
     def initialize(self):
         self.set_start_date(2023, 1, 2)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
-        self.add_universe(self.fundamental_filter_function)
-        self.add_universe(QuiverCNBCsUniverse, self.mad_money_selection)
+        self.add_universe(self._fundamental_filter_function)
+        self.add_universe(QuiverCNBCsUniverse, self._mad_money_selection)
     
-    def fundamental_filter_function(self, fundamental: List[Fundamental]) -> List[Symbol]:
+    def _fundamental_filter_function(self, fundamental: List[Fundamental]) -> List[Symbol]:
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
         self.fundamental = [c.symbol for c in sorted_by_dollar_volume[:100]]
         return Universe.UNCHANGED
     
-    def mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
+    def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
         madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
         return list(set(self.fundamental) & set(madmoney))
     
