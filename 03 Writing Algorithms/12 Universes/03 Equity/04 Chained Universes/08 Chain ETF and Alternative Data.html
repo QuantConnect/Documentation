@@ -1,14 +1,12 @@
 <p>The following example chains an <a href="/docs/v2/writing-algorithms/universes/equity/etf-constituents-universes">ETF universe</a> and a <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/cnbc-trading#10-Universe-Selection'>QuiverCNBCsUniverse alternative universe</a>. It first selects all constituents of SPY and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.</p>
 <div class="section-example-container">
-    <pre class="csharp">#region imports
-    using System.Collections.Generic;
-    using System.Linq;
-    using QuantConnect.Util;
-    using QuantConnect.Data;
-    using QuantConnect.DataSource;
-    using QuantConnect.Data.UniverseSelection;
-    using QuantConnect.Securities;
-#endregion
+    <pre class="csharp">using System.Collections.Generic;
+using System.Linq;
+using QuantConnect.Util;
+using QuantConnect.Data;
+using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Securities;
     
 namespace QuantConnect.Algorithm.CSharp
 {
@@ -52,32 +50,26 @@ namespace QuantConnect.Algorithm.CSharp
         }
     }
 }</pre>
-    <pre class="python"># region imports
-    from AlgorithmImports import *
-# endregion
-
-# region imports
-    from AlgorithmImports import *
-# endregion
+    <pre class="python">from AlgorithmImports import *
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
-    etf = []
+    _etf = []
 
     def initialize(self):
         self.set_start_date(2023, 1, 2)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
-        self.add_universe(self.universe.etf("SPY", Market.USA, self.universe_settings, self.etf_constituents_filter))
-        self.add_universe(QuiverCNBCsUniverse, self.mad_money_selection)
+        self.add_universe(self.universe.etf("SPY", Market.USA, self.universe_settings, self._etf_constituents_filter))
+        self.add_universe(QuiverCNBCsUniverse, self._mad_money_selection)
 
-    def etf_constituents_filter(self, fundamental: List[Fundamental]) -> List[Symbol]:
-        self.etf = [c.symbol for c in constituents]
+    def _etf_constituents_filter(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        self._etf = [c.symbol for c in constituents]
         return Universe.UNCHANGED
 
-    def mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
+    def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
         madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
-        return list(set(self.etf) & set(madmoney))
+        return list(set(self._etf) & set(madmoney))
 
     def on_securities_changed(self, changes):
         for added in changes.added_securities:
