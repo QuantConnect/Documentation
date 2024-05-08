@@ -6,7 +6,8 @@ $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
 $resolutionPeriodC = "Daily";
 $resolutionPeriodPy = "DAILY";
-$createConsolidatorExtraArgs = "";
+$createConsolidatorExtraArgsC = "";
+$createConsolidatorExtraArgsPy = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "";
@@ -20,7 +21,8 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$timeDeltaPeriod, 
 	$resolutionPeriodC, 
 	$resolutionPeriodPy,
-	$createConsolidatorExtraArgs,
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,
