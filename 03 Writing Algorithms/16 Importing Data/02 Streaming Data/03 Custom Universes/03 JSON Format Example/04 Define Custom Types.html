@@ -55,8 +55,8 @@ public class StockDataSource : BaseData
     def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
-         isLive: bool) -&gt; SubscriptionDataSource:
-        if not isLive:
+         is_live: bool) -&gt; SubscriptionDataSource:
+        if not is_live:
             return SubscriptionDataSource("&lt;json_universe_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.UNFOLDING_COLLECTION)
         return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/universe-example.json", 
                                       SubscriptionTransportMedium.REMOTE_FILE,
@@ -66,7 +66,7 @@ public class StockDataSource : BaseData
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
-         isLive: bool) -&gt; BaseData:
+         is_live: bool) -&gt; BaseData:
         
         objects = []
         data = json.loads(line)
