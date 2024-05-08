@@ -21,8 +21,8 @@
 <p>There are several other signatures for the <code class="csharp">AddData</code><code class="python">add_data</code> method.</p>
 <div class="python section-example-container">
     <pre>self.add_data(type, ticker, resolution)
-self.add_data(type, ticker, resolution, timeZone, fillForward, leverage)
-self.add_data(type, ticker, properties, exchangeHours, resolution, fillForward, leverage)</pre>
+self.add_data(type, ticker, resolution, time_zone, fill_forward, leverage)
+self.add_data(type, ticker, properties, exchange_hours, resolution, fill_forward, leverage)</pre>
 </div>
 <div class="csharp section-example-container">
     <pre>AddData&lt;T&gt;(ticker, resolution);
