@@ -4,7 +4,7 @@
 {
 
 }</pre>
-	<pre class='python'>def consolidation_handler(self, consolidated_bar: <?=$consolidationHandlerType?>) -&gt; None:
+	<pre class='python'>def _consolidation_handler(self, consolidated_bar: <?=$consolidationHandlerType?>) -&gt; None:
     pass</pre>
 </div>
 
