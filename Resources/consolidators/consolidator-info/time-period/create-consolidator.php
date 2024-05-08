@@ -6,11 +6,11 @@
 	<div class='section-example-container'>
 		<pre class='csharp'>_consolidator = new <?=$consolidatorClassName?>(TimeSpan.<?=$this->timeSpanPeriod?>);
 // Aliases:
-// _consolidator = CreateConsolidator(TimeSpan.<?=$this->timeSpanPeriod?>, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgs?>);
+// _consolidator = CreateConsolidator(TimeSpan.<?=$this->timeSpanPeriod?>, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgsC?>);
 // _consolidator = ResolveConsolidator(_symbol, TimeSpan.<?=$this->timeSpanPeriod?><?=$this->resolveConsolidatorExtraArgsC?>);</pre>
 			<pre class='python'>self._consolidator = <?=$consolidatorClassName?>(timedelta(<?=$this->timeDeltaPeriod?>))
 # Aliases:
-# self._consolidator = self.create_consolidator(timedelta(<?=$this->timeDeltaPeriod?>), <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)
+# self._consolidator = self.create_consolidator(timedelta(<?=$this->timeDeltaPeriod?>), <?=$typeOf?><?=$this->createConsolidatorExtraArgsPy?>)
 # self._consolidator = self.resolve_consolidator(self._symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
 	</div>
 
