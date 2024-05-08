@@ -7,7 +7,8 @@ $timeSpanPeriod = "FromMilliseconds(100)";
 $timeDeltaPeriod = "milliseconds=100";
 $resolutionPeriodC = "Second";
 $resolutionPeriodPy = "SECOND";
-$createConsolidatorExtraArgs = "";
+$createConsolidatorExtraArgsC = "";
+$createConsolidatorExtraArgsPy = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "";
@@ -21,7 +22,8 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$timeDeltaPeriod, 
 	$resolutionPeriodC, 
 	$resolutionPeriodPy,
-	$createConsolidatorExtraArgs,
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,
