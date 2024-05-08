@@ -1,0 +1,13 @@
+<p>To set the <a href="/docs/v2/writing-algorithm/securities/properties#Symbol-Properties">Symbol Properties</a> of the custom data symbol. You need to construct a <code>SymbolProperty</code> object and assign to the custom security with matching the custom symbol value and the <code>MarketTicker</code> field of the <code>SymbolProperty</code> object.</p>
+
+<p>To set the <a href="/docs/v2/writing-algorithm/securities/exchange#hours">Excahnge Hours</a> of the custom data symbol. You need to construct an <code>SecurityExchangeHours</code> object and assign to the custom security. Note that the default is 24/7 always open if not being set.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var ticker = "ABC";
+var properties = new SymbolProperties("description", "USD", 1, 0.01, 0.01, ticker);
+var hours = MarketHoursDatabase.GetEntry(Market.USA, "SPY", SecurityType.Equity).ExchangeHours;
+AddData&lt;CustomData&gt;(ticker, properties, hours);</pre>
+    <pre class="python">ticker = "ABC"
+properties = SymbolProperties("description", "USD", 1, 0.01, 0.01, ticker)
+var hours = MarketHoursDatabase.get_entry(Market.USA, "SPY", SecurityType.Equity).exchange_hours;
+self.add_data(CustomData, ticker, properties, hours)</pre>
