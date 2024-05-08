@@ -25,9 +25,9 @@ public void OnData(<?=$chainTypeName?> <?=$variableName?>)
 }
 <? } ?></pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.<?=$chainTypeName?>.get(self.contract_symbol.canonical)
+    chain = slice.<?=$chainTypeName?>.get(self._contract_symbol.canonical)
     if chain:
-        contract = chain.contracts.get(self.contract_symbol)
+        contract = chain.contracts.get(self._contract_symbol)
         if contract:
             open_interest = contract.open_interest</pre>
 </div>
