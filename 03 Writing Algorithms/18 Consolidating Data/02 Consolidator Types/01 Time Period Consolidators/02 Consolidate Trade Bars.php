@@ -7,7 +7,8 @@ $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
 $resolutionPeriodC = "Daily";
 $resolutionPeriodPy = "DAILY";
-$createConsolidatorExtraArgs = "";
+$createConsolidatorExtraArgsC = "";
+$createConsolidatorExtraArgsPy = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "_consolidator = TradeBarConsolidator.FromResolution(Resolution.Daily);
@@ -25,7 +26,8 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$timeDeltaPeriod, 
 	$resolutionPeriodC, 
 	$resolutionPeriodPy, 
-	$createConsolidatorExtraArgs,
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,
