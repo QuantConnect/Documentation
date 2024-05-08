@@ -60,7 +60,7 @@
 <div class="section-example-container">
     <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
     OptionStyle.American, OptionRight.Call, 365, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self.contract_symbol = Symbol.create_option(self._symbol, Market.USA,
+    <pre class="python">self._contract_symbol = Symbol.create_option(self._symbol, Market.USA,
     OptionStyle.AMERICAN, OptionRight.CALL, 365, datetime(2022, 6, 17))</pre>
 </div>
 
@@ -107,7 +107,7 @@ _contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.Strik
     <pre class="python">contract_symbols = self.option_chain_provider.get_option_contract_list(self._symbol, self.time)
 expiry = min([symbol.id.date for symbol in contract_symbols])
 filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -117,7 +117,7 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.str
 <div class="section-example-container">
     <pre class="csharp">var option = AddOptionContract(_contractSymbol);
 option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
-    <pre class="python">option = self.add_option_contract(self.contract_symbol)
+    <pre class="python">option = self.add_option_contract(self._contract_symbol)
 option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
