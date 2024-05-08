@@ -1,4 +1,4 @@
-<p>If you use the <code>Consolidate</code> helper method, the consolidation handler doesn't receive an <code>object</code> argument.</p>
+<p>If you use the <code class='csharp'>Consolidate</code><code class='python'>consolidate</code> helper method, the consolidation handler doesn't receive an <code>object</code> argument.</p>
 <div class='section-example-container'>
 	<pre class='csharp'>void ConsolidationHandler(<?=$consolidationHandlerType?> consolidatedBar)
 {
