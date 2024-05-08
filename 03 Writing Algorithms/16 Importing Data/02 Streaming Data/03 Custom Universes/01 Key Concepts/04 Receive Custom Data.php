@@ -13,7 +13,7 @@
 }
 </pre>
 <pre class="python">class MyCustomUniverseAlgorithm(QCAlgorithm):
-	def selector_function(self, data: List[MyCustomUniverseDataClass]) -&gt; List[Symbol]:
+	def _selector_function(self, data: List[MyCustomUniverseDataClass]) -&gt; List[Symbol]:
     	sorted_data = sorted([ x for x in data if x["CustomAttribute1"] &gt; 0 ],
                          	key=lambda x: x["CustomAttribute2"],
                          	reverse=True)
