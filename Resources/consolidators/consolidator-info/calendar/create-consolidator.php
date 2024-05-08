@@ -34,7 +34,7 @@
 		<pre class='csharp'>_consolidator = new <?=$consolidatorClassName?>(Calendar.Weekly);
 // Alias:
 // _consolidator = CreateConsolidator(Calendar.Weekly, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgs?>);</pre>
-		<pre class='python'>self._consolidator = <?=$consolidatorClassName?>(Calendar.Weekly)
+		<pre class='python'>self._consolidator = <?=$consolidatorClassName?>(Calendar.WEEKLY)
 # Alias:
 # self._consolidator = self.create_consolidator(Calendar.WEEKLY, <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)</pre>
 	</div>
