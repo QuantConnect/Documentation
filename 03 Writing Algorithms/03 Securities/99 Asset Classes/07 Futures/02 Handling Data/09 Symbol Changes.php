@@ -2,7 +2,7 @@
 
 <div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>
 
-<p>To get the <code>SymbolChangedEvent</code>, use the <code class='csharp'>SymbolChangedEvents</code><code class='csharp'>symbol_changed_events</code> property of the <code>Slice</code>. You can use <code>SymbolChangedEvents</code> to roll over contracts.</p>
+<p>To get the <code>SymbolChangedEvent</code>, use the <code class='csharp'>SymbolChangedEvents</code><code class='csharp'>symbol_changed_events</code> property of the <code>Slice</code>. You can use the <code>SymbolChangedEvent</code> to roll over contracts.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void OnData(Slice slice)
