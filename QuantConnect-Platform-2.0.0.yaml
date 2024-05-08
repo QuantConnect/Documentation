@@ -1721,12 +1721,7 @@ components:
           type: array
           description: List of holdings for the brokerage.
           items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
+            $ref: '#/components/schemas/BrokerageHolding'
         description: Settings for using Binance as a data provider or brokerage.
     BinanceFuturesUSDMSettings:
       type: object
@@ -1753,12 +1748,7 @@ components:
           type: array
           description: List of holdings for the brokerage.
           items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
+            $ref: '#/components/schemas/BrokerageHolding'
         description: Settings for using Binance Futures USDM as a data provider or brokerage.
     BinanceFuturesCOINSettings:
       type: object
@@ -1785,12 +1775,7 @@ components:
           type: array
           description: List of holdings for the brokerage.
           items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
+            $ref: '#/components/schemas/BrokerageHolding'
         description: Settings for using Binance Futures COIN as a data provider or brokerage.
     BinanceUSSettings:
       type: object
@@ -1817,12 +1802,7 @@ components:
           type: array
           description: List of holdings for the brokerage.
           items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
+            $ref: '#/components/schemas/BrokerageHolding'
         description: Settings for using Binance US as a data provider or brokerage.
     BitfinexSettings:
       type: object
@@ -1836,16 +1816,6 @@ components:
         bitfinex-api-secret:
           type: string
           description: Your Bitfinex API secret.
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
       description: Settings for using Bitfinex as a data provider or brokerage.
     BrokerageData:
       type: object
@@ -1893,12 +1863,7 @@ components:
           type: array
           description: List of holdings for the brokerage.
           items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
+            $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Bybit as a data provider or brokerage.
     Card:
       type: object
@@ -2023,12 +1988,7 @@ components:
           type: array
           description: List of holdings for the brokerage.
           items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
+            $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Coinbase as a data provider or brokerage.
     Collaborator:
       type: object
@@ -2715,6 +2675,24 @@ components:
           description: Current unrealized P/L of the holding.
           format: float
       description: Live results object class for packaging live result data.
+    BrokerageHolding:
+      type: object
+      properties:
+        symbolId:
+          type: string
+          description: Symbol ID of the holding.
+        symbol:
+          type: string
+          description: Symbol ticker of the holding.
+        quantity:
+          type: number
+          description: Quantity of the Symbol we hold.
+          format: float
+        averagePrice:
+          type: number
+          description: Average Price of our Holding in the currency the symbol is traded in.
+          format: float
+      description: Holding object class for creating a live algorithm.
     IEXDataFeedSettings:
       type: object
       properties:
@@ -2790,16 +2768,6 @@ components:
         kraken-verification-tier:
           type: string
           description: Your Kraken Verification Tier.
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
       description: Settings for using Kraken as a data provider.
     LeanVersionsResponse:
       type: object
@@ -4086,6 +4054,16 @@ components:
         rbi-account:
           type: string
           description: RBI account name.
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using RBI as a brokerage.
     ReadFilesRequest:
       required:
@@ -4277,6 +4255,16 @@ components:
         id:
           type: string
           description: ID of QuantConnect, this is QuantConnectBrokerage.
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
       description: QuantConnect settings for using it as a brokerage or data provider.
     InteractiveBrokersSettings:
       type: object
@@ -4303,16 +4291,6 @@ components:
           type: string
           description: Weekly restart UTC time (hh:mm:ss).
           format: date
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
       description: Settings for using Interactive Brokers as brokerage or data provider.
     ReadBacktestChartRequest:
       type: object
@@ -4717,6 +4695,16 @@ components:
           enum:
             - DAPI
             - SAPI
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using TerminalLink as a brokerage.
     Trade:
       type: object
@@ -4947,16 +4935,6 @@ components:
           enum:
             - live
             - paper
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/Holding'
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
       description: Settings for using Tradier as a data provider.
     TradingTechnologiesSettings:
       type: object
@@ -4988,6 +4966,11 @@ components:
         tt-order-routing-sender-comp-id:
           type: string
           description: Trading Technologies routing sender.
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
       description: Settings for using Trading Technologies as a brokerage.
     UpdateBacktestRequest:
       required:
@@ -5183,6 +5166,16 @@ components:
         wolverine-account:
           type: string
           description: Wolverine Execution Services account name.
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Wolverine Execution Services as a brokerage.
     ZerodhaSettings:
       type: object
