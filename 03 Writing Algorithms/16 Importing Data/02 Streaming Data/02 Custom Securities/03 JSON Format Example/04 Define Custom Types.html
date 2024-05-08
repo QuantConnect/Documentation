@@ -30,6 +30,10 @@ public class MyCustomDataType : BaseData
         DateTime date,
         bool isLiveMode)
     {
+        if (!isLive)
+        {
+            return new SubscriptionDataSource("&lt;customDataKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.UnfoldingCollection);
+        }
         return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection);
     }
 
@@ -61,7 +65,7 @@ public class MyCustomDataType : BaseData
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
         if not isLive:
-            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.UNFOLDING_COLLECTION)
         return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.REMOTE_FILE, FileFormat.UNFOLDING_COLLECTION)
 
     def reader(self,

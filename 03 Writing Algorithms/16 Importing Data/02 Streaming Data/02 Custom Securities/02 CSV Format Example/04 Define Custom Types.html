@@ -13,7 +13,11 @@
         DateTime date,
         bool isLiveMode)
     {
-        return new SubscriptionDataSource("https://www.dropbox.com/s/rsmg44jr6wexn2h/CNXNIFTY.csv?dl=1", SubscriptionTransportMedium.RemoteFile);
+        if (!isLiveMode)
+        {
+            return new SubscriptionDataSource("&lt;CustomDataKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+        }
+        return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", SubscriptionTransportMedium.RemoteFile);
     }
 
     public override BaseData Reader(
@@ -56,7 +60,7 @@
 
         if not isLive:
             return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
-        return SubscriptionDataSource("https://www.dropbox.com/s/rsmg44jr6wexn2h/CNXNIFTY.csv?dl=1", SubscriptionTransportMedium.REMOTE_FILE)
+        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", SubscriptionTransportMedium.REMOTE_FILE)
 
     def reader(self,
          config: SubscriptionDataConfig,

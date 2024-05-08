@@ -12,7 +12,11 @@
         DateTime date,
         bool isLiveMode)
     {
-        return new SubscriptionDataSource("https://www.dropbox.com/s/ae1couew5ir3z9y/daily-stock-picker-backtest.csv?dl=1", SubscriptionTransportMedium.RemoteFile);
+        if (!isLiveMode)
+        {
+            return new SubscriptionDataSource("&lt;CustomUniverseKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+        }
+        return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-universe-example.csv", SubscriptionTransportMedium.RemoteFile, FileFormat.Csv);
     }
 
     public override BaseData Reader(
@@ -40,7 +44,9 @@
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource("https://www.dropbox.com/s/ae1couew5ir3z9y/daily-stock-picker-backtest.csv?dl=1", SubscriptionTransportMedium.REMOTE_FILE)
+        if not isLive:
+            return SubscriptionDataSource("&lt;custom_universe_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-universe-example.csv", SubscriptionTransportMedium.REMOTE_FILE, FileFormat.CSV)
 
     def reader(self,
          config: SubscriptionDataConfig,

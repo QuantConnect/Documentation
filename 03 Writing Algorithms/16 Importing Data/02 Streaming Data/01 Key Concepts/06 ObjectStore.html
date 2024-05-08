@@ -1,0 +1,46 @@
+<p>It is optional to first transfer remote files in other locations (e.g. dropbox) to <a href="/docs/v2/writing-algorithm/objectstore">ObjectStore</a>. It can increase the execution speed of your backtests since it don't have to download the data at each run.</p>
+
+<p>Manually, you can do so by uploading the files into the <code>ObjectStore</code> via the <a href="/docs/v2/cloud-platform/object-store#Upload-Files">Organization page</a>.</p>
+
+<p>Alternatively, you can also do so by a <a href="/docs/v2/writing-algorithm/importing-data/bulk-downloads">bulk download</a> first. Then, re-uploading into the <code>ObjectStore</code>. It can be done using the research environment easily.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Case 1: CSV file
+var csvStringFile = qb.Download("&lt;csvFileURL&gt;");
+var csvSaveSuccessful = qb.ObjectStore.Save($"{qb.ProjectId}/{"&lt;YourCSVKey&gt;"}", csvStringFile);
+
+// Case 2: JSON file
+var jsonFile = qb.Download("&lt;jsonFileURL&gt;");
+var jsonSaveSuccessful = qb.ObjectStore.SaveJson&lt;Dictionary&lt;string, decimal&gt;&gt;($"{qb.ProjectId}/{"&lt;YourJSONKey&gt;"}", jsonFile);</pre>
+    <pre class="python"># Case 1: CSV file
+csv_string_file = qb.download("&lt;csv_file_url&gt;")
+csv_save_successful = qb.object_store.save(f'{qb.project_id}/{"&lt;your_csv_key&gt;"}', csv_string_file)
+
+# Case 2: JSON file
+json_file = qb.download("&lt;json_file_url&gt;")
+json_save_successful = qb.object_store.save(f'{qb.project_id}/{"&lt;your_json_key&gt;"}', json_file)</pre>
+</div>
+
+<p>To load the data in backtesting, set the custom data source to read from the saved file in <code>ObjectStore</code> and parse the data just like parsing from other data sources.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class MyCustomDataType : BaseData
+{
+    public override SubscriptionDataSource GetSource(
+        SubscriptionDataConfig config,
+        DateTime date,
+        bool isLiveMode)
+    {
+        return new SubscriptionDataSource("&lt;YourCSVKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+        // return new SubscriptionDataSource("&lt;YourJSONKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.UnfoldingCollection);
+    }
+}</pre>
+    <pre class="python">class MyCustomDataType(PythonData):
+    def get_source(self,
+            config: SubscriptionDataConfig,
+            date: datetime,
+            is_live_mode: bool) -&gt; SubscriptionDataSource:
+            
+        return SubscriptionDataSource("&lt;your_csv_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+        # return new SubscriptionDataSource("&lt;your_json_key&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.UNFOLDING_COLLECTION);</pre>
+</div>
