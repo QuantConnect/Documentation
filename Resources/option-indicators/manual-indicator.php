@@ -29,12 +29,12 @@ public override void Initialize()
     dividend_yield_provider = DividendYieldProvider(equity)
 
     # Example of using the single-contract IV calculation:
-    self.<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider)
+    self._<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider)
 
     # Example of using the using mirror-contract IV calculation:
-    mirrorOption = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
-    self.add_option_contract(mirrorOption)
-    self.<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider, mirrorOption)
+    mirror_option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
+    self.add_option_contract(mirror_option)
+    self._<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider, mirror_option)
 </pre>
 </div>
 
