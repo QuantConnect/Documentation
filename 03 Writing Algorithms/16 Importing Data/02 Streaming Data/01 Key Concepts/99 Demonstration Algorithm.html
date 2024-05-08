@@ -115,19 +115,19 @@ namespace QuantConnect.Algorithm.CSharp
         self.set_cash(100000)
 
         # Define the symbol and "type" of our generic data:
-        self.custom_data_symbol = self.add_data(Bitstamp, "BTC").symbol
+        self._custom_data_symbol = self.add_data(Bitstamp, "BTC").symbol
 
-        history = self.history(Bitstamp, self.custom_data_symbol, 200, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from historical data request of {self.custom_data_symbol}.")
+        history = self.history(Bitstamp, self._custom_data_symbol, 200, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from historical data request of {self._custom_data_symbol}.")
 
 
     def on_data(self, slice):
-        if self.custom_data_symbol not in slice:
+        if self._custom_data_symbol not in slice:
             return
 
-        data = slice[self.custom_data_symbol]
+        data = slice[self._custom_data_symbol]
         self.log(f'{data.end_time}: Close: {data.close}')
-        self.plot(self.custom_data_symbol, 'Price', data.close)
+        self.plot(self._custom_data_symbol, 'Price', data.close)
 
 
 class Bitstamp(PythonData):
