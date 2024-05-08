@@ -10,7 +10,8 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 		$timeDeltaPeriod, 
 		$resolutionPeriodC, 
 	        $resolutionPeriodPy, 
-		$createConsolidatorExtraArgs,
+		$createConsolidatorExtraArgsC,
+		$createConsolidatorExtraArgsPy,
 		$resolveConsolidatorExtraArgsC,
 		$resolveConsolidatorExtraArgsPy,
 		$resolutionArgExtraExamplesC,
@@ -23,7 +24,8 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 		$timeDeltaPeriod, 
 		$resolutionPeriodC, 
 		$resolutionPeriodPy, 
-		$createConsolidatorExtraArgs,
+		$createConsolidatorExtraArgsC,
+		$createConsolidatorExtraArgsPy,
 		$resolveConsolidatorExtraArgsC,
 		$resolveConsolidatorExtraArgsPy,
 		$resolutionArgExtraExamplesC,
@@ -38,7 +40,8 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 		$this->timeDeltaPeriod = $timeDeltaPeriod;
 		$this->resolutionPeriodC = $resolutionPeriodC;
 		$this->resolutionPeriodPy = $resolutionPeriodPy;
-		$this->createConsolidatorExtraArgs = $createConsolidatorExtraArgs;
+		$this->createConsolidatorExtraArgsC = $createConsolidatorExtraArgsC;
+		$this->createConsolidatorExtraArgsPy = $createConsolidatorExtraArgsPy;
 		$this->resolveConsolidatorExtraArgsC = $resolveConsolidatorExtraArgsC;
 		$this->resolveConsolidatorExtraArgsPy = $resolveConsolidatorExtraArgsPy;
 		$this->resolutionArgExtraExamplesC = $resolutionArgExtraExamplesC;
