@@ -14,7 +14,7 @@ The most common use case is to select a lot of liquid stocks. With a fundamental
         orderby f.DollarVolume descending
         select f.Symbol).Take(500);
 }</pre>
-<pre class="python">def fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+<pre class="python">def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     filtered = [f for f in fundamental if f.price &gt; 10 and f.dollar_volume &gt; 10000000]
     sorted_by_dollar_volume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)
     return sorted_by_dollar_volume[:500]</pre>
@@ -40,20 +40,20 @@ private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Funda
         select f.Symbol).Take(10);
 }</pre>
 <pre class="python"># setup state storage in initialize method
-self.state_data = { }
+self._state_data = { }
     
-def fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     # We are going to use a dictionary to refer the object that will keep the moving averages
     for f in fundamental:
-        if f.symbol not in self.state_data:
-            self.state_data[f.symbol] = SelectionData(f.symbol, 200)
+        if f.symbol not in self._state_data:
+            self._state_data[f.symbol] = SelectionData(f.symbol, 200)
     
         # Updates the SymbolData object with current EOD price
-        avg = self.state_data[f.symbol]
+        avg = self._state_data[f.symbol]
         avg.update(c.end_time, f.adjusted_price, f.dollar_volume)
     
     # Filter the values of the dict to those above EMA and more than $1B vol.
-    values = [x for x in self.state_data.values() if x.is_above_ema and x.volume > 1000000000]
+    values = [x for x in self._state_data.values() if x.is_above_ema and x.volume > 1000000000]
         
     # sort by the largest in volume.
     values.sort(key=lambda x: x.volume, reverse=True)
@@ -68,14 +68,14 @@ In this example, the <code>SelectionData</code> class group variables for the un
 <pre class="python">class SelectionData(object):
     def __init__(self, symbol, period):
         self._symbol = symbol
-        self.ema = ExponentialMovingAverage(period)
+        self._ema = ExponentialMovingAverage(period)
         self.is_above_ema = False
         self.volume = 0
 
     def update(self, time, price, volume):
         self.volume = volume
-        if self.ema.update(time, price):
-            self.is_above_ema = price &gt; ema.current.value</pre>
+        if self._ema.update(time, price):
+            self.is_above_ema = price &gt; self._ema.current.value</pre>
 <pre class="csharp">// example selection data class
 private class SelectionData
 {
@@ -107,15 +107,13 @@ The process to get the 10-day SMA stock volume is the same process as in Example
 <pre class="python">class SelectionData(object):
     def __init__(self, symbol, period):
         self._symbol = symbol
-        self.volume = 0
         self.volume_ratio = 0
         self._sma = SimpleMovingAverage(period)
 
     def update(self, time, price, volume):
-        self.volume = volume
-        if self.sma.update(time, volume):
+        if self._sma.update(time, volume):
             # get ratio of this volume bar vs previous 10 before it.
-            self.volume_ratio = volume / self.sma.current.value</pre>
+            self.volume_ratio = volume / self._sma.current.value</pre>
 <pre class="csharp">private class SelectionData
 {
     public readonly Symbol Symbol;
@@ -139,15 +137,15 @@ This class tracks the ratio of today's volume relative to historical volumes. Yo
 </p>
 
 <div class="section-example-container">
-<pre class="python">def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+<pre class="python">def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     for f in fundamental:
-        if f.symbol not in self.state_data:
-            self.state_data[f.symbol] = SelectionData(f.symbol, 10)
-        avg = self.state_data[f.symbol]
+        if f.symbol not in self._state_data:
+            self._state_data[f.symbol] = SelectionData(f.symbol, 10)
+        avg = self._state_data[f.symbol]
         avg.update(f.end_time, f.adjusted_price, f.dollar_volume)
 
     # filter the values of selectionData(sd) above SMA
-    values = [sd for sd in self.state_data.values() if sd.volume_ratio &gt; 1]
+    values = [sd for sd in self._state_data.values() if sd.volume_ratio &gt; 1]
         
     # sort sd by the largest % jump in volume.
     values.sort(key=lambda sd: sd.volume_ratio, reverse=True)
