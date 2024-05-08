@@ -114,7 +114,7 @@
         custom = MyCustomDataType()
         custom.symbol = config.symbol
 
-        if isLiveMode:
+        if is_live_mode:
             data = json.loads(line)
             custom.end_time =  Extensions.convert_from_utc(datetime.utcnow(), config.exchange_time_zone)
             custom.value = data["value"]
