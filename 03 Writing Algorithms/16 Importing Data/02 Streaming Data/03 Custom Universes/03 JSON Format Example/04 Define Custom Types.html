@@ -24,7 +24,13 @@ public class StockDataSource : BaseData
         DateTime date,
         bool isLiveMode)
     {
-        return new SubscriptionDataSource("https://www.dropbox.com/s/7xe7lfac52mdfpe/custom-universe.json?dl=1", 
+        if (!isLiveMode)
+        {
+            return new SubscriptionDataSource("&lt;jsonUniverseKey", 
+                                          SubscriptionTransportMedium.ObjectStore,
+                                          FileFormat.UnfoldingCollection);
+        }
+        return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/universe-example.json", 
                                           SubscriptionTransportMedium.RemoteFile,
                                           FileFormat.UnfoldingCollection);
     }
@@ -51,8 +57,8 @@ public class StockDataSource : BaseData
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
         if not isLive:
-            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
-        return SubscriptionDataSource("https://www.dropbox.com/s/7xe7lfac52mdfpe/custom-universe.json?dl=1", 
+            return SubscriptionDataSource("&lt;json_universe_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.UNFOLDING_COLLECTION)
+        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/universe-example.json", 
                                       SubscriptionTransportMedium.REMOTE_FILE,
                                       FileFormat.UNFOLDING_COLLECTION)
 
