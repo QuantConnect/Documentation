@@ -4,7 +4,7 @@
 	<pre class='csharp'>// Create a Classic Range consolidator that emits a bar when the price range moves $1
 _consolidator = new ClassicRangeConsolidator(1m);</pre>
 	<pre class='python'># Create a Classic Range consolidator that emits a bar when the price range moves $1
-self.consolidator = ClassicRangeConsolidator(1)</pre>
+self._consolidator = ClassicRangeConsolidator(1)</pre>
 </div>
 		
 
