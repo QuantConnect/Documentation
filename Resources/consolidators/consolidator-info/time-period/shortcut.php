@@ -14,8 +14,8 @@ $methodTyping = $consolidationHandlerType == "QuoteBar" ? "&lt;QuoteBar&gt;" : "
 
     <li><code>Resolution</code> Periods</li>
     <div class='section-example-container'>
-		<pre class='csharp'>_consolidator = Consolidate<?=$methodTyping?>(_symbol, Resolution.<?=$this->resolutionPeriod?>, <?=$this->shortCutTickTypeArg?>ConsolidationHandler);</pre>
-		<pre class='python'>self._consolidator = self.consolidate(self._symbol, Resolution.<?=$this->resolutionPeriod?>, <?=$this->shortCutTickTypeArg?>self._consolidation_handler)</pre>
+		<pre class='csharp'>_consolidator = Consolidate<?=$methodTyping?>(_symbol, Resolution.<?=$this->resolutionPeriodC?>, <?=$this->shortCutTickTypeArg?>ConsolidationHandler);</pre>
+		<pre class='python'>self._consolidator = self.consolidate(self._symbol, Resolution.<?=$this->resolutionPeriodPy?>, <?=$this->shortCutTickTypeArg?>self._consolidation_handler)</pre>
 	</div>
 </ul>
 
