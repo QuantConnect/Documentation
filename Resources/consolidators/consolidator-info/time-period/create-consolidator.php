@@ -22,8 +22,8 @@
 
 
 	<div class='section-example-container'>
-		<pre class='csharp'><?=$this->resolutionArgExtraExamplesC?>_consolidator = ResolveConsolidator(_symbol, Resolution.<?=$this->resolutionPeriod?>);</pre>
-		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self._consolidator = self.resolve_consolidator(self._symbol, Resolution.<?=$this->resolutionPeriod?>)</pre>
+		<pre class='csharp'><?=$this->resolutionArgExtraExamplesC?>_consolidator = ResolveConsolidator(_symbol, Resolution.<?=$this->resolutionPeriodC?>);</pre>
+		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self._consolidator = self.resolve_consolidator(self._symbol, Resolution.<?=$this->resolutionPeriodPy?>)</pre>
 	</div>
 </ul>
 
