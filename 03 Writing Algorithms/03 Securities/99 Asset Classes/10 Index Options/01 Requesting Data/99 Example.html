@@ -127,26 +127,26 @@
         self.universe_settings.minimum_time_in_universe = timedelta(minutes=0)
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         spx = self.add_index("SPX").symbol
-        self.chain_manager = {
+        self._chain_manager = {
             Symbol.create_canonical_option(spx, "SPXW", Market.USA, "?SPXW"): OptionChainManager(-10, 10, 0, 1)
         }
-        self.populate_option_chain()
-        self.schedule.on(self.date_rules.every_day(spx), self.time_rules.after_market_open(spx, 1), self.populate_option_chain)
-        self.schedule.on(self.date_rules.every_day(spx), self.time_rules.every(timedelta(minutes=5)), self.filter)
+        self._populate_option_chain()
+        self.schedule.on(self.date_rules.every_day(spx), self.time_rules.after_market_open(spx, 1), self._populate_option_chain)
+        self.schedule.on(self.date_rules.every_day(spx), self.time_rules.every(timedelta(minutes=5)), self._filter)
 
-    def populate_option_chain(self):
+    def _populate_option_chain(self):
         # The contract list is updated daily, so we can get it and apply
         # the expiration filter as soon as the market open
-        for symbol, manager in self.chain_manager.items():
+        for symbol, manager in self._chain_manager.items():
             manager.set_chain(self.option_chain_provider.get_option_contract_list(symbol, self.time), self.time)
         self.filter()
 
-    def filter(self):
-        for symbol, manager in self.chain_manager.items():
+    def _filter(self):
+        for symbol, manager in self._chain_manager.items():
             manager.select(self, symbol)
 
     def on_data(self, slice: Slice) -&gt; None:
-        for symbol, _ in self.chain_manager.items():
+        for symbol, _ in self._chain_manager.items():
             chain = slice.option_chains.get(symbol)
             if not chain: continue
             if self.portfolio[symbol.underlying].invested:
@@ -161,33 +161,36 @@
                 self.market_order(atm_call.symbol, 1)
 
 class OptionChainManager:
-    chain = []
-    symbols = []
+    _chain = []
+    _symbols = []
+        
     def __init__(self, min_strike, max_strike, min_expiry, max_expiry):
-        self.min_strike = min_strike
-        self.max_strike = max_strike
-        self.min_expiry = min_expiry
-        self.max_expiry = max_expiry
+        self._min_strike = min_strike
+        self._max_strike = max_strike
+        self._min_expiry = min_expiry
+        self._max_expiry = max_expiry
+        
     def set_chain(self, symbols: List[Symbol], time: datetime) -&gt; None:
-        self.chain = [x for x in symbols if self.min_expiry &lt;= (x.id.date - time).days &lt;= self.max_expiry]
+        self.chain = [x for x in symbols if self._min_expiry &lt;= (x.id.date - time).days &lt;= self._max_expiry]
+        
     def select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
-        if not self.chain:
+        if not self._chain:
             return
         if symbol.is_canonical():
             symbol = symbol.underlying
-        strikes = sorted(set(x.id.strike_price for x in self.chain))
+        strikes = sorted(set(x.id.strike_price for x in self._chain))
         spot = algorithm.securities[symbol].price
         atm = sorted(strikes, key=lambda x: abs(spot-x))[0]
         index = strikes.index(atm)
-        min_strike = strikes[max(0, index + self.min_strike)]
-        max_strike = strikes[min(len(strikes) - 1, index + self.max_strike)]
+        min_strike = strikes[max(0, index + self._min_strike)]
+        max_strike = strikes[min(len(strikes) - 1, index + self._max_strike)]
         symbols = set(x for x in self.chain if min_strike &lt;= x.id.strike_price &lt;= max_strike)
-        to_remove = set(self.symbols).difference(symbols)
+        to_remove = set(self._symbols).difference(symbols)
         for symbol in to_remove:
             if algorithm.remove_option_contract(symbol):
-                self.symbols.remove(symbol)
-        to_add = symbols.difference(self.symbols)
+                self._symbols.remove(symbol)
+        to_add = symbols.difference(self._symbols)
         for symbol in to_add:
-            self.symbols.append(symbol)
+            self._symbols.append(symbol)
             algorithm.add_option_contract(symbol)</pre>
 </div>
