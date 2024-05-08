@@ -94,11 +94,11 @@ public override void Initialize()
     option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 505, datetime(2014, 6, 27))
     self.add_option_contract(option)
 
-    mirrorOption = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
-    self.add_option_contract(mirrorOption)
+    mirror_option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505, datetime(2014, 6, 27))
+    self.add_option_contract(mirror_option)
 
-    self.iv = self.IV(option, mirrorOption)
+    self._iv = self.IV(option, mirror_option)
     # Example: The average of the call-put pair.
-    self.iv.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
+    self._iv.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
 </pre>
 </div>
