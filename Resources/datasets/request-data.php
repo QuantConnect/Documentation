@@ -249,7 +249,7 @@ quote_bars_list = <?=$pyVar?>.history[QuoteBar]([ibm, aapl], 5, Resolution.MINUT
 
 trade_bars_df = <?=$pyVar?>.history(TradeBar, [ibm, aapl], 5, Resolution.DAILY)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, [ibm, aapl], 5, Resolution.MINUTE)
-df = <?=$pyVar?>.history([ibm, aapl], 5, Resolution.Daily)  # Includes trade data only. No quote for daily equity data
+df = <?=$pyVar?>.history([ibm, aapl], 5, Resolution.DAILY)  # Includes trade data only. No quote for daily equity data
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-5.png' alt="Historical daily data dataframe of IBM &amp; AAPL">
 </pre>
 
