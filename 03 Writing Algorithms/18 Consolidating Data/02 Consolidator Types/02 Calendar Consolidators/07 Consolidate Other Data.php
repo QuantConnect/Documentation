@@ -3,11 +3,12 @@ include(DOCS_RESOURCES."/consolidators/consolidator-format-info/dynamic-data-def
 
 $dataFormatInfo = new DynamicDataConsolidatorFormatInfo();
 
-$createConsolidatorExtraArgs = "";
+$createConsolidatorExtraArgsC = "";
+$createConsolidatorExtraArgsPy = "";
 $shortCutTickTypeArgC = "";
 $shortCutTickTypeArgPy = "";
 
-$consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgs, $shortCutTickTypeArgC, $shortCutTickTypeArgPy);
+$consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgsC, $createConsolidatorExtraArgsPy, $shortCutTickTypeArgC, $shortCutTickTypeArgPy);
 
 include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>
