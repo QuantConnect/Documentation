@@ -310,25 +310,16 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
                     properties = request_object_properties_ = request_object_
                     type_ = request_object_["type"]
                     description_ = request_object_["description"] if "description" in request_object_ else "/"
-                    
+
             elif "key" in properties and "value" in properties:
-                key_ = properties["key"]
-                value_ = properties["value"]
-                
-                if "example" in key_:
-                    key_ = key_["example"]
-                elif "enum" in key_:
-                    key_ = key_["enum"][0]
-                else:
-                    key_ = key_["type"]
-                    
-                if "example" in value_:
-                    value_ = value_["example"]
-                elif "enum" in value_:
-                    value_ = value_["enum"][0]
-                else:
-                    value_ = value_["type"]
-                
+                key_ = properties.get("key")
+                key_ = key_.get("example", key_.get("enum", key_.get("type")))
+                value_ = properties.get("value")
+                if "$ref" not in value_:
+                    value_ = value_.get("example", value_.get("enum", value_.get("type")))
+                    if isinstance(value_, list):
+                        value_ = value_[0]
+
                 write_up, __, item_list = ExampleWriting({key_: value_}, item_list, order=order+1)
                 example_ += write_up
             
