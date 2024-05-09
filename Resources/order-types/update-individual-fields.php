@@ -6,9 +6,11 @@
       "UpdateTriggerPrice"  => array("C#" => "var triggerResponse = ticket.UpdateTriggerPrice(triggerPrice, tag);", "Python" => "response = ticket.update_trigger_price(trigger_price, tag)"), 
       "UpdateTag" => array("C#" => "var tagResponse = ticket.UpdateTag(tag);", "Python" => "response = ticket.update_tag(tag)")
     );
-    function toSnakeCase($input) {
-        // Convert to lowercase and insert underscore before capital letters
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $input));
+    if (!function_exists('toSnakeCase')) {
+        function toSnakeCase($input) {
+            // Convert to lowercase and insert underscore before capital letters
+            return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $input));
+        }
     }
   
     echo "
