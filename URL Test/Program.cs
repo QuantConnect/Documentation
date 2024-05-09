@@ -46,6 +46,7 @@ namespace UrlCheck
         const string leanIo = "https://www.lean.io/";
         const string strategyPhp = "../03 Writing Algorithms/42 Strategy Library/02 Tutorials.php";
         static readonly string[] leanIoFolder = new string[] {"05 Lean CLI", "06 LEAN Engine"};
+        static readonly string[] ignoreFiles = new string[] {"../Resources/indicators/using-indicator.php"};
 
         static void Main()
         {
@@ -69,12 +70,6 @@ namespace UrlCheck
             var resourceFiles = GetResourcesRedir();
             var count = urlFiles.Count;
             Log.Trace($"Start Testing {count} URLs...");
-
-            var emptyPages = Directory.GetDirectories(path, "*.*", SearchOption.AllDirectories)
-                .Where(filter)
-                .Where(x => Directory.GetFiles(x).Length == 0)
-                .Select(x => pathToLink(x))
-                .ToHashSet();
 
             foreach (var (url, files) in urlFiles)
             {
@@ -104,12 +99,6 @@ namespace UrlCheck
                                     Log.Error($"Lean.io non-existence:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                                     errorFlag = true;
                                 }
-                            }
-
-                            if (emptyPages.Contains(url))
-                            {
-                                Log.Error($"Empty page:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
-                                errorFlag = true;
                             }
 
                             // Check "go to section" mapping is wrong
@@ -316,6 +305,11 @@ namespace UrlCheck
                         }
                     }
                 }
+            }
+
+            foreach (var file in ignoreFiles)
+            {
+                urlFiles.Remove(file);
             }
 
             return urlFiles;

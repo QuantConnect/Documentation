@@ -1,0 +1,454 @@
+<div class="python">
+<h4 id="Universe">Universe</h4>
+<div class="code-snippet"><span class="object-type">class</span> <code>QuantConnect.Data.UniverseSelection.Universe</code><a class="code-source" href="https://github.com/search?q=repo%3AQuantConnect%2FLean+Universe&type=code">[source]</a>
+</div>
+<p>Provides a base class for all universes to derive from.</p>
+<div class="subsection-content">
+<div class="code-snippet"><code>can_remove_member(<span class="object-type">utc_time, security</span>)</code></div>
+<div class="subsection-content">
+<p>Determines whether or not the specified security can be removed from this universe. This is useful to prevent securities from being taken out of a universe before the algorithm has had enough time to make decisions on the security</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">utc_time</span> (<span class="object-type">datetime</span>)
+    </li>
+    <li>
+    <span class="arg-name">security</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Security">Security</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">bool</p>
+</div>
+
+<div class="code-snippet"><code>contains_member(<span class="object-type">symbol</span>)</code></div>
+<div class="subsection-content">
+<p>Determines whether or not the specified symbol is currently a member of this universe</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">bool</p>
+</div>
+
+<div class="code-snippet"><code>dispose()</code></div>
+<div class="subsection-content">
+<p>Marks this universe as disposed and ready to remove all child subscriptions</p>
+
+
+</div>
+
+<div class="code-snippet"><code>get_subscription_requests(<span class="object-type">security, current_time_utc, maximum_end_time_utc, subscription_service</span>)</code></div>
+<div class="subsection-content">
+<p>Gets the subscription requests to be added for the specified security</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">security</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Security">Security</a></span>)
+    </li>
+    <li>
+    <span class="arg-name">current_time_utc</span> (<span class="object-type">datetime</span>)
+    </li>
+    <li>
+    <span class="arg-name">maximum_end_time_utc</span> (<span class="object-type">datetime</span>)
+    </li>
+    <li>
+    <span class="arg-name">subscription_service</span> (<span class="object-type">ISubscriptionDataConfigService</span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">List[SubscriptionRequest]</p>
+</div>
+
+<div class="code-snippet"><code>perform_selection(<span class="object-type">utc_time, data</span>)</code></div>
+<div class="subsection-content">
+<p>Performs universe selection using the data specified</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">utc_time</span> (<span class="object-type">datetime</span>)
+    </li>
+    <li>
+    <span class="arg-name">data</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#BaseDataCollection">BaseDataCollection</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">List[Symbol]</p>
+</div>
+
+<div class="code-snippet"><code>select_symbols(<span class="object-type">utc_time, data</span>)</code></div>
+<div class="subsection-content">
+<p>Performs universe selection using the data specified</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">utc_time</span> (<span class="object-type">datetime</span>)
+    </li>
+    <li>
+    <span class="arg-name">data</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#BaseDataCollection">BaseDataCollection</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">List[Symbol]</p>
+</div>
+
+</div>
+<div class="subsection-content">
+<div class="code-snippet"><span class="object-type">property</span> <code>asynchronous</code></div>
+<div class="subsection-content">
+<p>True if this universe filter can run async in the data stack</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">True if this universe filter can run async in the data stack</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">bool</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>configuration</code></div>
+<div class="subsection-content">
+<p>Gets the configuration used to get universe data</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the configuration used to get universe data</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">SubscriptionDataConfig</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>data_type</code></div>
+<div class="subsection-content">
+<p>Gets the data type of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the data type of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Type</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>dispose_requested</code></div>
+<div class="subsection-content">
+<p>Flag indicating if disposal of this universe has been requested</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Flag indicating if disposal of this universe has been requested</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">bool</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>market</code></div>
+<div class="subsection-content">
+<p>Gets the market of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the market of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">str</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>members</code></div>
+<div class="subsection-content">
+<p>Gets the current listing of members in this universe. Modifications to this dictionary do not change universe membership.</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the current listing of members in this universe. Modifications to this dictionary do not change universe membership.</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Dict[Symbol, Security]</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>securities</code></div>
+<div class="subsection-content">
+<p>Gets the internal security collection used to define membership in this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the internal security collection used to define membership in this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Dict[Symbol, Member]</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>security_type</code></div>
+<div class="subsection-content">
+<p>Gets the security type of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the security type of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">SecurityType</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>selected</code></div>
+<div class="subsection-content">
+<p>The currently selected symbol set</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">The currently selected symbol set</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">HashSet[Symbol]</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>symbol</code></div>
+<div class="subsection-content">
+<p>Gets the symbol of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the symbol of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Symbol</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>universe_settings</code></div>
+<div class="subsection-content">
+<p>Gets the settings used for subscriptions added for this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the settings used for subscriptions added for this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">UniverseSettings</p>
+</div>
+
+</div>
+<div class="subsection-content">
+<div class="code-snippet"><span class="object-type">field</span> <code>UNCHANGED</code></div>
+<div class="subsection-content">
+<p>Gets a value indicating that no change to the universe should be made</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets a value indicating that no change to the universe should be made</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">UnchangedUniverse</p>
+</div>
+
+</div>
+</div>
+<div class="csharp">
+<h4 id="Universe">Universe</h4>
+<div class="code-snippet"><span class="object-type">class</span> <code>QuantConnect.Data.UniverseSelection.Universe</code><a class="code-source" href="https://github.com/search?q=repo%3AQuantConnect%2FLean+Universe&type=code">[source]</a>
+</div>
+<p>Provides a base class for all universes to derive from.</p>
+<div class="subsection-content">
+<div class="code-snippet"><code>CanRemoveMember(<span class="object-type">utcTime, security</span>)</code></div>
+<div class="subsection-content">
+<p>Determines whether or not the specified security can be removed from this universe. This is useful to prevent securities from being taken out of a universe before the algorithm has had enough time to make decisions on the security</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">utcTime</span> (<span class="object-type">DateTime</span>)
+    </li>
+    <li>
+    <span class="arg-name">security</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Security">Security</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Boolean</p>
+</div>
+
+<div class="code-snippet"><code>ContainsMember(<span class="object-type">symbol</span>)</code></div>
+<div class="subsection-content">
+<p>Determines whether or not the specified symbol is currently a member of this universe</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Boolean</p>
+</div>
+
+<div class="code-snippet"><code>Dispose()</code></div>
+<div class="subsection-content">
+<p>Marks this universe as disposed and ready to remove all child subscriptions</p>
+
+
+</div>
+
+<div class="code-snippet"><code>GetSubscriptionRequests(<span class="object-type">security, currentTimeUtc, maximumEndTimeUtc, subscriptionService</span>)</code></div>
+<div class="subsection-content">
+<p>Gets the subscription requests to be added for the specified security</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">security</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Security">Security</a></span>)
+    </li>
+    <li>
+    <span class="arg-name">currentTimeUtc</span> (<span class="object-type">DateTime</span>)
+    </li>
+    <li>
+    <span class="arg-name">maximumEndTimeUtc</span> (<span class="object-type">DateTime</span>)
+    </li>
+    <li>
+    <span class="arg-name">subscriptionService</span> (<span class="object-type">ISubscriptionDataConfigService</span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">IEnumerable[SubscriptionRequest]</p>
+</div>
+
+<div class="code-snippet"><code>PerformSelection(<span class="object-type">utcTime, data</span>)</code></div>
+<div class="subsection-content">
+<p>Performs universe selection using the data specified</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">utcTime</span> (<span class="object-type">DateTime</span>)
+    </li>
+    <li>
+    <span class="arg-name">data</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#BaseDataCollection">BaseDataCollection</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">IEnumerable[Symbol]</p>
+</div>
+
+<div class="code-snippet"><code>SelectSymbols(<span class="object-type">utcTime, data</span>)</code></div>
+<div class="subsection-content">
+<p>Performs universe selection using the data specified</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">utcTime</span> (<span class="object-type">DateTime</span>)
+    </li>
+    <li>
+    <span class="arg-name">data</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#BaseDataCollection">BaseDataCollection</a></span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">IEnumerable[Symbol]</p>
+</div>
+
+</div>
+<div class="subsection-content">
+<div class="code-snippet"><span class="object-type">property</span> <code>Asynchronous</code></div>
+<div class="subsection-content">
+<p>True if this universe filter can run async in the data stack</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">True if this universe filter can run async in the data stack</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">bool</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>Configuration</code></div>
+<div class="subsection-content">
+<p>Gets the configuration used to get universe data</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the configuration used to get universe data</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">SubscriptionDataConfig</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>DataType</code></div>
+<div class="subsection-content">
+<p>Gets the data type of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the data type of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Type</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>DisposeRequested</code></div>
+<div class="subsection-content">
+<p>Flag indicating if disposal of this universe has been requested</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Flag indicating if disposal of this universe has been requested</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">bool</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>Market</code></div>
+<div class="subsection-content">
+<p>Gets the market of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the market of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">string</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>Members</code></div>
+<div class="subsection-content">
+<p>Gets the current listing of members in this universe. Modifications to this dictionary do not change universe membership.</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the current listing of members in this universe. Modifications to this dictionary do not change universe membership.</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Dictionary&lt;Symbol, Security&gt;</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>Securities</code></div>
+<div class="subsection-content">
+<p>Gets the internal security collection used to define membership in this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the internal security collection used to define membership in this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">ConcurrentDictionary&lt;Symbol, Member&gt;</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>SecurityType</code></div>
+<div class="subsection-content">
+<p>Gets the security type of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the security type of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">SecurityType</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>Selected</code></div>
+<div class="subsection-content">
+<p>The currently selected symbol set</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">The currently selected symbol set</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">HashSet&lt;Symbol&gt;</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>Symbol</code></div>
+<div class="subsection-content">
+<p>Gets the symbol of this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the symbol of this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Symbol</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>UniverseSettings</code></div>
+<div class="subsection-content">
+<p>Gets the settings used for subscriptions added for this universe</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the settings used for subscriptions added for this universe</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">UniverseSettings</p>
+</div>
+
+</div>
+<div class="subsection-content">
+<div class="code-snippet"><span class="object-type">field</span> <code>Unchanged</code></div>
+<div class="subsection-content">
+<p>Gets a value indicating that no change to the universe should be made</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets a value indicating that no change to the universe should be made</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">UnchangedUniverse</p>
+</div>
+
+</div>
+</div>
