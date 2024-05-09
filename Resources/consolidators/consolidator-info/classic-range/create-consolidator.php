@@ -10,7 +10,7 @@ self._consolidator = ClassicRangeConsolidator(1)</pre>
 
 <p>The <code>ClassicRangeConsolidator</code> has the following default behavior:</p>
 <ul>
-    <li>It uses the <code>Value</code> property of the <code>IBaseData</code> object it receives to build the Range bars</li>
+    <li>It uses the <code class='csharp'>Value</code><code class='python'>value</code> property of the <code>IBaseData</code> object it receives to build the Range bars</li>
     <li>It ignores the volume of the input data</li>
     <li>It enforces the high and low of each bar to be a multiple of the bar size</li>
 </ul>
