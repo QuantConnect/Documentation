@@ -3764,11 +3764,27 @@ components:
       properties:
         holdings:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Holding'
           description: Dictionary of algorithm holdings information.
+          key:
+            type: string
+            description: ID of the symbol of the holding.
+            example: AAPL R735QTJ8XC9X
+          value:
+            type: object
+            description: Holding object associated with the symbol ID.
+            $ref: '#/components/schemas/Holding'
         cash:
-          $ref: '#/components/schemas/Cash'
+          type: object
+          description: Dictionary of algorithm cash currencies information.
+          key:
+            type: string
+            description: Cash currency.
+            example: USD
+          value:
+            type: object
+            description: Cash object associated with the cash currency.
+            $ref: '#/components/schemas/Cash'
+      description: Portfolio object with the holdings and cash information.
     Project:
       type: object
       properties:
