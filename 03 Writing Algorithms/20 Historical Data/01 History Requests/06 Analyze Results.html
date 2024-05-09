@@ -7,14 +7,14 @@ eurusd = self.add_forex("EURUSD", Resolution.DAILY).symbol
 nzdusd = self.add_forex("NZDUSD", Resolution.DAILY).symbol
 
 # STEP 1:  Request a DataFrame:
-self.df = self.history([eurusd, nzdusd], 3)
+df = self.history([eurusd, nzdusd], 3)
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-array_rev0.png" alt="Historical data of EURUSD, & NZDUSD">
 
 
 # STEP 2: Check if the DataFrame is empty and lock onto a Symbol index with the `loc[]` method.
 #  You can access a security’s data in a DataFrame by using the Symbol or the string representation of the Symbol
-if not self.df.empty:
-    eurusd_quotebars = self.df.loc[eurusd] # or just "EURUSD" instead of Symbol
+if not df.empty:
+    eurusd_quotebars = df.loc[eurusd] # or just "EURUSD" instead of Symbol
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-single_rev0.png" alt="Historical data of EURUSD">
 
 
@@ -30,11 +30,11 @@ spread = eurusd_quotebars["askclose"] - eurusd_quotebars["bidclose"]
 <pre class="python"># UNSTACKING: Transform into columns
 
 # Fetch multi-indexed history:
-self.dataframe = self.history([self.symbol("IBM"), self.symbol("AAPL")], 3)
+df = self.history([self.symbol("IBM"), self.symbol("AAPL")], 3)
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack-source_rev0.png" alt="Historical data of IBM, & AAPL">
 
 # Transform using unstack:
-self.dataframe["close"].unstack(level=0)
+df["close"].unstack(level=0)
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack_rev1.png" alt="Historical close price of IBM, & AAPL">
 # Make sure to use the lowercase string column name.</pre>
 </div>
