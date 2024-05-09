@@ -4,9 +4,10 @@ include(DOCS_RESOURCES."/consolidators/consolidator-format-info/dynamic-data-def
 $dataFormatInfo = new DynamicDataConsolidatorFormatInfo();
 
 $createConsolidatorExtraArgs = "";
-$shortCutTickTypeArg = "";
+$shortCutTickTypeArgC = "";
+$shortCutTickTypeArgPy = "";
 
-$consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgs, $shortCutTickTypeArg);
+$consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgs, $shortCutTickTypeArgC, $shortCutTickTypeArgPy);
 
 include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>
