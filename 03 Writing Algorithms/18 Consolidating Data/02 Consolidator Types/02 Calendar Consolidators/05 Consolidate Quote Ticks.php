@@ -3,9 +3,10 @@ include(DOCS_RESOURCES."/consolidators/consolidator-format-info/tick-quotebar-de
 $dataFormatInfo = new TickQuoteBarConsolidatorFormatInfo();
 
 $createConsolidatorExtraArgs = ", TickType.Quote";
-$shortCutTickTypeArg = "TickType.Quote, ";
+$shortCutTickTypeArgC = "TickType.Quote, ";
+$shortCutTickTypeArgPy = "TickType.QUOTE, ";
 
-$consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgs, $shortCutTickTypeArg);
+$consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgs, $shortCutTickTypeArgC, $shortCutTickTypeArgPy);
 
 include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>
