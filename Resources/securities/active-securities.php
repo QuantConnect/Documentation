@@ -7,4 +7,6 @@
 
 <p>When LEAN removes the security, the <code>Security</code> object remains in the <code class="csharp">Securities</code><code class="python">securities</code> collection for record-keeping purposes, like tracking fees and trading volume.</p>
 
+<? echo file_get_contents(DOCS_RESOURCES."/securities/securities_total.html"); ?>
+
 <p>To get only the assets that are currently in the universe, see <a href='/docs/v2/writing-algorithms/universes/key-concepts#11-Selected-Securities'>Selected Securities</a>.</p>

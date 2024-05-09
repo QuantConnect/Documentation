@@ -82,4 +82,8 @@ def on_delistings(self, delistings: Delistings) -> None:
         self.market_on_open_order(symbol, -quantity)</pre>
 </div>
 
+<p>The <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> event notifies the algorithm when delisted assets are removed from the universe.</p>
+
+<? echo file_get_contents(DOCS_RESOURCES."/securities/securities_total.html"); ?>
+
 <p>For a full example, see the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DelistingEventsAlgorithm.cs' class='csharp'>DelistingEventsAlgorithm</a><a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DelistingEventsAlgorithm.py' class='python'>DelistingEventsAlgorithm</a> in the LEAN GitHub repository.</p>

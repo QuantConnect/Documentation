@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/securities/corporate-actions/delistings.html"); ?>
+<? include(DOCS_RESOURCES."/securities/corporate-actions/delistings.php"); ?>
