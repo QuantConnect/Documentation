@@ -1,7 +1,8 @@
 <p>To select a dynamic universe of US Equities based on Corporate Lobbying data, call the <b class="csharp">AddUniverse</b><b class="python">add_universe</b> method with the <b>QuiverLobbyingUniverse</b> class and a selection function.</p> 
 
 <div class="section-example-container">
-<pre class="python">self.add_universe(QuiverLobbyingUniverse, "QuiverLobbyingUniverse", Resolution.DAILY, self.universe_selection)
+<pre class="python">def initialize(self):
+    self._universe = self.add_universe(QuiverLobbyingUniverse, "QuiverLobbyingUniverse", Resolution.DAILY, self.universe_selection)
 
 def universe_selection(self, alt_coarse: List[QuiverLobbyingUniverse]) -&gt; List[Symbol]:
     lobby_data_by_symbol = {}
@@ -15,23 +16,27 @@ def universe_selection(self, alt_coarse: List[QuiverLobbyingUniverse]) -&gt; Lis
     
     return [symbol for symbol, d in lobby_data_by_symbol.items()
             if sum([x.amount for x in d]) &gt;= 100000]</pre>
-<pre class="csharp">AddUniverse&lt;QuiverLobbyingUniverse&gt;("QuiverLobbyingUniverse", Resolution.Daily, altCoarse =&gt;
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    var lobbyDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverLobbyingUniverse&gt;&gt;();
-
-    foreach (var datum in altCoarse.OfType&lt;QuiverLobbyingUniverse&gt;())
+    _universe = AddUniverse&lt;QuiverLobbyingUniverse&gt;("QuiverLobbyingUniverse", Resolution.Daily, altCoarse =&gt;
     {
-        var symbol = datum.Symbol;
+        var lobbyDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverLobbyingUniverse&gt;&gt;();
 
-        if (!lobbyDataBySymbol.ContainsKey(symbol))
+        foreach (var datum in altCoarse.OfType&lt;QuiverLobbyingUniverse&gt;())
         {
-            lobbyDataBySymbol.Add(symbol, new List&lt;QuiverLobbyingUniverse&gt;());
-        }
-        lobbyDataBySymbol[symbol].Add(datum);
-    }
+            var symbol = datum.Symbol;
 
-    return from kvp in lobbyDataBySymbol
-           where kvp.Value.Sum(x =&gt; x.Amount) &gt;= 100000
-           select kvp.Key;
-});</pre>
+            if (!lobbyDataBySymbol.ContainsKey(symbol))
+            {
+                lobbyDataBySymbol.Add(symbol, new List&lt;QuiverLobbyingUniverse&gt;());
+            }
+            lobbyDataBySymbol[symbol].Add(datum);
+        }
+
+        return from kvp in lobbyDataBySymbol
+              where kvp.Value.Sum(x =&gt; x.Amount) &gt;= 100000
+              select kvp.Key;
+    })
+};</pre>
 </div>
