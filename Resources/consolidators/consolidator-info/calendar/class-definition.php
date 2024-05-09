@@ -6,14 +6,16 @@ if (class_exists('CalendarConsolidatorInfo')) return;
 
 class CalendarConsolidatorInfo extends ConsolidatorInfo
 {
-	public $createConsolidatorExtraArgs,
+	public $createConsolidatorExtraArgsC,
+	        $createConsolidatorExtraArgsPy,
 	 	$shortCutTickTypeArgC,
 	        $shortCutTickTypeArgPy;
 
-	function __construct($createConsolidatorExtraArgs, $shortCutTickTypeArgC, $shortCutTickTypeArgPy)
+	function __construct($createConsolidatorExtraArgsC, $createConsolidatorExtraArgsPy, $shortCutTickTypeArgC, $shortCutTickTypeArgPy)
 	{
 		parent::__construct();
-		$this->createConsolidatorExtraArgs = $createConsolidatorExtraArgs;
+		$this->createConsolidatorExtraArgsC = $createConsolidatorExtraArgsC;
+		$this->createConsolidatorExtraArgsPy = $createConsolidatorExtraArgsPy;
 		$this->shortCutTickTypeArgC = $shortCutTickTypeArgC;
 		$this->shortCutTickTypeArgPy = $shortCutTickTypeArgPy;
 		$this->basedOnText = "custom start and end periods";
