@@ -15,7 +15,7 @@
     var start = openTime + (int)((datetime - openTime) / period) * period;            
     return new CalendarInfo(start, period);
 }</pre>
-<pre class="python">def every_twenty_minute_after_equity_market_open(self, dt: datetime) -&gt; CalendarInfo:
+<pre class="python">def _every_twenty_minute_after_equity_market_open(self, dt: datetime) -&gt; CalendarInfo:
     period = timedelta(minutes=20)
     open_time = dt.replace(hour=9, minute=30, second=0, microsecond=0)
     start = open_time + int((dt - open_time) / period) * period
@@ -33,7 +33,7 @@
         .AddHours(datetime.Hour &lt; 17 ? -7 : 17);
     return new CalendarInfo(start, TimeSpan.FromDays(1));
 }</pre>
-    <pre class="python">def custom_daily_forex(self, dt: datetime) -&gt; CalendarInfo:
+    <pre class="python">def _custom_daily_forex(self, dt: datetime) -&gt; CalendarInfo:
 start = dt.replace(hour=17, minute=0, second=0)
 if dt.hour &lt; 17:
     start -= timedelta(1)
@@ -50,7 +50,7 @@ return CalendarInfo(start, timedelta(1))</pre>
     end = new DateTime(end.Year, end.Month, 1);
     return new CalendarInfo(start, (end - start));
 }</pre>
-    <pre class="python">def custom_monthly(self, dt: datetime) -&gt; CalendarInfo:
+    <pre class="python">def _custom_monthly(self, dt: datetime) -&gt; CalendarInfo:
     start = dt.replace(day=1).date()
     end = dt.replace(day=28) + timedelta(4)
     end = (end - timedelta(end.day - 1)).date()
