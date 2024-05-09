@@ -278,10 +278,10 @@ def _render_methods(method_list, language, special_type=False):
     if special_type:
         backlist.extend(['add', 'get', 'remove', "Add", "Get", "Remove"])
     types = []
-    for name in sorted(set(x["method-name"].strip() for x in method_list)):
+    for (name, return_type) in sorted(set((x["method-name"].strip(), x["method-return-type-short-name"].strip()) for x in method_list)):
         if name in backlist:
             continue
-        type_html = _render_method([x for x in method_list if x["method-name"].strip() == name], language)
+        type_html = _render_method([x for x in method_list if x["method-name"].strip() == name and x["method-return-type-short-name"].strip() == return_type], language)
         if 'Not meant for external use' in type_html:
             continue
         types.append(type_html)
