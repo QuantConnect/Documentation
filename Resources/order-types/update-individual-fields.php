@@ -20,7 +20,8 @@
     {
         if (in_array($key, $supportedMethods))
         {
-            echo "<li><code class='csharp'>{$key}</code><code class='python'>{toSnakeCase($key)}</code></li>";
+            $pyKey = toSnakeCase($key);
+            echo "<li><code class='csharp'>{$key}</code><code class='python'>{$pyKey}</code></li>";
         }
     }
   
