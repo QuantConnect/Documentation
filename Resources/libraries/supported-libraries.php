@@ -711,7 +711,7 @@ QuantConnect.pythonnet                  2.0.28
 RestSharp                               106.12.0
 SharpZipLib                             1.3.3
 System.ComponentModel.Composition       6.0.0
-<? if ($cloudPlatform) { ?>
+<? if ($isCloudPlatform) { ?>
 Accord.Audio                            3.6.0
 Accord.Genetic                          3.6.0
 Accord.MachineLearning.GPL              3.6.0
