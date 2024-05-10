@@ -1,7 +1,21 @@
 from json import dump
 from pathlib import Path
+import re
+import shutil
 from _code_generation_helpers import get_text_content, List
 ROOT = Path("05 Lean CLI/99 API Reference")
+CACHE = {}
+
+TYPE_CONVERSIONS = {
+    "TEXT": "&lt;string&gt;",
+    "INTEGER": "&lt;integer&gt;",
+    "BOOLEAN": "&lt;boolean&gt;",
+    "FILE": "&lt;file&gt;",
+    "DIRECTORY": "&lt;directory&gt;",
+    "RANGE": "&lt;range&gt;",
+    "DECIMAL": "&lt;float&gt;",
+    "FLOAT": "&lt;float&gt;",
+}
 
 def __get_commands_from_readme():
     commands = {}
@@ -44,9 +58,14 @@ def __seed_new_command(key: str, command: List[str]) -> None:
                 i += 1
                 parts += command[i].lstrip().split('  ')
             i += 1
+            arg_and_type = parts[0].strip()
+            for raw, replacement in TYPE_CONVERSIONS.items():
+                arg_and_type = arg_and_type.replace(raw, replacement)
+            arg_and_type = re.sub(r"\[([^\]]+)\]", r"&lt;enum: \1&gt;", arg_and_type)
+            arg_and_type = arg_and_type.replace("[", "&lt;").replace("]", "&gt;")
             rows += f'''
 <tr>
-    <td nowrap><code>{parts[0].strip()}</code></td>
+    <td nowrap><code>{arg_and_type}</code></td>
     <td>{parts[-1].strip()}</td>
 </tr>'''
 
@@ -121,6 +140,19 @@ def __check_for_missing_options(dir: Path, command: List[str]) -> None:
         fp.writelines(lines + ['    </tbody>\n</table>'])
 
 if __name__ == '__main__':
+    if ROOT.exists():
+        for description_file in Path.rglob(ROOT, "*02 Description.php"):
+            with open(description_file, mode='r') as f:
+                content = f.read()
+                CACHE[description_file] = content
+        metadata = ROOT / "metadata.json"
+        if metadata.exists():
+            with open(metadata, mode='r') as f:
+                content = f.read()
+                CACHE[metadata] = content
+        shutil.rmtree(ROOT)
+    ROOT.mkdir(parents=True, exist_ok=True)
+    
     commands = __get_commands_from_readme()
     directories = {x.name[3:] : x for x in ROOT.iterdir() if x.is_dir()}
 
@@ -133,10 +165,18 @@ if __name__ == '__main__':
         if command[0] != dir.name[:2]:
             dir = dir.rename(f'{ROOT}/{command[0]} {key}')
             directories[key] = dir
-
+        
+    for key, command in commands.items():
+        dir = directories.get(key)
         __check_for_missing_options(dir, command)
 
     # Check for directories without a command
     for path in ROOT.iterdir():
         if path.name[3:] not in commands and path.is_dir():
             print(f'Remove page with no command: {path}')
+            
+    # Add back cached files
+    for path, content in CACHE.items():
+        path.parent.absolute().mkdir(parents=True, exist_ok=True)
+        with open(path, mode='w') as f:
+            f.write(content)
