@@ -86,7 +86,7 @@ def __check_for_missing_options(dir: Path, command: List[str]) -> None:
 
     tbody = 0
     descriptions = {}
-    with files[0].open("r") as fp:
+    with files[0].open("r", encoding="utf-8") as fp:
         lines = fp.readlines()
         for i, line in enumerate(lines):
             if '<tbody>' in line:
@@ -111,12 +111,10 @@ def __check_for_missing_options(dir: Path, command: List[str]) -> None:
         # First 5 to avoid comments
         key = next((x for x in command[i].split(' ')[:5] if x.startswith('--')), None)
         if key:
-            lines.extend(descriptions.pop(key, [f'''<!--
-        <tr>
+            lines.extend(descriptions.pop(key, [f'''        <tr>
             <td nowrap><code>{key}</code></td>
             <td></td>
         </tr>
--->
 ''']))
 
     with files[0].open("w") as fp:
