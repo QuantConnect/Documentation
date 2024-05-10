@@ -1,0 +1,30 @@
+<p>In this following example, we will demonstate how to use <code>Julia</code> in python's environment via a custom docker image.</p>
+
+<ol>
+    <li>Follow step 1-2 in the <a href="#03-Building-Custom-Images">Building Custom Images tutorial</a> to obtain the basic Lean foundation.</li>
+
+    <li>Add the following instructions to install <code>Julia</code> in the docker file <code>DockerfileLeanFoundation</code> of Lean.</li>
+    <div class="cli section-example-container">
+        <pre># Install Julia
+RUN wget -q https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.5-linux-x86_64.tar.gz && \
+    tar zxvf julia-1.8.5-linux-x86_64.tar.gz && \
+    rm julia-1.8.5-linux-x86_64.tar.gz
+ENV PATH="/julia-1.8.5/bin:${PATH}"
+
+# Install Julia package
+RUN pip install --no-cache-dir julia==0.6.0
+
+# Install Julia so it's ready for usage
+RUN python -m julia.sysimage sys.so</pre>
+
+    <li>Continue to build the custom docker image following step 4-5 in the <a href="#03-Building-Custom-Images">Building Custom Images tutorial</a>.</li>
+</ol>
+
+<p>After building the <code>Julia</code>-compatible image, you are able to code with <code>Julia</code> under <a href="https://pyjulia.readthedocs.io/en/latest/">PyJulia</a> interface.</p>
+<div class="python section-example-container">
+    <pre>from julia import Julia
+jl = Julia(sysimage=""/sys.so"")
+from julia import Base
+
+Base.sind(90)
+...</pre>
