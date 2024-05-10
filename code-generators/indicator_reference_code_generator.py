@@ -242,6 +242,8 @@ include(DOCS_RESOURCES."/indicators/visualization.php");
 
         if description.find('<see cref=\"T:') > 0:
             description = description.replace('<see cref=\"T:','').replace('\" />','')
+        description = re.sub(r'<a href=".*?">(.*?)</a>', r'\1', description)
+        description = re.sub(r'<sup>(.*?)</sup>', "", description)
         if len(description) > 127:
             description = description[:127] + '...'
         with open(f'{folder}/metadata.json', 'w', encoding='utf-8') as fp:
