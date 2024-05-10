@@ -145,6 +145,10 @@ if __name__ == '__main__':
             with open(description_file, mode='r') as f:
                 content = f.read()
                 CACHE[description_file] = content
+        for arg_file in Path.rglob(ROOT, "*03 Arguments.php"):
+            with open(arg_file, mode='r') as f:
+                content = f.read()
+                CACHE[arg_file] = content
         metadata = ROOT / "metadata.json"
         if metadata.exists():
             with open(metadata, mode='r') as f:
