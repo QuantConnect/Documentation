@@ -1,6 +1,6 @@
 from json import dumps
 from pathlib import Path
-from re import sub
+from re import sub, finditer, findall
 from os import remove
 from _code_generation_helpers import get_text_content
 ROOT = Path("05 Lean CLI/99 API Reference")
@@ -91,11 +91,24 @@ def __generate_options_table(key, command):
             continue
         for raw, replacement in TYPE_CONVERSIONS.items():
             arg_and_type = arg_and_type.replace(raw, replacement)
-        arg_and_type = sub(r"\[([^\]]+)\]", r"&lt;enum: \1&gt;", arg_and_type)
-        arg_and_type = arg_and_type.replace("[", "&lt;").replace("]", "&gt;")
+        arg_and_type = __format_enum_type(arg_and_type)\
+            .replace("[", "&lt;").replace("]", "&gt;")
         lines.append([arg_and_type, parts[-1]])
     
     return __generate_table(name, key, lines)
+
+def __format_enum_type(arg_and_type):
+    parts = arg_and_type.split('|')
+    count = len(parts)
+    if count < 2:
+        return arg_and_type
+    parts[0] = parts[0].replace('[','&lt;enum: ')
+    parts[-1] = parts[-1][0:-1] + "&gt;"
+    if count < 4:
+        return '|'.join(parts)
+    index = parts[0].find(':') - 1
+    parts[1:] = ['<br>' + '&nbsp;' * index + part for part in parts[1:]]
+    return ''.join(parts)
 
 def __generate_commands_table(key, command):
     name = 'Commands'
