@@ -1,0 +1,17 @@
+<p>When an order is filled, LEAN uses the <a href='/docs/v2/writing-algorithms/portfolio/key-concepts'>portfolio</a> information to check you have <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>enough capital</a> to maintain the remaining open orders or they are canceled.</p>
+
+<p>The following table shows the order events of three orders of SPY 240109C00470000:</p>
+
+<table class="table qc-table" id="one-order-invalid-other">
+<thead>
+<tr><th>Time</th><th>Id</th><th>Type</th><th>Price</th><th>Quantity</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td rowspan="2" style="vertical-align: middle;">2024-01-08 09:31</td><td>1</td><td>Buy Market</td><td>0.91</td><td>20</td><td><code class="csharp">Filled</code><code class="python">FILLED</code></td></tr>
+<tr><td>2</td><td>Sell Stop Market</td><td>0.81</td><td>-20</td><td><code class="csharp">Submitted</code><code class="python">SUBMITTED</code></td></tr>
+<tr><td rowspan="2" style="vertical-align: middle;">2024-01-08 10:31</td><td>3</td><td>Sell Market</td><td>1.50</td><td>-10</td><td><code class="csharp">Filled</code><code class="python">FILLED</code></td></tr>
+<tr><td>2</td><td>Sell Stop Market</td><td>0.81</td><td>-20</td><td><code class="csharp">Invalid</code><code class="python">INVALID</code></td></tr>
+</tbody>
+</table>
+
+<p>When the sell market order fill at 10:31, LEAN checks the submitted sell stop and sets its status to <code class="csharp">OrderStatus.Invalid</code><code class="python">OrderStatus.INVALID</code> due to insufficient buying power to complete it.</p>
