@@ -32,3 +32,55 @@
 <?     } ?>
 
 <? } ?>
+
+<h4>Access in Jupyter Notebook</h4>
+<p>To see and analyze orders programmatically, call <code class="csharp">api.<? if ($pageName == "backtest") { ?>ReadBacktestOrders<? } else { ?>ReadLiveOrders<? } ?></code><code class="python">api.<? if ($pageName == "backtest") { ?>read_backtest_orders<? } else { ?>read_live_orders<? } ?></code> access the order in a jupyter notebook via the API. A List of <code>ApiOrderResponse</code> will be returned.</p>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th style="width: 20%">Argument</th>
+            <th style="width: 20%">Type</th>
+            <th style="width: 40%">Description</th>
+            <th style="width: 20%">Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ProjectId</td>
+            <td>int</td>
+            <td>Id of the project from which to read the orders</td>
+            <td></td>
+        </tr>
+<? if ($pageName == "backtest") { ?>
+        <tr>
+            <td>backtestId</td>
+            <td>string</td>
+            <td>Id of the backtest from which to read the orders</td>
+            <td></td>
+        </tr>
+<? } ?>
+        <tr>
+            <td>start</td>
+            <td>int</td>
+            <td>Starting index of the orders to be fetched. Required if end &gt; 100</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>end</td>
+            <td>int</td>
+            <td>Last index of the orders to be fetched. Note that end - start must be &le; 100</td>
+            <td>100</td>
+        </tr>
+    </tbody>
+</table>
+<div class="section-example-container">
+<? if ($pageName == "backtest") { ?>
+    <pre class="csharp">var orders = api.ReadBacktestOrders(projectId, "&lt;backtestId&gt;", 0, 100);</pre>
+    <pre class="python">orders = api.read_backtest_orders(project_id, "&lt;backtest_id&gt;", 0, 100)</pre>
+<? } else { ?>
+    <pre class="csharp">var orders = api.ReadLiveOrders(projectId, 0, 100);</pre>
+    <pre class="python">orders = api.read_live_orders(project_id, 0, 100)</pre>
+<? } ?>
+</div>
+<!--- full links for URL checker --->
+<p>Refer to the <? if ($pageName == "backtest") { ?><a href="/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/orders">API Reference page</a><? } else { ?><a href="/docs/v2/research-environment/meta-analysis/live-analysis">meta analysis page</a> and the <a href="/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/orders">API Reference page</a><? } ?> for details.</p>
