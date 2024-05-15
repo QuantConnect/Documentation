@@ -1,3 +1,13 @@
+<?php
+function title_to_dashed_lower($title) {
+    // Split the title into an array of words
+    $words = preg_split('/(?=[A-Z])/', $title);
+    // Convert each word to lowercase and join with dashes
+    $dashed_lower = implode('-', array_map('strtolower', $words));
+    return substr($dashed_lower, 1);
+}
+?>
+
 <? if($hasAutomaticIndicatorHelper) { ?>
 <p>To create an automatic indicators for <code><?=$typeName?></code>, call the <code><?=$helperName?></code> helper method from the <code>QCAlgorithm</code> class. The <code><?=$helperName?></code> method creates a <code><?=$typeName?></code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 
@@ -52,7 +62,7 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=strtolower($helperName)?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+        self._<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=title_to_dashed_lower($helperName)?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
         if self._<?=strtolower($helperName)?>.is_ready:
@@ -70,7 +80,7 @@
 </div>
 
 <p>The following reference table describes the <code><?=$helperName?></code> method:</p>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-" . strtolower($helperName) . ".html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-" . title_to_dashed_lower($helperName) . ".html"); ?>
 
 <p>If you don't provide a resolution, it defaults to the security resolution. If you provide a resolution, it must be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
 <p>For more information about the selector argument, see <a href="/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields">Alternative Price Fields</a>.</p>
@@ -119,7 +129,7 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.HOUR)
 <?}?>
-        self._<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=strtolower($helperName)?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
+        self._<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=title_to_dashed_lower($helperName)?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
 </pre>
 </div>
 <? } ?>
