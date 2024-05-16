@@ -1,7 +1,7 @@
 <p>You can add <span class='csharp'>properties</span><span class='python'>attributes</span> to the <code>Security</code> object. For example, you can add an <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average'>exponential moving average</a>.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var equity = AddEquity("SPY");
+<pre class="csharp">dynamic equity = AddEquity("SPY");
 equity.ema = EMA(equity.Symbol, 10, Resolution.Daily);</pre>
 <pre class="python">equity = self.add_equity("SPY")
 equity.ema = self.ema(equity.symbol, 10, Resolution.DAILY)</pre>
@@ -10,7 +10,6 @@ equity.ema = self.ema(equity.symbol, 10, Resolution.DAILY)</pre>
 <p>This feature is helpful because you can get the <code>Security</code> object from the <code class="csharp">Securities</code><code class="python">securities</code> object.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var ema = Securities["SPY"].ema.Current.Value;</pre>
+<pre class="csharp">var ema = (Securities["SPY"] as dynamic).ema.Current.Value;</pre>
 <pre class="python">ema = self.securities["SPY"].ema.current.value</pre>
 </div>
-
