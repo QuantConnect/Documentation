@@ -2,6 +2,7 @@
 
 <p>Follow the below steps to get the project Ids of all projects under the <code>/Live</code> directory:</p>
 <ol>
+    <li><a href='/docs/v2/research-environment/key-concepts/getting-started#03-Open-Notebooks'>Open a research notebook</a>.</li>
 <?
 $additionalImports = "";
 include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
