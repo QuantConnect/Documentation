@@ -10,6 +10,7 @@ if __name__ == '__main__':
 
     # Organize data
     for line in spdb.split('\n'):
+        if '[*]' in line: continue
         csv = line.split(',')
         market = csv[0]
         if market not in markets:
