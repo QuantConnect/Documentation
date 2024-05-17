@@ -7,21 +7,21 @@
         self.set_end_date(2020, 6, 1)
         self.set_cash(100000)
 
-        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
-        self.dataset_symbol = self.add_data(QuiverInsiderTrading, self.aapl).symbol</pre>
+        symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.dataset_symbol = self.add_data(QuiverInsiderTrading, symbol).symbol</pre>
 <pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
 {
     public class QuiverInsiderTradingDataAlgorithm: QCAlgorithm
     {
-        private Symbol _symbol, _datasetSymbol;
+        private Symbol _datasetSymbol;
 
         public override void Initialize()
         {
             SetStartDate(2019, 1, 1);
             SetEndDate(2020, 6, 1);
             SetCash(100000);
-            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-            _datasetSymbol= AddData&lt;QuiverInsiderTrading&gt;(_symbol).Symbol;
+            var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _datasetSymbol= AddData&lt;QuiverInsiderTrading&gt;(symbol).Symbol;
         }
     }
 }</pre>

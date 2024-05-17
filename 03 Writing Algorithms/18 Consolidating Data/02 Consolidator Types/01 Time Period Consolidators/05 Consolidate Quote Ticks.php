@@ -5,9 +5,11 @@ $dataFormatInfo = new TickQuoteBarConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromMilliseconds(100)";
 $timeDeltaPeriod = "milliseconds=100";
-$resolutionPeriod = "Second";
+$resolutionPeriodC = "Second";
+$resolutionPeriodPy = "SECOND";
 $typeOf = "Tick";
-$createConsolidatorExtraArgs = ", TickType.Quote";
+$createConsolidatorExtraArgsC = ", TickType.Quote";
+$createConsolidatorExtraArgsPy = ", TickType.QUOTE";
 $resolveConsolidatorExtraArgsC = ", typeof(QuoteBar)";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "";
@@ -20,8 +22,10 @@ $shortCutTickTypeArg = "TickType.Quote, ";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
 	$timeDeltaPeriod, 
-	$resolutionPeriod, 
-	$createConsolidatorExtraArgs,
+	$resolutionPeriodC, 
+	$resolutionPeriodPy,
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,

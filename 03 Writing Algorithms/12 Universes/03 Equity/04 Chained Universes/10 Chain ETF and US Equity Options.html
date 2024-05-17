@@ -10,7 +10,7 @@ using QuantConnect.Securities;
 using QuantConnect.Util;
 using System.Collections.Generic;
 using System.Linq;
-#endregion
+
 namespace QuantConnect.Algorithm.CSharp
 {
     public class ETFUniverseOptions : QCAlgorithm
@@ -55,16 +55,16 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.set_start_date(2023, 2, 2)
         self.universe_settings.asynchronous = True
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-        etf_universe = self.universe.etf("QQQ", Market.USA, self.universe_settings, self.etf_constituents_filter)
+        etf_universe = self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter)
         self.add_universe(etf_universe)
-        self.add_universe_options(etf_universe, self.option_filter_function)
+        self.add_universe_options(etf_universe, self._option_filter_function)
 
-    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         sorted_by_weight = sorted(constituents, key=lambda x: x.weight, reverse=True) 
         return [c.symbol for c in sorted_by_weight[:10]]
 
-    def option_filter_function(self, optionFilterUniverse: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-        return optionFilterUniverse.strikes(0, 2).front_month().calls_only()
+    def _option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        return option_filter_universe.strikes(0, 2).front_month().calls_only()
         
     def on_data(self, data: Slice) -&gt; None:
         for symbol, chain in data.option_chains.items():

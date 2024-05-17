@@ -28,11 +28,11 @@ _contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
 _weeklyContractSymbol = QuantConnect.Symbol.CreateOption(_symbol, "SPXW", Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, new DateTime(2022, 6, 17));</pre>
     <pre class="python"># Standard contracts
-self.contract_symbol = Symbol.create_option(self._symbol, Market.USA,
+self._contract_symbol = Symbol.create_option(self._symbol, Market.USA,
     OptionStyle.EUROPEAN, OptionRight.CALL, 3650, datetime(2022, 6, 17))
 
 # Weekly contracts
-self.weekly_contract_symbol = Symbol.create_option(self._symbol, "SPXW", Market.USA,
+self._weekly_contract_symbol = Symbol.create_option(self._symbol, "SPXW", Market.USA,
     OptionStyle.EUROPEAN, OptionRight.CALL, 3650, datetime(2022, 6, 17))</pre>
 </div>
 
@@ -87,19 +87,19 @@ var weeklyExpiry = weeklyContractSymbols.Select(symbol =&gt; symbol.ID.Date).Min
 filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == weeklyExpiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
 _weeklyContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
     <pre class="python"># Standard contracts
-self.canonical_symbol = Symbol.create_canonical_option(self._symbol, Market.USA, "?SPX")       
-contract_symbols = self.option_chain_provider.get_option_contract_list(self.canonical_symbol, self.time)
+self._canonical_symbol = Symbol.create_canonical_option(self._symbol, Market.USA, "?SPX")       
+contract_symbols = self.option_chain_provider.get_option_contract_list(self._canonical_symbol, self.time)
 expiry = min([symbol.id.date for symbol in contract_symbols])
 filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
+self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
 
 # Weekly contracts
-self.weekly_canonical_symbol = Symbol.create_canonical_option(self._symbol, "SPXW", Market.USA, "?SPXW")
-weekly_contract_symbols = self.option_chain_provider.get_option_contract_list(self.weekly_canonical_symbol, self.time)
+self._weekly_canonical_symbol = Symbol.create_canonical_option(self._symbol, "SPXW", Market.USA, "?SPXW")
+weekly_contract_symbols = self.option_chain_provider.get_option_contract_list(self._weekly_canonical_symbol, self.time)
 weekly_contract_symbols = [symbol for symbol in weekly_contract_symbols if OptionSymbol.is_weekly(symbol)]
 weekly_expiry = min([symbol.id.date for symbol in weekly_contract_symbols])
 weekly_filtered_symbols = [symbol for symbol in weekly_contract_symbols if symbol.id.date == weekly_expiry and symbol.id.option_right == OptionRight.CALL]
-self.weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+self._weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -108,7 +108,7 @@ self.weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol:
 <div class="section-example-container">
     <pre class="csharp">var option = AddIndexOptionContract(_contractSymbol);
 option.PriceModel = OptionPriceModels.BlackScholes();<br></pre>
-    <pre class="python">option = self.add_index_option_contract(self.contract_symbol)
+    <pre class="python">option = self.add_index_option_contract(self._contract_symbol)
 option.PriceModel = OptionPriceModels.black_scholes()<br></pre>
 </div>
 

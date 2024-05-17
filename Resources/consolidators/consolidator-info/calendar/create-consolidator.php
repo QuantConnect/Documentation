@@ -33,10 +33,10 @@
 	<div class='section-example-container'>
 		<pre class='csharp'>_consolidator = new <?=$consolidatorClassName?>(Calendar.Weekly);
 // Alias:
-// _consolidator = CreateConsolidator(Calendar.Weekly, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgs?>);</pre>
-		<pre class='python'>self.consolidator = <?=$consolidatorClassName?>(Calendar.Weekly)
+// _consolidator = CreateConsolidator(Calendar.Weekly, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgsC?>);</pre>
+		<pre class='python'>self._consolidator = <?=$consolidatorClassName?>(Calendar.WEEKLY)
 # Alias:
-# self.consolidator = self.create_consolidator(Calendar.WEEKLY, <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)</pre>
+# self._consolidator = self.create_consolidator(Calendar.WEEKLY, <?=$typeOf?><?=$this->createConsolidatorExtraArgsPy?>)</pre>
 	</div>
 	
 	<p class='csharp'>To use the <code>Calendar</code> class, you may need to add the following code to the imports section because of ambiguity with <a rel='nofollow' target='_blank' href='https://learn.microsoft.com/en-us/dotnet/api/system.globalization.calendar?view=net-7.0'>.NET Calendar Class</a>:</p>
@@ -65,7 +65,7 @@
     return new CalendarInfo(start, period);
 });</pre>    
     	<pre class='python'># Define a consolidation period method
-def consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
+def _consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
     period = timedelta(7)
 
     dt = dt.replace(hour=17, minute=0, second=0, microsecond=0)
@@ -77,6 +77,6 @@ def consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
     return CalendarInfo(start, period)
 
 # Create the consolidator with the consolidation period method
-self.consolidator = <?=$consolidatorClassName?>(self.consolidation_period)</pre>
+self._consolidator = <?=$consolidatorClassName?>(self._consolidation_period)</pre>
 	</div>
 </ul>

@@ -6,6 +6,12 @@
       "UpdateTriggerPrice"  => array("C#" => "var triggerResponse = ticket.UpdateTriggerPrice(triggerPrice, tag);", "Python" => "response = ticket.update_trigger_price(trigger_price, tag)"), 
       "UpdateTag" => array("C#" => "var tagResponse = ticket.UpdateTag(tag);", "Python" => "response = ticket.update_tag(tag)")
     );
+    if (!function_exists('toSnakeCase')) {
+        function toSnakeCase($input) {
+            // Convert to lowercase and insert underscore before capital letters
+            return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $input));
+        }
+    }
   
     echo "
         <p>To update individual fields of an order, call any of the following methods:</p>
@@ -16,7 +22,8 @@
     {
         if (in_array($key, $supportedMethods))
         {
-            echo "<li><code>{$key}</code></li>";
+            $pyKey = toSnakeCase($key);
+            echo "<li><code class='csharp'>{$key}</code><code class='python'>{$pyKey}</code></li>";
         }
     }
   

@@ -20,9 +20,9 @@
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.universe_settings.asynchronous = True
-        self._universe = self.add_universe(self.fundamental_function)
+        self._universe = self.add_universe(self._fundamental_function)
     
-    def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         return [c.symbol for c in fundamental if c.has_fundamental_data]</pre></div>
     
 <p><code>Fundamental</code> objects have the following attributes:</p>
@@ -45,9 +45,9 @@ _universe = AddUniverse(
         .Select(f =&gt; f.Symbol));</pre>
     <pre class="python"># In Initialize:
 self.universe_settings.asynchronous = True
-self._universe = self.add_universe(self.fundamental_selection_function)
+self._universe = self.add_universe(self._fundamental_selection_function)
     
-def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     filtered = [f for f in fundamental if f.price &gt; 10 and f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
     sorted_by_dollar_volume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)[:100]
     sorted_by_pe_ratio = sorted(sorted_by_dollar_volume, key=lambda f: f.valuation_ratios.pe_ratio, reverse=False)[:10]
@@ -97,7 +97,7 @@ Fundamental universes allow you to select an unlimited universe of assets to ana
         .Take(10)
         .Select(x => x.Symbol);
 }</pre>
-    <pre class="python">def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    <pre class="python">def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     filtered = [f for f in fundamental if f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
     sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
     return [f.symbol for f in sortedByPeRatio[:10] ]</pre>

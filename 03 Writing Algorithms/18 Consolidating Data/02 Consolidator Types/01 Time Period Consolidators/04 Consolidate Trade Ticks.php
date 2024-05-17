@@ -5,8 +5,10 @@ $dataFormatInfo = new TickConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromMilliseconds(100)";
 $timeDeltaPeriod = "milliseconds=100";
-$resolutionPeriod = "Second";
-$createConsolidatorExtraArgs = "";
+$resolutionPeriodC = "Second";
+$resolutionPeriodPy = "SECOND";
+$createConsolidatorExtraArgsC = "";
+$createConsolidatorExtraArgsPy = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "";
@@ -18,8 +20,10 @@ $shortCutTickTypeArg = "";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
 	$timeDeltaPeriod, 
-	$resolutionPeriod, 
-	$createConsolidatorExtraArgs,
+	$resolutionPeriodC, 
+	$resolutionPeriodPy,
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,

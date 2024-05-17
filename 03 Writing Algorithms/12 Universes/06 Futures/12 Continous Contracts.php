@@ -7,10 +7,10 @@ var adjustedPrice = Securities[_future.Symbol].Price;
 // Get the raw price of the currently selected contract in the continuous contract series
 var rawPrice = Securities[_future.Mapped].Price;</pre>
     <pre class="python"># Get the adjusted price of the continuous contract
-adjusted_price = self.securities[self.future.symbol].price 
+adjusted_price = self.securities[self._future.symbol].price 
 
 # Get the raw price of the currently selected contract in the continuous contract series
-raw_price = self.securities[self.future.mapped].price</pre>
+raw_price = self.securities[self._future.mapped].price</pre>
 </div>
 
 
@@ -39,8 +39,8 @@ raw_price = self.securities[self.future.mapped].price</pre>
         quantity = self.portfolio[old_symbol].quantity
 
         # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-        self.liquidate(old_symbol, tag = tag)
-        if quantity != 0: self.market_order(new_symbol, quantity, tag = tag)
+        self.liquidate(old_symbol, tag=tag)
+        if quantity != 0: self.market_order(new_symbol, quantity, tag=tag)
         self.log(tag)</pre>
 </div>
 

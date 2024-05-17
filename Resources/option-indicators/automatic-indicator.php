@@ -21,11 +21,11 @@ public override void Initialize()
     self.add_option_contract(option)
 
     # Example of using the single-contract IV calculation:
-    self.<?=strtolower($typeName)?> = self.<?=strtolower($helperMethod)?>(option)
+    self._<?=strtolower($typeName)?> = self.<?=strtolower($helperMethod)?>(option)
 
     # Example of using the using mirror-contract IV calculation:
-    mirrorOption = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505, datetime(2014, 6, 27))
+    mirror_option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505, datetime(2014, 6, 27))
     self.add_option_contract(mirror_option)
-    self.<?=strtolower($typeName)?> = self.<?=strtolower($helperMethod)?>(option, mirror_option)
+    self._<?=strtolower($typeName)?> = self.<?=strtolower($helperMethod)?>(option, mirror_option)
 </pre>
 </div>

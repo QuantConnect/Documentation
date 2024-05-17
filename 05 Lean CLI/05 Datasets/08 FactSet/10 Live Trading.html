@@ -1,8 +1,10 @@
-<p>Our implementation of the FactSet integration does not include a live data provider.</p>
-
-<p>Depending on the brokerage you select, you may need to provide some <a href='/docs/v2/lean-cli/api-reference/lean-live-deploy#02-Description'>required brokerage options</a>. To use a FactSet historical data, include the <code>--data-provider-historical</code> and <code>--factset-auth-config-file</code> options.
+<p>
+  To deploy a local live algorithm that uses FactSet as the historical data provider, open a terminal in your <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> and then run <code>lean live deploy &lt;projectName&gt; --data-provider-historical FactSet --factset-auth-config-file &lt;auth.json&gt; --brokerage &lt;brokerageName&gt; &lt;requiredBrokerageOptions&gt;</code>. 
+  FactSet doesn't support streaming live data.
+  The paper trading brokerage also doesn't provide live data, so if you select it, you need to include <code>--data-provider-live &lt;liveDataProviderName&gt; &lt;requiredLivedataProviderOptions&gt;</code>.
 </p>
+
 <div class="cli section-example-container">
-  <pre>$ lean live deploy "My Project" --data-provider-historical=factset --factset-auth-config-file=auth.json --brokerage "Paper Trading"</pre>
+  <pre>$ lean live deploy "My Project" --data-provider-historical FactSet --factset-auth-config-file auth.json --brokerage "Paper Trading" --data-provider-live "Custom data only"</pre>
 </div>  
 <p>If you provide any of the preceding options, your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a> saves them so that you only need to run <code>lean live deploy &lt;projectName&gt; --brokerage &lt;brokerageName&gt;</code> to deploy another live algorithm with the same options.</p>

@@ -56,17 +56,20 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.set_start_date(2023, 2, 2)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
-        self.add_universe(self.universe.etf("QQQ", Market.USA, self.universe_settings, self.etf_constituents_filter), self.fundamental_selection)
+        self.add_universe(
+            self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter), 
+            self._fundamental_selection
+        )
 
-    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         return [c.symbol for c in constituents]
 
-    def fundamental_selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _fundamental_selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         filtered = [f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio)]
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
     def on_data(self, data):
-        for symbol in data.keys:
+        for symbol in data.keys():
             self.debug(f"{symbol} PE Ratio: {self.securities[symbol].fundamentals.valuation_ratios.pe_ratio}")</pre>
 </div>

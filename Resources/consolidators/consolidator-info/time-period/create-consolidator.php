@@ -6,12 +6,12 @@
 	<div class='section-example-container'>
 		<pre class='csharp'>_consolidator = new <?=$consolidatorClassName?>(TimeSpan.<?=$this->timeSpanPeriod?>);
 // Aliases:
-// _consolidator = CreateConsolidator(TimeSpan.<?=$this->timeSpanPeriod?>, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgs?>);
+// _consolidator = CreateConsolidator(TimeSpan.<?=$this->timeSpanPeriod?>, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgsC?>);
 // _consolidator = ResolveConsolidator(_symbol, TimeSpan.<?=$this->timeSpanPeriod?><?=$this->resolveConsolidatorExtraArgsC?>);</pre>
-			<pre class='python'>self.consolidator = <?=$consolidatorClassName?>(timedelta(<?=$this->timeDeltaPeriod?>))
+			<pre class='python'>self._consolidator = <?=$consolidatorClassName?>(timedelta(<?=$this->timeDeltaPeriod?>))
 # Aliases:
-# self.consolidator = self.CreateConsolidator(timedelta(<?=$this->timeDeltaPeriod?>), <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)
-# self.consolidator = self.ResolveConsolidator(self._symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
+# self._consolidator = self.create_consolidator(timedelta(<?=$this->timeDeltaPeriod?>), <?=$typeOf?><?=$this->createConsolidatorExtraArgsPy?>)
+# self._consolidator = self.resolve_consolidator(self._symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
 	</div>
 
 	<?php include(DOCS_RESOURCES."/consolidators/time-period-start-time.html");?>
@@ -22,8 +22,8 @@
 
 
 	<div class='section-example-container'>
-		<pre class='csharp'><?=$this->resolutionArgExtraExamplesC?>_consolidator = ResolveConsolidator(_symbol, Resolution.<?=$this->resolutionPeriod?>);</pre>
-		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self.consolidator = self.ResolveConsolidator(self._symbol, Resolution.<?=$this->resolutionPeriod?>)</pre>
+		<pre class='csharp'><?=$this->resolutionArgExtraExamplesC?>_consolidator = ResolveConsolidator(_symbol, Resolution.<?=$this->resolutionPeriodC?>);</pre>
+		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self._consolidator = self.resolve_consolidator(self._symbol, Resolution.<?=$this->resolutionPeriodPy?>)</pre>
 	</div>
 </ul>
 

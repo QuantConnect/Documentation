@@ -5,8 +5,10 @@ $dataFormatInfo = new DynamicDataConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
-$resolutionPeriod = "Daily";
-$createConsolidatorExtraArgs = "";
+$resolutionPeriodC = "Daily";
+$resolutionPeriodPy = "DAILY";
+$createConsolidatorExtraArgsC = "";
+$createConsolidatorExtraArgsPy = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "";
@@ -18,8 +20,10 @@ $shortCutTickTypeArg = "";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
 	$timeDeltaPeriod, 
-	$resolutionPeriod, 
-	$createConsolidatorExtraArgs,
+	$resolutionPeriodC, 
+	$resolutionPeriodPy,
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,

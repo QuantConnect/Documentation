@@ -38,13 +38,13 @@ private OptionFilterUniverse Selector(OptionFilterUniverse optionFilterUniverse)
     return optionFilterUniverse.Contracts(symbols);
 }</pre>
     <pre class="python"># In Initialize
-self.AddFutureOption(future.Symbol, self.contract_selector)
+self.add_future_option(future.Symbol, self._contract_selector)
 
-def contract_selector(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
+def _contract_selector(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
     symbols = option_filter_universe.PutsOnly()
-    strike = min([symbol.ID.StrikePrice for symbol in symbols])
-    symbols = [symbol for symbol in symbols if symbol.ID.StrikePrice == strike]
-    return option_filter_universe.Contracts(symbols)</pre>
+    strike = min([symbol.id.strike_price for symbol in symbols])
+    symbols = [symbol for symbol in symbols if symbol.id.strike_price == strike]
+    return option_filter_universe.contracts(symbols)</pre>
 </div>
 
 <?

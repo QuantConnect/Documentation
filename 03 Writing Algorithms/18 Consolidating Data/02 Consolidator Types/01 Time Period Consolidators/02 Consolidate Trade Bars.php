@@ -5,14 +5,16 @@ $dataFormatInfo = new TradeBarConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
-$resolutionPeriod = "Daily";
-$createConsolidatorExtraArgs = "";
+$resolutionPeriodC = "Daily";
+$resolutionPeriodPy = "DAILY";
+$createConsolidatorExtraArgsC = "";
+$createConsolidatorExtraArgsPy = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "_consolidator = TradeBarConsolidator.FromResolution(Resolution.Daily);
 // Alias:
 // ";
-$resolutionArgExtraExamplesPy = "self.consolidator = TradeBarConsolidator.from_resolution(Resolution.DAILY)
+$resolutionArgExtraExamplesPy = "self._consolidator = TradeBarConsolidator.from_resolution(Resolution.DAILY)
 # Alias:
 # ";
 $consolidationTextResolution = "minute";
@@ -22,8 +24,10 @@ $shortCutTickTypeArg = "";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
 	$timeDeltaPeriod, 
-	$resolutionPeriod, 
-	$createConsolidatorExtraArgs,
+	$resolutionPeriodC, 
+	$resolutionPeriodPy, 
+	$createConsolidatorExtraArgsC,
+	$createConsolidatorExtraArgsPy,
 	$resolveConsolidatorExtraArgsC,
 	$resolveConsolidatorExtraArgsPy,
 	$resolutionArgExtraExamplesC,

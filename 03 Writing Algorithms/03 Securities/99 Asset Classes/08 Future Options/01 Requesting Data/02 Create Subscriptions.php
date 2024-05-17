@@ -32,7 +32,7 @@
 <div class="section-example-container">
     <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
     Market.CME, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self.future_contract_symbol = Symbol.create_future(Futures.Indices.SP500E_MINI,
+    <pre class="python">self._future_contract_symbol = Symbol.create_future(Futures.Indices.SP500E_MINI,
     Market.CME, datetime(2022, 6, 17))</pre>
 </div>
 
@@ -48,7 +48,7 @@
 <div class="section-example-container">
     <pre class="csharp">_optionContractSymbol = QuantConnect.Symbol.CreateOption(_futureContractSymbol,
     Market.CME, OptionStyle.American, OptionRight.Call, 3600, new DateTime(2022, 6, 17))</pre>
-    <pre class="python">self.option_contract_symbol = Symbol.create_option(self.future_contract_symbol,
+    <pre class="python">self._option_contract_symbol = Symbol.create_option(self._future_contract_symbol,
     Market.CME, OptionStyle.AMERICAN, OptionRight.CALL, 3600, datetime(2022, 6, 17))</pre>
 </div>
 
@@ -100,10 +100,10 @@
 var expiry = optionContractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
 var filteredSymbols = optionContractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
 _optionContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
-    <pre class="python">option_contract_symbols = self.option_chain_provider.get_option_contract_list(self.future_contract_symbol, self.time)
+    <pre class="python">option_contract_symbols = self.option_chain_provider.get_option_contract_list(self._future_contract_symbol, self.time)
 expiry = min([symbol.id.date for symbol in option_contract_symbols])
 filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+self._option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -113,7 +113,7 @@ self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol
 <div class="section-example-container">
     <pre class="csharp">var option = AddFutureOptionContract(_optionContractSymbol);
 option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
-    <pre class="python">option = self.add_future_option_contract(self.option_contract_symbol)
+    <pre class="python">option = self.add_future_option_contract(self._option_contract_symbol)
 option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 

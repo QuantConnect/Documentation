@@ -78,9 +78,8 @@ self.set_security_initializer(MySecurityInitializer(self.brokerage_model, seeder
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, algorithm: QCAlgorithm) -&gt; None:
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -&gt; None:
         super().__init__(brokerage_model, security_seeder)
-        self.algorithm = algorithm
 
     def initialize(self, security: Security) -&gt; None:
         # First, call the superclass definition

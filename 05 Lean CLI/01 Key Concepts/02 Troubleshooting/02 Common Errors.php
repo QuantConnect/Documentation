@@ -103,5 +103,13 @@
                 Click <span class="button-name">Apply &amp; Restart</span> after making the required changes.
             </td>
         </tr>
+        <tr>
+            <td>
+                <div class="error-messages">Could not open '/lib64/ld-linux-x86-64.so.2': No such file or directory</div>
+            </td>
+            <td>
+                Your Docker installation has pulled the incorrect platform version of the LEAN Docker image. Remove <span class="public-file-name">quantconnect/lean</span> image. Open your terminal, and run <code>docker pull quantconnect/lean --platform=linux/amd64</code>.
+            </td>
+        </tr>
     </tbody>
 </table>

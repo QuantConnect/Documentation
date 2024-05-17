@@ -21,9 +21,9 @@ if ($isFutureOptions)
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.option_chains.get(self.option_contract_symbol.canonical)
+    chain = slice.option_chains.get(self._option_contract_symbol.canonical)
     if chain:
-        contract = chain.contracts.get(self.option_contract_symbol)
+        contract = chain.contracts.get(self._option_contract_symbol)
         if contract:
             price = contract.price</pre>
 </div>  
@@ -57,7 +57,7 @@ if ($isFutureOptions)
         canonical_fop_symbol = Symbol.create_canonical_option(futures_contract.symbol)
         option_chain = slice.option_chains.get(canonical_fop_symbol)
         if option_chain:
-            option_contract = option_chain.contracts.get(self.option_contract_symbol)
+            option_contract = option_chain.contracts.get(self._option_contract_symbol)
             if option_contract:
                 price = option_contract.price</pre>
 </div> 
@@ -74,9 +74,9 @@ if ($isFutureOptions)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.option_chains.get(self.contract_symbol.canonical)
+    chain = slice.option_chains.get(self._contract_symbol.canonical)
     if chain:
-        contract = chain.contracts.get(self.contract_symbol)
+        contract = chain.contracts.get(self._contract_symbol)
         if contract:
             price = contract.price</pre>
 </div>
@@ -107,9 +107,9 @@ if ($isFutureOptions)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.option_chains.get(self.option_contract_symbol.canonical)
+    chain = slice.option_chains.get(self._option_contract_symbol.canonical)
     if chain:
-        contract = chain.contracts.get(self.option_contract_symbol)
+        contract = chain.contracts.get(self._option_contract_symbol)
         if contract:
             delta = contract.greeks.delta
             iv = contract.implied_volatility</pre>
@@ -128,9 +128,9 @@ if ($isFutureOptions)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.option_chains.get(self.contract_symbol.canonical)
+    chain = slice.option_chains.get(self._contract_symbol.canonical)
     if chain:
-        contract = chain.contracts.get(self.contract_symbol)
+        contract = chain.contracts.get(self._contract_symbol)
         if contract:
             delta = contract.greeks.delta
             iv = contract.implied_volatility</pre>

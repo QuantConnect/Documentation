@@ -1,7 +1,8 @@
 <p>To select a dynamic universe of US Equities based on US Government Contract data, call the <b class="csharp">AddUniverse</b><b class="python">add_universe</b> method with the <b>QuiverGovernmentContractUniverse</b> class and a selection function.</p> 
 
 <div class="section-example-container">
-<pre class="python">self.add_universe(QuiverGovernmentContractUniverse, self.universe_selection)
+<pre class="python">def initialize(self):
+    self._universe = self.add_universe(QuiverGovernmentContractUniverse, self.universe_selection)
 
 def universe_selection(self, alt_coase: List[QuiverGovernmentContractUniverse]) -&gt; List[Symbol]:
     gov_contract_data_by_symbol = {}
@@ -15,23 +16,27 @@ def universe_selection(self, alt_coase: List[QuiverGovernmentContractUniverse]) 
     
     return [symbol for symbol, d in gov_contract_data_by_symbol.items()
             if len(d) &gt;= 3 and sum([x.amount for x in d]) &gt; 50000]</pre>
-<pre class="csharp">AddUniverse&lt;QuiverGovernmentContractUniverse&gt;(altCoarse =&gt;
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    var govContractDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverGovernmentContractUniverse&gt;&gt;();
-
-    foreach (var datum in altCoarse.OfType&lt;QuiverGovernmentContractUniverse&gt;())
+    _universe = AddUniverse&lt;QuiverGovernmentContractUniverse&gt;(altCoarse =&gt;
     {
-        var symbol = datum.Symbol;
+        var govContractDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverGovernmentContractUniverse&gt;&gt;();
 
-        if (!govContractDataBySymbol.ContainsKey(symbol))
+        foreach (var datum in altCoarse.OfType&lt;QuiverGovernmentContractUniverse&gt;())
         {
-            govContractDataBySymbol.Add(symbol, new List&lt;QuiverGovernmentContractUniverse&gt;());
-        }
-        govContractDataBySymbol[symbol].Add(datum);
-    }
+            var symbol = datum.Symbol;
 
-    return from kvp in govContractDataBySymbol
-           where kvp.Value.Count &gt;= 3 &amp;&amp; kvp.Value.Sum(x =&gt; x.Amount) &gt; 50000m
-           select kvp.Key;
-});</pre>
+            if (!govContractDataBySymbol.ContainsKey(symbol))
+            {
+                govContractDataBySymbol.Add(symbol, new List&lt;QuiverGovernmentContractUniverse&gt;());
+            }
+            govContractDataBySymbol[symbol].Add(datum);
+        }
+
+        return from kvp in govContractDataBySymbol
+            where kvp.Value.Count &gt;= 3 &amp;&amp; kvp.Value.Sum(x =&gt; x.Amount) &gt; 50000m
+            select kvp.Key;
+    });
+}</pre>
 </div>

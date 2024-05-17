@@ -59,16 +59,16 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.set_start_date(2023, 2, 2)
         self.universe_settings.asynchronous = True
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-        universe = self.add_universe(self.fundamental_function)
-        self.add_universe_options(universe, self.option_filter_function)
+        universe = self.add_universe(self._fundamental_function)
+        self.add_universe_options(universe, self._option_filter_function)
 
-    def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         filtered = [f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio)]
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def option_filter_function(self, optionFilterUniverse: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-        return optionFilterUniverse.strikes(0, 2).front_month().calls_only()
+    def _option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        return option_filter_universe.strikes(0, 2).front_month().calls_only()
         
     def on_data(self, data: Slice) -&gt; None:
         for symbol, chain in data.option_chains.items():

@@ -1,7 +1,23 @@
-from json import dump
+from json import dumps
 from pathlib import Path
-from _code_generation_helpers import get_text_content, List
+from re import sub, finditer, findall
+from os import remove
+from _code_generation_helpers import get_text_content
 ROOT = Path("05 Lean CLI/99 API Reference")
+H3_INTRODUCTION = '01 Introduction.html'
+H3_OPTIONS = '04 Options.html'
+H3_COMMANDS = '05 Commands.html'
+
+TYPE_CONVERSIONS = {
+    "TEXT": "&lt;string&gt;",
+    "INTEGER": "&lt;integer&gt;",
+    "BOOLEAN": "&lt;boolean&gt;",
+    "FILE": "&lt;file&gt;",
+    "DIRECTORY": "&lt;directory&gt;",
+    "RANGE": "&lt;range&gt;",
+    "DECIMAL": "&lt;float&gt;",
+    "FLOAT": "&lt;float&gt;",
+}
 
 def __get_commands_from_readme():
     commands = {}
@@ -20,51 +36,12 @@ def __get_commands_from_readme():
         if current_key:
             commands[current_key].append(line)
 
-    return commands
+    return {key: __convert_command(key, command) for key, command in commands.items() } 
 
-def __seed_new_command(key: str, command: List[str]) -> None:
-    dir = ROOT.joinpath(f'{command[0]} {key}')
-    dir.mkdir(exist_ok=True, parents=True)
-        
-    usage = command[5][7:]
-        
-    with dir.joinpath("01 Introduction.html").open('w', encoding='utf-8') as fp:
-        fp.write(f'''<p>{command[2]}</p>
-<div class="cli section-example-container">
-<pre>$ {usage}</pre>
-</div>''')
-
-    rows = ''
-    start = 1 + command.index('Options:')
-    stop = command.index('```', start)
-    if start > 0:
-        for i in range(start, stop):
-            parts = command[i].lstrip().split('  ')
-            if len(parts) == 1:
-                i += 1
-                parts += command[i].lstrip().split('  ')
-            i += 1
-            rows += f'''
-<tr>
-    <td nowrap><code>{parts[0].strip()}</code></td>
-    <td>{parts[-1].strip()}</td>
-</tr>'''
-
-    with dir.joinpath("03 Options.html").open('w', encoding='utf-8') as fp:
-        if rows:
-            fp.write(f'''<p>The <code>{key}</code> command supports the following options:</p>
-<table class="table qc-table">
-    <thead>
-        <tr>
-            <th>Option</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>{rows}
-    </tbody>
-</table>''')
-
-    dump({
+def __convert_command(key, command):
+    return {
+        'metadata.json': dumps(
+{
     "type": "metadata",
     "values": {
         "description": f"API reference for the command `{key}` in command line console.",
@@ -72,55 +49,100 @@ def __seed_new_command(key: str, command: List[str]) -> None:
         "og:description": f"API reference for the command `{key}` in command line console.",
         "og:title": f"{key} - Documentation QuantConnect.com",
         "og:type": "website",
-        "og:site_name": "{key} - QuantConnect.com",
+        "og:site_name": f"{key} - QuantConnect.com",
         "og:image": f"https://cdn.quantconnect.com/docs/i/lean-cli/api-reference/{key.replace(' ','-')}.png"
     }
-}, dir.joinpath("metadata.json").open('w'), indent = 4)
+}, indent=4),
+            
+        H3_INTRODUCTION: f'''<p>{command[2]}</p>
+<div class="cli section-example-container">
+<pre>$ {command[5][7:]}</pre>
+</div>''',
 
-    return dir
+        H3_OPTIONS: __generate_options_table(key, command),
 
-def __check_for_missing_options(dir: Path, command: List[str]) -> None:
-    files = [f for f in dir.iterdir() if f.name.endswith('Options.html')]
-    if not files:
-        return
+        H3_COMMANDS: __generate_commands_table(key, command),
 
-    tbody = 0
-    descriptions = {}
-    with files[0].open("r") as fp:
-        lines = fp.readlines()
-        for i, line in enumerate(lines):
-            if '<tbody>' in line:
-                tbody = i + 1
-            start = line.find('--', line.find('<td nowrap'))
-            if start < 0:
-                start = line.find('-', line.find('<td nowrap'))
-            if start < 0:    
-                continue
-            end = next(start + f for f, v in enumerate(line[start:]) if v in [' ', '<'])
-            descriptions[line[start:end]] = lines[i-1:i+3]
+        'index': command[0]
+    }
 
-    if not descriptions:
-        return
+def __generate_options_table(key, command):
+    name = 'Options'
+    i = next((i+1 for i, l in enumerate(command) if f'{name}:' in l), 0)
+    if i < 1:
+        return ''
 
-    start = 1 + command.index('Options:')
-    stop = command.index('```', start)
+    lines = []
+    imax = command.index('```', i)
+    imax = min(imax, next((i for i, l in enumerate(command) if f'Commands:' in l), imax))
+    while i < imax:
+        line = command[i].lstrip()
+        if not line.startswith('-'):
+            lines[-1][-1] += ' ' + line
+            i += 1; continue
+        parts = line.split('  ')
+        if len(parts) == 1:
+            i += 1
+            parts += command[i].lstrip().split('  ')
+        i += 1
+        arg_and_type = parts[0].strip()
+        if arg_and_type == '--help':
+            lines.append(['--help', f"Display the help text of the <code>{key}</code> command and exit"])
+            continue
+        for raw, replacement in TYPE_CONVERSIONS.items():
+            arg_and_type = arg_and_type.replace(raw, replacement)
+        arg_and_type = __format_enum_type(arg_and_type)\
+            .replace("[", "&lt;").replace("]", "&gt;")
+        lines.append([arg_and_type, parts[-1]])
+    
+    return __generate_table(name, key, lines)
 
-    lines = lines[:tbody]
+def __format_enum_type(arg_and_type):
+    parts = arg_and_type.split('|')
+    count = len(parts)
+    if count < 2:
+        return arg_and_type
+    parts[0] = parts[0].replace('[','&lt;enum: ')
+    parts[-1] = parts[-1][0:-1] + "&gt;"
+    if count < 4:
+        return '|'.join(parts)
+    index = parts[0].find(':') - 1
+    parts[1:] = ['<br>' + '&nbsp;' * index + part for part in parts[1:]]
+    return ''.join(parts)
 
-    for i in range(start, stop):
-        # First 5 to avoid comments
-        key = next((x for x in command[i].split(' ')[:5] if x.startswith('--')), None)
-        if key:
-            lines.extend(descriptions.pop(key, [f'''<!--
+def __generate_commands_table(key, command):
+    name = 'Commands'
+    i = next((i+1 for i, l in enumerate(command) if f'{name}:' in l), 0)
+    if i < 1:
+        return ''
+    imax = command.index('```', i)    
+    lines = [l.lstrip().split('  ') for l in command[i:imax]]
+    return __generate_table("Arguments", key, lines, "expects")
+    
+def __generate_table(name, key, lines, verb='supports'):
+    def remove_period(line):
+        line = line.strip()
+        if line[-1] == '.':
+            line = line[:-1]
+        return line
+
+    rows = ''.join([f'''
+<tr>
+    <td nowrap><code>{line[0]}</code></td>
+    <td>{remove_period(line[-1])}</td>
+</tr>''' for line in lines])
+    
+    return f'''<p>The <code>{key}</code> command {verb} the following {name.lower()}:</p>
+<table class="table qc-table">
+    <thead>
         <tr>
-            <td nowrap><code>{key}</code></td>
-            <td></td>
+            <th>{name[:-1]}</th>
+            <th>Description</th>
         </tr>
--->
-''']))
-
-    with files[0].open("w") as fp:
-        fp.writelines(lines + ['    </tbody>\n</table>'])
+    </thead>
+    <tbody>{rows}
+    </tbody>
+</table>'''
 
 if __name__ == '__main__':
     commands = __get_commands_from_readme()
@@ -128,15 +150,24 @@ if __name__ == '__main__':
 
     for key, command in commands.items():
         dir = directories.get(key)
+        index = command.pop('index')
         if not dir:
-            directories[key] = __seed_new_command(key, command)
+            directories[key] = ROOT.joinpath(f'{index} {key}')
+            directories[key].mkdir(exist_ok=True, parents=True)
             continue
         # Rename directories to accomodate new commands
-        if command[0] != dir.name[:2]:
-            dir = dir.rename(f'{ROOT}/{command[0]} {key}')
+        if index != dir.name[:2]:
+            dir = dir.rename(f'{ROOT}/{index} {key}')
             directories[key] = dir
-
-        __check_for_missing_options(dir, command)
+        
+    for key, command in commands.items():
+        dir = directories.get(key)
+        [remove(f.absolute()) for f in dir.iterdir()
+            if 'options' in f.name.lower() or 'commands' in f.name.lower()]
+        for filename, content in command.items():
+            if content:
+                with dir.joinpath(filename).open('w', encoding='utf-8') as fp:
+                    fp.write(content)
 
     # Check for directories without a command
     for path in ROOT.iterdir():

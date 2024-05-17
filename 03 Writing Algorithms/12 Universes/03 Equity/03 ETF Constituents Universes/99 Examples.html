@@ -83,33 +83,33 @@ namespace QuantConnect.Algorithm.CSharp
 <pre class="python">from AlgorithmImports import * 
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    symbol_data_by_symbol = {}
+    _symbol_data_by_symbol = {}
     
     def initialize(self):
         self.set_cash(100000)
         self.set_start_date(2023, 6, 1)
         self.universe_settings.asynchronous = True
-        self.add_universe(self.universe.etf("QQQ"), self.fundamental_selection)
+        self.add_universe(self.universe.etf("QQQ"), self._fundamental_selection)
     
-    def fundamental_selection(self, fundamental: List[Fundamental]) -> List[Symbol]:
+    def _fundamental_selection(self, fundamental: List[Fundamental]) -> List[Symbol]:
         # Create/Update the indicator for each asset in the ETF
         universe_symbols = []
         for f in fundamental:
             universe_symbols.append(f.symbol)
-            if f.symbol not in self.symbol_data_by_symbol:
+            if f.symbol not in self._symbol_data_by_symbol:
                 # Create an indicator for each asset that enters the ETF
-                self.symbol_data_by_symbol[f.symbol] = SymbolData(self, f.symbol)
+                self._symbol_data_by_symbol[f.symbol] = SymbolData(self, f.symbol)
                 
             # Update each indicator
-            self.symbol_data_by_symbol[f.symbol].update(self.time, f.adjusted_price)
+            self._symbol_data_by_symbol[f.symbol].update(self.time, f.adjusted_price)
     
         # Remove indicators for assets that are no longer in the ETF
-        symbols_to_remove = [symbol for symbol in self.symbol_data_by_symbol.keys() if symbol not in universe_symbols]
+        symbols_to_remove = [symbol for symbol in self._symbol_data_by_symbol.keys() if symbol not in universe_symbols]
         for symbol in symbols_to_remove:
             self.symbol_data_by_symbol.pop(symbol)
 
         # Select a subset of the ETF constituents based on the indicator value
-        universe = [symbol for symbol, symbol_data in self.symbol_data_by_symbol.items() if symbol_data.is_above_sma]
+        universe = [symbol for symbol, symbol_data in self._symbol_data_by_symbol.items() if symbol_data.is_above_sma]
             
         # Plot the results
         self.plot("Universe", "Possible", len(list(fundamental)))

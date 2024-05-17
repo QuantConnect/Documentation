@@ -6,7 +6,7 @@
     <pre class="csharp">UniverseSettings.Asynchronous = true;
 AddUniverse(SelectFundamental);</pre>
     <pre class="python">self.universe_settings.asynchronous = True
-self.add_universe(self.select_fundamental)</pre>
+self.add_universe(self._select_fundamental)</pre>
 </div>
 
 <h4>ETF Constituent Universe</h4>
@@ -18,5 +18,5 @@ var spy = AddEquity("SPY").Symbol;
 AddUniverse(Universe.ETF(spy, UniverseSettings, ETFConstituentsFilter));</pre>
     <pre class="python">self.universe_settings.asynchronous = True
 spy = self.add_equity("SPY").symbol
-self.add_universe(self.universe.etf(spy, self.universe_settings, self.etf_constituents_filter))</pre>
+self.add_universe(self.universe.etf(spy, self.universe_settings, self._etf_constituents_filter))</pre>
 </div>

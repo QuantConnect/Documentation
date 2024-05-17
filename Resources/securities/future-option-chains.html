@@ -23,8 +23,8 @@
         # Example: Find 5 put contracts that are closest to at-the-money (ATM) and have the farthest expiration
         contracts = [x for x in option_chain if x.right == OptionRight.PUT]
         contracts = sorted(sorted(contracts, \
-            key = lambda x: abs(option_chain.Underlying.price - x.strike)), \
-            key = lambda x: x.Expiry, reverse=True)[:5]
+            key=lambda x: abs(option_chain.underlying.price - x.strike)), \
+            key=lambda x: x.expiry, reverse=True)[:5]
 
         # Select the contract with the delta closest to -0.5
         contract = sorted(contracts, key=lambda x: abs(-0.5 - x.greeks.delta))[0]</pre>

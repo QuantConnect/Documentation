@@ -69,10 +69,10 @@
 <pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.universe_settings.asynchronous = True
-        self._universe = self.universe.etf("SPY", self.universe_settings, self.etf_constituents_filter)
-        self.add_universe(self.universe)
+        self._universe = self.universe.etf("SPY", self.universe_settings, self._etf_constituents_filter)
+        self.add_universe(self._universe)
 
-    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         # Get the 10 securities with the largest weight in the index
         selected = sorted([c for c in constituents if c.weight],
             key=lambda c: c.weight, reverse=True)[:10]

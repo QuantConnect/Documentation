@@ -5,7 +5,7 @@ if __name__ == '__main__':
     spdb = get_text_content(SPDB)
 
     directory = "Resources/datasets/supported-securities/"
-    markets = ['binance','binanceus','bitfinex','bybit','coinbase','kraken','oanda']
+    markets = ['binance','binanceus','bitfinex','bybit','coinbase','kraken','oanda', 'interactivebrokers']
     results = {}
 
     # Organize data

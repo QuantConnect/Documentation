@@ -12,9 +12,9 @@ private void CustomSecurityInitializer(Security security)
 }
 </pre>
 <pre class="python">#In Initialize
-self.set_security_initializer(self.custom_security_initializer)
+self.set_security_initializer(self._custom_security_initializer)
 
-def custom_security_initializer(self, security: Security) -&gt; None:
+def _custom_security_initializer(self, security: Security) -&gt; None:
     # Disable trading fees
     security.set_fee_model(ConstantFeeModel(0, "USD"))
 </pre>

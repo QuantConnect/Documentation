@@ -149,22 +149,22 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>LocalFile</code></td>
+            <td><code class='csharp'>LocalFile</code><code class='python'>LOCAL_FILE</code></td>
             <td>The data comes from disk</td>
             <td><a href='https://github.com/QuantConnect/Lean.DataSource.CBOE/blob/master/CBOE.cs#L60'>Lean.DataSource.CBOE</a></td>
         </tr>
         <tr>
-            <td><code>RemoteFile</code></td>
+            <td><code class='csharp'>RemoteFile</code><code class='python'>REMOTE_FILE</code></td>
             <td>The data is downloaded from a remote source</td>
             <td><code><a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/csv-format-example#99-Demonstration-Algorithms'>Custom Securities Examples</a></td>
         </tr>
         <tr>
-            <td><code>Rest</code></td>
+            <td><code class='csharp'>Rest</code><code class='python'>REST</code></td>
             <td>The data comes from a rest call that is polled and returns a single line/data point of information</td>
             <td><code class="csharp">LiveMode</code><code class="python">live_mode</code> case of <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#99-Demonstration-Algorithm'>Demonstration Algorithm</a></td>
         </tr>
         <tr>
-            <td><code>ObjectStore</code></td>
+            <td><code class='csharp'>ObjectStore</code><code class='python'>OBJECT_STORE</code></td>
             <td>The data comes from the object store</td>
             <td><a href='/docs/v2/writing-algorithms/object-store#13-Example-of-Custom-Data'>Example of Custom Data</a></td>
         </tr>
