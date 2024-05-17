@@ -33,7 +33,17 @@
 
 <? } ?>
 
-<h4>Access in Jupyter Notebook</h4>
+<h4>Access in Jupyter Notebooks</h4>
+<p>To programmatically analyze orders, call the 
+<? if ($pageName == "backtest") { ?>
+    <a href='/docs/v2/research-environment/meta-analysis/backtest-analysis#03-Plot-Order-Fills'><span class='csharp'>ReadBacktestOrders</span><span class='python'>read_backtest_orders</span></a> method or the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/orders'>/backtests/orders/read</a> endpoint.
+<? } else { ?>
+    <a href='/docs/v2/research-environment/meta-analysis/live-analysis#04-Plot-Order-Fills'><span class='csharp'>ReadBacktestOrders</span><span class='python'>read_live_orders</span></a> method or the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/orders'>/live/orders/read</a> endpoint.
+<? } ?>
+<? if ($localPlatform) { ?> This method and endpoint only work if you deploy the algorithm in QC Cloud.<? } ?>
+<p>
+
+        
 <p>To see and analyze orders programmatically, call <code class="csharp">api.<? if ($pageName == "backtest") { ?>ReadBacktestOrders<? } else { ?>ReadLiveOrders<? } ?></code><code class="python">api.<? if ($pageName == "backtest") { ?>read_backtest_orders<? } else { ?>read_live_orders<? } ?></code> access the order in a jupyter notebook via the API. A List of <code>ApiOrderResponse</code> will be returned.</p>
 <table class="table qc-table">
     <thead>
