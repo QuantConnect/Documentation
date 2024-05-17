@@ -1,6 +1,9 @@
-<p>It is often that a portfolio consist of different currencies and assets at the initial state already. For example, breaking a previous algorithm for upgrade. Thus, we might need to set the initial holdings at initialization to mimic a complex portfolio's initial state.</p>
-
-<p>To <a href="/docs/v2/writing-algorithms/initialization#04-Set-Cash">set cash</a>, call <code class="csharp">SetCash</code><code class="python">set_cash</code> in the <code class="csharp">Initialize</code><code class="python">initialize</code> method. You can set multiple currencies by multiple calls.</p>
+<p>
+	When you deploy a backtest or a new paper trading algorithm, the default initial portfolio state contains $100,000 USD.
+	However, in the <a href='/docs/v2/writing-algorithms/initialization'><span class="csharp">Initialize</span><span class="python">initialize</span></a> method, you can define the initial portfolio state to something else.
+    To <a href="/docs/v2/writing-algorithms/initialization#04-Set-Cash">set the initial cash balances</a>, call <code class="csharp">SetCash</code><code class="python">set_cash</code> with the currency ticker and quantity. 
+	To set multiple currencies, call the method multiple times.
+</p>
 
 <div class="section-example-container">
 	<pre class="csharp">SetCash(100000);       // Set the quantity of the account currency to 100,000
@@ -11,7 +14,9 @@ self.set_cash("BTC", 10)    # Set the Bitcoin quantity to 10
 self.set_cash("EUR", 10000) # Set the EUR quantity to 10,000</pre>
 </div>
 
-<p>As per setting securities, you need to first add the security into your portfolio. Then, set the initial holding position with average acquisition price and quantity by <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.</p>
+<p>
+	To set the initial security holdings, <a href='/docs/v2/writing-algorithms/initialization#08-Add-Data'>subscribe to the security</a> so that it enters your <a href='/docs/v2/writing-algorithms/portfolio/key-concepts'>portfolio</a>, then call the <code class="csharp">SecurityHolding.SetHoldings</code><code class="python">SecurityHolding.set_holdings</code> method with the average purchase price and quantity.
+</p>
 
 <div class="section-example-container">
 	<pre class="csharp">if (!LiveMode)
