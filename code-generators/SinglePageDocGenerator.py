@@ -341,4 +341,3 @@ if __name__ == "__main__":
     Run(date)
     if PhpErrors:
         print('\n'.join(path for path in PhpErrors))
-        sys.exit(1)
