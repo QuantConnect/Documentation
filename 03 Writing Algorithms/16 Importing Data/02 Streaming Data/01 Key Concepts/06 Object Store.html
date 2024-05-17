@@ -1,0 +1,27 @@
+<p>
+    The Object Store file provider gives you the fastest execution because you don't need to download the files on every execution. 
+    To upload the data files into the Object Store, you can use the <a href='/docs/v2/cloud-platform/organizations/object-store#03-Upload-Files'>Algorithm Lab</a>, <a href='/docs/v2/lean-cli/object-store#03-Cloud-Storage'>CLI</a>, or <a href='/docs/v2/research-environment/object-store#04-Save-Data'>Research Environment</a>.
+    To then pull the data from the Object Store into an algorithm, set the custom data source to read from the file in Object Store and parse the data in the <code class='python'>reader</code><code class='csharp'>Reader</code> method.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class MyCustomDataType : BaseData
+{
+    public override SubscriptionDataSource GetSource(
+        SubscriptionDataConfig config,
+        DateTime date,
+        bool isLiveMode)
+    {
+        return new SubscriptionDataSource("&lt;YourCSVKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+        // return new SubscriptionDataSource("&lt;YourJSONKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.UnfoldingCollection);
+    }
+}</pre>
+    <pre class="python">class MyCustomDataType(PythonData):
+    def get_source(self,
+            config: SubscriptionDataConfig,
+            date: datetime,
+            is_live_mode: bool) -&gt; SubscriptionDataSource:
+            
+        return SubscriptionDataSource("&lt;your_csv_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+        # return new SubscriptionDataSource("&lt;your_json_key&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.UNFOLDING_COLLECTION);</pre>
+</div>
