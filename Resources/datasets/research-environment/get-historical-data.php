@@ -32,22 +32,22 @@ var allHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(qb.Securities.Keys, 
     <pre class='python'># DataFrame of trade and quote data
 single_history_df = qb.history(<?=$contractVariablePy?>, 10)
 subset_history_df = qb.history([<?=$contractVariablePy?>], 10)
-all_history_df = qb.history(qb.securities.keys, 10)
+all_history_df = qb.history(qb.securities.keys(), 10)
 
 # DataFrame of trade data
 single_history_trade_bar_df = qb.history(TradeBar, <?=$contractVariablePy?>, 10)
 subset_history_trade_bar_df = qb.history(TradeBar, [<?=$contractVariablePy?>], 10)
-all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys, 10)
+all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys(), 10)
 
 # DataFrame of quote data
 single_history_quote_bar_df = qb.history(QuoteBar, <?=$contractVariablePy?>, 10)
 subset_history_quote_bar_df = qb.history(QuoteBar, [<?=$contractVariablePy?>], 10)
-all_history_quote_bar_df = qb.history(QuoteBar, qb.securities.keys, 10)
+all_history_quote_bar_df = qb.history(QuoteBar, qb.securities.keys(), 10)
 
 # DataFrame of open interest data
 single_history_open_interest_df = qb.history(OpenInterest, <?=$contractVariablePy?>, 400)
 subset_history_open_interest_df = qb.history(OpenInterest, [<?=$contractVariablePy?>], 400)
-all_history_open_interest_df = qb.history(OpenInterest, qb.securities.keys, 400)
+all_history_open_interest_df = qb.history(OpenInterest, qb.securities.keys(), 400)
 
 # Slice objects
 all_history_slice = qb.history(10)
@@ -55,17 +55,17 @@ all_history_slice = qb.history(10)
 # TradeBar objects
 single_history_trade_bars = qb.history[TradeBar](<?=$contractVariablePy?>, 10)
 subset_history_trade_bars = qb.history[TradeBar]([<?=$contractVariablePy?>], 10)
-all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, 10)
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys(), 10)
 
 # QuoteBar objects
 single_history_quote_bars = qb.history[QuoteBar](<?=$contractVariablePy?>, 10)
 subset_history_quote_bars = qb.history[QuoteBar]([<?=$contractVariablePy?>], 10)
-all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys, 10)
+all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys(), 10)
 
 # OpenInterest objects
 single_history_open_interest = qb.history[OpenInterest](<?=$contractVariablePy?>, 400)
 subset_history_open_interest = qb.history[OpenInterest]([<?=$contractVariablePy?>], 400)
-all_history_open_interest = qb.history[OpenInterest](qb.securities.keys, 400)</pre>
+all_history_open_interest = qb.history[OpenInterest](qb.securities.keys(), 400)</pre>
 </div>
 <p>The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 <? if ($assetClass == "Futures") { ?>
@@ -104,22 +104,22 @@ var allHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(qb.Securities.Keys, 
     <pre class='python'># DataFrame of trade and quote data
 single_history_df = qb.history(<?=$contractVariablePy?>, timedelta(days=3))
 subset_history_df = qb.history([<?=$contractVariablePy?>], timedelta(days=3))
-all_history_df = qb.history(qb.securities.keys, timedelta(days=3))
+all_history_df = qb.history(qb.securities.keys(), timedelta(days=3))
 
 # DataFrame of trade data
 single_history_trade_bar_df = qb.history(TradeBar, <?=$contractVariablePy?>, timedelta(days=3))
 subset_history_trade_bar_df = qb.history(TradeBar, [<?=$contractVariablePy?>], timedelta(days=3))
-all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys, timedelta(days=3))
+all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys(), timedelta(days=3))
 
 # DataFrame of quote data
 single_history_quote_bar_df = qb.history(QuoteBar, <?=$contractVariablePy?>, timedelta(days=3))
 subset_history_quote_bar_df = qb.history(QuoteBar, [<?=$contractVariablePy?>], timedelta(days=3))
-all_history_quote_bar_df = qb.history(QuoteBar, qb.securities.keys, timedelta(days=3))
+all_history_quote_bar_df = qb.history(QuoteBar, qb.securities.keys(), timedelta(days=3))
 
 # DataFrame of open interest data
 single_history_open_interest_df = qb.history(OpenInterest, <?=$contractVariablePy?>, timedelta(days=3))
 subset_history_open_interest_df = qb.history(OpenInterest, [<?=$contractVariablePy?>], timedelta(days=3))
-all_history_open_interest_df = qb.history(OpenInterest, qb.securities.keys, timedelta(days=3))
+all_history_open_interest_df = qb.history(OpenInterest, qb.securities.keys(), timedelta(days=3))
 
 # Slice objects
 all_history_slice = qb.history(timedelta(days=3))
@@ -127,24 +127,24 @@ all_history_slice = qb.history(timedelta(days=3))
 # TradeBar objects
 single_history_trade_bars = qb.history[TradeBar](<?=$contractVariablePy?>, timedelta(days=3))
 subset_history_trade_bars = qb.history[TradeBar]([<?=$contractVariablePy?>], timedelta(days=3))
-all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, timedelta(days=3))
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys(), timedelta(days=3))
 
 # QuoteBar objects
 single_history_quote_bars = qb.history[QuoteBar](<?=$contractVariablePy?>, timedelta(days=3), Resolution.MINUTE)
 subset_history_quote_bars = qb.history[QuoteBar]([<?=$contractVariablePy?>], timedelta(days=3), Resolution.MINUTE)
-all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys, timedelta(days=3), Resolution.MINUTE) 
+all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys(), timedelta(days=3), Resolution.MINUTE) 
 
 <? if ($supportsTicks) { ?>
 # Tick objects
 single_history_ticks = qb.history[Tick](<?=$contractVariablePy?>, timedelta(days=3), Resolution.TICK)
 subset_history_ticks = qb.history[Tick]([<?=$contractVariablePy?>], timedelta(days=3), Resolution.TICK)
-all_history_ticks = qb.history[Tick](qb.securities.keys, timedelta(days=3), Resolution.TICK)
+all_history_ticks = qb.history[Tick](qb.securities.keys(), timedelta(days=3), Resolution.TICK)
 <? } ?>
 
 # OpenInterest objects
 single_history_open_interest = qb.history[OpenInterest](<?=$contractVariablePy?>, timedelta(days=2))
 subset_history_open_interest = qb.history[OpenInterest]([<?=$contractVariablePy?>], timedelta(days=2))
-all_history_open_interest = qb.history[OpenInterest](qb.securities.keys, timedelta(days=2))</pre>
+all_history_open_interest = qb.history[OpenInterest](qb.securities.keys(), timedelta(days=2))</pre>
 </div>
 <p>The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 
@@ -191,44 +191,44 @@ end_time = datetime(2021, 12, 31)
 # DataFrame of trade and quote data
 single_history_df = qb.history(<?=$contractVariablePy?>, start_time, end_time)
 subset_history_df = qb.history([<?=$contractVariablePy?>], start_time, end_time)
-all_history_df = qb.history(qb.securities.keys, start_time, end_time)
+all_history_df = qb.history(qb.securities.keys(), start_time, end_time)
 
 # DataFrame of trade data
 single_history_trade_bar_df = qb.history(TradeBar, <?=$contractVariablePy?>, start_time, end_time)
 subset_history_trade_bar_df = qb.history(TradeBar, [<?=$contractVariablePy?>], start_time, end_time)
-all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys, start_time, end_time)
+all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys(), start_time, end_time)
 
 # DataFrame of quote data
 single_history_quote_bar_df = qb.history(QuoteBar, <?=$contractVariablePy?>, start_time, end_time)
 subset_history_quote_bar_df = qb.history(QuoteBar, [<?=$contractVariablePy?>], start_time, end_time)
-all_history_quote_bar_df = qb.history(QuoteBar, qb.securities.keys, start_time, end_time)
+all_history_quote_bar_df = qb.history(QuoteBar, qb.securities.keys(), start_time, end_time)
 
 # DataFrame of open interest data
 single_history_open_interest_df = qb.history(OpenInterest, <?=$contractVariablePy?>, start_time, end_time)
 subset_history_open_interest_df = qb.history(OpenInterest, [<?=$contractVariablePy?>], start_time, end_time)
-all_history_trade_open_interest_df = qb.history(OpenInterest, qb.securities.keys, start_time, end_time)
+all_history_trade_open_interest_df = qb.history(OpenInterest, qb.securities.keys(), start_time, end_time)
 
 # TradeBar objects
 single_history_trade_bars = qb.history[TradeBar](<?=$contractVariablePy?>, start_time, end_time)
 subset_history_trade_bars = qb.history[TradeBar]([<?=$contractVariablePy?>], start_time, end_time)
-all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, start_time, end_time)
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys(), start_time, end_time)
 
 # QuoteBar objects
 single_history_quote_bars = qb.history[QuoteBar](<?=$contractVariablePy?>, start_time, end_time, Resolution.MINUTE)
 subset_history_quote_bars = qb.history[QuoteBar]([<?=$contractVariablePy?>], start_time, end_time, Resolution.MINUTE)
-all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys, start_time, end_time, Resolution.MINUTE)
+all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys(), start_time, end_time, Resolution.MINUTE)
 
 <? if ($supportsTicks) { ?>
 # Tick objects
 single_history_ticks = qb.history[Tick](<?=$contractVariablePy?>, start_time, end_time, Resolution.TICK)
 subset_history_ticks = qb.history[Tick]([<?=$contractVariablePy?>], start_time, end_time, Resolution.TICK)
-all_history_ticks = qb.history[Tick](qb.securities.keys, start_time, end_time, Resolution.TICK)
+all_history_ticks = qb.history[Tick](qb.securities.keys(), start_time, end_time, Resolution.TICK)
 <? } ?>
 
 # OpenInterest objects
 single_history_open_interest = qb.history[OpenInterest](<?=$contractVariablePy?>, start_time, end_time)
 subset_history_open_interest = qb.history[OpenInterest]([<?=$contractVariablePy?>], start_time, end_time)
-all_history_open_interest = qb.history[OpenInterest](qb.securities.keys, start_time, end_time)</pre>
+all_history_open_interest = qb.history[OpenInterest](qb.securities.keys(), start_time, end_time)</pre>
 </div>
 
 <? if ($assetClass == "Futures") { ?> 
