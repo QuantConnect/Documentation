@@ -32,3 +32,65 @@ else:
     self.debug("You don't have sufficient margin for this order.")</pre>
     </div>
 </ol>
+
+<p>Follow these steps to check if you have enough margin remaining to cover the initial <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#03-What-is-Margin3F'>margin requirements</a> of an option strategy. This example refers to the <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread'>Bull Put Spread</a> strategy.</p>
+
+<ol>
+    <li>Create an <code>OptionStrategy</code> object with the strategy you want to trade, and its buying power model</li>
+    <div class="section-example-container">
+        <pre class="csharp">var optionStrategy = OptionStrategies.BullPutSpread(_symbol, itmStrike, otmStrike, expiry);</pre>
+        <pre class="python">option_strategy = OptionStrategies.bull_put_spread(self._symbol, itm_strike, otm_strike, expiry)</pre>
+    </div>
+
+    <li>Create a <code>BuyingPowerModel</code> object of the strategy.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var buyingPowerModel = new OptionStrategyPositionGroupBuyingPowerModel(optionStrategy);</pre>
+        <pre class="python">buying_power_model = OptionStrategyPositionGroupBuyingPowerModel(option_strategy)</pre>
+    </div>
+
+    <li>Create a list of <code>Position</code> objects from the strategy legs.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var positions = optionStrategy.OptionLegs.Select(leg =>
+{
+    var symbol = QuantConnect.Symbol.CreateOption(_symbol.Underlying, _symbol.ID.Market, _symbol.ID.OptionStyle, leg.Right, leg.Strike, leg.Expiration);
+    return new Position(symbol, leg.Quantity, 1);
+});</pre>
+        <pre class="python">def get_symbol(leg):
+    return Symbol.CreateOption(self._symbol.underlying, self._symbol.id.market, self._symbol.id.option_style, leg.right, leg.strike, leg.expiration)
+
+positions = [Position(get_symbol(leg), leg.Quantity, 1) for leg in option_strategy.option_legs]</pre>
+    </div>
+
+    <li>Create a <code>PositionGroupInitialMarginParameters</code> objects with the portfolio and the position group.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var positionGroup = new PositionGroup(buyingPowerModel, 1, positions.ToArray());
+var parameters = new PositionGroupInitialMarginParameters(Portfolio, positionGroup);</pre>
+        <pre class="python">position_group = PositionGroup(buying_power_model, 1, positions)
+parameters = PositionGroupInitialMarginParameters(self.portfolio, position_group)</pre>
+    </div>
+
+    <li>Call the <code class="csharp">GetInitialMarginRequirement</code><code class="python">get_initial_margin_requirement</code> method of the strategy's buying power model with the <code>PositionGroupInitialMarginParameters</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var initialMargin = buyingPowerModel.GetInitialMarginRequirement(parameters);</pre>
+        <pre class="python">initial_margin = buying_power_model.get_initial_margin_requirement(parameters)</pre>
+    </div>
+
+    <p>The <code class="csharp">GetInitialMarginRequirement</code><code class="python">get_initial_margin_requirement</code> method returns an <code>InitialMargin</code> object, which have the following properties:</p>    
+    <div data-tree='QuantConnect.Securities.InitialMargin'></div>
+
+    <li>Compare the margin you have remaining against the initial margin requirement of the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">if (Portfolio.MarginRemaining >= initialMargin.Value)
+{
+    Buy(optionStrategy, 1);
+}
+else
+{
+    Debug("You don't have sufficient margin for this order.");
+}</pre>
+        <pre class="python">if self.portfolio.margin_remaining >= initial_margin.value:
+    self.buy(option_strategy, 1)
+else:
+    self.debug("You don't have sufficient margin for this order.")</pre>
+    </div>
+</ol>
