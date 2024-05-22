@@ -47,7 +47,7 @@ else:
         <pre class="python">option_strategy = OptionStrategies.bull_put_spread(self._symbol, itm_strike, otm_strike, expiry)</pre>
     </div>
 
-    <li>Create a <code>BuyingPowerModel</code> object of the strategy.</li>
+    <li>Create an <code>OptionStrategyPositionGroupBuyingPowerModel</code> object of the strategy.</li>
     <div class="section-example-container">
         <pre class="csharp">var buyingPowerModel = new OptionStrategyPositionGroupBuyingPowerModel(optionStrategy);</pre>
         <pre class="python">buying_power_model = OptionStrategyPositionGroupBuyingPowerModel(option_strategy)</pre>
@@ -87,17 +87,23 @@ parameters = PositionGroupInitialMarginParameters(self.portfolio, position_group
     <div data-tree='QuantConnect.Securities.InitialMargin'></div>
 
     <li>Compare the margin you have remaining against the initial margin requirement of the order.</li>
+    <p>
+        In this case, the <code class='csharp'>initialMargin.Value</code><code class='python'>initial_margin.value</code> is the initial margin requirement for a trade size of 1. 
+        For different trade sizes, multiply the <code class='csharp'>initialMargin.Value</code><code class='python'>initial_margin.value</code> by the quantity.
+    </p>
     <div class="section-example-container">
-        <pre class="csharp">if (Portfolio.MarginRemaining >= initialMargin.Value)
+        <pre class="csharp">var strategyQuantity = 2; 
+if (Portfolio.MarginRemaining >= strategyQuantity * initialMargin.Value)
 {
-    Buy(optionStrategy, 1);
+    Buy(optionStrategy, quantity);
 }
 else
 {
     Debug("You don't have sufficient margin for this order.");
 }</pre>
-        <pre class="python">if self.portfolio.margin_remaining >= initial_margin.value:
-    self.buy(option_strategy, 1)
+        <pre class="python">strategy_quantity = 2
+if self.portfolio.margin_remaining >= strategy_quantity * initial_margin.value:
+    self.buy(option_strategy, strategy_quantity)
 else:
     self.debug("You don't have sufficient margin for this order.")</pre>
     </div>
