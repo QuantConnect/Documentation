@@ -1,4 +1,7 @@
-<p>Follow these steps to check if you have enough margin remaining to cover the initial <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#03-What-is-Margin3F'>margin requirements</a> of an order:</p>
+<p>The following sections explain how to check if you have enough margin remaining to cover the initial <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#03-What-is-Margin3F'>margin requirements</a> of various order types.</p>
+
+<h4>Check Requirements of Regular Orders</h4>
+<p>Follow these steps to check if you have enough margin remaining to cover the initial margin requirements of an order:</p>
 
 <ol>
     <li>Create an <code>InitialMarginParameters</code> object with the security and quantity you want to trade.</li>
@@ -33,10 +36,12 @@ else:
     </div>
 </ol>
 
-<p>Follow these steps to check if you have enough margin remaining to cover the initial <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#03-What-is-Margin3F'>margin requirements</a> of an option strategy. This example refers to the <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread'>Bull Put Spread</a> strategy.</p>
+<h4>Check Requirements of Option Strategy Orders</h4>
+<p>Follow these steps to check if you have enough margin remaining to cover the initial margin requirements of an <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies'>Option strategy</a>:</p>
 
 <ol>
-    <li>Create an <code>OptionStrategy</code> object with the strategy you want to trade, and its buying power model</li>
+    <li>Create an <code>OptionStrategy</code> object with the strategy you want to trade and its buying power model.</li>
+    <p>For example, create a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread'>Bull Put Spread</a> strategy.</p>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.BullPutSpread(_symbol, itmStrike, otmStrike, expiry);</pre>
         <pre class="python">option_strategy = OptionStrategies.bull_put_spread(self._symbol, itm_strike, otm_strike, expiry)</pre>
@@ -56,7 +61,10 @@ else:
     return new Position(symbol, leg.Quantity, 1);
 });</pre>
         <pre class="python">def get_symbol(leg):
-    return Symbol.CreateOption(self._symbol.underlying, self._symbol.id.market, self._symbol.id.option_style, leg.right, leg.strike, leg.expiration)
+    return Symbol.CreateOption(
+        self._symbol.underlying, self._symbol.id.market, self._symbol.id.option_style, 
+        leg.right, leg.strike, leg.expiration
+    )
 
 positions = [Position(get_symbol(leg), leg.Quantity, 1) for leg in option_strategy.option_legs]</pre>
     </div>
