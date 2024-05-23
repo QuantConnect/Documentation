@@ -26,6 +26,11 @@
             <td>true</td>
         </tr>
         <tr>
+            <td nowrap><code>algorithm-manager-time-loop-maximum</code></td>
+            <td>The maximum amount of time the algorithm is permitted to spend in a single time loop.</td>
+            <td>20</td>
+        </tr>
+        <tr>
             <td nowrap><code>maximum-warmup-history-days-look-back</code></td>
             <td>The maximum number of days of data the history provider will provide during <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm-up</a> in live trading. The history provider expects older data to be on disk.</td>
             <td>5</td>
