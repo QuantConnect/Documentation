@@ -15,34 +15,14 @@
 
 <p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions:</p>
 
-<div class="section-example-container">
-    <pre class="python">import os
-from datetime import datetime
-from pytz import timezone
+<?
+$dataset = "US Equities";
+$securityType = "equity";
+$market = "usa";
+$ticker = "spy";
+$highResolutions = "[\"minute\", \"second\", \"tick\"]";
+$extraArgs = "";
+include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
+?>
 
-# Define a method to download the data
-def download_data(resolution, overwrite=False):
-    print(f"Updating {resolution} data...")
-    command = f'lean data download --dataset "US Equities" --data-type "Bulk" --resolution "{resolution}"'
-    if overwrite:
-        command += " --overwrite"
-    os.system(command)
-
-# Update minute, second, and tick data files
-END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
-new_data_available = False
-for resolution in ["tick", "second", "minute"]:
-    latest_date = sorted([f for f in os.listdir(f"equity/usa/{resolution}/spy")])[-1].split('_')[0]
-    if latest_date &gt;= END_DATE:
-        print(f"{resolution} data is already up to date.")
-        continue
-    new_data_available = True
-    download_data(resolution)
-
-# Update daily and hourly data files
-if new_data_available:
-    for resolution in ["hour", "daily"]:
-        download_data(resolution, True)</pre>
-</div>
-
-<p>The preceding script checks the date of the most recent SPY data you have for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions, adjust this script to your needs.</p>
+<p>The preceding script checks the date of the most recent SPY data you have for all resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions, adjust this script to your needs.</p>

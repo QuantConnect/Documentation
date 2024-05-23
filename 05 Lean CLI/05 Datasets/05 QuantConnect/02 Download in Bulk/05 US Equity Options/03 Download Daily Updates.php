@@ -13,31 +13,14 @@
 
 <p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions:</p>
 
-<div class="section-example-container">
-    <pre class="python">import os
-from datetime import datetime
-from pytz import timezone
-
-# Define a method to download the data
-def download_data(resolution, overwrite=False):
-    print(f"Updating {resolution} data...")
-    command = f'lean data download --dataset "US Equity Options" --data-type "Bulk" --option-style "American" --resolution "{resolution}"'
-    if overwrite:
-        command += " --overwrite"
-    os.system(command)
-
-# Update data files
-END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
-latest_date = sorted([f for f in os.listdir(f"option/usa/minute/aapl")])[-1].split('_')[0]
-if latest_date &gt;= END_DATE:
-    print(f"Your data is already up to date.")
-else:
-    download_data("minute")
-    for resolution in ['hour', 'daily']:
-        download_data(resolution, True)</pre>
-</div>
+<?
+$dataset = "US Equity Options";
+$securityType = "option";
+$market = "usa";
+$ticker = "aapl";
+$highResolutions = "[\"minute\"]";
+$extraArgs = "--option-style \"American\"";
+include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
+?>
 
 <p>The preceding script checks the date of the most recent minute resolution data you have for AAPL. If there is new minute data available, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions, adjust this script to your needs.</p>
-
-
-

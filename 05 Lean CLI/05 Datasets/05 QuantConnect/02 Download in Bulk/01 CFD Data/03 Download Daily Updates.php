@@ -11,34 +11,14 @@
 
 <p>After you subscribe to dataset updates, to update your local copy of the CFD dataset, use the <a href="https://www.quantconnect.com/datasets/oanda-cfd-data/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a>. Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions:</p>
 
-<div class="section-example-container">
-    <pre class="python">import os
-from datetime import datetime
-from pytz import timezone
-
-# Define a method to download the data
-def download_data(resolution, overwrite=False):
-    print(f"Updating {resolution} data...")
-    command = f'lean data download --dataset "CFD Data" --data-type "Bulk" --resolution "{resolution}"'
-    if overwrite:
-        command += " --overwrite"
-    os.system(command)
-
-# Update minute and second data files
-END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
-new_data_available = False
-for resolution in ["second", "minute"]:
-    latest_date = sorted([f for f in os.listdir(f"cfd/oanda/{resolution}/xauusd")])[-1].split('_')[0]
-    if latest_date &gt;= END_DATE:
-        print(f"{resolution} data is already up to date.")
-        continue
-    new_data_available = True
-    download_data(resolution)
-
-# Update daily and hourly data files
-if new_data_available:
-    for resolution in ["hour", "daily"]:
-        download_data(resolution, True)</pre>
-</div>
+<?
+$dataset = "CFD Data";
+$securityType = "cfd";
+$market = "oanda";
+$ticker = "xauusd";
+$highResolutions = "[\"minute\", \"second\"]";
+$extraArgs = "";
+include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
+?>
 
 <p>The preceding script checks the date of the most recent XAUUSD data you have for second and minute resolutions. If there is new data available for either of these resolutions, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions, adjust this script to your needs.</p>
