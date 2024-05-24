@@ -13,18 +13,10 @@
 
 <p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all of the new data that's missing from your local copy:</p>
 
-<div class="section-example-container">
-    <pre class="python">import os
-from datetime import datetime
-from pytz import timezone
-
-END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
-latest_date = sorted([f for f in os.listdir("equity/usa/universes/etf/spy")])[-1].split(".")[0]
-if latest_date &gt;= END_DATE:
-    print("Your data is already up to date.")
-else:
-    print(f"Updating data...")
-    os.system(f'lean data download --dataset "US ETF Constituents" --data-type "Download in Bulk"')</pre>
-</div>
+<?
+$dataset = "US ETF Constituents";
+$dirName = "equity/usa/universes/etf/spy";
+include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
+?>
 
 <p>The preceding script checks the date of the most recent SPY data you have. If there is new data available for SPY, it downloads the new data files for all of the ETFs. You may need to adjust this script to fit your needs.</p>

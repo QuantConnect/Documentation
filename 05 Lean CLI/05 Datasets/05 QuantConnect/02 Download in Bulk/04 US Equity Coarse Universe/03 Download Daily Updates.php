@@ -12,18 +12,10 @@
 
 <p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script downloads the latest data when it's available:</p><p></p>
 
-<div class="section-example-container">
-    <pre class="python">import os
-from datetime import datetime
-from pytz import timezone
-
-END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
-latest_date = sorted([f for f in os.listdir(f"equity/usa/fundamental/coarse")])[-1]
-if latest_date &gt;= END_DATE:
-    print(f"Your local data is already up to date.")
-else:
-    print("Updating data...")
-    os.system(f'lean data download --dataset "US Equity Coarse Universe" --data-type "Bulk"')</pre>
-</div>
+<?
+$dataset = "US Equity Coarse Universe";
+$dirName = "equity/usa/fundamental/coarse";
+include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
+?>
 
 <p>The preceding script checks the date of the most recent US Equity Coarse Universe data you have. If there is new data available, it downloads the new data files.</p>

@@ -10,40 +10,14 @@
 
 <p>After you subscribe to dataset updates, to update your local copy of the US Futures dataset, use the <a href="https://www.quantconnect.com/datasets/algoseek-us-equities/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a>. Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions and markets:</p>
 
-<div class="section-example-container">
-    <pre class="python">import os
-from datetime import datetime
-from pytz import timezone
-
-# Define a method to download the data
-def download_data(market, resolution, overwrite=False):
-    print(f"Updating {market} {resolution} data...")
-    command = f'lean data download --dataset "US Futures" --data-type "Bulk" --market "{market}" --resolution "{resolution}"'
-    if overwrite:
-        command += " --overwrite"
-    os.system(command)
-
-# Update minute, second, and tick data files
-MARKETS = ['CBOT', 'CFE', 'CME', 'COMEX', 'ICE', 'INDIA', 'NYMEX']
-END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
-new_data_available = False
-for resolution in ["tick", "second", "minute"]:
-    for f in os.listdir(f"future/cbot"):
-        if f != resolution:
-            continue
-        latest_date = sorted([f for f in os.listdir(f"future/cbot/{resolution}/zc")])[-1].split('_')[0]
-        if latest_date &gt;= END_DATE:
-            print(f"{resolution} data is already up to date.")
-            continue
-        new_data_available = True
-        for market in MARKETS:
-            download_data(market, resolution)
-
-# Update daily and hourly data files
-if new_data_available:
-    for resolution in ["hour", "daily"]:
-        for market in MARKETS:
-            download_data(market, resolution, True)</pre>
-</div>
+<?
+$dataset = "US Futures";
+$securityType = "future";
+$market = "cbot";
+$ticker = "zc";
+$highResolutions = "[\"minute\", \"second\", \"tick\"]";
+$extraArgs = "--market \"CBOT\"";
+include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
+?>
 
 <p>The preceding script checks the date of the most recent ZC data you have from the CBOT market for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions and markets, adjust this script to your needs.</p>
