@@ -1,6 +1,1 @@
-<?
-$fileType = "notebook";
-$openProjectLink = "/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects";
-$videoLink = "";
-include(DOCS_RESOURCES."/getting-started/projects/rename-files.php");
-?>
+<p>The process to rename notebook files depends on if you use the <a href='/docs/v2/cloud-platform/research/getting-started#07-Rename-Notebooks'>Algorithm Lab</a>, <a href='/docs/v2/local-platform/research/getting-started#07-Rename-Notebooks'>Local Platform</a>, or the <a href='/docs/v2/lean-cli/research'>CLI</a>.</p>
