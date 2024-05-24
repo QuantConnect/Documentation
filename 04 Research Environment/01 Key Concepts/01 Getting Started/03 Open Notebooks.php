@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/getting-started/research-environment/open-notebooks.html"); ?>
+<p>The process to open notebooks depends on if you use the <a href='/docs/v2/cloud-platform/research/getting-started#03-Open-Notebooks'>Algorithm Lab</a>, <a href='/docs/v2/local-platform/research/getting-started#03-Open-Notebooks'>Local Platform</a>, or the <a href='/docs/v2/lean-cli/research'>CLI</a>.</p>

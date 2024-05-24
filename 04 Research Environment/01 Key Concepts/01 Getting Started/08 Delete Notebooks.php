@@ -1,5 +1,1 @@
-<?
-$fileType = "notebook";
-$openProjectLink = "/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects";
-include(DOCS_RESOURCES."/getting-started/projects/delete-files.php");
-?>
+<p>The process to delete notebooks depends on if you use the <a href='/docs/v2/cloud-platform/research/getting-started#08-Delete-Notebooks'>Algorithm Lab</a>, <a href='/docs/v2/local-platform/research/getting-started#08-Delete-Notebooks'>Local Platform</a>, or the <a href='/docs/v2/lean-cli/research'>CLI</a>.</p>
