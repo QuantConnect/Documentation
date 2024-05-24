@@ -27,7 +27,7 @@
         </tr>
         <tr>
             <td nowrap><code>algorithm-manager-time-loop-maximum</code></td>
-            <td>The maximum amount of time the algorithm is permitted to spend in a single time loop.</td>
+            <td>The maximum amount of time the algorithm can spend in a single <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time loop</a>.</td>
             <td>20</td>
         </tr>
         <tr>
