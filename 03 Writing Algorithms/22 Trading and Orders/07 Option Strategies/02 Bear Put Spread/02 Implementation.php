@@ -66,7 +66,7 @@ public override void Initialize()
     itm_strike = put_strikes[-1]</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.BearPutSpread</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.BearPutSpread</code><code class="python">OptionStrategies.bear_put_spread</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.BearPutSpread(_symbol, itmStrike, otmStrike, expiry);
 Buy(optionStrategy, 1);<br></pre>

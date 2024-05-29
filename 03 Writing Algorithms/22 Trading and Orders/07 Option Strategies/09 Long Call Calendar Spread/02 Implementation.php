@@ -66,7 +66,7 @@ public override void Initialize()
     far_expiry = expiries[-1]</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.CallCalendarSpread</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.CallCalendarSpread</code><code class="python">OptionStrategies.call_calendar_spread</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.CallCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
 Buy(optionStrategy, 1);</pre>

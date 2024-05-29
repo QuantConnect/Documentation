@@ -88,7 +88,7 @@ public override void Initialize()
     put_strike = put_contracts[0].Strike</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.Strangle</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.Strangle</code><code class="python">OptionStrategies.strangle</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var longStrangle = OptionStrategies.Strangle(_symbol, callStrike, putStrike, expiry);
 Buy(longStrangle, 1);</pre>

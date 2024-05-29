@@ -59,7 +59,7 @@ public override void Initialize()
         return</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.Straddle</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.ShortStraddle</code><code class="python">OptionStrategies.short_straddle</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var shortStraddle = OptionStrategies.ShortStraddle(_symbol, contracts[0].Strike, expiry);
 Buy(shortStraddle, 1);<br></pre>

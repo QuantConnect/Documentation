@@ -66,7 +66,7 @@ public override void Initialize()
     otm_strike = call_strikes[-1]</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.BullCallSpread</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.BullCallSpread</code><code class="python">OptionStrategies.bull_call_spread</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.BullCallSpread(_symbol, itmStrike, otmStrike, expiry);
 Buy(optionStrategy, 1);<br></pre>

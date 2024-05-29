@@ -84,7 +84,7 @@ public override void Initialize()
     otm_strike = atm_strike - spread</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.ShortButterflyPut</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.ShortButterflyPut</code><code class="python">OptionStrategies.short_butterfly_put</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.ShortButterflyPut(_symbol, itmStrike, atmStrike, otmStrike, expiry);
 Buy(optionStrategy, 1);</pre>

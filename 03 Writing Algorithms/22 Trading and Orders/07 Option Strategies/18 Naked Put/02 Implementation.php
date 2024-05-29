@@ -60,7 +60,7 @@ public override void Initialize()
     atm_put = put_contracts[0]</pre>
 </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.NakedPut</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.NakedPut</code><code class="python">OptionStrategies.naked_put</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var nakedCall = OptionStrategies.NakedPut(_symbol, atmCall.Strike, expiry);
 Buy(nakedCall, 1);

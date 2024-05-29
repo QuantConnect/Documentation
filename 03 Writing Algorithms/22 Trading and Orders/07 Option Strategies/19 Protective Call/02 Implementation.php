@@ -60,7 +60,7 @@ public override void Initialize()
     atm_call = call_contracts[0]</pre>
 </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.ProtectiveCall</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.ProtectiveCall</code><code class="python">OptionStrategies.protective_call</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var protectiveCall = OptionStrategies.ProtectiveCall(_symbol, atmCall.Strike, expiry);
 Buy(protectiveCall, 1);
