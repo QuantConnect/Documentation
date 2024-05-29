@@ -83,3 +83,22 @@
         </tr>
     </tbody>
 </table>
+
+<p>You can create custom date rules with the <code>FuncDateRule</code> class. The <code>FuncDateRule</code> constructor expects a <code>name</code> argument of type <code class="csharp">string</code><code class="python">str</code> and a <code class="csharp">getDatesFunction</code><code class="python">get_dates_function</code> argument of type <code class="csharp">Func&lt;DateTime, DateTime, IEnumerable&lt;DateTime&gt;&gt;</code><code class="python">Callable[[datetime, datetime], List[datetime]]</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var dateRule = new FuncDateRule(
+    name: "CustomDateRule",
+    getDatesFunction: (start, end) => new []{start.AddDays((EndDate-start).TotalDays / 2)});
+
+Schedule.On(dateRule, TimeRules.Midnight, () => Debug(Time.ToString()));</pre>
+    <pre class="python">def get_dates_function(start: datetime, end: datetime) -&gt; List[datetime]:
+    start = start.replace(tzinfo=None)
+    return [start + (self.end_date-start) / 2]
+
+date_rule = FuncDateRule(
+    name="CustomDateRule", 
+    get_dates_function=get_dates_function) 
+
+self.schedule.on(date_rule, self.time_rules.midnight, lambda: self.debug(str(self.time)))</pre>
+</div>
