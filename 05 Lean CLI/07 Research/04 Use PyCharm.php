@@ -4,7 +4,7 @@
 <p>Follow these steps to open a research notebook in PyCharm:</p>
 
 <ol>
-    <li><a href="/docs/v2/lean-cli/research#02-Running-Local-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
+    <li><a href="/docs/v2/lean-cli/research#02-Start-the-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
     <li>Open the same project in PyCharm.</li>
     <li>In the top navigation menu of PyCharm, click <span class='button-name'>File > Settings</span>.</li>
     <li>In the Settings window, click <span class='button-name'>Language & Frameworks > Jupyter > Jupyter Servers</span>.</li>
@@ -35,7 +35,7 @@
 <h4>Rename Notebooks</h4>
 <p>Follow these steps to rename notebook files in PyCharm:</p>
 <ol>
-    <li><a href="/docs/v2/lean-cli/research#02-Running-Local-Research-Environment">Start a local research environment</a> for the project in PyCharm.</li>
+    <li><a href="/docs/v2/lean-cli/research#02-Start-the-Research-Environment">Start a local research environment</a> for the project in PyCharm.</li>
     <li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/pycharm-project-icon.png' alt='PyCharm Project icon'> <span class='icon-name'>Project</span> icon.</li> 
     <li>In the Project panel, right-click the notebook file you want to rename and then click <span class='button-name'>Refactor > Rename</span> from the drop-down menu.</li>
     <li>Enter the new name.</li>
@@ -45,7 +45,7 @@
 <h4>Delete Notebooks</h4>
 <p>Follow these steps to delete notebook files in PyCharm:</p>
 <ol>
-    <li><a href="/docs/v2/lean-cli/research#02-Running-Local-Research-Environment">Start a local research environment</a> for the project in PyCharm.</li>
+    <li><a href="/docs/v2/lean-cli/research#02-Start-the-Research-Environment">Start a local research environment</a> for the project in PyCharm.</li>
     <li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/pycharm-project-icon.png' alt='PyCharm Project icon'> <span class='icon-name'>Project</span> icon.</li> 
     <li>In the Project panel, right-click the notebook file you want to rename and then click <span class='button-name'>Delete</span> from the drop-down menu.</li>
     <li>In the Delete window, click <span class='button-name'>OK</span>.</li>

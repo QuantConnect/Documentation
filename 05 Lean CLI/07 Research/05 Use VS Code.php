@@ -3,7 +3,7 @@
 <h4>Open Notebooks</h4>
 <p>Follow these steps to open a research notebook in VS Code:</p>
 <ol>
-    <li><a href="/docs/v2/lean-cli/research#02-Running-Local-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
+    <li><a href="/docs/v2/lean-cli/research#02-Start-the-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
     <li>Open the same project VS Code.</li>
     <li>In the Explore panel, click the notebook file you want to open.</li>
 	<p>The default notebook is <span class='public-file-name'>research.ipynb</span>.</p>
@@ -23,7 +23,7 @@
 <p>Follow these steps to add notebook files to a project in VS Code:</p>
 
 <ol>
-	<li><a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>Open the project</a>.</li>
+	<li><a href='https://www.quantconnect.com/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>Open the project</a>.</li>
 	<li>In the right navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg" alt="Local lab explorer icon"> <span class="icon-name">Explorer</span> icon.</li>
     <li>In the Explorer panel, expand the <span class="button-name">QC (Workspace)</span> section.</li>
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/new-file-icon.png" alt="Add new file icon"> <span class="icon-name">New File</span> icon.</li>
@@ -34,7 +34,7 @@
 <h4>Rename Notebooks</h4>
 <p>Follow these steps to rename notebook files in VS Code:</p>
 <ol>
-    <li><a href="/docs/v2/lean-cli/research#02-Running-Local-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
+    <li><a href="/docs/v2/lean-cli/research#02-Start-the-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
     <li>In the right navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg" alt="Local lab explorer icon"> <span class="icon-name">Explorer</span> icon.</li>
     <li>In the Explorer panel, expand the <span class="button-name">QC (Workspace)</span> section.</li>
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/new-file-icon.png" alt="Add new file icon"> <span class="icon-name">New File</span> icon.</li>
@@ -45,7 +45,7 @@
 <h4>Delete Notebooks</h4>
 <p>Follow these steps to delete notebook files in VS Code:</p>
 <ol>
-    <li><a href="/docs/v2/lean-cli/research#02-Running-Local-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
+    <li><a href="/docs/v2/lean-cli/research#02-Start-the-Research-Environment">Start a local research environment</a> for the project that contains the notebook.</li>
     <li>In the right navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg" alt="Local lab explorer icon"> <span class="icon-name">Explorer</span> icon.</li>
     <li>In the Explorer panel, right-click the notebook you want to rename and then click <span class='menu-name'>Rename</span>.</li>
     <li>Enter the new name and then press <span class='button-name'>Enter</span>.</li>
