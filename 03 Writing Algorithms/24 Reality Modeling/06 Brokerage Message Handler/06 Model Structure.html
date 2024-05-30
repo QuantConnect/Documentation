@@ -1,0 +1,40 @@
+<p>Brokerage message handlers extend the <code>IBrokerageMessageHandler</code> interface. Extensions of the <code>IBrokerageMessageHandler</code> interfact must define the <code class="csharp">HandleMessage</code><code class="python">handle_message</code> and <code class="csharp">HandleOrder</code><code class="python">handle_order</code> methods.</p>
+
+<p>The <code class="csharp">HandleMessage</code><code class="python">handle_message</code> method processes the brokerage message event. It triggers any actions in the algorithm or notifications system required. </p>
+
+<p>The <code class="csharp">HandleOrder</code><code class="python">handle_order</code> method defines whether a new order placed manually in the brokerage side should be added to the transaction handler.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// In the Initialize method, set the brokerage message handler
+SetBrokerageMessageHandler(new MyBrokerageMessageHandler(this));
+
+// Define the custom brokerage message handler
+public class MyBrokerageMessageHandler : IBrokerageMessageHandler
+{
+    private readonly IAlgorithm _algorithm;
+    public MyBrokerageMessageHandler(IAlgorithm algorithm) { _algorithm = algorithm; }
+
+    public void HandleMessage(BrokerageMessageEvent message)
+    {
+        _algorithm.Debug($"{_algorithm.Time.ToStringInvariant("o")} Event: {message.Message}");
+    }
+
+    public bool HandleOrder(NewBrokerageOrderNotificationEventArgs eventArgs)
+    {
+        return false;
+    }
+}</pre>
+    <pre class="python"># In the Initialize method, set the brokerage message handler
+self.set_brokerage_message_handler(MyBrokerageMessageHandler(self))
+        
+# Define the custom brokerage message handler
+class MyBrokerageMessageHandler(IBrokerageMessageHandler):
+    def __init__(self, algorithm):
+        self._algorithm = algorithm
+
+    def handle_message(self, message: BrokerageMessageEvent) -> None:
+        self._algorithm.debug(f"{self._algorithm.time} Event: {message.message}")
+
+    def handle_order(self, event_args: NewBrokerageOrderNotificationEventArgs) -> bool:
+        return False</pre>
+</div>
