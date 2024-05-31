@@ -32,6 +32,8 @@
 
 <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/asset-plot-aapl.png' alt='AAPL stock price with order events overlaid'>
 
+<p>The order submission icons aren't visible by default.</p>
+
 <? if ($writingAlgorithms) { ?>
 <p>For more information about these charts, including how to view them in QC Cloud, see <span class='page-section-name'>Asset Plots</span> for <a href='/docs/v2/cloud-platform/backtesting/results#05-Asset-Plots'>backtests</a> or <a href='/docs/v2/cloud-platform/live-trading/results#05-Asset-Plots'>live trading</a>.</p>
 
