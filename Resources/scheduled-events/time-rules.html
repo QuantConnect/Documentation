@@ -63,16 +63,9 @@
 <div class="section-example-container">
     <pre class="csharp">var timeRule = new FuncTimeRule(
     name: "CustomTimeRule",
-    createUtcEventTimesFunction: dates => dates.Select(d => d.AddHours(10)));
-
-Schedule.On(DateRules.EveryDay(), timeRule, () => Debug(Time.ToString()));</pre>
-    <pre class="python">def create_utc_event_times_function(dates: List[datetime]) -&gt; List[datetime]:
-    return [d + timedelta(hours=10) for d in dates]
-
-time_rule = FuncTimeRule(
+    createUtcEventTimesFunction: dates => dates.Select(d => d.AddHours(10)));</pre>
+    <pre class="python">time_rule = FuncTimeRule(
     name="CustomTimeRule", 
-    create_utc_event_times_function=create_utc_event_times_function
-)
-
-self.schedule.on(self.date_rules.every_day(), time_rule, lambda: self.debug(str(self.time)))</pre>
+    create_utc_event_times_function=lambda dates: [d + timedelta(hours=10) for d in dates]
+)</pre>
 </div>
