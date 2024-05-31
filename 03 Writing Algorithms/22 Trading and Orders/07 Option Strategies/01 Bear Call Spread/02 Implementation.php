@@ -26,65 +26,7 @@ public override void Initialize()
     </div>
 </ol>
 
-<h4>Using Helper strategies</h4>
-<ol>
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiration and strikes of the contracts in the strategy legs.</li>
-    <div class="section-example-container">
-        <pre class="csharp">public override void OnData(Slice slice)
-{
-    if (Portfolio.Invested) return;
-
-    // Get the OptionChain
-    var chain = slice.OptionChains.get(_symbol, null);
-    if (chain.Count() == 0) return;
-
-    // Select the call Option contracts with the furthest expiry
-    var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;    
-    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
-    if (calls.Count() == 0) return;
-
-    // Select the ITM and OTM contract strike prices from the remaining contracts
-    var callStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
-    var itmStrike = callStrikes.First();
-    var otmStrike = callStrikes.Last();</pre>
-        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio.invested: return
-
-    # Get the OptionChain
-    chain = slice.option_chains.get(self._symbol, None)
-    if not chain: return
-
-    # Get the furthest expiry date of the contracts
-    expiry = sorted(chain, key = lambda x: x.expiry, reverse=True)[0].expiry
-    
-    # Select the call Option contracts with the furthest expiry
-    calls = [i for i in chain if i.expiry == expiry and i.right == OptionRight.CALL]
-    if len(calls) == 0: return
-
-    # Select the ITM and OTM contract strike prices from the remaining contracts
-    call_strikes = sorted([x.strike for x in calls])
-    itm_strike = call_strikes[0]
-    otm_strike = call_strikes[-1]</pre>
-    </div>
-
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.BearCallSpread</code><code class="python">OptionStrategies.bear_call_spread</code> method and then submit the order.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var optionStrategy = OptionStrategies.BearCallSpread(_symbol, itmStrike, otmStrike, expiry);
-Buy(optionStrategy, 1);<br></pre>
-        <pre class="python">option_strategy = OptionStrategies.bear_call_spread(self._symbol, itm_strike, otm_strike, expiry)
-self.buy(option_strategy, 1)</pre>
-    </div>
-
-<?php 
-$methodNames = array("Buy");
-include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
-?>
-
-</ol>
-
-<h4>Using Combo Orders</h4>
-<ol>
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts of the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -123,7 +65,23 @@ include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php");
     otm_call = ordered_calls[-1]</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, create <code>Leg</code> and call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders">Combo Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders">Combo Limit Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders">Combo Leg Limit Order</a> to submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+
+    <p>To place the order, call the <code class="csharp">OptionStrategies.BearCallSpread</code><code class="python">OptionStrategies.bear_call_spread</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+
+    <div class="section-example-container">
+        <pre class="csharp">var optionStrategy = OptionStrategies.BearCallSpread(_symbol, itmCall.Strike, otmCall.Strike, expiry);
+Buy(optionStrategy, 1);<br></pre>
+        <pre class="python">option_strategy = OptionStrategies.bear_call_spread(self._symbol, itm_call.strike, otm_call.strike, expiry)
+self.buy(option_strategy, 1)</pre>
+    </div>
+
+<?php 
+$methodNames = array("Buy");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
+
+    <li>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</li>
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()
     {
@@ -137,5 +95,5 @@ ComboMarketOrder(legs, 1);</pre>
 ]
 self.combo_market_order(legs, 1)</pre>
     </div>
-
 </ol>
+
