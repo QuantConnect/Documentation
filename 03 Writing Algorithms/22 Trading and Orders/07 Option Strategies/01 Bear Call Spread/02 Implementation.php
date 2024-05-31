@@ -24,7 +24,6 @@ public override void Initialize()
     self._symbol = option.symbol
     option.set_filter(lambda universe: universe.include_weeklys().strikes(-15, 15).expiration(0, 31))</pre>
     </div>
-</ol>
 
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts of the strategy legs.</li>
     <div class="section-example-container">
@@ -76,12 +75,7 @@ Buy(optionStrategy, 1);<br></pre>
 self.buy(option_strategy, 1)</pre>
     </div>
 
-<?php 
-$methodNames = array("Buy");
-include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
-?>
-
-    <li>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</li>
+    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()
     {
