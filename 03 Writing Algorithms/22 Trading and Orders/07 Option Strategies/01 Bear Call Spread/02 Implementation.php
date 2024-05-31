@@ -40,7 +40,7 @@ public override void Initialize()
     var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
-    // Select the ITM and OTM contract strike prices from the remaining contracts
+    // Select the target contracts
     var orderedCalls = calls.OrderBy(x =&gt; x.Strike);
     var itmCall = orderedCalls.First();
     var otmCall = orderedCalls.Last();</pre>
@@ -58,7 +58,7 @@ public override void Initialize()
     calls = [i for i in chain if i.expiry == expiry and i.right == OptionRight.CALL]
     if len(calls) == 0: return
 
-    # Select the ITM and OTM contract strike prices from the remaining contracts
+    # Select the target contracts
     ordered_calls = sorted(calls, key=lambda x: x.strike)
     itm_call = ordered_calls[0]
     otm_call = ordered_calls[-1]</pre>
