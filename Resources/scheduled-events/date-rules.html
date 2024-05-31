@@ -96,19 +96,13 @@
     <pre class="csharp">var dateRule = new FuncDateRule(
     name: "10th_day_of_the_month",
     getDatesFunction: (start, end) => Enumerable.Range(start.Year, end.Year - start.Year + 1)
-            .SelectMany(year => Enumerable.Range(1, 12).Select(month => new DateTime(year, month, 10)))
-            .ToList()
-);
-
-Schedule.On(dateRule, TimeRules.Midnight, () => Debug(Time.ToString()));</pre>
-    <pre class="python">def get_dates_function(start: datetime, end: datetime) -> List[datetime]:
-    months, years = range(1,12), range(start.year, end.year)
-    return [datetime(year, month, 10) for month in months for year in years]
-        
-date_rule = FuncDateRule(
+        .SelectMany(year => Enumerable.Range(1, 12).Select(month => new DateTime(year, month, 10)))
+);</pre>
+    <pre class="python">date_rule = FuncDateRule(
     name="10th_day_of_the_month", 
-    get_dates_function=get_dates_function
-) 
-
-self.schedule.on(date_rule, self.time_rules.midnight, lambda: self.debug(str(self.time)))</pre>
+    get_dates_function=lambda start, end: [
+        datetime(year, month, 10) 
+        for year in range(start.year, end.year) for month in range(1,12)
+    ]
+) </pre>
 </div>
