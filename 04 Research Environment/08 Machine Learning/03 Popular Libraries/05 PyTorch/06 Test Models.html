@@ -1,0 +1,24 @@
+<p>You need to  <a href="/docs/v2/research-environment/machine-learning/popular-libraries/pytorch#05-Train-Models">build and train the model</a> before you test its performance. If you have trained the model, test it on the out-of-sample data. Follow these steps to test the model:</p>
+
+<ol>
+    <li>Predict with the testing data.</li>
+    <div class="section-example-container">
+        <pre class="python">predict = model(X_test)
+y_predict = predict.detach().numpy()   # Convert tensor to numpy ndarray</pre>
+    </div>
+
+    <li>Plot the actual and predicted values of the testing period.</li>
+    <div class="section-example-container">
+        <pre class="python">df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
+df.plot(title='Model Performance: predicted vs actual standardized fractional return', figsize=(15, 10))
+plt.show()</pre>
+    </div>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pytorch-plot.png" alt="Pytorch model performance">
+    
+    <li>Calculate the R-square value.</li>
+    <div class="section-example-container">
+        <pre class="python">r2 = 1 - np.sum(np.square(y_test.flatten() - y_predict.flatten())) / np.sum(np.square(y_test.flatten() - y_test.mean()))
+print(f"The explained variance by the model (r-square): {r2*100:.2f}%")</pre>
+    </div>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pytorch-rsquare-2.png" alt="Pytorch model r-square">
+</ol>

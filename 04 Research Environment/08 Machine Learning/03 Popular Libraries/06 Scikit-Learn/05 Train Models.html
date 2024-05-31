@@ -1,0 +1,20 @@
+<p>You need to <a href="/docs/v2/research-environment/machine-learning/popular-libraries/scikit-learn#04-Prepare-Data">prepare the historical data</a> for training before you train the model. If you have prepared the data, build and train the model. In this example, build a Support Vector Regressor model and optimize its hyperparameters with grid search cross-validation. Follow these steps to create the model:</p>
+
+<ol>
+    <li>Set the choices of hyperparameters used for grid search testing.</li>
+    <div class="section-example-container">
+        <pre class="python">param_grid = {'C': [.05, .1, .5, 1, 5, 10], 
+              'epsilon': [0.001, 0.005, 0.01, 0.05, 0.1], 
+              'gamma': ['auto', 'scale']}</pre>
+    </div>
+
+    <li>Call the <code>GridSearchCV</code> constructor with the SVR model, the parameter grid, a scoring method, the number of cross-validation folds.</li>
+    <div class="section-example-container">
+        <pre class="python">gsc = GridSearchCV(SVR(), param_grid, scoring='neg_mean_squared_error', cv=5)</pre>
+    </div>
+    
+    <li>Call the <code>fit</code> method and then select the best estimator.</li>
+    <div class="section-example-container">
+        <pre class="python">model = gsc.fit(X_train, y_train).best_estimator_</pre>
+    </div>
+</ol>
