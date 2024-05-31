@@ -25,7 +25,7 @@ public override void Initialize()
     option.set_filter(-3, 3, 0, 31)
     self.call = None</pre>
     </div>
-  
+
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the Option contract.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
@@ -58,8 +58,11 @@ public override void Initialize()
         return
 
     atm_call = call_contracts[0]</pre>
-</div>
+    </div>
+</ol>
 
+<h4>Using Helper strategies</h4>
+<ol>
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.CoveredCall</code><code class="python">OptionStrategies.covered_call</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var coveredCall = OptionStrategies.CoveredCall(_symbol, atmCall.Strike, expiry);
@@ -75,5 +78,24 @@ self.call = atm_call.symbol</pre>
 $methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
-    
+
+</ol>
+
+<h4>Using Combo Orders</h4>
+<ol>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, create <code>Leg</code> and call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders">Combo Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders">Combo Limit Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders">Combo Leg Limit Order</a> to submit the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var legs = new List&lt;Leg&gt;()
+    {
+        Leg.Create(atmCall.Symbol, -1),
+        Leg.Create(chain.Underlying.Symbol, 100)    // the contract multiplier
+    };
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python">legs = [
+    Leg.create(atm_call.symbol, -1),
+    Leg.create(chain.underlying.symbol, 100)    # the contract multiplier
+]
+self.combo_market_order(legs, 1)</pre>
+    </div>
+
 </ol>

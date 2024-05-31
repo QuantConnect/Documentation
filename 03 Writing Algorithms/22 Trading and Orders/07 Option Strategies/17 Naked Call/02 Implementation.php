@@ -59,7 +59,10 @@ public override void Initialize()
 
     atm_call = call_contracts[0]</pre>
 </div>
+</ol>
 
+<h4>Using Helper strategies</h4>
+<ol>
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.NakedCall</code><code class="python">OptionStrategies.naked_call</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var nakedCall = OptionStrategies.NakedCall(_symbol, atmCall.Strike, expiry);
@@ -76,4 +79,15 @@ self.call = atm_call.symbol</pre>
 $methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
+    
+</ol>
+
+<h4>Using Simple Orders</h4>
+<ol>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders">Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">Limit Order</a> to submit the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(atmCall.Symbol, 1);</pre>
+        <pre class="python">self.market_order(atm_call.symbol, 1)</pre>
+    </div>
+
 </ol>

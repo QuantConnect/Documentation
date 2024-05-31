@@ -47,11 +47,17 @@ public override void Initialize()
 
     if (putContracts.Length &lt; 10 || putContracts.Length &lt; 10) return;
 
+    // Select the strategy legs
+    var farPut = putContracts[0];
+    var nearPut = putContracts[10];
+    var nearCall = callContracts[^10];
+    var farCall = callContracts[^1];
+
     // Select the strikes in the strategy legs
-    var farPut = putContracts[0].Strike;
-    var nearPut = putContracts[10].Strike;
-    var nearCall = callContracts[^10].Strike;
-    var farCall = callContracts[^1].Strike;</pre>
+    var farPutStrike = farPut.Strike;
+    var nearPutStrike = nearPut.Strike;
+    var nearCallStrike = nearCall.Strike;
+    var farCallStrike = farCall.Strike;</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.portfolio[self.symbol.underlying].invested:
         self.liquidate()
@@ -73,32 +79,69 @@ public override void Initialize()
     if len(call_contracts) &lt; 10 or len(put_contracts) &lt; 10:
         return
 
-    # Select the strikes in the strategy legs
-    far_put = put_contracts[0].strike
-    near_put = put_contracts[10].strike
-    near_call = call_contracts[-10].strike
-    far_call = call_contracts[-1].strike</pre>
-    </div>
+    # Select the strategy legs
+    far_put = put_contracts[0]
+    near_put = put_contracts[10]
+    near_call = call_contracts[-10]
+    far_call = call_contracts[-1]
 
+    # Select the strikes in the strategy legs
+    far_put_strike = far_put.strike
+    near_put_strike = near_put.strike
+    near_call_strike = near_call.strike
+    far_call_strike = far_call.strike</pre>
+    </div>
+</ol>
+
+<h4>Using Helper strategies</h4>
+<ol>
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.IronCondor</code><code class="python">OptionStrategies.iron_condor</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var ironCondor = OptionStrategies.IronCondor(
     _symbol, 
-    farPut,
-    nearPut,
-    nearCall,
-    nearPut,
+    farPutStrike,
+    nearPutStrike,
+    nearCallStrike,
+    nearCallStrike,
     expiry);
 
 Buy(ironCondor, 2);</pre>
         <pre class="python">iron_condor = OptionStrategies.iron_condor(
     self.symbol, 
-    far_put,
-    near_put,
-    near_call,
-    far_call,
+    far_put_strike,
+    near_put_strike,
+    near_call_strike,
+    far_call_strike,
     expiry)
 
 self.buy(iron_condor, 2)</pre>
     </div>
+<?php 
+$methodNames = array("Buy", "Sell");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
+    
+</ol>
+
+<h4>Using Combo Orders</h4>
+<ol>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, create <code>Leg</code> and call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders">Combo Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders">Combo Limit Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders">Combo Leg Limit Order</a> to submit the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var legs = new List&lt;Leg&gt;()
+    {
+        Leg.Create(farPut.Symbol, -1),
+        Leg.Create(nearPut.Symbol, 1),
+        Leg.Create(farCall.Symbol, -1),
+        Leg.Create(nearCall.Symbol, 1)
+    };
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python">legs = [
+    Leg.create(far_put.symbol, -1),
+    Leg.create(near_put.symbol, 1),
+    Leg.create(far_call.symbol, -1),
+    Leg.create(near_call.symbol, 1)
+]
+self.combo_market_order(legs, 1)</pre>
+    </div>
+
 </ol>

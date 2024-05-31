@@ -59,7 +59,10 @@ public override void Initialize()
 
     atm_put = put_contracts[0]</pre>
 </div>
+</ol>
 
+<h4>Using Helper strategies</h4>
+<ol>
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.ProtectivePut</code><code class="python">OptionStrategies.protective_put</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var protectivePut = OptionStrategies.ProtectivePut(_symbol, atmPut.Strike, expiry);
@@ -77,4 +80,23 @@ $methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
     
+</ol>
+
+<h4>Using Combo Orders</h4>
+<ol>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, create <code>Leg</code> and call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders">Combo Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders">Combo Limit Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders">Combo Leg Limit Order</a> to submit the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var legs = new List&lt;Leg&gt;()
+    {
+        Leg.Create(atmPut.Symbol, 1),
+        Leg.Create(chain.Underlying.Symbol, 100)   // contract multiplier
+    };
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python">legs = [
+    Leg.create(atm_put.symbol, 1),
+    Leg.create(chain.underlying.symbol, 100)   # contract multiplier
+]
+self.combo_market_order(legs, 1)</pre>
+    </div>
+
 </ol>

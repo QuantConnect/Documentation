@@ -36,8 +36,8 @@ public override void Initialize()
 
     // Find ATM put with the farthest expiry
     var expiry = chain.Max(x =&gt; x.Expiry);
-    var atmCall = chain
-        .Where(x =&gt; x.Right == OptionRight.Call &amp;&amp; x.Expiry == expiry)
+    var atmPut = chain
+        .Where(x =&gt; x.Right == OptionRight.Put &amp;&amp; x.Expiry == expiry)
         .OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price))
         .FirstOrDefault();</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
@@ -51,7 +51,7 @@ public override void Initialize()
     # Find ATM put with the farthest expiry
     expiry = max([x.expiry for x in chain])
     put_contracts = sorted([x for x in chain
-        if x.right == Optionright.call and x.expiry == expiry],
+        if x.right == OptionRight.PUT and x.expiry == expiry],
         key=lambda x: abs(chain.underlying.price - x.strike))
 
     if not put_contracts:
@@ -59,13 +59,16 @@ public override void Initialize()
 
     atm_put = put_contracts[0]</pre>
 </div>
+</ol>
 
+<h4>Using Helper strategies</h4>
+<ol>
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.NakedPut</code><code class="python">OptionStrategies.naked_put</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">var nakedCall = OptionStrategies.NakedPut(_symbol, atmCall.Strike, expiry);
-Buy(nakedCall, 1);
+        <pre class="csharp">var nakedPut = OptionStrategies.NakedPut(_symbol, atmPut.Strike, expiry);
+Buy(nakedPut, 1);
 
-_put = atmCall.Symbol;</pre>
+_put = atmPut.Symbol;</pre>
         <pre class="python">naked_put = OptionStrategies.naked_put(self._symbol, atm_put.strike, expiry)
 self.buy(naked_put, 1)
 
@@ -76,4 +79,15 @@ self.put = atm_put.symbol</pre>
 $methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
+    
+</ol>
+
+<h4>Using Simple Orders</h4>
+<ol>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders">Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">Limit Order</a> to submit the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(atmPut.Symbol, 1);</pre>
+        <pre class="python">self.market_order(atm_put.symbol, 1)</pre>
+    </div>
+
 </ol>
