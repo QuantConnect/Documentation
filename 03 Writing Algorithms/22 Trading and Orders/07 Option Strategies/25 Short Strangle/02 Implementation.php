@@ -53,8 +53,10 @@ public override void Initialize()
         .OrderByDescending(contract =&gt; contract.Strike).ToArray();
     if (putContracts.Length == 0) return;
 
-    var callStrike = callContracts[0].Strike;
-    var putStrike = putContracts[0].Strike;
+    var otmCall = callContracts[0];
+    var otmPut = putContracts[0];
+    var callStrike = otmCall.Strike;
+    var putStrike = otmPut.Strike;
 }</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.Portfolio.Invested:
@@ -84,10 +86,15 @@ public override void Initialize()
     if not put_contracts:
         return
 
-    call_strike = call_contracts[0].Strike
-    put_strike = put_contracts[0].Strike</pre>
+    otm_call = call_contracts[0]
+    otm_put = put_contracts[0]
+    call_strike = otm_call.Strike
+    put_strike = otm_put.Strike</pre>
     </div>
+</ol>
 
+<h4>Using Helper strategies</h4>
+<ol>
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.ShortStrangle</code><code class="python">OptionStrategies.short_strangle</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var shortStrangle = OptionStrategies.ShortStrangle(_symbol, callStrike, putStrike, expiry);
@@ -100,4 +107,24 @@ self.buy(short_strangle, 1)</pre>
 $methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
+
+</ol>
+
+<h4>Using Combo Orders</h4>
+<ol>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, create <code>Leg</code> and call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders">Combo Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders">Combo Limit Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders">Combo Leg Limit Order</a> to submit the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var legs = new List&lt;Leg&gt;()
+    {
+        Leg.Create(otmCall.Symbol, -1),
+        Leg.Create(otmPut.Symbol, -1)
+    };
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python">legs = [
+    Leg.create(otm_call.symbol, -1),
+    Leg.create(otm_put.symbol, -1)
+]
+self.combo_market_order(legs, 1)</pre>
+    </div>
+
 </ol>
