@@ -32,8 +32,10 @@ public override void Initialize()
     if (Portfolio.Invested) return;
 
     // Get the OptionChain
-    var chain = slice.OptionChains.get(_symbol, null);
-    if (chain.Count() == 0) return;
+    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        return;
+    }
 
     // Select the call Option contracts with the furthest expiry
     var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;    

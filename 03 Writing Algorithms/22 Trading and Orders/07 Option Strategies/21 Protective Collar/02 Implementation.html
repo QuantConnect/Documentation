@@ -3,7 +3,7 @@
 <ol>
     <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, set the end date, <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Equity</a>, and create an <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">private Symbol _equitySymbol, _optionSymbol;
+        <pre class="csharp">private Symbol _equitySymbol, _symbol;
 
 public override void Initialize()
 {
@@ -13,7 +13,7 @@ public override void Initialize()
     UniverseSettings.Asynchronous = true;
     _equitySymbol = AddEquity("GOOG").Symbol;
     var option = AddOption("GOOG", Resolution.Minute);
-    _optionSymbol = option.Symbol;
+    _symbol = option.Symbol;
     option.SetFilter(-10, 10, 0, 30);
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
@@ -23,7 +23,7 @@ public override void Initialize()
     self.UniverseSettings.Asynchronous = True
     self.equity_symbol = self.AddEquity("GOOG").Symbol
     option = self.AddOption("GOOG", Resolution.Minute)
-    self.option_symbol = option.Symbol
+    self._symbol = option.Symbol
     option.SetFilter(-10, 10, 0, 30)<br></pre>
     </div>
 
@@ -34,8 +34,10 @@ public override void Initialize()
     if (Portfolio.Invested) return;
 
     // Get the OptionChain
-    var chain = slice.OptionChains.get(_optionSymbol, null);
-    if (chain == null || chain.Count() == 0) return;
+    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        return;
+    }
 
     // Select an expiry date
     var expiry = chain.OrderBy(x =&gt; x.Expiry).Last().Expiry;

@@ -32,8 +32,10 @@ public override void Initialize()
     if (Portfolio.Invested) return;
 
     // Get the OptionChain
-    var chain = slice.OptionChains.get(_symbol, null);
-    if (chain == null || chain.Count() == 0) return;
+    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        return;
+    }
 
     // Separate the call and put contracts
     var calls = chain.Where(x =&gt; x.Right == OptionRight.Call);
