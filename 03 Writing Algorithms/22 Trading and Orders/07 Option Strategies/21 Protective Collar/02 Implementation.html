@@ -69,14 +69,33 @@ public override void Initialize()
     call = sorted(calls, key = lambda x: x.strike)[-1]
     put = sorted(puts, key = lambda x: x.strike)[0]</pre>
     </div>
+    
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, submit the orders.</li>
+    <p>To place the order, call the <code class="csharp">OptionStrategies.ProtectiveCollar</code><code class="python">OptionStrategies.protective_collar</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">Sell(call.Symbol, 1);    // Sell the OTM call
-Buy(put.Symbol, 1);      // Buy the OTM call
-Buy(_equitySymbol, 100); // Buy 100 shares of the underlying stock<br></pre>
-                <pre class="python">self.Sell(call.Symbol, 1)          # Sell the OTM call
-self.Buy(put.Symbol, 1)            # Buy the OTM put
-self.Buy(self.equity_symbol, 100)  # Buy 100 shares of the underlying stock<br></pre>
+        <pre class="csharp">var protectiveCollar = OptionStrategies.ProtectiveCollar(_symbol, call.Strike, put.Strike, expiry);
+Buy(protectiveCollar, 1);</pre>
+        <pre class="python">protective_collar = OptionStrategies.protective_collar(self._symbol, call.strike, put.strike, expiry)
+self.buy(protective_collar, 1)</pre>
     </div>
+    
+    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    
+    <div class="section-example-container">
+        <pre class="csharp">var legs = new List&lt;Leg&gt;()
+    {
+        Leg.Create(call.Symbol, -1),
+        Leg.Create(put.Symbol, 1),
+        Leg.Create(chain.Underlying.Symbol, 100)   // contract multiplier
+    };
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python">legs = [
+    Leg.create(call.symbol, -1),
+    Leg.create(put.symbol, 1),
+    Leg.create(chain.underlying.symbol, 100)   # contract multiplier
+]
+self.combo_market_order(legs, 1)</pre>
+    </div>
+
 </ol>
