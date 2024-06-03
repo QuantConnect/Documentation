@@ -24,69 +24,8 @@ public override void Initialize()
     self._symbol = option.symbol
     option.set_filter(lambda universe: universe.include_weeklys().strikes(-1, 1).expiration(0, 62))</pre>
     </div>
-</ol>
 
-<h4>Using Helper strategies</h4>
-<ol>
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the strike price and expiration dates of the contracts in the strategy legs.</li>
-    <div class="section-example-container">
-        <pre class="csharp">public override void OnData(Slice slice)
-{
-    if (Portfolio.Invested) return;
-
-    // Get the OptionChain
-    var chain = slice.OptionChains.get(_symbol, null);
-    if (chain == null || chain.Count() == 0) return;
-
-    // Get the ATM strike price
-    var atmStrike = chain.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
-
-    // Select the ATM put contracts
-    var puts = chain.Where(x =&gt; x.Strike == atmStrike &amp;&amp; x.Right == OptionRight.Put);
-    if (puts.Count() == 0) return;
-
-    // Select the near and far expiration dates
-    var expiries = puts.Select(x =&gt; x.Expiry).OrderBy(x =&gt; x);
-    var nearExpiry = expiries.First();
-    var farExpiry = expiries.Last();</pre>
-        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio.invested: return
-
-    # Get the OptionChain
-    chain = slice.option_chains.get(self._symbol, None)
-    if not chain: return
-
-    # Get the ATM strike price
-    atm_strike = sorted(chain, key=lambda x: abs(x.strike - chain.underlying.price))[0].strike
-
-    # Select the ATM put contracts
-    puts = [i for i in chain if i.strike == atm_strike and i.right == OptionRight.PUT]
-    if len(puts) == 0: return
-
-    # Select the near and far expiration dates
-    expiries = sorted([x.expiry for x in puts], key = lambda x: x)
-    near_expiry = expiries[0]
-    far_expiry = expiries[-1]</pre>
-    </div>
-
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code class="csharp">OptionStrategies.PutCalendarSpread</code><code class="python">OptionStrategies.put_calendar_spread</code> method and then submit the order.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var optionStrategy = OptionStrategies.PutCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
-Buy(optionStrategy, 1);</pre>
-        <pre class="python">option_strategy = OptionStrategies.put_calendar_spread(self._symbol, atm_strike, near_expiry, far_expiry)
-self.buy(option_strategy, 1)</pre>
-    </div>
-
-<?php 
-$methodNames = array("Buy");
-include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
-?>
-
-</ol>
-
-<h4>Using Combo Orders</h4>
-<ol>
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -106,7 +45,9 @@ include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php");
     // Select the near and far expiry contracts
     var orderedPuts = puts.OrderBy(x =&gt; x.Expiry);
     var nearExpiryPut = orderedPuts.First();
-    var farExpiryPut = orderedPuts.Last();</pre>
+    var nearExpiry = nearExpiryPut.Expiry;
+    var farExpiryPut = orderedPuts.Last();
+    var farExpiry = farExpiryPut.Expiry;</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.portfolio.invested: return
 
@@ -124,10 +65,23 @@ include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php");
     # Select the near and far expiry dates
     ordered_puts = sorted(puts, key=lambda x: x.expiry)
     near_expiry_put = ordered_puts[0]
-    far_expiry_put = ordered_puts[-1]</pre>
+    near_expiry = near_expiry_put.expiry
+    far_expiry_put = ordered_puts[-1]
+    far_expiry = far_expiry_put.expiry</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, create <code>Leg</code> and call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders">Combo Market Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders">Combo Limit Order</a>/<a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders">Combo Leg Limit Order</a> to submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+
+    <p>To place the order, call the <code class="csharp">OptionStrategies.PutCalendarSpread</code><code class="python">OptionStrategies.put_calendar_spread</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var optionStrategy = OptionStrategies.PutCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
+Buy(optionStrategy, 1);</pre>
+        <pre class="python">option_strategy = OptionStrategies.put_calendar_spread(self._symbol, atm_strike, near_expiry, far_expiry)
+self.buy(option_strategy, 1)</pre>
+    </div>
+
+    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()
     {
