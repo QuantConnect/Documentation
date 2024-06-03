@@ -57,19 +57,19 @@ public override void Initialize()
     expiry = sorted(chain, key = lambda x: x.expiry)[-1].expiry
     strike = sorted(chain, key = lambda x: abs(x.strike - chain.underlying.price))[0].strike
 
-    # Select the call and put contracts that expire on the selected date
-    call = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry and x.strike == strike]
-    put = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry and x.strike == strike]</pre>
+    # Select the call and put contracts
+    call = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry and x.strike == strike][0]
+    put = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry and x.strike == strike][0]</pre>
     </div>
     
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
 
     <p>To place the order, call the <code class="csharp">OptionStrategies.ReverseConversion</code><code class="python">OptionStrategies.reverse_conversion</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">var conversion = OptionStrategies.ReverseConversion(_symbol, strike, expiry);
-Buy(conversion, 1);</pre>
-        <pre class="python">conversion = OptionStrategies.reverse_conversion(self._symbol, strike, expiry)
-self.buy(conversion, 1)</pre>
+        <pre class="csharp">var reverseConversion = OptionStrategies.ReverseConversion(_symbol, strike, expiry);
+Buy(reverseConversion, 1);</pre>
+        <pre class="python">reverse_conversion = OptionStrategies.reverse_conversion(self._symbol, strike, expiry)
+self.buy(reverse_conversion, 1)</pre>
     </div>
     
     <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
