@@ -3,31 +3,31 @@
 <ol>
     <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, set the end date, <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Equity</a>, and create an <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">private Symbol _equitySymbol, _symbol;
+        <pre class="csharp">private Symbol _symbol;
 
 public override void Initialize()
 {
     SetStartDate(2017, 4, 1);
     SetEndDate(2017, 4, 30);
     SetCash(100000);
+
     UniverseSettings.Asynchronous = true;
-    _equitySymbol = AddEquity("GOOG").Symbol;
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
     option.SetFilter(-10, 10, 0, 30);
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2017, 4, 1)
-    self.SetEndDate(2017, 4, 30)
-    self.SetCash(100000)
-    self.UniverseSettings.Asynchronous = True
-    self.equity_symbol = self.AddEquity("GOOG").Symbol
-    option = self.AddOption("GOOG", Resolution.Minute)
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 4, 1)
+    self.set_end_date(2017, 4, 30)
+    self.set_cash(100000)
+
+    self.universe_settings.asynchronous = True
+    option = self.add_option("GOOG", Resolution.MINUTE)
     self._symbol = option.Symbol
-    option.SetFilter(-10, 10, 0, 30)<br></pre>
+    option.set_filter(-10, 10, 0, 30)<br></pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the Option contracts.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiry and strikes.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -40,37 +40,28 @@ public override void Initialize()
     }
 
     // Select an expiry date and ITM & OTM strike prices
-    var expiry = chain.Max(x =&gt; x.Expiry);
-    var lowerStrike = chain.Min(x =&gt; x.Strike);
-    var higherStrike = chain.Max(x =&gt; x.Strike);
-
-    // Select the call and put contracts
-    var itmCall = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == lowerStrike &amp;&amp; x.Right == OptionRight.Call);
-    var otmCall = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == higherStrike &amp;&amp; x.Right == OptionRight.Call);
-    var itmPut = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == higherStrike &amp;&amp; x.Right == OptionRight.Put);
-    var otmPut = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == lowerStrike &amp;&amp; x.Right == OptionRight.Put);</pre>
+    var contracts = chain.Where(x => x.Expiry == expiry).ToList();
+    var higherStrike = contracts.Max(x => x.Strike);
+    var lowerStrike = contracts.Min(x => x.Strike);</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio.invested: return
+    if self.portfolio.invested:
+        return
 
     # Get the OptionChain
     chain = slice.option_chains.get(self._symbol, None)
-    if not chain: return
+    if not chain:
+        return
 
     # Select an expiry date and ITM & OTM strike prices
-    expiry = sorted(chain, key = lambda x: x.expiry)[-1].expiry
-    lower_strike = min([x.strike for x in chain])
-    higher_strike = max([x.strike for x in chain])
-
-    # Select the call and put contracts
-    itm_call = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry and x.strike == lower_strike][0]
-    otm_call = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry and x.strike == higher_strike][0]
-    itm_put = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry and x.strike == higher_strike][0]
-    otm_put = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry and x.strike == lower_strike][0]</pre>
+    expiry = max([x.expiry for x in chain])
+    contracts = [x for x in chain if x.expiry == expiry]
+    lower_strike = min([x.strike for x in contracts])
+    higher_strike = max([x.strike for x in contracts])</pre>
     </div>
     
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts and place the order.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.BoxSpread</code><code class="python">OptionStrategies.box_spread</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.BoxSpread</code><code class="python">OptionStrategies.box_spread</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
         <pre class="csharp">var boxSpread = OptionStrategies.BoxSpread(_symbol, higherStrike, lowerStrike, expiry);
 Buy(boxSpread, 1);</pre>
@@ -78,24 +69,35 @@ Buy(boxSpread, 1);</pre>
 self.buy(box_spread, 1)</pre>
     </div>
     
-    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
     
     <div class="section-example-container">
-        <pre class="csharp">var legs = new List&lt;Leg&gt;()
-    {
-        Leg.Create(itmCall.Symbol, 1),
-        Leg.Create(itmPut.Symbol, 1),
-        Leg.Create(otmCall.Symbol, -1),
-        Leg.Create(otmPut.Symbol, -1),
-    };
+        <pre class="csharp">// Select the call and put contracts
+var itmCall = contracts.Single(x =&gt; x.Strike == lowerStrike &amp;&amp; x.Right == OptionRight.Call);
+var otmCall = contracts.Single(x =&gt; x.Strike == higherStrike &amp;&amp; x.Right == OptionRight.Call);
+var itmPut = contracts.Single(x =&gt; x.Strike == higherStrike &amp;&amp; x.Right == OptionRight.Put);
+var otmPut = contracts.Single(x =&gt; x.Strike == lowerStrike &amp;&amp; x.Right == OptionRight.Put);
+
+var legs = new List&lt;Leg&gt;()
+{
+    Leg.Create(itmCall.Symbol, 1),
+    Leg.Create(itmPut.Symbol, 1),
+    Leg.Create(otmCall.Symbol, -1),
+    Leg.Create(otmPut.Symbol, -1),
+};
 ComboMarketOrder(legs, 1);</pre>
-        <pre class="python">legs = [
+        <pre class="python"># Select the call and put contracts
+itm_call = next(filter(lambda x: x.right == OptionRight.CALL and x.strike == lower_strike, contracts))
+otm_call = next(filter(lambda x: x.right == OptionRight.CALL and x.strike == higher_strike, contracts))
+itm_put = next(filter(lambda x: x.right == OptionRight.PUT and x.strike == higher_strike, contracts))
+otm_put = next(filter(lambda x: x.right == OptionRight.PUT and x.strike == lower_strike, contracts))           
+
+legs = [
     Leg.create(itm_call.symbol, 1),
     Leg.create(itm_put.symbol, 1),
     Leg.create(otm_call.symbol, -1),
     Leg.create(otm_put.symbol, -1),
 ]
 self.combo_market_order(legs, 1)</pre>
-    </div>
-
+    </div>   
 </ol>
