@@ -1,4 +1,4 @@
-<p>Follow these steps to implement the protective collar strategy:</p>
+<p>Follow these steps to implement the conversion strategy:</p>
 
 <ol>
     <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, set the end date, <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Equity</a>, and create an <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -39,17 +39,13 @@ public override void Initialize()
         return;
     }
 
-    // Select an expiry date
+    // Select an expiry date and ATM strike price
     var expiry = chain.OrderBy(x =&gt; x.Expiry).Last().Expiry;
+    var strike = chain.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
 
-    // Select the call and put contracts that expire on the selected date
-    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
-    var puts = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Put);
-    if (calls.Count() == 0 || puts.Count() == 0) return;
-
-    // Select the OTM contracts
-    var call = calls.OrderBy(x =&gt; x.Strike).Last();
-    var put = puts.OrderBy(x =&gt; x.Strike).First();<br></pre>
+    // Select the call and put contracts
+    var call = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == strike &amp;&amp; x.Right == OptionRight.Call);
+    var put = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == strike &amp;&amp; x.Right == OptionRight.Put);</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.portfolio.invested: return
 
@@ -57,27 +53,23 @@ public override void Initialize()
     chain = slice.option_chains.get(self._symbol, None)
     if not chain: return
 
-    # Select an expiry date
+    # Select an expiry date and ATM strike price
     expiry = sorted(chain, key = lambda x: x.expiry)[-1].expiry
+    strike = sorted(chain, key = lambda x: abs(x.strike - chain.underlying.price))[0].strike
 
-    # Select the call and put contracts that expire on the selected date
-    calls = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry]
-    puts = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry]
-    if not calls or not puts: return
-
-    # Select the OTM contracts
-    call = sorted(calls, key = lambda x: x.strike)[-1]
-    put = sorted(puts, key = lambda x: x.strike)[0]</pre>
+    # Select the call and put contracts
+    call = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry and x.strike == strike][0]
+    put = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry and x.strike == strike][0]</pre>
     </div>
     
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.ProtectiveCollar</code><code class="python">OptionStrategies.protective_collar</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p>To place the order, call the <code class="csharp">OptionStrategies.Conversion</code><code class="python">OptionStrategies.conversion</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">var protectiveCollar = OptionStrategies.ProtectiveCollar(_symbol, call.Strike, put.Strike, expiry);
-Buy(protectiveCollar, 1);</pre>
-        <pre class="python">protective_collar = OptionStrategies.protective_collar(self._symbol, call.strike, put.strike, expiry)
-self.buy(protective_collar, 1)</pre>
+        <pre class="csharp">var conversion = OptionStrategies.Conversion(_symbol, strike, expiry);
+Buy(conversion, 1);</pre>
+        <pre class="python">conversion = OptionStrategies.conversion(self._symbol, strike, expiry)
+self.buy(conversion, 1)</pre>
     </div>
     
     <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>

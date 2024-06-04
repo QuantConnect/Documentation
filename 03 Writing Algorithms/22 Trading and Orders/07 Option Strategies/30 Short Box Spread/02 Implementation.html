@@ -1,4 +1,4 @@
-<p>Follow these steps to implement the protective collar strategy:</p>
+<p>Follow these steps to implement the short box spread strategy:</p>
 
 <ol>
     <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, set the end date, <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Equity</a>, and create an <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -39,17 +39,16 @@ public override void Initialize()
         return;
     }
 
-    // Select an expiry date
-    var expiry = chain.OrderBy(x =&gt; x.Expiry).Last().Expiry;
+    // Select an expiry date and ITM & OTM strike prices
+    var expiry = chain.Max(x =&gt; x.Expiry);
+    var lowerStrike = chain.Min(x =&gt; x.Strike);
+    var higherStrike = chain.Max(x =&gt; x.Strike);
 
-    // Select the call and put contracts that expire on the selected date
-    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
-    var puts = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Put);
-    if (calls.Count() == 0 || puts.Count() == 0) return;
-
-    // Select the OTM contracts
-    var call = calls.OrderBy(x =&gt; x.Strike).Last();
-    var put = puts.OrderBy(x =&gt; x.Strike).First();<br></pre>
+    // Select the call and put contracts
+    var itmCall = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == lowerStrike &amp;&amp; x.Right == OptionRight.Call);
+    var otmCall = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == higherStrike &amp;&amp; x.Right == OptionRight.Call);
+    var itmPut = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == higherStrike &amp;&amp; x.Right == OptionRight.Put);
+    var otmPut = chain.Single(x =&gt; x.Expiry == expiry &amp;&amp; x.Strike == lowerStrike &amp;&amp; x.Right == OptionRight.Put);</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.portfolio.invested: return
 
@@ -57,27 +56,26 @@ public override void Initialize()
     chain = slice.option_chains.get(self._symbol, None)
     if not chain: return
 
-    # Select an expiry date
+    # Select an expiry date and ITM & OTM strike prices
     expiry = sorted(chain, key = lambda x: x.expiry)[-1].expiry
+    lower_strike = min([x.strike for x in chain])
+    higher_strike = max([x.strike for x in chain])
 
-    # Select the call and put contracts that expire on the selected date
-    calls = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry]
-    puts = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry]
-    if not calls or not puts: return
-
-    # Select the OTM contracts
-    call = sorted(calls, key = lambda x: x.strike)[-1]
-    put = sorted(puts, key = lambda x: x.strike)[0]</pre>
+    # Select the call and put contracts
+    itm_call = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry and x.strike == lower_strike][0]
+    otm_call = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry and x.strike == higher_strike][0]
+    itm_put = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry and x.strike == higher_strike][0]
+    otm_put = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry and x.strike == lower_strike][0]</pre>
     </div>
     
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.ProtectiveCollar</code><code class="python">OptionStrategies.protective_collar</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p>To place the order, call the <code class="csharp">OptionStrategies.ShortBoxSpread</code><code class="python">OptionStrategies.short_box_spread</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">var protectiveCollar = OptionStrategies.ProtectiveCollar(_symbol, call.Strike, put.Strike, expiry);
-Buy(protectiveCollar, 1);</pre>
-        <pre class="python">protective_collar = OptionStrategies.protective_collar(self._symbol, call.strike, put.strike, expiry)
-self.buy(protective_collar, 1)</pre>
+        <pre class="csharp">var shortBoxSpread = OptionStrategies.ShortBoxSpread(_symbol, higherStrike, lowerStrike, expiry);
+Buy(shortBoxSpread, 1);</pre>
+        <pre class="python">short_box_spread = OptionStrategies.short_box_spread(self._symbol, higher_strike, lower_strike, expiry)
+self.buy(short_box_spread, 1)</pre>
     </div>
     
     <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
@@ -85,15 +83,17 @@ self.buy(protective_collar, 1)</pre>
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()
     {
-        Leg.Create(call.Symbol, -1),
-        Leg.Create(put.Symbol, 1),
-        Leg.Create(chain.Underlying.Symbol, 100)   // contract multiplier
+        Leg.Create(itmCall.Symbol, -1),
+        Leg.Create(itmPut.Symbol, -1),
+        Leg.Create(otmCall.Symbol, 1),
+        Leg.Create(otmPut.Symbol, 1),
     };
 ComboMarketOrder(legs, 1);</pre>
         <pre class="python">legs = [
-    Leg.create(call.symbol, -1),
-    Leg.create(put.symbol, 1),
-    Leg.create(chain.underlying.symbol, 100)   # contract multiplier
+    Leg.create(itm_call.symbol, -1),
+    Leg.create(itm_put.symbol, -1),
+    Leg.create(otm_call.symbol, 1),
+    Leg.create(otm_put.symbol, 1),
 ]
 self.combo_market_order(legs, 1)</pre>
     </div>
