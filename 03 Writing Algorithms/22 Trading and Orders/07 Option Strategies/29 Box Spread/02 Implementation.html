@@ -23,8 +23,8 @@ public override void Initialize()
 
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG", Resolution.MINUTE)
-    self._symbol = option.Symbol
-    option.set_filter(-10, 10, 0, 30)<br></pre>
+    self._symbol = option.symbol
+    option.set_filter(-10, 10, 0, 30)</pre>
     </div>
 
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiry and strikes.</li>
@@ -40,6 +40,7 @@ public override void Initialize()
     }
 
     // Select an expiry date and ITM & OTM strike prices
+    var expiry = chain.Max(x =&gt; x.Expiry);
     var contracts = chain.Where(x => x.Expiry == expiry).ToList();
     var higherStrike = contracts.Max(x => x.Strike);
     var lowerStrike = contracts.Min(x => x.Strike);</pre>
