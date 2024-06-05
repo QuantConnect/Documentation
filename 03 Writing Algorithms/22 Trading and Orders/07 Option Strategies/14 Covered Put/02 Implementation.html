@@ -3,13 +3,14 @@
 <ol>
     <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, starting cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">private Symbol _put, _symbol;
+        <pre class="csharp">private Symbol _symbol;
 
 public override void Initialize()
 {
     SetStartDate(2014, 1, 1);
     SetEndDate(2014, 3, 1);
     SetCash(100000);
+
     UniverseSettings.Asynchronous = true;
     var option = AddOption("IBM");
     _symbol = option.Symbol;
@@ -19,20 +20,22 @@ public override void Initialize()
     self.set_start_date(2014, 1, 1)
     self.set_end_date(2014, 3, 1)
     self.set_cash(100000)
+
     self.universe_settings.asynchronous = True
     option = self.add_option("IBM")
     self._symbol = option.symbol
-    option.set_filter(-3, 3, 0, 31)
-    self.put = None</pre>
+    option.set_filter(-3, 3, 0, 31)</pre>
     </div>
 
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the Option contract.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (_put != null &amp;&amp; Portfolio[_put].Invested) return;
-
-    if (!slice.OptionChains.TryGetValue(_symbol, out var chain)) return;
+    if (Portfolio.Invested ||
+        !slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        return;
+    }
 
     // Find ATM put with the farthest expiry
     var expiry = chain.Max(x =&gt; x.Expiry);
@@ -41,7 +44,7 @@ public override void Initialize()
         .OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price))
         .FirstOrDefault();</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.put and self.portfolio[self.put].invested:
+    if self.portfolio.invested:
         return
 
     chain = slice.option_chains.get(self._symbol)
@@ -51,7 +54,7 @@ public override void Initialize()
     # Find ATM put with the farthest expiry
     expiry = max([x.expiry for x in chain])
     put_contracts = sorted([x for x in chain
-        if x.right == Optionright.put and x.expiry == expiry],
+        if x.right == OptionRight.PUT and x.expiry == expiry],
         key=lambda x: abs(chain.underlying.price - x.strike))
 
     if not put_contracts:
@@ -60,32 +63,28 @@ public override void Initialize()
     atm_put = put_contracts[0]</pre>
     </div>
     
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the orders.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.CoveredPut</code><code class="python">OptionStrategies.covered_put</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.CoveredPut</code><code class="python">OptionStrategies.covered_put</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">var coveredput = OptionStrategies.CoveredPut(_symbol, atmput.Strike, expiry);
-Buy(coveredput, 1);
-
-_put = atmput.Symbol;</pre>
+        <pre class="csharp">var coveredPut = OptionStrategies.CoveredPut(_symbol, atmput.Strike, expiry);
+Buy(coveredPut, 1);</pre>
         <pre class="python">covered_put = OptionStrategies.covered_put(self._symbol, atm_put.strike, expiry)
-self.buy(covered_put, 1)
-
-self.put = atm_put.symbol</pre>
+self.buy(covered_put, 1)</pre>
     </div>
     
-    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
     
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()
     {
         Leg.Create(atmPut.Symbol, -1),
-        Leg.Create(chain.Underlying.Symbol, -100)    // the contract multiplier
+        Leg.Create(chain.Underlying.Symbol, -chain.Underlying.SymbolProperties.ContractMultiplier)
     };
 ComboMarketOrder(legs, 1);</pre>
         <pre class="python">legs = [
     Leg.create(atm_put.symbol, -1),
-    Leg.create(chain.underlying.symbol, -100)    # the contract multiplier
+    Leg.create(chain.underlying.symbol, -chain.underlying.symbol_properties.contract_multiplier)
 ]
 self.combo_market_order(legs, 1)</pre>
     </div>

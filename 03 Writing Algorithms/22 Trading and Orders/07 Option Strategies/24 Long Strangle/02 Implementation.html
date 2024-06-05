@@ -10,6 +10,7 @@ public override void Initialize()
     SetStartDate(2017, 4, 1);
     SetEndDate(2017, 4, 30);
     SetCash(100000);
+
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG");
     _symbol = option.Symbol;
@@ -19,6 +20,7 @@ public override void Initialize()
     self.set_start_date(2017, 4, 1)
     self.set_end_date(2017, 4, 30)
     self.set_cash(100000)
+
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG")
     self._symbol = option.symbol
@@ -53,67 +55,62 @@ public override void Initialize()
         .OrderByDescending(contract =&gt; contract.Strike).ToArray();
     if (putContracts.Length == 0) return;
 
-    var otmCall = callContracts[0];
-    var otmPut = putContracts[0];
-    var callStrike = otmCall.Strike;
-    var putStrike = otmPut.Strike;
-}</pre>
+    var call = callContracts[0];
+    var put = putContracts[0];</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.Portfolio.Invested:
+    if self.portfolio.invested:
         return
 
-    chain = slice.OptionChains.get(self._symbol)
+    chain = slice.option_chain.get(self._symbol)
     if not chain:
         return
 
     # Find options with the farthest expiry
-    expiry = max([x.Expiry for x in chain])
-    contracts = [contract for contract in chain if contract.Expiry == expiry]
+    expiry = max([x.expiry for x in chain])
+    contracts = [contract for contract in chain if contract.expiry == expiry]
      
     # Order the OTM calls by strike to find the nearest to ATM
     call_contracts = sorted([contract for contract in contracts
-        if contract.Right == OptionRight.Call and
-            contract.Strike > chain.Underlying.Price],
+        if contract.right == OptionRight.CALL and
+            contract.strike > chain.underlying.price],
         key=lambda x: x.Strike)
     if not call_contracts:
         return
         
     # Order the OTM puts by strike to find the nearest to ATM
     put_contracts = sorted([contract for contract in contracts
-        if contract.Right == OptionRight.Put and
-           contract.Strike < chain.Underlying.Price],
+        if contract.right == OptionRight.PUT and
+           contract.strike < chain.underlying.price],
         key=lambda x: x.Strike, reverse=True)
     if not put_contracts:
         return
 
-    otm_call = call_contracts[0]
-    otm_put = put_contracts[0]
-    call_strike = otm_call.Strike
-    put_strike = otm_put.Strike</pre>
+    call = call_contracts[0]
+    put = put_contracts[0]</pre>
     </div>
     
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the orders.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.Strangle</code><code class="python">OptionStrategies.strangle</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.Strangle</code><code class="python">OptionStrategies.strangle</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">var longStrangle = OptionStrategies.Strangle(_symbol, callStrike, putStrike, expiry);
+        <pre class="csharp">var longStrangle = OptionStrategies.Strangle(_symbol, call.Strike, put.Strike, expiry);
 Buy(longStrangle, 1);</pre>
-        <pre class="python">long_strangle = OptionStrategies.strangle(self._symbol, call_strike, put_strike, expiry)
+        <pre class="python">long_strangle = OptionStrategies.strangle(self._symbol, call.strike, put.strike, expiry)
 self.buy(long_strangle, 1)</pre>
     </div>
     
-    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
     
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()
     {
-        Leg.Create(otmCall.Symbol, 1),
-        Leg.Create(otmPut.Symbol, 1)
+        Leg.Create(call.Symbol, 1),
+        Leg.Create(put.Symbol, 1)
     };
 ComboMarketOrder(legs, 1);</pre>
         <pre class="python">legs = [
-    Leg.create(otm_call.symbol, 1),
-    Leg.create(otm_put.symbol, 1)
+    Leg.create(call.symbol, 1),
+    Leg.create(put.symbol, 1)
 ]
 self.combo_market_order(legs, 1)</pre>
     </div>

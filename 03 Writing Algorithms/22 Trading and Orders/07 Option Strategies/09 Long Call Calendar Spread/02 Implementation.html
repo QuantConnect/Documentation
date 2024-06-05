@@ -10,6 +10,7 @@ public override void Initialize()
     SetStartDate(2017, 2, 1);
     SetEndDate(2017, 2, 19);
     SetCash(500000);
+
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
@@ -19,20 +20,19 @@ public override void Initialize()
     self.set_start_date(2017, 2, 1)
     self.set_end_date(2017, 2, 19)
     self.set_cash(500000)
+
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG", Resolution.MINUTE)
     self._symbol = option.symbol
     option.set_filter(lambda universe: universe.include_weeklys().strikes(-1, 1).expiration(0, 62))</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiration and strikes of the contracts in the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the strike price and expiration dates of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (Portfolio.Invested) return;
-
-    // Get the OptionChain
-    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    if (Portfolio.Invested ||
+        !slice.OptionChains.TryGetValue(_symbol, out var chain))
     {
         return;
     }
@@ -45,36 +45,35 @@ public override void Initialize()
     if (calls.Count() == 0) return;
 
     // Select the near and far expiry contracts
-    var orderedCalls = calls.OrderBy(x =&gt; x.Expiry);
-    var nearExpiryCall = orderedCalls.First();
-    var nearExpiry = nearExpiryCall.Expiry;
-    var farExpiryCall = orderedCalls.Last();
-    var farExpiry = farExpiryCall.Expiry;</pre>
+    var expiries = calls.Select(x =&gt; x.Expiry).ToList();
+    var nearExpiry = expiries.Min();
+    var farExpiry = expiries.Max();</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio.invested: return
+    if self.portfolio.invested:
+        return
 
     # Get the OptionChain
     chain = slice.option_chains.get(self._symbol, None)
-    if not chain: return
+    if not chain:
+        return
 
     # Get the ATM strike
     atm_strike = sorted(chain, key=lambda x: abs(x.strike - chain.underlying.price))[0].strike
 
     # Select the ATM call Option contracts
     calls = [i for i in chain if i.strike == atm_strike and i.right == OptionRight.CALL]
-    if len(calls) == 0: return
+    if len(calls) == 0:
+        return
 
     # Select the near and far expiry dates
-    ordered_calls = sorted(calls, key=lambda x: x.expiry)
-    near_expiry_call = ordered_calls[0]
-    near_expiry = near_expiry_call.expiry
-    far_expiry_call = ordered_calls[-1]
-    far_expiry = far_expiry_call.expiry</pre>
+    expiries = sorted([x.expiry for x in calls])
+    near_expiry = expiries[0]
+    far_expiry = expiries[-1]</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts and place the orders.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.CallCalendarSpread</code><code class="python">OptionStrategies.call_calendar_spread</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.CallCalendarSpread</code><code class="python">OptionStrategies.call_calendar_spread</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.CallCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
 Buy(optionStrategy, 1);</pre>
@@ -82,16 +81,22 @@ Buy(optionStrategy, 1);</pre>
 self.buy(option_strategy, 1)</pre>
     </div>
     
-    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
     
     <div class="section-example-container">
-        <pre class="csharp">var legs = new List&lt;Leg&gt;()
+        <pre class="csharp">var nearExpiryCall = calls.Single(x =&gt; x.Expiry == nearExpiry);
+var farExpiryCall = calls.Single(x =&gt; x.Expiry == farExpiry);
+
+var legs = new List&lt;Leg&gt;()
     {
         Leg.Create(nearExpiryCall.Symbol, -1),
         Leg.Create(farExpiryCall.Symbol, 1)
     };
 ComboMarketOrder(legs, 1);</pre>
-        <pre class="python">legs = [
+        <pre class="python">near_expiry_call = [x for x in calls if x.expiry == near_expiry][0]
+far_expiry_call = [x for x in calls if x.expiry == far_expiry][0]
+
+legs = [
     Leg.create(near_expiry_call.symbol, -1),
     Leg.create(far_expiry_call.symbol, 1)
 ]

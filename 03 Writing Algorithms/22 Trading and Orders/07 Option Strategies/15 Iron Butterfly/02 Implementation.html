@@ -10,6 +10,7 @@ public override void Initialize()
     SetStartDate(2017, 4, 1);
     SetEndDate(2017, 5, 10);
     SetCash(100000);
+
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
@@ -19,6 +20,7 @@ public override void Initialize()
     self.set_start_date(2017, 4, 1)
     self.set_end_date(2017, 5, 10)
     self.set_cash(100000)
+
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG", Resolution.MINUTE)
     self._symbol = option.symbol
@@ -29,62 +31,87 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (Portfolio.Invested) return;
-
-    // Get the OptionChain
-    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    if (Portfolio.Invested ||
+        !slice.OptionChains.TryGetValue(_symbol, out var chain))
     {
         return;
     }
 
+    // Select expiry
+    var expiry = chain.Max(x =&gt; x.Expiry);
+
     // Separate the call and put contracts
-    var calls = chain.Where(x =&gt; x.Right == OptionRight.Call);
-    var puts = chain.Where(x =&gt; x.Right == OptionRight.Put);
+    var calls = chain.Where(x =&gt; x.Right == OptionRight.Call  &amp;&amp; x.Expiry == expiry);
+    var puts = chain.Where(x =&gt; x.Right == OptionRight.Put &amp;&amp; x.Expiry == expiry);
     if (calls.Count() == 0 || puts.Count() == 0) return;
 
-    // Get the ATM strike price
-    var atmStrike = chain.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
-
-    // Select the OTM contracts
-    var otmCallContract = calls.OrderBy(x =&gt; x.Strike).Last();
-    var otmPutContract = puts.OrderBy(x =&gt; x.Strike).First();
-
-    // Select the ATM contracts
-    var atmCallContract = calls.Where(x =&gt; x.Strike == atmStrike).First();
-    var atmPutsContract = puts.Where(x =&gt; x.Strike == atmStrike).First();</pre>
+    // Get the ATM and OTM strike prices
+    var atmStrike = calls.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+    var otmCallStrike = calls.Max(x =&gt; x.Strike);
+    var otmPutStrike = puts.Min(x =&gt; x.Strike);</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio.invested: return
+    if self.portfolio.invested:
+        return
 
     # Get the OptionChain
     chain = slice.option_chains.get(self._symbol, None)
-    if not chain: return
+    if not chain:
+        return
+
+    # Select expiry
+    expiry = max([x.expiry for x in chain])
 
     # Separate the call and put contracts
-    call = [i for i in chain if i.right == 0]
-    put = [i for i in chain if i.right == 1]
-    if len(call) == 0 or len(put) == 0 : return
+    calls = [i for i in chain if i.right == OptionRight.CALL and i.expiry == expiry]
+    puts = [i for i in chain if i.right == OptionRight.PUT and i.expiry == expiry]
+    if not calls or not puts:
+        return
 
-    # Select the OTM contracts
-    call_contracts = sorted(call, key = lambda x: x.strike)
-    put_contracts = sorted(put, key = lambda x: x.strike)
-    otm_call = call_contracts[-1]
-    otm_put = put_contracts[0]
-
-    # Select the ATM contracts
-    atm_put = sorted(put_contracts, key = lambda x: abs(chain.underlying.price - x.strike))[0]
-    atm_call = sorted(call_contracts, key = lambda x: abs(chain.underlying.price - x.strike))[0]
-</pre>
+    # Get the ATM and OTM strike prices
+    atm_strike = sorted(calls, key = lambda x: abs(chain.underlying.price - x.strike))[0].strike
+    otm_call_strike = max([x.strike for x in calls])
+    otm_put_strike = min([x.strike for x in puts])</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, submit the orders.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts and place the orders.</li>
+
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.IronButterfly</code><code class="python">OptionStrategies.iron_butterfly</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">Sell(atmPutsContract.Symbol, 1);
-Sell(atmCallContract.Symbol, 1);
-Buy(otmCallContract.Symbol, 1);
-Buy(otmPutContract.Symbol, 1);</pre>
-        <pre class="python">self.sell(atm_put.symbol, 1)
-self.sell(atm_call.symbol, 1)
-self.buy(otm_call.symbol, 1)
-self.buy(otm_put.symbol, 1)</pre>
+        <pre class="csharp">var ironButterfly = OptionStrategies.IronButterfly(_symbol, otmPutStrike, atmStrike, otmCallStrike, expiry);
+Buy(ironButterfly, 2);</pre>
+        <pre class="python">iron_butterfly = OptionStrategies.iron_butterfly(self._symbol, otm_put_strike, atm_strike, otm_call_strike, expiry)
+self.buy(iron_butterfly, 2)</pre>
+    </div>
+    
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    
+    <div class="section-example-container">
+        <pre class="csharp">// Select the contracts
+var atmCall = calls.Single(x =&gt; x.Strike == atmStrike);
+var atmPut = puts.Single(x =&gt; x.Strike == atmStrike);
+var otmCall = calls.Single(x =&gt; x.Strike == otmCallStrike);
+var otmPut = puts.Single(x =&gt; x.Strike == otmPutStrike);
+
+var legs = new List&lt;Leg&gt;()
+    {
+        Leg.Create(atmCall.Symbol, 1),
+        Leg.Create(atmPut.Symbol, 1),
+        Leg.Create(otmCall.Symbol, -1),
+        Leg.Create(otmPut.Symbol, -1)
+    };
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python"># Select the contracts
+atm_call = [x for x in calls if x.strike == atm_strike][0]
+atm_put = [x for x in puts if x.strike == atm_strike][0]
+otm_call = [x for x in calls if x.strike == otm_call_strike][0]
+otm_put = [x for x in puts if x.strike == otm_put_strike][0]
+
+legs = [
+    Leg.create(atm_call.symbol, 1),
+    Leg.create(atm_put.symbol, 1),
+    Leg.create(otm_call.symbol, -1),
+    Leg.create(otm_put.symbol, -1)
+]
+self.combo_market_order(legs, 1)</pre>
     </div>
 </ol>

@@ -10,6 +10,7 @@ public override void Initialize()
     SetStartDate(2017, 2, 1);
     SetEndDate(2017, 3, 5);
     SetCash(500000);
+
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
@@ -19,71 +20,67 @@ public override void Initialize()
     self.set_start_date(2017, 2, 1)
     self.set_end_date(2017, 3, 5)
     self.set_cash(500000)
+
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG", Resolution.MINUTE)
     self._symbol = option.symbol
     option.set_filter(lambda universe: universe.include_weeklys().strikes(-15, 15).expiration(0, 31))</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiration and strikes of the contracts in the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select strikes and expiration date of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (Portfolio.Invested) return;
-
-    // Get the OptionChain
-    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    if (Portfolio.Invested ||
+        !slice.OptionChains.TryGetValue(_symbol, out var chain))
     {
         return;
     }
 
     // Select the call Option contracts with the furthest expiry
-    var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;    
+    var expiry = chain.Max(x =x&gt; x.Expiry);    
     var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
-    // Select the ATM, ITM and OTM contract strike prices from the remaining contracts
+    // Select the ATM, ITM and OTM contracts from the remaining contracts
     var atmCall = calls.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First();
-    var atmStrike = atmCall.Strike;
     var itmCall = calls.OrderBy(x =&gt; x.Strike).Skip(1).First();
-    var itmStrike = itmCall.Strike;
-    var otmCall = calls.Single(x =&gt; x.Strike == atmStrike * 2 - itmStrike);
-    var otmStrike = otmCall.Strike;</pre>
+    var otmCall = calls.Single(x =&gt; x.Strike == atmCall.Strike * 2 - itmCall.Strike);</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio.invested: return
+    if self.portfolio.invested:
+        return
 
     # Get the OptionChain
     chain = slice.option_chains.get(self._symbol, None)
-    if not chain: return
+    if not chain:
+        return
 
     # Get the furthest expiry date of the contracts
-    expiry = sorted(chain, key = lambda x: x.expiry, reverse=True)[0].expiry
+    expiry = max([x.expiry for x in chain])
     
     # Select the call Option contracts with the furthest expiry
     calls = [i for i in chain if i.expiry == expiry and i.right == OptionRight.CALL]
-    if len(calls) == 0: return
+    if len(calls) == 0:
+        return
 
-    # Select the ATM, ITM and OTM contract strike prices from the remaining contracts
+    # Select the ATM, ITM and OTM contracts from the remaining contracts
     atm_call = sorted(calls, key=lambda x: abs(x.strike - chain.underlying.price))[0]
-    atm_strike = atm_call.strike
     itm_call = sorted(calls, key=lambda x: x.strike)[1]
-    itm_strike = itm_call.strike
-    otm_call = [x for x in calls if x.strike == atm_strike * 2 - itm_strike][0]
-    otm_strike = otm_call.strike</pre>
+    otm_call = [x for x in calls if x.strike == atm_call.strike * 2 - itm_call.strike][0]</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the orders.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.ShortButterflyCall</code><code class="python">OptionStrategies.short_butterfly_call</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.ShortButterflyCall</code><code class="python">OptionStrategies.short_butterfly_call</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
-        <pre class="csharp">var optionStrategy = OptionStrategies.ShortButterflyCall(_symbol, otmStrike, atmStrike, itmStrike, expiry);
+        <pre class="csharp">var optionStrategy = OptionStrategies.ShortButterflyCall(_symbol, otmCall.Strike, atmCall.Strike, itmCall.Strike, expiry);
 Buy(optionStrategy, 1);</pre>
-        <pre class="python">option_strategy = OptionStrategies.short_butterfly_call(self._symbol, otm_strike, atm_strike, itm_strike, expiry)
+        <pre class="python">option_strategy = OptionStrategies.short_butterfly_call(self._symbol, otm_call.strike, atm_call.strike, itm_call.strike, expiry)
 self.buy(option_strategy, 1)</pre>
     </div>
-
-    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
-
+    
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()
     {

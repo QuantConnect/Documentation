@@ -10,6 +10,7 @@ public override void Initialize()
     SetStartDate(2017, 2, 1);
     SetEndDate(2017, 3, 1);
     SetCash(500000);
+
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG");
     _symbol = option.Symbol;
@@ -19,6 +20,7 @@ public override void Initialize()
     self.set_start_date(2017, 2, 1)
     self.set_end_date(2017, 3, 1)
     self.set_cash(500000)
+
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG")
     self._symbol = option.symbol
@@ -34,9 +36,11 @@ public override void Initialize()
         Liquidate();
     }
 
-    if (Portfolio.Invested || !IsMarketOpen(_symbol)) return;
-
-    if (!slice.OptionChains.TryGetValue(_symbol, out var chain)) return;
+    if (Portfolio.Invested || !IsMarketOpen(_symbol) ||
+        !slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        return;
+    }
 
     // Find put and call contracts with the farthest expiry
     var expiry = chain.Max(x =&gt; x.Expiry);
@@ -51,15 +55,9 @@ public override void Initialize()
     var farPut = putContracts[0];
     var nearPut = putContracts[10];
     var nearCall = callContracts[^10];
-    var farCall = callContracts[^1];
-
-    // Select the strikes in the strategy legs
-    var farPutStrike = farPut.Strike;
-    var nearPutStrike = nearPut.Strike;
-    var nearCallStrike = nearCall.Strike;
-    var farCallStrike = farCall.Strike;</pre>
+    var farCall = callContracts[^1];</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio[self.symbol.underlying].invested:
+    if self.portfolio[self._symbol.underlying].invested:
         self.liquidate()
 
     if self.portfolio.invested or not self.is_market_open(self._symbol):
@@ -83,40 +81,34 @@ public override void Initialize()
     far_put = put_contracts[0]
     near_put = put_contracts[10]
     near_call = call_contracts[-10]
-    far_call = call_contracts[-1]
-
-    # Select the strikes in the strategy legs
-    far_put_strike = far_put.strike
-    near_put_strike = near_put.strike
-    near_call_strike = near_call.strike
-    far_call_strike = far_call.strike</pre>
+    far_call = call_contracts[-1]</pre>
     </div>
     
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the orders.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.IronCondor</code><code class="python">OptionStrategies.iron_condor</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.IronCondor</code><code class="python">OptionStrategies.iron_condor</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
         <pre class="csharp">var ironCondor = OptionStrategies.IronCondor(
     _symbol, 
-    farPutStrike,
-    nearPutStrike,
-    nearCallStrike,
-    nearCallStrike,
+    farPut.Strike,
+    nearPut.Strike,
+    nearCall.Strike,
+    nearCall.Strike,
     expiry);
 
 Buy(ironCondor, 2);</pre>
         <pre class="python">iron_condor = OptionStrategies.iron_condor(
-    self.symbol, 
-    far_put_strike,
-    near_put_strike,
-    near_call_strike,
-    far_call_strike,
+    self._symbol, 
+    far_put.strike,
+    near_put.strike,
+    near_call.strike,
+    far_call.strike,
     expiry)
 
 self.buy(iron_condor, 2)</pre>
     </div>
     
-    <p>Alternatively, create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
     
     <div class="section-example-container">
         <pre class="csharp">var legs = new List&lt;Leg&gt;()

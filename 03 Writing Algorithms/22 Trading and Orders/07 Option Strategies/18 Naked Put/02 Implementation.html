@@ -3,13 +3,14 @@
 <ol>
     <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, starting cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">private Symbol _put, _symbol;
+        <pre class="csharp">private Symbol _symbol;
 
 public override void Initialize()
 {
     SetStartDate(2014, 1, 1);
     SetEndDate(2014, 3, 1);
     SetCash(100000);
+
     UniverseSettings.Asynchronous = true;
     var option = AddOption("IBM");
     _symbol = option.Symbol;
@@ -19,20 +20,19 @@ public override void Initialize()
     self.set_start_date(2014, 1, 1)
     self.set_end_date(2014, 3, 1)
     self.set_cash(100000)
+
     self.universe_settings.asynchronous = True
     option = self.add_option("IBM")
     self._symbol = option.symbol
-    option.set_filter(-3, 3, 0, 31)
-    self.put = None</pre>
+    option.set_filter(-3, 3, 0, 31)</pre>
     </div>
   
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the Option contract.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (_put != null &amp;&amp; Portfolio[_put].Invested) return;
-
-    if (!slice.OptionChains.TryGetValue(_symbol, out var chain)) return;
+    if (Portfolio.Invested ||
+        !slice.OptionChains.TryGetValue(_symbol, out var chain)) return;
 
     // Find ATM put with the farthest expiry
     var expiry = chain.Max(x =&gt; x.Expiry);
@@ -41,7 +41,7 @@ public override void Initialize()
         .OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price))
         .FirstOrDefault();</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.put and self.portfolio[self.put].invested:
+    if self.portfolio.invested:
         return
 
     chain = slice.option_chains.get(self._symbol)
@@ -60,21 +60,17 @@ public override void Initialize()
     atm_put = put_contracts[0]</pre>
     </div>
     
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the orders.</li>
 
-    <p>To place the order, call the <code class="csharp">OptionStrategies.NakedPut</code><code class="python">OptionStrategies.naked_put</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.NakedPut</code><code class="python">OptionStrategies.naked_put</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
     <div class="section-example-container">
         <pre class="csharp">var nakedPut = OptionStrategies.NakedPut(_symbol, atmPut.Strike, expiry);
-Buy(nakedPut, 1);
-
-_put = atmPut.Symbol;</pre>
+Buy(nakedPut, 1);</pre>
         <pre class="python">naked_put = OptionStrategies.naked_put(self._symbol, atm_put.strike, expiry)
-self.buy(naked_put, 1)
-
-self.put = atm_put.symbol</pre>
+self.buy(naked_put, 1)</pre>
     </div>
     
-    <p>Alternatively, call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders"><span class="csharp">Market Order</span><span class="python">market_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders"><span class="csharp">Limit Order</span><span class="python">limit_order</span></a> method.</p>
+    <p><b>Approach B:</b> Call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders"><span class="csharp">Market Order</span><span class="python">market_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders"><span class="csharp">Limit Order</span><span class="python">limit_order</span></a> method.</p>
 
     <div class="section-example-container">
         <pre class="csharp">MarketOrder(atmPut.Symbol, -1);</pre>
