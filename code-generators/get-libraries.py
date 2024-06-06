@@ -1,22 +1,59 @@
 from os import path, popen
 from pathlib import Path
-if __name__ == '__main__':
 
+RESOURCE = Path('Resources/libraries/')
+
+def __process_pip_line(line):
+    if '@' not in line:
+        return line
+    line = next(filter(lambda l: 'whl' in l, line.split('/')), '')
+    if not line:
+        return line
+    return '=='.join(line.split('-')[:2]).replace('_','-') + '\n'
+
+def __create_python_libraries_file():
+    cmd = 'docker run --entrypoint bash quantconnect/lean:latest -c "pip3 freeze"'
+    lines = [__process_pip_line(line) for line in popen(cmd).readlines()]
+    with open(RESOURCE / 'default-python.txt', mode='w', encoding='utf-8') as fp:
+        fp.write(''.join([l for l in lines if l]))
+
+def __create_csharp_libraries_file():
     lean_sln = Path("../Lean/QuantConnect.Lean.sln")
     # Install Lean
     if not lean_sln.is_file():
         popen("git clone https://github.com/QuantConnect/Lean.git ../Lean").close()
         popen(f"dotnet restore {lean_sln.resolve()}").close()
 
-    docker_run = 'docker run --entrypoint bash quantconnect/lean:latest -c '
+    cmd = f'dotnet list {lean_sln.resolve()} package'
+    def process_line(line):
+        return '=='.join([l for l in line.split(' ') if l][1:3])
+    lines = sorted(set([process_line(line) for line in popen(cmd).readlines() if '>' in line]))
+    with open(RESOURCE / 'default-csharp.txt', mode='w', encoding='utf-8') as fp:
+        fp.write('\n'.join(lines))
 
-    cmds_by_file = {
-        'supported-libraries.php': {
-            'python': f'{docker_run} "pip list"',
-            'csharp': f'dotnet list {lean_sln.resolve()} package'
-        }
-    }
+def __library_to_code_block(maxlen, libraries):
+    def format_output(key: str, value: str, maxlen: int) -> str:
+        count = maxlen - len(key)
+        value = value.replace("\n", "")
+        return f'{key + " " * count} {value}'
+    html = ''
+    for key, value in sorted(libraries.items(), key=lambda x: x[0].lower()):
+        html += format_output(key, value, maxlen) + '\n'
+    return html
 
+def __read_libraries_from_file(filename):
+    with open(filename, mode='r', encoding='utf-8') as f:
+        def line_to_kvp(line):
+            csv = line.split('==')
+            return csv[0],csv[1][:-1]
+        lines = [__process_pip_line(line) for line in f.readlines()]
+        libraries = dict([line_to_kvp(line) for line in lines if '==' in line])
+        return len(max(libraries.keys(), key=len)), libraries
+
+if __name__ == '__main__':
+    __create_csharp_libraries_file()
+    __create_python_libraries_file()
+    
     package_reference = '''<PackageReference Include="Accord" Version="3.6.0" />
     <PackageReference Include="Accord.Audio" Version="3.6.0" />
     <PackageReference Include="Accord.Fuzzy" Version="3.6.0" />
@@ -145,7 +182,7 @@ if __name__ == '__main__':
             'example': '',
             'version': '',
             },
-        'stable-baselines3': {
+        'stable_baselines3': {
             'name': 'Stable-Baselines3',
             'url': 'https://stable-baselines3.readthedocs.io/en/master',
             'code': 'from stable_baselines3 import *',
@@ -195,56 +232,40 @@ if __name__ == '__main__':
             }
     }
 
-    for filename, cmds in cmds_by_file.items():
-        with open(f'Resources/libraries/{filename}', mode='w', encoding='utf-8') as fp:
-            html = '<div class="section-example-container">\n'
-            for language, cmd in cmds.items():
-                html += f'<pre class="{language}">\n'
-                maxlen, libraries = 39, {'# Name': 'Version'}
-                content = popen(cmd)
+    with open(RESOURCE / 'supported-libraries.php', mode='w', encoding='utf-8') as fp:
+        html = '<div class="section-example-container">\n'
+        for language in ['python', 'csharp']:
+            maxlen, libraries = __read_libraries_from_file(RESOURCE / f'default-{language}.txt')
 
-                for i, line in enumerate(content.readlines()):
-                    if i < 2: continue
-                    if "WARNING" in line: break
-                
-                    line = [x for x in line.split(' ') if x != '']
-                
-                    if language == "csharp":
-                        if ">" not in line: continue
-                    
-                        if line[-1] != "\n":
-                            key, value = [line[1]] + [line[-1].replace("\n", "")]
-                        else:
-                            key, value = [line[1]] + [line[-2].replace("\n", "")]
-                    else:
-                        key, value = line[:2]
-                        if key in selected:
-                            if not selected[key]['version']:
-                                selected[key]['version'] = line[1][:-1]
-                    maxlen = max(maxlen, len(key))
-                    libraries[key] = value
+            for key, value in libraries.items():
+                if key in selected:
+                    if not selected[key]['version']:
+                        selected[key]['version'] = value
 
-                def format_output(key: str, value: str, maxlen: int) -> str:
-                    count = maxlen - len(key)
-                    value = value.replace("\n", "")
-                    return f'{key + " " * count} {value}'
+            html += f'<pre class="{language}">\n' 
+            html += __library_to_code_block(maxlen, libraries)
 
-                for key, value in sorted(libraries.items(), key=lambda x: x[0].lower()):
-                    html += format_output(key, value, maxlen) + '\n'
+            # Add C# Cloud
+            if language == "csharp":
+                html += '<? if ($cloudPlatform) { ?>\n'
+                cloud_added = {k:v for k,v in cloud_added.items() if k not in libraries}
+                html += __library_to_code_block(maxlen, cloud_added)
+                html += '<? } ?>\n'
 
-                # Add C# Cloud
-                if language == "csharp":
-                    html += '<? if ($cloudPlatform) { ?>\n'
-                    for key, value in sorted(cloud_added.items(), key=lambda x: x[0].lower()):
-                        if key not in libraries:
-                            html += format_output(key, value, maxlen) + '\n'
-                    html += '<? } ?>\n'
+            html += '</pre>'
 
-                html += '</pre>'
+        html += '</div>'
+        fp.write(html)
 
-            html += '</div>'
-            fp.write(html)
-
+    for enviroment in ['autogluon','autokeras']:
+        with open(RESOURCE / f'supported-libraries-foundation-{enviroment}.html', mode='w', encoding='utf-8') as fp:
+            maxlen, libraries = __read_libraries_from_file(RESOURCE / f'{enviroment}.txt')
+            fp.write(f'''
+<div class="section-example-container"><pre class="python">
+{__library_to_code_block(maxlen, libraries)}
+</pre></div>
+''')
+        
     html = '''<style> 
 .centered {text-align: center; }
 </style>
