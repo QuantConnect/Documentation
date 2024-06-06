@@ -2,7 +2,7 @@
 <ol>
     <li>Set the key name of the model to be stored in the Object Store.</li>
     <div class="section-example-container">
-        <pre class="python">model_key = "model"</pre>
+        <pre class="python">model_key = "model.hdf5"</pre>
     </div>
 
     <li>Call the <code class="csharp">GetFilePath</code><code class="python">get_file_path</code> method with the key.</li>
@@ -11,8 +11,10 @@
     </div>
     <p>This method returns the file path where the model will be stored.</p>
 
-    <li>Call the <code>to_hdf5</code> method with the file path.</li>
+    <li>Call the <code>to_hdf5</code> method with the file path. Delete the file to avoid <code>FileExistsError</code> from the <code>to_hdf5</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">self.model.to_hdf5(file_name + ".hdf5")</pre>
+        <pre class="python">import os
+os.remove(file_name)
+self.model.to_hdf5(file_name)</pre>
     </div>
 </ol>
