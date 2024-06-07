@@ -4,7 +4,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
-<p>The following table shows the price details of the assets in the algorithm at Option expiration (2017-04-22):</p>
+<p>The following table shows the price details of the assets in the algorithm at Option expiration (04/22/2017):</p>
 
 <table class="table qc-table" id="payoff-table">
 <thead>
@@ -42,7 +42,7 @@ P_T &amp; = &amp; (C^{OTM}_T + P^{OTM}_T - C^{OTM}_0 - P^{OTM}_0)\times m - fee\
 \end{array}
 $$<br>
 
-<p>So, the strategy losses $1,013.</p>
+<p>So, the strategy loses $1,013.</p>
 
 <?
 $optionStrategyName = "a long straddle";
