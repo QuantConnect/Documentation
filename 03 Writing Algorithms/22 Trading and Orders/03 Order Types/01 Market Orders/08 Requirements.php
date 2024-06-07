@@ -8,5 +8,5 @@
 <ol>
   <li>Open the <a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a> documentation.</li>
   <li>Click an asset class.</li>
-  <li>Click <span class=button-name'>Market Hours</span>.</li>
+  <li>Click <span class='button-name'>Market Hours</span>.</li>
 </ol>
