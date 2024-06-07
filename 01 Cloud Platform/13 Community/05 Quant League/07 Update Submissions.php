@@ -13,7 +13,7 @@
   <ol>
       <li>Click <span class="button-name">Attach Backtest</span>.</li>
       <li>Click the <span class="field-name">Project</span> field and then select the project that contains the backtest that you want to attach from the drop-down menu.</li>
-      <p><b>Note: You can only attach projects that you own.</b></p>
+      <div class='highlight'>Note: You can only attach projects that you own.</div>
       <li>Click the <span class="field-name">Backtest</span> field and then select a backtest from the drop-down menu.</li>
   </ol>
   <li>Click <span class="button-name">Update League Submission</span>.</li>
