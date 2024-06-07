@@ -159,13 +159,75 @@ paths:
               explode: false
               schema:
                 type: string
+  /projects/collaborators/create:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 02 Project Management
+      - 05 Collaboration Management
+      - 01 Create Collaborator
+      summary: Adds collaborator to the project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCollaboratorRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCollaboratorResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /projects/collaborators/read:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 02 Project Management
+      - 05 Collaboration Management
+      - 02 Read Collaborators
+      summary: List all collaborators in a project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadCollaboratorsRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadCollaboratorsResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+
   /projects/nodes/read:
     post:
       tags:
       - 01 Cloud Platform
       - 99 API Reference
       - 02 Project Management
-      - 05 Read Project Nodes
+      - 06 Node Management
+      - 01 Read Project Nodes
       summary: Read all nodes in a project.
       requestBody:
         content:
@@ -194,7 +256,8 @@ paths:
       - 01 Cloud Platform
       - 99 API Reference
       - 02 Project Management
-      - 06 Update Project Nodes
+      - 06 Node Management
+      - 02 Update Project Nodes
       summary: Update the active state of some nodes to true. If you don't provide any nodes, all the nodes become inactive and AutoSelectNode is true.
       requestBody:
         content:
@@ -572,6 +635,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_3'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/insights/read:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 05 Backtest Management
+      - 02 Read Backtest
+      - 04 Insights
+      summary: Read out the insights of a backtest.
+      requestBody:
+        description: Fetch the insights of a backtest for the project Id, backtest Id and steps provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadBacktestInsightsRequest'
+        required: true
+      responses:
+        "200":
+          description: Orders of the backtest within range.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestInsightsResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -1395,6 +1489,21 @@ components:
           type: integer
           description: Total number of returned orders
       description: Contains orders and the number of orders of the backtest in the request criteria.
+    BacktestInsightsResponse:
+      type: object
+      properties:
+        insights:
+          type: array
+          description: Collection of insights.
+          items:
+            $ref: '#/components/schemas/Insight'
+        length:
+          type: integer
+          description: Total number of returned insights
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+      description: Contains insights and the number of insights of the backtest in the request criteria.
     BacktestResponse:
       type: object
       properties:
@@ -2025,6 +2134,61 @@ components:
         owner:
           type: boolean
           description: Indicate if the user is the owner of the project.
+    CreateCollaboratorRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id we sent for compile.
+        collaboratorUserId:
+          type: string
+          description: User Id of the collaborator we want to add.
+        collaborationLiveControl:
+          type: bool
+          description: Gives the right to deploy and stop live algorithms.
+        collaborationWrite:
+          type: bool
+          description: Gives the right to edit the code.
+      description: Request to create a new backtest.
+    CreateCollaboratorResponse:
+      type: object
+      properties:
+        collaborators:
+          type: array
+          description: List of collaborators.
+          items:
+            $ref: '#/components/schemas/Collaborator'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+      description: Response received when creating collaborator.
+    ReadCollaboratorsRequest:
+      required:
+      - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project from which to read one or multiple collaborators.
+      description: Request to list the collaborators in a project.
+    ReadCollaboratorsResponse:
+      type: object
+      properties:
+        collaborators:
+          type: array
+          description: List of collaborators.
+          items:
+            $ref: '#/components/schemas/Collaborator'
+        userLiveControl:
+          type: boolean
+          description: Indicate if the user has the right to deploy and stop live algorithms.
+        userPermissions:
+          type: string
+          description: List the user permissions - write/read
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+      description: Response received when reading the collaborators of a project.
     CompileFile:
       type: object
       properties:
@@ -2716,10 +2880,41 @@ components:
         id:
           type: string
           description: Insight ID.
+        groupId:
+          type: string
+          description: ID of the group of insights.
+        sourceModel:
+          type: string
+          description: Name of the model that sourced the insight.
+        generatedTime:
+          type: string
+          description: Gets the utc unixtime this insight was generated.
         createdTime:
           type: number
           description: Gets the utc unixtime this insight was created.
           format: float
+        closeTime:
+          type: number
+          description: Gets the utc unixtime this insight was closed.
+          format: float
+        symbol:
+          type: string
+          description: Gets the symbol ID this insight is for.
+        ticker:
+          type: string
+          description: Gets the symbol ticker this insight is for.
+        type:
+          type: string
+          description: Gets the type of insight, for example, price or volatility.
+          enum:
+          - price
+          - volatility
+        reference:
+          type: string
+          description: Gets the initial reference value this insight is predicting against.
+        referenceValueFinal:
+          type: string
+          description: Gets the final reference value, used for scoring, this insight is predicting against.
         direction:
           type: string
           description: Gets the predicted direction, down, flat or up.
@@ -2727,15 +2922,26 @@ components:
           - down
           - flat
           - up
-        type:
-          type: string
-          description: Gets the type of insight, for example, price or volatility.
-          enum:
-          - price
-          - volatility
-        symbol:
-          type: string
-          description: Gets the symbol ID this insight is for.
+        period:
+          type: number
+          description: Gets the period, in seconds, over which this insight is expected to come to fruition.
+          format: float
+        magnitude:
+          type: number
+          description: Gets the predicted percent change in the insight type (price/volatility). This value can be null.
+          format: float
+        confidence:
+          type: number
+          description: Gets the confidence in this insight. This value can be null.
+          format: float
+        weight:
+          type: number
+          description: Gets the portfolio weight of this insight. This value can be null.
+          format: float
+        scoreIsFinal:
+          type: bool
+          description: Gets whether or not this is the insight's final score.
+          format: float
         scoreDirection:
           type: number
           description: Gets the direction score.
@@ -2744,13 +2950,13 @@ components:
           type: number
           description: Gets the magnitude score.
           format: float
-        period:
+        estimatedValue:
           type: number
-          description: Gets the period, in seconds, over which this insight is expected to come to fruition.
+          description: Gets the estimated value of this insight in the account currency.
           format: float
-        weight:
-          type: number
-          description: Gets the portfolio weight of this insight. This value can be null.
+        tag:
+          type: string
+          description: The insight's tag containing additional information
           format: float
       description: Insight struct for emitting new prediction.
     KrakenSettings:
@@ -4351,6 +4557,27 @@ components:
           type: string
           description: Id of the backtest from which to read the orders.
       description: Request to read orders from a backtest.
+    ReadBacktestInsightsRequest:
+      required:
+      - start
+      - end
+      - projectId
+      - backtestId
+      type: object
+      properties:
+        start:
+          type: integer
+          description: Starting index of the insights to be fetched. Required if end > 100.
+        end:
+          type: integer
+          description: Last index of the insights to be fetched. Note that end - start must be less than 100.
+        projectId:
+          type: integer
+          description: Id of the project from which to read the backtest.
+        backtestId:
+          type: string
+          description: Id of the backtest from which to read the insights.
+      description: Request to read insights from a backtest.
     ReadLiveChartRequest:
       type: object
       properties:
