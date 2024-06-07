@@ -61,9 +61,12 @@
 <li><a href="#2.2.9" class="toc-h3" target="_parent">2.2.9 Modeling Fee Structures</a></li>
 <li><a href="#2.2.10" class="toc-h3" target="_parent">2.2.10 Updating the Algorithm API</a></li>
 <li><a href="#2.3" class="toc-h2" target="_parent">2.3 Indicators</a></li>
-<li><a href="#3" class="toc-h1" target="_parent">3 Statistics</a></li>
-<li><a href="#3.1" class="toc-h2" target="_parent">3.1 Capacity</a></li>
-<li><a href="#4" class="toc-h1" target="_parent">4 Class Reference</a></li>
+<li><a href="#3" class="toc-h1" target="_parent">3 Data Format</a></li>
+<li><a href="#3.1" class="toc-h2" target="_parent">3.1 Key Concepts</a></li>
+<li><a href="#3.2" class="toc-h2" target="_parent">3.2 Core Data Types</a></li>
+<li><a href="#4" class="toc-h1" target="_parent">4 Statistics</a></li>
+<li><a href="#4.1" class="toc-h2" target="_parent">4.1 Capacity</a></li>
+<li><a href="#5" class="toc-h1" target="_parent">5 Class Reference</a></li>
 </ul>
 </nav>
 <p style="page-break-after: always;">&nbsp;</p>
@@ -4659,16 +4662,1018 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
 </html>
 
 <p style="page-break-after: always;">&nbsp;</p>
-<p class='page-breadcrumb'>Statistics</p>
+<p class='page-breadcrumb'>Data Format</p>
 <div class='page-heading'>
     <section id="3">
+        <h1>Data Format</h1>
+        
+    </section>
+</div>
+<p class='page-breadcrumb'>Data Format > Key Concepts</p>
+<div class='page-heading'>
+    <section id="3.1">
+        <h1>Data Format</h1>
+        <h2>Key Concepts</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   From the beginning, LEAN has strived to use an open, human-readable data format - independent of any specific database or file format. From this core philosophy, we built LEAN to read its financial data from flat files on disk. Data compression is done in zip format, and all individual files are CSV or JSON.
+  </p>
+  <p>
+   The prices are expressed in the asset
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency">
+    quote currency
+   </a>
+   . For example, the value 0.06920 for ETHBTC is the amount of BTC, the quote currency, you need to buy 1 ETH.
+  </p>
+  <p>
+   When there is no activity for a security, the price is omitted from the file. Only new ticks and price changes are recorded.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   Data files are separated and nested in a few predictable layers:
+  </p>
+  <ul>
+   <li>
+    Tick, Second and Minute:
+    <span class="public-file-name">
+     /data/securityType/marketName/resolution/ticker/date_tradeType.zip
+    </span>
+   </li>
+   <li>
+    Hour, Daily:
+    <span class="public-file-name">
+     /data/securityType/marketName/resolution/ticker.zip
+    </span>
+   </li>
+  </ul>
+  <p>
+   The
+   <span class="public-file-name">
+    marketName
+   </span>
+   value is used to separate different tradable assets with the same ticker. E.g. BTCUSDT is traded on multiple brokerages all with slightly different prices.
+  </p>
+ </body>
+</html>
+
+<h3>Price Representation</h3>
+<html>
+ <body>
+  <p>
+   The prices are expressed in the asset
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency">
+    quote currency
+   </a>
+   . For example, the value 0.06920 for ETHBTC is the amount of BTC, the quote currency, you need to buy 1 ETH.
+  </p>
+  <p>
+   When there is no activity for a security, the price is omitted from the file. Only new ticks and price changes are recorded.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Core Data Types</p>
+<div class='page-heading'>
+    <section id="3.2">
+        <h1>Data Format</h1>
+        <h2>Core Data Types</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This page shows the file schema of the core data types represented in
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes">
+    supported asset classes
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Trade Tick</h3>
+<html>
+ <body>
+  <p>
+   <code>
+    Tick
+   </code>
+   of
+   <code>
+    TickType.
+   </code>
+   <code class="csharp">
+    Trade
+   </code>
+   <code class="python">
+    Quote
+   </code>
+   represents an individual record of trades for an asset. Tick data does not have a period.
+  </p>
+  <p>
+   The file schema is as follows:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight in the timezone of the data format
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Trade Sale
+     </td>
+     <td>
+      Most recent trade price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Quantity
+     </td>
+     <td>
+      Amount of asset purchased or sold
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Exchange
+     </td>
+     <td>
+      Location of the sale
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Trade Sale Condition
+     </td>
+     <td>
+      Notes on the sale
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the trade is far from other market prices and may be reversed.
+      <a href="">
+       TradeBar data
+      </a>
+      excludes suspicious ticks.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The trade has one of the following
+   <code>
+    QuoteConditionFlags
+   </code>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th style="width: 25%">
+      <code>
+       TradeConditionFlags
+      </code>
+     </th>
+     <th>
+      Status
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <code class="csharp">
+       Regular
+      </code>
+      <code class="python">
+       REGULAR
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      A trade made without stated conditions is deemed the regular way for settlement on the third business day following the transaction date.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       FormT
+      </code>
+      <code class="python">
+       FORM_T
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Trading in extended hours enables investors to react quickly to events that typically occur outside regular market hours, such as earnings reports. However, liquidity may be constrained during such Form T trading, resulting in wide bid-ask spreads.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Cash
+      </code>
+      <code class="python">
+       CASH
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      A transaction that requires delivery of securities and payment on the same day the trade takes place.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       ExtendedHours
+      </code>
+      <code class="python">
+       EXTENDED_HOURS
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Identifies a trade that was executed outside of regular primary market hours and is reported as an extended hours trade.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       NextDay
+      </code>
+      <code class="python">
+       NEXT_DAY
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      A transaction that requires the delivery of securities on the first business day following the trade date.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       OfficialClose
+      </code>
+      <code class="python">
+       OFFICIAL_CLOSE
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Indicates the "official" closing value determined by a Market Center. This transaction report will contain the market center generated closing price.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       OfficialOpen
+      </code>
+      <code class="python">
+       OFFICIAL_OPEN
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Indicates the 'Official' open value as determined by a Market Center. This transaction report will contain the market center generated opening price.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       ClosingPrints
+      </code>
+      <code class="python">
+       CLOSING_PRINTS
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      The transaction that constituted the trade-through was a single priced closing transaction by the Market Center.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       OpeningPrints
+      </code>
+      <code class="python">
+       OPENING_PRINTS
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      The trade that constituted the trade-through was a single priced opening transaction by the Market Center.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       IntermarketSweep
+      </code>
+      <code class="python">
+       INTERMARKET_SWEEP
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      The transaction that constituted the trade-through was the execution of an order identified as an Intermarket Sweep Order.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       TradeThroughExempt
+      </code>
+      <code class="python">
+       TRADE_THROUGH_EXEMPT
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      Denotes whether or not a trade is exempt (Rule 611).
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       OddLot
+      </code>
+      <code class="python">
+       ODD_LOT
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      Denotes the trade is an odd lot less than a 100 shares.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   See more information in the
+   <a href="https://us-equity-market-data-docs.s3.amazonaws.com/algoseek.US.Equity.TAQ.pdf" rel="nofollow" target="_blank">
+    AlgoSeek whitepaper
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Quote Tick</h3>
+<html>
+ <body>
+  <p>
+   <code>
+    Tick
+   </code>
+   of
+   <code>
+    TickType.
+   </code>
+   <code class="csharp">
+    Quote
+   </code>
+   <code class="python">
+    QUOTE
+   </code>
+   represents an individual record of quote updates for an asset. Tick data does not have a period.
+  </p>
+  <p>
+   The file schema is as follows:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight in the timezone of the data format
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Price
+     </td>
+     <td>
+      Best bid price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Price
+     </td>
+     <td>
+      Best ask price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Size
+     </td>
+     <td>
+      Best bid price's size/quantity
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Size
+     </td>
+     <td>
+      Best ask price's size/quantity
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Exchange
+     </td>
+     <td>
+      Location of the sale
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Quote Sale Condition
+     </td>
+     <td>
+      Notes on the sale.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the quote is far from other market prices and may be reversed. Each quote tick contains either bid or ask data only.
+      <a href="">
+       QuoteBar data
+      </a>
+      data excludes suspicious ticks.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The quote has one of the following
+   <code>
+    QuoteConditionFlags
+   </code>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th style="width: 25%">
+      <code>
+       QuoteConditionFlags
+      </code>
+     </th>
+     <th>
+      Status
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <code class="csharp">
+       Closing
+      </code>
+      <code class="python">
+       CLOSING
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Indicates that this quote was the last quote for a security for that Participant.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       NewsDissemination
+      </code>
+      <code class="python">
+       NEWS_DISSEMINATION
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Denotes a regulatory trading halt when relevant news influencing the security is being disseminated. Trading is 
+suspended until the primary market determines that an adequate publication or disclosure of information has occurred.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       NewsPending
+      </code>
+      <code class="python">
+       NEWS_PENDING
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Denotes a regulatory Trading Halt due to an expected news announcement, which may influence the security. An Opening Delay or Trading Halt may be continued once the news has been disseminated.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       TradingRangeIndication
+      </code>
+      <code class="python">
+       TRADING_RANGE_INDICATION
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Denotes the probable trading range (Bid and Offer prices, no sizes) of a security that is not Opening Delayed or Trading Halted. The Trading Range Indication is used prior to or after the opening of a security.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       OrderImbalance
+      </code>
+      <code class="python">
+       ORDER_IMBALANCE
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Denotes a non-regulatory halt condition where there is a significant imbalance of buy or sell orders.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Resume
+      </code>
+      <code class="python">
+       RESUME
+      </code>
+     </td>
+     <td>
+      Included
+     </td>
+     <td>
+      Indicates that trading for a Participant is no longer suspended in a security that had been Opening Delayed or Trading Halted.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Regular
+      </code>
+      <code class="python">
+       REGULAR
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      This condition is used for the majority of quotes to indicate a normal trading environment.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Slow
+      </code>
+      <code class="python">
+       SLOW
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      This condition is used to indicate that the quote is a Slow Quote on both the bid and offer sides due to a Set Slow List that includes high price securities.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Gap
+      </code>
+      <code class="python">
+       GAP
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      While in this mode, auto-execution is not eligible, the quote is then considered manual and non-firm in the bid and offer, and either or both sides can be traded through as per Regulation NMS.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       OpeningQuote
+      </code>
+      <code class="python">
+       OPENING_QUOTE
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      This condition can be disseminated to indicate that this quote was the opening quote for a security for that Participant.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       FastTrading
+      </code>
+      <code class="python">
+       FAST_TRADING
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      For extremely active periods of short duration. While in this mode, the UTP Participant will enter quotations on a best efforts basis.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Resume
+      </code>
+      <code class="python">
+       RESUME
+      </code>
+     </td>
+     <td>
+      Excluded
+     </td>
+     <td>
+      Indicate that trading for a Participant is no longer suspended in a security which had been Opening Delayed or Trading Halted.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   See more information in the
+   <a href="https://us-equity-market-data-docs.s3.amazonaws.com/algoseek.US.Equity.TAQ.pdf" rel="nofollow" target="_blank">
+    AlgoSeek whitepaper
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Trade Bar</h3>
+<html>
+ <body>
+  <p>
+   <code>
+    TradeBar
+   </code>
+   represents trade ticks of assets consolidated for a period.
+  </p>
+  <p>
+   The file schema is as follows:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Second and Minute: Milliseconds since midnight in the timezone of the data format
+      <br/>
+      Hour or Daily: Date/time formatted as
+      <span class="public-file-name">
+       YYYYMMDD HH:mm
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Open
+     </td>
+     <td>
+      Open Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      High
+     </td>
+     <td>
+      High Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Low
+     </td>
+     <td>
+      Low Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Close
+     </td>
+     <td>
+      Close Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Volume
+     </td>
+     <td>
+      Number of shares traded in the period
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Quote Bar</h3>
+<html>
+ <body>
+  <p>
+   <code>
+    QuoteBar
+   </code>
+   represents top of book quote data consolidated over a period of time (bid and ask bar).
+  </p>
+  <p>
+   The file schema is as follows:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Second and Minute: Milliseconds since midnight in the timezone of the data format
+      <br/>
+      Hour or Daily: Date/time formatted as
+      <span class="public-file-name">
+       YYYYMMDD HH:mm
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Open
+     </td>
+     <td>
+      Bid Open Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid High
+     </td>
+     <td>
+      Bid High Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Low
+     </td>
+     <td>
+      Bid Low Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Close
+     </td>
+     <td>
+      Bid Close Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Size
+     </td>
+     <td>
+      Number of shares being bid that quoted in this QuoteBar
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Open
+     </td>
+     <td>
+      Ask Open Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask High
+     </td>
+     <td>
+      Ask High Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Low
+     </td>
+     <td>
+      Ask Low Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Close
+     </td>
+     <td>
+      Ask Close Price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Size
+     </td>
+     <td>
+      Number of shares being asked that quoted in this QuoteBar
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Open Interest</h3>
+<html>
+ <body>
+  <p>
+   <code>
+    OpenIntest
+   </code>
+   represents the outstanding contracts.
+  </p>
+  <p>
+   The file schema is as follows:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <td>
+     Time
+    </td>
+    <td>
+     Second and Minute: Milliseconds since midnight in the timezone of the data format
+     <br/>
+     Hour or Daily: Date/time formatted as
+     <span class="public-file-name">
+      YYYYMMDD HH:mm
+     </span>
+    </td>
+    <tr>
+     <td>
+      Open Interest
+     </td>
+     <td>
+      Outstanding contracts
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Statistics</p>
+<div class='page-heading'>
+    <section id="4">
         <h1>Statistics</h1>
         
     </section>
 </div>
 <p class='page-breadcrumb'>Statistics > Capacity</p>
 <div class='page-heading'>
-    <section id="3.1">
+    <section id="4.1">
         <h1>Statistics</h1>
         <h2>Capacity</h2>
     </section>
@@ -4920,7 +5925,7 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Class Reference</p>
 <div class='page-heading'>
-    <section id="4">
+    <section id="5">
         <h1>Class Reference</h1>
         
     </section>
