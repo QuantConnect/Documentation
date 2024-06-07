@@ -1,7 +1,8 @@
-from os import path, popen
+from os import chdir, path, popen
 from pathlib import Path
 
-RESOURCE = Path('Resources/libraries/')
+chdir(path.dirname(path.abspath(__file__)))
+RESOURCE = Path('../Resources/libraries/')
 
 def __process_pip_line(line):
     if '@' not in line:
