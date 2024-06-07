@@ -27,7 +27,7 @@ public override void Initialize()
     option.set_filter(lambda universe: universe.include_weeklys().strikes(-15, 15).expiration(0, 31))</pre>
     </div>
 
-    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select strikes and expiration date of the contracts in the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts of the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -50,20 +50,20 @@ public override void Initialize()
     if self.portfolio.invested:
         return
 
-    # Get the OptionChain
+    # Get the OptionChain.
     chain = slice.option_chains.get(self._symbol, None)
     if not chain:
         return
 
-    # Get the furthest expiry date of the contracts
+    # Get the furthest expiry date of the contracts.
     expiry = max([x.expiry for x in chain])
     
-    # Select the call Option contracts with the furthest expiry
+    # Select the call Option contracts with the furthest expiry.
     calls = [i for i in chain if i.expiry == expiry and i.right == OptionRight.CALL]
     if len(calls) == 0:
         return
 
-    # Select the ATM, ITM and OTM contracts from the remaining contracts
+    # Select the target contracts.
     atm_call = sorted(calls, key=lambda x: abs(x.strike - chain.underlying.price))[0]
     itm_call = sorted(calls, key=lambda x: x.strike)[-2]
     otm_call = [x for x in calls if x.strike == atm_call.strike * 2 - itm_call.strike][0]</pre>
