@@ -19,6 +19,9 @@ def to_url(parts):
 
 def __generate_metadata(entry):
     description = entry[MARKET_HOUR.INTRODUCTION][3:-4]
+    end = description.find('\n') - 4
+    if end > 0:
+        description = description[:end]
     target = entry['target'].parts
     site_name = target[-1][3:]
     metadata = {
@@ -231,7 +234,10 @@ for key, entry in entries.items():
     entry['target'] = Path(f"{WRITING_ALGORITHMS}/03 Securities/99 Asset Classes/{mapping}")
 
     entry[MARKET_HOUR.INTRODUCTION] = f"<p>This page shows the trading hours, holidays, and time zone of the {fullname} market.</p>"
-
+    if entry['path'].parts[4] in ['ice', 'india', 'sgx', 'nyseliffe']:
+        market = entry['path'].parts[4].upper()
+        entry[MARKET_HOUR.INTRODUCTION] += f"\n<p>Historical data for backtesting is unavailable for {market}. In live trading, its data is sourced from the brokerage or a third-party data provider.</p>"
+        
     entry["exchangeTimeZone"] = entry["exchangeTimeZone"].replace("_", " ")
     entry[MARKET_HOUR.TIME_ZONE] = f'<p>The {fullname} market trades in the <code>{entry["exchangeTimeZone"]}</code> time zone.</p>'
 
