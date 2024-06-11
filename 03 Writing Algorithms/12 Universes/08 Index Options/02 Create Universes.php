@@ -25,7 +25,7 @@ self._symbol = option.symbol</pre>
         <tr>
             <td><code>ticker</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The underlying Index ticker. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The underlying Index ticker. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#08-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
@@ -77,13 +77,13 @@ self._symbol = option.symbol</pre>
         <tr>
             <td><code>underlying</code></td>
 	        <td><code>Symbol</code></td>
-            <td>The underlying Index <code>Symbol</code>. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The underlying Index <code>Symbol</code>. To view the supported indices, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#08-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
             <td><code class="csharp">targetOption</code><code class="python">target_option</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The target Option ticker. To view the supported target Options, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The target Option ticker. To view the supported target Options, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#08-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
