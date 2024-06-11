@@ -15,6 +15,7 @@
 
 using QuantConnect;
 using QuantConnect.Logging;
+using QuantConnect.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,13 +45,13 @@ namespace UrlCheck
         const string path = "..";
         const string root = "https://www.quantconnect.com/";
         const string leanIo = "https://www.lean.io/";
-        const string strategyPhp = "../03 Writing Algorithms/42 Strategy Library/02 Tutorials.php";
-        static readonly string[] leanIoFolder = new string[] {"05 Lean CLI", "06 LEAN Engine"};
-        static readonly string[] ignoreFiles = new string[] {"../Resources/indicators/using-indicator.php"};
+        const string strategyPhp = $"{path}/03 Writing Algorithms/42 Strategy Library/02 Tutorials.php";
+        static readonly string[] leanIoFolder = new[] { "05 Lean CLI", "06 LEAN Engine" };
+        static readonly string[] ignoreFiles = new[] { $"{path}/Resources/indicators/using-indicator.php" };
 
         static void Main()
         {
-            var leanIoErrorUrls = new string[] {
+            var leanIoErrorUrls = new [] {
                 "/docs/v2/cloud-platform", "/docs/v2/local-platform", "/docs/v2/writing-algorithm",
                 "/docs/v2/research-environment"
             };
@@ -237,8 +238,11 @@ namespace UrlCheck
 
             foreach (var file in allFiles)
             {
-                foreach (var line in File.ReadAllLines(file))
+                var hasRelativeLink = false;
+                var lines = File.ReadAllLines(file);
+                for (var i = 0; i < lines.Length; i++)
                 {
+                    var line = lines[i];
                     var end = line.IndexOf("href");
                     if (end < 0 ) continue;
                     var start = line[..end].IndexOf("<a");
@@ -265,7 +269,10 @@ namespace UrlCheck
                         {
                             if (url[0] == '#')
                             {
+                                var old_url = url;
                                 url = pathToLink(file, 1) + url;
+                                lines[i] = line = line.Replace(old_url, url.Replace(root, "/"));
+                                hasRelativeLink = true;
                             }
                             else if (url.Contains("mailto:"))
                             {
@@ -304,6 +311,10 @@ namespace UrlCheck
                             urlFiles[urlLeanIo].Add(file);
                         }
                     }
+                }
+                if (hasRelativeLink)
+                {
+                    File.WriteAllLines(file, lines);
                 }
             }
 
@@ -414,7 +425,8 @@ namespace UrlCheck
             // Exclude Documentation Updates since it may include broken links
             // Exclude single-page docs since it is generated from basic docs
             return !x.Contains(".git") && !x.Contains(".vs") && !x.Contains("single-page") && !x.Contains("08 Drafts") &&
-            !x.EndsWith("Documentation Updates.html");
+                !x.Contains("Resources/qcalgorithm-api/") && !x.Contains("Resources/indicators/") && 
+                !x.EndsWith("Documentation Updates.html");
         }
 
         private static string pathToLink(string x, int count = 0)
