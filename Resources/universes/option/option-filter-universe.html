@@ -51,6 +51,66 @@
             <td>Selects contracts that expire within a range of dates relative to the current day</td>
         </tr>
         <tr>
+            <td><code class="csharp">SingleCall(int daysTillExpiry, decimal strikeFromAtm)</code><code class="python">single_call(days_till_expiry: int, strike_from_atm: float)</code></td>
+            <td>Selects a single call contract with the best matched days until expiration and strike price from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/naked-call">Naked Call</a>, <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/covered-call">Covered Call</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/protective-call">Protective Call</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">SinglePut(int daysTillExpiry, decimal strikeFromAtm)</code><code class="python">single_put(days_till_expiry: int, strike_from_atm: float)</code></td>
+            <td>Selects a single put contract with the best matched days until expiration and strike price from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/naked-put">Naked Put</a>, <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/covered-put">Covered Put</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/protective-put">Protective Put</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">CallSpread(int daysTillExpiry, decimal higherStrikeFromAtm, decimal lowerStrikeFromAtm)</code><code class="python">call_spread(days_till_expiry: int, higher_strike_from_atm: float, lower_strike_from_atm: float)</code></td>
+            <td>Selects 2 call contracts with the same expiry but different strike prices that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-call-spread">Bull Call Spread</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/bear-call-spread">Bear Call Spread</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">PutSpread(int daysTillExpiry, decimal higherStrikeFromAtm, decimal lowerStrikeFromAtm)</code><code class="python">put_spread(days_till_expiry: int, higher_strike_from_atm: float, lower_strike_from_atm: float)</code></td>
+            <td>Selects 2 put contracts with the same expiry but different strike prices that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread">Bull Put Spread</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/bear-put-spread">Bear Put Spread</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">CallCalendarSpread(decimal strikeFromAtm, int nearDaysTillExpiry, int farDaysTillExpiry)</code><code class="python">call_calendar_spread(strike_from_atm: int, near_days_till_expiry: int, far_days_till_expiry: int)</code></td>
+            <td>Selects 2 call contracts with the same strike price but different expiries that best matched the given strike price from the current underlying price and days until expiration. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-call-calendar-spread">Long Call Calendar Spread</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-call-calendar-spread">Short Call Calendar Spread</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">PutCalendarSpread(decimal strikeFromAtm, int nearDaysTillExpiry, int farDaysTillExpiry)</code><code class="python">put_calendar_spread(strike_from_atm: int, near_days_till_expiry: int, far_days_till_expiry: int)</code></td>
+            <td>Selects 2 put contracts with the same strike price but different expiries that best matched the given strike price from the current underlying price and days until expiration. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-put-calendar-spread">Long Put Calendar Spread</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-put-calendar-spread">Short Put Calendar Spread</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Strangle(int daysTillExpiry, decimal higherStrikeFromAtm, decimal lowerStrikeFromAtm)</code><code class="python">strangle(days_till_expiry: int, higher_strike_from_atm: float, lower_strike_from_atm: float)</code></td>
+            <td>Selects an OTM call contract and an OTM put contract with the same expiry that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-strangle">Long Strangle</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-strangle">Short Strangle</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Straddle(int daysTillExpiry)</code><code class="python">straddle(days_till_expiry: int)</code></td>
+            <td>Selects an ATM call contract and an ATM put contract with the same expiry that best matched the given days until expiration. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-straddle">Long Straddle</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-straddle">Short Straddle</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">ProtectiveCollar(int daysTillExpiry, decimal higherStrikeFromAtm, decimal lowerStrikeFromAtm)</code><code class="python">protective_collar(days_till_expiry: int, higher_strike_from_atm: float, lower_strike_from_atm: float)</code></td>
+            <td>Selects a call contract and a put contract (with lower strike price) with the same expiry that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/protective-collar">Protective Collar</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Conversion(int daysTillExpiry, decimal strikeFromAtm)</code><code class="python">conversion(days_till_expiry: int, strike_from_atm: float)</code></td>
+            <td>Selects a call contract and a put contract with the same expiry and strike price that best matched the given days until expiration and strike price from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/conversion">Conversion</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/reverse-conversion">Reverse Conversion</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">CallButterfly(int daysTillExpiry, decimal strikeSpread)</code><code class="python">call_butterfly(days_till_expiry: int, strike_spread: float)</code></td>
+            <td>Selects an ITM call, an ATM call, and an OTM call with the same expiry and equidistance of strike prices that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-call-butterfly">Long Call Butterfly</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-call-butterfly">Short Call Butterfly</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">PutButterfly(int daysTillExpiry, decimal strikeSpread)</code><code class="python">put_butterfly(days_till_expiry: int, strike_spread: float)</code></td>
+            <td>Selects an ITM put, an ATM put, and an put call with the same expiry and equidistance of strike prices that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-put-butterfly">Long Put Butterfly</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-put-butterfly">Short Put Butterfly</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">IronButterfly(int daysTillExpiry, decimal strikeSpread)</code><code class="python">iron_butterfly(days_till_expiry: int, strike_spread: float)</code></td>
+            <td>Selects an OTM call, an ATM call, an ATM put, and an OTM put with the same expiry and equidistance of strike prices that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-iron-butterfly">Long Iron Butterfly</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-iron-butterfly">Short Iron Butterfly</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">IronCondor(int daysTillExpiry, decimal nearStrikeSpread, decimal farStrikeSpread)</code><code class="python">iron_condor(days_till_expiry: int, near_strike_spread: float, far_strike_spread: float)</code></td>
+            <td>Selects far-OTM call, a near-OTM call, a near-OTM put, and a far-OTM put with the same expiry and equidistance of strike prices that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-iron-condor">Long Iron Condor</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-iron-condor">Short Iron Condor</a> option strategies.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BoxSpread(int daysTillExpiry, decimal strikeSpread)</code><code class="python">box_spread(days_till_expiry: int, strike_spread: float)</code></td>
+            <td>Selects an OTM call, an ITM put (with same strike as the OTM call), an OTM put, and an ITM call (with same strike as the OTM put) with the same expiry and equidistance of strike prices that best matched the given days until expiration and strike prices from the current underlying price. It is applicable to <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/box-spread">Box Spread</a>, and <a href="docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-box-spread">Short Box Spread</a> option strategies.</td></td>
+        </tr>
+        <tr>
             <td><code class="csharp">Contracts(IEnumerable&lt;Symbol&gt; contracts)</code><code class="python">contracts(contracts: List[Symbol])</code></td>
             <td>Selects a list of contracts</td>
         </tr>
