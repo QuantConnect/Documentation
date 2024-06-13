@@ -10,7 +10,7 @@
 
 <? include(DOCS_RESOURCES."/machine-learning/hugging-face-table.html"); ?>
 
-<p>To see the commit hash of the cached models, run the following algorithm and then <a href='/docs/v2/writing-algorithms/logging#07-Get-Logs'>view the logs</a>:</p>
+<p>To see the commit hash of the cached models, run the following algorithm in QC Cloud and then <a href='/docs/v2/writing-algorithms/logging#07-Get-Logs'>view the logs</a>:</p>
 
 <div class="section-example-container">
 <pre class="python">from huggingface_hub import scan_cache_dir
