@@ -1,0 +1,34 @@
+<p>Follow these steps to analyze the sentiment of some text with FinBERT:</p>
+<ol>
+  <li>Get the text you want the model to analyze.</li>
+  <p>The model can analyze a single sentence or a list of sentences.</p>
+  <div class="section-example-container">
+    <pre class="python">content = "AAPL stock price spikes after record-breaking sales figures."</pre> 
+  </div>
+
+  <li>Tokenize the text(s).</li>
+  <div class="section-example-container">
+    <pre class="python">inputs = self._tokenizer(content, padding=True, truncation=True, return_tensors='tf')</pre> 
+  </div>
+  <p>For more information about how to tokenize, see the <a rel='nofollow' target='_blank' href='https://huggingface.co/docs/transformers/main/en/main_classes/tokenizer#transformers.PreTrainedTokenizer.__call__'>PreTrainedTokenizer.__call__</a> reference on the Hugging Face website.</p>
+
+  <li>Perform dictionary unpacking on the preceding result and pass it to the model as input.</li>
+  <div class="section-example-container">
+    <pre class="python">outputs = self._model(**inputs)</pre> 
+  </div>
+
+  <li>Apply softmax to the outputs to get probabilities of the text sentiment.</li>
+  <div class="section-example-container">
+    <pre class="python">scores = tf.nn.softmax(outputs.logits, axis=-1).numpy()</pre> 
+  </div>
+
+  <p>
+    The result of the preceding operation is a two dimensional numpy array. 
+    Each element in the two dimensional array is a list that contains the probability that the sentiment of the corresponding sentence is negative, neutral, or postiive, respectively.
+    For example, you may get the following result if you use a single sentence as input.
+    The result shows that the input is more positive than negative, but is likely neutral.
+  </p>
+  <div class="section-example-container">
+    <pre class="python">array([[0.21346861, 0.46771246, 0.318819]])</pre> 
+  </div>
+</ol>
