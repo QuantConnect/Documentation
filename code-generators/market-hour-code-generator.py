@@ -236,7 +236,7 @@ for key, entry in entries.items():
     entry[MARKET_HOUR.INTRODUCTION] = f"<p>This page shows the trading hours, holidays, and time zone of the {fullname} market.</p>"
     if entry['path'].parts[4] in ['ice', 'india', 'sgx', 'nyseliffe']:
         market = entry['path'].parts[4].upper()
-        entry[MARKET_HOUR.INTRODUCTION] += f"\n<p>Historical data for backtesting is unavailable for {market}. In live trading, its data is sourced from the brokerage or a third-party data provider.</p>"
+        entry[MARKET_HOUR.INTRODUCTION] += f"\n<p>Historical data for backtesting is unavailable for {market}. In live trading, LEAN sources this data from your <a href='/docs/v2/cloud-platform/live-trading/brokerages'>brokerage</a> or a <a href='/docs/v2/writing-algorithms/live-trading/data-providers'>third-party data provider</a>.</p>"
         
     entry["exchangeTimeZone"] = entry["exchangeTimeZone"].replace("_", " ")
     entry[MARKET_HOUR.TIME_ZONE] = f'<p>The {fullname} market trades in the <code>{entry["exchangeTimeZone"]}</code> time zone.</p>'
