@@ -1,7 +1,7 @@
 <p>The Chronos-T5 model is pre-trained, so you don't need to fine-tune it. Fine-tuning the model just tailors it to your specific use case. Follow these steps to fine-tune it:</p>
 
 <ol>
-  <li>Add the following imports to the top of your code file.</li>
+  <li>Add the following imports to the top of your code file:</li>
   <div class="section-example-container">
     <pre class="python">from ast import literal_eval
 from pathlib import Path
@@ -14,10 +14,21 @@ from chronos.scripts.training.train import ChronosDataset, has_enough_observatio
 from chronos.scripts.training import train
 from logging import getLogger, INFO</pre> 
   </div>
-  
-  <li><a href='/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/chronos-t5#03-Load-Pre-Trained-Model'>Load the pre-trained model</a>.</li>
 
-  <li>Define the training method.</li>
+  <li>In the <code>initialize</code> method, define the model and some of its settings.</li>
+  <p>In QuantConnect Cloud, the path to the tiny model is <span class='public-file-name'>llm / fine-tune / amazon-chronos-t5-tiny</span>.</p>
+
+  <div class="section-example-container">
+    <pre class="python">self._prediction_length = 3*21  # Three months of trading days   
+self._device_map = "cuda" if torch.cuda.is_available() else "cpu"
+self._optimizer = 'adamw_torch_fused' if torch.cuda.is_available() else 'adamw_torch'
+self._model_name = "amazon/chronos-t5-tiny"
+self._model_path = self.object_store.get_file_path(
+    f"llm/fine-tune/{self._model_name.replace('/', '-')}/"
+)</pre> 
+  </div>  
+  
+  <li>Define the fine-tuning method.</li>
   <div class="section-example-container">
     <pre class="python">def _train_chronos(
         self, training_data,
@@ -165,5 +176,58 @@ from logging import getLogger, INFO</pre>
     return output_dir
 </pre> 
   </div>
-  
+
+  <li>Create DataFrame(s) that contain your training samples.</li>
+  <p>
+    The DataFrame should have one column, named "target". 
+    The rows throughout the DataFrame should span a a consistent time.
+    If there is no data for the time step (for example, the weekend price of an Equity asset), put NaN as the value for the time step.
+    The following example demonstrates how to create DataFrames that contain one year of trailing prices for a set of Equities:
+  </p>
+
+  <div class="section-example-container">
+    <pre class="python"># Get historical equity curves.
+history = self.history(symbols, timedelta(365), Resolution.DAILY)['close'].unstack(0)
+
+# Gather the training data.
+training_data_by_symbol = {}
+for symbol in symbols:
+    df = history[[symbol]].dropna()
+    if df.shape[0] < 10: # Skip this asset if there is very little data
+        continue
+    adjusted_df = df.reset_index()[['time', symbol]]
+    adjusted_df = adjusted_df.rename(columns={str(symbol.id): 'target'})
+    adjusted_df['time'] = pd.to_datetime(adjusted_df['time'])
+    adjusted_df.set_index('time', inplace=True)
+    adjusted_df = adjusted_df.resample('D').asfreq()
+    training_data_by_symbol[symbol] = adjusted_df</pre> 
+  </div>
 </ol>
+  <p>For more information about history requests, see <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>History Requests</a>.</p>
+
+  <li>Call the fine-tuning method with the training data.</li>
+  <div class="section-example-container">
+    <pre class="python">output_dir_path = self._train_chronos(
+    list(training_data_by_symbol.values()),
+    context_length=int(252/2), # 6 months
+    prediction_length=self._prediction_length,
+    optim=self._optimizer,
+    model_id=self._model_name,
+    output_dir=self._model_path,
+    learning_rate=1e-5,
+    # Requires Ampere GPUs (e.g., A100)
+    tf32=False,
+    max_steps=3
+)</pre> 
+  </div>
+
+  <li>Load the fine-tuned model.</li>
+  <div class="section-example-container">
+    <pre class="python">pipeline = ChronosPipeline.from_pretrained(
+    output_dir_path,
+    device_map=self._device_map,
+    torch_dtype=torch.bfloat16,
+)</pre> 
+  </div>
+</ol>
+
