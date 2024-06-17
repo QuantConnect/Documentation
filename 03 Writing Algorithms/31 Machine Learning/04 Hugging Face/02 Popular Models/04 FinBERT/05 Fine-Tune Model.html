@@ -1,0 +1,52 @@
+<p>The FinBERT model is pre-trained, so you don't need to fine-tune it. Fine-tuning the model just tailors it to your specific use case. Follow these steps to fine-tune it:</p>
+
+<ol>
+  <li>Import the <code>Dataset</code> class.</li>
+  <div class="section-example-container">
+    <pre class="python">from datasets import Dataset</pre> 
+  </div>
+  
+  <li><a href='/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/finbert#03-Load-Pre-Trained-Model'>Load the pre-trained model</a>.</li>
+
+  <li>Compile the model with an optimizer and loss function.</li>
+  <div class="section-example-container">
+    <pre class="python">model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5), 
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+)</pre> 
+  </div>
+  <p>You only need to compile the model once. TensorFlow offers many other <a rel='nofollow' target='_blank' href='https://www.tensorflow.org/api_docs/python/tf/keras/optimizers'>optimizer</a> and <a rel='nofollow' target='_blank' href='https://www.tensorflow.org/api_docs/python/tf/keras/losses'>loss</a> classes you can use.</p>
+
+  <li>Create a DataFrame that contains your training samples.</li>
+  <p>
+    The DataFrame should have two columns, named "text" and "label". 
+    The label must be an integer that represents the sentiment class. 
+    By default, the FinBERT model has three classes. 
+    Class zero represents negative sentiment, class one represents neutral sentiment, and class two represents positive sentiment.</p>
+  <div class="section-example-container">
+    <pre class="python">samples = pd.DataFrame(columns=['text', 'label'])
+# Add rows to the DataFrame...</pre> 
+  </div>
+
+  <li>Convert the samples DataFrame to a <code>tf.data.Dataset</code> object.</li>
+  <div class="section-example-container">
+    <pre class="python">dataset = Dataset.from_pandas(samples)</pre> 
+  </div>
+
+  <li>Tokenize the text in each training sample.</li>
+  <div class="section-example-container">
+    <pre class="python">dataset = dataset.map(
+    lambda sample: self._tokenizer(sample['text'], padding='max_length', truncation=True)
+)</pre> 
+  </div>
+
+  <li>Call the model's <a rel='nofollow' target='_blank' href='https://huggingface.co/docs/transformers/main/en/main_classes/model#transformers.TFPreTrainedModel.prepare_tf_dataset'>prepare_tf_dataset</a> method.</li>
+  <div class="section-example-container">
+    <pre class="python">dataset = model.prepare_tf_dataset(dataset, shuffle=True, tokenizer=self._tokenizer)</pre> 
+  </div>
+
+  <li>Call the model's <a rel='nofollow' target='_blank' href='https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit'>fit</a> method.</li>
+  <div class="section-example-container">
+    <pre class="python">model.fit(dataset, epochs=2)</pre> 
+  </div>
+</ol>

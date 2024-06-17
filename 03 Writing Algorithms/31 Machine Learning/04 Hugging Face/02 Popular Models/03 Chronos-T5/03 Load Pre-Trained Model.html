@@ -1,0 +1,25 @@
+<p>Follow these steps to load the pre-trained Chronos-T5 model:</p>
+
+<ol>
+  <li>Add the following imports to the top of your code file:</li>
+  <div class="section-example-container">
+    <pre class="python">from chronos import ChronosPipeline
+import torch</pre> 
+  </div>
+
+  <li>Call the <code>ChronosPipeline.from_pretrained</code> method with the model path.</li>
+  <p>In QuantConnect Cloud, the path to the tiny model is <span class='public-file-name'>amazon / chronos-t5-tiny</span>.</p>
+  <div class="section-example-container">
+    <pre class="python">self._pipeline = ChronosPipeline.from_pretrained(
+    "amazon/chronos-t5-tiny",
+    device_map="cuda" if torch.cuda.is_available() else "cpu",
+    torch_dtype=torch.bfloat16,
+)</pre> 
+  </div>
+
+  <li><span class='qualifier'>(Optional)</span> Set the seed to enable reproducibility.</li>
+  <div class="section-example-container">
+    <pre class="python">from transformers import set_seed
+set_seed(1, True)</pre> 
+  </div>
+</ol>
