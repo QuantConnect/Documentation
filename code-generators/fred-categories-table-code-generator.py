@@ -12,7 +12,8 @@ def get_data(type: str) -> str:
         for field in fields:
             ticker = field.pop('field-default-value')
             data[ticker] = data.get(ticker, {})
-            data[ticker][language] = f"<b class='{css_class}'>Fred.{type}.{field.pop('field-name')}</b>"
+            #data[ticker][language] = f"<b class='{css_class}'>Fred.{type}.{field.pop('field-name')}</b>"
+            data[ticker][language] = f"<b>Fred.{type}.{field.pop('field-name')}</b>"
             data[ticker]['summary'] = field.pop('field-description')
 
     return f'<p>Category: <b>{type}</b></p>\n<ul>\n' + '\n'.join(
