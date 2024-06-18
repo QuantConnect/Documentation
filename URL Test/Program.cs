@@ -120,6 +120,7 @@ namespace UrlCheck
                                     .Replace("Third Party", "Third-Party") // special case
                                     .Replace("Fine Tune", "Fine-Tune") // special case
                                     .Replace("Pre Trained", "Pre-Trained") // special case
+                                    .Replace("chronos t5", "chronos-t5") // special case
                                     .Replace("C and Visual Studio", "C# and Visual Studio") // special case
                                     .Replace("C and VS Code", "C# and VS Code") // special case
                                     .Replace("C and Rider", "C# and Rider") // special case

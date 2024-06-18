@@ -33,7 +33,7 @@ qb.add_future_contract(futures_contract_symbol, fill_forward = False)</pre>
         <pre class="csharp">qb.AddFutureOption(future.Symbol, optionFilterUniverse =&gt; optionFilterUniverse.Strikes(-1, 1));</pre>
         <pre class="python">qb.add_future_option(future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1))</pre>
     </div>
-<p>The filter determines which contracts the <code>OptionHistory</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
+<p>The filter determines which contracts the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
 <ul>
 	<li>Standard type (exclude weeklys)</li>
 	<li>Within 1 strike price of the underlying asset price</li>
