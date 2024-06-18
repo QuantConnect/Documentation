@@ -117,6 +117,9 @@ namespace UrlCheck
                                     .Replace("Built in", "Built-in") // special case
                                     .Replace("scikit learn", "scikit-learn") // special case
                                     .Replace("third party", "third-party") // special case
+                                    .Replace("Third Party", "Third-Party") // special case
+                                    .Replace("Fine Tune", "Fine-Tune") // special case
+                                    .Replace("Pre Trained", "Pre-Trained") // special case
                                     .Replace("C and Visual Studio", "C# and Visual Studio") // special case
                                     .Replace("C and VS Code", "C# and VS Code") // special case
                                     .Replace("C and Rider", "C# and Rider") // special case
@@ -133,6 +136,9 @@ namespace UrlCheck
                                     .Replace("look ahead", "look-ahead") // special case
                                     .Replace("profit loss", "profit-loss") // special case
                                     .Replace("out of the money", "out-of-the-money") // special case
+                                    .Replace("Third Party", "Third-Party") // special case
+                                    .Replace("Fine Tune", "Fine-Tune") // special case
+                                    .Replace("Pre Trained", "Pre-Trained") // special case
                                     .Replace("Built in", "Built-in") // special case
                                     .Replace("C and Visual Studio", "C# and Visual Studio") // special case
                                     .Replace("C and VS Code", "C# and VS Code") // special case
@@ -146,8 +152,7 @@ namespace UrlCheck
                                     var subPaths = dir.Split(Path.DirectorySeparatorChar)
                                         .Where(x => int.TryParse(x.AsSpan(0, 1), out _));
                                     var nonNumberedPath = string.Join(Path.DirectorySeparatorChar,
-                                        subPaths.SkipLast(1).Select(x =>
-                                            new string(x.Where(c => c < '0' || c > '9').ToArray()).Trim()));
+                                        subPaths.SkipLast(1).Select(x => x[x.IndexOf(' ')..].Trim()));
                                     var sectionPath = subPaths.Last().Split('.').First();
 
                                     return $"{nonNumberedPath}{Path.DirectorySeparatorChar}{sectionPath}".ToLower() != expected;
