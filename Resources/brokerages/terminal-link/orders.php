@@ -163,13 +163,13 @@ public override void OnData(Slice slice)
     # Set the default order properties
     self.default_order_properties = TerminalLinkOrderProperties()
     self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
-    self.default_order_properties.strategy = TerminalLinkOrderProperties.strategy_parameters(
+    self.default_order_properties.strategy = TerminalLinkOrderProperties.StrategyParameters(
         "VWAP",
         [
-            TerminalLinkOrderProperties.strategy_field("09:30:00"),
-            TerminalLinkOrderProperties.strategy_field("10:30:00"),
-            TerminalLinkOrderProperties.strategy_field(),
-            TerminalLinkOrderProperties.strategy_field()
+            TerminalLinkOrderProperties.StrategyField("09:30:00"),
+            TerminalLinkOrderProperties.StrategyField("10:30:00"),
+            TerminalLinkOrderProperties.StrategyField(),
+            TerminalLinkOrderProperties.StrategyField()
         ]
     )
 
