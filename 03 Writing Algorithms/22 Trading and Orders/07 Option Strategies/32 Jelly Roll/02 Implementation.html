@@ -1,0 +1,104 @@
+<p>Follow these steps to implement the jelly roll strategy:</p>
+
+<ol>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, set the end date, <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Equity</a>, and create an <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    SetStartDate(2017, 4, 1);
+    SetEndDate(2017, 4, 22);
+    SetCash(100000);
+
+    UniverseSettings.Asynchronous = true;
+    var option = AddOption("GOOG", Resolution.Minute);
+    _symbol = option.Symbol;
+    option.SetFilter(x =&gt; x.IncludeWeeklys().Strikes(-5, 5).Expiration(30, 60));
+}</pre>
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 4, 1)
+    self.set_end_date(2017, 4, 22)
+    self.set_cash(100000)
+
+    self.universe_settings.asynchronous = True
+    option = self.add_option("GOOG", Resolution.MINUTE)
+    self._symbol = option.symbol
+    option.set_filter(lambda x: x.include_weeklys().strikes(-5, 5).expiration(30, 60))</pre>
+    </div>
+
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiry and strikes of the contracts in the strategy legs.</li>
+    <div class="section-example-container">
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    if (Portfolio.Invested) return;
+
+    // Get the OptionChain
+    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        return;
+    }
+
+    // Select expiry dates and strike price
+    var strike = chain.OrderBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).First().Strike;
+    var contracts = chain.Where(x =&gt; x.Strike == strike).ToList();
+    var farExpiry = contracts.Max(x =&gt; x.Expiry);
+    var nearExpiry = contracts.Min(x =&gt; x.Expiry);</pre>
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.portfolio.invested:
+        return
+
+    # Get the OptionChain
+    chain = slice.option_chains.get(self._symbol, None)
+    if not chain:
+        return
+
+    # Select an expiry date and ITM & OTM strike prices
+    strike = sorted([x.strike for x in chain], key=lambda x: abs(x - chain.underlying.price))[0]
+    contracts = [x for x in chain if x.strike == strike]
+    far_expiry = max([x.expiry for x in contracts])
+    near_expiry = min([x.expiry for x in contracts])</pre>
+    </div>
+    
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the contracts and place the order.</li>
+    <!--
+    <p><b>Approach A:</b> Call the <code class="csharp">OptionStrategies.JellyRoll</code><code class="python">OptionStrategies.jelly_roll</code> method with the details of each leg and then pass the result to the <code class="csharp">Buy</code><code class="python">buy</code> method.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var jellyRoll = OptionStrategies.JellyRoll(_symbol, strike, nearExpiry, farExpiry);
+Buy(jellyRoll, 1);</pre>
+        <pre class="python">jelly_roll = OptionStrategies.jelly_roll(self._symbol, strike, near_expiry, far_expiry)
+self.buy(jelly_roll, 1)</pre>
+    </div>
+    -->
+    <p><b>Approach B:</b> Create a list of <code>Leg</code> objects and then call the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders"><span class='csharp'>Combo Market Order</span><span class='python'>combo_market_order</span></a>, <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders"><span class='csharp'>Combo Limit Order</span><span class='python'>combo_limit_order</span></a>, or <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders"><span class='csharp'>Combo Leg Limit Order</span><span class='python'>combo_leg_limit_order</span></a> method.</p>
+    
+    <div class="section-example-container">
+        <pre class="csharp">// Select the call and put contracts
+var nearCall = contracts.Single(x =&gt; x.Expiry == nearExpiry &amp;&amp; x.Right == OptionRight.Call);
+var farCall = contracts.Single(x =&gt; x.Expiry == farExpiry &amp;&amp; x.Right == OptionRight.Call);
+var nearPut = contracts.Single(x =&gt; x.Expiry == nearExpiry &amp;&amp; x.Right == OptionRight.Put);
+var farPut = contracts.Single(x =&gt; x.Expiry == farExpiry &amp;&amp; x.Right == OptionRight.Put);
+
+var legs = new List&lt;Leg&gt;()
+{
+    Leg.Create(nearCall.Symbol, -1),
+    Leg.Create(farCall.Symbol, 1),
+    Leg.Create(nearPut.Symbol, 1),
+    Leg.Create(farPut.Symbol, -1),
+};
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python"># Select the call and put contracts
+near_call = next(filter(lambda x: x.right == OptionRight.CALL and x.expiry == near_expiry, contracts))
+far_call = next(filter(lambda x: x.right == OptionRight.CALL and x.expiry == far_expiry, contracts))
+near_put = next(filter(lambda x: x.right == OptionRight.PUT and x.expiry == near_expiry, contracts))
+call_put = next(filter(lambda x: x.right == OptionRight.PUT and x.expiry == far_expiry, contracts))           
+
+legs = [
+    Leg.create(near_call.symbol, -1),
+    Leg.create(far_call.symbol, 1),
+    Leg.create(near_put.symbol, 1),
+    Leg.create(call_put.symbol, -1),
+]
+self.combo_market_order(legs, 1)</pre>
+    </div>   
+</ol>
