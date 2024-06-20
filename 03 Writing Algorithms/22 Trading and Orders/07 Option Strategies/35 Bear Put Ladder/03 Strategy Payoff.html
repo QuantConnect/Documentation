@@ -1,0 +1,38 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The bear put spread is an limited-profit-unlimited-risk strategy. The payoff is</p>
+$$
+\begin{array}{rcll}
+P^{low}_T &amp; = &amp; (K^{low} - S_T)^{+}\\
+P^{mid}_T &amp; = &amp; (K^{mid} - S_T)^{+}\\
+P^{high}_T &amp; = &amp; (K^{high} - S_T)^{+}\\
+Payoff_T &amp; = &amp; (P^{low}_0 - P^{low}_T + P^{mid}_0 - P^{mid}_T + P^{high}_T - P^{high}_0)\times m - fee\\
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} &amp; P^{low}_T &amp; = &amp; \textrm{Lower-strike put value at time T}\\
+&amp; P^{mid}_T &amp; = &amp; \textrm{Middle-strike put value at time T}\\
+&amp; P^{high}_T &amp; = &amp; \textrm{Higher-strike put value at time T}\\
+&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
+&amp; K^{low} &amp; = &amp; \textrm{Lower-strike put strike price}\\
+&amp; K^{mid} &amp; = &amp; \textrm{Middle-strike put strike price}\\
+&amp; K^{mhighid} &amp; = &amp; \textrm{Higher-strike put strike price}\\
+&amp; P^{low}_0 &amp; = &amp; \textrm{Lower-strike put value at position opening (credit received)}\\
+&amp; P^{mid}_0 &amp; = &amp; \textrm{IMiddle-strikeTM put value at position opening (debit paid)}\\
+&amp; P^{high}_0 &amp; = &amp; \textrm{Higher-strike put value at position opening (debit paid)}\\
+&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
+&amp; T &amp; = &amp; \textrm{Time of expiration}
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bear-put-ladder.png" alt="Strategy payoff decomposition and analysis of bear put ladder">
+
+<p>The maximum profit is $K^{high} - K^{mid} + P^{low}_0 + P^{mid}_0 - P^{high}_0$, which occurs when the underlying price is between the two lower strike prices.</p>
+<p>The maximum loss is unlimited, which occurs when the underlying price increases indefinitely.</p>
+<p>If the Option is American Option, there is a risk of <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/assignment'>early assignment</a> on the contract you sell.</p>

@@ -1,0 +1,68 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The following table shows the price details of the assets in the algorithm:</p>
+
+<table class="table qc-table" id="payoff-table">
+<thead>
+<tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
+</thead>
+<tbody>
+<tr><td>Lower-Strike put</td><td>3.80</td><td>822.50</td></tr>
+<tr><td>Middle-strike put</td><td>4.70</td><td>825.00</td></tr>
+<tr><td>Higher-strike put</td><td>7.80</td><td>827.50</td></tr>
+<tr><td>Underlying Equity at expiration</td><td>843.25</td><td>-</td></tr>
+</tbody>
+</table>
+
+<style>
+#payoff-table td:nth-child(2), 
+#payoff-table th:nth-child(2), 
+#payoff-table td:nth-child(3), 
+#payoff-table th:nth-child(3) {
+    text-align: right;
+}
+</style>
+
+<p>Therefore, the payoff is</p>
+$$
+\begin{array}{rcll}
+P^{low}_T & = & (K^{low} - S_T)^{+}\\
+& = & (822.50-843.25)^{+}\\
+& = & 0\\
+P^{mid}_T & = & (K^{mid} - S_T)^{+}\\
+& = & (825.00-843.25)^{+}\\
+& = & 0\\
+P^{high}_T & = & (K^{high} - S_T)^{+}\\
+& = & (827.50-843.25)^{+}\\
+& = & 0\\
+Payoff_T & = & (P^{low}_0 - P^{low}_T + P^{mid}_0 - P^{mid}_T + P^{high}_T - P^{high}_0)\times m - fee\\
+& = & (3.80 - 0 + 4.70 - 0 + 0 - 7.80)\times100-1.00\times3\\
+& = & 67\\
+\end{array}
+$$
+<br>
+<p>So, the strategy gains $67.</p>
+
+<p>The following algorithm implements a bear put ladder Option strategy:</p>
+
+<div class="python">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_3b8761ecc9c592a5905f42a79dde3db3.html"></iframe>
+        </div>
+    </div>
+</div>
+
+<div class="csharp">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_8cd671215abdbeaa58693abfbcfc478f.html"></iframe>
+        </div>
+    </div>
+</div>
