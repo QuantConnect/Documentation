@@ -47,7 +47,7 @@
 
 <ul>
     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
-    <li><code>GoodTilCanceled</code> (not available for short selling)</li>
+    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code> (not available for short selling)</li>
 </ul>
 
 <?php if ($writingAlgorithms) { ?>
