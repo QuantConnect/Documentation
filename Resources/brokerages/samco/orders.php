@@ -10,15 +10,15 @@
    </thead>
    <tbody>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>Market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>Limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
    </tbody>
@@ -43,7 +43,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>Exchange</code></td>
+            <td><code class='csharp'>Exchange</code><code class="python">exchange</code></td>
             <td>Select the exchange for sending the order to. The following instructions are available:
                 <ul>
                     <li><code>NSE</code></li>
@@ -52,9 +52,9 @@
             </td>
         </tr>
         <tr>
-            <td><code>ProductType</code></td>
+            <td><code class='csharp'>ProductType</code><code class="python">product_type</code></td>
             <td>
-                A <code>ProductType</code> instruction to apply to the order. The <code>IndiaProductType</code> enumeration has the following members:
+                A <code>ProductType</code> instruction to apply to the order. The <code>IndiaOrderProperties.IndiaProductType</code> enumeration has the following members:
                 <div data-tree='QuantConnect.Orders.IndiaOrderProperties.IndiaProductType'></div>
             </td>
         </tr>
@@ -101,7 +101,7 @@ public override void OnData(Slice slice)
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.default_order_properties = IndiaOrderProperties(Exchange.NSE, IndiaOrderProperties.india_product_type.NRML)
+    self.default_order_properties = IndiaOrderProperties(Exchange.NSE, IndiaOrderProperties.IndiaProductType.NRML)
     self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
 
 def on_data(self, slice: Slice) -&gt; None:
@@ -109,11 +109,11 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
-    order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.india_product_type.MIS)
+    order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.IndiaProductType.MIS)
     order_properties.time_in_force = TimeInForce.DAY
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.india_product_type.CNC)
+    order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.IndiaProductType.CNC)
     order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
