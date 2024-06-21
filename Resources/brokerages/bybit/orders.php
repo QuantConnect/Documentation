@@ -125,7 +125,7 @@ def on_data(self, slice: Slice) -&gt; None:
     self.default_order_properties.reduce_only = False
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
     order_properties.post_only = False
     self.default_order_properties.reduce_only = True
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
