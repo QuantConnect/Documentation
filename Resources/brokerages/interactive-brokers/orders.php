@@ -210,13 +210,15 @@
 
 <h4>Order Properties</h4>
 
-<p><?=  $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties." : "We model custom order properties from the IB API." ?> The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the preceding methods for FA accounts.</p>
+<p><?=  $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties." : "We model custom order properties from the IB API." ?> The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/interactive-brokers#18-Financial-Advisors'>methods for FA accounts</a>.</p>
 
 <table class="table qc-table">
     <thead>
         <tr>
-            <th style="width: 25%">Property</th>
-            <th style="width: 75%">Description</th>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
@@ -229,10 +231,13 @@
                     <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
                 </ul>
             </td>
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
         <tr>
             <td><code class="csharp">OutsideRegularTradingHours</code><code class="python">outside_regular_trading_hours</code></td>
+            <td><code>bool</code></td>
             <td>A flag to signal that the order may be triggered and filled outside of regular trading hours.</td>
+            <td></td>
         </tr>
     </tbody>
 </table>
