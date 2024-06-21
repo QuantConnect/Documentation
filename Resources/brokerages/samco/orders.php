@@ -96,7 +96,7 @@ public override void OnData(Slice slice)
     LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.IndiaProductType.CNC)
                {
-                   TimeInForce = TimeInForce.GoodTilDate,
+                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)),
                };
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
@@ -114,7 +114,7 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
     order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.IndiaProductType.CNC)
-    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE
+    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
