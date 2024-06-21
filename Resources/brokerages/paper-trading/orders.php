@@ -166,7 +166,7 @@
 
 <ul>
     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
-    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+    <li><code class="csharp">GoodTilCanceled</code><code class="python">good_til_canceled</code></li>
     <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
 </ul>
 
