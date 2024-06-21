@@ -54,7 +54,7 @@
         <tr>
             <td><code class='csharp'>ProductType</code><code class="python">product_type</code></td>
             <td>
-                A <code>ProductType</code> instruction to apply to the order. The <code>IndiaOrderProperties.IndiaProductType</code> enumeration has the following members:
+                A <code class='csharp'>ProductType</code><code class="python">product_type</code> instruction to apply to the order. The <code>IndiaOrderProperties.IndiaProductType</code> enumeration has the following members:
                 <div data-tree='QuantConnect.Orders.IndiaOrderProperties.IndiaProductType'></div>
             </td>
         </tr>
