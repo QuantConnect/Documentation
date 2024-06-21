@@ -41,18 +41,30 @@
 <table class="table qc-table">
     <thead>
         <tr>
-            <th style="width: 25%">Property</th>
-            <th style="width: 75%">Description</th>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+            <td><code>TimeInForce</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The <code class='csharp'>GoodTilCanceled</code><code class='csharp'>GOOD_TIL_CANCELED</code> <code>TimeInForce</code> is supported.</td>
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
         <tr>
             <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
+            <td><code>bool</code></td>
             <td>A flag that signals the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
+            <td></td>
+        </tr>
+       <tr>
+            <td><code class="csharp">SelfTradePreventionId</code><code class="python">self_trade_prevention_id</code></td>
+            <td><code>bool</code></td>
+            <td>A flag that signals self-trade prevention is enabled for this order. Self-trade prevention helps prevent an order from crossing against the same user, reducing the risk of unintentional trades within the same account.</td>
+            <td></td>
         </tr>
     </tbody>
 </table>
