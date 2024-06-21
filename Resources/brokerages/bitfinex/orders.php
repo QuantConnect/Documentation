@@ -53,29 +53,37 @@
 <table class="table qc-table">
    <thead>
       <tr>
-         <th style="width: 25%">Property</th>
-         <th style="width: 75%">Description</th>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
       </tr>
    </thead>
    <tbody>
       <tr>
          <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+         <td><code>TimeInForce</code></td>
          <td>
              A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
              <ul>
                  <li><code class="csharp">Day</code><code class="python">DAY</code></li>
                  <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
-                 <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
+                 <li><code class="csharp">GoodTilDate</code><code class="python">good_til_date</code></li>
              </ul>
          </td>
+         <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
       </tr>
       <tr>
          <td><code class="csharp">Hidden</code><code class="python">hidden</code></td>
+         <td><code>bool</code></td>
          <td>A flag to signal that the order should be hidden. Hidden orders do not appear in the order book, so they do not influence other market participants. Hidden orders incur the taker fee.</td>
+         <td></td>
       </tr>
       <tr>
          <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
+         <td><code>bool</code></td>
          <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
+         <td></td>
       </tr>
    </tbody>
 </table>
@@ -132,7 +140,7 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.post_only = False
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     order_properties.hidden = False
     order_properties.post_only = True
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
