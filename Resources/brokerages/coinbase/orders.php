@@ -48,7 +48,7 @@
     <tbody>
         <tr>
             <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
-            <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The <code>GoodTilCanceled</code> <code>TimeInForce</code> is supported.</td>
+            <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The <code class='csharp'>GoodTilCanceled</code><code class='csharp'>GOOD_TIL_CANCELED</code> <code>TimeInForce</code> is supported.</td>
         </tr>
         <tr>
             <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
