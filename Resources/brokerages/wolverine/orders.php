@@ -37,7 +37,7 @@
         </tr>
         <tr>
             <td><code class="csharp">ExchangePostFix</code><code class="python">exchange_post_fix</code></td>
-            <td><code class='csharp'>string</code><code class='python'>str</code></td
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>The exchange post fix to apply if any. For example, if you set <code class="csharp">Exchange</code><code class="python">exchange</code> to <code>Exchange.SMART</code>, then "-INCA-TX" yields "SMART-INCA-TX".</td>
             <td></td>
         </tr>
