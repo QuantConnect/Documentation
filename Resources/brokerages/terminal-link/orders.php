@@ -58,82 +58,113 @@
 <table class="table qc-table" class='order-properties-table'>
     <thead>
         <tr>
-            <th style="width: 25%">Property</th>
-            <th style="width: 75%">Description</th>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+            <td><code>TimeInForce</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
                     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
                     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
-                    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
+                    <li><code class="csharp">GoodTilDate</code><code class="python">good_til_date</code></li>
                 </ul>
             </td>
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
         <tr>
             <td><code class="csharp">Notes</code><code class="python">notes</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>The free form instructions that may be sent to the broker.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">HandlingInstruction</code><code class="python">handling_instruction</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>The instructions for handling the order or route. The values can be preconfigured or a value customized by the broker.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">CustomNotes1</code><code class="python">custom_notes_1</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>Custom user order notes 1. For more information about custom order notes, see <a rel='nofollow' target='_blank' href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/description.html?highlight=Notes#custom-notes-free-text-fields'>Custom Notes & Free Text Fields</a> in the EMSX API documentation</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">CustomNotes2</code><code class="python">custom_notes_2</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>Custom user order notes 2.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">CustomNotes3</code><code class="python">custom_notes_3</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>Custom user order notes 3.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">CustomNotes4</code><code class="python">custom_notes_4</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>Custom user order notes 4.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">CustomNotes5</code><code class="python">custom_notes_5</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>Custom user order notes 5.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">Account</code><code class="python">account</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>The EMSX account.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">Broker</code><code class="python">broker</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>The EMSX broker code.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">Strategy</code><code class="python">strategy</code></td>
+            <td><code>StrategyParameters</code></td>
             <td>
-               A <code>StrategyParameters</code> object that represents the EMSX order strategy details. You must append strategy parameters in the order that the EMSX API expects. 
+               An object that represents the EMSX order strategy details. You must append strategy parameters in the order that the EMSX API expects. 
                The following strategy names are supported: "DMA", "DESK", "VWAP", "TWAP", "FLOAT", "HIDDEN", "VOLUMEINLINE", "CUSTOM", "TAP", "CUSTOM2", "WORKSTRIKE", "TAPNOW", "TIMED", "LIMITTICK", "STRIKE"
             </td>
         </tr>
         <tr>
             <td><code class="csharp">ExecutionInstruction</code><code class="python">execution_instruction</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>The execution instruction field.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">AutomaticPositionSides</code><code class="python">automatic_position_sides</code></td>
+            <td><code>bool</code></td>
             <td>A flag that determines whether to automatically include the position side in the order direction (buy-to-open, sell-to-close, etc.) instead of the default (buy, sell).</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">PositionSide</code><code class="python">position_side</code></td>
+            <td><code class='csharp'>OrderPosition?</code><code class='python'>OrderPosition/NoneType</code></td>
             <td>
                An <code>OrderPosition</code> object that specifies the position side in the order direction (buy-to-open, sell-to-close, etc.) instead of the default (buy, sell). 
                This member has precedence over <code class="csharp">AutomaticPositionSides</code><code class="python">automatic_position_sides</code>.
             </td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">Exchange</code><code class="python">exchange</code></td>
+            <td><code>Exchange</code></td>
             <td>Defines the exchange name for sending the order to.</td>
+            <td></td>
         </tr>
     </tbody>
 </table>
@@ -202,7 +233,7 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.account = "account1"
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     order_properties.account = "account2"
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
