@@ -45,8 +45,10 @@
 <table class="table qc-table">
     <thead>
         <tr>
-            <th style="width: 25%">Property</th>
-            <th style="width: 75%">Description</th>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
@@ -56,29 +58,40 @@
                 <ul>
                     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
                     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
-                    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
-                </ul>
-            </td>
+                    <li><code class="csharp">GoodTilDate</code><code class="python">good_til_date</code></li>
+                 </ul>
+             </td>
+             <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
         <tr>
             <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
+            <td><code>bool</code></td>
             <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">FeeInBase</code><code class="python">fee_in_base</code></td>
+            <td><code>bool</code></td>
             <td>A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code class="csharp">FeeInQuote</code><code class="python">fee_in_quote</code> flag.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">FeeInQuote</code><code class="python">fee_in_quote</code></td>
+            <td><code>bool</code></td>
             <td>A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code class="csharp">FeeInBase</code><code class="python">fee_in_base</code> flag.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">NoMarketPriceProtection</code><code class="python">no_market_price_protection</code></td>
+            <td><code>bool</code></td>
             <td>A flag to signal that no <a rel="nofollow" target="_blank" href="https://support.kraken.com/hc/en-us/articles/201648183-Market-Price-Protection">Market Price Protection</a> should be used.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">ConditionalOrder</code><code class="python">conditional_order</code></td>
+            <td><code>Order</code></td>
             <td>An <code>Order</code> that's submitted when the primary order is executed. The <code class="csharp">ConditionalOrder</code><code class="python">conditional_order</code> quantity must match the primary order quantity and the <code class="csharp">ConditionalOrder</code><code class="python">conditional_order</code> direction must be the opposite of the primary order direction. This order property is only available for live algorithms.</td>
+            <td></td>
         </tr>
     </tbody>
 </table>
@@ -146,7 +159,7 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.no_market_price_protection = True
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     order_properties.post_only = False
     order_properties.fee_in_base = True
     order_properties.fee_in_quote = False
