@@ -183,7 +183,7 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.account = "account1"
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
     order_properties.account = "account2"
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
