@@ -37,36 +37,44 @@
 <table class="table qc-table">
     <thead>
         <tr>
-            <th style="width: 25%">Property</th>
-            <th style="width: 75%">Description</th>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td><code class='csharp'>Exchange</code><code class="python">exchange</code></td>
+            <td><code>Exchange</code>
             <td>Select the exchange for sending the order to. The following instructions are available:
                 <ul>
-                    <li><code>NSE</code></li>
-                    <li><code>BSE</code></li>
+                    <li><code>Exchange.NSE</code></li>
+                    <li><code>Exchange.BSE</code></li>
                 </ul>
             </td>
+            <td></td>
         </tr>
         <tr>
             <td><code class='csharp'>ProductType</code><code class="python">product_type</code></td>
+            <td><code class='csharp'>string</code><code class="python">str</code></td>
             <td>
                 A <code class='csharp'>ProductType</code><code class="python">product_type</code> instruction to apply to the order. The <code>IndiaOrderProperties.IndiaProductType</code> enumeration has the following members:
                 <div data-tree='QuantConnect.Orders.IndiaOrderProperties.IndiaProductType'></div>
             </td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+            <td><code>TimeInForce</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are available:
                 <ul>
                     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
                     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
-                    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
+                    <li><code class="csharp">GoodTilDate</code><code class="python">good_til_date</code></li>
                 </ul>
             </td>
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
     </tbody>
 </table>
@@ -114,7 +122,7 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
     order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.IndiaProductType.CNC)
-    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
