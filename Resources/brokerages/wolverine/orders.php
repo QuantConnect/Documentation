@@ -28,12 +28,12 @@
             </td>
         </tr>
         <tr>
-            <td><code>Exchange</code></td>
-            <td>Defines the exchange name for a particular market. For example, <code>Exchange.SMART</code></td>
+            <td><code class="csharp">Exchange</code><code class="python">exchange</code></td>
+            <td>Defines the exchange name for a particular market. For example, <code>Exchange.SMART</code>.</td>
         </tr>
         <tr>
-            <td><code>ExchangePostFix</code></td>
-            <td>The exchange post fix to apply if any. For example, if you set <code>Exchange</code> to <code>Exchange.SMART</code>, then "-INCA-TX" yields "SMART-INCA-TX"</td>
+            <td><code class="csharp">ExchangePostFix</code><code class="python">exchange_post_fix</code></td>
+            <td>The exchange post fix to apply if any. For example, if you set <code class="csharp">Exchange</code><code class="python">exchange</code> to <code>Exchange.SMART</code>, then "-INCA-TX" yields "SMART-INCA-TX".</td>
         </tr>
     </tbody>
 </table>
