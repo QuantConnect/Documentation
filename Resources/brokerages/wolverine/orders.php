@@ -20,20 +20,26 @@
     <tbody>
         <tr>
             <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+            <td><code>TimeInForce</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
                     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
                     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
                 </ul>
             </td>
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td
         </tr>
         <tr>
             <td><code class="csharp">Exchange</code><code class="python">exchange</code></td>
+            <td><code>Exchange</code></td>
             <td>Defines the exchange name for a particular market. For example, <code>Exchange.SMART</code>.</td>
+            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">ExchangePostFix</code><code class="python">exchange_post_fix</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td
             <td>The exchange post fix to apply if any. For example, if you set <code class="csharp">Exchange</code><code class="python">exchange</code> to <code>Exchange.SMART</code>, then "-INCA-TX" yields "SMART-INCA-TX".</td>
+            <td></td>
         </tr>
     </tbody>
 </table>
