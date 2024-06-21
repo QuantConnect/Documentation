@@ -11,23 +11,23 @@
    </thead>
    <tbody>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>Market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>Limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>LimitIfTouchedOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>Limit if touched</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>Stop limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
    </tbody>
@@ -73,11 +73,11 @@
             <td>A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code class="csharp">FeeInBase</code><code class="python">fee_in_base</code> flag.</td>
         </tr>
         <tr>
-            <td><code>NoMarketPriceProtection</code></td>
+            <td><code class="csharp">NoMarketPriceProtection</code><code class="python">no_market_price_protection</code></td>
             <td>A flag to signal that no <a rel="nofollow" target="_blank" href="https://support.kraken.com/hc/en-us/articles/201648183-Market-Price-Protection">Market Price Protection</a> should be used.</td>
         </tr>
         <tr>
-            <td><code>ConditionalOrder</code></td>
+            <td><code class="csharp">ConditionalOrder</code><code class="python">conditional_order</code></td>
             <td>An <code>Order</code> that's submitted when the primary order is executed. The <code>ConditionalOrder</code> quantity must match the primary order quantity and the <code>ConditionalOrder</code> direction must be the opposite of the primary order direction. This order property is only available for live algorithms.</td>
         </tr>
     </tbody>
