@@ -12,19 +12,19 @@
    </thead>
    <tbody>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>Market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>Limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>Stop limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
    </tbody>
@@ -43,7 +43,7 @@
 </ul>
 
 <h4>Time In Force</h4>
-<p><?= $writingAlgorithms ? "The <code>TradingTechnologiesBrokerageModel</code> supports" : "We model the TT API by supporting" ?> the <code>Day</code> and <code>GoodTilCanceled</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> order properties.</p>
+<p><?= $writingAlgorithms ? "The <code>TradingTechnologiesBrokerageModel</code> supports" : "We model the TT API by supporting" ?> the <code class="csharp">Day</code><code class="python">DAY</code> and <code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> order properties.</p>
 
 <?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
