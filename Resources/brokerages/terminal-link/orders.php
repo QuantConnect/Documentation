@@ -116,6 +116,25 @@
                The following strategy names are supported: "DMA", "DESK", "VWAP", "TWAP", "FLOAT", "HIDDEN", "VOLUMEINLINE", "CUSTOM", "TAP", "CUSTOM2", "WORKSTRIKE", "TAPNOW", "TIMED", "LIMITTICK", "STRIKE"
             </td>
         </tr>
+        <tr>
+            <td><code class="csharp">ExecutionInstruction</code><code class="python">execution_instruction</code></td>
+            <td>The execution instruction field.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">AutomaticPositionSides</code><code class="python">automatic_position_sides</code></td>
+            <td>A flag that determines whether to automatically include the position side in the order direction (buy-to-open, sell-to-close, etc.) instead of the default (buy, sell).</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">PositionSide</code><code class="python">position_side</code></td>
+            <td>
+               An <code>OrderPosition</code> object that specifies the position side in the order direction (buy-to-open, sell-to-close, etc.) instead of the default (buy, sell). 
+               This member has precedence over <code class="csharp">AutomaticPositionSides</code><code class="python">automatic_position_sides</code>.
+            </td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Exchange</code><code class="python">exchange</code></td>
+            <td>Defines the exchange name for sending the order to.</td>
+        </tr>
     </tbody>
 </table>
 
