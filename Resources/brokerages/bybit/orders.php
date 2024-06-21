@@ -135,9 +135,9 @@ def on_data(self, slice: Slice) -&gt; None:
 <h4>Updates</h4>
 <p><?= $writingAlgorithms ? "The <code>BybitBrokerageModel</code> supports" : "We model the Bybit API by supporting"?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a> for Crypto Future assets that have one of the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events#03-Order-States'>order states</a>:</p>
 <ul>
-  <li><code>OrderStatus.New</code></li>
-  <li><code>OrderStatus.PartiallyFilled</code></li>
-  <li><code>OrderStatus.Submitted </code></li>
-  <li><code>OrderStatus.UpdateSubmitted</code></li>
+  <li><code class='csharp'>OrderStatus.New</code><code class='python'>OrderStatus.NEW</code></li>
+  <li><code class='csharp'>OrderStatus.PartiallyFilled</code><code class='python'>OrderStatus.PARTIALLY_FILLED</code></li>
+  <li><code class='csharp'>OrderStatus.Submitted</code><code class='python'>OrderStatus.SUBMITTED</code></li>
+  <li><code class='csharp'>OrderStatus.UpdateSubmitted</code><code class='python'>OrderStatus.FILLED</code></li>
 </ul>
 <p>In cases where you can't update an order, you can cancel the existing order and then create a new order with the desired arguments. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
