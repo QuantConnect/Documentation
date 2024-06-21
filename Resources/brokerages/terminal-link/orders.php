@@ -74,43 +74,43 @@
             </td>
         </tr>
         <tr>
-            <td><code>Notes</code></td>
+            <td><code class="csharp">Notes</code><code class="python">notes</code></td>
             <td>The free form instructions that may be sent to the broker.</td>
         </tr>
         <tr>
-            <td><code>HandlingInstruction</code></td>
+            <td><code class="csharp">HandlingInstruction</code><code class="python">handling_instruction</code></td>
             <td>The instructions for handling the order or route. The values can be preconfigured or a value customized by the broker.</td>
         </tr>
         <tr>
-            <td><code>CustomNotes1</code></td>
+            <td><code class="csharp">CustomNotes1</code><code class="python">custom_notes_1</code></td>
             <td>Custom user order notes 1. For more information about custom order notes, see <a rel='nofollow' target='_blank' href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/description.html?highlight=Notes#custom-notes-free-text-fields'>Custom Notes & Free Text Fields</a> in the EMSX API documentation</td>
         </tr>
         <tr>
-            <td><code>CustomNotes2</code></td>
+            <td><code class="csharp">CustomNotes2</code><code class="python">custom_notes_2</code></td>
             <td>Custom user order notes 2.</td>
         </tr>
         <tr>
-            <td><code>CustomNotes3</code></td>
+            <td><code class="csharp">CustomNotes3</code><code class="python">custom_notes_3</code></td>
             <td>Custom user order notes 3.</td>
         </tr>
         <tr>
-            <td><code>CustomNotes4</code></td>
+            <td><code class="csharp">CustomNotes4</code><code class="python">custom_notes_4</code></td>
             <td>Custom user order notes 4.</td>
         </tr>
         <tr>
-            <td><code>CustomNotes5</code></td>
+            <td><code class="csharp">CustomNotes5</code><code class="python">custom_notes_5</code></td>
             <td>Custom user order notes 5.</td>
         </tr>
         <tr>
-            <td><code>Account</code></td>
+            <td><code class="csharp">Account</code><code class="python">account</code></td>
             <td>The EMSX account.</td>
         </tr>
         <tr>
-            <td><code>Broker</code></td>
+            <td><code class="csharp">Broker</code><code class="python">broker</code></td>
             <td>The EMSX broker code.</td>
         </tr>
         <tr>
-            <td><code>Strategy</code></td>
+            <td><code class="csharp">Strategy</code><code class="python">strategy</code></td>
             <td>
                A <code>StrategyParameters</code> object that represents the EMSX order strategy details. You must append strategy parameters in the order that the EMSX API expects. 
                The following strategy names are supported: "DMA", "DESK", "VWAP", "TWAP", "FLOAT", "HIDDEN", "VOLUMEINLINE", "CUSTOM", "TAP", "CUSTOM2", "WORKSTRIKE", "TAPNOW", "TIMED", "LIMITTICK", "STRIKE"
