@@ -14,7 +14,7 @@
     <tbody>
         <tr>
             <td><code>ShortOrderIsGtc</code></td>
-            <td>You can't short sell with the <code>GoodTilCanceled</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>time in force</a></td>
+            <td>You can't short sell with the <code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>time in force</a></td>
         </tr>
         <tr>
             <td><code>SellShortOrderLastPriceBelow5</code></td>
