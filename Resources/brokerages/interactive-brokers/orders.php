@@ -19,43 +19,43 @@
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=593">Limit Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>LimitIfTouched</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>Limit if touched</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=592">Limit if Touched Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarket</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=609">Stop Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimit</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>Stop limit</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=608">Stop-Limit Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>TrailingStop</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>Trailing stop</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/trailing-stops.php">Trailing Stop Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>MarketOnOpen</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>Market on open</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=598">Market-on-Open (MOO) Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-close-orders'>MarketOnClose</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-close-orders'>Market on close</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=599">Market-on-Close (MOC) Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>ComboMarket</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>Combo market</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/spread.php">Spread Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders'>ComboLimit</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders'>Combo limit</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/spread.php">Spread Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders'>ComboLegLimit</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders'>Combo leg limit</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/spread.php">Spread Orders</a></td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>ExerciseOption</a></td>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>Exercise Option</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.ca/en/trading/exerciseCloseout.php">Options Exercise</a></td>
     </tr>
   </tbody>
