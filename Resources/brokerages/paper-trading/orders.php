@@ -20,7 +20,7 @@
    </thead>
    <tbody>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>Market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -32,7 +32,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>Limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -44,7 +44,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>LimitIfTouchedOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>Limit if touched</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -56,7 +56,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -68,7 +68,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>Stop limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -80,7 +80,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>MarketOnOpenOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>Market on open</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -92,7 +92,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-close-orders'>MarketOnCloseOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-close-orders'>Market on close</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -104,7 +104,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>ComboMarketOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>Combo market</a></td>
         <td></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td></td>
@@ -116,7 +116,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders'>ComboLimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders'>Combo limit</a></td>
         <td></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td></td>
@@ -128,7 +128,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders'>ComboLegLimitOrder</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders'>Combo leg limit</a></td>
         <td></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
         <td></td>
@@ -140,7 +140,7 @@
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td><?php } ?>
       </tr>
       <tr>
-        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>ExerciseOption</a></td>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>Exercise Option</a></td>
         <td></td>
         <?php if ($writingAlgorithms) { ?><td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"><br>Not supported for cash-settled Options</td><?php } ?>
         <td></td>
