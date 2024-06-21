@@ -78,7 +78,7 @@
         </tr>
         <tr>
             <td><code class="csharp">ConditionalOrder</code><code class="python">conditional_order</code></td>
-            <td>An <code>Order</code> that's submitted when the primary order is executed. The <code>ConditionalOrder</code> quantity must match the primary order quantity and the <code>ConditionalOrder</code> direction must be the opposite of the primary order direction. This order property is only available for live algorithms.</td>
+            <td>An <code>Order</code> that's submitted when the primary order is executed. The <code class="csharp">ConditionalOrder</code><code class="python">conditional_order</code> quantity must match the primary order quantity and the <code class="csharp">ConditionalOrder</code><code class="python">conditional_order</code> direction must be the opposite of the primary order direction. This order property is only available for live algorithms.</td>
         </tr>
     </tbody>
 </table>
