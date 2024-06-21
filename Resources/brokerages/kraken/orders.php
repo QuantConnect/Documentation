@@ -146,7 +146,7 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.no_market_price_protection = True
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
     order_properties.post_only = False
     order_properties.fee_in_base = True
     order_properties.fee_in_quote = False
