@@ -61,7 +61,7 @@
                  <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
              </ul>
          </td>
-         <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='csharp'>TimeInForce.GOOD_TIL_CANCELED</code></td>
+         <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
       </tr>
       <tr>
          <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
