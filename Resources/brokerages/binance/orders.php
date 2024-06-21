@@ -67,8 +67,8 @@
          <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
          <td><code>bool</code></td>
          <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
+         <td></td>
       </tr>
-      <td></td>
    </tbody>
 </table>
 
