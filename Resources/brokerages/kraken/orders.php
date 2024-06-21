@@ -54,6 +54,7 @@
     <tbody>
         <tr>
             <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+            <td><code>TimeInForce</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
                     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
