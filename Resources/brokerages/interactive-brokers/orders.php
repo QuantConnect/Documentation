@@ -228,7 +228,7 @@
                 <ul>
                     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
                     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
-                    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
+                    <li><code class="csharp">GoodTilDate</code><code class="python">good_til_date</code></li>
                 </ul>
             </td>
             <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
@@ -289,7 +289,7 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.outside_regular_trading_hours = True
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE(datetime(year, month, day))
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
