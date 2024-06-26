@@ -1,7 +1,9 @@
 <p>To send Telegram notifications in your code files, run:</p>
 <div class="section-example-container">
-    <pre class="csharp">Notify.Telegram(id, message, token);</pre>
-    <pre class="python">self.notify.telegram(id, message, token)</pre>
+    <pre class="csharp">var message = "2023-07-13T12:20:00.2033226Z,EURUSD,1.11853,89187,Market,Filled,99758.33511";
+Notify.Telegram(id: "503016366", message: message, token: "1234");</pre>
+    <pre class="python">message = "2023-07-13T12:20:00.2033226Z,EURUSD,1.11853,89187,Market,Filled,99758.33511"
+self.notify.telegram(id="503016366", message=message, token="1234")</pre>
 </div>
 
 <p>The <code>id</code> argument is your Telegram group Id. <? include(DOCS_RESOURCES."/notifications/telegram-group-id.html"); ?></p>
