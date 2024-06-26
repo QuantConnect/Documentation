@@ -1,9 +1,9 @@
-<p>The number of Telegram, email, or webhook notifications you can send in each live algorithm for free depends on the teir of your organization. The following table shows the hourly quotas:</p>
+<p>The number of email, <?=$writingAlgorithms ? "FTP," : "" ?> Telegram, or webhook notifications you can send in each live algorithm for free depends on the tier of your organization. The following table shows the hourly quotas:</p>
 
 <table class="qc-table table" id='notification-quota-table'>
     <thead>
         <tr>
-            <th>Teir</th>
+            <th>Tier</th>
             <th>Number of Notifications Per Hour</th>
         </tr>
     </thead>
@@ -38,6 +38,6 @@
 }
 </style>
 
-<p>If you exceed the hourly quota, each additional Telegram, email, or webhook notification costs 1 <a href='/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit</a> (QCC).</p>
+<p>If you exceed the hourly quota, each additional email, <?=$writingAlgorithms ? "FTP," : "" ?> Telegram, or webhook notification costs 1 <a href='/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit</a> (QCC).</p>
 
 <p>Each SMS notification you send to a US or Canadian phone number costs 1 QCC. Each SMS notification you send to an international phone number costs 10 QCC.</p>
