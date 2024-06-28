@@ -1,6 +1,6 @@
 <p>
-    Brokerage message handlers extend the <code>IBrokerageMessageHandler</code> interface. 
-    Extensions of the <code>IBrokerageMessageHandler</code> interface must define the <code class="csharp">HandleMessage</code><code class="python">handle_message</code> and <code class="csharp">HandleOrder</code><code class="python">handle_order</code> methods.
+    Brokerage message handlers extend the <code>DefaultBrokerageMessageHandler</code> class. 
+    Extensions of the <code>DefaultBrokerageMessageHandler</code> class should define the <code class="csharp">HandleMessage</code><code class="python">handle_message</code> and <code class="csharp">HandleOrder</code><code class="python">handle_order</code> methods.
 </p>
 
 <p>The <code class="csharp">HandleMessage</code><code class="python">handle_message</code> method processes the brokerage message event. It triggers any actions in the algorithm or notifications system required. </p>
@@ -12,10 +12,14 @@
 SetBrokerageMessageHandler(new MyBrokerageMessageHandler(this));
 
 // Define the custom brokerage message handler
-public class MyBrokerageMessageHandler : IBrokerageMessageHandler
+public class MyBrokerageMessageHandler : DefaultBrokerageMessageHandler
 {
     private readonly IAlgorithm _algorithm;
-    public MyBrokerageMessageHandler(IAlgorithm algorithm) { _algorithm = algorithm; }
+    public MyBrokerageMessageHandler(IAlgorithm algorithm) 
+        : base(algorithm)
+    { 
+        _algorithm = algorithm; 
+    }
 
     public void HandleMessage(BrokerageMessageEvent message)
     {
@@ -31,7 +35,7 @@ public class MyBrokerageMessageHandler : IBrokerageMessageHandler
 self.set_brokerage_message_handler(MyBrokerageMessageHandler(self))
         
 # Define the custom brokerage message handler
-class MyBrokerageMessageHandler(IBrokerageMessageHandler):
+class MyBrokerageMessageHandler(DefaultBrokerageMessageHandler):
         
     def __init__(self, algorithm):
         self._algorithm = algorithm
