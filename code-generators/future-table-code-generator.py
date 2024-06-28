@@ -16,7 +16,7 @@ TICKERS_BY_MARKET = {
 FUTURE_OPTIONS = {
     "DC":"DC", "ES":"ES", "CL":"LO", "NQ":"NQ", "SI":"SO",
     "RB":"OB", "GC":"OG", "HO":"OH", "NG":"ON", "HG":"HXE",
-    "ZB":"OZB", "ZC":"OZC", "ZS":"OZS", "ZT":"OZT", "ZW":"OZW"
+    "ZB":"OZB", "ZC":"OZC", "ZN":"OZN", "ZS":"OZS", "ZT":"OZT", "ZW":"OZW"
 }
 
 def get_data() -> dict:
