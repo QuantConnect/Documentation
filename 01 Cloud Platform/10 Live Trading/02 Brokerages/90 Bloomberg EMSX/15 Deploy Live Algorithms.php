@@ -18,6 +18,9 @@ $authentication = "<li>Click the <span class='field-name'>Connection Type</span>
 
 <li>In the <span class='field-name'>EMSX Account</span> field, enter the account to which LEAN should route orders.</li>
 
+<li>In the <span class='field-name'>EMSX Team</span> field, enter the team account to receive events of your team's orders.</li>
+<p>The default value is empty, which means LEAN disregards these notifications.</p>
+
 <li>In the <span class='field-name'>OpenFIGI Api Key</span> field, enter your API key.</li>
 
 <li>Click the <span class='field-name'>Environment</span> field and then click one of the options from the drop-down menu.</li>";
