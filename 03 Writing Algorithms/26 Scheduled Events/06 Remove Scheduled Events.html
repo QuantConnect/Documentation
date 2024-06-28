@@ -2,17 +2,23 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Create a Scheduled Event
-var scheduledEvent = Schedule.On(DateRules.EveryDay("SPY"),
-                                 TimeRules.AfterMarketOpen("SPY", 10),
-                                 tenMinutesAfterOpen);
+var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+var scheduledEvent = Schedule.On(
+    DateRules.EveryDay(symbol),
+    TimeRules.AfterMarketOpen(symbol, 10),
+    TenMinutesAfterOpen
+);
 
 // Remove the Scheduled Event
 Schedule.Remove(scheduledEvent);
 </pre>
     <pre class="python"># Create a Scheduled Event
-scheduled_event = self.schedule.on(self.date_rules.every_day("SPY"),
-                                   self.time_rules.after_market_open("SPY", 10),       
-                                   self.ten_minutes_after_open)
+symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+scheduled_event = self.schedule.on(
+    self.date_rules.every_day(symbol),
+    self.time_rules.after_market_open(symbol, 10),       
+    self._ten_minutes_after_open
+)
 
 # Remove the Scheduled Event
 self.schedule.remove(scheduled_event)</pre>
