@@ -75,6 +75,26 @@
          <td>2/10/2020<br></td>
          <td>9/20/2020<br></td>
       </tr>
+      <tr>
+         <td>Post-COVID Run-up 2020-2021</td>
+         <td>4/1/2020<br></td>
+         <td>1/1/2022<br></td>
+      </tr>
+      <tr>
+         <td>Meme Season 2021</td>
+         <td>1/1/2021<br></td>
+         <td>5/15/2021<br></td>
+      </tr>
+      <tr>
+         <td>Russia Invades Ukraine 2022-2023</td>
+         <td>2/1/2022<br></td>
+         <td>1/1/2024<br></td>
+      </tr>
+      <tr>
+         <td>AI Boom 2022-Present</td>
+         <td>11/30/2022<br></td>
+         <td>Present<br></td>
+      </tr>
    </tbody>
 </table>
 
