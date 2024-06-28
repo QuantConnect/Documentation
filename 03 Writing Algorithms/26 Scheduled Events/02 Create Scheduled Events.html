@@ -22,8 +22,8 @@ self.schedule.on(
 <div class="section-example-container">
     <pre class="csharp">var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
 Schedule.On(
-    DateRules.WeekEnd("SPY"),
-    TimeRules.BeforeMarketClose("SPY", 30),
+    DateRules.WeekEnd(symbol),
+    TimeRules.BeforeMarketClose(symbol, 30),
     Rebalance
 );</pre>
     <pre class="python">symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
@@ -39,13 +39,13 @@ self.schedule.on(
 <div class="section-example-container">
     <pre class="csharp">var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
 Schedule.On(
-    DateRules.EveryDay("SPY"),
+    DateRules.EveryDay(symbol),
     TimeRules.Every(TimeSpan.FromMinutes(30)),
     SomeAction
 );</pre>
     <pre class="python">symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
 self.schedule.on(
-    self.date_rules.every_day("SPY"),
+    self.date_rules.every_day(symbol),
     self.time_rules.every(timedelta(minutes=30)),
     self._some_action
 )</pre>
