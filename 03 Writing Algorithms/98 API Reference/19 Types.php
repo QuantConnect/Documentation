@@ -44,6 +44,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/identical-three-crows.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/in-neck.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/index.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/indicator-history.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/insight.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/inverted-hammer.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/kicking.html"); ?>

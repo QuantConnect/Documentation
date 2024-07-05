@@ -111,7 +111,6 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-θ.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-ρ.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-candlestick-patterns.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-enable-automatic-indicator-warm-up.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-t3.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
