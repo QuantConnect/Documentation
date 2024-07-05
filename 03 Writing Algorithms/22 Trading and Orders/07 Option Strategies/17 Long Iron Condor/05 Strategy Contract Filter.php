@@ -1,5 +1,5 @@
 <?
-  $strategy = "Iron Condor";
+  $strategy = "Long Iron Condor";
   $nContracts = "4";
   $csharpMethod = "IronCondor(30, 5, 10)";
   $pythonMethod = "iron_condor(30, 5, 10)"
