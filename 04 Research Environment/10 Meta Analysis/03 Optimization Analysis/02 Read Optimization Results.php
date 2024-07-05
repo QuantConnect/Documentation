@@ -11,7 +11,7 @@
     <thead>
         <tr>
             <th style='width: 50%'>Platform</th>
-            <th>Optimziation Id</th>
+            <th>Optimization Id</th>
         </tr>
     </thead>
     <tbody>
