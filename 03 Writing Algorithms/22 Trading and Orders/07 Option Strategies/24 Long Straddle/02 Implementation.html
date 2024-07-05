@@ -14,7 +14,7 @@ public override void Initialize()
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG");
     _symbol = option.Symbol;
-    option.SetFilter(-1, 1, 30, 60);
+    option.SetFilter(universe =&gt; universe.IncludeWeeklys().Straddle(30));
 }</pre>
         <pre class="python">def initialize(self) -&gt; None:
     self.set_start_date(2017, 4, 1)
@@ -24,8 +24,10 @@ public override void Initialize()
     self.universe_settings.asynchronous = True 
     option = self.add_option("GOOG")
     self._symbol = option.symbol
-    option.set_filter(-1, 1, 30, 60)</pre>
+    option.set_filter(lambda universe: universe.include_weeklys().straddle(30))</pre>
     </div>
+
+    <p>The <code class="csharp">Straddle</code><code class="python">straddle</code> filter narrows the universe down to just the two contracts you need to form a long straddle.</p>
 
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiration date and strike price of the contracts in the strategy legs.</li>
     <div class="section-example-container">
