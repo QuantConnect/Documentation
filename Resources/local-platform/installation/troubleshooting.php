@@ -17,7 +17,7 @@
 <? } ?>
 
 <h4>Docker Not Found</h4>
-<p>If you have Docker installed but the Local Platform can't detect it, update your <a href=''><span class='button-name'>Executable Path: Docker</span> setting</a> to be the path to your Docker executable.</p>
+<p>If you have Docker installed but the Local Platform can't detect it, update your <a href='/docs/v2/local-platform/development-environment/configuration#02-Extension-Settings'><span class='button-name'>Executable Path: Docker</span> setting</a> to be the path to your Docker executable.</p>
 
 <h4>LEAN CLI Account Syncronization</h4>
 <? include(DOCS_RESOURCES."/cli/login-sync.html"); ?>
