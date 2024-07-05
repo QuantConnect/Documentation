@@ -92,18 +92,18 @@ for indicator_data_point in history:
     value = indicator_data_point.value</pre>
 </div>
 
-<p>To make the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method update the indicator with an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields'>alternative price field</a> instead of the close (or midprice) of each bar, pass a <code>selector</code> argument.</p>
+<p>To make the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method update the indicator with an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields'>alternative price field</a> instead of the close (or mid-price) of each bar, pass a <code>selector</code> argument.</p>
 <div class="section-example-container">
 	<pre class="csharp">var history = IndicatorHistory(_sma, _symbol, TimeSpan.FromDays(30), selector: Field.Volume);</pre>
 	<pre class="python">history = self.indicator_history(self.sma, self._symbol, timedelta(30), selector=Field.VOLUME)</pre>
 </div>
 
 <p>
-    Some indicators require the prices of two assets to computer their value (for example, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/beta'>Beta</a>).
+    Some indicators require the prices of two assets to compute their value (for example, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/beta'>Beta</a>).
 	In this case, pass a list of the <code>Symbol</code> objects to the method.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">var spy = AddEquity("SPY).Symbol;
+	<pre class="csharp">var spy = AddEquity("SPY").Symbol;
 var aapl = AddEquity("AAPL").Symbol;
 var beta = new Beta("", aapl, spy, 21);
 var history = IndicatorHistory(beta, new[] {spy, aapl}, 10, Resolution.Daily);</pre>
