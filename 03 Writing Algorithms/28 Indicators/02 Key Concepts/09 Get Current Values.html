@@ -1,0 +1,25 @@
+<p>To access the indicator value, use the <code class="csharp">Current.Value</code><code class="python">current.value</code> property. Some indicators have one output and some indicators have multiple outputs. The <code>SimpleMovingAverage</code> indicator only has one output, the average price over the last n periods, so the <code class="csharp">Current.Value</code><code class="python">current.value</code> property returns this value. The <code>BollingerBand</code> indicator has multiple outputs because it has a simple moving average, an upper band, and a lower band. For indicators that have multiple outputs, refer to the <a href='/docs/v2/writing-algorithms/indicators/supported-indicators'>Supported Indicators</a> to see how to access the output values.</p>
+
+<div class="section-example-container">
+	<pre class="python">sma = self.sma.current.value
+
+current_price = self.auto_bb.current.value
+bb_upper_band = self.auto_bb.upper_band.current.value
+bb_lower_band = self.auto_bb.lower_band.current.value</pre>
+	<pre class="csharp">var sma = _sma.Current.Value;
+
+var currentPrice = _autoBB.Current.Value;
+var bbUpperBand = _autoBB.UpperBand.Current.Value;
+var bbLowerBand = _autoBB.LowerBand.Current.Value;</pre>
+</div>
+
+<p>You can implicitly cast indicators to the decimal version of their <code class="csharp">Current.Value</code><code class="python">current.value</code> property.</p>
+
+<div class="section-example-container">
+	<pre class="python">if self.sma.current.value &gt; self.auto_bb.upper_band.current.value:
+    self.set_holdings(self._symbol, -0.1)</pre>
+	<pre class="csharp">if (_sma &gt; _autoBB.UpperBand)
+{
+    SetHoldings(_symbol, -0.1);
+}</pre>
+</div>
