@@ -100,7 +100,7 @@ for indicator_data_point in history:
 
 <p>
     Some indicators require the prices of two assets to compute their value (for example, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/beta'>Beta</a>).
-	In this case, pass a list of the <code>Symbol</code> objects to the method.
+    In this case, pass a list of the <code>Symbol</code> objects to the method.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">var spy = AddEquity("SPY").Symbol;
@@ -112,3 +112,11 @@ self._aapl = self.add_equity('AAPL').symbol
 self._beta = Beta("", self._aapl, self._spy, 21)
 history = self.indicator_history(self._beta, [self._spy, self._aapl], 10, Resolution.DAILY)</pre>
 </div>
+
+<p class='csharp'>If you already have a list of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects, you can pass them to the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method to avoid the internal history request.</p>
+<div class="csharp section-example-container">
+	<pre class="csharp">var slices = History(new[] {spy}, 30, Resolution.Daily);
+var history = IndicatorHistory(indicator, slices);</pre>
+</div>
+
+
