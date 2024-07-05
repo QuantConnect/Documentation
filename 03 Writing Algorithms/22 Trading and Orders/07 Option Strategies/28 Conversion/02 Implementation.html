@@ -14,7 +14,7 @@ public override void Initialize()
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(-10, 10, 0, 30);
+    option.SetFilter(universe =&gt; universe.IncludeWeeklys().Conversion(30, -5));
 }</pre>
         <pre class="python">def initialize(self) -&gt; None:
     self.set_start_date(2017, 4, 1)
@@ -24,8 +24,10 @@ public override void Initialize()
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG", Resolution.MINUTE)
     self._symbol = option.symbol
-    option.set_filter(-10, 10, 0, 30)</pre>
+    option.set_filter(lambda universe: universe.include_weeklys().conversion(30, -5))</pre>
     </div>
+
+    <p>The <code class="csharp">Conversion</code><code class="python">conversion</code> filter narrows the universe down to just the two contracts you need to form a conversion.</p>
 
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the strike and expiry of the contracts in the strategy legs.</li>
     <div class="section-example-container">
