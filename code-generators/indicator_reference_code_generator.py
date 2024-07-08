@@ -261,5 +261,15 @@ include(DOCS_RESOURCES."/indicators/visualization.php");
             }
             fp.write(dumps(metadata, indent=4))
 
+        with open(f'{folder}/04 Indicator History.php', 'w', encoding='utf-8') as fp:
+            fp.write(f"""{TAG}
+<? 
+$typeName = "{type_name}";
+$indicatorVariable = "{helper_name.lower()}";
+$csharpProperties = {indicator['properties'][0]};
+$pythonProperties = {indicator['py_properties'][0]};
+include(DOCS_RESOURCES."/indicators/indicator-history.php");
+?>""")
+
 if __name__ == '__main__':
     Generate_Indicators_Reference()
