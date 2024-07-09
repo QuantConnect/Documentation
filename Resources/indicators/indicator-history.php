@@ -40,7 +40,9 @@
         var singleSymbolCountIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, _symbol, 100, Resolution.Minute);
         var singleSymbolTimeSpanIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, _symbol, TimeSpan.FromDays(10), Resolution.Minute);
         var singleSymbolTimePeriodIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, _symbol, new DateTime(2024, 7, 1), new DateTime(2024, 7, 5), Resolution.Minute);
-<? } ?></pre>
+<? } ?>
+    }
+}</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -97,15 +99,9 @@ history_indicator_history = self.indicator_history(<?=strtolower($helperName)?>,
 <p>To access the different properties of the returned indicator history, call the property directly of each <code>IndicatorDataPoint</code> entry.</p>
 <div class="section-example-container">
     <pre class="csharp"><? foreach ($csharpProperties as $property) { ?>
-var <?=strtolower($property)?> = singleSymbolCountIndicatorHistory.Select(x => x.<?=$property?>).ToList();
-<? } ?>
-<? foreach ($csharpProperties as $property) { ?>
-var <?=strtolower($property)?> = multipleSymbolsCountIndicatorHistory.Select(x => x[_symbol].<?=$property?>).ToList();
+var <?=strtolower($property)?> = indicatorHistory.Select(x => x.<?=$property?>).ToList();
 <? } ?></pre>
     <pre class="python"><? foreach ($pythonProperties as $property) { ?>
-<?=strtolower($property)?> = single_symbol_count_indicator_history["<?=$property?>"]
-<? } ?>
-<? foreach ($pythonProperties as $property) { ?>
-<?=strtolower($property)?> = multiple_symbols_count_indicator_history.loc[_symbol]["<?=$property?>"]
+<?=strtolower($property)?> = indicator_history["<?=$property?>"]
 <? } ?></pre>
 </div>
