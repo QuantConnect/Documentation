@@ -7,38 +7,92 @@
     <li>two <code class="csharp">DateTime</code><code class="python">datetime</code> objects as the start and end time of the indicator history needed</li>
 </ul>
 <div class="section-example-container">
-    <pre class="csharp">var singleSymbolCountIndicatorHistory = IndicatorHistory(<?=$indicatorVariable?>, _symbol, 100, Resolution.Minute);
-var singleSymbolTimeSpanIndicatorHistory = IndicatorHistory(<?=$indicatorVariable?>, _symbol, TimeSpan.FromDays(10), Resolution.Minute);
-var singleSymbolTimePeriodIndicatorHistory = IndicatorHistory(<?=$indicatorVariable?>, _symbol, new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), Resolution.Minute);
+    <pre class="csharp">public class <?=$typeName?>Algorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+<? if($hasReference) { ?>
+    private Symbol _reference;
+<?} else if($isOptionIndicator) { ?>
+    private Symbol _option, _mirrorOption;
+<?}?>
 
-var multipleSymbolsCountIndicatorHistory = IndicatorHistory(<?=$indicatorVariable?>, new[] { _symbol, _symbol2 }, 100, Resolution.Minute);
-var multipleSymbolsTimeSpanIndicatorHistory = IndicatorHistory(<?=$indicatorVariable?>, new[] { _symbol, _symbol2 }, TimeSpan.FromDays(10), Resolution.Minute);
-var multipleSymbolsTimePeriodIndicatorHistory = IndicatorHistory(<?=$indicatorVariable?>, new[] { _symbol, _symbol2 }, new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), Resolution.Minute);</pre>
-    <pre class="python">single_symbol_count_indicator_history = self.indicator_history(<?=$indicatorVariable?>, self._symbol, 100, Resolution.MINUTE)
-single_symbol_timedelta_indicator_history = self.indicator_history(<?=$indicatorVariable?>, self._symbol, timedelta(days=10), Resolution.MINUTE)
-single_symbol_time_period_indicator_history = self.indicator_history(<?=$indicatorVariable?>, self._symbol, datetime(2020, 1, 1), datetime(2021, 1, 1), Resolution.MINUTE)
-
-multiple_symbols_count_indicator_history = self.indicator_history(<?=$indicatorVariable?>, [self._symbol, self._symbol2], 100, Resolution.MINUTE)
-multiple_symbols_timedelta_indicator_history = self.indicator_history(<?=$indicatorVariable?>, [self._symbol, self._symbol2], timedelta(days=10), Resolution.MINUTE)
-multiple_symbols_time_period_indicator_history = self.indicator_history(<?=$indicatorVariable?>, [self._symbol, self._symbol2], datetime(2020, 1, 1), datetime(2021, 1, 1), Resolution.MINUTE)</pre>
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+<? if($hasReference) { ?>
+        _reference = AddEquity("QQQ", Resolution.Daily).Symbol;
+<?} else if($isOptionIndicator) { ?>
+        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 225m, new DateTime(2024, 7, 12));
+        AddOptionContract(_option, Resolution.Daily);
+        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 225m, new DateTime(2024, 7, 12));
+        AddOptionContract(_mirrorOption, Resolution.Daily);
+<?}?>
+        var <?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $helperArguments)))?>);
+<? if($hasReference) { ?>
+        var multipleSymbolsCountIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, new[] { _symbol, _reference }, 100, Resolution.Minute);
+        var multipleSymbolsTimeSpanIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, new[] { _symbol, _reference }, TimeSpan.FromDays(10), Resolution.Minute);
+        var multipleSymbolsTimePeriodIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, new[] { _symbol, _reference }, new DateTime(2024, 7, 1), new DateTime(2024, 7, 5), Resolution.Minute);
+<? } else if($isOptionIndicator) { ?>
+        var optionCountIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, new[] { _symbol, _option, _mirrorOption }, 100, Resolution.Minute);
+        var optionSymbolsTimeSpanIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, new[] { _symbol, _option, _mirrorOption }, TimeSpan.FromDays(10), Resolution.Minute);
+        var optionSymbolsTimePeriodIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, new[] { _symbol, _option, _mirrorOption }, new DateTime(2024, 7, 1), new DateTime(2024, 7, 5), Resolution.Minute);
+<? } else { ?>
+        var singleSymbolCountIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, _symbol, 100, Resolution.Minute);
+        var singleSymbolTimeSpanIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, _symbol, TimeSpan.FromDays(10), Resolution.Minute);
+        var singleSymbolTimePeriodIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, _symbol, new DateTime(2024, 7, 1), new DateTime(2024, 7, 5), Resolution.Minute);
+<? } ?></pre>
+    <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+<? if($hasReference) { ?>
+        self.reference = self.add_equity("QQQ", Resolution.DAILY).symbol
+<?} else if($isOptionIndicator) { ?>
+        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 225, datetime(2024, 7, 12))
+        self.add_option_contract(self.option, Resolution.DAILY)
+        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 225, datetime(2024, 7, 12))
+        self.add_option_contract(self.mirror_option, Resolution.DAILY)
+<?}?>
+        <?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=strtolower($helperName)?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+<? if($hasReference) { ?>
+        multiple_symbols_count_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self.reference], 100, Resolution.MINUTE)
+        multiple_symbols_timedelta_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self.reference], timedelta(days=10), Resolution.MINUTE)
+        multiple_symbols_time_period_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self.reference], datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
+<? } else if($isOptionIndicator) { ?>
+        option_count_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self.option, self.mirror_option], 100, Resolution.MINUTE)
+        option_timedelta_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self.option, self.mirror_option], timedelta(days=10), Resolution.MINUTE)
+        option_time_period_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self.option, self.mirror_option], datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
+<? } else { ?>
+        single_symbol_count_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, self._symbol, 100, Resolution.MINUTE)
+        single_symbol_timedelta_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, self._symbol, timedelta(days=10), Resolution.MINUTE)
+        single_symbol_time_period_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, self._symbol, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
+<? } ?></pre>
 </div>
 
-<p>You may also provide the history data instead of the time argument to generate indicator history with respect to the historical time and values provided.</p>
+<p>You may also provide the historical data instead of the time argument to generate indicator history with respect to the time and values of the historical data provided.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = History(_symbol, 100, Resolution.Minute);
-var historyIndicatorHistory = IndicatorHistory(<?=$indicatorVariable?>, _symbol, history, Resolution.Daily);</pre>
-    <pre class="python">history = self.history(self._symbol, 100, Resolution.MINUTE)
-history_indicator_history = self.indicator_history(<?=$indicatorVariable?>, self._symbol, history, Resolution.DAILY)</pre>
-</div>
-
-<? if ($isMultipleType) { ?>
-<p>You can also specify the return type of each entries of the indicator history request.</p>
-<div class="section-example-container">
-    <pre class="csharp">var otherTypeIndicatorHistory = IndicatorHistory&lt;T&gt;(<?=$indicatorVariable?>, _symbol, 100, Resolution.Daily);</pre>
-    <pre class="python">other_type_indicator_history = self.indicator_history(T, <?=$indicatorVariable?>, self._symbol, 100, Resolution.DAILY)</pre>
-</div>
-<p>where <code>T</code> can be different <a href="/docs/v2/writing-algorithms/indicators/key-concepts#03-Indicator-Types">indicator types</a> supported by the <code><?=$typeName?></code> indicator.</p>
+    <pre class="csharp"><? if($hasReference) { ?>
+var history = History(new[] { _symbol, _reference }, 100, Resolution.Minute);
+<? } else if($isOptionIndicator) { ?>
+var history = History(new[] { _symbol, _option, _mirrorOption }, 100, Resolution.Minute);
+<? } else { ?>
+var history = History(_symbol, 100, Resolution.Minute);
 <? } ?>
+var historyIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, history);</pre>
+    <pre class="python"><? if($hasReference) { ?>
+history = self.history([self._symbol, self.reference], 100, Resolution.MINUTE)
+<? } else if($isOptionIndicator) { ?>
+history = self.history([self._symbol, self.option, self.mirror_option], 100, Resolution.MINUTE)
+<? } else { ?>
+history = self.history(self._symbol, 100, Resolution.MINUTE)
+<? } ?>
+history_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, history)</pre>
+</div>
+
+<p>The default indicator historical data will be calculated using the <code>Value</code> property of each <code>BaseData</code> object iterated. You can assign custom calculation on the value being processed through a <code>selector</code> function argument.</p>
+<div class="section-example-container">
+    <pre class="csharp">var indicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, 100, Resolution.Minute, (bar) =&gt; ((TradeBar)bar).High);</pre>
+    <pre class="python">indicator_history = self.indicator_history(<?=strtolower($helperName)?>, 100, Resolution.Minute, lambda bar: bar.High)</pre>
+</div>
 
 <p>To access the different properties of the returned indicator history, call the property directly of each <code>IndicatorDataPoint</code> entry.</p>
 <div class="section-example-container">

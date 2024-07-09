@@ -264,8 +264,12 @@ include(DOCS_RESOURCES."/indicators/visualization.php");
         with open(f'{folder}/04 Indicator History.php', 'w', encoding='utf-8') as fp:
             fp.write(f"""{TAG}
 <? 
-$typeName = "{type_name}";
-$indicatorVariable = "{helper_name.lower()}";
+$helperPrefix = '{'CandlestickPatterns.' if 'CandlestickPatterns' in source else ''}';
+$typeName = '{type_name}';
+$helperName = '{helper_name}';
+$helperArguments = '{indicator['helper-arguments']}';
+$hasReference = { 'true' if 'reference' in indicator['helper-arguments'] else 'false' };
+$isOptionIndicator = { 'true' if type_name in OPTION_INDICATORS else 'false' };
 $csharpProperties = {indicator['properties'][0]};
 $pythonProperties = {indicator['py_properties'][0]};
 include(DOCS_RESOURCES."/indicators/indicator-history.php");
