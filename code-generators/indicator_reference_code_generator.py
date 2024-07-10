@@ -261,5 +261,19 @@ include(DOCS_RESOURCES."/indicators/visualization.php");
             }
             fp.write(dumps(metadata, indent=4))
 
+        with open(f'{folder}/04 Indicator History.php', 'w', encoding='utf-8') as fp:
+            fp.write(f"""{TAG}
+<? 
+$helperPrefix = '{'CandlestickPatterns.' if 'CandlestickPatterns' in source else ''}';
+$typeName = '{type_name}';
+$helperName = '{helper_name}';
+$helperArguments = '{indicator['helper-arguments']}';
+$hasReference = { 'true' if 'reference' in indicator['helper-arguments'] else 'false' };
+$isOptionIndicator = { 'true' if type_name in OPTION_INDICATORS else 'false' };
+$csharpProperties = {indicator['properties'][0]};
+$pythonProperties = {indicator['py_properties'][0]};
+include(DOCS_RESOURCES."/indicators/indicator-history.php");
+?>""")
+
 if __name__ == '__main__':
     Generate_Indicators_Reference()
