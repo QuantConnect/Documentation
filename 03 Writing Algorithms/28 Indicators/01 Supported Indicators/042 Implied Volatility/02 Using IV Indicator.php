@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'Vega';
-$helperName = 'V';
+$typeName = 'ImpliedVolatility';
+$helperName = 'IV';
 $helperArguments = 'option_symbol, option_mirror_symbol';
-$properties = array("ImpliedVolatility","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");
-$pyProperties = array("implied_volatility","risk_free_rate","dividend_yield","price","opposite_price","underlying_price");
+$properties = array("HistoricalVolatility","OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");
+$pyProperties = array("historical_volatility","option_symbol","risk_free_rate","dividend_yield","price","opposite_price","underlying_price");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
 $constructorArguments = 'option_symbol, interest_rate_model, dividend_yield_model, option_mirror_symbol';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'vega';
+$constructorBox = 'implied-volatility';
 $isOptionIndicator = true;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>
