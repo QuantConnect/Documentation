@@ -15,7 +15,7 @@
         <tr><td>Quantity</td><td>Amount of asset purchased or sold</td></tr>
         <tr><td>Exchange</td><td>Location of the sale</td></tr>
         <tr><td>Trade Sale Condition</td><td>Notes on the sale</td></tr>
-        <tr><td>Suspicious</td><td>Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the trade is far from other market prices and may be reversed. <a href="">TradeBar data</a> excludes suspicious ticks.</td></tr>
+        <tr><td>Suspicious</td><td>Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the trade is far from other market prices and may be reversed. <a href="/docs/v2/lean-engine/data-format/core-data-types#04-Trade-Bar">TradeBar data</a> excludes suspicious ticks.</td></tr>
     </tbody>
 </table>
 

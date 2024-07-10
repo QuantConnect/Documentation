@@ -17,7 +17,7 @@
         <tr><td>Ask Size</td><td>Best ask price's size/quantity</td></tr>
         <tr><td>Exchange</td><td>Location of the sale</td></tr>
         <tr><td>Quote Sale Condition</td><td>Notes on the sale.</td></tr>
-        <tr><td>Suspicious</td><td>Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the quote is far from other market prices and may be reversed. Each quote tick contains either bid or ask data only. <a href="">QuoteBar data</a> data excludes suspicious ticks.</td></tr>
+        <tr><td>Suspicious</td><td>Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the quote is far from other market prices and may be reversed. Each quote tick contains either bid or ask data only. <a href="/docs/v2/lean-engine/data-format/core-data-types#05-Quote-Bar">QuoteBar data</a> data excludes suspicious ticks.</td></tr>
     </tbody>
 </table>
 
