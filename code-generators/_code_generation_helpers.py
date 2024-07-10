@@ -18,6 +18,12 @@ class MARKET_HOUR:
     EARLY_CLOSE = "early-closes"
     LATE_OPEN = "late-opens"
     TIME_ZONE = "time-zone"
+    
+def get_all_indicators() -> List[str]:
+    methods = get_type("QuantConnect.Algorithm.QCAlgorithm")["methods"]
+    selected = set(x["method-return-type-short-name"] for x in methods
+                if x["documentation-attributes"] and len(x["documentation-attributes"]) == 1 and x["documentation-attributes"][0]["tag"] == "Indicators" and x["method-return-type-full-name"].split('.')[0] != "System")
+    return list(selected)
 
 def get_text_content(url: str) -> str:
     return urlopen(url).read().decode('utf-8')
@@ -27,8 +33,10 @@ def get_json_content(url: str) -> List:
         .replace("null", "None").replace("true", "True").replace("false", "False")
     return eval(content)
 
-def get_type(_type: str, language: str) -> List:
-    url = f'https://www.quantconnect.com/services/inspector?language={language}&type=T:{_type}'
+def get_type(_type: str, language: str = None) -> List:
+    url = f'https://www.quantconnect.com/services/inspector?type=T:{_type}'
+    if language:
+        url += f'&language={language}'
     return get_json_content(url)
 
 def to_key(name: str) -> str:

@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 import shutil
 from urllib.request import urlopen
-from _code_generation_helpers import _type_conversion, extract_xml_content, title_to_dash_linked_lower_case
+from _code_generation_helpers import get_all_indicators, _type_conversion, extract_xml_content, title_to_dash_linked_lower_case
 
 LEAN = "https://github.com/QuantConnect/Lean/blob/master"
 RAW_LEAN = "https://raw.githubusercontent.com/QuantConnect/Lean/master"
@@ -42,8 +42,7 @@ EXTRAS = {}
 DONE = []
 SOURCE_CODES = {}
 
-SUPPORTED_INDICATORS = [''.join(name.split(' ')[1:]) for name in os.listdir("03 Writing Algorithms/28 Indicators/01 Supported Indicators") 
-                        if os.path.isdir("03 Writing Algorithms/28 Indicators/01 Supported Indicators/" + name)]
+SUPPORTED_INDICATORS = get_all_indicators()
 SUPPORTED_CANDLES = [x.group(1) for x in 
                      re.finditer(r"public (\w+) \1\(", urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Algorithm/CandlestickPatterns.cs").read().decode('utf-8'))]
 
