@@ -76,6 +76,11 @@ namespace UrlCheck
             {
                 try
                 {
+                    if (url == string.Empty)
+                    {
+                        throw new Exception("Empty Url");
+                    }
+
                     tasks.Add(
                         HttpRequester(url, files).ContinueWith(response =>
                         {
@@ -264,7 +269,17 @@ namespace UrlCheck
                         var urlLeanIo = String.Empty;
                         var subUrl = String.Empty;
 
-                        if (string.IsNullOrWhiteSpace(url) || url.Contains('{') || url.Contains('}')) continue;
+                        if (url.Contains('{') || url.Contains('}')) continue;
+
+                        if (string.IsNullOrWhiteSpace(url))
+                        {
+                            if (!urlFiles.TryGetValue(urlLeanIo, out var emptyDict))
+                            {
+                                urlFiles[urlLeanIo] = emptyDict = new();
+                            }
+                            emptyDict.Add(file);
+                            continue;
+                        }
 
                         if (Regex.IsMatch(url, @"github.com/QuantConnect/Lean/issues/\d+"))
                         {
