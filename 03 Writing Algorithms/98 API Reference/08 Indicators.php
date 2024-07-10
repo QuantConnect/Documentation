@@ -106,6 +106,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-warm-up-indicator.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-wilr.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-wwma.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-zlema.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-γ.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-δ.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-θ.html"); ?>

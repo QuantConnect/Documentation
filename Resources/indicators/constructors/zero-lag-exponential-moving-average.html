@@ -1,8 +1,8 @@
 <div class="python">
-<h4 id="AutoRegressiveIntegratedMovingAverage">AutoRegressiveIntegratedMovingAverage</h4>
-<div class="code-snippet"><span class="object-type">class</span> <code>QuantConnect.Indicators.AutoRegressiveIntegratedMovingAverage</code><a class="code-source" href="https://github.com/search?q=repo%3AQuantConnect%2FLean+AutoRegressiveIntegratedMovingAverage&type=code">[source]</a>
+<h4 id="ZeroLagExponentialMovingAverage">ZeroLagExponentialMovingAverage</h4>
+<div class="code-snippet"><span class="object-type">class</span> <code>QuantConnect.Indicators.ZeroLagExponentialMovingAverage</code><a class="code-source" href="https://github.com/search?q=repo%3AQuantConnect%2FLean+ZeroLagExponentialMovingAverage&type=code">[source]</a>
 </div>
-<p>An Autoregressive Intergrated Moving Average (ARIMA) is a time series model which can be used to describe a set of data. In particular,with Xₜ representing the series, the model assumes the data are of form (after differencing <a href="#_diffOrder">_diffOrder</a> times): <para> Xₜ = c + εₜ + ΣᵢφᵢXₜ₋ᵢ + Σᵢθᵢεₜ₋ᵢ </para> where the first sum has an upper limit of <a href="#_arOrder">_arOrder</a> and the second <a href="#_maOrder">_maOrder</a>.</p>
+<p>Represents the zero lag moving average indicator (ZLEMA) ie a technical indicator that aims is to eliminate the inherent lag associated to all trend following indicators which average a price over time.</p>
 <div class="subsection-content">
 <div class="code-snippet"><code>get_enumerator()</code></div>
 <div class="subsection-content">
@@ -61,26 +61,6 @@
 
 </div>
 <div class="subsection-content">
-<div class="code-snippet"><span class="object-type">property</span> <code>ar_parameters</code></div>
-<div class="subsection-content">
-<p>Fitted AR parameters (φ terms).</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">Fitted AR parameters (φ terms).</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">float[]</p>
-</div>
-
-<div class="code-snippet"><span class="object-type">property</span> <code>ar_residual_error</code></div>
-<div class="subsection-content">
-<p>The variance of the residuals (Var(ε)) from the first step of <a href="#Double[])">Double[])</a>.</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">The variance of the residuals (Var(ε)) from the first step of <a href="#Double[])">Double[])</a>.</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">float</p>
-</div>
-
 <div class="code-snippet"><span class="object-type">property</span> <code>consolidators</code></div>
 <div class="subsection-content">
 <p>The data consolidators associated with this indicator if any</p>
@@ -99,16 +79,6 @@
 <p class="subsection-content">Gets the current state of this indicator. If the state has not been updated then the time on the value will equal DateTime.MinValue.</p>
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">IndicatorDataPoint</p>
-</div>
-
-<div class="code-snippet"><span class="object-type">property</span> <code>intercept</code></div>
-<div class="subsection-content">
-<p>Fitted intercept (c term).</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">Fitted intercept (c term).</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">float</p>
 </div>
 
 <div class="code-snippet"><span class="object-type">property</span> <code>is_ready</code></div>
@@ -131,26 +101,6 @@
 <p class="subsection-content">IndicatorDataPoint</p>
 </div>
 
-<div class="code-snippet"><span class="object-type">property</span> <code>ma_parameters</code></div>
-<div class="subsection-content">
-<p>Fitted MA parameters (θ terms).</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">Fitted MA parameters (θ terms).</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">float[]</p>
-</div>
-
-<div class="code-snippet"><span class="object-type">property</span> <code>ma_residual_error</code></div>
-<div class="subsection-content">
-<p>The variance of the residuals (Var(ε)) from the second step of <a href="#Double[])">Double[])</a>.</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">The variance of the residuals (Var(ε)) from the second step of <a href="#Double[])">Double[])</a>.</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">float</p>
-</div>
-
 <div class="code-snippet"><span class="object-type">property</span> <code>name</code></div>
 <div class="subsection-content">
 <p>Gets a name for this indicator</p>
@@ -159,6 +109,16 @@
 <p class="subsection-content">Gets a name for this indicator</p>
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">str</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>period</code></div>
+<div class="subsection-content">
+<p>Gets the period of this window indicator</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the period of this window indicator</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">int</p>
 </div>
 
 <div class="code-snippet"><span class="object-type">property</span> <code>previous</code></div>
@@ -212,10 +172,10 @@
 .subsection-content { margin-left: 10px; }
 </style>
 <div class="csharp">
-<h4 id="AutoRegressiveIntegratedMovingAverage">AutoRegressiveIntegratedMovingAverage</h4>
-<div class="code-snippet"><span class="object-type">class</span> <code>QuantConnect.Indicators.AutoRegressiveIntegratedMovingAverage</code><a class="code-source" href="https://github.com/search?q=repo%3AQuantConnect%2FLean+AutoRegressiveIntegratedMovingAverage&type=code">[source]</a>
+<h4 id="ZeroLagExponentialMovingAverage">ZeroLagExponentialMovingAverage</h4>
+<div class="code-snippet"><span class="object-type">class</span> <code>QuantConnect.Indicators.ZeroLagExponentialMovingAverage</code><a class="code-source" href="https://github.com/search?q=repo%3AQuantConnect%2FLean+ZeroLagExponentialMovingAverage&type=code">[source]</a>
 </div>
-<p>An Autoregressive Intergrated Moving Average (ARIMA) is a time series model which can be used to describe a set of data. In particular,with Xₜ representing the series, the model assumes the data are of form (after differencing <a href="#_diffOrder">_diffOrder</a> times): <para> Xₜ = c + εₜ + ΣᵢφᵢXₜ₋ᵢ + Σᵢθᵢεₜ₋ᵢ </para> where the first sum has an upper limit of <a href="#_arOrder">_arOrder</a> and the second <a href="#_maOrder">_maOrder</a>.</p>
+<p>Represents the zero lag moving average indicator (ZLEMA) ie a technical indicator that aims is to eliminate the inherent lag associated to all trend following indicators which average a price over time.</p>
 <div class="subsection-content">
 <div class="code-snippet"><code>GetEnumerator()</code></div>
 <div class="subsection-content">
@@ -274,26 +234,6 @@
 
 </div>
 <div class="subsection-content">
-<div class="code-snippet"><span class="object-type">property</span> <code>ArParameters</code></div>
-<div class="subsection-content">
-<p>Fitted AR parameters (φ terms).</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">Fitted AR parameters (φ terms).</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">Double[]</p>
-</div>
-
-<div class="code-snippet"><span class="object-type">property</span> <code>ArResidualError</code></div>
-<div class="subsection-content">
-<p>The variance of the residuals (Var(ε)) from the first step of <a href="#Double[])">Double[])</a>.</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">The variance of the residuals (Var(ε)) from the first step of <a href="#Double[])">Double[])</a>.</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">Double</p>
-</div>
-
 <div class="code-snippet"><span class="object-type">property</span> <code>Consolidators</code></div>
 <div class="subsection-content">
 <p>The data consolidators associated with this indicator if any</p>
@@ -314,16 +254,6 @@
 <p class="subsection-content">IndicatorDataPoint</p>
 </div>
 
-<div class="code-snippet"><span class="object-type">property</span> <code>Intercept</code></div>
-<div class="subsection-content">
-<p>Fitted intercept (c term).</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">Fitted intercept (c term).</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">Double</p>
-</div>
-
 <div class="code-snippet"><span class="object-type">property</span> <code>IsReady</code></div>
 <div class="subsection-content">
 <p>Gets a flag indicating when this indicator is ready and fully initialized</p>
@@ -334,26 +264,6 @@
 <p class="subsection-content">bool</p>
 </div>
 
-<div class="code-snippet"><span class="object-type">property</span> <code>MaParameters</code></div>
-<div class="subsection-content">
-<p>Fitted MA parameters (θ terms).</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">Fitted MA parameters (θ terms).</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">Double[]</p>
-</div>
-
-<div class="code-snippet"><span class="object-type">property</span> <code>MaResidualError</code></div>
-<div class="subsection-content">
-<p>The variance of the residuals (Var(ε)) from the second step of <a href="#Double[])">Double[])</a>.</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">The variance of the residuals (Var(ε)) from the second step of <a href="#Double[])">Double[])</a>.</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">Double</p>
-</div>
-
 <div class="code-snippet"><span class="object-type">property</span> <code>Name</code></div>
 <div class="subsection-content">
 <p>Gets a name for this indicator</p>
@@ -362,6 +272,16 @@
 <p class="subsection-content">Gets a name for this indicator</p>
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">string</p>
+</div>
+
+<div class="code-snippet"><span class="object-type">property</span> <code>Period</code></div>
+<div class="subsection-content">
+<p>Gets the period of this window indicator</p>
+
+<div class="subsection-header">Returns:</div>
+<p class="subsection-content">Gets the period of this window indicator</p>
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Int32</p>
 </div>
 
 <div class="code-snippet"><span class="object-type">property</span> <code>Previous</code></div>

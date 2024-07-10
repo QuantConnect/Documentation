@@ -18,7 +18,6 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/dark-cloud-cover.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/delistings.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/deployment-target.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/derivative-oscillator.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/dividends.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/doji.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/doji-star.html"); ?>
