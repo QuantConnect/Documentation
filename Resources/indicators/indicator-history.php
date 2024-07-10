@@ -96,6 +96,7 @@ history_indicator_history = self.indicator_history(<?=strtolower($helperName)?>,
     <pre class="python">indicator_history = self.indicator_history(<?=strtolower($helperName)?>, 100, Resolution.Minute, lambda bar: bar.High)</pre>
 </div>
 
+<? if ($csharpProperties) { ?>
 <p>To access the different properties of the returned indicator history, call the property directly of each <code>IndicatorDataPoint</code> entry.</p>
 <div class="section-example-container">
     <pre class="csharp"><? foreach ($csharpProperties as $property) { ?>
@@ -105,3 +106,4 @@ var <?=strtolower($property)?> = indicatorHistory.Select(x => x.<?=$property?>).
 <?=strtolower($property)?> = indicator_history["<?=$property?>"]
 <? } ?></pre>
 </div>
+<? } ?>
