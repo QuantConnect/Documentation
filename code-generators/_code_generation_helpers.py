@@ -8,6 +8,7 @@ INDICATORS = f'{WRITING_ALGORITHMS}/28 Indicators/01 Supported Indicators'
 API_REFERENCE = f'{WRITING_ALGORITHMS}/98 API Reference/'
 MHDB = "https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/market-hours/market-hours-database.json"
 SPDB = "https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv"
+KNOWN_MISSING_INDICATORS = ["DerivativeOscillator", "ValueAtRisk"]
 
 class MARKET_HOUR:
     INTRODUCTION = "introduction"
@@ -23,7 +24,7 @@ def get_all_indicators() -> List[str]:
     methods = get_type("QuantConnect.Algorithm.QCAlgorithm")["methods"]
     selected = set(x["method-return-type-short-name"] for x in methods
                 if x["documentation-attributes"] and len(x["documentation-attributes"]) == 1 and x["documentation-attributes"][0]["tag"] == "Indicators" and x["method-return-type-full-name"].split('.')[0] != "System")
-    return list(selected)
+    return list(selected) + KNOWN_MISSING_INDICATORS
 
 def get_text_content(url: str) -> str:
     return urlopen(url).read().decode('utf-8')
