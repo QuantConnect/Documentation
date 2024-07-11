@@ -15,10 +15,6 @@ Lean Engine is an open-source fully managed C# algorithmic trading engine built 
 
 Please submit new documentation requests as an issue to the [Documentation Repository][5]. Before submitting an issue please read others to ensure it is not a duplicate. Edits and fixes for clarity are warmly welcomed! 
 
-## Mailing List ##
-
-The mailing list for the project can be found on [Google Groups][6]
-
 ## Contributors and Pull Requests ##
 
 Contributions are warmly very welcomed but we ask you read the existing code to see how it is formatted, commented and ensure contributions match the existing style. All code submissions must include accompanying tests. Please see the [contributor guide lines][7].
