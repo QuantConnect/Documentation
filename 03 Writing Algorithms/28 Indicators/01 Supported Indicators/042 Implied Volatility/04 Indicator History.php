@@ -6,7 +6,7 @@ $helperName = 'IV';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $hasReference = false;
 $isOptionIndicator = true;
-$csharpProperties = array("HistoricalVolatility","OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");
-$pythonProperties = array("historical_volatility","option_symbol","risk_free_rate","dividend_yield","price","opposite_price","underlying_price");
+$csharpProperties = array("OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");
+$pythonProperties = array("option_symbol","risk_free_rate","dividend_yield","price","opposite_price","underlying_price");
 include(DOCS_RESOURCES."/indicators/indicator-history.php");
 ?>
