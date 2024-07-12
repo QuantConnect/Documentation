@@ -88,7 +88,7 @@ var historyIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, his
 </div>
 
 <? if ($csharpProperties) { ?>
-<p>To access the different properties of the returned indicator history, call the property directly of each <code>IndicatorDataPoint</code> entry.</p>
+<p>To access the properties of the indicator history, invoke the property of each <code>IndicatorDataPoint</code> object</p>
 <div class="section-example-container">
     <pre class="csharp"><? foreach ($csharpProperties as $property) { ?>
 var <?=strtolower($property)?> = indicatorHistory.Select(x => ((dynamic)x).<?=$property?>).ToList();
@@ -105,6 +105,7 @@ var <?=strtolower($property)?> = indicatorHistory.Select(x => ((dynamic)x).<?=$p
 # Alternative way
 <? foreach ($pythonProperties as $property) { ?>
 # <?=strtolower($property)?> = indicator_history.<?=$property?>
+
 <? } ?></pre>
 </div>
 <? } ?>
