@@ -72,7 +72,8 @@
 <p>To make the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method update the indicator with an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields'>alternative price field</a> instead of the close (or mid-price) of each bar, pass a <code>selector</code> argument.</p>
 <div class="section-example-container">
     <pre class="csharp">var indicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, 100, Resolution.Minute, (bar) =&gt; ((TradeBar)bar).High);</pre>
-    <pre class="python">indicator_history = self.indicator_history(<?=strtolower($helperName)?>, 100, Resolution.MINUTE, lambda bar: bar.high)</pre>
+    <pre class="python">indicator_history = self.indicator_history(<?=strtolower($helperName)?>, 100, Resolution.MINUTE, lambda bar: bar.high)
+indicator_history_df = indicator_history.data_frame</pre>
 </div>
 
 <p class='csharp'>If you already have a list of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects, you can pass them to the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method to avoid the internal history request.</p>
@@ -99,12 +100,12 @@ var <?=strtolower($property)?> = indicatorHistory.Select(x => ((dynamic)x).<?=$p
 // var <?=strtolower($property)?> = indicatorHistory.Select(x => x["<?=strtolower($property)?>"]).ToList();
 <? } ?></pre>
     <pre class="python"><? foreach ($pythonProperties as $property) { ?>
-<?=strtolower($property)?> = indicator_history["<?=$property?>"]
+<?=strtolower($property)?> = indicator_history_df["<?=$property?>"]
 <? } ?>
 
 # Alternative way
 <? foreach ($pythonProperties as $property) { ?>
-# <?=strtolower($property)?> = indicator_history.<?=$property?>
+# <?=strtolower($property)?> = indicator_history_df.<?=$property?>
 
 <? } ?></pre>
 </div>
