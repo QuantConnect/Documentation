@@ -14,7 +14,7 @@ public override void Initialize()
     UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(x =&gt; x.IncludeWeeklys().Strikes(-5, 5).Expiration(30, 60));
+    option.SetFilter(x =&gt; x.IncludeWeeklys().JellyRoll(5m, 30, 60));
 }</pre>
         <pre class="python">def initialize(self) -&gt; None:
     self.set_start_date(2017, 4, 1)
@@ -24,7 +24,7 @@ public override void Initialize()
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG", Resolution.MINUTE)
     self._symbol = option.symbol
-    option.set_filter(lambda x: x.include_weeklys().strikes(-5, 5).expiration(30, 60))</pre>
+    option.set_filter(lambda x: x.include_weeklys().jelly_roll(5.0, 30, 60))</pre>
     </div>
 
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiry and strikes of the contracts in the strategy legs.</li>
