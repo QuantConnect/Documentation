@@ -52,6 +52,21 @@ algorithm.warm_up_indicator(self._symbol, self._sma, timedelta(days=3))</pre>
     <pre class="python">algorithm.warm_up_indicator(self._symbol, self._sma, Resolution.DAILY, Field.HIGH)</pre>
 </div>
 
+<p>
+    Some indicators require the prices of two assets to compute their value (for example, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/beta'>Beta</a>).
+    In this case, pass a list of the <code>Symbol</code> objects to the method.
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var spy = AddEquity("SPY").Symbol;
+var aapl = AddEquity("AAPL").Symbol;
+var beta = new Beta("", aapl, spy, 21);
+WarmUpIndicator(beta, new[] {aapl, spy}, Resolution.Daily);</pre>
+	<pre class="python">self._spy = self.add_equity("SPY").symbol
+self._aapl = self.add_equity('AAPL').symbol
+self._beta = Beta("", self._aapl, self._spy, 21)
+self.warm_up_indicator([self._aapl, self._spy], self._beta, Resolution.DAILY)</pre>
+</div>
+
 <h4>Algorithm Warm-up</h4>
 <p>If you create indicators at the beginning of your algorithm, you can set an <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm-up period</a> to warm up the indicators. When you set an algorithm warm-up period, the engine pumps data in and automatically updates all the indicators from before the start date of the algorithm. To ensure that all the indicators are ready after the algorithm warm-up period, choose a lookback period that contains sufficient data.</p>
 
