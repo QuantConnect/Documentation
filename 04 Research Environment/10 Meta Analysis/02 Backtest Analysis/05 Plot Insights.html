@@ -1,0 +1,89 @@
+<p>Follow these steps to display the insights of each asset in a backtest:</p>
+
+<ol>
+  <li>Get the insights.</li>
+  <div class="section-example-container">
+	  <pre class="python">insight_response = api.read_backtest_insights(project_id, backtest_id)</pre>
+	</div>
+	<p>The following table provides links to documentation that explains how to get the project Id and backtest Id, depending on the platform you use:</p>
+	<table class="qc-table table">
+	    <thead>
+	        <tr>
+	            <th>Platform</th>
+	            <th>Project Id</th>
+	            <th>Backtest Id</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr>
+	            <td>Cloud Platform</td>
+	            <td><a href='/docs/v2/cloud-platform/projects/getting-started#13-Get-Project-Id'>Get Project Id</a></td>
+	            <td><a href='/docs/v2/cloud-platform/backtesting/getting-started#06-Get-Backtest-Id'>Get Backtest Id</a></td>
+	        </tr>
+	        <tr>
+	            <td>Local Platform</td>
+	            <td><a href='/docs/v2/local-platform/projects/getting-started#14-Get-Project-Id'>Get Project Id</a></td>
+	            <td><a href='/docs/v2/local-platform/backtesting/getting-started#07-Get-Backtest-Id'>Get Backtest Id</a></td>
+	        </tr>
+	        <tr>
+	            <td>CLI</td>
+	            <td><a href='/docs/v2/lean-cli/projects/project-management#07-Get-Project-Id'>Get Project Id</a></td>
+	            <td><a href='/docs/v2/lean-cli/backtesting/deployment#05-Get-Backtest-Id'>Get Backtest Id</a></td>
+	        </tr>
+	    </tbody>
+	</table>
+  <p>The <code>read_backtest_insights</code> method returns an <code>InsightResponse</code> object, which have the following properties:</p>
+  <div data-tree='QuantConnect.Api.InsightResponse'></div>
+
+  <li>Organize the insights into a DataFrame.</li>
+  <div class="section-example-container">
+	  <pre class="python">import pytz
+
+def _eastern_time(unix_timestamp):
+    return unix_timestamp.replace(tzinfo=pytz.utc)\
+        .astimezone(pytz.timezone('US/Eastern')).replace(tzinfo=None)
+
+insight_df = pd.DataFrame(
+    [
+        {
+            'Symbol': i.symbol,
+            'Direction': i.direction,
+            'Generated Time': _eastern_time(i.generated_time_utc),
+            'Close Time': _eastern_time(i.close_time_utc),
+            'Weight': i.weight
+        }
+        for i in insight_response.insights
+    ]
+)</pre>
+	</div>
+
+  <li>Get the price history of each security that has an insight.</li>
+  <div class="section-example-container">
+	  <pre class="python">symbols = list(insight_df['Symbol'].unique())
+qb = QuantBook()
+history = qb.history(
+    symbols, insight_df['Generated Time'].min()-timedelta(1), 
+    insight_df['Close Time'].max(), Resolution.DAILY
+)['close'].unstack(0)</pre>
+	</div>
+
+  <li>Plot the price and insights of each asset.</li>  
+  <div class="section-example-container">
+	  <pre class="python">colors = ['yellow', 'green', 'red']
+fig, axs = plt.subplots(len(symbols), 1, sharex=True)
+for i, symbol in enumerate(symbols):
+    ax = axs[i]
+    history[symbol].plot(ax=ax)
+    for _, insight in insight_df[insight_df['Symbol'] == symbol].iterrows():
+        ax.axvspan(
+            insight['Generated Time'], insight['Close Time'], 
+            color=colors[insight['Direction']], alpha=0.3
+        )
+    ax.set_title(f'Insights for {symbol.value}')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Price')
+plt.tight_layout()
+plt.show()</pre>
+	</div>
+  <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/meta-analysis-plot-insights.png'>
+</ol>
