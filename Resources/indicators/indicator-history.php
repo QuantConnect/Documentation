@@ -70,7 +70,7 @@
 <? } ?></pre>
 </div>
 
-<p>You may also provide the historical data instead of the time argument to generate indicator history with respect to the time and values of the historical data provided.</p>
+<p class='csharp'>You may also provide the historical data instead of the time argument to generate indicator history with respect to the time and values of the historical data provided.</p>
 <div class="section-example-container">
     <pre class="csharp"><? if($hasReference) { ?>
 var history = History(new[] { _symbol, _reference }, 100, Resolution.Minute);
@@ -80,14 +80,6 @@ var history = History(new[] { _symbol, _option, _mirrorOption }, 100, Resolution
 var history = History(_symbol, 100, Resolution.Minute);
 <? } ?>
 var historyIndicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, history);</pre>
-    <pre class="python"><? if($hasReference) { ?>
-history = self.history([self._symbol, self.reference], 100, Resolution.MINUTE)
-<? } else if($isOptionIndicator) { ?>
-history = self.history([self._symbol, self.option, self.mirror_option], 100, Resolution.MINUTE)
-<? } else { ?>
-history = self.history(self._symbol, 100, Resolution.MINUTE)
-<? } ?>
-history_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, history)</pre>
 </div>
 
 <p>The default indicator historical data will be calculated using the <code>Value</code> property of each <code>BaseData</code> object iterated. You can assign custom calculation on the value being processed through a <code>selector</code> function argument.</p>
