@@ -2,7 +2,7 @@ from json import dumps
 from pathlib import Path
 from re import sub, finditer, findall
 from os import remove
-from _code_generation_helpers import get_text_content
+from _code_generation_helpers import get_text_content, generate_landing_page
 ROOT = Path("05 Lean CLI/99 API Reference")
 H3_INTRODUCTION = '01 Introduction.html'
 H3_OPTIONS = '04 Options.html'
@@ -168,6 +168,9 @@ if __name__ == '__main__':
             if content:
                 with dir.joinpath(filename).open('w', encoding='utf-8') as fp:
                     fp.write(content)
+
+    generate_landing_page(1, 1 + len(commands), ROOT, 'API Reference',
+        '<p>The Lean CLI is a cross-platform CLI which makes it easier to develop with the LEAN engine locally and in the cloud. You can use any of the following commands. Click one to learn more.</p>')
 
     # Check for directories without a command
     for path in ROOT.iterdir():

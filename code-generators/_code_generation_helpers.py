@@ -112,3 +112,15 @@ def title_to_dash_linked_lower_case(title):
             lower_case += "-"
         lower_case += char.lower()
     return lower_case
+
+def generate_landing_page(start: int, stop: int, path: str, heading: str, content:str) -> None:
+    landing = {
+        'type' : 'landing',
+        'heading' : heading,
+        'subHeading' : '',
+        'content' : content,
+        'alsoLinks' : [],
+        'featureShortDescription': {f'{n:02}': '' for n in range(start, stop)}
+    }
+    with open(f'{path}/00.json', 'w', encoding='utf-8') as fp:
+        fp.write(dumps(landing, indent=4))
