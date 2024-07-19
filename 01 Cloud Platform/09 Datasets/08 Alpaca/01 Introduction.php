@@ -1,0 +1,2 @@
+<? include(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/alpaca.html"); ?>
+<p>The Alpaca data feeds are streams of Equity, Equity Option and Crypto prices directly from Alpaca. If you use this data feed and request historical data, the historical data comes from Alpaca.</p>
