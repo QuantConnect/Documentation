@@ -1,6 +1,6 @@
 <h4>Order Types</h4>
 
-<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our Trade Station integration" : "the <code>TradeStationBrokerageModel</code>" ?> supports:</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our TradeStation integration" : "the <code>TradeStationBrokerageModel</code>" ?> supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>
@@ -48,7 +48,7 @@
 
 
 <h4>Time In Force</h4>
-<p><?= $writingAlgorithms ? "The <code>TradeStationBrokerageModel</code> supports" : "We model the Trade Station API by supporting" ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
+<p><?= $writingAlgorithms ? "The <code>TradeStationBrokerageModel</code> supports" : "We model the TradeStation API by supporting" ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 
 <ul>
     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
@@ -100,7 +100,7 @@ def on_data(self, slice: Slice) -&gt; None:
 <? } ?>
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>TradeStationBrokerageModel</code> supports" : "We model the Trade Station API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>TradeStationBrokerageModel</code> supports" : "We model the TradeStation API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
