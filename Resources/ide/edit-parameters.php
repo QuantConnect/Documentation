@@ -12,7 +12,7 @@
     <li>Click <span class='button-name'>Create Parameter</span>.</li>
 </ol>
 
-<p>To get the parameter values into your algorithm, see <a href='/docs/v2/writing-algorithms/parameters#03-Get-Parameters'>Get Parameters</a>.</p>
+<p>To get the parameter values into your algorithm, see <a href='/docs/v2/writing-algorithms/optimization/parameters#03-Get-Parameters'>Get Parameters</a>.</p>
 
 <h4>Set Default Parameter Values</h4>
 <p>Follow these steps to set the default value of an algorithm parameter in a project:</p>
