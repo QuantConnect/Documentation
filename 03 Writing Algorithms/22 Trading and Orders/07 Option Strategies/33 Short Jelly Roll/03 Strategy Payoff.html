@@ -5,29 +5,30 @@
 </script>
 
 <p>
-This is a delta-neutral strategy. The payoff is</p>
+This is a delta-, gamma-, vega-, and theta-neutral strategy. The payoff is</p>
 $$
 \begin{array}{rcll}
 C_{T_1}^{T_1} &amp; = &amp; (S_{T_1} - K)^{+}\\
 P_{T_1}^{T_1} &amp; = &amp; (K - S_{T_1})^{+}\\
-Payoff_{T_1} &amp; = &amp; (C_{T_1}^{T_1} - C_0^{T_1} - P_{T_1}^{T_1} + P_0^{T_1} + P_{T_1}^{T_2} - P_0^{T_2} - C_{T_1}^{T_2} + C_0^{T_2})\times m - fee\\
+Payoff_{T_1} &amp; = &amp; (C_{T_1}^{T_1} - C_{T_0}^{T_1} - P_{T_1}^{T_1} + P_{T_0}^{T_1} + P_{T_1}^{T_2} - P_{T_0}^{T_2} - C_{T_1}^{T_2} + C_{T_0}^{T_2})\times m - fee\\
 \end{array}
 $$
 $$
 \begin{array}{rcll}
-\textrm{where} &amp; C_{T_1}^{T_1} &amp; = &amp; \textrm{Value of Call with expiry at T1 at time T1}\\
+\textrm{where} &amp; C_{T_1}^{T_1} &amp; = &amp; \textrm{Market value of Call with expiry at T1 at time T1}\\
 &amp; C_{T_1}^{T_2} &amp; = &amp; \textrm{Market value of Call with expiry at T2 at time T1}\\
-&amp; P_{T_1}^{T_1} &amp; = &amp; \textrm{Value of Put with expiry at T1 at time T1}\\
+&amp; P_{T_1}^{T_1} &amp; = &amp; \textrm{Market value of Put with expiry at T1 at time T1}\\
 &amp; P_{T_1}^{T_2} &amp; = &amp; \textrm{Market value of Put with expiry at T2 at time T1}\\
 &amp; S_{T_1} &amp; = &amp; \textrm{Underlying asset price at time T1}\\
 &amp; K &amp; = &amp; \textrm{Strike price}\\
-&amp; Payoff_T &amp; = &amp; \textrm{Payout total at time T}\\
-&amp; C_0^{T_1} &amp; = &amp; \textrm{Market value of Call with expiry at T1 when the trade opened}\\
-&amp; C_0^{T_2} &amp; = &amp; \textrm{Market value of Call with expiry at T2 when the trade opened}\\
-&amp; P_0^{T_1} &amp; = &amp; \textrm{Market value of Put with expiry at T2 when the trade opened}\\
-&amp; P_0^{T_2} &amp; = &amp; \textrm{Market value of Put with expiry at T2 when the trade opened}\\
+&amp; Payoff_{T_1} &amp; = &amp; \textrm{Payout total at time T1}\\
+&amp; C_{T_0}^{T_1} &amp; = &amp; \textrm{Market value of Call with expiry at T1 when the trade opened}\\
+&amp; C_{T_0}^{T_2} &amp; = &amp; \textrm{Market value of Call with expiry at T2 when the trade opened}\\
+&amp; P_{T_0}^{T_1} &amp; = &amp; \textrm{Market value of Put with expiry at T2 when the trade opened}\\
+&amp; P_{T_0}^{T_2} &amp; = &amp; \textrm{Market value of Put with expiry at T2 when the trade opened}\\
 &amp; m &amp; = &amp; \textrm{Contract multiplier}\\
-&amp; T &amp; = &amp; \textrm{Time of expiration}
+&amp; T_1 &amp; = &amp; \textrm{Time T1 as the near expiration}\\
+&amp; T_2 &amp; = &amp; \textrm{Time T2 as the far expiration}
 \end{array}
 $$
 <br>
@@ -37,7 +38,7 @@ $$
 <p>The payoff is dependent on the market prices of the options, but in theory, if assuming call-put parity exists, the expected payoff would be</p>
 $$
 \begin{array}{rcll}
-Payoff_{T_1} &amp; = &amp; Payoff_{put calendar spread} - Payoff_{call calendar spread}
+Payoff_{T_1} &amp; = &amp; Payoff_{\textrm{put calendar spread}} - Payoff_{\textrm{call calendar spread}}\\
 &amp; = &amp; D - K \times (T_2 - T_1) \times r
 \end{array}
 $$

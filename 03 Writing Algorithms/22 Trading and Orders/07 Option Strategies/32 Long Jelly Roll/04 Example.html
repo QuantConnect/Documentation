@@ -8,14 +8,14 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 
 <table class="table qc-table" id="payoff-table">
 <thead>
-<tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
+<tr><th>Asset</th><th>Price at position open ($)</th><th>Price at the first expiry ($)</th><th>Strike ($)</th></tr>
 </thead>
 <tbody>
-<tr><td>ITM Call</td><td>27.30</td><td>810.00</td></tr>
-<tr><td>ITM Put</td><td>28.00</td><td>857.50</td></tr>
-<tr><td>OTM Call</td><td>1.05</td><td>857.50</td></tr>
-<tr><td>OTM Put</td><td>1.50</td><td>810.00</td></tr>
-<tr><td>Underlying Equity at expiration</td><td>843.25</td><td>-</td></tr>
+<tr><td>Near-expiry Call</td><td>18.50</td><td>23.75</td><td>832.50</td></tr>
+<tr><td>Near-expiry Put</td><td>22.50</td><td>12.85</td><td>832.50</td></tr>
+<tr><td>Far-expiry Call</td><td>23.90</td><td>24.45</td><td>832.50</td></tr>
+<tr><td>Far-expiry Put</td><td>19.00</td><td>13.70</td><td>832.50</td></tr>
+<tr><td>Underlying Equity</td><td>-</td><td>843.2500</td><td>-</td></tr>
 </tbody>
 </table>
 
@@ -32,22 +32,22 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 
 $$
 \begin{array}{rcll}
-Payoff_T &amp; = &amp; (K_{+} - K_{-} + C_0^{OTM} + P_0^{OTM} - C_0^{ITM} - P_0^{ITM})\times m - fee\\
-&amp; = &amp; (857.50 -  810.00 + 1.05 + 1.50 - 27.30 - 28.00)\times100 - 1.00\times4\\
-&amp; = &amp; -529.00\\
+Payoff_{T_1} &amp; = &amp; (P_{T_1}^{T_1} - P_0^{T_1} - C_{T_1}^{T_1} + C_0^{T_1} + C_{T_1}^{T_2} - C_0^{T_2} - P_{T_1}^{T_2} + P_0^{T_2})\times m - fee\\
+&amp; = &amp; (12.85 -  22.50 - 23.75 + 18.50 + 24.45 - 23.90 - 13.70 + 19.00)\times100 - 1.00\times4\\
+&amp; = &amp; -909.00\\
 \end{array}
 $$
 <br>
 
-<p>So, the strategy loses $529.</p>
+<p>So, the strategy loses $909.</p>
 
-<p>The following algorithm implements a box spread Option strategy:</p>
+<p>The following algorithm implements a long jelly roll Option strategy:</p>
 
 <div class="python">
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_122fb32190e75873424c78c66e830f7b.html"></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_35cff76951fa0c1bce46bc639fc45163.html"></iframe>
         </div>
     </div>
 </div>
@@ -56,7 +56,7 @@ $$
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_0e586b0c5a0e52521e87edd57002f9ab.html"></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_2af67c4dc3e39cfcc9b0880fa7f0684d.html"></iframe>
         </div>
     </div>
 </div>

@@ -41,7 +41,7 @@ $$
 
 <?
 $optionStrategyName = "a naked put";
-$pythonBacktestHash = "66b70758a7fa2e0685d081ab6d6921b3" ;
-$csharpBacktestHash = "e3654011cfc55607efdb6cabba7bb2ef" ;
+$pythonBacktestHash = "5b83d5f29942900b3c8d4760d30a3803" ;
+$csharpBacktestHash = "3e1ea4dedf7d9311da0dd043a96d5fda" ;
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-embedded-backtest.php"); 
 ?>

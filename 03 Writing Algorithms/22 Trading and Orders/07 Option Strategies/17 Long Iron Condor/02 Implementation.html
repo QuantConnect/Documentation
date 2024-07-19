@@ -51,12 +51,12 @@ public override void Initialize()
     var putContracts = contracts.Where(x =&gt; x.Right == OptionRight.Put).ToArray();
     var callContracts = contracts.Where(x =&gt; x.Right == OptionRight.Call).ToArray();
 
-    if (putContracts.Length &lt; 3 || callContracts.Length &lt; 3) return;
+    if (putContracts.Length &lt; 2 || callContracts.Length &lt; 2) return;
 
     // Select the strategy legs
-    var nearCall = callContracts[^3];
-    var farCall = callContracts[^1];
-    var nearPut = putContracts[2];
+    var nearCall = callContracts[0];
+    var farCall = callContracts[1];
+    var nearPut = putContracts[1];
     var farPut = putContracts.Single(x => x.Strike == nearPut.Strike - farCall.Strike + nearCall.Strike);</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.portfolio[self._symbol.underlying].invested:
@@ -76,13 +76,13 @@ public override void Initialize()
     put_contracts = [x for x in chain if x.right == OptionRight.PUT]
     call_contracts = [x for x in chain if x.right == OptionRight.CALL]
 
-    if len(call_contracts) &lt; 3 or len(put_contracts) &lt; 3:
+    if len(call_contracts) &lt; 2 or len(put_contracts) &lt; 2:
         return
 
     # Select the strategy legs
-    near_call = call_contracts[-3]
-    far_call = call_contracts[-1]
-    near_put = put_contracts[2]
+    near_call = call_contracts[0]
+    far_call = call_contracts[1]
+    near_put = put_contracts[1]
     far_put = [x for x in put_contracts if x.Strike == near_put.strike - far_call.strike + near_call.strike][0]</pre>
     </div>
     

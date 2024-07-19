@@ -51,13 +51,13 @@ public override void Initialize()
     var putContracts = contracts.Where(x =&gt; x.Right == OptionRight.Put).ToArray();
     var callContracts = contracts.Where(x =&gt; x.Right == OptionRight.Call).ToArray();
 
-    if (putContracts.Length &lt; 3 || callContracts.Length &lt; 3) return;
+    if (putContracts.Length &lt; 2 || callContracts.Length &lt; 2) return;
 
     // Select the strategy legs
     var farPut = putContracts[0];
-    var nearPut = putContracts[2];
-    var nearCall = callContracts[^3];
-    var farCall = callContracts[^1];</pre>
+    var nearPut = putContracts[1];
+    var nearCall = callContracts[0];
+    var farCall = callContracts[1];</pre>
         <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.portfolio[self._symbol.underlying].invested:
         self.liquidate()
@@ -76,14 +76,14 @@ public override void Initialize()
     put_contracts = [x for x in chain if x.right == OptionRight.PUT]
     call_contracts = [x for x in chain if x.right == OptionRight.CALL]
 
-    if len(call_contracts) &lt; 3 or len(put_contracts) &lt; 3:
+    if len(call_contracts) &lt; 2 or len(put_contracts) &lt; 2:
         return
 
     # Select the strategy legs
     far_put = put_contracts[0]
-    near_put = put_contracts[2]
-    near_call = call_contracts[-3]
-    far_call = call_contracts[-1]</pre>
+    near_put = put_contracts[1]
+    near_call = call_contracts[0]
+    far_call = call_contracts[1]</pre>
     </div>
     
     <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, place the orders.</li>

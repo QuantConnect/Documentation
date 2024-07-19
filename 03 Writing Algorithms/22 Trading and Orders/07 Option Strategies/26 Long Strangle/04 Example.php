@@ -46,7 +46,7 @@ $$<br>
 
 <?
 $optionStrategyName = "a long straddle";
-$pythonBacktestHash = "546a7e1f6f0ba85d0394e2b147ff43aa" ;
-$csharpBacktestHash = "126b5aeb4be7a8bc2e15e10f54ee4894" ;
+$pythonBacktestHash = "0027804eaa47d1be35b3fa18ad07256e" ;
+$csharpBacktestHash = "55d49c7c30fb7727c1e1eccb3c523fa4" ;
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-embedded-backtest.php"); 
 ?>
