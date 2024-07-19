@@ -1,0 +1,2 @@
+<? include(DOCS_RESOURCES."/brokerages/fills.html"); ?>
+<p>To view how we model TradeStation order fills, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/tradestation#04-Fills">Fills</a>.</p>
