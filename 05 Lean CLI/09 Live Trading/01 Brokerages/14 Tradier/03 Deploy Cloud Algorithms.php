@@ -14,6 +14,7 @@ Access token: ****************</pre>
 Use the developer sandbox? (live, paper): </pre>
 </div>
 ";
+$dataFeedDetails = "";
 $brokerageName="Tradier";
 $isSupported=true;
 $supportsCashHoldings=false;

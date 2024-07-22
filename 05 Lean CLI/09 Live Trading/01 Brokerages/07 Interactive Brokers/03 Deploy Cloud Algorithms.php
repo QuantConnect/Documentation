@@ -28,6 +28,7 @@ Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
 Do you want to use the Interactive Brokers price data feed instead of the QuantConnect price data feed? (yes/no): y</pre>
 </div>
 ";
+$dataFeedDetails = "";
 $brokerageName="Interactive Brokers";
 $isSupported=true;
 $supportsCashHoldings=false;

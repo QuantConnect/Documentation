@@ -1,6 +1,6 @@
 <p>You need to <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#14-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
 
-<?php
+<?
 $brokerageDetails = "
 <li>Enter your unique user identifier (UUID).</li>
 <div class='cli section-example-container'>
@@ -43,6 +43,7 @@ EMSX account []: </pre>
 OpenFIGI API key: </pre>
 </div>
 ";
+$dataFeedDetails = "";
 $brokerageName="Terminal Link";
 $isSupported=true;
 $supportsCashHoldings=false;

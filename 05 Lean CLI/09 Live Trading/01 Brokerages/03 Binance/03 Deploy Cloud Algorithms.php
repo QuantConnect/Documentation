@@ -20,6 +20,7 @@ API secret: ****************************************************************</pr
 Use the testnet? (live, paper): </pre>
 </div>
 ";
+$dataFeedDetails = "";
 $brokerageName="Binance";
 $isSupported=true;
 $supportsCashHoldings=false;

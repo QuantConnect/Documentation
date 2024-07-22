@@ -21,7 +21,9 @@ if ($isBrokerage) {
       "Trading Technologies",
       "Kraken",
       "TD Ameritrade",
-      "Bybit"
+      "Bybit",
+      "TradeStation",
+      "Alpaca"
   );
   $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 }
@@ -44,7 +46,9 @@ $dataProviders = array(
     "IEX Cloud",
     "CoinApi",
     "Custom data only",
-    "Bybit"
+    "Bybit",
+    "TradeStation",
+    "Alpaca"
 );
 $dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName, $dataProviders) + 1 : -1;
 ?>
@@ -67,6 +71,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 </div>
 </li>
@@ -123,13 +129,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma: 9</pre>
 </div>
 </li>   
@@ -151,13 +160,16 @@ Select a live data feed:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma: <?=$dataProviderNumber?></pre>
             </div>
             </li>
@@ -179,13 +191,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
 </div>
 </li>
