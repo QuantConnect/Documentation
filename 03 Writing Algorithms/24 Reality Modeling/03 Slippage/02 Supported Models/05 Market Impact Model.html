@@ -135,26 +135,6 @@ In contrast, temporary impact refers to the price difference between the instant
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Slippage/MarketImpactSlippageModel.cs">LEAN GitHub repository</a>.</p>
 
-<h4>Implicit Cost</h4>
-<p><i>Spread</i> – For market orders, the most substantial of these implicit costs is spread. Spread is the difference between the bid and ask prices of an asset in the market. When a market order is filled, it crosses the spread and fills at the best available price. Most of the time practitioners optimistically assume fills will occur at the last trade sale price, which is generally somewhere in the middle of the spread. In live trading spread can have a significant impact on profitability and should be modeled in research.</p>
-<img src="https://cdn.quantconnect.com/i/tu/market-impact-liquidity-cost.webp" class="docs-image" alt="Implicit Cost">
-<p>In QuantConnect orders are filled using quote data, accounting for this spread. If the default fill behavior doesn’t fit your use case, you can customize the behavior with plugins.</p>
-<div class="section-example-container">
-	<pre class="csharp">security.set_fill_model(ImmediateFillModel())</pre>
-	<pre class="python">security.set_fill_model(ImmediateFillModel())</pre>
-</div>
-<p><i>Slippage</i> – Trade slippage is the difference between the expected execution price and the final fill price for your trade. The most common cause for small orders, on liquid assets, is time as the assets shift price while the order fills. For illiquid assets or large orders it can also be from an order consumer layers of the order book offer prices. As market participants enter their best offers at various prices, a multi-level “order book” is formed. There are fewer shares available at expensive prices, so when a large order hits the market it can consume several levels of offers.</p>
-<p>QuantConnect assumes assets are liquid by default but offers several alternative models to customize more pessimistic fill behavior:</p>
-<div class="section-example-container">
-<pre class="csharp"># assume instant fill at top of order book
-security.set_slippage_model(NullSlippageModel())
-# model estimated market impact in fills
-security.set_slippage_model(MarketImpactSlippageModel(self))</pre>
-<pre class="python"># assume instant fill at top of order book
-security.set_slippage_model(NullSlippageModel())
-# model estimated market impact in fills
-security.set_slippage_model(MarketImpactSlippageModel(self))</pre>
-</div>
 <style>
 #market-impact-slippage-model td:last-child, 
 #market-impact-slippage-model th:last-child {
