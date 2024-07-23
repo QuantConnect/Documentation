@@ -36,6 +36,9 @@ STYLE = '''
 .subsection-content { margin-left: 10px; }
 </style>
 '''
+TYPE_ORDER = ["bool", "int", "long", "float", "single", "double", "decimal", "string", "str", 
+              "datetime", "timespan", "timedelta", "list", "set", "ienumerable", "dictionary", "dict", 
+              "callable", "func"]
 
 DOCS_ATTR = {}
 EXTRAS = {}
@@ -345,11 +348,28 @@ def _merge_args(old_dict, new_dict):
     
     return {
         "argument-name": old_dict["argument-name"],
-        "argument-type-full-name": full_type,
-        "argument-type-short-name": short_type,
+        "argument-type-full-name": sorted(full_type, key=_type_sorting),
+        "argument-type-short-name": sorted(short_type, key=_type_sorting),
         "argument-optional": old_dict["argument-optional"] and new_dict["argument-optional"],
         "argument-default": old_dict["argument-default"]
     }
+    
+def _type_sorting(arg):
+    null = arg is None
+    if not null:
+        arg_type = arg.lower().split('[')[0].split('<')[0]
+        pyobj = "pyobject" in arg_type
+        try:
+            joint_type = JOINT_TYPE_ORDER.index(arg_type)
+        except:
+            joint_type = 0
+        try:
+            type_ = TYPE_ORDER.index(arg_type)
+        except:
+            type_ = 1e7
+        length = len(arg)
+        return (null, pyobj, joint_type, type_, length)
+    return (1, 0, 0, 0, 0)
     
 def _merge_return(old_ret, new_ret):
     if not new_ret or new_ret == "void" or ".Void" in new_ret:
