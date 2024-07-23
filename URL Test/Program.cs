@@ -98,6 +98,15 @@ namespace UrlCheck
                                 errorFlag = true;
                             }
 
+                            if (url.Contains($"/docs/"))
+                            {
+                                if (!url.Contains($"/docs/v2/"))
+                                {
+                                    Log.Error($"deprecated docs:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                    errorFlag = true;
+                                }
+                            }
+
                             if (url.Contains($"{leanIo}docs/v2/"))
                             {
                                 if (leanIoErrorUrls.Any(url.Contains))
