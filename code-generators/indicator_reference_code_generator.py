@@ -262,6 +262,3 @@ $csharpProperties = {indicator['properties'][0]};
 $pythonProperties = {indicator['py_properties'][0]};
 include(DOCS_RESOURCES."/indicators/indicator-history.php");
 ?>""")
-
-if __name__ == '__main__':
-    Generate_Indicators_Reference()

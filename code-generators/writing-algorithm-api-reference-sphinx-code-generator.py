@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import shutil
 from urllib.request import urlopen
+from indicator_reference_code_generator import Generate_Indicators_Reference
 from _code_generation_helpers import get_all_indicators, _type_conversion, extract_xml_content, title_to_dash_linked_lower_case
 
 LEAN = "https://github.com/QuantConnect/Lean/blob/master"
@@ -36,9 +37,8 @@ STYLE = '''
 .subsection-content { margin-left: 10px; }
 </style>
 '''
-TYPE_ORDER = ["bool", "int", "long", "float", "single", "double", "decimal", "string", "str", 
-              "datetime", "timespan", "timedelta", "list", "set", "ienumerable", "dictionary", "dict", 
-              "callable", "func"]
+TYPE_ORDER = ["bool", "int", "long", "float", "single", "double", "decimal", "string", "str", "datetime", "timespan", "timedelta"]
+JOINT_TYPE_ORDER = ["list", "set", "ienumerable", "dictionary", "dict", "callable", "func", "action"]
 
 DOCS_ATTR = {}
 EXTRAS = {}
@@ -357,7 +357,7 @@ def _merge_args(old_dict, new_dict):
 def _type_sorting(arg):
     null = arg is None
     if not null:
-        arg_type = arg.lower().split('[')[0].split('<')[0]
+        arg_type = arg.split('[')[0].split('<')[0].lower()
         pyobj = "pyobject" in arg_type
         try:
             joint_type = JOINT_TYPE_ORDER.index(arg_type)
@@ -546,3 +546,4 @@ def _get_field_return(return_type_name, description, source_url, line_num, langu
     
 if __name__ == '__main__':
     render_docs()
+    Generate_Indicators_Reference()
