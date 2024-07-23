@@ -9,7 +9,7 @@
         self.sell_fill_prices = []
 
 order_data_by_symbol = {}
-for order in orders:
+for order in [x.order for x in orders]:
     if order.symbol not in order_data_by_symbol:
         order_data_by_symbol[order.symbol] = OrderData()
     order_data = order_data_by_symbol[order.symbol]
@@ -26,9 +26,13 @@ for order in orders:
 start_date = datetime.max.date()
 end_date = datetime.min.date()
 for symbol, order_data in order_data_by_symbol.items():
-    start_date = min(start_date, min(order_data.buy_fill_times), min(order_data.sell_fill_times))
-    end_date = max(end_date, max(order_data.buy_fill_times), max(order_data.sell_fill_times))
-start_date -= timedelta(days=1)
+    if order_data.buy_fill_times:
+        start_date = min(start_date, min(order_data.buy_fill_times))
+        end_date = max(end_date, max(order_data.buy_fill_times))
+    if order_data.sell_fill_times:
+        start_date = min(start_date, min(order_data.sell_fill_times))
+        end_date = max(end_date, max(order_data.sell_fill_times))
+start_date -= timedelta(days=3)
 all_history = qb.history(list(order_data_by_symbol.keys()), start_date, end_date, Resolution.DAILY)</pre>
     </div>
 </li>
