@@ -1,0 +1,71 @@
+<p>Moving average is a special type of indicator that smoothes out the fluctuations in a security's price or market data. It calculates the average value of a security's price over a specified period with a special smoothing function, helping traders to identify denoised trend.</p>
+
+<p>Moving averages can also be used in conjunction with other technical indicators to make more informed trading decisions and identify potential support or resistance levels in the market. Lean has extra abstraction interface for indicators to implement a specific type of moving average. Therefore, if you are contributing a moving average indicator, additional steps are required:</p>
+<ol>
+    <li>Provide a new <code>enum</code> in <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/MovingAverageType.cs">MovingAverageType.cs</a></li>
+    <div class="section-example-container">
+        <pre class="csharp">namespace QuantConnect.Indicators
+{
+    public enum MovingAverageType
+    {
+        ...
+        /// &lt;summary&gt;
+        /// Description of the custom moving average indicator (&lt;the next enum number&gt;)
+        /// &lt;/summary&gt;
+        &lt;CustomMovingAverageEnum&gt;,
+    }
+}</pre>
+    </div>
+
+    <li>Add a new case of your custom moving average indicator in each method of <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/MovingAverageTypeExtensions.cs">MovingAverageTypeExtensions.cs</a></li>
+    <div class="section-example-container">
+        <pre class="csharp">namespace QuantConnect.Indicators
+{
+    public static class MovingAverageTypeExtensions
+    {
+        public static IndicatorBase&lt;IndicatorDataPoint&gt; AsIndicator(this MovingAverageType movingAverageType, int period)
+        {
+            switch (movingAverageType)
+            {
+                ...
+                case MovingAverageType.CustomMovingAverageEnum:
+                    return new CustomMovingAverage(period);
+            }
+        }
+
+        public static IndicatorBase&lt;IndicatorDataPoint&gt; AsIndicator(this MovingAverageType movingAverageType, string name, int period)
+        {
+            switch (movingAverageType)
+            {
+                ...
+                case MovingAverageType.CustomMovingAverageEnum:
+                    return new CustomMovingAverage(name, period);
+            }
+        }
+    }
+}</pre>
+    </div>
+
+    <li>Add a new test case of your custom moving average indicator in <a href="https://github.com/QuantConnect/Lean/blob/master/Tests/Indicators/MovingAverageTypeExtensionsTests.cs">MovingAverageTypeExtensionsTests.cs</a> to assert the indicator being instantiated correctly through the abstraction method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">namespace QuantConnect.Tests.Indicators
+{
+    [TestFixture]
+    public class MovingAverageTypeExtensionsTests
+    {
+        [Test]
+        public void CreatesCorrectAveragingIndicator()
+        {
+            ...
+            var indicator = MovingAverageType.CustomMovingAverageEnum.AsIndicator(1);
+            Assert.IsInstanceOf(typeof(CustomMovingAverage), indicator);
+            ...
+            string name = string.Empty;
+            ...
+            indicator = MovingAverageType.CustomMovingAverageEnum.AsIndicator(name, 1);
+            Assert.IsInstanceOf(typeof(CustomMovingAverage), indicator);
+        }
+    }
+}</pre>
+    </div>
+</ol>
