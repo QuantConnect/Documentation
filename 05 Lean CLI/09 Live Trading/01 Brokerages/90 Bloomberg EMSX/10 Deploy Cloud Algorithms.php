@@ -43,7 +43,7 @@ EMSX account []: </pre>
 OpenFIGI API key: </pre>
 </div>
 ";
-$dataFeedDetails = "";
+$dataProviderName = "Terminal Link";
 $brokerageName="Terminal Link";
 $isSupported=true;
 $supportsCashHoldings=false;
