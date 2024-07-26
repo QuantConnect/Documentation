@@ -54,7 +54,7 @@ $authentication = "<li>Click on the <span class='field-name'>Account Type</span>
     </tbody>
 </table>
 <li>Click on <span class=\"button-name\">Authenticate</span> button.</li>
-<li>On the TradeStation webiste, login to your account to grant QuantConnect access to your account information and authorization.</li>";
+<li>On the TradeStation website, login to your account to grant QuantConnect access to your account information and authorization.</li>";
 $dataProviderDetails = "<p>In most cases, we suggest using the <a href='/docs/v2/cloud-platform/datasets'>QuantConnect data provider</a>, the <a href='/docs/v2/cloud-platform/datasets/tradestation'>TradeStation data provider</a>, or both. The order you set them in the deployment wizard defines their order of precedence in Lean.</p>";
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
