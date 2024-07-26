@@ -69,8 +69,7 @@ Trading segment (equity, commodity):</pre>
 Do you have a history API subscription? (true, false): true</pre>
 </div>
 ";
-$dataProviderName = "Zerodha";
-$dataProviderDetails = "";
+$dataProviderName=$brokerageName;
 $brokerageName="Zerodha";
 $isSupported=true;
 $supportsCashHoldings=false;
