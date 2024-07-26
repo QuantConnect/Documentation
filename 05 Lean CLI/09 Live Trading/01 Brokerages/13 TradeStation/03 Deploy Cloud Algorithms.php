@@ -28,7 +28,7 @@ Trade Station account type (Cash, Margin, Futures, DVP): Margin</pre>
 </div>
 </li>";
 
-$dataFeedDetails = "
+$dataProviderDetails = "
 <li>LEAN CLI opens your browser for authorization. Login to TradeStation if necessary.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
