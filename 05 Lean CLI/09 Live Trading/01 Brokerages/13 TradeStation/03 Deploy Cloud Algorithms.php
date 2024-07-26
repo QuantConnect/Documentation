@@ -1,9 +1,8 @@
 <?
 $brokerageName = "TradeStation";
 $dataProviderName=$brokerageName;
-$isBrokerage = true;
 $brokerageDetails = "
-<li>LEAN CLI opens your browser for authorization. Login to TradeStation.
+<li>In the browser window that automatically opens, log in to your TradeStation account.
 
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
@@ -29,7 +28,7 @@ Trade Station account type (Cash, Margin, Futures, DVP): Margin</pre>
 </li>";
 
 $dataProviderDetails = "
-<li>LEAN CLI opens your browser for authorization. Login to TradeStation if necessary.
+<li>In the browser window that automatically opens, log in to your TradeStation account.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Please open the following URL in your browser to authorize the LEAN CLI.
@@ -38,8 +37,8 @@ Will sleep 5 seconds and retry fetching authorization...
 </pre>
 </div>
 </li>";
-$supportsIQFeed = true;
-$requiresSubscription = true;
-$moduleName = "TradeStation";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>
