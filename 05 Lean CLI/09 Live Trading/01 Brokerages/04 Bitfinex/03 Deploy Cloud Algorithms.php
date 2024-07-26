@@ -8,6 +8,7 @@ Secret key: *******************************************</div>
 <p>To create new API credentials, see the <a rel='nofollow' href='https://www.bitfinex.com/api' target='_blank'>API Management page</a> on the Bitfinex website.</p>
 ";
 $brokerageName="Bitfinex";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
