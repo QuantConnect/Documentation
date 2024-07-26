@@ -16,6 +16,7 @@ Select the Verification Tier (Starter, Intermediate, Pro):</pre>
 <p>For more information about verification tiers, see <a href='https://support.kraken.com/hc/en-us/articles/360001395743-Verification-levels-explained' target='_blank' rel='nofollow'>Verification levels explained</a> on the Kraken website.</p>
 ";
 $brokerageName="Kraken";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
