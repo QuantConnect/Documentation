@@ -1,8 +1,13 @@
-<p>Moving average is a special type of indicator that smoothes out the fluctuations in a security's price or market data. It calculates the average value of a security's price over a specified period with a special smoothing function, helping traders to identify denoised trend.</p>
+<p>
+    A moving average is a special type of indicator that smoothes out the fluctuations in a security's price or market data. 
+    It calculates the average value of a security's price over a specified period with a special smoothing function, helping traders to identify trends and reduce noise.
+    Moving averages can also be used in conjunction with other technical indicators to make more informed trading decisions and identify potential support or resistance levels in the market. 
+    LEAN has extra abstraction interface for indicators to implement a specific type of moving average. 
+    Therefore, if you are contributing a moving average indicator, follow these additional steps:
+</p>
 
-<p>Moving averages can also be used in conjunction with other technical indicators to make more informed trading decisions and identify potential support or resistance levels in the market. Lean has extra abstraction interface for indicators to implement a specific type of moving average. Therefore, if you are contributing a moving average indicator, additional steps are required:</p>
 <ol>
-    <li>Provide a new <code>enum</code> in <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/MovingAverageType.cs">MovingAverageType.cs</a></li>
+    <li>In the <span class='public-file-name'>Lean / Indicators / MovingAverageType.cs</span> file, define a new <code>MovingAverageType</code> enumeration member.</li>
     <div class="section-example-container">
         <pre class="csharp">namespace QuantConnect.Indicators
 {
@@ -17,7 +22,7 @@
 }</pre>
     </div>
 
-    <li>Add a new case of your custom moving average indicator in each method of <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/MovingAverageTypeExtensions.cs">MovingAverageTypeExtensions.cs</a></li>
+    <li>In the <span class='public-file-name'>Lean / Indicators / MovingAverageTypeExtensions.cs</span> file, add a new case of your custom moving average indicator in each <code>AsIndicator</code> method.</li>
     <div class="section-example-container">
         <pre class="csharp">namespace QuantConnect.Indicators
 {
@@ -46,7 +51,7 @@
 }</pre>
     </div>
 
-    <li>Add a new test case of your custom moving average indicator in <a href="https://github.com/QuantConnect/Lean/blob/master/Tests/Indicators/MovingAverageTypeExtensionsTests.cs">MovingAverageTypeExtensionsTests.cs</a> to assert the indicator being instantiated correctly through the abstraction method.</li>
+    <li>In the <span class='public-file-name'>Lean / Tests/ Indicators / MovingAverageTypeExtensionsTests.cs</span> file, add a new test case of your custom moving average indicator that asserts the indicator is  correctly instantiated through the abstraction methods.</li>
     <div class="section-example-container">
         <pre class="csharp">namespace QuantConnect.Tests.Indicators
 {
