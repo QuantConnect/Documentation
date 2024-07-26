@@ -1,6 +1,6 @@
 <?
 $brokerageDetails = "
-<li>LEAN CLI opens your browser for authorization. Click on Allow.
+<li>In the browser window that automatically opens, click <span class='button-name'>Allow</span>.
 
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
@@ -19,8 +19,8 @@ Live or Paper environment? (live, paper): live</pre>
 </li>
 ";
 
-$dataFeedDetails = "
-<li>LEAN CLI opens your browser for authorization. Click on Allow.
+$dataProviderDetails = "
+<li>In the browser window that automatically opens, click <span class='button-name'>Allow</span>.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Please open the following URL in your browser to authorize the LEAN CLI.
