@@ -21,6 +21,7 @@ API token: ****************</pre>
 <p>To create a token, see the <a href='https://www.oanda.com/account/tpa/personal_token' target='_blank'>Manage API Access page</a> on the OANDA website.</p>
 ";
 $brokerageName="Oanda";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
