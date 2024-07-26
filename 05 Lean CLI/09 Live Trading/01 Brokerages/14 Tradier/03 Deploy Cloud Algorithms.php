@@ -15,6 +15,7 @@ Use the developer sandbox? (live, paper): </pre>
 </div>
 ";
 $brokerageName="Tradier";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
