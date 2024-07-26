@@ -21,6 +21,7 @@ Use the testnet? (live, paper): </pre>
 </div>
 ";
 $brokerageName="Binance";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
