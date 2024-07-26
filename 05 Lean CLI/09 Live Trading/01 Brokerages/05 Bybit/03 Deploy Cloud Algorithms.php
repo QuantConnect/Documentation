@@ -17,7 +17,6 @@ VIP Level (VIP0, VIP1, VIP2, VIP3, VIP4, VIP5, SupremeVIP, Pro1, Pro2, Pro3, Pro
 <p>For more information about VIP levels, see <a href='https://www.bybit.com/en/help-center/article/FAQ-VIP-Program' target='_blank' rel='nofollow'>FAQ — Bybit VIP Program</a> on the Bybit website.</p>
 </li>
 ";
-$dataFeedDetails = "";
 $brokerageName="Bybit";
 $isSupported=true;
 $supportsCashHoldings=false;
