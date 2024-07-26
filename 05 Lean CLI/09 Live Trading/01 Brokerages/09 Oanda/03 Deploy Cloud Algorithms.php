@@ -20,7 +20,6 @@ API token: ****************</pre>
 </div>
 <p>To create a token, see the <a href='https://www.oanda.com/account/tpa/personal_token' target='_blank'>Manage API Access page</a> on the OANDA website.</p>
 ";
-$dataFeedDetails = "";
 $brokerageName="Oanda";
 $isSupported=true;
 $supportsCashHoldings=false;
