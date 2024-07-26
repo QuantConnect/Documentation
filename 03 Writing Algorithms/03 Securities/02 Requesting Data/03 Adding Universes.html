@@ -1,0 +1,29 @@
+<p>Universe selection is the process of selecting a basket of assets you may trade. When you add a universe to your algorithm, LEAN sends a large dataset into a filter function you define. LEAN automatically subscribes to these new symbols and adds them to your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class MyFundamentalUniverseAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        UniverseSettings.Asynchronous = true;
+        AddUniverse(FundamentalFilterFunction);
+    }
+    
+    private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        return (from c in fundamental
+            orderby c.DollarVolume descending
+            select c.Symbol).Take(100);
+    }
+}</pre>
+<pre class="python">class MyFundamentalUniverseAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.fundamental_filter_function)
+    
+    def fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
+        return [c.symbol for c in sorted_by_dollar_volume[:100]]</pre>
+</div>
+    
+<p>For more information about universes, see <a href='/docs/v2/writing-algorithms/universes'>Universes</a>.</p>
