@@ -39,6 +39,7 @@ Alpaca Api Secret: ****************************************
 </div>
 </li>";
 $brokerageName="Alpaca";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
