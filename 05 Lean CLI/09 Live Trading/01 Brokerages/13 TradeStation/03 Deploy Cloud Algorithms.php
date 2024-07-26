@@ -1,6 +1,6 @@
 <?
 $brokerageName = "TradeStation";
-$dataFeedName = "";
+$dataProviderName=$brokerageName;
 $isBrokerage = true;
 $brokerageDetails = "
 <li>LEAN CLI opens your browser for authorization. Login to TradeStation.
