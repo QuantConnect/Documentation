@@ -9,6 +9,7 @@ API secret: ********************************************************************
 <p>To create new API credentials, see the <a href='https://www.coinbase.com/settings/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase website.</p>
 ";
 $brokerageName="Coinbase Advanced Trade";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
