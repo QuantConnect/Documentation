@@ -18,6 +18,7 @@ VIP Level (VIP0, VIP1, VIP2, VIP3, VIP4, VIP5, SupremeVIP, Pro1, Pro2, Pro3, Pro
 </li>
 ";
 $brokerageName="Bybit";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=true;
