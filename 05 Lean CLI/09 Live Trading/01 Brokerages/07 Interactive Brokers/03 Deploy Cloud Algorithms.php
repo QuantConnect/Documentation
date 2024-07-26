@@ -29,6 +29,7 @@ Do you want to use the Interactive Brokers price data feed instead of the QuantC
 </div>
 ";
 $brokerageName="Interactive Brokers";
+$dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
