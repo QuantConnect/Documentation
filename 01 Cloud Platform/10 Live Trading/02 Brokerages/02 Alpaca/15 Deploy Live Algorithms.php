@@ -24,8 +24,8 @@ $authentication = "<li>Click on the <span class='field-name'>Environment</span> 
         </tr>
     </tbody>
 </table>
-<li>Check the <span class=\"box-name\">Authorization</span> box, and click on <span class=\"button-name\">Authenticate</span> button.</li>
-<p>Click on the <span class=\"button-name\">Allow</span> button to grant QuantConnect access to your account information and authorization.</p>";
+<li>Check the <span class=\"box-name\">Authorization</span> check box and then click <span class=\"button-name\">Authenticate</span>.</li>
+<li>On the Alpaca website, click <span class=\"button-name\">Allow</span> to grant QuantConnect access to your account information and authorization.</li>";
 $dataProviderDetails = "<p>In most cases, we suggest using the <a href='/docs/v2/cloud-platform/datasets'>QuantConnect data provider</a>, the <a href='/docs/v2/cloud-platform/datasets/alpaca'>Alpaca data provider</a>, or both. The order you set them in the deployment wizard defines their order of precedence in Lean.</p>";
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
