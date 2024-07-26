@@ -107,13 +107,19 @@ def _cumulative_return(self, daily_returns):
 
     <li>Define the optimization function.</li>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
-    # . . .
-    objective = self._cumulative_return
-    # . . .
-    
-def _cumulative_return(self, daily_returns):
-    return (daily_returns + 1).cumprod()[-1] - 1</pre>
+    <pre class="python">def _optimization_func(self, data, parameter_set, objective):
+    p1 = parameter_set['short_ema']
+    p2 = parameter_set['long_ema']
+    short_ema = data['close'].ewm(p1, min_periods=p1).mean()
+    long_ema = data['close'].ewm(p2, min_periods=p2).mean()
+    exposure = (short_ema - long_ema).dropna().apply(np.sign)\
+        .replace(0, pd.NA).ffill().shift(1)
+    # ^ shift(1) because we enter the position on the next day.
+    asset_daily_returns = data['open'].pct_change().shift(-1) 
+    # ^ shift(-1) because we want each entry to be the return from 
+    # the current day to the next day.
+    strategy_daily_returns = (exposure * asset_daily_returns).dropna()
+    return objective(strategy_daily_returns)</pre>
   </div>
 
   <li>Schedule the optimization sessions.</li>
