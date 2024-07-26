@@ -41,5 +41,5 @@ Will sleep 5 seconds and retry fetching authorization...
 $supportsIQFeed = true;
 $requiresSubscription = true;
 $moduleName = "TradeStation";
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>
