@@ -21,12 +21,15 @@
     self._rsi = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)
     self.ad = AccumulationDistribution()
 
-    self.consolidator = TradeBarConsolidator(timedelta(days=3))
-    self.consolidator = QuoteBarConsolidator(timedelta(days=3))
+    self.consolidator = TradeBarConsolidator(timedelta(3))   # 10 x 3 daily trade bars to warm up the RSI.
+    self.consolidator = QuoteBarConsolidator(timedelta(3))   # 10 x 3 daily quote bars to warm up the RSI.
     self.consolidator = RenkoBarConsolidator(1)     # Renko consolidator that emits a bar when the price moves $1
     # Update the AD indicator with the consolidated bar
-    self.consolidator.data_consolidated += (lambda _, bar : self.ad.update(bar))
+    self.consolidator.data_consolidated += self.on_data_consolidated
     self.subscription_manager.add_consolidator(self._symbol, self.consolidator)
+
+def on_data_consolidated(self, sender, bar):
+    self.ad.update(bar)
 
 def on_data(self, slice: Slice) -&gt; None:
     # Update the RSI indicator value with the new input close price every day
@@ -45,8 +48,8 @@ public override void Initialize()
     _rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
     _ad = new AccumulationDistribution();
 
-    var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(3));
-    consolidator = new QuoteBarConsolidator(TimeSpan.FromDays(3));
+    var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(3));   // 10 x 3 daily trade bars to warm up the RSI.
+    consolidator = new QuoteBarConsolidator(TimeSpan.FromDays(3));       // 10 x 3 daily quote bars to warm up the RSI.
     consolidator = new RenkoBarConsolidator(1);     // Renko consolidator that emits a bar when the price moves $1
     //Update the AD indicator with the consolidated bar
     consolidator.DataConsolidated += (_, bar) =&gt; _ad.Update(bar);
