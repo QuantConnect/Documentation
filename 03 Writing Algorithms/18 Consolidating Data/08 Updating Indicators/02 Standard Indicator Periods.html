@@ -11,14 +11,29 @@ sma = self.sma("SPY", 14, Resolution.DAILY)</pre>
 
 <p>If your algorithm has a dynamic universe, <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#03-Create-Manual-Indicators">create a manual indicator</a> and then <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators">create a time period consolidator</a> that updates the indicator at each time step. Keep a reference to the consolidator so you can remove it when your algorithm removes the security from the universe.</p>
 
-<div class="section-example-container"><pre class="csharp">_ema = new ExponentialMovingAverage(14);
-_consolidator = new TradeBarConsolidator(1);
-_consolidator.DataConsolidated += (_, bar) => ema.Update(bar.EndTime, bar.Close);
-SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+<div class="section-example-container"><pre class="csharp">public override void Initialize()
+{
+    _ema = new ExponentialMovingAverage(14);
+    _consolidator = new TradeBarConsolidator(1);
+    _consolidator.DataConsolidated += OnDataConsolidated;
+    SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+}
+
+// Define consolidator handler function as a class method
+public void OnDataConsolidated(object sender, TradeBar bar)
+{
+    ema.Update(bar.EndTime, bar.Close);
+}
+
 </pre>
-<pre class="python">self._ema = ExponentialMovingAverage(14)
-self._consolidator = TradeBarConsolidator(1)
-self._consolidator.data_consolidated += lambda _, bar: self._ema.update(bar.end_time, bar.close)
-self.subscription_manager.add_consolidator(self._symbol, self._consolidator)
+<pre class="python">def initialize(self):
+    self._ema = ExponentialMovingAverage(14)
+    self._consolidator = TradeBarConsolidator(1)
+    self._consolidator.data_consolidated += self.on_data_consolidated
+    self.subscription_manager.add_consolidator(self._symbol, self._consolidator)
+
+# Define consolidator handler function as a class method
+def on_data_consolidated(self, sender, bar):
+    self._ema.update(bar.end_time, bar.close)
 </pre>
 </div>

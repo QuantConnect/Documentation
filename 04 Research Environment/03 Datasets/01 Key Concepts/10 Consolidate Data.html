@@ -50,8 +50,10 @@ foreach(var bar in history)
 consolidator = TradeBarConsolidator(timedelta(7))
 window = RollingWindow[TradeBar](20)
 
-# Attach a consolidation handler method that saves the consolidated bars in the RollingWindow   
-consolidator.data_consolidated += lambda _, bar: window.add(bar)
+# Attach a consolidation handler method that saves the consolidated bars in the RollingWindow
+def on_data_consolidated(sender, bar):
+     window.add(bar)
+consolidator.data_consolidated += on_data_consolidated
 
 # Iterate the historical market data and feed each bar into the consolidator
 for bar in history.itertuples():

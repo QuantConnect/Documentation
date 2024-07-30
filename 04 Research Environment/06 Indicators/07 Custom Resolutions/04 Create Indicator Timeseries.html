@@ -85,7 +85,10 @@ bb.updated += UpdateBollingerBandWindow</pre>
 {
     bb.Update(consolidated.EndTime, consolidated.Close);
 };</pre>
-        <pre class="python">consolidator.data_consolidated += lambda sender, consolidated: bb.update(consolidated.end_time, consolidated.close)</pre>
+        <pre class="python">
+def on_data_consolidated(sender, consolidated):
+    bb.update(consolidated.end_time, consolidated.close)
+consolidator.data_consolidated += on_data_consolidated</pre>
     </div>
     <p>When the consolidator receives 7 days of data, the handler generates a 7-day <code>TradeBar</code> and update the indicator.</p>
     
