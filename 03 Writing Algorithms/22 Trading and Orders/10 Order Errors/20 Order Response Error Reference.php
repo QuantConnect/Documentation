@@ -242,7 +242,7 @@ if holding_quantity > 0:
 
 
 <h4>Non-Tradable Security</h4>
-<p>The <code class='csharp'>OrderResponseErrorCode.NonTradableSecurity</code><code class='python'>OrderResponseErrorCode.NON_TRADABLE_SECURITY</code> (-28) error occurs when you place an order for a security that's not <a href='/docs/v2/writing-algorithms/securities/key-concepts#07-Tradable-Status'>tradable</a>. To avoid this order response error, check if a security is tradable before you trade it.</p>
+<p>The <code class='csharp'>OrderResponseErrorCode.NonTradableSecurity</code><code class='python'>OrderResponseErrorCode.NON_TRADABLE_SECURITY</code> (-28) error occurs when you place an order for a security that's not <a href='/docs/v2/writing-algorithms/securities/key-concepts#05-Tradable-Status'>tradable</a>. To avoid this order response error, check if a security is tradable before you trade it.</p>
 
 <a id='non-exercisable-security'></a><div class="section-example-container">
     <pre class="csharp">if (Securities[_symbol].IsTradable)
