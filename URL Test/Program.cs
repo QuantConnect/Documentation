@@ -98,13 +98,10 @@ namespace UrlCheck
                                 errorFlag = true;
                             }
 
-                            if (url.Contains($"/docs/"))
+                            if (url.Contains($"{root}docs/") && !url.Contains("/docs/v1/") && !url.Contains("/docs/v2/"))
                             {
-                                if (!url.Contains($"/docs/v2/"))
-                                {
-                                    Log.Error($"deprecated docs:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
-                                    errorFlag = true;
-                                }
+                                Log.Error($"deprecated docs:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                errorFlag = true;
                             }
 
                             if (url.Contains($"{leanIo}docs/v2/"))
