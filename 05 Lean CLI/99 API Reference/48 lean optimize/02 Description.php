@@ -40,7 +40,10 @@
     You can provide this option multiple times to configure multiple constraints.
 </p>
 
-<? include(DOCS_RESOURCES."/cli/backtest-data-provider.html"); ?>
+<? 
+$isResearch = false;
+include(DOCS_RESOURCES."/cli/backtest-data-provider.php"); 
+?>
 
 <p>
     Example non-interactive usage:
