@@ -22,18 +22,18 @@ sma = self.sma("SPY", 14, Resolution.DAILY)</pre>
 // Define consolidator handler function as a class method
 public void OnDataConsolidated(object sender, TradeBar bar)
 {
-    ema.Update(bar.EndTime, bar.Close);
+    _ema.Update(bar.EndTime, bar.Close);
 }
 
 </pre>
 <pre class="python">def initialize(self):
     self._ema = ExponentialMovingAverage(14)
     self._consolidator = TradeBarConsolidator(1)
-    self._consolidator.data_consolidated += self.on_data_consolidated
+    self._consolidator.data_consolidated += self._on_data_consolidated
     self.subscription_manager.add_consolidator(self._symbol, self._consolidator)
 
 # Define consolidator handler function as a class method
-def on_data_consolidated(self, sender, bar):
+def _on_data_consolidated(self, sender, bar):
     self._ema.update(bar.end_time, bar.close)
 </pre>
 </div>
