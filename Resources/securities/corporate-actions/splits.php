@@ -68,7 +68,7 @@ def on_splits(self, splits: Splits) -> None:
 
 <p>To get historical splits, make a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a> with the <code>Split</code> type.</p>
 <div class='section-example-container'>
-    <pre class='csharp'>var splits = History<Split>(symbol, TimeSpan.FromDays(4*365));</pre>
+    <pre class='csharp'>var splits = History&lt;Split&gt;(symbol, TimeSpan.FromDays(4*365));</pre>
     <pre class='python'>splits_df = self.history(Split, symbol, timedelta(4*365))
 splits = self.history[Split](symbol, timedelta(4*365))</pre>
 </div>
