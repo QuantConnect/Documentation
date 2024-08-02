@@ -14,7 +14,10 @@
     The exact ways to get local debugging to work depends on your editor and language, see <a href="/docs/v2/lean-cli/backtesting/debugging">Debugging</a> for more information on how to set this up.
 </p>
 
-<? include(DOCS_RESOURCES."/cli/backtest-data-provider.html"); ?>
+<? 
+$isResearch = false;
+include(DOCS_RESOURCES."/cli/backtest-data-provider.php"); 
+?>
 
 <p>You can also use the <code>--data-purchase-limit</code> option to set the maximum amount of <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/credit">QuantConnect Credit</a> (QCC) to spend during the backtest when using QuantConnect as data provider.
     The <code>--data-purchase-limit</code> option is not persistent.
