@@ -169,7 +169,7 @@ if holding_quantity > 0:
 
 
 <h4>Forex Base and Quote Currencies Required</h4>
-<p><a id='forex-conversion-rate-zero'></a>The <code class='csharp'>OrderResponseErrorCode.ForexBaseAndQuoteCurrenciesRequired</code><code class='python'>OrderResponseErrorCode.FOREX_BASE_AND_QUOTE_CURRENCIES_REQUIRED</code> (-17) error occurs when you place a trade for a Forex or Crypto pair but you don't have the base currency and <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>. This error should never occur. If it does, create a bug report.</p>
+<p><a id='forex-conversion-rate-zero'></a>The <code class='csharp'>OrderResponseErrorCode.ForexBaseAndQuoteCurrenciesRequired</code><code class='python'>OrderResponseErrorCode.FOREX_BASE_AND_QUOTE_CURRENCIES_REQUIRED</code> (-17) error occurs when you place a trade for a Forex or Crypto pair but you don't have the base currency and <a href='/docs/v2/writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency'>quote currency</a> in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>. This error should never occur. If it does, create a bug report.</p>
 
 
 <h4>Forex Conversion Rate Zero</h4>
@@ -234,11 +234,11 @@ if holding_quantity > 0:
 
 
 <h4>Quote Currency Required</h4>
-<p><a id='conversion-rate-zero'></a>The <code class='csharp'>OrderResponseErrorCode.QuoteCurrencyRequired</code><code class='python'>OrderResponseErrorCode.QUOTE_CURRENCY_REQUIRED</code> (-26) error occurs when you place an order for a Forex or Crypto pair and don't have the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> of the pair in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>. This error should never occur. If it does, create a bug report.</p>
+<p><a id='conversion-rate-zero'></a>The <code class='csharp'>OrderResponseErrorCode.QuoteCurrencyRequired</code><code class='python'>OrderResponseErrorCode.QUOTE_CURRENCY_REQUIRED</code> (-26) error occurs when you place an order for a Forex or Crypto pair and don't have the <a href='/docs/v2/writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency'>quote currency</a> of the pair in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>. This error should never occur. If it does, create a bug report.</p>
 
 
 <h4>Conversion Rate Zero</h4>
-<p><a id='non-tradable-security'></a>The <code class='csharp'>OrderResponseErrorCode.ConversionRateZero</code><code class='python'>OrderResponseErrorCode.CONVERSION_RATE_ZERO</code> (-27) error occurs when you place an order for a Forex or Crypto pair and LEAN can't convert the value of the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in the pair to your account currency. This order response error usually indicates a lack of data. Investigate the data and if there is data missing, <a href='/docs/v2/cloud-platform/datasets/data-issues#04-Report-New-Issues'>report it</a>.</p>
+<p><a id='non-tradable-security'></a>The <code class='csharp'>OrderResponseErrorCode.ConversionRateZero</code><code class='python'>OrderResponseErrorCode.CONVERSION_RATE_ZERO</code> (-27) error occurs when you place an order for a Forex or Crypto pair and LEAN can't convert the value of the <a href='/docs/v2/writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency'>quote currency</a> in the pair to your account currency. This order response error usually indicates a lack of data. Investigate the data and if there is data missing, <a href='/docs/v2/cloud-platform/datasets/data-issues#04-Report-New-Issues'>report it</a>.</p>
 
 
 <h4>Non-Tradable Security</h4>
