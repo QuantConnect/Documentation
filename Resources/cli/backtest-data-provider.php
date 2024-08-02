@@ -122,4 +122,6 @@
     </tbody>
 </table>
 
+<? if (!$isResearch) { ?>
 <p>You can use the <code>--download-data</code> flag as an alias for <code>--data-provider-historical QuantConnect</code>. This data provider automatically downloads the required data files when your backtest requests them. After it downloads a data file, it stores it in your local <span class='public-directory-name'>data</span> directory so that in future runs, it won't have to download it again. If the file contain data for multiple days (for example, daily Equity price data files), the <code>ApiDataProvider</code> re-downloads the file if your local version is at least 7 days old. To adjust this setting, update the <code>downloader-data-update-period</code> value in your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration</a> file.</p>
+<? } ?>
