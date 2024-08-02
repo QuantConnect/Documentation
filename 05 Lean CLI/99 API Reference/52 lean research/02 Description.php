@@ -9,7 +9,10 @@
     To use a custom port, you can use the <code>--port</code> option, which is required to run two Jupyter Lab instances side-by-side.
 </p>
 
-<? include(DOCS_RESOURCES."/cli/backtest-data-provider.html"); ?>
+<? 
+$isResearch = true;
+include(DOCS_RESOURCES."/cli/backtest-data-provider.php"); 
+?>
 
 <p>You can use the <code>--download-data</code> flag as an alias for <code>--data-provider-historical QuantConnect</code> and the <code>--data-purchase-limit</code> option to set the maximum amount of <a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit</a> (QCC) to spend during the research session when using QuantConnect as data provider.
     The <code>--data-purchase-limit</code> option is not persistent.
