@@ -254,3 +254,6 @@ def on_data(self, slice: Slice) -&gt; None:
 <p>Terminal Link enables you to <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
+
+<h4>Brokerage Side Orders</h4>
+<p>By default, your algorithm doesn't record orders that were submit to your account by third-parties. To accept these orders, create a <a href='/docs/v2/writing-algorithms/reality-modeling/brokerage-message-handler'>custom brokerage message handler</a>.</p>
