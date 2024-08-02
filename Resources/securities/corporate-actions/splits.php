@@ -66,6 +66,12 @@ def on_splits(self, splits: Splits) -> None:
         pass</pre>
 </div>
 
+<p>To get historical splits, make a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a> with the <code>Split</code> type.</p>
+<div class='section-example-container'>
+    <pre class='csharp'>var splits = History<Split>(symbol, TimeSpan.FromDays(4*365));</pre>
+    <pre class='python'>splits_df = self.history(Split, symbol, timedelta(4*365))
+splits = self.history[Split](symbol, timedelta(4*365))</pre>
+</div>
 
 <p>LEAN stores the data for stock splits in factor files. To view some example factor files, see the <a rel='nofollow' target='_blank' href='<?=$factorFilesLink?>'>LEAN GitHub repository</a>. In backtests, your algorithm receives <code>Split</code> objects at midnight. In live trading, your algorithm receives <code>Split</code> objects when the factor files are ready.</p>
 
