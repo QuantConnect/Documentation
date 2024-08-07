@@ -255,5 +255,8 @@ def on_data(self, slice: Slice) -&gt; None:
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
 
-<h4>Brokerage Side Orders</h4>
-<p>By default, your algorithm doesn't record orders that were submit to your account by third-parties. To accept these orders, create a <a href='/docs/v2/writing-algorithms/reality-modeling/brokerage-message-handler'>custom brokerage message handler</a>.</p>
+<h4>Brokerage-Side Orders</h4>
+<p>
+   By default, your algorithm doesn't record orders that you submit to your account by third-parties instead of through LEAN. 
+   To accept these orders, create a <a href='/docs/v2/writing-algorithms/reality-modeling/brokerage-message-handler'>custom brokerage message handler</a>.
+</p>
