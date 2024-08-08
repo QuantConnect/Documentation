@@ -188,7 +188,6 @@ table td:not(:first-child) {
    </tbody>
 </table>
 
-
 <h4>Private Chatroom </h4>
 <p>When you require instant access to our Support team, we can open a private chatroom in Discord. In our private chatroom, you can ask our Support Team questions at any time and we focus on responding as quickly as we can. Request a private chatroom to avoid waiting for email responses on your support tickets.</p>
 
@@ -230,6 +229,30 @@ table td:not(:first-child) {
    <tbody>
       <tr>
         <td>Phone Call Consultations</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+   </tbody>
+</table>
+
+<h4>Local Development </h4>
+<p>Gold support has access to technical support to the <a href="/docs/v2/local-platform">Local Platform</a>, <a href="/docs/v2/lean-cli">LEAN CLI</a> and <a href="/docs/v2/cloud-platform/api-reference">QuantConnect REST API</a>, which includes installation and subjects that don't apply to the Cloud Platform.</p>
+
+<table class="qc-table table">
+   <thead>
+      <tr>
+      	<th style="width: 28%;">Feature</th>
+        <th style="width: 18%;">Community</th>
+        <th style="width: 18%;">Bronze</th>
+        <th style="width: 18%;">Silver</th>
+        <th style="width: 18%;">Gold</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td>Private Chatroom</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -303,6 +326,13 @@ table td:not(:first-child) {
       </tr>
       <tr>
         <td>Phone Call Consultations</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td>Local Development</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
