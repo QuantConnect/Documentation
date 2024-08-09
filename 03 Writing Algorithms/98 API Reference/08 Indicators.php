@@ -23,6 +23,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-cc.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-cci.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-chop.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-cks.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-cmf.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-cmo.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-create-indicator-name.html"); ?>
@@ -80,6 +81,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rocp.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rocr.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rsi.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rsv.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rvi.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-si.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-sma.html"); ?>
