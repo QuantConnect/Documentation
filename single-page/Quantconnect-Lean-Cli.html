@@ -92,19 +92,21 @@
 <li><a href="#8" class="toc-h1" target="_parent">8 Live Trading</a></li>
 <li><a href="#8.1" class="toc-h2" target="_parent">8.1 Brokerages</a></li>
 <li><a href="#8.1.1" class="toc-h3" target="_parent">8.1.1 QuantConnect Paper Trading</a></li>
-<li><a href="#8.1.2" class="toc-h3" target="_parent">8.1.2 Binance</a></li>
-<li><a href="#8.1.3" class="toc-h3" target="_parent">8.1.3 Bitfinex</a></li>
-<li><a href="#8.1.4" class="toc-h3" target="_parent">8.1.4 Bybit</a></li>
-<li><a href="#8.1.5" class="toc-h3" target="_parent">8.1.5 Coinbase</a></li>
-<li><a href="#8.1.6" class="toc-h3" target="_parent">8.1.6 Interactive Brokers</a></li>
-<li><a href="#8.1.7" class="toc-h3" target="_parent">8.1.7 Kraken</a></li>
-<li><a href="#8.1.8" class="toc-h3" target="_parent">8.1.8 Oanda</a></li>
-<li><a href="#8.1.9" class="toc-h3" target="_parent">8.1.9 Samco</a></li>
-<li><a href="#8.1.10" class="toc-h3" target="_parent">8.1.10 TD Ameritrade</a></li>
-<li><a href="#8.1.11" class="toc-h3" target="_parent">8.1.11 Tradier</a></li>
-<li><a href="#8.1.12" class="toc-h3" target="_parent">8.1.12 Trading Technologies</a></li>
-<li><a href="#8.1.13" class="toc-h3" target="_parent">8.1.13 Zerodha</a></li>
-<li><a href="#8.1.14" class="toc-h3" target="_parent">8.1.14 Bloomberg EMSX</a></li>
+<li><a href="#8.1.2" class="toc-h3" target="_parent">8.1.2 Alpaca</a></li>
+<li><a href="#8.1.3" class="toc-h3" target="_parent">8.1.3 Binance</a></li>
+<li><a href="#8.1.4" class="toc-h3" target="_parent">8.1.4 Bitfinex</a></li>
+<li><a href="#8.1.5" class="toc-h3" target="_parent">8.1.5 Bybit</a></li>
+<li><a href="#8.1.6" class="toc-h3" target="_parent">8.1.6 Coinbase</a></li>
+<li><a href="#8.1.7" class="toc-h3" target="_parent">8.1.7 Interactive Brokers</a></li>
+<li><a href="#8.1.8" class="toc-h3" target="_parent">8.1.8 Kraken</a></li>
+<li><a href="#8.1.9" class="toc-h3" target="_parent">8.1.9 Oanda</a></li>
+<li><a href="#8.1.10" class="toc-h3" target="_parent">8.1.10 Samco</a></li>
+<li><a href="#8.1.11" class="toc-h3" target="_parent">8.1.11 TD Ameritrade</a></li>
+<li><a href="#8.1.12" class="toc-h3" target="_parent">8.1.12 TradeStation</a></li>
+<li><a href="#8.1.13" class="toc-h3" target="_parent">8.1.13 Tradier</a></li>
+<li><a href="#8.1.14" class="toc-h3" target="_parent">8.1.14 Trading Technologies</a></li>
+<li><a href="#8.1.15" class="toc-h3" target="_parent">8.1.15 Zerodha</a></li>
+<li><a href="#8.1.16" class="toc-h3" target="_parent">8.1.16 Bloomberg EMSX</a></li>
 <li><a href="#8.2" class="toc-h2" target="_parent">8.2 Data Providers</a></li>
 <li><a href="#8.2.1" class="toc-h3" target="_parent">8.2.1 IEX Cloud</a></li>
 <li><a href="#8.2.2" class="toc-h3" target="_parent">8.2.2 IQFeed</a></li>
@@ -2110,6 +2112,44 @@ Successfully logged in</pre>
     Globals.DataFolder
    </code>
    variable.
+  </p>
+ </body>
+</html>
+
+<h3>Data Updates</h3>
+<html>
+ <body>
+  <p>
+   Every day, the LEAN CLI updates the
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/market-hours">
+    exchange market hours
+   </a>
+   (
+   <span class="public-file-name">
+    data / market-hours / market-hours-database.json
+   </span>
+   ) and the
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/key-concepts#06-Symbol-Properties">
+    symbol properties
+   </a>
+   database (
+   <span class="public-file-name">
+    data / symbol-properties / symbol-properties-database.csv
+   </span>
+   ).
+    To disable the updates, open the
+   <a href="#3.3">
+    LEAN configuration file
+   </a>
+   (
+   <span class="public-file-name">
+    lean.json
+   </span>
+   ) and set the
+   <code>
+    file-database-last-update
+   </code>
+   value to a date in the future.
   </p>
  </body>
 </html>
@@ -7833,13 +7873,13 @@ if __name__ == "__main__":
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical &lt;brokerageName&gt; --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --tickers &lt;tickers&gt; --market &lt;market&gt; --start-date &lt;YYYYMMDD&gt; --end-date &lt;YYYYMMDD&gt; --data-provider-historical &lt;brokerageName&gt; &lt;requiredBrokerageOptions&gt;.
+    lean data download --data-provider-historical &lt;brokerageName&gt; --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --ticker &lt;tickers&gt; --market &lt;market&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; &lt;requiredBrokerageOptions&gt;.
    </code>
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical "Interactive Brokers" --data-type Quote --resolution Daily --security-type Equity --tickers NVDA,AMD --start-date 20240303 --end-date 20240404 --ib-user-name userName --ib-account account --ib-password password
+   <pre>$ lean data download --data-provider-historical "Interactive Brokers" --data-type Trade --resolution Daily --security-type Equity --ticker NVDA,AMD --market USA --start 20240303 --end 20240404 --ib-user-name userName --ib-account account --ib-password password
 
-$ lean data download --data-provider-historical Binance --data-type Trade --resolution Daily --security-type Crypto --tickers BTCUSDT,ETHUSDT --start-date 20240303 --end-date 20240404 --binance-exchange-name Binance binance-api-key apiKey --binance-api-secret apiSecret</pre>
+$ lean data download --data-provider-historical Binance --data-type Trade --resolution Daily --security-type Crypto --ticker BTCUSDT,ETHUSDT --start 20240303 --end 20240404 --binance-exchange-name Binance binance-api-key apiKey --binance-api-secret apiSecret</pre>
   </div>
   <p>
    To download Coinbase data, include the
@@ -7849,7 +7889,7 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    option.
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical "Coinbase Advanced Trade" --data-type Trade --resolution hour --security-type Crypto --tickers BTCUSD --market Coinbase --start-date 20230101 --end-date 20240404 --coinbase-api-key apiKey --coinbase-api-secret apiSecret</pre>
+   <pre>$ lean data download --data-provider-historical "Coinbase Advanced Trade" --data-type Trade --resolution hour --security-type Crypto --ticker BTCUSD --market Coinbase --start 20230101 --end 20240404 --coinbase-api-key apiKey --coinbase-api-secret apiSecret</pre>
   </div>
   <p>
    If you provide your credentials, your
@@ -8059,96 +8099,6 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </thead>
    <tbody>
     <tr>
-     <td rowspan="3">
-      <code>
-       Interactive Brokers
-      </code>
-     </td>
-     <td>
-      <code>
-       --ib-user-name
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --ib-account
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --ib-password
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td rowspan="3">
-      <code>
-       Oanda
-      </code>
-     </td>
-     <td>
-      <code>
-       --oanda-account-id
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --oanda-access-token
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --oanda-environment
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td rowspan="2">
-      <code>
-       Bitfinex
-      </code>
-     </td>
-     <td>
-      <code>
-       --bitfinex-api-key
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --bitfinex-api-secret
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td rowspan="2">
-      <code>
-       Coinbase Advanced Trade
-      </code>
-     </td>
-     <td>
-      <code>
-       --coinbase-api-key
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --coinbase-api-secret
-      </code>
-     </td>
-    </tr>
-    <tr>
      <td rowspan="4">
       <code>
        Binance
@@ -8190,6 +8140,96 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
      </td>
     </tr>
     <tr>
+     <td rowspan="2">
+      <code>
+       Bitfinex
+      </code>
+     </td>
+     <td>
+      <code>
+       --bitfinex-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bitfinex-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Bybit
+      </code>
+     </td>
+     <td>
+      <code>
+       --bybit-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-vip-level
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2&lt;">
+      <code>
+       Coinbase Advanced Trade
+      </code>
+     </td>
+     <td>
+      <code>
+       --coinbase-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --coinbase-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Interactive Brokers
+      </code>
+     </td>
+     <td>
+      <code>
+       --ib-user-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-account
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-password
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="3">
       <code>
        Kraken
@@ -8216,28 +8256,28 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
      </td>
     </tr>
     <tr>
-     <td rowspan="4">
+     <td rowspan="3">
       <code>
-       Bybit
+       Oanda
       </code>
      </td>
      <td>
       <code>
-       --bybit-api-key
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --bybit-api-secret
+       --oanda-account-id
       </code>
      </td>
     </tr>
     <tr>
      <td>
       <code>
-       --bybit-vip-level
+       --oanda-access-token
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-environment
       </code>
      </td>
     </tr>
@@ -8346,12 +8386,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical AlphaVantage --data-type Trade --resolution &lt;resolution&gt; --security-type EQUITY --tickers &lt;tickers&gt; --start-date &lt;YYYYMMDD&gt; --end-date &lt;YYYYMMDD&gt; --alpha-vantage-api-key &lt;apiKey&gt; --alpha-vantage-price-plan &lt;pricePlan&gt;
+    lean data download --data-provider-historical AlphaVantage --data-type Trade --resolution &lt;resolution&gt; --security-type EQUITY --ticker &lt;tickers&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --alpha-vantage-api-key &lt;apiKey&gt; --alpha-vantage-price-plan &lt;pricePlan&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical AlphaVantage --data-type Trade --resolution Daily --security-type Equity --tickers NVDA,AMD --start-date 20240303 --end-date 20240404 --alpha-vantage-api-key apiKey --alpha-vantage-price-plan Free</pre>
+   <pre>$ lean data download --data-provider-historical AlphaVantage --data-type Trade --resolution Daily --security-type Equity --ticker NVDA,AMD --start 20240303 --end 20240404 --alpha-vantage-api-key apiKey --alpha-vantage-price-plan Free</pre>
   </div>
   <p>
    The
@@ -8819,12 +8859,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical FactSet --data-type &lt;data-type&gt; --resolution Daily --security-type IndexOption --tickers &lt;tickers&gt; --start-date &lt;YYYYMMDD&gt; --end-date &lt;YYYYMMDD&gt; --factset-auth-config-file=&lt;auth.json&gt;
+    lean data download --data-provider-historical FactSet --data-type &lt;data-type&gt; --resolution Daily --security-type IndexOption --ticker &lt;tickers&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --factset-auth-config-file=&lt;auth.json&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical FactSet --data-type Trade --resolution Daily --security-type IndexOption --tickers SPX --start-date 20240422 --end-date 20240423 --factset-auth-config-file=auth.json</pre>
+   <pre>$ lean data download --data-provider-historical FactSet --data-type Trade --resolution Daily --security-type IndexOption --ticker SPX --start 20240422 --end 20240423 --factset-auth-config-file=auth.json</pre>
   </div>
   <p>
    If you provide your credentials, your
@@ -9116,12 +9156,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical IEX --data-type Trade --resolution &lt;resolution&gt; --security-type EQUITY --tickers &lt;tickers&gt; --start-date &lt;YYYYMMDD&gt; --end-date &lt;YYYYMMDD&gt; --iex-cloud-api-key &lt;apiKey&gt; --iex-price-plan &lt;pricePlan&gt;
+    lean data download --data-provider-historical IEX --data-type Trade --resolution &lt;resolution&gt; --security-type EQUITY --ticker &lt;tickers&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --iex-cloud-api-key &lt;apiKey&gt; --iex-price-plan &lt;pricePlan&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical IEX --data-type Trade --resolution Daily --security-type Equity --tickers GOOGL --start-date 20100101 --end-date 20240404 --iex-cloud-api-key apiKey --iex-price-plan Grow</pre>
+   <pre>$ lean data download --data-provider-historical IEX --data-type Trade --resolution Daily --security-type Equity --ticker GOOGL --start 20100101 --end 20240404 --iex-cloud-api-key apiKey --iex-price-plan Grow</pre>
   </div>
   <p>
    The
@@ -9527,12 +9567,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical IQFeed --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --tickers &lt;tickers&gt; --start-date &lt;YYYYMMDD&gt; --end-date &lt;YYYYMMDD&gt; --iqfeed-username &lt;username&gt; --iqfeed-password &lt;password&gt;
+    lean data download --data-provider-historical IQFeed --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --ticker &lt;tickers&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --iqfeed-username &lt;username&gt; --iqfeed-password &lt;password&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical IQFeed --data-type Trade --resolution Daily --security-type Equity --tickers NVDA,AMD --start-date 20240303 --end-date 20240404 --iqfeed-username username --iqfeed-password password</pre>
+   <pre>$ lean data download --data-provider-historical IQFeed --data-type Trade --resolution Daily --security-type Equity --ticker NVDA,AMD --start 20240303 --end 20240404 --iqfeed-username username --iqfeed-password password</pre>
   </div>
   <p>
    If you provide your credentials, your
@@ -9866,12 +9906,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical Polygon --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --tickers &lt;tickers&gt; --start-date &lt;YYYYMMDD&gt; --end-date &lt;YYYYMMDD&gt; --polygon-api-key &lt;apiKey&gt;
+    lean data download --data-provider-historical Polygon --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --ticker &lt;tickers&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --polygon-api-key &lt;apiKey&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical Polygon --data-type Trade --resolution Hour --security-type Equity --tickers SOFI,TSLA,NIO --start-date 20200101 --end-date 20240404 --polygon-api-key apiKey</pre>
+   <pre>$ lean data download --data-provider-historical Polygon --data-type Trade --resolution Hour --security-type Equity --ticker SOFI,TSLA,NIO --start 20200101 --end 20240404 --polygon-api-key apiKey</pre>
   </div>
   <p>
    If you provide your credentials, your
@@ -10177,12 +10217,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical "Terminal Link" --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --tickers &lt;tickers&gt; --start-date &lt;YYYYMMDD&gt; --end-date &lt;YYYYMMDD&gt; --terminal-link-connection-type DAPI --terminal-link-environment &lt;environment&gt; --terminal-link-server-host &lt;serverHost&gt; --terminal-link-server-port &lt;serverPort&gt; --terminal-link-emsx-broker &lt;emsxBroker&gt; --terminal-link-openfigi-api-key &lt;openfigiApiKey&gt;
+    lean data download --data-provider-historical "Terminal Link" --data-type &lt;data-type&gt; --resolution &lt;resolution&gt; --security-type &lt;security-type&gt; --ticker &lt;tickers&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --terminal-link-connection-type DAPI --terminal-link-environment &lt;environment&gt; --terminal-link-server-host &lt;serverHost&gt; --terminal-link-server-port &lt;serverPort&gt; --terminal-link-emsx-broker &lt;emsxBroker&gt; --terminal-link-openfigi-api-key &lt;openfigiApiKey&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical "Terminal Link" --data-type Trade --resolution Daily --security-type Equity --tickers NVDA,AMD --start-date 20240303 --end-date 20240404 --terminal-link-connection-type DAPI --terminal-link-environment Production --terminal-link-server-host serverHost --terminal-link-server-port serverPort --terminal-link-emsx-broker emsxBroker --terminal-link-openfigi-api-key openfigiApiKey</pre>
+   <pre>$ lean data download --data-provider-historical "Terminal Link" --data-type Trade --resolution Daily --security-type Equity --ticker NVDA,AMD --start 20240303 --end 20240404 --terminal-link-connection-type DAPI --terminal-link-environment Production --terminal-link-server-host serverHost --terminal-link-server-port serverPort --terminal-link-emsx-broker emsxBroker --terminal-link-openfigi-api-key openfigiApiKey</pre>
   </div>
   <p>
    If you provide your credentials, your
@@ -11636,7 +11676,7 @@ Successfully updated name, files, and libraries for 'My Project'</pre>
      </td>
      <td>
       This property is a key/value object containing the project's parameters. Both the keys and the values must be strings. To load parameter values into your algorithm, see
-      <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/parameters#03-Get-Parameters">
+      <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/optimization/parameters#03-Get-Parameters">
        Get Parameters
       </a>
       . The parameter values are sent to your algorithm when you deploy the algorithm, so it's not possible to change the parameter values while the algorithm runs.
@@ -13988,7 +14028,7 @@ $ git add &lt;projectDirectory2&gt;/</pre>
    <a href="https://www.quantconnect.com/docs/v2/research-environment">
     QuantConnect's research environment
    </a>
-   but run locally with your own data.
+   but run on your local machine.
   </p>
  </body>
 </html>
@@ -14093,6 +14133,22 @@ Pulling quantconnect/research:11154...
     </div>
    </li>
   </ol>
+  <h4>
+   Data Providers
+  </h4>
+  <p>
+   When you run the Research Environment, the default data provider is your local machine. 
+    To use data from QuantConnect Cloud, a brokerage, or a third-party data provider, include the
+   <code>
+    --data-provider-historical
+   </code>
+   option.
+    To view what brokerages and third-party data providers are available, see
+   <a href="#12.52">
+    the reference page for this command
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -15110,8 +15166,8 @@ for key in backtest.statistics.keys:
 <html>
  <body>
   <p>
-   Backtesting is a way to test your algorithm on historic data.
-    The CLI makes backtesting easier by providing simple commands to backtest your algorithms locally with your own data, or in the cloud with QuantConnect's data.
+   Backtesting is a way to test your algorithm on historical data.
+    The CLI makes backtesting easier by providing simple commands to backtest your algorithms locally or in QuantConnect Cloud.
   </p>
  </body>
 </html>
@@ -15276,6 +15332,26 @@ Pulling quantconnect/lean:11154...
    </li>
   </ol>
   <h4>
+   Data Providers
+  </h4>
+  <p>
+   When you run a local backtest, the default data provider is your local machine. 
+    To use data from
+   <a href="#7.1">
+    QuantConnect Cloud
+   </a>
+   , a brokerage, or a third-party data provider, include the
+   <code>
+    --data-provider-historical
+   </code>
+   option.
+    To view what brokerages and third-party data providers are available, see
+   <a href="#12.1">
+    the reference page for this command
+   </a>
+   .
+  </p>
+  <h4>
    US Equity Options Algorithms
   </h4>
   <p>
@@ -15408,7 +15484,12 @@ $ lean data download --dataset "US Equity Options" --data-type "Quote" --option-
 <html>
  <body>
   <p>
-   Follow these steps to run a cloud backtest:
+   When you run a backtest in QuantConnect Cloud, it uses the data from the
+   <a href="https://www.quantconnect.com/datasets/">
+    Dataset Market
+   </a>
+   .
+    Follow these steps to run a cloud backtest:
   </p>
   <ol>
    <li>
@@ -15992,8 +16073,20 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
      </a>
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
-     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/binance">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/alpaca">
       <div class="content clickable" onclick="window.location.href = '#8.1.2'">
+       <div class="docs-internal-link">
+        <h4>
+         Alpaca
+        </h4>
+       </div>
+       US Equities, Equity Options &amp; Crypto
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/binance">
+      <div class="content clickable" onclick="window.location.href = '#8.1.3'">
        <div class="docs-internal-link">
         <h4>
          Binance
@@ -16005,7 +16098,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/bitfinex">
-      <div class="content clickable" onclick="window.location.href = '#8.1.3'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.4'">
        <div class="docs-internal-link">
         <h4>
          Bitfinex
@@ -16017,7 +16110,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/bybit">
-      <div class="content clickable" onclick="window.location.href = '#8.1.4'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.5'">
        <div class="docs-internal-link">
         <h4>
          Bybit
@@ -16029,7 +16122,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/coinbase">
-      <div class="content clickable" onclick="window.location.href = '#8.1.5'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.6'">
        <div class="docs-internal-link">
         <h4>
          Coinbase
@@ -16041,7 +16134,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers">
-      <div class="content clickable" onclick="window.location.href = '#8.1.6'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.7'">
        <div class="docs-internal-link">
         <h4>
          Interactive Brokers
@@ -16053,7 +16146,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/kraken">
-      <div class="content clickable" onclick="window.location.href = '#8.1.7'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.8'">
        <div class="docs-internal-link">
         <h4>
          Kraken
@@ -16065,7 +16158,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/oanda">
-      <div class="content clickable" onclick="window.location.href = '#8.1.8'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.9'">
        <div class="docs-internal-link">
         <h4>
          Oanda
@@ -16077,7 +16170,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/samco">
-      <div class="content clickable" onclick="window.location.href = '#8.1.9'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.10'">
        <div class="docs-internal-link">
         <h4>
          Samco
@@ -16089,7 +16182,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/td-ameritrade">
-      <div class="content clickable" onclick="window.location.href = '#8.1.10'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.11'">
        <div class="docs-internal-link">
         <h4>
          TD Ameritrade
@@ -16100,8 +16193,20 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
      </a>
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/tradestation">
+      <div class="content clickable" onclick="window.location.href = '#8.1.12'">
+       <div class="docs-internal-link">
+        <h4>
+         TradeStation
+        </h4>
+       </div>
+       US Equities, Equity Options &amp; Futures
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/tradier">
-      <div class="content clickable" onclick="window.location.href = '#8.1.11'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.13'">
        <div class="docs-internal-link">
         <h4>
          Tradier
@@ -16113,7 +16218,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/trading-technologies">
-      <div class="content clickable" onclick="window.location.href = '#8.1.12'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.14'">
        <div class="docs-internal-link">
         <h4>
          Trading Technologies
@@ -16125,7 +16230,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/zerodha">
-      <div class="content clickable" onclick="window.location.href = '#8.1.13'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.15'">
        <div class="docs-internal-link">
         <h4>
          Zerodha
@@ -16137,7 +16242,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/bloomberg-emsx">
-      <div class="content clickable" onclick="window.location.href = '#8.1.14'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.16'">
        <div class="docs-internal-link">
         <h4>
          Bloomberg EMSX
@@ -16152,6 +16257,10 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     <h3>
      See Also
     </h3>
+    <a href="#4.8">
+     IEX Cloud
+    </a>
+    <br/>
     <a href="#4.9">
      IQ Feed
     </a>
@@ -16235,6 +16344,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
     </div>
    </li>
@@ -16267,13 +16378,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -16410,6 +16524,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
    </div>
    <li>
@@ -16483,12 +16599,13 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -16500,11 +16617,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -16577,9 +16689,531 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 </html>
 
 <p style="page-break-after: always;">&nbsp;</p>
-<p class='page-breadcrumb'>Live Trading > Brokerages > Binance</p>
+<p class='page-breadcrumb'>Live Trading > Brokerages > Alpaca</p>
 <div class='page-heading'>
     <section id="8.1.2">
+        <h1>Brokerages</h1>
+        <h2>Alpaca</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The Lean CLI supports live trading on your local machine or in QuantConnect Cloud, which makes the transfer from backtesting to live trading as seamless as possible. This page contains instructions on how to start live trading with the Alpaca brokerage. If the
+   <a href="#3.3">
+    Lean Configuration file
+   </a>
+   in your
+   <a href="#3.2">
+    organization workspace
+   </a>
+   contains values for some of the command options, the CLI skips some of the prompts.
+  </p>
+  <p>
+   To view the implementation of the Alpaca brokerage integration, see the
+   <a href="https://github.com/QuantConnect/Lean.Brokerages.Alpaca" rel="nofollow" target="_blank">
+    Lean.Brokerages.Alpaca repository
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Deploy Local Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start local live trading with the Alpaca brokerage:
+  </p>
+  <ol>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean live "&lt;projectName&gt;"
+    </code>
+    to start a live deployment wizard for the project in
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    and then enter  the brokerage number,
+    <span class="key-combinations">
+     16
+    </span>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) OANDA
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) Bybit
+15) TradeStation
+16) Alpaca
+Enter an option: 16</pre>
+    </div>
+   </li>
+   <li>
+    In the browser window that automatically opens, click
+    <span class="button-name">
+     Allow
+    </span>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=alpaca
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Enter the environment to use.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Live or Paper environment? (live, paper): live</pre>
+    </div>
+   </li>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data provider:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TDAmeritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.8">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.9">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.10">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   In the browser window that automatically opens, click
+   <span class="button-name">
+    Allow
+   </span>
+   .
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=alpaca
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+   </div>
+  </li>
+  <li>
+   Enter
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/alpaca#02-Account-Types">
+    your API key and API secret
+   </a>
+   .
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Alpaca Api Key: PKEFXE36AR5OEG5K5KNQ
+Alpaca Api Secret: ****************************************
+</pre>
+   </div>
+  </li>
+  <li>
+   View the result in the
+   <span class="public-directory-name">
+    &lt;projectName&gt; / live / &lt;timestamp&gt;
+   </span>
+   directory.
+        Results are stored in real-time in JSON format.
+        You can save results to a different directory by providing the
+   <code>
+    --output &lt;path&gt;
+   </code>
+   option in step 2.
+  </li>
+  <p>
+   If you already have a live environment configured in your
+   <a href="#3.3">
+    Lean configuration file
+   </a>
+   , you can skip the interactive wizard by providing the
+   <code>
+    --environment &lt;value&gt;
+   </code>
+   option in step 2.
+    The value of this option must be the name of an environment which has
+   <code>
+    live-mode
+   </code>
+   set to
+   <code>
+    true
+   </code>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Deploy Cloud Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start live trading a project in the cloud with the Alpaca brokerage and the Alpaca data provider:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud live "&lt;projectName&gt;" --push --open
+    </code>
+    to push
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    . to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+[1/1] Pushing 'My Project'
+Successfully updated cloud file 'My Project/main.py'
+Started compiling project 'My Project'
+Successfully compiled project 'My Project'</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     16
+    </span>
+    to select the Alpaca brokerage.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) Bybit
+15) TradeStation
+16) Alpaca
+Enter an option: 16</pre>
+   </div>
+   <li>
+    In the browser window that automatically opens, click
+    <span class="button-name">
+     Allow
+    </span>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=alpaca
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Enter the environment to use.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Live or Paper environment? (live, paper): live</pre>
+    </div>
+   </li>
+   <li>
+    Configure your notification settings.
+   </li>
+   <p>
+    You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+     Live Trading Notification Quotas
+    </a>
+    .
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to send notifications on order events? [y/N]: y
+Do you want to send notifications on insights? [y/N]: y
+Email notifications: None
+Webhook notifications: None
+SMS notifications: None
+Select a notification method:
+1) Email
+2) Webhook
+3) SMS
+4) Telegram
+Enter an option: 1
+Email address: john.doe@example.com
+Subject: Algorithm notification
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Do you want to add another notification method? [y/N]: n</pre>
+   </div>
+   <li>
+    Enable or disable automatic algorithm restarting.
+   </li>
+   <p>
+    This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
+   </div>
+   <li>
+    Set your initial cash balance.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n</pre>
+   </div>
+   <li>
+    Set your initial portfolio holdings.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to set the initial portfolio holdings? [y/N]: y
+Do you want to use the last portfolio holdings? [] [y/N]: n
+Setting custom initial portfolio holdings...
+Symbol: GOOG
+Symbol ID: GOOCV VP83T1ZUHROL
+Quantity: 10
+Average Price: 50
+Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Do you want to add more holdings? [y/N]: n</pre>
+   </div>
+   <li>
+    Select the live node that you want to use.
+   </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     19
+    </span>
+    to select the Alpaca data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Select a live data feed:
+1) QuantConnect
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 19</pre>
+   </div>
+   <li>
+    In the browser window that automatically opens, click
+    <span class="button-name">
+     Allow
+    </span>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=alpaca
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Enter
+    <a href="https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/alpaca#02-Account-Types">
+     your API key and API secret
+    </a>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Alpaca Api Key: PKEFXE36AR5OEG5K5KNQ
+Alpaca Api Secret: ****************************************
+</pre>
+    </div>
+   </li>
+   <li>
+    Verify the configured settings and confirm them to start the live deployment in the cloud.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Brokerage: Alpaca
+Project id: 1234567
+Environment: Live
+Server name: L-MICRO node 89c90172
+Server type: L-MICRO
+Live Data providers: Alpaca
+LEAN version: 11157
+Order event notifications: Yes
+Insight notifications: Yes
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Automatic algorithm restarting: Yes
+Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
+   </div>
+   <li>
+    Inspect the result in the browser, which opens automatically after the deployment starts.
+   </li>
+  </ol>
+  <p>
+   Follow these steps to see the live status of a project:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud status "&lt;projectName&gt;"
+    </code>
+    to show the status of the cloud project named "&lt;projectName&gt;".
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud status "My Project"
+Project id: 1234567
+Project name: My Project
+Project url: https://www.quantconnect.com/project/1234567
+Live status: Running
+Live id: L-1234567a8901d234e5e678ddd9b0123c
+Live url: https://www.quantconnect.com/project/1234567/live
+Brokerage: Alpaca
+Launched: 2021-06-09 15:10:12 UTC</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
+<h3>Data Provider</h3>
+<html>
+ <body>
+  <p>
+   For more information about the Alpaca data provider, see
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/alpaca">
+    Alpaca
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Live Trading > Brokerages > Binance</p>
+<div class='page-heading'>
+    <section id="8.1.3">
         <h1>Brokerages</h1>
         <h2>Binance</h2>
     </section>
@@ -16653,6 +17287,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
     </div>
    </li>
@@ -16699,13 +17335,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -16770,7 +17409,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Binance brokerage :
+   Follow these steps to start live trading a project in the cloud with the Binance brokerage and the Binance data provider:
   </p>
   <ol>
    <li>
@@ -16828,6 +17467,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 7</pre>
    </div>
    <li>
@@ -16942,9 +17583,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     7
+    </span>
+    to select the Binance data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -16958,15 +17604,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 7</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -16975,11 +17621,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -16998,7 +17639,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Binance
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -17056,7 +17697,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Bitfinex</p>
 <div class='page-heading'>
-    <section id="8.1.3">
+    <section id="8.1.4">
         <h1>Brokerages</h1>
         <h2>Bitfinex</h2>
     </section>
@@ -17130,6 +17771,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 5</pre>
     </div>
    </li>
@@ -17162,13 +17805,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -17233,7 +17879,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Bitfinex brokerage :
+   Follow these steps to start live trading a project in the cloud with the Bitfinex brokerage and the Bitfinex data provider:
   </p>
   <ol>
    <li>
@@ -17291,6 +17937,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 5</pre>
    </div>
    <li>
@@ -17391,9 +18039,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     5
+    </span>
+    to select the Bitfinex data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -17407,15 +18060,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 5</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -17424,11 +18077,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -17447,7 +18095,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Bitfinex
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -17505,7 +18153,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Bybit</p>
 <div class='page-heading'>
-    <section id="8.1.4">
+    <section id="8.1.5">
         <h1>Brokerages</h1>
         <h2>Bybit</h2>
     </section>
@@ -17579,6 +18227,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 14</pre>
     </div>
    </li>
@@ -17641,13 +18291,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -17712,7 +18365,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Bybit brokerage :
+   Follow these steps to start live trading a project in the cloud with the Bybit brokerage and the Bybit data provider:
   </p>
   <ol>
    <li>
@@ -17770,6 +18423,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 14</pre>
    </div>
    <li>
@@ -17869,9 +18524,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     17
+    </span>
+    to select the Bybit data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -17885,15 +18545,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 17</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -17902,11 +18562,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -17925,7 +18580,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Bybit
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -17982,7 +18637,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Coinbase</p>
 <div class='page-heading'>
-    <section id="8.1.5">
+    <section id="8.1.6">
         <h1>Brokerages</h1>
         <h2>Coinbase</h2>
     </section>
@@ -18056,6 +18711,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 6</pre>
     </div>
    </li>
@@ -18088,13 +18745,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -18159,7 +18819,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Coinbase Advanced Trade brokerage :
+   Follow these steps to start live trading a project in the cloud with the Coinbase Advanced Trade brokerage and the Coinbase Advanced Trade data provider:
   </p>
   <ol>
    <li>
@@ -18217,6 +18877,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 6</pre>
    </div>
    <li>
@@ -18317,9 +18979,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     6
+    </span>
+    to select the Coinbase Advanced Trade data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -18333,15 +19000,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 6</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -18350,11 +19017,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -18373,7 +19035,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Coinbase Advanced Trade
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -18431,7 +19093,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Interactive Brokers</p>
 <div class='page-heading'>
-    <section id="8.1.6">
+    <section id="8.1.7">
         <h1>Brokerages</h1>
         <h2>Interactive Brokers</h2>
     </section>
@@ -18508,6 +19170,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 2</pre>
     </div>
    </li>
@@ -18557,13 +19221,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -18636,7 +19303,7 @@ Enable delayed market data? [yes/no]: </pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Interactive Brokers brokerage :
+   Follow these steps to start live trading a project in the cloud with the Interactive Brokers brokerage and the Interactive Brokers data provider:
   </p>
   <ol>
    <li>
@@ -18694,6 +19361,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 2</pre>
    </div>
    <li>
@@ -18820,9 +19489,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     2
+    </span>
+    to select the Interactive Brokers data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -18836,15 +19510,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 2</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -18853,11 +19527,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -18876,7 +19545,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Interactive Brokers
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -19110,7 +19779,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Kraken</p>
 <div class='page-heading'>
-    <section id="8.1.7">
+    <section id="8.1.8">
         <h1>Brokerages</h1>
         <h2>Kraken</h2>
     </section>
@@ -19184,6 +19853,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 12</pre>
     </div>
    </li>
@@ -19228,13 +19899,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -19299,7 +19973,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Kraken brokerage :
+   Follow these steps to start live trading a project in the cloud with the Kraken brokerage and the Kraken data provider:
   </p>
   <ol>
    <li>
@@ -19357,6 +20031,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 12</pre>
    </div>
    <li>
@@ -19471,9 +20147,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     12
+    </span>
+    to select the Kraken data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -19487,15 +20168,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 12</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -19504,11 +20185,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -19527,7 +20203,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Kraken
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -19585,7 +20261,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Oanda</p>
 <div class='page-heading'>
-    <section id="8.1.8">
+    <section id="8.1.9">
         <h1>Brokerages</h1>
         <h2>Oanda</h2>
     </section>
@@ -19659,6 +20335,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 4</pre>
     </div>
    </li>
@@ -19717,13 +20395,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -19788,7 +20469,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Oanda brokerage :
+   Follow these steps to start live trading a project in the cloud with the Oanda brokerage and the Oanda data provider:
   </p>
   <ol>
    <li>
@@ -19846,6 +20527,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 4</pre>
    </div>
    <li>
@@ -19974,9 +20657,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     4
+    </span>
+    to select the Oanda data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -19990,15 +20678,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 4</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -20007,11 +20695,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -20030,7 +20713,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Oanda
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -20088,7 +20771,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Samco</p>
 <div class='page-heading'>
-    <section id="8.1.9">
+    <section id="8.1.10">
         <h1>Brokerages</h1>
         <h2>Samco</h2>
     </section>
@@ -20162,6 +20845,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 9</pre>
     </div>
    </li>
@@ -20299,13 +20984,16 @@ Select a live data feed:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma: 8</pre>
    </div>
    <li>
@@ -20407,6 +21095,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 9</pre>
    </div>
    <li>
@@ -20626,19 +21316,36 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
 To enter multiple options, separate them with comma: 9</pre>
    </div>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    <a href="#4.8">
+     IEX Cloud
+    </a>
    </li>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
+   <li>
+    <a href="#4.10">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Samco
 Project id: 1234567
 Environment: Live
@@ -20656,11 +21363,10 @@ Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
 Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -20716,7 +21422,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > TD Ameritrade</p>
 <div class='page-heading'>
-    <section id="8.1.10">
+    <section id="8.1.11">
         <h1>Brokerages</h1>
         <h2>TD Ameritrade</h2>
     </section>
@@ -20790,6 +21496,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 13</pre>
     </div>
    </li>
@@ -20825,13 +21533,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -20896,7 +21607,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the TD Ameritrade brokerage :
+   Follow these steps to start live trading a project in the cloud with the TD Ameritrade brokerage and the TD Ameritrade data provider:
   </p>
   <ol>
    <li>
@@ -20954,6 +21665,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 13</pre>
    </div>
    <li>
@@ -21055,9 +21768,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     1
+    </span>
+    to select the TD Ameritrade data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -21071,15 +21789,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 1</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -21088,11 +21806,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -21111,7 +21824,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: TD Ameritrade
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -21167,9 +21880,503 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 </html>
 
 <p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Live Trading > Brokerages > TradeStation</p>
+<div class='page-heading'>
+    <section id="8.1.12">
+        <h1>Brokerages</h1>
+        <h2>TradeStation</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The Lean CLI supports live trading on your local machine or in QuantConnect Cloud, which makes the transfer from backtesting to live trading as seamless as possible. This page contains instructions on how to start live trading with the TradeStation brokerage. If the
+   <a href="#3.3">
+    Lean Configuration file
+   </a>
+   in your
+   <a href="#3.2">
+    organization workspace
+   </a>
+   contains values for some of the command options, the CLI skips some of the prompts.
+  </p>
+  <p>
+   To view the implementation of the TradeStation brokerage integration, see the
+   <a href="https://github.com/QuantConnect/Lean.Brokerages.TradeStation" rel="nofollow" target="_blank">
+    Lean.Brokerages.TradeStation repository
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Deploy Local Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start local live trading with the TradeStation brokerage:
+  </p>
+  <ol>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean live "&lt;projectName&gt;"
+    </code>
+    to start a live deployment wizard for the project in
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    and then enter  the brokerage number,
+    <span class="key-combinations">
+     15
+    </span>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) OANDA
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) Bybit
+15) TradeStation
+16) Alpaca
+Enter an option: 15</pre>
+    </div>
+   </li>
+   <li>
+    LEAN CLI opens your browser for authorization. Login to TradeStation.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tradestation
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Enter the environment to use.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Live or Paper environment? (live, paper): live</pre>
+    </div>
+   </li>
+   <li>
+    Enter the account type to use.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Trade Station account type (Cash, Margin, Futures, DVP): Margin</pre>
+    </div>
+   </li>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data provider:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TDAmeritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.8">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.9">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.10">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   LEAN CLI opens your browser for authorization. Login to TradeStation if necessary.
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tradestation
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+   </div>
+  </li>
+  <li>
+   View the result in the
+   <span class="public-directory-name">
+    &lt;projectName&gt; / live / &lt;timestamp&gt;
+   </span>
+   directory.
+        Results are stored in real-time in JSON format.
+        You can save results to a different directory by providing the
+   <code>
+    --output &lt;path&gt;
+   </code>
+   option in step 2.
+  </li>
+  <p>
+   If you already have a live environment configured in your
+   <a href="#3.3">
+    Lean configuration file
+   </a>
+   , you can skip the interactive wizard by providing the
+   <code>
+    --environment &lt;value&gt;
+   </code>
+   option in step 2.
+    The value of this option must be the name of an environment which has
+   <code>
+    live-mode
+   </code>
+   set to
+   <code>
+    true
+   </code>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Deploy Cloud Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start live trading a project in the cloud with the TradeStation brokerage and the TradeStation data provider:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud live "&lt;projectName&gt;" --push --open
+    </code>
+    to push
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    . to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+[1/1] Pushing 'My Project'
+Successfully updated cloud file 'My Project/main.py'
+Started compiling project 'My Project'
+Successfully compiled project 'My Project'</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     15
+    </span>
+    to select the TradeStation brokerage.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) Bybit
+15) TradeStation
+16) Alpaca
+Enter an option: 15</pre>
+   </div>
+   <li>
+    In the browser window that automatically opens, log in to your TradeStation account.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tradestation
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Enter the environment to use.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Live or Paper environment? (live, paper): live</pre>
+    </div>
+   </li>
+   <li>
+    Enter the account type to use.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Trade Station account type (Cash, Margin, Futures, DVP): Margin</pre>
+    </div>
+   </li>
+   <li>
+    Configure your notification settings.
+   </li>
+   <p>
+    You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+     Live Trading Notification Quotas
+    </a>
+    .
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to send notifications on order events? [y/N]: y
+Do you want to send notifications on insights? [y/N]: y
+Email notifications: None
+Webhook notifications: None
+SMS notifications: None
+Select a notification method:
+1) Email
+2) Webhook
+3) SMS
+4) Telegram
+Enter an option: 1
+Email address: john.doe@example.com
+Subject: Algorithm notification
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Do you want to add another notification method? [y/N]: n</pre>
+   </div>
+   <li>
+    Enable or disable automatic algorithm restarting.
+   </li>
+   <p>
+    This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
+   </div>
+   <li>
+    Set your initial cash balance.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n</pre>
+   </div>
+   <li>
+    Set your initial portfolio holdings.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to set the initial portfolio holdings? [y/N]: y
+Do you want to use the last portfolio holdings? [] [y/N]: n
+Setting custom initial portfolio holdings...
+Symbol: GOOG
+Symbol ID: GOOCV VP83T1ZUHROL
+Quantity: 10
+Average Price: 50
+Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Do you want to add more holdings? [y/N]: n</pre>
+   </div>
+   <li>
+    Select the live node that you want to use.
+   </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     18
+    </span>
+    to select the TradeStation data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Select a live data feed:
+1) QuantConnect
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 18</pre>
+   </div>
+   <li>
+    In the browser window that automatically opens, log in to your TradeStation account.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tradestation
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Verify the configured settings and confirm them to start the live deployment in the cloud.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Brokerage: TradeStation
+Project id: 1234567
+Environment: Live
+Server name: L-MICRO node 89c90172
+Server type: L-MICRO
+Live Data providers: TradeStation
+LEAN version: 11157
+Order event notifications: Yes
+Insight notifications: Yes
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Automatic algorithm restarting: Yes
+Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
+   </div>
+   <li>
+    Inspect the result in the browser, which opens automatically after the deployment starts.
+   </li>
+  </ol>
+  <p>
+   Follow these steps to see the live status of a project:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud status "&lt;projectName&gt;"
+    </code>
+    to show the status of the cloud project named "&lt;projectName&gt;".
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud status "My Project"
+Project id: 1234567
+Project name: My Project
+Project url: https://www.quantconnect.com/project/1234567
+Live status: Running
+Live id: L-1234567a8901d234e5e678ddd9b0123c
+Live url: https://www.quantconnect.com/project/1234567/live
+Brokerage: TradeStation
+Launched: 2021-06-09 15:10:12 UTC</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
+<h3>Data Provider</h3>
+<html>
+ <body>
+  <p>
+   For more information about the TradeStation data provider, see
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/tradestation">
+    TradeStation
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Tradier</p>
 <div class='page-heading'>
-    <section id="8.1.11">
+    <section id="8.1.13">
         <h1>Brokerages</h1>
         <h2>Tradier</h2>
     </section>
@@ -21243,6 +22450,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 3</pre>
     </div>
    </li>
@@ -21282,13 +22491,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -21353,7 +22565,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Tradier brokerage :
+   Follow these steps to start live trading a project in the cloud with the Tradier brokerage and the Tradier data provider:
   </p>
   <ol>
    <li>
@@ -21411,6 +22623,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 3</pre>
    </div>
    <li>
@@ -21518,9 +22732,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     3
+    </span>
+    to select the Tradier data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -21534,15 +22753,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 3</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -21551,11 +22770,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -21574,7 +22788,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Tradier
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -21645,7 +22859,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Trading Technologies</p>
 <div class='page-heading'>
-    <section id="8.1.12">
+    <section id="8.1.14">
         <h1>Brokerages</h1>
         <h2>Trading Technologies</h2>
     </section>
@@ -21719,6 +22933,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 11</pre>
     </div>
    </li>
@@ -21796,13 +23012,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -21867,7 +23086,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Trading Technologies brokerage :
+   Follow these steps to start live trading a project in the cloud with the Trading Technologies brokerage and the Trading Technologies data provider:
   </p>
   <ol>
    <li>
@@ -21925,6 +23144,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 11</pre>
    </div>
    <li>
@@ -22029,9 +23250,14 @@ Select a node:
 Enter an option: 1</pre>
    </div>
    <li>
-    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    Enter
+    <span class="key-combinations">
+     11
+    </span>
+    to select the Trading Technologies data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
 1) QuantConnect
 2) Interactive Brokers
@@ -22045,15 +23271,15 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
-To enter multiple options, separate them with comma:</pre>
-    </div>
-   </li>
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 11</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -22062,11 +23288,6 @@ To enter multiple options, separate them with comma:</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -22085,7 +23306,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Trading Technologies
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -22142,7 +23363,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Zerodha</p>
 <div class='page-heading'>
-    <section id="8.1.13">
+    <section id="8.1.15">
         <h1>Brokerages</h1>
         <h2>Zerodha</h2>
     </section>
@@ -22216,6 +23437,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 8</pre>
     </div>
    </li>
@@ -22350,13 +23573,16 @@ Select a live data feed:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma: 7</pre>
    </div>
    <li>
@@ -22465,6 +23691,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 8</pre>
    </div>
    <li>
@@ -22688,19 +23916,36 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
 To enter multiple options, separate them with comma: 8</pre>
    </div>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    <a href="#4.8">
+     IEX Cloud
+    </a>
    </li>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
+   <li>
+    <a href="#4.10">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Zerodha
 Project id: 1234567
 Environment: Live
@@ -22718,11 +23963,10 @@ Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
 Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -22778,7 +24022,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Bloomberg EMSX</p>
 <div class='page-heading'>
-    <section id="8.1.14">
+    <section id="8.1.16">
         <h1>Brokerages</h1>
         <h2>Bloomberg EMSX</h2>
     </section>
@@ -22992,7 +24236,7 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
      GoodTilDate
     </code>
     <code class="python">
-     GOOD_TIL_DATE
+     good_til_date
     </code>
    </li>
   </ul>
@@ -23274,6 +24518,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 10</pre>
     </div>
    </li>
@@ -23327,13 +24573,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma: 9</pre>
     </div>
    </li>
@@ -23385,7 +24634,7 @@ To enter multiple options, separate them with comma: 9</pre>
    before you can deploy cloud algorithms with Terminal Link.
   </p>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Terminal Link brokerage :
+   Follow these steps to start live trading a project in the cloud with the Terminal Link brokerage and the Terminal Link data provider:
   </p>
   <ol>
    <li>
@@ -23443,6 +24692,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 10</pre>
    </div>
    <li>
@@ -23581,32 +24832,34 @@ Enter an option: 1</pre>
    <li>
     Enter
     <span class="key-combinations">
-     9
+     10
     </span>
-    to select the Terminal Link live data provider.
-    <div class="cli section-example-container">
-     <pre>$ lean live "My Project"
+    to select the Terminal Link data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
 Select a live data feed:
-1) Interactive Brokers
-2) Tradier
-3) Oanda
-4) Bitfinex
-5) Coinbase Advanced Trade
-6) Binance
-7) Zerodha
-8) Samco
-9) Terminal Link
-10) Trading Technologies
-11) Kraken
-12) TD Ameritrade
-13) IQFeed
+1) QuantConnect
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TDAmeritrade
 14) Polygon
 15) IEX
 16) CoinApi
 17) Bybit
-To enter multiple options, separate them with comma: 9</pre>
-    </div>
-   </li>
+18) TradeStation
+19) Alpaca
+To enter multiple options, separate them with comma: 10</pre>
+   </div>
    <p>
     If you select one of the following data providers, see the respective page for more instructions:
    </p>
@@ -23615,11 +24868,6 @@ To enter multiple options, separate them with comma: 9</pre>
    <li>
     <a href="#4.8">
      IEX Cloud
-    </a>
-   </li>
-   <li>
-    <a href="#4.9">
-     IQFeed
     </a>
    </li>
    <li>
@@ -23638,7 +24886,7 @@ Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Live Data providers: QuantConnectBrokerage
+Live Data providers: Terminal Link
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -23851,6 +25099,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
     </div>
    </li>
@@ -23870,13 +25120,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -23994,6 +25247,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
    </div>
    <li>
@@ -24072,12 +25327,13 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
 To enter multiple options, separate them with comma: 15</pre>
    </div>
    <li>
@@ -24254,6 +25510,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
     </div>
    </li>
@@ -24273,13 +25531,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -24486,6 +25747,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
     </div>
    </li>
@@ -24505,13 +25768,16 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TD Ameritrade
+12) TDAmeritrade
 13) IQFeed
 14) Polygon
 15) IEX
 16) CoinApi
-17) Custom data only
-18) Bybit
+17) ThetaData
+18) Custom data only
+19) Bybit
+20) TradeStation
+21) Alpaca
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -24630,6 +25896,8 @@ Select a brokerage:
 12) Kraken
 13) TD Ameritrade
 14) Bybit
+15) TradeStation
+16) Alpaca
 Enter an option: 1</pre>
    </div>
    <li>
@@ -24708,12 +25976,13 @@ Select a live data feed:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
-14) IQFeed
-15) Polygon
-16) IEX
-17) CoinApi
-18) Bybit
+13) TDAmeritrade
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+18) TradeStation
+19) Alpaca
 To enter multiple options, separate them with comma: 14</pre>
    </div>
    <li>
@@ -26095,7 +27364,7 @@ parameters--&amp;gt</pre>
    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/glossary#11-drawdown">
     drawdown
    </a>
-   . If your run optimizations in the cloud, you don't need your own powerful machine or data library.
+   . If your run optimizations in the cloud, you don't need your own powerful machine.
   </p>
  </body>
 </html>
@@ -26272,6 +27541,19 @@ Successfully optimized 'My Project' and stored the output in 'My Project/custom-
    </a>
    to learn how to build and use custom Docker images.
   </p>
+  <p>
+   When you run a local optimization, the default data provider is your local machine. 
+    To use data from QuantConnect Cloud, a brokerage, or a third-party data provider, include the
+   <code>
+    --data-provider-historical
+   </code>
+   option.
+    To view what brokerages and third-party data providers are available, see
+   <a href="#12/lean-optimize">
+    the reference page for this command
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -26279,7 +27561,12 @@ Successfully optimized 'My Project' and stored the output in 'My Project/custom-
 <html>
  <body>
   <p>
-   Follow these steps to run a cloud optimization:
+   When you run an optimization in QuantConnect Cloud, it uses the data from the
+   <a href="https://www.quantconnect.com/datasets/">
+    Dataset Market
+   </a>
+   .
+    Follow these steps to run a cloud optimization:
   </p>
   <ol>
    <li>
@@ -26625,6 +27912,604 @@ if __name__ == '__main__':
         
     </section>
 </div>
+<html>
+ <body>
+  <div class="sub-heading-landing">
+   <div class="internal-content">
+    <p>
+     The Lean CLI is a cross-platform CLI which makes it easier to develop with the LEAN engine locally and in the cloud. You can use any of the following commands. Click one to learn more.
+    </p>
+   </div>
+   <div class="docs-landing-links">
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-backtest">
+      <div class="content clickable" onclick="window.location.href = '#12.1'">
+       <div class="docs-internal-link">
+        <h4>
+         lean backtest
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-build">
+      <div class="content clickable" onclick="window.location.href = '#12.2'">
+       <div class="docs-internal-link">
+        <h4>
+         lean build
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-backtest">
+      <div class="content clickable" onclick="window.location.href = '#12.3'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud backtest
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-live">
+      <div class="content clickable" onclick="window.location.href = '#12.4'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud live
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-live-deploy">
+      <div class="content clickable" onclick="window.location.href = '#12.5'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud live deploy
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-live-liquidate">
+      <div class="content clickable" onclick="window.location.href = '#12.6'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud live liquidate
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-live-stop">
+      <div class="content clickable" onclick="window.location.href = '#12.7'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud live stop
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-object-store-delete">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud object-store delete
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-object-store-get">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud object-store get
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-object-store-list">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud object-store list
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-object-store-ls">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud object-store ls
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-object-store-properties">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud object-store properties
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-object-store-set">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud object-store set
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-optimize">
+      <div class="content clickable" onclick="window.location.href = '#12.14'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud optimize
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-pull">
+      <div class="content clickable" onclick="window.location.href = '#12.15'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud pull
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-push">
+      <div class="content clickable" onclick="window.location.href = '#12.16'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud push
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-cloud-status">
+      <div class="content clickable" onclick="window.location.href = '#12.17'">
+       <div class="docs-internal-link">
+        <h4>
+         lean cloud status
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-config-get">
+      <div class="content clickable" onclick="window.location.href = '#12.18'">
+       <div class="docs-internal-link">
+        <h4>
+         lean config get
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-config-list">
+      <div class="content clickable" onclick="window.location.href = '#12.19'">
+       <div class="docs-internal-link">
+        <h4>
+         lean config list
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-config-set">
+      <div class="content clickable" onclick="window.location.href = '#12.20'">
+       <div class="docs-internal-link">
+        <h4>
+         lean config set
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-config-unset">
+      <div class="content clickable" onclick="window.location.href = '#12.21'">
+       <div class="docs-internal-link">
+        <h4>
+         lean config unset
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-create-project">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean create-project
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-data-download">
+      <div class="content clickable" onclick="window.location.href = '#12.23'">
+       <div class="docs-internal-link">
+        <h4>
+         lean data download
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-data-generate">
+      <div class="content clickable" onclick="window.location.href = '#12.24'">
+       <div class="docs-internal-link">
+        <h4>
+         lean data generate
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-decrypt">
+      <div class="content clickable" onclick="window.location.href = '#12.25'">
+       <div class="docs-internal-link">
+        <h4>
+         lean decrypt
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-delete-project">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean delete-project
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-encrypt">
+      <div class="content clickable" onclick="window.location.href = '#12.27'">
+       <div class="docs-internal-link">
+        <h4>
+         lean encrypt
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-init">
+      <div class="content clickable" onclick="window.location.href = '#12.28'">
+       <div class="docs-internal-link">
+        <h4>
+         lean init
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-library-add">
+      <div class="content clickable" onclick="window.location.href = '#12.29'">
+       <div class="docs-internal-link">
+        <h4>
+         lean library add
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-library-remove">
+      <div class="content clickable" onclick="window.location.href = '#12.30'">
+       <div class="docs-internal-link">
+        <h4>
+         lean library remove
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live">
+      <div class="content clickable" onclick="window.location.href = '#12.31'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live-add-security">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live add-security
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live-cancel-order">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live cancel-order
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live-deploy">
+      <div class="content clickable" onclick="window.location.href = '#12.34'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live deploy
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live-liquidate">
+      <div class="content clickable" onclick="window.location.href = '#12.35'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live liquidate
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live-stop">
+      <div class="content clickable" onclick="window.location.href = '#12.36'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live stop
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live-submit-order">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live submit-order
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-live-update-order">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean live update-order
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-login">
+      <div class="content clickable" onclick="window.location.href = '#12.39'">
+       <div class="docs-internal-link">
+        <h4>
+         lean login
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-logout">
+      <div class="content clickable" onclick="window.location.href = '#12.40'">
+       <div class="docs-internal-link">
+        <h4>
+         lean logout
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-logs">
+      <div class="content clickable" onclick="window.location.href = '#12.41'">
+       <div class="docs-internal-link">
+        <h4>
+         lean logs
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-object-store-delete">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean object-store delete
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-object-store-get">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean object-store get
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-object-store-list">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean object-store list
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-object-store-ls">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean object-store ls
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-object-store-properties">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean object-store properties
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-object-store-set">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean object-store set
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-optimize">
+      <div class="content clickable" onclick="window.location.href = '#12.48'">
+       <div class="docs-internal-link">
+        <h4>
+         lean optimize
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-project-create">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean project-create
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-project-delete">
+      <div class="content clickable" onclick="window.location.href = '#12'">
+       <div class="docs-internal-link">
+        <h4>
+         lean project-delete
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-report">
+      <div class="content clickable" onclick="window.location.href = '#12.51'">
+       <div class="docs-internal-link">
+        <h4>
+         lean report
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-research">
+      <div class="content clickable" onclick="window.location.href = '#12.52'">
+       <div class="docs-internal-link">
+        <h4>
+         lean research
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/api-reference/lean-whoami">
+      <div class="content clickable" onclick="window.location.href = '#12.53'">
+       <div class="docs-internal-link">
+        <h4>
+         lean whoami
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>API Reference > lean backtest</p>
 <div class='page-heading'>
     <section id="12.1">
@@ -26720,6 +28605,16 @@ if __name__ == '__main__':
    </thead>
    <tbody>
     <tr>
+     <td>
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      N/A
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <code>
        AlphaVantage
@@ -26739,6 +28634,97 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Binance
+      </code>
+     </td>
+     <td>
+      <code>
+       --binance-exchange-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-key
+      </code>
+      or
+      <code>
+       --binanceus-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-secret
+      </code>
+      or
+      <code>
+       --binanceus-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Bybit
+      </code>
+     </td>
+     <td>
+      <code>
+       --bybit-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-vip-level
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       CoinApi
+      </code>
+     </td>
+     <td>
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       FactSet
+      </code>
+     </td>
+     <td>
+      <code>
+       --factset-auth-config-file
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <code>
        IEX
@@ -26754,6 +28740,32 @@ if __name__ == '__main__':
      <td>
       <code>
        --iex-price-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       "Interactive Brokers"
+      </code>
+     </td>
+     <td>
+      <code>
+       --ib-user-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-account
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-password
       </code>
      </td>
     </tr>
@@ -26798,6 +28810,32 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Kraken
+      </code>
+     </td>
+     <td>
+      <code>
+       --kraken-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --kraken-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --kraken-verification-tier
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td>
       <code>
        Local
@@ -26805,6 +28843,32 @@ if __name__ == '__main__':
      </td>
      <td>
       N/A
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Oanda
+      </code>
+     </td>
+     <td>
+      <code>
+       --oanda-account-id
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-access-token
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-environment
+      </code>
      </td>
     </tr>
     <tr>
@@ -26897,6 +28961,16 @@ if __name__ == '__main__':
       <code>
        --thetadata-subscription-plan
       </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      N/A
      </td>
     </tr>
    </tbody>
@@ -27107,7 +29181,11 @@ if __name__ == '__main__':
        <br/>
        Terminal Link
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -27151,7 +29229,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value
+      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
      </td>
     </tr>
     <tr>
@@ -27467,7 +29545,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -27477,7 +29555,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -27606,6 +29684,42 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Bybit VIP Level
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-account-type &lt;enum: Cash
+       <br/>
+       Margin
+       <br/>
+       Futures
+       <br/>
+       DVP&gt;
+      </code>
+     </td>
+     <td>
+      Specifies the type of account on TradeStation
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
      </td>
     </tr>
     <tr>
@@ -28324,6 +30438,32 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      <code>
+       --alpaca-environment
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --alpaca-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --alpaca-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="4">
       <code>
        Binance
@@ -28627,6 +30767,25 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="2">
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      <code>
+       --trade-station-environment
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --trade-station-account-type
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="3">
       <code>
        Tradier
@@ -28773,6 +30932,20 @@ if __name__ == '__main__':
    </thead>
    <tbody>
     <tr>
+     <td>
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Alpaca
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
      <td rowspan="3">
       <code>
        Binance
@@ -28832,6 +31005,25 @@ if __name__ == '__main__':
        --brokerage Bybit
       </code>
       .
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       CoinApi
+      </code>
+     </td>
+     <td>
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --coinapi-product
+      </code>
      </td>
     </tr>
     <tr>
@@ -28984,6 +31176,20 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td>
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage TradeStation
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <code>
        Tradier
@@ -29075,108 +31281,6 @@ if __name__ == '__main__':
       <code>
        --zerodha-history-subscription
       </code>
-     </td>
-    </tr>
-   </tbody>
-  </table>
-  <p>
-   The
-   <code>
-    --data-provider-historical
-   </code>
-   option specifies the source of historical data. 
-    The following table shows the available historical data providers and their required options in non-interactive mode.
-    If the live data provider you set also provides historical data and you omit the
-   <code>
-    --data-provider-historical
-   </code>
-   option, it defaults to the same value as the
-   <code>
-    --data-provider-live
-   </code>
-   option. 
-    If the live data provider you set doesn't provide historical data and you omit the
-   <code>
-    --data-provider-historical
-   </code>
-   option, it defaults to the
-   <code>
-    Local
-   </code>
-   data provider.
-  </p>
-  <table class="qc-table table">
-   <thead>
-    <tr>
-     <th style="width: 25%">
-      <code>
-       --data-provider-historical
-      </code>
-     </th>
-     <th>
-      Required Options
-     </th>
-    </tr>
-   </thead>
-   <tbody>
-    <tr>
-     <td rowspan="2">
-      <code>
-       AlphaVantage
-      </code>
-     </td>
-     <td>
-      <code>
-       --alpha-vantage-api-key
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --alpha-vantage-price-plan
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td rowspan="2">
-      <code>
-       IEX
-      </code>
-     </td>
-     <td>
-      <code>
-       --iex-cloud-api-key
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --iex-price-plan
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       Polygon
-      </code>
-     </td>
-     <td>
-      <code>
-       --polygon-api-key
-      </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       QuantConnect
-      </code>
-     </td>
-     <td>
-      N/A
      </td>
     </tr>
    </tbody>
@@ -29300,7 +31404,11 @@ if __name__ == '__main__':
        <br/>
        TDAmeritrade
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -29342,7 +31450,11 @@ if __name__ == '__main__':
        <br/>
        CoinApi
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -29386,7 +31498,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value
+      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
      </td>
     </tr>
     <tr>
@@ -29702,7 +31814,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The EMSX broker to use
+      The EMSX broker to use (Optional)
      </td>
     </tr>
     <tr>
@@ -29712,7 +31824,17 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The EMSX account to use
+      The EMSX account to use (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --terminal-link-emsx-team &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The EMSX team to receive order events from (Optional)
      </td>
     </tr>
     <tr>
@@ -29910,6 +32032,42 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --trade-station-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-account-type &lt;enum: Cash
+       <br/>
+       Margin
+       <br/>
+       Futures
+       <br/>
+       DVP&gt;
+      </code>
+     </td>
+     <td>
+      Specifies the type of account on TradeStation
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --polygon-api-key &lt;string&gt;
       </code>
      </td>
@@ -29963,6 +32121,26 @@ if __name__ == '__main__':
      </td>
      <td>
       CoinApi pricing plan (https://www.coinapi.io/market-data-api/pricing)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-api-key &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Alpaca Api Key
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-api-secret &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Alpaca Api Secret
      </td>
     </tr>
     <tr>
@@ -32496,7 +34674,7 @@ if __name__ == '__main__':
 <html>
  <body>
   <p>
-   Purchase and download data directly from QuantConnect or download from Support Data Providers
+   Purchase and download data directly from QuantConnect or download from supported data providers.
   </p>
   <div class="cli section-example-container">
    <pre>$ lean data download [OPTIONS]</pre>
@@ -32508,8 +34686,17 @@ if __name__ == '__main__':
 <html>
  <body>
   <p>
-   Lets you purchase and download data from QuantConnect Datasets.
-    This command performs the following actions:
+   Lets you purchase and download historical data from the
+   <a href="https://www.quantconnect.com/datasets/">
+    QuantConnect Dataset Market
+   </a>
+   , a brokerage, or a third-party data provider.
+  </p>
+  <h4>
+   Download from QuantConnect
+  </h4>
+  <p>
+   When you download data from the QuantConnect Dataset Market, this command performs the following actions:
   </p>
   <ol>
    <li>
@@ -32530,12 +34717,7 @@ if __name__ == '__main__':
    </li>
   </ol>
   <p>
-   The available datasets and their pricing can be found in
-   <a href="https://www.quantconnect.com/datasets">
-    QuantConnect Datasets
-   </a>
-   .
-    Data is priced on a per-file per-download basis, meaning you pay a certain number of
+   Data from the Dataset Market is priced on a per-file per-download basis, meaning you pay a certain number of
    <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/credit">
     QuantConnect Credits
    </a>
@@ -32582,6 +34764,21 @@ if __name__ == '__main__':
     --yes
    </code>
    flag.
+  </p>
+  <h4>
+   Download from Brokerages and Third-Party Providers
+  </h4>
+  <p>
+   To download data from a brokerage or third-party data provider, run this command and follow the prompts to select the data you need. 
+    To view all the available data providers, see the
+   <code>
+    --data-provider-historical
+   </code>
+   <a href="#12/lean-data-download#04-Options">
+    option
+   </a>
+   description.
+    After you know what options you need to provide to download data from your specific brokerage or third-party data provider, you can run the command in a script to automate the process of downloading new data.
   </p>
  </body>
 </html>
@@ -32643,7 +34840,11 @@ if __name__ == '__main__':
        <br/>
        Terminal Link
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -32687,7 +34888,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value
+      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
      </td>
     </tr>
     <tr>
@@ -33003,7 +35204,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -33013,7 +35214,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -33147,6 +35348,42 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --trade-station-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-account-type &lt;enum: Cash
+       <br/>
+       Margin
+       <br/>
+       Futures
+       <br/>
+       DVP&gt;
+      </code>
+     </td>
+     <td>
+      Specifies the type of account on TradeStation
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --dataset &lt;string&gt;
       </code>
      </td>
@@ -33245,7 +35482,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Specify the market name for tickers (e.g., 'USA', 'NYMEX', 'Binance')
+      Specify the market name for tickers (e.g., 'USA', 'NYMEX', 'Binance') (if not provided or empty the default market for the requested security type will be used)
      </td>
     </tr>
     <tr>
@@ -35300,6 +37537,32 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      <code>
+       --alpaca-environment
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --alpaca-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --alpaca-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="4">
       <code>
        Binance
@@ -35395,7 +37658,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="2">
       <code>
-       Coinbase
+       "Coinbase Advanced Trade"
       </code>
      </td>
      <td>
@@ -35621,6 +37884,25 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="2">
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      <code>
+       --trade-station-environment
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --trade-station-account-type
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="3">
       <code>
        Tradier
@@ -35809,6 +38091,20 @@ if __name__ == '__main__':
    </thead>
    <tbody>
     <tr>
+     <td>
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Alpaca
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
      <td rowspan="3">
       <code>
        Binance
@@ -35857,36 +38153,62 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
-     <td>
+     <td rowspan="3">
       <code>
        Bybit
       </code>
      </td>
      <td>
-      All options required by
       <code>
-       --brokerage Bybit
+       --bybit-api-key
       </code>
-      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-vip-level
+      </code>
      </td>
     </tr>
     <tr>
      <td rowspan="2">
       <code>
-       "Coinbase Advanced Trade"
+       CoinApi
       </code>
      </td>
      <td>
       <code>
-       --coinbase-api-key
+       --coinapi-api-key
       </code>
      </td>
     </tr>
     <tr>
      <td>
       <code>
-       --coinbase-api-secret
+       --coinapi-product
       </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       "Coinbase Advanced Trade"
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage "Coinbase Advanced Trade"
+      </code>
+      .
      </td>
     </tr>
     <tr>
@@ -35994,22 +38316,17 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
-     <td rowspan="2">
+     <td>
       <code>
        Oanda
       </code>
      </td>
      <td>
+      All options required by
       <code>
-       --oanda-account-id
+       --brokerage Oanda
       </code>
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code>
-       --oanda-access-token
-      </code>
+      .
      </td>
     </tr>
     <tr>
@@ -36076,6 +38393,20 @@ if __name__ == '__main__':
       <code>
        --thetadata-subscription-plan
       </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage TradeStation
+      </code>
+      .
      </td>
     </tr>
     <tr>
@@ -36212,6 +38543,20 @@ if __name__ == '__main__':
    </thead>
    <tbody>
     <tr>
+     <td>
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Alpaca
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <code>
        AlphaVantage
@@ -36227,6 +38572,125 @@ if __name__ == '__main__':
      <td>
       <code>
        --alpha-vantage-price-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Binance
+      </code>
+     </td>
+     <td>
+      <code>
+       --binance-exchange-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-key
+      </code>
+      or
+      <code>
+       --binanceus-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-secret
+      </code>
+      or
+      <code>
+       --binanceus-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Bitfinex
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Bitfinex
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Bybit
+      </code>
+     </td>
+     <td>
+      <code>
+       --bybit-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-vip-level
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       CoinApi
+      </code>
+     </td>
+     <td>
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       "Coinbase Advanced Trade"
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage "Coinbase Advanced Trade"
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       FactSet
+      </code>
+     </td>
+     <td>
+      <code>
+       --factset-auth-config-file
       </code>
      </td>
     </tr>
@@ -36247,6 +38711,20 @@ if __name__ == '__main__':
       <code>
        --iex-price-plan
       </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       "Interactive Brokers"
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage "Interactive Brokers"
+      </code>
+      .
      </td>
     </tr>
     <tr>
@@ -36292,11 +38770,39 @@ if __name__ == '__main__':
     <tr>
      <td>
       <code>
+       Kraken
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Kraken
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
        Local
       </code>
      </td>
      <td>
       N/A
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Oanda
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Oanda
+      </code>
+      .
      </td>
     </tr>
     <tr>
@@ -36330,6 +38836,41 @@ if __name__ == '__main__':
      <td>
       <code>
        --thetadata-subscription-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage TradeStation
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       Zerodha
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Zerodha
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --zerodha-history-subscription
       </code>
      </td>
     </tr>
@@ -36501,7 +39042,11 @@ if __name__ == '__main__':
        <br/>
        TDAmeritrade
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -36547,7 +39092,11 @@ if __name__ == '__main__':
        <br/>
        Custom data only
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -36587,7 +39136,11 @@ if __name__ == '__main__':
        <br/>
        Local
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -36631,7 +39184,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value
+      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
      </td>
     </tr>
     <tr>
@@ -36957,7 +39510,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The EMSX broker to use
+      The EMSX broker to use (Optional)
      </td>
     </tr>
     <tr>
@@ -36967,7 +39520,17 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The EMSX account to use
+      The EMSX account to use (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --terminal-link-emsx-team &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The EMSX team to receive order events from (Optional)
      </td>
     </tr>
     <tr>
@@ -37127,7 +39690,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Whether FIX messages should be logged
+      Whether FIX messages should be logged (Optional)
      </td>
     </tr>
     <tr>
@@ -37255,11 +39818,47 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --trade-station-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-account-type &lt;enum: Cash
+       <br/>
+       Margin
+       <br/>
+       Futures
+       <br/>
+       DVP&gt;
+      </code>
+     </td>
+     <td>
+      Specifies the type of account on TradeStation
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --ib-enable-delayed-streaming-data &lt;boolean&gt;
       </code>
      </td>
      <td>
-      Whether delayed data may be used when your algorithm subscribes to a security you don't have a market data subscription for
+      Whether delayed data may be used when your algorithm subscribes to a security you don't have a market data subscription for (Optional)
      </td>
     </tr>
     <tr>
@@ -37377,7 +39976,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -37387,7 +39986,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -37404,6 +40003,26 @@ if __name__ == '__main__':
      </td>
      <td>
       Your ThetaData subscription price plan
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-api-key &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Alpaca Api Key
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-api-secret &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Alpaca Api Secret
      </td>
     </tr>
     <tr>
@@ -39205,6 +41824,16 @@ if __name__ == '__main__':
    </thead>
    <tbody>
     <tr>
+     <td>
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      N/A
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <code>
        AlphaVantage
@@ -39224,6 +41853,97 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Binance
+      </code>
+     </td>
+     <td>
+      <code>
+       --binance-exchange-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-key
+      </code>
+      or
+      <code>
+       --binanceus-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-secret
+      </code>
+      or
+      <code>
+       --binanceus-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Bybit
+      </code>
+     </td>
+     <td>
+      <code>
+       --bybit-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-vip-level
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       CoinApi
+      </code>
+     </td>
+     <td>
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       FactSet
+      </code>
+     </td>
+     <td>
+      <code>
+       --factset-auth-config-file
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <code>
        IEX
@@ -39239,6 +41959,32 @@ if __name__ == '__main__':
      <td>
       <code>
        --iex-price-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       "Interactive Brokers"
+      </code>
+     </td>
+     <td>
+      <code>
+       --ib-user-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-account
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-password
       </code>
      </td>
     </tr>
@@ -39283,6 +42029,32 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Kraken
+      </code>
+     </td>
+     <td>
+      <code>
+       --kraken-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --kraken-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --kraken-verification-tier
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td>
       <code>
        Local
@@ -39290,6 +42062,32 @@ if __name__ == '__main__':
      </td>
      <td>
       N/A
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Oanda
+      </code>
+     </td>
+     <td>
+      <code>
+       --oanda-account-id
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-access-token
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-environment
+      </code>
      </td>
     </tr>
     <tr>
@@ -39382,6 +42180,16 @@ if __name__ == '__main__':
       <code>
        --thetadata-subscription-plan
       </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      N/A
      </td>
     </tr>
    </tbody>
@@ -39643,7 +42451,11 @@ if __name__ == '__main__':
        <br/>
        Terminal Link
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -39777,7 +42589,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value
+      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
      </td>
     </tr>
     <tr>
@@ -40093,7 +42905,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -40103,7 +42915,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -40232,6 +43044,42 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Bybit VIP Level
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-account-type &lt;enum: Cash
+       <br/>
+       Margin
+       <br/>
+       Futures
+       <br/>
+       DVP&gt;
+      </code>
+     </td>
+     <td>
+      Specifies the type of account on TradeStation
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
      </td>
     </tr>
     <tr>
@@ -40882,12 +43730,13 @@ if __name__ == '__main__':
    <code>
     --data-provider-historical
    </code>
-   option to change where data is retrieved.
+   option to change where the data is retrieved.
     This option updates the
    <a href="#3.3">
     Lean configuration file
    </a>
-   , so you don't need to use this option multiple times for the same data provider if you are not switching between them. If you use the The following table shows the available data providers and their required options in non-interactive mode:
+   , so you don't need to use this option multiple times for the same data provider if you are not switching between them. 
+    The following table shows the available data providers and their required options in non-interactive mode:
   </p>
   <table class="qc-table table">
    <thead>
@@ -40903,6 +43752,16 @@ if __name__ == '__main__':
     </tr>
    </thead>
    <tbody>
+    <tr>
+     <td>
+      <code>
+       Alpaca
+      </code>
+     </td>
+     <td>
+      N/A
+     </td>
+    </tr>
     <tr>
      <td rowspan="2">
       <code>
@@ -40923,6 +43782,97 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Binance
+      </code>
+     </td>
+     <td>
+      <code>
+       --binance-exchange-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-key
+      </code>
+      or
+      <code>
+       --binanceus-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-secret
+      </code>
+      or
+      <code>
+       --binanceus-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Bybit
+      </code>
+     </td>
+     <td>
+      <code>
+       --bybit-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --bybit-vip-level
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       CoinApi
+      </code>
+     </td>
+     <td>
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       FactSet
+      </code>
+     </td>
+     <td>
+      <code>
+       --factset-auth-config-file
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <code>
        IEX
@@ -40938,6 +43888,32 @@ if __name__ == '__main__':
      <td>
       <code>
        --iex-price-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       "Interactive Brokers"
+      </code>
+     </td>
+     <td>
+      <code>
+       --ib-user-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-account
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --ib-password
       </code>
      </td>
     </tr>
@@ -40982,6 +43958,32 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
+     <td rowspan="3">
+      <code>
+       Kraken
+      </code>
+     </td>
+     <td>
+      <code>
+       --kraken-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --kraken-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --kraken-verification-tier
+      </code>
+     </td>
+    </tr>
+    <tr>
      <td>
       <code>
        Local
@@ -40989,6 +43991,32 @@ if __name__ == '__main__':
      </td>
      <td>
       N/A
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Oanda
+      </code>
+     </td>
+     <td>
+      <code>
+       --oanda-account-id
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-access-token
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-environment
+      </code>
      </td>
     </tr>
     <tr>
@@ -41081,6 +44109,16 @@ if __name__ == '__main__':
       <code>
        --thetadata-subscription-plan
       </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       TradeStation
+      </code>
+     </td>
+     <td>
+      N/A
      </td>
     </tr>
    </tbody>
@@ -41251,7 +44289,11 @@ if __name__ == '__main__':
        <br/>
        Terminal Link
        <br/>
-       Bybit&gt;
+       Bybit
+       <br/>
+       TradeStation
+       <br/>
+       Alpaca&gt;
       </code>
      </td>
      <td>
@@ -41295,7 +44337,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value
+      Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
      </td>
     </tr>
     <tr>
@@ -41611,7 +44653,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -41621,7 +44663,7 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-      The ThetaData host address
+      The ThetaData host address (Optional)
      </td>
     </tr>
     <tr>
@@ -41750,6 +44792,42 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Bybit VIP Level
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --trade-station-account-type &lt;enum: Cash
+       <br/>
+       Margin
+       <br/>
+       Futures
+       <br/>
+       DVP&gt;
+      </code>
+     </td>
+     <td>
+      Specifies the type of account on TradeStation
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --alpaca-environment &lt;enum: live|paper&gt;
+      </code>
+     </td>
+     <td>
+      Whether Live or Paper environment should be used
      </td>
     </tr>
     <tr>
