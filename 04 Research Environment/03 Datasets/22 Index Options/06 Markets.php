@@ -1,3 +1,1 @@
-<?php
-echo file_get_contents(DOCS_RESOURCES."/datasets/supported-securities/indexoption/market.html");
-?>
+<p>The only market available for Index Options is <code>Market.USA</code>.</p>
