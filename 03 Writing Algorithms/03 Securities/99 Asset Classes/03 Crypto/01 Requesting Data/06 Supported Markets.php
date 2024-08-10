@@ -1,4 +1,4 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/market-crypto.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/supported-securities/crypto/market.html"); ?>
 
 <p>To set the market for a security, pass a <code>market</code> argument to the <code class="csharp">AddCrypto</code><code class="python">add_crypto</code> method.</p>
 

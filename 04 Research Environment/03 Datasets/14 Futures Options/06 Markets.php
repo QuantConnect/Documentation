@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/market-futureoption.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/supported-securities/futureoption/market.html"); ?>
