@@ -19,11 +19,11 @@ class HuggingFaceModelHashAlgorithm(QCAlgorithm):
 
     def initialize(self):
         cache_info = scan_cache_dir()
-        cached_models_log = ''
+        cached_models_log = []
         for entry in cache_info.repos:
             revisions = [revision.commit_hash for revision in entry.revisions]
-            cached_models_log += f'\nRepo: {entry.repo_id}. Revisions {str(revisions)}'
-        self.quit(cached_models_log)</pre> 
+            cached_models_log.append(f'Repo: {entry.repo_id}. Revisions {str(revisions)}')
+        self.quit('\n'.join(sorted(cached_models_log)))</pre> 
 </div>
 
 
