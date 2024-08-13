@@ -1,3 +1,5 @@
+from requests import get
+
 REPOSITORIES = '''
 Repo: ProsusAI/finbert. Revisions ['4556d13015211d73dccd3fdd39d39232506f3e43']
 Repo: Salesforce/moirai-1.0-R-base. Revisions ['2149dc1c56c5d2684390ee4ec6fde58be4196c0c']
@@ -34,19 +36,27 @@ EXAMPLES = {
 
 def __to_row(line):
     url = line.split('Revisions')[0][6:-2]
-    example = next(filter(lambda x: x[0] in url, EXAMPLES.items()), '')
-    if example:
-        example = f'<a href="{example[1]}"><i class="fa fa-external-link"></i></a>'
-    return f'<tr><td>{url}</td><td style="text-align:center;"><a rel="nofollow" target="_blank" href="https://huggingface.co/{url}"><i class="fa fa-external-link"></i></a></td><td style="text-align:center;">{example}</td></tr>'
+    category = __get_category(url)
+    example = __get_example(url)
+    return f'<tr><td><a rel="nofollow" target="_blank" href="https://huggingface.co/{url}">{url}</a></td><td style="text-align:center;">{category}</td><td style="text-align:center;">{example}</td></tr>'
+
+def __get_category(url):
+    content = get(f"https://huggingface.co/{url}").text
+    start = content.find('<span>', content.find('models?pipeline_tag=')) + 6
+    return content[start:content.find('</span>', start)]
+
+def __get_example(url):
+    example = next(filter(lambda x: x[0] in url, EXAMPLES.items()), None)
+    return f'<a href="{example[1]}"><i class="fa fa-external-link"></i></a>' if example else ''
 
 if __name__ == '__main__':
     rows = sorted([__to_row(x) for x in REPOSITORIES.split('\n') if x], key=lambda x: x.lower())
     with open("Resources/machine-learning/hugging-face-table.html", mode='w') as f:
         rows = '\n        '.join(rows)
         f.write(f'''<table class="qc-table table">
-    <thead><tr><th>Name</th><th style="text-align:center;">Documentation</th><th style="text-align:center;">Example</th></tr></thead>
+    <thead><tr><th>Name</th><th style="text-align:center;">Category</th><th style="text-align:center;">Example</th></tr></thead>
     <tbody>
         {rows}
     </tbody>
-</table>       
+</table>
 ''')
