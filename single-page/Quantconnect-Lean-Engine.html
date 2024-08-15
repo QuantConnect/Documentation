@@ -4223,6 +4223,13 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
    </code>
    interface.
   </p>
+  <p>
+   If your indicator requires a moving average, see the
+   <a href="#2.3">
+    Extra Steps for Moving Averages Types
+   </a>
+   as you complete the following tutorial.
+  </p>
   <h4>
    Data Point Indicators
   </h4>
@@ -4656,6 +4663,120 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
  </body>
 </html>
 
+<h3>Extra Steps for Moving Average Types</h3>
+<html>
+ <body>
+  <p>
+   A moving average is a special type of indicator that smoothes out the fluctuations in a security's price or market data. 
+    It calculates the average value of a security's price over a specified period with a special smoothing function, helping traders to identify trends and reduce noise.
+    Moving averages can also be used in conjunction with other technical indicators to make more informed trading decisions and identify potential support or resistance levels in the market. 
+    LEAN has extra abstraction interface for indicators to implement a specific type of moving average.
+    The
+   <code>
+    MovingAverageType
+   </code>
+   enumeration currently has the following members:
+  </p>
+  <div data-tree="QuantConnect.Indicators.MovingAverageType">
+  </div>
+  <p>
+   If you are contributing an indicator that requires a new moving average type, follow these additional steps:
+  </p>
+  <ol>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Indicators / MovingAverageType.cs
+    </span>
+    file, define a new
+    <code>
+     MovingAverageType
+    </code>
+    enumeration member.
+   </li>
+   <div class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Indicators
+{
+    public enum MovingAverageType
+    {
+        ...
+        /// &lt;summary&gt;
+        /// Description of the custom moving average indicator (&lt;the next enum number&gt;)
+        /// &lt;/summary&gt;
+        &lt;CustomMovingAverageEnum&gt;,
+    }
+}</pre>
+   </div>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Indicators / MovingAverageTypeExtensions.cs
+    </span>
+    file, add a new case of your custom moving average indicator in each
+    <code>
+     AsIndicator
+    </code>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Indicators
+{
+    public static class MovingAverageTypeExtensions
+    {
+        public static IndicatorBase&lt;IndicatorDataPoint&gt; AsIndicator(this MovingAverageType movingAverageType, int period)
+        {
+            switch (movingAverageType)
+            {
+                ...
+                case MovingAverageType.CustomMovingAverageEnum:
+                    return new CustomMovingAverage(period);
+            }
+        }
+
+        public static IndicatorBase&lt;IndicatorDataPoint&gt; AsIndicator(this MovingAverageType movingAverageType, string name, int period)
+        {
+            switch (movingAverageType)
+            {
+                ...
+                case MovingAverageType.CustomMovingAverageEnum:
+                    return new CustomMovingAverage(name, period);
+            }
+        }
+    }
+}</pre>
+   </div>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Tests/ Indicators / MovingAverageTypeExtensionsTests.cs
+    </span>
+    file, add a new test case of your custom moving average indicator that asserts the indicator is  correctly instantiated through the abstraction methods.
+   </li>
+   <div class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Tests.Indicators
+{
+    [TestFixture]
+    public class MovingAverageTypeExtensionsTests
+    {
+        [Test]
+        public void CreatesCorrectAveragingIndicator()
+        {
+            ...
+            var indicator = MovingAverageType.CustomMovingAverageEnum.AsIndicator(1);
+            Assert.IsInstanceOf(typeof(CustomMovingAverage), indicator);
+            ...
+            string name = string.Empty;
+            ...
+            indicator = MovingAverageType.CustomMovingAverageEnum.AsIndicator(name, 1);
+            Assert.IsInstanceOf(typeof(CustomMovingAverage), indicator);
+        }
+    }
+}</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Data Format</p>
 <div class='page-heading'>
@@ -4679,7 +4800,7 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
   </p>
   <p>
    The prices are expressed in the asset
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency">
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency">
     quote currency
    </a>
    . For example, the value 0.06920 for ETHBTC is the amount of BTC, the quote currency, you need to buy 1 ETH.
@@ -4725,7 +4846,7 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
  <body>
   <p>
    The prices are expressed in the asset
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency">
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency">
     quote currency
    </a>
    . For example, the value 0.06920 for ETHBTC is the amount of BTC, the quote currency, you need to buy 1 ETH.
@@ -4837,7 +4958,7 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
      </td>
      <td>
       Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the trade is far from other market prices and may be reversed.
-      <a href="">
+      <a href="#3.2">
        TradeBar data
       </a>
       excludes suspicious ticks.
@@ -5169,7 +5290,7 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
      </td>
      <td>
       Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the quote is far from other market prices and may be reversed. Each quote tick contains either bid or ask data only.
-      <a href="">
+      <a href="#3.2">
        QuoteBar data
       </a>
       data excludes suspicious ticks.
