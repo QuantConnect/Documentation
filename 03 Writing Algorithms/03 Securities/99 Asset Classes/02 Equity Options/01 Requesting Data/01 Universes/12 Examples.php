@@ -1,4 +1,4 @@
-<h5>Example 1: Selecting for 0DTE Contracts</h5>
+<h4>Example 1: Selecting for 0DTE Contracts</h4>
 
 <p><span class='new-term'>0DTE Options</span> are Option contracts that expire on the same day you trade them. To create a universe with 0DTE Options, call the <code class="csharp">SetFilter</code><code class="python">set_filter</code> method with the following argument:</p>
 
