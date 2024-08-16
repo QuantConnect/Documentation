@@ -57,8 +57,6 @@
     <pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
-
 <h4>Get Contract Symbols</h4>
 
 <p>
