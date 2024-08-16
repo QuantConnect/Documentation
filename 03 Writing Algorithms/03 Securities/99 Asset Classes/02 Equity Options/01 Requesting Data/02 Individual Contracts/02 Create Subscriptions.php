@@ -61,16 +61,8 @@
 
 <h4>Get Contract Symbols</h4>
 
-<p>To subscribe to an Option contract, you need the contract <code>Symbol</code>. You can get the contract <code>Symbol</code> from the <code class="csharp">CreateOption</code><code class="python">create_option</code> method or from the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. If you use the <code class="csharp">CreateOption</code><code class="python">create_option</code> method, you need to provide the details of an existing contract.</p>
+<p>To subscribe to an Option contract, you need the contract <code>Symbol</code>. The perferred method to getting option contract symbols is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> for a given underlying Equity on a given date, which you can sort and filter to find the specific contract(s) that you would like. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
 
-<div class="section-example-container">
-    <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
-    OptionStyle.American, OptionRight.Call, 365, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self._contract_symbol = Symbol.create_option(self._symbol, Market.USA,
-    OptionStyle.AMERICAN, OptionRight.CALL, 365, datetime(2022, 6, 17))</pre>
-</div>
-
-<p>Another way to get an Option contract <code>Symbol</code> is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Equity on a given date. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
     <table class="qc-table table">
         <thead>
             <tr>
