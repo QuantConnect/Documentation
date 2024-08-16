@@ -1,0 +1,34 @@
+<p>To add a universe of Index Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method. This method returns an <code>Option</code> object, which has a <code class="csharp">SetFilter</code><code class="python">set_filter</code> method you can call to filter the set of tradable contract down to just the contracts you want.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class BasicIndexOptionAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var option = AddIndexOption("SPX");
+        option.SetFilter(-1, 1);
+    }
+
+    public override void OnData(Slice data)
+    {
+        foreach (var chain in data.OptionChains.Values)
+        {
+            foreach (var contract in chain.Contracts.Values)
+            {
+                var strike = contract.Strike;
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
+    def initialize(self):
+        option = self.add_index_option("SPX")
+        option.set_filter(min_strike=-1, max_strike=1)
+    
+    def on_data(self, data):
+        for canonical_symbol, chain in data.option_chains.items():
+            for symbol, contract in chain.contracts.items():
+                contract.strike</pre>
+</div>
+
+<p>For more information about the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method, see <a href='/docs/v2/writing-algorithms/universes/index-options#02-Create-Universes'>Create Universes</a>.</p>
