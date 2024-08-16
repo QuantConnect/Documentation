@@ -51,3 +51,7 @@
     <pre class="python">self._contract_symbol = Symbol.create_option(self._symbol, Market.USA,
     OptionStyle.AMERICAN, OptionRight.CALL, 365, datetime(2022, 6, 17))</pre>
 </div>
+
+<h4>Overriding the Initial Implied Volatility Guess</h4>
+
+<? include(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
