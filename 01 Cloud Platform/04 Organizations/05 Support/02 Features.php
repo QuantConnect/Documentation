@@ -238,7 +238,7 @@ table td:not(:first-child) {
 </table>
 
 <h4>Local Development </h4>
-<p>Gold support has access to technical support to the <a href="/docs/v2/local-platform">Local Platform</a>, <a href="/docs/v2/lean-cli">LEAN CLI</a> and <a href="/docs/v2/cloud-platform/api-reference">QuantConnect REST API</a>, which includes installation and subjects that don't apply to the Cloud Platform.</p>
+<p>If you have a gold support seat, you can access technical support for the <a href="/docs/v2/local-platform">Local Platform</a>, <a href="/docs/v2/lean-cli">LEAN CLI</a>, and the <a href="/docs/v2/cloud-platform/api-reference">QuantConnect REST API</a>, which includes installation and subjects that don't apply to the Cloud Platform.</p>
 
 <table class="qc-table table">
    <thead>
