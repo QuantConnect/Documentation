@@ -100,15 +100,13 @@ self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.st
             <tr>
                  <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
                  <td>
-                     The contract type. The <code>OptionRight</code> enumeration has the following members:
-                     <div data-tree="QuantConnect.OptionRight"></div>
-                  </td>
+                     The contract type, <code class="csharp">OptionRight.Put</code><code class="python">OptionRight.PUT</code> or <code class="csharp">OptionRight.Call</code><code class="python">OptionRight.CALL</code>.
+                 </td>
             </tr>
             <tr>
                  <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
                  <td>
-                     The contract style. The <code>OptionStyle</code> enumeration has the following members:
-                     <div data-tree="QuantConnect.OptionStyle"></div>
+                     The contract style, <code class="csharp">OptionStyle.American</code><code class="python">OptionStyle.AMERICAN</code> or <code class="csharp">OptionStyle.European</code><code class="python">OptionStyle.EUROPEAN</code>.
                      We currently only support American-style Options for US Equity Options.
                   </td>
             </tr>
