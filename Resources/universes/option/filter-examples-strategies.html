@@ -1,0 +1,21 @@
+<p>The preceding methods return an <code>OptionFilterUniverse</code>, so you can chain the methods together.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Example 1: Select a Straddle
+option.SetFilter(optionFilterUniverse => optionFilterUniverse.Straddle(30, 5, 10));
+
+// Example 2: Select the contracts (including weeklys) that expire in the next 30 days that form an Iron Condor
+option.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().Strikes(-20, 20).Expiration(0, 30).IronCondor(30, 5, 10));
+
+// Example 3: Select the 0DTE contracts that form an Strangle
+option.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().Expiration(0, 0).Strangle(30, 5, -10));
+</pre>
+    <pre class="python"># Example 1: Select a Straddle
+option.set_filter(lambda option_filter_universe: option_filter_universe.straddle(30, 5, 10))
+
+# Example 2: Select the contracts (including weeklys) that expire in the next 30 days that form an Iron Condor
+option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().strikes(-20, 20).expiration(0, 30).iron_condor(30, 5, 10))</pre>
+
+# Example 3: Select the 0DTE contracts that form an Strangle
+option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().expiration(0, 0).strangle(30, 5, -10))</pre>
+</div>
