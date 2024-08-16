@@ -65,8 +65,21 @@
     To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
     The perferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. 
     The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> objects for a given date and underlying Equity, which you can then sort and filter to find the specific contract(s) you want to trade. 
-    To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:
 </p>
+
+
+<div class="section-example-container">
+    <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
+var expiry = contractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
+var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
+_contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
+    <pre class="python">contract_symbols = self.option_chain_provider.get_option_contract_list(self._symbol, self.time)
+expiry = min([symbol.id.date for symbol in contract_symbols])
+filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
+self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+</div>
+
+<p>To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
 
     <table class="qc-table table">
         <thead>
@@ -101,17 +114,6 @@
             </tr>
         </tbody>
     </table>
-
-<div class="section-example-container">
-    <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
-var expiry = contractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
-var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
-_contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
-    <pre class="python">contract_symbols = self.option_chain_provider.get_option_contract_list(self._symbol, self.time)
-expiry = min([symbol.id.date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
-</div>
 
 <h4>Subscribe to Contracts</h4>
 
