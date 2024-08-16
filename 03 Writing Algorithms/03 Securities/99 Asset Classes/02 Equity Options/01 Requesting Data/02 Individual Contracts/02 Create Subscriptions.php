@@ -63,8 +63,8 @@
 
 <p>
     To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
-    The perferred method to getting Option contract symbols is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. 
-    The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> for a given underlying Equity on a given date, which you can then sort and filter to find the specific contract(s) you want to trade. 
+    The perferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. 
+    The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> objects for a given date and underlying Equity, which you can then sort and filter to find the specific contract(s) you want to trade. 
     To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:
 </p>
 
