@@ -9,11 +9,11 @@ pencil</span> icon that appears.</li>
     <li>Enter the new backtest name and then click <span class='button-name'>OK</span>.</li>
 </ol>
 
-<p>To rename the algorithm <code class="csharp">Name</code><code class="python">name</code> programmatically, call the <code class="csharp">SetName</code><code class="python">set_name</code> method.</p>
+<p>To programmatically set the backtest name, call the <code class="csharp">SetName</code><code class="python">set_name</code> method.</p>
 
 <div class="section-example-container">
 <pre class="csharp">SetName("Backtest Name");</pre>
 <pre class="python">self.set_name("Backtest Name")</pre>
 </div>
 
-<p>For information, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/initialization#97-Set-Name-and-Tags'>Writing Algorithms > Initialization > Set Name and Tags</a>.</p>
+<p>For more information, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/initialization#97-Set-Name-and-Tags'>Set Name and Tags</a>.</p>
