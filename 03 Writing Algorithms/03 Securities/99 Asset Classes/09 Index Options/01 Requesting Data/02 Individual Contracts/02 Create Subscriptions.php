@@ -22,7 +22,7 @@
                 .Where(symbol => symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call)
                 .ToList();
             var symbol = filteredSymbols.OrderBy(symbol => symbol.ID.StrikePrice).First();
-            _contract = AddOptionContract(symbol);
+            _contract = AddIndexOptionContract(symbol);
         }
     }
 }</pre>
@@ -38,7 +38,7 @@
             expiry = min([symbol.id.date for symbol in contract_symbols])
             filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
             symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
-            self._contract = self.add_option_contract(symbol)</pre>
+            self._contract = self.add_index_option_contract(symbol)</pre>
 </div>
 
 <h4>Configure the Underlying Index</h4>
