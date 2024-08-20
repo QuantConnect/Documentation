@@ -1,3 +1,53 @@
+<h4>Example 1: Large Cap Liquid Universe</h4>
+<p>Select 20 most traded stocks from large-cap stocks.</p>
+<div class="section-example-container">
+	<pre class="csharp">AddUniverse((fundamental) =&gt; fundamental.Where(f =&gt; f.HasFundamentalData && f.MarketCap &gt;= 1e10m)
+    .OrderedByDescending(f =&gt; f.DollarVolume)
+    .Take(20)
+    .Select(f =&gt; f.Symbol));
+  </pre>
+	<pre class="python">self.add_universe(self.selection)
+
+def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    large_cap_stocks = [f for f in fundamental if f.has_fundamental_data and f.market_cap &gt;= 1e10]
+    sorted_by_dollar_volume = sorted(large_cap_stocks, key=lambda f: f.dollar_volume, reverse=True)
+    return [f.symbol for f in sorted_by_dollar_volume[:20]]
+  </pre>
+</div>
+
+<h4>Example 2: Illiquid Penny Stocks Universe</h4>
+<p>Some market makers will aim at illiquid penny stocks to earn higher spread with less captital.</p>
+<div class="section-example-container">
+	<pre class="csharp">AddUniverse((fundamental) =&gt; fundamental.Where(f =&gt; f.Price &lt;= 3)
+    .OrderedBy(f =&gt; f.DollarVolume)
+    .Take(20)
+    .Select(f =&gt; f.Symbol));
+  </pre>
+	<pre class="python">self.add_universe(self.selection)
+
+def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    penny_stocks = [f for f in fundamental if f.price &lt;= 3]
+    sorted_by_dollar_volume = sorted(penny_stocks, key=lambda f: f.dollar_volume)
+    return [f.symbol for f in sorted_by_dollar_volume[:20]]
+  </pre>
+</div>
+
+<h4>Example 3: Highest Volume Universe</h4>
+<p>For intra-day trading, high volume stocks provide more arbitration chances.</p>
+<div class="section-example-container">
+	<pre class="csharp">AddUniverse((fundamental) =&gt; fundamental.OrderedByDescending(f =&gt; f.Volume)
+    .Take(20)
+    .Select(f =&gt; f.Symbol));
+  </pre>
+	<pre class="python">self.add_universe(self.selection)
+
+def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    sorted_by_volume = sorted(penny_stocks, key=lambda f: f.volume, reverse=True)
+    return [f.symbol for f in sorted_by_volume[:20]]
+  </pre>
+</div>
+
+<p>See more examples from Lean:</p>
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Algorithms</div>
   <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/UniverseSelectionDefinitionsAlgorithm.py" target="_BLANK">UniverseSelectionDefinitionsAlgorithm.py  <span class="badge-python pull-right">Python</span></a>

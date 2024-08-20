@@ -1,3 +1,31 @@
+<h4>Example 1: Set Data Seed</h4>
+<p>Some data might not have data feed on its first fetch, making the algorithm prone to error. To solve this case, you can set a seed on using the last known price as the initial data.</p>
+<div class="section-example-container">
+	<pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(
+        BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));</pre>
+	<pre class="python">self.set_security_initializer(BrokerageModelSecurityInitializer(
+        self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))</pre>
+</div>
+
+<h4>Example 2: Extended Market Hour</h4>
+<p>Some traders would use pre-market hour data for filtering assets. To do so, you can subscribe to extended market hour data with the following code:</p>
+<div class="section-example-container">
+	<pre class="csharp">UniverseSettings.ExtendedMarketHours = true;</pre>
+	<pre class="python">self.universe_settings.extended_market_hours = True</pre>
+</div>
+
+<h4>Example 3: Train Model On Warm Up Finishes</h4>
+<p>After warming up indicators or rolling windows, you can train machine learning model with the cached data:</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void OnWarmupFinished()
+{
+    Train(MyTrainingMethod);
+}</pre>
+	<pre class="python">def on_warmup_finished(self) -&gt; None:
+    self.train(self.my_training_method)</pre>
+</div>
+
+<p>See more examples from Lean:</p>
   <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateAlgorithm.py" target="_BLANK">
