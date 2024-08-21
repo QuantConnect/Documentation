@@ -1,0 +1,52 @@
+<h4>Example 1: Use QuoteBar Data</h4>
+<p>You can use mid-price of quote bar data to update indicator of illiquid assets for accuracy.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.QuoteBars.ContainsKey(_symbol))
+    {
+        var quoteBar = slice.QuoteBars[_symbol];
+        var midPrice = (quoteBar.Bid.Price + quoteBar.Ask.Price) * 0.5m;
+        _indicator.Update(slice.Time, midPrice);
+    }
+}</pre>
+    <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.quote_bars.contains_key(self._symbol):
+        quote_bar = slice.quote_bars[self._symbol]
+        mid_price = (quote_bar.bid.price + quote_bar.ask.price) * 0.5
+        _indicator.update(slice.time, mid_price)</pre>
+</div>
+
+<h4>Example 2: Use Tick Data</h4>
+<p>You can use tick data to obtain the instant bid and ask size of the latest tick.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.Ticks.ContainsKey(_symbol))
+    {
+        var tick = slice.Ticks[_symbol];
+        if (tick.TickType == TickType.Quote)
+        {
+            var bidSize = tick.BidSize;
+            var askSize = tick.AskSize;
+        }
+    }
+}</pre>
+    <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.ticks.contains_key(self._symbol):
+        tick = slice.ticks[self._symbol]
+        if tick.tick_type == TickType.QUOTE:
+            bid_size = tick.bid_size
+            ask_size = tick.ask_size</pre>
+</div>
+
+<h4>Example 3: Fundamental Cache</h4>
+<p>Except OHLCV data, you can also access <code>Fundamental</code> data cache from equity type <code>Security</code> object.</p>
+<div class="section-example-container">
+	<pre class="csharp">var security = Securities[_symbol];
+var fundamental = security.Fundamentals;
+var sectorCode = fundamental.AssetClassification.MorningstarSectorCode;</pre>
+	<pre class="python">security = self.securities[self._symbol]
+fundamental = security.fundamentals
+sector_code = fundamental.asset_classification.morningstar_sector_code</pre>
+</div>

@@ -1,0 +1,72 @@
+<h4>Example 1: 30-day expiring Straddle</h4>
+<p>You can filter option universe to obtain an ATM call and an ATM put contract with minimum 30 days from expiry to form a straddle for volatility trading.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var option = AddOption("SPY");
+    option.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().Straddle(30));
+}</pre>
+	<pre class="python">def initialize(self):
+    option = self.add_option("SPY")
+    option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().straddle(30))</pre>
+</div>
+
+<h4>Example 2: 10-day expiring Box Spread</h4>
+<p>A box spread strategy secures arbitration profit from mispricing if there exists any. You can filter the 4 contracts to form a box spread with minimum 10 days from expiry and $5 from ATM with the following.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var option = AddOption("SPY");
+    option.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().BoxSpread(10, 5));
+}</pre>
+	<pre class="python">def initialize(self):
+    option = self.add_option("SPY")
+    option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().box_spread(10, 5))</pre>
+</div>
+
+<h4>Example 3: 30-60-day expiring Jelly Roll</h4>
+<p>A jelly roll strategy secures arbitration profit from interest rate difference if there exists any. You can filter the 4 ATM contracts to form a jelly roll with minimum 30 and 60 days from expiry with the following.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var option = AddOption("SPY");
+    option.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().JellyRoll(0, 30, 60));
+}</pre>
+	<pre class="python">def initialize(self):
+    option = self.add_option("SPY")
+    option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().jelly_roll(0, 30, 60))</pre>
+</div>
+
+<p class="csharp">See more examples from Lean:</p>
+<div class="csharp example-fieldset">
+	<div class="example-legend">Demonstration Algorithms</div>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBearCallLadderRegressionAlgorithm.cs" target="_BLANK">OptionEquityBearCallLadderRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBearCallSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityBearCallSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBearPutLadderRegressionAlgorithm.cs" target="_BLANK">OptionEquityBearPutLadderRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBearPutSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityBearPutSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBoxSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityBoxSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBullCallLadderRegressionAlgorithm.cs" target="_BLANK">OptionEquityBullCallLadderRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBullCallSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityBullCallSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBullPutLadderRegressionAlgorithm.cs" target="_BLANK">OptionEquityBullPutLadderRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityBullPutSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityBullPutSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityCallButterflyRegressionAlgorithm.cs" target="_BLANK">OptionEquityCallButterflyRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityCallCalendarSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityCallCalendarSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityConversionRegressionAlgorithm.cs" target="_BLANK">OptionEquityConversionRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityCoveredCallRegressionAlgorithm.cs" target="_BLANK">OptionEquityCoveredCallRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityCoveredPutRegressionAlgorithm.cs" target="_BLANK">OptionEquityCoveredPutRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityIronButterflyRegressionAlgorithm.cs" target="_BLANK">OptionEquityIronButterflyRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityIronCondorRegressionAlgorithm.cs" target="_BLANK">OptionEquityIronCondorRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityJellyRollRegressionAlgorithm.cs" target="_BLANK">OptionEquityJellyRollRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityProtectiveCollarRegressionAlgorithm.cs" target="_BLANK">OptionEquityProtectiveCollarRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityPutButterflyRegressionAlgorithm.cs" target="_BLANK">OptionEquityPutButterflyRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityPutCalendarSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityPutCalendarSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityReverseConversionRegressionAlgorithm.cs" target="_BLANK">OptionEquityReverseConversionRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityShortBoxSpreadRegressionAlgorithm.cs" target="_BLANK">OptionEquityShortBoxSpreadRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityShortButterflyCallRegressionAlgorithm.cs" target="_BLANK">OptionEquityShortButterflyCallRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityShortButterflyPutRegressionAlgorithm.cs" target="_BLANK">OptionEquityShortButterflyPutRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityShortIronButterflyRegressionAlgorithm.cs" target="_BLANK">OptionEquityShortIronButterflyRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityShortIronCondorRegressionAlgorithm.cs" target="_BLANK">OptionEquityShortIronCondorRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityShortJellyRollRegressionAlgorithm.cs" target="_BLANK">OptionEquityShortJellyRollRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityStraddleRegressionAlgorithm.cs" target="_BLANK">OptionEquityStraddleRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/OptionEquityStrangleRegressionAlgorithm.cs" target="_BLANK">OptionEquityStrangleRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+</div>

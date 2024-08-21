@@ -1,0 +1,50 @@
+<h4>Example 1: Add Alternative Data By Filtered Universe</h4>
+<p>You can utilize information from alternative datasets for position sizing by subscribe to alternative data for selected universe members.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    foreach (var security in changes.AddedSecurities)
+    {
+        security.AltDataSymbol = AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol, Resolution.Daily).Symbol;
+    }
+    
+    foreach (var security in changes.RemovedSecurities)
+    {
+        if (security.AltDataSymbol != null)
+        {
+            RemoveSecurity(security.AltDataSymbol);
+        }
+    }
+}</pre>
+	<pre class="python">def on_warmup_finished(self, changes: SecurityChanges) -&gt; None:
+    for security in changes.added_securities:
+        security.alt_data_symbol = self.add_data(KavoutCompositeFactorBundle, security.symbol, Resolution.DAILY).symbol
+    
+    for security in changes.removed_securities:
+        if security.alt_data_symbol:
+            self.remove_security(security.alt_data_symbol)</pre>
+</div>
+
+<h4>Example 2: Disable Forward Fill Data</h4>
+<p>For some illiquid securities or alternative data, using forward filled data might not be an accurate estimation nor usable updated information. You can disable forward filled data to avoid this.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    AddData&lt;BrainSentiment&gt;(symbol, fillForward: false);
+}</pre>
+	<pre class="python">def initialize(self):
+    self.add_data(BrainSentiment, symbol, fill_forward=False)</pre>
+</div>
+
+<h4>Example 3: Different Resolution Subscription</h4>
+<p>You can subscribe to daily resolution for an asset for updating indicator and subscribe to another asset for denser resolution for trading using the indicator.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    AddEquity("VIX", Resolution.Daily);
+    AddEquity("SPY", Resolution.Minute);
+}</pre>
+	<pre class="python">def initialize(self):
+    self.add_equity("VIX", Resolution.DAILY)
+    self.add_equity("SPY", Resolution.MINUTE)</pre>
+</div>

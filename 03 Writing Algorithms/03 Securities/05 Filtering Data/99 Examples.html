@@ -1,3 +1,105 @@
+<h4>Example 1: Only Within 1 Hour Of Market Open And Close</h4>
+<p>Some traders prefer to use only data of 1 hour after market open and before market close, since they have the most volume.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var security = AddEquity("SPY");
+    security.SetDataFilter(new CustomDataFilter());
+}
+
+private class CustomDataFilter : ISecurityDataFilter
+{
+    public bool Filter(Security vehicle, BaseData data)
+    {
+        if (data.Time.Hour &gt;= 10 && data.Time.Hour &lt;= 14)
+        {
+            return false;
+        }
+        return true;
+    }
+}</pre>
+	<pre class="python">def initialize(self):
+    security = self.add_equity("SPY")
+    security.set_data_filter(CustomDataFilter())
+
+class CustomDataFilter(SecurityDataFilter):
+    def filter(self, vehicle: Security, data: BaseData) -> bool:
+        if 14 &gt;= data.time.hour &gt;= 10:
+            return False
+        return True</pre>
+</div>
+
+<h4>Example 2: Use Only Quote Ticks</h4>
+<p>You can use only quote ticks but not trade ticks for execution model training or more.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var security = AddEquity("SPY");
+    security.SetDataFilter(new CustomDataFilter());
+}
+
+private class CustomDataFilter : ISecurityDataFilter
+{
+    public bool Filter(Security vehicle, BaseData data)
+    {
+        var tick = data as Tick;
+        
+        if (tick.TickType == TickType.Trade)
+        {
+            return false;
+        }
+        return true;
+    }
+}</pre>
+	<pre class="python">def initialize(self):
+    security = self.add_equity("SPY")
+    security.set_data_filter(CustomDataFilter())
+
+class CustomDataFilter(SecurityDataFilter):
+    def filter(self, vehicle: Security, data: BaseData) -> bool:
+        tick = Tick(data)
+        
+        if tick.tick_type == TickType.TRADE:
+            return False
+        return True</pre>
+</div>
+
+<h4>Example 3: Train Model For Suspicious Data</h4>
+<p>You can also train a model to detect suspicious data feed and filter them</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var security = AddEquity("SPY");
+    security.SetDataFilter(new CustomDataFilter());
+}
+
+private class CustomDataFilter : ISecurityDataFilter
+{
+    public bool Filter(Security vehicle, BaseData data)
+    {
+        var tick = data as Tick;
+        
+        if (_model.IsSuspicious(tick))
+        {
+            return false;
+        }
+        return true;
+    }
+}</pre>
+	<pre class="python">def initialize(self):
+    security = self.add_equity("SPY")
+    security.set_data_filter(CustomDataFilter())
+
+class CustomDataFilter(SecurityDataFilter):
+    def filter(self, vehicle: Security, data: BaseData) -> bool:
+        tick = Tick(data)
+        
+        if self.model.is_suspicious(tick):
+            return False
+        return True</pre>
+</div>
+
+<p>See more examples from Lean:</p>
 <div class="example-fieldset">
   <div class="example-legend">Demonstration Algorithms</div>
   
