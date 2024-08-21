@@ -6,12 +6,12 @@ If you place a market order when the market is closed, LEAN automatically conver
 
 <div class="section-example-container">
 <pre class="csharp"> // Check market status before placing an order to avoid unintended market-on-open trades 
-    if (IsMarketOpen(_symbol))
+if (IsMarketOpen(_symbol))
 {
     MarketOrder(symbol, quantity);
 }</pre>
 <pre class="python"> # Check market status before placing an order to avoid unintended market-on-open trades
-    if self.is_market_open(self._symbol):
+if self.is_market_open(self._symbol):
     self.market_order(self._symbol, quantity)</pre>
 </div>
 
