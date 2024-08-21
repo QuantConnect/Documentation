@@ -3,10 +3,14 @@
 <h4>Warm Up Training Data</h4>
 <p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-    <pre class="python">training_length = 252*2
+    <pre class="python"># Create 2 years (252 trading days per year) period.
+training_length = 252*2
+# Create a rolling window to store training data.
 self.training_data = RollingWindow[float](training_length)
+# Request 2 years of daily data.
 history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
 for trade_bar in history:
+    # Populate the close price data to the training_data window.
     self.training_data.add(trade_bar.close)</pre>
 </div>
 
@@ -14,6 +18,7 @@ for trade_bar in history:
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
     <pre class="python">def get_features_and_labels(self, n_steps=5):
+    # Create a list of close prices from the rolling window.
     close_prices = np.array(list(self.training_data)[::-1])
     df = (np.roll(close_prices, -1) - close_prices) * 0.5 + close_prices * 0.5
     df = df[:-1]
@@ -26,15 +31,19 @@ for trade_bar in history:
 
     features = np.array(features)
     labels = np.array(labels)
+    # Compute standard score for the features and labels array.
     features = (features - features.mean()) / features.std()
     labels = (labels - labels.mean()) / labels.std()
 
+    # Load the NumPy array to the DMatrix object.
     d_matrix = xgb.DMatrix(features, label=labels)
 
     return d_matrix
 
 def my_training_method(self):
+    # Instantiate the DMatrix object with the features and labels array.
     d_matrix = self.get_features_and_labels()
+    # Instantiate the parameters for the XGBoost model.
     params = {
         'booster': 'gbtree',
         'colsample_bynode': 0.8,
@@ -45,6 +54,7 @@ def my_training_method(self):
         'objective': 'reg:squarederror',
         'subsample': 0.8,
       }
+    # Create the model and fit the training data. 
     self.model = xgb.train(params, d_matrix, num_boost_round=10)</pre>
 </div>
 
@@ -55,7 +65,7 @@ def my_training_method(self):
 </div>
 <p>To periodically re-train the model as your algorithm executes, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
 <div class="section-example-container">
-    <pre class="python"># Train the model every Sunday at 8:00 AM
+    <pre class="python"># Train the model every Sunday at 8:00 AM.
 self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), self.my_training_method)</pre>
 </div>
 
@@ -64,5 +74,6 @@ self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), se
 <div class="section-example-container">
     <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self._symbol in slice.bars:
+        # Update the training data with new value of close price. 
         self.training_data.add(slice.bars[self._symbol].close)</pre>
 </div>
