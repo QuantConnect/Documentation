@@ -1,21 +1,25 @@
 <h4>Example 1: Quarter End Selection</h4>
 <p>In this example, we select SPY if the current month is a quarter's end to ride on the possible quarter ending accounting period. Otherwise, we return an empty universe.</p>
 <div class="section-example-container">
-	<pre class="csharp">AddUniverse(new ScheduledUniverse(DateRules.MonthStart(), TimeRules.At(8, 0), (dt) =&gt; 
+	<pre class="csharp">public override void Initialize()
 {
-    if (dt.Month % 3 == 0)
+    AddUniverse(new ScheduledUniverse(DateRules.MonthStart(), TimeRules.At(8, 0), (dt) =&gt; 
     {
-        return new[] { Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
-    }
-    return Enumrable.Empty&lt;Symbol&gt;();
-}));</pre>
-	<pre class="python">self.add_universe(
-    ScheduledUniverse(
-        self.date_rules.month_start(), 
-        self.time_rules.at(8, 0), 
-        self._select_symbols
+        if (dt.Month % 3 == 0)
+        {
+            return new[] { Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        }
+        return Enumrable.Empty&lt;Symbol&gt;();
+    }));
+}</pre>
+	<pre class="python">def initialize(self):
+    self.add_universe(
+        ScheduledUniverse(
+            self.date_rules.month_start(), 
+            self.time_rules.at(8, 0), 
+            self._select_symbols
+        )
     )
-)
 	
 def _select_symbols(self, dt: datetime) -&gt; List[Symbols]:
     if dt.month % 3 == 0:
@@ -26,34 +30,41 @@ def _select_symbols(self, dt: datetime) -&gt; List[Symbols]:
 <h4>Example 2: Third Week VIX</h4>
 <p>The standard options are expiring at the third week's end of each month. You can filter the universe to select VIX related products on the third week to trade the foreseeable increasing volatility.</p>
 <div class="section-example-container">
-	<pre class="csharp">_month = -1;
-_week = -1;
-    
-AddUniverse(new ScheduledUniverse(DateRules.WeekStart(), TimeRules.At(8, 0), (dt) =&gt; 
+	<pre class="csharp">public class SampleAlgorithm : QCAlgorithm
 {
-    if (dt.Month == _month)
+    private int _month = -1;
+    private int _week = -1;
+        
+    public override void Initialize()
     {
-        if (++_week == 3)
+        AddUniverse(new ScheduledUniverse(DateRules.WeekStart(), TimeRules.At(8, 0), (dt) =&gt; 
         {
-          return new[] { Symbol.Create("VXZ", SecurityType.Equity, Market.USA) };
-        }
-        return Enumrable.Empty&lt;Symbol&gt;();
+            if (dt.Month == _month)
+            {
+                if (++_week == 3)
+                {
+                return new[] { Symbol.Create("VXZ", SecurityType.Equity, Market.USA) };
+                }
+                return Enumrable.Empty&lt;Symbol&gt;();
+            }
+            
+            _month = dt.Month;
+            _week = 0;
+            return Enumrable.Empty&lt;Symbol&gt;();
+        }));
     }
-    
-    _month = dt.Month;
-    _week = 0;
-    return Enumrable.Empty&lt;Symbol&gt;();
-}));</pre>
-	<pre class="python">self.month = -1
-self.week = -1
+}</pre>
+	<pre class="python">def initialize(self):
+    self.month = -1
+    self.week = -1
 
-self.add_universe(
-    ScheduledUniverse(
-        self.date_rules.week_start(), 
-        self.time_rules.at(8, 0), 
-        self._select_symbols
+    self.add_universe(
+        ScheduledUniverse(
+            self.date_rules.week_start(), 
+            self.time_rules.at(8, 0), 
+            self._select_symbols
+        )
     )
-)
 	
 def _select_symbols(self, dt: datetime) -&gt; List[Symbols]:
     if dt.month == self.month:

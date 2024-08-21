@@ -1,1 +1,44 @@
-<p>You can adapt the examples of the <a href='/docs/v2/writing-algorithms/universes/equity-options/'>Universes > Equity Options</a> section of this documentation.</p>
+<h4>Example 1: 30-day expiring Straddle</h4>
+<p>You can filter option universe to obtain an ATM call and an ATM put contract with minimum 30 days from expiry to form a straddle for volatility trading.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var index = AddIndex("SPX");
+    var indexOption = AddIndexOption(index.Symbol, "SPXW");
+    indexOption.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().Straddle(30));
+}</pre>
+	<pre class="python">def initialize(self):
+    index = self.add_index("SPX")
+    index_option = self.add_index_option(index.symbol, "SPXW")
+    index_option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().straddle(30))</pre>
+</div>
+
+<h4>Example 2: 10-day expiring Box Spread</h4>
+<p>A box spread strategy secures arbitration profit from mispricing if there exists any. You can filter the 4 contracts to form a box spread with minimum 10 days from expiry and $5 from ATM with the following.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var index = AddIndex("SPX");
+    var indexOption = AddIndexOption(index.Symbol, "SPXW");
+    indexOption.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().BoxSpread(10, 5));
+}</pre>
+	<pre class="python">def initialize(self):
+    index = self.add_index("SPX")
+    index_option = self.add_index_option(index.symbol, "SPXW")
+    index_option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().box_spread(10, 5))</pre>
+</div>
+
+<h4>Example 3: 30-60-day expiring Jelly Roll</h4>
+<p>A jelly roll strategy secures arbitration profit from interest rate difference if there exists any. You can filter the 4 ATM contracts to form a jelly roll with minimum 30 and 60 days from expiry with the following.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var index = AddIndex("SPX");
+    var indexOption = AddIndexOption(index.Symbol, "SPXW");
+    indexOption.SetFilter(optionFilterUniverse => optionFilterUniverse.IncludeWeeklys().JellyRoll(0, 30, 60));
+}</pre>
+	<pre class="python">def initialize(self):
+    index = self.add_index("SPX")
+    index_option = self.add_index_option(index.symbol, "SPXW")
+    index_option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().jelly_roll(0, 30, 60))</pre>
+</div>
