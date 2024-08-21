@@ -1,0 +1,34 @@
+<p>To add a universe of Future contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. This method returns an <code>Future</code> object, which has a <code class="csharp">SetFilter</code><code class="python">set_filter</code> method you can call to filter the set of tradable contract down to just the contracts you want.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class BasicFutureAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var future = AddFuture(Futures.Indices.SP500EMini);
+        future.SetFilter(0, 182);
+    }
+
+    public override void OnData(Slice data)
+    {
+        foreach (var (continuousSymbol, chain) in data.FuturesChains)
+        {
+            foreach (var (symbol, contract) in chain.Contracts)
+            {
+                var expiry = contract.Expiry;
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class BasicFutureAlgorithm(QCAlgorithm):
+    def initialize(self):
+        future = self.add_future(Futures.Indices.SP500E_MINI)
+        option.set_filter(0, 182)
+    
+    def on_data(self, data):
+        for continuous_symbol, chain in data.future_chains.items():
+            for symbol, contract in chain.contracts.items():
+                contract.strike</pre>
+</div>
+
+<p>For more information about the <code class="csharp">AddFuture</code><code class="python">add_future</code> method, see <a href='/docs/v2/writing-algorithms/universes/futures#11-Create-Universes'>Create Universes</a>.</p>
