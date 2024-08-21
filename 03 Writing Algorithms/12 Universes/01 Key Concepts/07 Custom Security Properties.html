@@ -8,13 +8,13 @@
     {
         var dynamicSecurity = security as dynamic;
 
-        // Create an indicator
+        // Create an SMA indicator with 10 periods for the security symbol
         dynamicSecurity.Indicator = SMA(security.Symbol, 10);
 
-        // Warm up the indicator
+        // Preload the histoical data for the indicator
         WarmUpIndicator(security.Symbol, dynamicSecurity.Indicator);
     }
-
+    // Remove the indicator in case of security removed from universe
     foreach (var security in changes.RemovedSecurities)
     {
         DeregisterIndicator((security as dynamic).Indicator);
@@ -22,12 +22,13 @@
 }</pre>
 <pre class="python">def on_securities_changed(self, changes: SecurityChanges) -> None:
     for security in changes.added_securities:
-        # Create an indicator
+        # Create an SMA indicator with 10 periods for the security symbol
         security.indicator = self.sma(security.Symbol, 10)
 
-        # Warm up the indicator
+        # Preload the histoical data for the indicator
         self.warm_up_indicator(security.symbol, security.indicator)
 
+    # Remove the indicator in case of security removed from universe
     for security in changes.removed_securities:
         self.deregister_indicator(security.indicator)</pre>
 </div>

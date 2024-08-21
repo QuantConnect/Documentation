@@ -28,10 +28,10 @@
     }
 ?>
 <div class='section-example-container'>
-<pre class='csharp'>// In Initialize
+<pre class='csharp'>// Apply my custom made MySecurityInitializer
 SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
 
-// Outside of the algorithm class
+// Implementing MySecurityInitializer class inheriting from BrokerageModelSecurityInitializer
 class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
     <?=$classMemberC?>public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder<?=$extraParamsC?>)
@@ -50,7 +50,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     }
 }</pre>
-<pre class='python'># In Initialize
+<pre class='python'># Apply my custom made MySecurityInitializer
 self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
 
 # Outside of the algorithm class

@@ -7,14 +7,18 @@
 </p>
 
  <div class="section-example-container">
-<pre class="csharp">public class SimpleRebalancingAlgorithm : QCAlgorithm
+<pre class="csharp"> // Rebalance the the holdings after market open with the top 5 dollar volume stocks
+public class SimpleRebalancingAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
         var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         var dateRule = DateRules.WeekStart(symbol);
+        // Schedule the rebalance on market open (SPY)
         UniverseSettings.Schedule.On(dateRule);
+        // Create a universe with the top 5 dollar volume stocks
         var universe = AddUniverse(Universe.DollarVolume.Top(5));
+        // After 30 minutes market open, rebalance the holdings with the currently top 5 dollar volume stocks
         Schedule.On(
             dateRule,
             TimeRules.AfterMarketOpen(symbol, 30),
@@ -25,13 +29,17 @@
         );
     }
 }</pre>
-<pre class="python">class SimpleRebalancingAlgorithm(QCAlgorithm):
+<pre class="python"> #Rebalance the the holdings after market open with the top 5 dollar volume stocks
+class SimpleRebalancingAlgorithm(QCAlgorithm):
 
     def initialize(self):
         symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
         date_rule = self.date_rules.week_start(symbol)
+        # Schedule the rebalance on market open (SPY)
         self.universe_settings.schedule.on(date_rule)
+        # Create a universe with the top 5 dollar volume stocks
         universe = self.add_universe(self.universe.dollar_volume.top(5))
+        # After 30 minutes market open, rebalance the holdings with the currently top 5 dollar volume stocks
         self.schedule.on(
             date_rule,
             self.time_rules.after_market_open(symbol, 30),
