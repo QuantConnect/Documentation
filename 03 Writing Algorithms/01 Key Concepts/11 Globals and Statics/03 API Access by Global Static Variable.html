@@ -9,8 +9,11 @@
   The following algorithm demonstrates this process:
 </p>
 <div class="section-example-container">
-    <pre class="csharp">public class MyCustomDataTypeAlgorithm : QCAlgorithm
+    <pre class="csharp">// Define a trading algorithm that is a subclass of QCAlgorithm
+public class MyCustomDataTypeAlgorithm : QCAlgorithm
 {
+    // Assign the current algorithm instance to the static ALGORITHM variable in MyCustomDataType to reference methods or properties from the algorithm
+    // Add custom data type to the algorithm with daily resolution and retrieve its symbol setting up the data feed
     public override void Initialize()
     {
         MyCustomDataType.ALGORITHM = this;
@@ -24,6 +27,7 @@ public class MyCustomDataType : BaseData
 
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
     {
+        // Check if the line starts with a digit, if not, log the header line to debug only data lines are processed
         if (!char.IsDigit(line.Trim()[0]))
         {
             // Display the line with the header
@@ -33,6 +37,9 @@ public class MyCustomDataType : BaseData
         var data = line.Split(',');
         return new MyCustomDataType()
         {
+            // Parse the data line into a new MyCustomDataType instance
+            // Set properties based on the parsed data and return the instance
+            // The EndTime is set to one day after Time to define the end of the data period
             Time = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture),
             EndTime = Time.AddDays(1),
             Symbol = config.Symbol,
@@ -41,34 +48,47 @@ public class MyCustomDataType : BaseData
         };
     }
 }</pre>
-    <pre class="python">class MyAlgorithmInstance(QCAlgorithm):
+    <pre class="python"># Define a trading algorithm that is a subclass of QCAlgorithm
+class MyAlgorithmInstance(QCAlgorithm):
 
     def initialize(self):
+        # Set the initial cash balance to $100,000 USD
         self.set_cash(100000)
+        # Define the start and end dates
         self.set_start_date(1998, 1, 1)
         self.set_end_date(2014, 6, 1)
             
         # Assign self to Static Cape Variable.
+        # This allows the Cape class to use methods or properties of the algorithm instance
         Cape.algorithm = self
+        # Add custom data source for Cape to the algorithm
         self.add_data(Cape, "CAPE")
     
     def on_data(self, data):
+        # Plot the CAPE value on the chart for visualization to help track and analyze the CAPE data over time
         self.plot("CAPE", "Value", data["CAPE"].value)
     
+# Define a custom data class for CAPE by subclassing PythonData
 class Cape(PythonData):  
     def get_source(self, config, date, isLiveMode): 
+        # Log a message to debug when fetching the data source to verify that the correct source URL is being used
         Cape.algorithm.debug("Test Static: GetSource")
+        # Return the URL of the data source
+        # The URL points to a CSV file hosted remotely that contains the CAPE data
         return SubscriptionDataSource("https://www.dropbox.com/scl/fi/mqbnfb7ll88nne7b8ymy7/CAPE.csv?rlkey=mnu0ax1d8lcj3gzkdw79z0pm8&dl=1", SubscriptionTransportMedium.REMOTE_FILE)
         
     def reader(self, config, line, date, isLiveMode):
+        # Skip lines that are empty or do not start with a digit ensuring that only valid data lines are processed
         if not (line.strip() and line[0].isdigit()): return None 
         index = Cape()
         try: 
+            # Parse the CSV line into relevant data fields
             data = line.split(',') 
             index.symbol = config.symbol
             index.time = datetime.strptime(data[0], "%Y-%m") 
             index.value = float(data[10])
         except ValueError: 
+            # Log an error if data parsing fails to identify issues with data formatting or parsing
             Cape.algorithm.debug("Test Static 2: ValueError")
             return None 
         return index</pre>

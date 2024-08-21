@@ -1,18 +1,23 @@
 <div class="section-example-container">
-<pre class="csharp">public override void OnMarginCall(List<SubmitOrderRequest> requests)
+<pre class="csharp">// Review order requests during a margin call to manage positions to meet margin requirements
+public override void OnMarginCall(List<SubmitOrderRequest> requests)
 {
     foreach (var orderRequest in requests) {
     }
 }
 
+// Log a warning when the margin level is critically low, indicating potential margin call conditions
 public override void OnMarginCallWarning()
 {
     Log("Margin call warning, 5% margin remaining");
 }</pre>
-<pre class="python">def on_margin_call(self, requests): -&gt; List[SubmitOrderRequest]: 
+<pre class="python"># Review order requests during a margin call to manage positions to meet margin requirements
+    return requests
+def on_margin_call(self, requests): -&gt; List[SubmitOrderRequest]: 
     # Modify order requests to choose what to liquidate.
     return requests
 
+# Log a warning when the margin level is critically low, indicating potential margin call conditions
 def on_margin_call_warning(self) -&gt; None:
     self.log("Margin call warning, 5% margin remaining")</pre>
 </div>

@@ -4,42 +4,61 @@
   The following algorithm demonstrates this process:
 </p>
 <div class="section-example-container">
-    <pre class="csharp">public class CustomPartialFillModelAlgorithm : QCAlgorithm
+    <pre class="csharp">// Define a trading algorithm that is a subclass of QCAlgorithm
+public class CustomPartialFillModelAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private SecurityHolding _holdings;
      
+    // Define an Initialize method.
+    // This method sets up the initial configuration for the algorithm, including dates and assets.
+    // LEAN only calls this method one time, at the start of your algorithm.
     public override void Initialize()
     {
+        // Set start and end dates
         SetStartDate(2019, 1, 1);
         SetEndDate(2019, 3, 1);
 
+        // Add SPY equity data with hourly resolution
         var equity = AddEquity("SPY", Resolution.Hour);
         _spy = equity.Symbol;
         _holdings = equity.Holdings;
 
         // Set the fill model with the instance of the algorithm
+        // This allows custom handling of order fills, including partial fills
         equity.SetFillModel(new CustomPartialFillModel(this));
     }
      
+    // Define an OnData method.
+    // This method handles incoming data and executes trading logic based on conditions.
     public override void OnData(Slice data)
     {
+        // Retrieve open orders for SPY
         var openOrders = Transactions.GetOpenOrders(_spy);
+        // Exit if there are open orders
         if (openOrders.Count != 0) return;
 
+        // Place orders based on the day of the month and holdings
+        // Buy if the holdings are zero or negative after the 10th
+        // Sell if the holdings are positive after the 20th
         if (Time.Day &gt; 10 && _holdings.Quantity &lt;= 0)
         {
             MarketOrder(_spy, 105, true);
         }
         else if (Time.Day &gt; 20 && _holdings.Quantity &gt;= 0)
-        {
+        {   
             MarketOrder(_spy, -100, true);
         }
     }
 
+    // Define a custom fill model by subclassing FillModel
     internal class CustomPartialFillModel : FillModel
     {
+        // Initialize the custom fill model
+        // Store reference to the algorithm instance and set up tracking for order quantities
+        // Store reference to the algorithm instance
         private readonly QCAlgorithm _algorithm;
+        // Dictionary to track remaining quantity by order ID
         private readonly Dictionary&lt;int, decimal&gt; _absoluteRemainingByOrderId = new();
      
         public CustomPartialFillModel(QCAlgorithm algorithm)
@@ -48,15 +67,22 @@
             _algorithm = algorithm;
         }
      
+        // Define a method to handle market fills
+        // Customize the fill logic to handle partial fills and logging
         public override OrderEvent MarketFill(Security asset, MarketOrder order)
         {
             if (!_absoluteRemainingByOrderId.TryGetValue(order.Id, out var absoluteRemaining))
             {
-              absoluteRemaining = order.AbsoluteQuantity;
+                // Get the remaining quantity for the order
+                absoluteRemaining = order.AbsoluteQuantity;
             }
      
+            // Call base class method for market fill to leverage the default fill logic
+            // This ensures that the base implementation is executed, which handles general aspects of order fills,
+            // and then the custom logic can be applied on top of it for additional control and adjustments.
             var fill = base.MarketFill(asset, order);
      
+            
             fill.FillQuantity = Math.Sign(order.Quantity) * 10m;
             if (Math.Min(Math.Abs(fill.FillQuantity), absoluteRemaining) == absoluteRemaining)
             {
@@ -71,41 +97,67 @@
                  var price = fill.FillPrice;
 
                 // Use the instance of the algorithm to log the information
+                // This helps in debugging and understanding partial fills
                 _algorithm.Debug($"{_algorithm.Time} - Partial Fill - Remaining {_absoluteRemainingByOrderId[order.Id]} Price - {price}");
             }
+            // Return the fill object to pass the customized fill details back to the algorithm
             return fill;
         }
     }
 }</pre>
-    <pre class="python">class CustomPartialFillModelAlgorithm(QCAlgorithm):      
+    <pre class="python"># Define a trading algorithm that is a subclass of QCAlgorithm
+class CustomPartialFillModelAlgorithm(QCAlgorithm):      
+    # Define an Initialize method.
+    # This method sets up the initial configuration for the algorithm, including dates and assets.
+    # LEAN only calls this method one time, at the start of your algorithm.
     def initialize(self):
+        # Set start and end dates
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2019, 3, 1)
 
+        # Add SPY equity data with hourly resolution
         equity = self.add_equity("SPY", Resolution.HOUR)
         self._spy = equity.symbol
         self._holdings = equity.holdings
 
         # Set the fill model with the instance of the algorithm
+        # This allows custom handling of order fills, including partial fills
         equity.set_fill_model(CustomPartialFillModel(self))
 
+    # Define an OnData method
+    # This method handles incoming data and executes trading logic based on conditions
     def on_data(self, data):
+        # Retrieve open orders for SPY
         open_orders = self.transactions.get_open_orders(self.spy)
+        # Exit if there are open orders
         if len(open_orders) != 0: return
 
+        # Place orders based on the day of the month and holdings
+        # Buy if the holdings are zero or negative after the 10th
+        # Sell if the holdings are positive after the 20th
         if self.time.day &gt; 10 and self._holdings.quantity &lt;= 0:
             self.market_order(self._spy, 105, True)
 
         elif self.time.day &gt; 20 and self._holdings.quantity &gt;= 0:
             self.market_order(self._spy, -100, True)
       
+# Define a custom fill model by subclassing FillModel
 class CustomPartialFillModel(FillModel):
+    # Initialize the custom fill model
+    # Store reference to the algorithm instance and set up tracking for order quantities
+    # Store reference to the algorithm instance
+    # Dictionary to track remaining quantity by order ID
     def __init__(self, algorithm):
         self._algorithm = algorithm
         self._absolute_remaining_by_order_id = {}
 
+    # Define a method to handle market fills
+    # Customize the fill logic to handle partial fills and logging
     def market_fill(self, asset, order):
         absolute_remaining = self._absolute_remaining_by_order_id.get(order.id, order.absolute_quantity)
+        # Call base class method for market fill to leverage the default fill logic
+        # This ensures that the base implementation is executed, which handles general aspects of order fills,
+        # and then the custom logic can be applied on top of it for additional control and adjustments.
         fill = super().market_fill(asset, order)
         fill.fill_quantity = np.sign(order.quantity) * 10
         if (min(abs(fill.fill_quantity), absolute_remaining) == absolute_remaining):
@@ -117,6 +169,7 @@ class CustomPartialFillModel(FillModel):
             self._absolute_remaining_by_order_id[order.id] = absolute_remaining - abs(fill.fill_quantity)
             price = fill.fill_price
             # Use the instance of the algorithm to log the information
+            # This helps in debugging and understanding partial fills
             self._algorithm.debug(f"{self._algorithm.time} - Partial Fill - Remaining {self._absolute_remaining_by_order_id[order.id]} Price - {price}")
       
         return fill</pre>
