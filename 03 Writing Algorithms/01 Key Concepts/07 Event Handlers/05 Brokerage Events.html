@@ -1,5 +1,5 @@
 <div class="section-example-container">
-<pre class="csharp">// Log brokerage messages related to reconnection to track and diagnose connectivity issues
+<pre class="csharp">// Brokerage messages event handler.
 public override void OnBrokerageMessage(BrokerageMessageEvent message)
 {
     if (message.Type== BrokerageMessageType.Reconnect)
@@ -8,27 +8,27 @@ public override void OnBrokerageMessage(BrokerageMessageEvent message)
     }
 }
 
-// Record the time of brokerage disconnection to monitor and respond to connectivity interruptions
+// Track brokerage disconnections and respond to connectivity interruptions.
 public override void OnBrokerageDisconnect()
 {
     Log($"Brokerage disconnection detected at {Time}.");
 }
 
-// Record the time of brokerage reconnection to confirm restored connectivity and resume trading operations
+// Track brokerage reconnections to resume trading operations.
 public override void OnBrokerageReconnect()
 {
     Log($"Brokerage reconnected at {Time}.");
 }</pre>
-<pre class="python"># Log brokerage messages related to reconnection to track and diagnose connectivity issues
+<pre class="python"># Brokerage messages event handler.
 def on_brokerage_message(self, message: BrokerageMessageEvent) -&gt; None: 
     if message.type == BrokerageMessageType.RECONNECT:
         self.log(f"{self.time}: {message.type}: Message: {message.message}")
 
-# Record the time of brokerage disconnection to monitor and respond to connectivity interruptions
+# Track brokerage disconnections and respond to connectivity interruptions.
 def on_brokerage_disconnect(self) -&gt; None:
     self.log(f"Brokerage disconnection detected at {self.time}")
 
- # Record the time of brokerage reconnection to confirm restored connectivity and resume trading operations
+ # Track brokerage reconnections to resume trading operations.
 def on_brokerage_reconnect(self) -&gt; None:
     self.log(f"Brokerage reconnected at {self.time}")
 </pre>
