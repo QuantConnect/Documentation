@@ -3,40 +3,48 @@
 <ol>
     <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions</a>.</li>
     <div class="section-example-container">
-        <pre class="python">equity_symbol = qb.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol
+        <pre class="python"># Create SPY equity symbol object.
+equity_symbol = qb.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol
 
 start_date = datetime(2021, 12, 31)
+# Create a list of option contract symbols from 12/31/2021 to the current time.
 contract_list = qb.OptionChainProvider.GetOptionContractList(equity_symbol, start_date)
 
+# Create a list of CALL options that have the strike price within [450, 500] range, and expire at 1/21/2022. 
 contract_symbols = [s for s in contract_list 
     if s.ID.OptionRight == OptionRight.Call
         and s.ID.Date == datetime(2022, 1, 21)
         and 450 <= s.ID.StrikePrice <= 500]
+# Create a list of PUT options that have the strike price within [450, 500] range, and expire at 1/21/2022. 
 mirror_symbols = [s for s in contract_list 
     if s.ID.OptionRight == OptionRight.Put
         and s.ID.Date == datetime(2022, 1, 21)
         and 450 <= s.ID.StrikePrice <= 500]
 
-# make sure the contracts are aligned by strike prices
+# Sort the contracts list by strike price in ascending order.
 option_contracts = sorted([qb.AddOptionContract(contract_symbol, fillForward = False).Symbol for contract_symbol in contract_symbols], key=lambda x: x.ID.StrikePrice)
 mirror_contracts = sorted([qb.AddOptionContract(mirror_symbol, fillForward = False).Symbol for mirror_symbol in mirror_symbols], key=lambda x: x.ID.StrikePrice)</pre>
-        <pre class="csharp">var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+        <pre class="csharp">// Create SPY equity symbol object.
+var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
 
+// Create a list of option contract symbols from 12/31/2021 to the current time.
 var startDate = new DateTime(2021, 12, 31);
 var contractList = qb.OptionChainProvider.GetOptionContractList(equitySymbol, startDate);
 
+// Create a list of CALL options that have the strike price within [450, 500] range, and expire at 1/21/2022. 
 var contractSymbols = contractList.Where(s => 
     s.ID.OptionRight == OptionRight.Call &&
     s.ID.StrikePrice &lt;= 500 &&
     s.ID.StrikePrice &gt;= 450 &&
     s.ID.Date == new DateTime(2022, 1, 21));
+// Create a list of PUT options that have the strike price within [450, 500] range, and expire at 1/21/2022.
 var mirrorSymbols = contractList.Where(s => 
     s.ID.OptionRight == OptionRight.Put &&
     s.ID.StrikePrice &lt;= 500 &&
     s.ID.StrikePrice &gt;= 450 &&
     s.ID.Date == new DateTime(2022, 1, 21));
 
-// make sure the contracts are aligned by strike prices
+// Sort the contracts list by strike price in ascending order.
 var optionContracts = contractSymbols.OrderBy(x =&gt; x.ID.StrikePrice).Select(x =&gt; qb.AddOptionContract(x, fillForward: false).Symbol).ToList();
 var mirrorContracts = mirrorSymbols.OrderBy(x =&gt; x.ID.StrikePrice).Select(x =&gt; qb.AddOptionContract(x, fillForward: false).Symbol).ToList();</pre>
     </div>
@@ -44,21 +52,25 @@ var mirrorContracts = mirrorSymbols.OrderBy(x =&gt; x.ID.StrikePrice).Select(x =
     <li><a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">Get historical data</a> for the underlying Equity and the Option contract(s).</li>
     <div class="section-example-container">
         <pre class="python">qb.set_start_date(start_date)
+# Request 20 quote bars with MINUTE resolution.
 history = qb.history[QuoteBar]([equity_symbol] + option_contracts + mirror_contracts, 20, Resolution.MINUTE)</pre>
         <pre class="csharp">qb.SetStartDate(startDate);
 var symbols = new List&lt;Symbol&gt; { equitySymbol };
+// Request 20 quote bars with MINUTE resolution.
 var history = qb.History&lt;QuoteBar&gt;(symbols.Concat(optionContracts).Concat(mirrorContracts), 20, Resolution.Minute);</pre>
     </div>
 
     <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators">Option Indicators</a>, with the chosen option pricing model.</li>
     <div class="section-example-container">
-        <pre class="python">iv = {}
+        <pre class="python"># Create a dictionary to store option indicator object.
+iv = {}
 delta = {}
 gamma = {}
 vega = {}
 theta = {}
 rho = {}
 
+# Create option indicators for each strike price.
 for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
     strike = option_contract.id.strike_price
 
@@ -68,13 +80,15 @@ for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
     vega[strike] = Vega(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)
     theta[strike] = Theta(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)
     rho[strike] = Rho(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)</pre>
-        <pre class="csharp">var iv = new Dictionary&lt;decimal, ImpliedVolatility>();
+        <pre class="csharp">// Create a dictionary to store option indicator object.
+var iv = new Dictionary&lt;decimal, ImpliedVolatility>();
 var delta = new Dictionary&lt;decimal, Delta&gt;();
 var gamma = new Dictionary&lt;decimal, Gamma&gt;();
 var vega = new Dictionary&lt;decimal, Vega&gt;();
 var theta = new Dictionary&lt;decimal, Theta&gt;();
 var rho = new Dictionary&lt;decimal, Rho&gt;();
 
+// Create option indicators for each strike price.
 foreach (var pair in optionContracts.Zip(mirrorContracts, (x, y) =&gt; new {OptionContract = x, MirrorContract = y}))
 {
     var strike = pair.OptionContract.ID.StrikePrice;
@@ -98,7 +112,7 @@ for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
     strike = option_contract.id.strike_price
 
     for bar in history:
-        # Update the option indicators with indicator data points of the 3 symbols
+        # Update the option indicators with indicator data points of the 3 symbols.
         equity_point = IndicatorDataPoint(equity_symbol, bar[equity_symbol].end_time, bar[equity_symbol].close)
         option_point = IndicatorDataPoint(option_contract, bar[option_contract].end_time, bar[option_contract].close)
         mirror_point = IndicatorDataPoint(mirror_contract, bar[mirror_contract].end_time, bar[mirror_contract].close)
@@ -149,7 +163,7 @@ foreach (var pair in optionContracts.Zip(mirrorContracts, (x, y) =&gt; new {Opti
     
     foreach (var bar in history)
     {
-        // Update the option indicators with indicator data points of the 3 symbols
+        // Update the option indicators with indicator data points of the 3 symbols.
         var equityPoint = new IndicatorDataPoint(equitySymbol, bar[equitySymbol].EndTime, bar[equitySymbol].Close);
         var optionPoint = new IndicatorDataPoint(optionContract, bar[optionContract].EndTime, bar[optionContract].Close);
         var mirrorPoint = new IndicatorDataPoint(mirrorContract, bar[mirrorContract].EndTime, bar[mirrorContract].Close);
