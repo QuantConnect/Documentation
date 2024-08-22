@@ -16,7 +16,7 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
     return (from f in fundamental
 	    // Select symbols with fundamental data and a price above $10.
             where f.HasFundamentalData && f.Price &gt; 10 && !Double.IsNaN(f.ValuationRatios.PERatio)
-	    // Sort descending by P/E ratio.
+	    // Sort ascending by P/E ratio.
             orderby f.ValuationRatios.PERatio
 	    // Select the first 10 security symbols.
             select f.Symbol).Take(10);
@@ -29,7 +29,7 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
 def fundamental_filter_function(self, fundamental: List[Fundamental]):
     # Select symbols with fundamental data and a price above $10.
     filtered = [f for f in fundamental if f.has_fundamental_data and f.price &gt; 10 and not np.isnan(f.valuation_ratios.pe_ratio)]
-    # Sort descending by P/E ratio.
+    # Sort ascending by P/E ratio.
     sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
     # Select the first 10 security symbols.
     return [f.symbol for f in sorted_by_pe_ratio[:10]]</pre>
@@ -102,9 +102,9 @@ class LiquidAndLowPEUniverseSelectionModel(FundamentalUniverseSelectionModel):
 	# Select symbols with fundamental data and a price above $1.
         filtered = [x for x in fundamental if x.price &gt; 1 and not np.isnan(x.valuation_ratios.pe_ratio)]
 	# Sort descending by daily dollar volume.
-        most_liquid = sorted(filtered, key=lambda x: x.dollar_volume)[-100:]
+        most_liquid = sorted(filtered, key=lambda x: x.dollar_volume, reverse=True)[-100:]
 	# Sort descending by P/E ratio.
-        lowest_pe_ratio = sorted(most_liquid, key=lambda x: x.valuation_ratios.pe_ratio)[:10]
+        lowest_pe_ratio = sorted(most_liquid, key=lambda x: x.valuation_ratios.pe_ratio, reverse=True)[:10]
         return [x.Symbol for x in lowest_pe_ratio]</pre>
 </div>
 
