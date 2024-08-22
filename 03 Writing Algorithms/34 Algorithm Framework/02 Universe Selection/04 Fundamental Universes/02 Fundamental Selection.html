@@ -6,7 +6,7 @@
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
-    // Run universe selection asynchronously to speed up your algorithm.
+    // Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls. 
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(new FundamentalUniverseSelectionModel(FundamentalFilterFunction));
 }
@@ -22,7 +22,7 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
             select f.Symbol).Take(10);
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
-    # Run universe selection asynchronously to speed up your algorithm.
+    # Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls. 
     self.universe_settings.asynchronous = True
     self.add_universe_selection(FundamentalUniverseSelectionModel(self.fundamental_filter_function))
 
@@ -71,11 +71,11 @@ def fundamental_filter_function(self, fundamental: List[Fundamental]):
 <p>To move the selection function outside of the algorithm class, create a universe selection model that inherits the <code>FundamentalUniverseSelectionModel</code> class and override its <code class="csharp">Select</code><code class="python">select</code> method.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize
+	<pre class="csharp">// Setup algorithm settings and request data in Initialize()
 UniverseSettings.Asynchronous = true;            
 AddUniverseSelection(new LiquidAndLowPEUniverseSelectionModel());
 
-// Outside of the algorithm class
+// Define universe selection class outside of the QCAlgorithm class
 public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelectionModel
 {
     public override IEnumerable<Symbol> Select(QCAlgorithm algorithm, IEnumerable<Fundamental> fundamental)
@@ -92,7 +92,7 @@ public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelection
             .Select(x => x.Symbol);
     }
 }</pre>
-	<pre class="python"># In initialize
+	<pre class="python"># Setup algorithm settings and request data in initialize
 self.universe_settings.asynchronous = True
 self.add_universe_selection(LiquidAndLowPEUniverseSelectionModel())
 
