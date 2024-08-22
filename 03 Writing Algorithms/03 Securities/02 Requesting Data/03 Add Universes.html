@@ -4,14 +4,16 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">public class MyFundamentalUniverseAlgorithm : QCAlgorithm
+<pre class="csharp">// Use the FundamentalFilterFunction to add the top 100 stocks by dollar volume to the universe.
+public class MyFundamentalUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
         UniverseSettings.Asynchronous = true;
         AddUniverse(FundamentalFilterFunction);
     }
-    
+
+    // Get the top 100 stocks by dollar volume.
     private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
     {
         return (from c in fundamental
@@ -19,11 +21,13 @@
             select c.Symbol).Take(100);
     }
 }</pre>
-<pre class="python">class MyFundamentalUniverseAlgorithm(QCAlgorithm):
+<pre class="python"># Use the fundamental_filter_function to add the top 100 stocks by dollar volume to the universe.
+class MyFundamentalUniverseAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.universe_settings.asynchronous = True
         self.add_universe(self.fundamental_filter_function)
-    
+
+    # Get the top 100 stocks by dollar volume.
     def fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
         return [c.symbol for c in sorted_by_dollar_volume[:100]]</pre>

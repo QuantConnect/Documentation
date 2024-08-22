@@ -1,7 +1,8 @@
 <p>The following example filter function selects the 100 most liquid US Equities.</p>
 
 <div class="section-example-container">
-<pre class="csharp">public class MyFundamentalUniverseAlgorithm : QCAlgorithm
+<pre class="csharp">// Use FundamentalFilterFunction to sort and select the 100 most liquid equities.
+public class MyFundamentalUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -16,13 +17,14 @@
             select c.Symbol).Take(100);
     }
 }</pre>
-<pre class="python">class MyFundamentalUniverseAlgorithm(QCAlgorithm):
+<pre class="python"># Use fundamental_filter_function to sort and select the 100 most liquid equities.
+class MyFundamentalUniverseAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.universe_settings.asynchronous = True
         self.add_universe(self._fundamental_filter_function)
 
     def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
+        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)
         return [c.symbol for c in sorted_by_dollar_volume[:100]]</pre>
 </div>
 

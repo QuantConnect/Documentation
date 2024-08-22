@@ -28,10 +28,9 @@
     }
 ?>
 <div class='section-example-container'>
-<pre class='csharp'>// In Initialize
+<pre class='csharp'>// Setup security initializers in the algorithm Initialize() method to seed initial prices and models.
 SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
 
-// Outside of the algorithm class
 class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
     <?=$classMemberC?>public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder<?=$extraParamsC?>)
@@ -40,8 +39,8 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     public override void Initialize(Security security)
     {
-        // First, call the superclass definition
-        // This method sets the reality models of each security using the default reality models of the brokerage model
+        // First, call the superclass definition.
+        // This method sets the reality models of each security using the default reality models of the brokerage model.
         base.Initialize(security);
 
         // Next, overwrite <?=$comment?>
@@ -50,7 +49,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     }
 }</pre>
-<pre class='python'># In Initialize
+<pre class='python'># Setup security initializers in the algorithm def initialize method to seed initial prices and models.
 self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
 
 # Outside of the algorithm class
@@ -61,8 +60,8 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
     
     def initialize(self, security: Security) -> None:
-        # First, call the superclass definition
-        # This method sets the reality models of each security using the default reality models of the brokerage model
+        # First, call the superclass definition.
+        # This method sets the reality models of each security using the default reality models of the brokerage model.
         super().initialize(security)
 
         # Next, overwrite <?=$comment?>
