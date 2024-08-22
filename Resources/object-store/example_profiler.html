@@ -1,0 +1,48 @@
+<p>
+  Your algorithm can spend up to 10 minutes on each timeslice unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models"><span class="csharp">Train</span><span class="python">train</span></a> method, see <a href="/docs/v2/writing-algorithms/key-concepts/algorithm-engine#06-Event-Flow">Event Flow</a>.
+</p>
+<p>
+  You can use the <a rel="nofollow" target="_blank" href='https://docs.python.org/3/library/profile.html'>Python Profilers</a> of the Python Standard Library to find the functions and methods that consume most of the runtime and improve your code. The following example shows how to save profiling data to the Object Store.
+</p>
+
+<ul>
+  <li>Import the <code>Profile</code>, <code>Stats</code>, and <code>StringIO</code> classes. Create a <code>profile</code> object and call the <code>enable</code> method to start collecting profiling data.</li>
+  <div class="section-example-container">
+    <pre class="python">from cProfile import Profile
+from pstats import Stats
+from io import StringIO
+
+# Create the profile and start collecting profiling data.
+profile = Profile()
+profile.enable()</pre>
+</div>
+
+  <li>Create a algorithm. In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>on_end_of_algorithm</a>, call the <code>disable</code> method to stop collecting profiling data. Use a <code>Stats</code> object to sort the methods by cumulative time and print the top 20. Save the profiling data to the Object Store.</li>
+
+  <div class="section-example-container">
+    <pre class="python">class FunctionTimeConsumptionAlgorithm(QCAlgorithm):
+    def initialize(self):
+        pass
+
+    def on_end_of_algorithm(self):
+        # Stop collecting profiling data
+        profile.disable()
+        stream = StringIO()
+        # Save the top 20 time-consuming functions to a file in the Object Store
+        Stats(profile, stream=stream).sort_stats('cumulative').print_stats(20)
+        # Save the profiling data to the Object Store using the algorithm ID
+        self.object_store.save(f"{self.algorithm_id}_profile", stream.getvalue())</pre>
+  </div>
+
+  <li><a href='/docs/v2/research-environment/key-concepts/getting-started#03-Open-Notebooks'>Open the Research Environment</a> and create a <code>QuantBook</code>.</li>
+  <div class="section-example-container">
+    <pre class="python">qb = QuantBook()</pre>
+  </div>
+
+  <li><a href='/docs/v2/cloud-platform/backtesting/getting-started#06-Get-Backtest-Id'>Get the backtest Id</a> and read the profiling data from the Object Store.</li>
+  <div class="section-example-container">
+    <pre class="python">algorithm_id = "8b16cec0c44f75188d82f9eadb310e17"
+profile_output = qb.object_store.read(f"{algorithm_id}_profile")
+print(profile_output)</pre>
+  </div>
+</ul>
