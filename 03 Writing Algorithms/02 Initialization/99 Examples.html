@@ -1,12 +1,15 @@
 <h4>Example 1: Set Data Seed</h4>
 <p>Some data might not have data feed on its first fetch, making the algorithm prone to error. To solve this case, you can set a seed on using the last known price as the initial data.</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Seed with the last known price to prevent algorithm errors.
+public override void Initialize()
 {
     SetSecurityInitializer(new BrokerageModelSecurityInitializer(
         BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 }</pre>
-	<pre class="python">def initialize(self):
+	<pre class="python"># Seed with the last known price to prevent algorithm errors.
+public override void Initialize()
+def initialize(self):
     self.set_security_initializer(BrokerageModelSecurityInitializer(
         self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))</pre>
 </div>
@@ -14,22 +17,26 @@
 <h4>Example 2: Extended Market Hour</h4>
 <p>Some traders would use pre-market hour data for filtering assets. To do so, you can subscribe to extended market hour data with the following code:</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Subscribe to extended market hour to use pre market hours data.
+public override void Initialize()
 {
     UniverseSettings.ExtendedMarketHours = true;
 }</pre>
-	<pre class="python">def initialize(self):
+	<pre class="python"># Subscribe to extended market hour to use pre market hours data.
+def initialize(self):
     self.universe_settings.extended_market_hours = True</pre>
 </div>
 
 <h4>Example 3: Train Model On Warm Up Finishes</h4>
 <p>After warming up indicators or rolling windows, you can train machine learning model with the cached data:</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void OnWarmupFinished()
+	<pre class="csharp">// Train machine learning model with the cached data.
+public override void OnWarmupFinished()
 {
     Train(MyTrainingMethod);
 }</pre>
-	<pre class="python">def on_warmup_finished(self) -&gt; None:
+	<pre class="python"># Train machine learning model with the cached data.
+def on_warmup_finished(self) -&gt; None:
     self.train(self.my_training_method)</pre>
 </div>
 
