@@ -93,12 +93,12 @@ contract_symbols = qb.option_chain_provider.get_option_contract_list(equity_symb
     </table>
 
     <div class="section-example-container">
-      <pre class="csharp">// Select the first contract in the call options list with strike price at 477 and expiry at 1/21/2022.
+      <pre class="csharp">// Select the first contract in the call options list that have strike price at 477 and expire at 1/21/2022.
     var contractSymbol = contractSymbols.Where(s =&gt; 
 	    s.ID.OptionRight == OptionRight.Call &amp;&amp;
 	    s.ID.StrikePrice == 477 &amp;&amp;
 	    s.ID.Date == new DateTime(2022, 1, 21)).First();</pre>
-      <pre class="python"># Select the first contract in the call options list with strike price at 477 and expiry at 1/21/2022.
+      <pre class="python"># Select the first contract in the call options list that have strike price at 477 and expire at 1/21/2022.
     contract_symbol = [s for s in contract_symbols 
 	    if s.id.option_right == OptionRight.CALL 
 	        and s.id.strike_price == 477 
