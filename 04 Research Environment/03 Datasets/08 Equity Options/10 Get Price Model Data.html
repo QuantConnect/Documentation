@@ -4,26 +4,26 @@
     <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions</a>.</li>
     <div class="section-example-container">
         <pre class="python"># Create SPY equity symbol object.
-equity_symbol = qb.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol
+equity_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
 
 start_date = datetime(2021, 12, 31)
 # Create a list of option contract symbols from 12/31/2021 to the current time.
-contract_list = qb.OptionChainProvider.GetOptionContractList(equity_symbol, start_date)
+contract_list = qb.option_chain_provider.get_option_contract_list(equity_symbol, start_date)
 
 # Create a list of CALL options that have the strike price within [450, 500] range, and expire at 1/21/2022. 
 contract_symbols = [s for s in contract_list 
-    if s.ID.OptionRight == OptionRight.Call
-        and s.ID.Date == datetime(2022, 1, 21)
-        and 450 <= s.ID.StrikePrice <= 500]
+    if s.id.option_right == OptionRight.CALL
+        and s.id.date == datetime(2022, 1, 21)
+        and 450 <= s.id.strike_price <= 500]
 # Create a list of PUT options that have the strike price within [450, 500] range, and expire at 1/21/2022. 
 mirror_symbols = [s for s in contract_list 
-    if s.ID.OptionRight == OptionRight.Put
-        and s.ID.Date == datetime(2022, 1, 21)
-        and 450 <= s.ID.StrikePrice <= 500]
+    if s.id.option_right == OptionRight.PUT
+        and s.id.date == datetime(2022, 1, 21)
+        and 450 <= s.id.strike_price <= 500]
 
 # Sort the contracts list by strike price in ascending order.
-option_contracts = sorted([qb.AddOptionContract(contract_symbol, fillForward = False).Symbol for contract_symbol in contract_symbols], key=lambda x: x.ID.StrikePrice)
-mirror_contracts = sorted([qb.AddOptionContract(mirror_symbol, fillForward = False).Symbol for mirror_symbol in mirror_symbols], key=lambda x: x.ID.StrikePrice)</pre>
+option_contracts = sorted([qb.add_option_contract(contract_symbol, fill_forward = False).symbol for contract_symbol in contract_symbols], key=lambda x: x.id.strike_price)
+mirror_contracts = sorted([qb.add_option_contract(mirror_symbol, fill_forward = False).symbol for mirror_symbol in mirror_symbols], key=lambda x: x.id.strike_price)</pre>
         <pre class="csharp">// Create SPY equity symbol object.
 var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
 
