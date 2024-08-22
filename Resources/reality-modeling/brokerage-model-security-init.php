@@ -28,10 +28,8 @@
     }
 ?>
 <div class='section-example-container'>
-<pre class='csharp'>// Apply my custom made MySecurityInitializer
-SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
+<pre class='csharp'>SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
 
-// Implementing MySecurityInitializer class inheriting from BrokerageModelSecurityInitializer
 class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
     <?=$classMemberC?>public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder<?=$extraParamsC?>)
@@ -40,8 +38,8 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     public override void Initialize(Security security)
     {
-        // First, call the superclass definition
-        // This method sets the reality models of each security using the default reality models of the brokerage model
+        // First, call the superclass definition.
+        // This method sets the reality models of each security using the default reality models of the brokerage model.
         base.Initialize(security);
 
         // Next, overwrite <?=$comment?>
@@ -50,8 +48,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     }
 }</pre>
-<pre class='python'># Apply my custom made MySecurityInitializer
-self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
+<pre class='python'>self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
 
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
@@ -61,8 +58,8 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
     
     def initialize(self, security: Security) -> None:
-        # First, call the superclass definition
-        # This method sets the reality models of each security using the default reality models of the brokerage model
+        # First, call the superclass definition.
+        # This method sets the reality models of each security using the default reality models of the brokerage model.
         super().initialize(security)
 
         # Next, overwrite <?=$comment?>
