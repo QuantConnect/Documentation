@@ -1,5 +1,6 @@
 <div class="section-example-container">
-<pre class="csharp">public override void OnOrderEvent(OrderEvent orderEvent)
+<pre class="csharp">// Track filled orders and details of each order execution.
+public override void OnOrderEvent(OrderEvent orderEvent)
 {
     var order = Transactions.GetOrderById(orderEvent.OrderId);
     if (orderEvent.Status == OrderStatus.Filled)
@@ -8,15 +9,18 @@
     }
 }
 
+// Track option assignment events to handle assigned stock holdings. 
 public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
 {
     Log(assignmentEvent.ToString());
 }</pre>
-<pre class="python">def on_order_event(self, order_event: OrderEvent) -&gt; None:
+<pre class="python"># Track filled orders and details of each order execution.
+def on_order_event(self, order_event: OrderEvent) -&gt; None:
     order = self.transactions.get_order_by_id(order_event.order_id)
     if order_event.status == OrderStatus.FILLED:
         self.debug(f"{self.time}: {order.type}: {order_event}")
 
+# Track option assignment events to handle assigned stock holdings.
 def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
     self.log(str(assignment_event))</pre>
 </div>

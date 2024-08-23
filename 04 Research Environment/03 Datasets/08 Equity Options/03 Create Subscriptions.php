@@ -24,8 +24,10 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     </div>
     <li><span class='qualifier'>(Optional)</span> Set a <a href="/docs/v2/writing-algorithms/universes/equity-options#03-Filter-Contracts">contract filter</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">option.set_filter(-1, 1, 0, 90);</pre>
-        <pre class="python">option.set_filter(-1, 1, 0, 90)</pre>
+        <pre class="csharp">// Set contract filter to return contracts that have the strike price within 1 strike level and expire within 90 days.
+	option.set_filter(-1, 1, 0, 90);</pre>
+        <pre class="python"># Set contract filter to return contracts that have the strike price within 1 strike level and expire within 90 days.
+	option.set_filter(-1, 1, 0, 90)</pre>
     </div>
     <p>The filter determines which contracts the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
 <ul>
@@ -35,8 +37,10 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 </ul>
     <li><span class='qualifier'>(Optional)</span> Set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein();</pre>
-        <pre class="python">option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
+        <pre class="csharp">// Use the Cox, Ross, and Rubinstein Binomial model to price the options.
+	option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein();</pre>
+        <pre class="python"># Use the Cox, Ross, and Rubinstein Binomial model to price the options.
+	option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
     </div>
 
 </ol>
@@ -45,9 +49,11 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 <ol>
     <li>Call the <code>GetOptionsContractList</code> method with the underlying <code>Equity</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var startDate = new DateTime(2021, 12, 31);
-var contractSymbols = qb.OptionChainProvider.GetOptionContractList(equitySymbol, startDate);</pre>
-    <pre class="python">start_date = datetime(2021, 12, 31)
+        <pre class="csharp">// Create a list of option contract symbols from 12/31/2021 to the current time.
+	var startDate = new DateTime(2021, 12, 31);
+	var contractSymbols = qb.OptionChainProvider.GetOptionContractList(equitySymbol, startDate);</pre>
+    <pre class="python"># Create a list of option contract symbols from 12/31/2021 to the current time.
+start_date = datetime(2021, 12, 31)
 contract_symbols = qb.option_chain_provider.get_option_contract_list(equity_symbol, start_date)</pre>
     </div>
     <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code class="csharp">SetFilter</code><code class="python">set_filter</code>, it doesn't affect the results of <code>GetOptionsContractList</code>.</p>
@@ -87,24 +93,30 @@ contract_symbols = qb.option_chain_provider.get_option_contract_list(equity_symb
     </table>
 
     <div class="section-example-container">
-      <pre class="csharp">var contractSymbol = contractSymbols.Where(s =&gt; 
-    s.ID.OptionRight == OptionRight.Call &amp;&amp;
-    s.ID.StrikePrice == 477 &amp;&amp;
-    s.ID.Date == new DateTime(2022, 1, 21)).First();</pre>
-	    <pre class="python">contract_symbol = [s for s in contract_symbols 
-    if s.id.option_right == OptionRight.CALL 
-        and s.id.strike_price == 477 
-        and s.id.date == datetime(2022, 1, 21)][0]</pre>
+      <pre class="csharp">// Select the first contract in the call options list that have strike price at 477 and expire at 1/21/2022.
+    var contractSymbol = contractSymbols.Where(s =&gt; 
+	    s.ID.OptionRight == OptionRight.Call &amp;&amp;
+	    s.ID.StrikePrice == 477 &amp;&amp;
+	    s.ID.Date == new DateTime(2022, 1, 21)).First();</pre>
+      <pre class="python"># Select the first contract in the call options list that have strike price at 477 and expire at 1/21/2022.
+    contract_symbol = [s for s in contract_symbols 
+	    if s.id.option_right == OptionRight.CALL 
+	        and s.id.strike_price == 477 
+	        and s.id.date == datetime(2022, 1, 21)][0]</pre>
     </div>
 	<li>Call the <code class="csharp">AddOptionContract</code><code class="python">add_option_contract</code>  method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
     <div class="section-example-container">
-      <pre class="csharp">var optionContract = qb.AddOptionContract(contractSymbol, fillForward: false);</pre>
-      <pre class="python">option_contract = qb.add_option_contract(contract_symbol, fill_forward = False)</pre>
+      <pre class="csharp">// Create a option object from the selected contract symbol.
+      var optionContract = qb.AddOptionContract(contractSymbol, fillForward: false);</pre>
+      <pre class="python"># Create a option object from the selected contract symbol.
+      option_contract = qb.add_option_contract(contract_symbol, fill_forward = False)</pre>
     </div>
   <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
     <li><span class='qualifier'>(Optional)</span> Set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">optionContract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
-        <pre class="python">option_contract.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
+        <pre class="csharp">// Use the Cox, Ross, and Rubinstein Binomial model to price the options.
+	optionContract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
+        <pre class="python"># Use the Cox, Ross, and Rubinstein Binomial model to price the options.
+	option_contract.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
     </div>
 </ol>

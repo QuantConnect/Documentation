@@ -5,16 +5,21 @@
 
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
-
+// Create a manual indicator.
 _sma = SimpleMovingAverage(20);
+// Request 20 bars of daily data.
 var history = algorithm.History(_symbol, 20, Resolution.Daily);
+// Warm up manually using historical data of close prices.
 foreach (var bar in history)
 {
     sma.Update(bar.Time, bar.Close);
 }
 </pre>
-    <pre class="python">self._sma = SimpleMovingAverage(20)
+    <pre class="python"> # Create a manual indicator.
+self._sma = SimpleMovingAverage(20)
+# Request 20 bars of daily data.
 history = algorithm.history(self._symbol, 20, Resolution.DAILY)
+# Warm up manually using historical data of close prices.
 if not history.empty:
     for time, row in history.loc[self._symbol].iterrows():
         self._sma.update(time, row.close)</pre>
@@ -22,27 +27,29 @@ if not history.empty:
 
 <h4>Warm-up Helper Method</h4>
 
-<p>If an indicator inherits the <code>IIndicatorWarmUpPeriodProvider</code> class, you can warm it up with the <code class='csharp'>WarmUpIndicator</code><code class='python'>warm_up_indicator</code> method.</p>
+<p>If an indicator inherits(implements) the <code>IIndicatorWarmUpPeriodProvider</code> interface, you can warm it up with the <code class='csharp'>WarmUpIndicator</code><code class='python'>warm_up_indicator</code> method.</p>
 
 
 <div class="section-example-container">
-    <pre class="csharp">_sma = SimpleMovingAverage(20);
+    <pre class="csharp">// Warm up manually using warm-up helper.
+_sma = SimpleMovingAverage(20);
 algorithm.WarmUpIndicator(_symbol, _sma);</pre>
-    <pre class="python">self._sma = SimpleMovingAverage(20)
+    <pre class="python"># Warm up manually using warm-up helper.
+self._sma = SimpleMovingAverage(20)
 algorithm.warm_up_indicator(self._symbol, self._sma)</pre>
 </div>
 
 <p>To warm up the indicator with a resolution that's different from the security resolution, pass a resolution or <code class="csharp">TimeSpan</code><code class="python">timedelta</code> argument to the <code class='csharp'>WarmUpIndicator</code><code class='python'>warm_up_indicator</code> method. The resolution you provide should be greater than or equal to the security resolution. For example, if the security has minute resolution data, you should warm up the indicator with data that spans at least one minute.<br></p>
 <div class="section-example-container">
-    <pre class="csharp">// Warm-up with daily bars
+    <pre class="csharp">// Warm-up with daily bars.
 algorithm.WarmUpIndicator(_symbol, _sma, Resolution.Daily);
 
-// Warm-up with 3-day bars
+// Warm-up with 3-day bars.
 algorithm.WarmUpIndicator(_symbol, _sma, TimeSpan.FromDays(3));</pre>
-    <pre class="python"># Warm-up with daily bars
+    <pre class="python"># Warm-up with daily bars.
 algorithm.warm_up_indicator(self._symbol, self._sma, Resolution.DAILY)
 
-# Warm-up with 3-day bars
+# Warm-up with 3-day bars.
 algorithm.warm_up_indicator(self._symbol, self._sma, timedelta(days=3))</pre>
 </div>
 
@@ -51,8 +58,10 @@ algorithm.warm_up_indicator(self._symbol, self._sma, timedelta(days=3))</pre>
 	In most cases, this is the closing price. To warm up the indicator with an alternative price field, pass a <code>Field</code> argument to the method.
 </p>
 <div class="section-example-container">
-    <pre class="csharp">algorithm.WarmUpIndicator(_symbol, _sma, Resolution.Daily, Field.High);</pre>
-    <pre class="python">algorithm.warm_up_indicator(self._symbol, self._sma, Resolution.DAILY, Field.HIGH)</pre>
+    <pre class="csharp">// Warm up indicator using historical data of high prices.
+algorithm.WarmUpIndicator(_symbol, _sma, Resolution.Daily, Field.High);</pre>
+    <pre class="python"># Warm up indicator using historical data of high prices.
+algorithm.warm_up_indicator(self._symbol, self._sma, Resolution.DAILY, Field.HIGH)</pre>
 </div>
 
 <p>
@@ -60,38 +69,41 @@ algorithm.warm_up_indicator(self._symbol, self._sma, timedelta(days=3))</pre>
     In this case, pass a list of the <code>Symbol</code> objects to the method.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">var spy = AddEquity("SPY").Symbol;
+	<pre class="csharp">//Example using the warm-up helper, for an indicator that needs 2 symbols of data.
+var spy = AddEquity("SPY").Symbol;
 var aapl = AddEquity("AAPL").Symbol;
 var beta = new Beta("", aapl, spy, 21);
 WarmUpIndicator(new[] {aapl, spy}, beta, Resolution.Daily);</pre>
-	<pre class="python">self._spy = self.add_equity("SPY").symbol
+	<pre class="python"># Example using the warm-up helper, for an indicator that needs 2 symbols of data.
+self._spy = self.add_equity("SPY").symbol
 self._aapl = self.add_equity('AAPL').symbol
 self._beta = Beta("", self._aapl, self._spy, 21)
 self.warm_up_indicator([self._aapl, self._spy], self._beta, Resolution.DAILY)</pre>
 </div>
 
 <h4>Algorithm Warm-up</h4>
-<p>If you create indicators at the beginning of your algorithm, you can set an <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm-up period</a> to warm up the indicators. When you set an algorithm warm-up period, the engine pumps data in and automatically updates all the indicators from before the start date of the algorithm. To ensure that all the indicators are ready after the algorithm warm-up period, choose a lookback period that contains sufficient data.</p>
+<p>If you create indicators at the beginning of your algorithm, you can set an <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm warm-up period</a> to warm up the indicators. When you set an algorithm warm-up period, the engine pumps data in and automatically updates all the indicators from before the start date of the algorithm. To ensure that all the indicators are ready after the algorithm warm-up period, choose a lookback period that contains sufficient data.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
 
-// In Initialize
+// In Initialize Method: Request data and construct the indicators you need.
 var symbol = AddEquity("SPY", Resolution.Daily).Symbol;
 _sma = SimpleMovingAverage(20);
 SetWarmUp(20);
 
-// In OnData
+// In the OnData Event Handler: Update your indicators if required. Use the IsWarmingUp flag to skip some code execution.
 _sma.Update(data["SPY"]); // Delete this line if you registered the indicator for automatic updates
-if (IsWarmingUp)<br>{
+if (IsWarmingUp) 
+{
     return;
 }</pre>
-    <pre class="python"># In Initialize
+    <pre class="python"># In the initialize() method, request data and construct the indicators you need.
 self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 self._sma = SimpleMovingAverage(20)
 self.set_warm_up(20)
 
-# In OnData
+# In the on_data event handler, update your indicators if required. Use the self.is_warming_up flag to skip some code execution.
 self._sma.update(data[self._symbol]) # Delete this line if you registered the indicator for automatic updates
 if self.is_warming_up:
     return</pre>

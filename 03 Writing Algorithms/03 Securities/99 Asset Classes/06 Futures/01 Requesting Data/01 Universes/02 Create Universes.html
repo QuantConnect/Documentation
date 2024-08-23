@@ -1,0 +1,77 @@
+<p>To add a universe of Future contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. This method returns an <code>Future</code> object, which has a <code class="csharp">SetFilter</code><code class="python">set_filter</code> method you can call to filter the set of tradable contract down to just the contracts you want.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class BasicFutureAlgorithm : QCAlgorithm
+{
+    private Future _future;
+    public override void Initialize()
+    {
+        _future = AddFuture(Futures.Indices.SP500EMini,
+            extendedMarketHours: true,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        _future.SetFilter(0, 182);
+    }
+
+    public override void OnData(Slice data)
+    {
+        data.Bars.TryGetValue(_future.Symbol, out var continuousTradeBar);
+        data.Bars.TryGetValue(_future.Mapped, out var mappedTradeBar);
+
+        foreach (var (continuousSymbol, chain) in data.FuturesChains)
+        {
+            foreach (var (symbol, contract) in chain.Contracts)
+            {
+                var expiry = contract.Expiry;
+            }
+        }
+    }
+
+    // Track events when security changes its ticker allowing algorithm to adapt to these changes.
+    public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+    {
+        foreach (var (symbol, changedEvent) in symbolChangedEvents)
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            var newSymbol = changedEvent.NewSymbol;
+            var quantity = Portfolio[oldSymbol].Quantity;
+
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
+            Liquidate(oldSymbol, tag: tag);
+            if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
+        }
+    }
+}</pre>
+    <pre class="python">class BasicFutureAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0)
+        self._future.set_filter(0, 182)
+    
+    def on_data(self, data):
+        continuous_trade_bar = data.bars.get(self._future.symbol)
+        mapped_trade_bar = data.bars.get(self._future.mapped)
+
+        for continuous_symbol, chain in data.future_chains.items():
+            for symbol, contract in chain.contracts.items():
+                expiry = contract.expiry
+    
+    # Track events when security changes its ticker allowing algorithm to adapt to these changes.
+    def on_symbol_changed_events(self, symbol_changed_events):
+        for symbol, changed_event in  symbol_changed_events.items():
+            old_symbol = changed_event.old_symbol
+            new_symbol = changed_event.new_symbol
+            quantity = self.portfolio[old_symbol].quantity
+
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
+            self.liquidate(old_symbol, tag=tag)
+            if quantity: self.market_order(new_symbol, quantity, tag=tag)</pre>
+</div>
+
+<p>For more information about the <code class="csharp">AddFuture</code><code class="python">add_future</code> method, see <a href='/docs/v2/writing-algorithms/universes/futures#11-Create-Universes'>Create Universes</a>.</p>

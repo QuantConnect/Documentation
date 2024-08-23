@@ -2,9 +2,9 @@
 
 <div class='section-example-container'>
     <pre class='csharp'>// Add data points to custom chart 
-        Plot("Chart Name", "Series Name", value);</pre>
+    Plot("Chart Name", "Series Name", value);</pre>
     <pre class='python'># Add data points to custom chart 
-        self.plot("Chart Name", "Series Name", value)</pre>
+    self.plot("Chart Name", "Series Name", value)</pre>
 </div>
 
 <p><?=$cloudPlatform ? "If you run your algorithm in QuantConnect Cloud, we limit" : "We limit" ?> the number of points a chart can have to 4,000 because intensive charting generates hundreds of megabytes (200MB) of data, which is too much to stream online or display in a web browser. If you exceed the limit, the following error message is thrown:</p>

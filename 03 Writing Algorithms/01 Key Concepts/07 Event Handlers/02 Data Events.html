@@ -1,41 +1,51 @@
 <div class="section-example-container">
-    <pre class="csharp">public override void OnData(Slice slice)
+    <pre class="csharp">// Get data for the specific symbol to analyze its price movements or trading signals.
+public override void OnData(Slice slice)
 {
     slice.TryGetValue(_symbol, out var myData);
 }
 
+// Get split information to adjust holdings and calculations for the symbol.
 public override void OnSplits(Splits splits)
 {
     splits.TryGetValue(_symbol, out var split);
 }
 
+// Capture dividend events to account for income or adjust strategy based on the dividend payout.
 public override void OnDividends(Dividends dividends)
 {
     dividends.TryGetValue(_symbol, out var dividend);
 }
 
+// Track events when security changes its ticker allowing algorithm to adapt to these changes.
 public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
 {
     symbolChangedEvents.TryGetValue(_symbol, out var symbolChangedEvent);
 }
 
+// Handle delisting events to manage the position or adjust the strategy when the symbol is delisted.
 public override void OnDelistings(Delistings delistings)
 {
     delistings.TryGetValue(_symbol, out var delisting);
 }
 </pre>
-    <pre class="python">def on_data(self, slice: Slice) -> None:
+    <pre class="python"># Get data for the specific symbol to analyze its price movements or trading signals.
+def on_data(self, slice: Slice) -> None:
     my_data = slice.get(self._symbol)
-    
+
+# Get split information to adjust holdings and calculations for the symbol.
 def on_splits(self, splits: Splits) -> None:
     split = splits.get(self._symbol)
-    
+ 
+# Capture dividend events to account for income or adjust strategy based on the dividend payout.
 def on_dividends(self, dividends: Dividends) -> None:
     dividend = dividends.get(self._symbol)
-    
+   
+# Track events when security changes its ticker allowing algorithm to adapt to these changes.
 def on_symbol_changed_events(self, symbol_changed_events: SymbolChangedEvents) -> None:
     symbol_changed_event = symbol_changed_events.get(self._symbol])
-        
+
+# Handle delisting events to manage the position or adjust the strategy when the symbol is delisted.
 def on_delistings(self, delistings: OnDelistings) -> None:
     delisting = delistings.get(self._symbol)
 </pre>
