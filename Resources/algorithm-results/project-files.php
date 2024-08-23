@@ -5,5 +5,5 @@
 <img class='docs-image' alt="Algorithm code snippets" src='<?=($pageName == "live") ? "https://cdn.quantconnect.com/i/tu/live-project-files-clone.png" : "https://cdn.quantconnect.com/i/tu/backtest-results-project-files.png" ?>'>
 
 <? if ($pageName == "live") { ?>
-  <p>To create a new project with the project files used to deploy the algorithm, click on <span class='button-name'>Clone Algorithm</span>.</p>
+  <p>To create a new project with the project files used to deploy the algorithm, click <span class='button-name'>Clone Algorithm</span>.</p>
 <?}?>
