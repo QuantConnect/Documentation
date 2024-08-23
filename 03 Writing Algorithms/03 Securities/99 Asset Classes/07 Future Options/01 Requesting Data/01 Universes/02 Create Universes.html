@@ -1,0 +1,66 @@
+<p>To add a universe of Future Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method. Pass the <code class="csharp">optionFilter</code><code class="python">option_filter</code> argument to filter the set of tradable contract down to just the contracts you want.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class BasicFutureOptionAlgorithm : QCAlgorithm
+{
+    private Future _future;
+    public override void Initialize()
+    {
+        _future = AddFuture(Futures.Indices.SP500EMini,
+            extendedMarketHours: true,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        _future.SetFilter(0, 182);
+
+        AddFutureOption(_future.Symbol, optionFilterUniverse => optionFilterUniverse.Strikes(-1, 1));
+    }
+
+    public override void OnData(Slice data)
+    {
+        // Iterate all Option chains to find the desired future and future options contracts 
+        foreach (var (canonicalSymbol, chain) in data.OptionChains)
+        {
+            var futureContract = canonicalSymbol.Underlying;
+            foreach (var (symbol, contract) in chain.Contracts)
+            {
+                var strike = contract.Strike;
+            }
+        }
+
+        // Get the Option chain for the mapped contract 
+        if (data.OptionChains.TryGetValue(QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped), out var mappedChain))
+        {
+            foreach (var (symbol, contract) in mappedChain.Contracts)
+            {
+                var strike = contract.Strike;
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class BasicFutureOptionAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0)
+        self._future.set_filter(0, 182)
+
+        self.add_future_option(self._future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1))
+    
+    def on_data(self, data):
+        # Iterate all Option chains to find the desired future and future options contracts 
+        for canonical_symbol, chain in data.option_chains.items():
+            future_contract = canonical_symbol.underlying
+            for symbol, contract in chain.contracts.items():
+                strike = contract.strike
+
+        # Get the Option chain for the mapped contract 
+        maoped_chain = data.option_chains.get(Symbol.create_canonical_option(self._future.mapped))
+        if maoped_chain:
+            for symbol, contract in maoped_chain.contracts.items():
+            strike = contract.strike</pre>
+</div>
+
+<p>For more information about the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method, see <a href='/docs/v2/writing-algorithms/universes/future-options#02-Create-Universes'>Create Universes</a>.</p>
