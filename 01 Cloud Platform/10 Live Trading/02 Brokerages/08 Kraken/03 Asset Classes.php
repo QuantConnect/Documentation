@@ -1,9 +1,9 @@
 <?php include(DOCS_RESOURCES."/brokerages/kraken/asset-classes.php"); ?>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add BTC/USDT crypto pair at minute resolution from the Kraken market
+    <pre class="csharp">// Add the BTC/USDT Crypto pair at minute resolution from the Kraken market.
     AddCrypto("BTCUSDT", Resolution.Minute, Market.Kraken);</pre>
-    <pre class="python"># Add BTC/USDT crypto pair at minute resolution from the Kraken market
+    <pre class="python"># Add the BTC/USDT Crypto pair at minute resolution from the Kraken market.
     self.add_crypto("BTCUSDT", Resolution.MINUTE, Market.KRAKEN)</pre>
 </div>
 
