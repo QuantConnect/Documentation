@@ -1,5 +1,5 @@
 <h4>Example 1: Sentiment Universe</h4>
-<p>High sentiment stocks make perfect choices for volatility and sentiment trading.</p>
+<p>High sentiment stocks are great for volatility and sentiment trading.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
@@ -12,16 +12,16 @@
     });
 }</pre>
 	<pre class="python">def initialize(self):
-    self.add_universe(BrainSentimentIndicatorUniverse, self.selection)
+    self.add_universe(BrainSentimentIndicatorUniverse, self._selection)
 
-def selection(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
+def _selection(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
     mentioned = [x for x in alt_data if x.total_article_mentions7_days &gt; 0]
     sorted_by_sentiment = sorted(mentioned, key=lambda x: x.sentiment7_days, reverse=True)
     return [x.symbol for x in sorted_by_sentiment[:20]]</pre>
 </div>
 
 <h4>Example 2: Follow Insiders' Trades</h4>
-<p>Insiders would have better information to evaluate the overall prospect of the company, hence following their trades could be useful. In this case, we filter for any stocks with insider buys.</p>
+<p>Insiders have more information to evaluate the overall prospect of the company, so following their trades could be useful. For example, you can select stocks with insider purchases.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
@@ -33,14 +33,14 @@ def selection(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[
     });
 }</pre>
 	<pre class="python">def initialize(self):
-    self.add_universe(QuiverInsiderTradingUniverse, self.selection)
+    self.add_universe(QuiverInsiderTradingUniverse, self._selection)
 
-def selection(self, alt_data: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
+def _selection(self, alt_data: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
     return [x.symbol for x in alt_data if x.direction == OrderDirection.BUY]</pre>
 </div>
 
 <h4>Example 3: Filter Crypto's Market Cap</h4>
-<p>Trading the highest-cap cryptos can lower the risk of ruin, while riding on the major trend of crypto. You can filter the top 10 cap cryptos with the following.</p>
+<p>Trading the Cryptos with the largest market caps can lower the risk of ruin while benefiting from the major trend of Crypto.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
@@ -52,9 +52,9 @@ def selection(self, alt_data: List[QuiverInsiderTradingUniverse]) -&gt; List[Sym
     });
 }</pre>
 	<pre class="python">def initialize(self):
-    self.add_universe(CoinGeckoUniverse, self.selection)
+    self.add_universe(CoinGeckoUniverse, self._selection)
 
-def selection(self, alt_data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
+def _selection(self, alt_data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
     sorted_by_cap = sorted(alt_data, key=lambda x: x.market_cap, reverse=True)
     return [x.symbol for x in sorted_by_cap[:10]]</pre>
 </div>
