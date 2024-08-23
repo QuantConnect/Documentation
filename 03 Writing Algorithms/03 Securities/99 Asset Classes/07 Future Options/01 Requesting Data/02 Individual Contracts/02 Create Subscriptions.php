@@ -1,4 +1,4 @@
-<p>Before you can subscribe to an Option contract, you must configure the underlying Equity and get the contract <code>Symbol</code>.</p>
+<p>Before you can subscribe to an Option contract, you must configure the underlying Future and get the contract <code>Symbol</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class BasicFutureOptionAlgorithm : QCAlgorithm
