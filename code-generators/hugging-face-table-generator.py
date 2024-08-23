@@ -38,7 +38,7 @@ def __to_row(line):
     url = line.split('Revisions')[0][6:-2]
     category = __get_category(url)
     example = __get_example(url)
-    return f'<tr><td><a rel="nofollow" target="_blank" href="https://huggingface.co/{url}">{url}</a></td><td style="text-align:center;">{category}</td><td style="text-align:center;">{example}</td></tr>'
+    return f'<tr><td><a rel="nofollow" target="_blank" href="https://huggingface.co/{url}">{url}</a></td><td>{category}</td><td style="text-align:center;">{example}</td></tr>'
 
 def __get_category(url):
     content = get(f"https://huggingface.co/{url}").text
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     with open("Resources/machine-learning/hugging-face-table.html", mode='w') as f:
         rows = '\n        '.join(rows)
         f.write(f'''<table class="qc-table table">
-    <thead><tr><th>Name</th><th style="text-align:center;">Category</th><th style="text-align:center;">Example</th></tr></thead>
+    <thead><tr><th>Name</th><th>Category</th><th style="text-align:center;">Example</th></tr></thead>
     <tbody>
         {rows}
     </tbody>
