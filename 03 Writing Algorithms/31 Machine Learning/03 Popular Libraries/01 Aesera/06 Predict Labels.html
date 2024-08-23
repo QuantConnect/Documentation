@@ -1,13 +1,15 @@
 <p>To predict the labels of new data, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, get the most recent set of features and then call the <code>predict</code> method.</p>
 <div class="section-example-container">
-    <pre class="python">features, _ = self.get_features_and_labels()
+    <pre class="python"># Generate feature set and make a prediction with the latest data.
+features, _ = self.get_features_and_labels()
 prediction = self.predict(features[-1].reshape(1, -1))
 prediction = float(prediction)</pre>
 </div>
 
 <p>You can use the label prediction to place orders.</p>
 <div class="section-example-container">
-    <pre class="python">if prediction == 1:
+    <pre class="python"># Use label prediction to place orders.
+if prediction == 1:
     self.set_holdings(self._symbol, 1)
 elif prediction == 0:            
     self.set_holdings(self._symbol, -1)</pre>
