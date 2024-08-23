@@ -43,44 +43,12 @@
 
 <h4>Configure the Underlying Futures Contract</h4>
 
-<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract. If you don't, LEAN automatically subscribes to the underlying Futures contract with the following settings:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Setting</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#05-Fill-Forward'>Fill forward</a></td>
-            <td>Same as the Option contract</td>
-        </tr>
-        <tr>
-            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#06-Margin-and-Leverage'>Leverage</a></td>
-            <td>0</td>
-        </tr>
-        <tr>
-            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#07-Extended-Market-Hours'>Extended Market Hours</a></td>
-            <td>Same as the Option contract</td>
-        </tr>
-    </tbody>
-</table>
-
-<p>In this case, you still need the Futures contract <code class="csharp">Symbol</code><code class="python">symbol</code>.</p> to subscribe to Futures Option contracts. If you don't have access to it, create it.</p>
+<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
-    Market.CME, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self._future_contract_symbol = Symbol.create_future(Futures.Indices.SP500E_MINI,
-    Market.CME, datetime(2022, 6, 17))</pre>
+    <pre class="csharp">_underlying = AddFuture(Futures.Indices.SP500EMini).Symbol;</pre>
+    <pre class="python">self._underlying = self.add_future(Futures.Indices.SP_500_E_MINI).symbol</pre>
 </div>
-
-<p>For more information about getting the <code>Symbol</code> of Futures contracts, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions'>Create Subscriptions</a>.</p>
-
-
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
 <h4>Get Contract Symbols</h4>
 
@@ -121,15 +89,13 @@
             <tr>
                  <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
                  <td>
-                     The contract type. The <code>OptionRight</code> enumeration has the following members:
-                     <div data-tree="QuantConnect.OptionRight"></div>
+                     The contract type, <code class="csharp">OptionRight.Put</code><code class="python">OptionRight.PUT</code> or <code class="csharp">OptionRight.Call</code><code class="python">OptionRight.CALL</code>.
                   </td>
             </tr>
             <tr>
                  <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
                  <td>
-                     The contract style. The <code>OptionStyle</code> enumeration has the following members:
-                     <div data-tree="QuantConnect.OptionStyle"></div>
+                     The contract style, <code class="csharp">OptionStyle.American</code><code class="python">OptionStyle.AMERICAN</code> or <code class="csharp">OptionStyle.European</code><code class="python">OptionStyle.EUROPEAN</code>.
                      We currently only support American-style Options for Future Options.
                   </td>
             </tr>
