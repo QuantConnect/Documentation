@@ -1,4 +1,4 @@
-<h4>Example 1: Add Alternative Data By Filtered Universe</h4>
+<h4>Example 1: Add Alternative Data for Universe Constituents</h4>
 <p>You can utilize information from alternative datasets for position sizing by subscribe to alternative data for selected universe members.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -16,7 +16,7 @@
         }
     }
 }</pre>
-	<pre class="python">def on_warmup_finished(self, changes: SecurityChanges) -&gt; None:
+	<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
     for security in changes.added_securities:
         security.alt_data_symbol = self.add_data(KavoutCompositeFactorBundle, security.symbol, Resolution.DAILY).symbol
     
@@ -25,8 +25,8 @@
             self.remove_security(security.alt_data_symbol)</pre>
 </div>
 
-<h4>Example 2: Disable Forward Fill Data</h4>
-<p>For some illiquid securities or alternative data, using forward filled data might not be an accurate estimation nor usable updated information. You can disable forward filled data to avoid this.</p>
+<h4>Example 2: Disable Fill Forward Data</h4>
+<p>For some illiquid securities or alternative data, using forward filled data might not be an accurate estimation nor usable information. To avoid this, disable fill forward.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
