@@ -5,9 +5,9 @@ include(DOCS_RESOURCES."/initialization/set-time-zone.php");
 <p>To get the time zone of your algorithm, use the<code class="csharp">TimeZone</code><code class="python">time_zone</code> property.</p>
 
 <div class="section-example-container">
-<pre class="python"># The algorithm timezone property can assist with multi-asset trading
+<pre class="python"># The algorithm timezone property can assist with multi-asset trading.
 time_zone = self.time_zone</pre>
-<pre class="csharp">// The algorithm timezone property can assist with multi-asset trading
+<pre class="csharp">// The algorithm timezone property can assist with multi-asset trading.
 var timeZone = TimeZone;</pre>
 </div> 
 
