@@ -43,7 +43,7 @@
         <tr><td><code>--coinapi-product</code></td></tr>
 
         <tr>
-            <td rowspan="2"><code>Coinbase Advanced Trade</code></td>
+            <td rowspan="2"><code>"Coinbase Advanced Trade"</code></td>
             <td><code>--coinbase-api-name</code></td>
         </tr>
         <tr><td><code>--coinbase-api-private-key</code></td></tr>
