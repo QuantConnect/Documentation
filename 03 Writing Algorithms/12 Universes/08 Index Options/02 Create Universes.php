@@ -31,7 +31,7 @@ self._symbol = option.symbol</pre>
         <tr>
             <td><code>resolution</code></td>
 	        <td><code class="csharp">Resolution?</code><code class="python">Resolution/NoneType</code></td>
-            <td>The resolution of the market data. To view the supported resolutions, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data#03-Resolutions'>Resolutions</a>.</td>
+            <td>The resolution of the market data. To view the supported resolutions, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data/individual-contracts#03-Resolutions'>Resolutions</a>.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
@@ -89,7 +89,7 @@ self._symbol = option.symbol</pre>
         <tr>
             <td><code>resolution</code></td>
 	        <td><code class="csharp">Resolution?</code><code class="python">Resolution/NoneType</code></td>
-            <td>The resolution of the market data. To view the supported resolutions, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data#03-Resolutions'>Resolutions</a>. The Index resolution must be less than or equal to the Index Option resolution. For example, if you set the Index resolution to minute, then you must set the Index Option resolution to minute, hour, or daily.</td>
+            <td>The resolution of the market data. To view the supported resolutions, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data/individual-contracts#03-Resolutions'>Resolutions</a>. The Index resolution must be less than or equal to the Index Option resolution. For example, if you set the Index resolution to minute, then you must set the Index Option resolution to minute, hour, or daily.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
