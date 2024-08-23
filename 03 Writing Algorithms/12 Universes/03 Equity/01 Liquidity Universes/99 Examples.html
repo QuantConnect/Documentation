@@ -3,17 +3,22 @@
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
+    // Filter for large-cap stocks (market_cap>=$10 billion), sort by dollar volume, return the top 20 symbols. 
     AddUniverse((fundamental) =&gt; fundamental.Where(f =&gt; f.HasFundamentalData && f.MarketCap &gt;= 1e10m)
         .OrderedByDescending(f =&gt; f.DollarVolume)
         .Take(20)
         .Select(f =&gt; f.Symbol));
 }</pre>
 	<pre class="python">def initialize(self):
+    # Initialize algo with custom universe
     self.add_universe(self._selection)
 
 def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    # Filter for large-cap stocks (market_cap >= $10 billion). 
     large_cap_stocks = [f for f in fundamental if f.has_fundamental_data and f.market_cap &gt;= 1e10]
+    # Sort the filtered large-cap stocks by dollar volume in decending order.
     sorted_by_dollar_volume = sorted(large_cap_stocks, key=lambda f: f.dollar_volume, reverse=True)
+    # Return the symbols of the top 20 stocks by dollar volume. 
     return [f.symbol for f in sorted_by_dollar_volume[:20]]</pre>
 </div>
 
