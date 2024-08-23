@@ -1,4 +1,45 @@
-<p>Before you can subscribe to a Future Option contract, you may configure the underlying volatility model and you must get the contract <code class="csharp">Symbol</code><code class="python">symbol</code>.</p>
+<p>Before you can subscribe to an Option contract, you must configure the underlying Equity and get the contract <code>Symbol</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class BasicFutureOptionAlgorithm : QCAlgorithm
+{
+    private Symbol _underlying;
+    private Option _contract = null;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        _underlying = AddFuture(Futures.Indices.SP500EMini).Symbol;
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (_contract == null)
+        {
+            var contractSymbols = OptionChainProvider.GetOptionContractList(_underlying, Time);
+            var expiry = contractSymbols.Min(symbol => symbol.ID.Date);
+            var filteredSymbols = contractSymbols
+                .Where(symbol => symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call)
+                .ToList();
+            var symbol = filteredSymbols.OrderBy(symbol => symbol.ID.StrikePrice).First();
+            _contract = AddFutureOptionContract(symbol);
+        }
+    }
+}</pre>
+    <pre class="python">class BasicFutureOptionAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2020, 1, 1)
+        self._underlying = self.add_future(Futures.Indices.SP_500_E_MINI).symbol
+        self._contract = None
+    
+    def on_data(self, data):
+        if not self._contract:
+            contract_symbols = self.option_chain_provider.get_option_contract_list(self._underlying, self.time)
+            expiry = min([symbol.id.date for symbol in contract_symbols])
+            filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
+            symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
+            self._contract = self.add_future_option_contract(symbol)</pre>
+</div>
 
 <h4>Configure the Underlying Futures Contract</h4>
 
