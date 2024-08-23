@@ -27,17 +27,23 @@ def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
+    // Filter stocks for (price <= $3), sort by lowest dollar volume, and return the symbols of the lowest 20 (by dollar volume). 
     AddUniverse((fundamental) =&gt; fundamental.Where(f =&gt; f.Price &lt;= 3)
         .OrderedBy(f =&gt; f.DollarVolume)
         .Take(20)
         .Select(f =&gt; f.Symbol));
 }</pre>
-	<pre class="python">def initialize(self):
+	<pre class="python"> 
+def initialize(self):
+    # Initialize algo with custom universe
     self.add_universe(self._selection)
 
 def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    # Filter stocks for (price <= $3).
     penny_stocks = [f for f in fundamental if f.price &lt;= 3]
+    # Sort stocks by dollar volume in ascending order.
     sorted_by_dollar_volume = sorted(penny_stocks, key=lambda f: f.dollar_volume)
+    # Return 20 symbols of the penny stocks that have the lowest dollar volume. 
     return [f.symbol for f in sorted_by_dollar_volume[:20]]</pre>
 </div>
 
@@ -46,15 +52,20 @@ def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
+    // Sort the penny stocks by volume, return the 20 with highest trade volume. 
     AddUniverse((fundamental) =&gt; fundamental.OrderedByDescending(f =&gt; f.Volume)
       .Take(20)
       .Select(f =&gt; f.Symbol));
 }</pre>
-	<pre class="python">def initialize(self):
+	<pre class="python">
+def initialize(self):
+    # Initialize algo with custom universe
     self.add_universe(self._selection)
 
 def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    # Of the penny stocks from prior example, sort in decending order with respect to volume. 
     sorted_by_volume = sorted(penny_stocks, key=lambda f: f.volume, reverse=True)
+    # Return top 20 symbols with highest volume. 
     return [f.symbol for f in sorted_by_volume[:20]]</pre>
 </div>
 
