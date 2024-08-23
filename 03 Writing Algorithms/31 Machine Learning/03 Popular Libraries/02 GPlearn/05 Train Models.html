@@ -3,7 +3,8 @@
 <h4>Warm Up Training Data</h4>
 <p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-    <pre class="python">training_length = 252*2
+    <pre class="python"># Initialize training data with a rolling window of size 252*2 days.
+training_length = 252*2
 self.training_data = RollingWindow[float](training_length)
 history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
 for trade_bar in history:
@@ -13,7 +14,8 @@ for trade_bar in history:
 <h4>Define a Training Method</h4>
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
-    <pre class="python">def get_features_and_labels(self, n_steps=5):
+    <pre class="python"># Prepare feature and label data for training by processing the rolling window data.
+def get_features_and_labels(self, n_steps=5):
     training_df = list(self.training_data)[::-1]
     daily_pct_change = ((np.roll(training_df, -1) - training_df) / training_df)[:-1]
 
@@ -42,7 +44,8 @@ def my_training_method(self):
 <h4>Set Training Schedule</h4>
 <p>To train the model at the beginning of your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method.</p>
 <div class="section-example-container">
-    <pre class="python">self.train(self.my_training_method)</pre>
+    <pre class="python"># Set the training schedule.
+self.train(self.my_training_method)</pre>
 </div>
 
 <p>To periodically re-train the model as your algorithm executes, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
@@ -54,7 +57,8 @@ self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), se
 <h4>Update Training Data</h4>
 <p>To update the training data as the algorithm executes, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, add the current close price to the <code>RollingWindow</code> that holds the training data.</p>
 <div class="section-example-container">
-    <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    <pre class="python"># Update the training data to train the model on most recent information
+def on_data(self, slice: Slice) -&gt; None:
     if self._symbol in slice.bars:
         self.training_data.add(slice.bars[self._symbol].close)</pre>
 </div>

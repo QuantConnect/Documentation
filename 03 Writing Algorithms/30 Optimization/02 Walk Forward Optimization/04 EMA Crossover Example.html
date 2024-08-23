@@ -3,7 +3,8 @@
 <ol>
   <li>Define the backtest dates and starting cash.</li>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
+    <pre class="python"># set start date, end date and cash.
+def initialize(self):
     self.set_start_date(2000, 1, 1)
     self.set_end_date(2024, 1, 1)
     self.set_cash(100_000)</pre>
@@ -11,14 +12,16 @@
 
   <li>Enable the automatic indicator warm up <a href='/docs/v2/writing-algorithms/initialization#06-Set-Universe-Settings'>setting</a>.</li>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
+    <pre class="python"># Set the automatic_indicator_warm_up property to true to enable automatic algorithm warm-up.
+def initialize(self):
     # . . .
     self.settings.automatic_indicator_warm_up = True</pre>
   </div>
 
   <li><a href='/docs/v2/writing-algorithms/securities/requesting-data'>Subscribe to an asset</a>.</li>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
+    <pre class="python"># Add SPY equity data subscription with daily resolution.
+def initialize(self):
     # . . .
     self._security = self.add_equity("SPY", Resolution.DAILY)
     self._symbol = self._security.symbol</pre>
@@ -26,7 +29,8 @@
 
   <li>Add some members for the EMA indicators.</li>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
+    <pre class="python"># Initialize members for short and long EMA indicators.
+def initialize(self):
     # . . .
     self._short_ema = None
     self._long_ema = None</pre>
@@ -34,7 +38,8 @@
 
   <li>Define the trading rules.</li>
   <div class="section-example-container">
-    <pre class="python">def on_data(self, data):
+    <pre class="python"># Define the trading logic.
+def on_data(self, data):
     if self.is_warming_up:
         return
 
@@ -50,7 +55,8 @@
 
   <li>Define a method that will adjust the algorithm's behavior, given a set of optimal parameters.</li>
   <div class="section-example-container">
-    <pre class="python">def _update_algorithm_logic(self, optimal_parameters):
+    <pre class="python"># Define a method to adjust the algorithm's behavior based on new optimal parameters.
+def _update_algorithm_logic(self, optimal_parameters):
     # Remove the old indicators.
     if self._short_ema:
         self.deregister_indicator(self._short_ema)
@@ -67,7 +73,8 @@
 
   <li>Back in <code>initialize</code> method, generate all the possible combinations of parameter values.</li>
   <div class="section-example-container">
-    <pre class="python">import itertools
+    <pre class="python"># In the initialize method, generate all possible combinations of parameter values.
+import itertools
       
 def initialize(self):
     # . . .
@@ -96,7 +103,8 @@ def _generate_parameter_sets(self, search_space):
 
   <li>Define the objective function.</li>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
+    <pre class="python"># Define an objective function to optimize the algorithm's overall performance.
+def initialize(self):
     # . . .
     objective = self._cumulative_return
     # . . .
@@ -107,7 +115,8 @@ def _cumulative_return(self, daily_returns):
 
     <li>Define the optimization function.</li>
   <div class="section-example-container">
-    <pre class="python">def _optimization_func(self, data, parameter_set, objective):
+    <pre class="python"># Evaluate parameter sets by calculating strategy performance with the objective function.
+def _optimization_func(self, data, parameter_set, objective):
     p1 = parameter_set['short_ema']
     p2 = parameter_set['long_ema']
     short_ema = data['close'].ewm(p1, min_periods=p1).mean()
@@ -124,7 +133,8 @@ def _cumulative_return(self, daily_returns):
 
   <li>Schedule the optimization sessions.</li>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
+    <pre class="python"># Schedule the WFO process to run at the start of each month and midnight.
+def initialize(self):
     # . . .
     self.train(
         self.date_rules.month_start(self._symbol),
@@ -155,7 +165,8 @@ def _do_wfo(self, optimization_func, min_max, objective):
     <li>Add a <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm-up period</a>.</li>
     <p>The warm-up period ensures that the algorithm calls the <code>_do_wfo</code> method at least one time before the algorithm starts trading.</p>
   <div class="section-example-container">
-    <pre class="python">def initialize(self):
+    <pre class="python"># Set the warm-up period.
+def initialize(self):
     # . . .
     self.set_warm_up(timedelta(45))</pre>
   </div>
