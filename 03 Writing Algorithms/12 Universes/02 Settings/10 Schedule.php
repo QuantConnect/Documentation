@@ -5,9 +5,11 @@ To change the selection schedule, call the <code class="csharp">UniverseSettings
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">UniverseSettings.Schedule.On(DateRules.MonthStart());
+    <pre class="csharp">// Run universe selection on a schedule using the DateRules class. e.g. On a monthly basis.
+UniverseSettings.Schedule.On(DateRules.MonthStart());
 AddUniverse(Universe.DollarVolume.Top(50));</pre>
-    <pre class="python">self.universe_settings.schedule.on(self.date_rules.month_start())
+    <pre class="python"># Run universe selection on a schedule using the date_rule class. e.g. On a monthly basis.
+self.universe_settings.schedule.on(self.date_rules.month_start())
 self.add_universe(self.universe.dollar_volume.top(50))</pre>
 </div>
 
