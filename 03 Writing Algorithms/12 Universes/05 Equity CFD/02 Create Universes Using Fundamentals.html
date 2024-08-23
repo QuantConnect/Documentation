@@ -1,11 +1,13 @@
 <p>To add a fundamental universe, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, pass a filter function to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method. The filter function receives a list of <code>Fundamental</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. In live mode, call the <code class="csharp">Symbol.Create</code><code class="python">Symbol.create</code> method to swap for a CFD version of the same <code>Symbol</code>. Don't call <code class="csharp">AddCfd</code><code class="python">add_cfd</code> in the filter function.</p>
     
 <div class="section-example-container">
-    <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
+    <pre class="csharp">// Create a universe for CFD securities that includes fundamental data.
+public class MyUniverseAlgorithm : QCAlgorithm {
     private Universe _universe;
     public override void Initialize() 
     {
         UniverseSettings.Asynchronous = true;
+        // Use the filter function in AddUniverse argument.
         _universe = AddUniverse(FundamentalFilterFunction);
     }
         
@@ -23,9 +25,11 @@
         return symbols;
     }
 }</pre>
-    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    <pre class="python"># Create a universe for CFD securities that includes fundamental data.
+class MyUniverseAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.universe_settings.asynchronous = True
+        # Use the filter function in add_universe argument.
         self._universe = self.add_universe(self._fundamental_function)
     
     def _fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
@@ -40,8 +44,8 @@ The simplest example of accessing the fundamental object would be harnessing the
 </p>
     
 <div class="section-example-container">
-    <pre class="csharp">// Take the top 50 by dollar volume using fundamental
-// Then the top 10 by PERatio using fine
+    <pre class="csharp">// Take the top 50 by dollar volume using fundamental.
+// Then the top 10 by PE Ratio using fine.
 UniverseSettings.Asynchronous = true;
 _universe = AddUniverse(
     fundamental =&gt;
@@ -60,7 +64,8 @@ _universe = AddUniverse(
         
         return symbols;
     });</pre>
-    <pre class="python"># In Initialize:
+    <pre class="python"># Take the top 50 by dollar volume using fundamental.
+# Then the top 10 by PE Ratio using fine.
 self.universe_settings.asynchronous = True
 self._universe = self.add_universe(self._fundamental_selection_function)
     
