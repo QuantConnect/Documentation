@@ -1,4 +1,4 @@
-<p>To remove a contract subscription that you created with <code><?=$addContractMethodName?></code>, call the <code class="csharp">RemoveOptionContract</code><code class="python">remove_option_contract</code> method. This method is an alias for <code class="csharp">RemoveSecurity</code><code class="python">remove_security</code>.</p>
+<p>To remove a contract subscription that you created with <?=$addContractMethodName?>, call the <code class="csharp">RemoveOptionContract</code><code class="python">remove_option_contract</code> method. This method is an alias for <code class="csharp">RemoveSecurity</code><code class="python">remove_security</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>RemoveOptionContract(<?=$cSharpVariableName?>);</pre>
