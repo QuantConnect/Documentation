@@ -2,5 +2,5 @@
 
 <?
   include(DOCS_RESOURCES."/universes/option/option-filter-universe-strategies.html"); 
-  include(DOCS_RESOURCES."/universes/future_option/filter-examples-strategies.html");
+  include(DOCS_RESOURCES."/universes/future-option/filter-examples-strategies.html");
 ?>
