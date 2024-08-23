@@ -1,5 +1,5 @@
 <h4>Example 1: Set Data Seed</h4>
-<p>Some data might not have data feed on its first fetch, making the algorithm prone to error. To solve this case, you can set a seed on using the last known price as the initial data.</p>
+<p>Some data feeds might not have data on its first fetch, making the algorithm prone to error. To avoid issues, <a href='/docs/v2/writing-algorithms/universes/settings#98-Configure-Universe-Securities'>set a seed</a> on using the last known value as the initial value.</p>
 <div class="section-example-container">
 	<pre class="csharp">// Seed with the last known price to prevent security price $0 errors.
 public override void Initialize()
@@ -8,7 +8,6 @@ public override void Initialize()
         BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 }</pre>
 	<pre class="python"># Seed with the last known price to prevent security price $0 errors.
-public override void Initialize()
 def initialize(self):
     self.set_security_initializer(BrokerageModelSecurityInitializer(
         self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))</pre>
