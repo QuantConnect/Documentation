@@ -9,16 +9,16 @@
         .Select(f =&gt; f.Symbol));
 }</pre>
 	<pre class="python">def initialize(self):
-    self.add_universe(self.selection)
+    self.add_universe(self._selection)
 
-def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     large_cap_stocks = [f for f in fundamental if f.has_fundamental_data and f.market_cap &gt;= 1e10]
     sorted_by_dollar_volume = sorted(large_cap_stocks, key=lambda f: f.dollar_volume, reverse=True)
     return [f.symbol for f in sorted_by_dollar_volume[:20]]</pre>
 </div>
 
 <h4>Example 2: Illiquid Penny Stocks Universe</h4>
-<p>Some market makers will aim at illiquid penny stocks to earn higher spread with less captital.</p>
+<p>Some market makers will aim at illiquid penny stocks to earn higher spreads with less captital.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
@@ -28,16 +28,16 @@ def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         .Select(f =&gt; f.Symbol));
 }</pre>
 	<pre class="python">def initialize(self):
-    self.add_universe(self.selection)
+    self.add_universe(self._selection)
 
-def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     penny_stocks = [f for f in fundamental if f.price &lt;= 3]
     sorted_by_dollar_volume = sorted(penny_stocks, key=lambda f: f.dollar_volume)
     return [f.symbol for f in sorted_by_dollar_volume[:20]]</pre>
 </div>
 
 <h4>Example 3: Highest Volume Universe</h4>
-<p>For intra-day trading, high volume stocks provide more arbitration chances.</p>
+<p>For intraday trading, high volume stocks provide more arbitrage oppotunities.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
@@ -46,14 +46,14 @@ def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
       .Select(f =&gt; f.Symbol));
 }</pre>
 	<pre class="python">def initialize(self):
-    self.add_universe(self.selection)
+    self.add_universe(self._selection)
 
-def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     sorted_by_volume = sorted(penny_stocks, key=lambda f: f.volume, reverse=True)
     return [f.symbol for f in sorted_by_volume[:20]]</pre>
 </div>
 
-<p>See more examples from Lean:</p>
+<p>For more examples, see the following algorithms:</p>
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Algorithms</div>
   <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/UniverseSelectionDefinitionsAlgorithm.py" target="_BLANK">UniverseSelectionDefinitionsAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
