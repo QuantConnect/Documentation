@@ -9,5 +9,4 @@ self.plot("Chart Name", "Series Name", value)</pre>
 
 <p><?=$cloudPlatform ? "If you run your algorithm in QuantConnect Cloud, we limit" : "We limit" ?> the number of points a chart can have to 4,000 because intensive charting generates hundreds of megabytes (200MB) of data, which is too much to stream online or display in a web browser. If you exceed the limit, the following error message is thrown:</p>
 <span class='error-messages'>Exceeded maximum data points per series, chart update skipped.</span>
-<br>
-<p>Some plans on the QuantConnect cloud can plot more points by downsampling the charts when at a daily zoom.</p>
+
