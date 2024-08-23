@@ -5,12 +5,12 @@
 If you place a market order when the market is closed, LEAN automatically converts the order into market on open order. This most commonly happens when you use daily or hourly data, which your algorithm can receive when the market is closed. With the <code class="csharp">DailyPreciseEndTime</code><code class="python">daily_precise_end_time</code> <a href='/docs/v2/writing-algorithms/initialization#10-Set-Algorithm-Settings'>setting</a> enabled, your algorithm receives daily bars and the last hourly bar of each day at 4 PM Eastern Time (ET). To avoid LEAN from converting your market order to market on open orders, submit your market orders when the market is open. To check if the market is open, call the <code class="csharp">IsMarketOpen</code><code class="python">is_market_open</code> method.<br></p>
 
 <div class="section-example-container">
-<pre class="csharp"> // Check market status before placing an order to avoid unintended market-on-open trades 
+<pre class="csharp">// Check market status before placing an order to avoid unintended market-on-open trades 
 if (IsMarketOpen(_symbol))
 {
     MarketOrder(symbol, quantity);
 }</pre>
-<pre class="python"> # Check market status before placing an order to avoid unintended market-on-open trades
+<pre class="python"># Check market status before placing an order to avoid unintended market-on-open trades.
 if self.is_market_open(self._symbol):
     self.market_order(self._symbol, quantity)</pre>
 </div>
