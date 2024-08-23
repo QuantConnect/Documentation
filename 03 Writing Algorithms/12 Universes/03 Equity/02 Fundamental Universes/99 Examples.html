@@ -14,9 +14,13 @@ The most common use case is to select a lot of liquid stocks. With a fundamental
         orderby f.DollarVolume descending
         select f.Symbol).Take(500);
 }</pre>
-<pre class="python">def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+<pre class="python">
+def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    # Filter for securities with price &gt; $10 and has trading volume &gt; $10M. 
     filtered = [f for f in fundamental if f.price &gt; 10 and f.dollar_volume &gt; 10000000]
+    # Sort by decending order of previously filtered list.
     sorted_by_dollar_volume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)
+    # Return fundamentals of 500 securities with highest trading volume that are priced above $10.
     return sorted_by_dollar_volume[:500]</pre>
 </div>
 
@@ -65,7 +69,8 @@ def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; Lis
 In this example, the <code>SelectionData</code> class group variables for the universe selection and updates the indicator of each asset. We highly recommend you follow this pattern to keep your algorithm tidy and bug free. The following snippet shows an example implementation of the <code>SelectionData</code> class, but you can make this whatever you need to store your custom universe filters.
 </p>
 <div class="section-example-container">
-<pre class="python">class SelectionData(object):
+<pre class="python">
+class SelectionData(object):
     def __init__(self, symbol, period):
         self._symbol = symbol
         self._ema = ExponentialMovingAverage(period)
