@@ -20,18 +20,24 @@
     {
         if (_contractSymbol == null)
         {
-            // Iterate all Future chains to find the desired future options contracts  
+            // Method 1: Add the desired option chain for the mapped contract
+            _contractSymbol = SelectOptionContract(_future.Mapped);
+            AddFutureOptionContract(_contractSymbol);
+            
+            // Method 2: Get all future contracts from the Future chain provider
+            var futureContractSymbol = FutureChainProvider.GetFutureContractList(_future.Symbol, Time)
+                .OrderBy(symbol =&gt; symbol.ID.Date).FirstOrDefault();
+            var symbol = SelectOptionContract(futureContractSymbol);
+            AddFutureOptionContract(symbol);
+            
+            // Method 3: Iterate all Future chains to find the desired future options contracts  
             foreach (var (_, chain) in data.FutureChains)
             {
                 var expiry = chain.Min(contract =&gt; contract.Expiry);
                 var futureContract = chain.Where(contract =&gt; contract.Expiry == expiry).FirstOrDefault();
-                var symbol = SelectOptionContract(futureContract.Symbol);
+                symbol = SelectOptionContract(futureContract.Symbol);
                 AddFutureOptionContract(symbol);
             }
-
-            // Add the desired option chain for the mapped contract
-            _contractSymbol = SelectOptionContract(_future.Mapped);
-            AddFutureOptionContract(_contractSymbol);
         }
     }
 
@@ -56,16 +62,22 @@
     
     def on_data(self, data):
         if not self._contract_symbol:
-            # Iterate all Future chains to find the desired future options contracts         
+            # Method 1: Add the desired option chain for the mapped contract
+            self._contract_symbol = self._select_option_contract(self._future.mapped)
+            self.add_future_option_contract(self._contract_symbol)
+
+            # Method 2: Get all future contracts from the Future chain provider
+            future_contract_symbols = self.future_chain_provider.get_future_contract_list(self._future.symbol, self.time)
+            future_contract_symbol = sorted(future_contract_symbols, key=lambda symbol: symbol.id.date)[0]
+            symbol = self._select_option_contract(future_contract_symbol)
+            self.add_future_option_contract(symbol)
+
+            # Method 3: Iterate all Future chains to find the desired future options contracts         
             for symbol, chain in data.future_chains.items():
                 expiry = min([contract.expiry for contract in chain])
                 future_contract = next(contract for contract in chain if contract.expiry == expiry)
                 symbol = self._select_option_contract(future_contract.symbol)
                 self.add_future_option_contract(symbol)
-
-            # Add the desired option chain for the mapped contract
-            self._contract_symbol = self._select_option_contract(self._future.mapped)
-            self.add_future_option_contract(self._contract_symbol)
 
     def _select_option_contract(self, future_contract_symbol):
         contract_symbols = self.option_chain_provider.get_option_contract_list(future_contract_symbol, self.time)
@@ -77,11 +89,19 @@
 
 <h4>Configure the Underlying Futures Contract</h4>
 
-<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract.</p>
+<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data/individual-contracts#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">_future = AddFuture(Futures.Indices.SP500EMini);</pre>
-    <pre class="python">self._future = self.add_future(Futures.Indices.SP_500_E_MINI)</pre>
+    <pre class="csharp">_future = AddFuture(Futures.Indices.SP500EMini,
+    extendedMarketHours: true,
+    dataMappingMode: DataMappingMode.OpenInterest,
+    dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+    contractDepthOffset: 0);</pre>
+    <pre class="python">self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+    extended_market_hours=True,
+    data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+    data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+    contract_depth_offset=0)</pre>
 </div>
 
 <p>You can use the <code class="csharp">Mapped</code><code class="python">mapped</code> property of the <code>Future</code> object or the <code class="csharp">Symbol</code><code class="python">symbol</code> property of the <code>FutureContract</code> objects in the <code class="csharp">Slice.FutureChains</code><code class="python">Slice.future_chains</code> collection.</p>
