@@ -1,7 +1,8 @@
 <p>To predict the labels of new data, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, get the most recent set of features and then call the <code>predict</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="python">features, _ = self.get_observations_and_rewards()
+    <pre class="python"># Generate feature set and make a prediction with the latest data.
+features, _ = self.get_observations_and_rewards()
 action, _ = self.model.predict(features[-5:], deterministic=True)
 _, _, _, _ = self.env.step(action)</pre>
 </div>
@@ -9,7 +10,8 @@ _, _, _, _ = self.env.step(action)</pre>
 <p>You can use the label prediction to place orders.</p>
 
 <div class="section-example-container">
-    <pre class="python">if action == 0:
+    <pre class="python"># Use label prediction to place orders.
+if action == 0:
     self.liquidate(self.spy)
 elif action == 1:
     self.set_holdings(self.spy, 1)

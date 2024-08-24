@@ -2,14 +2,16 @@
 <ol>
   <li>Get some <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>historical data</a>.</li>
   <div class="section-example-container">
-    <pre class="python">history = self.history(symbols, timedelta(365), Resolution.DAILY)['close'].unstack(0)</pre> 
+    <pre class="python"># Get historical closing price.
+history = self.history(symbols, timedelta(365), Resolution.DAILY)['close'].unstack(0)</pre> 
   </div>
 
   <li>Load the <a href='/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/chronos-t5#03-Load-Pre-Trained-Model'>pre-trained</a> or <a href='/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/chronos-t5#04-Fine-Tune-Model'>fine-tuned</a> model.</li>
   
   <li>Forecast the future time series.</li>
   <div class="section-example-container">
-    <pre class="python">all_forecasts = pipeline.predict(
+    <pre class="python"># Generate forecasts for symbols using the trained pipeline.
+all_forecasts = pipeline.predict(
     [
         torch.tensor(history[symbol].dropna())
         for symbol in symbols
@@ -22,7 +24,8 @@
   <li>Aggregate the future prices paths of each asset into a single price path for each asset.</li>
   <p>For example, take the median value of each time step in the future price paths.</p>
   <div class="section-example-container">
-    <pre class="python">forecasts_df = pd.DataFrame(
+    <pre class="python"># Create a DataFrame with median forecasts for each symbol.
+forecasts_df = pd.DataFrame(
     {
         symbol: np.quantile(
             all_forecasts[i].numpy(), 0.5, axis=0   # 0.5 = median
