@@ -13,7 +13,8 @@
 <p>To see the commit hash of the cached models, run the following algorithm in QC Cloud and then <a href='/docs/v2/writing-algorithms/logging#07-Get-Logs'>view the logs</a>:</p>
 
 <div class="section-example-container">
-<pre class="python">from huggingface_hub import scan_cache_dir
+<pre class="python"># Scan and log all cached Hugging Face model revisions from the cache directory.
+from huggingface_hub import scan_cache_dir
 
 class HuggingFaceModelHashAlgorithm(QCAlgorithm):
 
