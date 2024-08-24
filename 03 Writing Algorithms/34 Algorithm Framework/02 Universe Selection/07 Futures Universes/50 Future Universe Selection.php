@@ -1,7 +1,7 @@
 <p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls.
+	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
 UniverseSettings.Asynchronous = true;
 // Select E-mini S&P 500 symbol for the future universe.
 AddUniverseSelection(
@@ -12,7 +12,7 @@ AddUniverseSelection(
     )
 );</pre>
 	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-# Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls.
+# Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
 self.universe_settings.asynchronous = True
 # Select E-mini S&P 500 symbol for the future universe.
 self.add_universe_selection(
