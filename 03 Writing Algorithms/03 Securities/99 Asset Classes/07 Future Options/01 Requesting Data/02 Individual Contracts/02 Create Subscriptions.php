@@ -89,7 +89,7 @@
 
 <h4>Configure the Underlying Futures Contract</h4>
 
-<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract.</p>
+<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data/individual-contracts#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract.</p>
 
 <div class="section-example-container">
     <pre class="csharp">_future = AddFuture(Futures.Indices.SP500EMini,
