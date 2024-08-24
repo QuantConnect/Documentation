@@ -1,18 +1,23 @@
 <p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">UniverseSettings.Asynchronous = true;
+	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls.
+UniverseSettings.Asynchronous = true;
+// Select E-mini S&P 500 symbol for the future universe.
 AddUniverseSelection(
     new FutureUniverseSelectionModel(
+	// Refresh the universe daily.
         TimeSpan.FromDays(1), 
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
     )
 );</pre>
 	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
+# Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls.
 self.universe_settings.asynchronous = True
+# Select E-mini S&P 500 symbol for the future universe.
 self.add_universe_selection(
     FutureUniverseSelectionModel(
+	# Refresh the universe daily.
         timedelta(1), 
         lambda _: [Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
     )
@@ -57,6 +62,7 @@ self.add_universe_selection(
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
+    // Select future symbols using custom selector function.
     AddUniverseSelection(
         new FutureUniverseSelectionModel(TimeSpan.FromDays(1), SelectFutureChainSymbols)
     );
@@ -64,6 +70,7 @@ self.add_universe_selection(
 
 private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
 {
+    // Select E-mini S&P 500 and Gold symbols for the future universe. 
     return new[] {
         QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
@@ -72,11 +79,13 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
     <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
 def initialize(self) -&gt; None:
+    # Select future symbols using custom selector function.
     self.set_universe_selection(
         FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)
     )
 
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+    # Select E-mini S&P 500 and Gold symbols for the future universe.
     return [ 
         Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
         Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
@@ -92,7 +101,7 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 <p>To move the Future chain Symbol selector and the contract selection function outside of the algorithm class, create a universe selection model that inherits the FundamentalUniverseSelectionModel class and override its Select method.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize
+	<pre class="csharp">// Setup algorithm settings and request data in initialize.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
 
@@ -100,10 +109,12 @@ AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
 class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
 {
     public FrontMonthFutureUniverseSelectionModel()
+	// Refresh the universe daily.
         : base(TimeSpan.FromDays(1), SelectFutureChainSymbols) {}
 
     private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
     {
+	// Select E-mini S&P 500 and Gold symbols for the future universe.
         return new List&lt;Symbol&gt; {
             QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
             QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
@@ -112,25 +123,29 @@ class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
 
     protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
     {
+	// Apply universe filter to return front month contracts.
         return filter.FrontMonth();
     }
 }</pre>
-	<pre class="python"># In initialize
+	<pre class="python"># Setup algorithm settings and request data in initialize.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(FrontMonthFutureUniverseSelectionModel())
 
 # Outside of the algorithm class
 class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
     def __init__(self) -> None:
+	# Refresh the universe daily.
         super().__init__(timedelta(1), self.select_future_chain_symbols)
 
     def select_future_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
+	# Select E-mini S&P 500 and Gold symbols for the future universe.
         return [ 
             Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
             Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX) 
         ]
 
     def filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
+	# Apply universe filter to return front month contracts.
         return filter.front_month()</pre>
 </div>
 
