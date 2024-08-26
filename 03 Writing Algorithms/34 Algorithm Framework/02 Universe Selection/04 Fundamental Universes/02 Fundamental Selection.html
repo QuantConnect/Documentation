@@ -85,7 +85,7 @@ public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelection
         return fundamental
             // Select symbols with fundamental data and a price above $1.
             .Where(x => x.HasFundamentalData && x.Price > 1 && !Double.IsNaN(x.ValuationRatios.PERatio))
-            // Select the 100 assets with the lowest daily dollar volume.
+            // Select the 100 assets with the greatest daily dollar volume.
             .OrderByDescending(x => x.DollarVolume)
             .Take(100)
             // Select the 10 assets with the lowest PE ratio.
@@ -103,7 +103,7 @@ class LiquidAndLowPEUniverseSelectionModel(FundamentalUniverseSelectionModel):
     def select(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         # Select symbols with fundamental data and a price above $1.
         filtered = [x for x in fundamental if x.price &gt; 1 and not np.isnan(x.valuation_ratios.pe_ratio)]
-        # Select the 100 assets with the lowest daily dollar volume.
+        # Select the 100 assets with the greatest daily dollar volume.
         most_liquid = sorted(filtered, key=lambda x: x.dollar_volume, reverse=True)[:100]
         # Select the 10 assets with the lowest PE ratio.
         lowest_pe_ratio = sorted(most_liquid, key=lambda x: x.valuation_ratios.pe_ratio, reverse=True)[:10]
