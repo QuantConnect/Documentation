@@ -1,19 +1,25 @@
 <p>An Option chained universe subscribes to Option contracts on the constituents of a <a href="/docs/v2/writing-algorithms/universes/equity">US Equity universe</a>. <br>
 
 </p><div class="section-example-container">
-	<pre class="csharp">UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+	<pre class="csharp">// Subscribe price data unadjusted for splits and dividends ("raw") into the algorithm. Required for options and useful for more accurately modeling historical periods.
+UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(
     new OptionChainedUniverseSelectionModel(
+	// Add 10 highest dollar trading volume securities to the universe.
         AddUniverse(Universe.DollarVolume.Top(10)),
+	// Set contract filter to return only front month CALL options that have the strike price within 2 strike level.
         optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
     )
 );</pre>
-	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+	<pre class="python"># Subscribe price data unadjusted for splits and dividends ("raw") into the algorithm. Required for options and useful for more accurately modeling historical periods.
+self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
 self.universe_settings.asynchronous = True
 self.add_universe_selection(
     OptionChainedUniverseSelectionModel(
+	# Add 10 highest dollar trading volume securities to the universe.
         self.add_universe(self.universe.dollar_volume.top(10)),
+	# Set contract filter to return only front month CALL options that have the strike price within 2 strike level.
         lambda option_filter_universe: option_filter_universe.strikes(-2, +2).front_month().calls_only()
     )
 )</pre>
@@ -63,6 +69,7 @@ self.add_universe_selection(
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
+    // Setup algorithm settings and request data.
     UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(
@@ -72,11 +79,13 @@ self.add_universe_selection(
     );
 }
 
+// Set contract filter to return only front month CALL options that have the strike price within 2 strike level.
 private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
 {
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
+    # Setup algorithm settings and request data.
     self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
     self.universe_settings.asynchronous = True
     self.add_universe_selection(
@@ -85,6 +94,7 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
         )
     )
 
+# Set contract filter to return only front month CALL options that have the strike price within 2 strike level.
 def option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
     return option_filter_universe.strikes(-2, +2).front_month().calls_only()</pre>
 </div>
