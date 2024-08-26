@@ -7,11 +7,12 @@
     public override void Initialize() 
     {
         UniverseSettings.Asynchronous = true;
+        // Adds to universe returned symbols from FunamentalFilterFunction
         _universe = AddUniverse(FundamentalFilterFunction);
     }
         
     private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental) 
-    {
+    {   // Returns symbols that have fundamental data. 
          return (from f in fundamental
                 where f.HasFundamentalData
                 select f.Symbol);
@@ -19,10 +20,13 @@
 }</pre>
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        # Algo can run while universe is being updated.
         self.universe_settings.asynchronous = True
+        # Filter function that adds symbols to custom universe of securities with fundamentals.
         self._universe = self.add_universe(self._fundamental_function)
     
     def _fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Returns symbols that have fundamental data. 
         return [c.symbol for c in fundamental if c.has_fundamental_data]</pre></div>
     
 <p><code>Fundamental</code> objects have the following attributes:</p>
@@ -45,12 +49,17 @@ _universe = AddUniverse(
         .Select(f =&gt; f.Symbol));</pre>
     <pre class="python"># In Initialize:
 self.universe_settings.asynchronous = True
+# Custom universe created by calling on function (_fundamental_selection_function).
 self._universe = self.add_universe(self._fundamental_selection_function)
     
 def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    # Filter for securities with (price &gt; $10), has fundamental data, and has a price_to_earnings ratio. 
     filtered = [f for f in fundamental if f.price &gt; 10 and f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
+    # Sort filtered securities by dollar volume in decending order, keep the top 100 (securities with the most dollar volume). 
     sorted_by_dollar_volume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)[:100]
+    # Sort the previously sorted 100 by P/E ratio, keep the securities with the lowest 10 P/E ratios. 
     sorted_by_pe_ratio = sorted(sorted_by_dollar_volume, key=lambda f: f.valuation_ratios.pe_ratio, reverse=False)[:10]
+    # Return the final selected securities
     return [f.symbol for f in sorted_by_pe_ratio]</pre>
 </div>
     
@@ -59,22 +68,28 @@ def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; 
 
 <p>Sectors are large super categories of data. To get the sector of a stock, use the <code>MorningstarSectorCode</code> property.</p>
 <div class="section-example-container">
-<pre class="csharp">var tech = fundamental.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
-<pre class="python">tech = [x for x in fundamental if x.asset_classification.morningstar_sector_code == MorningstarSectorCode.TECHNOLOGY]
+<pre class="csharp">// List of securities in the Technology sector.
+var tech = fundamental.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
+<pre class="python"># List of securities in Technology sector. 
+tech = [x for x in fundamental if x.asset_classification.morningstar_sector_code == MorningstarSectorCode.TECHNOLOGY]
 </pre>
 </div>
 
 <p>Industry groups are clusters of related industries that tie together. To get the industry group of a stock, use the <code>MorningstarIndustryGroupCode</code> property.</p>
 <div class="section-example-container">
-<pre class="csharp">var ag = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture);</pre>
-<pre class="python">ag = [x for x in fundamental if x.asset_classification.morningstar_industry_group_code == MorningstarIndustryGroupCode.AGRICULTURE]
+<pre class="csharp">// List of securities in the Agricluture industry group (more generally tied together). 
+var ag = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture);</pre>
+<pre class="python"># List of securities in the Agricluture industry group (more generally tied together). 
+ag = [x for x in fundamental if x.asset_classification.morningstar_industry_group_code == MorningstarIndustryGroupCode.AGRICULTURE]
 </pre>
 </div>
 
 <p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. To get the industry of a stock, use the <code>MorningstarIndustryCode</code>.</p>
 <div class="section-example-container">
-<pre class="csharp">var coal = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
-<pre class="python">coal = [x for x in fundamental if x.asset_classification.morningstar_industry_code == MorningstarSectorCode.COAL]
+<pre class="csharp">// List of securities in the Coal industry (more specific grouping according to Morningstar). 
+var coal = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
+<pre class="python"># List of securities in the Coal industry (more specific grouping according to Morningstar). 
+coal = [x for x in fundamental if x.asset_classification.morningstar_industry_code == MorningstarSectorCode.COAL]
 </pre>
 </div>
 
@@ -90,15 +105,22 @@ Fundamental universes allow you to select an unlimited universe of assets to ana
 
 <div class="section-example-container">
     <pre class="csharp">private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamentals) 
-{
+{ 
+    // Filtering for securities with P/E ratios without NaN's. 
+    // Sort filtered list by ascending order according to P/E ratio.
+    // Return symbols of top 10 with the lowest P/E ratio. 
     return fundamentals
         .Where(f => f.HasFundamentalData && !Double.IsNaN(f.ValuationRatios.PERatio))
         .OrderBy(f => f.ValuationRatios.PERatio)
         .Take(10)
         .Select(x => x.Symbol);
 }</pre>
-    <pre class="python">def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    <pre class="python"># Filtering out NaN's. 
+def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    # Filtering for securities with P/E ratios without NaN's. 
     filtered = [f for f in fundamental if f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
+    # Sort filtered list by ascending order according to P/E ratio. 
     sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
+    # Return symbols of top 10 with the lowest P/E ratio. 
     return [f.symbol for f in sortedByPeRatio[:10] ]</pre>
 </div>
