@@ -102,7 +102,7 @@ var contractSymbol = contractSymbols.Where(s =&gt;
 contract_symbol = [s for s in contract_symbols 
     if s.id.option_right == OptionRight.CALL 
         and s.id.strike_price == 477 
-	and s.id.date == datetime(2022, 1, 21)][0]</pre>
+        and s.id.date == datetime(2022, 1, 21)][0]</pre>
     </div>
 	<li>Call the <code class="csharp">AddOptionContract</code><code class="python">add_option_contract</code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
     <div class="section-example-container">
