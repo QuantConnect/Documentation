@@ -1,3 +1,54 @@
+<h4>Example 1: Warm Up TradeBar Indicator</h4>
+<p>We can make use of historical traed bar to warm up a TradeBar indicator like <code>AverageTrueRange</code>.</p>
+<div class="section-example-container">
+	<pre class="csharp">private AveargeTrueRange _atr;
+private Symbol _symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+
+public override void Initialize()
+{
+    _atr = new AverageTrueRange(14);
+    var tradeBarHistory = History&lt;TradeBar&gt;(_symbol, 14, Resolution.Daily);
+    foreach (TradeBar tradeBar in tradeBarHistory)
+    {
+        atr.Update(tradeBar);
+    }
+}</pre>
+  <pre class="python">def initialize(self):
+    self.atr = AverageTrueRange(14)
+    self._symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+    trade_bar_history = self.history[TradeBar](self._symbol, 14, Resolution.DAILY)
+    for trade_bar in trade_bar_history:
+        self.atr.update(trade_bar)
+  </pre>
+</div>
+
+<h4>Example 2: Sentiment Analysis</h4>
+<p>We can analyze the sentiment of a stock using historical alternative data.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Symbol _symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+
+public override void OnData(Slice slice)
+{
+    var sentimentHistory = History&lt;BrainSentiment&gt;(_symbol, 10, Resolution.DAILY);
+}</pre>
+  <pre class="python">def initialize(self):
+    self._symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+
+def on_data(self, slice: Slice):
+    sentiment_history = self.history(BrainSentiment, self._symbol, 10, Resolution.DAILY)</pre>
+</div>
+
+<div class="python">
+<h4>Example 3: Resampled History</h4>
+<p>You can also resample the historical data into different resolution, such as weekly in this example.</p>
+<div class="python section-example-container">
+	<pre>daily_history = self.history(["SPY", "QQQ"], 100, Resolution.DAILY)
+weekly_history = daily_history.groupby(pd.Grouper(freq='W', level=-1))</pre>
+</div>
+</div>
+
+<p>For more examples, see the following algorithms:</p>
+
   <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithm</div>
     

@@ -1,3 +1,51 @@
+<h4>Example 1: Warm Up Indicator</h4>
+<p>You can warm up an indicator by the number of sample it needs.</p>
+<div class="section-example-container">
+	<pre class="csharp">private RelativeStrengthIndex _rsi;
+    
+public override void Initialize()
+{
+    var spy = AddEquity("SPY", Resolution.Minute).Symbol;
+    _rsi = RSI(spy, 14, Resolution.Daily);
+    SetWarmUp(14 * 390);
+    // alterantive: WarmUpIndicator(_rsi);
+}</pre>
+  <pre class="python">def initialize(self):
+    spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+    self._rsi = self.rsi(spy, 14, Resolution.DAILY)
+    self,set_warm_up(14 * 390)
+    # alterantive: self.warm_up_indicator(self._rsi)</pre>
+</div>
+
+<h4>Example 2: Train Machine Learning Model On Warm Up Finishes</h4>
+<p>Train your ML model when the warm up process is completed and your indicators/RollingWindow are ready.</p>
+<div class="section-example-container">
+	<pre class="csharp">private RelativeStrengthIndex _rsi;
+    
+public override void Initialize()
+{
+    var spy = AddEquity("SPY", Resolution.Minute).Symbol;
+    _rsi = RSI(spy, 14, Resolution.Daily);
+    _rsi.Window.Size = 20
+    SetWarmUp(34 * 390);
+}
+
+public override void OnWarmupFinished()
+{
+    Train(MyTrainingMethod);
+}</pre>
+  <pre class="python">def initialize(self):
+    spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+    self._rsi = self.rsi(spy, 14, Resolution.DAILY)
+    self._rsi.window.size = 20
+    self,set_warm_up(34 * 390)
+  
+def on_warmup_finished(self):
+    self.train(self.my_training_method)</pre>
+</div>
+
+<p>For more examples, see the following algorithms:</p>
+
   <div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     

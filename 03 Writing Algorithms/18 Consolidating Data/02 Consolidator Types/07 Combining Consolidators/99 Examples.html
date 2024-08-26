@@ -1,4 +1,43 @@
-  <div class="example-fieldset"> 
+<h4>Example 1: 5-minute 10-Dollar Bar</h4>
+<p>It is a similar concept as a dollar bar, but being down-sampled to remove noise and only study the trend.</p>
+<div class="section-example-container">
+	<pre class="csharp">var fiveMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
+var tenDollarConsolidator = new ClassicRangeConsolidator(10);
+var fiveMinuteTenDollarConsolidator = new SequentialConsolidator(fiveMinuteConsolidator, tenDollarConsolidator);</pre>
+  <pre class="python">five_minute_consolidator = TradeBarConsolidator(timedelta(minutes=5))
+ten_dollar_consolidator = ClassicRenkoConsolidator(10)
+five_minute_ten_dollar_consolidator = SequentialConsolidator(five_minute_consolidator, ten_dollar_consolidator)</pre>
+</div>
+
+<h4>Example 2: Multiple Time Bar</h4>
+<p>Some indicators may use a shorter time bar, while some use longer ones. In this examples, we show how to create a 5-minute bar, and a 15-minute bar on top of that.</p>
+<div class="section-example-container">
+	<pre class="csharp">var fiveMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
+var threeCountConsolidator = new TradeBarConsolidator(3);
+var fifteenMinuteConsolidator = new SequentialConsolidator(fiveMinuteConsolidator, threeCountConsolidator);</pre>
+  <pre class="python">five_minute_consolidator = TradeBarConsolidator(timedelta(minutes=5))
+three_count_consolidator = TradeBarConsolidator(3)
+fifteen_minute_consolidator = SequentialConsolidator(five_minute_consolidator, three_count_consolidator)</pre>
+</div>
+
+<h4>Example 3: 10-second Bid-Ask Spread Bar</h4>
+<p>It is a similar concept as a bid--ask spread range bar to study liquidity, but being down-sampled to remove noise and only study the trend.</p>
+<div class="section-example-container">
+	<pre class="csharp">var tenSecondConsolidator = new TradeBarConsolidator(TimeSpan.FromSeconds(10));
+var bidAskSpreadConsolidator = new RangeConsolidator(0.05, data =&gt; 
+{
+    var bar = data as QuoteBar;
+    return bar.Ask.Close - bar.Bid.Close;
+})
+var tenSecondBidAskSpreadConsolidator = new SequentialConsolidator(tenSecondConsolidator, bidAskSpreadConsolidator);</pre>
+	<pre class="python">ten_second_consolidator = TradeBarConsolidator(timedelta(seconds=10))
+bid_ask_spread_consolidator = RangeConsolidator(0.05, selector = lambda data: data.ask.close - data.bid.close)
+ten_second_bid_ask_spreadr_consolidator = SequentialConsolidator(ten_second_consolidator, bid_ask_spread_consolidator)</pre>
+</div>
+
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
     
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DataConsolidationAlgorithm.py" target="_BLANK">
@@ -8,5 +47,5 @@
     <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DataConsolidationAlgorithm.cs" target="_BLANK">
         DataConsolidationAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
     </a>
-
-  </div>
+</div>
+*

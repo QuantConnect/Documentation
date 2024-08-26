@@ -1,3 +1,123 @@
+<h4>Example 1: Trailing Stop Price</h4>
+<p>Update the trailing stop price of a stop order to lock profit.</p>
+<div class="section-example-container">
+	<pre class="csharp">private OrderTicket _ticket;
+private Symbol _symbol;
+
+public override void Initialize()
+{
+    _symbol = AddEquity("SPY").Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_symbol))
+    {
+        var stopPrice = slice[_symbol].Price * 0.98m;
+        if (!Portfolio.Invested)
+        {
+            _ticket = MarketOrder(_symbol, 10);
+        }
+        else if (stopPrice > _ticket.Get(OrderField.StopPrice))
+        {
+            _ticket.UpdateStopPrice(stopPrice);
+        }
+    }
+}
+  </pre>
+	<pre class="python">def initialize(self):
+    self.ticket = None
+    self._symbol = self.add_equity("SPY").symbol
+ 
+def on_data(self, slice: Slice):
+    if self._symbol in slice:
+        stop_price = slice[self._symbol].price * 0.98
+        if not self.portfolio.invested:
+            self.ticket = self.stop_market_order(self._symbol, 10, stop_price)
+        elif stop_price > self.ticket.get(OrderField.STOP_PRICE):
+            self.ticket.update_stop_price(stop_price)</pre>
+</div>
+
+<h4>Example 2: Cancel Order</h4>
+<p>If the trading volume after your order submission is large, the original execution strategy may become suboptimal and you may want to cancel the order.</p>
+<div class="section-example-container">
+	<pre class="csharp">private OrderTicket _ticket;
+private Symbol _symbol;
+private decimal _volume = 0;
+
+public override void Initialize()
+{
+    _symbol = AddEquity("SPY").Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    if (slice.Bars.ContainsKey(_symbol))
+    {
+        _volume += slice.Bars[_symbol].Volume;
+        if (!Portfolio.Invested)
+        {
+            _ticket = StopMarketOrder(_symbol, 10, stopPrice);
+            _volume = 0
+        }
+        else if (_volume > 5000)
+        {
+            _ticket.Cancel("Expired");
+        }
+    }
+}
+  </pre>
+	<pre class="python">def initialize(self):
+    self.ticket = None
+    self._symbol = self.add_equity("SPY").symbol
+    self.volume = 0
+ 
+def on_data(self, slice: Slice):
+    if self._symbol in slice.bars:
+        self.volume += slice.bars[self._symbol].volume
+        if not self.portfolio.invested:
+            self.ticket = self.market_order(self._symbol, 10)
+            self.volume = 0
+        elif self.volume > 5000:
+            self.ticket.cancel("Expired")</pre>
+</div>
+
+<h4>Example 2: Cancel Unprocessed Order</h4>
+<p>During market closed, if an order is submitted but not processed, it is better to cancel it to avoid extreme filling during market open or system error.</p>
+<div class="section-example-container">
+	<pre class="csharp">private OrderTicket _ticket;
+private Symbol _symbol;
+
+public override void Initialize()
+{
+    _symbol = AddEquity("SPY").Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    if (!Portfolio.Invested)
+    {
+        _ticket = StopMarketOrder(_symbol, 10, stopPrice);
+    }
+    else if (!ticket.GetMostRecentOrderResponse().IsProcessed)
+    {
+        _ticket.Cancel("Unprocessed");
+    }
+}
+  </pre>
+	<pre class="python">def initialize(self):
+    self.ticket = None
+    self._symbol = self.add_equity("SPY").symbol
+ 
+def on_data(self, slice: Slice):
+    if not self.portfolio.invested:
+        self.ticket = self.market_order(self._symbol, 10)
+    elif not self.ticket.get_most_recent_order_response().is_processed:
+        self.ticket.cancel("Unprocessed")</pre>
+</div>
+
+<p>For more examples, see the following algorithms:</p>
+
   <div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     

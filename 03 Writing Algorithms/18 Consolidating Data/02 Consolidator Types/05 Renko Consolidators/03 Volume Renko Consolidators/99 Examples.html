@@ -1,12 +1,38 @@
-  <div class="example-fieldset"> 
-    <div class="example-legend">Demonstration Algorithms</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/VolumeRenkoConsolidatorAlgorithm.py" target="_BLANK">
-      VolumeRenkoConsolidatorAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/VolumeRenkoConsolidatorAlgorithm.cs" target="_BLANK">
-      VolumeRenkoConsolidatorAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
+<p>Except ordinary volume renko bars, you can also use create volume renko bars with ordinary renko consolidator using volume alternative measurements.</p>
 
-  </div>
+<h4>Example 1: Bid Volume Bar</h4>
+<p>Volume bar that only accepts bid volume to study the market demand.</p>
+<div class="section-example-container">
+	<pre class="csharp">var bidVolumeConsolidator = new RenkoConsolidator(1000, data =&gt; 
+{
+    var bar = data as QuoteBar;
+    return bar.BidSize;
+});</pre>
+	<pre class="python">bid_volume_consolidator = RenkoConsolidator(1000, lambda data: bar.bid_size)</pre>
+</div>
+
+<h4>Example 2: Volume Direction</h4>
+<p>We can train model to predict the capital flow using a volume renko bar of the difference of ask volume versus bid volume.</p>
+<div class="section-example-container">
+	<pre class="csharp">var volumeDirectionConsolidator = new RenkoConsolidator(1000, data =&gt;
+{
+    var bar = data as QuoteBar;
+    return bar.AskSize - bar.BidSize;
+});</pre>
+	<pre class="python">volume_direction_consolidator = RenkoConsolidator(1000, lambda data: data.ask_size - bar.bid_size)</pre>
+</div>
+
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset"> 
+  <div class="example-legend">Demonstration Algorithms</div>
+  
+  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/VolumeRenkoConsolidatorAlgorithm.py" target="_BLANK">
+    VolumeRenkoConsolidatorAlgorithm.py <span class="badge-python pull-right">Python</span>
+  </a>
+  
+  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/VolumeRenkoConsolidatorAlgorithm.cs" target="_BLANK">
+    VolumeRenkoConsolidatorAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
+  </a>
+
+</div>

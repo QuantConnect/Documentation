@@ -5,6 +5,6 @@
 
 <p>To get most recent order response, call the <code class="csharp">GetMostRecentOrderResponse</code><code class="python">get_most_recent_order_response</code> method.</p>
 <div class="section-example-container">
-<pre class="csharp">var response = ticket.get_most_recent_order_response();</pre>
+<pre class="csharp">var response = ticket.GetMostRecentOrderResponse();</pre>
 <pre class="python">response = ticket.get_most_recent_order_response()</pre>
 </div>

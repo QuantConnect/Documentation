@@ -1,0 +1,28 @@
+<h4>Example 1: Dollar Bar</h4>
+<p>Financial machine learning expert Marcos Lopez de Prado suggested that using dollar bar would provide better information than time bar due to fairness and variation in machine learning.</p>
+<div class="section-example-container">
+	<pre class="csharp">var dollarBarConsolidator = new RenkoConsolidator(1);</pre>
+	<pre class="python">dollar_bar_consolidator = RenkoConsolidator(1)</pre>
+</div>
+
+<h4>Example 2: High-Low Range Bar</h4>
+<p>You can also use Renko bars with alternative measurements other than price. One example is that you can create High - Low range bars for prediction of volatility.</p>
+<div class="section-example-container">
+	<pre class="csharp">var highLowRangeConsolidator = new RenkoConsolidator(10, data =&gt; 
+{
+    var bar = data as TradeBar;
+    return bar.High - bar.Low;
+});</pre>
+	<pre class="python">high_low_range_consolidator = RenkoConsolidator(10, selector = lambda data: data.high - data.low)</pre>
+</div>
+
+<h4>Example 3: Bid-Ask Spread Bar</h4>
+<p>Like example 2, a spread bar is an alternative measure of the bid-ask spread for prediction of liquidity.</p>
+<div class="section-example-container">
+	<pre class="csharp">var bidAskSpreadConsolidator = new RenkoConsolidator(0.05, data =&gt; 
+{
+    var bar = data as QuoteBar;
+    return bar.Ask.Close - bar.Bid.Close;
+});</pre>
+	<pre class="python">bid_ask_spread_consolidator = RenkoConsolidator(0.05, selector = lambda data: data.ask.close - data.bid.close)</pre>
+</div>

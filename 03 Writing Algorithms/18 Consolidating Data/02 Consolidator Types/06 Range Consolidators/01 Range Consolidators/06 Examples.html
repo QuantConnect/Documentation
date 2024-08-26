@@ -1,3 +1,30 @@
+<h4>Example 1: High Price Range Bar</h4>
+<p>Using range bar with high price can capture the fluctuation of high price levels for ultra short-term reversal strategy.</p>
+<div class="section-example-container">
+	<pre class="csharp">var highRangeConsolidator = new RangeConsolidator(1, data =&gt; (data as TradeBar).High);</pre>
+	<pre class="python">high_range_consolidator = RangeConsolidator(1, lambda data: data.high)</pre>
+</div>
+
+<h4>Example 2: Volume Range Bar</h4>
+<p>Volume Range bar can provide insight for analysis in capital flow direction and rate.</p>
+<div class="section-example-container">
+	<pre class="csharp">var volumeRangeConsolidator = new RangeConsolidator(1000, data =&gt; (data as TradeBar).Volume);</pre>
+	<pre class="python">volume_range_consolidator = RenkoConsolidator(1000, selector = lambda data: data.volume)</pre>
+</div>
+
+<h4>Example 3: Bid-Ask Spread Bar</h4>
+<p>A spread bar is an alternative measure of the bid-ask spread for prediction of liquidity.</p>
+<div class="section-example-container">
+	<pre class="csharp">var bidAskSpreadConsolidator = new RangeConsolidator(0.1, data =&gt; 
+{
+    var bar = data as QuoteBar;
+    return bar.Ask.Close - bar.Bid.Close;
+})</pre>
+	<pre class="python">bid_ask_spread_consolidator = RangeConsolidator(0.1, selector = lambda data: data.ask.close - data.bid.close)</pre>
+</div>
+
+<p>For more examples, see the following algorithms:</p>
+
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Algorithms</div>
   <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/RangeConsolidatorAlgorithm.py" target="_BLANK">RangeConsolidatorAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
