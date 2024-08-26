@@ -1,13 +1,13 @@
 <h4>Example 1: Set Data Seed</h4>
 <p>Some data feeds might not have data on its first fetch, making the algorithm prone to error. To avoid issues, <a href='/docs/v2/writing-algorithms/universes/settings#98-Configure-Universe-Securities'>set a seed</a> on using the last known value as the initial value.</p>
 <div class="section-example-container">
-	<pre class="csharp">// Seed with the last known price to prevent security price $0 errors.
+	<pre class="csharp">// Seed with the last known price to prevent $0 security price errors.
 public override void Initialize()
 {
     SetSecurityInitializer(new BrokerageModelSecurityInitializer(
         BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 }</pre>
-	<pre class="python"># Seed with the last known price to prevent security price $0 errors.
+	<pre class="python"># Seed with the last known price to prevent $0 security price errors.
 def initialize(self):
     self.set_security_initializer(BrokerageModelSecurityInitializer(
         self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))</pre>
@@ -29,13 +29,13 @@ def initialize(self):
 <h4>Example 3: Train Model When the Warm Up Finishes</h4>
 <p>After warming up indicators or rolling windows, you can train machine learning model with the prepared data.</p>
 <div class="section-example-container">
-	<pre class="csharp">// Train machine learning models after the algorithm warm up is done so your models 
+	<pre class="csharp">// Train machine learning models after the algorithm warm up is done, so your models 
 // are ready as soon as the algorithm starts trading. 
 public override void OnWarmupFinished()
 {
     Train(MyTrainingMethod);
 }</pre>
-	<pre class="python"># Train machine learning models after the algorithm warm up is done so your models 
+	<pre class="python"># Train machine learning models after the algorithm warm up is done, so your models 
 # are ready as soon as the algorithm starts trading. 
 def on_warmup_finished(self) -&gt; None:
     self.train(self.my_training_method)</pre>
