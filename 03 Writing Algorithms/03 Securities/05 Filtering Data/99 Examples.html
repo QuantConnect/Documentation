@@ -79,7 +79,7 @@ class CustomDataFilter(SecurityDataFilter):
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
-    var security = AddEquity("SPY");
+    var security = AddEquity("SPY", Resolution.Tick);
     security.SetDataFilter(new CustomDataFilter());
 }
 
@@ -87,7 +87,7 @@ private class CustomDataFilter : ISecurityDataFilter
 {
     public bool Filter(Security vehicle, BaseData data)
     {
-        // Cast into Tick data to obtain the exchange of the feed
+        // Use tick data to obtain the exchange of the feed
         var tick = data as Tick;
         
         // Check if the feed is from BATS
@@ -101,12 +101,12 @@ private class CustomDataFilter : ISecurityDataFilter
     }
 }</pre>
 	<pre class="python">def initialize(self):
-    security = self.add_equity("SPY")
+    security = self.add_equity("SPY", Resolution.TICK)
     security.set_data_filter(CustomDataFilter())
 
 class CustomDataFilter(SecurityDataFilter):
     def filter(self, vehicle: Security, data: BaseData) -> bool:
-        # Cast into Tick data to obtain the exchange of the feed
+        # Use tick data to obtain the exchange of the feed
         tick = Tick(data)
         
         # Check if the feed is from BATS
