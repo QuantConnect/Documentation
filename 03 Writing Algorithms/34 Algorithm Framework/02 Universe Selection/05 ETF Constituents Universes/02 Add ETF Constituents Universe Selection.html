@@ -64,10 +64,10 @@ private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConsti
 	<pre class="python">def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True   
     self.add_universe_selection(
-        ETFConstituentsUniverseSelectionModel("SPY", universe_filter_func=self.etf_constituents_filter)
+        ETFConstituentsUniverseSelectionModel("SPY", universe_filter_func=self._etf_constituents_filter)
     )
 
-def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
     # Sort descending by weight and select the first 10 symbols.
     selected = sorted(
         [c for c in constituents if c.weight],
@@ -94,7 +94,7 @@ class LargestWeightSPYETFUniverseSelectionModel : ETFConstituentsUniverseSelecti
 
     private static IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
     {
-	// Sort descending by weight and select the first 10 symbols.
+        // Sort descending by weight and select the first 10 symbols.
         return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
     }
 }</pre>
@@ -105,10 +105,10 @@ self.add_universe_selection(LargestWeightSPYETFUniverseSelectionModel())
 # Outside of the algorithm class
 class LargestWeightSPYETFUniverseSelectionModel(ETFConstituentsUniverseSelectionModel):
     def __init__(self) -&gt; None:
-        super().__init__(symbol, universe_filter_func=self.etf_constituents_filter)
+        super().__init__(symbol, universe_filter_func=self._etf_constituents_filter)
 
-    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
-	# Sort descending by weight and select the first 10 symbols.
+    def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Sort descending by weight and select the first 10 symbols.
         selected = sorted(
             [c for c in constituents if c.weight],
             key=lambda c: c.weight, reverse=True

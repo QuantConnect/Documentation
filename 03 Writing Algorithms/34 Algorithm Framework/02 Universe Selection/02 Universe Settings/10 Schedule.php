@@ -5,10 +5,10 @@ To change the selection schedule, call the <code class="csharp">UniverseSettings
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Trigger selection schedule at the begining of each month.
+    <pre class="csharp">// Trigger selections at the begining of each month.
 UniverseSettings.Schedule.On(DateRules.MonthStart());
 AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("QQQ"));</pre>
-    <pre class="python"># Trigger selection schedule at the begining of each month. 
+    <pre class="python"># Trigger selections at the begining of each month. 
 self.universe_settings.schedule.on(self.date_rules.month_start())
 self.add_universe_selection(ETFConstituentsUniverseSelectionModel("QQQ"))</pre>
 </div>

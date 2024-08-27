@@ -1,18 +1,24 @@
 <p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options, Index Options, and Future Options you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">UniverseSettings.Asynchronous = true;
+	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
+UniverseSettings.Asynchronous = true;
+// Select SPY option symbol for the future universe.
 AddUniverseSelection(
     new OptionUniverseSelectionModel(
+	// Refresh the universe daily.
         TimeSpan.FromDays(1), 
         _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
     )
 );</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
+# Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
 self.universe_settings.asynchronous = True
+# Select SPY option symbol for the future universe.
 self.set_universe_selection(
     OptionUniverseSelectionModel(
+	# Refresh the universe daily.
         timedelta(1), lambda _: [Symbol.create("SPY", SecurityType.OPTION, Market.USA)]
     )
 )</pre>
@@ -110,7 +116,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 <p>To move the Option chain Symbol selector outside of the algorithm class, create a universe selection model that inherits the <code>OptionUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize
+	<pre class="csharp">// Setup algorithm settings and request data in initialize.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(this));
 
@@ -138,14 +144,14 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
             yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
         }
     }
-
+    // Create a filter to return contracts that have the strike price within 1 strike level and expire within 7 days.
     protected override OptionFilterUniverse Filter(OptionFilterUniverse filter)
     {
         return filter.Strikes(-1, -1).Expiration(0, 7).CallsOnly();
     }
 }
 </pre>
-	<pre class="python"># In initialize
+	<pre class="python"># Setup algorithm settings and request data in initialize.
 self.universe_settings.asynchronous = True
 self.add_universe_settings(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
 
@@ -168,7 +174,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
         future_contract_symbols = self.algo.future_chain_provider.get_future_contract_list(future_symbol, self.algo.time)
         return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]
-
+    #  Create a filter to return contracts that have the strike price within 1 strike level and expire within 7 days.
     def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
         return option_filter_universe.strikes(-1, -1).expiration(0, 7).calls_only()</pre>
 </div>

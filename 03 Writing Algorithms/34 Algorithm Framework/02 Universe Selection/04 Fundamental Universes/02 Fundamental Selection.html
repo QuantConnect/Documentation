@@ -6,7 +6,8 @@
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
-    // Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls. 
+    // Run asynchronous universe selection to speed up your algorithm. 
+    // In this case, you can't rely on the method or algorithm state between filter calls. 
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(new FundamentalUniverseSelectionModel(FundamentalFilterFunction));
 }
@@ -14,24 +15,25 @@
 public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental&gt; fundamental)
 {
     return (from f in fundamental
-	    // Select symbols with fundamental data and a price above $10.
+            // Select symbols with fundamental data and a price above $10.
             where f.HasFundamentalData && f.Price &gt; 10 && !Double.IsNaN(f.ValuationRatios.PERatio)
-	    // Sort ascending by P/E ratio.
+            // Sort the assets in ascending order by their P/E ratio.
             orderby f.ValuationRatios.PERatio
-	    // Select the first 10 security symbols.
+            // Select the first 10 assets.
             select f.Symbol).Take(10);
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
-    # Run universe selection asynchronously to speed up your algorithm. This means you cannoy rely on method or algorithm state between filter calls. 
+    # Run asynchronous universe selection to speed up your algorithm. 
+    # In this case, you can't rely on the method or algorithm state between filter calls. 
     self.universe_settings.asynchronous = True
-    self.add_universe_selection(FundamentalUniverseSelectionModel(self.fundamental_filter_function))
+    self.add_universe_selection(FundamentalUniverseSelectionModel(self._fundamental_filter_function))
 
-def fundamental_filter_function(self, fundamental: List[Fundamental]):
+def _fundamental_filter_function(self, fundamental: List[Fundamental]):
     # Select symbols with fundamental data and a price above $10.
     filtered = [f for f in fundamental if f.has_fundamental_data and f.price &gt; 10 and not np.isnan(f.valuation_ratios.pe_ratio)]
-    # Sort ascending by P/E ratio.
+    # Sort the assets in ascending order by their P/E ratio.
     sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
-    # Select the first 10 security symbols.
+    # Select the first 10 assets.
     return [f.symbol for f in sorted_by_pe_ratio[:10]]</pre>
 </div>
 
@@ -71,11 +73,11 @@ def fundamental_filter_function(self, fundamental: List[Fundamental]):
 <p>To move the selection function outside of the algorithm class, create a universe selection model that inherits the <code>FundamentalUniverseSelectionModel</code> class and override its <code class="csharp">Select</code><code class="python">select</code> method.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Setup algorithm settings and request data in Initialize()
+	<pre class="csharp">// In Initialize, set the algorithm settings and add a universe.
 UniverseSettings.Asynchronous = true;            
 AddUniverseSelection(new LiquidAndLowPEUniverseSelectionModel());
 
-// Define universe selection class outside of the QCAlgorithm class
+// Outside of the algorithm class, define the universe selection model.
 public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelectionModel
 {
     public override IEnumerable<Symbol> Select(QCAlgorithm algorithm, IEnumerable<Fundamental> fundamental)
@@ -83,27 +85,27 @@ public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelection
         return fundamental
             // Select symbols with fundamental data and a price above $1.
             .Where(x => x.HasFundamentalData && x.Price > 1 && !Double.IsNaN(x.ValuationRatios.PERatio))
-            // Sort descending by daily dollar volume.
+            // Select the 100 assets with the greatest daily dollar volume.
             .OrderByDescending(x => x.DollarVolume)
             .Take(100)
-            // Sort descending by P/E ratio.
+            // Select the 10 assets with the lowest PE ratio.
             .OrderByDescending(x => x.ValuationRatios.PERatio)
             .Take(10)
             .Select(x => x.Symbol);
     }
 }</pre>
-	<pre class="python"># Setup algorithm settings and request data in initialize
+	<pre class="python"># In initialize, set the algorithm settings and add a universe.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(LiquidAndLowPEUniverseSelectionModel())
 
-# Outside of the algorithm class
+# Outside of the algorithm class, define the universe selection model.
 class LiquidAndLowPEUniverseSelectionModel(FundamentalUniverseSelectionModel):
     def select(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-	# Select symbols with fundamental data and a price above $1.
+        # Select symbols with fundamental data and a price above $1.
         filtered = [x for x in fundamental if x.price &gt; 1 and not np.isnan(x.valuation_ratios.pe_ratio)]
-	# Sort descending by daily dollar volume.
-        most_liquid = sorted(filtered, key=lambda x: x.dollar_volume, reverse=True)[-100:]
-	# Sort descending by P/E ratio.
+        # Select the 100 assets with the greatest daily dollar volume.
+        most_liquid = sorted(filtered, key=lambda x: x.dollar_volume, reverse=True)[:100]
+        # Select the 10 assets with the lowest PE ratio.
         lowest_pe_ratio = sorted(most_liquid, key=lambda x: x.valuation_ratios.pe_ratio, reverse=True)[:10]
         return [x.Symbol for x in lowest_pe_ratio]</pre>
 </div>

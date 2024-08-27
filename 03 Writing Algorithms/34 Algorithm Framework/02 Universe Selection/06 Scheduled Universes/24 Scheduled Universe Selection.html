@@ -1,7 +1,9 @@
 <p>The <code>ScheduledUniverseSelectionModel</code> selects assets on the schedule you provide. To use this model, provide a <code>DateRule</code>, <code>TimeRule</code>, and a selector function. The <code>DateRule</code> and <code>TimeRule</code> define the selection schedule. The selector function receives a <code class="python">datetime</code><code class="csharp">DateTime</code> object and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the constituents of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">UniverseSettings.Asynchronous = true;
+	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
+UniverseSettings.Asynchronous = true;
+// Schedule at midnight in the begining of each month, select SPY symbol if current month is October or QQQ otherwise.
 AddUniverseSelection(
     new ScheduledUniverseSelectionModel(
         DateRules.MonthStart(), 
@@ -11,7 +13,9 @@ AddUniverseSelection(
         }
     )
 );</pre>
-	<pre class="python">self.universe_settings.asynchronous = True
+	<pre class="python"># Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
+self.universe_settings.asynchronous = True
+# Schedule at midnight in the begining of each month, select SPY symbol if current month is October or QQQ otherwise.
 self.add_universe_selection(
     ScheduledUniverseSelectionModel(
         self.date_rules.month_start(), 
@@ -65,7 +69,7 @@ self.add_universe_selection(
 <p>To return the current universe constituents from the selector function, return <code>Universe.<span class="csharp">Unchanged</span><span class="python">UNCHANGED</span></code>.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
+	<pre class="csharp">// Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00.
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
     TimeRules.Every(TimeSpan.FromHours(6)),
@@ -80,7 +84,7 @@ private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
         QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 }
 </pre>
-	<pre class="python"># Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
+	<pre class="python"># Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00.
 self.add_universe_selection(ScheduledUniverseSelectionModel(
     self.date_rules.every(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY),
     self.time_rules.every(timedelta(hours = 6)),

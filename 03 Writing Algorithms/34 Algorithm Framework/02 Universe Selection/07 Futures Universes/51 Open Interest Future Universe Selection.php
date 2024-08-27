@@ -75,7 +75,8 @@ self.add_universe_selection(
 <p>The following example shows how to define the Future chain Symbol selector as an isolated method:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public override void Initialize()
+    <pre class="csharp">// Setup algorithm settings and request data in initialize.
+public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;  
     AddUniverseSelection(
@@ -83,6 +84,7 @@ self.add_universe_selection(
     );
 }
 
+// Create selection function which returns symbol objects.
 private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
 {
     return new[] {
@@ -92,12 +94,14 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
 }
 
 </pre>
-    <pre class="python">def initialize(self) -&gt; None:
+    <pre class="python"># Setup algorithm settings and request data in initialize.
+def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True
     self.add_universe_selection(
         OpenInterestFutureUniverseSelectionModel(self, self.select_future_chain_symbols)
     )
 
+# Create selection function which returns symbol objects.
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ 
         Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
@@ -108,7 +112,7 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 <p>To move the Future chain Symbol selector outside of the algorithm class, create a universe selection model that inherits the <code>OpenInterestFutureUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In Initialize
+    <pre class="csharp">// Setup algorithm settings and request data in initialize.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new GoldOpenInterestFutureUniverseSelectionModel(this));
 
@@ -126,7 +130,7 @@ class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseS
         };
     }
 }</pre>
-    <pre class='python'># In initialize
+    <pre class='python'># Create selection function which returns symbol objects.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(GoldOpenInterestFutureUniverseSelectionModel(self))
     
