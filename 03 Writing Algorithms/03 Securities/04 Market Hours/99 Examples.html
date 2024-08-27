@@ -1,0 +1,157 @@
+<h4>Example 1: Only Within 1 Hour Of Market Open And Close</h4>
+<p>Buying SPY shortly after market holidays or weekend breaks can be a profitable strategy. Historically, the market has tended to experience positive returns in the trading sessions immediately following extended market closures. This is often attributed to the release of pent-up demand and information during the downtime. By positioning into SPY at the open or within the first few trading hours after a holiday or weekend, investors may be able to capture this post-break bounce in the broader market.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Equity _spy;
+        
+public override void Initialize()
+{
+    // Daily data
+    _spy = AddEquity("SPY", Resolution.Daily);
+}
+
+public override void OnData(Slice slice)
+{
+    if (!slice.Bars.ContainsKey(_spy.Symbol)) return;
+
+    // Check if the previous day is holiday
+    if (_spy.Exchange.Hours.Holidays.Contains(slice.Bars[_spy.Symbol].Time.AddDays(-1)))
+    {
+        // Buy if it is a holiday a day before
+        SetHoldings(_spy.Symbol, 1);
+    }
+    else if (Portfolio[_spy.Symbol].Invested)
+    {
+        // Liquidate otherwise if any open position
+        Liquidate(_spy.Symbol);
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    # Daily data
+    self.spy = self.add_equity("SPY", Resolution.DAILY)
+
+def on_data(self, slice: Slice) -&gt; None:
+    if self.spy.symbol not in slice.bars:
+        return
+    
+    # Check if the previous day is holiday
+    if slice.bars[self.spy.symbol].time - timedelta(1) not in self.spy.exchange.hours.holidays:
+        # Buy if it is a holiday a day before
+        self.set_holdings(self.spy.symbol, 1)
+    elif self.portfolio[self.spy.symbol].invested:
+        # Liquidate otherwise if any open position
+        self.liquidate(self.spy.symbol)</pre>
+</div>
+
+<h4>Example 2: Pre-market Short Limit Order</h4>
+<p>A pre-market short limit order is a type of order placed before the regular trading session begins. It allows a trader to take a short position at a price higher than the current market price, with the intention of selling the position shortly after the market opens and profiting from the expected price decline. This strategy is often used by traders who anticipate a decline in the asset's value and want to capitalize on it.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Equity _spy;
+        
+public override void Initialize()
+{
+    // Enable extended market hours feed
+    _spy = AddEquity("SPY", extendedMarketHours: true);
+}
+
+public override void OnData(Slice slice)
+{
+    if (!slice.QuoteBars.ContainsKey(_spy.Symbol)) return;
+
+    var exchangeHours = _spy.Exchange.Hours;
+    // Check it is extended market hours before market open and no position/open order
+    if (IsBeforeMarketOpenExtendedHours(exchangeHours, slice.Time)
+        && !Portfolio[_spy.Symbol].Invested
+        && Transactions.GetOpenOrderTickets(_spy.Symbol).Count() == 0)
+    {
+        // Short sell at a higher quote
+        LimitOrder(_spy.Symbol, -10, slice.QuoteBars[_spy.Symbol].Bid.Close * 1.005m);
+    }
+    // Check if the normal market is opening and any position
+    else if (exchangeHours.IsOpen(slice.Time, extendedMarketHours: false) && Portfolio[_spy.Symbol].Invested)
+    {
+        // Close the short position
+        Liquidate(_spy.Symbol);
+    }
+}
+
+private bool IsBeforeMarketOpenExtendedHours(SecurityExchangeHours exchangeHours, DateTime time)
+{
+    // Check if it is extended market hours before market open 
+    // Check by if the extended market is open and if the next non-extended market open is on the same day
+    return exchangeHours.IsOpen(time, extendedMarketHours: true)
+        && exchangeHours.GetNextMarketOpen(time, extendedMarketHours: false).Day == time.Day;
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    # Enable extended market hours feed
+    self.spy = self.add_equity("SPY", extended_market_hours=True)
+
+def on_data(self, slice: Slice) -&gt; None:
+    if self.spy.symbol not in slice.quote_bars:
+        return
+    
+    exchange_hours = self.spy.exchange.hours
+    # Check it is extended market hours before market open and no position/open order
+    if is_before_market_open_extended_hours(exchange_hours, slice.time) \
+        and not self.portfolio[self.spy.symbol].invested \
+        and not self.transactions.get_open_order_tickets(self.spy.symbol):
+        # Short sell at a higher quote
+        self.limit_order(self.spy.symbol, -10, slice.quote_bars[self.spy.symbol].bid.close * 1.005)
+    # Check if the normal market is opening and any position
+    elif self.portfolio[self.spy.symbol].invested and self.portfolio[self.spy.symbol].invested:
+        # Liquidate otherwise if any open position
+        self.liquidate(self.spy.symbol)
+    
+def is_before_market_open_extended_hours(self, exchange_hours: SecurityExchangeHours, time: datetime) -&gt; bool:
+    # Check if it is extended market hours before market open 
+    # Check by if the extended market is open and if the next non-extended market open is on the same day
+    return exchange_hours.is_open(time, extended_market_hours=True)\
+        and exchange_hours.get_next_market_open(time, extended_market_hours=False).day == time.day</pre>
+</div>
+<p>However, it is important to note that pre-market trading can be more volatile and riskier than regular trading, and the intended price may not be achieved on this strategy.</p>
+
+<h4>Example 3: Last Hour Trades</h4>
+<p>Establishing a scheduled trading event in the hour before market close can be an effective strategy. This allows the trader to analyze market conditions, identify potential trade opportunities, and prepare orders ahead of the close. By emitting their trading insights and planned actions to the market in this critical final hour, the trader can influence other market participants and potentially gain an edge.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Equity _spy;
+
+public override void Initialize()
+{
+    _spy = AddEquity("SPY");
+
+    // Set up a portfolio construction model to handle insights for trading
+    SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
+
+    // Set up a scheduled event on 1-hour before market close to open position
+    Schedule.On(
+        DateRules.EveryDay(_spy.Symbol),
+        TimeRules.BeforeMarketClose(_spy.Symbol, 60),
+        LastHourTrade
+    );
+}
+
+private void LastHourTrade()
+{
+    // Get the time of next market close
+    var marketCloseTime = _spy.Exchange.Hours.GetNextMarketClose(Time, extendedMarketHours: false);
+    // Emit an insight that expires 1 minutye before the next market close
+    EmitInsights(Insight.Price(_spy.Symbol, marketCloseTime.AddMinutes(-1), InsightDirection.Up));
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    self.spy = self.add_equity("SPY")
+
+    # Set up a portfolio construction model to handle insights for trading
+    self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_DAY))
+
+    # Set up a scheduled event on 1-hour before market close to open position
+    self.schedule.on(
+        self.date_rules.every_day(self.spy.symbol),
+        self.time_rules.before_market_close(self.spy.symbol, 60),
+        self.last_hour_trade
+    )
+
+def last_hour_trade(self) -&gt; None:
+    # Get the time of next market close
+    market_close_time = self.spy.exchange.hours.get_next_market_close(self.time, extended_market_hours=False)
+    # Emit an insight that expires 1 minutye before the next market close
+    self.emit_insights(Insight.price(self.spy.symbol, market_close_time - timedelta(minutes=1), InsightDirection.UP))</pre>
+</div>
