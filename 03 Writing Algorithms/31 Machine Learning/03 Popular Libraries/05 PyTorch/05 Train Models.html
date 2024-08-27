@@ -14,7 +14,7 @@ for trade_bar in history:
 <h4>Define a Training Method</h4>
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
-    <pre class="python"># Prepare feature and label data for training by processing the rolling window data.
+    <pre class="python"># Prepare feature and label data for training by processing rolling window data to create time-series sequences for model training.
 def get_features_and_labels(self, n_steps=5):
     close_prices = list(self.training_data)[::-1]
 
@@ -56,7 +56,7 @@ def my_training_method(self):
 <h4>Set Training Schedule</h4>
 <p>To train the model at the beginning of your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method.</p>
 <div class="section-example-container">
-    <pre class="python"># Set the training schedule.
+    <pre class="python"># Train the model initially to provide a baseline for prediction and decision-making.
 self.train(self.my_training_method)</pre>
 </div>
 <p>To periodically re-train the model as your algorithm executes, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
@@ -69,7 +69,7 @@ self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), se
 <h4>Update Training Data</h4>
 <p>To update the training data as the algorithm executes, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
 <div class="section-example-container">
-    <pre class="python"># Update the training data to train the model on most recent information.
+    <pre class="python"># Add the latest bar to training data to ensure the model is trained with the most recent market data.
 def on_data(self, slice: Slice) -> None:
     if self._symbol in slice.Bars:
         self.training_data.Add(slice.Bars[self._symbol].Close)</pre>

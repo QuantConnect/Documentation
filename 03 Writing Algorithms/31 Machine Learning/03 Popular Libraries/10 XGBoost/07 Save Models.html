@@ -2,20 +2,20 @@
 <ol>
     <li>Set the key name of the model to be stored in the Object Store.</li>
     <div class="section-example-container">
-        <pre class="python"># Set the key name to save model.
+        <pre class="python"># Set the key to store the model in Object Store for reuse across sessions.
 model_key = "model"</pre>
     </div>
 
     <li>Call the <code class="csharp">GetFilePath</code><code class="python">get_file_path</code> method with the key.</li>
     <div class="section-example-container">
-        <pre class="python"># Get the file path where model will be stored.
+        <pre class="python"># Get the file path to correctly save and access the model in Object Store.
 file_name = self.object_store.get_file_path(model_key)</pre>
     </div>
     <p>This method returns the file path where the model will be stored.</p>
 
     <li>Call the <code>dump</code> method the file path.</li>
     <div class="section-example-container">
-        <pre class="python"># Serialize Python objects into a file.
+        <pre class="python"># Serialize Python objects into a file to save the model's state for other runs.
 joblib.dump(self.model, file_name)</pre>
     </div>
     <p>If you dump the model using the <code>joblib</code> module before you save the model, you don't need to retrain the model.</p>
