@@ -1,8 +1,9 @@
 <p>
-    Follow these steps to start local live trading with the <?=($isBrokerage) ? "{$brokerageName} brokerage" : "{$dataFeedName} data provider" ?>:
+    Follow these steps to start local live trading with the <?=$isBrokerage ? "{$brokerageName} brokerage" : "{$dataFeedName} data provider" ?>:
 </p>
 
 <ol>
+    <li><a href='/docs/v2/lean-cli/initialization/authentication#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>        
     <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
 
 <?
