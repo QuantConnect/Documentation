@@ -163,7 +163,7 @@
 	<pre class="csharp">public override void Initialize()
 {
     // We only select BTCUSD in this example due to the custom data
-    AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; from x in universeDay select x.Symbol if x.Symbol.Value == "BTCUSD"));
+    AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; from x in universeDay where x.Symbol.Value == "BTCUSD" select x.Symbol));
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
     # We only select BTCUSD in this example due to the custom data
@@ -175,16 +175,20 @@
 	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
 {
     // Iterate securities that are newly added to the universe
-    foreach (var security in changes.AddedSecurities)
+    foreach (var added in changes.AddedSecurities)
     {
+        // Cast Security object as dynamic to assign property
+        var security = added as dynamic;
         // Subscribe to Bitstamp data for the newly added
         // Cache the Bitstamp data symbol in the security object
         security.AltDataSymbol = AddData&lt;Bitstamp&gt;(security.Symbol.Value, Resolution.Daily).Symbol;
     }
     
     // Iterate securities that are exiting the universe
-    foreach (var security in changes.RemovedSecurities)
+    foreach (var removed in changes.RemovedSecurities)
     {
+        // Cast Security object as dynamic to assign property
+        var security = removed as dynamic;
         // Check if Bitstamp data is being subscribed on this security
         if (security.AltDataSymbol != null)
         {
