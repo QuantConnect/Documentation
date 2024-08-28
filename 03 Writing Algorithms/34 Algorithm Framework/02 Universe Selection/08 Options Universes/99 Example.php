@@ -9,7 +9,8 @@
 <? include(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
 <div class="section-example-container">
-	<pre class="csharp">using QuantConnect.Data;
+	<pre class="csharp">// Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
+using QuantConnect.Data;
 using QuantConnect.Data.Fundamental;
 using QuantConnect.Data.UniverseSelection;
 using QuantConnect.Securities;
@@ -99,7 +100,8 @@ namespace QuantConnect.Algorithm.CSharp
         }
     }
 }</pre>
-	<pre class="python">from AlgorithmImports import *
+	<pre class="python"># Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
+from AlgorithmImports import *
 
     class ChainedUniverseAlgorithm(QCAlgorithm):
     def initialize(self):

@@ -2,7 +2,8 @@
 <code>CoarseFundamental</code> objects and returns a list of <code>Symbol</code> objects.  The <code>Symbol</code> objects you return from the coarse selection function are the constituents of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Set asynchronous universe settings for improved speed and use CoarseFundamentalUniverseSelectionModel with a custom function to select the top 100 most liquid assets with available fundamental data, ensuring the universe consists of liquid and fundamentally strong securities for stable returns.
+public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(new CoarseFundamentalUniverseSelectionModel(SelectCoarse));
@@ -16,7 +17,8 @@ private IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&
                  .Take(100)
                  .Select(c =&gt; c.Symbol);
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
+	<pre class="python"># Set asynchronous universe settings for improved speed and use CoarseFundamentalUniverseSelectionModel with a custom function to select the top 100 most liquid assets with available fundamental data, ensuring the universe consists of liquid and fundamentally strong securities for stable returns.
+def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True
     self.add_universe_selection(CoarseFundamentalUniverseSelectionModel(self.select_coarse))
 
@@ -29,7 +31,7 @@ def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
 <p>To move the coarse selection function outside of the algorithm class, create a universe selection model that inherits the <code>CoarseFundamentalUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize
+	<pre class="csharp">// Move the coarse selection function outside of the algorithm class by creating a custom universe selection model inheriting from CoarseFundamentalUniverseSelectionModel, allowing for modification and reusability of the selection logic.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel(UniverseSettings));
 
@@ -49,7 +51,7 @@ class MostLiquidFundamentalUniverseSelectionModel : CoarseFundamentalUniverseSel
                      .Select(c =&gt; c.Symbol);
     }
 }</pre>
-	<pre class="python"># In Initialize
+	<pre class="python"># Move the coarse selection function outside of the algorithm class by creating a custom universe selection model inheriting from CoarseFundamentalUniverseSelectionModel, allowing for modification and reusability of the selection logic.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(MostLiquidFundamentalUniverseSelectionModel(self.universe_settings))
 

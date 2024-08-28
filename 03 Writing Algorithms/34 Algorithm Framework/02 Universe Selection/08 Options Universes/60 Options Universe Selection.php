@@ -60,7 +60,8 @@ self.set_universe_selection(
 <p>The following example shows how to define the Option chain Symbol selector as an isolated method:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Define option chain symbol selector to subscribe to SP500 E-mini futures options security in the algorithm.
+public override void Initialize()
 {
     AddUniverseSelection(
         new OptionUniverseSelectionModel(TimeSpan.FromDays(1), SelectOptionChainSymbols)
@@ -85,7 +86,8 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
         yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
     }
 }</pre>
-	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
+	<pre class="python"># Define option chain symbol selector to subscribe to SP500 E-mini futures options security in the algorithm.
+from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
 def initialize(self) -&gt; None:
     self.add_universe_selection(

@@ -60,7 +60,9 @@ self.add_universe_selection(
 <p>The following example shows how to define the Future chain Symbol selector as an isolated method:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public override void Initialize()
+    <pre class="csharp">// Initialize, configure FutureUniverseSelectionModel with a custom function to selectively choose E-mini S&P 500 and Gold futures, enabling precise trading focus.
+
+public override void Initialize()
 {
     // Select future symbols using custom selector function.
     AddUniverseSelection(
@@ -76,7 +78,8 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
     };
 }</pre>
-    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+    <pre class="python"># Initialize, configure FutureUniverseSelectionModel with a custom function to selectively choose E-mini S&P 500 and Gold futures, enabling precise trading focus.
+from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
 def initialize(self) -&gt; None:
     # Select future symbols using custom selector function.

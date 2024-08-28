@@ -67,7 +67,8 @@ self.add_universe_selection(
 <p>The following example shows how to define the Option filter as an isolated method:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Configure the algorithm to use raw data for precision and asynchronous processing for speed. Apply OptionChainedUniverseSelectionModel to select the top 10 equities by dollar volume, and filter for front month CALL options with strike prices within 2 levels.
+public override void Initialize()
 {
     // Setup algorithm settings and request data.
     UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
@@ -84,7 +85,8 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
 {
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
+	<pre class="python"># Configure the algorithm to use raw data for precision and asynchronous processing for speed. Apply OptionChainedUniverseSelectionModel to select the top 10 equities by dollar volume, and filter for front month CALL options with strike prices within 2 levels.
+def initialize(self) -&gt; None:
     # Setup algorithm settings and request data.
     self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
     self.universe_settings.asynchronous = True

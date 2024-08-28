@@ -7,12 +7,14 @@
 <p>The default value is <code class="csharp">DataNormalizationMode.Adjusted</code><code class="python">DataNormalizationMode.ADJUSTED</code>. To change the data normalization mode, in the <a href='/docs/v2/writing-algorithms/initialization'>Initialize</a> method, adjust the algorithm's <code>UniverseSettings</code> before you create the Universe Selection model.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+	<pre class="csharp">// Set universe data normalization to use raw prices to reflect actual traded values without adjustments and manually select equities MSTR, MSFT, and IBM.
+UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 
 var tickers = new[] {"MSTR", "MSFT", "IBM"};
 var symbols = tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 AddUniverseSelection(new ManualUniverseSelectionModel(symbols));</pre>
-	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+	<pre class="python"># Set universe data normalization to use raw prices to reflect actual traded values without adjustments and manually select equities MSTR, MSFT, and IBM.
+self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
 
 tickers = ["MSTR", "MSFT", "IBM"]
 symbols = [ Symbol.create(ticker, SecurityType.EQUITY, Market.USA) for ticker in tickers]
