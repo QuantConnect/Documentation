@@ -1,50 +1,209 @@
-<h4>Example 1: Add Alternative Data for Universe Constituents</h4>
-<p>You can utilize information from alternative datasets for position sizing by subscribe to alternative data for selected universe members.</p>
+<h4>Example 1: Add Linked Alternative Data for Universe Constituents</h4>
+<p>Many traders select the universe and position sizing the investment through independent logics. Often, position sizing is done with additional information and this information might come from alternative data other than price history. You can utilize information from alternative datasets for position sizing by subscribing alternative data for selected universe members.</p>
+<p>In this example, we demonstrate how to add and remove <a href="https://www.quantconnect.com/datasets/kavout-composite-factor-bundle">KavoutCompositeFactorBundle</a> data subscription when securities enter and exit the universe, such that you can make use of factor data when making order.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
 {
+    // Iterate securities that are newly added to the universe
     foreach (var security in changes.AddedSecurities)
     {
+        // Subscribe to factor data for the newly added
+        // Cache the alternative data symbol in the security object
         security.AltDataSymbol = AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol, Resolution.Daily).Symbol;
     }
     
+    // Iterate securities that are exiting the universe
     foreach (var security in changes.RemovedSecurities)
     {
+        // Check if factor data is being subscribed on this security
         if (security.AltDataSymbol != null)
         {
+            // Remove subscription of the factor data if there is any
             RemoveSecurity(security.AltDataSymbol);
         }
     }
 }</pre>
 	<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+    # Iterate securities that are newly added to the universe
     for security in changes.added_securities:
+        # Subscribe to factor data for the newly added
+        # Cache the alternative data symbol in the security object
         security.alt_data_symbol = self.add_data(KavoutCompositeFactorBundle, security.symbol, Resolution.DAILY).symbol
     
+    # Iterate securities that are exiting the universe
     for security in changes.removed_securities:
+        # Check if factor data is being subscribed on this security
         if security.alt_data_symbol:
+            # Remove subscription of the factor data if there is any
             self.remove_security(security.alt_data_symbol)</pre>
 </div>
+<p>For the details on how to obtain and handle the alternative factor data, refer to the corresponding <a href="https://www.quantconnect.com/datasets">dataset page</a> of the alternative dataset and <a href="">Handling Data</a> page.</p>
 
-<h4>Example 2: Disable Fill Forward Data</h4>
-<p>For some illiquid securities or alternative data, using forward filled data might not be an accurate estimation nor usable information. To avoid this, disable fill forward.</p>
+<h4>Example 2: Add Linked Custom Data for Universe Constituents</h4>
+<p>Some data might not be readily available in Lean, i.e. not inclusive in the dataset collections. In such case, you will need to provide your own custom data. In the below example, we will demonstrate how to import Bitstamp CSV data for BTCUSD trading.</p>
+
+<p>First, you will need to inherit a <code class="csharp">BaseData</code><code class="python">PythonData</code> data class to load and stream the custom data. You should override the <code class="csharp">GetSource</code><code class="python">get_source</code> method to load the data from its position and the <code class="csharp">Reader</code><code class="python">reader</code> method to read each data entry. Details on importing custom data, refer to <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts">Importing Data</a> page.</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class Bitstamp : BaseData
 {
-    AddData&lt;BrainSentiment&gt;(symbol, fillForward: false);
+    // Declear the properties of the custom dataset
+    // We use JsonProperty to load the row entry with header
+    [JsonProperty("timestamp")]
+    public int Timestamp = 0;
+    [JsonProperty("open")]
+    public decimal Open = 0;
+    [JsonProperty("high")]
+    public decimal High = 0;
+    [JsonProperty("low")]
+    public decimal Low = 0;
+    [JsonProperty("last")]
+    public decimal Close = 0;
+    [JsonProperty("bid")]
+    public decimal Bid = 0;
+    [JsonProperty("ask")]
+    public decimal Ask = 0;
+    [JsonProperty("vwap")]
+    public decimal WeightedPrice = 0;
+    [JsonProperty("volume")]
+    public decimal VolumeBTC = 0;
+    public decimal VolumeUSD = 0;
+
+    // Override the GetSource method to load the data from its source position
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+    {
+        // Use $"{config.Symbol}" if it is symbol defined link
+        var source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv";
+        return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);      // RemoteFile: In a web storage
+    }
+
+    // Override the Reader method to read the data row entry
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
+    {
+        // Ignore empty row
+        if (string.IsNullOrWhiteSpace(line.Trim()))
+        {
+            return null;
+        }
+        
+        // Instantiate a new data object
+        var coin = new Bitstamp() {Symbol = config.Symbol};
+
+        // Ignore non-numeric line
+        if (!char.IsDigit(line[0]))
+        {
+            return null;
+        }
+
+        // Split the CSV data by comma
+        var data = line.Split(',');
+        coin.Value = data[4].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+        // Ignore invalid data
+        if (coin.Value == 0)
+        {
+            return null;
+        }
+
+        // Parse the data into the data entry's properties
+        coin.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
+        coin.EndTime = coin.Time.AddDays(1);
+        coin.Open = data[1].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+        coin.High = data[2].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+        coin.Low = data[3].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+        coin.VolumeBTC = data[5].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+        coin.VolumeUSD = data[6].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+        coin.WeightedPrice = data[7].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+        coin.Close = coin.Value;
+        return coin;
+    }
 }</pre>
-	<pre class="python">def initialize(self):
-    self.add_data(BrainSentiment, symbol, fill_forward=False)</pre>
+	<pre class="python">class Bitstamp(PythonData):
+    # Override the get_source method to load the data from its source position
+    def get_source(self, config, date, is_live_mode):
+        # Use f"{config.symbol}" if it is symbol defined link
+        source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)      # REMOTE_FILE: In a web storage
+    
+    # Override the reader method to read the data row entry
+    def reader(self, config, line, date, is_live_mode):
+        # Ignore empty row
+        if not line.strip():
+            return None
+        
+        # Instantiate a new data object
+        coin = Bitstamp()
+        coin.symbol = config.symbol
+
+        # Ignore non-numeric line
+        if not line[0].isdigit():
+            return None
+
+        # Split the CSV data by comma
+        data = line.split(',')
+
+        # Ignore invalid data
+        coin.value = float(data[4])
+        if coin.value == 0:
+            return None
+
+        # Parse the data into the data entry's properties, save in a cache
+        coin.time = datetime.strptime(data[0], "%Y-%m-%d")
+        coin.end_time = coin.time + timedelta(1)
+        coin["Open"] = float(data[1])
+        coin["High"] = float(data[2])
+        coin["Low"] = float(data[3])
+        coin["Close"] = coin.value
+        coin["VolumeBTC"] = float(data[5])
+        coin["VolumeUSD"] = float(data[6])
+        coin["WeightedPrice"] = float(data[7])
+        return coin</pre>
 </div>
 
-<h4>Example 3: Different Resolution Subscription</h4>
-<p>You can subscribe to daily resolution for an asset for updating indicator and subscribe to another asset for denser resolution for trading using the indicator.</p>
+<p>Add a crypto selection universe to use the custom data that correspond to a specific symbol. You may find details in the <a href="/docs/v2/writing-algorithms/universes/crypto">Crpyto Universe</a> page.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
-    AddEquity("VIX", Resolution.Daily);
-    AddEquity("SPY", Resolution.Minute);
+    // We only select BTCUSD in this example due to the custom data
+    AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; from x in universeDay select x.Symbol if x.Symbol.Value == "BTCUSD"));
 }</pre>
-	<pre class="python">def initialize(self):
-    self.add_equity("VIX", Resolution.DAILY)
-    self.add_equity("SPY", Resolution.MINUTE)</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    # We only select BTCUSD in this example due to the custom data
+    self._universe = self.add_universe(CryptoUniverse.coinbase(lambda universe_day: [c.symbol for c in universe_day if c.symbol.value == "BTCUSD"]))</pre>
+</div>
+
+<p>Now, you can utilize information from the custom dataset to subscribe alternative data for selected universe members with the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    // Iterate securities that are newly added to the universe
+    foreach (var security in changes.AddedSecurities)
+    {
+        // Subscribe to Bitstamp data for the newly added
+        // Cache the Bitstamp data symbol in the security object
+        security.AltDataSymbol = AddData&lt;Bitstamp&gt;(security.Symbol.Value, Resolution.Daily).Symbol;
+    }
+    
+    // Iterate securities that are exiting the universe
+    foreach (var security in changes.RemovedSecurities)
+    {
+        // Check if Bitstamp data is being subscribed on this security
+        if (security.AltDataSymbol != null)
+        {
+            // Remove subscription of the Bitstamp data if there is any
+            RemoveSecurity(security.AltDataSymbol);
+        }
+    }
+}</pre>
+	<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+    # Iterate securities that are newly added to the universe
+    for security in changes.added_securities:
+        # Subscribe to Bitstamp data for the newly added
+        # Cache the Bitstamp data symbol in the security object
+        security.alt_data_symbol = self.add_data(Bitstamp, security.symbol.value, Resolution.DAILY).symbol
+    
+    # Iterate securities that are exiting the universe
+    for security in changes.removed_securities:
+        # Check if Bitstamp data is being subscribed on this security
+        if security.alt_data_symbol:
+            # Remove subscription of the Bitstamp data if there is any
+            self.remove_security(security.alt_data_symbol)</pre>
 </div>
