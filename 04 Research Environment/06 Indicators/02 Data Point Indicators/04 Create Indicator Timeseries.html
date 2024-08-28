@@ -9,8 +9,10 @@
 <h4>Indicator Helper Method</h4>
 <p>To create an indicator timeseries with the helper method, call the <code>Indicator</code> method.</p>
 <div class="section-example-container">
-    <pre class="csharp">var bbIndicator = qb.Indicator(bb, symbol, 50, Resolution.Daily);</pre>
-    <pre class="python">bb_dataframe = qb.indicator(bb, symbol, 50, Resolution.DAILY)</pre>
+    <pre class="csharp">// Create a dataframe with a date index, and columns are indicator values.
+var bbIndicator = qb.Indicator(bb, symbol, 50, Resolution.Daily);</pre>
+    <pre class="python"># Create a dataframe with a date index, and columns are indicator values.
+bb_dataframe = qb.indicator(bb, symbol, 50, Resolution.DAILY)</pre>
 </div>
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-py-helper-bb.png" alt="Historical bollinger band data">
 
@@ -21,14 +23,18 @@
 <ol>
     <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
+        <pre class="csharp">// Request historical trading data with the daily resolution.
+var history = qb.History(symbol, 70, Resolution.Daily);</pre>
+        <pre class="python"># Request historical trading data with the daily resolution.
+history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
     </div>
 
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
     <div class="section-example-container">
-        <pre class="csharp">var time = new RollingWindow&lt;DateTime&gt;(50);
+        <pre class="csharp">// Create a window dictionary to store RollingWindow objects.
 var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
+// Store the RollingWindow objects, index by key is the property of the indicator.
+var time = new RollingWindow&lt;DateTime&gt;(50);
 window["bollingerbands"] = new RollingWindow&lt;decimal&gt;(50);
 window["lowerband"] = new RollingWindow&lt;decimal&gt;(50);
 window["middleband"] = new RollingWindow&lt;decimal&gt;(50);
@@ -38,7 +44,9 @@ window["percentb"] = new RollingWindow&lt;decimal&gt;(50);
 window["standarddeviation"] = new RollingWindow&lt;decimal&gt;(50);
 window["price"] = new RollingWindow&lt;decimal&gt;(50);
 </pre>
-        <pre class="python">window = {}
+        <pre class="python"># Create a window dictionary to store RollingWindow objects.
+window = {}
+# Store the RollingWindow objects, index by key is the property of the indicator.
 window['time'] = RollingWindow[DateTime](50)
 window["bollingerbands"] = RollingWindow[float](50)
 window["lowerband"] = RollingWindow[float](50)
@@ -52,7 +60,8 @@ window["price"] = RollingWindow[float](50)
     </div>
     <li>Attach a handler method to the indicator that updates the <code>RollingWindow</code> objects.</li>
     <div class="section-example-container">
-        <pre class="csharp">bb.Updated += (sender, updated) =&gt; 
+        <pre class="csharp">// Define an update function to add the indicator values to the RollingWindow object.
+bb.Updated += (sender, updated) =&gt; 
 {
     var indicator = (BollingerBands)sender;
     time.Add(updated.EndTime);
@@ -65,7 +74,8 @@ window["price"] = RollingWindow[float](50)
     window["standarddeviation"].Add(indicator.StandardDeviation);
     window["price"].Add(indicator.Price);
 };</pre>
-        <pre class="python">def update_bollinger_band_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python"># Define an update function to add the indicator values to the RollingWindow object.
+def update_bollinger_band_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
     indicator = sender
     window['time'].add(updated.end_time)
     window["bollingerbands"].add(updated.value)
