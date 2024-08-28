@@ -1,7 +1,8 @@
 <p>When the Universe Selection model adjusts the universe constituents, we notify your algorithm through the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> event handler on your other framework components. The method receives <code>QCAlgorithm</code> and <code>SecurityChanges</code> objects. The <code>QCAlgorithm</code> object is an instance of the base QCAlgorithm class, not a reference to your algorithm object. To access the added securities, check the <code class="csharp">changes.AddedSecurities</code><code class="python">changes.added_securities</code> method property. To access the removed securities, check the <code class="csharp">changes.RemovedSecurities</code><code class="python">changes.removed_securities</code> method property.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+	<pre class="csharp">// Log added and removed securities to update the universe and adapt the strategy.
+public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
 {
     foreach (var security in changes.AddedSecurities)
     {
@@ -13,7 +14,8 @@
         Log($"Removed {security.Symbol}");
     }
 }</pre>
-	<pre class="python">def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+	<pre class="python"># Log added and removed securities to update the universe and adapt the strategy.
+def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
     for security in changes.added_securities::
         self.log(f"Added {security.symbol}")
 

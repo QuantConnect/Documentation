@@ -25,7 +25,8 @@
     <li>Create a custom <code>gym</code> environment class.</li>
     <p>In this example, create a custom environment with the previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.</p>
     <div class="section-example-container">
-        <pre class="python">class TradingEnv(gym.Env):
+        <pre class="python"># Example of a custom environment with the previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.
+class TradingEnv(gym.Env):
     FLAT = 0
     LONG = 1
     SHORT = 2
@@ -80,16 +81,19 @@
 
     <li>Get the processed training data.</li>
     <div class="section-example-container">
-        <pre class="python">obs, rewards = self.get_observations_and_rewards()</pre>
+        <pre class="python"># Fetch observations and rewards to set up the training environment and train the model.
+obs, rewards = self.get_observations_and_rewards()</pre>
     </div>
 
     <li>Initialize the environment with the observations and results.</li>
     <div class="section-example-container">
-        <pre class="python">self.env = TradingEnv(obs, rewards)</pre>
+        <pre class="python"># Initialize the trading environment with observations and rewards to provide the necessary data for simulating trading actions and feedback during model training.
+self.env = TradingEnv(obs, rewards)</pre>
     </div>
 
     <li>Call the <code>DQN</code> constructor with the learning policy and the&nbsp;<code>gym</code> environment.</li>
     <div class="section-example-container">
-        <pre class="python">self.model = DQN(MlpPolicy, env)</pre>
+        <pre class="python"># Initialize the Deep Q-Network model with the environment to train and evaluate the policy using Q-learning for action-value estimation.
+self.model = DQN(MlpPolicy, env)</pre>
     </div>
 </ol>

@@ -1,14 +1,16 @@
 <p>To predict the labels of new data, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, get the most recent set of features and then call the <code>predict</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="python">features = self.get_features()
+    <pre class="python"># Generate feature set and predict with the latest data for current market decisions.
+features = self.get_features()
 self.labels = self.model.predict(features.T.values)</pre>
 </div>
 
 <p>You can use the label prediction to place orders.</p>
 
 <div class="section-example-container">
-    <pre class="python">for i in set(self.labels):
+    <pre class="python"># Use label prediction to place orders based on forecasted market direction.
+for i in set(self.labels):
     assets_in_cluster = features.columns[[n for n, k in enumerate(self.labels) if k == i]]
     size = 1/6/len(assets_in_cluster)
     self.set_holdings([PortfolioTarget(symbol, size) for symbol in assets_in_cluster])</pre>

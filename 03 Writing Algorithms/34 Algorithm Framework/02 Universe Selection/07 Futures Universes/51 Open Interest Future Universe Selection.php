@@ -1,14 +1,16 @@
 <p>The <code>OpenInterestFutureUniverseSelectionModel</code> is an extension of the <code>FutureUniverseSelectionModel</code> that selects the contract with the greatest open interest on a daily basis.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">UniverseSettings.Asynchronous = true;
+    <pre class="csharp">// Enable asynchronous universe settings for faster performance and use OpenInterestFutureUniverseSelectionModel with a custom function to select E-mini S&P 500 futures, incorporating contracts with high open interest into the trading universe.
+UniverseSettings.Asynchronous = true;
 AddUniverseSelection(
     new OpenInterestFutureUniverseSelectionModel(
         this, 
         utcTime => new[] { QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }
     )
 );</pre>
-    <pre class="python">self.universe_settings.asynchronous = True
+    <pre class="python"># Enable asynchronous universe settings for faster performance and use OpenInterestFutureUniverseSelectionModel with a custom function to select E-mini S&P 500 futures, incorporating contracts with high open interest into the trading universe.
+self.universe_settings.asynchronous = True
 self.add_universe_selection(
     OpenInterestFutureUniverseSelectionModel(
         self, 

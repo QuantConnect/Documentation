@@ -1,10 +1,12 @@
 
 <p>To add a <code>ManualUniverseSelectionModel</code> to your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>AddUniverseSelection</code> method. The <code>ManualUniverseSelectionModel</code> constructor expects a list of <code>Symbol</code> objects that represent the universe constituents.</p>
 <div class="section-example-container">
-	<pre class="csharp">var tickers = new[] {"SPY", "QQQ", "IWM"};
+	<pre class="csharp">// Use ManualUniverseSelectionModel method to select a static set of equities, similar to traditional add_security methods, for a fixed trading universe.
+var tickers = new[] {"SPY", "QQQ", "IWM"};
 var symbols = tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 AddUniverseSelection(new ManualUniverseSelectionModel(symbols));</pre>
-	<pre class="python">tickers = ["SPY", "QQQ", "IWM"]
+	<pre class="python"># Use ManualUniverseSelectionModel method to select a static set of equities, similar to traditional add_security methods, for a fixed trading universe.
+tickers = ["SPY", "QQQ", "IWM"]
 symbols = [ Symbol.create(ticker, SecurityType.EQUITY, Market.USA) for ticker in tickers]
 self.add_universe_selection(ManualUniverseSelectionModel(symbols))</pre>
 </div>
@@ -39,7 +41,7 @@ self.add_universe_selection(ManualUniverseSelectionModel(symbols))</pre>
 <p>To move the universe tickers and <code>Symbol</code> objects outside of the algorithm class, create a universe selection model that inherits the <code>ManualUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize
+	<pre class="csharp">// Create a custom universe selection model to move universe tickers and Symbol objects outside of the algorithm class for improved modularity, reusability, and maintainability.
 AddUniverseSelection(new IndexUniverseSelectionModel());
 
 // Outside of the algorithm class
@@ -54,7 +56,7 @@ class IndexUniverseSelectionModel : ManualUniverseSelectionModel
         return tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
     }
 }</pre>
-	<pre class="python"># In Initialize
+	<pre class="python"># Create a custom universe selection model to move universe tickers and Symbol objects outside of the algorithm class for improved modularity, reusability, and maintainability.
 self.add_universe_selection(IndexUniverseSelectionModel())
 
 # Outside of the algorithm class

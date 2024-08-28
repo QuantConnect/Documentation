@@ -48,7 +48,8 @@ self.add_universe_selection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
 
 <p>The following example shows how to select the 10 Equities with the largest weight in the SPY ETF:</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Initialize asynchronous settings for speed and use ETFConstituentsUniverseSelectionModel to select the top 10 SPY constituents by weight, focusing on blue-chip stocks with minimal risk.
+public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(
@@ -61,7 +62,8 @@ private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConsti
     // Sort descending by weight and select the first 10 symbols.
     return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
+	<pre class="python"># Initialize asynchronous settings for speed and use ETFConstituentsUniverseSelectionModel to select the top 10 SPY constituents by weight, focusing on blue-chip stocks with minimal risk.
+def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True   
     self.add_universe_selection(
         ETFConstituentsUniverseSelectionModel("SPY", universe_filter_func=self._etf_constituents_filter)
@@ -80,7 +82,7 @@ def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -
 
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize
+	<pre class="csharp">// Initialize asynchronous settings for speed and use LargestWeightSPYETFUniverseSelectionModel to select the top 10 blue-chip SPY constituents by weight, focusing on stocks with minimal risk.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new LargestWeightSPYETFUniverseSelectionModel());
 
@@ -98,7 +100,7 @@ class LargestWeightSPYETFUniverseSelectionModel : ETFConstituentsUniverseSelecti
         return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
     }
 }</pre>
-	<pre class="python"># In Initialize
+	<pre class="python"># Initialize asynchronous settings for speed and use LargestWeightSPYETFUniverseSelectionModel to select the top 10 blue-chip SPY constituents by weight, focusing on stocks with minimal risk.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(LargestWeightSPYETFUniverseSelectionModel())
 

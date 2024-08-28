@@ -20,7 +20,8 @@ from logging import getLogger, INFO</pre>
   <p>In QuantConnect Cloud, the path to the tiny model is <span class='public-file-name'>amazon/chronos-t5-tiny</span>.</p>
 
   <div class="section-example-container">
-    <pre class="python">self._prediction_length = 3*21  # Three months of trading days   
+    <pre class="python"># Configure model parameters to optimize performance.
+self._prediction_length = 3*21  # Three months of trading days   
 self._device_map = "cuda" if torch.cuda.is_available() else "cpu"
 self._optimizer = 'adamw_torch_fused' if torch.cuda.is_available() else 'adamw_torch'
 self._model_name = "amazon/chronos-t5-tiny"
@@ -31,7 +32,8 @@ self._model_path = self.object_store.get_file_path(
   
   <li>Define the fine-tuning method.</li>
   <div class="section-example-container">
-    <pre class="python">def _train_chronos(
+    <pre class="python"># Configure the fine-tuning method and initiate model training.
+def _train_chronos(
         self, training_data,
         probability: Optional[str] = None,
         context_length: int = 512,
@@ -207,7 +209,8 @@ for symbol in symbols:
 
   <li>Call the fine-tuning method with the training data.</li>
   <div class="section-example-container">
-    <pre class="python">output_dir_path = self._train_chronos(
+    <pre class="python"># Train the model with set parameters and save to the output directory.
+output_dir_path = self._train_chronos(
     list(training_data_by_symbol.values()),
     context_length=int(252/2), # 6 months
     prediction_length=self._prediction_length,
@@ -223,7 +226,8 @@ for symbol in symbols:
 
   <li>Load the fine-tuned model.</li>
   <div class="section-example-container">
-    <pre class="python">pipeline = ChronosPipeline.from_pretrained(
+    <pre class="python"># Load the trained model from the output directory.
+pipeline = ChronosPipeline.from_pretrained(
     output_dir_path,
     device_map=self._device_map,
     torch_dtype=torch.bfloat16,

@@ -2,23 +2,27 @@
 <ol>
     <li>Set the key name of the model to be stored in the Object Store.</li>
     <div class="section-example-container">
-        <pre class="python">model_key = "model.hdf5"</pre>
+        <pre class="python"># Set the key to store the model in Object Store for reuse across sessions.
+model_key = "model.hdf5"</pre>
     </div>
 
     <li>Call the <code class="csharp">GetFilePath</code><code class="python">get_file_path</code> method with the key.</li>
     <div class="section-example-container">
-        <pre class="python">file_name = self.object_store.get_file_path(model_key)</pre>
+        <pre class="python"># Get the file path to correctly save and access the model in Object Store.
+file_name = self.object_store.get_file_path(model_key)</pre>
     </div>
     <p>This method returns the file path where the model will be stored.</p>
 
     <li>Delete the current file to avoid a <code>FileExistsError</code> error when you save the model.</li>
      <div class="section-example-container">
-        <pre class="python">import os
+        <pre class="python">
+import os
 os.remove(file_name)</pre>
     </div>   
 
     <li>Call the <code>to_hdf5</code> method with the file path.</li>
     <div class="section-example-container">
-        <pre class="python">self.model.to_hdf5(file_name)</pre>
+        <pre class="python"># Serialize Python objects into a file to save the model's state for other runs.
+self.model.to_hdf5(file_name)</pre>
     </div>
 </ol>
