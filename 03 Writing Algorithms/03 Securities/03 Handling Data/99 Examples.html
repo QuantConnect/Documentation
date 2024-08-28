@@ -1,52 +1,209 @@
 <h4>Example 1: Use QuoteBar Data</h4>
 <p>To increase the accuracy of indicator values for illiquid assets, update the indicator with the mid-price of a quote bar.</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void OnData(Slice slice)
+	<pre class="csharp">private Symbol _symbol;
+// Initialize a new instance of a SimpleMovingAverage object
+private SimpleMovingAverage _indicator = new(20);
+
+public override void Initialize()
 {
+    _symbol = AddEquity("SPY").Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Check if the QuoteBars received contain SPY quote data
     if (slice.QuoteBars.ContainsKey(_symbol))
     {
         var quoteBar = slice.QuoteBars[_symbol];
-        var midPrice = (quoteBar.Bid.Price + quoteBar.Ask.Price) * 0.5m;
-        _indicator.Update(slice.Time, midPrice);
+        // Calculate the mid price by averaging the bid and ask price
+        var midPrice = (quoteBar.Bid.Close + quoteBar.Ask.Close) * 0.5m;
+        // Update the SMA indicator with the mid price
+        _indicator.Update(quoteBar.EndTime, midPrice);
     }
 }</pre>
-    <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
+    self._symbol = self.add_equity("SPY").symbol
+    self.indicator = SimpleMovingAverage(20)
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Check if the QuoteBars received contain SPY quote data
     if slice.quote_bars.contains_key(self._symbol):
         quote_bar = slice.quote_bars[self._symbol]
-        mid_price = (quote_bar.bid.price + quote_bar.ask.price) * 0.5
-        _indicator.update(slice.time, mid_price)</pre>
+        # Calculate the mid price by averaging the bid and ask price
+        mid_price = (quote_bar.bid.close + quote_bar.ask.close) * 0.5
+        # Update the SMA indicator with the mid price
+        self.indicator.update(quote_bar.end_time, mid_price)</pre>
 </div>
 
 <h4>Example 2: Use Tick Data</h4>
 <p>To obtain the instant bid and ask size of the latest tick, use tick data.</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void OnData(Slice slice)
+	<pre class="csharp">private Symbol _symbol;
+// Set up variables to save the bid and ask price
+private decimal _bidSize = 0m;
+private decimal _askSize = 0m;
+
+public override void Initialize()
 {
+    _symbol = AddEquity("SPY", Resolution.Tick).Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Check if the Ticks received contain SPY tick data
     if (slice.Ticks.ContainsKey(_symbol))
     {
-        var tick = slice.Ticks[_symbol];
-        if (tick.TickType == TickType.Quote)
+        // Reset the bid and ask size
+        _bidSize = 0;
+        _askSize = 0;
+
+        var ticks = slice.Ticks[_symbol];
+        
+        // Iterate all related ticks to calculate the bid and ask size
+        // Make sure the tick data is a quote to obtain either bid and ask size
+        foreach (var tick in ticks.Where(tick =&gt; tick.TickType == TickType.Quote))
         {
-            var bidSize = tick.BidSize;
-            var askSize = tick.AskSize;
+            // Update the bid or ask size
+            _bidSize += tick.BidSize;
+            _askSize += tick.AskSize;
         }
     }
 }</pre>
-    <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
+    self._symbol = self.add_equity("SPY", Resolution.TICK).symbol
+    # Set up variables to save the bid and ask price
+    self.bid_size = 0
+    self.ask_size = 0
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Check if the Ticks received contain SPY tick data
     if slice.ticks.contains_key(self._symbol):
-        tick = slice.ticks[self._symbol]
-        if tick.tick_type == TickType.QUOTE:
-            bid_size = tick.bid_size
-            ask_size = tick.ask_size</pre>
+        # Reset the bid and ask size
+        self.bid_size = 0
+        self.ask_size = 0
+
+        ticks = slice.ticks[self._symbol]
+
+        # Iterate all related ticks to calculate the bid and ask size
+        for tick in ticks:
+            # Make sure the tick data is a quote to obtain either bid and ask size
+            if tick.tick_type == TickType.QUOTE:
+                # Update the bid or ask size
+                self.bid_size += tick.bid_size
+                self.ask_size += tick.ask_size</pre>
 </div>
 
 <h4>Example 3: Fundamental Cache</h4>
 <p>You can also access the <code>Fundamental</code> data cache from <code>Equity</code> objects.</p>
 <div class="section-example-container">
-	<pre class="csharp">var security = Securities[_symbol];
-var fundamental = security.Fundamentals;
-var sectorCode = fundamental.AssetClassification.MorningstarSectorCode;</pre>
-	<pre class="python">security = self.securities[self._symbol]
-fundamental = security.fundamentals
-sector_code = fundamental.asset_classification.morningstar_sector_code</pre>
+	<pre class="csharp">public override void OnData(Slice slice)
+{
+    // Iterate active security objects
+    foreach (var security in ActiveSecurities.Values)
+    {
+        // Access the Fundamental cache
+        var fundamental = security.Fundamentals;
+        // Obtain the sector code
+        var sectorCode = fundamental.AssetClassification.MorningstarSectorCode;
+    }
+}</pre>
+	<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Iterate active security objects
+    for security in self.active_securities.values():
+        # Access the Fundamental cache
+        fundamental = security.fundamentals
+        # Obtain the sector code
+        sector_code = fundamental.asset_classification.morningstar_sector_code</pre>
+</div>
+
+<h4>Example 4: Access Option Greeks</h4>
+<p>Use the <code class="csharp">OptionChains</code><code class="python">option_chains</code> of the <code>Slice</code> data to access properties of option contracts of an underlying. Refer to <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#04-Option-Chains">Equity Option</a> page for more details.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    // Subscribe to option data
+    var option = AddOption("SPY");
+    // Set the option universe filter: in this example, we select all contracts with 5 strike ranges from ATM and within expiration 60 days
+    option.SetFilter(x =&gt; x.IncludeWeeklys().Strikes(-5, 5).Expiration(0, 60));
+    // Save reference of the canonical symbol
+    _symbol = option.Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Try to get the option contracts within the option chain of the canonical symbol
+    if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        foreach (var contract in chain)
+        {
+            // Obtain the implied volatility and option greeks in each contract
+            var iv = contract.ImpliedVolatility;
+            var greeks = contract.Greeks;
+            var delta = greeks.Delta;
+            var gamma = greeks.Gamma;
+            var vega = greeks.Vega;
+            var theta = greeks.Theta;
+            var rho = greeks.Rho;
+        }
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    # Subscribe to option data
+    option = self.add_option("SPY")
+    # Set the option universe filter: in this example, we select all contracts with 5 strike ranges from ATM and within expiration 60 days
+    option.set_filter(lambda x: x.include_weeklys().strikes(-5, 5).expiration(0, 60))
+    # Save reference of the canonical symbol
+    self._symbol = option.symbol
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Try to get the option contracts within the option chain of the canonical symbol
+    chain = slice.option_chains.get(self._symbol)
+    if chain:
+        for contract in chain:
+            # Obtain the implied volatility and option greeks in each contract
+            iv = contract.implied_volatility
+            greeks = contract.greeks
+            delta = greeks.delta
+            gamma = greeks.gamma
+            vega = greeks.vega
+            theta = greeks.theta
+            rho = greeks.rho</pre>
+</div>
+
+<h4>Example 5: Access Sentiment</h4>
+<p>You can also subscribe and receive updated alternative data in the <code class="csharp">OnData</code><code class="python">on_data</code> method. In this example, we demonstrate how to handle <a href="https://www.quantconnect.com/datasets/brain-sentiment-indicator">Brain Sentiment</a> dataset. For other alternative datasets, you may refer to the <a href="https://www.quantconnect.com/datasets/">dataset pages</a>.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Symbol _dataset7DaySymbol;
+
+public override void Initialize()
+{
+    var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+    // Subscribe to 7-day sentiment data
+    _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(aapl).Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Check if the current slice contains the 7-day sentiment data
+    if (slice.ContainsKey(_dataset7DaySymbol))
+    {
+        var dataPoint = slice[_dataset7DaySymbol];
+        // Display the sentiment property
+        Log($"{_dataset7DaySymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}");
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+    # Subscribe to 7-day sentiment data
+    self.dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, aapl).symbol
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Check if the current slice contains the 7-day sentiment data
+    if slice.contains_key(self.dataset_7day_symbol):
+        data_point = slice[self.dataset_7day_symbol]
+        # Display the sentiment property
+        self.log(f"{self.dataset_7day_symbol} sentiment at {slice.time}: {data_point.sentiment}")</pre>
 </div>
