@@ -11,4 +11,4 @@
     <pre class="python">self._symbol = AddEquity("YESBANK", market=Market.INDIA, data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 
-<? include(DOCS_RESOURCES."/datasets/scaled-raw.php"); ?>
+<? include(DOCS_RESOURCES."/datasets/scaled-raw.html"); ?>
