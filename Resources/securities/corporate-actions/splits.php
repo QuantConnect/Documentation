@@ -1,9 +1,10 @@
 <p>When a company does a stock split, the number of shares each shareholder owns increases and the price of each share decreases. When a company does a reverse stock split, the number of shares each shareholder owns decreases and the price of each share increases. A company may perform a stock split or a reverse stock split to adjust the price of their stock so that more investors trade it and the liquidity increases.</p>
 
-<p>When a stock split or reverse stock split occurs for an Equity in your algorithm, LEAN sends a <code>Split</code> object to the <code class="csharp">OnData</code><code class="python">on_data</code> method. </code>Split</code> objects have the following properties:</p>
-<div data-tree='QuantConnect.Data.Market.Split'></div>
-
-<p>You receive <code>Split</code> objects when a split is in the near future and when it occurs. To know if the split occurs in the near future or now, check the <code class="csharp">Type</code><code class="python">type</code> property.</p>
+<p>
+    When a stock split or reverse stock split occurs for an Equity in your algorithm, LEAN sends a <code>Split</code> object to the <code class="csharp">OnData</code><code class="python">on_data</code> method.
+    You receive <code>Split</code> objects when a split is in the near future and when it occurs. 
+    To know if the split occurs in the near future or now, check the <code class="csharp">Type</code><code class="python">type</code> property.
+</p>
 
 <p>If you backtest without the <code class="csharp">Raw</code><code class="python">RAW</code> <a href='<?=$dataNormalizationModeLink?>'>data normalization mode</a>, the splits are factored into the price and volume. If you backtest with the <code class="csharp">Raw</code><code class="python">RAW</code> data normalization mode or trade live, when a split occurs, LEAN automatically adjusts your positions based on the <code class="csharp">SplitFactor</code><code class="python">split_factor</code>. If the post-split quantity isn't a valid <a href='/docs/v2/writing-algorithms/securities/key-concepts#06-Symbol-Properties'>lot size</a>, LEAN credits the remaining value to your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cashbook</a> in your account currency. If you have indicators in your algorithm, <a href='/docs/v2/writing-algorithms/indicators/key-concepts#11-Reset-Indicators'>reset and warm-up your indicators with ScaledRaw data</a> when splits occur so that the data in your indicators account for the price adjustments that the splits cause.</p>
 
@@ -79,3 +80,6 @@ splits = self.history[Split](symbol, timedelta(4*365))</pre>
 <p>If you hold an Option contract for an underlying Equity when a split occurs, LEAN closes your Option contract position.</p>
 
 <? include(DOCS_RESOURCES."/securities/corporate-actions/splits-order.html"); ?>
+
+<p><code>Split</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.Market.Split'></div>
