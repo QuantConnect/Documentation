@@ -2,7 +2,11 @@
     
 <div data-tree='QuantConnect.DataNormalizationMode' data-fields='Raw,RAW,Adjusted,ADJUSTED,SplitAdjusted,SPLIT_ADJUSTED,TotalReturn,TOTAL_RETURN,ScaledRaw,SCALED_RAW'></div>
 
-<? include(DOCS_RESOURCES."/datasets/data-normalization.php"); ?>
+<p>
+    If you use <code class="csharp">Adjusted</code><code class="python">ADJUSTED</code>, <code class="csharp">SplitAdjusted</code><code class="python">SPLIT_ADJUSTED</code>, or <code class="csharp">TotalReturn</code><code class="python">TOTAL_RETURN</code>, we use the entire split and dividend history to adjust historical prices. 
+    This process ensures you get the same adjusted prices, regardless of the <code>QuantBook</code> time. 
+    If you use <code class="csharp">ScaledRaw</code><code class="python">SCALED_RAW</code>, we use the split and dividend history before the <code>QuantBook</code>'s <code>EndDate</code> to adjust historical prices.
+</p>
 
 <p>To set the data normalization mode for a security, pass a <code class="csharp">dataNormalizationMode</code><code class="python">data_normalization_mode</code> argument to the <code class="csharp">AddEquity</code><code class="python">add_equity</code> method.</p>    
 
