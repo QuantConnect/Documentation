@@ -1,7 +1,5 @@
 <p><code>TradeBar</code> objects are price bars that consolidate individual trades from the exchanges. They contain the open, high, low, close, and volume of trading activity over a period of time.</p>
-<img src='https://cdn.quantconnect.com/docs/i/dataformat-tradebar.png' class='img-responsive' alt="Tradebar decomposition">
-<p><code>TradeBar</code> objects have the following properties:</p>    
-<div data-tree='QuantConnect.Data.Market.TradeBar'></div>    
+<img src='https://cdn.quantconnect.com/docs/i/dataformat-tradebar.png' class='img-responsive' alt="Tradebar decomposition"> 
 <p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code class="csharp">Bars</code><code class="python">bars</code> property of the <code>Slice</code> with the <?=$securityName?> <code class="csharp">Symbol</code><code class="python">symbol</code>. If the <?=$securityName?> doesn't actively trade or you are in the same time step as when you added the <?=$securityName?> subscription, the <code>Slice</code> may not contain data for your <code class="csharp">Symbol</code><code class="python">symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your <?=$securityName?> before you index the <code>Slice</code> with the <?=$securityName?> <code class="csharp">Symbol</code><code class="python">symbol</code>.</p>
 
 <div class='section-example-container'>
@@ -33,3 +31,6 @@
     for symbol, trade_bar in slice.bars.items():
         close_price = trade_bar.close</pre>
 </div>
+
+<p><code>TradeBar</code> objects have the following properties:</p>    
+<div data-tree='QuantConnect.Data.Market.TradeBar'></div>   
