@@ -2,7 +2,7 @@
 
 
 <div class="section-example-container">
-<pre class="csharp">// Cast the security as dynamic to add custom properties to the object.
+<pre class="csharp">// Cast the security to a dynamic object to add custom properties to it.
 public override void OnSecuritiesChanged(SecurityChanges changes)
 {
     foreach (var security in changes.AddedSecurities)
@@ -12,26 +12,26 @@ public override void OnSecuritiesChanged(SecurityChanges changes)
         // Create an SMA indicator with 10 periods for the asset.
         dynamicSecurity.Indicator = SMA(security.Symbol, 10);
 
-        // Warm up the historical data for the indicator.
+        // Warm up the indicator with historical data.
         WarmUpIndicator(security.Symbol, dynamicSecurity.Indicator);
     }
-    // Remove the indicator in case of security is removed from universe.
+    // Remove the automatic indicator updates when the security leaves the universe.
     foreach (var security in changes.RemovedSecurities)
     {
         DeregisterIndicator((security as dynamic).Indicator);
     }
 }</pre>
-<pre class="python"># Add custom properties to the security by adding custom members to the object.
+<pre class="python"># Add custom properties to the security by duck-typing.
 def on_securities_changed(self, changes: SecurityChanges) -> None:
     for security in changes.added_securities:
         # Create an SMA indicator with 10 periods for the asset. 
         # Use duck typing to store it on the security object.
         security.indicator = self.sma(security.Symbol, 10)
 
-        # Warm up the historical data for the indicator.
+        # Warm up the indicator with historical data.
         self.warm_up_indicator(security.symbol, security.indicator)
 
-    # Remove the indicator in case of security is removed from universe.
+    # Remove the automatic indicator updates when the security leaves the universe.
     for security in changes.removed_securities:
         self.deregister_indicator(security.indicator)</pre>
 </div>
