@@ -1,17 +1,17 @@
 <h4>Example 1: Filter Price Outliners Using SMA</h4>
-<p>When analyzing high-frequency price data, it's important to filter out potential outliers and anomalies that may skew the analysis. One effective method is to use a 1-month SMA to identify price ticks that deviate significantly from the short-term trend. By comparing each price tick to the 1-month SMA, you can flag any data points that fall outside a specified threshold, which we used 3 standard deviations in this example. This helps remove suspicious or erroneous price information, ensuring a cleaner dataset for further technical analysis and trading strategies.</p>
+<p>When analyzing high-frequency price data, it's important to filter out potential outliers and anomalies that may skew the analysis. One effective method is to use a 100-step SMA to identify price ticks that deviate significantly from the short-term trend. By comparing each price tick to the 100-step SMA, you can flag any data points that fall outside a specified threshold, which we used 3 standard deviations in this example. This helps remove suspicious or erroneous price information, ensuring a cleaner dataset for further technical analysis and trading strategies.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class SampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        dynamic equity = AddEquity("AAPL", Resolution.Daily);
-        // Set a 22-step for 1 month daily price SMA
-        equity.Sma = SMA(equity.Symbol, 22, Resolution.Daily);
-        // Set 22-step rolling window of the SMA indicator to save last month data to calculate standard deviation
-        equity.Sma.Window.Size = 22;
+        dynamic equity = AddEquity("AAPL", Resolution.Tick);
+        // Set a 100-step price SMA
+        equity.Sma = SMA(equity.Symbol, 100, Resolution.Tick);
+        // Set 100-step rolling window of the SMA indicator to save the last 100 tick data to calculate standard deviation
+        equity.Sma.Window.Size = 100;
         // Warm up the indicator
-        WarmUpIndicator((Symbol)equity.Symbol, (SimpleMovingAverage)equity.Sma, Resolution.Daily);
+        WarmUpIndicator((Symbol)equity.Symbol, (SimpleMovingAverage)equity.Sma, Resolution.Tick);
         // Set the data filter
         equity.SetDataFilter(new CustomDataFilter());
     }
@@ -46,13 +46,13 @@
 }</pre>
 	<pre class="python">class TestAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
-        equity = self.add_equity("AAPL", Resolution.DAILY)
-        # Set a 22-step for 1 month daily price SMA
-        equity.sma = self.sma(equity.symbol, 22, Resolution.DAILY)
-        # Set 22-step rolling window of the SMA indicator to save last month data to calculate standard deviation
-        equity.sma.window.size = 22
+        equity = self.add_equity("AAPL", Resolution.TICK)
+        # Set a 100-step price SMA
+        equity.sma = self.sma(equity.symbol, 100, Resolution.TICK)
+        # Set 100-step rolling window of the SMA indicator to save the last 100 tick data to calculate standard deviation
+        equity.sma.window.size = 100
         # Warm up the indicator
-        self.warm_up_indicator(equity.symbol, equity.sma, Resolution.DAILY)
+        self.warm_up_indicator(equity.symbol, equity.sma, Resolution.TICK)
         # Set the data filter
         equity.set_data_filter(CustomDataFilter())
 
