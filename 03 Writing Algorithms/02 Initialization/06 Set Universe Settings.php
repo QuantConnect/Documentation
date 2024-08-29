@@ -39,6 +39,13 @@
         </tr>
         <tr>
             <td>
+                <h4>Method: <span><code class="csharp">Schedule.On</code><code class="python">schedule.on</code></span></h4>
+                <p class='property-description'>What days should universe selection run? If it's <code class="csharp">null</code><code class="python">None</code>, it's the data resolution. For example, <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>US Equity fundamentals universes</a> are daily at midnight.</p>
+                <p>Argument Type: <span><code class='csharp'>IDateRule</code><code class='python'>IDateRule</code></span><span  class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">null</code><code class="python">None</code></span></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <h4>Property: <span><code class="csharp">ContractDepthOffset</code><code class="python">contract_depth_offset</code></span></h4>
                 <p class='property-description'>What offset from the current front month should be used for <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Future contracts</a>? 0 uses the front month and 1 uses the back month contract. This setting is only available for Future assets.</p>
                 <p>Data Type: <span><code>int</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code>0</code></span></p>

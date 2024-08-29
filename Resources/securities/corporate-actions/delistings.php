@@ -1,7 +1,8 @@
-<p>When a company is delisting from an exchange, LEAN sends a <code>Delisting</code> object to the <code class="csharp">OnData</code><code class="python">on_data</code> method. <code>Delisting</code> objects have the following properties:</p>
-<div data-tree="QuantConnect.Data.Market.Delisting"></div>
-
-<p>You receive <code>Delisting</code> objects when a delisting is in the near future and when it occurs. To know if the delisting occurs in the near future or now, check the <code>Type</code> property.</p>
+<p>
+    When a company is delisting from an exchange, LEAN sends a <code>Delisting</code> object to the <code class="csharp">OnData</code><code class="python">on_data</code> method. 
+    You receive <code>Delisting</code> objects when a delisting is in the near future and when it occurs. 
+    To know if the delisting occurs in the near future or now, check the <code>Type</code> property.
+</p>
 
 <p>To get the <code>Delisting</code> objects, index the <code class="csharp">Delistings</code><code class="python">delistings</code> object with the security <code  class="csharp">Symbol</code><code class="python">symbol</code>. The <code class="csharp">Delistings</code><code class="python">delistings</code> objects may not contain data for your <code  class="csharp">Symbol</code><code class="python">symbol</code>. To avoid issues, check if the <code class="csharp">Delistings</code><code class="python">delistings</code> object contains data for your security before you index it with the security <code  class="csharp">Symbol</code><code class="python">symbol</code>.</p>
 
@@ -87,3 +88,6 @@ def on_delistings(self, delistings: Delistings) -> None:
 <? echo file_get_contents(DOCS_RESOURCES."/securities/securities_total.html"); ?>
 
 <p>For a full example, see the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DelistingEventsAlgorithm.cs' class='csharp'>DelistingEventsAlgorithm</a><a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DelistingEventsAlgorithm.py' class='python'>DelistingEventsAlgorithm</a> in the LEAN GitHub repository.</p>
+
+<p><code>Delisting</code> objects have the following properties:</p>
+<div data-tree="QuantConnect.Data.Market.Delisting"></div>

@@ -1,6 +1,4 @@
-<p><code>Tick</code> objects represent a single trade or quote at a moment in time. A trade tick is a record of a transaction for the <?=$securityName?>. A quote tick is an offer to buy or sell the <?=$securityName?> at a specific price. <code>Tick</code> objects have the following properties:</p>
-<div data-tree='QuantConnect.Data.Market.Tick'></div>
-
+<p><code>Tick</code> objects represent a single trade or quote at a moment in time. A trade tick is a record of a transaction for the <?=$securityName?>. A quote tick is an offer to buy or sell the <?=$securityName?> at a specific price.</p>
 <p>Trade ticks have a non-zero value for the <code class="csharp">Quantity</code><code class="python">quantity</code> and <code class="csharp">Price</code><code class="python">price</code> properties, but they have a zero value for the <code class="csharp">BidPrice</code><code class="python">bid_price</code>, <code class="csharp">BidSize</code><code class="python">bid_size</code>, <code class="csharp">AskPrice</code><code class="python">ask_price</code>, and <code class="csharp">AskSize</code><code class="python">ask_size</code> properties. Quote ticks have non-zero values for <code class="csharp">BidPrice</code><code class="python">bid_price</code> and <code class="csharp">BidSize</code><code class="python">bid_size</code> properties or have non-zero values for <code class="csharp">AskPrice</code><code class="python">ask_price</code> and <code class="csharp">AskSize</code><code class="python">ask_size</code> properties. To check if a tick is a trade or a quote, use the <code class="csharp">TickType</code><code class="python">ticktype</code> property.</p>
 
 <p> In backtests, LEAN groups ticks into one millisecond buckets. In live trading, LEAN groups ticks into ~70-millisecond buckets. To get the <code>Tick</code> objects in the <code>Slice</code>, index the <code>Ticks</code> property of the <code>Slice</code> with a <code class="csharp">Symbol</code><code class="python">symbol</code>. If the <?=$securityName?> doesn't actively trade or you are in the same time step as when you added the <?=$securityName?> subscription, the <code>Slice</code> may not contain data for your <code class="csharp">Symbol</code><code class="python">symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your <?=$securityName?> before you index the <code>Slice</code> with the <?=$securityName?> <code class="csharp">Symbol</code><code class="python">symbol</code>.</p>
@@ -45,3 +43,6 @@
 </div>
 
 <p>Tick data is raw and unfiltered, so it can contain bad ticks that skew your trade results. For example, some ticks come from dark pools, which aren't tradable. We recommend you only use tick data if you understand the risks and are able to perform your own online tick filtering.</p>
+
+<p><code>Tick</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.Market.Tick'></div>

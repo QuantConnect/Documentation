@@ -1,7 +1,7 @@
-<p><code>FuturesChain</code> objects represent an entire chain of contracts for a single underlying Future. They have the following properties:</p>
-<div data-tree='QuantConnect.Data.Market.FuturesChain'></div>    
-
-<p>To get the <code>FuturesChain</code>, index the <code class="csharp">FuturesChains</code><code class="python">futures_chains</code> property of the <code>Slice</code> with the continuous contract <code>Symbol</code>.</p>
+<p>
+    <code>FuturesChain</code> objects represent an entire chain of contracts for a single underlying Future. 
+    To get the <code>FuturesChain</code>, index the <code class="csharp">FuturesChains</code><code class="python">futures_chains</code> property of the <code>Slice</code> with the continuous contract <code>Symbol</code>.
+</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -44,3 +44,5 @@ public void OnData(FuturesChains futuresChains)
         contracts = chain.contracts</pre>
 </div>
 
+<p><code>FuturesChain</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.Market.FuturesChain'></div>    

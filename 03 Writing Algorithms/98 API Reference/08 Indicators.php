@@ -110,6 +110,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-v.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vidya.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vp.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vtx.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vwap.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vwma.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-warm-up-indicator.html"); ?>

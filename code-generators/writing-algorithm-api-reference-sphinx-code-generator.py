@@ -112,22 +112,6 @@ def render_docs():
         
     with open(WRITE_PATH / f"{i+1:02} Types.php", 'a', encoding="utf-8") as file:
         file.write(STYLE)
-        
-    # clean up non-inclusive jump links
-    for dir in [WRITE_PATH, RESOURCE, INDICATOR_RESOURCE]:
-        for path in Path.glob(dir, "*.html"):
-            with open(path, 'r', encoding="utf-8") as file:
-                content = file.read().replace(f"an list", "a list").replace(f"an dictionary", "a dictionary")
-
-                pattern = fr"<a href=\"{TARGET}#(\w+)\">"
-                matches = re.findall(pattern, content)
-                
-                to_remove = [x for x in matches if x.strip().lower() not in DONE]
-                for match in to_remove:
-                    content = content.replace(f'<a href=\"#{match}\">{match}</a>', match).replace(f'<a href=\"#{match}\">{match}[]</a>', f"{match}[]")
-
-            with open(path, 'w', encoding="utf-8") as file:
-                file.write(content)
             
     # handle indicator references
     for html_filename, type_name in sorted(INDICATORS.items(), key=lambda x: x[0]):
@@ -158,6 +142,24 @@ def render_docs():
                 html += "</div>\n"
                 file.write(html)
                 file.write(STYLE)
+        
+    # clean up non-inclusive jump links
+    for dir in [WRITE_PATH, RESOURCE, INDICATOR_RESOURCE]:
+        for path in Path.glob(dir, "*.html"):
+            with open(path, 'r', encoding="utf-8") as file:
+                content = file.read().replace(f"an list", "a list").replace(f"an dictionary", "a dictionary")
+
+                pattern1 = fr"<a href=\"{TARGET}#(\w+)\">"
+                pattern2 = r"<a href=\"#(\w+)\">"
+                matches = re.findall(pattern1, content) + re.findall(pattern2, content)
+                
+                to_remove = [x for x in matches if x.strip().lower() not in DONE]
+                for match in to_remove:
+                    content = content.replace(f'<a href=\"#{match}\">{match}</a>', match).replace(f'<a href=\"{TARGET}#{match}\">{match}</a>', match)\
+                        .replace(f'<a href=\"#{match}\">{match}[]</a>', f"{match}[]").replace(f'<a href=\"{TARGET}#{match}\">{match}[]</a>', f"{match}[]")
+
+            with open(path, 'w', encoding="utf-8") as file:
+                file.write(content)
             
 def _render_section_docs(i, h3, type_json_url, write=False):
     for lang in ["python", "csharp"]:
@@ -357,8 +359,11 @@ def _merge_args(old_dict, new_dict):
 def _type_sorting(arg):
     null = arg is None
     if not null:
-        arg_type = arg.split('[')[0].split('<')[0].lower()
+        arg_type = arg.split('[')[0].split('<')[0].lower().strip()
         pyobj = "pyobject" in arg_type
+        if pyobj:
+            return (0, 1, 1, 1, 1)
+        
         try:
             joint_type = JOINT_TYPE_ORDER.index(arg_type)
         except:
@@ -367,9 +372,9 @@ def _type_sorting(arg):
             type_ = TYPE_ORDER.index(arg_type)
         except:
             type_ = 1e7
-        length = len(arg)
-        return (null, pyobj, joint_type, type_, length)
-    return (1, 0, 0, 0, 0)
+        return (0, 0, joint_type, type_, arg)
+    
+    return (1, 1, 1, 1, 1)
     
 def _merge_return(old_ret, new_ret):
     if not new_ret or new_ret == "void" or ".Void" in new_ret:
