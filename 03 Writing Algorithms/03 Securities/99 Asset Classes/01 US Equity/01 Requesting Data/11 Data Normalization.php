@@ -11,3 +11,4 @@
     <pre class="python">self._symbol = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 
+<? include(DOCS_RESOURCES."/datasets/scaled-raw.php"); ?>
