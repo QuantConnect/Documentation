@@ -9,8 +9,10 @@
 <h4>Indicator Helper Method</h4>
 <p>To create an indicator timeseries with the helper method, call the <code>Indicator</code> method.</p>
 <div class="section-example-container">
-    <pre class="csharp">var atrIndicator = qb.Indicator(atr, symbol, 50, Resolution.Daily);</pre>
-    <pre class="python">atr_dataframe = qb.indicator(atr, symbol, 50, Resolution.DAILY)</pre>
+    <pre class="csharp">// Create a dataframe with a date index, and columns are indicator values.
+var atrIndicator = qb.Indicator(atr, symbol, 50, Resolution.Daily);</pre>
+    <pre class="python"># Create a dataframe with a date index, and columns are indicator values.
+atr_dataframe = qb.indicator(atr, symbol, 50, Resolution.DAILY)</pre>
 </div>
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-bar-py-helper-atr.png" alt="Historical average true range data">
 
@@ -22,17 +24,23 @@
 <ol>
     <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
+        <pre class="csharp">// Request historical trading data with the daily resolution.
+var history = qb.History(symbol, 70, Resolution.Daily);</pre>
+        <pre class="python"># Request historical trading data with the daily resolution.
+history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
     </div>
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
     <div class="section-example-container">
-        <pre class="csharp">var time = new RollingWindow&lt;DateTime&gt;(50);
+        <pre class="csharp">// Create a window dictionary to store RollingWindow objects.
 var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
+// Store the RollingWindow objects, index by key is the property of the indicator.
+var time = new RollingWindow&lt;DateTime&gt;(50);
 window["averagetruerange"] = new RollingWindow&lt;decimal&gt;(50);
 window["truerange"] = new RollingWindow&lt;decimal&gt;(50);
 </pre>
-        <pre class="python">window = {}
+        <pre class="python"># Create a window dictionary to store RollingWindow objects.
+window = {}
+# Store the RollingWindow objects, index by key is the property of the indicator.
 window['time'] = RollingWindow[DateTime](50)
 window['averagetruerange'] = RollingWindow[float](50)
 window["truerange"] = RollingWindow[float](50)
@@ -40,14 +48,16 @@ window["truerange"] = RollingWindow[float](50)
     </div>
     <li>Attach a handler method to the indicator that updates the <code>RollingWindow</code> objects.</li>
     <div class="section-example-container">
-        <pre class="csharp">atr.Updated += (sender, updated) =&gt; 
+        <pre class="csharp">// Define an update function to add the indicator values to the RollingWindow object.
+atr.Updated += (sender, updated) =&gt; 
 {
     var indicator = (AverageTrueRange)sender;
     time.Add(updated.EndTime);
     window["averagetruerange"].Add(updated);
     window["truerange"].Add(indicator.TrueRange);
 };</pre>
-        <pre class="python">def update_average_true_range_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python"># Define an update function to add the indicator values to the RollingWindow object.
+def update_average_true_range_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
     indicator = sender
     window['time'].add(updated.end_time)
     window["averagetruerange"].add(updated.value)
