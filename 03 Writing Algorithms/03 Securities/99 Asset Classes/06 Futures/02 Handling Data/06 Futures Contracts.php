@@ -8,3 +8,6 @@ $chainTypeName = "FuturesChains";
 $variableName = "futuresChains";
 include(DOCS_RESOURCES."/securities/open-interest.php"); 
 ?>
+
+<p><code>FuturesContract</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.Market.FuturesContract'></div>
