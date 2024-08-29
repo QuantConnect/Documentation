@@ -4,7 +4,8 @@ from _code_generation_helpers import SPDB, get_text_content, get_type
 if __name__ == '__main__':    
     spdb = get_text_content(SPDB)
 
-    directory = "Resources/datasets/supported-securities/"
+    directory = Path("Resources/datasets/supported-securities/")
+    directory.mkdir(parents=True, exist_ok=True)
     backlist = ['market','ftx', 'ftxus', 'fxcm', 'gdax']
     markets = ['binance', 'binanceus', 'bitfinex', 'bybit', 'coinbase', 'kraken', 'oanda', 'interactivebrokers']
     results = {}
@@ -31,6 +32,32 @@ if __name__ == '__main__':
                for language in ["csharp", "python"]]
 
     market = dict([(cs.lower(), ','.join(sorted(set([cs,py])))) for cs,py in zip(market[0], market[1])])
+
+    rows = ''
+    security_types = ['EQUITY','OPTION','CRYPTO','CRYPTO_FUTURE','FOREX','FUTURE','FUTURE_OPTION','FUTURE_INDEX','INDEX','INDEX_OPTION','CFD']
+    for security_type in security_types:
+        csharp_name = security_type.title().replace('_','')
+        result = results.get(csharp_name.lower())
+        if not result:
+            continue
+        type_cell = f'<code class="csharp">SecurityType.{csharp_name}</code><code class="python">SecurityType.{security_type}</code>'
+        csharp_market_cell = []
+        python_market_cell = []
+        for key in result.keys():
+            market_cell = market[key].split(',')
+            python_market_cell.append(market_cell[0])
+            csharp_market_cell.append(market_cell[-1])
+        csharp_market_cell = '<br>'.join(f'Market.{x}' for x in sorted(csharp_market_cell))
+        python_market_cell = '<br>'.join(f'Market.{x}' for x in sorted(python_market_cell))
+        rows += f'<tr><td>{type_cell}</td><td><code class="csharp">{csharp_market_cell}</code><code class="python">{python_market_cell}</code></td></tr>\n'
+    with open(f"{directory}/markets.html", "w", encoding="utf-8") as html:
+        html.write(f'''<div>
+<table class="table qc-table table-reflow ticker-table hidden-xs">
+<thead><tr><th>Security Type</th><th>Market(s)</th></tr></thead>
+<tbody>
+{rows}</tbody>
+</table>
+</div>''')
 
     # Write files
     for security_type, result in results.items():
