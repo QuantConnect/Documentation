@@ -1,8 +1,10 @@
 <p>The <code>EqualWeightingPortfolioConstructionModel</code> assigns an equal share of the portfolio to the securities with active insights. This weighting scheme is useful for universe rotation based on simple portfolio strategies.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());</pre>
-	<pre class="python">self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
+	<pre class="csharp">// Set portfolio construction to EqualWeightingPortfolioConstructionModel to allocate capital equally across selected securities, ensuring balanced exposure and reducing the influence of any single asset on the portfolio.
+SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());</pre>
+	<pre class="python"># Set portfolio construction to EqualWeightingPortfolioConstructionModel to allocate capital equally across selected securities, ensuring balanced exposure and reducing the influence of any single asset on the portfolio.
+self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

@@ -3,7 +3,9 @@
 <p>Each Portfolio Construction model has a unique method to combine Insight objects. The base <code>PortfolioConstructionModel</code> that most PCM's inherit from doesn't combine information from Insight objects with the same <code>Symbol</code> - but just gets the most recent active insight. To combine the active insights differently, override the <code class="csharp">GetTargetInsights</code><code class="python">get_target_insights</code>, and return all active insights. The <code class="csharp">DetermineTargetPercent</code><code class="python">determine_target_percent</code> method implements the combination criteria and determines the target for each <code>Symbol</code>.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public class MultipleAlphaPortfolioConstructionModel : PortfolioConstructionModel
+	<pre class="csharp">// Implement MultipleAlphaPortfolioConstructionModel to handle and utilize insights from multiple Alpha models. 
+// The get_target_insights method retrieves current active insights, and determine_target_percent allocates portfolio weights accordingly for integrating and balancing multiple Alpha signals within the portfolio.
+public class MultipleAlphaPortfolioConstructionModel : PortfolioConstructionModel
 {
     protected override List&lt;Insight&gt; GetTargetInsights()
     {
@@ -15,7 +17,9 @@
         return new Dictionary&lt;Insight, double&gt;();
     }
 }</pre>
-	<pre class="python">class MultipleAlphaPortfolioConstructionModel(PortfolioConstructionModel):
+	<pre class="python"># Implement MultipleAlphaPortfolioConstructionModel to handle and utilize insights from multiple Alpha models. 
+# The get_target_insights method retrieves current active insights, and determine_target_percent allocates portfolio weights accordingly for integrating and balancing multiple Alpha signals within the portfolio.
+class MultipleAlphaPortfolioConstructionModel(PortfolioConstructionModel):
     def get_target_insights(self) -&gt; List[Insight]:
         return list(self.insight_collection.get_active_insights(self.algorithm.utc_time))
 
