@@ -1,7 +1,7 @@
-<p><code>OptionContract</code> objects represent the data of a single Option contract in the market. They have the following properties:</p>
-<div data-tree='QuantConnect.Data.Market.OptionContract'></div>
-
-<p>To get the Option contracts in the <code>Slice</code>, use the <code class="csharp">Contracts</code><code class="python">contracts</code> property of the <code>OptionChain</code>.</p>
+<p>
+    <code>OptionContract</code> objects represent the data of a single Option contract in the market. 
+    To get the Option contracts in the <code>Slice</code>, use the <code class="csharp">Contracts</code><code class="python">contracts</code> property of the <code>OptionChain</code>.
+</p>
 
 <?
 if ($isFutureOptions) 
