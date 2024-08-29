@@ -8,7 +8,7 @@
 
  <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("YESBANK", market: Market.India, dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class="python">self._symbol = AddEquity("YESBANK", market=Market.INDIA, data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
+    <pre class="python">self._symbol = add_equity("YESBANK", market=Market.INDIA, data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 
 <? include(DOCS_RESOURCES."/datasets/scaled-raw.html"); ?>
