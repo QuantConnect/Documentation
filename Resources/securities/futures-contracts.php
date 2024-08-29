@@ -32,6 +32,3 @@ public void OnData(FuturesChains futuresChains)
         if contract:
             price = contract.LastPrice</pre>
 </div>   
-
-<p><code>FuturesContract</code> objects have the following properties:</p>
-<div data-tree='QuantConnect.Data.Market.FuturesContract'></div>
