@@ -1,6 +1,6 @@
 <?
 $brokerageDetails = "
-<li>Enter your Trading Technologies credentials.</li>
+<li>Enter <a href='/docs/v2/cloud-platform/live-trading/brokerages/trading-technologies#14-Create-TT-Users'>your Trading Technologies credentials</a>.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 User name: john
@@ -8,7 +8,7 @@ Session password: ****************
 Account name: jane</pre></div>
 
 
-<li>Enter the REST configuration.</li>
+<li>Enter the <a href='/docs/v2/cloud-platform/live-trading/brokerages/trading-technologies#14-Create-TT-Users'>REST configuration</a>.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 REST app key: my-rest-app-key
@@ -16,7 +16,7 @@ REST app secret: ******************
 REST environment: my-environment</pre></div>
 
 
-<li>Enter the order routing configuration.</li>
+<li>Enter the <a href='/docs/v2/cloud-platform/live-trading/brokerages/trading-technologies#14-Create-TT-Users'>order routing configuration</a>.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Order routing sender comp id: </pre></div>
