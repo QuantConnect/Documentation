@@ -2,7 +2,8 @@
 <code>CoarseFundamental</code> objects and returns a list of <code>Symbol</code> objects. To filter the <code>CoarseFundamental</code> down to the securities that have fundamental data, add a <code class="csharp">HasFundamentalData</code><code class="python">has_fundamental_data</code> filter to the coarse selection function. The fine selection function receives a subset of <code>FineFundamental</code> objects generated from coarse selection results and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the fine selection function are the constituents of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// FineFundamentalUniverseSelectionModel integrates corporate fundamental data into the algorithm through a two-step filtering process: coarse selection ensures liquidity and fundamental data availability, while fine selection focuses on valuation metrics, refining the universe of selected stocks.
+public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
@@ -25,7 +26,8 @@ private IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; 
                .Select(f =&gt; f.Symbol);
 }
 </pre>
-	<pre class="python">def initialize(self) -&gt; None:
+	<pre class="python"># FineFundamentalUniverseSelectionModel integrates corporate fundamental data into the algorithm through a two-step filtering process: coarse selection ensures liquidity and fundamental data availability, while fine selection focuses on valuation metrics, refining the universe of selected stocks.
+def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True
     self.add_universe_selection(FineFundamentalUniverseSelectionModel(self.select_coarse, self.select_fine))
 
@@ -43,7 +45,7 @@ def select_fine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
 <p>To move the selection functions outside of the algorithm class, create a universe selection model that inherits the <code>FineFundamentalUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize
+	<pre class="csharp">// Create a custom universe selection model inheriting from FineFundamentalUniverseSelectionModel to move both coarse and fine selection functions outside the algorithm class, enabling easier modification and reusability of the filtering and ranking logic.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new LowPERatioUniverseSelectionModel(UniverseSettings));
 
@@ -72,7 +74,7 @@ class LowPERatioUniverseSelectionModel : FineFundamentalUniverseSelectionModel
                    .Select(f =&gt; f.Symbol);
     }
 }</pre>
-	<pre class="python"># In Initialize
+	<pre class="python"># Create a custom universe selection model inheriting from FineFundamentalUniverseSelectionModel to move both coarse and fine selection functions outside the algorithm class, enabling easier modification and reusability of the filtering and ranking logic.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(LowPERatioUniverseSelectionModel(self.universe_settings))
 

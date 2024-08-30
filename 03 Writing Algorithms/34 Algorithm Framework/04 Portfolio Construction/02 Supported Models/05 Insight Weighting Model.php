@@ -2,8 +2,10 @@
 
 
 <div class="section-example-container">
-	<pre class="csharp">SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());</pre>
-	<pre class="python">self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())</pre>
+	<pre class="csharp">// Use InsightWeightingPortfolioConstructionModel to allocate capital based on the latest Insight weights, generating long or short targets as per the Insight direction and adjusting allocations if total weights exceed 1, ensuring portfolio weights reflect current market insights and maintains proper risk management.
+SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());</pre>
+	<pre class="python"># Use InsightWeightingPortfolioConstructionModel to allocate capital based on the latest Insight weights, generating long or short targets as per the Insight direction and adjusting allocations if total weights exceed 1, ensuring portfolio weights reflect current market insights and maintains proper risk management.
+self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

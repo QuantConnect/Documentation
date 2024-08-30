@@ -1,8 +1,10 @@
 <p>The <code>ConfidenceWeightedPortfolioConstructionModel</code> generates target portfolio weights based on the <code>Insight.<span class="csharp">Confidence</span><span class="python">confidence</span></code> for the last Insight of each Symbol. If the Insight has a direction of <code>InsightDirection.<span class="csharp">Up</span><span class="python">UP</span></code>, the model generates long targets. If the Insight has a direction of <code>InsightDirection.<span class="csharp">Down</span><span class="python">DOWN</span></code>, the model generates short targets. If the sum of all the last active Insight per Symbol is greater than 1, the model factors down each target percent holdings proportionally so the sum is 1. The model ignores <code>Insight</code> objects that have no <code>Confidence</code> value.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">SetPortfolioConstruction(new ConfidenceWeightedPortfolioConstructionModel());</pre>
-	<pre class="python">self.set_portfolio_construction(ConfidenceWeightedPortfolioConstructionModel())</pre>
+	<pre class="csharp">// Use ConfidenceWeightedPortfolioConstructionModel to assign portfolio weights based on the confidence level of the latest Insights, creating long or short positions accordingly, and normalizing weights if the total exceeds 1, leveraging the strength of predictions for better allocation and risk management.
+SetPortfolioConstruction(new ConfidenceWeightedPortfolioConstructionModel());</pre>
+	<pre class="python"># Use ConfidenceWeightedPortfolioConstructionModel to assign portfolio weights based on the confidence level of the latest Insights, creating long or short positions accordingly, and normalizing weights if the total exceeds 1, leveraging the strength of predictions for better allocation and risk management.
+self.set_portfolio_construction(ConfidenceWeightedPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

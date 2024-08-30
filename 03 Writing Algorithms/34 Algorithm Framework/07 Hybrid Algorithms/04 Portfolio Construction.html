@@ -3,11 +3,12 @@
 <p>The following example uses a Portfolio Construction Framework model with <code>EmitInsights</code> method in a classic algorithm:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Add a Portfolio Construction model to place orders directly without relying on Alpha-generated insights.
+public override void Initialize()
 {
     SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
 }
-
+// Use the EmitInsights method in the OnData method to provide trading signals for executing trades, ensuring balanced investment with the chosen Portfolio Construction model.
 public override void OnData(Slice slice)
 {
 	EmitInsights(new Insight("GOOG", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up));
@@ -16,9 +17,11 @@ public override void OnData(Slice slice)
 		new Insight("MSFT", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up)
 	});
 }</pre>
-	<pre class="python">def initialize(self):
+	<pre class="python"># Add a Portfolio Construction model to place orders directly without relying on Alpha-generated insights.
+def initialize(self):
     self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
+# Use the emit_insights method in the on_data method to provide trading signals for executing trades, ensuring balanced investment with the chosen Portfolio Construction model.
 def on_data(self, slice):
 	self.emit_insights(Insight("GOOG", TimeSpan.from_minutes(20), InsightType.PRICE, InsightDirection.UP))
 	self.emit_insights([

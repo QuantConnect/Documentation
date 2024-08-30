@@ -41,12 +41,14 @@ var insight = Insight.Price("IBM", Resolution.Minute, 20, InsightDirection.Up);<
 <p>To mark insights as a group, call the <code>Insight.Group</code> method.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">return Insight.Group(
+	<pre class="csharp">// Generate and group insights for a set of tickers with a 20-minute prediction horizon; each Insight object provides directional signals, magnitudes, and confidence for price movement.
+return Insight.Group(
 	Insight.price("IBM", TimeSpan.FromMinutes(20), InsightDirection.UP), 
 	Insight.price("SPY", TimeSpan.FromMinutes(20), InsightDirection.UP), 
 	Insight.price("AAPL", TimeSpan.FromMinutes(20), InsightDirection.UP)
 );</pre>
-	<pre class="python">tickers = ["IBM", "SPY", "AAPL"]
+	<pre class="python"># Generate and group insights for a set of tickers with a 20-minute prediction horizon; each Insight object provides directional signals, magnitudes, and confidence for price movement.
+tickers = ["IBM", "SPY", "AAPL"]
 insights = [Insight.price(ticker, timedelta(minutes = 20), InsightDirection.UP) for ticker in tickers]
 return Insight.group(insights)
 </pre>
@@ -59,8 +61,10 @@ return Insight.group(insights)
 <p>To cancel an Insight, call its <code class="csharp">Cancel</code><code class="python">cancel</code>/<code>Expire</code> method with the algorithm's Coordinated Universal Time (UTC).</p>
 
 <div class="section-example-container">
-    <pre class="python">self.insight.cancel(algorithm.utc_time)</pre>
-    <pre class="csharp">_insight.Cancel(algorithm.UtcTime);</pre>
+    <pre class="python"># Cancel any outstanding insights to ensure only current predictions are considered and to avoid outdated signals influencing trading decisions.
+self.insight.cancel(algorithm.utc_time)</pre>
+    <pre class="csharp">// Cancel any outstanding insights to ensure only current predictions are considered and to avoid outdated signals influencing trading decisions.
+_insight.Cancel(algorithm.UtcTime);</pre>
 </div>
 
 <p>If you don't have a reference to the Insight you want to cancel, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#04-Get-Insights'>get it from the InsightManager</a>.</p>
