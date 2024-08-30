@@ -1,5 +1,5 @@
 <h4>Example 1: Manual Universe</h4>
-<p>This example subscribes to extended market hour data for a specified list of U.S. stocks, allowing users to monitor price movements and trading volumes outside regular trading hours. Using Lean, all it takes is adding subscription to a list of tickers using the <code class="csharp">AddEquity</code><code class="csharp">self.add_equity</code> method with the <code class="csharp">extendedMarketHours</code><code class="csharp">extended_market_hours</code> argument set as <code class="csharp">true</code><code class="csharp">True</code>, then the algorithm will stream data for these stocks during pre-market and after-hours sessions.</p>
+<p>This example subscribes to extended market hours data for a list of U.S. stocks, to monitor price movements outside regular trading hours. Use the <code class="csharp">AddEquity</code><code class="csharp">self.add_equity</code> method with the <code class="csharp">extendedMarketHours</code><code class="csharp">extended_market_hours</code> argument set as <code class="csharp">true</code><code class="csharp">True</code> to stream data for these stocks during pre-market and after-hours sessions.</p>
 <div class="section-example-container">
 	<pre class="csharp">private readonly List&lt;Symbol&gt; _symbols = new();
 
@@ -16,10 +16,9 @@ public override void Initialize()
     # Subscribe to each tickers, with extended market hour data
     self.symbols = [self.add_equity(ticker, extended_market_hours=True) for ticker in tickers]</pre>
 </div>
-<p>It allows you to make informed trading decisions based on real-time information like news or earning reports after market closed. This functionality is essential for active traders and investors seeking to capitalize on market insight in time.</p>
 
 <h4>Example 2: Periodically Request Custom Data</h4>
-<p>You may want to use external alternative data to provide extra insights for trading. In this example, we demonstrate how to periodically scrap a weekly updating DropBox file through <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">bulk download</a> to support our trading decision. Note that the same file is being updated every Saturday. The data format is a CSV file as follows:</p>
+<p>You may want to use an external list of tickers to trade. This example demonstrates how to scrape a DropBox file using <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">bulk download</a>. The data format is a CSV file as follows:</p>
 <div class="section-example-container">
 	<pre>#ticker#source,source1,source2,source3,source4,source5
 AAPL,1.25,1.10,1.32,1.13,1.21
@@ -62,7 +61,7 @@ public override void Initialize()
     )</pre>
 </div>
 
-<p>Then, we can download the data from the DropBox share link and convert the data into trading signals. Note that you need to set the DropBox query with suffix <code>?dl=1</code>.</p>
+<p>Then we download the file from DropBox and convert it into trading signals. You need to use a DropBox query with suffix <code>?dl=1</code>.</p>
 <div class="section-example-container">
 	<pre class="csharp">private void DownloadDataAndPlaceOrder()
 {
