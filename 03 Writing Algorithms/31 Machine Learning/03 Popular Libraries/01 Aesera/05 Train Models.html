@@ -3,10 +3,9 @@
 <h4>Warm Up Training Data</h4>
 <p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-    <pre class="python"># Initialize training data with a rolling window of size 252*2 days.
+    <pre class="python"># Fill a RollingWindow with 2 years of training data.
 training_length = 252*2
 self.training_data = RollingWindow[TradeBar](training_length)
-# Load historical data and populate the rolling window.
 history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
 for trade_bar in history:
     self.training_data.add(trade_bar)</pre>
@@ -15,7 +14,7 @@ for trade_bar in history:
 <h4>Define a Training Method</h4>
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
-    <pre class="python"># Prepare feature and label data for training by processing rolling window data to create time-series sequences for model training.
+    <pre class="python"># Prepare feature and label data for training.
 def get_features_and_labels(self, n_steps=5):
     training_df = self.PandasConverter.GetDataFrame[TradeBar](list(self.training_data)[::-1])['close']
 
@@ -25,11 +24,11 @@ def get_features_and_labels(self, n_steps=5):
         close.name = f"close-{i}"
         features.append(close)
     features = pd.concat(features, axis=1)
-    # Normalize using the 5 day interval
+    # Normalize using the 5 day interval.
     features = MinMaxScaler().fit_transform(features.T).T[4:]
     
     Y = training_df.pct_change().shift(-1)[n_steps*2-1:-1].reset_index(drop=True)
-    labels = np.array([1 if y > 0 else 0 for y in Y])   # binary class
+    labels = np.array([1 if y > 0 else 0 for y in Y])   # Binary class.
 
     return features, labels
 
@@ -42,20 +41,20 @@ def my_training_method(self):
 <h4>Set Training Schedule</h4>
 <p>To train the model at the beginning of your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method.</p>
 <div class="section-example-container">
-    <pre class="python"># Train the model initially to provide a baseline for prediction and decision-making.
+    <pre class="python"># Train the model right now.
 self.train(self.my_training_method)</pre>
 </div>
 
 <p>To periodically re-train the model as your algorithm executes, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
 <div class="section-example-container">
-    <pre class="python"># Train the model every Sunday at 8:00 AM
+    <pre class="python"># Train the model every Sunday at 8:00 AM.
 self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), self.my_training_method)</pre>
 </div>
 
 <h4>Update Training Data</h4>
 <p>To update the training data as the algorithm executes, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
 <div class="section-example-container">
-    <pre class="python"># Add the latest bar to training data to ensure the model is trained with the most recent market data.
+    <pre class="python"># Add the current bar to the training data to ensure the model trains with the most recent market data.
 def on_data(self, slice: Slice) -&gt; None:
     if self._symbol in slice.bars:
         self.training_data.add(slice.bars[self._symbol])</pre>
