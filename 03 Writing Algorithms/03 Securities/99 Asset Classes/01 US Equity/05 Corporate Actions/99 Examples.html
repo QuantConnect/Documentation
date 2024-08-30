@@ -1,0 +1,99 @@
+<h4>Example 1: Split Adjustment On Raw Price</h4>
+<p>This example demonstrates resetting and warming up an indicator after a split, so the indicator isn't impacted by the price discontinuity.</p>
+<div class="section-example-container">
+	<pre class="csharp">private dynamic _spy;
+
+public override void Initialize()
+{
+    // Subscribe to raw data
+    _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw) as dynamic;
+    // Set up EMA indicator with duck typing
+    _spy.Ema = EMA(_spy.Symbol, 50);
+}
+
+public override void OnSplits(Splits splits)
+{
+    // Check if SPY has split in on-splits handler
+    if (splits.ContainsKey(_spy.Symbol))
+    {
+        // If so, reset the EMA indicator
+        _spy.Ema.Reset();
+        // Re-warm up with split adjusted historical data
+        foreach (var bar in History&lt;TradeBar&gt;(_spy.Symbol, 50, Resolution.Minute, dataNormalizationMode: DataNormalizationMode.SplitAdjusted))
+        {
+            _spy.Ema.Update(bar.EndTime, bar.Close);
+        }
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    # Subscribe to raw data
+    self.spy = self.add_equity("SPY", Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.RAW)
+    # Set up EMA indicator with duck typing
+    self.spy.ema = self.ema(self.spy.symbol, 50)
+
+def on_splits(self, splits: Splits) -&gt; None:
+    # Check if SPY has split in on-splits handler
+    if self.spy.symbol in splits:
+        # If so, reset the EMA indicator
+        self.spy.ema.reset()
+        # Re-warm up with split adjusted historical data
+        for bar in self.history[TradeBar](self.spy.symbol, 50, Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.SPLIT_ADJUSTED):
+            self.spy.ema.update(bar.end_time, bar.close)</pre>
+</div>
+
+<h4>Example 2: Reinvesting Dividend</h4>
+<p>Reinvesting dividends can significantly enhance long-term investment growth. When dividends are received, instead of cashing them out, investors can use these funds to purchase additional shares of the same stock or mutual fund. This example uses raw price data, and reinvests dividend payments into stock.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Symbol _spy;
+
+public override void Initialize()
+{
+    // Subscribe to raw data
+    _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Invest if not
+    if (!Portfolio[_spy].Invested)
+    {
+        SetHoldings(_spy, 0.5m);
+    }
+}
+
+public override void OnDividends(Dividends dividends)
+{
+    // Check if SPY has dividend in on-dividends handler
+    if (dividends.ContainsKey(_spy))
+    {
+        // Obtain the total dividend payment amount
+        var dividendPerShare = dividends[_spy].Distribution;
+        var totalDividendAmount = dividendPerShare * Portfolio[_spy].Quantity;
+
+        // Calculate the quantity to reinvest (all dividend)
+        var quantity = Math.Floor(totalDividendAmount / Securities[_spy].Price);    // round down
+        // Place order to reinvest
+        MarketOrder(_spy, quantity);
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    # Subscribe to raw data
+    self.spy = self.add_equity("SPY", Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.RAW).symbol
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Invest if not
+    if not self.portfolio[self.spy].invested:
+        self.set_holdings(self.spy, 0.5)
+
+def on_dividends(self, dividends: Dividends) -&gt; None:
+    # Check if SPY has dividend in on-dividends handler
+    if self.spy in dividends:
+        # Obtain the total dividend payment amount
+        dividend_per_share = dividends[self.spy].distribution
+        total_dividend_amount = dividend_per_share * self.portfolio[self.spy].quantity
+    
+        # Calculate the quantity to reinvest (all dividend)
+        quantity = np.floor(total_dividend_amount / self.securities[self.spy].price)     # round down
+        # Place order to reinvest
+        self.market_order(self.spy, quantity)</pre>
+</div>
