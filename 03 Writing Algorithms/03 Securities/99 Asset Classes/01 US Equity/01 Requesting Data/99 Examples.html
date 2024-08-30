@@ -1,0 +1,107 @@
+<h4>Example 1: Manual Universe</h4>
+<p>This example subscribes to extended market hours data for a list of U.S. stocks, to monitor price movements outside regular trading hours. Use the <code class="csharp">AddEquity</code><code class="csharp">self.add_equity</code> method with the <code class="csharp">extendedMarketHours</code><code class="csharp">extended_market_hours</code> argument set as <code class="csharp">true</code><code class="csharp">True</code> to stream data for these stocks during pre-market and after-hours sessions.</p>
+<div class="section-example-container">
+	<pre class="csharp">private readonly List&lt;Symbol&gt; _symbols = new();
+
+public override void Initialize()
+{
+    // List of tickers that you'd like to subscribe to their extended market hour data
+    var tickers = new string[] { "AAPL", "TSLA", "GOOG" };
+    // Subscribe to each tickers, with extended market hour data
+    _symbols = tickers.Select(ticker =&gt; AddEquity(ticker, extendedMarketHours: true));
+}</pre>
+	<pre class="python">def initialize(self):
+    # List of tickers that you'd like to subscribe to their extended market hour data
+    tickers = ["AAPL", "TSLA", "GOOG"]
+    # Subscribe to each tickers, with extended market hour data
+    self.symbols = [self.add_equity(ticker, extended_market_hours=True) for ticker in tickers]</pre>
+</div>
+
+<h4>Example 2: Periodically Request Custom Data</h4>
+<p>You may want to use an external list of tickers to trade. This example demonstrates how to scrape a DropBox file using <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">bulk download</a>. The data format is a CSV file as follows:</p>
+<div class="section-example-container">
+	<pre>#ticker#source,source1,source2,source3,source4,source5
+AAPL,1.25,1.10,1.32,1.13,1.21
+AMZN,1.15,1.05,1.07,1.11,1.03
+GOOG,0.97,0.99,0.98,1.04,0.95
+META,1.04,1.03,1.10,1.04,0.98
+MSFT,0.92,0.96,0.98,1.01,0.98</pre>
+</div>
+
+<p>To periodically scrap the data, we need to set up a <a href="/docs/v2/writing-algorithms/scheduled-events">scheduled event</a> to download the data from DropBox and convert it into trading signals.</p>
+<div class="section-example-container">
+	<pre class="csharp">private List&lt;Symbol&gt; _symbols = new();
+
+public override void Initialize()
+{
+    // Subscribe the known tickers from the alternative data
+    foreach (var ticker in new[] { "AAPL", "AMZN", "GOOG", "META", "MSFT" })
+    {
+        _symbols.Add(AddEquity(ticker, Resolution.Daily).Symbol);
+    }
+
+    // Set up a weekly scheduled event to download data and place order
+    Schedule.On(
+        DateRules.Every(DayOfWeek.Sunday),
+        TimeRules.At(8, 0),
+        DownloadDataAndPlaceOrder
+    );
+}</pre>
+	<pre class="python">def initialize(self):
+    self.symbols = []
+    # Subscribe the known tickers from the alternative data
+    for ticker in ["AAPL", "AMZN", "GOOG", "META", "MSFT"]:
+        self.symbols.append(self.add_equity(ticker, Resolution.DAILY).symbol)
+
+    # Set up a weekly scheduled event to download data and place order
+    self.schedule.on(
+        self.date_rules.every(DayOfWeek.SUNDAY),
+        self.time_rules.at(8, 0),
+        self.download_data_and_place_order
+    )</pre>
+</div>
+
+<p>Then we download the file from DropBox and convert it into trading signals. You need to use a DropBox query with suffix <code>?dl=1</code>.</p>
+<div class="section-example-container">
+	<pre class="csharp">private void DownloadDataAndPlaceOrder()
+{
+    // Download the data from DropBox
+    var file = Download("&lt;DropBoxUrlWith?dl=1&gt;");
+
+    // Convert the text file into trading signals
+    var signals = file.Split('\n')                 // split by line
+        .Skip(1)                                // skip the header row
+        .Select(x =&gt;
+        {
+            var items = x.Split(',');           // split each data entry by comma for CSV
+            // Parse data to numeric data for each source and average them as trading singal
+            return items.Skip(1)                // skip index column
+                .Select(score =&gt; decimal.Parse(score))
+                .Average();
+        })
+        .ToList();
+
+    // Place order according to signals
+    for (int i = 0; i &lt; signals.Count; i++)
+    {
+        var weight = signals[i] &gt;= 1 ? 0.2m : -0.2m;
+        SetHoldings(_symbols[i], weight);
+    }
+}</pre>
+	<pre class="python">from io import StringIO
+
+def download_data_and_place_order(self):
+    # Download the data from DropBox
+    file = self.download("&lt;DropBoxUrlWith?dl=1&gt;")
+
+    # Convert the text file into trading signals
+    df = pd.read_csv(StringIO(file), index_col=0)
+    signals = df.mean(axis=1)
+    signals.index = self.symbols
+
+    # Place order according to signals
+    for symbol, signal in signals.items():
+        weight = 0.2 if signal &gt;= 1 else -0.2
+        self.set_holdings(symbol, weight)</pre>
+</div>
+</div>
