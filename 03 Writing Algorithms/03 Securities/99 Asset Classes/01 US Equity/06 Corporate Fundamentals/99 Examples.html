@@ -58,7 +58,7 @@ public override void Initialize()
 {
     // Add universe selection method
     AddUniverse(Selection);
-    // We update the universe at month start
+    // Update the universe at month start
     UniverseSettings.Schedule.On(DateRules.MonthStart());
 
     // Set a monthly rebalance scheduled event
@@ -71,6 +71,8 @@ public override void Initialize()
 
 private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; fundamental)
 {
+    var selected = new List&lt;Symbol&gt;();
+
     // Get the top 500 market cap stocks
     var top500Cap = fundamental.OrderByDescending(x =&gt; x.MarketCap).Take(500).ToList();
 
@@ -86,9 +88,11 @@ private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; funda
             sectorList = _sectorSymbols[sectorCode] = new();
         }
         sectorList.Add(f.Symbol);
+
+        selected.Add(f.Symbol);
     }
 
-    return top500Cap.Select(f =&gt; f.Symbol);
+    return selected;
 }
 
 private void Rebalance()
@@ -114,5 +118,55 @@ private void Rebalance()
     // Clear the dictionary
     _sectorSymbols.Clear();
 }</pre>
-	<pre class="python"></pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    self.sector_symbols = {}
+
+    # Add universe selection method
+    self.add_universe(self.selection)
+    # Update the universe at month start
+    self.universe_settings.schedule.on(self.date_rules.month_start())
+
+    # Set a monthly rebalance scheduled event
+    self.schedule.on(
+        self.date_rules.month_start(),
+        self.time_rules.at(9, 31),
+        self.rebalance
+    )
+
+def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    selected = []
+
+    # Get the top 500 market cap stocks
+    top_500_cap = sorted(fundamental, key=lambda f: f.market_cap, reverse=True)[:500]
+
+    # Iterate each filtered stock and map them by sector
+    for f in top_500_cap:
+        # Extract the sector code
+        sector_code = f.asset_classification.morningstar_sector_code
+        
+        # Save them into dictionary
+        if sector_code not in self.sector_symbols:
+            self.sector_symbols[sector_code] = []
+        self.sector_symbols[sector_code].append(f.symbol)
+
+        selected.append(f.symbol)
+    
+    return selected
+
+def rebalance(self) -&gt; None:
+    # Get total number of sector involved
+    sector_count = len(self.sector_symbols)
+    # Get number of members in each sector
+    sector_symbol_count = {sector: len(sector_list) for sector, sector_list in self.sector_symbols.items()}
+
+    # Invest each member according to sector weight
+    targets = []
+    for sector, sector_list in self.sector_symbols.items():
+        for member in sector_list:
+            target = PortfolioTarget(member, 1. / sector_count / sector_symbol_count[sector])
+            targets.append(target)
+    self.set_holdings(targets)
+
+    # Clear the dictionary
+    self.sector_symbols.clear()</pre>
 </div>
