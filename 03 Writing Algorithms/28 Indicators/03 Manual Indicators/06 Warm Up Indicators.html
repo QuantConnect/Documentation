@@ -18,11 +18,10 @@ foreach (var bar in history)
     <pre class="python"># Create a manual indicator.
 self._sma = SimpleMovingAverage(20)
 # Get 20 bars of daily data.
-history = algorithm.history(self._symbol, 20, Resolution.DAILY)
+history = algorithm.history[TradeBar](self._symbol, 20, Resolution.DAILY)
 # Manually warm up the indicator with the historical close prices.
-if not history.empty:
-    for time, row in history.loc[self._symbol].iterrows():
-        self._sma.update(time, row.close)</pre>
+for bar in history:
+    self._sma.update(bar.end_time, bar.close)</pre>
 </div>
 
 <h4>Warm-up Helper Method</h4>
