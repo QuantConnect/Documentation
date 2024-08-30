@@ -1,43 +1,42 @@
+<p>The following examples demonstrate some common practices in regards to requesting data.</p>
+
 <h4>Example 1: Add Linked Alternative Data for Universe Constituents</h4>
-<p>Many traders select the universe constituents and position size with independent logic. Often, position sizing is done with additional information and this information might come from alternative data. You can use information in alternative datasets for position sizing by subscribing to the data for selected universe members.</p>
-<p>In this example, we demonstrate how to add and remove <a href="https://www.quantconnect.com/datasets/kavout-composite-factor-bundle">KavoutCompositeFactorBundle</a> data subscription when securities enter and exit the universe, such that you can make use of factor data when making order.</p>
+<p>
+	Many traders select the universe constituents and then allocate positions with two independent sets of logic. 
+	Position sizing usually requires additional information, like alternative data factors. 
+	To use manage alternative data subscriptions for all the universe constituents, subscribe and unsubscribe from the data in the <code class='csharp'>OnSecuritiesChanged</code><code class='csharp'>on_securities_changed</code> method.
+	The following example demonstrates how to do this with the <a href="https://www.quantconnect.com/datasets/kavout-composite-factor-bundle">KavoutCompositeFactorBundle</a>:
+</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
 {
-    // Iterate securities that are newly added to the universe
+    // Iterate securities that entered the universe.
     foreach (var security in changes.AddedSecurities)
     {
-        // Subscribe to factor data for the newly added
-        // Cache the alternative data symbol in the security object
+        // Subscribe to the factor data for the new security.
+        // Save the alternative data symbol in the security object.
         security.AltDataSymbol = AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol, Resolution.Daily).Symbol;
     }
     
-    // Iterate securities that are exiting the universe
+    // Iterate securities that left the universe.
     foreach (var security in changes.RemovedSecurities)
     {
-        // Check if factor data is being subscribed on this security
-        if (security.AltDataSymbol != null)
-        {
-            // Remove subscription of the factor data if there is any
-            RemoveSecurity(security.AltDataSymbol);
-        }
+        // Unsubscribe from the altnerative data updates.
+        RemoveSecurity(security.AltDataSymbol);
     }
 }</pre>
 	<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Iterate securities that are newly added to the universe
+    # Iterate securities that entered the universe.
     for security in changes.added_securities:
-        # Subscribe to factor data for the newly added
-        # Cache the alternative data symbol in the security object
+        # Subscribe to the factor data for the new security.
+        # Save the alternative data symbol in the security object.
         security.alt_data_symbol = self.add_data(KavoutCompositeFactorBundle, security.symbol, Resolution.DAILY).symbol
     
-    # Iterate securities that are exiting the universe
+    # Iterate securities that left the universe.
     for security in changes.removed_securities:
-        # Check if factor data is being subscribed on this security
-        if security.alt_data_symbol:
-            # Remove subscription of the factor data if there is any
-            self.remove_security(security.alt_data_symbol)</pre>
+        # Unsubscribe from the altnerative data updates.
+        self.remove_security(security.alt_data_symbol)</pre>
 </div>
-<p>For the details on how to obtain and handle the alternative factor data, refer to the corresponding <a href="https://www.quantconnect.com/datasets">dataset page</a> of the alternative dataset and <a href="">Handling Data</a> page.</p>
 
 <h4>Example 2: Add Linked Custom Data for Universe Constituents</h4>
 <p>Some data might not be readily available in Lean, i.e. not included in cloud datasets. In such case, you will need to provide your own custom data. In the below example, we will demonstrate how to import Bitstamp CSV data for BTCUSD trading.</p>
