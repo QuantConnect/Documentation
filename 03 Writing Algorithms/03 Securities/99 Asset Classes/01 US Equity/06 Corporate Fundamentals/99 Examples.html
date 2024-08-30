@@ -1,0 +1,118 @@
+<h4>Example 1: Invest On Filing</h4>
+<p>Investing based on SEC filing events focuses on market sentiment rather than fundamental analysis. When a company files documents with the SEC, it often triggers investor reactions, creating volatility and trading opportunities. By monitoring these filings—such as 10-Qs or 8-Ks—investors can act quickly to buy or sell shares immediately after the filing is recorded. This strategy capitalizes on the immediate market sentiment surrounding the event, as investors may react positively or negatively to news, regardless of the underlying fundamentals. Engaging in this approach allows traders to harness short-term price movements driven by the emotional responses of market participants.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Equity _aapl;
+private DateTime? _lastFilingDate = null;
+
+public override void Initialize()
+{
+    // Subscribe to AAPL data
+    _aapl = AddEquity("AAPL");
+    // Set a portfolio construction model for trading
+    SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfWeek));
+}
+
+public override void OnData(Slice slice)
+{
+    // Get the latest filing date
+    var updateFilingDate = _aapl.Fundamentals.FinancialStatements.FileDate.Value;
+
+    // Check if the filing date is being changed (a new filing event)
+    if (_lastFilingDate.HasValue && updateFilingDate != _lastFilingDate.Value)
+    {
+        // If so, emit an insight to open position and hold for a week
+        var insight = Insight.Price(_aapl.Symbol, TimeSpan.FromDays(7), InsightDirection.Up);
+        EmitInsights(insight);
+    }
+
+    // Update the last filing date
+    _lastFilingDate = (DateTime?)updateFilingDate;
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    self.last_filing_date = None
+    # Subscribe to AAPL data
+    self.aapl = self.add_equity("AAPL")
+    # Set a portfolio construction model for trading
+    self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_WEEK))
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Get the latest filing date
+    update_filing_date = self.aapl.fundamentals.financial_statements.file_date.value
+    
+    # Check if the filing date is being changed (a new filing event)
+    if self.last_filing_date and update_filing_date != self.last_filing_date:
+        # If so, emit an insight to open position and hold for a week
+        insight = Insight.price(self.aapl.symbol, timedelta(7), InsightDirection.UP)
+        self.emit_insights(insight)
+    
+    # Update the last filing date
+    self.last_filing_date = update_filing_date</pre>
+</div>
+
+<h4>Example 2: Sector Equal Weighting Portfolio</h4>
+<p>A sector equal weighting portfolio aims to mitigate concentration risk by allocating the same percentage to each sector, regardless of their market capitalization. Using the <code>Fundamental</code> cache of the <code>Security</code> object, we can extract the MorningStar sector codes for accurate classification of our investments. In this example, we use the top 500 market cap stocks as our universe constituents. Then, equally invest in each sector and equally invest in members within each sector.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Dictionary&lt;int, List&lt;Symbol&gt;&gt; _sectorSymbols;
+
+public override void Initialize()
+{
+    // Add universe selection method
+    AddUniverse(Selection);
+    // We update the universe at month start
+    UniverseSettings.Schedule.On(DateRules.MonthStart());
+
+    // Set a monthly rebalance scheduled event
+    Schedule.On(
+        DateRules.MonthStart(),
+        TimeRules.At(9, 31),
+        Rebalance
+    );
+}
+
+private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; fundamental)
+{
+    // Get the top 500 market cap stocks
+    var top500Cap = fundamental.OrderByDescending(x =&gt; x.MarketCap).Take(500).ToList();
+
+    // Iterate each filtered stock and map them by sector
+    foreach (var f in top500Cap)
+    {
+        // Extract the sector code
+        var sectorCode = f.AssetClassification.MorningstarSectorCode;
+
+        // Save them into dictionary
+        if (!_sectorSymbols.TryGetValue(sectorCode, out var sectorList))
+        {
+            sectorList = _sectorSymbols[sectorCode] = new();
+        }
+        sectorList.Add(f.Symbol);
+    }
+
+    return top500Cap.Select(f =&gt; f.Symbol);
+}
+
+private void Rebalance()
+{
+    // Get total number of sector involved
+    var sectorCount = _sectorSymbols.Keys.Count();
+    // Get number of members in each sector
+    var sectorSymbolCount = _sectorSymbols.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.Count);
+
+    // Invest each member according to sector weight
+    var targets = new List&lt;PortfolioTarget&gt;();
+    foreach (var kvp in _sectorSymbols)
+    {
+        var sector = kvp.Key;
+        foreach (var member in kvp.Value)
+        {
+            var target = new PortfolioTarget(member, 1m / sectorCount / sectorSymbolCount[sector]);
+            targets.Add(target);
+        }
+    }
+    SetHoldings(targets);
+
+    // Clear the dictionary
+    _sectorSymbols.Clear();
+}</pre>
+	<pre class="python"></pre>
+</div>
