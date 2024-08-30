@@ -1,0 +1,157 @@
+<h4>Example 1: Invest On Filing</h4>
+<p>In the example below, we detect new 10Q or 8K filings and trigger an investment using the fundamental data property of the security object. This strategy is based on the hypothesis investors overreact to the filings and we seek to harness short term volatility.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Equity _aapl;
+private DateTime? _lastFilingDate = null;
+
+public override void Initialize()
+{
+    // Subscribe to AAPL data, and use equal weight PCM to manage trading for insights.
+    _aapl = AddEquity("AAPL"); 
+    SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfWeek));
+}
+
+public override void OnData(Slice slice)
+{
+    // Get the latest filing date using security object fundamental property accessor.
+    var updateFilingDate = _aapl.Fundamentals.FinancialStatements.FileDate.Value;
+
+    // Check if the filing date is being changed, which indicates a new filing event.
+    if (_lastFilingDate.HasValue && updateFilingDate != _lastFilingDate.Value)
+    {
+        // Emit an insight on filing date changes to open position and hold for a week.
+        var insight = Insight.Price(_aapl.Symbol, TimeSpan.FromDays(7), InsightDirection.Up);
+        EmitInsights(insight);
+    }
+
+    // Update the last filing date to identify changes in the date in future OnData loops
+    _lastFilingDate = (DateTime?)updateFilingDate;
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    self.last_filing_date = None
+    # Subscribe to AAPL data, and use equal weight PCM to manage trading for insights.
+    self.aapl = self.add_equity("AAPL")
+    self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_WEEK))
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Get the latest filing date using security object fundamental property accessor.
+    update_filing_date = self.aapl.fundamentals.financial_statements.file_date.value
+    
+    # Check if the filing date is being changed, which indicates a new filing event.
+    if self.last_filing_date and update_filing_date != self.last_filing_date:
+        #  Emit an insight on filing date changes to open position and hold for a week.
+        insight = Insight.price(self.aapl.symbol, timedelta(7), InsightDirection.UP)
+        self.emit_insights(insight)
+    
+    # Update the last filing date to identify changes in the date in future on_data events
+    self.last_filing_date = update_filing_date</pre>
+</div>
+
+<h4>Example 2: Sector Equal Weighting Portfolio</h4>
+<p>In this example we select stocks based on MorningStar sector code, and then allocate equally to them. We sum up the stocks in each sector to generate the allocation weight for each. The strategy aims to reduce concentration in any one sector. Using the <code>Fundamental</code> cache of the <code>Security</code> object, we can extract the MorningStar sector code to classify the asset.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Dictionary&lt;int, List&lt;Symbol&gt;&gt; _sectorSymbols = new();
+
+public override void Initialize()
+{
+    // Schedule universe select at the start of the month.
+    AddUniverse(Selection); 
+    UniverseSettings.Schedule.On(DateRules.MonthStart());
+
+    // Schedule a rebalance of portfolio at 931 so there is price information available.
+    Schedule.On(
+        DateRules.MonthStart(),
+        TimeRules.At(9, 31),
+        Rebalance
+    );
+}
+
+private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; fundamental)
+{
+    // Get the fundamental data object from the top 500 market cap stocks
+    var selected = new List&lt;Symbol&gt;();
+    var top500Cap = fundamental.OrderByDescending(x =&gt; x.MarketCap).Take(500).ToList();
+
+    // Map the top 500 market cap stocks to their sectors, so we can calculate the portfolio allocations.
+    foreach (var f in top500Cap)
+    {
+        // Extract the sector code from MorningStar fundamental object.
+        var sectorCode = f.AssetClassification.MorningstarSectorCode;
+        if (!_sectorSymbols.TryGetValue(sectorCode, out var sectorList))
+        {
+            sectorList = _sectorSymbols[sectorCode] = new();
+        }
+        sectorList.Add(f.Symbol);
+        selected.Add(f.Symbol);
+    }
+    return selected;
+}
+
+private void Rebalance()
+{
+    // Get total number of sectors, and companies per sector, to calculate allocation per stock.
+    var sectorCount = _sectorSymbols.Keys.Count();
+    var sectorSymbolCount = _sectorSymbols.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.Count);
+
+    // Equal weight allocate with portfolio targets to each stock in sector.
+    var targets = new List&lt;PortfolioTarget&gt;();
+    foreach (var kvp in _sectorSymbols)
+    {
+        var sector = kvp.Key;
+        foreach (var member in kvp.Value)
+        {
+            var target = new PortfolioTarget(member, 1m / sectorCount / sectorSymbolCount[sector]);
+            targets.Add(target);
+        }
+    }
+    SetHoldings(targets);
+
+    // Clear the dictionary
+    _sectorSymbols.Clear();
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    self.sector_symbols = {}
+
+    # Schedule universe select at the start of the month
+    self.add_universe(self.selection)
+    self.universe_settings.schedule.on(self.date_rules.month_start())
+
+    # Schedule a rebalance of portfolio at 931 so there is price information available.
+    self.schedule.on(
+        self.date_rules.month_start(),
+        self.time_rules.at(9, 31),
+        self.rebalance
+    )
+
+def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    selected = []
+
+    # Get the fundamental data object from the top 500 market cap stocks
+    top_500_cap = sorted(fundamental, key=lambda f: f.market_cap, reverse=True)[:500]
+
+    # Map the top 500 market cap stocks to their sectors, so we can calculate the portfolio allocations.
+    for f in top_500_cap:
+        # Extract the sector code, save to dictionary, to calculate portolio allocation by stock.
+        sector_code = f.asset_classification.morningstar_sector_code 
+        if sector_code not in self.sector_symbols:
+            self.sector_symbols[sector_code] = []
+        self.sector_symbols[sector_code].append(f.symbol)
+        selected.append(f.symbol)
+    return selected
+
+def rebalance(self) -&gt; None:
+    # Get total number of sector involved, and the number of members in each sector.
+    sector_count = len(self.sector_symbols)
+    sector_symbol_count = {sector: len(sector_list) for sector, sector_list in self.sector_symbols.items()}
+
+    # Invest each member according to instrument-sector weight.
+    targets = []
+    for sector, sector_list in self.sector_symbols.items():
+        for member in sector_list:
+            target = PortfolioTarget(member, 1. / sector_count / sector_symbol_count[sector])
+            targets.append(target)
+    self.set_holdings(targets)
+
+    # Clear the dictionary
+    self.sector_symbols.clear()</pre>
+</div>
