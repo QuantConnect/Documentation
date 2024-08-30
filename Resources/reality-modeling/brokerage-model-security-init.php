@@ -28,7 +28,7 @@
     }
 ?>
 <div class='section-example-container'>
-<pre class='csharp'>// Setup security initializers in the algorithm Initialize() method to seed initial prices and models.
+<pre class='csharp'>// In the Initialize method, set the security initializer to seed initial the prices and models of assets.
 SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
 
 class MySecurityInitializer : BrokerageModelSecurityInitializer
@@ -49,7 +49,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     
     }
 }</pre>
-<pre class='python'># Setup security initializers in the algorithm def initialize method to seed initial prices and models.
+<pre class='python'># In the Initialize method, set the security initializer to seed initial the prices and models of assets.
 self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
 
 # Outside of the algorithm class

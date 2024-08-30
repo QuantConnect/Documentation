@@ -1,8 +1,8 @@
-<p>When the <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous contract</a> rolls over, LEAN passes a <code>SymbolChangedEvent</code> to your <code class="csharp">OnData</code><code class="python">on_data</code> method, which contains the old contract <code>Symbol</code> and the new contract <code>Symbol</code>. <code>SymbolChangedEvent</code> objects have the following properties:</p>
-
-<div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>
-
-<p>To get the <code>SymbolChangedEvent</code>, use the <code class='csharp'>SymbolChangedEvents</code><code class='python'>symbol_changed_events</code> property of the <code>Slice</code>. You can use the <code>SymbolChangedEvent</code> to roll over contracts.</p>
+<p>
+    When the <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous contract</a> rolls over, LEAN passes a <code>SymbolChangedEvent</code> to your <code class="csharp">OnData</code><code class="python">on_data</code> method, which contains the old contract <code>Symbol</code> and the new contract <code>Symbol</code>. 
+    To get the <code>SymbolChangedEvent</code>, use the <code class='csharp'>SymbolChangedEvents</code><code class='python'>symbol_changed_events</code> property of the <code>Slice</code>. 
+    You can use the <code>SymbolChangedEvent</code> to roll over contracts.
+</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void OnData(Slice slice)
@@ -33,3 +33,6 @@
 </div>
 
 <p>In backtesting, the <code>SymbolChangedEvent</code> occurs at midnight Eastern Time (ET). In live trading, the live data for continuous contract mapping arrives at 6/7 AM ET, so that's when it occurs.</p>
+
+<p><code>SymbolChangedEvent</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>

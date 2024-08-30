@@ -1,6 +1,7 @@
-<p>The benefit of the <code>Symbol</code> class is that it always maps to the same security, regardless of their trading ticker. When a company changes its trading ticker, LEAN sends a <code>SymbolChangedEvent</code> to the <code class="csharp">OnData</code><code class="python">on_data</code> method. <code>SymbolChangedEvent</code> objects have the following properties:</p>
-
-<div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>
+<p>
+    The benefit of the <code>Symbol</code> class is that it always maps to the same security, regardless of their trading ticker. 
+    When a company changes its trading ticker, LEAN sends a <code>SymbolChangedEvent</code> to the <code class="csharp">OnData</code><code class="python">on_data</code> method. 
+</p>
 
 <p>To get the <code>SymbolChangedEvent</code> objects, index the <code class="csharp">SymbolChangedEvents</code><code class="python">symbol_changed_events</code> object with the security <code  class="csharp">Symbol</code><code class="python">symbol</code>. The <code class="csharp">SymbolChangedEvents</code><code class="python">symbol_changed_events</code> object may not contain data for your <code  class="csharp">Symbol</code><code class="python">symbol</code>. To avoid issues, check if the <code class="csharp">SymbolChangedEvents</code><code class="python">symbol_changed_events</code> object contains data for your security before you index it with the security <code  class="csharp">Symbol</code><code class="python">symbol</code>.</p>
 
@@ -83,3 +84,6 @@ def on_symbol_changed_events(self, symbol_changed_events: SymbolChangedEvents) -
     </div>
 
 <p>LEAN stores the data for ticker changes in map files. To view some example map files, see the <a rel='nofollow' target='_blank' href='<?=$mapFilesLink?>'>LEAN GitHub repository</a>.</p>
+
+<p><code>SymbolChangedEvent</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>

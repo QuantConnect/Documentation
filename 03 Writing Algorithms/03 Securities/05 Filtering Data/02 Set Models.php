@@ -1,10 +1,10 @@
 <p>To set a data filter for a security, call the <code class="csharp">SetDataFilter</code><code class="python">set_data_filter</code> property on the <code>Security</code> object.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Use SetDataFilter method to apply the SecurityDataFilter on the SPY equity.
+    <pre class="csharp">// Use the SetDataFilter method to use the SecurityDataFilter on the SPY ETF data.
 var spy = AddEquity("SPY");
 spy.SetDataFilter(new SecurityDataFilter());</pre>
-    <pre class="python"># Use set_data_filter method to apply the SecurityDataFilter on the SPY equity.
+    <pre class="python"># Use the set_data_filter method to use the SecurityDataFilter on the SPY ETF data.
 spy = self.add_equity("SPY")
 spy.set_data_filter(SecurityDataFilter())</pre>
 </div>
