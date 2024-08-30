@@ -3,7 +3,7 @@ $brokerageName = "Trading Technologies";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter your Trading Technologies credentials.
+<li>Enter <a href='/docs/v2/cloud-platform/live-trading/brokerages/trading-technologies#14-Create-TT-Users'>your Trading Technologies credentials</a>.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 User name: john
@@ -12,7 +12,7 @@ Account name: jane</pre>
 </div>
 </li>
 
-<li>Enter the REST configuration.
+<li>Enter the <a href='/docs/v2/cloud-platform/live-trading/brokerages/trading-technologies#14-Create-TT-Users'>REST configuration</a>.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 REST app key: my-rest-app-key

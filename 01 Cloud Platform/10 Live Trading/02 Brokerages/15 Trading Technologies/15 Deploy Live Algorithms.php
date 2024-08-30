@@ -4,6 +4,7 @@ $cashState = true;
 $holdingsState = false;
 $secondBullet = "";
 $authentication = "<li>Enter your TT user name, account name, routing sender, session password, app key, and app secret.</li>
+<p>To get your credentials, see <a href='/docs/v2/cloud-platform/live-trading/brokerages/trading-technologies#14-Create-TT-Users'>Create TT Users</a>.</p>
 <p>Our TT integration routes orders via the TT FIX 4.4 Connection. <a rel='nofollow' target='_blank' href='https://www.tradingtechnologies.com/contact/'>Contact your TT representative</a> to set the exchange where you would like your orders sent. Your account details are not saved on QuantConnect.<br></p>
 <p>Our integration fetches your positions using the REST endpoint, so the app key and app secret are your REST App credentials.</p>
 <li>Click the <span class='field-name'>Environment</span> field and then click one of the environments from the drop-down menu.</li>
