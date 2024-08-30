@@ -86,13 +86,14 @@ self.warm_up_indicator([self._aapl, self._spy], self._beta, Resolution.DAILY)</p
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
 
-// In Initialize Method: Request data and construct the indicators you need.
+// In Initialize method, request data and construct the indicators you need.
 var symbol = AddEquity("SPY", Resolution.Daily).Symbol;
 _sma = SimpleMovingAverage(20);
 SetWarmUp(20);
 
-// In the OnData Event Handler: Update your indicators if required. Use the IsWarmingUp flag to skip some code execution.
-_sma.Update(data["SPY"]); // Delete this line if you registered the indicator for automatic updates
+// In the OnData event handler, update your indicators. 
+// Use the IsWarmingUp flag to skip some code execution.
+_sma.Update(data["SPY"]); // Delete this line if you registered the indicator for automatic updates.
 if (IsWarmingUp) 
 {
     return;
@@ -102,8 +103,9 @@ self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 self._sma = SimpleMovingAverage(20)
 self.set_warm_up(20)
 
-# In the on_data event handler, update your indicators if required. Use the self.is_warming_up flag to skip some code execution.
-self._sma.update(data[self._symbol]) # Delete this line if you registered the indicator for automatic updates
+# In the on_data event handler, update your indicators. 
+# Use the self.is_warming_up flag to skip some code execution.
+self._sma.update(data[self._symbol]) # Delete this line if you registered the indicator for automatic updates.
 if self.is_warming_up:
     return</pre>
 </div>
