@@ -53,12 +53,13 @@ public class LinkedCustomDataExampleAlgorithm : QCAlgorithm
     {
         SetStartDate(2011, 9, 13);
         SetEndDate(2021, 6, 20);
-		// Subscribe to Bitcoin and the custom dataset.
+        // Subscribe to Bitcoin and the custom dataset.
         btc = AddCrypto("BTCUSD");
         (btc as dynamic).dataSymbol = AddData&lt;Bitstamp&gt;(btc.Symbol.Value, Resolution.Daily).Symbol;
     }
 }
-		
+
+// Define the custom data source.
 public class Bitstamp : BaseData
 {
     // Declear the properties of the custom dataset.
@@ -136,11 +137,11 @@ class LinkedCustomDataExampleAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2011, 9, 13)
         self.set_end_date(2021, 6, 20)
-		# Subscribe to Bitcoin and the custom dataset.
+        # Subscribe to Bitcoin and the custom dataset.
         self._btc = self.add_crypto('BTCUSD')
         self._btc.data_symbol = self.add_data(Bitstamp, self._btc.symbol.value, Resolution.DAILY).symbol
 
-
+# Define the custom data source.
 class Bitstamp(PythonData):
     # Override the get_source method to load the data from its location.
     def get_source(self, config, date, is_live_mode):
