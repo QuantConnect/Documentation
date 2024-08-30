@@ -38,14 +38,28 @@
         self.remove_security(security.alt_data_symbol)</pre>
 </div>
 
-<h4>Example 2: Add Linked Custom Data for Universe Constituents</h4>
+<h4>Example 2: Add Linked Custom Data</h4>
 <p>
 	QuantConnect Cloud has a lot of data, but not everything. 
 	To import some external data into your algorithm, define a <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts'>custom data source</a>. 
 	The following example demonstrates how to request Bitstamp's BTCUSD trading activity from a CSV file:
 </p>
 <div class="section-example-container">
-	<pre class="csharp">public class Bitstamp : BaseData
+	<pre class="csharp">// Define the algorithm.
+public class LinkedCustomDataExampleAlgorithm : QCAlgorithm
+{
+    private Crypto btc;
+    public override void Initialize()
+    {
+        SetStartDate(2011, 9, 13);
+        SetEndDate(2021, 6, 20);
+		// Subscribe to Bitcoin and the custom dataset.
+        btc = AddCrypto("BTCUSD");
+        (btc as dynamic).dataSymbol = AddData&lt;Bitstamp&gt;(btc.Symbol.Value, Resolution.Daily).Symbol;
+    }
+}
+		
+public class Bitstamp : BaseData
 {
     // Declear the properties of the custom dataset.
     // Use the JsonProperty to load the row entry with header.
@@ -116,7 +130,18 @@
         return coin;
     }
 }</pre>
-	<pre class="python">class Bitstamp(PythonData):
+	<pre class="python"># Define the algorithm.
+class LinkedCustomDataExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2011, 9, 13)
+        self.set_end_date(2021, 6, 20)
+		# Subscribe to Bitcoin and the custom dataset.
+        self._btc = self.add_crypto('BTCUSD')
+        self._btc.data_symbol = self.add_data(Bitstamp, self._btc.symbol.value, Resolution.DAILY).symbol
+
+
+class Bitstamp(PythonData):
     # Override the get_source method to load the data from its location.
     def get_source(self, config, date, is_live_mode):
         source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
@@ -157,56 +182,3 @@
         return coin</pre>
 </div>
 
-<p>Add a crypto selection universe to use the custom data that correspond to a specific symbol. You may find details in the <a href="/docs/v2/writing-algorithms/universes/crypto">Crpyto Universe</a> page.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
-{
-    // We only select BTCUSD in this example due to the custom data
-    AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; from x in universeDay where x.Symbol.Value == "BTCUSD" select x.Symbol));
-}</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # We only select BTCUSD in this example due to the custom data
-    self._universe = self.add_universe(CryptoUniverse.coinbase(lambda universe_day: [c.symbol for c in universe_day if c.symbol.value == "BTCUSD"]))</pre>
-</div>
-
-<p>Now, you can utilize information from the custom dataset to subscribe alternative data for selected universe members with the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
-{
-    // Iterate securities that are newly added to the universe
-    foreach (var added in changes.AddedSecurities)
-    {
-        // Cast Security object as dynamic to assign property
-        var security = added as dynamic;
-        // Subscribe to Bitstamp data for the newly added
-        // Cache the Bitstamp data symbol in the security object
-        security.AltDataSymbol = AddData&lt;Bitstamp&gt;(security.Symbol.Value, Resolution.Daily).Symbol;
-    }
-    
-    // Iterate securities that are exiting the universe
-    foreach (var removed in changes.RemovedSecurities)
-    {
-        // Cast Security object as dynamic to assign property
-        var security = removed as dynamic;
-        // Check if Bitstamp data is being subscribed on this security
-        if (security.AltDataSymbol != null)
-        {
-            // Remove subscription of the Bitstamp data if there is any
-            RemoveSecurity(security.AltDataSymbol);
-        }
-    }
-}</pre>
-	<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Iterate securities that are newly added to the universe
-    for security in changes.added_securities:
-        # Subscribe to Bitstamp data for the newly added
-        # Cache the Bitstamp data symbol in the security object
-        security.alt_data_symbol = self.add_data(Bitstamp, security.symbol.value, Resolution.DAILY).symbol
-    
-    # Iterate securities that are exiting the universe
-    for security in changes.removed_securities:
-        # Check if Bitstamp data is being subscribed on this security
-        if security.alt_data_symbol:
-            # Remove subscription of the Bitstamp data if there is any
-            self.remove_security(security.alt_data_symbol)</pre>
-</div>
