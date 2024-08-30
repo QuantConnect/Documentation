@@ -5,7 +5,7 @@
 <div class="section-example-container">
     <pre class="csharp">public class BasicFutureAlgorithm : QCAlgorithm
 {
-    // Track events when security changes its ticker allowing algorithm to adapt to these changes.
+    // Track when the continuous contract switches from one contract to the next.
     public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
     {
         foreach (var (symbol, changedEvent) in symbolChangedEvents)
@@ -14,7 +14,7 @@
             var newSymbol = changedEvent.NewSymbol;
             var quantity = Portfolio[oldSymbol].Quantity;
 
-            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            // Rolling over: To liquidate the old mapped contract and switch to the new mapped contract.
             var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
             Liquidate(oldSymbol, tag: tag);
             if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
@@ -22,14 +22,14 @@
     }
 }</pre>
     <pre class="python">class BasicFutureAlgorithm(QCAlgorithm):
-    # Track events when security changes its ticker allowing algorithm to adapt to these changes.
+    # Track when the continuous contract switches from one contract to the next.
     def on_symbol_changed_events(self, symbol_changed_events):
         for symbol, changed_event in  symbol_changed_events.items():
             old_symbol = changed_event.old_symbol
             new_symbol = changed_event.new_symbol
             quantity = self.portfolio[old_symbol].quantity
 
-            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            # Rolling over: To liquidate the old mapped contract and switch to the new mapped contract.
             tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
             self.liquidate(old_symbol, tag=tag)
             if quantity: self.market_order(new_symbol, quantity, tag=tag)</pre>
