@@ -3,7 +3,7 @@
 <ol>
   <li>Define the backtest dates and starting cash.</li>
   <div class="section-example-container">
-    <pre class="python"># set start date, end date and cash.
+    <pre class="python"># Set the start date, end date, and starting cash.
 def initialize(self):
     self.set_start_date(2000, 1, 1)
     self.set_end_date(2024, 1, 1)
@@ -20,7 +20,7 @@ def initialize(self):
 
   <li><a href='/docs/v2/writing-algorithms/securities/requesting-data'>Subscribe to an asset</a>.</li>
   <div class="section-example-container">
-    <pre class="python"># Add SPY equity data subscription with daily resolution.
+    <pre class="python"># Add daily SPY Equity data.
 def initialize(self):
     # . . .
     self._security = self.add_equity("SPY", Resolution.DAILY)
@@ -43,11 +43,11 @@ def on_data(self, data):
     if self.is_warming_up:
         return
 
-    # Case 1: Short EMA is above long EMA
+    # Case 1: Short EMA is above long EMA.
     if (self._short_ema > self._long_ema and 
         not self._security.holdings.is_long):
         self.set_holdings(self._symbol, 1)
-    # Case 2: Short EMA is below long EMA
+    # Case 2: Short EMA is below long EMA.
     elif (self._short_ema < self._long_ema and 
             not self._security.holdings.is_short):
         self.set_holdings(self._symbol, 0)</pre>
@@ -55,7 +55,7 @@ def on_data(self, data):
 
   <li>Define a method that will adjust the algorithm's behavior, given a set of optimal parameters.</li>
   <div class="section-example-container">
-    <pre class="python"># Define a method to adjust the algorithm's behavior based on new optimal parameters.
+    <pre class="python"># Define a method to adjust the algorithm's behavior based on the new optimal parameters.
 def _update_algorithm_logic(self, optimal_parameters):
     # Remove the old indicators.
     if self._short_ema:
@@ -93,7 +93,7 @@ def _generate_parameter_sets(self, search_space):
         for parameter_name, (min_, max_, step_size) in search_space.items()
     }
     
-    # Do cartesian product and create a list of dictionaries for
+    # Calculate the cartesian product and create a list of dictionaries for
     # the parameter sets.
     return [
         dict(zip(ranges.keys(), combination)) 
@@ -115,7 +115,7 @@ def _cumulative_return(self, daily_returns):
 
     <li>Define the optimization function.</li>
   <div class="section-example-container">
-    <pre class="python"># Evaluate parameter sets by calculating strategy performance with the objective function.
+    <pre class="python"># Evaluate parameter sets with the objective function.
 def _optimization_func(self, data, parameter_set, objective):
     p1 = parameter_set['short_ema']
     p2 = parameter_set['long_ema']
@@ -133,7 +133,7 @@ def _optimization_func(self, data, parameter_set, objective):
 
   <li>Schedule the optimization sessions.</li>
   <div class="section-example-container">
-    <pre class="python"># Schedule the WFO process to run at the start of each month and midnight.
+    <pre class="python"># Schedule the WFO process to run at the start of each month at midnight.
 def initialize(self):
     # . . .
     self.train(
@@ -144,7 +144,7 @@ def initialize(self):
     # . . .
     
 def _do_wfo(self, optimization_func, min_max, objective):
-    # Get the historical data we need to calculate the scores.
+    # Get the historical data you need to calculate the scores.
     prices = self.history(
         self._symbol, timedelta(365), Resolution.DAILY
     ).loc[self._symbol]
@@ -155,7 +155,7 @@ def _do_wfo(self, optimization_func, min_max, objective):
         for parameter_set in self._parameter_sets
     ]
     
-    # Find the parameter set that maximizes the objective function.
+    # Find the parameter set that minimizes/maximizes the objective function.
     optimal_parameters = self._parameter_sets[scores.index(min_max(scores))]
 
     # Adjust the algorithm's logic.
