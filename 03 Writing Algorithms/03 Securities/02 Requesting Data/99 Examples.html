@@ -39,14 +39,16 @@
 </div>
 
 <h4>Example 2: Add Linked Custom Data for Universe Constituents</h4>
-<p>Some data might not be readily available in Lean, i.e. not included in cloud datasets. In such case, you will need to provide your own custom data. In the below example, we will demonstrate how to import Bitstamp CSV data for BTCUSD trading.</p>
-
-<p>First, you will need to inherit a <code class="csharp">BaseData</code><code class="python">PythonData</code> data class to load and stream the custom data. You should override the <code class="csharp">GetSource</code><code class="python">get_source</code> method to load the data from its position and the <code class="csharp">Reader</code><code class="python">reader</code> method to read each data entry. Details on importing custom data, refer to <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts">Importing Data</a> page.</p>
+<p>
+	QuantConnect Cloud has a lot of data, but not everything. 
+	To import some external data into your algorithm, define a <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts'>custom data source</a>. 
+	The following example demonstrates how to request Bitstamp's BTCUSD trading activity from a CSV file:
+</p>
 <div class="section-example-container">
 	<pre class="csharp">public class Bitstamp : BaseData
 {
-    // Declear the properties of the custom dataset
-    // We use JsonProperty to load the row entry with header
+    // Declear the properties of the custom dataset.
+    // Use the JsonProperty to load the row entry with header.
     [JsonProperty("timestamp")]
     public int Timestamp = 0;
     [JsonProperty("open")]
@@ -67,42 +69,41 @@
     public decimal VolumeBTC = 0;
     public decimal VolumeUSD = 0;
 
-    // Override the GetSource method to load the data from its source position
+    // Override the GetSource method to load the data from its location.
     public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
-        // Use $"{config.Symbol}" if it is symbol defined link
         var source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv";
-        return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);      // RemoteFile: In a web storage
+        return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);  // RemoteFile means it's in online storage.
     }
 
-    // Override the Reader method to read the data row entry
+    // Override the Reader method to read the CSV rows.
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
     {
-        // Ignore empty row
+        // Ignore empty rows.
         if (string.IsNullOrWhiteSpace(line.Trim()))
         {
             return null;
         }
         
-        // Instantiate a new data object
+        // Instantiate a new data object.
         var coin = new Bitstamp() {Symbol = config.Symbol};
 
-        // Ignore non-numeric line
+        // Ignore non-numeric lines.
         if (!char.IsDigit(line[0]))
         {
             return null;
         }
 
-        // Split the CSV data by comma
+        // Split the CSV data by its commas.
         var data = line.Split(',');
         coin.Value = data[4].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-        // Ignore invalid data
+        // Ignore invalid data.
         if (coin.Value == 0)
         {
             return null;
         }
 
-        // Parse the data into the data entry's properties
+        // Parse the row.
         coin.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
         coin.EndTime = coin.Time.AddDays(1);
         coin.Open = data[1].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
@@ -116,35 +117,34 @@
     }
 }</pre>
 	<pre class="python">class Bitstamp(PythonData):
-    # Override the get_source method to load the data from its source position
+    # Override the get_source method to load the data from its location.
     def get_source(self, config, date, is_live_mode):
-        # Use f"{config.symbol}" if it is symbol defined link
         source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)      # REMOTE_FILE: In a web storage
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)  # REMOTE_FILE means it's in online storage.
     
-    # Override the reader method to read the data row entry
+    # Override the reader method to read the CSV rows.
     def reader(self, config, line, date, is_live_mode):
-        # Ignore empty row
+        # Ignore empty rows.
         if not line.strip():
             return None
         
-        # Instantiate a new data object
+        # Instantiate a new data object.
         coin = Bitstamp()
         coin.symbol = config.symbol
 
-        # Ignore non-numeric line
+        # Ignore non-numeric lines.
         if not line[0].isdigit():
             return None
 
-        # Split the CSV data by comma
+        # Split the CSV data by its commas.
         data = line.split(',')
 
-        # Ignore invalid data
+        # Ignore invalid data.
         coin.value = float(data[4])
         if coin.value == 0:
             return None
 
-        # Parse the data into the data entry's properties, save in a cache
+        # Parse the row.
         coin.time = datetime.strptime(data[0], "%Y-%m-%d")
         coin.end_time = coin.time + timedelta(1)
         coin["Open"] = float(data[1])
