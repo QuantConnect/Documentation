@@ -6,5 +6,5 @@
 AddFuture(Futures.Currencies.BTC, contractDepthOffset: 3);</pre>
     <pre class="python"># To adjust the contract depth offset to the second back month contract, 
 # pass the value 3 to the contract_depth_offset argument in the add_future method.
-self.add_future(Futures.Currencies.BTC, c=3)</pre>
+self.add_future(Futures.Currencies.BTC, contract_depth_offset=3)</pre>
 </div>
