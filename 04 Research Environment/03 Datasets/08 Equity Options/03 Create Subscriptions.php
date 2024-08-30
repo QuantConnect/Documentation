@@ -24,9 +24,11 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     </div>
     <li><span class='qualifier'>(Optional)</span> Set a <a href="/docs/v2/writing-algorithms/universes/equity-options#03-Filter-Contracts">contract filter</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">// Set contract filter to return contracts that have the strike price within 1 strike level and expire within 90 days.
+        <pre class="csharp">// Set contract filter to select contracts that have the strike price 
+// within 1 strike level and expire within 90 days.
 option.set_filter(-1, 1, 0, 90);</pre>
-        <pre class="python"># Set contract filter to return contracts that have the strike price within 1 strike level and expire within 90 days.
+        <pre class="python"># Set contract filter to select contracts that have the strike price 
+# within 1 strike level and expire within 90 days.
 option.set_filter(-1, 1, 0, 90)</pre>
     </div>
     <p>The filter determines which contracts the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
@@ -37,9 +39,9 @@ option.set_filter(-1, 1, 0, 90)</pre>
 </ul>
     <li><span class='qualifier'>(Optional)</span> Set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">// Use the Cox, Ross, and Rubinstein Binomial model to price the options.
+        <pre class="csharp">// Use the Cox, Ross, and Rubinstein Binomial model to price the Options.
 option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein();</pre>
-        <pre class="python"># Use the Cox, Ross, and Rubinstein Binomial model to price the options.
+        <pre class="python"># Use the Cox, Ross, and Rubinstein Binomial model to price the Options.
 option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
     </div>
 
