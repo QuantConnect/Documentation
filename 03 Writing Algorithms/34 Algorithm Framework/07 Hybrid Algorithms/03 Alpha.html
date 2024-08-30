@@ -1,17 +1,21 @@
 <p>You can add one or multiple <a href='/docs/v2/writing-algorithms/algorithm-framework/alpha/key-concepts'>Alpha</a> models to your classic algorithm and place the orders using <code>Insight</code> objects without a Portfolio Construction model. To receive the collection of <code>Insight</code> objects in a classic algorithm, implement the <code class="csharp">InsightsGenerated</code><code class="python">insights_generated</code> event handler:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">// Add one or multiple Alpha models to a classic algorithm allowing for direct trading based on generated Insight objects, bypassing the need for a Portfolio Construction model. 
+public override void Initialize()
 {
     AddAlpha(new EmaCrossAlphaModel());
+    // The InsightsGenerated event handler is used to receive and process the collection of insights, facilitating flexible and dynamic trading strategies.
     InsightsGenerated += OnInsightsGenerated;
 }
 private void OnInsightsGenerated(IAlgorithm algorithm, GeneratedInsightsCollection insightsCollection)
 {
     var insights = insightsCollection.Insights;
 }</pre>
-	<pre class="python">def initialize(self):
+	<pre class="python"># Add one or multiple Alpha models to a classic algorithm allowing for direct trading based on generated Insight objects, bypassing the need for a Portfolio Construction model. 
+def initialize(self):
     self.add_alpha(EmaCrossAlphaModel())
+    # The insights_generated event handler is used to receive and process the collection of insights, facilitating flexible and dynamic trading strategies.
     self.insights_generated += self.on_insights_generated
 
 def on_insights_generated(self, algorithm: IAlgorithm, insights_collection: GeneratedInsightsCollection) -&gt; None:
