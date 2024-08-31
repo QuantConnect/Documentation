@@ -1,40 +1,85 @@
-<h4>Example 1: Only Within 1 Hour Of Market Open And Close</h4>
-<p>Some traders prefer to use only data of 1 hour after market open and before market close, since they have the most volume.</p>
+<h4>Example 1: Filter Price Outliners Using SMA</h4>
+<p>When analyzing high-frequency price data, it's important to filter out potential outliers and anomalies that may skew the analysis. One effective method is to use a 100-step SMA to identify price ticks that deviate significantly from the short-term trend. By comparing each price tick to the 100-step SMA, you can flag any data points that fall outside a specified threshold, which we used 3 standard deviations in this example. This helps remove suspicious or erroneous price information, ensuring a cleaner dataset for further technical analysis and trading strategies.</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class SampleAlgorithm : QCAlgorithm
 {
-    var security = AddEquity("SPY");
-    security.SetDataFilter(new CustomDataFilter());
-}
-
-private class CustomDataFilter : ISecurityDataFilter
-{
-    public bool Filter(Security vehicle, BaseData data)
+    public override void Initialize()
     {
-        if (data.Time.Hour &gt;= 10 && data.Time.Hour &lt;= 14)
+        dynamic equity = AddEquity("AAPL", Resolution.Tick);
+        // Set a 100-step price SMA
+        equity.Sma = SMA(equity.Symbol, 100, Resolution.Tick);
+        // Set 100-step rolling window of the SMA indicator to save the last 100 tick data to calculate standard deviation
+        equity.Sma.Window.Size = 100;
+        // Warm up the indicator
+        WarmUpIndicator((Symbol)equity.Symbol, (SimpleMovingAverage)equity.Sma, Resolution.Tick);
+        // Set the data filter
+        equity.SetDataFilter(new CustomDataFilter());
+    }
+
+    private class CustomDataFilter : ISecurityDataFilter
+    {
+        public bool Filter(Security vehicle, BaseData data)
         {
-            return false;
+            // Cast into dynamic for custom property SMA
+            var security = vehicle as dynamic;
+            // Get the average and standard deviation of the SMA data points
+            var sma = security.Sma.Current.Value;
+            var window = (RollingWindow&lt;IndicatorDataPoint&gt;)security.Sma.Window;
+            var std = Convert.ToDecimal(Math.Sqrt(window.Average(point =&gt; Math.Pow((double)(point.Value - sma), 2))));
+            
+            // Check if the data point is suspicious
+            if (data.Value.IsSuspicious(sma, sd))
+            {
+                // If so, we reject the data
+                return false;
+            }
+            // Otherwise, we accept it
+            return true;
         }
-        return true;
+
+        private IsSuspicious(this decimal value, decimal sma, decimal sd)
+        {
+            // Define suspicious data point to be out of 3SD of the SMA
+            return value &gt; sma + 3m * std || value &lt; sma - 3m * std
+        }
     }
 }</pre>
-	<pre class="python">def initialize(self):
-    security = self.add_equity("SPY")
-    security.set_data_filter(CustomDataFilter())
+	<pre class="python">class TestAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        equity = self.add_equity("AAPL", Resolution.TICK)
+        # Set a 100-step price SMA
+        equity.sma = self.sma(equity.symbol, 100, Resolution.TICK)
+        # Set 100-step rolling window of the SMA indicator to save the last 100 tick data to calculate standard deviation
+        equity.sma.window.size = 100
+        # Warm up the indicator
+        self.warm_up_indicator(equity.symbol, equity.sma, Resolution.TICK)
+        # Set the data filter
+        equity.set_data_filter(CustomDataFilter())
 
 class CustomDataFilter(SecurityDataFilter):
-    def filter(self, vehicle: Security, data: BaseData) -> bool:
-        if 14 &gt;= data.time.hour &gt;= 10:
+    def filter(self, vehicle: Security, data: BaseData) -&gt; bool:
+        # Get the average and standard deviation of the SMA data points
+        sma = vehicle.sma.current.value
+        std = np.std([x.value for x in vehicle.sma.window])
+        
+        # Check if the data point is suspicious
+        if is_suspicious(data.values, sma, std):
+            # If so, we reject the data
             return False
-        return True</pre>
+        # Otherwise, we accept it
+        return True
+    
+    def is_suspicious(self, value: float, sma: float, sd: float):
+        # Define suspicious data point to be out of 3SD of the SMA
+        return value &gt; sma + 3 * std or value &lt; sma - 3 * std</pre>
 </div>
 
-<h4>Example 2: Use Only Quote Ticks</h4>
-<p>You can use only quote ticks, and exclude trade ticks, for execution model training.</p>
+<h4>Example 2: Filter Major Exchanges</h4>
+<p>This examples shows how to only keep the data feed from BATS exchange while filtering the other major exchanges. When trading less liquid financial instruments, it can be advantageous to focus on the BATS exchange, as its quote data may not fully reflect the fair market value. Due to the lower trading volume and visibility of BATS, the quoted prices there may lag behind the true underlying value of illiquid assets. A carefully designed algorithm can analyze the BATS feed to identify situations where the quoted price appears to be undervalued compared to the asset's intrinsic worth. By executing trades to capture this disconnect, rather than arbitraging between exchanges, you may be able to profit from the market inefficiencies present in the less liquid instrument.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
-    var security = AddEquity("SPY");
+    var security = AddEquity("SPY", Resolution.Tick);
     security.SetDataFilter(new CustomDataFilter());
 }
 
@@ -42,61 +87,34 @@ private class CustomDataFilter : ISecurityDataFilter
 {
     public bool Filter(Security vehicle, BaseData data)
     {
+        // Use tick data to obtain the exchange of the feed
         var tick = data as Tick;
         
-        if (tick.TickType == TickType.Trade)
+        // Check if the feed is from BATS
+        if (tick != null && tick.Exchange == Exchange.BATS)
         {
-            return false;
+            // If so, we accept the data
+            return true;
         }
-        return true;
+        // Otherwise, we reject it
+        return false;
     }
 }</pre>
 	<pre class="python">def initialize(self):
-    security = self.add_equity("SPY")
+    security = self.add_equity("SPY", Resolution.TICK)
     security.set_data_filter(CustomDataFilter())
 
 class CustomDataFilter(SecurityDataFilter):
     def filter(self, vehicle: Security, data: BaseData) -> bool:
+        # Use tick data to obtain the exchange of the feed
         tick = Tick(data)
         
-        if tick.tick_type == TickType.TRADE:
-            return False
-        return True</pre>
-</div>
-
-<h4>Example 3: Train Model For Suspicious Data</h4>
-<p>You can also train a model to detect suspicious data points and filter them out.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
-{
-    var security = AddEquity("SPY");
-    security.SetDataFilter(new CustomDataFilter());
-}
-
-private class CustomDataFilter : ISecurityDataFilter
-{
-    public bool Filter(Security vehicle, BaseData data)
-    {
-        var tick = data as Tick;
-        
-        if (_model.IsSuspicious(tick))
-        {
-            return false;
-        }
-        return true;
-    }
-}</pre>
-	<pre class="python">def initialize(self):
-    security = self.add_equity("SPY")
-    security.set_data_filter(CustomDataFilter())
-
-class CustomDataFilter(SecurityDataFilter):
-    def filter(self, vehicle: Security, data: BaseData) -> bool:
-        tick = Tick(data)
-        
-        if self.model.is_suspicious(tick):
-            return False
-        return True</pre>
+        # Check if the feed is from BATS
+        if tick and tick.exchange == Exchange.BATS:
+            # If so, we accept the data
+            return True
+        # Otherwise, we reject it
+        return False</pre>
 </div>
 
 <p>For more examples, see the following algorithms:</p>

@@ -1,7 +1,7 @@
 
 <p>In backtests, the <code class="csharp">Train</code><code class="python">train</code> method is synchronous, so it blocks your algorithm execution while the model trains. In live trading, the <code class="csharp">Train</code><code class="python">train</code> method is asynchronous, so ensure your model is trained before you continue the algorithm execution. Training occurs on a separate thread, so set a boolean flag to notify your algorithm of the model state. A <span class="new-term">semaphore</span> is a thread-safe flag you can use to synchronize program operations across different threads. <br></p>
 <div class="section-example-container">
-<pre class="python"># Example of using a flag to signal the model is ready to be used in live trading.
+<pre class="python"># Example of using a flag to signal the model is ready to for use:
 class SemaphoreTrainingAlgorithm(QCAlgorithm):
 
     # Model Object
@@ -14,23 +14,23 @@ class SemaphoreTrainingAlgorithm(QCAlgorithm):
     
     def my_training_method(self) -&gt; None: 
         self.model_is_training = True
-        # Perform Work
+        # Train the model here.
         self.model_is_training = False
     
     def on_data(self, slice: Slice) -&gt; None: 
-        # Do not use model while it is being trained.
+        # Don't use the model while it is training.
         if self.model_is_training:
             return
         
-        # Once training is complete; use the model safely.
+        # Once training is complete, use the model.
         result = self.model.predict()
 </pre>
-<pre class="csharp">// Example of using a flag to signal the model is ready to be used in live trading
+<pre class="csharp">// Example of using a flag to signal the model is ready to for use:
 public class SemaphoreTrainingAlgorithm : QCAlgorithm
 {
-    // Model Object
+    // Initialize the model.
     private MachineLearningModel _model;
-    // Model State Flag
+    // Initialize the training state flag.
     private bool _modelIsTraining;
 
     public override void Initialize()
@@ -41,18 +41,18 @@ public class SemaphoreTrainingAlgorithm : QCAlgorithm
     private void MyTrainingMethod()
     {
         _modelIsTraining = true;
-        // Perform Work
+        // Train the model here.
         _modelIsTraining = false;
     }
 
     public override void OnData(Slice slice)
     {
-        // Do not use model while it is being trained.
+        // Don't use the model while it is training.
         if (_modelIsTraining)
         {
             return;
         }
-        // Once training is complete; use the model safely.
+        // Once training is complete, use the model.
         var result = _model.Predict();
     }
 }</pre>

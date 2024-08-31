@@ -73,7 +73,8 @@ def _fundamental_filter_function(self, fundamental: List[Fundamental]):
 <p>To move the selection function outside of the algorithm class, create a universe selection model that inherits the <code>FundamentalUniverseSelectionModel</code> class and override its <code class="csharp">Select</code><code class="python">select</code> method.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize, set asynchronous universe settings for improved processing speed and add LiquidAndLowPEUniverseSelectionModel to select assets based on high liquidity and low PE ratio, targeting undervalued stocks.
+	<pre class="csharp">// In Initialize, enable asynchronous universe settings for improved processing speed and 
+// add a custom universe selection model that selects undervalued, liquid stocks.
 UniverseSettings.Asynchronous = true;            
 AddUniverseSelection(new LiquidAndLowPEUniverseSelectionModel());
 
@@ -94,7 +95,8 @@ public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelection
             .Select(x => x.Symbol);
     }
 }</pre>
-	<pre class="python"># In Initialize, set asynchronous universe settings for improved processing speed and add LiquidAndLowPEUniverseSelectionModel to select assets based on high liquidity and low PE ratio, targeting undervalued stocks.
+	<pre class="python"># In Initialize, enable asynchronous universe settings for improved processing speed and 
+# add a custom universe selection model that selects undervalued, liquid stocks.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(LiquidAndLowPEUniverseSelectionModel())
 

@@ -1,33 +1,38 @@
-<h4>Example 1: Set Data Seed</h4>
-<p>Some data feeds might not have data on its first fetch, making the algorithm prone to error. To avoid issues, <a href='/docs/v2/writing-algorithms/universes/settings#98-Configure-Universe-Securities'>set a seed</a> on using the last known value as the initial value.</p>
+<p>The following examples demonstrate some common practices for initializing algorithms.</p>
+
+<h4>Example 1: Set the Data Seed</h4>
+<p>
+	Some data feeds might not have data on its first fetch, making the algorithm prone to error. 
+	To avoid issues, <a href='/docs/v2/writing-algorithms/universes/settings#98-Configure-Universe-Securities'>set a seed</a> so the initial price of each asset is its last known price.
+</p>
 <div class="section-example-container">
-	<pre class="csharp">// Seed with the last known price to prevent $0 security price errors.
+	<pre class="csharp">// Seed with the last known price of assets to prevent $0 security price errors.
 public override void Initialize()
 {
     SetSecurityInitializer(new BrokerageModelSecurityInitializer(
         BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 }</pre>
-	<pre class="python"># Seed with the last known price to prevent $0 security price errors.
+	<pre class="python"># Seed with the last known price of assets to prevent $0 security price errors.
 def initialize(self):
     self.set_security_initializer(BrokerageModelSecurityInitializer(
         self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))</pre>
 </div>
 
-<h4>Example 2: Extended Market Hour</h4>
-<p>Some traders use pre-market hour data for filtering assets. To do so, subscribe to extended market hour data.</p>
+<h4>Example 2: Enable Extended Market Hours</h4>
+<p>Some traders use pre-market data for filtering assets. To enable extended market hour data, adjust the <a href='/docs/v2/writing-algorithms/universes/settings'>universe settings</a>.</p>
 <div class="section-example-container">
-	<pre class="csharp">// Request extended market hour to use pre/post market hours data for universe subscriptions.
+	<pre class="csharp">// Request extended market hours to use pre/post market hours data for universe subscriptions.
 public override void Initialize()
 {
     UniverseSettings.ExtendedMarketHours = true;
 }</pre>
-	<pre class="python"># Request extended market hour to use pre/post market hours data for universe subscriptions.
+	<pre class="python"># Request extended market hours to use pre/post market hours data for universe subscriptions.
 def initialize(self):
     self.universe_settings.extended_market_hours = True</pre>
 </div>
 
-<h4>Example 3: Train Model When the Warm Up Finishes</h4>
-<p>After warming up indicators or rolling windows, you can train machine learning model with the prepared data.</p>
+<h4>Example 3: Train Models When the Warm Up Finishes</h4>
+<p>After warming up indicators or rolling windows, you can train machine learning models with the data.</p>
 <div class="section-example-container">
 	<pre class="csharp">// Train machine learning models after the algorithm warm up is done, so your models 
 // are ready as soon as the algorithm starts trading. 

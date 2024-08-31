@@ -1,12 +1,13 @@
 <p>
-  Your algorithm can spend up to 10 minutes on each timeslice unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models"><span class="csharp">Train</span><span class="python">train</span></a> method, see <a href="/docs/v2/writing-algorithms/key-concepts/algorithm-engine#06-Event-Flow">Event Flow</a>.
-</p>
-<p>
-  You can use the <a rel="nofollow" target="_blank" href='https://docs.python.org/3/library/profile.html'>Python Profilers</a> of the Python Standard Library to find the functions and methods that consume most of the runtime and improve your code. The following example shows how to save profiling data to the Object Store.
+  Your algorithm can spend up to 10 minutes on each <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>timeslice</a> unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models"><span class="csharp">Train</span><span class="python">train</span></a> method.
+  <a rel="nofollow" target="_blank" href='https://docs.python.org/3/library/profile.html'>Python Profilers</a> from the Python Standard Library enable you to find the functions and methods in your algorithm that consume most of the runtime.
+  To analyze your algorithm's efficiency with the Python Profilers, follow these steps:
 </p>
 
-<ul>
-  <li>Import the <code>Profile</code>, <code>Stats</code>, and <code>StringIO</code> classes. Create a <code>profile</code> object and call the <code>enable</code> method to start collecting profiling data.</li>
+<ol>
+  <li>Open the project in the <a href='/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects'>Cloud Platform</a>, <a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>Local Platform</a>, or a local IDE if you use the CLI.</p>
+
+  <li>At the top of the <span class='public-file-name'>main.py</span> file, import the classes you need and enable the <code>Profile</code>.</li>
   <div class="section-example-container">
     <pre class="python">from cProfile import Profile
 from pstats import Stats
@@ -17,7 +18,7 @@ profile = Profile()
 profile.enable()</pre>
 </div>
 
-  <li>Create a algorithm. In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>on_end_of_algorithm</a>, call the <code>disable</code> method to stop collecting profiling data. Use a <code>Stats</code> object to sort the methods by cumulative time and print the top 20. Save the profiling data to the Object Store.</li>
+  <li>Define or extend the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>on_end_of_algorithm</a> method to <code>disable</code> the <code>Profile</code> and save information on the most time-consuming functions to the <a href='/docs/v2/research-environment/object-store'>Object Store</a>.</li>
 
   <div class="section-example-container">
     <pre class="python">class FunctionTimeConsumptionAlgorithm(QCAlgorithm):
@@ -28,9 +29,9 @@ profile.enable()</pre>
         # Stop collecting profiling data
         profile.disable()
         stream = StringIO()
-        # Save the top 20 time-consuming functions to a file in the Object Store
+        # Save the top 20 time-consuming functions to a file in the Object Store.
         Stats(profile, stream=stream).sort_stats('cumulative').print_stats(20)
-        # Save the profiling data to the Object Store using the algorithm ID
+        # Save the profiling data to the Object Store using the algorithm ID.
         self.object_store.save(f"{self.algorithm_id}_profile", stream.getvalue())</pre>
   </div>
 
@@ -39,10 +40,11 @@ profile.enable()</pre>
     <pre class="python">qb = QuantBook()</pre>
   </div>
 
-  <li><a href='/docs/v2/cloud-platform/backtesting/getting-started#06-Get-Backtest-Id'>Get the backtest Id</a> and read the profiling data from the Object Store.</li>
+  <li>Get the backtest Id and read the profiling data from the Object Store.</li>
+  <p>The process to get the backtest Id depends on if you use the <a href='/docs/v2/cloud-platform/backtesting/getting-started#06-Get-Backtest-Id'>Cloud Platform</a>, <a href='/docs/v2/local-platform/backtesting/getting-started#07-Get-Backtest-Id'>Local Platform</a>, or <a href='/docs/v2/lean-cli/backtesting/deployment#05-Get-Backtest-Id'>CLI</a>.</p>
   <div class="section-example-container">
-    <pre class="python">algorithm_id = "8b16cec0c44f75188d82f9eadb310e17"
-profile_output = qb.object_store.read(f"{algorithm_id}_profile")
+    <pre class="python">backtest_id = "8b16cec0c44f75188d82f9eadb310e17"
+profile_output = qb.object_store.read(f"{backtest_id}_profile")
 print(profile_output)</pre>
   </div>
-</ul>
+</ol>

@@ -26,37 +26,40 @@
 <ol>
     <li>Initialize variables.</li>
     <div class="section-example-container">
-        <pre class="python"># Declare Aesara symbolic variables
+        <pre class="python"># Declare Aesara's symbolic variables.
 x = at.dmatrix("x")
 y = at.dvector("y")
 
-# initialize the weight vector w randomly using share so model coefficients keep their values
-# between training iterations (updates)
+# Initialize a NumPy random number generator with a fixed seed for reproducibility.
 rng = np.random.default_rng(100)
+
+# Initialize the weight vector w randomly using share so model coefficients keep their values
+# between training iterations (updates).
 w = aesara.shared(rng.standard_normal(5), name="w")
 
-# initialize the bias term
+# Initialize the bias term.
 b = aesara.shared(0., name="b")</pre>
     </div>
     
     <li>Construct the model graph.</li>
     <div class="section-example-container">
-        <pre class="python"># Construct Aesara expression graph
-p_1 = 1 / (1 + at.exp(-at.dot(x, w) - b))       # Logistic transformation
-prediction = p_1 > 0.5                          # The prediction thresholded
-xent = y * at.log(p_1) - (1 - y) * at.log(1 - p_1)  # Cross-entropy log-loss function
-cost = xent.mean() + 0.01 * (w ** 2).sum()      # The cost to minimize (MSE)
-gw, gb = at.grad(cost, [w, b])                  # Compute the gradient of the cost</pre>
+        <pre class="python"># Construct the Aesara expression graph.
+p_1 = 1 / (1 + at.exp(-at.dot(x, w) - b))           # Logistic transformation.
+prediction = p_1 > 0.5                              # The prediction thresholded.
+xent = y * at.log(p_1) - (1 - y) * at.log(1 - p_1)  # Cross-entropy log-loss function.
+cost = xent.mean() + 0.01 * (w ** 2).sum()          # The cost to minimize (MSE).
+gw, gb = at.grad(cost, [w, b])                      # Compute the gradient of the cost.</pre>
     </div>
     
     <li>Compile the model.</li>
     <div class="section-example-container">
-        <pre class="python"># Define training and prediction functions with Aesara to optimize weights and biases during training and generate predictions.
+        <pre class="python"># Define training and prediction functions with Aesara to optimize weights 
+# and biases during training and generate predictions.
 self.train = aesara.function(
-          inputs=[x, y],
-          outputs=[prediction, xent],
-          # Update weights and biases.
-          updates=((w, w - 0.1 * gw), (b, b - 0.1 * gb)))
+    inputs=[x, y],
+    outputs=[prediction, xent],
+    # Update weights and biases.
+    updates=((w, w - 0.1 * gw), (b, b - 0.1 * gb)))
 self.predict = aesara.function(inputs=[x], outputs=prediction)</pre>
     </div>
 </ol>
