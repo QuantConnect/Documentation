@@ -1,9 +1,11 @@
 <p>A chart series displays data on the chart. To add a series to a chart, create a <code>Series</code> object and then call the <code class="csharp">AddSeries</code><code class="python">add_series</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var series = new Series("&lt;seriesName&gt;");
+    <pre class="csharp">// Add a data series on the cart by creating a Series object and calling the AddSeries method to track and display specific data over time.
+var series = new Series("&lt;seriesName&gt;");
 chart.AddSeries(series);</pre>
-    <pre class="python">series = Series("&lt;seriesName&gt;")
+    <pre class="python"># Add a data series on the cart by creating a Series object and calling the add_series method to track and display specific data over time.
+series = Series("&lt;seriesName&gt;")
 chart.add_series(series)</pre>
 </div>
 
