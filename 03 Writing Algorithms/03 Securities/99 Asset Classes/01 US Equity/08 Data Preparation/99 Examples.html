@@ -1,15 +1,15 @@
 <h4>Example 1: Use Market On Open Orders</h4>
 <p>In this example, we place an Market On Open order (MOO) to purchase 10 shares of SPY on July 1st, 2021 at 10:31 AM. The <code class="csharp">MarketOnOpenOrder</code><code class="python">market_on_open_order</code> method places a trade when the market open i.e. at 9:31 AM everyday. The fill model fills the order on July 2, 2021 at 9:31 AM at a price of $431.67, which is the official opening time for July 2, 2021.</p>
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _spy;
+	<pre class="csharp">private dynamic _spy;
+
 public override void Initialize()
 {
     // Set the start and end date for the strategy.
     SetStartDate(2021, 7, 1);
     SetEndDate(2021, 7, 4);
     // Subscribe to raw data of SPY.
-    UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-    _spy = AddEquity("SPY").Symbol;
+    _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw) as dynamic;
 }
 
 public override void OnData(Slice data)
@@ -17,7 +17,7 @@ public override void OnData(Slice data)
     // Place an on market open order at 10:31 AM, July 1st, 2021.
     if (Time.Day == 1 && Time.Hour == 10 && Time.Minute == 31)
     {
-        MarketOnOpenOrder(_spy, 10);
+        MarketOnOpenOrder(_spy.Symbol, 10);
     }
 }</pre>
 	<pre class="python">def initialize(self):
@@ -25,11 +25,10 @@ public override void OnData(Slice data)
     self.set_start_date(2021, 7, 1)
     self.set_end_date(2021, 7, 3)
     # Subscribe to raw data of SPY.
-    self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-    self.spy = self.add_equity("SPY").symbol
+    self.spy = self.add_equity("SPY", Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.RAW)
 
 def on_data(self, data):
     # Place an on market open order at 10:31 AM, July 1st, 2021.
     if self.time.day == 1 and self.time.hour == 10 and self.time.minute == 31:
-      self.market_on_open_order(spy, 10)</pre>
+      self.market_on_open_order(self.spy.symbol, 10)</pre>
 </div>
