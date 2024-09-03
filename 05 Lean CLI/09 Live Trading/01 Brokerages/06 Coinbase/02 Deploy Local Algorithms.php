@@ -1,15 +1,15 @@
 <?
 $brokerageName = "Coinbase Advanced Trade";
-$dataFeedName = "";
+$dataFeedName = $brokerageName;
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter your API key and API secret.
+<li>Enter your API name and private key.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-API key: 6d3ef5ca2d2fa52e4ee55624b0471261
-API secret: ****************************************************************************************</pre>
+API name: organizations/2c7dhs-a3a3-4acf-aa0c-f68584f34c37/apiKeys/41090ffa-asd2-8080-815f-afaf63747e35
+API private key: ****************************************************************************************</pre>
 </div>
-To create new API credentials, see the <a href='https://www.coinbase.com/settings/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase website.
+To create new API credentials, see <a href='/docs/v2/cloud-platform/live-trading/brokerages/coinbase#02-Account-Types'>Account Types</a>.
 </li>
 ";
 $dataFeedDetails = "";
