@@ -3,237 +3,161 @@
 <ol>
     <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions</a>.</li>
     <div class="section-example-container">
-        <pre class="python"># Subscribe to the underlying Equity with raw data normalization.
-equity_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+        <pre class="python">qb = QuantBook()
 
-# Get the Option contracts that were tradable on December 31st, 2021.
-start_date = datetime(2021, 12, 31)
-contract_list = qb.option_chain_provider.get_option_contract_list(equity_symbol, start_date)
+# Set price seeder
+qb.set_security_initializer(lambda security: FuncSecuritySeeder(qb.get_last_known_prices).seed_security(security))
+# Subscribe to the underlying Equity with raw data normalization.
+underlying = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+underlying_price = qb.securities[underlying].price
 
-# Select the call contracts that have the strike price within [450, 500] and expire at January 21st, 2022. 
-contract_symbols = [s for s in contract_list 
-    if s.id.option_right == OptionRight.CALL
-        and s.id.date == datetime(2022, 1, 21)
-        and 450 <= s.id.strike_price <= 500]
-# Select the put contracts that have the strike price within [450, 500] and expire at January 21st, 2022.  
-mirror_symbols = [s for s in contract_list 
-    if s.id.option_right == OptionRight.PUT
-        and s.id.date == datetime(2022, 1, 21)
-        and 450 <= s.id.strike_price <= 500]
+# Get the Option contracts that were tradable on August 28th, 2024.
+qb.set_start_date(2024, 8, 28)
+contract_list = qb.option_chain_provider.get_option_contract_list(underlying, qb.start_date)
+expiry = min([x.id.date for x in contract_list])
 
-# Subscribe to the contracts and sort them by their strike price.
-option_contracts = sorted([qb.add_option_contract(contract_symbol, fill_forward=False).symbol for contract_symbol in contract_symbols], key=lambda x: x.id.strike_price)
-mirror_contracts = sorted([qb.add_option_contract(mirror_symbol, fill_forward=False).symbol for mirror_symbol in mirror_symbols], key=lambda x: x.id.strike_price)</pre>
-        <pre class="csharp">// Subscribe to the underlying Equity with raw data normalization.
-var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+# Select the call contracts that have the strike price within $10 ATM and expire the earliest. 
+contract_list = [s for s in contract_list if s.id.date == expiry and abs(underlying_price - s.id.strike_price) < 10]</pre>
+        <pre class="csharp">var qb = new QuantBook();
 
-// Get the Option contracts that were tradable on December 31st, 2021.
-var startDate = new DateTime(2021, 12, 31);
-var contractList = qb.OptionChainProvider.GetOptionContractList(equitySymbol, startDate);
+// Set price seeder
+qb.SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(qb.GetLastKnownPrices).SeedSecurity(security));
+// Subscribe to the underlying Equity with raw data normalization.
+var underlying = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+var underlyingPrice = qb.Securities[underlying].Price;
 
-// Select the call contracts that have the strike price within [450, 500] and expire at January 21st, 2022.  
-var contractSymbols = contractList.Where(s => 
-    s.ID.OptionRight == OptionRight.Call &&
-    s.ID.StrikePrice &lt;= 500 &&
-    s.ID.StrikePrice &gt;= 450 &&
-    s.ID.Date == new DateTime(2022, 1, 21));
-// Select the put contracts that have the strike price within [450, 500] and expire at January 21st, 2022. 
-var mirrorSymbols = contractList.Where(s => 
-    s.ID.OptionRight == OptionRight.Put &&
-    s.ID.StrikePrice &lt;= 500 &&
-    s.ID.StrikePrice &gt;= 450 &&
-    s.ID.Date == new DateTime(2022, 1, 21));
+// Get the Option contracts that were tradable on August 28th, 2024.
+qb.SetStartDate(2024, 8, 28);
+var contractList = qb.OptionChainProvider.GetOptionContractList(underlying, qb.StartDate);
+var expiry = contractList.Min(x =&gt; x.ID.Date);
 
-// Subscribe to the contracts and sort them by their strike price.
-var optionContracts = contractSymbols.OrderBy(x =&gt; x.ID.StrikePrice).Select(x =&gt; qb.AddOptionContract(x, fillForward: false).Symbol).ToList();
-var mirrorContracts = mirrorSymbols.OrderBy(x =&gt; x.ID.StrikePrice).Select(x =&gt; qb.AddOptionContract(x, fillForward: false).Symbol).ToList();</pre>
+// Select the call contracts that have the strike price within $10 ATM and expire the earliest. 
+contractList = contractList.Where(s =&gt;
+    Math.Abs(s.ID.StrikePrice - underlyingPrice) &lt; 10 &&
+    s.ID.Date == expiry)
+    .ToList();</pre>
     </div>
 
-    <li><a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">Get historical data</a> for the underlying Equity and the Option contract(s).</li>
+    <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators">Implied Volatility & Greeks Indicators</a> for each contract selected.</li>
     <div class="section-example-container">
-        <pre class="python">qb.set_start_date(start_date)
-# Request 20 quote bars with minute resolution.
-history = qb.history[QuoteBar]([equity_symbol] + option_contracts + mirror_contracts, 20, Resolution.MINUTE)</pre>
-        <pre class="csharp">qb.SetStartDate(startDate);
-var symbols = new List&lt;Symbol&gt; { equitySymbol };
-// Request 20 quote bars with minute resolution.
-var history = qb.History&lt;QuoteBar&gt;(symbols.Concat(optionContracts).Concat(mirrorContracts), 20, Resolution.Minute);</pre>
-    </div>
+        <pre class="python"># Set up risk free rate, dividend yield, and option pricing model
+risk_free_rate_model = qb.risk_free_interest_rate_model
+dividend_yield_model = DividendYieldProvider(underlying)
+option_model = OptionPricingModelType.FORWARD_TREE
 
-    <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators">Option Indicators</a>, with the chosen option pricing model.</li>
-    <div class="section-example-container">
-        <pre class="python"># Create dictionaries to store Option indicator objects.
-iv = {}
-delta = {}
-gamma = {}
-vega = {}
-theta = {}
-rho = {}
+# Define a method to generate the option indicator history
+def get_indicators(contracts):
+    # Mirror option contract pairs
+    call, put = contracts
+    if call.id.option_right == OptionRight.PUT:
+        call, put = put, call
 
-# Create Option indicators for each put/call combination at each strike price.
-for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
-    strike = option_contract.id.strike_price
+    def get_value(indicator):
+        # Use both call and put contract with the underlying to obtain indicator history and update the indicator
+        qb.indicator_history(indicator, [call, put, call.Underlying], 1)
+        return indicator.current.value
 
-    iv[strike] = ImpliedVolatility(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)
-    delta[strike] = Delta(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)
-    gamma[strike] = Gamma(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)
-    vega[strike] = Vega(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)
-    theta[strike] = Theta(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)
-    rho[strike] = Rho(option_contract, mirrorOption=mirror_contract, option_model=OptionPricingModelType.FORWARD_TREE)</pre>
-        <pre class="csharp">// Create dictionaries to store Option indicator objects.
-var iv = new Dictionary&lt;decimal, ImpliedVolatility>();
-var delta = new Dictionary&lt;decimal, Delta&gt;();
-var gamma = new Dictionary&lt;decimal, Gamma&gt;();
-var vega = new Dictionary&lt;decimal, Vega&gt;();
-var theta = new Dictionary&lt;decimal, Theta&gt;();
-var rho = new Dictionary&lt;decimal, Rho&gt;();
+    # Obtain values from all IV and Greeks indicators
+    return {
+        'iv_call': get_value(ImpliedVolatility(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
+        'iv_put': get_value(ImpliedVolatility(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
+        'delta_call': get_value(Delta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
+        'delta_put': get_value(Delta(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
+        'gamma_call': get_value(Gamma(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
+        'gamma_put': get_value(Gamma(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
+        'rho_call': get_value(Rho(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
+        'rho_put': get_value(Rho(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
+        'vega_call': get_value(Vega(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
+        'vega_put': get_value(Vega(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
+        'theta_call': get_value(Theta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
+        'theta_put': get_value(Theta(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
+    }</pre>
+        <pre class="csharp">// Set up risk free rate, dividend yield, and option pricing model
+var riskFreeRateModel = qb.RiskFreeInterestRateModel;
+var dividendYieldModel = new DividendYieldProvider(underlying);
+var optionModel = OptionPricingModelType.ForwardTree;
 
-// Create Option indicators for each put/call combination at each strike price.
-foreach (var pair in optionContracts.Zip(mirrorContracts, (x, y) =&gt; new {OptionContract = x, MirrorContract = y}))
+// Define a method to generate the option indicator history
+(decimal IVCall, decimal IVPut,
+decimal DeltaCall, decimal DeltaPut,
+decimal GammaCall, decimal GammaPut,
+decimal VegaCall, decimal VegaPut,
+decimal ThetaCall, decimal ThetaPut,
+decimal RhoCall, decimal RhoPut) GetIndicators(Symbol call, Symbol put)
 {
-    var strike = pair.OptionContract.ID.StrikePrice;
-    var optionContract = pair.OptionContract;
-    var mirrorContract = pair.MirrorContract;
+    decimal GetValue(OptionIndicatorBase indicator)
+    {
+        // Use both call and put contract with the underlying to obtain indicator history and update the indicator
+        qb.IndicatorHistory(indicator, new[] { call, put, underlying }, 1);
+        return indicator.Current.Value;
+    }
 
-    iv[strike] = new ImpliedVolatility(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
-    delta[strike] = new Delta(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
-    gamma[strike] = new Gamma(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
-    vega[strike] = new Vega(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
-    theta[strike] = new Theta(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
-    rho[strike] = new Rho(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
+    // Obtain values from all IV and Greeks indicators
+    return (
+        IVCall: GetValue(new ImpliedVolatility(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
+        IVPut: GetValue(new ImpliedVolatility(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
+        DeltaCall: GetValue(new Delta(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
+        DeltaPut: GetValue(new Delta(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
+        GammaCall: GetValue(new Gamma(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
+        GammaPut: GetValue(new Gamma(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
+        VegaCall: GetValue(new Vega(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
+        VegaPut: GetValue(new Vega(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
+        ThetaCall: GetValue(new Theta(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
+        ThetaPut: GetValue(new Theta(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
+        RhoCall: GetValue(new Rho(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
+        RhoPut: GetValue(new Rho(put, riskFreeRateModel, dividendYieldModel, call, optionModel))
+    );
 }</pre>
     </div>
 
-    <li>Iterate through the historical data and calculate the values.</li>
+    <li>Group contracts by strike price, then obtain the indicators' values.</li>
     <div class="section-example-container">
-        <pre class="python">df = pd.DataFrame()
+        <pre class="python">from itertools import groupby
+keyfunc = lambda x: x.id.strike_price
+# Use strike price to group option contracts and generate Greeks indicators
+indicators_by_strike = {int(strike): get_indicators(group) for strike, group in groupby(sorted(contract_list, key=keyfunc), keyfunc)}
+# Organize data in a dataframe
+df = pd.DataFrame(indicators_by_strike.values(), index=indicators_by_strike.keys())</pre>
+        <pre class="csharp">// Get all strike prices
+var strikes = contractList.Select(x =&gt; x.ID.StrikePrice).Distinct().OrderBy(x =&gt; x);
+// A dictionary to hold greeks data
+var greeks = new Dictionary&lt;decimal, (decimal IVCall, decimal IVPut,
+    decimal DeltaCall, decimal DeltaPut,
+    decimal GammaCall, decimal GammaPut,
+    decimal VegaCall, decimal VegaPut,
+    decimal ThetaCall, decimal ThetaPut,
+    decimal RhoCall, decimal RhoPut)&gt;();
 
-for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
-    strike = option_contract.id.strike_price
-
-    for bar in history:
-        # Update the Option indicators with data from the put contract, call contract, and the underlying.
-        equity_point = IndicatorDataPoint(equity_symbol, bar[equity_symbol].end_time, bar[equity_symbol].close)
-        option_point = IndicatorDataPoint(option_contract, bar[option_contract].end_time, bar[option_contract].close)
-        mirror_point = IndicatorDataPoint(mirror_contract, bar[mirror_contract].end_time, bar[mirror_contract].close)
-
-        iv[strike].update(equity_point)
-        iv[strike].update(option_point)
-        iv[strike].update(mirror_point)
-        
-        delta[strike].update(equity_point)
-        delta[strike].update(option_point)
-        delta[strike].update(mirror_point)
-        
-        gamma[strike].update(equity_point)
-        gamma[strike].update(option_point)
-        gamma[strike].update(mirror_point)
-        
-        vega[strike].update(equity_point)
-        vega[strike].update(option_point)
-        vega[strike].update(mirror_point)
-        
-        theta[strike].update(equity_point)
-        theta[strike].update(option_point)
-        theta[strike].update(mirror_point)
-        
-        rho[strike].update(equity_point)
-        rho[strike].update(option_point)
-        rho[strike].update(mirror_point)
-
-        new_data = pd.Series({
-            "Strike": strike,
-            "OptionPrice": bar[option_contract].close,
-            "UnderlyingPrice": bar[equity_symbol].close,
-            "IV": iv[strike].current.value,
-            "Delta": delta[strike].current.value,
-            "Gamma": gamma[strike].current.value,
-            "Vega": vega[strike].current.value,
-            "Theta": theta[strike].current.value,
-            "Rho": rho[strike].current.value,
-        }, name=bar[option_contract].end_time).to_frame().T
-        df = pd.concat([df, new_data])</pre>
-        <pre class="csharp">var ivs = new Dictionary&lt;decimal, decimal&gt;();
-
-foreach (var pair in optionContracts.Zip(mirrorContracts, (x, y) =&gt; new {OptionContract = x, MirrorContract = y}))
+// Iterate each strike and obtain all the greek and IV indicator values
+foreach (var strike in strikes)
 {
-    var strike = pair.OptionContract.ID.StrikePrice;
-    var optionContract = pair.OptionContract;
-    var mirrorContract = pair.MirrorContract;
-    
-    foreach (var bar in history)
-    {
-        // Update the Option indicators with data from the put contract, call contract, and the underlying.
-        var equityPoint = new IndicatorDataPoint(equitySymbol, bar[equitySymbol].EndTime, bar[equitySymbol].Close);
-        var optionPoint = new IndicatorDataPoint(optionContract, bar[optionContract].EndTime, bar[optionContract].Close);
-        var mirrorPoint = new IndicatorDataPoint(mirrorContract, bar[mirrorContract].EndTime, bar[mirrorContract].Close);
+    // Get call and put contract of the same strike
+    var filtered = contractList.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
+    var call = filtered.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Call);
+    var put = filtered.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Put);
+    // If either call or put absent, ignore
+    if (call == null || put == null) continue;
 
-        iv[strike].Update(equityPoint);
-        iv[strike].Update(optionPoint);
-        iv[strike].Update(mirrorPoint);
-        
-        delta[strike].Update(equityPoint);
-        delta[strike].Update(optionPoint);
-        delta[strike].Update(mirrorPoint);
-        
-        gamma[strike].Update(equityPoint);
-        gamma[strike].Update(optionPoint);
-        gamma[strike].Update(mirrorPoint);
-        
-        vega[strike].Update(equityPoint);
-        vega[strike].Update(optionPoint);
-        vega[strike].Update(mirrorPoint);
-        
-        theta[strike].Update(equityPoint);
-        theta[strike].Update(optionPoint);
-        theta[strike].Update(mirrorPoint);
-        
-        rho[strike].Update(equityPoint);
-        rho[strike].Update(optionPoint);
-        rho[strike].Update(mirrorPoint);
-
-        ivs[strike] = iv[strike].Current.Value;
-
-        var line = $"OptionPrice: {bar[optionContract].Close:0.0000}, UnderlyingPrice: {bar[equitySymbol].Close:0.0000}, Strike: {strike}, "
-            + $"IV: {iv[strike].Current.Value:0.0000}, Delta: {delta[strike].Current.Value:0.0000}, Gamma: {gamma[strike].Current.Value:0.0000}, "
-            + $"Vega: {vega[strike].Current.Value:0.0000}, Theta: {theta[strike].Current.Value:0.0000}, Rho: {rho[strike].Current.Value:0.0000}";
-        Console.WriteLine(line);
-    }
+    // Generate the IV and Greeks data
+    greeks[strike] = GetIndicators(call, put);
 }</pre>
     </div>
 
     <p>We can also plot the Implied Volatility smile across different strike prices:</p>
     <div class="section-example-container">
-        <pre class="python">df.reset_index().set_index(["index", "Strike"]).loc[pd.to_datetime("2021-12-30 16:00:00")]["IV"].plot(title="Implied Volatility of Calls", ylabel="IV", figsize=(8, 6))</pre>
-        <pre class="csharp">var chart = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
-    ivs.Select(kvp =&gt; kvp.Key),
-    ivs.Select(kvp =&gt; kvp.Value)
-);
-
-LinearAxis xAxis = new LinearAxis();
-xAxis.SetValue("title", "Strike");
-LinearAxis yAxis = new LinearAxis();
-yAxis.SetValue("title", "IV");
-Title title = Title.init($"Implied Volatilities of Calls");
-
-Layout layout = new Layout();
-layout.SetValue("xaxis", xAxis);
-layout.SetValue("yaxis", yAxis);
-layout.SetValue("title", title);
-
-chart.WithLayout(layout);
-HTML(GenericChart.toChartHTML(chart))</pre>
+        <pre class="python">df[['iv_call', 'iv_put']].plot(kind='line', title=f"IV by Strike", ylabel=field, figsize=(8, 6))</pre>
+        <pre class="csharp"></pre>
     </div>
 
-    <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/iv-research-get-model-data-python.png" alt="Implied Volatilities of Calls by IV indicator">
-    <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/iv-research-get-model-data-csharp.png" alt="Implied Volatilities of Calls by IV indicator">
+    <img class="python docs-image" src="" alt="Implied Volatilities by Strikes">
+    <img class="csharp docs-image" src="" alt="Implied Volatilities by Strikes">
 </ol>
 <p>For a full example, see the following project:</p>
 <div class="python">
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_575327ea9c303c60cde1da2023bde4e5.html"></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src=""></iframe>
         </div>
     </div>
 </div>
@@ -242,7 +166,7 @@ HTML(GenericChart.toChartHTML(chart))</pre>
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_11bd60c4d67f4c8992839564fa33292f.html"></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src=""></iframe>
         </div>
     </div>
 </div>
