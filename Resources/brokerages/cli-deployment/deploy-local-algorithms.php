@@ -56,7 +56,7 @@ $dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName,
     
     <li>Run <code>lean live deploy "&lt;projectName&gt;"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and then enter <? if ($isBrokerage) { ?> the brokerage number, <span class='key-combinations'><?=$brokerageNumber?></span><? } else { ?>a brokerage number<? } ?>.
     <div class='cli section-example-container'>
-<pre>$ lean live "My Project"
+<pre>$ lean live deploy "My Project"
 Select a brokerage:
 1) Paper Trading
 2) Interactive Brokers
@@ -83,7 +83,7 @@ Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 <? if (isset($supportsCashHoldings) && $supportsCashHoldings) { ?> 
     <li>Set your initial cash balance.
         <div class='cli section-example-container'>
-        <pre>$ lean live "My Project"
+        <pre>$ lean live deploy "My Project"
 Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
 Do you want to set a different initial cash balance? [y/N]: y 
 Setting initial cash balance...
@@ -98,7 +98,7 @@ Do you want to add more currency? [y/N]: n</pre>
 <? if (isset($supportedPositionHoldings) && $supportedPositionHoldings) { ?>
     <li>Set your initial portfolio holdings.
         <div class='cli section-example-container'>
-        <pre>$ lean live "My Project"
+        <pre>$ lean live deploy "My Project"
 Do you want to set the initial portfolio holdings? [y/N]: y
 Do you want to use the last portfolio holdings? [] [y/N]: n
 Setting custom initial portfolio holdings...
@@ -117,7 +117,7 @@ if ($isBrokerage && $brokerageName == "Terminal Link") {
 ?>
 <li>Enter <span class='key-combinations'>9</span> to select the Terminal Link live data provider.
 <div class='cli section-example-container'>
-<pre>$ lean live "My Project"
+<pre>$ lean live deploy "My Project"
 Select a live data provider:
 1) Interactive Brokers
 2) Tradier
@@ -148,7 +148,7 @@ To enter multiple options, separate them with comma: 9</pre>
 ?>
             <li>Enter <span class='key-combinations'><?=$dataProviderNumber?></span> to select the <?=$dataProviderName?> data provider.</li> 
             <div class='cli section-example-container'>
-<pre>$ lean live "My Project"
+<pre>$ lean live deploy "My Project"
 Select a live data feed:
 1) Interactive Brokers
 2) Tradier
@@ -179,7 +179,7 @@ To enter multiple options, separate them with comma: <?=$dataProviderNumber?></p
 } else {
 ?><li>Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
 <div class='cli section-example-container'>
-<pre>$ lean live "My Project"
+<pre>$ lean live deploy "My Project"
 Select a live data provider:
 1) Interactive Brokers
 2) Tradier
