@@ -6,7 +6,7 @@
             <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
             <li>Run <code>lean cloud live deploy "&lt;projectName&gt;" --push --open</code> to push <span class='public-directory-name'>. / &lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.</li>
 <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 [1/1] Pushing 'My Project'
 Successfully updated cloud file 'My Project/main.py'
 Started compiling project 'My Project'
@@ -61,7 +61,7 @@ $dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName,
          
             <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.</li>
 <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 Select a brokerage:
 1) Paper Trading
 2) Interactive Brokers
@@ -87,7 +87,7 @@ Enter an option: <?=$brokerageNumber?></pre>
             <li>Configure your notification settings.</li>
             <p>You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the <a href='/docs/v2/cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas'>Live Trading Notification Quotas</a>.</p>
             <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 Do you want to send notifications on order events? [y/N]: y
 Do you want to send notifications on insights? [y/N]: y
 Email notifications: None
@@ -111,13 +111,13 @@ Do you want to add another notification method? [y/N]: n</pre>
             <li>Enable or disable automatic algorithm restarting.</li>
             <p>This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.</p>
             <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
 </div>
     
  <? if (!$supportsCashHoldings) { ?> <li>Set your initial cash balance.</li>
             <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
 Do you want to set a different initial cash balance? [y/N]: y
 Setting initial cash balance...
@@ -129,7 +129,7 @@ Do you want to add more currency? [y/N]: n</pre>
 
  <? if (!$supportsPositionHoldings) { ?> <li>Set your initial portfolio holdings.</li>
             <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 Do you want to set the initial portfolio holdings? [y/N]: y
 Do you want to use the last portfolio holdings? [] [y/N]: n
 Setting custom initial portfolio holdings...
@@ -144,7 +144,7 @@ Do you want to add more holdings? [y/N]: n</pre>
             <li>Select the live node that you want to use.</li>
             <p>If you only have one idle live trading node, it is selected automatically and this step is skipped.</p>
 <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 Select a node:
 1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
 2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
@@ -222,7 +222,7 @@ To enter multiple options, separate them with comma:</pre>
        
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.</li>
             <div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
+<pre>$ lean cloud live deploy "My Project" --push --open
 Brokerage: <?=$brokerageName?>
 
 Project id: 1234567
