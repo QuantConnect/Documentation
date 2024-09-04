@@ -1,3 +1,168 @@
+<h4>Example 1: Covered Call</h4>
+<p>A cover call consists of a short call and with a lot of the underlying equity. Although it capped the maximum profit if the underlying skyrocketted, it also provide extra credit received while speculating the underlying will rise.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Symbol _aapl;
+private Option _option;
+
+public override void Initialize()
+{
+    // Subscribe to AAPL (underlying)
+    _aapl = AddEquity("AAPL").Symbol;
+    // Subscribe to AAPL's option
+    _option = AddOption(_aapl);
+    // Select the calls that is 2 strikes away from current price within 30 days expiry
+    _option.SetFilter((u) =&gt; u.CallsOnly().Strikes(-2, 2).Expiration(0, 30));
+}
+
+public override void OnData(Slice slice)
+{
+    // Get option chain of AAPL
+    if (!Portfolio.Invested &&
+        slice.OptionChains.TryGetValue(_option.Symbol, out var chain))
+    {
+        // Get the contract closest to ATM and expiry
+        var contract = chain.OrderBy(x =&gt; x.Expiry)
+            .ThenBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
+            .First();
+
+        // Short 1 option contract
+        MarketOrder(contract.Symbol, -1);
+        // Order 1 lot of underlying
+        MarketOrder(_aapl, _option.SymbolProperties.ContractMultiplier);
+    }
+}
+
+public override void OnOrderEvent(OrderEvent orderEvent)
+{
+    // Exit AAPL if the short call is not exercised
+    // If it is exercised, the underlying will be used to settle the contract automatically
+    if (orderEvent.Ticket.OrderType == OrderType.OptionExercise &&
+        !orderEvent.IsInTheMoney)
+    {
+        MarketOrder(_aapl, -_option.SymbolProperties.ContractMultiplier);
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Subscribe to AAPL (underlying)
+    self.aapl = self.add_equity("AAPL").symbol
+    # Subscribe to AAPL's option
+    self.option = self.add_option(self.aapl)
+    # Select the calls that is 2 strikes away from current price within 30 days expiry
+    self.option.set_filter(lambda u: u.calls_only().strikes(-2, 2).expiration(0, 30))
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Get option chain of AAPL
+    chain = slice.option_chains.get(self.option.symbol)
+    if self.portfolio.invested or not chain:
+        return
+    
+    # Get the contract closest to ATM and expiry
+    expiry = min(x.expiry for x in chain)
+    contracts = sorted([x for x in chain if x.expiry == expiry],
+                       key=lambda x: abs(x.strike - x.underlying_last_price))[0]
+        
+    # Short 1 option contract
+    self.market_order(contract.symbol, -1)
+    # Order 1 lot of underlying
+    self.market_order(self.aapl, self.option.symbol_properties.contract_multipliers)
+
+def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    # Exit AAPL if the short call is not exercised
+    # If it is exercised, the underlying will be used to settle the contract automatically
+    if order_event.ticket.order_type == OrderType.OPTION_EXERCISE \
+    and not order_event.is_in_the_money:
+        self.market_order(self.aapl, -self.option.symbol_properties.contract_multipliers)</pre>
+</div>
+
+<h4>Example 2: 0-DTE Bull Put Spread</h4>
+<p>0DTE options often trades with high volume and volatility, providing arbitration opportunities and higher profit margin on spread type trading. In this example, we make use of 0-DTE SPY options to trade <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread">bull put spread</a> option strategy.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Option _option;
+
+public override void Initialize()
+{
+    // Subscribe to SPY options
+    _option = AddOption("SPY");
+    // Select the 0-DTE puts that are 5 strikes away from current price and be able to form a put spread
+    _option.SetFilter((u) =&gt; u.IncludeWeeklys().Expiration(0, 0).PutSpread(0, 5));
+
+    // Exit all positions before market close
+    Schedule.On(
+        DateRules.EveryDay(_option.Symbol),
+        TimeRules.BeforeMarketClose(_option.Symbol, 1),
+        ExitPositions
+    );
+}
+
+public override void OnData(Slice slice)
+{
+    // Get option chain of SPY
+    if (!Portfolio.Invested && Time.Hour &lt; 15 &&
+        slice.OptionChains.TryGetValue(_option.Symbol, out var chain))
+    {
+        // Obtain the ITM strike, OTM strike and expiry to form the bull put spread
+        var itmStrike = chain.Max(x =&gt; x.Strike);
+        var otmStrike = chain.Min(x =&gt; x.Strike);
+        var expiry = chain.Min(x =&gt; x.Expiry);
+
+        // Form a bull put spread strategy and order
+        var bullPutSpread = OptionStrategies.BullPutSpread(_option.Symbol, itmStrike, otmStrike, expiry);
+        Buy(bullPutSpread, 1);
+    }
+}
+
+private void ExitPositions()
+{
+    // Exit all positions
+    Liquidate();
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Subscribe to SPY option
+    self.option = self.add_option("SPY")
+    # Select the 0-DTE puts that are 5 strikes away from current price and be able to form a put 
+    self.option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).put_spread(0, 5))
+
+    # Exit all positions before market close
+    self.schedule.on(
+        self.date_rules.every_day(self.option.symbol),
+        self.time_rules.before_market_close(self.option.symbol, 1),
+        self.exit_position
+    );
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Get option chain of AAPL
+    chain = slice.option_chains.get(self.option.symbol)
+    if self.portfolio.invested or self.time.hour >= 15 or not chain:
+        return
+    
+    # Obtain the ITM strike, OTM strike and expiry to form the bull put spread
+    expiry = min(x.expiry for x in chain)
+    itm_strike = max(x.strike for x in chain)
+    otm_strike = min(x.strike for x in chain)
+        
+    # Form a bull put spread strategy and order
+    bull_put_spread = OptionStrategies.bull_put_spread(self.option.symbol, itm_strike, otm_strike, expiry)
+    self.buy(bull_put_spread, 1)
+
+def exit_position(self) -&gt; None:
+    self.liquidate()</pre>
+</div>
+
+<h4>Example 3: Filter Option Contracts By Option Greeks indicator</h4>
+<p>In this example, we demonstrate filtering option contracts by <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/delta">Delta</a>, an Option Greeks indicator. We filter all the call contracts with <code>Delta</code> greater than 0.99 that expires just more than 7 days later on Monday morning. This filter is useful when creating a hedge replicate portfolio for arbitration.</p>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"></pre>
+</div>
+
+<h4>Example 4: </h4>
+<p></p>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"></pre>
+</div>
+
+<h4>Example 5: Scan and Update Option Chain Every 5 Minutes</h4>
 <p>
     The following example shows how to update the Option chain every five minutes. The <code>OptionChainManager</code> class implements the selection logic and manages the contract subscriptions.
 </p>
