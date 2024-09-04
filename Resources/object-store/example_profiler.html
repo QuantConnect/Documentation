@@ -49,13 +49,13 @@ print(profile_output)</pre>
 </ol>
 
 <p>
-  To increase the speed of some methods, you can use decorators like <code>@jit</code> or <code>@lru_cache(maxsize=512)</code>.
+  To increase the speed of some methods, you can use decorators like <code>@jit</code> or <code>@lru_cache</code>.
 </p>
 
 <p>
   The <code>@jit</code> decorator from Numba is for Just-In-Time (JIT) compilation.
-  It compiles Python code to machine code at runtime to increase the speed of looks and mathematical operations.
-  Numba can't compile all Python code.
+  It compiles Python code to machine code at runtime to increase the speed of loops and mathematical operations.
+  However, Numba can't compile all Python code.
   It performs best with NumPy arrays.
   If you add the <code>@jit</code> decorator to your methods, it can make the debugging process more challenging since the code is compiled to machine code.
   The following code snippet shows an example of using the <code>@jit</code> decorator:
@@ -99,14 +99,15 @@ print(f"Fast function took: {time.time() - start} seconds")</pre>
 <p>Slow function took: 1.1557221412658691 seconds</p>
 <p>Fast function took: 0.32973551750183105 seconds</p>
 </blockquote>
+<br>
 
 <p>
-  The <code>@jit</code> decorator from Numba is for Just-In-Time (JIT) compilation.
-  It compiles Python code to machine code at runtime to increase the speed of looks and mathematical operations.
-  Numba can't compile all Python code.
-  It performs best with NumPy arrays.
-  If you add the <code>@jit</code> decorator to your methods, it can make the debugging process more challenging since the code is compiled to machine code.
-  The following code snippet shows an example of using the <code>@jit</code> decorator:
+  The <code>@lru_cache</code> decorator from the <code>functools</code> module is for Least Recently Used (LRU) caching.
+  It caches the result of a function based on its arguments, so that the function body doesn't have to repeatedly execute when you call the function multiple times with the same inputs.
+  The <code>maxsize</code> argument of the decorator defines the number of results to cache.
+  For example, <code>@lru_cache(maxsize=512)</code> means that it should cache a maximum of 512 results.
+  If you add the <code>@lru_cache</code> decorator to your methods, make sure your function is completely dependant on the arguments (not global state variables) or else the caching process may lead to incorrect results.
+  The following code snippet shows an example of using the <code>@lru_cache</code> decorator:
 </p>
 
 <div class="section-example-container">
