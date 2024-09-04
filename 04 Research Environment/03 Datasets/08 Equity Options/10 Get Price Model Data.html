@@ -146,18 +146,49 @@ foreach (var strike in strikes)
     <p>We can also plot the Implied Volatility smile across different strike prices:</p>
     <div class="section-example-container">
         <pre class="python">df[['iv_call', 'iv_put']].plot(kind='line', title=f"IV by Strike", ylabel=field, figsize=(8, 6))</pre>
-        <pre class="csharp"></pre>
+        <pre class="csharp">// Plot IV by strikes for both call and put
+var ivCall = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
+    greeks.Select(kvp =&gt; kvp.Key),
+    greeks.Select(kvp =&gt; kvp.Value.IVCall)
+);
+var ivPut = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
+    greeks.Select(kvp =&gt; kvp.Key),
+    greeks.Select(kvp =&gt; kvp.Value.IVPut)
+);
+
+// Combine 2 line charts in the same plot
+var chartList = new List&lt;GenericChart.GenericChart&gt;();
+chartList.Add(ivCall);
+chartList.Add(ivPut);
+var combinedChart = Plotly.NET.Chart.Combine(chartList);
+
+// Set the title, x-axis and y-axis labels
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Strike");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "IV");
+Title title = Title.init($"Implied Volatility by Strikes");
+
+// Set up layout
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+combinedChart.WithLayout(layout);
+
+// Display the plot
+HTML(GenericChart.toChartHTML(combinedChart))</pre>
     </div>
 
-    <img class="python docs-image" src="" alt="Implied Volatilities by Strikes">
-    <img class="csharp docs-image" src="" alt="Implied Volatilities by Strikes">
+    <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/iv-by-strikes-py.png" alt="Implied Volatilities by Strikes">
+    <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/iv-by-strikes-cs.png" alt="Implied Volatilities by Strikes">
 </ol>
 <p>For a full example, see the following project:</p>
 <div class="python">
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src=""></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_d12f9d51be0efd2275bfbc69e010af29.html"></iframe>
         </div>
     </div>
 </div>
@@ -166,7 +197,7 @@ foreach (var strike in strikes)
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src=""></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_64ebd1394df3ba74e0c202a587b7349d.html"></iframe>
         </div>
     </div>
 </div>
