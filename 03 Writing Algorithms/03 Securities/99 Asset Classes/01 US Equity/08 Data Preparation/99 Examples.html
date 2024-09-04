@@ -32,3 +32,77 @@ def on_data(self, data):
     if self.time.day == 1 and self.time.hour == 10 and self.time.minute == 31:
       self.market_on_open_order(self.spy.symbol, 10)</pre>
 </div>
+
+<h4>Example 2: Demonstrate Pinning The Opening Auction Tick Data</h4>
+<p>In this example, we will try to pin the opening aution prices (or an opening prints) of a security on July 1st, 2021. The algorithm subscribes to the raw tick data of QQQ ETF and log the aution price tick data of the asset across different exchanges.</p>
+<div class="section-example-container">
+	<pre class="csharp">DateTime _lastTickTime = new DateTime();
+private Security _asset;
+private Symbol _symbol;
+private string _primaryExchangeCode; 
+uint officialOpen;
+uint openingPrints;
+
+public override void Initialize()
+{
+    SetStartDate(2021, 7, 1);
+    SetEndDate(2021, 7, 1);
+    // Subscribe to tick data of a security and find the exchange code.
+    _asset = AddEquity("QQQ", Resolution.Tick, extendedMarketHours: true, dataNormalizationMode: DataNormalizationMode.Raw);
+    _symbol = _asset.Symbol;
+    _primaryExchangeCode = ((Equity)_asset).PrimaryExchange.Code;
+    // Define flags to help filter opening auctions in the OnData method.
+    officialOpen = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OfficialOpen);
+    openingPrints = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OpeningPrints);
+    // Display exchange code and trade condition flags on the console.
+    Debug($"Search Codes: Ex:{_primaryExchangeCode} OO: {officialOpen} OP: {openingPrints}"); 
+}
+
+public override void OnData(Slice slice)
+{
+    // Create a list of opening auction tick data. 
+    var trades = _asset.Cache.GetAll<Tick>()
+        .Where(x => 
+            x.TickType == TickType.Trade && 
+            x.Price > 0 && 
+            !string.IsNullOrWhiteSpace(x.SaleCondition) && (
+                (x.ParsedSaleCondition == officialOpen || x.ParsedSaleCondition == openingPrints)
+            )
+            );
+    // Pin and log the opening auction tick data.
+    foreach(var tick in trades)
+    {
+        Log($"{Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}");
+        _lastTickTime = Time;
+    }
+}</pre>
+	<pre class="python">def initialize(self):
+    self.set_start_date(2021, 7, 1)
+    self.set_end_date(2021, 7, 1)
+    # Subscribe to tick data of a security and find the exchange code.
+    self._asset = self.add_equity(ticker = "QQQ", resolution = Resolution.TICK, extended_market_hours = True, data_normalization_mode = DataNormalizationMode.RAW)
+    self._symbol = self._asset.symbol
+    self._primaryExchangeCode = self._asset.primary_exchange.code
+    # Define flags to help filter opening auctions in the OnData method.
+    self.officialOpen = TradeConditionFlags.REGULAR | TradeConditionFlags.OFFICIAL_OPEN
+    self.openingPrints = TradeConditionFlags.REGULAR | TradeConditionFlags.OPENING_PRINTS
+    # Display exchange code and trade condition flags on the console.
+    self.debug(f"Search Codes: Ex:{self._primaryExchangeCode} OO: {self.officialOpen} OP: {self.openingPrints}")
+
+def on_data(self, data):
+    # Create a list of opening auction tick data. 
+    trades = [
+        tick for tick in self._asset.cache.get_all[Tick]()
+        if  tick.TickType == TickType.TRADE and
+            tick.Price > 0 and
+            tick.SaleCondition and
+            (
+                tick.ParsedSaleCondition == self.officialOpen or
+                tick.ParsedSaleCondition == self.openingPrints
+            )
+    ]
+    # Pin and log the opening auction tick data.
+    for tick in trades:
+        self.log(f"{self.Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}")
+        self._lastTickTime = self.Time</pre>
+</div>
