@@ -1,6 +1,6 @@
 <p>The following examples demonstrate some common practices for filtering data.</p>
 
-<h4>Example 1: Filter Price Outliners Using SMA</h4>
+<h4>Example 1: Filter Out Outliers</h4>
 <p>
 	When analyzing high-frequency price data, it's important to filter out potential outliers and anomalies that may skew the analysis. 
 	One effective method is to use <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>simple moving average</a> (SMA) and <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/standard-deviation'>standard deviation</a> indicators to identify ticks that significantly deviate from the short-term trend. 
@@ -45,9 +45,7 @@ class CustomDataFilter : SecurityDataFilter
         equity = self.add_equity("AAPL", Resolution.TICK)
         # Create the indicators.
         equity.sma = self.sma(equity.symbol, 100)
-        equity.std = IndicatorExtensions.of(
-            StandardDeviation(100), equity.sma, True
-        )
+        equity.std = IndicatorExtensions.of(StandardDeviation(100), equity.sma, True)
         # Set the data filter.
         equity.set_data_filter(CustomDataFilter())
 
@@ -66,47 +64,52 @@ class CustomDataFilter(SecurityDataFilter):
         return sma - 3*std <= data.value <= sma + 3*std</pre>
 </div>
 
-<h4>Example 2: Filter Major Exchanges</h4>
-<p>This examples shows how to only keep the data feed from BATS exchange while filtering the other major exchanges. When trading less liquid financial instruments, it can be advantageous to focus on the BATS exchange, as its quote data may not fully reflect the fair market value. Due to the lower trading volume and visibility of BATS, the quoted prices there may lag behind the true underlying value of illiquid assets. A carefully designed algorithm can analyze the BATS feed to identify situations where the quoted price appears to be undervalued compared to the asset's intrinsic worth. By executing trades to capture this disconnect, rather than arbitraging between exchanges, you may be able to profit from the market inefficiencies present in the less liquid instrument.</p>
+<h4>Example 2: Filter Out Major Exchanges</h4>
+<p>
+	When you trade illiquid financial instruments, it can be advantageous to focus on the BATS exchange since its quote data may not fully reflect the fair market value. 
+	Due to the lower trading volume and visibility of BATS, the quotes there may lag behind the true value of illiquid assets. 
+	A carefully designed algorithm can analyze the BATS feed to identify situations where the quotes appears to be undervalued compared to the asset's intrinsic worth. 
+	By executing trades to capture this disconnect, rather than arbitraging between exchanges, you may be able to profit from the market inefficiencies present in the less liquid instrument.
+	The following example demonstrates how to only consume data from the BATS exchange:
+</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class BatsDataFilterAlgorithm : QCAlgorithm
 {
-    var security = AddEquity("SPY", Resolution.Tick);
-    security.SetDataFilter(new CustomDataFilter());
+    public override void Initialize()
+    {
+        dynamic equity = AddEquity("AAPL", Resolution.Tick);
+        // Set the data filter.
+        equity.SetDataFilter(new BatsDataFilter());
+    }
 }
 
-private class CustomDataFilter : ISecurityDataFilter
+class BatsDataFilter : SecurityDataFilter
 {
-    public bool Filter(Security vehicle, BaseData data)
+    public BatsDataFilter() : base() { }
+    public override bool Filter(Security vehicle, BaseData data)
     {
-        // Use tick data to obtain the exchange of the feed
+        // Get the tick object.
         var tick = data as Tick;
-        
-        // Check if the feed is from BATS
-        if (tick != null && tick.Exchange == Exchange.BATS)
-        {
-            // If so, we accept the data
-            return true;
-        }
-        // Otherwise, we reject it
-        return false;
+        // Return true (keep) or false (discard).
+        return tick != null && tick.Exchange == Exchange.BATS;
     }
 }</pre>
-	<pre class="python">def initialize(self):
-    security = self.add_equity("SPY", Resolution.TICK)
-    security.set_data_filter(CustomDataFilter())
+	<pre class="python">class BatsDataFilterAlgorithm(QCAlgorithm):
 
-class CustomDataFilter(SecurityDataFilter):
+    def initialize(self) -> None:
+        equity = self.add_equity("AAPL", Resolution.TICK)
+        # Set the data filter.
+        equity.set_data_filter(BatsDataFilter())
+
+
+class BatsDataFilter(SecurityDataFilter):
+
     def filter(self, vehicle: Security, data: BaseData) -> bool:
-        # Use tick data to obtain the exchange of the feed
+        # Get the tick object.
         tick = Tick(data)
-        
-        # Check if the feed is from BATS
-        if tick and tick.exchange == Exchange.BATS:
-            # If so, we accept the data
-            return True
-        # Otherwise, we reject it
-        return False</pre>
+        # Return True (keep) or False (discard).
+        return tick and tick.exchange == Exchange.BATS.name
+        </pre>
 </div>
 
 <p>For more examples, see the following algorithms:</p>
