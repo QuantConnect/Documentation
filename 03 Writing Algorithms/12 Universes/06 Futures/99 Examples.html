@@ -1,27 +1,44 @@
-<h4>Example 1: Futures Expiring On Quarter End</h4>
-<p>If you are running strategies with quarterly trading cycle, you may filter Future contracts that expire only on quarter ends to reduce the need of rollover.</p>
+<p>The following examples demonstrate some common Futures universes.</p>
+
+<h4>Example 1: Contracts Expiring On Quarter End</h4>
+<p>If you run strategies with a quarterly trading cycle, you can filter Future contracts that expire only on quarter ends to reduce the need of rollovers.</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class QuarterlyFuturesAlgorithm : QCAlgorithm
 {
-    var future = AddFuture("ES");
-    future.SetFilter(futureFilterUniverse => futureFilterUniverse.ExpirationCycle(new int[] { 3, 6, 9, 12 }));
+    public override void Initialize()
+    {
+        var future = AddFuture("ES");
+        future.SetFilter(futureFilterUniverse => futureFilterUniverse.ExpirationCycle(new int[] { 3, 6, 9, 12 }));
+    }
 }</pre>
-	<pre class="python">def initialize(self):
-    future = self.add_future("ES")
-    future.set_filter(lambda future_filter_universe: future_filter_universe.expiration_cycle([3, 6, 9, 12]))</pre>
+	<pre class="python">class QuarterlyFuturesAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        future = self.add_future("ES")
+        future.set_filter(lambda future_filter_universe: future_filter_universe.expiration_cycle([3, 6, 9, 12]))</pre>
 </div>
 
-<h4>Example 2: 1-week Expiring Contract</h4>
-<p>The trading volume of Futures reaches its maximum at the last week of the trading period. You can filter the contracts that expire within a week to do scalping strategies.</p>
+<h4>Example 2: Contracts Expiring Within One Week</h4>
+<p>
+	The trading volume of Futures reaches its maximum during the last week of the trading period. 
+	The following algorithm selects contracts that expire within a week:
+</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class WeeklyFuturesAlgorithm : QCAlgorithm
 {
-    var future = AddFuture("ES");
-    future.SetFilter(futureFilterUniverse => futureFilterUniverse.Expiration(0, 7).OnlyApplyFilterAtMarketOpen());
+    public override void Initialize()
+    {
+        var future = AddFuture("ES");
+        future.SetFilter(futureFilterUniverse => futureFilterUniverse.Expiration(0, 7).OnlyApplyFilterAtMarketOpen());
+    }
 }</pre>
-	<pre class="python">def initialize(self):
-    future = self.add_future("ES")
-    future.set_filter(lambda future_filter_universe: future_filter_universe.expiration(0, 7).only_apply_filter_at_market_open())</pre>
+	<pre class="python">class WeeklyFuturesAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        future = self.add_future("ES")
+        future.set_filter(
+            lambda future_filter_universe: future_filter_universe.expiration(0, 7).only_apply_filter_at_market_open()
+        )</pre>
 </div>
 
 <p>For more examples, see the following algorithms:</p>
