@@ -1,60 +1,89 @@
-<h4>Example 1: Sentiment Universe</h4>
-<p>High sentiment stocks are great for volatility and sentiment trading.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
-{
-    AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(altData =&gt;
-    {
-        return (from d in altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
-            where d.TotalArticleMentions7Days > 0m
-            orderby d.Sentiment7Days descending
-            select d.Symbol).Take(20);
-    });
-}</pre>
-	<pre class="python">def initialize(self):
-    self.add_universe(BrainSentimentIndicatorUniverse, self._selection)
+<p>The following examples demonstrate some common alternative data universes.</p>
 
-def _selection(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
-    mentioned = [x for x in alt_data if x.total_article_mentions7_days &gt; 0]
-    sorted_by_sentiment = sorted(mentioned, key=lambda x: x.sentiment7_days, reverse=True)
-    return [x.symbol for x in sorted_by_sentiment[:20]]</pre>
+<h4>Example 1: Brain Sentiment Universe</h4>
+<p>
+    The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/brain/brain-sentiment-indicator'>Brain Sentiment Indicator</a> dataset to create a universe of US Equities that have some article mentions and the most positive sentiment: 
+</p>
+<div class="section-example-container">
+	<pre class="csharp">public class BrainSentimentUniverseAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {   
+        AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(
+            altData => altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
+                // Filter out assets with `null` factor values.
+                .Where(x => x.TotalArticleMentions7Days.HasValue && x.Sentiment7Days.HasValue)
+                // Select assets with some mentions and the greatest sentiment.
+                .Where(x => x.TotalArticleMentions7Days > 0)
+                .OrderByDescending(x => x.Sentiment7Days)
+                .Take(20)
+                // Return the symbols for the selected assets.
+                .Select(x => x.Symbol)
+        );
+    }
+}</pre>
+	<pre class="python">class BrainSentimentUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
+    
+    def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:
+        # Filter out assets with `None` factor values.
+        alt_data =  [
+            x for x in alt_data 
+            if (x.total_article_mentions_7_days is not None and 
+                x.sentiment_7_days is not None)
+        ]
+        # Select assets with some mentions and the greatest sentiment.
+        selected = sorted(
+            [x for x in alt_data if x.total_article_mentions_7_days > 0],
+            key=lambda x: x.sentiment_7_days
+        )[-20:]
+        # Return the symbols for the selected assets.
+        return [x.symbol for x in selected]</pre>
 </div>
 
-<h4>Example 2: Follow Insiders' Trades</h4>
-<p>Insiders have more information to evaluate the overall prospect of the company, so following their trades could be useful. For example, you can select stocks with insider purchases.</p>
+<h4>Example 2: Follow the Trades of Insiders</h4>
+<p>
+	Insiders have more information to evaluate the overall prospect of the company, so following their trades can be useful. 
+	The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/insider-trading'>Insider Trading</a> to create a universe of US Equities that insiders have recently purchased:
+</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
 {
-    AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altData =&gt;
+    public override void Initialize()
     {
-        return from d in altData.OfType&lt;QuiverInsiderTradingUniverse&gt;()
-            where d.Direction == OrderDirection.Buy
-            select d.Symbol;
-    });
+        AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altData =>
+        {
+            // Select assets that insiders have purchased.
+            return from d in altData.OfType&lt;QuiverInsiderTradingUniverse&gt;()
+                   where d.Shares != null
+                   select d.Symbol;
+        });
+    }
 }</pre>
-	<pre class="python">def initialize(self):
-    self.add_universe(QuiverInsiderTradingUniverse, self._selection)
+	<pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
 
-def _selection(self, alt_data: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
-    return [x.symbol for x in alt_data if x.direction == OrderDirection.BUY]</pre>
+    def initialize(self):
+        # Select a universe of assets that insiders have bought.
+        self.add_universe(
+            QuiverInsiderTradingUniverse, 
+            lambda alt_data: [x.symbol for x in alt_data if x.shares]
+        )</pre>
 </div>
 
-<h4>Example 3: Filter Crypto's Market Cap</h4>
-<p>Trading the Cryptos with the largest market caps can lower the risk of ruin while benefiting from the major trend of Crypto.</p>
+<h4>Example 3: Share Buy Back Universe</h4>
+<p>The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/smart-insider/corporate-buybacks'></a> to create a universe of US Equities that have announced an upcoming share buyback program:</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class InsiderBuyBackUniverseAlgorithm : QCAlgorithm
 {
-        AddUniverse&lt;CoinGeckoUniverse&gt;(altData =&gt;
+    public override void Initialize()
     {
-        return (from d in altData.OfType&lt;CoinGeckoUniverse&gt;()
-            orderby d.MarketCap descending
-            select d.Symbol).Take(10);
-    });
+        AddUniverse&lt;SmartInsiderIntentionUniverse&gt;();
+    }
 }</pre>
-	<pre class="python">def initialize(self):
-    self.add_universe(CoinGeckoUniverse, self._selection)
+	<pre class="python">class InsiderBuyBackUniverseAlgorithm(QCAlgorithm):
 
-def _selection(self, alt_data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
-    sorted_by_cap = sorted(alt_data, key=lambda x: x.market_cap, reverse=True)
-    return [x.symbol for x in sorted_by_cap[:10]]</pre>
+    def initialize(self):
+        self.add_universe(SmartInsiderIntentionUniverse)</pre>
 </div>
