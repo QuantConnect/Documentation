@@ -1,3 +1,33 @@
+<p>The following examples demonstrate some common Index Option universes.</p>
+
+<h4>Example 1: 0DTE Contracts</h4>
+
+<p>
+  <span class='new-term'>0DTE Options</span> are Option contracts that expire on the same day you trade them. 
+  The following algorithm selects 0DTE Index Option contracts for SPX Index that fall within 3 strikes of the underlying price.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class ZeroDTEIndexOptionUniverseAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var index = AddIndex("SPX");
+        var indexOption = AddIndexOption(index.Symbol, "SPXW");
+        indexOption.SetFilter(u => u.IncludeWeeklys().Expiration(0, 0).Strikes(-3, 3));
+    }
+}</pre>
+    <pre class="python">class ZeroDTEIndexOptionUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        index = self.add_index('SPX')
+        index_option = self.add_index_option(index.symbol, 'SPXW')
+        index_option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-3, 3))
+</pre>
+</div>
+
+
+<!--
 <h4>Example 1: 30-day Expiring Straddle</h4>
 <p>The following example selects an ATM call and an ATM put contract with at least 30 days from expiry to form a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-straddle'>straddle</a>.</p>
 <div class="section-example-container">
@@ -42,3 +72,4 @@
     index_option = self.add_index_option(index.symbol, "SPXW")
     index_option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().jelly_roll(0, 30, 60))</pre>
 </div>
+-->
