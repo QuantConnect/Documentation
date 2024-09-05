@@ -1,11 +1,11 @@
 <p>Follow these steps to get the values of implied volatility, and Greeks:</p>
 
 <ol>
-    <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions</a>.</li>
+    <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions</a> of the underlying. Get and filter the option contracts.</li>
     <div class="section-example-container">
         <pre class="python">qb = QuantBook()
 
-# Set price seeder
+# Set price seeder to ensure underlying price ready for filtering
 qb.set_security_initializer(lambda security: FuncSecuritySeeder(qb.get_last_known_prices).seed_security(security))
 # Subscribe to the underlying Equity with raw data normalization.
 underlying = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
@@ -16,11 +16,11 @@ qb.set_start_date(2024, 8, 28)
 contract_list = qb.option_chain_provider.get_option_contract_list(underlying, qb.start_date)
 expiry = min([x.id.date for x in contract_list])
 
-# Select the call contracts that have the strike price within $10 ATM and expire the earliest. 
-contract_list = [s for s in contract_list if s.id.date == expiry and abs(underlying_price - s.id.strike_price) < 10]</pre>
+# Select the call contracts that expire the earliest. 
+contract_list = [s for s in contract_list if s.id.date == expiry]</pre>
         <pre class="csharp">var qb = new QuantBook();
 
-// Set price seeder
+// Set price seeder to ensure underlying price ready for filtering
 qb.SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(qb.GetLastKnownPrices).SeedSecurity(security));
 // Subscribe to the underlying Equity with raw data normalization.
 var underlying = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
@@ -31,11 +31,8 @@ qb.SetStartDate(2024, 8, 28);
 var contractList = qb.OptionChainProvider.GetOptionContractList(underlying, qb.StartDate);
 var expiry = contractList.Min(x =&gt; x.ID.Date);
 
-// Select the call contracts that have the strike price within $10 ATM and expire the earliest. 
-contractList = contractList.Where(s =&gt;
-    Math.Abs(s.ID.StrikePrice - underlyingPrice) &lt; 10 &&
-    s.ID.Date == expiry)
-    .ToList();</pre>
+// Select the call contracts that expire the earliest. 
+contractList = contractList.Where(s =&gt; s.ID.Date == expiry).ToList();</pre>
     </div>
 
     <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators">Implied Volatility & Greeks Indicators</a> for each contract selected.</li>
@@ -143,9 +140,9 @@ foreach (var strike in strikes)
 }</pre>
     </div>
 
-    <p>We can also plot the Implied Volatility smile across different strike prices:</p>
+    <p>(Optional) We can also plot the Implied Volatility smile across different strike prices:</p>
     <div class="section-example-container">
-        <pre class="python">df[['iv_call', 'iv_put']].plot(kind='line', title=f"IV by Strike", ylabel=field, figsize=(8, 6))</pre>
+        <pre class="python">df[['iv_call', 'iv_put']].plot(kind='line', title=f"IV by Strike", ylabel=field, xlabel="Strike", figsize=(8, 6))</pre>
         <pre class="csharp">// Plot IV by strikes for both call and put
 var ivCall = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
     greeks.Select(kvp =&gt; kvp.Key),
@@ -180,8 +177,8 @@ combinedChart.WithLayout(layout);
 HTML(GenericChart.toChartHTML(combinedChart))</pre>
     </div>
 
-    <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/iv-by-strikes-py.png" alt="Implied Volatilities by Strikes">
-    <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/iv-by-strikes-cs.png" alt="Implied Volatilities by Strikes">
+    <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/iv-smile-research-py.png" alt="Implied Volatilities by Strikes">
+    <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/iv-smile-research-cs.png" alt="Implied Volatilities by Strikes">
 </ol>
 <p>For a full example, see the following project:</p>
 <div class="python">
