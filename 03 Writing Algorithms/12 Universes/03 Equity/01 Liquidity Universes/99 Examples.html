@@ -1,50 +1,68 @@
-<h4>Example 1: Large Cap Liquid Universe</h4>
-<p>Select 20 most traded stocks from large-cap stocks.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
-{
-    // Filter for large-cap stocks (market_cap>=$10 billion), sort by dollar volume, return the top 20 symbols. 
-    AddUniverse((fundamental) =&gt; fundamental.Where(f =&gt; f.HasFundamentalData && f.MarketCap &gt;= 1e10m)
-        .OrderedByDescending(f =&gt; f.DollarVolume)
-        .Take(20)
-        .Select(f =&gt; f.Symbol));
-}</pre>
-	<pre class="python">def initialize(self):
-    # Initialize algo with custom universe
-    self.add_universe(self._selection)
+<p>The following examples demonstrate some common liquidity universes for US Equities.</p>
 
-def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    # Filter for large-cap stocks (market_cap >= $10 billion). 
-    large_cap_stocks = [f for f in fundamental if f.has_fundamental_data and f.market_cap &gt;= 1e10]
-    # Sort the filtered large-cap stocks by dollar volume in decending order.
-    sorted_by_dollar_volume = sorted(large_cap_stocks, key=lambda f: f.dollar_volume, reverse=True)
-    # Return the symbols of the top 20 stocks by dollar volume. 
-    return [f.symbol for f in sorted_by_dollar_volume[:20]]</pre>
+<h4>Example 1: Large Cap Liquid Universe</h4>
+<p>The following example selects 20 of the most traded large-cap stocks:</p>
+<div class="section-example-container">
+	<pre class="csharp">public class LargeCapLiquidUniverseAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        AddUniverse(
+            fundamental => fundamental
+                .Where(f => f.MarketCap >= 1e10m)
+                .OrderByDescending(f => f.DollarVolume)
+                .Take(20)
+                .Select(f => f.Symbol)
+        );
+    }
+}</pre>
+	<pre class="python">class LargeCapLiquidUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.add_universe(self._select_assets)
+
+    def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        # Select the most liquid large-cap stocks.
+        selected = sorted(
+            [f for f in fundamental if f.market_cap >= 1e10], 
+            key=lambda f: f.dollar_volume
+        )[-20:]
+        # Return the symbols of the selected stocks.
+        return [f.symbol for f in selected]</pre>
 </div>
 
 <h4>Example 2: Illiquid Penny Stocks Universe</h4>
-<p>Some market makers will aim at illiquid penny stocks to earn higher spreads with less captital.</p>
+<p>
+	Some market makers aim at illiquid penny stocks to earn higher spreads with less captital.
+	The following example selects the most illiquid stocks below $3.
+</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class IliquidPennyStockUniverseAlgorithm : QCAlgorithm
 {
-    // Filter stocks for (price <= $3), sort by lowest dollar volume, and return the symbols of the lowest 20 (by dollar volume). 
-    AddUniverse((fundamental) =&gt; fundamental.Where(f =&gt; f.Price &lt;= 3)
-        .OrderedBy(f =&gt; f.DollarVolume)
-        .Take(20)
-        .Select(f =&gt; f.Symbol));
+    public override void Initialize()
+    {
+        // Select the most illiquid stocks below $3.
+        AddUniverse(
+            fundamental => fundamental
+                .Where(f => f.Price <= 3)
+                .OrderBy(f => f.DollarVolume)
+                .Take(20)
+                .Select(f => f.Symbol)
+        );
+    }
 }</pre>
-	<pre class="python"> 
-def initialize(self):
-    # Initialize algo with custom universe
-    self.add_universe(self._selection)
+	<pre class="python">class IliquidPennyStockUniverseAlgorithm(QCAlgorithm):
 
-def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    # Filter stocks for (price <= $3).
-    penny_stocks = [f for f in fundamental if f.price &lt;= 3]
-    # Sort stocks by dollar volume in ascending order.
-    sorted_by_dollar_volume = sorted(penny_stocks, key=lambda f: f.dollar_volume)
-    # Return 20 symbols of the penny stocks that have the lowest dollar volume. 
-    return [f.symbol for f in sorted_by_dollar_volume[:20]]</pre>
+    def initialize(self):
+        self.add_universe(self._select_assets)
+
+    def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        # Select the most illiquid stocks below $3.
+        selected = sorted(
+            [f for f in fundamental if f.price <= 3],
+            key=lambda f: f.dollar_volume
+        )[:20]
+        return [f.symbol for f in selected]</pre>
 </div>
 
 <h4>Example 3: Highest Volume Universe</h4>
