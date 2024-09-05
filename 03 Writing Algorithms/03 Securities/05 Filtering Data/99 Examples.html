@@ -3,22 +3,19 @@
 <h4>Example 1: Filter Price Outliners Using SMA</h4>
 <p>
 	When analyzing high-frequency price data, it's important to filter out potential outliers and anomalies that may skew the analysis. 
-	One effective method is to use a <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>simple moving average</a> (SMA) to identify ticks that significantly deviate from the short-term trend. 
-	By comparing each tick to the SMA, you can flag any data points that fall outside a threshold (for example, three standard deviations).
+	One effective method is to use <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>simple moving average</a> (SMA) and <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/standard-deviation'>standard deviation</a> indicators to identify ticks that significantly deviate from the short-term trend. 
+	By comparing each tick to the indicator values, you can flag any data points that fall outside a threshold (for example, three standard deviations).
 	This filtration process removes suspicious or erroneous price information from entering your algorithm, ensuring a cleaner dataset for trading.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">public class CustomDataFilterAlgorithm : QCAlgorithm
 {
-
     public override void Initialize()
     {
         dynamic equity = AddEquity("AAPL", Resolution.Tick);
-        // Create a 100-period SMA.
+        // Create the indicators.
         equity.Sma = SMA(equity.Symbol, 100);
-        // Extend the rolling window of the SMA indicator to save the last 
-        // 100 ticks to calculate the standard deviation.
-        equity.Sma.Window.Size = 100;
+        equity.Std = IndicatorExtensions.Of(new StandardDeviation(100), equity.Sma, true);
         // Set the data filter.
         equity.SetDataFilter(new CustomDataFilter());
     }
@@ -29,51 +26,44 @@ class CustomDataFilter : SecurityDataFilter
     public CustomDataFilter() : base() { }
     public override bool Filter(Security vehicle, BaseData data)
     {
-        // Wait until the indicator is ready.
+        // Wait until the indicators are ready.
         var security = vehicle as dynamic;
-        if (!(security.Sma.IsReady && security.Sma.Window.IsReady))
+        if (!(security.Sma.IsReady && security.Std.Window.IsReady))
         {
-            return true;
+            return true; // Keep the data point.
         }
-        // Get the average and standard deviation.
-        var sma = security.Sma.Current.Value;
-        var window = (RollingWindow&lt;IndicatorDataPoint&gt;)security.Sma.Window;
-        var std = Convert.ToDecimal(
-            Math.Sqrt(window.Average(point => Math.Pow((double)(point.Value - sma), 2)))
-        );
         // Check if the current value is within 3 standard deviations of the mean.
         // Return true (keep) or false (discard).
+        var sma = security.Sma.Current.Value;
+        var std = security.Std.Current.Value;
         return sma - 3m*std <= data.Value && data.Value <= sma + 3m*std;
     }
 }</pre>
-	<pre class="python">class TestAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
+	<pre class="python">class CustomDataFilterAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
         equity = self.add_equity("AAPL", Resolution.TICK)
-        # Set a 100-step price SMA
-        equity.sma = self.sma(equity.symbol, 100, Resolution.TICK)
-        # Set 100-step rolling window of the SMA indicator to save the last 100 tick data to calculate standard deviation
-        equity.sma.window.size = 100
-        # Warm up the indicator
-        self.warm_up_indicator(equity.symbol, equity.sma, Resolution.TICK)
-        # Set the data filter
+        # Create the indicators.
+        equity.sma = self.sma(equity.symbol, 100)
+        equity.std = IndicatorExtensions.of(
+            StandardDeviation(100), equity.sma, True
+        )
+        # Set the data filter.
         equity.set_data_filter(CustomDataFilter())
 
+
 class CustomDataFilter(SecurityDataFilter):
-    def filter(self, vehicle: Security, data: BaseData) -&gt; bool:
-        # Get the average and standard deviation of the SMA data points
-        sma = vehicle.sma.current.value
-        std = np.std([x.value for x in vehicle.sma.window])
-        
-        # Check if the data point is suspicious
-        if is_suspicious(data.values, sma, std):
-            # If so, we reject the data
-            return False
-        # Otherwise, we accept it
-        return True
-    
-    def is_suspicious(self, value: float, sma: float, sd: float):
-        # Define suspicious data point to be out of 3SD of the SMA
-        return value &gt; sma + 3 * std or value &lt; sma - 3 * std</pre>
+
+    def filter(self, vehicle: Security, data: BaseData) -> bool:
+        # Wait until the indicators are ready.
+        security = vehicle
+        if not (security.sma.is_ready and security.std.is_ready):
+            return True # Keep the data point.
+        # Check if the current value is within 3 standard deviations of the mean.
+        # Return True (keep) or False (discard).
+        sma = security.sma.current.value
+        std = security.std.current.value
+        return sma - 3*std <= data.value <= sma + 3*std</pre>
 </div>
 
 <h4>Example 2: Filter Major Exchanges</h4>
