@@ -1,0 +1,158 @@
+<h4>Example 1: Selecting for 0DTE Contracts</h4>
+
+<p><span class='new-term'>0DTE Options</span> are Option contracts that expire on the same day you trade them. To create an universe with 0DTE Options, call the <code class="csharp">SetFilter</code><code class="python">set_filter</code> method with expiration set. In order to trade with the contracts with most liquidity, limit the strike range from 10 strikes above and below the current price level.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Subscribe to SPY option data
+    var option = AddOption("SPY");
+    // Filter for 0-DTE contracts within +/-10 strike range
+    option.SetFilter(u =&gt; u.IncludeWeeklys().Expiration(0, 0).Strikes(-10, 10));
+}</pre>
+    <pre class="python">def initial(self) -&gt; None:
+    # Subscribe to SPY option data
+    option = self.add_option("SPY")
+    # Filter for 0-DTE contracts within +/-10 strike range
+    option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-10, 10))</pre>
+</div>
+
+<h4>Example 2: Straddle</h4>
+<p>You can also create an universe that return the option contracts that form an <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies">option strategy</a>. In this example, we demonstrate filtering for a <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-straddle">long straddle</a> strategy that expires 30 days later.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    // Subscribe to SPY option data
+    var option = AddOption("SPY");
+    _symbol = option.Symbol;
+    // Filter for 30-day expiring straddle
+    option.SetFilter(u =&gt; u.IncludeWeeklys().Straddle(30));
+}
+
+public override void OnData(Slice slice)
+{
+    // Check if data is ready
+    if (!Portfolio.Invested &&
+        slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        // There should only be 1 expiry and 1 strike from the 2 contracts returned
+        var expiry = chain.First().Expiry;
+        var strike = chain.First().Strike;
+
+        // Form a long straddle option strategy and trade
+        var longStraddle = OptionStrategies.Straddle(_symbol, strike, expiry);
+        Buy(longStraddle, 1);
+    }
+}</pre>
+    <pre class="python">def initial(self) -&gt; None:
+    # Subscribe to SPY option data
+    option = self.add_option("SPY")
+    self._symbol = option.symbol
+    # Filter for 30-day expiring straddle
+    option.set_filter(lambda u: u.include_weeklys().straddle(30))
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Check if data is ready
+    if not self.portfolio.invested and self._symbol in slice.option_chains:
+        # There should only be 1 expiry and 1 strike from the 2 contracts returned
+        expiry = chain[0].expiry
+        strike = chain[0].strike
+    
+        # Form a long straddle option strategy and trade
+        long_straddle = OptionStrategies.straddle(self._symbol, strike, expiry)
+        self.buy(long_straddle, 1)</pre>
+</div>
+
+<h4>Example 3: Custom Selector</h4>
+<p>Using a custom selection function, you can filter the option universe to obtain the contracts that you need without subscribing the redundants. This can ensure the accuracy of the filter, as well as avoiding unnecessary subscriptions that drag the algorithm computational performance. In this example, we try to obtain a put contract that expires 30 days later that is $5 below the current underlying price and a call contract that expires 60 days later that is $10 above the current underlying price.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Equity _underlying;
+        
+public override void Initialize()
+{
+    // Subscribe to SPY data and seed the last price
+    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+    _underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
+    // Subscribe to SPY option data
+    var option = AddOption(_underlying.Symbol);
+
+    // Apply custom filter
+    option.SetFilter(u =&gt; u.IncludeWeeklys().Contracts((contracts) =&gt;
+    {
+        var selected = new List&lt;Symbol&gt;();
+
+        // Put contracts that expires 30 days later that is $5 below the current underlying price
+        var puts = contracts.Where(x =&gt;
+                x.ID.OptionRight == OptionRight.Put &&
+                x.ID.Date &gt;= Time.AddDays(30) &&
+                x.ID.StrikePrice &lt;= _underlying.Price - 5m
+            ).ToList();
+        if (puts.Count &gt; 0)
+        {
+            // Select the best match
+            var put = puts.OrderBy(x =&gt; x.ID.Date)
+                .ThenByDescending(x =&gt; x.ID.StrikePrice)
+                .First();
+            selected.Add(put);
+        }
+
+        // Call contract that expires 60 days later that is $10 above the current underlying price
+        var calls = contracts.Where(x =&gt;
+                x.ID.OptionRight == OptionRight.Call &&
+                x.ID.Date &gt;= Time.AddDays(60) &&
+                x.ID.StrikePrice &gt;= _underlying.Price + 10m
+            ).ToList();
+        if (calls.Count &gt; 0)
+        {
+            // Select the best match
+            var call = calls.OrderBy(x =&gt; x.ID.Date)
+                .ThenBy(x =&gt; x.ID.StrikePrice)
+                .First();
+            selected.Add(call);
+        }
+
+        return selected;
+    }));
+}</pre>
+    <pre class="python">def initial(self) -&gt; None:
+    # Subscribe to SPY data and seed the last price
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self.underlying = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
+    # Subscribe to SPY option data
+    option = self.add_option(self.underlying.symbol)
+    # Apply custom filter
+    option.set_filter(lambda u: u.include_weeklys().contracts(self.selection))
+
+# Define selection function
+def selection(self, contract: List[Symbol]) -&gt; List[Symbol]:
+    selected = []
+
+    # Put contracts that expires 30 days later that is $5 below the current underlying price
+    puts = filter(lambda x: x.id.option_right == OptionRight.PUT and \
+            x.id.date &gt;= self.time + timedelta(30) and \
+            x.id.strike_price &lt;= self.underlying.price - 5,
+            contracts)
+    if len(puts) &gt; 0:
+        # Select the best match
+        expiry = min(x.id.date for x in puts)
+        put = sorted([x for x in puts if x.id.date == expiry],
+            key=lambda x: x.id.strike_price,
+            reverse=True)[0]
+        selected.append(put)
+
+    # Call contract that expires 60 days later that is $10 above the current underlying price
+    calls = filter(lambda x: x.id.option_right == OptionRight.CALL and \
+            x.id.date &gt;= self.time + timedelta(60) and \
+            x.id.strike_price &gt;= self.underlying.price + 10,
+            contracts)
+    if len(calls) &gt; 0:
+        # Select the best match
+        expiry = min(x.id.date for x in calls)
+        call = sorted([x for x in calls if x.id.date == expiry],
+            key=lambda x: x.id.strike_price)[0]
+        selected.append(call)
+        
+    return selected</pre>
+</div>
