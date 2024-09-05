@@ -1,90 +1,39 @@
 <p>The following examples demonstrate some common liquidity universes for US Equities.</p>
 
-<h4>Example 1: Large Cap Liquid Universe</h4>
-<p>The following example selects 20 of the most traded large-cap stocks:</p>
+<h4>Example 1: Daily Liquid Universe</h4>
+<p>The following example selects the 100 most liquid US Equities and subscribes to daily data:</p>
 <div class="section-example-container">
-	<pre class="csharp">public class LargeCapLiquidUniverseAlgorithm : QCAlgorithm
+	<pre class="csharp">public class DailyLiquidUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        AddUniverse(
-            fundamental => fundamental
-                .Where(f => f.MarketCap >= 1e10m)
-                .OrderByDescending(f => f.DollarVolume)
-                .Take(20)
-                .Select(f => f.Symbol)
-        );
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverse(Universe.DollarVolume.Top(100));
     }
 }</pre>
-	<pre class="python">class LargeCapLiquidUniverseAlgorithm(QCAlgorithm):
-
-    def initialize(self) -> None:
-        self.add_universe(self._select_assets)
-
-    def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:
-        # Select the most liquid large-cap stocks.
-        selected = sorted(
-            [f for f in fundamental if f.market_cap >= 1e10], 
-            key=lambda f: f.dollar_volume
-        )[-20:]
-        # Return the symbols of the selected stocks.
-        return [f.symbol for f in selected]</pre>
-</div>
-
-<h4>Example 2: Illiquid Penny Stocks Universe</h4>
-<p>
-	Some market makers aim at illiquid penny stocks to earn higher spreads with less captital.
-	The following example selects the most illiquid stocks below $3.
-</p>
-<div class="section-example-container">
-	<pre class="csharp">public class IliquidPennyStockUniverseAlgorithm : QCAlgorithm
-{
-    public override void Initialize()
-    {
-        // Select the most illiquid stocks below $3.
-        AddUniverse(
-            fundamental => fundamental
-                .Where(f => f.Price <= 3)
-                .OrderBy(f => f.DollarVolume)
-                .Take(20)
-                .Select(f => f.Symbol)
-        );
-    }
-}</pre>
-	<pre class="python">class IliquidPennyStockUniverseAlgorithm(QCAlgorithm):
+	<pre class="python">class DailyLiquidUniverseAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.add_universe(self._select_assets)
-
-    def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:
-        # Select the most illiquid stocks below $3.
-        selected = sorted(
-            [f for f in fundamental if f.price <= 3],
-            key=lambda f: f.dollar_volume
-        )[:20]
-        return [f.symbol for f in selected]</pre>
+        self.universe_settings.resolution = Resolution.DAILY
+        self.add_universe(self.universe.dollar_volume.top(100))</pre>
 </div>
 
-<h4>Example 3: Highest Volume Universe</h4>
-<p>For intraday trading, high volume stocks provide more arbitrage oppotunities.</p>
+<h4>Example 2: Asynchronous Liquid Universe</h4>
+<p>The following example asynchronously selects the 1,000 most liquid stocks:</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class AsynchronousLiquidUniverseAlgorithm : QCAlgorithm
 {
-    // Sort the penny stocks by volume, return the 20 with highest trade volume. 
-    AddUniverse((fundamental) =&gt; fundamental.OrderedByDescending(f =&gt; f.Volume)
-      .Take(20)
-      .Select(f =&gt; f.Symbol));
+    public override void Initialize()
+    {
+        UniverseSettings.Asynchronous = true;
+        AddUniverse(Universe.DollarVolume.Top(1000));
+    }
 }</pre>
-	<pre class="python">
-def initialize(self):
-    # Initialize algo with custom universe
-    self.add_universe(self._selection)
+	<pre class="python">class AsynchronousLiquidUniverseAlgorithm(QCAlgorithm):
 
-def _selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    # Of the penny stocks from prior example, sort in decending order with respect to volume. 
-    sorted_by_volume = sorted(penny_stocks, key=lambda f: f.volume, reverse=True)
-    # Return top 20 symbols with highest volume. 
-    return [f.symbol for f in sorted_by_volume[:20]]</pre>
+    def initialize(self):
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.universe.dollar_volume.top(1_000))</pre>
 </div>
 
 <p>For more examples, see the following algorithms:</p>
