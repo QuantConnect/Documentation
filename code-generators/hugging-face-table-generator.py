@@ -47,7 +47,7 @@ def __get_category(url):
 
 def __get_example(url):
     example = next(filter(lambda x: x[0] in url, EXAMPLES.items()), None)
-    return f'<a href="{example[1]}"><i class="fa fa-external-link"></i></a>' if example else ''
+    return f'<a href="{example[1]}"><img src="https://cdn.quantconnect.com/i/tu/internal-link.svg" alt="Example"></a>' if example else ''
 
 if __name__ == '__main__':
     rows = sorted([__to_row(x) for x in REPOSITORIES.split('\n') if x], key=lambda x: x.lower())
