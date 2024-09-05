@@ -1,47 +1,49 @@
+<p>The following examples demonstrate some common practices for filtering data.</p>
+
 <h4>Example 1: Filter Price Outliners Using SMA</h4>
-<p>When analyzing high-frequency price data, it's important to filter out potential outliers and anomalies that may skew the analysis. One effective method is to use a 100-step SMA to identify price ticks that deviate significantly from the short-term trend. By comparing each price tick to the 100-step SMA, you can flag any data points that fall outside a specified threshold, which we used 3 standard deviations in this example. This helps remove suspicious or erroneous price information, ensuring a cleaner dataset for further technical analysis and trading strategies.</p>
+<p>
+	When analyzing high-frequency price data, it's important to filter out potential outliers and anomalies that may skew the analysis. 
+	One effective method is to use a <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>simple moving average</a> (SMA) to identify ticks that significantly deviate from the short-term trend. 
+	By comparing each tick to the SMA, you can flag any data points that fall outside a threshold (for example, three standard deviations).
+	This filtration process removes suspicious or erroneous price information from entering your algorithm, ensuring a cleaner dataset for trading.
+</p>
 <div class="section-example-container">
-	<pre class="csharp">public class SampleAlgorithm : QCAlgorithm
+	<pre class="csharp">public class CustomDataFilterAlgorithm : QCAlgorithm
 {
+
     public override void Initialize()
     {
         dynamic equity = AddEquity("AAPL", Resolution.Tick);
-        // Set a 100-step price SMA
-        equity.Sma = SMA(equity.Symbol, 100, Resolution.Tick);
-        // Set 100-step rolling window of the SMA indicator to save the last 100 tick data to calculate standard deviation
+        // Create a 100-period SMA.
+        equity.Sma = SMA(equity.Symbol, 100);
+        // Extend the rolling window of the SMA indicator to save the last 
+        // 100 ticks to calculate the standard deviation.
         equity.Sma.Window.Size = 100;
-        // Warm up the indicator
-        WarmUpIndicator((Symbol)equity.Symbol, (SimpleMovingAverage)equity.Sma, Resolution.Tick);
-        // Set the data filter
+        // Set the data filter.
         equity.SetDataFilter(new CustomDataFilter());
     }
+}
 
-    private class CustomDataFilter : ISecurityDataFilter
+class CustomDataFilter : SecurityDataFilter
+{
+    public CustomDataFilter() : base() { }
+    public override bool Filter(Security vehicle, BaseData data)
     {
-        public bool Filter(Security vehicle, BaseData data)
+        // Wait until the indicator is ready.
+        var security = vehicle as dynamic;
+        if (!(security.Sma.IsReady && security.Sma.Window.IsReady))
         {
-            // Cast into dynamic for custom property SMA
-            var security = vehicle as dynamic;
-            // Get the average and standard deviation of the SMA data points
-            var sma = security.Sma.Current.Value;
-            var window = (RollingWindow&lt;IndicatorDataPoint&gt;)security.Sma.Window;
-            var std = Convert.ToDecimal(Math.Sqrt(window.Average(point =&gt; Math.Pow((double)(point.Value - sma), 2))));
-            
-            // Check if the data point is suspicious
-            if (data.Value.IsSuspicious(sma, sd))
-            {
-                // If so, we reject the data
-                return false;
-            }
-            // Otherwise, we accept it
             return true;
         }
-
-        private IsSuspicious(this decimal value, decimal sma, decimal sd)
-        {
-            // Define suspicious data point to be out of 3SD of the SMA
-            return value &gt; sma + 3m * std || value &lt; sma - 3m * std
-        }
+        // Get the average and standard deviation.
+        var sma = security.Sma.Current.Value;
+        var window = (RollingWindow&lt;IndicatorDataPoint&gt;)security.Sma.Window;
+        var std = Convert.ToDecimal(
+            Math.Sqrt(window.Average(point => Math.Pow((double)(point.Value - sma), 2)))
+        );
+        // Check if the current value is within 3 standard deviations of the mean.
+        // Return true (keep) or false (discard).
+        return sma - 3m*std <= data.Value && data.Value <= sma + 3m*std;
     }
 }</pre>
 	<pre class="python">class TestAlgorithm(QCAlgorithm):
