@@ -1,3 +1,31 @@
+<p>The following examples demonstrate some common Equity Option universes.</p>
+
+<h4>Example 1: 0DTE Contracts</h4>
+
+<p>
+  <span class='new-term'>0DTE Options</span> are Option contracts that expire on the same day you trade them. 
+  The following algorithm selects 0DTE Option contracts for the SPY that fall within 3 strikes of the underlying price.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class ZeroDTEOptionUniverseAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var option = AddOption("SPY");
+        option.SetFilter(u => u.IncludeWeeklys().Expiration(0, 0).Strikes(-3, 3));
+    }
+}</pre>
+    <pre class="python">class InsiderBuyBackUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        option = self.add_option('SPY')
+        option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-3, 3))
+</pre>
+</div>
+
+<!--
+
 <h4>Example 1: 30-day Expiring Straddle</h4>
 <p>The following example selects an ATM call and an ATM put contract with at least 30 days from expiry to form a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-straddle'>straddle</a>.</p>
 <div class="section-example-container">
@@ -36,6 +64,7 @@
     option = self.add_option("SPY")
     option.set_filter(lambda option_filter_universe: option_filter_universe.include_weeklys().jelly_roll(0, 30, 60))</pre>
 </div>
+-->
 
 <p class="csharp">For more examples, see the following algorithms:</p>
 <div class="csharp example-fieldset">
