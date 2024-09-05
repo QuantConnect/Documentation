@@ -1,57 +1,74 @@
-<h4>Example 1: High Dollar Volume Cryptos</h4>
-<p>To fairly compare the liquidity between Crypto pairs, use the <code class="csharp">VolumeInUsd</code><code class="python">volume_in_usd</code> property of <code>CryptoCoarseFundamental</code> object when doing universe selection. The following example selects the 10 Crypto pairs with the greatest USD volume that are over 10 dollars in their quote currency.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
-{
-    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Bitfinex, UniverseSettings, (data) =&gt; 
-        data.Where(datum =&gt; datum.Price &gt;=10 &amp;&amp; datum.VolumeInUsd != null)
-            .OrderByDescending(datum =&gt; datum.VolumeInUsd)
-            .Take(10)
-            .Select(datum =&gt; datum.Symbol)));
-}</pre>
-	<pre class="python">def initialize(self):
-    self.add_universe(CryptoCoarseFundamentalUniverse(Market.BITFINEX, self.universe_settings, self._selection))
+<p>The following examples demonstrate some common Crypto universes.</p>
 
-def _selection(self, data):
-    filtered = [datum for datum in data
-            if datum.price >= 10 and datum.volume_in_usd]
-    sorted_by_volume_in_usd = sorted(filtered, key=lambda datum: datum.volume_in_usd, reverse=True)
-    
-    return [datum.symbol for datum in sorted_by_volume_in_usd[:10]]</pre>
+<h4>Example 1: Highly Liquid Crypto Universe</h4>
+<p>
+	To fairly compare the liquidity between Crypto pairs, use the <code class="csharp">VolumeInUsd</code><code class="python">volume_in_usd</code> property of the <code>CryptoCoarseFundamental</code> objects during universe selection. 
+	The following algorithm selects the 10 Crypto pairs with the greatest USD volume on Bitfinex:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">public class HighlyLiquidCryptoUniverseAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        AddUniverse(
+            new CryptoCoarseFundamentalUniverse(
+                Market.Bitfinex, UniverseSettings, data => data
+                    .Where(x => x.VolumeInUsd != null)
+                    .OrderByDescending(x => x.VolumeInUsd)
+                    .Take(10)
+                    .Select(x => x.Symbol)
+            )
+        );
+    }
+}</pre>
+	<pre class="python">class HighlyLiquidCryptoUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2021, 1, 1)
+        self.add_universe(
+            CryptoCoarseFundamentalUniverse(
+                Market.BITFINEX, self.universe_settings, self._select_assets
+            )
+        )
+
+    def _select_assets(self, data):
+        selected = sorted(
+            [x for x in data if x.volume_in_usd], 
+            key=lambda x: x.volume_in_usd
+        )[-10:]
+        return [x.symbol for x in selected]</pre>
 </div>
 
-<h4>Example 2: Highest Volume In Quote Currency</h4>
-<p>Most of the Crypto pairs are in the structure that the base currency being the ordinary currency and the quote currency being the Crypto. You can filter the Crypto pairs with higher volume in their quote currency to select the Cryptos being traded the most.</p>
+<h4>Example 2: Highly Volatile Crypto Universe</h4>
+<p>The following algorithm creates a universe of volatile Crypto pairs by selecting the pairs with the largest trading range in the previous day on Binance:</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class HighlyVolatileCryptoUniverseAlgorithm : QCAlgorithm
 {
-    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Coinbase, UniverseSettings, (data) =&gt; 
-        data.OrderByDescending(datum =&gt; datum.VolumeInQuoteCurrency)
-            .Take(10)
-            .Select(datum =&gt; datum.Symbol)));
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        AddUniverse(
+            new CryptoUniverseFactory(
+                Market.Binance, UniverseSettings, data => data
+                    .OrderByDescending(x => (x.High - x.Low) / x.Low)
+                    .Take(10)
+                    .Select(x => x.Symbol)
+            )
+        );
+    }
 }</pre>
-	<pre class="python">def initialize(self):
-    self.add_universe(CryptoCoarseFundamentalUniverse(Market.COINBASE, self.universe_settings, self._selection))
+	<pre class="python">class HighlyVolatileCryptoUniverseAlgorithm(QCAlgorithm):
 
-def _selection(self, data):
-    sorted_by_volume_in_usd = sorted(data, key=lambda datum: datum.volume_in_equote_currency, reverse=True)
-    return [datum.symbol for datum in sorted_by_volume_in_usd[:10]]</pre>
-</div>
+    def initialize(self):
+        self.set_start_date(2021, 1, 1)
+        self.add_universe(
+            CryptoCoarseFundamentalUniverse(
+                Market.BINANCE, self.universe_settings, self._select_assets
+            )
+        )
 
-<h4>Example 3: Highest Day Range</h4>
-<p>To get the most volatile Crypto pairs for volatility trading, filter the Crypto pairs with the largest trading range in the previous day.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
-{
-    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Binance, UniverseSettings, (data) =&gt; 
-        data.OrderByDescending(datum =&gt; datum.High - datum.Low)
-            .Take(10)
-            .Select(datum =&gt; datum.Symbol)));
-}</pre>
-	<pre class="python">def initialize(self):
-    self.add_universe(CryptoCoarseFundamentalUniverse(Market.BINANCE, self.universe_settings, self._selection))
-
-def _selection(self, data):
-    sorted_by_volume_in_usd = sorted(data, key=lambda datum: datum.high - datum.low, reverse=True)
-    return [datum.symbol for datum in sorted_by_volume_in_usd[:10]]</pre>
+    def _select_assets(self, data):
+        selected = sorted(data, key=lambda x: (x.high - x.low) / x.low)[-10:]
+        return [x.symbol for x in selected]</pre>
 </div>
