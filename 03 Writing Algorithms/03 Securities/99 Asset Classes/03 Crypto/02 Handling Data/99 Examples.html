@@ -1,0 +1,84 @@
+<h4>Example 1: Dollar Cost Average BTC</h4>
+<p>Dollar cost averaging is a fixed investment in dollar amount on a regular basis (e.g. monthly) regardless of the asset's price. It can smoothen the volatility in PnL due to the averaging of acquisition price of each batch investment. In this example, we demonstrate a dollar cost average investment on BTC. We will invest $1000 USD worth of BTC every midnight EST for 30 consecutive days.</p>
+<div class="section-example-container"></div>
+	<pre class="csharp">private Symbol _symbol;
+private int _dayCount = 0;
+
+public override void Initialize()
+{
+    // Set Brokerage as Bitfinex
+    SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Cash);
+    // Add subscription of BTC-USD daily data
+    _symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Check if already invested for 30 consecutive days
+    // Add day count
+    if (slice.Bars.ContainsKey(_symbol) && _dayCount++ &lt; 30)
+    {
+        // Calculate the order size for $10000 USD
+        var size = 10000m / slice.Bars[_symbol].Close;
+        // Place order
+        MarketOrder(_symbol, size);
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    self.day_count = 0
+    # Set Brokerage as Bitfinex
+    self.set_brokerage_model(BrokerageName.BITFINEX, AccountType.CASH)
+    # Add subscription of BTC-USD daily data
+    self._symbol = self.add_crypto("BTCUSD", Resolution.DAILY, Market.BITFINEX).symbol
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Check if already invested for 30 consecutive days
+    if self._symbol in slice.bars and self.day_count &lt; 30:
+        # Calculate the order size for $10000 USD
+        size = 10000 / slice.bars[self._symbol].close
+        # Place order
+        self.market_order(self._symbol, size)
+    
+        # Add day count
+        self.day_count += 1</pre>
+</div>
+
+<h4>Example 2: Inter-market spread</h4>
+<p>Always, there exhibit a small discrepancy in price of the same crypto pair trading between different crypto exchanges. Although you cannot live trade different brokerages in the same algorithm, you can study the cointegration pattern and implement 2 live nodes to do arbitration for this inter market spread discrepancy. In the below example, we demonstrate how to obtain this spread between BTCUSD traded in Kraken and Coinbase exchanges.</p>
+<div class="section-example-container"></div>
+	<pre class="csharp">private Symbol _krakenBtc;
+private Symbol _coinbaseBtc;
+
+public override void Initialize()
+{
+    // Add subscription of BTC-USD of Kraken exchange
+    _krakenBtc = AddCrypto("BTCUSD", market: Market.Kraken).Symbol;
+    // Add subscription of BTC-USD of Coinbase exchange
+    _coinbaseBtc = AddCrypto("BTCUSD", market: Market.Coinbase).Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Check if data available
+    if (slice.Bars.ContainsKey(_krakenBtc) && slice.Bars.ContainsKey(_coinbaseBtc))
+    {
+        // Calculate the spread between the 2 exchanges
+        var spread = slice.Bars[_krakenBtc].Close - slice.Bars[_coinbaseBtc].Close;
+        // Plot the spread between the 2 exchanges
+        Plot("BTC Close Spread", "Spread", spread);
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    # Add subscription of BTC-USD of Kraken exchange
+    self.kraken_btc = self.add_crypto("BTCUSD", market=Market.KRAKEN).symbol
+    # Add subscription of BTC-USD of Coinbase exchange
+    self.coinbase_btc = self.add_crypto("BTCUSD", market=Market.COINBASE).symbol
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Check if data available
+    if self.kraken_btc in slice.bars and self.coinbase_btc in slice.bars:
+        # Calculate the spread between the 2 exchanges
+        spread = slice.bars[self.kraken_btc].close - slice.bars[self.coinbase_btc].close
+        # Plot the spread between the 2 exchanges
+        self.plot("BTC Close Spread", "Spread", spread)</pre>
+</div>
