@@ -3,7 +3,7 @@
 <p>After you subscribe to dataset updates, to update your local copy of the US ETF Constituents dataset, open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and run:</p>
 
 <div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US ETF Constituents" --data-type "Download in Bulk"</pre> 
+     <pre>$ lean data download --dataset "US ETF Constituents" --data-type "Bulk" --start "20090601" --end "20500101"</pre> 
 </div>
 
 <p>To update your local copy of the US Equity Security Master, run:</p>
