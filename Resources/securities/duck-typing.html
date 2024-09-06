@@ -13,7 +13,17 @@ equity.ema = self.ema(equity.symbol, 10, Resolution.DAILY)</pre>
 
 <div class="section-example-container">
 <pre class="csharp">// Get the SPY Equity object from Securities to get the EMA indicator.
-var ema = (Securities["SPY"] as dynamic).ema.Current.Value;</pre>
+var ema = (decimal)(Securities["SPY"] as dynamic).ema.Current.Value;</pre>
 <pre class="python"># Get the SPY Equity object from Securities to get the EMA indicator.
 ema = self.securities["SPY"].ema.current.value</pre>
 </div>
+
+<p class="csharp">To avoid casting to and from the <code>dynamic</code> type, you can use the <code>Get&lt;T&gt;</code> method to access the dynamic member and return the object with its type.</p>
+
+<div class="section-example-container csharp">
+<pre class="csharp">// Get the SPY Equity object from Securities to get the EMA indicator and its current value
+var ema = Securities["SPY"].Get&lt;ExponentialMovingAverage&gt;("ema");   // The type of ema is ExponentialMovingAverage
+var emaValue = ema.Current.Value;    // The type of emaValue is decimal</pre>
+</div>
+
+<p class="csharp">If the type or the member name is incorrect, the <code>Get&lt;T&gt;</code> method causes a runtime error.</p>
