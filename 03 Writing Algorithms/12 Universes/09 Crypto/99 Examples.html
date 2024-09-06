@@ -12,12 +12,11 @@
     {
         SetStartDate(2021, 1, 1);
         AddUniverse(
-            new CryptoCoarseFundamentalUniverse(
-                Market.Bitfinex, UniverseSettings, data => data
-                    .Where(x => x.VolumeInUsd != null)
-                    .OrderByDescending(x => x.VolumeInUsd)
-                    .Take(10)
-                    .Select(x => x.Symbol)
+            CryptoUniverse.Bitfinex(data => data
+                .Where(x => x.VolumeInUsd != null)
+                .OrderByDescending(x => x.VolumeInUsd)
+                .Take(10)
+                .Select(x => x.Symbol)
             )
         );
     }
@@ -26,11 +25,7 @@
 
     def initialize(self):
         self.set_start_date(2021, 1, 1)
-        self.add_universe(
-            CryptoCoarseFundamentalUniverse(
-                Market.BITFINEX, self.universe_settings, self._select_assets
-            )
-        )
+        self.add_universe(CryptoUniverse.bitfinex(self._select_assets))
 
     def _select_assets(self, data):
         selected = sorted(
@@ -49,11 +44,10 @@
     {
         SetStartDate(2021, 1, 1);
         AddUniverse(
-            new CryptoCoarseFundamentalUniverse(
-                Market.Binance, UniverseSettings, data => data
-                    .OrderByDescending(x => (x.High - x.Low) / x.Low)
-                    .Take(10)
-                    .Select(x => x.Symbol)
+            CryptoUniverse.Binance(data => data
+                .OrderByDescending(x => (x.High - x.Low) / x.Low)
+                .Take(10)
+                .Select(x => x.Symbol)
             )
         );
     }
@@ -62,11 +56,7 @@
 
     def initialize(self):
         self.set_start_date(2021, 1, 1)
-        self.add_universe(
-            CryptoCoarseFundamentalUniverse(
-                Market.BINANCE, self.universe_settings, self._select_assets
-            )
-        )
+        self.add_universe(CryptoUniverse.binance(self._select_assets)
 
     def _select_assets(self, data):
         selected = sorted(data, key=lambda x: (x.high - x.low) / x.low)[-10:]
