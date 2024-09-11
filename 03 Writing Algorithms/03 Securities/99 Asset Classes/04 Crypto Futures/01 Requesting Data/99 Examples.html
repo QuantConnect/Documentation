@@ -1,0 +1,44 @@
+<p>The following examples demonstrate some common practices for requesting Crypto Futures data.</p>
+
+<h4>Example 1: Round To Lot</h4>
+<p>Like Futures, Crypto Futures contracts have a fixed discrete size lot to trade instead of fractional like spot cryptos. Therefore, we will demonstrate how to order with the correct lot size to avoid rounding error. To access the lot size, call <code class="csharp">SymbolProperties</code><code class="python">symbol_properties</code> property of the <code>CryptoFuture</code> security object.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    // Set brokerage and base currency
+    SetAccountCurrency("USDT", 10000);
+    SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+    // Add subscription of BTC-USD Futures
+    _symbol = AddCryptoFuture("BTCUSDT", market: Market.Binance).Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    if (!Portfolio.Invested && IsMarketOpen(_symbol))
+    {
+        // Get the lot size
+        var lotSize = Securities[_symbol].SymbolProperties.LotSize;
+        // Obtain the rounded order quantity
+        var quantity = Convert.ToDecimal(Math.Floor(100.5 / (double)lotSize)) * lotSize;
+        // Order
+        MarketOrder(_symbol, quantity);
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Set brokerage and base currency
+    self.set_account_currency("USDT", 10000)
+    self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
+    # Add subscription of BTC-USD Futures
+    self._symbol = self.add_crypto_future("BTCUSDT", market=Market.BINANCE).symbol
+    
+def on_data(self, slice: Slice) -&gt; None:
+    if not self.portfolio.invested and self.is_market_open(self._symbol):
+        # Get the lot size
+        var lotSize = self.securities[self._symbol].symbol_properties.lot_size
+        # Obtain the rounded order quantity
+        var quantity = 100.5 // lot_size * lot_size
+        # Order
+        self.market_order(self._symbol, quantity)</pre>
+</div>
