@@ -1,0 +1,127 @@
+<h4>Example 1: Short Penny Stock Gainers</h4>
+<p>This example builds a universe of low-cap penny stocks (below $1) that showed the greatest gain on the previous day. It uses an intraday Bollinger Band indicator to time entry and exit.</p>
+<div class="section-example-container">
+	<pre class="csharp">// Dictionary to cache last price for gain calculation
+private Dictionary&lt;Symbol, decimal&gt; _symbolLastPrices = new();
+
+public override void Initialize()
+{
+    // Add universe filtering function to obtain the low-cap penny stocks top gainers
+    AddUniverse(Selection)
+}
+
+private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; fundamental)
+{
+    // Select the small-cap penny stocks with a price less than $1.
+    var filtered = fundamental.Where(x =&gt; x.MarketCap &lt;= 5e6 && x.Price &lt;= 1).ToList();
+    
+    var pctGain = new Dictionary&lt;Symbol, decimal&gt;();
+    // Iterate filtered stocks to calculate best gainers
+    foreach (var f in filtered)
+    {
+        // If not in dictionary, save last price and exit
+        if (!_symbolLastPrices.TryGetValue(f.Symbol, out var lastPrice))
+        {
+            lastPrice = _symbolLastPrices[f.Symbol] = f.Price;
+            continue;
+        }
+
+        // Cache the 1-day percentage change
+        var pctChg = (f.Price - lastPrice) / lastPrice;
+        pctGain.Add(f.Symbol, pctChg);
+
+        // Update last price
+        _symbolLastPrices[f.Symbol] = f.Price;
+    }
+
+    // Return Symbols of the top 20 gainers
+    return pctGain.OrderByDescending(x =&gt; x.Value)
+        .Take(20)
+        .Select(x =&gt; x.Key);
+}
+
+public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    // Iterate new universe members to setup the indicators
+    foreach (var added in changes.AddedSecurities)
+    {
+        var security = added as dynamic;
+        // Create an automatically updated BollingerBand indicator
+        security.BBands = BB(added.Symbol, 20, Resolution.Minute);
+        // Add a handler for trading
+        security.BBands.Updated += OnBBUpdate;
+    }
+}
+
+private void OnBBUpdate(object sender, IndicatorDataPoint point)
+{
+    var price = Securities[point.Symbol].Price;
+    // Check if the stock is invested
+    if (!Portfolio[point.Symbol].Invested)
+    {
+        // Trade if short sell criteria met
+        if (price &gt; sender.UpperBand.Current.Value)
+        {
+            SetHoldings(point.Symbol, -0.05m);
+        }
+    }
+    else
+    {
+        // Exit if invested and price drop below middle band
+        if (price &lt; sender.MiddleBand.Current.Value)
+        {
+            Liquidate(point.Symbol)
+        }
+    }
+}</pre>
+	<pre class="python">def initialize(self) -&gt; None:
+    self.symbol_last_prices = None
+    # Add universe filtering function to obtain the low-cap penny stocks top gainers
+    self.add_universe(self.selection)
+
+def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    symbols = []
+    market_caps = []
+    prices = []
+    # Iterate stocks to get market cap and price
+    for f in fundamental:
+        symbols.append(f.symbol)
+        market_caps.append(f.market_cap)
+        prices.append(f.price)
+    df = pd.DataFrame({"Symbol": symbols, "MarketCap": market_caps, "Price": prices}).set_index("Symbol")
+    
+    # Filter the stocks
+    df = df[(df["MarketCap"] &lt;= 5e6) & (df["Price"] &lt;= 1)]
+
+    # Calculate the percentage change
+    top_gainers = []
+    if self.symbol_last_prices:
+        pct_chg = (df["Price"] - self.symbol_last_prices["Price"]) / self.symbol_last_prices["Price"]
+        # Get the top 20 gainers
+        top_gainers = list(pct_chg.nlargest(20).index)
+
+    # Update last price
+    self.symbol_last_prices = df
+    
+    return top_gainers
+	
+def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+    # Iterate new members to create an automatically updated BollingerBand indicator
+    for added in changes.added_securities:
+        # Create a BollingerBand indicator
+        added._bbands = self.bb(added.symbol, 20, Resolution.MINUTE)
+        # Add a handler for trading
+        added._bbands.updated += self.on_bb_updated
+
+def on_bb_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
+    price = self.securities[point.symbol].price
+    # Check if the stock is invested
+    if not self.portfolio[point.symbol].invested:
+        # Trade if short sell criteria met
+        if price &lt; sender.upper_band.current.value:
+            self.set_holdings(point.symbol, -0.05)
+    else:
+        # Exit if invested and price drop below middle band
+        price &lt; sender.middle_band.current.value:
+            self.liquidate(point.symbol)</pre>
+</div>
