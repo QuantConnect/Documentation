@@ -28,7 +28,7 @@ META,1.04,1.03,1.10,1.04,0.98
 MSFT,0.92,0.96,0.98,1.01,0.98</pre>
 </div>
 
-<p>To periodically scrap the data, we need to set up a <a href="/docs/v2/writing-algorithms/scheduled-events">scheduled event</a> to download the data from DropBox and convert it into trading signals.</p>
+<p>To periodically scrap the data, we need to set up a <a href="/docs/v2/writing-algorithms/scheduled-events">scheduled event</a> to download the data from DropBox and convert it into trading signals. Then we download the file from DropBox and convert it into trading signals. You need to use a DropBox query with suffix <code>?dl=1</code>.</p>
 <div class="section-example-container">
 	<pre class="csharp">private List&lt;Symbol&gt; _symbols = new();
 
@@ -46,24 +46,9 @@ public override void Initialize()
         TimeRules.At(8, 0),
         DownloadDataAndPlaceOrder
     );
-}</pre>
-	<pre class="python">def initialize(self):
-    self.symbols = []
-    # Subscribe the known tickers from the alternative data
-    for ticker in ["AAPL", "AMZN", "GOOG", "META", "MSFT"]:
-        self.symbols.append(self.add_equity(ticker, Resolution.DAILY).symbol)
+}
 
-    # Set up a weekly scheduled event to download data and place order
-    self.schedule.on(
-        self.date_rules.every(DayOfWeek.SUNDAY),
-        self.time_rules.at(8, 0),
-        self.download_data_and_place_order
-    )</pre>
-</div>
-
-<p>Then we download the file from DropBox and convert it into trading signals. You need to use a DropBox query with suffix <code>?dl=1</code>.</p>
-<div class="section-example-container">
-	<pre class="csharp">private void DownloadDataAndPlaceOrder()
+private void DownloadDataAndPlaceOrder()
 {
     // Download the data from DropBox
     var file = Download("&lt;DropBoxUrlWith?dl=1&gt;");
@@ -89,6 +74,19 @@ public override void Initialize()
     }
 }</pre>
 	<pre class="python">from io import StringIO
+        
+def initialize(self):
+    self.symbols = []
+    # Subscribe the known tickers from the alternative data
+    for ticker in ["AAPL", "AMZN", "GOOG", "META", "MSFT"]:
+        self.symbols.append(self.add_equity(ticker, Resolution.DAILY).symbol)
+
+    # Set up a weekly scheduled event to download data and place order
+    self.schedule.on(
+        self.date_rules.every(DayOfWeek.SUNDAY),
+        self.time_rules.at(8, 0),
+        self.download_data_and_place_order
+    )
 
 def download_data_and_place_order(self):
     # Download the data from DropBox
