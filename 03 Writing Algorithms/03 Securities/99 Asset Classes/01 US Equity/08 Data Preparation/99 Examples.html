@@ -1,0 +1,97 @@
+<h4>Example 1: Use Market On Open Orders</h4>
+<p>In this example, we create an Market On Open order (MOO) to purchase 10 shares of SPY on July 1st, 2021 at 10:31 AM. The <code class="csharp">MarketOnOpenOrder</code><code class="python">market_on_open_order</code> method places a trade which fills when the market next opens. In this example it fills at 9:30 AM the following day. Market on open orders must be placed at least 15 minutes before market open.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Security _spy;
+
+public override void Initialize()
+{
+    SetStartDate(2021, 7, 1);
+    SetEndDate(2021, 7, 4);
+    // Subscribe to raw data of SPY.
+    _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw);
+}
+
+public override void OnData(Slice data)
+{
+    // Place an on market open order at 10:31 AM, July 1st, 2021 to be filled the following day open.
+    if (Time.Day == 1 && Time.Hour == 10 && Time.Minute == 31)
+    {
+        MarketOnOpenOrder(_spy.Symbol, 10);
+    }
+}</pre>
+	<pre class="python">def initialize(self): 
+    self.set_start_date(2021, 7, 1)
+    self.set_end_date(2021, 7, 3)
+    # Subscribe to raw data of SPY.
+    self.spy = self.add_equity("SPY", Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.RAW)
+
+def on_data(self, data):
+    # Place an on market open order at 10:31 AM, July 1st, 2021  to be filled the following day open.
+    if self.time.day == 1 and self.time.hour == 10 and self.time.minute == 31:
+      self.market_on_open_order(self.spy.symbol, 10)</pre>
+</div>
+
+<h4>Example 2: Demonstrate Using Tick Flags to Identify Opening Auction Tick</h4>
+<p>This example demonstrates using the tick flags to identify the official opening price on the security primary exchange. All exchanges have an opening auction to determine the market on open price, but only the primary listed exchange is used as the official open price for the asset. The algorithm subscribes to the raw tick data of QQQ ETF and logs the auction price tick data of the asset.</p>
+<div class="section-example-container">
+	<pre class="csharp">private Equity _asset;
+uint officialOpen;
+uint openingPrints;
+
+public override void Initialize()
+{
+    SetStartDate(2021, 7, 1);
+    SetEndDate(2021, 7, 1);
+    // Subscribe to tick data of a security and find the exchange code.
+    _asset = AddEquity("QQQ", Resolution.Tick, extendedMarketHours: true, dataNormalizationMode: DataNormalizationMode.Raw); 
+    // Define flags to help filter opening auctions in the OnData method.
+    officialOpen = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OfficialOpen);
+    openingPrints = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OpeningPrints);
+    // Display exchange code and trade condition flags on the console.
+    Debug($"Search Codes: Ex:{_asset.PrimaryExchange.Code} OO: {officialOpen} OP: {openingPrints}"); 
+}
+
+public override void OnData(Slice slice)
+{
+    // Create a list of opening auction tick data.
+    var trades = _asset.Cache.GetAll<Tick>()
+        .Where(x => 
+            x.TickType == TickType.Trade && 
+            x.Price > 0 && 
+            !string.IsNullOrWhiteSpace(x.SaleCondition) && (
+                (x.ParsedSaleCondition == officialOpen || x.ParsedSaleCondition == openingPrints)
+            )
+            );
+    // Log the opening auction tick price
+    foreach(var tick in trades)
+    {
+        Log($"{Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}"); 
+    }
+}</pre>
+	<pre class="python">def initialize(self):
+    self.set_start_date(2021, 7, 1)
+    self.set_end_date(2021, 7, 1)
+    # Subscribe to tick data of a security and find the exchange code.
+    self._asset = self.add_equity(ticker = "QQQ", resolution = Resolution.TICK, extended_market_hours = True, data_normalization_mode = DataNormalizationMode.RAW)
+    # Define flags to help filter opening auctions in the OnData method.
+    self.officialOpen = TradeConditionFlags.REGULAR | TradeConditionFlags.OFFICIAL_OPEN
+    self.openingPrints = TradeConditionFlags.REGULAR | TradeConditionFlags.OPENING_PRINTS
+    # Display exchange code and trade condition flags on the console.
+    self.debug(f"Search Codes: Ex:{self._asset.primary_exchange.code} OO: {self.officialOpen} OP: {self.openingPrints}")
+
+def on_data(self, data):
+    # Create a list of opening auction tick data. 
+    trades = [
+        tick for tick in self._asset.cache.get_all[Tick]()
+        if  tick.TickType == TickType.TRADE and
+            tick.Price > 0 and
+            tick.SaleCondition and
+            (
+                tick.ParsedSaleCondition == self.officialOpen or
+                tick.ParsedSaleCondition == self.openingPrints
+            )
+    ]
+    # Log the opening auction tick price
+    for tick in trades:
+        self.log(f"{self.Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}")</pre>
+</div>
