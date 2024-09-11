@@ -1,0 +1,150 @@
+<p>The following examples demonstrate some common practices for handling Crypto Futures data.</p>
+
+<h4>Example 1: Margin Cost Reinvest</h4>
+<p>This example demonstrates how to reinvest the amount of margin cost of the Crypto Future. We short BTCUSDT Crypto Futures in the beginning. When a margin deduction event happened, the Crypto Future's base currency face amount would deducted, which is "BTC" in this example involving "BTCUSDT". In order to keep the amount of "BTC" invested stable, we can reinvest the same amount to buy back the "BTC" position.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    // Set brokerage and base currency
+    SetAccountCurrency("USDT", 10000);
+    SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+    // Add subscription of BTC-USD Futures
+    var btcusdt = AddCryptoFuture("BTCUSDT", market: Market.Binance);
+    _symbol = btcusdt.Symbol;
+    // the amount of BTC we need to hold to trade 'BTCUSDT'
+    btcusdt.BaseCurrency.SetAmount(1000m);
+}
+
+public override void OnData(Slice slice)
+{
+    // Short BTCUSD Futures
+    if (!Portfolio.Invested && IsMarketOpen(_symbol))
+    {
+        MarketOrder(_symbol, -1000);
+    }
+
+    // Margin rate event
+    if (slice.MarginInterestRates.ContainsKey(_symbol))
+    {
+        // Get the margin interest
+        var interestRate = slice.MarginInterestRates[_symbol].InterestRate;
+        // Calculate the margin paid
+        var btc = (Securities[_symbol] as CryptoFuture).BaseCurrency.Amount;
+        var marginPaid = btc * interestRate;
+        // Invest the same size as the margin paid
+        MarketOrder(_symbol, marginPaid);
+
+        // Plot the cashbook
+        var usdt = (Securities[_symbol] as CryptoFuture).QuoteCurrency.Amount;
+        Plot("CashBook", "USDT", usdt);
+        Plot("CashBook", "BTC", btc);
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Set brokerage and base currency
+    self.set_account_currency("USDT", 10000)
+    self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
+    # Add subscription of BTC-USD Futures
+    btcusdt = self.add_crypto_future("BTCUSDT", market=Market.BINANCE)
+    self._symbol = btcusdt.symbol;
+    # the amount of BTC we need to hold to trade 'BTCUSDT'
+    btcusdt.base_currency.set_amount(1000)
+
+def on_data(self, slice: Slice) -&gt; None:
+    # Short BTCUSD Futures
+    if not self.portfolio.invested and self.is_market_open(self._symbol):
+        self.market_order(self._symbol, -1000)
+    
+    # Margin rate event
+    if self._symbol in slice.margin_interest_rates:
+        # Get the margin interest
+        interest_rate = slice.margin_interest_rates[self._symbol].interest_rate
+        # Calculate the margin paid
+        btc = self.securities[_symbol].base_currency.amount
+        margin_paid = btc * interest_rate
+        # Invest the same size as the margin paid
+        self.market_order(self._symbol, margin_paid)
+
+        # Plot the cashbook
+        usdt = self.securities[self._symbol].quote_currency.amount
+        self.plot("CashBook", "USDT", usdt)
+        self.plot("CashBook", "BTC", btc)</pre>
+</div>
+
+<h4>Example 2: Future-Spot Arbitration</h4>
+<p>Long-short arbitrage involves simultaneously trading BTCUSD in the spot market and BTCUSD futures with the same size. If the spot price exceed the front-month future price by a threshold, we short the spot and buy the future, assuming their discrepancies will be wiped out within a short period due to market efficiency. Vice versa for the other way around. Positions will be closed after the price gap bounced back.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Symbol _spot;
+private Symbol _future;
+
+public override void Initialize()
+{
+    // Add subscription of BTC-USD Futures
+    var future = AddCryptoFuture("BTCUSDT", market: Market.Binance);
+    _future = future.Symbol;
+    // Add subscription of spot BTC-USD
+    _spot = AddCrypto("BTCUSDT", market: Market.Binance).Symbol;
+    // the amount of BTC we need to hold to trade 'BTCUSDT'
+    future.BaseCurrency.SetAmount(0.001m);
+}
+
+public override void OnData(Slice slice)
+{
+    if (slice.Bars.ContainsKey(_spot) && slice.Bars.ContainsKey(_future))
+    {
+        // Get the spot and future price
+        var spotPrice = slice.Bars[_spot].Price;
+        var futurePrice = slice.Bars[_future].Price;
+
+        // Threshold of 0.5%
+        // If spot price lower than future, short spot buy future
+        if (spotPrice &gt;= futurePrice * 1.005m)
+        {
+            SetHoldings(_spot, -0.25m);
+            SetHoldings(_future, 0.25m);
+        }
+        // If spot price higher than future, buy spot short future
+        else if (spotPrice * 1.005m &lt;= futurePrice)
+        {
+            SetHoldings(_spot, 0.25m);
+            SetHoldings(_future, -0.25m);
+        }
+        // close position if price matched
+        else if ((Portfolio[_spot].Quantity &lt; 0 && spotPrice &lt; futurePrice)
+            || (Portfolio[_spot].Quantity &gt; 0 && spotPrice &gt; futurePrice))
+        {
+            Liquidate();
+        }
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Add subscription of BTC-USD Futures
+    future = self.add_crypto_future("BTCUSDT", market=Market.BINANCE)
+    self._future = future.symbol;
+    # Add subscription of spot BTC-USD
+    self._spot = self.add_crypto("BTCUSDT", market=Market.BINANCE).symbol
+    # the amount of BTC we need to hold to trade 'BTCUSDT'
+    future.base_currency.set_amount(0.001)
+
+def on_data(self, slice: Slice) -&gt; None:
+    if self._spot in slice.bars and self._future in slice.bars:
+        # Get the spot and future price
+        spot_price = slice.bars[self._spot].price
+        future_price = slice.bars[self._future].price
+    
+        # Threshold of 0.5%
+        # If spot price lower than future, short spot buy future
+        if spot_price &gt;= future_price * 1.005:
+            self.set_holdings(self._spot, -0.25)
+            self.set_holdings(self._future, 0.25)
+        # If spot price higher than future, buy spot short future
+        elif spot_price * 1.005 &lt;= future_price:
+            self.set_holdings(self._spot, 0.25)
+            self.set_holdings(self._future, -0.25)
+        # close position if price matched
+        elif (self.portfolio[self._spot].quantity &lt; 0 and spot_price &lt; future_price)\
+        or (self.portfolio[self._spot].quantity &gt; 0 and spot_price &gt; future_price):
+            self.liquidate()</pre>
+</div>
