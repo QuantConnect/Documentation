@@ -1,13 +1,5 @@
-<h4>Example 1: Tim Sykes Alpha Model - Short Penny Stock Gainers</h4>
-<p>As a renowned millionaire penny stock trader, Tim Sykes gained his reputation through intra-day trading of short-selling peeny stocks that made him a billionaire. In this example, we aimed to create a simple strategy with a similar logic: short selling the low-cap penny stocks with the greatest gain on the previous day with Bollinger Band signals. The rule are as below:</p>
-<ul>
-    <li>Market Cap below 5 million USD</li>
-    <li>Price below $1</li>
-    <li>Top 20 percentage gainers that satisfied the above</li>
-    <li>Short sell if price above the upper band of 20-minute Bollinger Bands</li>
-    <li>Exit position if price drop below middle band of 20-minute Bollinger Bands</li>
-</ul>
-<p>We need to set up the daily filtering function first:</p>
+<h4>Example 1: Short Penny Stock Gainers</h4>
+<p>This example builds a universe of low-cap penny stocks (below $1) that showed the greatest gain on the previous day. It uses an intraday Bollinger Band indicator to time entry and exit.</p>
 <div class="section-example-container">
 	<pre class="csharp">// Dictionary to cache last price for gain calculation
 private Dictionary&lt;Symbol, decimal&gt; _symbolLastPrices = new();
@@ -20,7 +12,7 @@ public override void Initialize()
 
 private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; fundamental)
 {
-    // Small-cap penny stocks
+    // Select the small-cap penny stocks with a price less than $1.
     var filtered = fundamental.Where(x =&gt; x.MarketCap &lt;= 5e6 && x.Price &lt;= 1).ToList();
     
     var pctGain = new Dictionary&lt;Symbol, decimal&gt;();
@@ -42,10 +34,45 @@ private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; funda
         _symbolLastPrices[f.Symbol] = f.Price;
     }
 
-    // Return the top 20 gainers
+    // Return Symbols of the top 20 gainers
     return pctGain.OrderByDescending(x =&gt; x.Value)
         .Take(20)
         .Select(x =&gt; x.Key);
+}
+
+public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    // Iterate new universe members to setup the indicators
+    foreach (var added in changes.AddedSecurities)
+    {
+        var security = added as dynamic;
+        // Create an automatically updated BollingerBand indicator
+        security.BBands = BB(added.Symbol, 20, Resolution.Minute);
+        // Add a handler for trading
+        security.BBands.Updated += OnBBUpdate;
+    }
+}
+
+private void OnBBUpdate(object sender, IndicatorDataPoint point)
+{
+    var price = Securities[point.Symbol].Price;
+    // Check if the stock is invested
+    if (!Portfolio[point.Symbol].Invested)
+    {
+        // Trade if short sell criteria met
+        if (price &gt; sender.UpperBand.Current.Value)
+        {
+            SetHoldings(point.Symbol, -0.05m);
+        }
+    }
+    else
+    {
+        // Exit if invested and price drop below middle band
+        if (price &lt; sender.MiddleBand.Current.Value)
+        {
+            Liquidate(point.Symbol)
+        }
+    }
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
     self.symbol_last_prices = None
@@ -76,56 +103,17 @@ def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     # Update last price
     self.symbol_last_prices = df
     
-    return top_gainers</pre>
-</div>
-
-<p>Then, we need to create a <code>BollingerBand</code> indicator for the universe members.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
-{
-    // Iterate new members
-    foreach (var added in changes.AddedSecurities)
-    {
-        var security = added as dynamic;
-        // Create a BollingerBand indicator
-        security.BBands = BB(added.Symbol, 20, Resolution.Minute);
-        // Add a handler for trading
-        security.BBands.Updated += OnBBUpdate;
-    }
-}</pre>
-	<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Iterate new members
+    return top_gainers
+	
+def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+    # Iterate new members to create an automatically updated BollingerBand indicator
     for added in changes.added_securities:
         # Create a BollingerBand indicator
         added._bbands = self.bb(added.symbol, 20, Resolution.MINUTE)
         # Add a handler for trading
-        added._bbands.updated += self.on_bb_updated</pre>
-</div>
+        added._bbands.updated += self.on_bb_updated
 
-<p>Finally, trade the stocks through the indicator update handler.</p>
-<div class="section-example-container">
-	<pre class="csharp">private void OnBBUpdate(object sender, IndicatorDataPoint point)
-{
-    var price = Securities[point.Symbol].Price;
-    // Check if the stock is invested
-    if (!Portfolio[point.Symbol].Invested)
-    {
-        // Trade if short sell criteria met
-        if (price &gt; sender.UpperBand.Current.Value)
-        {
-            SetHoldings(point.Symbol, -0.05m);
-        }
-    }
-    else
-    {
-        // Exit if invested and price drop below middle band
-        if (price &lt; sender.MiddleBand.Current.Value)
-        {
-            Liquidate(point.Symbol)
-        }
-    }
-}</pre>
-	<pre class="python">def on_securities_changed(self, sender: object, point: IndicatorDataPoint) -&gt; None:
+def on_bb_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
     price = self.securities[point.symbol].price
     # Check if the stock is invested
     if not self.portfolio[point.symbol].invested:
