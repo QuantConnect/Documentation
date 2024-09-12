@@ -35,8 +35,13 @@ public override void OnData(Slice slice)
         // Check if quote data is available
         if (slice.QuoteBars.ContainsKey(contract))
         {
-            // Calculate mid price
-            var midPrice = (slice.QuoteBars[contract].Bid.Close + slice.QuoteBars[contract].Ask.Close) * 0.5m;
+            // Get the quote
+            var quote = slice.QuoteBars[contract];
+            if (quote.Bid != null && quote.Ask != null)
+            {
+                // Calculate mid price
+                var midPrice = (quote.Bid.Close + quote.Ask.Close) * 0.5m;
+            }
         }
     }
 }</pre>
@@ -44,11 +49,11 @@ public override void OnData(Slice slice)
     self.contracts = []
 
     # Subscribe to SPY data and seed the last price
-    self.set_security_initializer(lamdba security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
     self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
     
     # Set up a scheduled event to update the option list daily
-    self.schdeule.on(
+    self.schedule.on(
         self.date_rules.every_day(self.spy),
         self.time_rules.at(9, 0),
         self.update_contracts
@@ -65,8 +70,11 @@ def on_data(self, slice: Slice) -&gt; None:
     for contract in self.contracts:
         # Check if quote data is available
         if contract in slice.quote_bars:
-            # Calculate mid price
-            mid_price = (slice.quote_bars[contract].bid.close + slice.quote_bars[contract].ask.close) * 0.5</pre>
+            # Get the quote
+            quote = slice.quote_bars[contract]
+            if quote.bid is not None and quote.ask is not None:
+                # Calculate mid price
+                mid_price = (quote.bid.close + quote.ask.close) * 0.5</pre>
 </div>
 
 <h4>Example 2: Get Mid Price For Universe</h4>
@@ -101,7 +109,7 @@ public override void OnData(Slice slice)
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
     # Subscribe to SPY data and seed the last price
-    self.set_security_initializer(lamdba security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
     spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
     # Subscribe to SPY option data
     option = self.add_option(spy)
@@ -149,7 +157,7 @@ public override void OnData(Slice slice)
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
     # Subscribe to SPY data and seed the last price
-    self.set_security_initializer(lamdba security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
     spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
     # Subscribe to SPY option data
     option = self.add_option(spy)
