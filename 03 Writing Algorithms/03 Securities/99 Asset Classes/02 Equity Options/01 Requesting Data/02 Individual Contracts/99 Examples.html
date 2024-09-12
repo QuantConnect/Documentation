@@ -2,33 +2,50 @@
 <p>A cover call consists of a short call and with a lot of the underlying equity. Although it capped the maximum profit if the underlying skyrocketted, it also provide extra credit received while speculating the underlying will rise.</p>
 <div class="section-example-container">
     <pre class="csharp">private Symbol _aapl;
-private Option _option;
+private List&lt;Symbol&gt; _options = new();
 
 public override void Initialize()
 {
-    // Subscribe to AAPL (underlying)
-    _aapl = AddEquity("AAPL").Symbol;
-    // Subscribe to AAPL's option
-    _option = AddOption(_aapl);
-    // Select the calls that is 2 strikes away from current price within 30 days expiry
-    _option.SetFilter((u) =&gt; u.CallsOnly().Strikes(-2, 2).Expiration(0, 30));
+    // Subscribe to AAPL data and seed the last price
+    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+    _aapl = AddEquity("AAPL", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+
+    // Refresh option list before market open
+    Schedule.On(
+        DateRules.EveryDay(_aapl),
+        TimeRules.At(9, 0),
+        RefreshOptionList
+    );
+}
+
+private void RefreshOptionList()
+{
+    // Get option contracts available for AAPL
+    var contractSymbols = OptionChainProvider.GetOptionContractList(_aapl, Time);
+    // Select the calls expires within 30 days and within $5 strike from ATM
+    _options = contractSymbols
+        .Where(symbol =&gt; 
+            symbol.ID.Date &lt; Time.AddDays(30) && 
+            symbol.ID.OptionRight == OptionRight.Call && 
+            Math.Abs(symbol.ID.StrikePrice - Securities[_aapl].Price) &lt;= 5
+        )
+        .Select(symbol =&gt; AddOptionContract(symbol).Symbol)
+        .ToList();
 }
 
 public override void OnData(Slice slice)
 {
-    // Get option chain of AAPL
-    if (!Portfolio.Invested &&
-        slice.OptionChains.TryGetValue(_option.Symbol, out var chain))
+    if (!Portfolio.Invested && slice.Bars.ContainsKey(_aapl) && _options.Count &gt; 0)
     {
         // Get the contract closest to ATM and expiry
-        var contract = chain.OrderBy(x =&gt; x.Expiry)
-            .ThenBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
+        var contract = _options.OrderBy(x =&gt; x.ID.Date)
+            .ThenBy(x =&gt; Math.Abs(x.ID.StrikePrice - slice.Bars[_aapl].Price))
             .First();
 
         // Short 1 option contract
-        MarketOrder(contract.Symbol, -1);
+        MarketOrder(contract, -1);
         // Order 1 lot of underlying
-        MarketOrder(_aapl, _option.SymbolProperties.ContractMultiplier);
+        MarketOrder(_aapl, Securities[contract].SymbolProperties.ContractMultiplier);
     }
 }
 
@@ -39,75 +56,104 @@ public override void OnOrderEvent(OrderEvent orderEvent)
     if (orderEvent.Ticket.OrderType == OrderType.OptionExercise &&
         !orderEvent.IsInTheMoney)
     {
-        MarketOrder(_aapl, -_option.SymbolProperties.ContractMultiplier);
+        MarketOrder(_aapl, -Securities[orderEvent.Symbol].SymbolProperties.ContractMultiplier);
     }
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to AAPL (underlying)
-    self.aapl = self.add_equity("AAPL").symbol
-    # Subscribe to AAPL's option
-    self.option = self.add_option(self.aapl)
-    # Select the calls that is 2 strikes away from current price within 30 days expiry
-    self.option.set_filter(lambda u: u.calls_only().strikes(-2, 2).expiration(0, 30))
+    self.options = []
+    # Subscribe to SPY data and seed the last price
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self.aapl = self.add_equity("AAPL", data_normalization_mode=DataNormalizationMode.RAW).symbol
+    
+    # Refresh option list before market open
+    self.schedule.on(
+        self.date_rules.every_day(self.aapl),
+        self.time_rules.at(9, 0),
+        self.refresh_option_list
+    )
+
+def refresh_option_list(self) -&gt; None:
+    # Get option contracts available for AAPL
+    contract_symbols = self.option_chain_provider.get_option_contract_list(self.aapl, self.time)
+    # Select the calls expires within 30 days and within $5 strike from ATM
+    self.options = [self.add_option_contract(symbol).symbol for symbol in contract_symbols
+        if symbol.id.date &lt; self.time + timedelta(30) \
+        and symbol.id.option_right == OptionRight.CALL \
+        and abs(symbol.id.strike_price - self.securities[self.aapl].price) &lt;= 5]
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Get option chain of AAPL
-    chain = slice.option_chains.get(self.option.symbol)
-    if self.portfolio.invested or not chain:
-        return
-    
-    # Get the contract closest to ATM and expiry
-    expiry = min(x.expiry for x in chain)
-    contracts = sorted([x for x in chain if x.expiry == expiry],
-                       key=lambda x: abs(x.strike - x.underlying_last_price))[0]
-        
-    # Short 1 option contract
-    self.market_order(contract.symbol, -1)
-    # Order 1 lot of underlying
-    self.market_order(self.aapl, self.option.symbol_properties.contract_multipliers)
+    if not self.portfolio.invested and self.aapl in slice.bars and self.options:
+        # Get the contract closest to ATM and expiry
+        expiry = min(x.id.date for x in self.options)
+        contract = sorted([x for x in self.options if x.id.date == expiry],
+            key=lambda x: abs(x.id.strike_price - self.securities[self.aapl].price))[0]
+            
+        # Short 1 option contract
+        self.market_order(contract, -1)
+        # Order 1 lot of underlying
+        self.market_order(self.aapl, self.securities[contract].symbol_properties.contract_multiplier)
 
 def on_order_event(self, order_event: OrderEvent) -&gt; None:
     # Exit AAPL if the short call is not exercised
     # If it is exercised, the underlying will be used to settle the contract automatically
     if order_event.ticket.order_type == OrderType.OPTION_EXERCISE \
     and not order_event.is_in_the_money:
-        self.market_order(self.aapl, -self.option.symbol_properties.contract_multipliers)</pre>
+        self.market_order(self.aapl, -self.securities[order_event.symbol].symbol_properties.contract_multiplier)</pre>
 </div>
 
 <h4>Example 2: 0-DTE Bull Put Spread</h4>
 <p>0DTE options often trades with high volume and volatility, providing arbitration opportunities and higher profit margin on spread type trading. In this example, we make use of 0-DTE SPY options to trade <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread">bull put spread</a> option strategy.</p>
 <div class="section-example-container">
-    <pre class="csharp">private Option _option;
+    <pre class="csharp">private Symbol _spy;
+private List&lt;Symbol&gt; _options = new();
 
 public override void Initialize()
 {
-    // Subscribe to SPY options
-    _option = AddOption("SPY");
-    // Select the 0-DTE puts that are 5 strikes away from current price and be able to form a put spread
-    _option.SetFilter((u) =&gt; u.IncludeWeeklys().Expiration(0, 0).PutSpread(0, 5));
+    // Subscribe to SPY data and seed the last price
+    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+    _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+
+    // Refresh option list before market open
+    Schedule.On(
+        DateRules.EveryDay(_spy),
+        TimeRules.At(9, 0),
+        RefreshOptionList
+    );
 
     // Exit all positions before market close
     Schedule.On(
-        DateRules.EveryDay(_option.Symbol),
-        TimeRules.BeforeMarketClose(_option.Symbol, 1),
+        DateRules.EveryDay(_spy),
+        TimeRules.BeforeMarketClose(_spy, 1),
         ExitPositions
     );
 }
 
+private void RefreshOptionList()
+{
+    // Get option contracts available for SPY
+    var contractSymbols = OptionChainProvider.GetOptionContractList(_spy, Time);
+    // Select the 0-DTE puts
+    var filteredSymbols = contractSymbols
+        .Where(symbol =&gt; symbol.ID.Date &lt; Time.AddDays(1) && symbol.ID.OptionRight == OptionRight.Put)
+        .ToList();
+    if (filteredSymbols.Count &lt; 2)
+    {
+        _options = new();
+        return;
+    }
+    // Select and subscribe to put contracts $5 away from ATM
+    var itmPut = filteredSymbols.MinBy(symbol =&gt; Math.Abs(symbol.ID.StrikePrice - Securities[_spy].Price - 5));
+    var otmPut = filteredSymbols.MinBy(symbol =&gt; Math.Abs(symbol.ID.StrikePrice - Securities[_spy].Price + 5));
+    _options = new List&lt;Symbol&gt; { AddOptionContract(itmPut).Symbol, AddOptionContract(otmPut).Symbol };
+}
+
 public override void OnData(Slice slice)
 {
-    // Get option chain of SPY
-    if (!Portfolio.Invested && Time.Hour &lt; 15 &&
-        slice.OptionChains.TryGetValue(_option.Symbol, out var chain))
+    if (!Portfolio.Invested && Time.Hour &lt; 15 &&  _options.Count == 2)
     {
-        // Obtain the ITM strike, OTM strike and expiry to form the bull put spread
-        var itmStrike = chain.Max(x =&gt; x.Strike);
-        var otmStrike = chain.Min(x =&gt; x.Strike);
-        var expiry = chain.Min(x =&gt; x.Expiry);
-
         // Form a bull put spread strategy and order
-        var bullPutSpread = OptionStrategies.BullPutSpread(_option.Symbol, itmStrike, otmStrike, expiry);
-        Buy(bullPutSpread, 1);
+        MarketOrder(_options.MaxBy(x =&gt; x.ID.StrikePrice), -1);
+        MarketOrder(_options.MinBy(x =&gt; x.ID.StrikePrice), 1);
     }
 }
 
@@ -117,32 +163,46 @@ private void ExitPositions()
     Liquidate();
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to SPY option
-    self.option = self.add_option("SPY")
-    # Select the 0-DTE puts that are 5 strikes away from current price and be able to form a put 
-    self.option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).put_spread(0, 5))
+    self.options = []
+    # Subscribe to SPY data and seed the last price
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+    
+    # Refresh option list before market open
+    self.schedule.on(
+        self.date_rules.every_day(self.spy),
+        self.time_rules.at(9, 0),
+        self.refresh_option_list
+    )
 
     # Exit all positions before market close
     self.schedule.on(
-        self.date_rules.every_day(self.option.symbol),
-        self.time_rules.before_market_close(self.option.symbol, 1),
+        self.date_rules.every_day(self.spy),
+        self.time_rules.before_market_close(self.spy, 1),
         self.exit_position
-    );
+    )
+
+def refresh_option_list(self) -&gt; None:
+    # Get option contracts available for SPY
+    contract_symbols = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
+    # Select the 0-DTE puts
+    filtered_symbols = [symbol for symbol in contract_symbols
+        if symbol.id.date &lt; self.time + timedelta(1) and symbol.id.option_right == OptionRight.PUT]
+    if len(filtered_symbols) &lt; 2:
+        self.options = []
+        return
+        
+    # Select and subscribe to put contracts $5 away from ATM
+    itm_put = sorted(filtered_symbols, key=lambda symbol: abs(symbol.id.strike_price - self.securities[self.spy].price - 5))[0]
+    otm_put = sorted(filtered_symbols, key=lambda symbol: abs(symbol.id.strike_price - self.securities[self.spy].price + 5))[0]
+    self.options = [self.add_option_contract(itm_put).symbol, self.add_option_contract(otm_put).symbol]
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Get option chain of AAPL
-    chain = slice.option_chains.get(self.option.symbol)
-    if self.portfolio.invested or self.time.hour >= 15 or not chain:
-        return
-    
-    # Obtain the ITM strike, OTM strike and expiry to form the bull put spread
-    expiry = min(x.expiry for x in chain)
-    itm_strike = max(x.strike for x in chain)
-    otm_strike = min(x.strike for x in chain)
-        
-    # Form a bull put spread strategy and order
-    bull_put_spread = OptionStrategies.bull_put_spread(self.option.symbol, itm_strike, otm_strike, expiry)
-    self.buy(bull_put_spread, 1)
+    if not self.portfolio.invested and self.time.hour &lt; 15 and len(self.options) == 2:
+        # Form a bull put spread strategy and order
+        sorted_by_strike = sorted(self.options, key=lambda x: x.id.strike_price)
+        self.market_order(sorted_by_strike[-1], -1)
+        self.market_order(sorted_by_strike[0], 1)
 
 def exit_position(self) -&gt; None:
     self.liquidate()</pre>
@@ -174,7 +234,7 @@ private void Filter()
 {
     // Get all option contracts trading
     var contractSymbols = OptionChainProvider.GetOptionContractList(_spy, Time);
-    // Get the first expiry that just over 7 days later and within 1 year
+    // Get the first expiry that just over 7 days later
     var expiry = contractSymbols.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(7))
         .Min(x =&gt; x.ID.Date);
     // Get contracts expires on the selected expiry
@@ -206,21 +266,13 @@ private decimal GetDelta(Symbol call, Symbol put)
 {
     // Create a new Delta indicator
     var delta = new Delta(call, RiskFreeInterestRateModel, _dividendYieldModel, put, OptionPricingModelType.ForwardTree);
-
     // Warm up the indicator using both mirror contract pairs and the underlying
-    var history = History&lt;QuoteBar&gt;(new[] { call, put, _spy }, 1, Resolution.Daily);
-    foreach (var bar in history)
-    {
-        delta.Update(new IndicatorDataPoint(call, bar[call].EndTime, bar[call].Close));
-        delta.Update(new IndicatorDataPoint(put, bar[put].EndTime, bar[put].Close));
-        delta.Update(new IndicatorDataPoint(_spy, bar[_spy].EndTime, bar[_spy].Close));
-    }
-
+    IndicatorHistory(delta, new[] { call, put, _spy }, 1);
     // Return the latest delta value
     return delta.Current.Value;
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    self.universe = []
+    self._universe = []
     # Subscribe to SPY
     self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
     # Instantiate dividend yield model
@@ -236,7 +288,7 @@ private decimal GetDelta(Symbol call, Symbol put)
 def filter(self) -&gt; None:
     # Get all option contracts trading
     contract_symbols = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
-    # Get the first expiry that just over 7 days later and within 1 year
+    # Get the first expiry that just over 7 days later
     expiry = min(x.id.date for x in contract_symbols if x.id.date &gt;= self.time + timedelta(7))
     # Get contracts expires on the selected expiry
     filtered = [x for x in contract_symbols if x.id.date == expiry]
@@ -255,20 +307,14 @@ def filter(self) -&gt; None:
         symbol_delta[call] = delta
     
     # Update the filtered list of contract symbols, subscribe to the contract data
-    self.universe = [self.add_option_contract(call).symbol 
-        for call, delta in symbol_delta if delta &gt;= 0.99]
+    self._universe = [self.add_option_contract(call).symbol 
+        for call, delta in symbol_delta.items() if delta &gt;= 0.99]
     
 def get_delta(self, call: Symbol, put: Symbol) -&gt; float:
     # Create a new Delta indicator
     delta = Delta(call, self.risk_free_interest_rate_model, self.dividend_yield_provider, put, OptionPricingModelType.FORWARD_TREE)
-
     # Warm up the indicator using both mirror contract pairs and the underlying
-    history = self.history[QuoteBar]([call, put, self.spy], 1, Resolution.DAILY)
-    for bar in history:
-        delta.update(IndicatorDataPoint(call, bar[call].end_time, bar[call].close))
-        delta.update(IndicatorDataPoint(put, bar[put].end_time, bar[put].close))
-        delta.update(IndicatorDataPoint(self.spy, bar[self.spy].end_time, bar[self.spy].close))
-    
+    self.indicator_history(delta, [call, put, self.spy], 1)
     # Return the latest delta value
     return delta.current.value</pre>
 </div>
