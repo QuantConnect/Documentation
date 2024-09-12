@@ -10,7 +10,7 @@
     // Filter for 0-DTE contracts within +/-10 strike range
     option.SetFilter(u =&gt; u.IncludeWeeklys().Expiration(0, 0).Strikes(-10, 10));
 }</pre>
-    <pre class="python">def initial(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Subscribe to SPY option data
     option = self.add_option("SPY")
     # Filter for 0-DTE contracts within +/-10 strike range
@@ -46,7 +46,7 @@ public override void OnData(Slice slice)
         Buy(longStraddle, 1);
     }
 }</pre>
-    <pre class="python">def initial(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Subscribe to SPY option data
     option = self.add_option("SPY")
     self._symbol = option.symbol
@@ -55,10 +55,11 @@ public override void OnData(Slice slice)
 
 def on_data(self, slice: Slice) -&gt; None:
     # Check if data is ready
-    if not self.portfolio.invested and self._symbol in slice.option_chains:
+    chain = slice.option_chains.get(self._symbol)
+    if not self.portfolio.invested and chain:
         # There should only be 1 expiry and 1 strike from the 2 contracts returned
-        expiry = chain[0].expiry
-        strike = chain[0].strike
+        expiry = list(chain)[0].expiry
+        strike = list(chain)[0].strike
     
         # Form a long straddle option strategy and trade
         long_straddle = OptionStrategies.straddle(self._symbol, strike, expiry)
@@ -116,7 +117,7 @@ public override void Initialize()
         return selected;
     }));
 }</pre>
-    <pre class="python">def initial(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Subscribe to SPY data and seed the last price
     self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
     self.underlying = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
@@ -126,14 +127,15 @@ public override void Initialize()
     option.set_filter(lambda u: u.include_weeklys().contracts(self.selection))
 
 # Define selection function
-def selection(self, contract: List[Symbol]) -&gt; List[Symbol]:
+def selection(self, contracts: List[Symbol]) -&gt; List[Symbol]:
     selected = []
 
     # Put contracts that expires 30 days later that is $5 below the current underlying price
-    puts = filter(lambda x: x.id.option_right == OptionRight.PUT and \
-            x.id.date &gt;= self.time + timedelta(30) and \
-            x.id.strike_price &lt;= self.underlying.price - 5,
-            contracts)
+    puts = [x for x in contracts
+        if x.id.option_right == OptionRight.PUT and \
+        x.id.date &gt;= self.time + timedelta(30) and \
+        x.id.strike_price &lt;= self.underlying.price - 5
+    ]
     if len(puts) &gt; 0:
         # Select the best match
         expiry = min(x.id.date for x in puts)
@@ -143,10 +145,11 @@ def selection(self, contract: List[Symbol]) -&gt; List[Symbol]:
         selected.append(put)
 
     # Call contract that expires 60 days later that is $10 above the current underlying price
-    calls = filter(lambda x: x.id.option_right == OptionRight.CALL and \
-            x.id.date &gt;= self.time + timedelta(60) and \
-            x.id.strike_price &gt;= self.underlying.price + 10,
-            contracts)
+    calls = [x for x in contracts
+        if x.id.option_right == OptionRight.CALL and \
+        x.id.date &gt;= self.time + timedelta(60) and \
+        x.id.strike_price &gt;= self.underlying.price + 10
+    ]
     if len(calls) &gt; 0:
         # Select the best match
         expiry = min(x.id.date for x in calls)
