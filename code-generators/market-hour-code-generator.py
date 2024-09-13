@@ -72,6 +72,9 @@ def __write_content(exchange, entries):
         if imax > 1 and len(parts) > 5 and parts[3] not in ['cfd', 'forex', 'index', 'indexoption']:
             entry['target'] = entry['target'] / f'{exchange} {parts[4].upper()}'
         
+        if imax == 1 and parts[3] in ['future']:
+            # Generic Future without other assets or one non-generic asset
+            entry['target'] = entry['target'] / f'{exchange} {parts[-2].upper()}'
         if parts[-1] != 'generic':
             name = parts[-1].upper()
 
@@ -80,9 +83,6 @@ def __write_content(exchange, entries):
             rows += f'<li>{href}</li>\n' if parts[3] == 'forex' \
                 else f'<tr><td>{href}</td><td>{entry["name"]}</td></tr>\n'
             i += 1
-        elif imax == 1 and parts[3] in ['future']:
-            # Generic Future without other assets
-            entry['target'] = entry['target'] / f'{exchange} {parts[-2].upper()}'
 
         entry['path'].mkdir(parents=True, exist_ok=True)
         entry['target'].mkdir(parents=True, exist_ok=True)
@@ -143,6 +143,8 @@ def __write_content(exchange, entries):
 
     if rows:
         entry = entries.get('[*]', None)
+        if not entry:
+            return
         fullname = entry['fullname']
         with open(entry['path'] / 'assets-with-other-hours.html', 'w', encoding='utf-8') as fp:
             if entry['path'].parts[3] == 'forex':
@@ -197,6 +199,7 @@ for key, entry in entries.items():
         'Equity-india-[*]': 'India Equity',
         'Option-usa-[*]': 'Equity Option',
         'Index-usa-[*]': 'US Indices',
+        'Index-eurex-[*]': 'EUREX Indices',
         'IndexOption-usa-[*]': 'US Index Option',
     }.get(key, tmp[0])
     asset_class = tmp[0].replace("Cfd", "CFD").replace("IndexOption", "US Index Option")
@@ -209,7 +212,7 @@ for key, entry in entries.items():
             "indexoption": f'Option contracts'
         }.get(tmp[0].lower(),
             f'contract in the {tmp[1].upper()} {asset_class}')
-    
+
     if tmp[0::2] == ["Future","[*]"]:
         fullname = f'{tmp[1].upper()} {asset_class}'
 
@@ -227,6 +230,7 @@ for key, entry in entries.items():
         'option-usa': '02 Equity Options/04 Market Hours',
         'forex-oanda': '05 Forex/04 Market Hours',
         'index-usa': '08 Index/04 Market Hours',
+        'index-eurex': '08 Index/04 Market Hours/99 EUREX',
         'indexoption-usa': '09 Index Options/04 Market Hours',
         'cfd-interactivebrokers': '10 CFD/04 Market Hours/01 Interactive Brokers',
         'cfd-oanda': '10 CFD/04 Market Hours/02 Oanda',
