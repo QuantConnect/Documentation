@@ -1,0 +1,150 @@
+<p>The following examples demonstrate some common practices for handling Futures data.</p>
+
+<h4>Example 1: Rollover</h4>
+<p>Spot Future is referred as the the continuous Future contract, which is usually mapped by the front month contract or the contract with the most open interest. When a contract is expired or very close to expiry, traders will roll over the current contract with the next contract to avoid price settlement and subsequent handling fees while keeping the investment positions. In Lean, we can make use of the <code class="csharp">OnSymbolChangedEvents</code></p><code class="python">on_symbol_changed_events</code> event handler to perform the rolling over.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Future _future;
+
+public override void Initialize()
+{
+    // Subscribe to continous future data and seed data with last price
+    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+    _future = AddFuture(Futures.Indices.SP500EMini,
+        extendedMarketHours: true,
+        dataMappingMode: DataMappingMode.OpenInterest,
+        dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+        contractDepthOffset: 0);
+}
+
+public override void OnData(Slice slice)
+{
+    // Initial order
+    if (!Portfolio.Invested)
+    {
+        MarketOrder(_future.Mapped, 1m);
+    }
+}
+
+// Track events when security changes its ticker, allowing the algorithm to adapt to these changes.
+public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+{
+    foreach (var (symbol, changedEvent) in symbolChangedEvents)
+    {
+        // Get the old and new mapped symbols
+        var oldSymbol = changedEvent.OldSymbol;
+        var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+        // Get the qunatity requried for rolling over
+        var quantity = Portfolio[oldSymbol].Quantity;
+
+        // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+        var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
+        Liquidate(oldSymbol, tag: tag);
+        if (quantity != 0)
+        {
+            LimitOrder(newSymbol, quantity, Securities[newSymbol].Price, tag: tag);
+        }
+    }
+}</pre>
+    <pre class="python">def initialize(self):
+    # Subscribe to continous future data and seed data with last price
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+        extended_market_hours=True,
+        data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+        data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+        contract_depth_offset=0)
+
+def on_data(self, data):
+    # Initial order
+    if not self.portfolio.invested:
+        self.market_order(self._future.symbol, 1)
+
+# Track events when security changes its ticker allowing algorithm to adapt to these changes.
+def on_symbol_changed_events(self, symbol_changed_events):
+    for symbol, changed_event in  symbol_changed_events.items():
+        # Get the old and new mapped symbols
+        old_symbol = changed_event.old_symbol
+        new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
+        # Get the qunatity requried for rolling over
+        quantity = self.portfolio[old_symbol].quantity
+
+        # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+        tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
+        self.liquidate(old_symbol, tag=tag)
+        if quantity:
+            self.limit_order(new_symbol, quantity, self.security[new_symbol].price, tag=tag)</pre>
+</div>
+
+<h4>Example 2: Micro Gold vs Gold</h4>
+<p>The following example will demonstrate how to use <code class="csharp">SymbolPropertiesDatabase</code><code class="python">self.symbol_properties_database</code> to obtain the contract multipliers of both Micro Gold and Gold Future contracts. By means of that, it then invests $500k nominal value for each contract.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Future _gold, _microGold;
+private decimal _goldMulitplier, _microGoldMulitplier;
+
+public override void Initialize()
+{
+    SetCash(1000000);
+    // Subscribe to micro gold and gold data and seed data with last price
+    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+    _gold = AddFuture(Futures.Metals.Gold,
+        extendedMarketHours: true,
+        dataMappingMode: DataMappingMode.OpenInterest,
+        dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+        contractDepthOffset: 0);
+    _microGold = AddFuture(Futures.Metals.MicroGold,
+        extendedMarketHours: true,
+        dataMappingMode: DataMappingMode.OpenInterest,
+        dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+        contractDepthOffset: 0);
+    // Obtain the contract multipliers using symbol properties database
+    _goldMulitplier = SymbolPropertiesDatabase.GetSymbolProperties(
+        Market.COMEX, _gold.Symbol, SecurityType.Future, _gold.QuoteCurrency.Symbol).ContractMultiplier;
+    _microGoldMulitplier = SymbolPropertiesDatabase.GetSymbolProperties(
+        Market.COMEX, _microGold.Symbol, SecurityType.Future, _microGold.QuoteCurrency.Symbol).ContractMultiplier;
+}
+
+public override void OnData(Slice slice)
+{
+    if (!Portfolio.Invested && slice.Bars.ContainsKey(_gold.Symbol) && slice.Bars.ContainsKey(_microGold.Symbol))
+    {
+        // Calculate the order size for $500k
+        var goldQuantity = Math.Floor(500000m / slice.Bars[_gold.Symbol].Close / _goldMulitplier);
+        var microGoldQuantity = Math.Floor(500000m / slice.Bars[_microGold.Symbol].Close / _microGoldMulitplier);
+
+        // Order
+        MarketOrder(_gold.Mapped, goldQuantity);
+        MarketOrder(_microGold.Mapped, microGoldQuantity);
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    self.set_cash(1000000)
+    # Subscribe to micro gold and gold data and seed data with last price
+    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    self.gold = self.add_future(Futures.Metals.GOLD,
+        extended_market_hours=True,
+        data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+        data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+        contract_depth_offset=0)
+    self.micro_gold = self.add_future(Futures.Metals.MICRO_GOLD,
+        extended_market_hours=True,
+        data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+        data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+        contract_depth_offset=0)
+    # Obtain the contract multipliers using symbol properties database
+    self.gold_multiplier = self.symbol_properties_database.get_symbol_properties(
+            Market.COMEX, self.gold.symbol, SecurityType.FUTURE, self.gold.quote_currency.symbol
+        ).contract_multiplier
+    self.micro_gold_multiplier = self.symbol_properties_database.get_symbol_properties(
+            Market.COMEX, self.micro_gold.symbol, SecurityType.FUTURE, self.micro_gold.quote_currency.symbol
+        ).contract_multiplier
+    
+def on_data(self, slice: Slice) -&gt; None:
+    if not self.portfolio.invested and self.gold.symbol in slice.bars and self.micro_gold.symbol in slice.bars:
+        # Calculate the order size for $500k
+        gold_quantity = 500000 / slice.bars[self.gold.symbol].close // self.gold_multiplier
+        micro_gold_quantity = 500000 / slice.bars[self.micro_gold.symbol].close // self.micro_gold_multiplier
+    
+        # Order
+        self.market_order(self.gold.mapped, gold_quantity)
+        self.market_order(self.micro_gold.mapped, micro_gold_quantity)</pre>
+</div>
