@@ -1,65 +1,63 @@
 <p>The following examples demonstrate some common practices for requesting Index data.</p>
 
 <h4>Example 1: Trading SPY using EMA Cross on VIX strategy</h4>
-<p>In this example, we will try to subscribe to VIX daily price data and use <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> indicator to create signals for the strategy. We will create a Slow EMA (30 periods) and a Fast EMA (15 periods) of the index and entry when the Fast EMA cross up the Slow EMA and exit otherwise.</p>
+<p>In this example, we will subscribe to VIX daily price data and use the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average (EMA)</a> indicator to create signals for the strategy. We will create a Slow EMA (30 periods) and a Fast EMA (15 periods) of the index, entering a position when the Fast EMA crosses above the Slow EMA and exiting when it crosses below.</p>
 <div class="section-example-container">
   <pre class="csharp">private ExponentialMovingAverage _emaFast;
 private ExponentialMovingAverage _emaSlow;
 private Symbol _vix;
 private Symbol _spy;
+private decimal tolerance;
 
 public override void Initialize()
 {
-  // Subscribe to VIX daily price data.
-  _vix = AddIndex("VIX", Resolution.Daily).Symbol;
-  _spy = AddEquity("SPY", Resolution.Daily).Symbol;
-  // Create fast and slow EMA indicators.
-  _emaFast = EMA(_vix, 15);
-  _emaSlow = EMA(_vix, 30);
-  // Define a small tolerance to avoid bouncing.
-  float tolerance = 0.00015
+    // Subscribe to VIX daily price data.
+    _vix = AddIndex("VIX", Resolution.Daily).Symbol;
+    _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+    // Create fast and slow EMA indicators.
+    _emaFast = EMA(_vix, 15);
+    _emaSlow = EMA(_vix, 30);
+    // Define a small tolerance to avoid bouncing.
+    tolerance = 0.00015M;
 }
 public override void OnData(Slice data)
 {
-  // Check if the indicators is ready.
-  if (!(_emaSlow.IsReady))
-  {
-    return;
-  }
-  // Buy SPY with 80% of the available cash if the fast ema of VIX crosses up the slow ema indicator.
-  if (Portfolio.Invested == False && (_emaFast.Current.Value > _emaSlow.Current.Value  * (1 + tolerance))
-  {
-    SetHoldings(_spy, 0.8)
-  }
-  if (Portfolio.Invested && (_emaFast.Current.Value < _emaSlow.Current.Value  * (1 + tolerance))
-  {
-    Liquidate(_spy)
-  }
-}
-
-  </pre>
+    // Check if the indicators is ready.
+    if (!(_emaSlow.IsReady))
+    {
+        return;
+    }
+    // Buy SPY with 80% of the available cash if the fast ema of VIX crosses up the slow ema indicator.
+    if (!Portfolio.Invested && (_emaFast.Current.Value > _emaSlow.Current.Value  * (1 + tolerance)))
+    {
+        SetHoldings(_spy, 0.8);
+    }
+    if (Portfolio.Invested && (_emaFast.Current.Value < _emaSlow.Current.Value  * (1 + tolerance)))
+    {
+        Liquidate(_spy);
+    }
+}</pre>
   <pre class="python">def initialize(self) -> None:
-  # Subscribe to VIX daily price data.
-  self._vix = self.add_index("VIX", Resolution.DAILY).symbol
-  self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
-  # Create fast and slow EMA indicators.
-  self.ema_fast = self.ema(self._vix, 15)
-  self.ema_slow = self.ema(self._vix, 30)
-  # Define a small tolerance to avoid bouncing.
-  self.tolerance = 0.00015
+    # Subscribe to VIX daily price data.
+    self._vix = self.add_index("VIX", Resolution.DAILY).symbol
+    self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+    # Create fast and slow EMA indicators.
+    self.ema_fast = self.ema(self._vix, 15)
+    self.ema_slow = self.ema(self._vix, 30)
+    # Define a small tolerance to avoid bouncing.
+    self.tolerance = 0.00015
 
 def on_data(self, slice: Slice) -> None:
-  # Check if the indicators is ready.
-  if not self.ema_slow.is_ready:
-    return
-  # Buy SPY with 80% of the available cash if the fast ema of VIX crosses up the slow ema indicator.
-  if not self.portfolio.invested:
-    if self.ema_fast.current.value > self.ema_slow.current.value * (1 + tolerance):
-      self.set_holdings(self._spy, 0.8)
-  # Liquidate the position if the fash ema of VIX crosses down the slow ema indicator.
-  if self.portfolio.invested:
-    if self.ema_fast.current.value < self.ema_slow.current.value * (1 + tolerance):
-      self.liquidate(self._spy)
-  </pre>
+    # Check if the indicators is ready.
+    if not self.ema_slow.is_ready:
+        return
+    # Buy SPY with 80% of the available cash if the fast ema of VIX crosses up the slow ema indicator.
+    if not self.portfolio.invested:
+        if self.ema_fast.current.value > self.ema_slow.current.value * (1 + self.tolerance):
+            self.set_holdings(self._spy, 0.8)
+    # Liquidate the position if the fash ema of VIX crosses down the slow ema indicator.
+    if self.portfolio.invested:
+        if self.ema_fast.current.value < self.ema_slow.current.value * (1 + self.tolerance):
+            self.liquidate(self._spy)</pre>
 </div>
 
