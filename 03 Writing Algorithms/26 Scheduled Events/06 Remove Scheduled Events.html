@@ -1,25 +1,29 @@
 <p>If you no longer need a Scheduled Event in your algorithm, remove it so your algorithm doesn't execute unnecessary functions. To remove a Scheduled Event, save a reference to the Scheduled Event when you create it and then call the <code class="csharp">Remove</code><code class="python">remove</code> method to remove it.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Remove a scheduled event by keeping a copy of the object on creation.
-var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-var scheduledEvent = Schedule.On(
-    DateRules.EveryDay(symbol),
-    TimeRules.AfterMarketOpen(symbol, 10),
-    TenMinutesAfterOpen
-);
+    <pre class="csharp">private ScheduledEvent _scheduledEvent;
 
-// Remove the scheduled event using the object reference.
-Schedule.Remove(scheduledEvent);
-</pre>
-    <pre class="python"># Remove a scheduled event by keeping a copy of the object on creation.
-symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
-scheduled_event = self.schedule.on(
-    self.date_rules.every_day(symbol),
-    self.time_rules.after_market_open(symbol, 10),       
-    self._ten_minutes_after_open
-)
+public override void Initialize()
+{
+    // Remove a scheduled event by keeping a copy of the object on creation.
+    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+    _scheduledEvent = Schedule.On(
+        DateRules.EveryDay(symbol),
+        TimeRules.AfterMarketOpen(symbol, 10),
+        TenMinutesAfterOpen
+    )
+};
 
-# Remove the scheduled event using the object reference.
-self.schedule.remove(scheduled_event)</pre>
+// Remove the scheduled event using the object reference in any method
+Schedule.Remove(_scheduledEvent);</pre>
+    <pre class="python">def initialize(self):
+    # Remove a scheduled event by keeping a copy of the object on creation.
+    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+    self.scheduled_event = self.schedule.on(
+        self.date_rules.every_day(symbol),
+        self.time_rules.after_market_open(symbol, 10),       
+        self._ten_minutes_after_open)
+
+# Remove the scheduled event using the object reference in any method
+self.schedule.remove(self.scheduled_event)</pre>
 </div>

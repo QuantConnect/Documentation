@@ -1,58 +1,70 @@
 <p>To create a Scheduled Event, call the <code class="csharp">Schedule.On</code><code class="python">schedule.on</code> method. The method expects a <code>DateRules</code> object, a <code>TimeRules</code> object, and a function to execute. The following examples demonstrate some common Scheduled Events.</p>
 
 <h4>Schedule Events Before Market Open</h4>
-<p>You may want to train a model or fetch historical data before the market opens. The following example demonstrates how to set a Scheduled Event for 10 minutes before the market opens. <br></p>
+<p>You may want to train a model or fetch historical data before the market opens. The following example demonstrates how to set a Scheduled Event for 10 minutes before the market opens.</p>
 <div class="section-example-container">
-    <pre class="csharp">// Call the BeforeMarketOpen method 10 minutes before open every day SPY is trading. 
-var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-Schedule.On(
-    DateRules.EveryDay(symbol),
-    TimeRules.AfterMarketOpen(symbol, -10),
-    BeforeMarketOpen
-);</pre>
-    <pre class="python"># Call the _before_market_open method 10 minutes before open every day SPY is trading. 
-symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
-self.schedule.on(
-    self.date_rules.every_day(symbol),
-    self.time_rules.after_market_open(symbol, -10),
-    self._before_market_open
-)</pre>
+    <pre class="csharp">public override void Initialize()
+{
+    // Call the BeforeMarketOpen method 10 minutes before open every day SPY is trading. 
+    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+    Schedule.On(
+        DateRules.EveryDay(symbol),
+        TimeRules.BeforeMarketOpen(symbol, 10),
+        BeforeMarketOpen
+    );
+}</pre>
+    <pre class="python">def initialize(self):
+    # Call the _before_market_open method 10 minutes before open every day SPY is trading. 
+    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+    self.schedule.on(
+        self.date_rules.every_day(symbol),
+        self.time_rules.before_market_open(symbol, 10),
+        self._before_market_open
+    )</pre>
 </div>
 
 <h4>Schedule Events on the Last Trading Day of the Week</h4>
 <p>You may want to rebalance your portfolio on the last trading day of each week and factor in market holidays. The following example demonstrates how to set a Scheduled Event for the last trading day of each week 30 minutes before the market closes.</p>
 <div class="section-example-container">
-    <pre class="csharp">// Call the Rebalance method 30 minutes before the end of the SPY trading week.
-var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-Schedule.On(
-    DateRules.WeekEnd(symbol),
-    TimeRules.BeforeMarketClose(symbol, 30),
-    Rebalance
-);</pre>
-    <pre class="python"># Call the _rebalance method 30 minutes before the end of the SPY trading week.
-symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
-self.schedule.on(
-    self.date_rules.week_end(symbol),
-    self.time_rules.before_market_close(symbol, 30),
-    self._rebalance
-)</pre>
+    <pre class="csharp">public override void Initialize()
+{
+    // Call the Rebalance method 30 minutes before the end of the SPY trading week.
+    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+    Schedule.On(
+        DateRules.WeekEnd(symbol),
+        TimeRules.BeforeMarketClose(symbol, 30),
+        Rebalance
+    );
+}</pre>
+    <pre class="python">def initialize(self):
+# Call the _rebalance method 30 minutes before the end of the SPY trading week.
+    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+    self.schedule.on(
+        self.date_rules.week_end(symbol),
+        self.time_rules.before_market_close(symbol, 30),
+        self._rebalance
+    )</pre>
 </div>
 
 <h4>Schedule Events on Regular Intervals Throughout the Trading Day</h4>
 <p>You may want to perform some action on a regular interval through each trading day. The following example demonstrates how to set a Scheduled Event for every 30 minutes through the trading day for SPY.</p>
 <div class="section-example-container">
-    <pre class="csharp">// Every day SPY is trading, call the 'SomeAction' method every 30 minutes.
-var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-Schedule.On(
-    DateRules.EveryDay(symbol),
-    TimeRules.Every(TimeSpan.FromMinutes(30)),
-    SomeAction
-);</pre>
-    <pre class="python"># Every day SPY is trading, call the '_some_action' method every 30 minutes.
-symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
-self.schedule.on(
-    self.date_rules.every_day(symbol),
-    self.time_rules.every(timedelta(minutes=30)),
-    self._some_action
-)</pre>
-</div>
+    <pre class="csharp">public override void Initialize()
+{
+    // Every day SPY is trading, call the 'SomeAction' method every 30 minutes.
+    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+    Schedule.On(
+        DateRules.EveryDay(symbol),
+        TimeRules.Every(TimeSpan.FromMinutes(30)),
+        SomeAction
+    );
+}</pre>
+    <pre class="python">def initialize(self):
+    # Every day SPY is trading, call the '_some_action' method every 30 minutes.
+    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+    self.schedule.on(
+        self.date_rules.every_day(symbol),
+        self.time_rules.every(timedelta(minutes=30)),
+        self._some_action
+    )</pre>
+</div> 
