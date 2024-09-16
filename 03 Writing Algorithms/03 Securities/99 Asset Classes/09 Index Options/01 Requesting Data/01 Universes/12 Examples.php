@@ -57,7 +57,7 @@ public override void OnData(Slice slice)
     # Filter the option universe by Delta.
     self._option.set_filter(lambda option_filter_universe: option_filter_universe.delta(0.25, 0.75))
 
-def on_data(self, slice: Slice) -> None:
+def on_data(self, slice: Slice) -&gt None:
     if self.portfolio.invested:
         return
     # Get the option chain data.
