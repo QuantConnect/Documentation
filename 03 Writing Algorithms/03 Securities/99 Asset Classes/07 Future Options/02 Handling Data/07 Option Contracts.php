@@ -3,6 +3,7 @@ $isFutureOptions = true;
 include(DOCS_RESOURCES."/securities/option-contracts.php"); 
 
 $contractTypeName = "Option";
+$pyContractTypeName = "option";
 $chainTypeName = "OptionChains";
 $csChainTypeName = "OptionChains";
 $pyChainTypeName = "option_chains";
