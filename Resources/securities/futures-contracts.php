@@ -6,8 +6,10 @@
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Try to get the OptionChain using the canonical symbol
     if (slice.FuturesChains.TryGetValue(<?=$cSharpMemberName?>.Canonical, out var chain))
     {
+        // Get individual contract data
         if (chain.Contracts.TryGetValue(<?=$cSharpMemberName?>, out var contract))
         {
             var price = contract.LastPrice;
@@ -15,10 +17,13 @@
     }
 }
 
+// // Using this overload will only handle any FutureChains object received
 public void OnData(FuturesChains futuresChains)
 {
+    // Try to get the OptionChain using the canonical symbol
     if (futuresChains.TryGetValue(<?=$cSharpMemberName?>.Canonical, out var chain))
     {
+        // Get individual contract data
         if (chain.Contracts.TryGetValue(<?=$cSharpMemberName?>, out var contract))
         {
             var price = contract.LastPrice;
@@ -26,8 +31,10 @@ public void OnData(FuturesChains futuresChains)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Try to get the OptionChain using the canonical symbol
     chain = slice.FuturesChains.get(<?=$pythonMemberName?>.Canonical)
     if chain:
+        # Get individual contract data (None if not contained)
         contract = chain.Contracts.get(<?=$pythonMemberName?>)
         if contract:
             price = contract.LastPrice</pre>

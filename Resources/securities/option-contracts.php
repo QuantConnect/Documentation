@@ -11,8 +11,10 @@ if ($isFutureOptions)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Try to get the OptionChain using the canonical symbol
     if (slice.OptionChains.TryGetValue(_optionContractSymbol.Canonical, out var chain))
     {
+        // Get individual contract data
         if (chain.Contracts.TryGetValue(_optionContractSymbol, out var contract))
         {
             var price = contract.Price;
@@ -21,8 +23,10 @@ if ($isFutureOptions)
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Try to get the OptionChain using the canonical symbol
     chain = slice.option_chains.get(self._option_contract_symbol.canonical)
     if chain:
+        # Get individual contract data
         contract = chain.contracts.get(self._option_contract_symbol)
         if contract:
             price = contract.price</pre>
@@ -33,6 +37,7 @@ if ($isFutureOptions)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Iterate all received Canonical Symbol-FuturesChain key-value pairs
     foreach (var kvp in slice.FuturesChains)
     {
         var continuousContractSymbol = kvp.Key;
@@ -41,8 +46,10 @@ if ($isFutureOptions)
         // Select a Future Contract and create its canonical FOP Symbol
         var futuresContract = futuresChain.First();
         var canonicalFOPSymbol = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        // Try to get the OptionChain using the canonical FOP symbol
         if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
+            // Get individual contract data
             if (optionChain.Contracts.TryGetValue(_optionContractSymbol, out var optionContract))
             {
                 var price = optionContract.Price;
@@ -51,12 +58,15 @@ if ($isFutureOptions)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Iterate all received Canonical Symbol-FuturesChain key-value pairs
     for continuous_future_symbol, futures_chain in slice.futures_chains.items():
         # Select a Future Contract and create its canonical FOP Symbol
         futures_contract = [contract for contract in futures_chain][0]
         canonical_fop_symbol = Symbol.create_canonical_option(futures_contract.symbol)
+        # Try to get the OptionChain using the canonical FOP symbol
         option_chain = slice.option_chains.get(canonical_fop_symbol)
         if option_chain:
+            # Get individual contract data
             option_contract = option_chain.contracts.get(self._option_contract_symbol)
             if option_contract:
                 price = option_contract.price</pre>
@@ -65,8 +75,10 @@ if ($isFutureOptions)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Try to get the OptionChain using the canonical symbol
     if (slice.OptionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
     {
+        // Get individual contract data
         if (chain.Contracts.TryGetValue(_contractSymbol, out var contract))
         {
             var price = contract.Price;
@@ -74,8 +86,10 @@ if ($isFutureOptions)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Try to get the OptionChain using the canonical symbol
     chain = slice.option_chains.get(self._contract_symbol.canonical)
     if chain:
+        # Get individual contract data
         contract = chain.contracts.get(self._contract_symbol)
         if contract:
             price = contract.price</pre>
@@ -97,20 +111,26 @@ if ($isFutureOptions)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Try to get the OptionChain using the canonical symbol
     if (slice.OptionChains.TryGetValue(_optionContractSymbol.Canonical, out var chain))
     {
+        // Get individual contract data
         if (chain.Contracts.TryGetValue(_optionContractSymbol, out var contract))
         {
+            // Get greeks data of the selected contract
             var delta = contract.Greeks.Delta;
             var iv = contract.ImpliedVolatility;
         }
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Try to get the OptionChain using the canonical symbol
     chain = slice.option_chains.get(self._option_contract_symbol.canonical)
     if chain:
+        # Get individual contract data
         contract = chain.contracts.get(self._option_contract_symbol)
         if contract:
+            # Get greeks data of the selected contract
             delta = contract.greeks.delta
             iv = contract.implied_volatility</pre>
 </div>
@@ -118,20 +138,26 @@ if ($isFutureOptions)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Try to get the OptionChain using the canonical symbol
     if (slice.OptionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
     {
+        // Get individual contract data
         if (chain.Contracts.TryGetValue(_contractSymbol, out var contract))
         {
+            // Get greeks data of the selected contract
             var delta = contract.Greeks.Delta;
             var iv = contract.ImpliedVolatility;
         }
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Try to get the OptionChain using the canonical symbol
     chain = slice.option_chains.get(self._contract_symbol.canonical)
     if chain:
+        # Get individual contract data
         contract = chain.contracts.get(self._contract_symbol)
         if contract:
+            # Get greeks data of the selected contract
             delta = contract.greeks.delta
             iv = contract.implied_volatility</pre>
 </div>
