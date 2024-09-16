@@ -1,0 +1,77 @@
+<p>The following examples demonstrate some common practices for requesting Future Option data through universe filtering.</p>
+
+<h4>Example 1: Call Spread</h4>
+<p>The following example demonstrates how to implement a <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-call-spread">bull call spread</a> option strategy using universe filtering. We have to first subscribe to the underlying Future (with filtering), then call <code class="csharp">AddFutureOption</code><code class="python">self.add_future_option</code> with the underlying <code>Symbol</code> and the filtering function. We use <code class="csharp">CallSpread</code><code class="python">call_spread</code> method in the <code>OptionFilterUniverse</code> object to return only the 2 best match call contracts that forms a bull call spread.</p>
+<div class="section-example-container">
+    <pre class="csharp">private Future _underlying;
+
+public override void Initialize()
+{
+    // Subscribe to the underlying and filter
+    _underlying = AddFuture(Futures.Indices.SP500EMini,
+        extendedMarketHours: true,
+        dataMappingMode: DataMappingMode.OpenInterest,
+        dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+        contractDepthOffset: 0);
+    _underlying.SetFilter(0, 182);
+    // Subscribe to future option with option universe filter
+    AddFutureOption(_underlying.Symbol, (u) =&gt; u.IncludeWeeklys().CallSpread(5, 5, -5));
+}
+
+public override void OnData(Slice slice)
+{
+    // Create canonical symbol for the mapped future contract
+    var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
+
+    // Get option chain data for the mapped future
+    if (!Portfolio.Invested && 
+        slice.OptionChains.TryGetValue(symbol, out var chain))
+    {
+        // Make sure at least 2 contracts
+        if (chain.Count() &lt; 2)
+        {
+            return;
+        }
+
+        // Obtain the high and low strike call
+        var itmCall = chain.MinBy(x =&gt; x.Strike);
+        var otmCall = chain.MaxBy(x =&gt; x.Strike);
+
+        // Set up option strategy to buy bull call spread
+        var optionStrategy = OptionStrategies.BullCallSpread(symbol, itmCall.Strike, otmCall.Strike, otmCall.Expiry);
+        Buy(optionStrategy, 1);
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Subscribe to the underlying and filter
+    self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
+        extended_market_hours=True,
+        data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+        data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+        contract_depth_offset=0)
+    self.underlying.set_filter(0, 182)
+    # Subscribe to future option with option universe filter
+    self.add_future_option(self.underlying.symbol, lambda u: u.include_weeklys().call_spread(5, 5, -5))
+    
+def on_data(self, slice: Slice) -&gt; None:
+    # Create canonical symbol for the mapped future contract
+    symbol = Symbol.create_canonical_option(self.underlying.mapped)
+
+    # Get option chain data for the mapped future
+    chain = slice.option_chains.get(symbol)
+    if not self.portfolio.invested and chain:
+        # Make sure at least 2 contracts
+        if len(list(chain)) &lt; 2:
+            return
+        
+        # Obtain the high and low strike call
+        sorted_by_strike = sorted(chain, key=lambda x: x.strike)
+        itm_call = sorted_by_strike[0]
+        otm_call = sorted_by_strike[-1]
+    
+        # Set up option strategy to buy bull call spread
+        option_strategy = OptionStrategies.bull_call_spread(symbol, itm_call.strike, otm_call.strike, otm_call.expiry)
+        self.buy(option_strategy, 1)</pre>
+</div>
+
+<p>Note that since both the underlying Future and the Future Option are expiring on the same day and are cash-settling in most cases, Lean can exercise the Future Option into account cash automatically at expiry and we do not need to handle the option exercise/assignment event.</p>
