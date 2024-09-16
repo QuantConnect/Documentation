@@ -16,14 +16,14 @@
          <td>Relatively simple strategies with less than 100 assets</td>
          <td>2</td>
          <td>8</td>
-         <td>10</td>
+         <td>6</td>
       </tr>
       <tr>
          <td>O4-12</td>
          <td>Strategies with less than 500 assets and simple universe selections</td>
          <td>4</td>
          <td>12</td>
-         <td>6</td>
+         <td>4</td>
       </tr>
       <tr>
          <td>O8-16</td>
