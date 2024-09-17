@@ -133,8 +133,8 @@ def on_data(self, slice: Slice) -&gt; None:
     chain = slice.option_chains.get(symbol)
     if not self.portfolio.invested and chain:
         # Obtain the ATM call that expires at the end of week
-        expiry = max(x.id.date for x in chain)
-        atm_call = sorted([x for x in chain if x.id.date == expiry],
+        expiry = max(x.expiry for x in chain)
+        atm_call = sorted([x for x in chain if x.expiry == expiry],
             key=lambda x: abs(x.strike - x.underlying_last_price))[0]
 
         # Set up option strategy to buy the cover call
