@@ -7,45 +7,47 @@
 
 public override void Initialize()
 {
-    // Add subscription of ES Futures
     var future = AddFuture(Futures.Indices.SP500EMini, extendedMarketHours: true);
     _future = future.Symbol;
-    // Filter the universe to front month contract
+    // We only want to hold position of the front month contract
     future.SetFilter((u) =&gt; u.OnlyApplyFilterAtMarketOpen().FrontMonth());
 }
 
 public override void OnSecuritiesChanged(SecurityChanges changes)
 {
-    // Liquidate if expired and exit universe
+    // Liquidate if expired (or not being the front month contract anymore) and exit universe
     foreach (var removed in changes.RemovedSecurities)
     {
         Liquidate(removed.Symbol);
     }
     
-    // Roll position to newly mapped contract
     foreach (var added in changes.AddedSecurities)
     {
+        // Make sure the newly added contract is an actual mapped tradable contract
         if (!added.Symbol.IsCanonical())
         {
+            // Roll over by ordering the same quantity
+            // Use limit order since market on open order is not supported on Future and avoid extreme quote filling
             LimitOrder(added.Symbol, 1m, Securities[_future].Price);
         }
     }
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Add subscription of ES Futures
     future = self.add_future(Futures.Indices.SP_500_E_MINI, extended_market_hours=True)
     self._future = future.symbol
-    # Filter the universe to front month contract
+    # We only want to hold position of the front month contract
     future.set_filter(lambda u: u.only_apply_filter_at_market_open().front_month())
 
 def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Liquidate if expired and exit universe
+    # Liquidate if expired (or not being the front month contract anymore) and exit universe
     for removed in changes.removed_securities:
         self.liquidate(removed.symbol)
     
-    # Roll position to newly mapped contract
     for added in changes.added_securities:
+        # Make sure the newly added contract is an actual mapped tradable contract
         if not added.symbol.is_canonical():
+            # Roll over by ordering the same quantity
+            # Use limit order since market on open order is not supported on Future and avoid extreme quote filling
             self.limit_order(added.symbol, 1, self.securities[self._future].price)</pre>
 </div>
 
@@ -56,70 +58,68 @@ def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
 
 public override void Initialize()
 {
-    // Add subscription of ES Futures with backward ratio normalization for continuous contract
+    // Use backward ratio normalization for continuous contract to feed smooth, comparable price series to the indicator
     _future = AddFuture(Futures.Indices.SP500EMini,
         dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
         extendedMarketHours: true);
-    // Filter the universe to front month contract
+    // We only want to hold position of the front month contract
     (_future as Future).SetFilter((u) =&gt; u.OnlyApplyFilterAtMarketOpen().FrontMonth());
-    // Create 252-day EMA indicator
+    // Create a 252-day EMA indicator as a trend estimator
     _future.ema = EMA(_future.Symbol, 252, Resolution.Daily);
-    // Warm up indicator
+    // Warm up the EMA indicator to make it readily available
     WarmUpIndicator((Symbol)_future.Symbol, (ExponentialMovingAverage)_future.ema);
 }
 
 public override void OnData(Slice slice)
 {
-    if (!slice.Bars.ContainsKey(_future.Symbol))
+    // Ensure the TradeBar data is available for the Future. Only use updated price data to update the indicator and make trading decision
+    if (slice.Bars.ContainsKey(_future.Symbol))
     {
-        return;
-    }
-
-    // Long the mapped contract if the current price above EMA
-    if (_future.ema.Current.Value &gt;= slice.Bars[_future.Symbol].Close)
-    {
-        SetHoldings(_future.Mapped, 0.1m);
-    }
-    // Short otherwise
-    else
-    {
-        SetHoldings(_future.Mapped, -0.1m);
+        // Buy the mapped contract if the trend is estimated to go up (price above EMA)
+        if (_future.ema.Current.Value &gt;= slice.Bars[_future.Symbol].Close)
+        {
+            SetHoldings(_future.Mapped, 0.1m);
+        }
+        // Short the mapped contract if the trend is estimated to go down (price below EMA)
+        else
+        {
+            SetHoldings(_future.Mapped, -0.1m);
+        }
     }
 }
 
 public override void OnSecuritiesChanged(SecurityChanges changes)
 {
-    // Liquidate if expired and exit universe
+    // Liquidate if expired (or not being the front month contract anymore) and exit universe
     foreach (var removed in changes.RemovedSecurities)
     {
         Liquidate(removed.Symbol);
     }
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Add subscription of ES Futures
+    # Use backward ratio normalization for continuous contract to feed smooth, comparable price series to the indicator
     self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
         data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
         extended_market_hours=True)
-    # Filter the universe to front month contract
+    # We only want to hold position of the front month contract
     self._future.set_filter(lambda u: u.only_apply_filter_at_market_open().front_month())
-    # Create 252-day EMA indicator
+    # Create a 252-day EMA indicator as a trend estimator
     self._future.ema = self.ema(self._future.symbol, 252, Resolution.DAILY)
-    # Warm up indicator
+    # Warm up the EMA indicator to make it readily available
     self.warm_up_indicator(self._future.symbol, self._future.ema)
 
 def on_data(self, slice: Slice) -&gt; None:
-    if not self._future.symbol in slice.bars:
-        return
-
-    # Long the mapped contract if the current price above EMA
-    if self._future.ema.current.value &gt;= slice.bars[self._future.symbol].close:
-        self.set_holdings(self._future.mapped, 0.1)
-    # Short otherwise
-    else:
-        self.set_holdings(self._future.mapped, -0.1)
+    # Ensure the TradeBar data is available for the Future. Only use updated price data to update the indicator and make trading decision
+    if self._future.symbol in slice.bars:
+        # Buy the mapped contract if the trend is estimated to go up (price above EMA)
+        if self._future.ema.current.value &gt;= slice.bars[self._future.symbol].close:
+            self.set_holdings(self._future.mapped, 0.1)
+        # Short the mapped contract if the trend is estimated to go down (price below EMA)
+        else:
+            self.set_holdings(self._future.mapped, -0.1)
 
 def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Liquidate if expired and exit universe
+    # Liquidate if expired (or not being the front month contract anymore) and exit universe
     for removed in changes.removed_securities:
         self.liquidate(removed.symbol)</pre>
 </div>
@@ -131,28 +131,27 @@ def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
 
 public override void Initialize()
 {
-    // Add subscription of micro gold Futures
+    // Allow extended market hours trade, which is common for Future
     var future = AddFuture(Futures.Metals.MicroGold, extendedMarketHours: true);
     _future = future.Symbol;
-    // Filter the universe to contracts expires within 3 months
-    future.SetFilter((u) =&gt; u.OnlyApplyFilterAtMarketOpen().Expiration(0, 95));
+    // Limit the expiration to within 6 months, as the longer the expiration, the higher the price uncertainty
+    future.SetFilter((u) =&gt; u.OnlyApplyFilterAtMarketOpen().Expiration(0, 183));
 }
 
 public override void OnData(Slice slice)
 {
-    // Get Future chain
+    // Get Future chain only for the selected Future contract
     if (!Portfolio.Invested && slice.FutureChains.TryGetValue(_future, out var chain))
     {
+        // It takes 2 contracts with different expiries to form a horizontal spread arbitration to earn price difference in contango
         if (chain.Count() &lt; 2) return;
-
-        // Get the far and near contract
         var farContract = chain.MaxBy(x =&gt; x.Expiry);
         var nearContract = chain.MinBy(x =&gt; x.Expiry);
 
         // Check if the far contract price is 1% higher than the near one
+        // If so, short the far contract and buy the near one to earn the horizontal spread premium
         if (farContract.BidPrice &gt;= nearContract.AskPrice * 1.01m)
         {
-            // If so, short the far contract and buy the near one to earn the premium
             MarketOrder(farContract.Symbol, -1);
             MarketOrder(nearContract.Symbol, 1);
         }
@@ -161,39 +160,38 @@ public override void OnData(Slice slice)
 
 public override void OnSecuritiesChanged(SecurityChanges changes)
 {
-    // Liquidate all positions if a contract expired and exit universe
+    // Liquidate if expired (or not being the front month contract anymore) and exit universe
     foreach (var removed in changes.RemovedSecurities)
     {
         Liquidate();
     }
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Add subscription of micro gold Futures
+    # Allow extended market hours trade, which is common for Future
     future = self.add_future(Futures.Metals.MICRO_GOLD, extended_market_hours=True)
     self._future = future.symbol
-    # Filter the universe to contracts expires within 3 months
-    future.set_filter(lambda u: u.only_apply_filter_at_market_open().expiration(0, 95))
+    # Limit the expiration to within 6 months, as the longer the expiration, the higher the price uncertainty
+    future.set_filter(lambda u: u.only_apply_filter_at_market_open().expiration(0, 183))
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Get Future chain
+    # Get Future chain only for the selected Future contract
     chain = slice.future_chains.get(self._future)
     if not self.portfolio.invested and chain:
+        # It takes 2 contracts with different expiries to form a horizontal spread arbitration to earn price difference in contango
         if len(list(chain)) &lt; 2:
             return
-
-        # Get the far and near contract
         sorted_by_expiry = sorted(chain, key=lambda x: x.expiry)
         far_contract = sorted_by_expiry[-1]
         near_contract = sorted_by_expiry[0]
 
         # Check if the far contract price is 1% higher than the near one
+        # If so, short the far contract and buy the near one to earn the horizontal spread premium
         if far_contract.bid_price &gt;= near_contract.ask_price * 1.01:
-            # If so, short the far contract and buy the near one to earn the premium
             self.market_order(far_contract.symbol, -1)
             self.market_order(near_contract.symbol, 1)
 
 def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Liquidate all positions if a contract expired and exit universe
+    # Liquidate if expired (or not being the front month contract anymore) and exit universe
     for removed in changes.removed_securities:
         self.liquidate()</pre>
 </div>
