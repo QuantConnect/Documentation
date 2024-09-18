@@ -8,15 +8,17 @@
 
 public override void Initialize()
 {
-    // Subscribe to the underlying and filter, seed the last price
+    // Seed the security price to ensure the underlying price is available at the initial filtering
     SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+    // Subscribe the underlying since the updated price is needed for filtering
     _underlying = AddFuture(Futures.Indices.SP500EMini,
         dataMappingMode: DataMappingMode.OpenInterest,
         dataNormalizationMode: DataNormalizationMode.Raw,
         contractDepthOffset: 0);
+    // Filter the underlying continuous Futures to narrow the FOP spectrum
     _underlying.SetFilter(0, 31);
 
-    // Schedule a monthly event on selection of future-future option pair
+    // Schedule a monthly event on selection of future-future option pair, since the portfolio rebalance on a monthly basis
     Schedule.On(
         DateRules.MonthStart(_underlying.Symbol),
         TimeRules.AfterMarketOpen(_underlying.Symbol, 0),
@@ -26,32 +28,34 @@ public override void Initialize()
 
 private void SelectionAndRebalance()
 {
-    // Get all available put Future Option contracts
+    // Get all available put FOP contract for the mapped underlying contract, since the trade liquidity and volatility is the highest
     var contractSymbols = OptionChainProvider.GetOptionContractList(_underlying.Mapped, Time)
         .Where(symbol =&gt; symbol.ID.OptionRight == OptionRight.Put)
         .ToList();
-    // The max expiry of the front month future will expire the same time as the future
+    // Select the ATM put expires the same date as the underlying. The max expiry of the FOP will expire the same time as the front month future
     var expiry = contractSymbols.Max(symbol =&gt; symbol.ID.Date);
-    // Get ATM contract
     var selected = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry)
         .OrderBy(symbol =&gt; Math.Abs(symbol.ID.StrikePrice - Securities[_underlying.Mapped].Price))
         .First();
+    // Request the FOP contract data for trading
     var contract = AddFutureOptionContract(selected);
 
-    // Formulate the protective put strategy that both Future and Future Option expires at end of month
+    // A Protective Put consists of long a lot of the underlying, and long a put contract
     MarketOrder(_underlying.Mapped, contract.SymbolProperties.ContractMultiplier);
     MarketOrder(contract.Symbol, 1);
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to the underlying and filter, seed the last price
+    # Seed the security price to ensure the underlying price is available at the initial filtering
     self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+    # Subscribe the underlying since the updated price is needed for filtering
     self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
         data_mapping_mode=DataMappingMode.OPEN_INTEREST,
         data_normalization_mode=DataNormalizationMode.RAW,
         contract_depth_offset=0)
+    # Filter the underlying continuous Futures to narrow the FOP spectrum
     self.underlying.set_filter(0, 31)
 
-    # Schedule a monthly event on selection of future-future option pair
+    # Schedule a monthly event on selection of future-future option pair, since the portfolio rebalance on a monthly basis
     self.schedule.on(
         self.date_rules.month_start(self.underlying.symbol),
         self.time_rules.after_market_open(self.underlying.symbol, 0),
@@ -59,18 +63,17 @@ private void SelectionAndRebalance()
     )
 
 def selection_and_rebalance(self) -&gt; None:
-    # Get all available Future Option contracts
+    # Get all available put FOP contract for the mapped underlying contract, since the trade liquidity and volatility is the highest
     contract_symbols = self.option_chain_provider.get_option_contract_list(self.underlying.mapped, self.time)
-    # Puts only
     contract_symbols = [symbol for symbol in contract_symbols if symbol.id.option_right == OptionRight.PUT]
-    # The max expiry of the front month future will expire the same time as the future
+    # Select the ATM put expires the same date as the underlying. The max expiry of the FOP will expire the same time as the front month future
     expiry = max(symbol.id.date for symbol in contract_symbols)
     filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry]
-    # Get ATM contract
     selected = sorted(filtered_symbols, key=lambda symbol: abs(symbol.id.strike_price - self.securities[self.underlying.mapped].price))[0]
+    # Request the FOP contract data for trading
     contract = self.add_future_option_contract(selected)
 
-    # Formulate the protective put strategy that both Future and Future Option expires at end of month
+    # A Protective Put consists of long a lot of the underlying, and long a put contract
     self.market_order(self.underlying.mapped, contract.symbol_properties.contract_multiplier)
     self.market_order(contract.symbol, 1)</pre>
 </div>
@@ -82,62 +85,63 @@ def selection_and_rebalance(self) -&gt; None:
 
 public override void Initialize()
 {
-    // Subscribe to the underlying and filter
+    // Subscribe the underlying since the updated price is needed for filtering
     _underlying = AddFuture(Futures.Indices.SP500EMini,
         extendedMarketHours: true,
         dataMappingMode: DataMappingMode.OpenInterest,
         dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
         contractDepthOffset: 0);
+    // Filter the underlying continuous Futures to narrow the FOP spectrum
     _underlying.SetFilter(0, 182);
-    // Subscribe to future option with option universe filter
-    // We try to get the call contracts that expire at the current week
+    // Filter for the current-week-expiring calls to formulate a covered call that expires at the end of week
     AddFutureOption(_underlying.Symbol, (u) =&gt; u.IncludeWeeklys().CallsOnly().Expiration(0, 5));
 }
 
 public override void OnData(Slice slice)
 {
-    // Create canonical symbol for the mapped future contract
+    // Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol
     var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
 
-    // Get option chain data for the mapped future
+    // Get option chain data for the mapped future, as both the underlying and FOP have the highest liquidity among all other contracts
     if (!Portfolio.Invested && 
         slice.OptionChains.TryGetValue(symbol, out var chain))
     {
-        // Obtain the ATM call that expires at the end of week
+        // Obtain the ATM call that expires at the end of week, such that both underlying and the FOP expires the same time
         var expiry = chain.Max(x =&gt; x.Expiry);
         var atmCall = chain.Where(x =&gt; x.Expiry == expiry)
             .OrderBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
             .First();
 
-        // Set up option strategy to buy the cover call
+        // Use abstraction method to order a covered call to avoid manual error
         var optionStrategy = OptionStrategies.CoveredCall(symbol, atmCall.Strike, expiry);
         Buy(optionStrategy, 1);
     }
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to the underlying and filter
+    # Subscribe the underlying since the updated price is needed for filtering
     self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
         extended_market_hours=True,
         data_mapping_mode=DataMappingMode.OPEN_INTEREST,
         data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
         contract_depth_offset=0)
+    # Filter the underlying continuous Futures to narrow the FOP spectrum
     self.underlying.set_filter(0, 182)
-    # Subscribe to future option with option universe filter
+    # Filter for the current-week-expiring calls to formulate a covered call that expires at the end of week
     self.add_future_option(self.underlying.symbol, lambda u: u.include_weeklys().calls_only().expiration(0, 5))
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Create canonical symbol for the mapped future contract
+    # Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol
     symbol = Symbol.create_canonical_option(self.underlying.mapped)
 
-    # Get option chain data for the mapped future
+    # Get option chain data for the mapped future, as both the underlying and FOP have the highest liquidity among all other contracts
     chain = slice.option_chains.get(symbol)
     if not self.portfolio.invested and chain:
-        # Obtain the ATM call that expires at the end of week
+        # Obtain the ATM call that expires at the end of week, such that both underlying and the FOP expires the same time
         expiry = max(x.expiry for x in chain)
         atm_call = sorted([x for x in chain if x.expiry == expiry],
             key=lambda x: abs(x.strike - x.underlying_last_price))[0]
 
-        # Set up option strategy to buy the cover call
+        # Use abstraction method to order a covered call to avoid manual error
         option_strategy = OptionStrategies.covered_call(symbol, atm_call.strike,expiry)
         self.buy(option_strategy, 1)</pre>
 </div>
