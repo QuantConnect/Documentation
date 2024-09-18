@@ -7,38 +7,44 @@
 
 public override void Initialize()
 {
-    // Set brokerage and base currency
-    SetAccountCurrency("USDT", 10000);
+    // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
     SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
-    // Add subscription of BTC-USD Futures
+    // In Binance brokerage, USD is not a valid currency to trade or automatically convertable
+    // Thus, we need to set account currency as USDT and add the starting cash
+    SetAccountCurrency("USDT", 10000);
+    // Add subscriptions to BTCUSDT Future with specific market to ensure the correct securities are selected
     _symbol = AddCryptoFuture("BTCUSDT", market: Market.Binance).Symbol;
 }
 
 public override void OnData(Slice slice)
 {
+    // Make sure to place order when market is open since market on open order is not accepted
     if (!Portfolio.Invested && IsMarketOpen(_symbol))
     {
-        // Get the lot size
+        // Lot size data can be obtained in symbol properties
+        // Placing an order rounded to the lot size ensures the order is valid and allows accurate calculation on profit and risk of the whole portfolio
         var lotSize = Securities[_symbol].SymbolProperties.LotSize;
-        // Obtain the rounded order quantity
-        var quantity = Convert.ToDecimal(Math.Floor(1.5 / (double)lotSize)) * lotSize;
-        // Order
+        // This example demonstrate an initial desired order size of 2.5 contracts, which will be rounded to 2 contracts since the lot size = 1
+        var quantity = Convert.ToDecimal(Math.Floor(2.5 / (double)lotSize)) * lotSize;
         MarketOrder(_symbol, quantity);
     }
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Set brokerage and base currency
-    self.set_account_currency("USDT", 10000)
+    # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
     self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
-    # Add subscription of BTC-USD Futures
+    # In Binance brokerage, USD is not a valid currency to trade or automatically convertable
+    # Thus, we need to set account currency as USDT and add the starting cash
+    self.set_account_currency("USDT", 10000)
+    # Add subscriptions to BTCUSDT Future with specific market to ensure the correct securities are selected
     self._symbol = self.add_crypto_future("BTCUSDT", market=Market.BINANCE).symbol
     
 def on_data(self, slice: Slice) -&gt; None:
+    # Make sure to place order when market is open since market on open order is not accepted
     if not self.portfolio.invested and self.is_market_open(self._symbol):
-        # Get the lot size
+        # Lot size data can be obtained in symbol properties
+        # Placing an order rounded to the lot size ensures the order is valid and allows accurate calculation on profit and risk of the whole portfolio
         lot_size = self.securities[self._symbol].symbol_properties.lot_size
-        # Obtain the rounded order quantity
-        quantity = 1.5 // lot_size * lot_size
-        # Order
+        # This example demonstrate an initial desired order size of 2.5 contracts, which will be rounded to 2 contracts since the lot size = 1
+        quantity = 2.5 // lot_size * lot_size
         self.market_order(self._symbol, quantity)</pre>
 </div>
