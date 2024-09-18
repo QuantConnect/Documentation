@@ -7,70 +7,72 @@
 
 public override void Initialize()
 {
-    // Subscribe to the underlying and filter
+    // Filter the underlying continuous Futures to narrow the FOP spectrum
     _underlying = AddFuture(Futures.Indices.SP500EMini,
         extendedMarketHours: true,
         dataMappingMode: DataMappingMode.OpenInterest,
         dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
         contractDepthOffset: 0);
     _underlying.SetFilter(0, 182);
-    // Subscribe to future option with option universe filter
+    // Use CallSpread filter to obtain the 2 best-matched contracts that forms a call spread
+    // It simplifies from further filtering and reduce computation on redundant subscription
     AddFutureOption(_underlying.Symbol, (u) =&gt; u.IncludeWeeklys().CallSpread(5, 5, -5));
 }
 
 public override void OnData(Slice slice)
 {
-    // Create canonical symbol for the mapped future contract
+    // Create canonical symbol for the mapped future contract, since we need that to access the option chain
     var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
 
-    // Get option chain data for the mapped future
+    // Get option chain data for the mapped future only
     if (!Portfolio.Invested && 
         slice.OptionChains.TryGetValue(symbol, out var chain))
     {
-        // Make sure at least 2 contracts
+        // It requires 2 contracts with different strikes to form a call spread, so we make sure at least 2 contracts are present
         if (chain.Count() &lt; 2)
         {
             return;
         }
 
-        // Obtain the high and low strike call
-        var itmCall = chain.MinBy(x =&gt; x.Strike);
-        var otmCall = chain.MaxBy(x =&gt; x.Strike);
+        // Separate the contracts by strike, as we need to access their strike 
+        var itmStrike = chain.Min(x =&gt; x.Strike);
+        var otmStrike = chain.Max(x =&gt; x.Strike);
 
-        // Set up option strategy to buy bull call spread
-        var optionStrategy = OptionStrategies.BullCallSpread(symbol, itmCall.Strike, otmCall.Strike, otmCall.Expiry);
+        // Use abstraction method to order a bull call spread to avoid manual error
+        var optionStrategy = OptionStrategies.BullCallSpread(symbol, itmStrike, otmStrike, chain.First().Expiry);
         Buy(optionStrategy, 1);
     }
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to the underlying and filter
+    # Filter the underlying continuous Futures to narrow the FOP spectrum
     self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
         extended_market_hours=True,
         data_mapping_mode=DataMappingMode.OPEN_INTEREST,
         data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
         contract_depth_offset=0)
     self.underlying.set_filter(0, 182)
-    # Subscribe to future option with option universe filter
+    # Use CallSpread filter to obtain the 2 best-matched contracts that forms a call spread
+    # It simplifies from further filtering and reduce computation on redundant subscription
     self.add_future_option(self.underlying.symbol, lambda u: u.include_weeklys().call_spread(5, 5, -5))
     
 def on_data(self, slice: Slice) -&gt; None:
-    # Create canonical symbol for the mapped future contract
+    # Create canonical symbol for the mapped future contract, since we need that to access the option chain
     symbol = Symbol.create_canonical_option(self.underlying.mapped)
 
-    # Get option chain data for the mapped future
+    # Get option chain data for the mapped future only
     chain = slice.option_chains.get(symbol)
     if not self.portfolio.invested and chain:
-        # Make sure at least 2 contracts
+        # It requires 2 contracts with different strikes to form a call spread, so we make sure at least 2 contracts are present
         if len(list(chain)) &lt; 2:
             return
         
-        # Obtain the high and low strike call
-        sorted_by_strike = sorted(chain, key=lambda x: x.strike)
-        itm_call = sorted_by_strike[0]
-        otm_call = sorted_by_strike[-1]
+        # Separate the contracts by strike, as we need to access their strike 
+        sorted_by_strike = sorted([x.strike for x in chain])
+        itm_strike = sorted_by_strike[0]
+        otm_strike = sorted_by_strike[-1]
     
-        # Set up option strategy to buy bull call spread
-        option_strategy = OptionStrategies.bull_call_spread(symbol, itm_call.strike, otm_call.strike, otm_call.expiry)
+        # Use abstraction method to order a bull call spread to avoid manual error
+        option_strategy = OptionStrategies.bull_call_spread(symbol, itm_strike, otm_strike, otm_call.expiry)
         self.buy(option_strategy, 1)</pre>
 </div>
 
