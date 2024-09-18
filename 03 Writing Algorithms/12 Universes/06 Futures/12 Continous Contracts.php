@@ -46,5 +46,7 @@
 <p>The <code class="csharp">dataMappingMode</code><code class="python">data_mapping_mode</code> argument defines when contract rollovers occur. The <code>DataMappingMode</code> enumeration has the following members:</p>
 <div data-tree="QuantConnect.DataMappingMode"></div>
 
+<p><code>Futures.Indices.VIX</code> (VX) doesn't support continous contract rolling with <code class="csharp">DataMappingMode.OpenInterest</code><code class="python">DataMappingMode.OPEN_INTEREST</code> and <code class="csharp">DataMappingMode.OpenInterestAnnuak</code><code class="python">DataMappingMode.OPEN_INTEREST_ANNUAL</code>.</p>
+
 <h4>Contract Depth Offsets</h4>
 <p>The <code class="csharp">contractDepthOffset</code><code class="python">contract_depth_offset</code> argument defines which contract to use. 0 is the front month contract, 1 is the following back month contract, and 3 is the second back month contract.</p>
