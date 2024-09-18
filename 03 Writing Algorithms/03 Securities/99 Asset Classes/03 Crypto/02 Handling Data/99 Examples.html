@@ -1,42 +1,43 @@
 <h4>Example 1: Dollar Cost Average BTC</h4>
-<p>Dollar cost averaging is a fixed investment in dollar amount on a regular basis (e.g. monthly) regardless of the asset's price. It can smoothen the volatility in PnL due to the averaging of acquisition price of each batch investment. In this example, we demonstrate a dollar cost average investment on BTC. We will invest $1000 USD worth of BTC every midnight EST for 30 consecutive days.</p>
+<p>Dollar cost averaging (DCA) is a fixed investment in dollar amount on a regular basis (e.g. monthly) regardless of the asset's price. It can smoothen the volatility in PnL due to the averaging of acquisition price of each batch investment. In this example, we demonstrate a dollar cost average investment on BTC. We will invest $1000 USD worth of BTC every midnight EST for 30 consecutive days.</p>
 <div class="section-example-container"></div>
 	<pre class="csharp">private Symbol _symbol;
+// Set a day count variable for counting the days of DCA trade
 private int _dayCount = 0;
 
 public override void Initialize()
 {
-    // Set Brokerage as Bitfinex
+    // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
     SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Cash);
-    // Add subscription of BTC-USD daily data
+    // For daily DCA investment, subscription to daily data is sufficient
+    // Add subscriptions to cryptos with specific market to ensure the correct securities are selected
     _symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
 }
 
 public override void OnData(Slice slice)
 {
-    // Check if already invested for 30 consecutive days
-    // Add day count
+    // If already invested for 30 consecutive days, stop additional investment
     if (slice.Bars.ContainsKey(_symbol) && _dayCount++ &lt; 30)
     {
-        // Calculate the order size for $10000 USD
+        // Calculate the order size for $10000 USD using the current price
         var size = 10000m / slice.Bars[_symbol].Close;
-        // Place order
         MarketOrder(_symbol, size);
     }
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
+    # Set a day count variable for counting the days of DCA trade
     self.day_count = 0
-    # Set Brokerage as Bitfinex
+    # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
     self.set_brokerage_model(BrokerageName.BITFINEX, AccountType.CASH)
-    # Add subscription of BTC-USD daily data
+    # For daily DCA investment, subscription to daily data is sufficient
+    # Add subscriptions to cryptos with specific market to ensure the correct securities are selected
     self._symbol = self.add_crypto("BTCUSD", Resolution.DAILY, Market.BITFINEX).symbol
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Check if already invested for 30 consecutive days
+    # If already invested for 30 consecutive days, stop additional investment
     if self._symbol in slice.bars and self.day_count &lt; 30:
-        # Calculate the order size for $10000 USD
+        # Calculate the order size for $10000 USD using the current price
         size = 10000 / slice.bars[self._symbol].close
-        # Place order
         self.market_order(self._symbol, size)
     
         # Add day count
@@ -51,34 +52,32 @@ private Symbol _coinbaseBtc;
 
 public override void Initialize()
 {
-    // Add subscription of BTC-USD of Kraken exchange
+    // Add subscription of BTC-USD of 2 different exchanges in order to obtain the inter-market spread
     _krakenBtc = AddCrypto("BTCUSD", market: Market.Kraken).Symbol;
-    // Add subscription of BTC-USD of Coinbase exchange
     _coinbaseBtc = AddCrypto("BTCUSD", market: Market.Coinbase).Symbol;
 }
 
 public override void OnData(Slice slice)
 {
-    // Check if data available
+    // Only compare the price if prices of both exchanges are updated for fair comparison
     if (slice.Bars.ContainsKey(_krakenBtc) && slice.Bars.ContainsKey(_coinbaseBtc))
     {
-        // Calculate the spread between the 2 exchanges
+        // Calculate the spread between the 2 exchanges, make sure the comparison is always in the same direction
         var spread = slice.Bars[_krakenBtc].Close - slice.Bars[_coinbaseBtc].Close;
-        // Plot the spread between the 2 exchanges
+        // Plot the spread between the 2 exchanges in a custom plot and series by the plot and series name
         Plot("BTC Close Spread", "Spread", spread);
     }
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
-    # Add subscription of BTC-USD of Kraken exchange
+    # Add subscription of BTC-USD of 2 different exchanges in order to obtain the inter-market spread
     self.kraken_btc = self.add_crypto("BTCUSD", market=Market.KRAKEN).symbol
-    # Add subscription of BTC-USD of Coinbase exchange
     self.coinbase_btc = self.add_crypto("BTCUSD", market=Market.COINBASE).symbol
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Check if data available
+    # Only compare the price if prices of both exchanges are updated for fair comparison
     if self.kraken_btc in slice.bars and self.coinbase_btc in slice.bars:
-        # Calculate the spread between the 2 exchanges
+        # Calculate the spread between the 2 exchanges, make sure the comparison is always in the same direction
         spread = slice.bars[self.kraken_btc].close - slice.bars[self.coinbase_btc].close
-        # Plot the spread between the 2 exchanges
+        # Plot the spread between the 2 exchanges in a custom plot and series by the plot and series name
         self.plot("BTC Close Spread", "Spread", spread)</pre>
 </div>
