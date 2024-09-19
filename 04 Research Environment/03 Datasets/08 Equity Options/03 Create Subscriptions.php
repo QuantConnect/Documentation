@@ -24,10 +24,10 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     </div>
     <li><span class='qualifier'>(Optional)</span> Set a <a href="/docs/v2/writing-algorithms/universes/equity-options#03-Filter-Contracts">contract filter</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">// Set contract filter to select contracts that have the strike price 
+        <pre class="csharp">// Set the contract filter to select contracts that have the strike price 
 // within 1 strike level and expire within 90 days.
 option.set_filter(-1, 1, 0, 90);</pre>
-        <pre class="python"># Set contract filter to select contracts that have the strike price 
+        <pre class="python"># Set the contract filter to select contracts that have the strike price 
 # within 1 strike level and expire within 90 days.
 option.set_filter(-1, 1, 0, 90)</pre>
     </div>
