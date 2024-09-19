@@ -1,32 +1,32 @@
-<p>Follow these steps to get the values of implied volatility, and Greeks:</p>
+<p>Follow these steps to get the values of implied volatility and the Greeks:</p>
 
 <ol>
-    <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions</a> of the underlying. Get and filter the option contracts.</li>
+    <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Subscribe to the underlying Equity</a>.</li>
     <div class="section-example-container">
         <pre class="python">qb = QuantBook()
 
 # Set price seeder to ensure underlying price ready for filtering
 qb.set_security_initializer(lambda security: FuncSecuritySeeder(qb.get_last_known_prices).seed_security(security))
 # Subscribe to the underlying Equity with raw data normalization.
-underlying = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
-underlying_price = qb.securities[underlying].price
+underlying = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
+        <pre class="csharp">var qb = new QuantBook();
 
-# Get the Option contracts that were tradable on August 28th, 2024.
+// Set price seeder to ensure underlying price ready for filtering
+qb.SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(qb.GetLastKnownPrices).SeedSecurity(security));
+// Subscribe to the underlying Equity with raw data normalization.
+var underlying = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
+    </div>
+
+    <li>Select some Option contracts that share the same expiration date.</li>
+    <div class="section-example-container">
+        <pre class="python"># Get the Option contracts that were tradable on August 28th, 2024.
 qb.set_start_date(2024, 8, 28)
 contract_list = qb.option_chain_provider.get_option_contract_list(underlying, qb.start_date)
 expiry = min([x.id.date for x in contract_list])
 
 # Select the call contracts that expire the earliest. 
 contract_list = [s for s in contract_list if s.id.date == expiry]</pre>
-        <pre class="csharp">var qb = new QuantBook();
-
-// Set price seeder to ensure underlying price ready for filtering
-qb.SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(qb.GetLastKnownPrices).SeedSecurity(security));
-// Subscribe to the underlying Equity with raw data normalization.
-var underlying = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-var underlyingPrice = qb.Securities[underlying].Price;
-
-// Get the Option contracts that were tradable on August 28th, 2024.
+        <pre class="csharp">// Get the Option contracts that were tradable on August 28th, 2024.
 qb.SetStartDate(2024, 8, 28);
 var contractList = qb.OptionChainProvider.GetOptionContractList(underlying, qb.StartDate);
 var expiry = contractList.Min(x =&gt; x.ID.Date);
@@ -34,27 +34,27 @@ var expiry = contractList.Min(x =&gt; x.ID.Date);
 // Select the call contracts that expire the earliest. 
 contractList = contractList.Where(s =&gt; s.ID.Date == expiry).ToList();</pre>
     </div>
-
-    <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators">Implied Volatility & Greeks Indicators</a> for each contract selected.</li>
+    
+    <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators">Implied Volatility & Greeks Indicators</a> for each contract.</li>
     <div class="section-example-container">
-        <pre class="python"># Set up risk free rate, dividend yield, and option pricing model
+        <pre class="python"># Set up the risk free rate, dividend yield, and Option pricing models.
 risk_free_rate_model = qb.risk_free_interest_rate_model
 dividend_yield_model = DividendYieldProvider(underlying)
 option_model = OptionPricingModelType.FORWARD_TREE
 
-# Define a method to generate the option indicator history
+# Define a method to generate the Option indicator history.
 def get_indicators(contracts):
-    # Mirror option contract pairs
+    # Get the put/call contract pair.
     call, put = contracts
     if call.id.option_right == OptionRight.PUT:
         call, put = put, call
 
     def get_value(indicator):
-        # Use both call and put contract with the underlying to obtain indicator history and update the indicator
+        # Use both contracts and the underlying to update the indicator and get its value.
         qb.indicator_history(indicator, [call, put, call.Underlying], 1)
         return indicator.current.value
 
-    # Obtain values from all IV and Greeks indicators
+    # Get the values of all the IV and Greek indicators.
     return {
         'iv_call': get_value(ImpliedVolatility(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
         'iv_put': get_value(ImpliedVolatility(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
@@ -69,12 +69,12 @@ def get_indicators(contracts):
         'theta_call': get_value(Theta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
         'theta_put': get_value(Theta(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
     }</pre>
-        <pre class="csharp">// Set up risk free rate, dividend yield, and option pricing model
+        <pre class="csharp">// Set up the risk free rate, dividend yield, and Option pricing models.
 var riskFreeRateModel = qb.RiskFreeInterestRateModel;
 var dividendYieldModel = new DividendYieldProvider(underlying);
 var optionModel = OptionPricingModelType.ForwardTree;
 
-// Define a method to generate the option indicator history
+// Define a method to generate the Option indicator history.
 (decimal IVCall, decimal IVPut,
 decimal DeltaCall, decimal DeltaPut,
 decimal GammaCall, decimal GammaPut,
@@ -84,12 +84,12 @@ decimal RhoCall, decimal RhoPut) GetIndicators(Symbol call, Symbol put)
 {
     decimal GetValue(OptionIndicatorBase indicator)
     {
-        // Use both call and put contract with the underlying to obtain indicator history and update the indicator
+        // Use both contracts and the underlying to update the indicator and get its value.
         qb.IndicatorHistory(indicator, new[] { call, put, underlying }, 1);
         return indicator.Current.Value;
     }
 
-    // Obtain values from all IV and Greeks indicators
+    // Get the values of all the IV and Greek indicators.
     return (
         IVCall: GetValue(new ImpliedVolatility(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
         IVPut: GetValue(new ImpliedVolatility(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
@@ -107,17 +107,17 @@ decimal RhoCall, decimal RhoPut) GetIndicators(Symbol call, Symbol put)
 }</pre>
     </div>
 
-    <li>Group contracts by strike price, then obtain the indicators' values.</li>
+    <li>Group the contracts by their strike price and then get the indicator values.</li>
     <div class="section-example-container">
         <pre class="python">from itertools import groupby
 keyfunc = lambda x: x.id.strike_price
-# Use strike price to group option contracts and generate Greeks indicators
+# Use the strike price to group Option contracts and generate indicator values.
 indicators_by_strike = {int(strike): get_indicators(group) for strike, group in groupby(sorted(contract_list, key=keyfunc), keyfunc)}
-# Organize data in a dataframe
+# Organize the data in a DataFrame.
 df = pd.DataFrame(indicators_by_strike.values(), index=indicators_by_strike.keys())</pre>
-        <pre class="csharp">// Get all strike prices
+        <pre class="csharp">// Get all strike prices.
 var strikes = contractList.Select(x =&gt; x.ID.StrikePrice).Distinct().OrderBy(x =&gt; x);
-// A dictionary to hold greeks data
+// Create a dictionary to hold the indicator data.
 var greeks = new Dictionary&lt;decimal, (decimal IVCall, decimal IVPut,
     decimal DeltaCall, decimal DeltaPut,
     decimal GammaCall, decimal GammaPut,
@@ -125,25 +125,25 @@ var greeks = new Dictionary&lt;decimal, (decimal IVCall, decimal IVPut,
     decimal ThetaCall, decimal ThetaPut,
     decimal RhoCall, decimal RhoPut)&gt;();
 
-// Iterate each strike and obtain all the greek and IV indicator values
+// Iterate each strike and get all the indicator values.
 foreach (var strike in strikes)
 {
-    // Get call and put contract of the same strike
+    // Get the call/put contract pair for this strike.
     var filtered = contractList.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
     var call = filtered.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Call);
     var put = filtered.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Put);
-    // If either call or put absent, ignore
+    // If we're missing one of the contracts in the pair, continue.
     if (call == null || put == null) continue;
 
-    // Generate the IV and Greeks data
+    // Generate the IV and Greeks data.
     greeks[strike] = GetIndicators(call, put);
 }</pre>
     </div>
 
-    <p>(Optional) We can also plot the Implied Volatility smile across different strike prices:</p>
+    <li>(Optional) Plot the Implied Volatility smile across different strike prices.</li>
     <div class="section-example-container">
         <pre class="python">df[['iv_call', 'iv_put']].plot(kind='line', title=f"IV by Strike", ylabel=field, xlabel="Strike", figsize=(8, 6))</pre>
-        <pre class="csharp">// Plot IV by strikes for both call and put
+        <pre class="csharp">// Plot the IV of each strike for the call and put contract.
 var ivCall = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
     greeks.Select(kvp =&gt; kvp.Key),
     greeks.Select(kvp =&gt; kvp.Value.IVCall)
@@ -153,27 +153,27 @@ var ivPut = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
     greeks.Select(kvp =&gt; kvp.Value.IVPut)
 );
 
-// Combine 2 line charts in the same plot
+// Combine 2 line charts in the same plot.
 var chartList = new List&lt;GenericChart.GenericChart&gt;();
 chartList.Add(ivCall);
 chartList.Add(ivPut);
 var combinedChart = Plotly.NET.Chart.Combine(chartList);
 
-// Set the title, x-axis and y-axis labels
+// Set the title, x-axis and y-axis labels.
 LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Strike");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "IV");
 Title title = Title.init($"Implied Volatility by Strikes");
 
-// Set up layout
+// Set up layout.
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
 layout.SetValue("title", title);
 combinedChart.WithLayout(layout);
 
-// Display the plot
+// Display the plot.
 HTML(GenericChart.toChartHTML(combinedChart))</pre>
     </div>
 
