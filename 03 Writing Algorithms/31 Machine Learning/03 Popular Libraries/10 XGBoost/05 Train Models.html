@@ -3,14 +3,14 @@
 <h4>Warm Up Training Data</h4>
 <p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-    <pre class="python"># Create 2 years (252 trading days per year) period.
+    <pre class="python"># Create a 2 year (252 trading days per year) period.
 training_length = 252*2
 # Create a rolling window to store training data.
 self.training_data = RollingWindow[float](training_length)
-# Request 2 years of daily data.
+# Get 2 years of daily data.
 history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
 for trade_bar in history:
-    # Populate the close price data to the training_data window.
+    # Populate the training_data window with the close price data.
     self.training_data.add(trade_bar.close)</pre>
 </div>
 
@@ -32,11 +32,11 @@ def get_features_and_labels(self, n_steps=5):
 
     features = np.array(features)
     labels = np.array(labels)
-    # Compute standard score for the features and labels array.
+    # Standardize the features and labels arrays.
     features = (features - features.mean()) / features.std()
     labels = (labels - labels.mean()) / labels.std()
 
-    # Load the NumPy array to the DMatrix object.
+    # Load the NumPy array into a DMatrix object.
     d_matrix = xgb.DMatrix(features, label=labels)
 
     return d_matrix
@@ -55,7 +55,7 @@ def my_training_method(self):
         'objective': 'reg:squarederror',
         'subsample': 0.8,
       }
-    # Create the model and fit the training data. 
+    # Create the model and fit it with the training data. 
     self.model = xgb.train(params, d_matrix, num_boost_round=10)</pre>
 </div>
 
@@ -77,6 +77,6 @@ self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), se
     <pre class="python"># Add the latest bar to training data to ensure the model is trained with the most recent market data.
 def on_data(self, slice: Slice) -&gt; None:
     if self._symbol in slice.bars:
-        # Update the training data with new value of close price. 
+        # Update the training data with new most recent close price. 
         self.training_data.add(slice.bars[self._symbol].close)</pre>
 </div>
