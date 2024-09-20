@@ -1,4 +1,4 @@
-<p>The Greeks and IV values in the <a href='<?=$filterLink?>'>filter function</a> are daily, pre-calculated values based on the end of the previous trading day.</p>
+<p>The Greeks and IV values in the <a href='<?=$filterLink?>'>filter function</a> are the daily, pre-calculated values based on the end of the previous trading day.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
