@@ -1,0 +1,37 @@
+<p>
+  To get the daily, pre-calculated Greeks and implied volaility of all the currently tradable contracts, call the <code class='csharp'>OptionChain</code><code class='python'>option_chain</code> method.
+  <span class='csharp'>This method returns a collection of <code>OptionUniverse</code> objects, where each object represents a contract.</span>
+  <span class='python'>
+    This method returns a <code>DataHistory[OptionUniverse]</code> object, which you can format into a DataFrame or iterate through.
+    Each row in the DataFrame and each <code>OptionUniverse</code> object represents a single contract.
+  </span>
+  The data it returns contains information on all the currently tradable contract, not just the contracts that pass your filter.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void OnData(Slice data)
+{
+    foreach (var optionUniverse in OptionChain(_symbol)) 
+    {
+        var close = optionUniverse.Close;
+        var oi = optionUniverse.OpenInterest;
+        var delta = optionUniverse.Greeks.Delta;
+    }
+}</pre>
+    <pre class="python">def on_data(self, data):
+    option_chain = self.option_chain(self._symbol)
+
+    # Get the DataFrame format.
+    df = option_chain.data_frame
+    for (symbol, time), row in oc.data_frame.iterrows():
+        close = row['close']
+        oi = row['open_interest']
+        delta = row['greeks'].delta
+        
+
+    # Get the OptionUniverse objects format.
+    for option_universe in self.option_chain(self._symbol):
+        close = option_universe.close
+        oi = option_universe.open_interest
+        delta = option_universe.greeks.delta</pre>
+</div>
