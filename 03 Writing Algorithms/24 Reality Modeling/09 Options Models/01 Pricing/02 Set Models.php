@@ -3,14 +3,16 @@
 <p>If you have access to the <code>Option</code> object when you subscribe to the Option universe or contract, you can set the price model immediately after you create the subscription.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In Initialize
-UniverseSettings.Asynchronous = true;
-var option = AddOption("SPY");
-option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
-    <pre class="python"># In Initialize
-self.universe_settings.asynchronous = True
-option = self.add_option("SPY")
-option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
+    <pre class="csharp">public override Initialize()
+{
+    UniverseSettings.Asynchronous = true;
+    var option = AddOption("SPY");
+    option.PriceModel = OptionPriceModels.CrankNicolsonFD();
+}</pre>
+    <pre class="python">def initialize(self):
+    self.universe_settings.asynchronous = True
+    option = self.add_option("SPY")
+    option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
 <p>Otherwise, set the price model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
