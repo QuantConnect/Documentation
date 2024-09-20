@@ -28,10 +28,12 @@
         oi = row['open_interest']
         delta = row['greeks'].delta
         
-
     # Get the OptionUniverse objects format.
-    for option_universe in self.option_chain(self._symbol):
+    for option_universe in option_chain:
         close = option_universe.close
         oi = option_universe.open_interest
         delta = option_universe.greeks.delta</pre>
 </div>
+
+<p><code>OptionUniverse</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
