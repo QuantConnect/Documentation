@@ -5,15 +5,6 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">UniverseSettings.Asynchronous = true;
-var option = AddOption("SPY");
-_symbol = option.Symbol;</pre>
-    <pre class="python">self.universe_settings.asynchronous = True
-option = self.add_option("SPY")
-self._symbol = option.symbol</pre>
-</div>
-
-<div class="section-example-container">
     <pre class="csharp">public class BasicOptionAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
