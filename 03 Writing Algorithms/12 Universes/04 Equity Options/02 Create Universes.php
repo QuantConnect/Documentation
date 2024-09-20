@@ -13,7 +13,7 @@
     {
         var option = AddOption("SPY");
         option.SetFilter(-1, 1);
-			  _symbol = option.Symbol;
+         _symbol = option.Symbol;
     }
 
     public override void OnData(Slice data)
@@ -24,10 +24,11 @@
             {
                 var strike = contract.Strike;
             }
-			  } 
+        } 
     }
 }</pre>
     <pre class="python">class BasicOptionAlgorithm(QCAlgorithm):
+    
     def initialize(self):
         option = self.add_option("SPY")
         option.set_filter(min_strike=-1, max_strike=1)
@@ -35,8 +36,8 @@
     
     def on_data(self, data):
         chain = data.option_chains.get(self._symbol)
-			  if chain:
-			      for symbol, contract in chain.contracts.items():
+        if chain:
+            for symbol, contract in chain.contracts.items():
                 contract.strike</pre>
 </div>
 
