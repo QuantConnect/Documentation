@@ -1,0 +1,22 @@
+<p>To perform thorough filtering on the <code>OptionFilterUniverse</code>, define an isolated filter method.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Select the put contracts with the lowest strike price.
+option.SetFilter(Selector);
+    
+private OptionFilterUniverse Selector(OptionFilterUniverse optionFilterUniverse)
+{
+    var symbols = optionFilterUniverse.PutsOnly();
+    var strike = symbols.Select(symbol => symbol.ID.StrikePrice).Min();
+    symbols = symbols.Where(symbol => symbol.ID.StrikePrice == strike);
+    return optionFilterUniverse.Contracts(symbols);
+}</pre>
+    <pre class="python"># Select the put contracts with the lowest strike price.
+option.set_filter(self._contract_selector)
+    
+def _contract_selector(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
+    symbols = option_filter_universe.puts_only()
+    strike = min([symbol.id.strike_price for symbol in symbols])
+    symbols = [symbol for symbol in symbols if symbol.id.strike_price == strike]
+    return option_filter_universe.contracts(symbols)</pre>
+</div>
