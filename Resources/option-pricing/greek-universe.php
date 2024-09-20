@@ -1,4 +1,4 @@
-<p>The Greeks and IV values in the filter function are daily, pre-calculated values based on the end of the previous trading day.</p>
+<p>The Greeks and IV values in the <a href='<?=$filterLink?>'>filter function</a> are daily, pre-calculated values based on the end of the previous trading day.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
@@ -12,6 +12,6 @@
 </div>
 
 <p>
-    You can't customize the Greeks and IV values that the <a href='<?=$filterLink?>'>filter function</a> receives.
+    You can't customize the Greeks and IV values that the filter function receives.
     However, you can create <a href='<?=$indicatorLink?>'>indicators</a> to customize how the Greeks and IV are calculated for the contracts already in your universe.
 </p>
