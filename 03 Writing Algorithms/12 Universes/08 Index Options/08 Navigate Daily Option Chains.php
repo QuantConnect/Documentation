@@ -27,7 +27,7 @@
         close = row['close']
         oi = row['open_interest']
         delta = row['greeks'].delta
-        
+    
     # Get the OptionUniverse objects format.
     for option_universe in option_chain:
         close = option_universe.close
