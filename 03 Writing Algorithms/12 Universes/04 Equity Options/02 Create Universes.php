@@ -11,34 +11,40 @@
     
     public override void Initialize()
     {
+        UniverseSettings.Asynchronous = true;
         var option = AddOption("SPY");
-        option.SetFilter(-1, 1);
-         _symbol = option.Symbol;
+        option.SetFilter(Filter);
+        _symbol = option.Symbol;
     }
+
+    private OptionFilterUniverse Filter(OptionFilterUniverse universe)
+    {
+        return universe.IncludeWeeklys().Expiration(0, 7).Delta(0.35m, 0.75m);
+    } 
 
     public override void OnData(Slice data)
     {
         if (data.OptionChains.TryGetValue(_symbol, out var chain))
         {
-            foreach (var contract in chain.Contracts.Values)
-            {
-                var strike = contract.Strike;
-            }
+            var contract = chain.OrderBy(x =&gt; x.Greeks.Delta).FirstOrDefault();   
         } 
     }
 }</pre>
     <pre class="python">class BasicOptionAlgorithm(QCAlgorithm):
     
     def initialize(self):
+        self.universe_settings.asynchronous = True
         option = self.add_option("SPY")
-        option.set_filter(min_strike=-1, max_strike=1)
+        option.set_filter(self._filter)
         self._symbol = option.symbol
-    
+
+    def _filter(self, universe):
+        return universe.include_weeklys().expiration(0, 7).delta(0.35, 0.75)
+
     def on_data(self, data):
         chain = data.option_chains.get(self._symbol)
         if chain:
-            for symbol, contract in chain.contracts.items():
-                contract.strike</pre>
+            contract = sorted(chain, key=lambda x: (x.expiry, x.greeks.delta))[0]</pre>
 </div>
 
 <p>The following table describes the <code class="csharp">AddOption</code><code class="python">add_option</code> method arguments:</p>

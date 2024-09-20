@@ -5,10 +5,45 @@
 <p>To create a universe of Index Options based on an index like VIX, SPX, or NDX, pass the index ticker to the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var option = AddIndexOption("VIX");
-_symbol = option.Symbol;</pre>
-    <pre class="python">option = self.add_index_option("VIX")
-self._symbol = option.symbol</pre>
+    <pre class="csharp">public class BasicIndexOptionAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    
+    public override void Initialize()
+    {
+        UniverseSettings.Asynchronous = true;
+        var option = AddIndexOption("SPX", "SPXW");
+        option.SetFilter(Filter);
+        _symbol = option.Symbol;
+    }
+
+    private OptionFilterUniverse Filter(OptionFilterUniverse universe)
+    {
+        return universe.IncludeWeeklys().Expiration(0, 7).Delta(0.35m, 0.75m);
+    } 
+
+    public override void OnData(Slice data)
+    {
+        if (data.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            var contract = chain.OrderBy(x =&gt; x.Expiry).ThenBy(x =&gt; x.Greeks.Delta).FirstOrDefault();   
+        } 
+    }
+}</pre>
+    <pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.universe_settings.asynchronous = True
+        option = self.add_index_option("SPX","SPXW")
+        option.set_filter(self._filter)
+        self._symbol = option.symbol
+
+    def _filter(self, universe):
+        return universe.include_weeklys().expiration(0, 7).delta(0.35, 0.75)
+
+    def on_data(self, data):
+        chain = data.option_chains.get(self._symbol)
+        if chain:
+            contract = sorted(chain, key=lambda x: (x.expiry, x.greeks.delta))[0]</pre>
 </div>
 
 <p>The following table describes the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method arguments for standard universes:</p>

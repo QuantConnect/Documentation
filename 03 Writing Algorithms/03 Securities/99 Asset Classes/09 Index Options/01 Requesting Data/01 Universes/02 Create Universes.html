@@ -3,32 +3,43 @@
 <div class="section-example-container">
     <pre class="csharp">public class BasicIndexOptionAlgorithm : QCAlgorithm
 {
+    private Symbol _symbol;
+    
     public override void Initialize()
     {
-        var option = AddIndexOption("SPX");
-        option.SetFilter(-1, 1);
+        UniverseSettings.Asynchronous = true;
+        var option = AddIndexOption("SPX", "SPXW");
+        option.SetFilter(Filter);
+        _symbol = option.Symbol;
     }
+
+    private OptionFilterUniverse Filter(OptionFilterUniverse universe)
+    {
+        return universe.IncludeWeeklys().Expiration(0, 7).Delta(0.35m, 0.75m);
+    } 
 
     public override void OnData(Slice data)
     {
-        foreach (var chain in data.OptionChains.Values)
+        if (data.OptionChains.TryGetValue(_symbol, out var chain))
         {
-            foreach (var contract in chain.Contracts.Values)
-            {
-                var strike = contract.Strike;
-            }
-        }
+            var contract = chain.OrderBy(x =&gt; x.Expiry).ThenBy(x =&gt; x.Greeks.Delta).FirstOrDefault();   
+        } 
     }
 }</pre>
     <pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
     def initialize(self):
-        option = self.add_index_option("SPX")
-        option.set_filter(min_strike=-1, max_strike=1)
-    
+        self.universe_settings.asynchronous = True
+        option = self.add_index_option("SPX","SPXW")
+        option.set_filter(self._filter)
+        self._symbol = option.symbol
+
+    def _filter(self, universe):
+        return universe.include_weeklys().expiration(0, 7).delta(0.35, 0.75)
+
     def on_data(self, data):
-        for canonical_symbol, chain in data.option_chains.items():
-            for symbol, contract in chain.contracts.items():
-                contract.strike</pre>
+        chain = data.option_chains.get(self._symbol)
+        if chain:
+            contract = sorted(chain, key=lambda x: (x.expiry, x.greeks.delta))[0]</pre>
 </div>
 
 <p>For more information about the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method, see <a href='/docs/v2/writing-algorithms/universes/index-options#02-Create-Universes'>Create Universes</a>.</p>
