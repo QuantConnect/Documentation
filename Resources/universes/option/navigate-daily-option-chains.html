@@ -19,17 +19,17 @@
     }
 }</pre>
     <pre class="python">def on_data(self, data):
-    option_chain = self.option_chain(self._symbol)
+    daily_option_chain = self.option_chain(self._symbol)
 
     # Get the DataFrame format.
-    df = option_chain.data_frame
-    for (symbol, time), row in oc.data_frame.iterrows():
+    df = daily_option_chain.data_frame
+    for (symbol, time), row in df.iterrows():
         close = row['close']
         oi = row['open_interest']
         delta = row['greeks'].delta
     
     # Get the OptionUniverse objects format.
-    for option_universe in option_chain:
+    for option_universe in daily_option_chain:
         close = option_universe.close
         oi = option_universe.open_interest
         delta = option_universe.greeks.delta</pre>
