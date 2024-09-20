@@ -7,4 +7,5 @@
   $assetClass = "Option";
   include(DOCS_RESOURCES."/universes/option/filter-examples-pricing.html");
   include(DOCS_RESOURCES."/universes/option/option-filter-universe-pricing.html"); 
+  include(DOCS_RESOURCES."/universes/option/filter-examples-pricing-isolated-filter.html");
 ?>
