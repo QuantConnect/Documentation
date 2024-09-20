@@ -1,4 +1,8 @@
-<p>To add a universe of Equity Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddOption</code><code class="python">add_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code class="csharp">Symbol</code><code class="python">symbol</code>. You can't trade with the canonical Option <code class="csharp">Symbol</code><code class="python">symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/universes/equity-options#04-Navigate-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
+<p>
+	To add a universe of Equity Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddOption</code><code class="python">add_option</code> method. 
+	This method returns an <code>Option</code> object, which contains the canonical <code class="csharp">Symbol</code><code class="python">symbol</code>. 
+	You can't trade with the canonical Option <code class="csharp">Symbol</code><code class="python">symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/universes/equity-options#04-Navigate-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.
+</p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -7,6 +11,42 @@ _symbol = option.Symbol;</pre>
     <pre class="python">self.universe_settings.asynchronous = True
 option = self.add_option("SPY")
 self._symbol = option.symbol</pre>
+</div>
+
+<div class="section-example-container">
+    <pre class="csharp">public class BasicOptionAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    
+    public override void Initialize()
+    {
+        var option = AddOption("SPY");
+        option.SetFilter(-1, 1);
+			  _symbol = option.Symbol;
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            foreach (var contract in chain.Contracts.Values)
+            {
+                var strike = contract.Strike;
+            }
+			  } 
+    }
+}</pre>
+    <pre class="python">class BasicOptionAlgorithm(QCAlgorithm):
+    def initialize(self):
+        option = self.add_option("SPY")
+        option.set_filter(min_strike=-1, max_strike=1)
+        self._symbol = option.symbol
+    
+    def on_data(self, data):
+        chain = data.option_chains.get(self._symbol)
+			  if chain:
+			      for symbol, contract in chain.contracts.items():
+                contract.strike</pre>
 </div>
 
 <p>The following table describes the <code class="csharp">AddOption</code><code class="python">add_option</code> method arguments:</p>
