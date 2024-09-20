@@ -1,7 +1,7 @@
 <? 
-$addOptionPy = "self.add_option(\"GOOG\")
+$addOptionPy = "self.add_option(\"SPY\")
 ";
-$addOptionC = "AddOption(\"GOOG\");
+$addOptionC = "AddOption(\"SPY\");
 ";
 $filterLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/universes#04-Filter-by-Implied-Volatility-and-Greeks";
 $indicatorLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators";
