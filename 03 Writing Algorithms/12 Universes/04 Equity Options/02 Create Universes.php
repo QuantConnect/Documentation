@@ -90,14 +90,3 @@ self._symbol = option.symbol</pre>
 </table>
 
 <p>If you already have a subscription to the underlying Equity but it's not <code class="csharp">Raw</code><code class="python">RAW</code> data normalization, LEAN automatically changes it to <code class="csharp">Raw</code><code class="python">RAW</code>.</p>
-
-<p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
-
-<div class="section-example-container">
-    <pre class="csharp">// Set price_model property to use the Crank-Nicolson finite-difference model to price the options.
-option.price_model = OptionPriceModels.crank_nicolson_fd();</pre>
-    <pre class="python"># // Set price_model field to use the Crank-Nicolson finite-difference model to price the options.
-option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
-</div>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
