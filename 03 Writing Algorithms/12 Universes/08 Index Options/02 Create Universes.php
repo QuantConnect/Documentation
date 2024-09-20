@@ -108,14 +108,3 @@ self._symbol = option.symbol</pre>
 </table>
 
 <p>If you add an Option universe for an underlying Index that you don't have a subscription for, LEAN automatically subscribes to the underlying Index.</p>
-
-<h4>Configure Reality Models</h4>
-
-<p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
-
-<div class="section-example-container">
-    <pre class="csharp">option.price_model = OptionPriceModels.crank_nicolson_fd();</pre>
-    <pre class="python">option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
-</div>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
