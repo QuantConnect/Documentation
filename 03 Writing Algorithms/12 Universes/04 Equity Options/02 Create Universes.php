@@ -18,7 +18,7 @@
 
     public override void OnData(Slice data)
     {
-        if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+        if (data.OptionChains.TryGetValue(_symbol, out var chain))
         {
             foreach (var contract in chain.Contracts.Values)
             {
