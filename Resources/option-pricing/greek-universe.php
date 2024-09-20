@@ -11,6 +11,8 @@
     option.set_filter(lambda universe: universe.include_weeklys().delta(0.3, 0.7).expiration(0,7))</pre>
 </div>
 
+<p><?=$calculationMethod?></p>
+
 <p>
     You can't customize the Greeks and IV values that the filter function receives.
     However, you can create <a href='<?=$indicatorLink?>'>indicators</a> to customize how the Greeks and IV are calculated for the contracts already in your universe.
