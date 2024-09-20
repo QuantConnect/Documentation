@@ -1,5 +1,5 @@
 <p>
-  The Greeks and IV values that you get from the current <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> are from the calculations of the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.
+  The Greeks and IV values that you get from the current <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> are from the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a> calculations.
   These values aren't the same as the values you get in the universe filter function.
 </p>
 
