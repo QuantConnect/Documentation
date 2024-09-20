@@ -1,1 +1,1 @@
-<p>The Greeks and IV values that you get from the <a href='<?=$indicatorLink?>'>indicators</a> come from the same calculation as the values in the filter function, but they reflect intraday prices not just daily closing prices.</p>
+<p>The Greeks and IV values that you get from the <a href='<?=$indicatorLink?>'>indicators</a> are calculated in the same way as the values you get in the filter function, but they can reflect intraday prices instead of just the daily closing prices.</p>
