@@ -33,8 +33,8 @@
 
 <p>In this case, you still need the Equity <code>Symbol</code> to subscribe to Equity Option contracts. If you don't have access to it, create it.</p>
 <div class="section-example-container">
-    <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
-    <pre class="python">self._symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)</pre>
+    <pre class="csharp">_underlying = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
+    <pre class="python">self._underlying = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)</pre>
 </div>
 
 <h4>Manually Creating Option Symbol Objects</h4>
@@ -46,9 +46,9 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
+    <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_underlying, Market.USA,
     OptionStyle.American, OptionRight.Call, 365, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self._contract_symbol = Symbol.create_option(self._symbol, Market.USA,
+    <pre class="python">self._contract_symbol = Symbol.create_option(self._underlying, Market.USA,
     OptionStyle.AMERICAN, OptionRight.CALL, 365, datetime(2022, 6, 17))</pre>
 </div>
 
