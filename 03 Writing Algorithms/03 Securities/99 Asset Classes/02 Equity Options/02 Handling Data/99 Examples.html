@@ -1,188 +1,200 @@
 <h4>Example 1: Get Mid Price For Individual Contracts</h4>
 <p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Equity Option contracts to calculate mid price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/individual-contracts">filter individual option contracts and request data</a> using <code class="csharp">OptionChainProvider.GetOptionContractList</code><code class="python">self.option_chain_provider.get_option_contract_list</code> method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.</p>
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _spy;
-private List&lt;Symbol&gt; _contracts = new();
+	<pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private List&lt;Symbol&gt; _contracts = new();
         
-public override void Initialize()
-{
-    // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering
-    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
-    // Subscribe to underlying data for ATM calculation using the update underlying price
-    // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable
-    _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-
-    // Update the tradable contracts daily before market open since the option contract list provider populate them daily
-    Schedule.On(
-        DateRules.EveryDay(_spy),
-        TimeRules.At(9, 0),
-        UpdateContracts
-    );
-}
-
-private void UpdateContracts()
-{
-    // Get all contracts that expiring this week to trade with, subscribe to data for trading need
-    _contracts = OptionChainProvider.GetOptionContractList(_spy, Time)
-        .Where(x =&gt; x.ID.Date &lt;= Expiry.EndOfWeek(Time))
-        .Select(x =&gt; AddOptionContract(x).Symbol)
-        .ToList();
-}
-
-public override void OnData(Slice slice)
-{
-    // Only focus on filtered list of option contracts to trade
-    foreach (var contract in _contracts)
+    public override void Initialize()
     {
-        // Mid price can only be calculated when quote bar data is available
-        if (slice.QuoteBars.ContainsKey(contract))
+        // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        // Subscribe to underlying data for ATM calculation using the update underlying price.
+        // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+
+        // Update the tradable contracts daily before market open since the option contract list provider populate them daily.
+        Schedule.On(
+            DateRules.EveryDay(_spy),
+            TimeRules.At(9, 0),
+            UpdateContracts
+        );
+    }
+
+    private void UpdateContracts()
+    {
+        // Get all contracts that expiring this week to trade with, subscribe to data for trading need.
+        _contracts = OptionChainProvider.GetOptionContractList(_spy, Time)
+            .Where(x =&gt; x.ID.Date &lt;= Expiry.EndOfWeek(Time))
+            .Select(x =&gt; AddOptionContract(x).Symbol)
+            .ToList();
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only focus on filtered list of option contracts to trade.
+        foreach (var contract in _contracts)
         {
-            var quote = slice.QuoteBars[contract];
-            if (quote.Bid != null && quote.Ask != null)
+            // Mid price can only be calculated when quote bar data is available.
+            if (slice.QuoteBars.ContainsKey(contract))
             {
-                // Mid price = average of bid close price and ask close price
-                var midPrice = (quote.Bid.Close + quote.Ask.Close) * 0.5m;
+                var quote = slice.QuoteBars[contract];
+                if (quote.Bid != null && quote.Ask != null)
+                {
+                    // Mid price = average of bid close price and ask close price.
+                    var midPrice = (quote.Bid.Close + quote.Ask.Close) * 0.5m;
+                }
             }
         }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    self.contracts = []
+	<pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.contracts = []
 
-    # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering
-    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
-    # Subscribe to underlying data for ATM calculation using the update underlying price
-    # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable
-    self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+        # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        # Subscribe to underlying data for ATM calculation using the update underlying price.
+        # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
     
-    # Update the tradable contracts daily before market open since the option contract list provider populate them daily
-    self.schedule.on(
-        self.date_rules.every_day(self.spy),
-        self.time_rules.at(9, 0),
-        self.update_contracts
-    )
+        # Update the tradable contracts daily before market open since the option contract list provider populate them daily.
+        self.schedule.on(
+            self.date_rules.every_day(self.spy),
+            self.time_rules.at(9, 0),
+            self.update_contracts
+        )
 
-def update_contracts(self) -&gt; None:
-    # Get all contracts that expiring this week to trade with, subscribe to data for trading need
-    contracts = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
-    self.contracts = [self.add_option_contract(x).symbol for x in contracts
-        if x.id.date &lt; Expiry.end_of_week(self.time)]
+    def update_contracts(self) -&gt; None:
+        # Get all contracts that expiring this week to trade with, subscribe to data for trading need.
+        contracts = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
+        self.contracts = [self.add_option_contract(x).symbol for x in contracts
+            if x.id.date &lt; Expiry.end_of_week(self.time)]
     
-def on_data(self, slice: Slice) -&gt; None:
-    # Only focus on filtered list of option contracts to trade
-    for contract in self.contracts:
-        # Mid price can only be calculated when quote bar data is available
-        if contract in slice.quote_bars:
-            quote = slice.quote_bars[contract]
-            if quote.bid is not None and quote.ask is not None:
-                # Mid price = average of bid close price and ask close price
-                mid_price = (quote.bid.close + quote.ask.close) * 0.5</pre>
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only focus on filtered list of option contracts to trade.
+        for contract in self.contracts:
+            # Mid price can only be calculated when quote bar data is available.
+            if contract in slice.quote_bars:
+                quote = slice.quote_bars[contract]
+                if quote.bid is not None and quote.ask is not None:
+                    # Mid price = average of bid close price and ask close price.
+                    mid_price = (quote.bid.close + quote.ask.close) * 0.5</pre>
 </div>
 
 <h4>Example 2: Get Mid Price For Universe</h4>
 <p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Equity Option contracts to calculate mid price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/universes">request data through universe selection function</a> using <code class="csharp">SetFilter</code><code class="python">set_filter</code> method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.</p>
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _symbol;
+	<pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
         
-public override void Initialize()
-{
-    // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering
-    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
-    // Subscribe to underlying data for ATM calculation using the update underlying price
-    // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable
-    var spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-    // Subscribe to SPY option data
-    var option = AddOption(spy);
-    _symbol = option.Symbol;
-    // We wish to only trade the contracts expiring within the same week since they have the highest volume
-    option.SetFilter((u) =&gt; u.IncludeWeeklys().Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
-}
-
-public override void OnData(Slice slice)
-{
-    // Only want to obtain the option chain of the selected symbol
-    if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+    public override void Initialize()
     {
-        foreach (var contract in chain)
+        // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        // Subscribe to underlying data for ATM calculation using the update underlying price.
+        // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        var spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+        // Subscribe to SPY option data.
+        var option = AddOption(spy);
+        _symbol = option.Symbol;
+        // We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        option.SetFilter((u) =&gt; u.IncludeWeeklys().Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only want to obtain the option chain of the selected symbol.
+        if (slice.OptionChains.TryGetValue(_symbol, out var chain))
         {
-            // Mid price = average of bid close price and ask close price
-            var midPrice = (contract.BidPrice + contract.AskPrice) * 0.5m;
+            foreach (var contract in chain)
+            {
+                // Mid price = average of bid close price and ask close price.
+                var midPrice = (contract.BidPrice + contract.AskPrice) * 0.5m;
+            }
         }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering
-    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
-    # Subscribe to underlying data for ATM calculation using the update underlying price
-    # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable
-    spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
-    # Subscribe to SPY option data
-    option = self.add_option(spy)
-    self._symbol = option.symbol
-    # We wish to only trade the contracts expiring within the same week since they have the highest volume
-    option.set_filter(lambda u: u.include_weeklys().contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
+	<pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        # Subscribe to underlying data for ATM calculation using the update underlying price.
+        # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+        # Subscribe to SPY option data.
+        option = self.add_option(spy)
+        self._symbol = option.symbol
+        # We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        option.set_filter(lambda u: u.include_weeklys().contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
     
-def on_data(self, slice: Slice) -&gt; None:
-    # Only want to obtain the option chain of the selected symbol
-    chain = slice.option_chains.get(self._symbol)
-    if not chain:
-        return
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only want to obtain the option chain of the selected symbol.
+        chain = slice.option_chains.get(self._symbol)
+        if not chain:
+            return
     
-    for contract in chain:
-        # Mid price = average of bid close price and ask close price
-        mid_price = (contract.bid_price + contract.ask_price) * 0.5</pre>
+        for contract in chain:
+            # Mid price = average of bid close price and ask close price
+            mid_price = (contract.bid_price + contract.ask_price) * 0.5</pre>
 </div>
 
 <h4>Example 3: Get Instant Delta</h4>
 <p>The option greeks change rapidly, so we need to obtain the instant greeks to accurately calculate the hedge size for arbitration or replication portfolio. You can call the <code>Greeks</code> property from the <code>OptionChain</code> data to access various greeks. In this example, we will demonstrate how to obtain the contract with delta closest to 0.4 among all call contracts expiring the same week.</p>
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _symbol;
+	<pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
         
-public override void Initialize()
-{
-    // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering
-    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
-    // Subscribe to underlying data for ATM calculation using the update underlying price
-    // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable
-    var spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-    // Subscribe to SPY option data
-    var option = AddOption(spy);
-    _symbol = option.Symbol;
-    // We wish to only trade the contracts expiring within the same week since they have the highest volume
-    // 0.4 Delta will only appear in call contracts
-    option.SetFilter((u) =&gt; u.IncludeWeeklys().CallsOnly().Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
-}
-
-public override void OnData(Slice slice)
-{
-    // Only want to obtain the option chain of the selected symbol
-    if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+    public override void Initialize()
     {
-        // Get the contract with Delta closest to 0.4 to trade
-        // The arbitary delta criterion might be set due to hedging need or risk adjustment
-        var selected = chain.OrderBy(x => Math.Abs(x.Greeks.Delta - 0.4m)).First();
+        // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        // Subscribe to underlying data for ATM calculation using the update underlying price.
+        // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        var spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+        // Subscribe to SPY option data.
+        var option = AddOption(spy);
+        _symbol = option.Symbol;
+        // We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        // 0.4 Delta will only appear in call contracts.
+        option.SetFilter((u) =&gt; u.IncludeWeeklys().CallsOnly().Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only want to obtain the option chain of the selected symbol.
+        if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            // Get the contract with Delta closest to 0.4 to trade.
+            // The arbitary delta criterion might be set due to hedging need or risk adjustment.
+            var selected = chain.OrderBy(x => Math.Abs(x.Greeks.Delta - 0.4m)).First();
+        }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering
-    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
-    # Subscribe to underlying data for ATM calculation using the update underlying price
-    # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable
-    spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
-    # Subscribe to SPY option data
-    option = self.add_option(spy)
-    self._symbol = option.symbol
-    # We wish to only trade the contracts expiring within the same week since they have the highest volume
-    # 0.4 Delta will only appear in call contracts
-    option.set_filter(lambda u: u.include_weeklys().calls_only().contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
+	<pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        # Subscribe to underlying data for ATM calculation using the update underlying price.
+        # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+        # Subscribe to SPY option data.
+        option = self.add_option(spy)
+        self._symbol = option.symbol
+        # We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        # 0.4 Delta will only appear in call contracts.
+        option.set_filter(lambda u: u.include_weeklys().calls_only().contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
     
-def on_data(self, slice: Slice) -&gt; None:
-    # Only want to obtain the option chain of the selected symbol
-    chain = slice.option_chains.get(self._symbol)
-    if not chain:
-        return
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only want to obtain the option chain of the selected symbol.
+        chain = slice.option_chains.get(self._symbol)
+        if not chain:
+            return
     
-    # Get the contract with Delta closest to 0.4 to trade
-    # The arbitary delta criterion might be set due to hedging need or risk adjustment
-    selected = sorted(chain, key=lambda x: abs(x.greeks.delta - 0.4))[0]</pre>
+        # Get the contract with Delta closest to 0.4 to trade.
+        # The arbitary delta criterion might be set due to hedging need or risk adjustment.
+        selected = sorted(chain, key=lambda x: abs(x.greeks.delta - 0.4))[0]</pre>
 </div>
