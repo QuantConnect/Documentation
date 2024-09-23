@@ -93,8 +93,8 @@
         <tr>
             <td>US Equity Option Universe</td>
             <td>Download On Premise</td>
-            <td>1 underlying Equity<br>=&gt;1 file<br><br>1 file @ 100 QCC/file<br>= 100 QCC<br>= $1 USD</td>
-            <td>1 underlying Equity<br>=&gt;1 file/day<br><br>1 file/day @ 100 QCC/file<br>= 100 QCC/day<br>= $1 USD/day</td>
+            <td>1 underlying Equity<br>=&gt; 1 file<br><br>1 file @ 100 QCC/file<br>= 100 QCC<br>= $1 USD</td>
+            <td>1 underlying Equity<br>=&gt; 1 file/day<br><br>1 file/day @ 100 QCC/file<br>= 100 QCC/day<br>= $1 USD/day</td>
         </tr>
         <tr>
             <td>US Equity</td>
