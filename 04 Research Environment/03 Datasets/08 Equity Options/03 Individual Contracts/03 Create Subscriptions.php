@@ -76,7 +76,7 @@ contract_id = chain[
 ].sort_values('openinterest').iloc[-1]['id']
 
 # Convert the security Id to a Symbol.
-contract_symbol = self.symbol(str(contract_id))</pre>
+contract_symbol = qb.symbol(str(contract_id))</pre>
     </div>
   <p><code>OptionUniverse</code> objects have the following properties:</p>
   <div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
