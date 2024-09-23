@@ -1,6 +1,19 @@
-<p>Equity Option algorithms require the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a>, some data from the <a href="https://www.quantconnect.com/datasets/algoseek-us-equity-options/pricing">US Equity Options</a> dataset, and data for the underlying US Equity universes and assets. The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
+<p>
+    Equity Option algorithms require the following data:
+</p>
 
-<?php include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
+<ul>
+    <li><a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a></li>
+    <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe'>US Equity Option Universe</a></li>
+    <li>Some data from the <a href="https://www.quantconnect.com/datasets/algoseek-us-equity-options/pricing">US Equity Options</a> dataset</li>
+    <li>Data for the underlying US Equity universes and assets</li>
+</ul>
+
+<p>The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
+
+<? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
+
+<p>The file format of the US Equity Option Universe data is one file per underlying Equity and each file costs 100 QCC = $1 USD.</p>
 
 <p>The US Equity Options dataset is available is several resolutions. The resolution you need depends on the US Equity Option subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
@@ -76,6 +89,12 @@
             <td>Download On Premise</td>
             <td>$600 USD</td>
             <td>$600 USD/year</td>
+        </tr>
+        <tr>
+            <td>US Equity Option Universe</td>
+            <td>Download On Premise</td>
+            <td>$1 USD</td>
+            <td>$1 USD/day</td>
         </tr>
         <tr>
             <td>US Equity</td>
