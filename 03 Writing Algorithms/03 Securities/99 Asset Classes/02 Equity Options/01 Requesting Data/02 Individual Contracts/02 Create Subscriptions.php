@@ -3,42 +3,55 @@
 <div class="section-example-container">
     <pre class="csharp">public class BasicOptionAlgorithm : QCAlgorithm
 {
-    private Symbol _underlying;
-    private Option _contract = null;
-
+    private Symbol _underlying, _contractSymbol;
     public override void Initialize()
     {
-        SetStartDate(2020, 1, 1);
+        SetStartDate(2024, 1, 1);
         _underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
     }
 
     public override void OnData(Slice data)
     {
-        if (_contract == null)
+        if (_contractSymbol != null)
         {
-            var contractSymbols = OptionChainProvider.GetOptionContractList(_underlying, Time);
-            var expiry = contractSymbols.Min(symbol => symbol.ID.Date);
-            var filteredSymbols = contractSymbols
-                .Where(symbol => symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call)
-                .ToList();
-            var symbol = filteredSymbols.OrderBy(symbol => symbol.ID.StrikePrice).First();
-            _contract = AddOptionContract(symbol);
+            return;
         }
+        var chain = OptionChain(_underlying);
+        var expiry = chain.Select(contract => contract.ID.Date).Min();
+        _contractSymbol = chain
+            .Where(contract => 
+                contract.ID.Date == expiry && 
+                contract.ID.OptionRight == OptionRight.Call &&
+                contract.Greeks.Delta > 0.3m && 
+                contract.Greeks.Delta < 0.7m
+            )
+            .OrderByDescending(contract => contract.OpenInterest)
+            .First()
+            .Symbol;
+        AddOptionContract(_contractSymbol);
     }
 }</pre>
     <pre class="python">class BasicOptionAlgorithm(QCAlgorithm):
+
     def initialize(self):
-        self.set_start_date(2020, 1, 1)
-        self._underlying = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
-        self._contract = None
-    
+        self.set_start_date(2024, 1, 1)
+        self._underlying = self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW).symbol
+        self._contract_symbol = None
+
     def on_data(self, data):
-        if not self._contract:
-            contract_symbols = self.option_chain_provider.get_option_contract_list(self._underlying, self.time)
-            expiry = min([symbol.id.date for symbol in contract_symbols])
-            filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-            symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
-            self._contract = self.add_option_contract(symbol)</pre>
+        if not self._contract_symbol:
+            return
+        chain = self.option_chain(self._symbol).data_frame
+        expiry = chain.id.apply(lambda id: id.date).min()
+        chain = chain[
+            chain.id.map(lambda id: id.date == expiry) & 
+            chain.id.map(lambda id: id.option_right == OptionRight.CALL)
+        ]
+        delta = chain.greeks.map(lambda greeks: greeks.delta)
+        chain = chain[(delta > 0.3) & (delta < 0.7)]
+        contract_id = chain.sort_values('openinterest').iloc[-1]['id']
+        self._contract_symbol = self.symbol(str(contract_id))
+        self.add_option_contract(self._contract_symbol)</pre>
 </div>
 
 <h4>Configure the Underlying Equity</h4>
@@ -46,8 +59,8 @@
 <p>If you want to subscribe to the underlying Equity in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the Equity <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization">data normalization</a> to <code class="csharp">DataNormalizationMode.Raw</code><code class="python">DataNormalizationMode.RAW</code>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class="python">self._symbol = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
+    <pre class="csharp">_underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
+    <pre class="python">self._underlying = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 
 <p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/equity">universe</a> of Equities, before you add the Equity universe in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the universe data normalization mode to <code class="csharp">DataNormalizationMode.Raw</code><code class="python">DataNormalizationMode.RAW</code>.</p>
@@ -61,55 +74,59 @@
 
 <p>
     To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
-    The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. 
-    The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> objects for a given date and underlying Equity, which you can then sort and filter to find the specific contract(s) you want to trade. 
+    The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method. 
+    <span class='python'>
+        This method returns a <code>DataHistory[OptionUniverse]</code> object, which you can format into a DataFrame or iterate through.
+        Each row in the DataFrame and each <code>OptionUniverse</code> object represents a single contract.
+    </span>
+    <span class='csharp'>This method returns a collection of <code>OptionUniverse</code> objects, where each object represents a contract.</span>
+    Sort and filter the data to find the specific contract(s) you want to trade.
 </p>
 
 
 <div class="section-example-container">
-    <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
-var expiry = contractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
-var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
-_contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
-    <pre class="python">contract_symbols = self.option_chain_provider.get_option_contract_list(self._symbol, self.time)
-expiry = min([symbol.id.date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+    <pre class="csharp">// Get the contracts available to trade.
+var chain = OptionChain(_underlying);
+
+// Select a contract.
+var expiry = chain.Select(contract => contract.ID.Date).Min();
+_contractSymbol = chain
+    .Where(contract => 
+        // Select call contracts with the closest expiry.
+        contract.ID.Date == expiry && 
+        contract.ID.OptionRight == OptionRight.Call &&
+        // Select contracts with a 0.3-0.7 delta.
+        contract.Greeks.Delta > 0.3m && 
+        contract.Greeks.Delta < 0.7m
+    )
+    // Select the contract with the largest open interest.
+    .OrderByDescending(contract => contract.OpenInterest)
+    .First()
+    // Get the Symbol of the target contract.
+    .Symbol;</pre>
+    <pre class="python"># Get the contracts available to trade (in DataFrame format).
+chain = self.option_chain(self._symbol).data_frame
+
+# Select call contracts with the closest expiry.
+expiry = chain.id.apply(lambda id: id.date).min()
+chain = chain[
+    chain.id.map(lambda id: id.date == expiry) & 
+    chain.id.map(lambda id: id.option_right == OptionRight.CALL)
+]
+
+# Select contracts with a 0.3-0.7 delta.
+delta = chain.greeks.map(lambda greeks: greeks.delta)
+chain = chain[(delta > 0.3) & (delta < 0.7)]
+
+# Select the contract with the largest open interest.
+contract_id = chain.sort_values('openinterest').iloc[-1]['id']
+
+# Convert the contract Id to a Symbol.
+self._contract_symbol = self.symbol(str(contract_id))</pre>
 </div>
 
-<p>To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
-
-    <table class="qc-table table">
-        <thead>
-            <tr>
-                <th>Property</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                 <td><code class="csharp">ID.Date</code><code class="python">id.date</code></td>
-                 <td>The expiration date of the contract.</td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.StrikePrice</code><code class="python">id.strike_price</code></td>
-                 <td>The strike price of the contract.</td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
-                 <td>
-                     The contract type, <code class="csharp">OptionRight.Put</code><code class="python">OptionRight.PUT</code> or <code class="csharp">OptionRight.Call</code><code class="python">OptionRight.CALL</code>.
-                 </td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
-                 <td>
-                     The contract style, <code class="csharp">OptionStyle.American</code><code class="python">OptionStyle.AMERICAN</code> or <code class="csharp">OptionStyle.European</code><code class="python">OptionStyle.EUROPEAN</code>.
-                     We currently only support American-style Options for US Equity Options.
-                  </td>
-            </tr>
-        </tbody>
-    </table>
+<p><code>OptionUniverse</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
 
 <h4>Subscribe to Contracts</h4>
 
