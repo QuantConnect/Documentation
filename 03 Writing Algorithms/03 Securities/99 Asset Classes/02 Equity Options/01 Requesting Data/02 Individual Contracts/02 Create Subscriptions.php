@@ -41,7 +41,7 @@
     def on_data(self, data):
         if not self._contract_symbol:
             return
-        chain = self.option_chain(self._symbol).data_frame
+        chain = self.option_chain(self._underlying).data_frame
         expiry = chain.id.apply(lambda id: id.date).min()
         chain = chain[
             chain.id.map(lambda id: id.date == expiry) & 
@@ -105,7 +105,7 @@ _contractSymbol = chain
     // Get the Symbol of the target contract.
     .Symbol;</pre>
     <pre class="python"># Get the contracts available to trade (in DataFrame format).
-chain = self.option_chain(self._symbol).data_frame
+chain = self.option_chain(self._underlying).data_frame
 
 # Select call contracts with the closest expiry.
 expiry = chain.id.apply(lambda id: id.date).min()
