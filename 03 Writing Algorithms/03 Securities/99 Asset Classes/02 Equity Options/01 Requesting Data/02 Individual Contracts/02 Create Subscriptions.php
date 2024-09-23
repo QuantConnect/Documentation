@@ -42,14 +42,14 @@
         if self._contract_symbol:
             return
         chain = self.option_chain(self._underlying).data_frame
-        expiry = chain.id.apply(lambda id: id.date).min()
-        chain = chain[
-            chain.id.map(lambda id: id.date == expiry) & 
-            chain.id.map(lambda id: id.option_right == OptionRight.CALL)
-        ]
+        expiry = chain.id.map(lambda id: id.date).min()
         delta = chain.greeks.map(lambda greeks: greeks.delta)
-        chain = chain[(delta > 0.3) & (delta < 0.7)]
-        contract_id = chain.sort_values('openinterest').iloc[-1]['id']
+        contract_id = chain[
+            chain.id.map(lambda id: id.date == expiry) & 
+            chain.id.map(lambda id: id.option_right == OptionRight.CALL) &
+            (delta > 0.3) &
+            (delta < 0.7)
+        ].sort_values('openinterest').iloc[-1]['id'] 
         self._contract_symbol = self.symbol(str(contract_id))
         self.add_option_contract(self._contract_symbol)</pre>
 </div>
@@ -107,21 +107,19 @@ _contractSymbol = chain
     <pre class="python"># Get the contracts available to trade (in DataFrame format).
 chain = self.option_chain(self._underlying).data_frame
 
-# Select call contracts with the closest expiry.
-expiry = chain.id.apply(lambda id: id.date).min()
-chain = chain[
-    chain.id.map(lambda id: id.date == expiry) & 
-    chain.id.map(lambda id: id.option_right == OptionRight.CALL)
-]
-
-# Select contracts with a 0.3-0.7 delta.
+# Select a contract.
+expiry = chain.id.map(lambda id: id.date).min()
 delta = chain.greeks.map(lambda greeks: greeks.delta)
-chain = chain[(delta > 0.3) & (delta < 0.7)]
+contract_id = chain[
+    # Select call contracts with the closest expiry.
+    chain.id.map(lambda id: id.date == expiry) & 
+    chain.id.map(lambda id: id.option_right == OptionRight.CALL) &
+    # Select contracts with a 0.3-0.7 delta.
+    (delta > 0.3) &
+    (delta < 0.7)
+    # Select the contract with the largest open interest.
+].sort_values('openinterest').iloc[-1]['id'] 
 
-# Select the contract with the largest open interest.
-contract_id = chain.sort_values('openinterest').iloc[-1]['id']
-
-# Convert the contract Id to a Symbol.
 self._contract_symbol = self.symbol(str(contract_id))</pre>
 </div>
 
