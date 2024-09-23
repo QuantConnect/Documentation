@@ -2,11 +2,11 @@
 
 <div class='section-example-container'>
     <pre class='python'>option_history = qb.option_history(
-    equity_symbol, end_time-timedelta(days=2), end_time, Resolution.MINUTE, 
+    equity_symbol, qb.start_date-timedelta(days=2), qb.start_date, Resolution.MINUTE, 
     fill_forward=False, extended_market_hours=False
 )</pre>
     <pre class='csharp'>var optionHistory = qb.OptionHistory(
-    equitySymbol, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, 
+    equitySymbol, qb.StartDate-TimeSpan.FromDays(2), qb.StartDate, Resolution.Minute, 
     fillForward: False, extendedMarketHours: False
 );</pre>
 </div>
