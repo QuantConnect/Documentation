@@ -244,11 +244,9 @@ all_history_open_interest = qb.history[OpenInterest](qb.securities.keys(), start
 <p>To get historical data for all of the <?=$assetClass?> contracts that traded during a specific period of time, call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the underlying <?=$underlyingAssetClass?> <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 <? } elseif ($assetClass == "Index Option") { ?>
 <p>To get historical data for all of the <?=$assetClass?> contracts that pass your <a href='<?=$createSubscriptionsLink?>'>filter</a> during a specific period of time, call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the canonical Index Option <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
-<? } else { ?>
-<p>To get historical data for all of the <?=$assetClass?> contracts that pass your <a href='<?=$createSubscriptionsLink?>'>filter</a> during a specific period of time, call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the underlying <?=$underlyingAssetClass?> <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 <? } ?>
 
-<? if ($assetClass != "Futures") { ?> 
+<? if ($assetClass != "Futures" && $assetClass != "Equity Option") { ?> 
 <div class='section-example-container'>
     <pre class='python'>option_history = qb.option_history(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.MINUTE, fill_forward=False, extended_market_hours=False)</pre>
     <pre class='csharp'>var optionHistory = qb.OptionHistory(<?=$underlyingSymbolVariableC?>, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, fillForward: False, extendedMarketHours: False);</pre>
