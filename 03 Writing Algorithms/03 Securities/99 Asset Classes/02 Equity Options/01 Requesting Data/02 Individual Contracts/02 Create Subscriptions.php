@@ -39,7 +39,7 @@
         self._contract_symbol = None
 
     def on_data(self, data):
-        if not self._contract_symbol:
+        if self._contract_symbol:
             return
         chain = self.option_chain(self._underlying).data_frame
         expiry = chain.id.apply(lambda id: id.date).min()
