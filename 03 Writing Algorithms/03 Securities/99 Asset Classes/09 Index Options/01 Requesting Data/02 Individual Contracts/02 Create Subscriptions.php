@@ -3,123 +3,139 @@
 <div class="section-example-container">
     <pre class="csharp">public class BasicIndexOptionAlgorithm : QCAlgorithm
 {
-    private Symbol _underlying;
-    private Option _contract = null;
-
+    private Symbol _underlying, _contractSymbol;
     public override void Initialize()
     {
-        SetStartDate(2020, 1, 1);
+        SetStartDate(2024, 1, 1);
         _underlying = AddIndex("SPX").Symbol;
     }
 
     public override void OnData(Slice data)
     {
-        if (_contract == null)
+        if (_contractSymbol != null)
         {
-            var contractSymbols = OptionChainProvider.GetOptionContractList(_underlying, Time);
-            var expiry = contractSymbols.Min(symbol => symbol.ID.Date);
-            var filteredSymbols = contractSymbols
-                .Where(symbol => symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call)
-                .ToList();
-            var symbol = filteredSymbols.OrderBy(symbol => symbol.ID.StrikePrice).First();
-            _contract = AddIndexOptionContract(symbol);
+            return;
         }
+        var chain = OptionChain(
+            QuantConnect.Symbol.CreateCanonicalOption(_underlying, Market.USA, "?SPX")
+        );
+        var expiry = chain.Select(contract => contract.ID.Date).Min();
+        _contractSymbol = chain
+            .Where(contract => 
+                contract.ID.Date == expiry && 
+                contract.ID.OptionRight == OptionRight.Call &&
+                contract.Greeks.Delta > 0.3m && 
+                contract.Greeks.Delta < 0.7m
+            )
+            .OrderByDescending(contract => contract.OpenInterest)
+            .First()
+            .Symbol;
+        AddOptionContract(_contractSymbol);
     }
 }</pre>
     <pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
+
     def initialize(self):
-        self.set_start_date(2020, 1, 1)
+        self.set_start_date(2024, 1, 1)
         self._underlying = self.add_index("SPX").symbol
-        self._contract = None
-    
+        self._contract_symbol = None
+
     def on_data(self, data):
-        if not self._contract:
-            contract_symbols = self.option_chain_provider.get_option_contract_list(self._underlying, self.time)
-            expiry = min([symbol.id.date for symbol in contract_symbols])
-            filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-            symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
-            self._contract = self.add_index_option_contract(symbol)</pre>
+        if self._contract_symbol:
+            return
+        chain = self.option_chain(
+            Symbol.create_canonical_option(self._underlying, Market.USA, "?SPX") 
+        ).data_frame
+        expiry = chain.id.map(lambda id: id.date).min()
+        delta = chain.greeks.map(lambda greeks: greeks.delta)
+        contract_id = chain[
+            chain.id.map(lambda id: id.date == expiry) & 
+            chain.id.map(lambda id: id.option_right == OptionRight.CALL) &
+            (delta > 0.3) &
+            (delta < 0.7)
+        ].sort_values('openinterest').iloc[-1]['id'] 
+        self._contract_symbol = self.symbol(str(contract_id))
+        self.add_index_option_contract(self._contract_symbol)</pre>
 </div>
 
 <h4>Configure the Underlying Index</h4>
 <p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Index</a> before you subscribe to an Index Option contract.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">_symbol = AddIndex("SPX").Symbol;</pre>
-    <pre class="python">self._symbol = self.add_index("SPX").symbol</pre>
+    <pre class="csharp">_underlying = AddIndex("SPX").Symbol;</pre>
+    <pre class="python">self._underlying = self.add_index("SPX").symbol</pre>
 </div>
 
 <h4>Get Contract Symbols</h4>
 
 <p>
-    To subscribe to an Option contract, you need the contract <code>Symbol</code>.
-    The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. 
-    The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> objects for a given date and underlying Index, which you can then sort and filter to find the specific contract(s) you want to trade. 
+    To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
+    The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method. 
+    <span class='python'>
+        This method returns a <code>DataHistory[OptionUniverse]</code> object, which you can format into a DataFrame or iterate through.
+        Each row in the DataFrame and each <code>OptionUniverse</code> object represents a single contract.
+    </span>
+    <span class='csharp'>This method returns a collection of <code>OptionUniverse</code> objects, where each object represents a contract.</span>
+    Sort and filter the data to find the specific contract(s) you want to trade.
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Standard contracts
-_canonicalSymbol = QuantConnect.Symbol.CreateCanonicalOption(_symbol, Market.USA, "?SPX");
-var contractSymbols = OptionChainProvider.GetOptionContractList(_canonicalSymbol, Time);
-var expiry = contractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
-var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call);
-_contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();
+    <pre class="csharp">// Get the contracts available to trade.
+//   Option A: Standard contracts.
+var chain = OptionChain(
+    QuantConnect.Symbol.CreateCanonicalOption(_underlying, Market.USA, "?SPX")
+);
 
-// Weekly contracts
-_weeklyCanonicalSymbol = QuantConnect.Symbol.CreateCanonicalOption(_symbol, "SPXW", Market.USA, "?SPXW");
-var weeklyContractSymbols = OptionChainProvider.GetOptionContractList(_weeklyCanonicalSymbol, Time)
-    .Where(symbol =&gt; OptionSymbol.IsWeekly(symbol));
-var weeklyExpiry = weeklyContractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
-filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == weeklyExpiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
-_weeklyContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
-    <pre class="python"># Standard contracts
-self._canonical_symbol = Symbol.create_canonical_option(self._symbol, Market.USA, "?SPX")       
-contract_symbols = self.option_chain_provider.get_option_contract_list(self._canonical_symbol, self.time)
-expiry = min([symbol.id.date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
-self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
+//   Option B: Weekly contracts.
+//var chain = OptionChain(
+//    QuantConnect.Symbol.CreateCanonicalOption(_underlying, "SPXW", Market.USA, "?SPXW")
+//).Where(contract => OptionSymbol.IsWeekly(contract.Symbol));
 
-# Weekly contracts
-self._weekly_canonical_symbol = Symbol.create_canonical_option(self._symbol, "SPXW", Market.USA, "?SPXW")
-weekly_contract_symbols = self.option_chain_provider.get_option_contract_list(self._weekly_canonical_symbol, self.time)
-weekly_contract_symbols = [symbol for symbol in weekly_contract_symbols if OptionSymbol.is_weekly(symbol)]
-weekly_expiry = min([symbol.id.date for symbol in weekly_contract_symbols])
-weekly_filtered_symbols = [symbol for symbol in weekly_contract_symbols if symbol.id.date == weekly_expiry and symbol.id.option_right == OptionRight.CALL]
-self._weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+// Select a contract.
+var expiry = chain.Select(contract => contract.ID.Date).Min();
+_contractSymbol = chain
+    .Where(contract => 
+        // Select call contracts with the closest expiry.
+        contract.ID.Date == expiry && 
+        contract.ID.OptionRight == OptionRight.Call &&
+        // Select contracts with a 0.3-0.7 delta.
+        contract.Greeks.Delta > 0.3m && 
+        contract.Greeks.Delta < 0.7m
+    )
+    // Select the contract with the largest open interest.
+    .OrderByDescending(contract => contract.OpenInterest)
+    .First()
+    // Get the Symbol of the target contract.
+    .Symbol;</pre>
+    <pre class="python"># Get the contracts available to trade (in DataFrame format).
+#   Option A: Standard contracts.
+chain = self.option_chain(
+    Symbol.create_canonical_option(self._underlying, Market.USA, "?SPX") 
+).data_frame
+
+#  Option B: Weekly contracts.
+chain = self.option_chain(
+    Symbol.create_canonical_option(self._underlying, "SPXW", Market.USA, "?SPXW") 
+).data_frame
+chain = chain[chain.id.map(lambda id: OptionSymbol.is_weekly(self.symbol(str(id))))]
+
+# Select a contract.
+expiry = chain.id.map(lambda id: id.date).min()
+delta = chain.greeks.map(lambda greeks: greeks.delta)
+contract_id = chain[
+    # Select call contracts with the closest expiry.
+    chain.id.map(lambda id: id.date == expiry) & 
+    chain.id.map(lambda id: id.option_right == OptionRight.CALL) &
+    # Select contracts with a 0.3-0.7 delta.
+    (delta > 0.3) &
+    (delta < 0.7)
+    # Select the contract with the largest open interest.
+].sort_values('openinterest').iloc[-1]['id'] 
+self._contract_symbol = self.symbol(str(contract_id))</pre>
 </div>
 
-<p>To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
-    <table class="qc-table table">
-        <thead>
-            <tr>
-                <th>Property</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                 <td><code class="csharp">ID.Date</code><code class="python">id.date</code></td>
-                 <td>The expiration date of the contract.</td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.StrikePrice</code><code class="python">id.strike_price</code></td>
-                 <td>The strike price of the contract.</td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
-                 <td>
-                     The contract type, <code class="csharp">OptionRight.Put</code><code class="python">OptionRight.PUT</code> or <code class="csharp">OptionRight.Call</code><code class="python">OptionRight.CALL</code>.
-                  </td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
-                 <td>
-                     The contract style, <code class="csharp">OptionStyle.American</code><code class="python">OptionStyle.AMERICAN</code> or <code class="csharp">OptionStyle.European</code><code class="python">OptionStyle.EUROPEAN</code>. 
-                     We currently only support European-style Options for Index Options.
-                  </td>
-            </tr>
-        </tbody>
-    </table>
+<p><code>OptionUniverse</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
 
 <h4>Subscribe to Contracts</h4>
 <p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
