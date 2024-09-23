@@ -1,4 +1,4 @@
-<p>Follow these steps to subscribe to an Equity Option security:</p>
+<p>Follow these steps to subscribe to an Equity Option universe:</p>
 
 <ol>
 <?
