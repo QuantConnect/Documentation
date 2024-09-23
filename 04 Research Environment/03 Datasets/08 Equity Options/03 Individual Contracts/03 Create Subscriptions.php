@@ -43,10 +43,40 @@ chain = qb.option_chain(underlying_symbol)</pre>
 
     <li>Sort and filter the data to select the specific contract(s) you want to analyze.</li>
     <div class="section-example-container">
-      <pre class="csharp">// Select the call contract that has a $477 strike price and expires on January 21st, 2022.
-var contractSymbol = </pre>
-      <pre class="python"># Select the call contract that has a $477 strike price and expires on January 21st, 2022.
-contract_symbol = </pre>
+      <pre class="csharp">// Select a contract.
+var expiry = chain.Select(contract => contract.ID.Date).Min();
+var contractSymbol = chain
+    .Where(contract => 
+        // Select call contracts with the closest expiry.
+        contract.ID.Date == expiry && 
+        contract.ID.OptionRight == OptionRight.Call &&
+        // Select contracts with a 0.3-0.7 delta.
+        contract.Greeks.Delta > 0.3m && 
+        contract.Greeks.Delta < 0.7m
+    )
+    // Select the contract with the largest open interest.
+    .OrderByDescending(contract => contract.OpenInterest)
+    .First()
+    // Get the Symbol of the target contract.
+    .Symbol;</pre>
+      <pre class="python"># Get the contracts available to trade (in DataFrame format).
+chain = chain.data_frame
+
+# Select a contract.
+expiry = chain.id.map(lambda id: id.date).min()
+delta = chain.greeks.map(lambda greeks: greeks.delta)
+contract_id = chain[
+    # Select call contracts with the closest expiry.
+    chain.id.map(lambda id: id.date == expiry) & 
+    chain.id.map(lambda id: id.option_right == OptionRight.CALL) &
+    # Select contracts with a 0.3-0.7 delta.
+    (delta > 0.3) &
+    (delta < 0.7)
+    # Select the contract with the largest open interest.
+].sort_values('openinterest').iloc[-1]['id']
+
+# Convert the security Id to a Symbol.
+contract_symbol = self.symbol(str(contract_id))</pre>
     </div>
   <p><code>OptionUniverse</code> objects have the following properties:</p>
   <div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
