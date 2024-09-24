@@ -3,173 +3,185 @@
 <h4>Example 1: Trade USDJPY Spread</h4>
 <p>USDJPY is a forex pair that the reserve banks of the base currency and quote currency act at different time, such that a 12-hour seasonal peak volume is expected. Therefore, to trade USDJPY more efficiently, we should place order at the time with the lowest bid-ask spread, such that lower slippage cost will be costed.</p>
 <div class="section-example-container">
-    <pre class="csharp">private dynamic _forex;
-
-public override void Initialize()
+    <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
-    // Add subscriptions to USDJPY with specific market to ensure the correct securities are selected
-    _forex = AddForex("USDJPY", Resolution.Minute, Market.Oanda);
-    // Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours
-    _forex.spreadLow = new Minimum(12*60);
-    // Warm up the indicator for its readiness to use immediately
-    WarmUpIndicator(_forex.Symbol, _forex.spreadLow);
-}
+    private dynamic _forex;
 
-public override void OnData(Slice slice)
-{
-    // To get the updated bid-ask spread, make sure the quote data of USDJPY is available
-    if (slice.QuoteBars.ContainsKey(_forex.Symbol))
+    public override void Initialize()
     {
-        var quoteBar = slice.QuoteBars[_forex.Symbol];
-        // Bid-ask spread = Ask price - Bid price
-        var bidAskSpread = quoteBar.Ask.Close - quoteBar.Bid.Close;
-        // Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours
-        _forex.spreadLow.Update(quoteBar.EndTime, bidAskSpread);
-
-        // Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage
-        if (!Portfolio.Invested && bidAskSpread == _forex.spreadLow.Current.Value)
+        // Add subscriptions to USDJPY with specific market to ensure the correct securities are selected.
+        _forex = AddForex("USDJPY", Resolution.Minute, Market.Oanda);
+        // Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours.
+        _forex.spreadLow = new Minimum(12*60);
+        // Warm up the indicator for its readiness to use immediately.
+        WarmUpIndicator(_forex.Symbol, _forex.spreadLow);
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // To get the updated bid-ask spread, make sure the quote data of USDJPY is available.
+        if (slice.QuoteBars.ContainsKey(_forex.Symbol))
         {
-            MarketOrder(_forex.Symbol, 1000);
+            var quoteBar = slice.QuoteBars[_forex.Symbol];
+            // Bid-ask spread = Ask price - Bid price
+            var bidAskSpread = quoteBar.Ask.Close - quoteBar.Bid.Close;
+            // Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
+            _forex.spreadLow.Update(quoteBar.EndTime, bidAskSpread);
+    
+            // Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
+            if (!Portfolio.Invested && bidAskSpread == _forex.spreadLow.Current.Value)
+            {
+                MarketOrder(_forex.Symbol, 1000);
+            }
+    
+            // Plot the bid-ask spread to validate the minimum bid-ask spread calculation.
+            Plot("Bid-Ask Spread", "spread", bidAskSpread);
         }
-
-        // Plot the bid-ask spread to validate the minimum bid-ask spread calculation
-        Plot("Bid-Ask Spread", "spread", bidAskSpread);
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    # Add subscriptions to USDJPY with specific market to ensure the correct securities are selected
-    self._forex = self.add_forex("USDJPY", Resolution.MINUTE, Market.OANDA)
-    # Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours
-    self._forex.spread_low = Minimum(12*60)
-    # Warm up the indicator for its readiness to use immediately
-    self.warm_up_indicator(self._forex.symbol, self._forex.spread_low)
-
-def on_data(self, slice: Slice) -&gt; None:
-    # To get the updated bid-ask spread, make sure the quote data of USDJPY is available
-    if self._forex.symbol in slice.quote_bars:
-        quote_bar = slice.quote_bars[self._forex.symbol]
-        # Bid-ask spread = Ask price - Bid price
-        bid_ask_spread = quote_bar.ask.close = quote_bar.bid.close
-        # Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours
-        self._forex.spread_low.update(quote_bar.end_time, bid_ask_spread)
+    <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Add subscriptions to USDJPY with specific market to ensure the correct securities are selected.
+        self._forex = self.add_forex("USDJPY", Resolution.MINUTE, Market.OANDA)
+        # Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours.
+        self._forex.spread_low = Minimum(12*60)
+        # Warm up the indicator for its readiness to use immediately.
+        self.warm_up_indicator(self._forex.symbol, self._forex.spread_low)
     
-        # Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage
-        if not self.portfolio.invested and bid_ask_spread == self._forex.spread_low.current.value:
-            self.market_order(self._forex.symbol, 1000)
+    def on_data(self, slice: Slice) -&gt; None:
+        # To get the updated bid-ask spread, make sure the quote data of USDJPY is available.
+        if self._forex.symbol in slice.quote_bars:
+            quote_bar = slice.quote_bars[self._forex.symbol]
+            # Bid-ask spread = Ask price - Bid price
+            bid_ask_spread = quote_bar.ask.close = quote_bar.bid.close
+            # Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
+            self._forex.spread_low.update(quote_bar.end_time, bid_ask_spread)
         
-        # Plot the bid-ask spread to validate the minimum bid-ask spread calculation
-        self.plot("Bid-Ask Spread", "spread", bid_ask_spread)</pre>
+            # Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
+            if not self.portfolio.invested and bid_ask_spread == self._forex.spread_low.current.value:
+                self.market_order(self._forex.symbol, 1000)
+            
+            # Plot the bid-ask spread to validate the minimum bid-ask spread calculation.
+            self.plot("Bid-Ask Spread", "spread", bid_ask_spread)</pre>
 </div>
 
 <h4>Example 2: 5-Minute EURUSD Trend</h4>
 <p>The following example estimates the trend of EURUSD using 20-bar <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> indicator. To smoothen the noise of the minute resolution data, we consolidate the data into 5-Minute <code>TradeBar</code> using <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#02-Consolidate-Trade-Bars">TradeBarConsolidator</a>. If the current EURUSD price is above the 20-bar EMA, it is consider bullish and we long the Forex, otherwise, we short the bearish trend.</p>
 <div class="section-example-container">
-    <pre class="csharp">private dynamic _forex;
-
-public override void Initialize()
+    <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
-    // Add subscriptions to EURUSD with specific market to ensure the correct securities are selected
-    _forex = AddForex("EURUSD", Resolution.Minute, Market.Oanda);
-    // Create an Exponential Moving Average indicator to estimate the trend of EURUSD
-    _forex.ema = new ExponentialMovingAverage(20);
-    // Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend
-    var consolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(5));
-    // Update the EMA indicator with the smoothened price data to get the accurate trend
-    consolidator.DataConsolidated += (_, bar) =&gt; {
-        _forex.ema.Update(bar.EndTime, bar.Close);
-    };
-    // Warm up the indicator by updating the consolidator with historical data, such that the EMA trend detector can be used immediately
-    foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 100, Resolution.Minute))
-    {
-        consolidator.Update(bar);
-    }
-    // Subscribe the consolidator to EURUSD data feed for auto-updating the consolidator
-    SubscriptionManager.AddConsolidator(_forex.Symbol, consolidator);
-}
+    private dynamic _forex;
 
-public override void OnData(Slice slice)
-{
-    // Trade only by the updated price and trend information
-    if (slice.QuoteBars.ContainsKey(_forex.Symbol) && _forex.ema.IsReady)
+    public override void Initialize()
     {
-        // Long if the trend goes up (the current price above EMA)
-        if (slice.QuoteBars[_forex.Symbol].Close &gt;= _forex.ema.Current.Value)
+        // Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
+        _forex = AddForex("EURUSD", Resolution.Minute, Market.Oanda);
+        // Create an Exponential Moving Average indicator to estimate the trend of EURUSD.
+        _forex.ema = new ExponentialMovingAverage(20);
+        // Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend.
+        var consolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(5));
+        // Update the EMA indicator with the smoothened price data to get the accurate trend.
+        consolidator.DataConsolidated += (_, bar) =&gt; {
+            _forex.ema.Update(bar.EndTime, bar.Close);
+        };
+        // Warm up the indicator by updating the consolidator with historical data, such that the EMA trend detector can be used immediately.
+        foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 100, Resolution.Minute))
         {
-            SetHoldings(_forex.Symbol, 0.5);
+            consolidator.Update(bar);
         }
-        // Short if the trend goes down (the current price below EMA)
-        else
+        // Subscribe the consolidator to EURUSD data feed for auto-updating the consolidator.
+        SubscriptionManager.AddConsolidator(_forex.Symbol, consolidator);
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Trade only by the updated price and trend information.
+        if (slice.QuoteBars.ContainsKey(_forex.Symbol) && _forex.ema.IsReady)
         {
-            SetHoldings(_forex.Symbol, -0.5);
+            // Long if the trend goes up (the current price above EMA).
+            if (slice.QuoteBars[_forex.Symbol].Close &gt;= _forex.ema.Current.Value)
+            {
+                SetHoldings(_forex.Symbol, 0.5);
+            }
+            // Short if the trend goes down (the current price below EMA).
+            else
+            {
+                SetHoldings(_forex.Symbol, -0.5);
+            }
         }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    # Add subscriptions to EURUSD with specific market to ensure the correct securities are selected
-    self._forex = self.add_forex("EURUSD", Resolution.MINUTE, Market.OANDA)
-    # Create an Exponential Moving Average indicator to estimate the trend of EURUSD
-    self._forex.ema = ExponentialMovingAverage(20)
-    # Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend
-    consolidator = QuoteBarConsolidator(timedelta(minutes=5))
-    # Update the EMA indicator with the smoothened price data to get the accurate trend
-    consolidator.DataConsolidated += self.on_consolidated
-    # Warm up the indicator by updating the consolidator with historical data, such that the EMA trend detector can be used immediately
-    for bar in self.history[QuoteBar](self._forex.symbol, 100, Resolution.MINUTE):
-        consolidator.update(bar)
-    # Subscribe the consolidator to EURUSD data feed for auto-updating the consolidator
-    self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
-
-def on_consolidated(self, sender: object, bar: QuoteBar) -&gt; None:
-    # Update the EMA indicator with the smoothened price data to get the accurate trend
-    self._forex.ema.update(bar.end_time, bar.close)
-
-def on_data(self, slice: Slice) -&gt; None:
-    # Trade only by the updated price and trend information
-    if self._forex.symbol in slice.quote_bars and self._forex.ema.is_ready:
-        # Long if the trend goes up (the current price above EMA)
-        if slice.quote_bars[self._forex.symbol].close &gt;= self._forex.ema.current.value:
-            self.set_holdings(self._forex.symbol, 0.5)
-        # Short if the trend goes down (the current price below EMA)
-        else:
-            self.set_holdings(self._forex.symbol, -0.5)</pre>
+    <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
+        self._forex = self.add_forex("EURUSD", Resolution.MINUTE, Market.OANDA)
+        # Create an Exponential Moving Average indicator to estimate the trend of EURUSD.
+        self._forex.ema = ExponentialMovingAverage(20)
+        # Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend.
+        consolidator = QuoteBarConsolidator(timedelta(minutes=5))
+        # Update the EMA indicator with the smoothened price data to get the accurate trend.
+        consolidator.DataConsolidated += self.on_consolidated
+        # Warm up the indicator by updating the consolidator with historical data, such that the EMA trend detector can be used immediately.
+        for bar in self.history[QuoteBar](self._forex.symbol, 100, Resolution.MINUTE):
+            consolidator.update(bar)
+        # Subscribe the consolidator to EURUSD data feed for auto-updating the consolidator.
+        self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
+    
+    def on_consolidated(self, sender: object, bar: QuoteBar) -&gt; None:
+        # Update the EMA indicator with the smoothened price data to get the accurate trend.
+        self._forex.ema.update(bar.end_time, bar.close)
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade only by the updated price and trend information.
+        if self._forex.symbol in slice.quote_bars and self._forex.ema.is_ready:
+            # Long if the trend goes up (the current price above EMA).
+            if slice.quote_bars[self._forex.symbol].close &gt;= self._forex.ema.current.value:
+                self.set_holdings(self._forex.symbol, 0.5)
+            # Short if the trend goes down (the current price below EMA).
+            else:
+                self.set_holdings(self._forex.symbol, -0.5)</pre>
 </div>
 
 <h4>Example 3: New York Time Alignment</h4>
 <p>To line up the time for New York market close, you can set up a <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/calendar-consolidators">custom period consolidator</a> to get daily bars from 5pm to 5pm next day. It is useful on updating daily bar indicators upon New York market's information.</p>
 <div class="section-example-container">
-    <pre class="csharp">private Symbol _forex;
-
-public override void Initialize()
+    <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
-    // Add subscriptions to EURUSD with specific market to ensure the correct securities are selected
-    _forex = AddForex("EURUSD", Resolution.Minute, Market.Oanda).Symbol;
-    // Create a custom period (5pm-5pm NY time based) daily bar consolidator
-    var consolidator = new QuoteBarConsolidator(_ConsolidationPeriod);
-    // Subscribe the consolidator to EURUSD data feed to automatically update the consolidator
-    SubscriptionManager.AddConsolidator(_forex, consolidator);
-}
+    private Symbol _forex;
 
-private CalendarInfo _ConsolidationPeriod(DateTime datetime)
-{
-    // Start time is set as the previous day's 5pm
-    var timeSpan = new TimeSpan(17, 0, 0);
-    var start = datetime.Date.AddDays(-1) + timeSpan;
-    // Set period to 1 day, making 1-day bar until the next 5pm
-    return new CalendarInfo(start, TimeSpan.FromDays(1));
+    public override void Initialize()
+    {
+        // Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
+        _forex = AddForex("EURUSD", Resolution.Minute, Market.Oanda).Symbol;
+        // Create a custom period (5pm-5pm NY time based) daily bar consolidator.
+        var consolidator = new QuoteBarConsolidator(_ConsolidationPeriod);
+        // Subscribe the consolidator to EURUSD data feed to automatically update the consolidator.
+        SubscriptionManager.AddConsolidator(_forex, consolidator);
+    }
+    
+    private CalendarInfo _ConsolidationPeriod(DateTime datetime)
+    {
+        // Start time is set as the previous day's 5pm.
+        var timeSpan = new TimeSpan(17, 0, 0);
+        var start = datetime.Date.AddDays(-1) + timeSpan;
+        // Set period to 1 day, making 1-day bar until the next 5pm.
+        return new CalendarInfo(start, TimeSpan.FromDays(1));
+    }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    # Add subscriptions to EURUSD with specific market to ensure the correct securities are selected
-    self._forex = self.add_forex("EURUSD", Resolution.MINUTE, Market.OANDA)
-    # Create a custom period (5pm-5pm NY time based) daily bar consolidator
-    consolidator = QuoteBarConsolidator(self._consolidation_period)
-    # Subscribe the consolidator to EURUSD data feed to automatically update the consolidator
-    self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
-
-def _consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
-    # Start time is set as the previous day's 5pm
-    dt = dt.replace(hour=17, minute=0, second=0, microsecond=0)
-    period = timedelta(1)
-    start = dt - period
-    # Set period to 1 day, making 1-day bar until the next 5pm
-    return CalendarInfo(start, period)</pre>
+    <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
+        self._forex = self.add_forex("EURUSD", Resolution.MINUTE, Market.OANDA)
+        # Create a custom period (5pm-5pm NY time based) daily bar consolidator.
+        consolidator = QuoteBarConsolidator(self._consolidation_period)
+        # Subscribe the consolidator to EURUSD data feed to automatically update the consolidator.
+        self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
+    
+    def _consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
+        # Start time is set as the previous day's 5pm.
+        dt = dt.replace(hour=17, minute=0, second=0, microsecond=0)
+        period = timedelta(1)
+        start = dt - period
+        # Set period to 1 day, making 1-day bar until the next 5pm.
+        return CalendarInfo(start, period)</pre>
 </div>
