@@ -9,6 +9,7 @@
 $name = "gamma";
 $typeName = "Gamma";
 $helperMethod = "G";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
@@ -44,6 +45,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 $name = "gamma";
 $typeName = "Gamma";
 $indicatorPage = "gamma";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
