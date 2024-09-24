@@ -1,149 +1,152 @@
 <p>To create a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/manual-indicators'>manual indicator</a> for <?=$name?>, call the <code><?=$typeName?></code> constructor.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">private Symbol _spy;
-private DividendYieldProvider _dividendYieldProvider;
-private List&lt;Symbol&gt; _<?=strtolower($typeName)?>s = new();
-// Define the option pricing model
-private readonly OptionPricingModelType _optionPricingModel = OptionPricingModelType.ForwardTree;
-
-public override void Initialize()
+    <pre class="csharp">public class Manual<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
-    // Subscribe to the underlying
-    _spy = AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol;
-    // Set up dividend yield provider for the underlying
-    _dividendYieldProvider = new(_spy);
-    
-    // Set up a scheduled event to select contract and create Greeks indicator daily before market open
-    Schedule.On(
-        DateRules.EveryDay(_spy),
-        TimeRules.At(9, 0),
-        UpdateContractsAndGreeks
-    );
-}
+    private Symbol _underlying;
+    private DividendYieldProvider _dividendYieldProvider;
+    private List&lt;<?=strtolower($typeName)?>&gt; _indicators = new();
+    // Define the Option pricing model.
+    private readonly OptionPricingModelType _optionPricingModel = OptionPricingModelType.ForwardTree;
 
-private void UpdateContractsAndGreeks()
-{
-    // Get all tradable option contracts
-    var contractList = OptionChainProvider.GetOptionContractList(_spy, Time).ToList();
-    // You can do further filtering here
-
-    // Iterate all expiries
-    foreach (var expiry in contractList.Select(x =&gt; x.ID.Date).Distinct())
+    public override void Initialize()
     {
-        var contractsByExpiry = contractList.Where(x =&gt; x.ID.Date == expiry).ToList();
+        // Subscribe to the underlying asset.
+        _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw)" : "AddIndex(\"SPY\")"?>.Symbol;
+        // Set up dividend yield provider for the underlying
+        _dividendYieldProvider = new(_underlying);
+        
+        // Set up a Scheduled Event to select contract and create the indicators every day before market open.
+        Schedule.On(
+            DateRules.EveryDay(_underlying),
+            TimeRules.At(9, 0),
+            UpdateContractsAndGreeks
+        );
+    }
 
-        // Iterate all strike prices among the contracts of the same expiry
-        foreach (var strike in contractsByExpiry.Select(x =&gt; x.ID.StrikePrice).Distinct())
+    private void UpdateContractsAndGreeks()
+    {
+        // Get all the tradable Option contracts.
+        var chain = OptionChain(_underlying);
+        // You can do further filtering here
+    
+        // Iterate all expiries.
+        foreach (var expiry in chain.Select(x =&gt; x.ID.Date).Distinct())
         {
-            var contractsByStrike = contractsByExpiry.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
+            var contractsForExpiry = chain.Where(x =&gt; x.ID.Date == expiry).ToList();
 
-            // Get the call and put respectively
-            var call = contractsByStrike.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Call);
-            var put = contractsByStrike.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Put);
-            // Skip if either call or put not exist
-            if (call == null || put == null) continue;
+            // Iterate all strike prices among the contracts of the same expiry.
+            foreach (var strike in contractsForExpiry.Select(x =&gt; x.ID.StrikePrice).Distinct())
+            {
+                var contractsForStrike = contractsForExpiry.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
 
-            // Create subscriptions to both contract
-            call = AddOptionContract(call).Symbol;
-            put = AddOptionContract(put).Symbol;
+                // Get the call and put, respectively.
+                var call = contractsForStrike.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Call);
+                var put = contractsForStrike.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Put);
+                // Skip if the call doesn't exist, the put doesn't exist, or they are already in the universe.
+                if (call == null || put == null || Securities.ContainsKey(call.Symbol)) continue;
 
-            // Create the manual-updating <?=$typeName?> indicator
-            var call<?=$typeName?> = new <?=$typeName?>(call, RiskFreeInterestRateModel, _dividendYieldProvider, put, _optionPricingModel);
-            var put<?=$typeName?> = new <?=$typeName?>(put, RiskFreeInterestRateModel, _dividendYieldProvider, call, _optionPricingModel);
-            // Add to list of indicator
-            _<?=strtolower($typeName)?>s.Add(call<?=$typeName?>);
-            _<?=strtolower($typeName)?>s.Add(put<?=$typeName?>);
+                // Subscribe to both contracts.
+                AddOptionContract(call.Symbol);
+                AddOptionContract(put.Symbol);
+
+                // Create and save the manual <?=$typeName?> indicators.
+                _indicators.Add(new <?=$typeName?>(call, RiskFreeInterestRateModel, _dividendYieldProvider, put, _optionPricingModel));
+                _indicators.Add(new <?=$typeName?>(put, RiskFreeInterestRateModel, _dividendYieldProvider, call, _optionPricingModel));
+            }
         }
     }
-}
 
-public override void OnData(Slice slice)
-{
-    // Iterate indicators
-    foreach (var <?=strtolower($typeName)?>Indicator in _<?=strtolower($typeName)?>s)
+    public override void OnData(Slice slice)
     {
-        var option = <?=strtolower($typeName)?>Indicator.OptionSymbol;
-        var mirrorRight = option.ID.OptionRight == OptionRight.Call ? OptionRight.Put : OptionRight.Call;
-        var mirror = QuantConnect.Symbol.CreateOption(option.Underlying.Value, Market.USA, OptionStyle.American, mirrorRight, option.ID.StrikePrice, option.ID.Date);
-
-        // Check if price data available for both contracts and the underlying
-        if (slice.QuoteBars.ContainsKey(option) && slice.QuoteBars.ContainsKey(mirror) && slice.Bars.ContainsKey(_spy))
+        // Iterate through the indicators.
+        foreach (var indicator in _indicators)
         {
-            // Update the indicator
-            <?=strtolower($typeName)?>Indicator.Update(new IndicatorDataPoint(option, slice.QuoteBars[option].EndTime, slice.QuoteBars[option].Close));
-            <?=strtolower($typeName)?>Indicator.Update(new IndicatorDataPoint(mirror, slice.QuoteBars[mirror].EndTime, slice.QuoteBars[mirror].Close));
-            <?=strtolower($typeName)?>Indicator.Update(new IndicatorDataPoint(_spy, slice.Bars[_spy].EndTime, slice.Bars[_spy].Close));
+            var option = indicator.OptionSymbol;
+            var mirrorRight = option.ID.OptionRight == OptionRight.Call ? OptionRight.Put : OptionRight.Call;
+            var mirror = QuantConnect.Symbol.CreateOption(option.Underlying.Value, Market.USA, OptionStyle.American, mirrorRight, option.ID.StrikePrice, option.ID.Date);
+            
+            // Check if price data is available for both contracts and the underlying asset.
+            if (slice.QuoteBars.ContainsKey(option) && slice.QuoteBars.ContainsKey(mirror) && slice.Bars.ContainsKey(_underlying))
+            {
+                // Update the indicator.
+                indicator.Update(new IndicatorDataPoint(option, slice.QuoteBars[option].EndTime, slice.QuoteBars[option].Close));
+                indicator.Update(new IndicatorDataPoint(mirror, slice.QuoteBars[mirror].EndTime, slice.QuoteBars[mirror].Close));
+                indicator.Update(new IndicatorDataPoint(_underlying, slice.Bars[_underlying].EndTime, slice.Bars[_underlying].Close));
 
-            // Get the current value
-            var <?=strtolower($typeName)?> = <?=strtolower($typeName)?>Indicator.Current.Value;
+                // Get the current value.
+                var value = indicator.Current.Value;
+            }
         }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    # List to hold Greeks indicators
-    self.<?=strtolower($typeName)?>s = []
+    <pre class="python">class <?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
+    _indicators = []
 
-    # Subscribe to the underlying
-    self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
-    # Set up dividend yield provider for the underlying
-    self.dividend_yield_provider = DividendYieldProvider(self.spy)
-    # Define the option pricing model
-    self.option_pricing_model = OptionPricingModelType.FORWARD_TREE
+    def initialize(self) -&gt; None:
+        # Subscribe to the underlying asset.
+        self._underlying = <?=$assetClass == "Equity" ? "self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW)" : "self.add_index('SPX')" ?>.symbol
+        # Set up dividend yield provider for the underlying.
+        self._dividend_yield_provider = DividendYieldProvider(self._underlying)
+        # Define the Option pricing model.
+        self._option_pricing_model = OptionPricingModelType.FORWARD_TREE
 
-    # Set up a scheduled event to select contract and create Greeks indicator daily before market open
-    self.schedule.on(
-        self.date_rules.every_day(self.spy),
-        self.time_rules.at(9, 0),
-        self.update_contracts_and_greeks
-    )
-
-def update_contracts_and_greeks(self) -&gt; None:
-    # Get all tradable option contracts
-    contract_list = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
-    # You can do further filtering here
-
-    # Iterate all expiries
-    for expiry in set(x.id.date for x in contract_list):
-        contract_by_expiry = [x for x in contract_list if x.id.date == expiry]
+        # Set up a Scheduled Event to select contract and create the indicators every day before market open.
+        self.schedule.on(
+            self.date_rules.every_day(self._underlying),
+            self.time_rules.at(9, 0),
+            self._update_contracts_and_greeks
+        )
         
-        # Iterate all strike prices among the contracts of the same expiry
-        for strike in set(x.id.strike_price for x in contract_by_expiry):
-            contract_by_strike = [x for x in contract_by_expiry if x.id.strike_price == strike]
+    def _update_contracts_and_greeks(self) -&gt; None:
+        # Get all the tradable Option contracts.
+        chain = self.option_chain(self._underlying)
+        # You can do further filtering here
+
+        # Iterate all expiries
+        for expiry in set(x.id.date for x in chain):
+            contracts_for_expiry = [x for x in chain if x.id.date == expiry]
         
-            # Get the call and put respectively
-            call = next(filter(lambda x: x.id.option_right == OptionRight.CALL, contract_by_strike))
-            put = next(filter(lambda x: x.id.option_right == OptionRight.PUT, contract_by_strike))
-            # Skip if either call or put not exist
-            if not call or not put:
-                continue
+            # Iterate all strike prices among the contracts of the same expiry.
+            for strike in set(x.id.strike_price for x in contracts_for_expiry):
+                contract_for_strike = [x for x in contracts_for_expiry if x.id.strike_price == strike]
             
-            # Create subscriptions to both contract
-            call = self.add_option_contract(call).symbol
-            put = self.add_option_contract(put).symbol
-        
-            # Create the manual-updating <?=$typeName?> indicator
-            call_<?=strtolower($typeName)?> = <?=$typeName?>(call, self.risk_free_interest_rate_model, self.dividend_yield_provider, put, self.option_pricing_model)
-            put_<?=strtolower($typeName)?> = <?=$typeName?>(put, self.risk_free_interest_rate_model, self.dividend_yield_provider, call, self.option_pricing_model)
-            # Add to list of indicator
-            self.<?=strtolower($typeName)?>s.extend([call_<?=strtolower($typeName)?>, put_<?=strtolower($typeName)?>])
-        
-def on_data(self, slice: Slice) -&gt; None:
-    # Iterate indicators
-    for <?=strtolower($typeName)?>_indicator in self.<?=strtolower($typeName)?>s:
-        option = <?=strtolower($typeName)?>_indicator.option_symbol
-        mirror_right = OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT
-        mirror = Symbol.create_option(option.underlying.value, Market.USA, OptionStyle.AMERICAN, mirror_right, option.id.strike_price, option.id.date)
-    
-        # Check if price data available for both contracts and the underlying
-        if option in slice.quote_bars and mirror in slice.quote_bars and self.spy in slice.bars:
-            # Update the indicator
-            <?=strtolower($typeName)?>_indicator.update(IndicatorDataPoint(option, slice.quote_bars[option].end_time, slice.quote_bars[option].close))</pre>
-            <?=strtolower($typeName)?>_indicator.update(IndicatorDataPoint(mirror, slice.quote_bars[mirror].end_time, slice.quote_bars[mirror].close))
-            <?=strtolower($typeName)?>_indicator.update(IndicatorDataPoint(self.spy, slice.bars[self.spy].end_time, slice.bars[self.spy].close))
+                # Get the call and put respectively.
+                call = next(filter(lambda x: x.id.option_right == OptionRight.CALL, contract_for_strike))
+                put = next(filter(lambda x: x.id.option_right == OptionRight.PUT, contract_for_strike))
+                # Skip if the call doesn't exist, the put doesn't exist, or they are already in the universe.
+                if not call or not put or call.symbol in self.securities:
+                    continue
+                
+                # Subscribe to both contracts.
+                call = call.symbol
+                put = put.symbol
+                self.add_option_contract(call)
+                self.add_option_contract(put)
+            
+                # Create and save the automatic <?=$typeName?> indicators.
+                self._indicators.extend(
+                    [
+                        <?=$typeName?>(call, self._risk_free_interest_rate_model, self._dividend_yield_provider, put, self._option_pricing_model),
+                        <?=$typeName?>(put, self._risk_free_interest_rate_model, self._dividend_yield_provider, call, self._option_pricing_model)
+                    ]
+                )
 
-            # Get the current value
-            <?=strtolower($typeName)?> = <?=strtolower($typeName)?>_indicator.current.value;
+    def on_data(self, slice: Slice) -&gt; None:
+        # Iterate through the indicators.
+        for indicator in self._indicators:
+            option = indicator.option_symbol
+            mirror_right = OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT
+            mirror = Symbol.create_option(option.underlying.value, Market.USA, OptionStyle.AMERICAN, mirror_right, option.id.strike_price, option.id.date)
+
+            # Check if price data is available for both contracts and the underlying asset.
+            if option in slice.quote_bars and mirror in slice.quote_bars and self.spy in slice.bars:
+                indicator.update(IndicatorDataPoint(option, slice.quote_bars[option].end_time, slice.quote_bars[option].close))
+                indicator.update(IndicatorDataPoint(mirror, slice.quote_bars[mirror].end_time, slice.quote_bars[mirror].close))
+                indicator.update(IndicatorDataPoint(self.spy, slice.bars[self._underlying].end_time, slice.bars[self._underlying].close))
+
+                # Get the current value.
+                value = indicator.current.value</pre>
 </div>
 
 <p>For more information about the <code><?=$typeName?></code> constructor, see <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/<?=$indicatorPage?>">Using <?=$helperMethod?> Indicator</a>.</p>
