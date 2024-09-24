@@ -117,12 +117,7 @@
         }
     }
 }</pre>
-    <pre class="python"># region imports
-from AlgorithmImports import *
-# endregion
-
-
-class OptionChainProviderFullExample(QCAlgorithm):
+    <pre class="python">class OptionChainProviderFullExample(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2023, 1, 2)
@@ -180,8 +175,8 @@ class OptionChainManager:
         self._min_expiry = min_expiry
         self._max_expiry = max_expiry
         
-    def set_chain(self, symbols: List[Symbol], time: datetime) -> None:
-        self._chain = [x for x in symbols if self._min_expiry <= (x.id.date - time).days <= self._max_expiry]
+    def set_chain(self, universe: DataHistory[OptionUniverse], time: datetime) -> None:
+        self._chain = [x for x in universe if self._min_expiry <= (x.id.date - time).days <= self._max_expiry]
         
     def select(self, algorithm: QCAlgorithm, symbol: Symbol) -> None:
         if not self._chain:
