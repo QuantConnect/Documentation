@@ -6,7 +6,7 @@
     <li><a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a></li>
     <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe'>US Equity Option Universe</a></li>
     <li>Some data from the <a href="https://www.quantconnect.com/datasets/algoseek-us-equity-options/pricing">US Equity Options</a> dataset</li>
-    <li>Data for the underlying US Equity universes and assets</li>
+    <li>Data for the underlying <a href='https://www.quantconnect.com/docs/v2/lean-cli/datasets/quantconnect/download-by-ticker/costs#02-US-Equity'>US Equity universes and assets</a></li>
 </ul>
 
 <p>The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
