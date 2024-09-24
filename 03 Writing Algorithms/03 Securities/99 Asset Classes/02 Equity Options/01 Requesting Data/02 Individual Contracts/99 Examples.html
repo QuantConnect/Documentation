@@ -68,7 +68,7 @@
         private readonly int _maxStrike;
         private readonly int _minExpiry;
         private readonly int _maxExpiry;
-        private List&lt;Symbol&gt; _chain = new();
+        private List&lt;OptionUniverse&gt; _chain = new();
         private readonly List&lt;Symbol&gt; _symbols = new();
 
         public OptionChainManager(int minStrike, int maxStrike, int minExpiry, int maxExpiry)
@@ -85,7 +85,7 @@
             {
                 var totalDays = (x.ID.Date - time).TotalDays;
                 return _minExpiry &lt;= totalDays && totalDays &lt;= _maxExpiry;
-            }).Select(x=> x.Symbol).ToList();
+            }).ToList();
         }
         
         public void Select(QCAlgorithm algorithm, Symbol underlyingSymbol)
@@ -101,7 +101,9 @@
             var index = strikes.IndexOf(atm);
             var minStrike = strikes[Math.Max(0, index + _minStrike)];
             var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
-            var symbols = _chain.Where(x =&gt; minStrike &lt;= x.ID.StrikePrice && x.ID.StrikePrice &lt;= maxStrike).ToList();
+            var symbols = _chain
+                .Where(x =&gt; minStrike &lt;= x.ID.StrikePrice && x.ID.StrikePrice &lt;= maxStrike)
+                .Select(x => x.Symbol).ToList();
 
             foreach (var symbol in _symbols.Except(symbols).ToList())
             {
@@ -153,9 +155,6 @@
             chain = slice.option_chains.get(symbol)
             if not chain: 
                 continue
-            if self.portfolio[symbol.underlying].invested:
-                self.liquidate(symbol.underlying)
-
             expiry = min([x.expiry for x in chain])
             contracts = [
                 x for x in chain 
@@ -193,7 +192,7 @@ class OptionChainManager:
         index = strikes.index(atm)
         min_strike = strikes[max(0, index + self._min_strike)]
         max_strike = strikes[min(len(strikes) - 1, index + self._max_strike)]
-        symbols = set(x for x in self._chain if min_strike <= x.id.strike_price <= max_strike)
+        symbols = set(x.symbol for x in self._chain if min_strike <= x.id.strike_price <= max_strike)
         
         for symbol in self._symbols - symbols:
             if algorithm.remove_option_contract(symbol):
