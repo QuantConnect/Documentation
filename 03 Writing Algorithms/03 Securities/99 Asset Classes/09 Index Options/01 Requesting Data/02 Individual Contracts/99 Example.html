@@ -15,7 +15,9 @@
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
             UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
-            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+            SetSecurityInitializer(
+                new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+            );
             var spx = AddIndex("SPX").Symbol;
             _chainManager[QuantConnect.Symbol.CreateCanonicalOption(spx, "SPXW", Market.USA, "?SPXW")] = new(-10, 10, 0, 1);
             PopulateOptionChain();
@@ -121,13 +123,17 @@
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
         self.universe_settings.minimum_time_in_universe = timedelta(minutes=0)
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
+        )
         spx = self.add_index("SPX").symbol
         self._chain_manager = {
             Symbol.create_canonical_option(spx, "SPXW", Market.USA, "?SPXW"): OptionChainManager(-10, 10, 0, 1)
         }
         self._populate_option_chain()
-        self.schedule.on(self.date_rules.every_day(spx), self.time_rules.after_market_open(spx, 1), self._populate_option_chain)
+        self.schedule.on(
+            self.date_rules.every_day(spx), self.time_rules.after_market_open(spx, 1), self._populate_option_chain
+        )
         self.schedule.on(self.date_rules.every_day(spx), self.time_rules.every(timedelta(minutes=5)), self._filter)
 
     def _populate_option_chain(self):
