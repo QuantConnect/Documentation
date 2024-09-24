@@ -62,7 +62,7 @@
         }
     }
 }</pre>
-    <pre class="python">class <?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
+    <pre class="python">class Automatic<?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
     _indicators = []
     
     def initialize(self) -&gt; None:
