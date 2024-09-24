@@ -141,8 +141,8 @@
             <td>
                 1 Option over 252 trading days with 3 data formats
                 <br>=&gt; 1 * 252 * 3 files
-                <br>= 756 file
-                s<br>
+                <br>= 756 files
+                <br>
                 <br>756 files @ 15 QCC/file
                 <br>=&gt; 756 * 15 QCC 
                 <br>= 11,360 QCC 
