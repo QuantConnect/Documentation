@@ -10,6 +10,7 @@
 $name = "rho";
 $typeName = "Rho";
 $helperMethod = "R";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
@@ -42,6 +43,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 $name = "rho";
 $typeName = "Rho";
 $indicatorPage = "rho";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
