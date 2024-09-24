@@ -96,6 +96,7 @@
             <td>
                 1 underlying Equity over 252 trading days
                 <br>=&gt; 1 * 252 files
+                <br>= 252 files
                 <br>
                 <br>252 files @ 100 QCC/file
                 <br>=&gt; 252 * 100 QCC
