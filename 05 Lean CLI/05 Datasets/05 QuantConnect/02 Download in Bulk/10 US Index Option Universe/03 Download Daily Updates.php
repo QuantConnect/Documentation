@@ -6,7 +6,7 @@
 
 <p>
 	After you subscribe to dataset updates, to update your local copy of the US Index Option Universe dataset, use the <a href="https://www.quantconnect.com/datasets/algoseek-us-index-option-universe/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a>. 
-	Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions:
+	Alternatively, instead of directly calling the <code>lean data download</code> command, you can place the following Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files.
 </p>
 
 <?
