@@ -26,12 +26,11 @@
         private void PopulateOptionChain()
         {
             // The contract list is updated daily, so we can get it and apply
-            // the expiration filter as soon as the market open
+            // the expiration filter as soon as the market opens.
             foreach (var (symbol, manager) in _chainManager)
             {
-                manager.SetChain(OptionChainProvider.GetOptionContractList(symbol, Time), Time);
+                manager.SetChain(OptionChain(symbol), Time);
             }
-    
             Filter();
         }
         
@@ -78,13 +77,13 @@
             _maxExpiry = maxExpiry;
         }
 
-        public void SetChain(IEnumerable&lt;Symbol&gt; symbols, DateTime time)
+        public void SetChain(DataHistory&lt;OptionUniverse&gt; symbols, DateTime time)
         {
             _chain = symbols.Where(x =&gt;
             {
                 var totalDays = (x.ID.Date - time).TotalDays;
                 return _minExpiry &lt;= totalDays && totalDays &lt;= _maxExpiry;
-            }).ToList();
+            }).Select(x=> x.Symbol).ToList();
         }
         
         public void Select(QCAlgorithm algorithm, Symbol underlyingSymbol)
@@ -101,15 +100,12 @@
             var minStrike = strikes[Math.Max(0, index + _minStrike)];
             var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
             var symbols = _chain.Where(x =&gt; minStrike &lt;= x.ID.StrikePrice && x.ID.StrikePrice &lt;= maxStrike).ToList();
-
-            var toRemove = _symbols.Except(symbols).ToList();
-            foreach (var symbol in toRemove)
+            foreach (var symbol in _symbols.Except(symbols).ToList())
             {
                 if (algorithm.RemoveOptionContract(symbol))
                     _symbols.Remove(symbol);
             }
-            var toAdd = symbols.Except(_symbols).ToList();
-            foreach (var symbol in toAdd)
+            foreach (var symbol in symbols.Except(_symbols).ToList())
             {
                 _symbols.Add(symbol);
                 algorithm.AddOptionContract(symbol);
