@@ -8,6 +8,7 @@
 $name = "vega";
 $typeName = "Vega";
 $helperMethod = "V";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
@@ -44,6 +45,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 $name = "vega";
 $typeName = "Vega";
 $indicatorPage = "vega";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
