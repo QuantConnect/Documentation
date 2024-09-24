@@ -9,7 +9,7 @@
     public override void Initialize()
     {
         // Subscribe to the underlying asset.
-        _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw)" : "AddIndex(\"SPY\")"?>.Symbol;
+        _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw)" : "AddIndex(\"SPX\")"?>.Symbol;
     
         // Set up a Scheduled Event to select contract and create the indicators every day before market open.
         Schedule.On(
