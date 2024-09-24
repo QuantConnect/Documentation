@@ -127,8 +127,8 @@
                 # Create and save the automatic <?=$typeName?> indicators.
                 self._indicators.extend(
                     [
-                        <?=$typeName?>(call, self._risk_free_interest_rate_model, self._dividend_yield_provider, put, self._option_pricing_model),
-                        <?=$typeName?>(put, self._risk_free_interest_rate_model, self._dividend_yield_provider, call, self._option_pricing_model)
+                        <?=$typeName?>(call, self.risk_free_interest_rate_model, self._dividend_yield_provider, put, self._option_pricing_model),
+                        <?=$typeName?>(put, self.risk_free_interest_rate_model, self._dividend_yield_provider, call, self._option_pricing_model)
                     ]
                 )
 
