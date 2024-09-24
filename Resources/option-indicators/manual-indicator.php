@@ -80,7 +80,7 @@
         }
     }
 }</pre>
-    <pre class="python">class <?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
+    <pre class="python">class Manual<?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
     _indicators = []
 
     def initialize(self) -&gt; None:
