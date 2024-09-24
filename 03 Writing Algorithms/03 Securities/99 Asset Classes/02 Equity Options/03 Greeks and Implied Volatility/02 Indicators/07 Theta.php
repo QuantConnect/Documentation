@@ -9,6 +9,7 @@
 $name = "theta";
 $typeName = "Theta";
 $helperMethod = "T";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
@@ -43,6 +44,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 $name = "theta";
 $typeName = "Theta";
 $indicatorPage = "theta";
+$assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
