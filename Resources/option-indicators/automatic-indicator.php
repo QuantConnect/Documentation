@@ -89,16 +89,16 @@
             for strike in set(x.id.strike_price for x in contracts_for_expiry):
                 contract_for_strike = [x for x in contracts_for_expiry if x.id.strike_price == strike]
             
-                # Get the call and put respectively.
-                call = next(filter(lambda x: x.id.option_right == OptionRight.CALL, contract_for_strike))
-                put = next(filter(lambda x: x.id.option_right == OptionRight.PUT, contract_for_strike))
+                # Get the call and put, respectively.
+                calls = [x for x in contract_for_strike if x.id.option_right == OptionRight.CALL]
+                puts = [x for x in contract_for_strike if x.id.option_right == OptionRight.PUT]
                 # Skip if the call doesn't exist, the put doesn't exist, or they are already in the universe.
-                if not call or not put or call.symbol in self.securities:
+                if not calls or not puts or calls[0].symbol in self.securities:
                     continue
                 
                 # Subscribe to both contracts.
-                call = call.symbol
-                put = put.symbol
+                call = calls[0].symbol
+                put = puts[0].symbol
                 self.add_option_contract(call)
                 self.add_option_contract(put)
             
