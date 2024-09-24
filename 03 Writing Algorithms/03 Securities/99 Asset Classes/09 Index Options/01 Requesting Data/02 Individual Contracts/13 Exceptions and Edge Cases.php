@@ -12,7 +12,7 @@
 
 <p>
 	To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
-	To get Index Option contract <code>Symbol</code> objects, call the <code class="csharp">CreateOption</code><code class="python">create_option</code> method or use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>.
+	To get Index Option contract <code>Symbol</code> objects, call the <code class="csharp">CreateOption</code><code class="python">create_option</code> or <code class="csharp">OptionChain</code><code class="python">option_chain</code> methods.
 	If you use the <code class="csharp">CreateOption</code><code class="python">create_option</code> method, you need to know the specific contract details.</p>
 
 <div class="section-example-container">
