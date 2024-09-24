@@ -1,4 +1,4 @@
-<p>Permissioned <a href="/docs/v2/cloud-platform/organizations/tier-features#06-Institution-Tier">Institutional</a> clients can build derivative data such as machine learning models and download it from the Object Store. <a href="mailto:support@quantconnect.com?cc=jared@quantconnect.com&amp;?subject=Download%20Files%20From%20Object%20Store">Contact us</a> to unlock this feature for your account.</p>
+<? include(DOCS_RESOURCES."/object-store/download-files-from-cloud-permission.php"); ?>
 
 <p>Follow these steps to download files and directories from the Object Store:</p>
 

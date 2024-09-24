@@ -31,11 +31,20 @@ Key                Bytes  Folder  Filename
 </div>
 
 <h4>Get File Metadata</h4>
-<p>To view the metadata of a file in the Object Store, run <code>lean cloud object-store get &lt;path/to/file&gt;</code>.</p>
+<p>To view the metadata of a file in the Object Store, run <code>lean cloud object-store properties &lt;path/to/file&gt;</code>.</p>
 <div class="cli section-example-container">
-<pre>$ lean cloud object-store get 15710069/adjusted
+<pre>$ lean cloud object-store properties 15710069/adjusted
 Bytes  Modified             Filename           Preview
 60024  2023-08-30 23:08:23  15710069/adjusted  {"12723264</pre>
+</div>
+
+<h4>Download Content</h4>
+<? include(DOCS_RESOURCES."/object-store/download-files-from-cloud-permission.php"); ?>
+<p>To download a file or directory from the Object Store, run <code>lean cloud object-store get &lt;key&gt;</code>.</p>
+<div class="cli section-example-container">
+<pre>$ lean cloud object-store get 15710069/adjusted
+Fetching object store download url
+Unzipping object store keys values into: &lt;Current Directory&gt;</pre>
 </div>
 
 <h4>Delete Content</h4>
