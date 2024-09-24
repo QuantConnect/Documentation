@@ -3,48 +3,52 @@
 <h4>Example 1: Round To Lot</h4>
 <p>Like Futures, Crypto Futures contracts have a fixed discrete size lot to trade instead of fractional like spot cryptos. Therefore, we will demonstrate how to order with the correct lot size to avoid rounding error. To access the lot size, call <code class="csharp">SymbolProperties</code><code class="python">symbol_properties</code> property of the <code>CryptoFuture</code> security object.</p>
 <div class="section-example-container">
-    <pre class="csharp">private Symbol _symbol;
-
-public override void Initialize()
+    <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
 {
-    // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
-    SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
-    // In Binance brokerage, USD is not a valid currency to trade or automatically convertable
-    // Thus, we need to set account currency as USDT and add the starting cash
-    SetAccountCurrency("USDT", 10000);
-    // Add subscriptions to BTCUSDT Future with specific market to ensure the correct securities are selected
-    _symbol = AddCryptoFuture("BTCUSDT", market: Market.Binance).Symbol;
-}
+    private Symbol _symbol;
 
-public override void OnData(Slice slice)
-{
-    // Make sure to place order when market is open since market on open order is not accepted
-    if (!Portfolio.Invested && IsMarketOpen(_symbol))
+    public override void Initialize()
     {
-        // Lot size data can be obtained in symbol properties
-        // Placing an order rounded to the lot size ensures the order is valid and allows accurate calculation on profit and risk of the whole portfolio
-        var lotSize = Securities[_symbol].SymbolProperties.LotSize;
-        // This example demonstrate an initial desired order size of 2.5 contracts, which will be rounded to 2 contracts since the lot size = 1
-        var quantity = Convert.ToDecimal(Math.Floor(2.5 / (double)lotSize)) * lotSize;
-        MarketOrder(_symbol, quantity);
+        // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+        // In Binance brokerage, USD is not a valid currency to trade or automatically convertable.
+        // Thus, we need to set account currency as USDT and add the starting cash.
+        SetAccountCurrency("USDT", 10000);
+        // Add subscriptions to BTCUSDT Future with specific market to ensure the correct securities are selected.
+        _symbol = AddCryptoFuture("BTCUSDT", market: Market.Binance).Symbol;
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Make sure to place order when market is open since market on open order is not accepted.
+        if (!Portfolio.Invested && IsMarketOpen(_symbol))
+        {
+            // Lot size data can be obtained in symbol properties.
+            // Placing an order rounded to the lot size ensures the order is valid and allows accurate calculation on profit and risk of the whole portfolio.
+            var lotSize = Securities[_symbol].SymbolProperties.LotSize;
+            // This example demonstrate an initial desired order size of 2.5 contracts, which will be rounded to 2 contracts since the lot size = 1.
+            var quantity = Convert.ToDecimal(Math.Floor(2.5 / (double)lotSize)) * lotSize;
+            MarketOrder(_symbol, quantity);
+        }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
-    self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
-    # In Binance brokerage, USD is not a valid currency to trade or automatically convertable
-    # Thus, we need to set account currency as USDT and add the starting cash
-    self.set_account_currency("USDT", 10000)
-    # Add subscriptions to BTCUSDT Future with specific market to ensure the correct securities are selected
-    self._symbol = self.add_crypto_future("BTCUSDT", market=Market.BINANCE).symbol
-    
-def on_data(self, slice: Slice) -&gt; None:
-    # Make sure to place order when market is open since market on open order is not accepted
-    if not self.portfolio.invested and self.is_market_open(self._symbol):
-        # Lot size data can be obtained in symbol properties
-        # Placing an order rounded to the lot size ensures the order is valid and allows accurate calculation on profit and risk of the whole portfolio
-        lot_size = self.securities[self._symbol].symbol_properties.lot_size
-        # This example demonstrate an initial desired order size of 2.5 contracts, which will be rounded to 2 contracts since the lot size = 1
-        quantity = 2.5 // lot_size * lot_size
-        self.market_order(self._symbol, quantity)</pre>
+    <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
+        # In Binance brokerage, USD is not a valid currency to trade or automatically convertable.
+        # Thus, we need to set account currency as USDT and add the starting cash.
+        self.set_account_currency("USDT", 10000)
+        # Add subscriptions to BTCUSDT Future with specific market to ensure the correct securities are selected.
+        self._symbol = self.add_crypto_future("BTCUSDT", market=Market.BINANCE).symbol
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        # Make sure to place order when market is open since market on open order is not accepted.
+        if not self.portfolio.invested and self.is_market_open(self._symbol):
+            # Lot size data can be obtained in symbol properties.
+            # Placing an order rounded to the lot size ensures the order is valid and allows accurate calculation on profit and risk of the whole portfolio.
+            lot_size = self.securities[self._symbol].symbol_properties.lot_size
+            # This example demonstrate an initial desired order size of 2.5 contracts, which will be rounded to 2 contracts since the lot size = 1.
+            quantity = 2.5 // lot_size * lot_size
+            self.market_order(self._symbol, quantity)</pre>
 </div>
