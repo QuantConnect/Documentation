@@ -77,9 +77,9 @@
             _maxExpiry = maxExpiry;
         }
 
-        public void SetChain(DataHistory&lt;OptionUniverse&gt; symbols, DateTime time)
+        public void SetChain(DataHistory&lt;OptionUniverse&gt; chain, DateTime time)
         {
-            _chain = symbols.Where(x =&gt;
+            _chain = chain.Where(x =&gt;
             {
                 var totalDays = (x.ID.Date - time).TotalDays;
                 return _minExpiry &lt;= totalDays && totalDays &lt;= _maxExpiry;
@@ -171,8 +171,8 @@ class OptionChainManager:
         self._min_expiry = min_expiry
         self._max_expiry = max_expiry
         
-    def set_chain(self, universe: DataHistory[OptionUniverse], time: datetime) -> None:
-        self._chain = [x for x in universe if self._min_expiry <= (x.id.date - time).days <= self._max_expiry]
+    def set_chain(self, chain: DataHistory[OptionUniverse], time: datetime) -> None:
+        self._chain = [x for x in chain if self._min_expiry <= (x.id.date - time).days <= self._max_expiry]
         
     def select(self, algorithm: QCAlgorithm, symbol: Symbol) -> None:
         if not self._chain:
