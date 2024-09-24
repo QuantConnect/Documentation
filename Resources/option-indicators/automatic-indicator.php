@@ -4,12 +4,12 @@
     <pre class="csharp">public class Automatic<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
     private Symbol _underlying;
-    private List<$typeName> _indicators = new();
+    private List&lt;<?=$typeName?>&gt; _indicators = new();
 
     public override void Initialize()
     {
         // Subscribe to the underlying asset.
-        _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode=DataNormalizationMode.Raw)" : "AddIndex(\"SPY\")"?>.Symbol;
+        _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw)" : "AddIndex(\"SPY\")"?>.Symbol;
     
         // Set up a Scheduled Event to select contract and create the indicators every day before market open.
         Schedule.On(
@@ -42,14 +42,12 @@
                 if (call == null || put == null || Securities.ContainsKey(call.Symbol)) continue;
 
                 // Subscribe to both contracts.
-                call = call.Symbol;
-                put = put.Symbol;
-                AddOptionContract(call);
-                AddOptionContract(put);
+                AddOptionContract(call.Symbol);
+                AddOptionContract(put.Symbol);
 
                 // Create and save the automatic <?=$typeName?> indicators.
-                _indicators.Add(<?=$helperMethod?>(call, put));
-                _indicators.Add(<?=$helperMethod?>(put, call));
+                _indicators.Add(<?=$helperMethod?>(call.Symbol, put.Symbol));
+                _indicators.Add(<?=$helperMethod?>(put.Symbol, call.Symbol));
             }
         }
     }
