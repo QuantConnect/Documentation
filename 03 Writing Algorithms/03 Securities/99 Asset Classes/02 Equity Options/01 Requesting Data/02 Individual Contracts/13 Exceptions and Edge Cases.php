@@ -41,7 +41,7 @@
 
 <p>
     To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
-    You can get the contract <code>Symbol</code> from the <code class="csharp">CreateOption</code><code class="python">create_option</code> method or from the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. 
+    You can get the contract <code>Symbol</code> from the <code class="csharp">CreateOption</code><code class="python">create_option</code> or <code class="csharp">OptionChain</code><code class="python">option_chain</code> methods. 
     If you use the <code class="csharp">CreateOption</code><code class="python">create_option</code> method, you need to provide the details of an existing contract.
 </p>
 
