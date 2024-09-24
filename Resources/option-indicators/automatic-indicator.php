@@ -46,8 +46,8 @@
                 AddOptionContract(call.Symbol).Symbol;
 
                 // Create and save the automatic <?=$typeName?> indicators.
-                _<?=strtolower($typeName)?>s.Add(<?=$helperMethod?>(call, put));
-                _<?=strtolower($typeName)?>s.Add(<?=$helperMethod?>(put, call));
+                _indicators.Add(<?=$helperMethod?>(call, put));
+                _indicators.Add(<?=$helperMethod?>(put, call));
             }
         }
     }
@@ -101,7 +101,7 @@
                 self.add_option_contract(put.symbol).symbol
             
                 # Create and save the automatic <?=$typeName?> indicators.
-                self.<?=strtolower($typeName)?>s.extend([self.<?=strtolower($helperMethod)?>(call, put), self.<?=strtolower($helperMethod)?>(put, call)])
+                self._indicators.extend([self.<?=strtolower($helperMethod)?>(call, put), self.<?=strtolower($helperMethod)?>(put, call)])
         
     def on_data(self, slice: Slice) -&gt; None:
         # Get the <?=$typeName?> indicator of each contract.
