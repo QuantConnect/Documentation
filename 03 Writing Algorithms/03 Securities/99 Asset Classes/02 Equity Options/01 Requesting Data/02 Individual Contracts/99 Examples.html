@@ -15,7 +15,9 @@
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
             UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
-            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+            SetSecurityInitializer(
+                new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+            );
             var spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
             _chainManager[QuantConnect.Symbol.CreateCanonicalOption(spy)] = new(-10, 10, 0, 7);
             PopulateOptionChain();
@@ -26,12 +28,11 @@
         private void PopulateOptionChain()
         {
             // The contract list is updated daily, so we can get it and apply
-            // the expiration filter as soon as the market open
+            // the expiration filter as soon as the market opens.
             foreach (var (symbol, manager) in _chainManager)
             {
-                manager.SetChain(OptionChainProvider.GetOptionContractList(symbol, Time), Time);
+                manager.SetChain(OptionChain(symbol), Time);
             }
-    
             Filter();
         }
         
@@ -78,13 +79,13 @@
             _maxExpiry = maxExpiry;
         }
 
-        public void SetChain(IEnumerable&lt;Symbol&gt; symbols, DateTime time)
+        public void SetChain(DataHistory&lt;OptionUniverse&gt; chain, DateTime time)
         {
-            _chain = symbols.Where(x =&gt;
+            _chain = chain.Where(x =&gt;
             {
                 var totalDays = (x.ID.Date - time).TotalDays;
                 return _minExpiry &lt;= totalDays && totalDays &lt;= _maxExpiry;
-            }).ToList();
+            }).Select(x=> x.Symbol).ToList();
         }
         
         public void Select(QCAlgorithm algorithm, Symbol underlyingSymbol)
@@ -102,14 +103,12 @@
             var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
             var symbols = _chain.Where(x =&gt; minStrike &lt;= x.ID.StrikePrice && x.ID.StrikePrice &lt;= maxStrike).ToList();
 
-            var toRemove = _symbols.Except(symbols).ToList();
-            foreach (var symbol in toRemove)
+            foreach (var symbol in _symbols.Except(symbols).ToList())
             {
                 if (algorithm.RemoveOptionContract(symbol))
                     _symbols.Remove(symbol);
             }
-            var toAdd = symbols.Except(_symbols).ToList();
-            foreach (var symbol in toAdd)
+            foreach (var symbol in symbols.Except(_symbols).ToList())
             {
                 _symbols.Add(symbol);
                 algorithm.AddOptionContract(symbol);
@@ -125,13 +124,17 @@
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
         self.universe_settings.minimum_time_in_universe = timedelta(minutes=0)
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
+        )
         spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
         self._chain_manager = {
             Symbol.create_canonical_option(spy): OptionChainManager(-10, 10, 0, 7)
         }
         self._populate_option_chain()
-        self.schedule.on(self.date_rules.every_day(spy), self.time_rules.after_market_open(spy, 1), self._populate_option_chain)
+        self.schedule.on(
+            self.date_rules.every_day(spy), self.time_rules.after_market_open(spy, 1), self._populate_option_chain
+        )
         self.schedule.on(self.date_rules.every_day(spy), self.time_rules.every(timedelta(minutes=5)), self._filter)
 
     def _populate_option_chain(self):
@@ -165,6 +168,7 @@
             if not self.portfolio[atm_call.symbol].invested:
                 self.market_order(atm_call.symbol, 1)
 
+
 class OptionChainManager:
     _chain = []
     _symbols = set([])
@@ -175,8 +179,8 @@ class OptionChainManager:
         self._min_expiry = min_expiry
         self._max_expiry = max_expiry
     
-    def set_chain(self, universe: DataHistory[OptionUniverse], time: datetime) -> None:
-        self._chain = [x for x in universe if self._min_expiry <= (x.id.date - time).days <= self._max_expiry]
+    def set_chain(self, chain: DataHistory[OptionUniverse], time: datetime) -> None:
+        self._chain = [x for x in chain if self._min_expiry <= (x.id.date - time).days <= self._max_expiry]
     
     def select(self, algorithm: QCAlgorithm, symbol: Symbol) -> None:
         if not self._chain:
