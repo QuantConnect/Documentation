@@ -14,9 +14,9 @@ def __get_start_date() -> str:
 
 def __get_end_date() -> str:
     now = datetime.now(timezone("US/Eastern"))
-    if now.time() > time(7,30):
+    if now.time() > time(7, 0):
         return (now - timedelta(1)).strftime("%Y%m%d")
-    print('New data is available at 07:30 AM EST')
+    print('New data is available at 07:00 AM EST')
     return (now - timedelta(2)).strftime("%Y%m%d")
 
 if __name__ == "__main__":
