@@ -140,10 +140,10 @@
             mirror = Symbol.create_option(option.underlying.value, Market.USA, OptionStyle.AMERICAN, mirror_right, option.id.strike_price, option.id.date)
 
             # Check if price data is available for both contracts and the underlying asset.
-            if option in slice.quote_bars and mirror in slice.quote_bars and self.spy in slice.bars:
+            if option in slice.quote_bars and mirror in slice.quote_bars and self._underlying in slice.bars:
                 indicator.update(IndicatorDataPoint(option, slice.quote_bars[option].end_time, slice.quote_bars[option].close))
                 indicator.update(IndicatorDataPoint(mirror, slice.quote_bars[mirror].end_time, slice.quote_bars[mirror].close))
-                indicator.update(IndicatorDataPoint(self.spy, slice.bars[self._underlying].end_time, slice.bars[self._underlying].close))
+                indicator.update(IndicatorDataPoint(self._underlying, slice.bars[self._underlying].end_time, slice.bars[self._underlying].close))
 
                 # Get the current value.
                 value = indicator.current.value</pre>
