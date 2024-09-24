@@ -93,20 +93,69 @@
         <tr>
             <td>US Equity Option Universe</td>
             <td>Download On Premise</td>
-            <td>1 underlying Equity<br>=&gt; 1 file<br><br>1 file @ 100 QCC/file<br>= 100 QCC<br>= $1 USD</td>
-            <td>1 underlying Equity<br>=&gt; 1 file/day<br><br>1 file/day @ 100 QCC/file<br>= 100 QCC/day<br>= $1 USD/day</td>
+            <td>
+                1 underlying Equity over 252 trading days
+                <br>=&gt; 1 * 252 files
+                <br>
+                <br>252 files @ 100 QCC/file
+                <br>=&gt; 252 * 100 QCC
+                <br>= 25,200 QCC
+                <br>= $252 USD
+            </td>
+            <td>
+                1 underlying Equity
+                <br>=&gt; 1 file/day
+                <br>
+                <br>1 file/day @ 100 QCC/file
+                <br>= 100 QCC/day
+                <br>= $1 USD/day
+            </td>
         </tr>
         <tr>
             <td>US Equity</td>
             <td>Minute Download</td>
-            <td>1 security over 252 trading days with 2 data formats<br>=&gt; 1 * 252 * 2 files<br>= 504 files<br><br>504 files @ 5 QCC/file<br>=&gt; 504 * 5 QCC <br>= 2,520 QCC <br>= $25.20 USD</td>
-            <td>1 security with 2 data formats<br>=&gt; 2 files/day<br><br>2 files/day @ 5 QCC/file<br>=&gt; 2 * 5 QCC/day<br>= 10 QCC/day<br>= $0.10 USD/day</td>
+            <td>
+                1 security over 252 trading days with 2 data formats
+                <br>=&gt; 1 * 252 * 2 files
+                <br>= 504 files
+                <br>
+                <br>504 files @ 5 QCC/file
+                <br>=&gt; 504 * 5 QCC 
+                <br>= 2,520 QCC 
+                <br>= $25.20 USD
+            </td>
+            <td>
+                1 security with 2 data formats
+                <br>=&gt; 2 files/day
+                <br>
+                <br>2 files/day @ 5 QCC/file
+                <br>=&gt; 2 * 5 QCC/day
+                <br>= 10 QCC/day
+                <br>= $0.10 USD/day
+            </td>
         </tr>
         <tr>
             <td>US Equity Options</td>
             <td>Minute Download</td>
-            <td>1 Option over 252 trading days with 3 data formats<br>=&gt; 1 * 252 * 3 files<br>= 756 files<br><br>756 files @ 15 QCC/file<br>=&gt; 756 * 15 QCC <br>= 11,360 QCC <br>= $113.60 USD</td>
-            <td>1 Option with 3 data formats<br>=&gt; 3 files/day<br><br>3 files/day @ 15 QCC/file<br>=&gt; 3 * 15 QCC/day<br>= 45 QCC/day<br>= $0.45 USD/day</td>
+            <td>
+                1 Option over 252 trading days with 3 data formats
+                <br>=&gt; 1 * 252 * 3 files
+                <br>= 756 file
+                s<br>
+                <br>756 files @ 15 QCC/file
+                <br>=&gt; 756 * 15 QCC 
+                <br>= 11,360 QCC 
+                <br>= $113.60 USD
+            </td>
+            <td>
+                1 Option with 3 data formats
+                <br>=&gt; 3 files/day
+                <br>
+                <br>3 files/day @ 15 QCC/file
+                <br>=&gt; 3 * 15 QCC/day
+                <br>= 45 QCC/day
+                <br>= $0.45 USD/day
+            </td>
         </tr>
     </tbody>
 </table>
