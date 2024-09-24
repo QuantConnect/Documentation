@@ -136,25 +136,30 @@
 
     def _populate_option_chain(self):
         # The contract list is updated daily, so we can get it and apply
-        # the expiration filter as soon as the market open
+        # the expiration filter as soon as the market opens.
         for symbol, manager in self._chain_manager.items():
-            manager.set_chain(self.option_chain_provider.get_option_contract_list(symbol, self.time), self.time)
+            manager.set_chain(self.option_chain(symbol), self.time)
         self._filter()
 
     def _filter(self):
         for symbol, manager in self._chain_manager.items():
             manager.select(self, symbol)
 
-    def on_data(self, slice: Slice) -&gt; None:
+    def on_data(self, slice: Slice) -> None:
         for symbol, _ in self._chain_manager.items():
             chain = slice.option_chains.get(symbol)
-            if not chain: continue
+            if not chain: 
+                continue
             if self.portfolio[symbol.underlying].invested:
                 self.liquidate(symbol.underlying)
 
             expiry = min([x.expiry for x in chain])
-            contracts = [x for x in chain if x.expiry == expiry and x.right == OptionRight.CALL and self.securities[x.symbol].is_tradable]
-            if not contracts: continue
+            contracts = [
+                x for x in chain 
+                if x.expiry == expiry and x.right == OptionRight.CALL and self.securities[x.symbol].is_tradable
+            ]
+            if not contracts: 
+                continue
             atm_call = sorted(contracts, key=lambda x: abs(chain.underlying.price-x.strike))[0]
 
             if not self.portfolio[atm_call.symbol].invested:
@@ -162,7 +167,7 @@
 
 class OptionChainManager:
     _chain = []
-    _symbols = []
+    _symbols = set([])
     
     def __init__(self, min_strike, max_strike, min_expiry, max_expiry):
         self._min_strike = min_strike
@@ -170,10 +175,10 @@ class OptionChainManager:
         self._min_expiry = min_expiry
         self._max_expiry = max_expiry
     
-    def set_chain(self, symbols: List[Symbol], time: datetime) -&gt; None:
-        self._chain = [x for x in symbols if self._min_expiry &lt;= (x.id.date - time).days &lt;= self._max_expiry]
+    def set_chain(self, universe: DataHistory[OptionUniverse], time: datetime) -> None:
+        self._chain = [x for x in universe if self._min_expiry <= (x.id.date - time).days <= self._max_expiry]
     
-    def select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
+    def select(self, algorithm: QCAlgorithm, symbol: Symbol) -> None:
         if not self._chain:
             return
         if symbol.is_canonical():
@@ -184,13 +189,12 @@ class OptionChainManager:
         index = strikes.index(atm)
         min_strike = strikes[max(0, index + self._min_strike)]
         max_strike = strikes[min(len(strikes) - 1, index + self._max_strike)]
-        symbols = set(x for x in self._chain if min_strike &lt;= x.id.strike_price &lt;= max_strike)
-        to_remove = set(self._symbols).difference(symbols)
-        for symbol in to_remove:
+        symbols = set(x for x in self._chain if min_strike <= x.id.strike_price <= max_strike)
+        
+        for symbol in self._symbols - (symbols):
             if algorithm.remove_option_contract(symbol):
                 self._symbols.remove(symbol)
-        to_add = symbols.difference(self._symbols)
-        for symbol in to_add:
-            self._symbols.append(symbol)
+        for symbol in symbols - self._symbols:
+            self._symbols.add(symbol)
             algorithm.add_option_contract(symbol)</pre>
 </div>
