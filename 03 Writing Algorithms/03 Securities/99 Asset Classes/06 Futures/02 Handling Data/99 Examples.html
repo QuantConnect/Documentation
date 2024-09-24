@@ -3,149 +3,157 @@
 <h4>Example 1: Rollover</h4>
 <p>Spot Future is referred as the the continuous Future contract, which is usually mapped by the front month contract or the contract with the most open interest. When a contract is expired or very close to expiry, traders will roll over the current contract with the next contract to avoid price settlement and subsequent handling fees while keeping the investment positions. In Lean, we can make use of the <code class="csharp">OnSymbolChangedEvents</code></p><code class="python">on_symbol_changed_events</code> event handler to perform the rolling over.</p>
 <div class="section-example-container">
-    <pre class="csharp">private Future _future;
-
-public override void Initialize()
+    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
-    // Seed the price with last known price as limit price for contract roll over
-    SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
-    // Setting the continuous contract mapping criteria for rolling over
-    _future = AddFuture(Futures.Indices.SP500EMini,
-        extendedMarketHours: true,
-        dataMappingMode: DataMappingMode.OpenInterest,
-        dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-        contractDepthOffset: 0);
-}
+    private Future _future;
 
-public override void OnData(Slice slice)
-{
-    // Initial order
-    if (!Portfolio.Invested)
+    public override void Initialize()
     {
-        // In live trading, you must order the mapped contract for a valid order
-        MarketOrder(_future.Mapped, 1m);
+        // Seed the price with last known price as limit price for contract roll over.
+        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        // Setting the continuous contract mapping criteria for rolling over.
+        _future = AddFuture(Futures.Indices.SP500EMini,
+            extendedMarketHours: true,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
     }
-}
-
-// Track events when security changes its ticker, allowing the algorithm to adapt to these changes.
-public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
-{
-    foreach (var (symbol, changedEvent) in symbolChangedEvents)
+    
+    public override void OnData(Slice slice)
     {
-        var oldSymbol = changedEvent.OldSymbol;
-        // The newly mapped contract might not be subscribed yet, request its data for valid ordering
-        var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
-        // Quantity to roll over should be consistent
-        var quantity = Portfolio[oldSymbol].Quantity;
-
-        // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-        var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
-        Liquidate(oldSymbol, tag: tag);
-        if (quantity != 0)
+        // Initial order.
+        if (!Portfolio.Invested)
         {
-            // Place limit order since market on open order is not available for Futures and avoid extreme quote filling
-            LimitOrder(newSymbol, quantity, Securities[newSymbol].Price, tag: tag);
+            // In live trading, you must order the mapped contract for a valid order.
+            MarketOrder(_future.Mapped, 1m);
+        }
+    }
+    
+    // Track events when security changes its ticker, allowing the algorithm to adapt to these changes.
+    public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+    {
+        foreach (var (symbol, changedEvent) in symbolChangedEvents)
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            // The newly mapped contract might not be subscribed yet, request its data for valid ordering.
+            var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+            // Quantity to roll over should be consistent.
+            var quantity = Portfolio[oldSymbol].Quantity;
+    
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
+            var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
+            Liquidate(oldSymbol, tag: tag);
+            if (quantity != 0)
+            {
+                // Place limit order since market on open order is not available for Futures and avoid extreme quote filling.
+                LimitOrder(newSymbol, quantity, Securities[newSymbol].Price, tag: tag);
+            }
         }
     }
 }</pre>
-    <pre class="python">def initialize(self):
-    # Seed the price with last known price as limit price for contract roll over
-    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
-    # Setting the continuous contract mapping criteria for rolling over
-    self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
-        extended_market_hours=True,
-        data_mapping_mode=DataMappingMode.OPEN_INTEREST,
-        data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-        contract_depth_offset=0)
-
-def on_data(self, data):
-    # Initial order
-    if not self.portfolio.invested:
-        # In live trading, you must order the mapped contract for a valid order
-        self.market_order(self._future.symbol, 1)
-
-# Track events when security changes its ticker allowing algorithm to adapt to these changes.
-def on_symbol_changed_events(self, symbol_changed_events):
-    for symbol, changed_event in symbol_changed_events.items():
-        old_symbol = changed_event.old_symbol
-        # The newly mapped contract might not be subscribed yet, request its data for valid ordering
-        new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
-        # Quantity to roll over should be consistent
-        quantity = self.portfolio[old_symbol].quantity
-
-        # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-        tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
-        self.liquidate(old_symbol, tag=tag)
-        if quantity:
-            # Place limit order since market on open order is not available for Futures and avoid extreme quote filling
-            self.limit_order(new_symbol, quantity, self.security[new_symbol].price, tag=tag)</pre>
+    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+    def initialize(self):
+        # Seed the price with last known price as limit price for contract roll over.
+        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        # Setting the continuous contract mapping criteria for rolling over.
+        self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0)
+    
+    def on_data(self, data):
+        # Initial order.
+        if not self.portfolio.invested:
+            # In live trading, you must order the mapped contract for a valid order.
+            self.market_order(self._future.symbol, 1)
+    
+    # Track events when security changes its ticker allowing algorithm to adapt to these changes.
+    def on_symbol_changed_events(self, symbol_changed_events):
+        for symbol, changed_event in symbol_changed_events.items():
+            old_symbol = changed_event.old_symbol
+            # The newly mapped contract might not be subscribed yet, request its data for valid ordering.
+            new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
+            # Quantity to roll over should be consistent.
+            quantity = self.portfolio[old_symbol].quantity
+    
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
+            tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
+            self.liquidate(old_symbol, tag=tag)
+            if quantity:
+                # Place limit order since market on open order is not available for Futures and avoid extreme quote filling.
+                self.limit_order(new_symbol, quantity, self.security[new_symbol].price, tag=tag)</pre>
 </div>
 
 <h4>Example 2: Micro Gold vs Gold</h4>
 <p>The following example will demonstrate how to use <code class="csharp">SymbolPropertiesDatabase</code><code class="python">self.symbol_properties_database</code> to obtain the contract multipliers of both Micro Gold and Gold Future contracts. By means of that, it then invests $500k nominal value for each contract.</p>
 <div class="section-example-container">
-    <pre class="csharp">private Future _gold, _microGold;
-private decimal _goldMulitplier, _microGoldMulitplier;
-
-public override void Initialize()
+    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
-    SetCash(1000000);
-    // Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts
-    _gold = AddFuture(Futures.Metals.Gold,
-        extendedMarketHours: true,
-        dataMappingMode: DataMappingMode.OpenInterest,
-        dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-        contractDepthOffset: 0);
-    _microGold = AddFuture(Futures.Metals.MicroGold,
-        extendedMarketHours: true,
-        dataMappingMode: DataMappingMode.OpenInterest,
-        dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-        contractDepthOffset: 0);
-    // The contract multiplier is cached in the Security SymbolProperties property from the symbol properties database
-    _goldMulitplier = _gold.SymbolProperties.ContractMultiplier;
-    _microGoldMulitplier = _microGold.SymbolProperties.ContractMultiplier;
-}
-
-public override void OnData(Slice slice)
-{
-    // Make sure to calculate the order size by the most updated price data of both contracts
-    if (!Portfolio.Invested && slice.Bars.ContainsKey(_gold.Symbol) && slice.Bars.ContainsKey(_microGold.Symbol))
+    private Future _gold, _microGold;
+    private decimal _goldMulitplier, _microGoldMulitplier;
+    
+    public override void Initialize()
     {
-        // Calculate the order size for $500k
-        // Get the quotient after dividing the contract multiplier since the order size must be whole number
-        var goldQuantity = Math.Floor(500000m / slice.Bars[_gold.Symbol].Close / _goldMulitplier);
-        var microGoldQuantity = Math.Floor(500000m / slice.Bars[_microGold.Symbol].Close / _microGoldMulitplier);
-
-        MarketOrder(_gold.Mapped, goldQuantity);
-        MarketOrder(_microGold.Mapped, microGoldQuantity);
+        SetCash(1000000);
+        // Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts.
+        _gold = AddFuture(Futures.Metals.Gold,
+            extendedMarketHours: true,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        _microGold = AddFuture(Futures.Metals.MicroGold,
+            extendedMarketHours: true,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        // The contract multiplier is cached in the Security SymbolProperties property from the symbol properties database.
+        _goldMulitplier = _gold.SymbolProperties.ContractMultiplier;
+        _microGoldMulitplier = _microGold.SymbolProperties.ContractMultiplier;
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Make sure to calculate the order size by the most updated price data of both contracts.
+        if (!Portfolio.Invested && slice.Bars.ContainsKey(_gold.Symbol) && slice.Bars.ContainsKey(_microGold.Symbol))
+        {
+            // Calculate the order size for $500k.
+            // Get the quotient after dividing the contract multiplier since the order size must be whole number.
+            var goldQuantity = Math.Floor(500000m / slice.Bars[_gold.Symbol].Close / _goldMulitplier);
+            var microGoldQuantity = Math.Floor(500000m / slice.Bars[_microGold.Symbol].Close / _microGoldMulitplier);
+    
+            MarketOrder(_gold.Mapped, goldQuantity);
+            MarketOrder(_microGold.Mapped, microGoldQuantity);
+        }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    self.set_cash(1000000)
-    # Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts
-    self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
-    self.gold = self.add_future(Futures.Metals.GOLD,
-        extended_market_hours=True,
-        data_mapping_mode=DataMappingMode.OPEN_INTEREST,
-        data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-        contract_depth_offset=0)
-    self.micro_gold = self.add_future(Futures.Metals.MICRO_GOLD,
-        extended_market_hours=True,
-        data_mapping_mode=DataMappingMode.OPEN_INTEREST,
-        data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-        contract_depth_offset=0)
-    # The contract multiplier is cached in the Security symbol_properties property from the symbol properties database
-    self.gold_multiplier = self.gold.symbol_properties.contract_multiplier
-    self.micro_gold_multiplier = self.micro_gold.symbol_properties.contract_multiplier
+    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_cash(1000000)
+        # Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts.
+        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        self.gold = self.add_future(Futures.Metals.GOLD,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0)
+        self.micro_gold = self.add_future(Futures.Metals.MICRO_GOLD,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0)
+        # The contract multiplier is cached in the Security symbol_properties property from the symbol properties database.
+        self.gold_multiplier = self.gold.symbol_properties.contract_multiplier
+        self.micro_gold_multiplier = self.micro_gold.symbol_properties.contract_multiplier
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        # Make sure to calculate the order size by the most updated price data of both contracts.
+        if not self.portfolio.invested and self.gold.symbol in slice.bars and self.micro_gold.symbol in slice.bars:
+            # Calculate the order size for $500k.
+            # Get the quotient after dividing the contract multiplier since the order size must be whole number.
+            gold_quantity = 500000 / slice.bars[self.gold.symbol].close // self.gold_multiplier
+            micro_gold_quantity = 500000 / slice.bars[self.micro_gold.symbol].close // self.micro_gold_multiplier
     
-def on_data(self, slice: Slice) -&gt; None:
-    # Make sure to calculate the order size by the most updated price data of both contracts
-    if not self.portfolio.invested and self.gold.symbol in slice.bars and self.micro_gold.symbol in slice.bars:
-        # Calculate the order size for $500k
-        # Get the quotient after dividing the contract multiplier since the order size must be whole number
-        gold_quantity = 500000 / slice.bars[self.gold.symbol].close // self.gold_multiplier
-        micro_gold_quantity = 500000 / slice.bars[self.micro_gold.symbol].close // self.micro_gold_multiplier
-
-        self.market_order(self.gold.mapped, gold_quantity)
-        self.market_order(self.micro_gold.mapped, micro_gold_quantity)</pre>
+            self.market_order(self.gold.mapped, gold_quantity)
+            self.market_order(self.micro_gold.mapped, micro_gold_quantity)</pre>
 </div>
