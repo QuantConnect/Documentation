@@ -86,7 +86,7 @@
     def initialize(self) -&gt; None:
         # Subscribe to the underlying asset.
         self._underlying = <?=$assetClass == "Equity" ? "self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW)" : "self.add_index('SPX')" ?>.symbol
-        # Set up dividend yield provider for the underlying.
+        # Set up the dividend yield provider for the underlying.
         self._dividend_yield_provider = DividendYieldProvider(self._underlying)
         # Define the Option pricing model.
         self._option_pricing_model = OptionPricingModelType.FORWARD_TREE
