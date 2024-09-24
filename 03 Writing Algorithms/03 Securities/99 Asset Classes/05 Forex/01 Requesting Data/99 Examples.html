@@ -3,18 +3,22 @@
 <h4>Example 1: Request All Oanda Forex</h4>
 <p>The following algorithm aims to add subscription to all Forex pairs traded in the <a href="https://www.quantconnect.com/datasets/oanda-forex">Oanda exchange</a>. By making use of the <code class="csharp">GetSymbolPropertiesList</code><code class="csharp">get_symbol_properties_list</code> method of the symbol properties database with the designated market and security type, we can obtain and request data for all symbols of the wanted security type traded in the desired market. It will be particularly useful for spotting arbitration opportunities among forex pairs.</p>
 <div class="section-example-container">
-    <pre class="csharp">private List&lt;Symbol&gt; _forex;
-
-public override void Initialize()
+    <pre class="csharp">public ForexExampleAlgorithm : QCAlgorithm
 {
-    // To get all symbols and properties of Oanda traded Forex, retrieve data from the symbol property database
-    var symbolPropertiesList = SymbolPropertiesDatabase.GetSymbolPropertiesList(Market.Oanda, SecurityType.Forex);
-    // Subscribe to all the returned Forex, note that you do not need to specify the market as the symbol object already does
-    _forex = symbolPropertiesList.Select(x =&gt; AddForex(x.Key.Symbol).Symbol).ToList();
+    private List&lt;Symbol&gt; _forex;
+
+    public override void Initialize()
+    {
+        // To get all symbols and properties of Oanda traded Forex, retrieve data from the symbol property database.
+        var symbolPropertiesList = SymbolPropertiesDatabase.GetSymbolPropertiesList(Market.Oanda, SecurityType.Forex);
+        // Subscribe to all the returned Forex, note that you do not need to specify the market as the symbol object already does.
+        _forex = symbolPropertiesList.Select(x =&gt; AddForex(x.Key.Symbol).Symbol).ToList();
+    }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    # To get all symbols and properties of Oanda traded Forex, retrieve data from the symbol property database
-    symbol_properties_list = self.symbol_properties_database.get_symbol_properties_list(Market.OANDA, SecurityType.FOREX)
-    # Subscribe to all the returned Forex, note that you do not need to specify the market as the symbol object already does
-    self._forex = [self.add_forex(x.key.symbol).symbol for x in symbol_properties_list]</pre>
+    <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # To get all symbols and properties of Oanda traded Forex, retrieve data from the symbol property database.
+        symbol_properties_list = self.symbol_properties_database.get_symbol_properties_list(Market.OANDA, SecurityType.FOREX)
+        # Subscribe to all the returned Forex, note that you do not need to specify the market as the symbol object already does.
+        self._forex = [self.add_forex(x.key.symbol).symbol for x in symbol_properties_list]</pre>
 </div>
