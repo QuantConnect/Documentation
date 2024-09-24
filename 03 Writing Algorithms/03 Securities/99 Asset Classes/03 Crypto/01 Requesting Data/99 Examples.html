@@ -1,28 +1,32 @@
 <h4>Example 1: Binance Initialization</h4>
 <p>This example shows how to request data for trading BTC-USDT and ETH-USDT crypto pairs in Binance brokerage. You will need to ensure the account's base currency is designated as USDT rather than USD, as the brokerage does not automatically convert USD to USDT for trading, making orders invalid. To provide realistic brokerage fee and filling, you need to set the brokerage model designated for Binance as well.</p>
 <div class="section-example-container"></div>
-	<pre class="csharp">public override void Initialize()
+	<pre class="csharp">public class CryptoExampleAlgorithm : QCAlgorithm
 {
-    // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
-    SetBrokerageModel(BrokerageName.Binance, AccountType.Cash);
+    public override void Initialize()
+    {
+        // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        SetBrokerageModel(BrokerageName.Binance, AccountType.Cash);
 
-    // In some crypto brokerages, USD is not a valid currency to trade or automatically convertable
-    // Thus, we need to set account currency as USDT and add the starting cash
-    SetAccountCurrency("USDT", 100000);
+        // In some crypto brokerages, USD is not a valid currency to trade or automatically convertable.
+        // Thus, we need to set account currency as USDT and add the starting cash.
+        SetAccountCurrency("USDT", 100000);
 
-    // Add subscriptions to cryptos with specific market to ensure the correct securities are selected
-    AddCrypto("BTCUSDT", market: Market.Binance);
-    AddCrypto("ETHUSDT", market: Market.Binance);
+        // Add subscriptions to cryptos with specific market to ensure the correct securities are selected.
+        AddCrypto("BTCUSDT", market: Market.Binance);
+        AddCrypto("ETHUSDT", market: Market.Binance);
+    }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior
-    self.set_brokerage_model(BrokerageName.BINANCE, AccountType.CASH)
+	<pre class="python">class CryptoExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        self.set_brokerage_model(BrokerageName.BINANCE, AccountType.CASH)
 
-    # In some crypto brokerages, USD is not a valid currency to trade or automatically convertable
-    # Thus, we need to set account currency as USDT and add the starting cash
-    self.set_account_currency("USDT", 100000)
+        # In some crypto brokerages, USD is not a valid currency to trade or automatically convertable.
+        # Thus, we need to set account currency as USDT and add the starting cash.
+        self.set_account_currency("USDT", 100000)
 
-    # Add subscriptions to cryptos with specific market to ensure the correct securities are selected
-    self.add_crypto("BTCUSDT", market=Market.BINANCE)
-    self.add_crypto("ETHUSDT", market=Market.BINANCE)</pre>
+        # Add subscriptions to cryptos with specific market to ensure the correct securities are selected.
+        self.add_crypto("BTCUSDT", market=Market.BINANCE)
+        self.add_crypto("ETHUSDT", market=Market.BINANCE)</pre>
 </div>
