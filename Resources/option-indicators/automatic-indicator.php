@@ -57,10 +57,10 @@
     public override void OnData(Slice slice)
     {
         // Get the <?=$typeName?> indicator of each contract.
-        foreach (var <?=strtolower($typeName)?> in _indicators)
+        foreach (var indicator in _indicators)
         {
-            var symbol = <?=strtolower($typeName)?>.OptionSymbol;
-            var value = <?=strtolower($typeName)?>.Current.Value;
+            var symbol = indicator.OptionSymbol;
+            var value = indicator.Current.Value;
         }
     }
 }</pre>
@@ -109,7 +109,7 @@
         
     def on_data(self, slice: Slice) -&gt; None:
         # Get the <?=$typeName?> indicator of each contract.
-        for <?=strtolower(str_replace(" ", "_", $name))?> in self._indicators:
-            symbol = <?=strtolower(str_replace(" ", "_", $name))?>.option_symbol
-            value = <?=strtolower(str_replace(" ", "_", $name))?>.current.value</pre>
+        for indicator in self._indicators:
+            symbol = indicator.option_symbol
+            value = indicator.current.value</pre>
 </div>
