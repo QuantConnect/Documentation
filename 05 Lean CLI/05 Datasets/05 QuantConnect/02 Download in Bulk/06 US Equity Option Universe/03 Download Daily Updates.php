@@ -12,7 +12,7 @@
      <pre>$ lean data download --dataset "US Equity Security Master"</pre> 
 </div>
 
-<p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions:</p>
+<p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place the following Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. </p>
 
 <?
 $dataset = "US Equity Option Universe";
