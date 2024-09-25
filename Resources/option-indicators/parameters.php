@@ -45,7 +45,7 @@
             <td><code>OptionPricingModelType</code></td>
             <td>
                 The Option pricing model that's used to calculate the Greeks. 
-                If you don't provide a value, the default value is <code>OptionPricingModelType.BlackScholes</code> for European Options or <code>OptionPricingModelType.BinomialCoxRossRubinstein</code> for American Options.
+                If you don't provide a value, the default value is <?=$defaultPricingModel?>.
             </td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
