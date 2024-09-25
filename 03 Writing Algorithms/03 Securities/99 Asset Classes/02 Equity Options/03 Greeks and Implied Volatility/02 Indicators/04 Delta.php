@@ -14,7 +14,7 @@ $assetClass = "Equity";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>The follow table describes the arguments that the <code>D</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
+<p>The follow table describes the arguments that the <code class='csharp'>D</code><code class='python'>d</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
 <table class="qc-table table">
     <thead>
