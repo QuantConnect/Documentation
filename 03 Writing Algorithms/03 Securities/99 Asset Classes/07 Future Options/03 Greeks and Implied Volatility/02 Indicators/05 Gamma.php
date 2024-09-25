@@ -9,12 +9,11 @@
 $name = "gamma";
 $typeName = "Gamma";
 $helperMethod = "G";
-
-include(DOCS_RESOURCES."/option-indicators/equity.php");
+include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>The follow table describes the arguments that the <code class='csharp'>G</code><code class='python'>g</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
+<p>The follow table describes the arguments that the <code class='csharp'>G</code><code class='python'>g</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/future-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
 
 <table class="qc-table table">
@@ -46,14 +45,13 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 $name = "gamma";
 $typeName = "Gamma";
 $indicatorPage = "gamma";
-
-include(DOCS_RESOURCES."/option-indicators/equity.php");
+include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
 <h4>Volatility Smoothing</h4>
 <?
 $typeName = "gamma";
-$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters";
+$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#02-Parameters";
 include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
 ?>

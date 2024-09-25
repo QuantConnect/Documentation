@@ -43,20 +43,25 @@
 
     private Symbol SelectOptionContract(Symbol futureContractSymbol)
     {
-        var contractSymbols = OptionChainProvider.GetOptionContractList(futureContractSymbol, Time)
-            .Where(symbol =&gt; symbol.ID.OptionRight == OptionRight.Call).ToList();
-        var expiry = contractSymbols.Min(symbol =&gt; symbol.ID.Date);
-        return contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry).OrderBy(symbol =&gt; symbol.ID.StrikePrice).FirstOrDefault();
+        var chain = OptionChain(futureContractSymbol)
+            .Where(contract =&gt; contract.ID.OptionRight == OptionRight.Call).ToList();
+        var expiry = chain.Min(contract =&gt; contract.ID.Date);
+        return chain
+            .Where(contract =&gt; contract.ID.Date == expiry)
+            .OrderBy(contract =&gt; contract.ID.StrikePrice)
+            .Select(contract =&gt; contract.Symbol).FirstOrDefault();
     }
 }</pre>
     <pre class="python">class BasicFutureOptionAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2020, 1, 1)
-        self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+        self._future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
             extended_market_hours=True,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
             data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-            contract_depth_offset=0)
+            contract_depth_offset=0
+        )
         self._future.set_filter(0, 182)
         self._contract_symbol = None
     
@@ -80,14 +85,14 @@
                 self.add_future_option_contract(symbol)
 
     def _select_option_contract(self, future_contract_symbol):
-        contract_symbols = self.option_chain_provider.get_option_contract_list(future_contract_symbol, self.time)
-        contract_symbols = [symbol for symbol in contract_symbols if symbol.id.option_right == OptionRight.CALL]
-        expiry = min([symbol.id.date for symbol in contract_symbols])
-        filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry]
-        return sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+        chain = self.option_chain(future_contract_symbol)
+        chain = [contract for contract in chain if contract.id.option_right == OptionRight.CALL]
+        expiry = min([contract.id.date for contract in chain])
+        chain = [contract for contract in chain if contract.id.date == expiry]
+        return sorted(chain, key=lambda contract: contract.id.strike_price)[0].symbol</pre>
 </div>
 
-<h4>Configure the Underlying Futures Contract</h4>
+<h4>Configure the Underlying Futures Contracts</h4>
 
 <p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data/individual-contracts#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract.</p>
 
@@ -97,68 +102,47 @@
     dataMappingMode: DataMappingMode.OpenInterest,
     dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
     contractDepthOffset: 0);</pre>
-    <pre class="python">self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+    <pre class="python">self._future = self.add_future(
+    Futures.Indices.SP_500_E_MINI,
     extended_market_hours=True,
     data_mapping_mode=DataMappingMode.OPEN_INTEREST,
     data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-    contract_depth_offset=0)</pre>
+    contract_depth_offset=0
+)</pre>
 </div>
 
-<p>You can use the <code class="csharp">Mapped</code><code class="python">mapped</code> property of the <code>Future</code> object or the <code class="csharp">Symbol</code><code class="python">symbol</code> property of the <code>FutureContract</code> objects in the <code class="csharp">Slice.FutureChains</code><code class="python">Slice.future_chains</code> collection.</p>
+<p>To get a <code>Symbol</code> of a specific Futures contract, use the <code class="csharp">Mapped</code><code class="python">mapped</code> property of the <code>Future</code> object or the <code class="csharp">Symbol</code><code class="python">symbol</code> property of the <code>FutureContract</code> objects in the <code class="csharp">Slice.FutureChains</code><code class="python">Slice.future_chains</code> collection.</p>
 
 <h4>Get Contract Symbols</h4>
 
 <p>
     To subscribe to a Future Option contract, you need the contract <code>Symbol</code>. 
-    The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. 
-    The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> objects for a given date and underlying Future, which you can then sort and filter to find the specific contract(s) you want to trade. 
+    The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method. 
+    <span class='python'>
+        This method returns a <code>DataHistory[OptionUniverse]</code> object, which you can format into a DataFrame or iterate through.
+        Each row in the DataFrame and each <code>OptionUniverse</code> object represents a single Future Option contract.
+    </span>
+    <span class='csharp'>This method returns a collection of <code>OptionUniverse</code> objects, where each object represents a Future Option contract.</span>
+    Sort and filter the data to find the specific contract(s) you want to trade.
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(futureContractSymbol, Time)
-    .Where(symbol =&gt; symbol.ID.OptionRight == OptionRight.Call).ToList();
-var expiry = contractSymbols.Min(symbol =&gt; symbol.ID.Date);
-_contractSymbol = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry).OrderBy(symbol =&gt; symbol.ID.StrikePrice).FirstOrDefault();</pre>
-    <pre class="python">contract_symbols = self.option_chain_provider.get_option_contract_list(future_contract_symbol, self.time)
-contract_symbols = [symbol for symbol in contract_symbols if symbol.id.option_right == OptionRight.CALL]
-expiry = min([symbol.id.date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry]
-self._contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
+    <pre class="csharp">var chain = OptionChain(futureContractSymbol)
+    .Where(contract =&gt; contract.ID.OptionRight == OptionRight.Call).ToList();
+var expiry = chain.Min(contract =&gt; contract.ID.Date);
+_contractSymbol = chain
+    .Where(contract =&gt; contract.ID.Date == expiry)
+    .OrderBy(contract =&gt; contract.ID.StrikePrice)
+    .Select(contract =&gt; contract.Symbol).FirstOrDefault();</pre>
+    <pre class="python">chain = self.option_chain(future_contract_symbol)
+chain = [contract for contract in chain if contract.id.option_right == OptionRight.CALL]
+expiry = min([contract.id.date for contract in chain])
+chain = [contract for contract in chain if contract.id.date == expiry]
+self._contract_symbol = sorted(chain, key=lambda contract: contract.id.strike_price)[0].symbol</pre>
 </div>
 
-<p>To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
-
-    <table class="qc-table table">
-        <thead>
-            <tr>
-                <th>Property</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                 <td><code class="csharp">ID.Date</code><code class="python">id.date</code></td>
-                 <td>The expiration date of the contract.</td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.StrikePrice</code><code class="python">id.strike_price</code></td>
-                 <td>The strike price of the contract.</td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
-                 <td>
-                     The contract type, <code class="csharp">OptionRight.Put</code><code class="python">OptionRight.PUT</code> or <code class="csharp">OptionRight.Call</code><code class="python">OptionRight.CALL</code>.
-                 </td>
-            </tr>
-            <tr>
-                 <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
-                 <td>
-                     The contract style, <code class="csharp">OptionStyle.American</code><code class="python">OptionStyle.AMERICAN</code> or <code class="csharp">OptionStyle.European</code><code class="python">OptionStyle.EUROPEAN</code>.
-                     We currently only support European-style Options for US Future Options.
-                  </td>
-            </tr>
-        </tbody>
-    </table>
+<p><code>OptionUniverse</code> objects have the following properties:</p>
+<div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
 
 <h4>Subscribe to Contracts</h4>
 

@@ -3,17 +3,17 @@
 <div class="section-example-container">
     <pre class="csharp">public class Automatic<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
-    private Symbol _underlying;
+    <?=$memberDeclarationsAutomaticC?>
     private List&lt;<?=$typeName?>&gt; _indicators = new();
 
     public override void Initialize()
     {
         // Subscribe to the underlying asset.
-        _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw)" : "AddIndex(\"SPX\")"?>.Symbol;
+        <?=$underlyingSubscriptionC?>
     
         // Set up a Scheduled Event to select contracts and create the indicators every day before market open.
         Schedule.On(
-            DateRules.EveryDay(_underlying),
+            DateRules.EveryDay(<?=$scheduleSymbolC?>),
             TimeRules.At(9, 0),
             UpdateContractsAndGreeks
         );
@@ -22,7 +22,7 @@
     private void UpdateContractsAndGreeks()
     {
         // Get all the tradable Option contracts.
-        var chain = OptionChain(_underlying);
+        var chain = OptionChain(<?=$underlyingSymbolC?>);
         // You can do further filtering here
     
         // Iterate all expiries.
@@ -67,18 +67,18 @@
     
     def initialize(self) -&gt; None:
         # Subscribe to the underlying asset.
-        self._underlying = <?=$assetClass == "Equity" ? "self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW)" : "self.add_index('SPX')" ?>.symbol
+        <?=$underlyingSubscriptionPy?>
 
         # Set up a Scheduled Event to select contracts and create the indicators every day before market open.
         self.schedule.on(
-            self.date_rules.every_day(self._underlying),
+            self.date_rules.every_day(<?=$scheduleSymbolPy?>),
             self.time_rules.at(9, 0),
             self._update_contracts_and_greeks
         )
 
     def _update_contracts_and_greeks(self) -&gt; None:
         # Get all the tradable Option contracts.
-        chain = self.option_chain(self._underlying)
+        chain = self.option_chain(<?=$underlyingSymbolPy?>)
         # You can do further filtering here
 
         # Iterate all expiries

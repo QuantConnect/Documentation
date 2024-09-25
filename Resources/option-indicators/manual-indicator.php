@@ -3,22 +3,24 @@
 <div class="section-example-container">
     <pre class="csharp">public class Manual<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
-    private Symbol _underlying;
-    private DividendYieldProvider _dividendYieldProvider;
-    private List&lt;<?=strtolower($typeName)?>&gt; _indicators = new();
+    <?=$memberDeclarationsManualC?>
+    // Create a list to store the indicators.
+    private List&lt;<?=$typeName?>&gt; _indicators = new();
     // Define the Option pricing model.
     private readonly OptionPricingModelType _optionPricingModel = OptionPricingModelType.ForwardTree;
 
     public override void Initialize()
     {
         // Subscribe to the underlying asset.
-        _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw)" : "AddIndex(\"SPY\")"?>.Symbol;
+        <?=$underlyingSubscriptionC?>
+
         // Set up dividend yield provider for the underlying
-        _dividendYieldProvider = new(_underlying);
+        _dividendYieldProvider = <?=$dividendYieldProviderConstructor?>
+
         
         // Set up a Scheduled Event to select contract and create the indicators every day before market open.
         Schedule.On(
-            DateRules.EveryDay(_underlying),
+            DateRules.EveryDay(<?=$scheduleSymbolC?>),
             TimeRules.At(9, 0),
             UpdateContractsAndGreeks
         );
@@ -27,7 +29,7 @@
     private void UpdateContractsAndGreeks()
     {
         // Get all the tradable Option contracts.
-        var chain = OptionChain(_underlying);
+        var chain = OptionChain(<?=$underlyingSymbolC?>);
         // You can do further filtering here
     
         // Iterate all expiries.
@@ -51,8 +53,8 @@
                 AddOptionContract(put.Symbol);
 
                 // Create and save the manual <?=$typeName?> indicators.
-                _indicators.Add(new <?=$typeName?>(call, RiskFreeInterestRateModel, _dividendYieldProvider, put, _optionPricingModel));
-                _indicators.Add(new <?=$typeName?>(put, RiskFreeInterestRateModel, _dividendYieldProvider, call, _optionPricingModel));
+                _indicators.Add(new <?=$typeName?>(call.Symbol, RiskFreeInterestRateModel, _dividendYieldProvider, put.Symbol, _optionPricingModel));
+                _indicators.Add(new <?=$typeName?>(put.Symbol, RiskFreeInterestRateModel, _dividendYieldProvider, call.Symbol, _optionPricingModel));
             }
         }
     }
@@ -63,16 +65,19 @@
         foreach (var indicator in _indicators)
         {
             var option = indicator.OptionSymbol;
-            var mirrorRight = option.ID.OptionRight == OptionRight.Call ? OptionRight.Put : OptionRight.Call;
-            var mirror = QuantConnect.Symbol.CreateOption(option.Underlying.Value, Market.USA, OptionStyle.American, mirrorRight, option.ID.StrikePrice, option.ID.Date);
+            var mirror = QuantConnect.Symbol.CreateOption(
+                option.Underlying.Value, option.ID.Market, option.ID.OptionStyle, 
+                option.ID.OptionRight == OptionRight.Call ? OptionRight.Put : OptionRight.Call, 
+                option.ID.StrikePrice, option.ID.Date
+            )<?=$mirrorExtensionC?>;
             
             // Check if price data is available for both contracts and the underlying asset.
-            if (slice.QuoteBars.ContainsKey(option) && slice.QuoteBars.ContainsKey(mirror) && slice.Bars.ContainsKey(_underlying))
+            if (slice.QuoteBars.ContainsKey(option) && slice.QuoteBars.ContainsKey(mirror) && slice.Bars.ContainsKey(option.Underlying))
             {
                 // Update the indicator.
                 indicator.Update(new IndicatorDataPoint(option, slice.QuoteBars[option].EndTime, slice.QuoteBars[option].Close));
                 indicator.Update(new IndicatorDataPoint(mirror, slice.QuoteBars[mirror].EndTime, slice.QuoteBars[mirror].Close));
-                indicator.Update(new IndicatorDataPoint(_underlying, slice.Bars[_underlying].EndTime, slice.Bars[_underlying].Close));
+                indicator.Update(new IndicatorDataPoint(option.Underlying, slice.Bars[option.Underlying].EndTime, slice.Bars[option.Underlying].Close));
 
                 // Get the current value.
                 var value = indicator.Current.Value;
@@ -81,26 +86,27 @@
     }
 }</pre>
     <pre class="python">class Manual<?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
+
     _indicators = []
 
     def initialize(self) -&gt; None:
         # Subscribe to the underlying asset.
-        self._underlying = <?=$assetClass == "Equity" ? "self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW)" : "self.add_index('SPX')" ?>.symbol
+        <?=$underlyingSubscriptionPy?>
         # Set up the dividend yield provider for the underlying.
-        self._dividend_yield_provider = DividendYieldProvider(self._underlying)
+        self._dividend_yield_provider = <?=$dividendYieldProviderConstructorPy?>
         # Define the Option pricing model.
         self._option_pricing_model = OptionPricingModelType.FORWARD_TREE
 
         # Set up a Scheduled Event to select contract and create the indicators every day before market open.
         self.schedule.on(
-            self.date_rules.every_day(self._underlying),
+            self.date_rules.every_day(<?=$scheduleSymbolPy?>),
             self.time_rules.at(9, 0),
             self._update_contracts_and_greeks
         )
         
     def _update_contracts_and_greeks(self) -&gt; None:
         # Get all the tradable Option contracts.
-        chain = self.option_chain(self._underlying)
+        chain = self.option_chain(<?=$underlyingSymbolPy?>)
         # You can do further filtering here
 
         # Iterate all expiries
@@ -136,14 +142,17 @@
         # Iterate through the indicators.
         for indicator in self._indicators:
             option = indicator.option_symbol
-            mirror_right = OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT
-            mirror = Symbol.create_option(option.underlying.value, Market.USA, OptionStyle.AMERICAN, mirror_right, option.id.strike_price, option.id.date)
+            mirror = Symbol.create_option(
+                option.underlying.value, option.id.market, option.id.option_style, 
+                OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT,
+                option.id.strike_price, option.id.date
+            )<?=$mirrorExtensionPy?>
 
             # Check if price data is available for both contracts and the underlying asset.
-            if option in slice.quote_bars and mirror in slice.quote_bars and self._underlying in slice.bars:
+            if option in slice.quote_bars and mirror in slice.quote_bars and option.underlying in slice.bars:
                 indicator.update(IndicatorDataPoint(option, slice.quote_bars[option].end_time, slice.quote_bars[option].close))
                 indicator.update(IndicatorDataPoint(mirror, slice.quote_bars[mirror].end_time, slice.quote_bars[mirror].close))
-                indicator.update(IndicatorDataPoint(self._underlying, slice.bars[self._underlying].end_time, slice.bars[self._underlying].close))
+                indicator.update(IndicatorDataPoint(option.underlying, slice.bars[option.underlying].end_time, slice.bars[option.underlying].close))
 
                 # Get the current value.
                 value = indicator.current.value</pre>
