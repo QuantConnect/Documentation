@@ -2,13 +2,13 @@
 $memberDeclarationsAutomaticC = "private Future _future;
 ";
 $memberDeclarationsManualC = "private Future _future;
-        private ConstantDividendYieldModel _dividendYieldProvider;
+    private ConstantDividendYieldModel _dividendYieldProvider;
 ";
 $underlyingSubscriptionC = "_future = AddFuture(Futures.Indices.SP500EMini, 
-                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-                dataMappingMode: DataMappingMode.OpenInterest,
-                contractDepthOffset: 0);
-            _future.SetFilter(0, 182);
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            contractDepthOffset: 0);
+        _future.SetFilter(0, 182);
 ";
 $dividendYieldProviderConstructorC = "new ConstantDividendYieldModel(0m);";
 $scheduleSymbolC = "_future.Symbol";
