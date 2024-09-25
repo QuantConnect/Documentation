@@ -15,9 +15,6 @@
             new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
         );
         _future = AddFuture(Futures.Indices.SP500EMini, 
-            resolution: Resolution.Minute, 
-            fillForward: true, 
-            extendedMarketHours: true,
             dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
             dataMappingMode: DataMappingMode.OpenInterest,
             contractDepthOffset: 0);
@@ -61,7 +58,6 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
         )
         self._future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
-            extended_market_hours=True,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
             data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
             contract_depth_offset=0
