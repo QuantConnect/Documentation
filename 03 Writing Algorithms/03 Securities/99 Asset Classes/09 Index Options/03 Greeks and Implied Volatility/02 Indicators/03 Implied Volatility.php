@@ -12,7 +12,7 @@ $helperMethod = "IV";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>The follow table describes the arguments that the <code class="csharp">IV</code><code class="python">iv</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#02-Parameters'>standard parameters</a>:</p>
+<p>The follow table describes the arguments that the <code class="csharp">IV</code><code class="python">iv</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
 <table class="qc-table table">
     <thead>
