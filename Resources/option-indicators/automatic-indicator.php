@@ -88,11 +88,11 @@
         
             # Iterate all strike prices among the contracts of the same expiry.
             for strike in set(x.id.strike_price for x in contracts_for_expiry):
-                contract_for_strike = [x for x in contracts_for_expiry if x.id.strike_price == strike]
+                contracts_for_strike = [x for x in contracts_for_expiry if x.id.strike_price == strike]
             
                 # Get the call and put, respectively.
-                calls = [x for x in contract_for_strike if x.id.option_right == OptionRight.CALL]
-                puts = [x for x in contract_for_strike if x.id.option_right == OptionRight.PUT]
+                calls = [x for x in contracts_for_strike if x.id.option_right == OptionRight.CALL]
+                puts = [x for x in contracts_for_strike if x.id.option_right == OptionRight.PUT]
                 # Skip if the call doesn't exist, the put doesn't exist, or they are already in the universe.
                 if not calls or not puts or calls[0].symbol in self.securities:
                     continue
