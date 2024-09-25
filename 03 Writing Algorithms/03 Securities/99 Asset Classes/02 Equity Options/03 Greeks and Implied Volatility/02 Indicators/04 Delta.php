@@ -10,7 +10,8 @@
 $name = "delta";
 $typeName = "Delta";
 $helperMethod = "D";
-$assetClass = "Equity";
+
+include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
@@ -45,7 +46,8 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 $name = "delta";
 $typeName = "Delta";
 $indicatorPage = "delta";
-$assetClass = "Equity";
+
+include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 

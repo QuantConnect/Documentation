@@ -9,7 +9,8 @@
 $name = "implied volatility";
 $typeName = "ImpliedVolatility";
 $helperMethod = "IV";
-$assetClass = "Equity";
+
+include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
@@ -42,7 +43,8 @@ $name = "implied volatility";
 $typeName = "ImpliedVolatility";
 $indicatorPage = "implied-volatility";
 $helperMethod = "IV";
-$assetClass = "Equity";
+
+include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 

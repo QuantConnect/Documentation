@@ -9,12 +9,11 @@
 $name = "theta";
 $typeName = "Theta";
 $helperMethod = "T";
-
-include(DOCS_RESOURCES."/option-indicators/equity.php");
+include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>The follow table describes the arguments that the <code class='csharp'>T</code><code class='python'>t</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
+<p>The follow table describes the arguments that the <code class='csharp'>T</code><code class='python'>t</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/future-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
 <table class="qc-table table">
     <thead>
@@ -45,14 +44,13 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 $name = "theta";
 $typeName = "Theta";
 $indicatorPage = "theta";
-
-include(DOCS_RESOURCES."/option-indicators/equity.php");
+include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
 <h4>Volatility Smoothing</h4>
 <?
 $typeName = "theta";
-$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters";
+$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#02-Parameters";
 include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
 ?>
