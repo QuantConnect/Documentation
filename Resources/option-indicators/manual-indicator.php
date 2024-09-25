@@ -53,8 +53,15 @@
                 AddOptionContract(put.Symbol);
 
                 // Create and save the manual <?=$typeName?> indicators.
-                _indicators.Add(new <?=$typeName?>(call.Symbol, RiskFreeInterestRateModel, _dividendYieldProvider, put.Symbol, _optionPricingModel));
-                _indicators.Add(new <?=$typeName?>(put.Symbol, RiskFreeInterestRateModel, _dividendYieldProvider, call.Symbol, _optionPricingModel));
+                foreach (var (contractA, contractB) in new[] { (call, put), (put, call) })
+                {
+                    _indicators.Add(
+                        new <?=$typeName?>(
+                            contractA.Symbol, RiskFreeInterestRateModel, _dividendYieldProvider, 
+                            contractB.Symbol, _optionPricingModel
+                        )
+                    );
+                }
             }
         }
     }
@@ -72,12 +79,22 @@
             )<?=$mirrorExtensionC?>;
             
             // Check if price data is available for both contracts and the underlying asset.
-            if (slice.QuoteBars.ContainsKey(option) && slice.QuoteBars.ContainsKey(mirror) && slice.Bars.ContainsKey(option.Underlying))
+            var q = slice.QuoteBars;
+            var b = slice.Bars;
+            if (q.ContainsKey(option) && q.ContainsKey(mirror) && b.ContainsKey(option.Underlying))
             {
-                // Update the indicator.
-                indicator.Update(new IndicatorDataPoint(option, slice.QuoteBars[option].EndTime, slice.QuoteBars[option].Close));
-                indicator.Update(new IndicatorDataPoint(mirror, slice.QuoteBars[mirror].EndTime, slice.QuoteBars[mirror].Close));
-                indicator.Update(new IndicatorDataPoint(option.Underlying, slice.Bars[option.Underlying].EndTime, slice.Bars[option.Underlying].Close));
+                var dataPoints = new List&lt;IndicatorDataPoint&gt;
+                {
+                    new IndicatorDataPoint(option, q[option].EndTime, q[option].Close),
+                    new IndicatorDataPoint(mirror, q[mirror].EndTime, q[mirror].Close),
+                    new IndicatorDataPoint(
+                        option.Underlying, b[option.Underlying].EndTime, b[option.Underlying].Close
+                    )
+                };
+                foreach (var dataPoint in dataPoints)
+                {
+                    indicator.Update(dataPoint);
+                }
 
                 // Get the current value.
                 var value = indicator.Current.Value;
@@ -132,12 +149,13 @@
                 self.add_option_contract(put)
             
                 # Create and save the automatic <?=$typeName?> indicators.
-                self._indicators.extend(
-                    [
-                        <?=$typeName?>(call, self.risk_free_interest_rate_model, self._dividend_yield_provider, put, self._option_pricing_model),
-                        <?=$typeName?>(put, self.risk_free_interest_rate_model, self._dividend_yield_provider, call, self._option_pricing_model)
-                    ]
-                )
+                for contract_a, contract_b in [(call, put), (put, call)]:
+                    self._indicators.append(
+                        <?=$typeName?>(
+                            contract_a, self.risk_free_interest_rate_model, 
+                            self._dividend_yield_provider, contract_b, self._option_pricing_model
+                        ) 
+                    )
 
     def on_data(self, slice: Slice) -&gt; None:
         # Iterate through the indicators.
@@ -150,10 +168,18 @@
             )<?=$mirrorExtensionPy?>
 
             # Check if price data is available for both contracts and the underlying asset.
-            if option in slice.quote_bars and mirror in slice.quote_bars and option.underlying in slice.bars:
-                indicator.update(IndicatorDataPoint(option, slice.quote_bars[option].end_time, slice.quote_bars[option].close))
-                indicator.update(IndicatorDataPoint(mirror, slice.quote_bars[mirror].end_time, slice.quote_bars[mirror].close))
-                indicator.update(IndicatorDataPoint(option.underlying, slice.bars[option.underlying].end_time, slice.bars[option.underlying].close))
+            q = slice.quote_bars
+            b = slice.bars
+            if option in q and mirror in q and option.underlying in b:
+                data_points = [
+                    IndicatorDataPoint(option, q[option].end_time, q[option].close),
+                    IndicatorDataPoint(mirror, q[mirror].end_time, q[mirror].close),
+                    IndicatorDataPoint(
+                        option.underlying, b[option.underlying].end_time, b[option.underlying].close
+                    )
+                ]
+                for data_point in data_points:
+                    indicator.update(data_point)
 
                 # Get the current value.
                 value = indicator.current.value</pre>
