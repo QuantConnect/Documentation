@@ -15,7 +15,7 @@
         <?=$underlyingSubscriptionC?>
 
         // Set up dividend yield provider for the underlying
-        _dividendYieldProvider = <?=$dividendYieldProviderConstructor?>
+        _dividendYieldProvider = <?=$dividendYieldProviderConstructorC?>
 
         
         // Set up a Scheduled Event to select contract and create the indicators every day before market open.
@@ -94,6 +94,7 @@
         <?=$underlyingSubscriptionPy?>
         # Set up the dividend yield provider for the underlying.
         self._dividend_yield_provider = <?=$dividendYieldProviderConstructorPy?>
+
         # Define the Option pricing model.
         self._option_pricing_model = OptionPricingModelType.FORWARD_TREE
 
