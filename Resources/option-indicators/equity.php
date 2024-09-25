@@ -2,7 +2,7 @@
 $memberDeclarationsAutomaticC = "private Symbol _underlying;
 ";
 $memberDeclarationsManualC = "private Symbol _underlying;
-        private DividendYieldProvider _dividendYieldProvider;
+    private DividendYieldProvider _dividendYieldProvider;
 ";
 $underlyingSubscriptionC = "_underlying = AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
 ";
