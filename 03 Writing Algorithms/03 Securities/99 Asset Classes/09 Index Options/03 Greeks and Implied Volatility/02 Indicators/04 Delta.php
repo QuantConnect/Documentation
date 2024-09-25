@@ -13,7 +13,7 @@ $helperMethod = "D";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>The follow table describes the arguments that the <code>D</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#02-Parameters'>standard parameters</a>:</p>
+<p>The follow table describes the arguments that the <code class='csharp'>D</code><code class='python'>d</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
 <table class="qc-table table">
     <thead>
@@ -37,7 +37,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
     </tbody>
 </table>
 
-<p>For more information about the <code>D</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/delta#02-Using-D-Indicator'>Using D Indicator</a>.</p>
+<p>For more information about the <code class='csharp'>D</code><code class='python'>d</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/delta#02-Using-D-Indicator'>Using D Indicator</a>.</p>
 
 <h4>Manual Indicators</h4>
 <?
@@ -50,5 +50,7 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 <h4>Volatility Smoothing</h4>
 <?
 $typeName = "delta";
+$assetClass = "Index";
+$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#03-Implied-Volatility";
 include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
 ?>
