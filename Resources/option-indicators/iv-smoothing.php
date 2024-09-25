@@ -1,5 +1,5 @@
 <p>
-    The default <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a> method uses the one contract in the pair that's at-the-money or out-of-money to calculate the IV.
+    The default <a href="<?=$ivLink?>">IV smoothing</a> method uses the one contract in the pair that's at-the-money or out-of-money to calculate the IV.
     To change the smoothing function, pass a <code class="csharp">mirrorOption</code><code class="python">mirror_option</code> argument to the indicator method or constructor and then call the <code class="csharp">SetSmoothingFunction</code><code class="python">set_smoothing_function</code> method of the <code class='csharp'>ImpliedVolatility</code><code class='python'>implied_volatility</code> property of the indicator.
 </p>
     
@@ -10,4 +10,3 @@
 <?=$typeName?>_indicator.implied_volatility.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)</pre>
 </div>
 
-<p>For more information about the IV smoothing function, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#03-Implied-Volatility">Implied Volatility</a>.</p>
