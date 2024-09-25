@@ -52,5 +52,6 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 <h4>Volatility Smoothing</h4>
 <?
 $typeName = "delta";
+$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#03-Implied-Volatility";
 include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
 ?>
