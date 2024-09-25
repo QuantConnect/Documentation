@@ -46,7 +46,7 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 
 <h4>Volatility Smoothing</h4>
 <p>
-    The default <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a> method uses the one contract in the pair that's at-the-money or out-of-money to calculate the IV.
+    The default <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters">IV smoothing</a> method uses the one contract in the pair that's at-the-money or out-of-money to calculate the IV.
     To change the smoothing function, pass a <code class="csharp">mirrorOption</code><code class="python">mirror_option</code> argument to the <code class="csharp">IV</code><code class="python">iv</code> method or <code>ImpliedVolatility</code> constructor and then call the <code class="csharp">SetSmoothingFunction</code><code class="python">set_smoothing_function</code> method of the resulting <code>ImpliedVolatility</code> object.
     The follow table describes the arguments of the custom function:
 </p>
