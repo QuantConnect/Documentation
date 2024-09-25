@@ -50,6 +50,6 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 <h4>Volatility Smoothing</h4>
 <?
 $typeName = "rho";
-$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#03-Implied-Volatility";
+$ivLink = "/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#02-Parameters";
 include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
 ?>
