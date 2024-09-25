@@ -11,7 +11,7 @@
         // Subscribe to the underlying asset.
         _underlying = <?=$assetClass == "Equity" ? "AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw)" : "AddIndex(\"SPX\")"?>.Symbol;
     
-        // Set up a Scheduled Event to select contract and create the indicators every day before market open.
+        // Set up a Scheduled Event to select contracts and create the indicators every day before market open.
         Schedule.On(
             DateRules.EveryDay(_underlying),
             TimeRules.At(9, 0),
@@ -69,7 +69,7 @@
         # Subscribe to the underlying asset.
         self._underlying = <?=$assetClass == "Equity" ? "self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW)" : "self.add_index('SPX')" ?>.symbol
 
-        # Set up a Scheduled Event to select contract and create the indicators every day before market open.
+        # Set up a Scheduled Event to select contracts and create the indicators every day before market open.
         self.schedule.on(
             self.date_rules.every_day(self._underlying),
             self.time_rules.at(9, 0),
