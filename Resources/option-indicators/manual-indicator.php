@@ -96,7 +96,7 @@
                     indicator.Update(dataPoint);
                 }
 
-                // Get the current value.
+                // Get the current value of the <?=$typeName?> indicator.
                 var value = indicator.Current.Value;
             }
         }
