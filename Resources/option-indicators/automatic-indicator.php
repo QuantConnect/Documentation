@@ -100,8 +100,8 @@
                 # Subscribe to both contracts.
                 call = calls[0].symbol
                 put = puts[0].symbol
-                <?=$addContractMethodPy?>(call)
-                <?=$addContractMethodPy?>(put)
+                self.<?=$addContractMethodPy?>(call)
+                self.<?=$addContractMethodPy?>(put)
             
                 # Create and save the automatic <?=$typeName?> indicators.
                 self._indicators.extend([self.<?=strtolower($helperMethod)?>(call, put), self.<?=strtolower($helperMethod)?>(put, call)])
