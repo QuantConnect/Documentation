@@ -1,3 +1,4 @@
+<div class="section-example-container">
 <pre class="csharp">public class OptionHistoryAlgorithm : QCAlgorithm
 {       
     public override void Initialize()
