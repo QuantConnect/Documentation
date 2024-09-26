@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/trade-statistics/introduction.html"); ?>
