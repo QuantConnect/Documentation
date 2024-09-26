@@ -16,6 +16,6 @@ $underlyingSubscriptionPy = "self._underlying = self.add_equity('SPY', data_norm
 $dividendYieldProviderConstructorPy = "DividendYieldProvider(self._underlying)";
 $scheduleSymbolPy = "self._underlying";
 $underlyingSymbolPy = "self._underlying";
-$addContractMethodC = "add_option_contract";
+$addContractMethodPy = "add_option_contract";
 $mirrorExtensionPy = "";
 ?>
