@@ -4,7 +4,10 @@
   This method returns the entire Option chain for each trading day, not the subset of contracts that pass your universe filter.
 </p>
 
-<? include(DOCS_RESOURCES."/option-pricing/greek-history-code.php"); ?>
+<? 
+$addOptionC = "AddOption(\"SPY\");";
+include(DOCS_RESOURCES."/option-pricing/greek-history-code.php"); 
+?>
 
 <p>
     The Greeks and IV values that you get from a history request of the Option universe are the daily, pre-calculated values based on the end of the previous trading day.
