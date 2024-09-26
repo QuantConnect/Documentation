@@ -16,6 +16,6 @@ $underlyingSubscriptionPy = "self._underlying = self.add_index('SPX').symbol
 $dividendYieldProviderConstructorPy = "DividendYieldProvider(self._underlying)";
 $scheduleSymbolPy = "self._underlying";
 $underlyingSymbolPy = "self._underlying";
-$addContractMethodC = "add_index_option_contract";
+$addContractMethodPy = "add_index_option_contract";
 $mirrorExtensionPy = "";
 ?>
