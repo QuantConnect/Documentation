@@ -145,8 +145,8 @@
                 # Subscribe to both contracts.
                 call = calls[0].symbol
                 put = puts[0].symbol
-                <?=$addContractMethodPy?>(call)
-                <?=$addContractMethodPy?>(put)
+                self.<?=$addContractMethodPy?>(call)
+                self.<?=$addContractMethodPy?>(put)
             
                 # Create and save the automatic <?=$typeName?> indicators.
                 for contract_a, contract_b in [(call, put), (put, call)]:
