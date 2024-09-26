@@ -49,8 +49,8 @@
                 if (call == null || put == null || Securities.ContainsKey(call.Symbol)) continue;
 
                 // Subscribe to both contracts.
-                AddOptionContract(call.Symbol);
-                AddOptionContract(put.Symbol);
+                <?=$addContractMethodC?>(call.Symbol);
+                <?=$addContractMethodC?>(put.Symbol);
 
                 // Create and save the manual <?=$typeName?> indicators.
                 foreach (var (contractA, contractB) in new[] { (call, put), (put, call) })
@@ -145,8 +145,8 @@
                 # Subscribe to both contracts.
                 call = calls[0].symbol
                 put = puts[0].symbol
-                self.add_option_contract(call)
-                self.add_option_contract(put)
+                <?=$addContractMethodPy?>(call)
+                <?=$addContractMethodPy?>(put)
             
                 # Create and save the automatic <?=$typeName?> indicators.
                 for contract_a, contract_b in [(call, put), (put, call)]:
@@ -181,7 +181,7 @@
                 for data_point in data_points:
                     indicator.update(data_point)
 
-                # Get the current value.
+                # Get the current value of the <?=$typeName?> indicator.
                 value = indicator.current.value</pre>
 </div>
 
