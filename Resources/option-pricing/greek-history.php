@@ -9,7 +9,8 @@
     public override void Initialize()
     {
         SetStartDate(2020, 1, 1);
-        var option = <=$addOptionC?>
+        var option = <?=$addOptionC?>
+
         var history = History&lt;OptionUniverse&gt;(option.Symbol, 5);
         foreach (var chain in history)
         {
