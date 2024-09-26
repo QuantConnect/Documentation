@@ -1,6 +1,6 @@
 <div class='csharp'>
 <p>
-  To get historical chains for you Equity Option, call the <code class='csharp'>History&lt;OptionUniverse&gt;</code> method with the canonical Option <code>Symbol</code>.
+  To get historical chains for an Equity Option, call the <code class='csharp'>History&lt;OptionUniverse&gt;</code> method with the canonical Option <code>Symbol</code>.
   This method returns the entire Option chain for each trading day, not the subset of contracts that pass your universe filter.
 </p>
 
