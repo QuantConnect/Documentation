@@ -13,6 +13,7 @@ $underlyingSubscriptionC = "_future = AddFuture(Futures.Indices.SP500EMini,
 $dividendYieldProviderConstructorC = "new ConstantDividendYieldModel(0m);";
 $scheduleSymbolC = "_future.Symbol";
 $underlyingSymbolC = "_future.Mapped";
+$addContractMethodC = "AddFutureOptionContract";
 $mirrorExtensionC = ".Value";
 $underlyingSubscriptionPy = "self._future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
@@ -25,5 +26,6 @@ $underlyingSubscriptionPy = "self._future = self.add_future(
 $dividendYieldProviderConstructorPy = "ConstantDividendYieldModel(0)";
 $scheduleSymbolPy = "self._future.symbol";
 $underlyingSymbolPy = "self._future.mapped";
+$addContractMethodC = "add_future_option_contract";
 $mirrorExtensionPy = ".value";
 ?>
