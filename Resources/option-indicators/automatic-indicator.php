@@ -42,8 +42,8 @@
                 if (call == null || put == null || Securities.ContainsKey(call.Symbol)) continue;
 
                 // Subscribe to both contracts.
-                AddOptionContract(call.Symbol);
-                AddOptionContract(put.Symbol);
+                <?=$addContractMethodC?>(call.Symbol);
+                <?=$addContractMethodC?>(put.Symbol);
 
                 // Create and save the automatic <?=$typeName?> indicators.
                 _indicators.Add(<?=$helperMethod?>(call.Symbol, put.Symbol));
@@ -100,8 +100,8 @@
                 # Subscribe to both contracts.
                 call = calls[0].symbol
                 put = puts[0].symbol
-                self.add_option_contract(call)
-                self.add_option_contract(put)
+                <?=$addContractMethodPy?>(call)
+                <?=$addContractMethodPy?>(put)
             
                 # Create and save the automatic <?=$typeName?> indicators.
                 self._indicators.extend([self.<?=strtolower($helperMethod)?>(call, put), self.<?=strtolower($helperMethod)?>(put, call)])
