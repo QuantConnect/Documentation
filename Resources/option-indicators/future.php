@@ -26,6 +26,6 @@ $underlyingSubscriptionPy = "self._future = self.add_future(
 $dividendYieldProviderConstructorPy = "ConstantDividendYieldModel(0)";
 $scheduleSymbolPy = "self._future.symbol";
 $underlyingSymbolPy = "self._future.mapped";
-$addContractMethodC = "add_future_option_contract";
+$addContractMethodPy = "add_future_option_contract";
 $mirrorExtensionPy = ".value";
 ?>
