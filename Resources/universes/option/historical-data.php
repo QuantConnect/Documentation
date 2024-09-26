@@ -9,7 +9,7 @@ include(DOCS_RESOURCES."/option-pricing/greek-history-code.php");
 ?>
 
 <p>
-    The Greeks and IV values that you get from a history request of the Option universe are the daily, pre-calculated values based on the end of the previous trading day.
+    The Greeks and IV values that you get from a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a> of the Option universe are the daily, pre-calculated values based on the end of the previous trading day.
     To get the intraday values or to customize the Greeks and IV calculations, create some <a href='<?=$indicatorLink?>'>Option indicators</a>.
 </p>
 
