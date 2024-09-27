@@ -1,0 +1,64 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The following table shows the price details of the assets in the algorithm:</p>
+
+<table class="table qc-table" id="payoff-table">
+<thead>
+<tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
+</thead>
+<tbody>
+<tr><td>Lower-Strike put</td><td>4.70</td><td>825.00</td></tr>
+<tr><td>Higher-strike put</td><td>10.90</td><td>835.00</td></tr>
+<tr><td>Underlying Equity at expiration</td><td>843.19</td><td>-</td></tr>
+</tbody>
+</table>
+
+<style>
+#payoff-table td:nth-child(2), 
+#payoff-table th:nth-child(2), 
+#payoff-table td:nth-child(3), 
+#payoff-table th:nth-child(3) {
+    text-align: right;
+}
+</style>
+
+<p>Therefore, the payoff is</p>
+$$
+\begin{array}{rcll}
+P^{low}_T & = & (K^{low} - S_T)^{+}\\
+& = & (825.00-843.19)^{+}\\
+& = & 0.00\\
+P^{high}_T & = & (K^{high} - S_T)^{+}\\
+& = & (835.00-843.19)^{+}\\
+& = & 0.00\\
+Payoff_T & = & (P^{high}_T - P^{high}_0 - P^{low}_T \times 2 + P^{low}_0 \times 2)\times m - fee\\
+& = & (0 - 10.90 - 0.00\times2 + 4.70\times2)\times100-2.30\\
+& = & -152.30\\
+\end{array}
+$$
+<br>
+<p>So, the strategy loses $152.30.</p>
+
+<p>The following algorithm implements a short put backspread Option strategy:</p>
+
+<div class="python">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_5fcfff698500fd7cc3b66c890c2611e5.html"></iframe>
+        </div>
+    </div>
+</div>
+
+<div class="csharp">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_c7db4c8122f59ddc1f9947110e8c6ae6.html"></iframe>
+        </div>
+    </div>
+</div>
