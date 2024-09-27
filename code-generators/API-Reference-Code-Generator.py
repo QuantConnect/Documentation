@@ -1,3 +1,4 @@
+import json
 import pathlib
 import yaml
 
@@ -367,13 +368,16 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
                 example_ = tab + f'  "{name}": "{property}"'
             else:
                 example_ = tab + f'  "{name}": {property}'
-            
+
         if "example" in properties:
-            eg = properties["example"]
+            eg = properties["example"] 
             type_ += f'<br/><i><sub>example: {eg}</sub></i>'
-            
+
             if isinstance(eg, str):
                 eg = '"' + eg + '"'
+            if isinstance(eg, dict):
+                eg = json.dumps(eg, indent=4)
+                
             example_ = tab + f'  "{name}": {eg}'
         
         if "Array" in type_:
