@@ -67,34 +67,34 @@
 
     public override void Initialize()
     {
-        // Add subscription of BTC-USD of 2 different exchanges in order to obtain the inter-market spread
+        // Subscribe to BTC/USD on 2 different exchanges.
         _krakenBtc = AddCrypto("BTCUSD", market: Market.Kraken).Symbol;
         _coinbaseBtc = AddCrypto("BTCUSD", market: Market.Coinbase).Symbol;
     }
 
     public override void OnData(Slice slice)
     {
-        // Only compare the price if prices of both exchanges are updated for fair comparison
+        // Only calculate the spread if the prices on both exchanges are in the current Slice.
         if (slice.Bars.ContainsKey(_krakenBtc) && slice.Bars.ContainsKey(_coinbaseBtc))
         {
-            // Calculate the spread between the 2 exchanges, make sure the comparison is always in the same direction
+            // Calculate the spread between the 2 exchanges, making sure the comparison is always in the same direction.
             var spread = slice.Bars[_krakenBtc].Close - slice.Bars[_coinbaseBtc].Close;
-            // Plot the spread between the 2 exchanges in a custom plot and series by the plot and series name
+            // Plot the spread between the 2 exchanges in a custom plot.
             Plot("BTC Close Spread", "Spread", spread);
         }
     }
 }</pre>
 	<pre class="python">class CryptoExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        # Add subscription of BTC-USD of 2 different exchanges in order to obtain the inter-market spread.
+        # Subscribe to BTC/USD on 2 different exchanges.
         self.kraken_btc = self.add_crypto("BTCUSD", market=Market.KRAKEN).symbol
         self.coinbase_btc = self.add_crypto("BTCUSD", market=Market.COINBASE).symbol
 
     def on_data(self, slice: Slice) -&gt; None:
-        # Only compare the price if prices of both exchanges are updated for fair comparison.
+        # Only calculate the spread if the prices on both exchanges are in the current Slice.
         if self.kraken_btc in slice.bars and self.coinbase_btc in slice.bars:
-            # Calculate the spread between the 2 exchanges, make sure the comparison is always in the same direction.
+            # Calculate the spread between the 2 exchanges, making sure the comparison is always in the same direction.
             spread = slice.bars[self.kraken_btc].close - slice.bars[self.coinbase_btc].close
-            # Plot the spread between the 2 exchanges in a custom plot and series by the plot and series name.
+            # Plot the spread between the 2 exchanges in a custom plot.
             self.plot("BTC Close Spread", "Spread", spread)</pre>
 </div>
