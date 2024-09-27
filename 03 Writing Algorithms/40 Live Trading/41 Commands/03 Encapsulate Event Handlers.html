@@ -1,0 +1,55 @@
+<p>
+	To encapsulate the command handler logic, define isolated classes. 
+	Command classes should extend the <code>Command</code> class. 
+	Extensions of the <code>Command</code> class must implement a <code class='python'>run</code><code class='csharp'>Run</code> method, which receives the payload you send and returns a boolean that represents if the command was successful. 
+	To add the command to your algorithm, call the <code class='python'>add_command</code><code class='csharp'>AddCommand</code> method.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class EncapsulatedCommandAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        AddCommand&lt;MyCommand&gt;();
+        SetBenchmark(x => 1); // So the algorithm doesn’t need asset data.
+    }
+
+}
+
+public class MyCommand : Command
+{
+    public string Ticker { get; set; }
+    public int Quantity { get; set; }
+    public Dictionary&lt;string, string&gt; Parameters { get; set; }
+    public override bool? Run(IAlgorithm algorithm)
+    {
+        ((QCAlgorithm)algorithm).Log($"ticker: {Ticker}; quantity: {Quantity}; parameters: {Parameters}");
+        return true;
+    }
+}
+</pre>
+<pre class="python">class EncapsulatedCommandAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.add_command(MyCommand)
+        self.set_benchmark(lambda x: 1) # So the algorithm doesn’t need asset data.
+
+class MyCommand(Command):
+    ticker = None
+    quantity = None
+    parameters = {}
+
+    def run(self, algorithm):
+        algorithm.log(f"ticker: {self.ticker}; quantity: {self.quantity}; parameters: {self.parameters}")
+        return True
+</pre>
+</div>
+
+<p>
+	To invoke the <code class='python'>run</code><code class='csharp'>Run</code> method of the class you define, send a payload with a <code>$type</code> key (for example, {“ticker”: “AAPL”, “quantity”: 1, “$type”: “MyCommand”}). 
+	The value of the <code>$type</code> key must be the <code>Command</code> class you define. 
+	The other keys of the payload set the members of the class. 
+	If you don’t provide a <code>$type</code> key, LEAN runs the <code class='python'>on_command</code><code class='csharp'>OnCommand</code> method instead of the <code class='python'>run</code><code class='csharp'>Run</code> method in your custom <code>Command</code> class.
+
+</p>
