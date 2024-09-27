@@ -1,0 +1,34 @@
+<p>
+	To receive and handle generic commands in your algorithm, define the <code class='python'>on_command</code><code class='csharp'>OnCommand</code> method. 
+	This method receives the data you want to inject into your algorithm and returns a boolean that represents if the command was successful. 
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class BasicCommandAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize() 
+    {
+        SetBenchmark(x => 1); // So the algorithm needs no asset data.
+    }
+
+    public override bool? OnCommand(dynamic data)
+    {
+        Log($"Got command at {Time} with data: {data}");
+        return true;
+    }
+}</pre>
+<pre class="python">class BasicCommandAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_benchmark(lambda x: 1) # So the algorithm needs no asset data.
+
+    def on_command(self, data):
+        self.log(f'Got command at {self.time} with data: {data}')
+        return True</pre>
+</div>
+
+<p>
+	To invoke the <code class='python'>on_command</code><code class='csharp'>OnCommand</code> event handler, send a payload (for example, <code>{"ticker": "AAPL", "quantity": 1}</code>) through the <a href='https://www.quantconnect.com/docs/v2/cloud-platform/api-reference/live-management/live-commands'>QuantConnect REST API</a> or <a href='/docs/v2/lean-cli/live-trading/algorithm-control'>LEAN CLI</a>. 
+	The keys of the payload become the members of the <code>data</code> object.	
+</p>
