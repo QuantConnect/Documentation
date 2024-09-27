@@ -1,27 +1,33 @@
+<p>The following examples demonstrate some common practices for handling Crypto data.</p>
+
 <h4>Example 1: Dollar Cost Average BTC</h4>
-<p>Dollar cost averaging (DCA) is a fixed investment in dollar amount on a regular basis (e.g. monthly) regardless of the asset's price. It can smoothen the volatility in PnL due to the averaging of acquisition price of each batch investment. In this example, we demonstrate a dollar cost average investment on BTC. We will invest $1000 USD worth of BTC every midnight EST for 30 consecutive days.</p>
-<div class="section-example-container"></div>
+<p>
+	Dollar cost averaging (DCA) is where you consistently invest a fixed dollar amount into an asset on a regular basis (for example, monthly), regardless of the asset's price. 
+	It can reduce the volatility in your PnL due to slowly increasing the position size over time. 
+	The following algorithm demonstrates a DCA investment into BTC. 
+	It buys $10,000 USD worth of BTC every midnight for 30 consecutive days.
+</p>
+<div class="section-example-container">
 	<pre class="csharp">public class CryptoExampleAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
-    // Set a day count variable for counting the days of DCA trade.
+    // Set a day count variable for counting the days of the DCA trade.
     private int _dayCount = 0;
 
     public override void Initialize()
     {
-        // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        // Set the brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Cash);
-        // For daily DCA investment, subscription to daily data is sufficient.
-        // Add subscriptions to cryptos with specific market to ensure the correct securities are selected.
-        _symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
+        // For daily DCA purchases, subscribe to daily asset data.
+        _symbol = AddCrypto("BTCUSD", Resolution.Daily).Symbol;
     }
 
     public override void OnData(Slice slice)
     {
-        // If already invested for 30 consecutive days, stop additional investment.
+        // If you haven't invested for 30 consecutive days yet, continue buying.
         if (slice.Bars.ContainsKey(_symbol) && _dayCount++ &lt; 30)
         {
-            // Calculate the order size for $10000 USD using the current price.
+            // Calculate the order size for $10,000 USD using the current price.
             var size = 10000m / slice.Bars[_symbol].Close;
             MarketOrder(_symbol, size);
         }
@@ -29,28 +35,31 @@
 }</pre>
 	<pre class="python">class CryptoExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        # Set a day count variable for counting the days of DCA trade.
+        # Set a day count variable for counting the days of the DCA trade.
         self.day_count = 0
-        # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        # Set the brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         self.set_brokerage_model(BrokerageName.BITFINEX, AccountType.CASH)
-        # For daily DCA investment, subscription to daily data is sufficient.
-        # Add subscriptions to cryptos with specific market to ensure the correct securities are selected.
+        # For daily DCA purchases, subscribe to daily asset data.
         self._symbol = self.add_crypto("BTCUSD", Resolution.DAILY, Market.BITFINEX).symbol
 
     def on_data(self, slice: Slice) -&gt; None:
-        # If already invested for 30 consecutive days, stop additional investment.
+        # If you haven't invested for 30 consecutive days yet, continue buying.
         if self._symbol in slice.bars and self.day_count &lt; 30:
-            # Calculate the order size for $10000 USD using the current price.
+            # Calculate the order size for $10,000 USD using the current price.
             size = 10000 / slice.bars[self._symbol].close
             self.market_order(self._symbol, size)
     
-            # Add day count.
+            # Increase the day count.
             self.day_count += 1</pre>
 </div>
 
-<h4>Example 2: Inter-market spread</h4>
-<p>Always, there exhibit a small discrepancy in price of the same crypto pair trading between different crypto exchanges. Although you cannot live trade different brokerages in the same algorithm, you can study the cointegration pattern and implement 2 live nodes to do arbitration for this inter market spread discrepancy. In the below example, we demonstrate how to obtain this spread between BTCUSD traded in Kraken and Coinbase exchanges.</p>
-<div class="section-example-container"></div>
+<h4>Example 2: Inter-Market Spread</h4>
+<p>
+	There is always a small discrepancy in the price of the same Crypto pair trading on different exchanges. 
+	Although you can't currently live trade on algorithm with multiple brokerages, you can study the cointegration pattern and implement 2 live nodes to capture the arbitrage opportunity. 
+	The following algorithm demonstrates how to obtain the spread between the BTCUSD pair on Kraken and on Coinbase:
+</p>
+<div class="section-example-container">
 	<pre class="csharp">public class CryptoExampleAlgorithm : QCAlgorithm
 {
     private Symbol _krakenBtc;
