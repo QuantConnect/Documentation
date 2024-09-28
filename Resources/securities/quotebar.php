@@ -6,13 +6,16 @@
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Check if the symbol is contained in QuoteBars object
     if (slice.QuoteBars.ContainsKey(<?=$cSharpVariable?>))
     {
+        // Obtain the mapped QuoteBar of the symbol
         var quoteBar = slice.QuoteBars[<?=$cSharpVariable?>];
     }
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Obtain the mapped QuoteBar of the symbol if any
     quote_bar = slice.quote_bars.get(<?=$pythonVariable?>)   # None if not found</pre>
 </div>
 
@@ -20,6 +23,7 @@
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Iterate all received Symbol-QuoteBar key-value pairs
     foreach (var kvp in slice.QuoteBars)
     {
         var symbol = kvp.Key;
@@ -28,6 +32,7 @@
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Iterate all received Symbol-QuoteBar key-value pairs
     for symbol, quote_bar in slice.quote_bars.items():
         ask_price = quote_bar.ask.close</pre>
 </div>
