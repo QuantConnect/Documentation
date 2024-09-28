@@ -44,7 +44,8 @@ UniverseSettings.Asynchronous = true;
 _universe = AddUniverse(
     fundamental =&gt; (from f in fundamental
         where f.Price &gt; 10 &amp;&amp; f.HasFundamentalData &amp;&amp; !Double.IsNaN(f.ValuationRatios.PERatio)
-        orderby f.DollarVolume descending).Take(100)
+        orderby f.DollarVolume descending
+        select f).Take(100)
         .OrderBy(f =&gt; f.ValuationRatios.PERatio).Take(10)
         .Select(f =&gt; f.Symbol));</pre>
     <pre class="python"># In Initialize:
