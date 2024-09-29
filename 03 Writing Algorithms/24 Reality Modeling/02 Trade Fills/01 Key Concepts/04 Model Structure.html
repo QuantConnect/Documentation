@@ -1,9 +1,16 @@
 <p>Fill Models should extend the <code>FillModel</code> class. To implement your own fill model, override the methods in the <code>FillModel</code> class you wish to change.
 	The class has a dedicated method for each order type. Most of the methods receive a <code>Security</code> and <code>Order</code> object and return an <code>OrderEvent</code> object that contains information about the order status, fill quantity, and errors. <br></p>
 <div class="section-example-container">
-<pre class="csharp">// In the Initialize method, set the custom fill model
-security.SetFillModel(new MyFillModel());
-	
+<pre class="csharp">public class CustomFillModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // In the Initialize method, set the custom fill model for an added security to use the custom model
+        var security = AddEquity("SPY");
+        security.SetFillModel(new MyFillModel());
+    }
+}
+
 // Define the custom fill model outside of the algorithm
 public class MyFillModel : FillModel {
 
@@ -52,8 +59,11 @@ public class MyFillModel : FillModel {
     }
 }
 </pre>
-<pre class="python"># In the Initialize method, set the custom fill model
-security.set_fill_model(MyFillModel())
+<pre class="python">class CustomFillModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # In the Initialize method, set the custom fill model for an added security to use the custom model
+        security = self.add_equity("SPY")
+        security.set_fill_model(MyFillModel())
 
 # Define the custom fill model outside of the algorithm
 class MyFillModel(FillModel):
