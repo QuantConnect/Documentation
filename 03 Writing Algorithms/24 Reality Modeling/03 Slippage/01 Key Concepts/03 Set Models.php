@@ -5,11 +5,15 @@
 {
     var security = AddEquity("SPY");
     // Set the slippage model for the requested security to backtest with the most realistic scenario
+    // VolumeShareSlippageModel has slippage size affected by the volume of the order compared to the actual filled volume of the bar
+    // It is only valid for the security with a volume property, while being more accurate with denser resolution
     security.SetSlippageModel(new VolumeShareSlippageModel());
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
     security = self.add_equity("SPY")
     # Set the slippage model for the requested security to backtest with the most realistic scenario
+    # VolumeShareSlippageModel has slippage size affected by the volume of the order compared to the actual filled volume of the bar
+    # It is only valid for the security with a volume property, while being more accurate with denser resolution
     security.set_slippage_model(VolumeShareSlippageModel())</pre>
 </div>
 

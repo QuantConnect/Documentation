@@ -4,11 +4,13 @@
 {
     var security = AddEquity("SPY");
     // Set the fill model for the requested security to backtest with the most realistic scenario
+    // ImmediateFillModel provide no delay from network issue or brokerage rules
     security.SetFillModel(new ImmediateFillModel());
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
     security = self.add_equity("SPY")
     # Set the fill model for the requested security to backtest with the most realistic scenario
+    # ImmediateFillModel provide no delay from network issue or brokerage rules
     security.set_fill_model(ImmediateFillModel())</pre>
 </div>
 
