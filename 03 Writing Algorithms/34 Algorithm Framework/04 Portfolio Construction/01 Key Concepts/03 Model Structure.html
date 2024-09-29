@@ -10,11 +10,11 @@ class MyPortfolioConstructionModel : PortfolioConstructionModel
     // Create list of PortfolioTarget objects from Insights.
     public override List&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
     {
-        return base.CreateTargets(algorithm, insights);
+        return (List&lt;PortfolioTarget&gt;) base.CreateTargets(algorithm, insights);
     }
     
     // Determine if the portfolio should rebalance based on the provided rebalancing function.
-    protected virtual bool IsRebalanceDue(Insight[] insights, DateTime algorithmUtc) 
+    protected override bool IsRebalanceDue(Insight[] insights, DateTime algorithmUtc) 
     {
         return base.IsRebalanceDue(insights, algorithmUtc);
     }
@@ -40,7 +40,7 @@ class MyPortfolioConstructionModel : PortfolioConstructionModel
     // Security change details.
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        return base.OnSecuritiesChanged(algorithm, changes);
+        base.OnSecuritiesChanged(algorithm, changes);
     }
 }</pre>
 	<pre class="python"> # Portfolio construction scaffolding class; basic method arguments.
