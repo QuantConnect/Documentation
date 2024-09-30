@@ -5,6 +5,7 @@
 {
     public override void Initialize()
     {
+        var symbol = AddEquity("SPY").Symbol;
         // Before creating the indicator, create the dividend yield model
         var dividendYieldModel = new MyDividendYieldModel();
         _iv = new ImpliedVolatility(symbol, RiskFreeInterestRateModel, dividendYieldModel, OptionPricingModelType.BlackScholes);
@@ -21,6 +22,7 @@ public class MyDividendYieldModel : IDividendYieldModel
 }</pre>
 <pre class="python">class CustomDividendYieldModelExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        symbol = self.add_equity("SPY").symbol
         # Before creating the indicator, create the dividend yield model
         dividend_yield_model = MyDividendYieldModel()
         self.iv = ImpliedVolatility(symbol, self.risk_free_interest_rate_model, dividend_yield_model, OptionPricingModelType.BLACK_SCHOLES)

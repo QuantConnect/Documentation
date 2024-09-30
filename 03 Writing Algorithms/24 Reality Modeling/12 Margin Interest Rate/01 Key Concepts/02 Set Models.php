@@ -1,11 +1,15 @@
 <p>The brokerage model of your algorithm automatically sets the margin interest rate model for each security, but you can override it. To manually set the margin interest rate model of a security, assign a model to the <code>MarginInterestRateModel</code> property of the Security object.</p>
 <div class="section-example-container">
-    <pre class="csharp">// In Initialize
-var security = AddEquity("SPY");
-security.MarginInterestRateModel = MarginInterestRateModel.Null;</pre>
-    <pre class="python"># In Initialize
-security = self.add_equity("SPY")
-security.set_margin_interest_rate_model(MarginInterestRateModel.NULL)</pre>
+    <pre class="csharp">public override void Initialize()
+{
+    var security = AddEquity("SPY");
+    // Null margin interest rate model is non-realistic, you should set it according to your broker information
+    security.MarginInterestRateModel = MarginInterestRateModel.Null;
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    security = self.add_equity("SPY")
+    # Null margin interest rate model is non-realistic, you should set it according to your broker information
+    security.set_margin_interest_rate_model(MarginInterestRateModel.NULL)</pre>
 </div>
 
 <p>You can also set the margin interest rate model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a dynamic universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p><p>
