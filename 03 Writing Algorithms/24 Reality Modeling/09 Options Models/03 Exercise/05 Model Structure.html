@@ -4,8 +4,15 @@
 <div class="section-example-container">
     <pre class="csharp">using QuantConnect.Orders.OptionExercise;
 
-// In the security initializer, set the custom Option exercise model
-(security as Option).SetOptionExerciseModel(new MyOptionExerciseModel());
+public class CustomOptionExerciseModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var security = AddOption("SPY");
+        // Set custom option exercise model for mimicking specific Brokerage most realistic actions
+        (security as Option).SetOptionExerciseModel(new MyOptionExerciseModel());
+    }
+}
 
 // Define the custom Option exercise model outside of the algorithm
 public class MyOptionExerciseModel : IOptionExerciseModel
@@ -28,8 +35,11 @@ public class MyOptionExerciseModel : IOptionExerciseModel
         ) { IsAssignment = isAssignment };
     }
 }</pre>
-    <pre class="python"># In the security initializer, set the custom Option exercise model
-security.set_option_exercise_model(MyOptionExerciseModel())
+    <pre class="python">class CustomOptionExerciseModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        security = self.add_option("SPY")
+        # Set custom option exercise model for mimicking specific Brokerage most realistic actions
+        security.set_option_exercise_model(MyOptionExerciseModel())
 
 # Define the custom Option exercise model outside of the algorithm
 class MyOptionExerciseModel(DefaultExerciseModel):
