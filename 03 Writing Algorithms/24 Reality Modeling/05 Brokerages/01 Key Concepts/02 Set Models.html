@@ -1,11 +1,16 @@
 <p>To set a brokerage model, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">SetBrokerageModel</code><code class="python">set_brokerage_model</code> method with a <code>BrokerageName</code> and an <code>AccountType</code>. If you set a brokerage model, it overrides any security level models you manually set in your algorithm.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">SetBrokerageModel(BrokerageName.OandaBrokerage); // Defaults to margin account
-SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin); // Overrides the default account type
-</pre>
-<pre class="python">self.set_brokerage_model(BrokerageName.OANDA_BROKERAGE) # Defaults to margin account
-self.set_brokerage_model(BrokerageName.BITFINEX, AccountType.MARGIN) # Overrides the default account type
+	<pre class="csharp">public override void Initialize()
+{
+	// Set the brokerage model to backtest with the most realistic scenario
+	SetBrokerageModel(BrokerageName.OandaBrokerage); // Defaults to margin account
+	SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin); // Overrides the default account type, which is AccountType.Cash
+}</pre>
+<pre class="python">def initialize(self) -&gt; None:
+	# Set the brokerage model to backtest with the most realistic scenario
+	self.set_brokerage_model(BrokerageName.OANDA_BROKERAGE) # Defaults to margin account
+	self.set_brokerage_model(BrokerageName.BITFINEX, AccountType.MARGIN) # Overrides the default account type, which is AccountType.Cash
 </pre></div>
 
 <p>In live trading, LEAN doesn't ignore your <code class="csharp">SetBrokerageModel</code><code class="python">set_brokerage_model</code> method calls. LEAN uses some of the brokerage model rules to catch invalid orders before they reach your real brokerage.</p>
