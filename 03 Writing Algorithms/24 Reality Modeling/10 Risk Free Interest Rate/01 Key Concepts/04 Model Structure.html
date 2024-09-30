@@ -1,8 +1,15 @@
 <p>Risk free interest rate models must extend the <code>IRiskFreeInterestRateModel</code> interface. Extensions of the <code>IRiskFreeInterestRateModel</code> interface must implement a <code class="csharp">GetInterestRate</code><code class="python">get_interest_rate</code> method. The <code class="csharp">GetInterestRate</code><code class="python">get_interest_rate</code> method returns the risk free interest rate for a given date.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// In the Initialize method, set the risk free interest rate model
-SetRiskFreeInterestRateModel(new MyRiskFreeInterestRateModel());
+<pre class="csharp">public class CustomRiskFreeInterestRateModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // Set the interest rate model for accurate option IV/greeks and result metrics like Sharpe Ratio
+        // You should set it according to the main currency of your trading Securities
+        SetRiskFreeInterestRateModel(new MyRiskFreeInterestRateModel());
+    }
+}
 
 // Define the custom risk free interest rate model
 public class MyRiskFreeInterestRateModel : IRiskFreeInterestRateModel 
@@ -12,8 +19,11 @@ public class MyRiskFreeInterestRateModel : IRiskFreeInterestRateModel
         return 0.02m;
     }
 }</pre>
-<pre class="python"># In the Initialize method, set the risk free interest rate model
-self.set_risk_free_interest_rate_model(MyRiskFreeInterestRateModel())
+<pre class="python">class CustomRiskFreeInterestRateModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Set the interest rate model for accurate option IV/greeks and result metrics like Sharpe Ratio
+        # You should set it according to the main currency of your trading Securities
+        self.set_risk_free_interest_rate_model(MyRiskFreeInterestRateModel())
     
 # Define the custom risk free interest rate model
 class MyRiskFreeInterestRateModel:
