@@ -1,12 +1,16 @@
 <p>To set the volatility model of the underlying security of an Option, set the <code>VolatilityModel</code> property of the <code>Security</code> object. The volatility model can have a different resolution than the underlying asset subscription.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In Initialize
-var underlyingSecurity= AddEquity("SPY");
-underlyingSecurity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);</pre>
-    <pre class="python"># In Initialize
-underlying_security = self.add_equity("SPY")
-underlying_security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)</pre>
+    <pre class="csharp">public override void Initialize()
+{
+    var underlyingSecurity = AddEquity("SPY");
+    // Usually, the historical and implied volatility is calculated using 30-day standard deviation of return
+    underlyingSecurity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    underlying_security = self.add_equity("SPY")
+    # Usually, the historical and implied volatility is calculated using 30-day standard deviation of return
+    underlying_security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)</pre>
 </div>
 
 
@@ -14,7 +18,7 @@ underlying_security.volatility_model = StandardDeviationOfReturnsVolatilityModel
 
 <?
 $overwriteCodePy = "if security.Type == SecurityType.EQUITY:
-            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)";
+            security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)";
 $overwriteCodeC = "if (security.Type == SecurityType.Equity)
         {
             security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);

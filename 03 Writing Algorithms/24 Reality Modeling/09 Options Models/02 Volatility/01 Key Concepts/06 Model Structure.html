@@ -1,8 +1,15 @@
 <p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code class="csharp">Update</code><code class="python">update</code> and <code class="csharp">GetHistoryRequirements</code><code class="python">get_history_requirements</code> methods and a <code class="csharp">Volatility</code><code class="python">volatility</code> property. The <code class="csharp">Update</code><code class="python">update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code class="csharp">Volatility</code><code class="python">volatility</code>. The <code class="csharp">GetHistoryRequirements</code><code class="python">get_history_requirements</code> method receives <code>Security</code> and <code class="csharp">DateTime</code><code class="python">datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
 
 <div class="section-example-container">
-    <pre class="csharp">// In the Initialize method, set the custom volatility model of the underlying security
-underlyingSecurity.VolatilityModel = new MyVolatilityModel();
+    <pre class="csharp">public class CustomVolatilityModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var underlyingSecurity = AddIndex("VIX");
+        // Apply custom volatility model for specific underlyings, often they are synthetic products or with different market calendar
+        underlyingSecurity.VolatilityModel = new MyVolatilityModel();
+    }
+}
 
 // Define the custom volatility model outside of the algorithm
 public class MyVolatilityModel : BaseVolatilityModel
@@ -35,8 +42,11 @@ public class MyVolatilityModel : BaseVolatilityModel
         return base.GetHistoryRequirements(security, utcTime, resolution, barCount);
     }
 }</pre>
-    <pre class="python"># In the Initialize method, set the custom volatility model of the underlying security
-underlying_security.volatility_model = MyVolatilityModel()
+    <pre class="python">class CustomVolatilityModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        underlying_security = self.add_index("VIX")
+        # Apply custom volatility model for specific underlyings, often they are synthetic products or with different market calendar
+        underlying_security.volatility_model = MyVolatilityModel()
 
 # Define the custom volatility model outside of the algorithm
 class MyVolatilityModel(BaseVolatilityModel):
