@@ -2,8 +2,15 @@
 <p class='python'>Option assignment models should extend the <code>NullOptionAssignmentModel</code> class. Extensions of the <code>NullOptionAssignmentModel</code> class must implement the <code class="csharp">GetAssignment</code><code class="python">get_assignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In the security initializer, set the custom Option assignment model
-(security as Option).SetOptionAssignmentModel(new MyOptionAssignmentModel());
+    <pre class="csharp">public class CustomOptionAssignmentModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var security = AddOption("SPY");
+        // Set custom option assignment model for mimicking specific Brokerage most realistic actions
+        (security as Option).SetOptionAssignmentModel(new MyOptionAssignmentModel());
+    }
+}
 
 // Define the custom Option assignment model outside of the algorithm
 public class MyOptionAssignmentModel : IOptionAssignmentModel
@@ -20,8 +27,11 @@ public class MyOptionAssignmentModel : IOptionAssignmentModel
         return OptionAssignmentResult.Null;
     }
 }</pre>
-    <pre class="python"># In the security initializer, set the custom Option assignment model
-security.set_option_assignment_model(MyOptionAssignmentModel())
+    <pre class="python">class CustomOptionAssignmentModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        security = self.add_option("SPY")
+        # Set custom option assignment model for mimicking specific Brokerage most realistic actions
+        security.set_option_assignment_model(MyOptionAssignmentModel())
 
 # Define the custom Option assignment model outside of the algorithm
 class MyOptionAssignmentModel(NullOptionAssignmentModel):
