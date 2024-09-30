@@ -1,8 +1,15 @@
 <p>Margin interest rate models should implement the <code>IMarginInterestRateModel</code> interface. Extensions of the <code>IMarginInterestRateModel</code> interface must implement the <code class="csharp">ApplyMarginInterestRate</code><code class="python">apply_margin_interest_rate</code> method, which applies margin interest payments to the portfolio.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In the Initialize method, set the margin interest rate model
-security.SetMarginInterestRateModel(new MyMarginInterestRateModel());
+    <pre class="csharp">public class CustomMarginInterestRateModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var security = AddEquity("SPY");
+        // You should set it according to your broker information for the least actual-expected discrepancies
+        security.SetMarginInterestRateModel(new MyMarginInterestRateModel());
+    }
+}
 
 // Define the custom margin interest rate model
 public class MyMarginInterestRateModel : IMarginInterestRateModel 
@@ -14,8 +21,11 @@ public class MyMarginInterestRateModel : IMarginInterestRateModel
         positionValue.Cash.AddAmount(-1);
     }
 }</pre>
-    <pre class="python"># In the Initialize method, set the margin interest rate model
-security.set_margin_interest_rate_model(MyMarginInterestRateModel())
+    <pre class="python">class CustomMarginInterestRateModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        security = self.add_equity("SPY")
+        # You should set it according to your broker information for the least actual-expected discrepancies
+        security.set_margin_interest_rate_model(MyMarginInterestRateModel())
 
 # Define the custom margin interest rate model
 class MyMarginInterestRateModel:

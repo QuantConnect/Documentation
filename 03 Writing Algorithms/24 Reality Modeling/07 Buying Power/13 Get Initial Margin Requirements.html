@@ -6,14 +6,21 @@
 <ol>
     <li>Create an <code>InitialMarginParameters</code> object with the security and quantity you want to trade.</li>
     <div class="section-example-container">
-        <pre class="csharp">var parameter = new InitialMarginParameters(security, quantity);</pre>
-        <pre class="python">parameter = InitialMarginParameters(security, quantity)</pre>
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    var security = Securities["SPY"];
+    var quantity = 100m;
+    var parameter = new InitialMarginParameters(security, quantity);</pre>
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    security = self.securities["SPY"]
+    quantity = 100
+    parameter = InitialMarginParameters(security, quantity)</pre>
     </div>
 
     <li>Call the <code class="csharp">GetInitialMarginRequirement</code><code class="python">get_initial_margin_requirement</code> method of the security's buying power model with the <code>InitialMarginParameters</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var initialMargin = security.BuyingPowerModel.GetInitialMarginRequirement(parameter);</pre>
-        <pre class="python">initial_margin = security.buying_power_model.get_initial_margin_requirement(parameter)</pre>
+        <pre class="csharp">    var initialMargin = security.BuyingPowerModel.GetInitialMarginRequirement(parameter);</pre>
+        <pre class="python">    initial_margin = security.buying_power_model.get_initial_margin_requirement(parameter)</pre>
     </div>
 
     <p>The <code class="csharp">GetInitialMarginRequirement</code><code class="python">get_initial_margin_requirement</code> method returns an <code>InitialMargin</code> object, which have the following properties:</p>    
@@ -21,18 +28,19 @@
 
     <li>Compare the margin you have remaining against the initial margin requirement of the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">if (Portfolio.MarginRemaining >= initialMargin.Value)
-{
-    MarketOrder(security.Symbol, quantity);
-}
-else
-{
-    Debug("You don't have sufficient margin for this order.");
+        <pre class="csharp">    if (Portfolio.MarginRemaining >= initialMargin.Value)
+    {
+        MarketOrder(security.Symbol, quantity);
+    }
+    else
+    {
+        Debug("You don't have sufficient margin for this order.");
+    }
 }</pre>
-        <pre class="python">if self.portfolio.margin_remaining >= initial_margin.value:
-    self.market_order(security.symbol, quantity)
-else:
-    self.debug("You don't have sufficient margin for this order.")</pre>
+        <pre class="python">    if self.portfolio.margin_remaining >= initial_margin.value:
+        self.market_order(security.symbol, quantity)
+    else:
+        self.debug("You don't have sufficient margin for this order.")</pre>
     </div>
 </ol>
 
@@ -43,44 +51,78 @@ else:
     <li>Create an <code>OptionStrategy</code> object with the strategy you want to trade and its buying power model.</li>
     <p>For example, create a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread'>Bull Put Spread</a> strategy.</p>
     <div class="section-example-container">
-        <pre class="csharp">var optionStrategy = OptionStrategies.BullPutSpread(_symbol, itmStrike, otmStrike, expiry);</pre>
-        <pre class="python">option_strategy = OptionStrategies.bull_put_spread(self._symbol, itm_strike, otm_strike, expiry)</pre>
+        <pre class="csharp">private Symbol _symbol;
+            
+public override void Initialize()
+{
+    // Subscribe to option data and cache the canonical symbol to obtain the option data
+    _symbol = AddOption("SPY").Symbol;
+}
+
+public voerride void OnData(Slice slice)
+{
+    // Trade on updated option chain data
+    if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+    {
+        return;
+    }
+
+    var itmStrike = chain.Max(x =&gt; x.Strike);
+    var otmStrike = chain.Min(x =&gt; x.Strike);
+    var expiry = chain.Min(x =&gt; x.Expiry);
+
+    var optionStrategy = OptionStrategies.BullPutSpread(_symbol, itmStrike, otmStrike, expiry);</pre>
+        <pre class="python">def initialize(self) -&gt; None:
+    # Subscribe to option data and cache the canonical symbol to obtain the option data
+    self._symbol = self.add_option("SPY").symbol
+    
+def on_data(self, slice: Slice) &gt; None:
+    # Trade on updated option chain data
+    chain = slice.option_chains.get(self._symbol)
+    if not chain:
+        return
+    
+    itm_strike = max(x.strike for x in chain)
+    otm_strike = min(x.strike for x in chain)
+    expiry = min(x.expiry for x in chain)
+
+    option_strategy = OptionStrategies.bull_put_spread(self._symbol, itm_strike, otm_strike, expiry)</pre>
     </div>
 
     <li>Create an <code>OptionStrategyPositionGroupBuyingPowerModel</code> object of the strategy.</li>
     <div class="section-example-container">
-        <pre class="csharp">var buyingPowerModel = new OptionStrategyPositionGroupBuyingPowerModel(optionStrategy);</pre>
-        <pre class="python">buying_power_model = OptionStrategyPositionGroupBuyingPowerModel(option_strategy)</pre>
+        <pre class="csharp">    var buyingPowerModel = new OptionStrategyPositionGroupBuyingPowerModel(optionStrategy);</pre>
+        <pre class="python">    buying_power_model = OptionStrategyPositionGroupBuyingPowerModel(option_strategy)</pre>
     </div>
 
     <li>Create a list of <code>Position</code> objects from the strategy legs.</li>
     <div class="section-example-container">
-        <pre class="csharp">var positions = optionStrategy.OptionLegs.Select(leg =>
-{
-    var symbol = QuantConnect.Symbol.CreateOption(_symbol.Underlying, _symbol.ID.Market, _symbol.ID.OptionStyle, leg.Right, leg.Strike, leg.Expiration);
-    return new Position(symbol, leg.Quantity, 1);
-});</pre>
-        <pre class="python">def get_symbol(leg):
-    return Symbol.CreateOption(
-        self._symbol.underlying, self._symbol.id.market, self._symbol.id.option_style, 
-        leg.right, leg.strike, leg.expiration
-    )
+        <pre class="csharp">    var positions = optionStrategy.OptionLegs.Select(leg =>
+    {
+        var symbol = QuantConnect.Symbol.CreateOption(_symbol.Underlying, _symbol.ID.Market, _symbol.ID.OptionStyle, leg.Right, leg.Strike, leg.Expiration);
+        return new Position(symbol, leg.Quantity, 1);
+    });</pre>
+        <pre class="python">    def get_symbol(leg):
+        return Symbol.CreateOption(
+            self._symbol.underlying, self._symbol.id.market, self._symbol.id.option_style, 
+            leg.right, leg.strike, leg.expiration
+        )
 
-positions = [Position(get_symbol(leg), leg.quantity, 1) for leg in option_strategy.option_legs]</pre>
+    positions = [Position(get_symbol(leg), leg.quantity, 1) for leg in option_strategy.option_legs]</pre>
     </div>
 
     <li>Create a <code>PositionGroupInitialMarginParameters</code> objects with the portfolio and the position group.</li>
     <div class="section-example-container">
-        <pre class="csharp">var positionGroup = new PositionGroup(buyingPowerModel, 1, positions.ToArray());
-var parameters = new PositionGroupInitialMarginParameters(Portfolio, positionGroup);</pre>
-        <pre class="python">position_group = PositionGroup(buying_power_model, 1, positions)
-parameters = PositionGroupInitialMarginParameters(self.portfolio, position_group)</pre>
+        <pre class="csharp">    var positionGroup = new PositionGroup(buyingPowerModel, 1, positions.ToArray());
+    var parameters = new PositionGroupInitialMarginParameters(Portfolio, positionGroup);</pre>
+        <pre class="python">    position_group = PositionGroup(buying_power_model, 1, positions)
+    parameters = PositionGroupInitialMarginParameters(self.portfolio, position_group)</pre>
     </div>
 
     <li>Call the <code class="csharp">GetInitialMarginRequirement</code><code class="python">get_initial_margin_requirement</code> method of the strategy's buying power model with the <code>PositionGroupInitialMarginParameters</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var initialMargin = buyingPowerModel.GetInitialMarginRequirement(parameters);</pre>
-        <pre class="python">initial_margin = buying_power_model.get_initial_margin_requirement(parameters)</pre>
+        <pre class="csharp">    var initialMargin = buyingPowerModel.GetInitialMarginRequirement(parameters);</pre>
+        <pre class="python">    initial_margin = buying_power_model.get_initial_margin_requirement(parameters)</pre>
     </div>
 
     <p>The <code class="csharp">GetInitialMarginRequirement</code><code class="python">get_initial_margin_requirement</code> method returns an <code>InitialMargin</code> object, which have the following properties:</p>    
@@ -92,19 +134,20 @@ parameters = PositionGroupInitialMarginParameters(self.portfolio, position_group
         For different trade sizes, multiply the <code class='csharp'>initialMargin.Value</code><code class='python'>initial_margin.value</code> by the quantity.
     </p>
     <div class="section-example-container">
-        <pre class="csharp">var strategyQuantity = 2; 
-if (Portfolio.MarginRemaining >= strategyQuantity * initialMargin.Value)
-{
-    Buy(optionStrategy, quantity);
-}
-else
-{
-    Debug("You don't have sufficient margin for this order.");
+        <pre class="csharp">    var strategyQuantity = 2; 
+    if (Portfolio.MarginRemaining >= strategyQuantity * initialMargin.Value)
+    {
+        Buy(optionStrategy, quantity);
+    }
+    else
+    {
+        Debug("You don't have sufficient margin for this order.");
+    }
 }</pre>
-        <pre class="python">strategy_quantity = 2
-if self.portfolio.margin_remaining >= strategy_quantity * initial_margin.value:
-    self.buy(option_strategy, strategy_quantity)
-else:
-    self.debug("You don't have sufficient margin for this order.")</pre>
+        <pre class="python">    strategy_quantity = 2
+    if self.portfolio.margin_remaining >= strategy_quantity * initial_margin.value:
+        self.buy(option_strategy, strategy_quantity)
+    else:
+        self.debug("You don't have sufficient margin for this order.")</pre>
     </div>
 </ol>

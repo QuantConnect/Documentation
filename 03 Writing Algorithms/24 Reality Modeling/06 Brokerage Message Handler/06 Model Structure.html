@@ -8,8 +8,14 @@
 <p>The <code class="csharp">HandleOrder</code><code class="python">handle_order</code> method defines whether the transaction handler should process a new order you placed directly through the brokerage's website or third-party software.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In the Initialize method, set the brokerage message handler
-SetBrokerageMessageHandler(new MyBrokerageMessageHandler(this));
+    <pre class="csharp">public class CustomBrokerageMessageHandlerExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // In the Initialize method, set the brokerage message handler
+        SetBrokerageMessageHandler(new MyBrokerageMessageHandler(this));
+    }
+}
 
 // Define the custom brokerage message handler
 public class MyBrokerageMessageHandler : DefaultBrokerageMessageHandler
@@ -31,8 +37,10 @@ public class MyBrokerageMessageHandler : DefaultBrokerageMessageHandler
         return false;
     }
 }</pre>
-    <pre class="python"># In the Initialize method, set the brokerage message handler
-self.set_brokerage_message_handler(MyBrokerageMessageHandler(self))
+    <pre class="python">class CustomBrokerageMessageHandlerExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # In the Initialize method, set the brokerage message handler
+        self.set_brokerage_message_handler(MyBrokerageMessageHandler(self))
         
 # Define the custom brokerage message handler
 class MyBrokerageMessageHandler(DefaultBrokerageMessageHandler):

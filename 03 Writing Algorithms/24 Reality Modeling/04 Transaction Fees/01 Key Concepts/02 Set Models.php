@@ -5,10 +5,14 @@
     <pre class="csharp">public override Initialize()
 {
     var security = AddEquity("SPY");
+    // Set the fee model for the requested security to backtest with the most realistic scenario
+    // Constant fee model of 0 dollar is accurate for the commission-free brokerage
     security.SetFeeModel(new ConstantFeeModel(0));
 }</pre>
     <pre class="python">def initialize(self):
     security = self.add_equity("SPY")
+    # Set the fee model for the requested security to backtest with the most realistic scenario
+    # Constant fee model of 0 dollar is accurate for the commission-free brokerage
     security.set_fee_model(ConstantFeeModel(0))</pre>
 </div>
 

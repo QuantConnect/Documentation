@@ -1,10 +1,16 @@
 <p>To set the risk free interest rate model, in the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/initialization'>Initialize</a> method, call the <code class="csharp">SetRiskFreeInterestRateModel</code><code class="python">set_risk_free_interest_rate_model</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In Initialize
-SetRiskFreeInterestRateModel(new ConstantRiskFreeRateInterestRateModel(0.02m));</pre>
-    <pre class="python"># In Initialize
-self.set_risk_free_interest_rate_model(ConstantRiskFreeRateInterestRateModel(0.02))</pre>
+    <pre class="csharp">public overide void Initialize()
+{
+    // Set the interest rate model for accurate option IV/greeks and result metrics like Sharpe Ratio
+    // You should set it according to the main currency of your trading Securities
+    SetRiskFreeInterestRateModel(new ConstantRiskFreeRateInterestRateModel(0.02m));
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Set the interest rate model for accurate option IV/greeks and result metrics like Sharpe Ratio
+    # You should set it according to the main currency of your trading Securities
+    self.set_risk_free_interest_rate_model(ConstantRiskFreeRateInterestRateModel(0.02))</pre>
 </div>
 
 <p>To view all the pre-built risk free interest rate models, see <a href='/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/supported-models'>Supported Models</a>.</p>

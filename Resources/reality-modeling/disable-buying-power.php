@@ -13,14 +13,20 @@
 
 <p>To disable the validations of the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default buying power model</a>, use the <code>NullBuyingPowerModel</code>. To set the <code>NullBuyingPowerModel</code> for a security subscription, call the <code class="csharp">SetBuyingPowerModel</code><code class="python">set_buying_power_model</code> method with the <code>BuyingPowerModel.<span class="csharp">Null</span><span class="python">NULL</span></code> argument.</p>
 <div class="section-example-container">
-<pre class="csharp">var equity = AddEquity("SPY");
-equity.SetBuyingPowerModel(BuyingPowerModel.Null);
-// Alias: 
-// equity.SetMarginModel(SecurityMarginModel.Null);</pre>
-<pre class="python">equity = self.add_equity("SPY")
-equity.set_buying_power_model(BuyingPowerModel.NULL)
-# Alias:
-# equity.set_margin_model(SecurityMarginModel.NULL)</pre>
+<pre class="csharp">public override void Initialize()
+{
+    var equity = AddEquity("SPY");
+    // To disable any buying power of the selected security
+    equity.SetBuyingPowerModel(BuyingPowerModel.Null);
+    // Alias: 
+    // equity.SetMarginModel(SecurityMarginModel.Null);
+}</pre>
+<pre class="python">def initialize(self) -&gt; None:
+    equity = self.add_equity("SPY")
+    # To disable any buying power of the selected security
+    equity.set_buying_power_model(BuyingPowerModel.NULL)
+    # Alias:
+    # equity.set_margin_model(SecurityMarginModel.NULL)</pre>
 </div>
 
 <p>

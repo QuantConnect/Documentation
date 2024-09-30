@@ -2,29 +2,37 @@
 
 
 <div class="section-example-container">
-    <pre class="csharp" style="">// In Initialize
-var security = AddEquity("SPY");
-security.SetShortableProvider(new LocalDiskShortableProvider("axos"));</pre>
-    <pre class="python"># In Initialize
-security = self.add_equity("SPY")
-security.set_shortable_provider(LocalDiskShortableProvider("axos"))</pre>
+    <pre class="csharp" style="">public override void Initialize()
+{
+    var security = AddEquity("SPY");
+    // Get shortable stocks and quantity from local disk
+    security.SetShortableProvider(new LocalDiskShortableProvider("axos"));
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    security = self.add_equity("SPY")
+    # Get shortable stocks and quantity from local disk
+    security.set_shortable_provider(LocalDiskShortableProvider("axos"))</pre>
 </div>
 
 <p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
-<pre class="csharp" style="">// In Initialize
-SetSecurityInitializer(CustomSecurityInitializer);
-AddEquity("SPY");
+<pre class="csharp" style="">public override void Initialize()
+{
+    // Set the security initializer before requesting data to apply to all requested securities afterwards
+    SetSecurityInitializer(CustomSecurityInitializer);
+    AddEquity("SPY");
+}
 
 private void CustomSecurityInitializer(Security security)
 {
     security.SetShortableProvider(new LocalDiskShortableProvider("axos"));
 }
 </pre>
-<pre class="python"># In Initialize
-self.set_security_initializer(self.custom_security_initializer)
-self.add_equity("SPY")
+<pre class="python">def initialize(self) -&gt; None:
+    # Set the security initializer before requesting data to apply to all requested securities afterwards
+    self.set_security_initializer(self.custom_security_initializer)
+    self.add_equity("SPY")
 
 def custom_security_initializer(self, security: Security) -&gt; None:
     security.set_shortable_provider(LocalDiskShortableProvider("axos"))

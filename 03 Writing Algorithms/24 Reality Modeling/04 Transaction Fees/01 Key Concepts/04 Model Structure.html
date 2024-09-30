@@ -1,8 +1,15 @@
 <p>Fee models should extend the <code>FeeModel</code> class. Extensions of the <code>FeeModel</code> class must implement the <code class="csharp">GetOrderFee</code><code class="python">get_order_fee</code> method, which receives <code>OrderFeeParameters</code> and returns an <code>OrderFee</code> that represents a cash amount in a currency.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// In the Initialize method, set the fee model
-security.SetFeeModel(new MyFeeModel());
+<pre class="csharp">public class CustomFeeModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // In the Initialize method, set the custom fee model for an added security to use the custom model
+        var security = AddEquity("SPY");
+        security.SetFeeModel(new MyFeeModel());
+    }
+}
 
 // Define the custom fee model
 public class MyFeeModel : FeeModel 
@@ -12,8 +19,11 @@ public class MyFeeModel : FeeModel
         return new OrderFee(new CashAmount(0.5m, "USD"));
     }
 }</pre>
-<pre class="python"># In the Initialize method, set the fee model
-security.set_fee_model(MyFeeModel())
+<pre class="python">class CustomFeeModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # In the Initialize method, set the custom fee model for an added security to use the custom model
+        security = self.add_equity("SPY")
+        security.set_fee_model(MyFeeModel())
 
 # Define the custom fee model
 class MyFeeModel(FeeModel):
