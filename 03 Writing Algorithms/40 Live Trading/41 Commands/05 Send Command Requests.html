@@ -1,0 +1,90 @@
+<p>
+  Instead of sending a command to your algorithm through the QuantConnect REST API or LEAN CLI, you can create the command in your algorithm and then send yourself an <a href='/docs/v2/writing-algorithms/live-trading/notifications'>email notification</a> with a link inside it.
+  When you click the link, it then executes the event handler in your algorithm.
+  To create the link, call the <code class='python'>link</code><code class='csharp'>Link</code> method.
+  The following algorithm demonstrates how send command requests for the <code>on_command</code> event handler:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class BasicLinkedCommandAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize() 
+    {
+        SetBenchmark(x => 1); // So the algorithm needs no asset data.
+        var link = Link(new {Ticker = "AAPL", Quantity = 1});
+        Notify.Email("email@address.com", "Run Command?", $"Click here to run: {link}");
+    }
+
+    public override bool? OnCommand(dynamic data)
+    {
+        Log($"Got command at {Time} with data: {data}");
+        return true;
+    }
+}</pre>
+<pre class="python">class BasicLinkedCommandAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_benchmark(lambda x: 1) # So the algorithm needs no asset data.
+        link = self.link({"ticker": "AAPL", "quantity": 1})
+        self.notify.email("email@address.com", "Run Command?", f"Click here to run: {link}")
+
+    def on_command(self, data):
+        self.log(f'Got command at {self.time} with data: {data}')
+        return True</pre>
+</div>
+
+<p>The following algorithm demonstrates how to send command requests for an event handler you encapsulate in a class:</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class EncapsulatedAndLinkedCommandAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        AddCommand<MyCommand>();
+        SetBenchmark(x => 1); // So the algorithm doesn’t need asset data.
+        var potentialCommand = new MyCommand
+        {
+            Ticker = "AAPL",
+            Quantity = 1,
+            Parameters = new() { {"tag", "Signal X"} }
+        };
+        var link = Link(potentialCommand);
+        Notify.Email("email@address.com", "Run Command?", $"Click here to run: {link}");
+    }
+
+}
+
+public class MyCommand : Command
+{
+    public string Ticker { get; set; }
+    public int Quantity { get; set; }
+    public Dictionary&lt;string, string&gt; Parameters { get; set; }
+    public override bool? Run(IAlgorithm algorithm)
+    {
+        ((QCAlgorithm)algorithm).Log($"ticker: {Ticker}; quantity: {Quantity}; parameters: {Parameters}");
+        return true;
+    }
+}</pre>
+<pre class="python">class EncapsulatedAndLinkedCommandAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.add_command(MyCommand)
+        self.set_benchmark(lambda x: 1) # So the algorithm doesn’t need asset data.
+        potential_command = MyCommand()
+        potential_command.ticker = 'AAPL'
+        potential_command.quantity = 1
+        potential_command.parameters = {"tag": "Signal X"}
+        link = self.link(potential_command)
+        self.notify.email("email@address.com", "Run Command?", f"Click here to run: {link}")
+
+class MyCommand(Command):
+    ticker = None
+    quantity = None
+    parameters = {}
+
+    def run(self, algorithm):
+        algorithm.log(f"ticker: {self.ticker}; quantity: {self.quantity}; parameters: {self.parameters}")
+        return True</pre>
+</div>
