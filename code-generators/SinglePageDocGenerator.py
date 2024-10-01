@@ -242,7 +242,7 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
 def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, List[str]] = None) -> None:
     try:
         pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
-        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css')
+        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css', options={"image-quality": 50})
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
