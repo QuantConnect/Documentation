@@ -13,7 +13,7 @@
 }
 
 <? if ($chainTypeName != "FuturesChains") { ?>
-public void OnData(<?=$chainTypeName?> <?=$variableName?>)
+public void OnData(<?=$csChainTypeName?> <?=$variableName?>)
 {
     if (<?=$variableName?>.TryGetValue(_contractSymbol.Canonical, out var chain))
     {
@@ -25,7 +25,7 @@ public void OnData(<?=$chainTypeName?> <?=$variableName?>)
 }
 <? } ?></pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.<?=$chainTypeName?>.get(self._contract_symbol.canonical)
+    chain = slice.<?=$pyChainTypeName?>.get(self._contract_symbol.canonical)
     if chain:
         contract = chain.contracts.get(self._contract_symbol)
         if contract:

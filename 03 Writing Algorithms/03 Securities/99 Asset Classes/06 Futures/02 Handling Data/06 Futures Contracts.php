@@ -5,6 +5,8 @@ include(DOCS_RESOURCES."/securities/futures-contracts.php");
 
 $contractTypeName = "Future";
 $chainTypeName = "FuturesChains";
+$csChainTypeName = "FuturesChains";
+$pyChainTypeName = "futures_chains";
 $variableName = "futuresChains";
 include(DOCS_RESOURCES."/securities/open-interest.php"); 
 ?>
