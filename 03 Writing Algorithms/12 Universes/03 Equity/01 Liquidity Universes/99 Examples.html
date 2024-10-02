@@ -1,23 +1,29 @@
 <p>The following examples demonstrate some common liquidity universes for US Equities.</p>
 
-<h4>Example 1: Daily Liquid Universe</h4>
-<p>The following example selects the 100 most liquid US Equities and subscribes to <a href='/docs/v2/writing-algorithms/universes/settings#02-Resolution'>daily data</a>:</p>
+<h4>Example 1: Minute-Resolution Liquid Universe</h4>
+<p>The following example <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 10 most liquid US Equities and subscribes to <a href='/docs/v2/writing-algorithms/universes/settings#02-Resolution'>minute data</a>:</p>
 <div class="section-example-container">
-	<pre class="csharp">public class DailyLiquidUniverseAlgorithm : QCAlgorithm
+	<pre class="csharp">public class MinuteLiquidUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        // Define the universe settings and constituents.
-        UniverseSettings.Resolution = Resolution.Daily;
-        AddUniverse(Universe.DollarVolume.Top(100));
+        // Using asynchronous universe settings can efficiently use the computational resources.
+        UniverseSettings.Asynchronous = true;
+        // Minute resolution data can have orders filled more realistic and avoid stale fill.
+        UniverseSettings.Resolution = Resolution.Minute;
+        // Add top 10 dollar volume universe to trade on the most liquid equities, which has the most informed information from market activities.
+        AddUniverse(Universe.DollarVolume.Top(10));
     }
 }</pre>
-	<pre class="python">class DailyLiquidUniverseAlgorithm(QCAlgorithm):
+	<pre class="python">class MinuteLiquidUniverseAlgorithm(QCAlgorithm):
 
-    def initialize(self):
-        # Define the universe settings and constituents.
-        self.universe_settings.resolution = Resolution.DAILY
-        self.add_universe(self.universe.dollar_volume.top(100))</pre>
+    def initialize(self) -&gt; None:
+        # Using asynchronous universe settings can efficiently use the computational resources.
+        self.universe_settings.asynchronous = True
+        # Minute resolution data can have orders filled more realistic and avoid stale fill.
+        self.universe_settings.resolution = Resolution.MINUTE
+        # Add top 10 dollar volume universe to trade on the most liquid equities, which has the most informed information from market activities.
+        self.add_universe(self.universe.dollar_volume.top(10))</pre>
 </div>
 
 <h4>Example 2: Asynchronous Liquid Universe</h4>
@@ -25,19 +31,93 @@
 <div class="section-example-container">
 	<pre class="csharp">public class AsynchronousLiquidUniverseAlgorithm : QCAlgorithm
 {
+    private Dictionary&lt;Symbol, BollingerBands&gt; _bbBySymbols = new();
+    
     public override void Initialize()
     {
-        // Define the universe settings and constituents.
+        // Using asynchronous universe settings can efficiently use the computational resources.
         UniverseSettings.Asynchronous = true;
-        AddUniverse(Universe.DollarVolume.Top(1000));
+        // Subscribe to daily data for speed, accuracy is not affected since the trading frequency is only at daily market open.
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverse(Selection);
+    }
+
+    private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Filter the top 500 most liquid equities for further filtering later.
+        // They trade more efficiently and have the most informed information from market activities for later filtering.
+        var top500DollarVolume = fundamental.OrderByDescending(f =&gt; f.DollarVolume)
+            .Take(500)
+            .ToList();
+        
+        // Remove the non-liquid ones from the dictionary, since they are not traded anymore.
+        var nonLiquid = _bbBySymbols.Keys
+            .Except(top500DollarVolume.Select(x =&gt; x.Symbol).ToList())
+            .ToList();
+        foreach (var symbol in nonLiquid)
+        {
+            _bbBySymbols.Remove(symbol);
+        }
+
+        // Update the BB indicators for the liquid stocks.
+        foreach (var f in top500DollarVolume)
+        {
+            // Create the BB indicator for filtering if not exists.
+            if (!_bbBySymbols.TryGetValue(f.Symbol, out var bb))
+            {
+                bb = _bbBySymbols[f.Symbol] = new(20, 2);
+                // Warm up indicator to make it readily usable for filtering.
+                WarmUpIndicator(f.Symbol, bb);
+            }
+            // Normal updating using the latest price if exists.
+            else
+            {
+                bb.Update(Time, f.Price);
+            }
+        }
+
+        // Select the bottom 100 BB stocks, as predicted that their price will mean-revert up.
+        return _bbBySymbols.OrderBy(kvp =&gt; kvp.Value)
+            .Take(100)
+            .Select(kvp =&gt; kvp.Key)
+            .ToList();
     }
 }</pre>
 	<pre class="python">class AsynchronousLiquidUniverseAlgorithm(QCAlgorithm):
 
-    def initialize(self):
-        # Define the universe settings and constituents.
+    bb_by_symbols = {}
+
+    def initialize(self) -&gt; None:
+        # Using asynchronous universe settings can efficiently use the computational resources.
         self.universe_settings.asynchronous = True
-        self.add_universe(self.universe.dollar_volume.top(1_000))</pre>
+        # Subscribe to daily data for speed, accuracy is not affected since the trading frequency is only at daily market open.
+        self.universe_settings.resolution = Resolution.DAILY
+        self.add_universe(self.selection)
+    
+    def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Filter the top 500 most liquid equities for further filtering later.
+        # They trade more efficiently and have the most informed information from market activities for later filtering.
+        top_500_dollar_volume = sorted(fundamental, key=lambda f: f.dollar_volume, reverse=True)[:500]
+    
+        # Remove the non-liquid ones from the dictionary, since they are not traded anymore.
+        non_liquid = [symbol for symbol in self.bb_by_symbols if symbol not in [f.symbol for f in top_500_dollar_volume]]
+        for symbol in non_liquid:
+            del self.bb_by_symbols[symbol]
+        
+        # Update the BB indicators for the liquid stocks.
+        for f in top_500_dollar_volume:
+            # Create the BB indicator for filtering if not exists.
+            if f.symbol not in self.bb_by_symbols:
+                self.bb_by_symbols[f.symbol] = BollingerBands(20, 2, Resolution.DAILY)
+                # Warm up indicator to make it readily usable for filtering.
+                self.warm_up_indicator(f.symbol, self.bb_by_symbols[f.symbol])
+            # Normal updating using the latest price if exists.
+            else:
+                self.bb_by_symbols[f.symbol].update(self.time, f.price)
+            
+        # Select the bottom 100 BB stocks, as predicted that their price will mean-revert up.
+        bottom_100_bb = sorted(self.bb_by_symbols.items(), key=lambda x: x[1].current.value)[:100]
+        return [x[0] for x in bottom_100_bb]</pre>
 </div>
 
 <p>For more examples, see the following algorithms:</p>
