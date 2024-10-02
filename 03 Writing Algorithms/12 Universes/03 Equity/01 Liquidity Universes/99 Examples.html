@@ -26,8 +26,8 @@
         self.add_universe(self.universe.dollar_volume.top(10))</pre>
 </div>
 
-<h4>Example 2: Asynchronous Liquid Universe</h4>
-<p>The following example <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 1,000 most liquid stocks:</p>
+<h4>Example 2: Low Bollinger Bands Liquid Universe</h4>
+<p>The following example <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 500 most liquid stocks. Among them, select the ones with 20-day Bollinger Bands below 2 standard deviations. Place <a href="">market-on-open orders</a> and bet them to revert to mean.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class AsynchronousLiquidUniverseAlgorithm : QCAlgorithm
 {
@@ -65,9 +65,13 @@
             // Create the BB indicator for filtering if not exists.
             if (!_bbBySymbols.TryGetValue(f.Symbol, out var bb))
             {
-                bb = _bbBySymbols[f.Symbol] = new(20, 2);
+                bb = _bbBySymbols[f.Symbol] = new(60, 2);
                 // Warm up indicator to make it readily usable for filtering.
-                WarmUpIndicator(f.Symbol, bb);
+                var history = History&lt;TradeBar&gt;(f.Symbol, 60, Resolution.Daily);
+                foreach (var bar in history)
+                {
+                    bb.Update(bar.EndTime, bar.Close);
+                }
             }
             // Normal updating using the latest price if exists.
             else
@@ -77,10 +81,17 @@
         }
 
         // Select the bottom 100 BB stocks, as predicted that their price will mean-revert up.
-        return _bbBySymbols.OrderBy(kvp =&gt; kvp.Value)
+        var bottom100BB = _bbBySymbols.OrderBy(kvp =&gt; kvp.Value)
             .Take(100)
             .Select(kvp =&gt; kvp.Key)
             .ToList();
+        // Place market-on-open orders to bet their mean-reversion
+        foreach (var symbol in bottom100BB)
+        {
+            MarketOnOpenOrder(symbol, 10);
+        }
+
+        return bottom100BB;
     }
 }</pre>
 	<pre class="python">class AsynchronousLiquidUniverseAlgorithm(QCAlgorithm):
@@ -108,16 +119,22 @@
         for f in top_500_dollar_volume:
             # Create the BB indicator for filtering if not exists.
             if f.symbol not in self.bb_by_symbols:
-                self.bb_by_symbols[f.symbol] = BollingerBands(20, 2, Resolution.DAILY)
+                self.bb_by_symbols[f.symbol] = BollingerBands(60, 2, Resolution.DAILY)
                 # Warm up indicator to make it readily usable for filtering.
-                self.warm_up_indicator(f.symbol, self.bb_by_symbols[f.symbol])
+                history = self.history[TradeBar](f.symbol, 60, Resolution.DAILY)
+                for bar in history:
+                    self.bb_by_symbols[f.symbol].update(bar.end_time, bar.close)
             # Normal updating using the latest price if exists.
             else:
                 self.bb_by_symbols[f.symbol].update(self.time, f.price)
             
         # Select the bottom 100 BB stocks, as predicted that their price will mean-revert up.
-        bottom_100_bb = sorted(self.bb_by_symbols.items(), key=lambda x: x[1].current.value)[:100]
-        return [x[0] for x in bottom_100_bb]</pre>
+        bottom_100_bb = [x[0] for x in sorted(self.bb_by_symbols.items(), key=lambda x: x[1].current.value)[:100]]
+        # Place market-on-open orders to bet their mean-reversion
+        for symbol in bottom_100_bb:
+            self.market_on_open_order(symbol, 10)
+
+        return bottom_100_bb</pre>
 </div>
 
 <p>For more examples, see the following algorithms:</p>
