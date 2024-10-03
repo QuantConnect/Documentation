@@ -84,8 +84,6 @@
     def initialize(self) -&gt; None:
         self.set_cash(100000)
         self.set_start_date(2023, 6, 1)
-        # Asynchronous can utilize computational resources more efficiently.
-        self.universe_settings.asynchronous = True
         # To avoid over-trading and high transaction cost, refilter and rebalance weekly.
         self.universe_settings.schedule.on(self.date_rules.week_end())
 
@@ -153,8 +151,6 @@
         {
             SetCash(100000);
             SetStartDate(2023, 6, 1);
-            // Asynchronous can utilize computational resources more efficiently.
-            UniverseSettings.Asynchronous = true;
             // Select from SPY constituents, select the ones with higher expectation of return within the market benchmark for extra alpha.
             var spy = AddEquity("SPY", Resolution.Daily).Symbol;
             AddUniverse(Universe.ETF(spy), FundamentalSelection);
