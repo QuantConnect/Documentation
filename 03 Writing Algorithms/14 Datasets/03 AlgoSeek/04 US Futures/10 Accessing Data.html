@@ -2,8 +2,10 @@
 
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Get future chain of the canonical symbol
     chain = slice.futures_chains.get(self.future_symbol)
     if chain:
+        # Iterate each contract in the future chain
         for contract in chain:
             self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")
 </pre>
@@ -11,8 +13,10 @@
 
 <pre class="csharp">public override void OnData(Slice slice)
 {
+    // Get future chain of the canonical symbol
     if (slice.FuturesChains.TryGetValue(_futureSymbol, out var chain))
     {
+        // Iterate each contract in the future chain
         foreach (var contract in chain)
         {
             Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
@@ -24,15 +28,19 @@
 <p>You can also iterate through all of the <b>FuturesChain</b> objects in the current <b>Slice</b>.</p>
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Iterate all future chains
     for canonical_symbol, chain in slice.futures_chains.items():
+        # Iterate each contract in the future chain
         for contract in chain:
             self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
+    // Iterate all future chains
     foreach (var kvp in slice.FuturesChains)
     {
         var canonicalSymbol = kvp.Key;
         var chain = kvp.Value;
+        // Iterate each contract in the future chain
         foreach (var contract in chain)
         {
             Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");

@@ -2,10 +2,11 @@
 
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Get Symbol Change Event of the Continuous Future (change in mapped contract)
     changed_event = slice.symbol_changed_events.get(self.continuous_future_symbol)
     if changed_event:
         old_symbol = changed_event.old_symbol
-        new_symbol = changed_event.new_symbol
+        new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
         tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -&gt; {new_symbol}"
         quantity = self.portfolio[old_symbol].quantity
 
@@ -15,10 +16,11 @@
         self.log(tag)</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
+    // Get Symbol Change Event of the Continuous Future (change in mapped contract)
     if (slice.SymbolChangedEvents.TryGetValue(_continuousFutureSymbol, out var changedEvent))
     {
         var oldSymbol = changedEvent.OldSymbol;
-        var newSymbol = changedEvent.NewSymbol;
+        var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
         var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -&gt; {newSymbol}";
         var quantity = Portfolio[oldSymbol].Quantity;
         // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract

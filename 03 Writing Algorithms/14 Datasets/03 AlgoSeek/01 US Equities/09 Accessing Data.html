@@ -2,32 +2,38 @@
 
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Access data: TradeBar data
     if self.aapl in slice.bars:
         trade_bar = slice.bars[self.aapl]
         self.log(f"{self.aapl} close at {slice.time}: {trade_bar.close}")
 
+    # Access data: QuoteBar data
     if self.aapl in slice.quote_bars:
         quote_bar = slice.quote_bars[self.aapl]
         self.log(f"{self.aapl} bid at {slice.time}: {quote_bar.bid.close}")
 
+    # Access data: Ticks data
     if self.aapl in slice.ticks:
         ticks = slice.ticks[self.aapl]
         for tick in ticks:
             self.log(f"{self.aapl} price at {slice.time}: {tick.price}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
+    // Access data: TradeBar data
     if (slice.Bars.ContainsKey(_symbol))
     {
         var tradeBar = slice.Bars[_symbol];
         Log($"{_symbol} price at {slice.Time}: {tradeBar.Close}");
     }
 
+    // Access data: QuoteBar data
     if (slice.QuoteBars.ContainsKey(_symbol))
     {
         var quoteBar = slice.QuoteBars[_symbol];
         Log($"{_symbol} bid at {slice.Time}: {quoteBar.Bid.Close}");
     }
 
+    // Access data: Ticks data
     if (slice.Ticks.ContainsKey(_symbol))
     {
         var ticks = slice.Ticks[_symbol];
@@ -44,17 +50,21 @@
 
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Iterate all TradeBar received
     for symbol, trade_bar in slice.bars.items():
         self.log(f"{symbol} close at {slice.time}: {trade_bar.close}")
 
+    # Iterate all QuoteBar received
     for symbol, quote_bar in slice.quote_bars.items():
         self.log(f"{symbol} bid at {slice.time}: {quote_bar.bid.close}")
 
-     for symbol, ticks in slice.ticks.items():
+    # Iterate all Ticks received
+    for symbol, ticks in slice.ticks.items():
         for tick in ticks:
             self.log(f"{symbol} price at {slice.time}: {tick.price}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
+    // Iterate all TradeBar received
     foreach (var kvp in slice.Bars)
     {
         var symbol = kvp.Key;
@@ -62,6 +72,7 @@
         Log($"{symbol} price at {slice.Time}: {tradeBar.Close}");
     }
 
+    // Iterate all QuoteBar received
     foreach (var kvp in slice.QuoteBars)
     {
         var symbol = kvp.Key;
@@ -69,6 +80,7 @@
         Log($"{symbol} bid at {slice.Time}: {quoteBar.Bid.Close}");
     }
 
+    // Iterate all Ticks received
     foreach (var kvp in slice.Ticks)
     {
         var symbol = kvp.Key;

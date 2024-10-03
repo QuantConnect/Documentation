@@ -2,16 +2,19 @@
 
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Get the wanted option chain with the canonical symbol
     chain = slice.option_chains.get(self.option_symbol)
     if chain:
+        # Iterate the option contracts in chain
         for contract in chain:
             self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (slice.OptionChains.ContainsKey(_optionSymbol))
+    // Get the wanted option chain with the canonical symbol
+    if (slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
     {
-        var chain = slice.OptionChains[_optionSymbol];
+        // Iterate the option contracts in chain
         foreach (var contract in chain)
         {
             Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
@@ -23,16 +26,20 @@
 <p>You can also iterate through all of the <b>OptionChain</b> objects in the current <b>Slice</b>.</p>
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Iterate all option chains of all symbols
     for canonical_symbol, chain in slice.option_chains.items():
+        # Iterate the option contracts in chain
         for contract in chain:
             self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
+    // Iterate all option chains of all symbols
     foreach (var kvp in slice.OptionChains)
     {
         var canonicalSymbol = kvp.Key;
         var chain = kvp.Value;
+        // Iterate the option contracts in chain
         foreach (var contract in chain)
         {
             Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
