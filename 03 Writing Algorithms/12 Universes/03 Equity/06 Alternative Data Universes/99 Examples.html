@@ -2,74 +2,146 @@
 
 <h4>Example 1: Brain Sentiment Universe</h4>
 <p>
-    The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/brain/brain-sentiment-indicator'>Brain Sentiment Indicator</a> dataset to create a universe of US Equities that have some article mentions and the most positive sentiment: 
+    The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/brain/brain-sentiment-indicator'>Brain Sentiment Indicator</a> dataset to create a universe of US Equities that have some article mentions and the most positive sentiment. The selected equities will be invested according to their sentiment score. The more positive the sentiment, the higher the weighting.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">public class BrainSentimentUniverseAlgorithm : QCAlgorithm
 {
+    // A dictionary to hold the updated sentiment score from the stocks with top sentiment score for position sizing.
+    private Dictionary&lt;Symbol, decimal&gt; _sentimentScores = new();
+    // A day count variable to control the rebalancing time to be daily.
+    private int _day = -1;
+
     public override void Initialize()
     {   
+        // Select from Brain Sentiment dataset by sentiment factor.
         AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(
-            altData => altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
-                // Filter out assets with `null` factor values.
-                .Where(x => x.TotalArticleMentions7Days.HasValue && x.Sentiment7Days.HasValue)
-                // Select assets with some mentions and the greatest sentiment.
-                .Where(x => x.TotalArticleMentions7Days > 0)
-                .OrderByDescending(x => x.Sentiment7Days)
+            altData =&gt; altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
+                // Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
+                .Where(x =&gt; x.TotalArticleMentions7Days.HasValue && x.Sentiment7Days.HasValue)
+                // Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
+                .Where(x =&gt; x.TotalArticleMentions7Days &gt; 0)
+                .OrderByDescending(x =&gt; x.Sentiment7Days)
                 .Take(20)
                 // Return the symbols for the selected assets.
-                .Select(x => x.Symbol)
+                .Select(x =&gt; {
+                    // Update sentiment score dictionary to only holds the most updated sentiment score for sizing.
+                    _sentimentScores.Clear();
+                    _sentimentScores[x.Symbol] = x.Sentiment7Days.Value;
+                    return x.Symbol;
+                })
         );
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade on daily basis from the daily-updated insights.
+        if (_day != slice.Time.Day)
+        {
+            // Calculate the sentiment score sum to normalize them for sizing.
+            var sentimentScoreSum = _sentimentScores.Sum(kvp =&gt; kvp.Value);
+
+            foreach (var (symbol, holding) in Portfolio)
+            {
+                // If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
+                if (holding.Invested &amp;&amp; !_sentimentScores.ContainsKey(symbol))
+                {
+                    Liquidate(symbol);
+                }
+                // Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
+                else if (_sentimentScores.TryGetValue(symbol, out var score))
+                {
+                    SetHoldings(symbol, score / sentimentScoreSum);
+                }
+            }
+
+            _day = slice.Time.Day;
+        }
     }
 }</pre>
 	<pre class="python">class BrainSentimentUniverseAlgorithm(QCAlgorithm):
+    # A dictionary to hold the updated sentiment score from the stocks with top sentiment score for position sizing.
+    _sentiment_scores = {}
+    # A day count variable to control the rebalancing time to be daily.
+    _day = -1
 
-    def initialize(self):
+    def initialize(self) -&gt; None:
+        # Select from Brain Sentiment dataset by sentiment factor.
         self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
     
-    def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:
-        # Filter out assets with `None` factor values.
-        alt_data =  [
-            x for x in alt_data 
-            if (x.total_article_mentions_7_days is not None and 
-                x.sentiment_7_days is not None)
-        ]
-        # Select assets with some mentions and the greatest sentiment.
-        selected = sorted(
-            [x for x in alt_data if x.total_article_mentions_7_days > 0],
-            key=lambda x: x.sentiment_7_days
-        )[-20:]
+    def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
+        # Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
+        alt_data = [x for x in alt_data if x.total_article_mentions_7_days and x.sentiment_7_days]
+        # Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
+        selected = sorted(alt_data, key=lambda x: x.sentiment_7_days)[-20:]
+        # Update sentiment score dictionary to only holds the most updated sentiment score for sizing.
+        self._sentiment_scores.clear()
+        universe = []
+        for datum in selected:
+            self._sentiment_scores[datum.symbol] = datum.sentiment_7_days
+            universe.append(datum.symbol)
         # Return the symbols for the selected assets.
-        return [x.symbol for x in selected]</pre>
+        return universe
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade on daily basis from the daily-updated insights.
+        if self._day != slice.time.day:
+            # Calculate the sentiment score sum to normalize them for sizing.
+            sentiment_score_sum = sum(list(self._sentiment_scores.values()))
+
+            for symbol, holding in self.portfolio.items():
+                # If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
+                if holding.invested and symbol not in self._sentiment_scores:
+                    self.liquidate(symbol)
+                # Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
+                elif symbol in self._sentiment_scores:
+                    self.set_holdings(symbol, self._sentiment_scores[symbol] / sentiment_score_sum)
+
+            self._day = slice.time.day</pre>
 </div>
 
 <h4>Example 2: Insiders Trading Universe</h4>
 <p>
 	Insiders have more information to evaluate the overall prospect of the company, so following their trades can be useful. 
-	The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/insider-trading'>Insider Trading</a> to create a universe of US Equities that insiders have recently purchased:
+	The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/insider-trading'>Insider Trading</a> to create a universe of US Equities that insiders have recently purchased.
+    We invest equally into the companies with positive insider trades, which may provide extra confidence in their expected return, and hold for 3 months.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altData =>
+        // Using QuiverInsiderTrading dataset for insider trade detection and filtering.
+        AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altData =&gt;
         {
-            // Select assets that insiders have purchased.
+            // Select assets that insiders have purchased, which may provide extra confidence in their expected return.
             return from d in altData.OfType&lt;QuiverInsiderTradingUniverse&gt;()
-                   where d.Shares != null
+                   where d.Shares.HasValue &amp;&amp; d.Shares.Value &gt; 0m
                    select d.Symbol;
         });
+
+        // To emit trade insights for all the filtered equities and hold for 3 months to let the insiders' future projection to realize.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(92)));
+
+        // Invest equally to evenly dissipate capital risk from non-systematic risky events.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
     }
 }</pre>
 	<pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
 
-    def initialize(self):
-        # Select a universe of assets that insiders have bought.
+    def initialize(self) -&gt; None:
+        # Using QuiverInsiderTrading dataset for insider trade detection and filtering.
+        # Select assets that insiders have purchased, which may provide extra confidence in their expected return.
         self.add_universe(
             QuiverInsiderTradingUniverse, 
-            lambda alt_data: [x.symbol for x in alt_data if x.shares]
-        )</pre>
+            lambda alt_data: [x.symbol for x in alt_data if x.shares and x.shares &gt; 0]
+        )
+    
+        # To emit trade insights for all the filtered equities and hold for 3 months to let the insiders' future projection to realize.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(92)))
+    
+        # Invest equally to evenly dissipate capital risk from non-systematic risky events.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_DAY))</pre>
 </div>
 
 <h4>Example 3: Share Buyback Universe</h4>
@@ -77,15 +149,117 @@
 <div class="section-example-container">
 	<pre class="csharp">public class InsiderBuyBackUniverseAlgorithm : QCAlgorithm
 {
+    // A dictionary to hold the updated buyback size for position sizing.
+    public Dictionary&lt;Symbol, decimal&gt; _buybackSize = new();
+
     public override void Initialize()
     {
-        // Select all assets that have announced a buyback.
-        AddUniverse&lt;SmartInsiderIntentionUniverse&gt;();
+        // Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
+        AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(
+            altData =&gt; altData.OfType&lt;SmartInsiderIntentionUniverse&gt;()
+                // Only select sufficiently large-cap companies to avoid fraud.
+                // A material buyback percentage size to have better confidence in its prospect.
+                .Where(d =&gt; d.Percentage &gt; 0.005m && d.USDMarketCap &gt; 10000000m)
+                .Select(d =&gt; {
+                    // Update buyback size dictionary for sizing.
+                    _buybackSize[d.Symbol] = d.Percentage.Value;
+                    return d.Symbol;
+                })
+        );
+
+        // A custom alpha model that emit insight with weight as the buyback size.
+        AddAlpha(new InsiderBuybackSizeAlphaModel(this));
+
+        // To invest with position sizing according to the insight weight (buyback size).
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+    }
+}
+
+public class InsiderBuybackSizeAlphaModel : AlphaModel
+{
+    private InsiderBuyBackUniverseAlgorithm _algorithm;
+    // A dictionary to hold the updated buyback size for position sizing.
+    private Dictionary&lt;Symbol, decimal&gt; _buybackSize = new();
+
+    public InsiderBuybackSizeAlphaModel(InsiderBuyBackUniverseAlgorithm algorithm)
+    {
+        _algorithm = algorithm;
+    }
+
+    public override List&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        // Emit insights for the newly announced buyback coporates and hold for 3 months to let the future projection to realize.
+        foreach (var symbol in _buybackSize.Keys)
+        {
+            // Remove the disgested signals from the dictionary to avoid repeat rebalancing.
+            if (_buybackSize.Remove(symbol, out var size))
+            {
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(92), InsightDirection.Up, weight: size));
+            }
+        }
+
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        // Register the buyback size of the newly added equities on the buyback size dictionary for insight generation.
+        foreach (var added in changes.AddedSecurities)
+        {
+            _buybackSize[added.Symbol] = (double)_algorithm._buybackSize[added.Symbol];
+        }
     }
 }</pre>
 	<pre class="python">class InsiderBuyBackUniverseAlgorithm(QCAlgorithm):
+    # A dictionary to hold the updated buyback size for position sizing.
+    _buyback_size = {}
 
-    def initialize(self):
-        # Select all assets that have announced a buyback.
-        self.add_universe(SmartInsiderIntentionUniverse)</pre>
+    def initialize(self) -&gt; None:
+        # Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
+        self.add_universe(SmartInsiderIntentionUniverse, self.intention_selection)
+
+        # A custom alpha model that emit insight with weight as the buyback size.
+        self.add_alpha(InsiderBuybackSizeAlphaModel(self))
+    
+        # To invest with position sizing according to the insight weight (buyback size).
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel(Expiry.END_OF_MONTH))
+    
+    def intention_selection(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
+        selected = []
+        
+        for d in alt_coarse:
+            # Only select sufficiently large-cap companies to avoid fraud.
+            # A material buyback percentage size to have better confidence in its prospect.
+            if d.percentage and d.percentage &gt; 0.005 \
+            and d.usd_market_cap and d.usd_market_cap &gt; 100000000:
+                # Update buyback size dictionary for sizing.
+                _buyback_size[d.symbol] = d.percentage
+                selected.append(d.symbol)
+
+        return selected
+    
+class InsiderBuybackSizeAlphaModel(AlphaModel):
+    # A dictionary to hold the updated buyback size for position sizing.
+    _buyback_size = {}
+
+    def __init__(self, algorithm: InsiderBuyBackUniverseAlgorithm) -&gt; None:
+        self._algorithm = algorithm
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+    
+        # Emit insights for the newly announced buyback coporates and hold for 3 months to let the future projection to realize.
+        for symbol, size in self._buyback_size.copy().items():
+            insights.append(Insight.price(symbol, timedelta(92), InsightDirection.UP, weight=size))
+            # Remove the disgested signals from the dictionary to avoid repeat rebalancing.
+            del self._buyback_size[symbol]
+            
+        return insights
+    
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        # Register the buyback size of the newly added equities on the buyback size dictionary for insight generation.
+        for added in changes.added_securities:
+            self._buyback_size[added.symbol] = self._algorithm._buyback_size[added.symbol]</pre>
 </div>
