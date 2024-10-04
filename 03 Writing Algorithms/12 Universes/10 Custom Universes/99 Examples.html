@@ -1,3 +1,176 @@
+<p>The following examples demonstrate some common practices for Custom Universe.</p>
+
+<h4>Example 1: Data From Object Store</h4>
+<p>The following algorithm demonstrates how to read custom data that store in the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a> and filter from it. In this example, the custom data includes the weight for position sizing as well. We generate some random samples using the following code in the <a href="/docs/v2/research-environment">research environment</a> to save the custom universe data in the <code>df.csv</code> file in Object Store.</p>
+<div class="python section-example-container">
+    <pre>import random
+np.random.seed(0)
+
+equities = []
+indices = [[x] * 3 for x in pd.bdate_range('2015-01-01', '2024-12-31')]
+weights = list(np.random.dirichlet((10, 5, 3), size=(len(indices),)).flatten())
+
+for i in range(len(indices)):
+    random.seed(i)
+    equities.extend(list(random.sample(["SPY", "TLT", "GLD", "USO", "IWM"], 3)))
+
+df = pd.DataFrame({"Date": [x for y in indices for x in y], "Symbol": equities, "Weight": weights})
+
+qb = QuantBook()
+file_path = qb.object_store.get_file_path(f"df.csv")
+df.to_csv(file_path, index=False)</pre>
+</div>
+
+<p>To filter and invest using the custom data, we create a custom universe class inherited from the <code class="csharp">BaseData</code><code class="python">PythonData</code> class. Then, add the universe of this custom class to filter from it.</p>
+<p></p>
+<div class="section-example-container">
+    <pre class="csharp">public class CustomUniverseExampleAlgorithm : QCAlgorithm
+{
+    // A dictionary to hold the updated weight for position sizing.
+    public Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2015, 1, 1);
+        // Daily weight signals from our custom universe data only requires daily resolution.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter using the custom dataset, our sample data is by daily basis.
+        AddUniverse&lt;CustomUniverseData&gt;("CustomUniverse", Resolution.Daily, (altCoarse) =&gt; {
+            // Clear weight dictionary to avoid outdated signals.
+            _weightBySymbol.Clear();
+
+            var selected = new List&lt;Symbol&gt;();
+            foreach (CustomUniverseData d in altCoarse)
+            {
+                // Select the symbols that have a significant weight in the custom universe data to avoid small-size trade that friction and fee would erode the return.
+                if (d.Weight &gt; 0.05m)
+                {
+                    selected.Add(d.Symbol);
+                    // Cache the indicated weight in the custom data for investment size later.
+                    _weightBySymbol[d.Symbol] = d.Weight;
+                }
+            }
+
+            return selected;
+        });
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Invest according to the custom data indicated weight. Since the resolution is daily, there is no issue for over rebalancing.
+        foreach (var (symbol, weight) in _weightBySymbol)
+        {
+            SetHoldings(symbol, weight);
+        }
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Liquidate the remove securities to free margin.
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            Liquidate(removed.Symbol);
+        }
+    }
+}
+
+public class CustomUniverseData : BaseData
+{
+    public decimal Weight;
+    public override DateTime EndTime 
+    {
+        // The universe weight is valid for 1 day.
+        get { return Time + QuantConnect.Time.OneDay; }
+        set { Time = value - QuantConnect.Time.OneDay; }
+    }
+
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+    {
+        // The saved dataframe is in form of CSV saved in the object store.
+        return new SubscriptionDataSource("df.csv", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+    }
+
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) 
+    {
+        // Skip header column.
+        if (!Char.IsDigit(line[0]))
+        {
+            return null;
+        }
+
+        // CSV data is split by comma.
+        var items = line.Split(",");
+
+        // Generate required data, then return an instance of your class.
+        return new CustomUniverseData 
+        {
+            EndTime = Parse.DateTimeExact(items[0], "yyyy-MM-dd"),
+            // All the symbols are US Equities.
+            Symbol = Symbol.Create(items[1], SecurityType.Equity, Market.USA),
+            Weight = decimal.Parse(items[2], NumberStyles.Any, CultureInfo.InvariantCulture)
+        };
+    }
+}</pre>
+    <pre class="python">class CustomUniverseExampleAlgorithm(QCAlgorithm):
+    # A dictionary to hold the updated weight for position sizing.
+    _weight_by_symbol = {}
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2015, 1, 1)
+        # Daily weight signals from our custom universe data only requires daily resolution.
+        self.universe_settings.resolution = Resolution.DAILY
+        # Filter using the custom dataset, our sample data is by daily basis.
+        self.add_universe(CustomUniverseData, "CustomUniverse", Resolution.DAILY, self.selector_function)
+    
+    def selector_function(self, alt_coarse: List[PythonData]) -&gt; List[Symbol]:
+        # Clear weight dictionary to avoid outdated signals.
+        self._weight_by_symbol.clear()
+        
+        selected = []
+        for d in alt_coarse:
+            # Select the symbols that have a significant weight in the custom universe data to avoid small-size trade that friction and fee would erode the return.
+            if d["weight"] &gt; 0.05:
+            	selected.append(d.symbol)
+                # Cache the indicated weight in the custom data for investment size later.
+            	self._weight_by_symbol[d.symbol] = d["weight"]
+
+        return selected
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Invest according to the custom data indicated weight. Since the resolution is daily, there is no issue for over rebalancing.
+        for symbol, weight in self._weight_by_symbol.items():
+            self.set_holdings(symbol, weight)
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Liquidate the remove securities to free margin.
+        for removed in changes.removed_securities:
+            self.liquidate(removed.symbol)
+    
+class CustomUniverseData(PythonData):
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -&gt; SubscriptionDataSource:
+        # The saved dataframe is in form of CSV saved in the object store.
+        return SubscriptionDataSource("df.csv", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -&gt; BaseData:
+		# Skip header column.
+        if not line[0].isnumeric():
+            return None
+            
+        # CSV data is split by comma.
+        items = line.split(",")
+    
+        # Generate required data, then return an instance of your class.
+        data = CustomUniverseData()
+        data.end_time = datetime.strptime(items[0], "%Y-%m-%d")
+        # The universe weight is valid for 1 day.
+        data.time = data.end_time - timedelta(1)
+        # All the symbols are US Equities.
+        data.symbol = Symbol.create(items[1], SecurityType.EQUITY, Market.USA)
+        data["weight"] = float(items[2])
+        return data</pre>
+</div>
+
+<p>For more examples, see the following algorithms:</p>
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Algorithms</div>
 	<a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DropboxUniverseSelectionAlgorithm.py" target="_BLANK"> DropboxUniverseSelectionAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
