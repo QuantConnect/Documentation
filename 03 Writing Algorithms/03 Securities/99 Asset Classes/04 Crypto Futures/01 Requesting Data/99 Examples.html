@@ -1,6 +1,6 @@
 <p>The following examples demonstrate some common practices for requesting Crypto Futures data.</p>
 
-<h4>Example 1: Round To Lot</h4>
+<h4>Example 1: Respect Lot Sizes</h4>
 <p>
     Like Futures, Crypto Futures contracts have a fixed discrete lot size to trade instead of fractional like spot Crypto pairs. 
     The following algorithm demonstrates how to place orders that respect the lot size to avoid rounding errors. 
@@ -12,6 +12,7 @@
 
     public override void Initialize()
     {
+        SetStartDate(2020, 4, 1);
         // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
         // In the Binance brokerage, you can't trade with USD.
@@ -39,13 +40,14 @@
     <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
+        self.set_start_date(2020, 4, 1)
         # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
         # In the Binance brokerage, you can't trade with USD.
         # Set the account currency as USDT and add the starting cash.
         self.set_account_currency("USDT", 10000)
-        # Subscribe to the BTCUSDT perpetual Future contract..
-        self._symbol = self.add_crypto_future("BTCUSDT", market=Market.BINANCE).symbol
+        # Subscribe to the BTCUSDT perpetual Future contract.
+        self._symbol = self.add_crypto_future("BTCUSDT").symbol
         
     def on_data(self, slice: Slice) -&gt; None:
         # Only place orders when market is open since market on open orders aren't supported.
