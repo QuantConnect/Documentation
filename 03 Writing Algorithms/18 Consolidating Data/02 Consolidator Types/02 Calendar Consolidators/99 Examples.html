@@ -164,23 +164,106 @@
 
         self._day = slice.time.day</pre>
 </div>
-<p>To consolidate data into another period, change the <code>period</code> variable. For example, to consolidate into 4-hour bars, replace <code class="python">timedelta(minutes=20)</code><code class="csharp">TimeSpan.FromMinutes(20)</code> with <code class="python">timedelta(hours=4)</code><code class="csharp">TimeSpan.FromHours(4).</code></p>
+<p>To consolidate data into another period, change the <code>period</code> variable. For example, to consolidate into 5-minute bars, replace <code class="python">timedelta(hours=23)</code><code class="csharp">TimeSpan.FromHours(23)</code> with <code class="python">timedelta(minutes=5)</code><code class="csharp">TimeSpan.FromMinutes(5)</code>.</p>
 
 <h4>Example 2: Consolidate data in daily <code>QuoteBar</code> objects that start at 5 PM:</h4>
-<p>This is a typical Forex case because the Forex market opens on Sunday at 5 PM ET.</p>
+<p>This is a typical Forex case because the Forex market opens on Sunday at 5 PM ET. We try to make use of this daily bar for an EMA cross strategy.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public CalendarInfo CustomDailyForex(DateTime datetime)
+    <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
-    var start = datetime.Date
-        .AddHours(datetime.Hour &lt; 17 ? -7 : 17);
-    return new CalendarInfo(start, TimeSpan.FromDays(1));
+    private Symbol _usdjpy;
+    private ExponentialMovingAverage _ema = new(20);
+
+    public override void Initialize()
+    {
+        // Request USDJPY, as one of the most traded and trend-oriented forex, for trading.
+        _usdjpy = AddForex("USDJPY").Symbol;
+        // Create a calendar consolidator for USDJPY daily bar, since forex trades from 5pm EST to 5pm EST next day.
+        // Note that forex only have quote bar data.
+        var consolidator = new QuoteBarConsolidator(CustomDailyForex);
+        // Update the EMA indicator, as we use 20-day EMA to determine the trade.
+        RegisterIndicator(_usdjpy, _ema, consolidator);
+        // Warm up the EMA indicator using the data consolidated handler by updating the consolidator.
+        var history = History&lt;QuoteBar&gt;(_usdjpy, 29000, Resolution.Minute);
+        foreach (var bar in history)
+        {
+            consolidator.Update(bar);
+        }
+        // Subscribe the consolidator with USDJPY data feed to update it automatically.
+        SubscriptionManager.AddConsolidator(_usdjpy, consolidator);
+    }
+
+    public CalendarInfo CustomDailyForex(DateTime datetime)
+    {
+        // Forex market opens at 5pm EST.
+        var start = datetime.Date
+            .AddHours(datetime.Hour &lt; 17 ? -7 : 17);
+        return new CalendarInfo(start, TimeSpan.FromDays(1));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only trade based on updated price and EMA data.
+        if (!_ema.IsReady || !slice.QuoteBars.TryGetValue(_usdjpy, out var quote))
+        {
+            return;
+        }
+
+        // Long if the price above EMA, suggesting the trend is uprising and we follow the trend.
+        if (quote.Close &gt; _ema)
+        {
+            // Trade with 5x leverage for higher return.
+            SetHoldings(_usdjpy, 1);
+        }
+        // Short if the price below EMA, suggesting the trend is downgoing and we follow the trend.
+        else
+        {
+            SetHoldings(_usdjpy, -1);
+        }
+    }
 }</pre>
-    <pre class="python">def _custom_daily_forex(self, dt: datetime) -&gt; CalendarInfo:
-start = dt.replace(hour=17, minute=0, second=0)
-if dt.hour &lt; 17:
-    start -= timedelta(1)
-return CalendarInfo(start, timedelta(1))</pre>
+    <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        # Create ATR indicator for take profit and stop loss price.
+        self._ema = ExponentialMovingAverage(10)
+
+        # Request USDJPY, as one of the most traded and trend-oriented forex, for trading.
+        self.usdjpy = self.add_forex("USDJPY").symbol
+        # Create a calendar consolidator for USDJPY daily bar, since market open at 5pm EST to 5pm EST next day.
+        # Note that forex only have quote bar data.
+        consolidator = QuoteBarConsolidator(self.custom_daily_forex)
+        # Update the EMA indicator, as we use 20-day EMA to determine the trade.
+        self.register_indicator(self.usdjpy, self._ema, consolidator)
+        # Warm up the EMA indicator using the data consolidated handler by updating the consolidator.
+        history = self.history[QuoteBar](self.usdjpy, 29000, Resolution.MINUTE)
+        for bar in history:
+            consolidator.update(bar)
+        # Subscribe the consolidator with USDJPY data feed to update it automatically.
+        self.subscription_manager.add_consolidator(self.usdjpy, consolidator)
+    
+    def custom_daily_forex(self, dt: datetime) -&gt; CalendarInfo:
+        # Forex market opens at 5pm EST.
+        start = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        if dt.hour &lt; 17:
+            start -= timedelta(7)
+        else:
+            start += timedelta(17)
+        # Ends at 5pm EST next day.
+        return CalendarInfo(start, timedelta(1))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only trade based on updated price and EMA data.
+        if not self._ema.is_ready or self.usdjpy not in slice.quote_bars:
+            return
+        
+        price = slice.quote_bars[self.usdjpy].close
+        # Long if the price above EMA, suggesting the trend is uprising and we follow the trend.
+        if price &gt; self._ema.current.value:
+            self.set_holdings(self.usdjpy, 1)
+        else:
+            self.set_holdings(self.usdjpy, -1)</pre>
 </div>
 
 <h4>Example 3: Consolidate data into monthly <code>TradeBar</code> objects that start at midnight:</h4>
