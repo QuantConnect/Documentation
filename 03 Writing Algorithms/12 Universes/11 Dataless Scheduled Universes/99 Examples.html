@@ -1,6 +1,128 @@
 <p>The following examples demonstrate some common practices for dataless scheduled universes.</p>
 
-<h4>Example 1: Quarter End Selection</h4>
+<h4>Example 1: Bulk Download Custom List</h4>
+<p>The following example directly download a dataframe file from dropbox, in which its only column contains a list of equity to be included in the universe on that day with the date as index. The dataless scheduled universe can then retrieve the required equities from that day.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class DatalessScheduledUniverseExampleAlgorithm : QCAlgorithm
+{
+    // A dictionary of date-stock list pairs for easy access.
+    private Dictionary&lt;DateTime, string&gt; _selections = new();
+    private List&lt;Symbol&gt; _universe = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2015, 1, 1);
+
+        // To download the list of stocks to be included in the universe of each day, make sure you set "dl=1" for dropbox links.
+        var file = Download("https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1");
+        // Map into a dictionary of date-stock list pairs for easy access. Remember to skip the header row
+        foreach (var line in file.Split('\n').Skip(1))
+        {
+            // Skip empty line
+            if (line.IsNullOrEmpty())
+            {
+                continue;
+            }
+            
+            // CSV entry items are split by comma.
+            var items = line.Split(',');
+
+            var date = Parse.DateTimeExact(items[0], "yyyy-MM-dd").Date;
+            _selections[date] = String.Join(',', items.Skip(1));
+        }
+
+        // Daily weight signals from our custom universe data only requires daily resolution to trade with.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter using the custom dataset, our sample data is by daily basis.
+        AddUniverse(
+            new ScheduledUniverse(
+                DateRules.EveryDay(),
+                TimeRules.At(8, 0),
+                (dt) =&gt; {
+                    // Check if the date is in the selection dictionary with stocks selection, return empty list if not.
+                    if (!_selections.TryGetValue(dt.Date, out var stockListString))
+                    {
+                        return Enumerable.Empty&lt;Symbol&gt;();
+                    }
+
+                    // The stock list is in string format that each stock is split by ",".
+                    _universe = stockListString.Split(',')
+                        // All selections in list are US Equity.
+                        .Select(x =&gt; QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA))
+                        .ToList();
+                    return _universe;
+            }));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var universeCount = _universe.Count;
+
+        // Invest equally to evenly dissipate capital risk. Since the resolution is daily, there is no issue for over rebalancing.
+        SetHoldings(_universe.Select(symbol =&gt; new PortfolioTarget(symbol, 1m / universeCount)).ToList());
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Liquidate the remove securities to free margin.
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            Liquidate(removed.Symbol);
+        }
+    }
+}</pre>
+    <pre class="python">from AlgorithmImports import * 
+from io import StringIO
+
+class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2015, 1, 1)
+
+        # To download the list of stocks to be included in the universe of each day, make sure you set "dl=1" for dropbox links.
+        file = self.download("https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1")
+        # Map into a dictionary of date-stock list pairs for easy access.
+        df = pd.read_csv(StringIO(file), index_col=0).iloc[:, 0]
+        df.index = pd.to_datetime(df.index).date
+        self.selections = df.to_dict()
+
+        # Daily weight signals from our custom universe data only requires daily resolution to trade with.
+        self.universe_settings.resolution = Resolution.DAILY
+        # Filter using the custom dataset, our sample data is by daily basis.
+        self.add_universe(
+            ScheduledUniverse(
+                self.date_rules.every_day(), 
+                self.time_rules.at(8, 0), 
+                self._select_symbols
+            ))
+    
+    def _select_symbols(self, dt: datetime) -&gt; List[Symbol]:
+        # Check if the date is in the selection dictionary with stocks selection, return empty list if not.
+        date = dt.date()
+        if date not in self.selections:
+            return []
+        
+        self._universe = [
+            # All selections in list are US Equity.
+            Symbol.create(x, SecurityType.EQUITY, Market.USA)
+            # The stock list is in string format that each stock is split by ","
+            for x in self.selections[date].split(",")
+        ]
+        return self._universe
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Invest equally to evenly dissipate capital risk. Since the resolution is daily, there is no issue for over rebalancing.
+        self.set_holdings([
+            PortfolioTarget(symbol, 1./len(self._universe)) for symbol in self._universe
+        ])
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Liquidate the remove securities to free margin.
+        for removed in changes.removed_securities:
+            self.liquidate(removed.symbol)</pre>
+</div>
+
+<h4>Example 2: Quarter End Selection</h4>
 <p>The following example selects SPY on the last month of each quarter. For the remaining months, it selects no assets.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
@@ -38,7 +160,7 @@
         return []</pre>
 </div>
 
-<h4>Example 2: Third Week VIX</h4>
+<h4>Example 3: Third Week VIX</h4>
 <p>Standard Options expire at end of the third week of each month. The following algorithm selects VIX-related products on the third week to trade the foreseeable increasing volatility:</p>
 <div class="section-example-container">
 	<pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
@@ -63,7 +185,7 @@
                 }
                 _month = dt.Month;
                 _week = 0;
-                return Enumerable.Empty<Symbol>();
+                return Enumerable.Empty&lt;Symbol&gt;();
             }
         ));
     }
