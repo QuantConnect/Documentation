@@ -166,7 +166,8 @@ def _render_section_docs(i, h3, type_json_url, write=False):
         _render_section_docs_by_language(i, h3, type_json_url, lang, write)
 
 def _render_section_docs_by_language(i, h3, type_json_url, language, write=False):
-    content = json.loads(urlopen(LEAN_SERVICE % (language, type_json_url)).read())
+    url = LEAN_SERVICE % (language, type_json_url)
+    content = json.loads(urlopen(url.replace(" ", "%20")).read())
     
     # Not a type, do not render
     if "type-name" not in content:
