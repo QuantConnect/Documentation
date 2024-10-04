@@ -14,17 +14,10 @@ Will sleep 5 seconds and retry fetching authorization...
 </div>
 </li>
 
-<li>Enter the environment to use.
+<li>Enter the TradeStation account ID.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Live or Paper environment? (live, paper): live</pre>
-</div>
-</li>
-
-<li>Enter the account type to use.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Trade Station account type (Cash, Margin, Futures, DVP): Margin</pre>
+The TradeStation account Id (11810357, 210NKH33, SIM2829935F, SIM2829934M): SIM2829935F</pre>
 </div>
 </li>";
 
