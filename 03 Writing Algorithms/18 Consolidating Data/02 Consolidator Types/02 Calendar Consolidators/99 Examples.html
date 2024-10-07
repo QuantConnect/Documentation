@@ -4,59 +4,330 @@
 
 </p><p>The preceding sections of this page provide a typical calendar function that consolidates data weekly, starting at 5:00 PM. If you consolidate US Equity and Crypto data, the event handler triggers at different times since the data time zone of US Equity is America/New York and Crypto is UTC.</p>
 
-<h4>Example 1: Consolidate data into 20-minute <code>TradeBar</code> objects that start at 9:30 AM</h4>
-<p>This is a typical case for the US markets because they open every business day at 9:30 PM Eastern Time (ET).</p>
+<h4>Example 1: Futures Indicator</h4>
+<p>Future market trades from 6pm EST to 5pm EST next day, so a calendar consolidator on that time is suitable for updating daily indicator. The following example uses the custmo time consolidated daily bar to update an <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/average-true-range">Average True Range</a> indicator for dynamically updating the take profit and stop loss price on ES future for scalp-trading it.</p>
 
 <div class="section-example-container">
-<pre class="csharp">public CalendarInfo EveryTwentyMinuteAfterEquityMarketOpen(DateTime datetime)
+<pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
-    var period = TimeSpan.FromMinutes(20);
-    var openTime = datetime.Date + new TimeSpan(9, 30, 0);
-    var start = openTime + (int)((datetime - openTime) / period) * period;            
-    return new CalendarInfo(start, period);
+    private Future _es;
+    private decimal _takeProfitPrice;
+    private decimal _stopLossPrice;
+    // Create ATR indicator for take profit and stop loss price.
+    private AverageTrueRange _atr = new(10);
+    // Day counter to avoid overtrading.
+    private int _day = -1;
+
+    public override void Initialize()
+    {
+        // Request continuous ES Future data for trading and smoothen series for fair indicator feed.
+        _es = AddFuture(
+            Futures.Indices.SP500EMini,
+            Resolution.Minute,
+            extendedMarketHours: true,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            contractDepthOffset: 0
+        );
+        // Create a calendar consolidator for ES Future daily bar, since market starts at 6pm EST to 5pm EST next day.
+        var consolidator = new TradeBarConsolidator(FutureTradingHour);
+        consolidator.DataConsolidated += OnConsolidated;
+        // Warm up the ATR indicator using the data consolidated handler by updating the consolidator.
+        var history = History&lt;TradeBar&gt;(_es.Symbol, 14500, Resolution.Minute);
+        foreach (var bar in history)
+        {
+            consolidator.Update(bar);
+        }
+        // Subscribe the consolidator with ES data feed to update it automatically for updating stop price.
+        SubscriptionManager.AddConsolidator(_es.Symbol, consolidator);
+    }
+
+    private CalendarInfo FutureTradingHour(DateTime datetime)
+    {
+        // ES market starts at 6pm EST.
+        var start = datetime.Date
+            .AddHours(datetime.Hour &lt; 18 ? -6 : 18);
+        // Ends at 5pm EST next day, which is 23 hours later.
+        return new CalendarInfo(start, TimeSpan.FromHours(23));
+    }
+
+    private void OnConsolidated(object sender, TradeBar bar)
+    {
+        // Update the ATR indicator since we want the daily ATR to set the stop price.
+        _atr.Update(bar);
+        // Update the daily take profit and stop price using the previous close price and the updated ATR.
+        _takeProfitPrice = bar.Close + _atr * 2m;
+        _stopLossPrice = bar.Close - _atr * 2m;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Change in mapped contract will require switching contract.
+        if (slice.SymbolChangedEvents.TryGetValue(_es.Symbol, out var changedEvent))
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+            var quantity = Portfolio[oldSymbol].Quantity;
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
+            Liquidate(oldSymbol);
+            if (quantity != 0)
+            {
+                MarketOrder(newSymbol, quantity);
+            }
+
+            return;
+        }
+
+        // Enter position on a new day if not hold.
+        if (!Portfolio.Invested &amp;&amp; _day != slice.Time.Day)
+        {
+            MarketOrder(_es.Mapped, 1);
+        }
+        else if (Portfolio.Invested &amp;&amp; slice.Bars.TryGetValue(_es.Symbol, out var bar))
+        {
+            // Check if the current price is above profit taker or below stop loss to exit the position.
+            if (bar.Close &gt; _takeProfitPrice || bar.Close &lt; _stopLossPrice)
+            {
+                Liquidate();
+            }
+        }
+
+        _day = slice.Time.Day;
+    }
 }</pre>
-<pre class="python">def _every_twenty_minute_after_equity_market_open(self, dt: datetime) -&gt; CalendarInfo:
-    period = timedelta(minutes=20)
-    open_time = dt.replace(hour=9, minute=30, second=0, microsecond=0)
-    start = open_time + int((dt - open_time) / period) * period
-    return CalendarInfo(start, period)</pre>
+<pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        # Create ATR indicator for take profit and stop loss price.
+        self._atr = AverageTrueRange(10)
+        # Day counter to avoid overtrading.
+        self._day = -1
+
+        # Request continuous ES Future data for trading and smoothen series for fair indicator feed.
+        self.es = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
+            Resolution.MINUTE,
+            extended_market_hours=True,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            contract_depth_offset=0
+        )
+        # Create a calendar consolidator for ES Future daily bar, since market starts at 6pm EST to 5pm EST next day.
+        consolidator = TradeBarConsolidator(self.future_trading_hour)
+        consolidator.data_consolidated += self.on_consolidated
+        # Warm up the ATR indicator using the data consolidated handler by updating the consolidator.
+        history = self.history[TradeBar](self.es.symbol, 14500, Resolution.MINUTE)
+        for bar in history:
+            consolidator.update(bar)
+        # Subscribe the consolidator with ES data feed to update it automatically for updating stop price.
+        self.subscription_manager.add_consolidator(self.es.symbol, consolidator)
+    
+    def future_trading_hour(self, dt: datetime) -&gt; CalendarInfo:
+        # ES market starts at 6pm EST.
+        start = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        if dt.hour &lt; 18:
+            start -= timedelta(6)
+        else:
+            start += timedelta(18)
+        # Ends at 5pm EST next day, which is 23 hours later.
+        return CalendarInfo(start, timedelta(hours=23))
+
+    def on_consolidated(self, sender: object, bar: TradeBar) -&gt; None:
+        # Update the ATR indicator since we want the daily ATR to set the stop price.
+        self._atr.update(bar)
+        # Update the daily take profit and stop price using the previous close price and the updated ATR.
+        self.take_profit_price = bar.close + self._atr.current.value * 2
+        self.stop_loss_price = bar.close - self._atr.current.value * 2
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Change in mapped contract will require switching contract.
+        changed_event = slice.symbol_changed_events.get(self.es.symbol)
+        if changed_event:
+            old_symbol = changed_event.old_symbol
+            new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
+            quantity = self.portfolio[old_symbol].quantity
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
+            self.liquidate(old_symbol)
+            if quantity != 0:
+                self.market_order(new_symbol, quantity)
+            
+            return
+
+        # Enter position on a new day if not hold.
+        if not self.portfolio.invested and self._day != slice.time.day:
+            self.market_order(self.es.mapped, 1)
+        elif self.portfolio.invested and self.es.symbol in slice.bars:
+            current_price = slice.bars[self.es.symbol].close
+            # Check if the current price is above profit taker or below stop loss to exit the position.
+            if (current_price &gt; self.take_profit_price or current_price &lt; self.stop_loss_price):
+                self.liquidate()
+
+        self._day = slice.time.day</pre>
 </div>
-<p>To consolidate data into another period, change the <code>period</code> variable. For example, to consolidate into 4-hour bars, replace <code class="python">timedelta(minutes=20)</code><code class="csharp">TimeSpan.FromMinutes(20)</code> with <code class="python">timedelta(hours=4)</code><code class="csharp">TimeSpan.FromHours(4).</code></p>
+<p>To consolidate data into another period, change the <code>period</code> variable. For example, to consolidate into 5-minute bars, replace <code class="python">timedelta(hours=23)</code><code class="csharp">TimeSpan.FromHours(23)</code> with <code class="python">timedelta(minutes=5)</code><code class="csharp">TimeSpan.FromMinutes(5)</code>.</p>
 
 <h4>Example 2: Consolidate data in daily <code>QuoteBar</code> objects that start at 5 PM:</h4>
-<p>This is a typical Forex case because the Forex market opens on Sunday at 5 PM ET.</p>
+<p>This is a typical Forex case because the Forex market opens on Sunday at 5 PM ET. We try to make use of this daily bar for an EMA cross strategy.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public CalendarInfo CustomDailyForex(DateTime datetime)
+    <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
-    var start = datetime.Date
-        .AddHours(datetime.Hour &lt; 17 ? -7 : 17);
-    return new CalendarInfo(start, TimeSpan.FromDays(1));
+    private Symbol _usdjpy;
+    private ExponentialMovingAverage _ema = new(20);
+
+    public override void Initialize()
+    {
+        // Request USDJPY, as one of the most traded and trend-oriented forex, for trading.
+        _usdjpy = AddForex("USDJPY").Symbol;
+        // Create a calendar consolidator for USDJPY daily bar, since forex trades from 5pm EST to 5pm EST next day.
+        // Note that forex only have quote bar data.
+        var consolidator = new QuoteBarConsolidator(CustomDailyForex);
+        // Update the EMA indicator, as we use 20-day EMA to determine the trade.
+        RegisterIndicator(_usdjpy, _ema, consolidator);
+        // Warm up the EMA indicator using the data consolidated handler by updating the consolidator.
+        var history = History&lt;QuoteBar&gt;(_usdjpy, 29000, Resolution.Minute);
+        foreach (var bar in history)
+        {
+            consolidator.Update(bar);
+        }
+        // Subscribe the consolidator with USDJPY data feed to update it automatically.
+        SubscriptionManager.AddConsolidator(_usdjpy, consolidator);
+    }
+
+    public CalendarInfo CustomDailyForex(DateTime datetime)
+    {
+        // Forex market opens at 5pm EST.
+        var start = datetime.Date
+            .AddHours(datetime.Hour &lt; 17 ? -7 : 17);
+        return new CalendarInfo(start, TimeSpan.FromDays(1));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only trade based on updated price and EMA data.
+        if (!_ema.IsReady || !slice.QuoteBars.TryGetValue(_usdjpy, out var quote))
+        {
+            return;
+        }
+
+        // Long if the price above EMA, suggesting the trend is uprising and we follow the trend.
+        if (quote.Close &gt; _ema)
+        {
+            // Trade with 5x leverage for higher return.
+            SetHoldings(_usdjpy, 1);
+        }
+        // Short if the price below EMA, suggesting the trend is downgoing and we follow the trend.
+        else
+        {
+            SetHoldings(_usdjpy, -1);
+        }
+    }
 }</pre>
-    <pre class="python">def _custom_daily_forex(self, dt: datetime) -&gt; CalendarInfo:
-start = dt.replace(hour=17, minute=0, second=0)
-if dt.hour &lt; 17:
-    start -= timedelta(1)
-return CalendarInfo(start, timedelta(1))</pre>
+    <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        # Create ATR indicator for take profit and stop loss price.
+        self._ema = ExponentialMovingAverage(10)
+
+        # Request USDJPY, as one of the most traded and trend-oriented forex, for trading.
+        self.usdjpy = self.add_forex("USDJPY").symbol
+        # Create a calendar consolidator for USDJPY daily bar, since market open at 5pm EST to 5pm EST next day.
+        # Note that forex only have quote bar data.
+        consolidator = QuoteBarConsolidator(self.custom_daily_forex)
+        # Update the EMA indicator, as we use 20-day EMA to determine the trade.
+        self.register_indicator(self.usdjpy, self._ema, consolidator)
+        # Warm up the EMA indicator using the data consolidated handler by updating the consolidator.
+        history = self.history[QuoteBar](self.usdjpy, 29000, Resolution.MINUTE)
+        for bar in history:
+            consolidator.update(bar)
+        # Subscribe the consolidator with USDJPY data feed to update it automatically.
+        self.subscription_manager.add_consolidator(self.usdjpy, consolidator)
+    
+    def custom_daily_forex(self, dt: datetime) -&gt; CalendarInfo:
+        # Forex market opens at 5pm EST.
+        start = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        if dt.hour &lt; 17:
+            start -= timedelta(7)
+        else:
+            start += timedelta(17)
+        # Ends at 5pm EST next day.
+        return CalendarInfo(start, timedelta(1))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only trade based on updated price and EMA data.
+        if not self._ema.is_ready or self.usdjpy not in slice.quote_bars:
+            return
+        
+        price = slice.quote_bars[self.usdjpy].close
+        # Long if the price above EMA, suggesting the trend is uprising and we follow the trend.
+        if price &gt; self._ema.current.value:
+            self.set_holdings(self.usdjpy, 1)
+        else:
+            self.set_holdings(self.usdjpy, -1)</pre>
 </div>
 
-<h4>Example 3: Consolidate data into monthly <code>TradeBar</code> objects that start at midnight:</h4>
+<h4>Example 3: Monthly Candlestick</h4>
+<p>Consolidate data into monthly <code>TradeBar</code> objects that start at midnight to create a monthly candlestick.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public CalendarInfo CustomMonthly(DateTime datetime)
+    <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
-    var start = dt.AddDays(1 - dt.Day).Date;
-    var end = dt.AddMonths(1);
-    end = new DateTime(end.Year, end.Month, 1);
-    return new CalendarInfo(start, (end - start));
+    public override void Initialize()
+    {
+        // Request SPY for trading.
+        var spy = AddEquity("SPY").Symbol;
+        // Create a calendar consolidator for SPY monthly bar, in which the bar starts at midnight of the month start and ends at midnight of the month start.
+        var consolidator = new TradeBarConsolidator(CustomMonthly);
+        // Add a consolidation handler to create monthly candlestick bar.
+        consolidator.DataConsolidated += OnConsolidated;
+        // Subscribe the consolidator with SPY data feed to update it automatically.
+        SubscriptionManager.AddConsolidator(spy, consolidator);
+    }
+
+    public CalendarInfo CustomMonthly(DateTime dt)
+    {
+        // Bar starts at month start midnight.
+        var start = dt.AddDays(1 - dt.Day).Date;
+        // Set the end time as the midnight of the next month start.
+        var end = dt.AddMonths(1);
+        end = new DateTime(end.Year, end.Month, 1);
+        return new CalendarInfo(start, (end - start));
+    }
+
+    private void OnConsolidated(object sender, TradeBar bar)
+    {
+        // Plot the OHLC in a candlestick plot.
+        Plot("Monthly Candlestick", "SPY", bar.Open, bar.High, bar.Low, bar.Close);
+    }
 }</pre>
-    <pre class="python">def _custom_monthly(self, dt: datetime) -&gt; CalendarInfo:
-    start = dt.replace(day=1).date()
-    end = dt.replace(day=28) + timedelta(4)
-    end = (end - timedelta(end.day - 1)).date()
-    return CalendarInfo(start, end - start)</pre>
+    <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        # Request SPY for trading.
+        spy = self.add_equity("SPY").symbol
+        # Create a calendar consolidator for SPY monthly bar, in which the bar starts at midnight of the month start and ends at midnight of the month start.
+        consolidator = TradeBarConsolidator(self._custom_monthly)
+        # Add a consolidation handler to create monthly candlestick bar.
+        consolidator.data_consolidated += self.on_consolidated
+        # Subscribe the consolidator with SPY data feed to update it automatically.
+        self.subscription_manager.add_consolidator(spy, consolidator)
+    
+    def _custom_monthly(self, dt: datetime) -&gt; CalendarInfo:
+        # Bar starts at month start midnight.
+        start = dt.replace(day=1).date()
+        # To get month end time, make the day as "32" to ensure it rolls into the next month.
+        end = dt.replace(day=28) + timedelta(4)
+        # Set the end time as the midnight of the next month start.
+        end = (end - timedelta(end.day - 1)).date()
+        return CalendarInfo(start, end - start)
+
+    def on_consolidated(self, sender: object, bar: TradeBar) -&gt; None:
+        # Plot the OHLC in a candlestick plot.
+        self.plot("Monthly Candlestick", "SPY", bar.open, bar.high, bar.low, bar.close)</pre>
 </div>
 
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
 <div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     
