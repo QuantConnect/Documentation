@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'VolumeWeightedMovingAverage';
-$helperName = 'VolumeWeightedMovingAverage';
-$helperArguments = 'symbol';
+$helperName = 'VWMA';
+$helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

@@ -577,6 +577,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'VWAP(symbol, 20)',
                 'columns' : []
             },
+            'volume-weighted-moving-average':
+            {
+                'code': VolumeWeightedMovingAverage(20),
+                'title' : 'VWMA(symbol, 20)',
+                'columns' : []
+            },
             'vortex':
             {
                 'code': Vortex(14),
