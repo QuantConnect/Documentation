@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'DerivativeOscillator';
-$helperName = 'DerivativeOscillator';
-$helperArguments = 'symbol';
+$helperName = 'DO';
+$helperArguments = 'symbol, 14, 5, 3, 9';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

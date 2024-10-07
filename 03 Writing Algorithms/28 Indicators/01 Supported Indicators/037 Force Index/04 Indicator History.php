@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ForceIndex';
-$helperName = 'ForceIndex';
-$helperArguments = 'symbol';
+$helperName = 'FI';
+$helperArguments = 'symbol, 13';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

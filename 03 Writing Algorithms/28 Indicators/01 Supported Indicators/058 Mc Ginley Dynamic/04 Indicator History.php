@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'McGinleyDynamic';
-$helperName = 'McGinleyDynamic';
-$helperArguments = 'symbol';
+$helperName = 'MGD';
+$helperArguments = 'symbol, 10';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

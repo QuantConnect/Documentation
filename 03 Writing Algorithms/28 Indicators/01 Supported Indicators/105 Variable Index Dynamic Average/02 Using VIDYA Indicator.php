@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'DerivativeOscillator';
-$helperName = 'DerivativeOscillator';
-$helperArguments = 'symbol';
+$typeName = 'VariableIndexDynamicAverage';
+$helperName = 'VIDYA';
+$helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '';
+$constructorArguments = '20';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'derivative-oscillator';
+$constructorBox = 'variable-index-dynamic-average';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'RogersSatchellVolatility';
-$helperName = 'RogersSatchellVolatility';
-$helperArguments = 'symbol';
-$properties = array();
-$pyProperties = array();
+$typeName = 'Vortex';
+$helperName = 'VTX';
+$helperArguments = 'symbol, 14';
+$properties = array("PlusVortex","MinusVortex");
+$pyProperties = array("plus_vortex","minus_vortex");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '14';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'rogers-satchell-volatility';
+$constructorBox = 'vortex';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

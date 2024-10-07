@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'StochasticRelativeStrengthIndex';
-$helperName = 'StochasticRelativeStrengthIndex';
-$helperArguments = 'symbol';
-$properties = array("K","D");
-$pyProperties = array("k","d");
+$typeName = 'McGinleyDynamic';
+$helperName = 'MGD';
+$helperArguments = 'symbol, 10';
+$properties = array();
+$pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '';
+$constructorArguments = '10';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'stochastic-relative-strength-index';
+$constructorBox = 'mc-ginley-dynamic';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

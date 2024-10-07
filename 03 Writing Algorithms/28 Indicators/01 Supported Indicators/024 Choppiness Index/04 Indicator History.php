@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ChoppinessIndex';
-$helperName = 'ChoppinessIndex';
-$helperArguments = 'symbol';
+$helperName = 'CHOP';
+$helperArguments = 'symbol, 14';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'ChoppinessIndex';
-$helperName = 'ChoppinessIndex';
-$helperArguments = 'symbol';
-$properties = array();
-$pyProperties = array();
+$typeName = 'SmoothedOnBalanceVolume';
+$helperName = 'SOBV';
+$helperArguments = 'symbol, 20';
+$properties = array("OnBalanceVolume");
+$pyProperties = array("on_balance_volume");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '20';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'choppiness-index';
+$constructorBox = 'smoothed-on-balance-volume';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

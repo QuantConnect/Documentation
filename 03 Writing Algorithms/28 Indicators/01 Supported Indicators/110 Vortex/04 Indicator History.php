@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Vortex';
-$helperName = 'Vortex';
-$helperArguments = 'symbol';
+$helperName = 'VTX';
+$helperArguments = 'symbol, 14';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("PlusVortex","MinusVortex");

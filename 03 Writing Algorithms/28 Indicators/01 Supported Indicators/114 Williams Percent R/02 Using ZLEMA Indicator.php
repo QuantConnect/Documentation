@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'SmoothedOnBalanceVolume';
-$helperName = 'SmoothedOnBalanceVolume';
-$helperArguments = 'symbol';
-$properties = array("OnBalanceVolume");
-$pyProperties = array("on_balance_volume");
+$typeName = 'WilliamsPercentR';
+$helperName = 'ZLEMA';
+$helperArguments = 'symbol, 10';
+$properties = array("Maximum","Minimum");
+$pyProperties = array("maximum","minimum");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '10';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'smoothed-on-balance-volume';
+$constructorBox = 'williams-percent-r';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

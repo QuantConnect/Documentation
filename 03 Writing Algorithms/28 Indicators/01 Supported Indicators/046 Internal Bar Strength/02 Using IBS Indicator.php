@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'VariableIndexDynamicAverage';
-$helperName = 'VariableIndexDynamicAverage';
+$typeName = 'InternalBarStrength';
+$helperName = 'IBS';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
-$updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
+$updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
 $constructorArguments = '';
-$updateParameterValue = 'bar.EndTime, bar.Close';
+$updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'variable-index-dynamic-average';
+$constructorBox = 'internal-bar-strength';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

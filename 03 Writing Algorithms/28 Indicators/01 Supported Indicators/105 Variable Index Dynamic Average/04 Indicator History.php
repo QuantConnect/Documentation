@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'VariableIndexDynamicAverage';
-$helperName = 'VariableIndexDynamicAverage';
-$helperArguments = 'symbol';
+$helperName = 'VIDYA';
+$helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();
