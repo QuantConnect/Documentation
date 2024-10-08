@@ -25,7 +25,7 @@ include(DOCS_RESOURCES."/trading-and-orders/stop-algorithm.php");
 <p>For more information about the command options, see <a href='/docs/v2/lean-cli/api-reference/lean-cloud-live-stop#04-Options'>Options</a>.</p>
 
 <h4>Send Commands</h4>
-<p>To send <a href='/docs/v2/writing-algorithms/live-trading/commands'>commands</a> to your algorithm, open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project and then run <code>lean cloud live cloud command "My Project" --data "&lt;payload&gt;"</code>.
+<p>To send <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/commands'>commands</a> to your algorithm, open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project and then run <code>lean cloud live cloud command "My Project" --data "&lt;payload&gt;"</code>.
 
 <div class="cli section-example-container">
 <pre>$ lean cloud live command "My Project" --data "{'ticker': 'AAPL', 'quantity': 1}"</pre>

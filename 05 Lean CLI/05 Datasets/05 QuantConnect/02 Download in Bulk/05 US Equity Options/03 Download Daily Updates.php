@@ -4,7 +4,7 @@
     <li>US Equity Options Minute Updates by AlgoSeek</li>
     <li>US Equity Options Hour Updates by AlgoSeek</li>
 </ul>
-<p>You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
+<p>You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#09-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
 
 <p>After you subscribe to dataset updates, to update your local copy of the US Equity Options dataset, use the <a href="https://www.quantconnect.com/datasets/algoseek-us-equity-options/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a>. To update your local copy of the US Equity Security Master, run:</p>
 <div class="cli section-example-container">

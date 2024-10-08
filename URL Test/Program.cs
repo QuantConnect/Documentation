@@ -139,6 +139,9 @@ namespace UrlCheck
                                     .Replace("mixed mode consolidators", "mixed-mode consolidators") // special case
                                     .Replace("Multi Alpha", "Multi-Alpha") // special case
                                     .Replace("Margin3F", "Margin%3F") // special case
+                                    .Replace("Greeks3F", "Greeks%3F") // special case
+                                    .Replace("Smile3F", "Smile%3F") // special case
+                                    .Replace("Smoothing3F", "Smoothing%3F") // special case
                                     .Replace("Volatility3F", "Volatility%3F") // special case
                                     .ToLower();
 
@@ -157,6 +160,9 @@ namespace UrlCheck
                                     .Replace("C and Rider", "C# and Rider") // special case
                                     .Replace("Multi Alpha", "Multi-Alpha") // special case
                                     .Replace("Margin3F", "Margin%3F") // special case
+                                    .Replace("Greeks3F", "Greeks%3F") // special case
+                                    .Replace("Smile3F", "Smile%3F") // special case
+                                    .Replace("Smoothing3F", "Smoothing%3F") // special case
                                     .Replace("Volatility3F", "Volatility%3F"); // special case
                                 var allFiles = Directory.GetFiles(path, $"{section}.*", SearchOption.AllDirectories);
                                 var noEquals = allFiles.All(dir =>

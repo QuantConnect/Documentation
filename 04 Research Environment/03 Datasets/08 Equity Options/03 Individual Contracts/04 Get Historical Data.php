@@ -1,5 +1,5 @@
 <?
-$createSubscriptionsLink = "/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions";
+$createSubscriptionsLink = "/docs/v2/research-environment/datasets/equity-options/universes#03-Create-Subscriptions";
 $assetClass = "Equity Option";
 $underlyingSymbolVariablePy = "equity_symbol";
 $underlyingSymbolVariableC = "equitySymbol";

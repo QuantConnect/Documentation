@@ -22,7 +22,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var option = qb.AddOption(equitySymbol);</pre>
         <pre class="python">option = qb.add_option(equity_symbol)</pre>
     </div>
-    <li><span class='qualifier'>(Optional)</span> Set a <a href="/docs/v2/writing-algorithms/universes/equity-options#03-Filter-Contracts">contract filter</a>.</li>
+    <li><span class='qualifier'>(Optional)</span> Set a <a href="/docs/v2/writing-algorithms/universes/equity-options#05-Filter-by-Other-Contract-Properties">contract filter</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">// Set the contract filter to select contracts that have the strike price 
 // within 1 strike level and expire within 90 days.

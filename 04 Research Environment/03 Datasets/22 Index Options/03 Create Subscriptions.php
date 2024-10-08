@@ -24,7 +24,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var option = qb.AddIndexOption(indexSymbol);</pre>
         <pre class="python">option = qb.add_index_option(index_symbol)</pre>
     </div>
-    <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/index-options#03-Filter-Contracts'>contract filter</a>.</li>
+    <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/index-options#05-Filter-by-Other-Contract-Properties'>contract filter</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">option.set_filter(-1, 1, 0, 90);</pre>
         <pre class="python">option.set_filter(-1, 1, 0, 90)</pre>

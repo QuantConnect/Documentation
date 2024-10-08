@@ -1,7 +1,7 @@
 <p>
 	After you bulk download the US Index Option Universe dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. 
 	To unlock local access to the data updates, open the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization and subscribe to the <span class="button-name">US Index Option Universe - On Premise Bulk Download Updates</span> data package.
-	You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.
+	You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#09-Permissions">billing permissions</a> to change the organization's subscriptions.
 </p>
 
 <p>

@@ -5,7 +5,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 
 <p>The Object Store saves objects under a key-value system. If you save objects in backtests, you can access them from the Research Environment. <?=$writingAlgorithms ? "To avoid slowing down your backtests, save data once in the <code class='csharp'>OnEndOfAlgorithm</code><code class='python'>on_end_of_algorithm</code> event handler. In live trading, you can save data more frequently like at the end of a <code class='csharp'>Train</code><code class='python'>train</code> method or after universe selection." : "" ?></p>
 
-<p>If you run algorithms in QuantConnect Cloud, you need <a href='/docs/v2/cloud-platform/organizations/members#08-Permissions'>storage create permissions</a> to save data in the Object Store.</p>
+<p>If you run algorithms in QuantConnect Cloud, you need <a href='/docs/v2/cloud-platform/organizations/members#09-Permissions'>storage create permissions</a> to save data in the Object Store.</p>
 
 <p>If you don't have data to store, <a href='<?=$writingAlgorithms ? "/docs/v2/writing-algorithms/object-store#03-Create-Sample-Data" : "/docs/v2/research-environment/object-store#03-Create-Sample-Data" ?>'>create some sample data</a>.</p>
 
