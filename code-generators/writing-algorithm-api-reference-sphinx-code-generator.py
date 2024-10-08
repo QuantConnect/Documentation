@@ -518,11 +518,11 @@ def _get_hyperlinked_type(type_raw_name, language):
             i_name = title_to_dash_linked_lower_case(plain_type)
         
         if split_type_name[1] == "Indicators":
-            if "Indicator" in split_type_name[2]:
-                return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/\">{_type}</a>"
-            elif plain_type in SUPPORTED_INDICATORS:
+            if plain_type in SUPPORTED_INDICATORS:
                 INDICATORS[i_name] = type_name.replace('[]', '')
                 return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/{title_to_dash_linked_lower_case(plain_type)}\">{_type}</a>"
+            elif "Indicator" in split_type_name[2]:
+                return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/\">{_type}</a>"
         elif "CandlestickPatterns" in type_raw_name:
             return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/candlestick-patterns\">{_type}</a>"
         
