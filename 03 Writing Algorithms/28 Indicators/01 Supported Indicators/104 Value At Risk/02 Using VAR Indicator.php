@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'DerivativeOscillator';
-$helperName = 'DerivativeOscillator';
-$helperArguments = 'symbol';
+$typeName = 'ValueAtRisk';
+$helperName = 'VAR';
+$helperArguments = 'symbol, 252, 0.95';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '';
+$constructorArguments = '252, 0.95';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'derivative-oscillator';
+$constructorBox = 'value-at-risk';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

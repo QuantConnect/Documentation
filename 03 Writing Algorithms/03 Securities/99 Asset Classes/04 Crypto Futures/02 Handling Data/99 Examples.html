@@ -1,0 +1,198 @@
+<p>The following examples demonstrate some common practices for handling Crypto Futures data.</p>
+
+<h4>Example 1: Adjust Holdings on Margin Payments</h4>
+<p>
+    Perpetual futures have a mechanism called <span class='new-term'>funding</span>, where if you're holding a position at certain times (the funding timestamp), you might have to pay or receive funding based on the difference between the perpetual contract price and the spot price.
+    This example demonstrates how to adjust your position in Crypto Future based on the funding rate.
+    The funding is settled in the quote currency, which is USDT in this case.
+    When you receive USDT, the algorithm increases its position size in BTCUSDT.
+    When you pay USDT, the algorithm decreases its position size.
+</p>
+<div class="section-example-container">
+    <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private decimal _lotSize;
+    private int _day = -1;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 4, 1);
+        SetEndDate(2024, 10, 1);
+        // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+        // In the Binance brokerage, you can't trade with USD.
+        // Set the account currency as USDT and add the starting cash.
+        SetAccountCurrency("USDT", 1000000);
+        // Subscribe to the BTCUSDT perpetual Future contract.
+        var btcusdt = AddCryptoFuture("BTCUSDT");
+        _symbol = btcusdt.Symbol;
+        // Save the lot size to avoid order errors.
+        _lotSize = btcusdt.SymbolProperties.LotSize;
+        // Set the starting BTC balance to 10.
+        btcusdt.BaseCurrency.SetAmount(10);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only place orders when the market is open since market on open orders aren't supported.
+        if (!Portfolio.Invested && IsMarketOpen(_symbol))
+        {
+            // Open a long position in the perpetual Crypto Future.
+            MarketOrder(_symbol, 10);
+        }
+        // Only run the following logic once per day.
+        if (_day == Time.Day)
+        {
+            return;
+        }
+        // Get the current margin interest rate.
+        MarginInterestRate interestRate;
+        if (!slice.MarginInterestRates.TryGetValue(_symbol, out interestRate))
+        {
+            return;
+        }
+        // Calculate the funding payment.
+        var holding = Portfolio[_symbol];
+        var positionValue = holding.GetQuantityValue(holding.Quantity).Amount;
+        var funding = interestRate.InterestRate * positionValue / holding.Price;
+        // Increase/decrease the position size based on the funding payment.
+        var quantity = -(int)(funding / _lotSize) * _lotSize;
+        if (quantity != 0)
+        {
+            MarketOrder(_symbol, quantity);
+            // Plot the portfolio state.
+            Plot("CashBook", "USDT", Portfolio.CashBook["USDT"].Amount);
+            Plot("CashBook", "BTC", Portfolio.CashBook["BTC"].Amount);
+            Plot("Quantity", "BTCUSDT", Portfolio[_symbol].Quantity);
+        }
+        _day = Time.Day;
+    }
+}</pre>
+    <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2020, 4, 1)
+        self.set_end_date(2024, 10, 1)
+        # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
+        # In the Binance brokerage, you can't trade with USD.
+        # Set the account currency as USDT and add the starting cash.
+        self.set_account_currency("USDT", 1000000)
+        # Subscribe to the BTCUSDT perpetual Future contract.
+        btcusdt = self.add_crypto_future("BTCUSDT")
+        self._symbol = btcusdt.symbol
+        # Save the lot size to avoid order errors.
+        self._lot_size = btcusdt.symbol_properties.lot_size
+        # Set the starting BTC balance to 10.
+        btcusdt.base_currency.set_amount(10)
+        # Create a member to track the current day.
+        self._day = -1
+    
+    def on_data(self, slice: Slice) -> None:
+        # Only place orders when the market is open since market on open orders aren't supported.
+        if not self.portfolio.invested and self.is_market_open(self._symbol):
+            # Open a long position in the perpetual Crypto Future.
+            self.market_order(self._symbol, 10)
+        # Only run the following logic once per day.
+        if self._day == self.time.day:
+            return
+        # Get the current margin interest rate.
+        interest_rate = slice.margin_interest_rates.get(self._symbol)
+        if not interest_rate:
+            return
+        # Calculate the funding payment.
+        holding = self.portfolio[self._symbol]
+        position_value = holding.get_quantity_value(holding.quantity).amount
+        interest_rate = slice.margin_interest_rates[self._symbol].interest_rate
+        funding = interest_rate * position_value / holding.security.price
+        # Increase/decrease the position size based on the funding payment.
+        quantity = -funding // self._lot_size * self._lot_size
+        if quantity:
+            self.market_order(self._symbol, quantity)
+            # Plot the portfolio state.
+            self.plot("CashBook", "USDT", self.portfolio.cash_book['USDT'].amount)
+            self.plot("CashBook", "BTC", self.portfolio.cash_book['BTC'].amount)
+            self.plot("Quantity", "BTCUSDT", self.portfolio[self._symbol].quantity)
+        self._day = self.time.day</pre>
+</div>
+
+<h4>Example 2: Future-Spot Arbitration</h4>
+<p>Long-short arbitrage involves simultaneously trading BTCUSD in the spot market and BTCUSD futures with the same size. If the spot price exceed the front-month future price by a threshold, we short the spot and buy the future, assuming their discrepancies will be wiped out within a short period due to market efficiency. Vice versa for the other way around. Positions will be closed after the price gap bounced back.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
+{
+    private Symbol _spot;
+    private Symbol _future;
+    
+    public override void Initialize()
+    {
+        // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+        // In Binance brokerage, USD is not a valid currency to trade or automatically convertable.
+        // Thus, we need to set account currency as USDT and add the starting cash.
+        SetAccountCurrency("USDT", 1000);
+        // Add subscription of BTC-USD Futures and spot crypto with specific market to ensure the correct securities are selected.
+        _future = AddCryptoFuture("BTCUSDT", market: Market.Binance).Symbol;
+        _spot = AddCrypto("BTCUSDT", market: Market.Binance).Symbol;
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Only compare the most updated price if both spot and future are available to ensure fair comparison for arbitration.
+        if (slice.Bars.ContainsKey(_spot) && slice.Bars.ContainsKey(_future))
+        {
+            var spotPrice = slice.Bars[_spot].Price;
+            var futurePrice = slice.Bars[_future].Price;
+    
+            // To provide sufficient profit margin to overcome fee and slippage, a threshold of 0.5% is set.
+            // Buy low sell high: if one's price is above another by the set threshold, sell it and buy the other security.
+            if (spotPrice &gt;= futurePrice * 1.005m)
+            {
+                SetHoldings(_spot, -0.25m);
+                SetHoldings(_future, 0.25m);
+            }
+            else if (spotPrice * 1.005m &lt;= futurePrice)
+            {
+                SetHoldings(_spot, 0.25m);
+                SetHoldings(_future, -0.25m);
+            }
+            // When the mispricing converges, close both positions to earn the spread.
+            else if ((Portfolio[_spot].Quantity &lt; 0 && spotPrice &lt; futurePrice)
+                || (Portfolio[_spot].Quantity &gt; 0 && spotPrice &gt; futurePrice))
+            {
+                Liquidate();
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
+        # In Binance brokerage, USD is not a valid currency to trade or automatically convertable.
+        # Thus, we need to set account currency as USDT and add the starting cash.
+        self.set_account_currency("USDT", 1000)
+        # Add subscription of BTC-USD Futures and spot crypto with specific market to ensure the correct securities are selected.
+        self._future = self.add_crypto_future("BTCUSDT", market=Market.BINANCE).symbol
+        self._spot = self.add_crypto("BTCUSDT", market=Market.BINANCE).symbol
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only compare the most updated price if both spot and future are available to ensure fair comparison for arbitration.
+        if self._spot in slice.bars and self._future in slice.bars:
+            spot_price = slice.bars[self._spot].price
+            future_price = slice.bars[self._future].price
+        
+            # To provide sufficient profit margin to overcome fee and slippage, a threshold of 0.5% is set.
+            # Buy low sell high: if one's price is above another by the set threshold, sell it and buy the other security.
+            if spot_price &gt;= future_price * 1.005:
+                self.set_holdings(self._spot, -0.25)
+                self.set_holdings(self._future, 0.25)
+            elif spot_price * 1.005 &lt;= future_price:
+                self.set_holdings(self._spot, 0.25)
+                self.set_holdings(self._future, -0.25)
+            # When the mispricing converges, close both positions to earn the spread.
+            elif (self.portfolio[self._spot].quantity &lt; 0 and spot_price &lt; future_price)\
+            or (self.portfolio[self._spot].quantity &gt; 0 and spot_price &gt; future_price):
+                self.liquidate()</pre>
+</div>

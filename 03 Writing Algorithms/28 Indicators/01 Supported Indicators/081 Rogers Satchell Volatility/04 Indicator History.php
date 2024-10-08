@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RogersSatchellVolatility';
-$helperName = 'RogersSatchellVolatility';
-$helperArguments = 'symbol';
+$helperName = 'RSV';
+$helperArguments = 'symbol, 30';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

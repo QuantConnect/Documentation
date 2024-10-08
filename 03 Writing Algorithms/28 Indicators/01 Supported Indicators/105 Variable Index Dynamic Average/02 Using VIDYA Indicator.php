@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'InternalBarStrength';
-$helperName = 'InternalBarStrength';
-$helperArguments = 'symbol';
+$typeName = 'VariableIndexDynamicAverage';
+$helperName = 'VIDYA';
+$helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
-$updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
-$updateParameterValue = 'bar';
+$updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
+$constructorArguments = '20';
+$updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'internal-bar-strength';
+$constructorBox = 'variable-index-dynamic-average';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

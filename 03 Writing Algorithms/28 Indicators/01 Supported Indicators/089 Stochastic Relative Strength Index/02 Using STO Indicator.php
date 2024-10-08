@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'ValueAtRisk';
-$helperName = 'ValueAtRisk';
-$helperArguments = 'symbol';
-$properties = array();
-$pyProperties = array();
+$typeName = 'StochasticRelativeStrengthIndex';
+$helperName = 'STO';
+$helperArguments = 'symbol, 14, 14, 3, 3';
+$properties = array("K","D");
+$pyProperties = array("k","d");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '';
+$constructorArguments = '14, 14, 3, 3';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'value-at-risk';
+$constructorBox = 'stochastic-relative-strength-index';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

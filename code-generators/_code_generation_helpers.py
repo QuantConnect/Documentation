@@ -8,7 +8,7 @@ INDICATORS = f'{WRITING_ALGORITHMS}/28 Indicators/01 Supported Indicators'
 API_REFERENCE = f'{WRITING_ALGORITHMS}/98 API Reference/'
 MHDB = "https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/market-hours/market-hours-database.json"
 SPDB = "https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv"
-KNOWN_MISSING_INDICATORS = ["DerivativeOscillator", "ValueAtRisk"]
+KNOWN_MISSING_INDICATORS = ["DerivativeOscillator", "ValueAtRisk", "IntradayVwap", "VolumeWeightedAveragePriceIndicator", "DeMarkerIndicator", "MomersionIndicator"]
 
 class MARKET_HOUR:
     INTRODUCTION = "introduction"

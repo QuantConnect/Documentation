@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'McGinleyDynamic';
-$helperName = 'McGinleyDynamic';
-$helperArguments = 'symbol';
+$typeName = 'ChoppinessIndex';
+$helperName = 'CHOP';
+$helperArguments = 'symbol, 14';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
-$updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '';
-$updateParameterValue = 'bar.EndTime, bar.Close';
+$updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
+$constructorArguments = '14';
+$updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'mc-ginley-dynamic';
+$constructorBox = 'choppiness-index';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

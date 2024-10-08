@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'WilliamsPercentR';
-$helperName = 'WILR';
-$helperArguments = 'symbol, 20';
-$properties = array("Maximum","Minimum");
-$pyProperties = array("maximum","minimum");
+$typeName = 'RogersSatchellVolatility';
+$helperName = 'RSV';
+$helperArguments = 'symbol, 30';
+$properties = array();
+$pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '20';
+$constructorArguments = '30';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'williams-percent-r';
+$constructorBox = 'rogers-satchell-volatility';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

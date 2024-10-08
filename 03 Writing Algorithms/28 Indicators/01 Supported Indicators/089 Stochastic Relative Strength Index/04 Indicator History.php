@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'StochasticRelativeStrengthIndex';
-$helperName = 'StochasticRelativeStrengthIndex';
-$helperArguments = 'symbol';
+$helperName = 'STO';
+$helperArguments = 'symbol, 14, 14, 3, 3';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("K","D");

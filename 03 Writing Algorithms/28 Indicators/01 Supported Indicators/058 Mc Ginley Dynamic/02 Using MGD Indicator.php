@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'VariableIndexDynamicAverage';
-$helperName = 'VariableIndexDynamicAverage';
-$helperArguments = 'symbol';
+$typeName = 'McGinleyDynamic';
+$helperName = 'MGD';
+$helperArguments = 'symbol, 10';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '';
+$constructorArguments = '10';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'variable-index-dynamic-average';
+$constructorBox = 'mc-ginley-dynamic';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

@@ -4,14 +4,22 @@ from QuantConnect.Indicators.CandlestickPatterns import *
 import plotly.express as px
 # endregion
 
-def generate(name, indicator, df):
-    columns = set(df.columns).intersection(indicator.get('columns', '') + ['price'])
-    df = df.drop(columns=columns).dropna()
-    fig = px.line(df, x=df.index, y=df.columns, title=indicator['title'])
-    fig.write_image(f"{name}.png", width=1200, height=630, format='png')
-
 class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
-
+        
+    def generate(self, name, indicator, df):
+        columns = set(df.columns).intersection(indicator.get('columns', '') + ['price'])
+        df = df.drop(columns=columns).dropna().reset_index()
+        try:
+            if "current" in df.columns:
+                fig = px.line(df, x="index", y="current", title=indicator['title'])
+            else:
+                fig = px.line(df, x="index", y=list(df.columns)[1], title=indicator['title'])
+            
+            path = self.object_store.get_file_path(f"{name}.png")
+            fig.write_image(path, width=1200, height=630, format='png')
+                        
+        except Exception as e:
+            self.log(f"{name} unable to plot :: {e}")
 
     def Initialize(self):
         self.SetStartDate(2021,1,1)
@@ -125,6 +133,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'CMO(symbol, 20)',
                 'columns' : []
             },
+            'choppiness-index':
+            {
+                'code': ChoppinessIndex(14),
+                'title' : 'CHOP(symbol, 14)',
+                'columns' : []
+            },
             'commodity-channel-index':
             {
                 'code': CommodityChannelIndex(20, MovingAverageType.Simple),
@@ -141,6 +155,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             {
                 'code': DeMarkerIndicator(20, MovingAverageType.Simple),
                 'title' : 'DEM(symbol, 20, MovingAverageType.Simple)',
+                'columns' : []
+            },
+            'derivative-oscillator':
+            {
+                'code': DerivativeOscillator("DerivativeOscillator", 14, 5, 3, 9),
+                'title' : 'DO(symbol, 14, 5, 3, 9)',
                 'columns' : []
             },
             'detrended-price-oscillator':
@@ -179,6 +199,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'FISH(symbol, 20)',
                 'columns' : []
             },
+            'force-index':
+            {
+                'code': ForceIndex(13),
+                'title' : 'FI(symbol, 13)',
+                'columns' : []
+            },
             'fractal-adaptive-moving-average':
             {
                 'code': FractalAdaptiveMovingAverage(20, 198),
@@ -213,6 +239,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             {
                 'code': Identity("SPY"),
                 'title' : 'Identity(symbol)',
+                'columns' : []
+            },
+            'internal-bar-strength':
+            {
+                'code': InternalBarStrength(),
+                'title' : 'IBS(symbol)',
                 'columns' : []
             },
             'kaufman-adaptive-moving-average':
@@ -263,6 +295,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'MAX(symbol, 20)',
                 'columns' : []
             },
+            'mc-ginley-dynamic':
+            {
+                'code': McGinleyDynamic(10),
+                'title' : 'MGD(symbol, 10)',
+                'columns' : []
+            },
             'mid-point':
             {
                 'code': MidPoint(20),
@@ -299,7 +337,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'MOMP(symbol, 20)',
                 'columns' : []
             },
-            'momersion-indicator':
+            'momersion':
             {
                 'code': MomersionIndicator(10, 20),
                 'title' : 'MOMERSION(symbol, 10, 20)',
@@ -395,6 +433,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'RVI(symbol, 20, MovingAverageType.Simple)',
                 'columns' : []
             },
+            'rogers-satchell-volatility':
+            {
+                'code': RogersSatchellVolatility(30),
+                'title' : 'RSV(symbol, 30)',
+                'columns' : []
+            },
             'schaff-trend-cycle':
             {
                 'code': SchaffTrendCycle(5, 10, 20, MovingAverageType.Exponential),
@@ -413,6 +457,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'SMA(symbol, 20)',
                 'columns' : ['rollingsum']
             },
+            'smoothed-on-balance-volume':
+            {
+                'code': SmoothedOnBalanceVolume(20),
+                'title' : 'SOBV(symbol, 20)',
+                'columns' : ['onbalancevolume']
+            },
             'sortino-ratio':
             {
                 'code': SortinoRatio(22),
@@ -430,6 +480,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': Stochastic(20, 10, 20),
                 'title' : 'STO(symbol, 20, 10, 20)',
                 'columns' : []
+            },
+            'stochastic-relative-strength-index':
+            {
+                'code': StochasticRelativeStrengthIndex(14, 14, 3, 3),
+                'title' : 'STO(symbol, 14, 14, 3, 3)',
+                'columns' : ["k", "d"]
             },
             'sum':
             {
@@ -497,6 +553,18 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'ULTOSC(symbol, 5, 10, 20)',
                 'columns' : []
             },
+            'value-at-risk':
+            {
+                'code': ValueAtRisk(252, 0.95),
+                'title' : 'VAR(symbol, 252, 0.95)',
+                'columns' : []
+            },
+            'variable-index-dynamic-average':
+            {
+                'code': VariableIndexDynamicAverage(20),
+                'title' : 'VIDYA(symbol, 20)',
+                'columns' : []
+            },
             'variance':
             {
                 'code': Variance(20),
@@ -508,6 +576,18 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': VolumeWeightedAveragePriceIndicator(20),
                 'title' : 'VWAP(symbol, 20)',
                 'columns' : []
+            },
+            'volume-weighted-moving-average':
+            {
+                'code': VolumeWeightedMovingAverage(20),
+                'title' : 'VWMA(symbol, 20)',
+                'columns' : []
+            },
+            'vortex':
+            {
+                'code': Vortex(14),
+                'title' : 'VTX(symbol, 14)',
+                'columns' : ["plusvortex", "minusvortex"]
             },
             'wilder-accumulative-swing-index':
             {
@@ -532,6 +612,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': WilliamsPercentR(20),
                 'title' : 'WILR(symbol, 20)',
                 'columns' : ['maximum', 'minimum']
+            },
+            'williams-percent-r':
+            {
+                'code': ZeroLagExponentialMovingAverage(10),
+                'title' : 'ZLEMA(symbol, 10)',
+                'columns' : []
             },
         }
 
@@ -664,7 +750,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             code = indicator['code']
             df = qb.Indicator(code, 'SPY', timedelta(365) , Resolution.Daily)
             try:
-                generate(name, indicator, df)
+                self.generate(name, indicator, df)
             except Exception as e:
                 self.Debug(e)
 
@@ -684,7 +770,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 values.append(indicator['code'].Current.Value)
 
         df = pd.DataFrame(values, index=index, columns=["targetdownsidedeviation"])
-        generate("target-downside-deviation", indicator, df)
+        self.generate("target-downside-deviation", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('advance-decline-difference')
@@ -696,7 +782,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["advancedeclinedifference"])
-        generate("advance-decline-difference", indicator, df)
+        self.generate("advance-decline-difference", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('advance-decline-ratio')
@@ -708,7 +794,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["advancedeclineratio"])
-        generate("advance-decline-ratio", indicator, df)
+        self.generate("advance-decline-ratio", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('advance-decline-volume-ratio')
@@ -720,7 +806,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["advancedeclinevolumeratio"])
-        generate("advance-decline-volume-ratio", indicator, df)
+        self.generate("advance-decline-volume-ratio", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('alpha')
@@ -732,7 +818,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["alpha"])
-        generate("alpha", indicator, df)
+        self.generate("alpha", indicator, df)
         
         index, values = [], []
         indicator = special_indicators.get('beta')
@@ -744,7 +830,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["beta"])
-        generate("beta", indicator, df)
+        self.generate("beta", indicator, df)
         
         index, values = [], []
         indicator = special_indicators.get('correlation')
@@ -756,7 +842,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["correlation"])
-        generate("correlation", indicator, df)
+        self.generate("correlation", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('arms-index')
@@ -768,7 +854,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["armsindex"])
-        generate("arms-index", indicator, df)
+        self.generate("arms-index", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('mc-clellan-oscillator')
@@ -780,7 +866,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["mcclellanoscillator"])
-        generate("mc-clellan-oscillator", indicator, df)
+        self.generate("mc-clellan-oscillator", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('mc-clellan-summation-index')
@@ -792,7 +878,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["mcclellansummationindex"])
-        generate("mc-clellan-summation-index", indicator, df)
+        self.generate("mc-clellan-summation-index", indicator, df)
         
         index, values = [], []
         indicator = special_indicators.get('intraday-vwap')
@@ -802,7 +888,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["intradayvwap"])
-        generate("intraday-vwap", indicator, df)
+        self.generate("intraday-vwap", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('time-profile')
@@ -812,7 +898,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["timeprofile"])
-        generate("time-profile", indicator, df)
+        self.generate("time-profile", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('volume-profile')
@@ -822,7 +908,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["volumeprofile"])
-        generate("volume-profile", indicator, df)
+        self.generate("volume-profile", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('filtered-identity')
@@ -832,7 +918,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 index.append(bars.Time)
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["filteredidentity"])
-        generate("filtered-identity", indicator, df)
+        self.generate("filtered-identity", indicator, df)
         
         times = set(bars.get("SPY").EndTime for bars in history).intersection(bars.get(option_symbol).EndTime for bars in option_history)
         history = [bar for bar in history if bar.get("SPY").EndTime in times]
@@ -848,6 +934,6 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                     index.append(bars.get("SPY").EndTime)
                     values.append(indicator['code'].Current.Value)
             df = pd.DataFrame(values, index=index, columns=[name.replace('-', '')])
-            generate(name, indicator, df)
+            self.generate(name, indicator, df)
 
         self.Quit()

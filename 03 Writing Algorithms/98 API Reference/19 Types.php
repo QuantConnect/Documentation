@@ -7,9 +7,11 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/breakaway.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/brokerage-message-event.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/brokerage-name.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/callback-command.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/cfd.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/chart.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/closing-marubozu.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/command-result-packet.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/concealed-baby-swallow.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/correlation-type.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/counterattack.html"); ?>
@@ -43,6 +45,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/identical-three-crows.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/in-neck.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/index.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/index-option.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/indicator-history.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/insight.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/inverted-hammer.html"); ?>
@@ -59,6 +62,8 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/moving-average-type.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/on-neck.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/option.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/option-chain.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/option-chains.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/option-pricing-model-type.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/option-strategy.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/order-event.html"); ?>

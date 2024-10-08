@@ -2,7 +2,7 @@
 <? 
 $helperPrefix = '';
 $typeName = 'InternalBarStrength';
-$helperName = 'InternalBarStrength';
+$helperName = 'IBS';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

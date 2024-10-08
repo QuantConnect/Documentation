@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ValueAtRisk';
-$helperName = 'ValueAtRisk';
-$helperArguments = 'symbol';
+$helperName = 'VAR';
+$helperArguments = 'symbol, 252, 0.95';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

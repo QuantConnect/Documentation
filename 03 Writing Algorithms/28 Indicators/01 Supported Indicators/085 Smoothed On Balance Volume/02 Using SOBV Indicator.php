@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'VolumeWeightedMovingAverage';
-$helperName = 'VolumeWeightedMovingAverage';
-$helperArguments = 'symbol';
-$properties = array();
-$pyProperties = array();
+$typeName = 'SmoothedOnBalanceVolume';
+$helperName = 'SOBV';
+$helperArguments = 'symbol, 20';
+$properties = array("OnBalanceVolume");
+$pyProperties = array("on_balance_volume");
 $otherProperties = array();
 $otherPyProperties = array();
-$updateParameterType = 'a <code>TradeBar</code>';
-$constructorArguments = '';
+$updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
+$constructorArguments = '20';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'volume-weighted-moving-average';
+$constructorBox = 'smoothed-on-balance-volume';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

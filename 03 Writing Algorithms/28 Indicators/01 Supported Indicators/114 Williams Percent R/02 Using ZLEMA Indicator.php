@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'Vortex';
-$helperName = 'Vortex';
-$helperArguments = 'symbol';
-$properties = array("PlusVortex","MinusVortex");
-$pyProperties = array("plus_vortex","minus_vortex");
+$typeName = 'WilliamsPercentR';
+$helperName = 'ZLEMA';
+$helperArguments = 'symbol, 10';
+$properties = array("Maximum","Minimum");
+$pyProperties = array("maximum","minimum");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '10';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'vortex';
+$constructorBox = 'williams-percent-r';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

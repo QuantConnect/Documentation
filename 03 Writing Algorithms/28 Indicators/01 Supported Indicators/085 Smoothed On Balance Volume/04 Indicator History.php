@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SmoothedOnBalanceVolume';
-$helperName = 'SmoothedOnBalanceVolume';
-$helperArguments = 'symbol';
+$helperName = 'SOBV';
+$helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("OnBalanceVolume");
