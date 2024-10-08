@@ -80,6 +80,8 @@
     def _update_contracts_and_greeks(self) -&gt; None:
         # Get all the tradable Option contracts.
         chain = self.option_chain(<?=$underlyingSymbolPy?>).data_frame
+        if chain.empty:
+            return
 
         # Filter the contracts down. For example, ATM contracts with the closest expiry.
         expiry = chain.expiry.min()
