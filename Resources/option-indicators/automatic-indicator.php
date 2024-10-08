@@ -90,10 +90,10 @@
 
         # Group the contracts into call/put pairs.
         contracts_pair_sizes = chain.groupby(['expiry', 'strike']).count()['right']
-        missing_contracts = contracts_pair_sizes[contracts_pair_sizes < 2].index
+        paired_contracts = contracts_pair_sizes[contracts_pair_sizes == 2].index
         symbols = chain[
-            chain['expiry'].isin(missing_contracts.levels[0]) & 
-            chain['strike'].isin(missing_contracts.levels[1])
+            chain['expiry'].isin(paired_contracts.levels[0]) & 
+            chain['strike'].isin(paired_contracts.levels[1])
         ].reset_index().groupby(['expiry', 'strike', 'right', 'symbol']).first().index.levels[-1]
         pairs = [(symbols[i], symbols[i+1]) for i in range(0, len(symbols), 2)]
 
