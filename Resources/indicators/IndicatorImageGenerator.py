@@ -484,7 +484,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             'stochastic-relative-strength-index':
             {
                 'code': StochasticRelativeStrengthIndex(14, 14, 3, 3),
-                'title' : 'STO(symbol, 14, 14, 3, 3)',
+                'title' : 'SRSI(symbol, 14, 14, 3, 3)',
                 'columns' : ["k", "d"]
             },
             'sum':

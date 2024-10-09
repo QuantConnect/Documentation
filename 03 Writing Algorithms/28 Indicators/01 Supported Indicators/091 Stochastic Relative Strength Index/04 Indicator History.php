@@ -2,7 +2,7 @@
 <? 
 $helperPrefix = '';
 $typeName = 'StochasticRelativeStrengthIndex';
-$helperName = 'STO';
+$helperName = 'SRSI';
 $helperArguments = 'symbol, 14, 14, 3, 3';
 $hasReference = false;
 $isOptionIndicator = false;
