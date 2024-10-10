@@ -124,38 +124,41 @@
         
     def _update_contracts_and_greeks(self) -&gt; None:
         # Get all the tradable Option contracts.
-        chain = self.option_chain(<?=$underlyingSymbolPy?>)
-        # You can do further filtering here
-
-        # Iterate all expiries
-        for expiry in set(x.id.date for x in chain):
-            contracts_for_expiry = [x for x in chain if x.id.date == expiry]
+        chain = self.option_chain(self._underlying).data_frame
+        if chain.empty:
+            return
         
-            # Iterate all strike prices among the contracts of the same expiry.
-            for strike in set(x.id.strike_price for x in contracts_for_expiry):
-                contracts_for_strike = [x for x in contracts_for_expiry if x.id.strike_price == strike]
+        # Filter the contracts down. For example, ATM contracts with the closest expiry.
+        expiry = chain.expiry.min()
+        chain = chain[chain.expiry == expiry]
+        chain.loc[:, 'abs_strike_delta'] = abs(chain['strike'] - chain['underlyinglastprice'])
+        abs_strike_delta = chain['abs_strike_delta'].min()
+        chain = chain[chain['abs_strike_delta'] == abs_strike_delta]
+
+        # Group the contracts into call/put pairs.
+        contracts_pair_sizes = chain.groupby(['expiry', 'strike']).count()['right']
+        paired_contracts = contracts_pair_sizes[contracts_pair_sizes == 2].index
+        symbols = [
+            idx[-1] for idx in chain[
+                chain['expiry'].isin(paired_contracts.levels[0]) & 
+                chain['strike'].isin(paired_contracts.levels[1])
+            ].reset_index().groupby(['expiry', 'strike', 'right', 'symbol']).first().index
+        ]
+        pairs = [(symbols[i], symbols[i+1]) for i in range(0, len(symbols), 2)]
+
+        for call, put in pairs:
+            # Subscribe to both contracts.
+            self.<?=$addContractMethodPy?>(call)
+            self.<?=$addContractMethodPy?>(put)
             
-                # Get the call and put, respectively.
-                calls = [x for x in contracts_for_strike if x.id.option_right == OptionRight.CALL]
-                puts = [x for x in contracts_for_strike if x.id.option_right == OptionRight.PUT]
-                # Skip if the call doesn't exist, the put doesn't exist, or they are already in the universe.
-                if not calls or not puts or calls[0].symbol in self.securities:
-                    continue
-                
-                # Subscribe to both contracts.
-                call = calls[0].symbol
-                put = puts[0].symbol
-                self.<?=$addContractMethodPy?>(call)
-                self.<?=$addContractMethodPy?>(put)
-            
-                # Create and save the automatic <?=$typeName?> indicators.
-                for contract_a, contract_b in [(call, put), (put, call)]:
-                    self._indicators.append(
-                        <?=$typeName?>(
-                            contract_a, self.risk_free_interest_rate_model, 
-                            self._dividend_yield_provider, contract_b, self._option_pricing_model
-                        ) 
-                    )
+            # Create and save the automatic <?=$typeName?> indicators.
+            for contract_a, contract_b in [(call, put), (put, call)]:
+                self._indicators.append(
+                    <?=$typeName?>(
+                        contract_a, self.risk_free_interest_rate_model, 
+                        self._dividend_yield_provider, contract_b, self._option_pricing_model
+                    ) 
+                )
 
     def on_data(self, slice: Slice) -&gt; None:
         # Iterate through the indicators.
