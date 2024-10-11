@@ -8,6 +8,7 @@
 
     public override void Initialize()
     {
+        SetStartDate(2024, 1, 1);
         // Subscribe to the underlying asset.
         <?=$underlyingSubscriptionC?>
     
@@ -71,6 +72,7 @@
     _indicators = []
     
     def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
         # Subscribe to the underlying asset.
         <?=$underlyingSubscriptionPy?>
 
