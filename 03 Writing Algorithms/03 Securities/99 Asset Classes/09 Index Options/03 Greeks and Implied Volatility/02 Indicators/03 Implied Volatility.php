@@ -14,27 +14,6 @@ include(DOCS_RESOURCES."/option-indicators/index.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>The follow table describes the arguments that the <code class="csharp">IV</code><code class="python">iv</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Argument</th>
-            <th>Data Type</th>
-            <th>Description</th>
-            <th>Default Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>period</code></td>
-            <td><code>int</code></td>
-            <td>The number of periods to use when calculating the historical volatility for comparison.</td>
-            <td>252</td>
-        </tr>
-    </tbody>
-</table>
-
 <p>For more information about the <code class="csharp">IV</code><code class="python">iv</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
 
 <h4>Manual Indicators</h4>
