@@ -25,7 +25,7 @@
 
     def initialize(self):
         self.set_start_date(2020, 1, 1)
-        option = self.add_option("SPY")
+        option = <?=$addOptionPy?>
         history = self.history(option.symbol, 5)
         for index, chain in history['data'].items():
             end_time = index[-1]
