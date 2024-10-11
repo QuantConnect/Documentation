@@ -26,9 +26,10 @@
     def initialize(self):
         self.set_start_date(2020, 1, 1)
         option = <?=$addOptionPy?>
-        history = self.history(option.symbol, 5)
-        for index, chain in history['data'].items():
-            end_time = index[-1]
+
+        history = self.history[OptionUniverse](option.symbol, 5)
+        for chain in history:
+            end_time = chain.end_time
             filtered_contracts = [c for c in chain if c.greeks.delta > 0.3]
             for contract in filtered_contracts:
                 symbol = contract.symbol
