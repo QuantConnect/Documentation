@@ -28,32 +28,36 @@
 
     private void UpdateContractsAndGreeks()
     {
+        // Remove indicators on expired contracts.
+        _indicators = _indicators.Where(indicator => indicator.OptionSymbol.ID.Date > Time).ToList();
+        
         // Get all the tradable Option contracts.
         var chain = OptionChain(<?=$underlyingSymbolC?>);
-        // You can do further filtering here
-    
-        // Iterate all expiries.
-        foreach (var expiry in chain.Select(x =&gt; x.ID.Date).Distinct())
+        if (chain.Count() == 0)
         {
-            var contractsForExpiry = chain.Where(x =&gt; x.ID.Date == expiry).ToList();
+            return;
+        }
+        
+        // Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
+        var expiry = chain.Where(contract => contract.Expiry > Time.AddDays(30))
+            .Min(contract => contract.Expiry);
+        var filteredChain = chain
+            .Where(contract => contract.Expiry == expiry)
+            .OrderBy(contract => Math.Abs(contract.Strike - contract.UnderlyingLastPrice))
+            .Take(4);
 
-            // Iterate all strike prices among the contracts of the same expiry.
-            foreach (var strike in contractsForExpiry.Select(x =&gt; x.ID.StrikePrice).Distinct())
+        // Group the contracts into call/put pairs.
+        foreach (var group in filteredChain.GroupBy(contract => contract.Strike))
+        {
+            var contracts = group.ToList();
+            if (contracts.Count > 1)
             {
-                var contractsForStrike = contractsForExpiry.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
-
-                // Get the call and put, respectively.
-                var call = contractsForStrike.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Call);
-                var put = contractsForStrike.SingleOrDefault(x =&gt; x.ID.OptionRight == OptionRight.Put);
-                // Skip if the call doesn't exist, the put doesn't exist, or they are already in the universe.
-                if (call == null || put == null || Securities.ContainsKey(call.Symbol)) continue;
-
                 // Subscribe to both contracts.
-                <?=$addContractMethodC?>(call.Symbol);
-                <?=$addContractMethodC?>(put.Symbol);
+                <?=$addContractMethodC?>(contracts[0]);
+                <?=$addContractMethodC?>(contracts[1]);
 
                 // Create and save the manual <?=$typeName?> indicators.
-                foreach (var (contractA, contractB) in new[] { (call, put), (put, call) })
+                foreach (var (contractA, contractB) in new[] { contracts, contracts.Reverse() })
                 {
                     _indicators.Add(
                         new <?=$typeName?>(
@@ -123,6 +127,9 @@
         )
         
     def _update_contracts_and_greeks(self) -&gt; None:
+        # Remove indicators on expired contracts.
+        self._indicators = [indicator for indicator in self._indicators if indicator.option_symbol.id.date > self.time]
+        
         # Get all the tradable Option contracts.
         chain = self.option_chain(self._underlying).data_frame
         if chain.empty:
