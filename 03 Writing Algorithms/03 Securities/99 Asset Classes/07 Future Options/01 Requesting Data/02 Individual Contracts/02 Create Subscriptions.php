@@ -85,11 +85,11 @@
                 self.add_future_option_contract(symbol)
 
     def _select_option_contract(self, future_contract_symbol):
-        chain = self.option_chain(future_contract_symbol)
-        chain = [contract for contract in chain if contract.right == OptionRight.CALL]
-        expiry = min([contract.expiry for contract in chain])
-        chain = [contract for contract in chain if contract.expiry == expiry]
-        return sorted(chain, key=lambda contract: contract.strike)[0].symbol</pre>
+        chain = self.option_chain(future_contract_symbol).data_frame
+        expiry = chain.expiry.min()
+        return chain[
+            (chain.expiry == expiry) & (chain.right == OptionRight.CALL) 
+        ].sort_values('strike').index[-1]</pre>
 </div>
 
 <h4>Configure the Underlying Futures Contracts</h4>
@@ -118,31 +118,27 @@
 <p>
     To subscribe to a Future Option contract, you need the contract <code>Symbol</code>. 
     The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method. 
+    This method returns an <code>OptionChain</code> object, which represent an entire chain of Option contracts for a single underlying security.
     <span class='python'>
-        This method returns a <code>DataHistory[OptionUniverse]</code> object, which you can format into a DataFrame or iterate through.
-        Each row in the DataFrame and each <code>OptionUniverse</code> object represents a single Future Option contract.
+        You can even format the chain data into a DataFrame where each row in the DataFrame represents a single contract.
     </span>
-    <span class='csharp'>This method returns a collection of <code>OptionUniverse</code> objects, where each object represents a Future Option contract.</span>
-    Sort and filter the data to find the specific contract(s) you want to trade.
+    With the chain, sort and filter the data to find the specific contract(s) you want to trade.
 </p>
 
 <div class="section-example-container">
     <pre class="csharp">var chain = OptionChain(futureContractSymbol)
-    .Where(contract =&gt; contract.ID.OptionRight == OptionRight.Call).ToList();
-var expiry = chain.Min(contract =&gt; contract.ID.Date);
+    .Where(contract =&gt; contract.Right == OptionRight.Call).ToList();
+var expiry = chain.Min(contract =&gt; contract.Expiry);
 _contractSymbol = chain
-    .Where(contract =&gt; contract.ID.Date == expiry)
-    .OrderBy(contract =&gt; contract.ID.StrikePrice)
+    .Where(contract =&gt; contract.Expiry == expiry)
+    .OrderBy(contract =&gt; contract.Strike)
     .Select(contract =&gt; contract.Symbol).FirstOrDefault();</pre>
-    <pre class="python">chain = self.option_chain(future_contract_symbol)
-chain = [contract for contract in chain if contract.id.option_right == OptionRight.CALL]
-expiry = min([contract.id.date for contract in chain])
-chain = [contract for contract in chain if contract.id.date == expiry]
-self._contract_symbol = sorted(chain, key=lambda contract: contract.id.strike_price)[0].symbol</pre>
+    <pre class="python">chain = self.option_chain(future_contract_symbol).data_frame
+expiry = chain.expiry.min()
+self._contract_symbol = chain[
+    (chain.expiry == expiry) & (chain.right == OptionRight.CALL) 
+].sort_values('strike').index[0]</pre>
 </div>
-
-<p><code>OptionUniverse</code> objects have the following properties:</p>
-<div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
 
 <h4>Subscribe to Contracts</h4>
 
