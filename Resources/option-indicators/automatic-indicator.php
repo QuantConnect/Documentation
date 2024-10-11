@@ -81,12 +81,15 @@
         )
 
     def _update_contracts_and_greeks(self) -&gt; None:
+        # Remove indicators on expired contracts.
+        self._indicators = [indicator for indicator in self._indicators if indicator.option_symbol.id.date > self.time]
+        
         # Get all the tradable Option contracts.
         chain = self.option_chain(<?=$underlyingSymbolPy?>).data_frame
         if chain.empty:
             return
 
-        # Filter the contracts down. For example, ATM contracts with the closest expiry.
+        # Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
         expiry = chain.expiry.min()
         chain = chain[chain.expiry == expiry]
         chain.loc[:, 'abs_strike_delta'] = abs(chain['strike'] - chain['underlyinglastprice'])
