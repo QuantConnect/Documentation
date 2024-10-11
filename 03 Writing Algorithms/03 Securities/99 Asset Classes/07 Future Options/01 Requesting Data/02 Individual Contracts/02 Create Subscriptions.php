@@ -126,17 +126,27 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">var chain = OptionChain(futureContractSymbol)
+    <pre class="csharp">// Get the contracts available to trade.
+var chain = OptionChain(futureContractSymbol)
     .Where(contract =&gt; contract.Right == OptionRight.Call).ToList();
+
+// Select a contract.
 var expiry = chain.Min(contract =&gt; contract.Expiry);
 _contractSymbol = chain
+    // Select call contracts with the closest expiry.
     .Where(contract =&gt; contract.Expiry == expiry)
+    // Select the contract with the lowest strike price.
     .OrderBy(contract =&gt; contract.Strike)
     .Select(contract =&gt; contract.Symbol).FirstOrDefault();</pre>
-    <pre class="python">chain = self.option_chain(future_contract_symbol).data_frame
+    <pre class="python"># Get the contracts available to trade (in DataFrame format).
+chain = self.option_chain(future_contract_symbol).data_frame
+
+# Select a contract.
 expiry = chain.expiry.min()
 self._contract_symbol = chain[
+    # Select call contracts with the closest expiry.
     (chain.expiry == expiry) & (chain.right == OptionRight.CALL) 
+    # Select the contract with the lowest strike price.
 ].sort_values('strike').index[0]</pre>
 </div>
 
