@@ -27,15 +27,15 @@
         
         // Get all the tradable Option contracts.
         var chain = OptionChain(<?=$underlyingSymbolC?>);
-        if (chain.Count() == 0)
+        
+        // Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
+        var filteredChain = chain.Where(contract => contract.Expiry > Time.AddDays(30));
+        if (filteredChain.Count() == 0)
         {
             return;
         }
-        
-        // Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
-        var expiry = chain.Where(contract => contract.Expiry > Time.AddDays(30))
-            .Min(contract => contract.Expiry);
-        var filteredChain = chain
+        var expiry = filteredChain.Min(contract => contract.Expiry);
+        filteredChain = filteredChain
             .Where(contract => contract.Expiry == expiry)
             .OrderBy(contract => Math.Abs(contract.Strike - contract.UnderlyingLastPrice))
             .Take(4);
