@@ -46,12 +46,12 @@
             if (contracts.Count > 1)
             {
                 // Subscribe to both contracts.
-                AddOptionContract(contracts[0]);
-                AddOptionContract(contracts[1]);
+                <?=$addContractMethodC?>(contracts[0]);
+                <?=$addContractMethodC?>(contracts[1]);
 
                 // Create and save the automatic <?=$typeName?> indicators.
-                _indicators.Add(IV(contracts[0], contracts[1]));
-                _indicators.Add(IV(contracts[1], contracts[0]));
+                _indicators.Add(<?=$typeName?>(contracts[0], contracts[1]));
+                _indicators.Add(<?=$typeName?>(contracts[1], contracts[0]));
             }
         }
     }
