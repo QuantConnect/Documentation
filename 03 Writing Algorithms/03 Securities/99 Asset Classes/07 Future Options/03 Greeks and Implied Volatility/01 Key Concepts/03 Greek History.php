@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/option-pricing/greek-history.php"); ?>
+<p><i>This feature is coming soon for Future Options.</i></p>
