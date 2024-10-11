@@ -93,6 +93,7 @@
             return
 
         # Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
+        chain = chain[chain.expiry > self.time + timedelta(30)]
         expiry = chain.expiry.min()
         chain = chain[chain.expiry == expiry]
         chain.loc[:, 'abs_strike_delta'] = abs(chain['strike'] - chain['underlyinglastprice'])
