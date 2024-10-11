@@ -4,7 +4,9 @@ $cSharpMemberName = "_contractSymbol";
 include(DOCS_RESOURCES."/securities/futures-contracts.php"); 
 
 $contractTypeName = "Future";
+$pyContractTypeName = "future";
 $chainTypeName = "FuturesChains";
+$pyChainTypeName = "futures_chains";
 $variableName = "futuresChains";
 include(DOCS_RESOURCES."/securities/open-interest.php"); 
 ?>

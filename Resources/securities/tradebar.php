@@ -5,13 +5,16 @@
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Check if the symbol is contained in TradeBars object
     if (slice.Bars.ContainsKey(<?=$cSharpVariable?>))
     {
+        // Obtain the mapped TradeBar of the symbol
         var tradeBar = slice.Bars[<?=$cSharpVariable?>];
     }
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Obtain the mapped TradeBar of the symbol if any
     trade_bar = slice.bars.get(<?=$pythonVariable?>)   # None if not found</pre>
 </div>
 
@@ -20,6 +23,7 @@
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
+    // Iterate all received Symbol-TradeBar key-value pairs
     foreach (var kvp in slice.Bars)
     {
         var symbol = kvp.Key;
@@ -28,6 +32,7 @@
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
+    # Iterate all received Symbol-TradeBar key-value pairs
     for symbol, trade_bar in slice.bars.items():
         close_price = trade_bar.close</pre>
 </div>
