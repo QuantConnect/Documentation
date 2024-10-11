@@ -30,6 +30,7 @@
         {
             return;
         }
+        
         // Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
         var expiry = chain.Where(contract => contract.Expiry > Time.AddDays(30))
             .Min(contract => contract.Expiry);
