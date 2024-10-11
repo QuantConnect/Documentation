@@ -21,7 +21,21 @@
         }
     }
 }</pre>
-    <pre class="python"># Coming soon</pre>
+    <pre class="python">class OptionHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2020, 1, 1)
+        option = self.add_option("SPY")
+        history = self.history(option.symbol, 5)
+        for index, chain in history['data'].items():
+            end_time = index[-1]
+            filtered_contracts = [c for c in chain if c.greeks.delta > 0.3]
+            for contract in filtered_contracts:
+                symbol = contract.symbol
+                expiry = contract.id.date
+                strike = contract.id.strike_price
+                price = contract.close
+                iv = contract.implied_volatility</pre>
 </div>
 
 <!-- FOP code when the data is available:
