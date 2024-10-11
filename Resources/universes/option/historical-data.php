@@ -12,9 +12,8 @@ include(DOCS_RESOURCES."/option-pricing/greek-history-code.php");
     To get the intraday values or to customize the Greeks and IV calculations, create some <a href='<?=$indicatorLink?>'>Option indicators</a>.
 </p>
 
-  <p>
+<p>
     The <code class='csharp'>History&lt;OptionUniverse&gt;</code> method represents each contract with an <code>OptionUniverse</code> object, which have the following properties:
-  </p>
-  <div data-tree="QuantConnect.Data.UniverseSelection.OptionUniverse"></div>
-  
-</div>
+</p>
+<div data-tree="QuantConnect.Data.UniverseSelection.OptionUniverse"></div>
+
