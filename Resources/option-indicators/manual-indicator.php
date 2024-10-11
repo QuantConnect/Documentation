@@ -57,7 +57,7 @@
                 <?=$addContractMethodC?>(contracts[1]);
 
                 // Create and save the manual <?=$typeName?> indicators.
-                foreach (var (contractA, contractB) in new[] { contracts, contracts.Reverse() })
+                foreach (var (contractA, contractB) in new[] { (contracts[0], contracts[1]), (contracts[1], contracts[0]) })
                 {
                     _indicators.Add(
                         new <?=$typeName?>(
