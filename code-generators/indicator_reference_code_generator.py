@@ -87,9 +87,9 @@ def Generate_Indicators_Reference():
                 py_indicator = get_type(type_name, "python")
                 key = " ".join(re.findall('[a-zA-Z][^A-Z]*', indicator['type-name']))
                 indicator['description'] = _format_introduction(type_name, indicator.get('description'))
-
+                type_name = indicator['type-name'] if not indicator['type-name'].startswith('Momersion') else 'Momersion'
                 start = content.find('https://github.com/QuantConnect/Lean/blob/master/Indicators/')   
-                indicator_source = f"https://github.com/QuantConnect/Lean/tree/master/Indicators/{indicator['type-name']}.cs" \
+                indicator_source = f"https://github.com/QuantConnect/Lean/tree/master/Indicators/{type_name}.cs" \
                     if not "CandlestickPatterns" in indicator["full-type-name"] else \
                     f"https://github.com/QuantConnect/Lean/tree/master/Indicators/CandlestickPatterns/{indicator['type-name']}.cs"
                 for wrong_file, correct_file in EXCEPTION_CS_FILES.items():
