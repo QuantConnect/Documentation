@@ -1,12 +1,8 @@
 <p>
   There are several ways to get the implied volatility and Greeks of contracts.
-  The values in the universe filter function are pre-calculated, daily values.
 </p>
 
-<div class="section-example-container">
-    <pre class="csharp">// TODO</pre>
-    <pre class="python"># TODO</pre>
-</div>
+<? include(DOCS_RESOURCES."/option-pricing/greek-universe.php"); ?>
 
 <p>
   To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a>.
