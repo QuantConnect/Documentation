@@ -50,8 +50,8 @@
                 <?=$addContractMethodC?>(contracts[1]);
 
                 // Create and save the automatic <?=$typeName?> indicators.
-                _indicators.Add(<?=$typeName?>(contracts[0], contracts[1]));
-                _indicators.Add(<?=$typeName?>(contracts[1], contracts[0]));
+                _indicators.Add(<?=$helperMethod?>(contracts[0], contracts[1]));
+                _indicators.Add(<?=$helperMethod?>(contracts[1], contracts[0]));
             }
         }
     }
