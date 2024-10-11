@@ -44,11 +44,11 @@
     private Symbol SelectOptionContract(Symbol futureContractSymbol)
     {
         var chain = OptionChain(futureContractSymbol)
-            .Where(contract =&gt; contract.ID.OptionRight == OptionRight.Call).ToList();
-        var expiry = chain.Min(contract =&gt; contract.ID.Date);
+            .Where(contract =&gt; contract.Right == OptionRight.Call).ToList();
+        var expiry = chain.Min(contract =&gt; contract.Expiry);
         return chain
-            .Where(contract =&gt; contract.ID.Date == expiry)
-            .OrderBy(contract =&gt; contract.ID.StrikePrice)
+            .Where(contract =&gt; contract.Expiry == expiry)
+            .OrderBy(contract =&gt; contract.Strike)
             .Select(contract =&gt; contract.Symbol).FirstOrDefault();
     }
 }</pre>
@@ -86,10 +86,10 @@
 
     def _select_option_contract(self, future_contract_symbol):
         chain = self.option_chain(future_contract_symbol)
-        chain = [contract for contract in chain if contract.id.option_right == OptionRight.CALL]
-        expiry = min([contract.id.date for contract in chain])
-        chain = [contract for contract in chain if contract.id.date == expiry]
-        return sorted(chain, key=lambda contract: contract.id.strike_price)[0].symbol</pre>
+        chain = [contract for contract in chain if contract.right == OptionRight.CALL]
+        expiry = min([contract.expiry for contract in chain])
+        chain = [contract for contract in chain if contract.expiry == expiry]
+        return sorted(chain, key=lambda contract: contract.strike)[0].symbol</pre>
 </div>
 
 <h4>Configure the Underlying Futures Contracts</h4>
