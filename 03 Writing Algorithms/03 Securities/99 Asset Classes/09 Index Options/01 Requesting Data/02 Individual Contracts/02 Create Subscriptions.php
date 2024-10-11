@@ -16,14 +16,12 @@
         {
             return;
         }
-        var chain = OptionChain(
-            QuantConnect.Symbol.CreateCanonicalOption(_underlying, Market.USA, "?SPX")
-        );
-        var expiry = chain.Select(contract => contract.ID.Date).Min();
+        var chain = OptionChain(_underlying);
+        var expiry = chain.Select(contract => contract.Expiry).Min();
         _contractSymbol = chain
             .Where(contract => 
-                contract.ID.Date == expiry && 
-                contract.ID.OptionRight == OptionRight.Call &&
+                contract.Expiry == expiry && 
+                contract.Right == OptionRight.Call &&
                 contract.Greeks.Delta > 0.3m && 
                 contract.Greeks.Delta < 0.7m
             )
@@ -43,19 +41,15 @@
     def on_data(self, data):
         if self._contract_symbol:
             return
-        chain = self.option_chain(
-            Symbol.create_canonical_option(self._underlying, Market.USA, "?SPX") 
-        ).data_frame
-        expiry = chain.id.map(lambda id: id.date).min()
-        delta = chain.greeks.map(lambda greeks: greeks.delta)
-        contract_id = chain[
-            chain.id.map(lambda id: id.date == expiry) & 
-            chain.id.map(lambda id: id.option_right == OptionRight.CALL) &
-            (delta > 0.3) &
-            (delta < 0.7)
-        ].sort_values('openinterest').iloc[-1]['id'] 
-        self._contract_symbol = self.symbol(str(contract_id))
-        self.add_index_option_contract(self._contract_symbol)</pre>
+        chain = self.option_chain(self._underlying).data_frame
+        expiry = chain.expiry.min()
+        self._contract_symbol = chain[
+            (chain.expiry == expiry) &
+            (chain.right == OptionRight.CALL) &
+            (chain.delta < 0.7) &
+            (chain.delta > 0.3)
+        ].sort_values('openinterest').index[-1]
+        self.add_option_contract(self._contract_symbol)</pre>
 </div>
 
 <h4>Configure the Underlying Index</h4>
@@ -71,12 +65,11 @@
 <p>
     To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
     The preferred method to getting Option contract <code>Symbol</code> objects is to use the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method. 
+    This method returns an <code>OptionChain</code> object, which represent an entire chain of Option contracts for a single underlying security.
     <span class='python'>
-        This method returns a <code>DataHistory[OptionUniverse]</code> object, which you can format into a DataFrame or iterate through.
-        Each row in the DataFrame and each <code>OptionUniverse</code> object represents a single contract.
+        You can even format the chain data into a DataFrame where each row in the DataFrame represents a single contract.
     </span>
-    <span class='csharp'>This method returns a collection of <code>OptionUniverse</code> objects, where each object represents a contract.</span>
-    Sort and filter the data to find the specific contract(s) you want to trade.
+    With the chain, sort and filter the data to find the specific contract(s) you want to trade.
 </p>
 
 <div class="section-example-container">
@@ -92,12 +85,12 @@ var chain = OptionChain(
 //).Where(contract => OptionSymbol.IsWeekly(contract.Symbol));
 
 // Select a contract.
-var expiry = chain.Select(contract => contract.ID.Date).Min();
+var expiry = chain.Select(contract => contract.Expiry).Min();
 _contractSymbol = chain
     .Where(contract => 
         // Select call contracts with the closest expiry.
-        contract.ID.Date == expiry && 
-        contract.ID.OptionRight == OptionRight.Call &&
+        contract.Expiry == expiry && 
+        contract.Right == OptionRight.Call &&
         // Select contracts with a 0.3-0.7 delta.
         contract.Greeks.Delta > 0.3m && 
         contract.Greeks.Delta < 0.7m
@@ -117,25 +110,20 @@ chain = self.option_chain(
 chain = self.option_chain(
     Symbol.create_canonical_option(self._underlying, "SPXW", Market.USA, "?SPXW") 
 ).data_frame
-chain = chain[chain.id.map(lambda id: OptionSymbol.is_weekly(self.symbol(str(id))))]
+chain = chain[chain.index.map(lambda symbol: OptionSymbol.is_weekly(symbol))].shape
 
 # Select a contract.
-expiry = chain.id.map(lambda id: id.date).min()
-delta = chain.greeks.map(lambda greeks: greeks.delta)
-contract_id = chain[
+expiry = chain.expiry.min()
+self._contract_symbol = chain[
     # Select call contracts with the closest expiry.
-    chain.id.map(lambda id: id.date == expiry) & 
-    chain.id.map(lambda id: id.option_right == OptionRight.CALL) &
+    (chain.expiry == expiry) &
+    (chain.right == OptionRight.CALL) &
     # Select contracts with a 0.3-0.7 delta.
-    (delta > 0.3) &
-    (delta < 0.7)
+    (chain.delta < 0.7) &
+    (chain.delta > 0.3)
     # Select the contract with the largest open interest.
-].sort_values('openinterest').iloc[-1]['id'] 
-self._contract_symbol = self.symbol(str(contract_id))</pre>
+].sort_values('openinterest').index[-1]</pre>
 </div>
-
-<p><code>OptionUniverse</code> objects have the following properties:</p>
-<div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
 
 <h4>Subscribe to Contracts</h4>
 <p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a>.</p>
