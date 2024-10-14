@@ -14,7 +14,7 @@ include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>For more information about the <code class="csharp">IV</code><code class="python">iv</code> method, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'></a> and <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
+<p>For more information about the <code class="csharp">IV</code><code class="python">iv</code> method, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>Parameters</a> and <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
 
 <h4>Manual Indicators</h4>
 <?
