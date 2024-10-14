@@ -11,12 +11,7 @@
     <pre class="python">self.add_future_option(future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1))</pre>
 </div>
 
-
-<p>The following table describes the filter methods of the <code>OptionFilterUniverse</code> class:</p>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
-
-<p>The preceding methods return an <code>OptionFilterUniverse</code>, so you can chain the methods together.</p>
+<? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureOption(future.Symbol, optionFilterUniverse => optionFilterUniverse.Strikes(-1, 1).CallsOnly());</pre>
