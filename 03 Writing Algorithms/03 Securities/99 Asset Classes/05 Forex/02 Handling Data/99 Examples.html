@@ -1,7 +1,11 @@
-<p>The following examples demonstrate some common practices for handling forex data.</p>
+<p>The following examples demonstrate some common practices for handling Forex data.</p>
 
 <h4>Example 1: Trade USDJPY Spread</h4>
-<p>USDJPY is a forex pair that the reserve banks of the base currency and quote currency act at different time, such that a 12-hour seasonal peak volume is expected. Therefore, to trade USDJPY more efficiently, we should place order at the time with the lowest bid-ask spread, such that lower slippage cost will be costed.</p>
+<p>
+    USDJPY is a Forex pair where the reserve banks of the base currency and quote currency act at different time, which results in a 12-hour period of seasonal peak volume. 
+    To reduce slippage costs, place orders when bid-ask spread is relatively low.
+    The following algorithm demonstrates how to utilize the <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/minimum'>Minimum indicator</a> to check for a narrow spread.
+</p>
 <div class="section-example-container">
     <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
@@ -9,38 +13,42 @@
 
     public override void Initialize()
     {
+        SetStartDate(2004, 1, 1);
         // Add subscriptions to USDJPY with specific market to ensure the correct securities are selected.
         _forex = AddForex("USDJPY", Resolution.Minute, Market.Oanda);
         // Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours.
-        _forex.spreadLow = new Minimum(12*60);
+        _forex.SpreadLow = new Minimum(12*60);
         // Warm up the indicator for its readiness to use immediately.
-        WarmUpIndicator(_forex.Symbol, _forex.spreadLow);
+        WarmUpIndicator&lt;IndicatorDataPoint&gt;(_forex.Symbol, _forex.SpreadLow);
     }
     
     public override void OnData(Slice slice)
     {
         // To get the updated bid-ask spread, make sure the quote data of USDJPY is available.
-        if (slice.QuoteBars.ContainsKey(_forex.Symbol))
+        if (!slice.QuoteBars.ContainsKey(_forex.Symbol))
         {
-            var quoteBar = slice.QuoteBars[_forex.Symbol];
-            // Bid-ask spread = Ask price - Bid price
-            var bidAskSpread = quoteBar.Ask.Close - quoteBar.Bid.Close;
-            // Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
-            _forex.spreadLow.Update(quoteBar.EndTime, bidAskSpread);
-    
-            // Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
-            if (!Portfolio.Invested && bidAskSpread == _forex.spreadLow.Current.Value)
-            {
-                MarketOrder(_forex.Symbol, 1000);
-            }
-    
-            // Plot the bid-ask spread to validate the minimum bid-ask spread calculation.
-            Plot("Bid-Ask Spread", "spread", bidAskSpread);
+            return;
         }
+        var quoteBar = slice.QuoteBars[_forex.Symbol];
+        // Bid-ask spread = Ask price - Bid price
+        var bidAskSpread = quoteBar.Ask.Close - quoteBar.Bid.Close;
+        // Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
+        _forex.SpreadLow.Update(quoteBar.EndTime, bidAskSpread);
+    
+        // Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
+        if (!Portfolio.Invested && bidAskSpread == _forex.SpreadLow.Current.Value)
+        {
+            MarketOrder(_forex.Symbol, 1000);
+        }
+    
+        // Plot the bid-ask spread to validate the minimum bid-ask spread calculation.
+        Plot("Bid-Ask Spread", "spread", bidAskSpread);
     }
 }</pre>
     <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+        
     def initialize(self) -&gt; None:
+        self.set_start_date(2004, 1, 1)
         # Add subscriptions to USDJPY with specific market to ensure the correct securities are selected.
         self._forex = self.add_forex("USDJPY", Resolution.MINUTE, Market.OANDA)
         # Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours.
@@ -50,19 +58,20 @@
     
     def on_data(self, slice: Slice) -&gt; None:
         # To get the updated bid-ask spread, make sure the quote data of USDJPY is available.
-        if self._forex.symbol in slice.quote_bars:
-            quote_bar = slice.quote_bars[self._forex.symbol]
-            # Bid-ask spread = Ask price - Bid price
-            bid_ask_spread = quote_bar.ask.close = quote_bar.bid.close
-            # Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
-            self._forex.spread_low.update(quote_bar.end_time, bid_ask_spread)
+        if self._forex.symbol not in slice.quote_bars:
+            return
+        quote_bar = slice.quote_bars[self._forex.symbol]
+        # Bid-ask spread = Ask price - Bid price
+        bid_ask_spread = quote_bar.ask.close = quote_bar.bid.close
+        # Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
+        self._forex.spread_low.update(quote_bar.end_time, bid_ask_spread)
         
-            # Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
-            if not self.portfolio.invested and bid_ask_spread == self._forex.spread_low.current.value:
-                self.market_order(self._forex.symbol, 1000)
+        # Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
+        if not self.portfolio.invested and bid_ask_spread == self._forex.spread_low.current.value:
+            self.market_order(self._forex.symbol, 1000)
             
-            # Plot the bid-ask spread to validate the minimum bid-ask spread calculation.
-            self.plot("Bid-Ask Spread", "spread", bid_ask_spread)</pre>
+        # Plot the bid-ask spread to validate the minimum bid-ask spread calculation.
+        self.plot("Bid-Ask Spread", "spread", bid_ask_spread)</pre>
 </div>
 
 <h4>Example 2: 5-Minute EURUSD Trend</h4>
