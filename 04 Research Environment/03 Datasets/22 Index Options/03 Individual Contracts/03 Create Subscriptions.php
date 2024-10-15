@@ -40,7 +40,7 @@ var chain = qb.OptionChain(
 //   Option B: Weekly contracts.
 //var chain = qb.OptionChain(
 //    QuantConnect.Symbol.CreateCanonicalOption(underlyingSymbol, "SPXW", Market.USA, "?SPXW")
-//).Where(contract => OptionSymbol.IsWeekly(contract.Symbol));</pre>
+//).Where(contract => !IndexOptionSymbol.IsStandard(contract.Symbol));</pre>
     <pre class="python"># Get the Option contracts that were tradable on January 1st, 2024.
 #   Option A: Standard contracts.
 chain = qb.option_chain(
@@ -51,7 +51,7 @@ chain = qb.option_chain(
 #chain = qb.option_chain(
 #    Symbol.create_canonical_option(underlying_symbol, "SPXW", Market.USA, "?SPXW") 
 #).data_frame
-#chain = chain[chain.index.map(lambda symbol: OptionSymbol.is_weekly(symbol))]</pre>
+#chain = chain[chain.index.map(lambda symbol: not IndexOptionSymbol.is_standard(symbol))]</pre>
     </div>
     <p>
       This method returns an <code>OptionChain</code> object, which represent an entire chain of Option contracts for a single underlying security.
