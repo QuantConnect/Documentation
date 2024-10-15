@@ -1,4 +1,4 @@
-<p>You need to <a href='/docs/v2/research-environment/datasets/index-options/universes#03-Create-Subscriptions'>add an Index Option to your QuantBook</a> before you can request historical data for Index Option contracts.</p>
+<p>You need to <a href='/docs/v2/research-environment/datasets/index-options/universes#02-Create-Subscriptions'>add an Index Option to your QuantBook</a> before you can request historical data for Index Option contracts.</p>
 
 <h4>Data on Filtered Contracts</h4>
 <p>To get the prices and volumes for all of the Index Option contracts that pass your filter during a specific period of time, call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the underlying Index <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
