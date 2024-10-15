@@ -10,7 +10,7 @@
 )</pre>
     <pre class='csharp'>var optionHistory = qb.OptionHistory(
     indexSymbol, new DateTime(2024, 1, 1), new DateTime(2024, 1, 5), Resolution.Minute, 
-    fillForward: False, extendedMarketHours: False
+    fillForward: false, extendedMarketHours: false
 );</pre>
 </div>
 
