@@ -30,7 +30,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 
     <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/index-options#05-Filter-by-Other-Contract-Properties'>contract filter</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">option.set_filter(-1, 1, 0, 90);</pre>
+        <pre class="csharp">option.SetFilter(-1, 1, 0, 90);</pre>
         <pre class="python">option.set_filter(-1, 1, 0, 90)</pre>
     </div>
     <p>The filter determines which contracts the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
