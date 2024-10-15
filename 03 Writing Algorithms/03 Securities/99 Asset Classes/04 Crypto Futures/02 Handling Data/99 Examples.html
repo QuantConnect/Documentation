@@ -124,42 +124,51 @@
 {
     private Symbol _spot;
     private Symbol _future;
+    private decimal _multiplier;
     
     public override void Initialize()
     {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2023, 1, 1);
+
         // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
         // In Binance brokerage, USD is not a valid currency to trade or automatically convertable.
         // Thus, we need to set account currency as USDT and add the starting cash.
-        SetAccountCurrency("USDT", 1000);
+        SetAccountCurrency("USDT", 50000000);
         // Add subscription of BTC-USD Futures and spot crypto with specific market to ensure the correct securities are selected.
-        _future = AddCryptoFuture("BTCUSDT", market: Market.Binance).Symbol;
+        var future = AddCryptoFuture("BTCUSDT", market: Market.Binance);
+        _multiplier = future.SymbolProperties.ContractMultiplier;
+        _future = future.Symbol;
         _spot = AddCrypto("BTCUSDT", market: Market.Binance).Symbol;
     }
     
     public override void OnData(Slice slice)
     {
         // Only compare the most updated price if both spot and future are available to ensure fair comparison for arbitration.
-        if (slice.Bars.ContainsKey(_spot) && slice.Bars.ContainsKey(_future))
+        if (slice.Bars.ContainsKey(_spot) &amp;&amp; slice.Bars.ContainsKey(_future))
         {
             var spotPrice = slice.Bars[_spot].Price;
             var futurePrice = slice.Bars[_future].Price;
     
-            // To provide sufficient profit margin to overcome fee and slippage, a threshold of 0.5% is set.
+            // To provide sufficient profit margin to overcome fee and slippage, a threshold of 2% is set.
             // Buy low sell high: if one's price is above another by the set threshold, sell it and buy the other security.
-            if (spotPrice &gt;= futurePrice * 1.005m)
+            // Make sure to equalize the actual order size with the contract multiplier.
+            if (spotPrice &gt;= futurePrice * 1.02m)
             {
-                SetHoldings(_spot, -0.25m);
-                SetHoldings(_future, 0.25m);
+                var quantity = CalculateOrderQuantity(_future, 0.5m);
+                MarketOrder(_spot, -quantity * _multiplier);
+                MarketOrder(_future, quantity);
             }
-            else if (spotPrice * 1.005m &lt;= futurePrice)
+            else if (spotPrice * 1.02m &lt;= futurePrice)
             {
-                SetHoldings(_spot, 0.25m);
-                SetHoldings(_future, -0.25m);
+                var quantity = CalculateOrderQuantity(_future, 0.5m);
+                MarketOrder(_spot, quantity * _multiplier);
+                MarketOrder(_future, -quantity);
             }
             // When the mispricing converges, close both positions to earn the spread.
-            else if ((Portfolio[_spot].Quantity &lt; 0 && spotPrice &lt; futurePrice)
-                || (Portfolio[_spot].Quantity &gt; 0 && spotPrice &gt; futurePrice))
+            else if ((Math.Round(Portfolio[_spot].Quantity, 2) &lt; 0 &amp;&amp; spotPrice &lt; futurePrice)
+                || (Math.Round(Portfolio[_spot].Quantity, 2) &gt; 0 &amp;&amp; spotPrice &gt; futurePrice))
             {
                 Liquidate();
             }
@@ -168,13 +177,18 @@
 }</pre>
     <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2023, 1, 1)
+
         # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
         # In Binance brokerage, USD is not a valid currency to trade or automatically convertable.
         # Thus, we need to set account currency as USDT and add the starting cash.
-        self.set_account_currency("USDT", 1000)
+        self.set_account_currency("USDT", 50000000)
         # Add subscription of BTC-USD Futures and spot crypto with specific market to ensure the correct securities are selected.
-        self._future = self.add_crypto_future("BTCUSDT", market=Market.BINANCE).symbol
+        future = self.add_crypto_future("BTCUSDT", market=Market.BINANCE)
+        self.multiplier = future.symbol_properties.contract_multiplier
+        self._future = future.symbol
         self._spot = self.add_crypto("BTCUSDT", market=Market.BINANCE).symbol
     
     def on_data(self, slice: Slice) -&gt; None:
@@ -183,16 +197,19 @@
             spot_price = slice.bars[self._spot].price
             future_price = slice.bars[self._future].price
         
-            # To provide sufficient profit margin to overcome fee and slippage, a threshold of 0.5% is set.
+            # To provide sufficient profit margin to overcome fee and slippage, a threshold of 2% is set.
             # Buy low sell high: if one's price is above another by the set threshold, sell it and buy the other security.
-            if spot_price &gt;= future_price * 1.005:
-                self.set_holdings(self._spot, -0.25)
-                self.set_holdings(self._future, 0.25)
-            elif spot_price * 1.005 &lt;= future_price:
-                self.set_holdings(self._spot, 0.25)
-                self.set_holdings(self._future, -0.25)
+            # Make sure to equalize the actual order size with the contract multiplier.
+            if spot_price &gt;= future_price * 1.02:
+                quantity = self.calculate_order_quantity(self._future, 0.5)
+                self.market_order(self._spot, -quantity * self.multiplier)
+                self.market_order(self._future, quantity)
+            elif spot_price * 1.02 &lt;= future_price:
+                quantity = self.calculate_order_quantity(self._future, 0.5)
+                self.market_order(self._spot, quantity * self.multiplier)
+                self.market_order(self._future, -quantity)
             # When the mispricing converges, close both positions to earn the spread.
-            elif (self.portfolio[self._spot].quantity &lt; 0 and spot_price &lt; future_price)\
-            or (self.portfolio[self._spot].quantity &gt; 0 and spot_price &gt; future_price):
+            elif (round(self.portfolio[self._spot].quantity, 2) &lt; 0 and spot_price &lt; future_price)\
+            or (round(self.portfolio[self._spot].quantity, 2) &gt; 0 and spot_price &gt; future_price):
                 self.liquidate()</pre>
 </div>
