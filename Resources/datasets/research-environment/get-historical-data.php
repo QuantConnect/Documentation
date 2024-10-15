@@ -1,5 +1,7 @@
 <p>You need a <a href='<?=$createSubscriptionsLink?>'>subscription</a> before you can request historical data for <?=$assetClass?> contracts. On the time dimension, you can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. On the contract dimension, you can request historical data for a single contract, a subset of the contracts you created subscriptions for in your notebook, or all of the contracts in your notebook.</p>
 
+<p>These history requests return the prices and open interest of the Option contracts. They don't provide the implied volatility or Greeks. To get the implied volaility and Greeks, call the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method or create some <a href='<?=$indicatorLink?>'>indicators</a>.</p>
+
 <p>Before you request historical data, call the <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> method with a <code class='python'>datetime</code><code class='csharp'>DateTime </code> to reduce the risk of <a href='/docs/v2/writing-algorithms/key-concepts/glossary#17-look-ahead-bias'>look-ahead bias</a>.</p>
 <div class='section-example-container'>
     <pre class='csharp'>qb.SetStartDate(startDate);</pre>
@@ -36,7 +38,7 @@ all_history_df = qb.history(qb.securities.keys(), 10)
 
 # DataFrame of trade data
 single_history_trade_bar_df = qb.history(TradeBar, <?=$contractVariablePy?>, 10)
-subset_history_trade_bar_df = qb.history(TradeBar, [<?=$contractVariablePy?>], 10)
+subset_history_trade_bar_df = qb.history(TradeBar, [<?=$contractVariablePy?>], 10)s
 all_history_trade_bar_df = qb.history(TradeBar, qb.securities.keys(), 10)
 
 # DataFrame of quote data
@@ -176,9 +178,9 @@ var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, startTi
 
 <? if ($supportsTicks) { ?>
 // Tick objects
-var singleHistoryTicks = qb.History<Tick>(<?=$contractVariableC?>, startTime, endTime, Resolution.Tick);
-var subsetHistoryTicks = qb.History<Tick>(new[] {<?=$contractVariableC?>}, startTime, endTime, Resolution.Tick);
-var allHistoryTicks = qb.History<Tick>(qb.Securities.Keys, startTime, endTime, Resolution.Tick);
+var singleHistoryTicks = qb.History&lt;Tick&gt;(<?=$contractVariableC?>, startTime, endTime, Resolution.Tick);
+var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {<?=$contractVariableC?>}, startTime, endTime, Resolution.Tick);
+var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Tick);
 <? } ?>
 
 // OpenInterest objects
@@ -242,15 +244,6 @@ all_history_open_interest = qb.history[OpenInterest](qb.securities.keys(), start
 </div>
 <? } elseif ($assetClass == "Futures Option") { ?>
 <p>To get historical data for all of the <?=$assetClass?> contracts that traded during a specific period of time, call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the underlying <?=$underlyingAssetClass?> <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
-<? } elseif ($assetClass == "Index Option") { ?>
-<p>To get historical data for all of the <?=$assetClass?> contracts that pass your <a href='<?=$createSubscriptionsLink?>'>filter</a> during a specific period of time, call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the canonical Index Option <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 <? } ?>
-
-<? if ($assetClass != "Futures" && $assetClass != "Equity Option") { ?> 
-<div class='section-example-container'>
-    <pre class='python'>option_history = qb.option_history(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.MINUTE, fill_forward=False, extended_market_hours=False)</pre>
-    <pre class='csharp'>var optionHistory = qb.OptionHistory(<?=$underlyingSymbolVariableC?>, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, fillForward: False, extendedMarketHours: False);</pre>
-</div>
-<? } ?> 
 
 <p>The preceding calls return data that have a timestamp within the defined period of time.</p>

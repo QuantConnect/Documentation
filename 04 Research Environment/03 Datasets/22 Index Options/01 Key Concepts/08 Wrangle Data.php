@@ -2,7 +2,7 @@
 $assetClass = 'Index Options';
 $singularAssetClass = 'Index Option contract';
 $pluralAssetClass = 'Index Option contracts';
-$historicalDataLink = "/docs/v2/research-environment/datasets/index-options#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/index-options/key-concepts#03-Get-Historical-Data";
 $primarySymbolPy = 'contract_symbol';
 $primarySymbolC = 'contractSymbol';
 $primaryTicker = '';

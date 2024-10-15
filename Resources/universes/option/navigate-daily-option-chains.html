@@ -9,7 +9,11 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">public override void OnData(Slice data)
+    <pre class="csharp">// In the initialize method, create a Scheduled Event to get the Option 
+// chain and rebalance the portfolio.
+Schedule.On(DateRules.WeekStart(_symbol), TimeRules.AfterMarketOpen(_symbol, 1), Rebalance);
+
+public void Rebalance()
 {
     foreach (var optionUniverse in OptionChain(_symbol)) 
     {
@@ -18,11 +22,22 @@
         var delta = optionUniverse.Greeks.Delta;
     }
 }</pre>
-    <pre class="python">def on_data(self, data):
+    <pre class="python">
+# In the initialize method, create a Scheduled Event to get the Option 
+# chain and rebalance the portfolio.
+self.schedule.on(
+    self.date_rules.week_start(self._symbol), 
+    self.time_rules.after_market_open(self._symbol, 1), 
+    self._rebalance
+  )
+
+# Define the method.
+def _rebalance(self):
     daily_option_chain = self.option_chain(self._symbol)
 
     # Get the DataFrame format.
     df = daily_option_chain.data_frame
+    delta_by_symbol = df.delta
     
     # Get the OptionUniverse objects format.
     for option_universe in daily_option_chain:
@@ -30,6 +45,8 @@
         oi = option_universe.open_interest
         delta = option_universe.greeks.delta</pre>
 </div>
+
+<p>The <code class='csharp'>OptionChain</code><code class='python'>option_chain</code> method was previously known as the <code class='csharp'>OptionChainProvider.GetOptionContractList</code><code class='python'>option_chain_provider.get_option_contract_list</code> method.</p>
 
 <p><code>OptionUniverse</code> objects have the following properties:</p>
 <div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>

@@ -2,7 +2,7 @@
 $assetClass = 'Futures Option';
 $singularAssetClass = 'Futures Option contract';
 $pluralAssetClass = 'Futures Option contracts';
-$historicalDataLink = "/docs/v2/research-environment/datasets/futures-options#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/futures-options#03-Get-Historical-Data";
 $primarySymbolPy = 'fop_contract_symbol';
 $primarySymbolC = 'fopContractSymbol';
 $primaryTicker = '';

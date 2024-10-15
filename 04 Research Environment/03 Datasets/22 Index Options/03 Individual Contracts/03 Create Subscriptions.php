@@ -1,8 +1,9 @@
-<p>Follow these steps to subscribe to individual Equity Option contracts:</p>
+<p>Follow these steps to subscribe to individual Index Option contracts:</p>
 
 <ol>
 <?
-$additionalImports = "using QuantConnect.Securities.Option;
+$additionalImports = "using QuantConnect.Securities.Index;
+using QuantConnect.Securities.IndexOption;
 ";
 include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
 ?>
@@ -12,12 +13,13 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="python">qb = QuantBook()</pre>
     </div>
 
-    <li>Subscribe to the underlying Equity with raw data normalization and save a reference to the Equity <code>Symbol</code>.</li>
+    <li><a href='/docs/v2/research-environment/datasets/indices#03-Create-Subscriptions'>Add the underlying Index</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var underlyingSymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-        <pre class="python">underlying_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre></div><div class="csharp section-example-container">
+        <pre class="csharp">var underlyingSymbol = qb.AddIndex("SPX", Resolution.Minute).Symbol;</pre>
+        <pre class="python">underlying_symbol = qb.add_index("SPX", Resolution.MINUTE).symbol</pre>
     </div>
-    <p>To view the supported underlying assets in the US Equity Options dataset, see the <a href="/datasets/algoseek-us-equity-options/explorer">Data Explorer</a>.</p>
+    <p>To view the available Indices, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#08-Supported-Assets">Supported Assets</a>.</p>
+    <p>If you do not pass a resolution argument, <code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code> is used by default. <br></p>
 
     <li><a href='/docs/v2/research-environment/initialization#02-Set-Dates'>Set the start date</a> to a date in the past that you want to use as the analysis date.</li>
     <div class="section-example-container">
@@ -26,19 +28,36 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     </div>
     <p>The method that you call in the next step returns data on all the contracts that were tradable on this date.</p>
 
-    <li>Call the <code class='csharp'>OptionChain</code><code class='python'>option_chain</code> method with the underlying <code>Equity</code> <code>Symbol</code>.</li>
+
+    <li>Call the <code class='csharp'>OptionChain</code><code class='python'>option_chain</code> method with the underlying <code>Index</code> <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">// Get the Option contracts that were tradable on January 1st, 2024.
-var chain = qb.OptionChain(underlyingSymbol);</pre>
+//   Option A: Standard contracts.
+var chain = OptionChain(
+    QuantConnect.Symbol.CreateCanonicalOption(underlyingSymbol, Market.USA, "?SPX")
+);
+
+//   Option B: Weekly contracts.
+//var chain = OptionChain(
+//    QuantConnect.Symbol.CreateCanonicalOption(underlyingSymbol, "SPXW", Market.USA, "?SPXW")
+//).Where(contract => OptionSymbol.IsWeekly(contract.Symbol));</pre>
     <pre class="python"># Get the Option contracts that were tradable on January 1st, 2024.
-chain = qb.option_chain(underlying_symbol)</pre>
+#   Option A: Standard contracts.
+chain = self.option_chain(
+    Symbol.create_canonical_option(self._underlying, Market.USA, "?SPX") 
+).data_frame
+
+#  Option B: Weekly contracts.
+#chain = self.option_chain(
+#    Symbol.create_canonical_option(self._underlying, "SPXW", Market.USA, "?SPXW") 
+#).data_frame
+#chain = chain[chain.index.map(lambda symbol: OptionSymbol.is_weekly(symbol))]</pre>
     </div>
     <p>
       This method returns an <code>OptionChain</code> object, which represent an entire chain of Option contracts for a single underlying security.
       <span class='python'>
         You can even format the chain data into a DataFrame where each row in the DataFrame represents a single contract.
       </span>
-      
     </p>
 
     <li>Sort and filter the data to select the specific contract(s) you want to analyze.</li>
@@ -59,10 +78,7 @@ var contractSymbol = chain
     .First()
     // Get the Symbol of the target contract.
     .Symbol;</pre>
-      <pre class="python"># Get the contracts available to trade (in DataFrame format).
-chain = chain.data_frame
-
-# Select a contract.
+      <pre class="python"># Select a contract.
 expiry = chain.expiry.min()
 contract_symbol = chain[
     # Select call contracts with the closest expiry.
@@ -75,12 +91,11 @@ contract_symbol = chain[
 ].sort_values('openinterest').index[-1]</pre>
     </div>
 
-	<li>Call the <code class="csharp">AddOptionContract</code><code class="python">add_option_contract</code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
+  <li>Call the <code class='csharp'>AddIndexOptionContract</code><code class='python'>add_index_option_contract</code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
     <div class="section-example-container">
-      <pre class="csharp">// Subscribe to the target contract.
-var optionContract = qb.AddOptionContract(contractSymbol, fillForward: false);</pre>
-      <pre class="python"># Subscribe to the target contract.
-option_contract = qb.add_option_contract(contract_symbol, fill_forward=False)</pre>
+      <pre class="csharp">qb.AddIndexOptionContract(contractSymbol, fillForward: false);</pre>
+      <pre class="python">qb.add_index_option_contract(contract_symbol, fill_forward=False)</pre>
     </div>
   <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
 </ol>
+

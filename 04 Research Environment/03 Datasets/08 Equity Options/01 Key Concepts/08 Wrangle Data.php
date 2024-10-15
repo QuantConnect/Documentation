@@ -2,7 +2,7 @@
 $assetClass = 'Equity Options';
 $singularAssetClass = 'Equity Option contract';
 $pluralAssetClass = 'Equity Option contracts';
-$historicalDataLink = "/docs/v2/research-environment/datasets/equity-options/universes#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/equity-options/universes#03-Get-Historical-Data";
 $primarySymbolPy = 'contract_symbol';
 $primarySymbolC = 'contractSymbol';
 $primaryTicker = '';

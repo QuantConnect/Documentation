@@ -107,10 +107,10 @@ chain = self.option_chain(
 ).data_frame
 
 #  Option B: Weekly contracts.
-chain = self.option_chain(
-    Symbol.create_canonical_option(self._underlying, "SPXW", Market.USA, "?SPXW") 
-).data_frame
-chain = chain[chain.index.map(lambda symbol: OptionSymbol.is_weekly(symbol))].shape
+#chain = self.option_chain(
+#    Symbol.create_canonical_option(self._underlying, "SPXW", Market.USA, "?SPXW") 
+#).data_frame
+#chain = chain[chain.index.map(lambda symbol: OptionSymbol.is_weekly(symbol))]
 
 # Select a contract.
 expiry = chain.expiry.min()
