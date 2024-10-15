@@ -11,9 +11,9 @@ futures_contract = sorted(
 
 # Get the Options data for the selected Futures contract.
 option_history = qb.option_history(
-    futures_contract, start_date, futures_contract.id.date, Resolution.MINUTE, 
+    futures_contract, start_date, futures_contract.id.date, Resolution.HOUR, 
     fill_forward=False, extended_market_hours=False
-)</pre>
+).data_frame</pre>
     <pre class='csharp'>var startDate = new DateTime(2024, 1, 1);
 
 // Select a contract. For example, get the front-month Futures contract.
@@ -23,7 +23,7 @@ var futuresContract = qb.FutureChainProvider.GetFutureContractList(future.Symbol
 
 // Get the Options data for the selected Futures contract.
 var optionHistory = qb.OptionHistory(
-    futuresContract, startDate, futuresContract.ID.Date, Resolution.Minute, 
+    futuresContract, startDate, futuresContract.ID.Date, Resolution.Hour, 
     fillForward: false, extendedMarketHours: false
 );</pre>
 </div>
