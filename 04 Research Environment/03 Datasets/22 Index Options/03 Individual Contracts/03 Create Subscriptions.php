@@ -33,23 +33,23 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     <div class="section-example-container">
         <pre class="csharp">// Get the Option contracts that were tradable on January 1st, 2024.
 //   Option A: Standard contracts.
-var chain = OptionChain(
+var chain = qb.OptionChain(
     QuantConnect.Symbol.CreateCanonicalOption(underlyingSymbol, Market.USA, "?SPX")
 );
 
 //   Option B: Weekly contracts.
-//var chain = OptionChain(
+//var chain = qb.OptionChain(
 //    QuantConnect.Symbol.CreateCanonicalOption(underlyingSymbol, "SPXW", Market.USA, "?SPXW")
 //).Where(contract => OptionSymbol.IsWeekly(contract.Symbol));</pre>
     <pre class="python"># Get the Option contracts that were tradable on January 1st, 2024.
 #   Option A: Standard contracts.
-chain = self.option_chain(
-    Symbol.create_canonical_option(self._underlying, Market.USA, "?SPX") 
+chain = qb.option_chain(
+    Symbol.create_canonical_option(underlying_symbol, Market.USA, "?SPX") 
 ).data_frame
 
 #  Option B: Weekly contracts.
-#chain = self.option_chain(
-#    Symbol.create_canonical_option(self._underlying, "SPXW", Market.USA, "?SPXW") 
+#chain = qb.option_chain(
+#    Symbol.create_canonical_option(underlying_symbol, "SPXW", Market.USA, "?SPXW") 
 #).data_frame
 #chain = chain[chain.index.map(lambda symbol: OptionSymbol.is_weekly(symbol))]</pre>
     </div>
