@@ -1,0 +1,34 @@
+<p>
+    By default, LEAN expects the data in chronological order. If the data is unsorted, set the <code class="csharp">Sort</code><code class="python">sort</code> property of the <code>SubscriptionDataSource</code> object to <code class="csharp">true</code><code class="python">True</code>.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class MyCustomDataType : BaseData
+{
+    public override SubscriptionDataSource GetSource(
+        SubscriptionDataConfig config,
+        DateTime date,
+        bool isLiveMode)
+    {
+        var source = $"http://my-ftp-server.com/{config.Symbol.Value}/{date:yyyyMMdd}.csv";
+        return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile)
+        { 
+            Sort = true
+        };
+    }
+}</pre>
+    <pre class="python">class MyCustomDataType(PythonData):
+    def get_source(self,
+            config: SubscriptionDataConfig,
+            date: datetime,
+            is_live_mode: bool) -&gt; SubscriptionDataSource:
+            
+        source = f"http://my-ftp-server.com/{config.symbol.value}/{date:%Y%M%d}.csv"
+        subscription = SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
+        subscription.sort = True
+        return subscription</pre>
+</div>
+
+<p>
+    LEAN uses <code class="csharp">EndTime</code><code class="python">end_time</code> property of your custom data to sort it.
+</p>
