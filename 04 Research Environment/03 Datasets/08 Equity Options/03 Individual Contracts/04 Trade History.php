@@ -20,5 +20,3 @@ for trade_bar in history:
 
 <p><code>TradeBar</code> objects have the following properties:</p>    
 <div data-tree='QuantConnect.Data.Market.TradeBar'></div>
-
-<p>For more information about history requests, see <a href='/docs/v2/research-environment/datasets/key-concepts'>Key Concepts</a>.</p>
