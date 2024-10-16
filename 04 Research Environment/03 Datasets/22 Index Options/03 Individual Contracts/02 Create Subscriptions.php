@@ -93,8 +93,8 @@ contract_symbol = chain[
 
   <li>Call the <code class='csharp'>AddIndexOptionContract</code><code class='python'>add_index_option_contract</code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
     <div class="section-example-container">
-      <pre class="csharp">qb.AddIndexOptionContract(contractSymbol, fillForward: false);</pre>
-      <pre class="python">qb.add_index_option_contract(contract_symbol, fill_forward=False)</pre>
+      <pre class="csharp">var optionContract = qb.AddIndexOptionContract(contractSymbol, fillForward: false);</pre>
+      <pre class="python">option_contract = qb.add_index_option_contract(contract_symbol, fill_forward=False)</pre>
     </div>
   <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
 </ol>
