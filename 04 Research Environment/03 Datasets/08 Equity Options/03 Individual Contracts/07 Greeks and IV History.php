@@ -44,18 +44,18 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
         ).data_frame.current
 
     return pd.DataFrame({
-        'iv_call': get_value(ImpliedVolatility, call, put),
-        'iv_put': get_value(ImpliedVolatility, put, call),
-        'delta_call': get_value(Delta, call, put),
-        'delta_put': get_value(Delta, put, call),
-        'gamma_call': get_value(Gamma, call, put),
-        'gamma_put': get_value(Gamma, put, call),
-        'rho_call': get_value(Rho, call, put),
-        'rho_put': get_value(Rho, put, call),
-        'vega_call': get_value(Vega, call, put),
-        'vega_put': get_value(Vega, put, call),
-        'theta_call': get_value(Theta, call, put),
-        'theta_put': get_value(Theta, put, call),
+        'iv_call': get_values(ImpliedVolatility, call, put),
+        'iv_put': get_values(ImpliedVolatility, put, call),
+        'delta_call': get_values(Delta, call, put),
+        'delta_put': get_values(Delta, put, call),
+        'gamma_call': get_values(Gamma, call, put),
+        'gamma_put': get_values(Gamma, put, call),
+        'rho_call': get_values(Rho, call, put),
+        'rho_put': get_values(Rho, put, call),
+        'vega_call': get_values(Vega, call, put),
+        'vega_put': get_values(Vega, put, call),
+        'theta_call': get_values(Theta, call, put),
+        'theta_put': get_values(Theta, put, call),
     })</pre>
         <pre class="csharp">Dictionary&lt;string, IndicatorHistory&gt; GreeksAndIV(List&lt;Symbol&gt; contracts, int period)
 {
