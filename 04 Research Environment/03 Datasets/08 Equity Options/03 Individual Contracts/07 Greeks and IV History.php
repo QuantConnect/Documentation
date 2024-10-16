@@ -32,26 +32,30 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
 
     <li>Define a method to return the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators">IV & Greeks indicator</a> values for each contract.</li>
     <div class="section-example-container">
-        <pre class="python">def greeks_and_iv(contracts, period):
-
+        <pre class="python">def greeks_and_iv(contracts, period, risk_free_rate_model, dividend_yield_model, option_model):
+    # Get the call and put contract.
     call, put = sorted(contracts, key=lambda s: s.id.option_right)
     
-    def get_values(indicator):
-        return qb.indicator_history(indicator, [call, put, underlying_symbol], period).data_frame.current
+    def get_values(indicator_class, contract, mirror_contract):
+        return qb.indicator_history(
+            indicator_class(contract, risk_free_rate_model, dividend_yield_model, mirror_contract, option_model), 
+            [contract, mirror_contract, contract.underlying], 
+            period
+        ).data_frame.current
 
     return pd.DataFrame({
-        'iv_call': get_values(ImpliedVolatility(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
-        'iv_put': get_values(ImpliedVolatility(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
-        'delta_call': get_values(Delta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
-        'delta_put': get_values(Delta(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
-        'gamma_call': get_values(Gamma(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
-        'gamma_put': get_values(Gamma(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
-        'rho_call': get_values(Rho(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
-        'rho_put': get_values(Rho(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
-        'vega_call': get_values(Vega(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
-        'vega_put': get_values(Vega(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
-        'theta_call': get_values(Theta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
-        'theta_put': get_values(Theta(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
+        'iv_call': get_value(ImpliedVolatility, call, put),
+        'iv_put': get_value(ImpliedVolatility, put, call),
+        'delta_call': get_value(Delta, call, put),
+        'delta_put': get_value(Delta, put, call),
+        'gamma_call': get_value(Gamma, call, put),
+        'gamma_put': get_value(Gamma, put, call),
+        'rho_call': get_value(Rho, call, put),
+        'rho_put': get_value(Rho, put, call),
+        'vega_call': get_value(Vega, call, put),
+        'vega_put': get_value(Vega, put, call),
+        'theta_call': get_value(Theta, call, put),
+        'theta_put': get_value(Theta, put, call),
     })</pre>
         <pre class="csharp">Dictionary&lt;string, IndicatorHistory&gt; GreeksAndIV(List&lt;Symbol&gt; contracts, int period)
 {
@@ -87,7 +91,7 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
 
     <li>Call the preceding method and display the results.</li>
     <div class="section-example-container">
-        <pre class="python">greeks_and_iv([contract_symbol, mirror_contract_symbol], 10)</pre>
+        <pre class="python">greeks_and_iv([contract_symbol, mirror_contract_symbol], 10, risk_free_rate_model, dividend_yield_model, option_model)</pre>
         <pre class="csharp">foreach (var (key, indicatorHistory) in GreeksAndIV(new List<Symbol> {contractSymbol, mirrorContractSymbol}, 10))
 {
     foreach (var dataPoint in indicatorHistory)
