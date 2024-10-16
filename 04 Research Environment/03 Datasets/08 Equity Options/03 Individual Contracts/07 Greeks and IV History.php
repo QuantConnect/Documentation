@@ -1,3 +1,5 @@
+<? include(DOCS_RESOURCES."/securities/data-definitions/greeks-and-iv.html"); ?>
+
 <p>Follow these steps to get the implied volatility and Greeks data:</p>
 
 <ol>
