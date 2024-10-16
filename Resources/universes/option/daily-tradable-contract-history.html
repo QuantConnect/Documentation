@@ -6,20 +6,20 @@ history_df = qb.history(option.symbol, datetime(2024, 1, 1), datetime(2024, 1, 5
 
 # OptionUniverse objects
 history = qb.history[OptionUniverse](option.symbol, datetime(2024, 1, 1), datetime(2024, 1, 5))
-for option_universe in history:
+for chain in history:
     end_time = option_universe.end_time
-    filtered_contracts = [contract for contract in option_universe if contract.greeks.delta > 0.3]
-    for contract in filtered_contracts:
+    filtered_chain = [contract for contract in chain if contract.greeks.delta > 0.3]
+    for contract in filtered_chain:
         price = contract.price
         iv = contract.implied_volatility</pre>
     <pre class='csharp'>var history = qb.History&lt;OptionUniverse&gt;(option.Symbol, new DateTime(2024, 1, 1), new DateTime(2024, 1, 5));
 foreach (var chain in history)
 {
     var endTime = chain.EndTime;
-    var filteredContracts = chain.Data
+    var filteredChain = chain.Data
         .Select(contract => contract as OptionUniverse)
         .Where(contract => contract.Greeks.Delta > 0.3m);
-    foreach (var contract in filteredContracts)
+    foreach (var contract in filteredChain)
     {
         var price = contract.Price;
         var iv = contract.ImpliedVolatility;
@@ -27,5 +27,5 @@ foreach (var chain in history)
 }</pre>
 </div>
 
-<p class='csharp'>The method represents each contract with an <code>OptionUniverse</code> object, which have the following properties:</p>
+<p>The method represents each contract with an <code>OptionUniverse</code> object, which have the following properties:</p>
 <div class='csharp' data-tree="QuantConnect.Data.UniverseSelection.OptionUniverse"></div>
