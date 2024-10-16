@@ -36,9 +36,9 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
     # Get the call and put contract.
     call, put = sorted(contracts, key=lambda s: s.id.option_right)
     
-    def get_values(indicator_class, contract, mirror_contract):
+    def get_values(cls, contract, mirror_contract):
         return qb.indicator_history(
-            indicator_class(contract, risk_free_rate_model, dividend_yield_model, mirror_contract, option_model), 
+            cls(contract, risk_free_rate_model, dividend_yield_model, mirror_contract, option_model), 
             [contract, mirror_contract, contract.underlying], 
             period
         ).data_frame.current
