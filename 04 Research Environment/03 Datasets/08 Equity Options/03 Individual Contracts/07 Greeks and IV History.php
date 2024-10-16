@@ -30,7 +30,7 @@ var dividendYieldModel = new DividendYieldProvider(underlyingSymbol);
 var optionModel = OptionPricingModelType.ForwardTree;</pre>
     </div>
 
-    <li>Define a method to return the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators">Implied Volatility & Greeks indicator</a> values for each contract.</li>
+    <li>Define a method to return the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators">IV & Greeks indicator</a> values for each contract.</li>
     <div class="section-example-container">
         <pre class="python">def get_indicators(contracts):
     # Get the call and put contract.
