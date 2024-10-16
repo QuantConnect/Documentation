@@ -25,20 +25,4 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var option = qb.AddOption(equitySymbol);</pre>
         <pre class="python">option = qb.add_option(equity_symbol)</pre>
     </div>
-
-    <li><span class='qualifier'>(Optional)</span> Set a <a href="/docs/v2/writing-algorithms/universes/equity-options#05-Filter-by-Other-Contract-Properties">contract filter</a>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">// Set the contract filter to select contracts that have the strike price 
-// within 1 strike level and expire within 90 days.
-option.SetFilter(-1, 1, 0, 90);</pre>
-        <pre class="python"># Set the contract filter to select contracts that have the strike price 
-# within 1 strike level and expire within 90 days.
-option.set_filter(-1, 1, 0, 90)</pre>
-    </div>
-    <p>The filter determines which contracts the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
-    <ul>
-    	<li>Standard type (exclude weeklys)</li>
-    	<li>Within 1 strike price of the underlying asset price</li>
-    	<li>Expire within 31 days</li>
-    </ul>
 </ol>
