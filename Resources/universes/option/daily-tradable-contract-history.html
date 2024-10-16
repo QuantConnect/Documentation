@@ -2,11 +2,16 @@
 
 <div class='section-example-container'>
     <pre class='python'># DataFrame format
-history = qb.history(option.symbol, datetime(2024, 1, 1), datetime(2024, 1, 5))
+history_df = qb.history(option.symbol, datetime(2024, 1, 1), datetime(2024, 1, 5))
 
 # OptionUniverse objects
 history = qb.history[OptionUniverse](option.symbol, datetime(2024, 1, 1), datetime(2024, 1, 5))
-</pre>
+for option_universe in history:
+    end_time = option_universe.end_time
+    filtered_contracts = [contract for contract in option_universe if contract.greeks.delta > 0.3]
+    for contract in filtered_contracts:
+        price = contract.price
+        iv = contract.implied_volatility</pre>
     <pre class='csharp'>var history = qb.History&lt;OptionUniverse&gt;(option.Symbol, new DateTime(2024, 1, 1), new DateTime(2024, 1, 5));
 foreach (var chain in history)
 {
