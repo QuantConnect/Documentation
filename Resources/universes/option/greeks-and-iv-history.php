@@ -7,26 +7,27 @@
     <div class="section-example-container">
         <pre class="csharp">var mirrorContractSymbol = Symbol.CreateOption(
     optionContract.Underlying.Symbol, 
-    contractSymbol.ID.Market, 
+    <?=$contractNameC?>.ID.Market, 
     optionContract.Style, 
     optionContract.Right == OptionRight.Put ? OptionRight.Call : OptionRight.Put,
     optionContract.StrikePrice, 
     optionContract.Expiry
 );</pre>
         <pre class="python">mirror_contract_symbol = Symbol.create_option(
-    option_contract.underlying.symbol, contract_symbol.id.market, option_contract.style, 
+    option_contract.underlying.symbol, <?=$contractNamePy?>.id.market, option_contract.style, 
     OptionRight.Call if option_contract.right == OptionRight.PUT else OptionRight.PUT,
     option_contract.strike_price, option_contract.expiry
 )</pre>
     </div>
     
     <li>Set up the <a href='/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/key-concepts'>risk free interest rate</a>, <a href='/docs/v2/writing-algorithms/reality-modeling/dividend-yield/key-concepts'>dividend yield</a>, and <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>Option pricing</a> models.</li>
+    <p>In <a href='/research/16977/greeks-and-iv-implementation/p1'>our research</a>, we found the Forward Tree model to be the best pricing model for indicators.</p>
     <div class="section-example-container">
         <pre class="python">risk_free_rate_model = qb.risk_free_interest_rate_model
-dividend_yield_model = DividendYieldProvider(underlying_symbol)
+dividend_yield_model = DividendYieldProvider(<?=$underlyingNamePy?>)
 option_model = OptionPricingModelType.FORWARD_TREE</pre>
         <pre class="csharp">var riskFreeRateModel = qb.RiskFreeInterestRateModel;
-var dividendYieldModel = new DividendYieldProvider(underlyingSymbol);
+var dividendYieldModel = new DividendYieldProvider(<?=$underlyingNameC?>);
 var optionModel = OptionPricingModelType.ForwardTree;</pre>
     </div>
 
@@ -67,7 +68,7 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
     IndicatorHistory GetValues(OptionIndicatorBase indicator)
     {
         // Use both contracts and the underlying to update the indicator and get its value.
-        return qb.IndicatorHistory(indicator, new[] { call, put, underlyingSymbol }, period);
+        return qb.IndicatorHistory(indicator, new[] { call, put, call.Underlying }, period);
     }
 
     // Get the values of all the IV and Greek indicators.
@@ -91,8 +92,8 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
 
     <li>Call the preceding method and display the results.</li>
     <div class="section-example-container">
-        <pre class="python">greeks_and_iv([contract_symbol, mirror_contract_symbol], 10, risk_free_rate_model, dividend_yield_model, option_model)</pre>
-        <pre class="csharp">foreach (var (key, indicatorHistory) in GreeksAndIV(new List<Symbol> {contractSymbol, mirrorContractSymbol}, 10))
+        <pre class="python">greeks_and_iv([<?=$contractNamePy?>, mirror_contract_symbol], 10, risk_free_rate_model, dividend_yield_model, option_model)</pre>
+        <pre class="csharp">foreach (var (key, indicatorHistory) in GreeksAndIV(new List&lt;Symbol&gt; {<?=$contractNameC?>, mirrorContractSymbol}, 10))
 {
     foreach (var dataPoint in indicatorHistory)
     {

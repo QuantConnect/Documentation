@@ -1,18 +1,18 @@
-<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/index-options/key-concepts#03-Get-Historical-Data">historical Index Options data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><a href="/docs/v2/research-environment/charting/plotly-net">Plot.NET</a> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p>You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><a href="/docs/v2/research-environment/charting/plotly-net">Plot.NET</a> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4>Candlestick Chart<br></h4>
 
 <p>Follow these steps to plot candlestick charts:</p>
 
 <ol>
-    <li>Get some <a href="/docs/v2/research-environment/datasets/index-options/key-concepts#03-Get-Historical-Data">historical data</a>.</li>
-	<div class="section-example-container">
-        <pre class="python">history = qb.history(contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
-        <pre class="csharp">var history = qb.History&lt;QuoteBar&gt;(contractSymbol, new DateTime(2021, 12, 30), new DateTime(2021, 12, 30));</pre>
+    <li>Get some historical data.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.history(fop_contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
+        <pre class="csharp">var history = qb.History&lt;QuoteBar&gt;(fopContractSymbol, new DateTime(2021, 12, 30), new DateTime(2021, 12, 30));</pre>
     </div>
 
     <li class="python">Drop the first four index levels of <code>DataFrame</code> that returns.<br></li>
-	<div class="python section-example-container">
+    <div class="python section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
     </div>
 
@@ -26,11 +26,13 @@ using Plotly.NET.LayoutObjects;</pre>
 
     <li>Create a <code>Candlestick</code>.<br></li>
     <div class="section-example-container">
-        <pre class="python">candlestick = go.Candlestick(x=history.index,
-                             open=history['open'],
-                             high=history['high'],
-                             low=history['low'],
-                             close=history['close'])</pre>
+        <pre class="python">candlestick = go.Candlestick(
+    x=history.index,
+    open=history['open'],
+    high=history['high'],
+    low=history['low'],
+    close=history['close']
+)</pre>
         <pre class="csharp">var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
     history.Select(x => x.Open),
     history.Select(x => x.High),
@@ -42,10 +44,12 @@ using Plotly.NET.LayoutObjects;</pre>
 
     <li>Create a <code>Layout</code>.</li>
     <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.value} OHLC'),
-                   xaxis_title='Date',
-                   yaxis_title='Price',
-                   xaxis_rangeslider_visible=False)</pre>
+        <pre class="python">layout = go.Layout(
+    title=go.layout.Title(text=f'{symbol.value} OHLC'),
+    xaxis_title='Date',
+    yaxis_title='Price',
+    xaxis_rangeslider_visible=False
+)</pre>
         <pre class="csharp">LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
@@ -85,13 +89,13 @@ layout.SetValue("title", title);</pre>
 <ol>
     <li>Get some historical data.</li>
     <div class="section-example-container">
-        <pre class="python">history = qb.history(OpenInterest, contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31))</pre>
-        <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(contractSymbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));</pre>
+        <pre class="python">history = qb.history(OpenInterest, fop_contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31))</pre>
+        <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(fopContractSymbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));</pre>
     </div>
 
     <li class="python">Drop the first three index levels of the <code>DataFrame</code> that returns.</li>
     <div class="python section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
+        <pre class="python">history.index = history.index.droplevel([0, 1, 2])</pre>
     </div>
 
     <li class="python">Select the open interest data.</li>
@@ -99,11 +103,12 @@ layout.SetValue("title", title);</pre>
         <pre class="python">history = history['openinterest'].unstack(level=0).ffill()</pre>
     </div>
 
-	<li class="python">Rename the column to be the <code>Symbol</code> of each contract.</li>
+    <li class="python">Rename the column to be the <code>Symbol</code> of each contract.</li>
     <div class="python section-example-container">
         <pre class="python">history.columns = [
     Symbol.get_alias(SecurityIdentifier.parse(x), index_symbol)
-        for x in history.columns]</pre>
+    for x in history.columns
+]</pre>
     </div>
 
     <li class="python">Call the <code>plot</code> method with a title and figure size.</li>
