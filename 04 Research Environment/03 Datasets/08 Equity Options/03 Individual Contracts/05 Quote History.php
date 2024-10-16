@@ -20,5 +20,3 @@ for quote_bar in history:
 
 <p><code>QuoteBar</code> objects have the following properties:</p>    
 <div data-tree='QuantConnect.Data.Market.QuoteBar'></div>
-
-<p>For more information about history requests, see <a href='/docs/v2/research-environment/datasets/key-concepts'>Key Concepts</a>.</p>
