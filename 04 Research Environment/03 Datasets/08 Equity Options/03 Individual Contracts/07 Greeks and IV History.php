@@ -32,15 +32,14 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
 
     <li>Define a method to return the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators">IV & Greeks indicator</a> values for each contract.</li>
     <div class="section-example-container">
-        <pre class="python">def get_indicators(contracts):
-    # Get the call and put contract.
+        <pre class="python">def get_indicators(contracts, period):
+
     call, put = sorted(contracts, key=lambda s: s.id.option_right)
     
     def get_value(indicator):
-        qb.indicator_history(indicator, [call, put, underlying_symbol], 1)
-        return indicator.current.value
+        return qb.indicator_history(indicator, [call, put, underlying_symbol], period).data_frame.current
 
-    return {
+    return pd.DataFrame({
         'iv_call': get_value(ImpliedVolatility(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
         'iv_put': get_value(ImpliedVolatility(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
         'delta_call': get_value(Delta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
@@ -53,23 +52,22 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
         'vega_put': get_value(Vega(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
         'theta_call': get_value(Theta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
         'theta_put': get_value(Theta(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
-    }</pre>
-        <pre class="csharp">Dictionary&lt;string, decimal&gt; GetIndicators(List&lt;Symbol&gt; contracts)
+    })</pre>
+        <pre class="csharp">Dictionary&lt;string, IndicatorHistory&gt; GetIndicators(List&lt;Symbol&gt; contracts, int period)
 {
     // Get the call and put contract.
     var sortedSymbols = contracts.OrderBy(s => s.ID.OptionRight).ToArray();
     var call = sortedSymbols[0];
     var put = sortedSymbols[1];
     
-    decimal GetValue(OptionIndicatorBase indicator)
+    IndicatorHistory GetValue(OptionIndicatorBase indicator)
     {
         // Use both contracts and the underlying to update the indicator and get its value.
-        qb.IndicatorHistory(indicator, new[] { call, put, underlyingSymbol }, 1);
-        return indicator.Current.Value;
+        return qb.IndicatorHistory(indicator, new[] { call, put, underlyingSymbol }, period);
     }
 
     // Get the values of all the IV and Greek indicators.
-    return new Dictionary&lt;string, decimal&gt;
+    return new Dictionary&lt;string, IndicatorHistory&gt;
     {
         {"IVCall", GetValue(new ImpliedVolatility(call, riskFreeRateModel, dividendYieldModel, put, optionModel))},
         {"IVPut", GetValue(new ImpliedVolatility(put, riskFreeRateModel, dividendYieldModel, call, optionModel))},
@@ -89,10 +87,13 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
 
     <li>Call the preceding method and display the results.</li>
     <div class="section-example-container">
-        <pre class="python">get_indicators([contract_symbol, mirror_contract_symbol])</pre>
-        <pre class="csharp">foreach (var (k, v) in GetIndicators(new List&lt;Symbol&gt; {contractSymbol, mirrorContractSymbol}))
+        <pre class="python">get_indicators([contract_symbol, mirror_contract_symbol], 10)</pre>
+        <pre class="csharp">foreach (var (key, indicatorHistory) in GetIndicators(new List<Symbol> {contractSymbol, mirrorContractSymbol}, 10))
 {
-    Console.WriteLine($"{k}: {v}");
+    foreach (var dataPoint in indicatorHistory)
+    {
+        Console.WriteLine($"{dataPoint.EndTime} - {key}: {dataPoint.Current.Value}");
+    }
 }</pre>
     </div>
 </ol>
