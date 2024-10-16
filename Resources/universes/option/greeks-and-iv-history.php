@@ -92,8 +92,8 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
 
     <li>Call the preceding method and display the results.</li>
     <div class="section-example-container">
-        <pre class="python">greeks_and_iv([<?=$contractNamePy?>, mirror_contract_symbol], 10, risk_free_rate_model, dividend_yield_model, option_model)</pre>
-        <pre class="csharp">foreach (var (key, indicatorHistory) in GreeksAndIV(new List&lt;Symbol&gt; {<?=$contractNameC?>, mirrorContractSymbol}, 10))
+        <pre class="python">greeks_and_iv([<?=$contractNamePy?>, mirror_contract_symbol], 20, risk_free_rate_model, dividend_yield_model, option_model)</pre>
+        <pre class="csharp">foreach (var (key, indicatorHistory) in GreeksAndIV(new List&lt;Symbol&gt; {<?=$contractNameC?>, mirrorContractSymbol}, 20))
 {
     foreach (var dataPoint in indicatorHistory)
     {
