@@ -22,6 +22,7 @@ option.set_filter(-1, 1, 0, 90)</pre>
     fill_forward=False, extended_market_hours=False
 )</pre>
     <pre class='csharp'>var optionHistory = qb.OptionHistory(
-    equity<?=strtolower($underlyingAssetClass)?>fillForward: False, extendedMarketHours: False
+    <?=strtolower($underlyingAssetClass)?>Symbol, new DateTime(2024, 1, 1), new DateTime(2024, 1, 5), Resolution.Minute,
+    fillForward: False, extendedMarketHours: False
 );</pre>
 </div>
