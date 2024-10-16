@@ -1,93 +1,43 @@
-<p>Follow these steps to get the values of implied volatility and the Greeks:</p>
+<p>Follow these steps to get the implied volatility and Greeks data:</p>
 
 <ol>
-    <li class='csharp'>Load the assembly files and data types in their own cell.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">#load "../Initialize.csx"</pre>
-    </div>
-
-    <li class='csharp'>Load the necessary assembly files.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">#load "../QuantConnect.csx"
-#r "../Plotly.NET.dll"
-#r "../Plotly.NET.Interactive.dll"</pre>
-    </div>
-
-    <li class='csharp'>Import the <code>QuantConnect</code> and <code>Plot.NET</code> packages.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">using QuantConnect;
-using QuantConnect.Api;
-using QuantConnect.Algorithm;
-using QuantConnect.Data;
-using QuantConnect.Data.Market;
-using QuantConnect.Research;
-using QuantConnect.Securities.Option;
-using QuantConnect.DataSource;
-using QuantConnect.Securities;
-using QuantConnect.Indicators;
-
-using Plotly.NET;
-using Plotly.NET.Interactive;
-using Plotly.NET.LayoutObjects;</pre>
-    </div>
-
-    <li><a href="/docs/v2/research-environment/datasets/equity-options/universes#03-Create-Subscriptions">Add the underlying Equity</a> to your QuantBook.</li>
+    <li>Create the mirror contract <code>Symbol</code>.</li>
     <div class="section-example-container">
-        <pre class="python">qb = QuantBook()
-# Subscribe to the underlying Equity with raw data normalization.
-underlying = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
-        <pre class="csharp">var qb = new QuantBook();
-// Subscribe to the underlying Equity with raw data normalization.
-var underlying = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    </div>
-
-    <li>Select some Option contracts that share the same expiration date.</li>
-    <div class="section-example-container">
-        <pre class="python"># Get the Option contracts that were tradable on August 28th, 2024.
-qb.set_start_date(2024, 8, 28)
-chain = qb.option_chain(underlying).data_frame
-# Select the call contracts with the closest expiry.
-expiry = chain.expiry.min()
-chain = chain[(chain.expiry == expiry) & (abs(chain.underlyinglastprice - chain.strike) < 10)]</pre>
-        <pre class="csharp">// Get the Option contracts that were tradable on August 28th, 2024.
-qb.SetStartDate(2024, 8, 28);
-var chain = qb.OptionChain(underlying);
-var expiry = chain.Min(x => x.Expiry);
-
-// Select the call contracts that expire the earliest. 
-var filteredChain = chain
-    .Where(x => x.Expiry == expiry && Math.Abs(x.Strike - x.UnderlyingLastPrice) < 10)
-    .ToList();</pre>
-    </div>
-
-    <li class="python">Group the contracts into call/put pairs.</li>
-    <div class="python section-example-container">
-        <pre class="python">contracts_pair_sizes = chain.groupby('strike').count()['right']
-strikes = contracts_pair_sizes[contracts_pair_sizes == 2].index
-symbols = [
-    idx[-1] for idx in chain[
-        chain['strike'].isin(strikes)
-    ].reset_index().groupby(['strike', 'right', 'symbol']).first().index
-]
-pairs = [(symbols[i], symbols[i+1]) for i in range(0, len(symbols), 2)]</pre>
+        <pre class="csharp">var mirrorContractSymbol = Symbol.CreateOption(
+    optionContract.Underlying.Symbol, 
+    contractSymbol.ID.Market, 
+    optionContract.Style, 
+    optionContract.Right == OptionRight.Put ? OptionRight.Call : OptionRight.Put,
+    optionContract.StrikePrice, 
+    optionContract.Expiry
+);</pre>
+        <pre class="python">mirror_contract_symbol = Symbol.create_option(
+    option_contract.underlying.symbol, contract_symbol.id.market, option_contract.style, 
+    OptionRight.Call if option_contract.right == OptionRight.PUT else OptionRight.PUT,
+    option_contract.strike_price, option_contract.expiry
+)</pre>
     </div>
     
-    <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators">Implied Volatility & Greeks Indicators</a> for each contract.</li>
+    <li>Set up the <a href='/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/key-concepts'>risk free interest rate</a>, <a href='/docs/v2/writing-algorithms/reality-modeling/dividend-yield/key-concepts'>dividend yield</a>, and <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>Option pricing</a> models.</li>
     <div class="section-example-container">
-        <pre class="python"># Set up the risk free rate, dividend yield, and Option pricing models.
-risk_free_rate_model = qb.risk_free_interest_rate_model
-dividend_yield_model = DividendYieldProvider(underlying)
-option_model = OptionPricingModelType.FORWARD_TREE
+        <pre class="python">risk_free_rate_model = qb.risk_free_interest_rate_model
+dividend_yield_model = DividendYieldProvider(underlying_symbol)
+option_model = OptionPricingModelType.FORWARD_TREE</pre>
+        <pre class="csharp">var riskFreeRateModel = qb.RiskFreeInterestRateModel;
+var dividendYieldModel = new DividendYieldProvider(underlyingSymbol);
+var optionModel = OptionPricingModelType.ForwardTree;</pre>
+    </div>
 
-# Define a method to generate the Option indicator history.
-def get_indicators(call, put):
-
+    <li>Define a method to return the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators">Implied Volatility & Greeks indicator</a> values for each contract.</li>
+    <div class="section-example-container">
+        <pre class="python">def get_indicators(contracts):
+    # Get the call and put contract.
+    call, put = sorted(contracts, key=lambda s: s.id.option_right)
+    
     def get_value(indicator):
-        # Use both contracts and the underlying to update the indicator and get its value.
-        qb.indicator_history(indicator, [call, put, call.Underlying], 1)
+        qb.indicator_history(indicator, [call, put, underlying_symbol], 1)
         return indicator.current.value
 
-    # Get the values of all the IV and Greek indicators.
     return {
         'iv_call': get_value(ImpliedVolatility(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
         'iv_put': get_value(ImpliedVolatility(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
@@ -102,126 +52,46 @@ def get_indicators(call, put):
         'theta_call': get_value(Theta(call, risk_free_rate_model, dividend_yield_model, put, option_model)),
         'theta_put': get_value(Theta(put, risk_free_rate_model, dividend_yield_model, call, option_model)),
     }</pre>
-        <pre class="csharp">// Set up the risk free rate, dividend yield, and Option pricing models.
-var riskFreeRateModel = qb.RiskFreeInterestRateModel;
-var dividendYieldModel = new DividendYieldProvider(underlying);
-var optionModel = OptionPricingModelType.ForwardTree;
-
-// Define a method to generate the Option indicator history.
-(decimal IVCall, decimal IVPut,
-decimal DeltaCall, decimal DeltaPut,
-decimal GammaCall, decimal GammaPut,
-decimal VegaCall, decimal VegaPut,
-decimal ThetaCall, decimal ThetaPut,
-decimal RhoCall, decimal RhoPut) GetIndicators(Symbol call, Symbol put)
+        <pre class="csharp">Dictionary&lt;string, decimal&gt; GetIndicators(List&lt;Symbol&gt; contracts)
 {
+    // Get the call and put contract.
+    var sortedSymbols = contracts.OrderBy(s => s.ID.OptionRight).ToArray();
+    var call = sortedSymbols[0];
+    var put = sortedSymbols[1];
+    
     decimal GetValue(OptionIndicatorBase indicator)
     {
         // Use both contracts and the underlying to update the indicator and get its value.
-        qb.IndicatorHistory(indicator, new[] { call, put, underlying }, 1);
+        qb.IndicatorHistory(indicator, new[] { call, put, underlyingSymbol }, 1);
         return indicator.Current.Value;
     }
 
     // Get the values of all the IV and Greek indicators.
-    return (
-        IVCall: GetValue(new ImpliedVolatility(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
-        IVPut: GetValue(new ImpliedVolatility(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
-        DeltaCall: GetValue(new Delta(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
-        DeltaPut: GetValue(new Delta(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
-        GammaCall: GetValue(new Gamma(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
-        GammaPut: GetValue(new Gamma(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
-        VegaCall: GetValue(new Vega(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
-        VegaPut: GetValue(new Vega(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
-        ThetaCall: GetValue(new Theta(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
-        ThetaPut: GetValue(new Theta(put, riskFreeRateModel, dividendYieldModel, call, optionModel)),
-        RhoCall: GetValue(new Rho(call, riskFreeRateModel, dividendYieldModel, put, optionModel)),
-        RhoPut: GetValue(new Rho(put, riskFreeRateModel, dividendYieldModel, call, optionModel))
-    );
+    return new Dictionary&lt;string, decimal&gt;
+    {
+        {"IVCall", GetValue(new ImpliedVolatility(call, riskFreeRateModel, dividendYieldModel, put, optionModel))},
+        {"IVPut", GetValue(new ImpliedVolatility(put, riskFreeRateModel, dividendYieldModel, call, optionModel))},
+        {"DeltaCall", GetValue(new Delta(call, riskFreeRateModel, dividendYieldModel, put, optionModel))},
+        {"DeltaPut", GetValue(new Delta(put, riskFreeRateModel, dividendYieldModel, call, optionModel))},
+        {"GammaCall", GetValue(new Gamma(call, riskFreeRateModel, dividendYieldModel, put, optionModel))},
+        {"GammaPut", GetValue(new Gamma(put, riskFreeRateModel, dividendYieldModel, call, optionModel))},
+        {"VegaCall", GetValue(new Vega(call, riskFreeRateModel, dividendYieldModel, put, optionModel))},
+        {"VegaPut", GetValue(new Vega(put, riskFreeRateModel, dividendYieldModel, call, optionModel))},
+        {"ThetaCall", GetValue(new Theta(call, riskFreeRateModel, dividendYieldModel, put, optionModel))},
+        {"ThetaPut", GetValue(new Theta(put, riskFreeRateModel, dividendYieldModel, call, optionModel))},
+        {"RhoCall", GetValue(new Rho(call, riskFreeRateModel, dividendYieldModel, put, optionModel))},
+        {"RhoPut", GetValue(new Rho(put, riskFreeRateModel, dividendYieldModel, call, optionModel))}
+    };
 }</pre>
     </div>
 
-    <li>Group the contracts by their strike price and then get the indicator values.</li>
+    <li>Call the preceding method and display the results.</li>
     <div class="section-example-container">
-        <pre class="python">df = pd.DataFrame({call.id.strike_price: get_indicators(call, put) for (call, put) in pairs}).T</pre>
-        <pre class="csharp">// Get all strike prices.
-var strikes = filteredChain.Select(x => x.Strike).Distinct().OrderBy(x => x);
-// Create a dictionary to hold the indicator data.
-var greeks = new Dictionary&lt;decimal, (decimal IVCall, decimal IVPut,
-    decimal DeltaCall, decimal DeltaPut,
-    decimal GammaCall, decimal GammaPut,
-    decimal VegaCall, decimal VegaPut,
-    decimal ThetaCall, decimal ThetaPut,
-    decimal RhoCall, decimal RhoPut)&gt;();
-
-// Iterate each strike and get all the indicator values.
-foreach (var strike in strikes)
+        <pre class="python">get_indicators([contract_symbol, mirror_contract_symbol])</pre>
+        <pre class="csharp">foreach (var (k, v) in GetIndicators(new List&lt;Symbol&gt; {contractSymbol, mirrorContractSymbol}))
 {
-    // Get the call/put contract pair for this strike.
-    var strikeContracts = filteredChain.Where(x => x.Strike == strike).ToList();
-    var call = strikeContracts.SingleOrDefault(x => x.Right == OptionRight.Call);
-    var put = strikeContracts.SingleOrDefault(x => x.Right == OptionRight.Put);
-    // If we're missing one of the contracts in the pair, continue.
-    if (call == null || put == null) continue;
-    // Generate the IV and Greeks data.
-    greeks[strike] = GetIndicators(call, put);
+    Console.WriteLine($"{k}: {v}");
 }</pre>
     </div>
-
-    <li>(Optional) Plot the Implied Volatility smile across different strike prices.</li>
-    <div class="section-example-container">
-        <pre class="python">df[['iv_call', 'iv_put']].plot(kind='line', title=f"IV by Strike", ylabel=field, xlabel="Strike", figsize=(8, 6))</pre>
-        <pre class="csharp">// Plot the IV of each strike for the call and put contract.
-var ivCall = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
-    greeks.Select(kvp =&gt; kvp.Key),
-    greeks.Select(kvp =&gt; kvp.Value.IVCall)
-);
-var ivPut = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
-    greeks.Select(kvp =&gt; kvp.Key),
-    greeks.Select(kvp =&gt; kvp.Value.IVPut)
-);
-
-// Combine 2 line charts in the same plot.
-var chartList = new List&lt;GenericChart.GenericChart&gt;();
-chartList.Add(ivCall);
-chartList.Add(ivPut);
-var combinedChart = Plotly.NET.Chart.Combine(chartList);
-
-// Set the title, x-axis and y-axis labels.
-LinearAxis xAxis = new LinearAxis();
-xAxis.SetValue("title", "Strike");
-LinearAxis yAxis = new LinearAxis();
-yAxis.SetValue("title", "IV");
-Title title = Title.init($"Implied Volatility by Strikes");
-
-// Set up layout.
-Layout layout = new Layout();
-layout.SetValue("xaxis", xAxis);
-layout.SetValue("yaxis", yAxis);
-layout.SetValue("title", title);
-combinedChart.WithLayout(layout);
-
-// Display the plot.
-HTML(GenericChart.toChartHTML(combinedChart))</pre>
-    </div>
-
-    <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/iv-smile-research-py.png" alt="Implied Volatilities by Strikes">
-    <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/iv-smile-research-cs.png" alt="Implied Volatilities by Strikes">
 </ol>
-<p>For a full example, see the following project:</p>
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_ccce360c4c81824f91e80bc7551a4f45.html"></iframe>
-        </div>
-    </div>
-</div>
 
-<div class="csharp">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_2189602746e432007e639da39c7b8644.html"></iframe>
-        </div>
-    </div>
-</div>
