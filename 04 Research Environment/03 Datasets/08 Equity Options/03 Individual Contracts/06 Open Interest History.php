@@ -6,7 +6,7 @@
     <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(contractSymbol, TimeSpan.FromDays(3));
 foreach (var openInterest in history)
 {
-	Console.WriteLine(openInterest);
+    Console.WriteLine(openInterest);
 }</pre>
     <pre class="python"># DataFrame format
 history_df = qb.history(OpenInterest, contract_symbol, timedelta(3))
