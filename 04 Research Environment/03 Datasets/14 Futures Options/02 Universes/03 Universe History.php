@@ -9,7 +9,7 @@
 <div class='section-example-container'>
     <pre class='python'>start_date = datetime(2024, 1, 1)
 
-# Select a contract. For example, get the front-month Futures contract.
+# Select an underlying Futures contract. For example, get the front-month contract.
 futures_contract = sorted(
     qb.future_chain_provider.get_future_contract_list(future.symbol, start_date),
     key=lambda symbol: symbol.id.date
@@ -22,7 +22,7 @@ option_history = qb.option_history(
 ).data_frame</pre>
     <pre class='csharp'>var startDate = new DateTime(2024, 1, 1);
 
-// Select a contract. For example, get the front-month Futures contract.
+// Select an underlying Futures contract. For example, get the front-month contract.
 var futuresContract = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate)
     .OrderBy(symbol => symbol.ID.Date)
     .Last();
