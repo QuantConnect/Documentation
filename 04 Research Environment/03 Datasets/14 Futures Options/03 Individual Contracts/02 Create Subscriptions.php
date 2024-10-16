@@ -21,7 +21,7 @@ var futuresContractSymbol = qb.FutureChainProvider.GetFutureContractList(future.
     .OrderBy(s =&gt; s.ID.Date)
     .FirstOrDefault();
 qb.AddFutureContract(futuresContractSymbol, fillForward: false);</pre>
-        <pre class="python">future = qb.add_future(Futures.Indices.SP500E_MINI)
+        <pre class="python">future = qb.add_future(Futures.Indices.SP_500_E_MINI)
 start_date = datetime(2023, 12, 20)
 futures_contract_symbol = sorted(
   qb.future_chain_provider.get_future_contract_list(future.symbol, start_date), 
@@ -33,8 +33,8 @@ qb.add_future_contract(futures_contract_symbol, fill_forward=False)</pre>
 
     <li><a href='/docs/v2/research-environment/initialization#02-Set-Dates'>Set the start date</a> to a date in the past that you want to use as the analysis date.</li>
     <div class="section-example-container">
-      <pre class="csharp">qb.SetStartDate(2024, 1, 1);</pre>
-      <pre class="python">qb.set_start_date(2024, 1, 1)</pre>
+      <pre class="csharp">qb.SetStartDate(futuresContractSymbol.ID.Date.AddDays(-5));</pre>
+      <pre class="python">qb.set_start_date(futures_contract_symbol.id.date - timedelta(5))</pre>
     </div>
     <p>The method that you call in the next step returns data on all the contracts that were tradable on this date.</p>
 
@@ -58,14 +58,11 @@ var fopContractSymbol = chain
     .Where(contract => 
         // Select call contracts with the closest expiry.
         contract.Expiry == expiry && 
-        contract.Right == OptionRight.Call &&
-        // Select contracts with a 0.3-0.7 delta.
-        contract.Greeks.Delta > 0.3m && 
-        contract.Greeks.Delta < 0.7m
+        contract.Right == OptionRight.Call
     )
-    // Select the contract with the largest open interest.
-    .OrderByDescending(contract => contract.OpenInterest)
-    .First()
+    // Select the contract with a strike price near the middle.
+    .OrderBy(contract => contract.Strike)
+    .ToList()[150]
     // Get the Symbol of the target contract.
     .Symbol;</pre>
       <pre class="python"># Select a contract.
@@ -73,12 +70,9 @@ expiry = chain.expiry.min()
 fop_contract_symbol = chain[
     # Select call contracts with the closest expiry.
     (chain.expiry == expiry) & 
-    (chain.right == OptionRight.CALL) &
-    # Select contracts with a 0.3-0.7 delta.
-    (chain.delta > 0.3) &
-    (chain.delta < 0.7)
-    # Select the contract with the largest open interest.
-].sort_values('openinterest').index[-1]</pre>
+    (chain.right == OptionRight.CALL)
+    # Select the contract with a strike price near the middle.
+].sort_values('strike').index[150]</pre>
     </div>
 
     <li>Call the <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code> method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>

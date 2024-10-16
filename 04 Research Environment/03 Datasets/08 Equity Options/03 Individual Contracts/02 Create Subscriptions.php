@@ -12,7 +12,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="python">qb = QuantBook()</pre>
     </div>
 
-    <li>Subscribe to the underlying Equity with raw data normalization and save a reference to the Equity <code>Symbol</code>.</li>
+    <li><a href='/docs/v2/research-environment/datasets/us-equity#03-Create-Subscriptions'>Add the underlying Equity</a> with raw <a href='/docs/v2/research-environment/datasets/us-equity#07-Data-Normalization'>data normalization</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var underlyingSymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
         <pre class="python">underlying_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre></div><div class="csharp section-example-container">

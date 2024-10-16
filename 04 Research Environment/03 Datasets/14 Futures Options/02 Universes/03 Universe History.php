@@ -1,4 +1,10 @@
-<p>You need to <a href='/docs/v2/research-environment/datasets/futures-options/universes#03-Create-Subscriptions'>add a Future to your QuantBook</a> before you can request historical data for Future Option contracts. To get the prices and volumes for all of the Option contracts of the underlying Futures contract over a specific period of time, call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the underlying Future contract's <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>. The following example gets the front-month Futures contract and then gets all of the Option contracts on top of that Futures contract.</p>
+<p>
+    The <a href="/docs/v2/writing-algorithms/universes/index-options#05-Filter-by-Other-Contract-Properties">contract filter</a> determines which Future Option contracts are in your universe each trading day.
+    The default filter selects the contracts with the following characteristics:
+</p>
+<? $annotation = "weeklies and non-standard contracts are not available"; include(DOCS_RESOURCES."/universes/option/default-filter.php"); ?>
+
+<p>To get the prices and volumes for all of the Future Option contracts that pass your filter during a specific period of time, get the underlying Future contract and then call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the Future contract's <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 
 <div class='section-example-container'>
     <pre class='python'>start_date = datetime(2024, 1, 1)
@@ -28,3 +34,4 @@ var optionHistory = qb.OptionHistory(
 );</pre>
 </div>
 
+<? include(DOCS_RESOURCES."/universes/option/option-history-object.html"); ?>
