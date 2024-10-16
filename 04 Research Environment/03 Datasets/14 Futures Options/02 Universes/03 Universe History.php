@@ -19,7 +19,7 @@ futures_contract = sorted(
 option_history = qb.option_history(
     futures_contract, start_date, futures_contract.id.date, Resolution.HOUR, 
     fill_forward=False, extended_market_hours=False
-).data_frame</pre>
+)</pre>
     <pre class='csharp'>var startDate = new DateTime(2024, 1, 1);
 
 // Select an underlying Futures contract. For example, get the front-month contract.
