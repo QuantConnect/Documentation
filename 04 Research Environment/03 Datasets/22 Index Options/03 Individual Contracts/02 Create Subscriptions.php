@@ -2,7 +2,8 @@
 
 <ol>
 <?
-$additionalImports = "using QuantConnect.Securities.Index;
+$additionalImports = "using QuantConnect.Data.Market;
+using QuantConnect.Securities.Index;
 using QuantConnect.Securities.IndexOption;
 ";
 include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
