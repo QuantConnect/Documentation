@@ -1,6 +1,6 @@
 <? include(DOCS_RESOURCES."/securities/data-definitions/greeks-and-iv.html"); ?>
 
-<p>Follow these steps to get the implied volatility and Greeks data:</p>
+<p>Follow these steps to get the Greeks and IV data:</p>
 
 <ol>
     <li>Create the mirror contract <code>Symbol</code>.</li>
