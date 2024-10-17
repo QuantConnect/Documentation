@@ -12,9 +12,13 @@
     public override void Initialize()
     {
         AddCommand&lt;MyCommand&gt;();
-        SetBenchmark(x => 1); // So the algorithm doesn’t need asset data.
+        SetBenchmark(x =&gt; 1); // So the algorithm doesn’t need asset data.
     }
 
+    public void DoSomething()
+    {
+        Log("Something was done!");
+    }
 }
 
 public class MyCommand : Command
@@ -25,6 +29,7 @@ public class MyCommand : Command
     public override bool? Run(IAlgorithm algorithm)
     {
         ((QCAlgorithm)algorithm).Log($"ticker: {Ticker}; quantity: {Quantity}; parameters: {Parameters}");
+        ((EncapsulatedAndLinkedCommandAlgorithm)algorithm).DoSomething();
         return true;
     }
 }
@@ -32,16 +37,22 @@ public class MyCommand : Command
 <pre class="python">class EncapsulatedCommandAlgorithm(QCAlgorithm):
 
     def initialize(self):
+        MyCommand.ALGORITHM = self
         self.add_command(MyCommand)
         self.set_benchmark(lambda x: 1) # So the algorithm doesn’t need asset data.
 
+    def do_something(self):
+        self.log('Something was done!')
+
 class MyCommand(Command):
+    ALGORITHM = None
     ticker = None
     quantity = None
     parameters = {}
 
     def run(self, algorithm):
         algorithm.log(f"ticker: {self.ticker}; quantity: {self.quantity}; parameters: {self.parameters}")
+        MyCommand.ALGORITHM.do_something()
         return True
 </pre>
 </div>
@@ -51,5 +62,6 @@ class MyCommand(Command):
 	The value of the <code>$type</code> key must be the <code>Command</code> class you define. 
 	The other keys of the payload set the members of the class. 
 	If you don’t provide a <code>$type</code> key, LEAN runs the <code class='python'>on_command</code><code class='csharp'>OnCommand</code> method instead of the <code class='python'>run</code><code class='csharp'>Run</code> method in your custom <code>Command</code> class.
-
 </p>
+
+<p class='python'>To access your algorithm's attributes, you need to create a <a href="/docs/v2/writing-algorithms/key-concepts/globals-and-statics#03-API-Access-by-Global-Static-Variable">global static variable</a>, and assign the reference to the global variable in the algorithm's <code>initialize</code>. Then, in the <code>run</code> merhod, you can acess your algorithm's attributes through the global.</p>
