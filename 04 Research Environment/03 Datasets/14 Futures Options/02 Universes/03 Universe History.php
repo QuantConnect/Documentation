@@ -34,4 +34,9 @@ var optionHistory = qb.OptionHistory(
 );</pre>
 </div>
 
-<? include(DOCS_RESOURCES."/universes/option/option-history-object.html"); ?>
+<? 
+$dataFrameImg = "https://cdn.quantconnect.com/i/tu/future-options-uiverse-history-data-frame-python.png";
+$expiryDatesImg = "https://cdn.quantconnect.com/i/tu/future-options-uiverse-history-get-expiry-dates-python.png";
+$strikesImg = "https://cdn.quantconnect.com/i/tu/future-options-uiverse-history-get-strikes-python.png";
+include(DOCS_RESOURCES."/universes/option/option-history-object.php"); 
+?>
