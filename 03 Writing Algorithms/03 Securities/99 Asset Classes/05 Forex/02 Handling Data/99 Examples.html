@@ -14,17 +14,17 @@
     public override void Initialize()
     {
         SetStartDate(2004, 1, 1);
-        // Add subscriptions to USDJPY with specific market to ensure the correct securities are selected.
+        // Add the USDJPY trading pair.
         _forex = AddForex("USDJPY", Resolution.Minute, Market.Oanda);
-        // Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours.
+        // Create a Minimum indicator to track the lowest bid-ask spread for the past 12 hours.
         _forex.SpreadLow = new Minimum(12*60);
-        // Warm up the indicator for its readiness to use immediately.
+        // Warm up the indicator so it's immediately ready to use.
         WarmUpIndicator&lt;IndicatorDataPoint&gt;(_forex.Symbol, _forex.SpreadLow);
     }
     
     public override void OnData(Slice slice)
     {
-        // To get the updated bid-ask spread, make sure the quote data of USDJPY is available.
+        // Ensure we have quote data for USDJPY in the current slice.
         if (!slice.QuoteBars.ContainsKey(_forex.Symbol))
         {
             return;
@@ -32,10 +32,11 @@
         var quoteBar = slice.QuoteBars[_forex.Symbol];
         // Bid-ask spread = Ask price - Bid price
         var bidAskSpread = quoteBar.Ask.Close - quoteBar.Bid.Close;
-        // Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
+        // Update the spread minimum indicator to calculate the lowest bid-ask spread over the last 12 hours.
         _forex.SpreadLow.Update(quoteBar.EndTime, bidAskSpread);
     
-        // Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
+        // Trade if the current spread is the lowest bid-ask spread, since it is the most efficient, 
+        // liquid price with lowest slippage.
         if (!Portfolio.Invested && bidAskSpread == _forex.SpreadLow.Current.Value)
         {
             MarketOrder(_forex.Symbol, 1000);
@@ -49,24 +50,25 @@
         
     def initialize(self) -&gt; None:
         self.set_start_date(2004, 1, 1)
-        # Add subscriptions to USDJPY with specific market to ensure the correct securities are selected.
+        # Add the USDJPY trading pair.
         self._forex = self.add_forex("USDJPY", Resolution.MINUTE, Market.OANDA)
-        # Create a minimum indicator to track the lowest bid-ask spread for the past 12 hours.
+        # Create a Minimum indicator to track the lowest bid-ask spread for the past 12 hours.
         self._forex.spread_low = Minimum(12*60)
-        # Warm up the indicator for its readiness to use immediately.
+        # Warm up the indicator so it's immediately ready to use.
         self.warm_up_indicator(self._forex.symbol, self._forex.spread_low)
     
     def on_data(self, slice: Slice) -&gt; None:
-        # To get the updated bid-ask spread, make sure the quote data of USDJPY is available.
+        # Ensure we have quote data for USDJPY in the current slice.
         if self._forex.symbol not in slice.quote_bars:
             return
         quote_bar = slice.quote_bars[self._forex.symbol]
         # Bid-ask spread = Ask price - Bid price
         bid_ask_spread = quote_bar.ask.close = quote_bar.bid.close
-        # Update the spread minimum indicator to calculate the updated lowest bid-ask spread in the last 12 hours.
+        # Update the spread minimum indicator to calculate the lowest bid-ask spread over the last 12 hours.
         self._forex.spread_low.update(quote_bar.end_time, bid_ask_spread)
         
-        # Order if the current spread is the lowest bid-ask spread, since it is the most efficient, liquid price with lowest slippage.
+        # Trade if the current spread is the lowest bid-ask spread, since it is the most efficient, 
+        # liquid price with lowest slippage.
         if not self.portfolio.invested and bid_ask_spread == self._forex.spread_low.current.value:
             self.market_order(self._forex.symbol, 1000)
             
