@@ -1,154 +1,197 @@
-<p>You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><a href="/docs/v2/research-environment/charting/plotly-net">Plot.NET</a> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p>The following examples demonstrate some common practices for analyzing Equity Options in the Research Environment.</p>
 
-<h4>Candlestick Chart<br></h4>
+<h4>Example 1: Contract Prices</h4>
+<p>The following notebook plots the historical prices of a SPY Equity Option contract using <a class='python' href='/docs/v2/research-environment/charting/plotly'>Plotly</a><a class='python' href='/docs/v2/research-environment/charting/plotly-net'>Plotly.NET</a>:</p>
 
-<p>Follow these steps to plot candlestick charts:</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">#load "../Initialize.csx"</pre>
+</div>
 
-<ol>
-    <li>Get some historical data.</li>
-	<div class="section-example-container">
-        <pre class="python">history = qb.history(contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
-        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(contractSymbol, new DateTime(2021, 12, 30), new DateTime(2021, 12, 31));</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python">import plotly.graph_objects as go
 
-    <li class="python">Drop the first four index levels of the <code>DataFrame</code> that returns.</li>
-	<div class="python section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
-    </div>
-    
-    <li>Import the <code class="python">plotly</code><code class="csharp">Plot.NET</code> library.</li>
-    <div class="section-example-container">
-        <pre class="python">import plotly.graph_objects as go</pre>
-        <pre class="csharp">#r "../Plotly.NET.dll"
+# Get the SPY Option chain for January 1, 2024.
+qb = QuantBook()
+underlying_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+qb.set_start_date(2024, 1, 1)
+chain = qb.option_chain(underlying_symbol).data_frame
+
+# Select a contract from the chain.
+expiry = chain.expiry.min()
+contract_symbol = chain[
+    (chain.expiry == expiry) & 
+    (chain.right == OptionRight.CALL) &
+    (chain.delta > 0.3) &
+    (chain.delta < 0.7)
+].sort_values('openinterest').index[-1]
+
+# Add the target contract.
+qb.add_option_contract(contract_symbol)
+
+# Get the contract history.
+history = qb.history(contract_symbol, timedelta(3))
+
+# Plot the price history.
+go.Figure(
+    data=go.Candlestick(
+        x=history.index.levels[4],
+        open=history['open'],
+        high=history['high'],
+        low=history['low'],
+        close=history['close']
+    ), 
+    layout=go.Layout(
+        title=go.layout.Title(text=f'{contract_symbol.value} OHLC'),
+        xaxis_title='Date',
+        yaxis_title='Price',
+        xaxis_rangeslider_visible=False
+    )
+).show()</pre>
+    <pre class="csharp">#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
+
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+using QuantConnect.Indicators;
+using QuantConnect.Data.Market;
+using QuantConnect.Securities.Option;
 using Plotly.NET;
-using Plotly.NET.LayoutObjects;</pre>
-    </div>
+using Plotly.NET.LayoutObjects;
 
-    <li>Create a <code>Candlestick</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">candlestick = go.Candlestick(
-    x=history.index,
-    open=history['open'],
-    high=history['high'],
-    low=history['low'],
-    close=history['close']
-)</pre>
-        <pre class="csharp">var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+// Get the SPY Option chain for January 1, 2024.
+var qb = new QuantBook();
+var underlyingSymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+qb.SetStartDate(2024, 1, 1);
+var chain = qb.OptionChain(underlyingSymbol);
+
+// Select a contract from the chain.
+var expiry = chain.Select(contract => contract.Expiry).Min();
+var contractSymbol = chain
+    .Where(contract => 
+        contract.Expiry == expiry && 
+        contract.Right == OptionRight.Call &&
+        contract.Greeks.Delta > 0.3m && 
+        contract.Greeks.Delta < 0.7m
+    )
+    .OrderByDescending(contract => contract.OpenInterest)
+    .First()
+    .Symbol;
+
+// Add the target contract.
+qb.AddOptionContract(contractSymbol);
+
+// Get the contract history.
+var history = qb.History&lt;TradeBar&gt;(contractSymbol, TimeSpan.FromDays(3));
+
+// Plot the price history.
+var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
     history.Select(x => x.Open),
     history.Select(x => x.High),
     history.Select(x => x.Low),
     history.Select(x => x.Close),
     history.Select(x => x.EndTime)
-);</pre>
-    </div>
-
-    <li>Create a <code>Layout</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">layout = go.Layout(
-    title=go.layout.Title(text=f'{symbol.value} OHLC'),
-    xaxis_title='Date',
-    yaxis_title='Price',
-    xaxis_rangeslider_visible=False
-)</pre>
-        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
+);
+LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Price ($)");
 Title title = Title.init($"{contractSymbol} Price");
-
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
-layout.SetValue("title", title);</pre>
-    </div>
+layout.SetValue("title", title);
+chart.WithLayout(layout);
+HTML(GenericChart.toChartHTML(chart))</pre>
+</div>
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/equity-options-price-example-python.png' alt='Candlestick plot of the prices for a SPY Option contract'>
+<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/equity-options-price-example-csharp.png' alt='Candlestick plot of the prices for a SPY Option contract'>
 
-    <li class="python">Create the <code>Figure</code>.<br></li>
-    <div class="python section-example-container">
-        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
-    </div>
 
-    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">chart.WithLayout(layout);</pre>
-    </div>
+<h4>Example 2: Contract Open Interest</h4>
+<p>The following notebook plots the historical open interest of a TSLA Equity Option contract using <a class='python' href='/docs/v2/research-environment/charting/matplotlib'>Matplotlib</a><a class='python' href='/docs/v2/research-environment/charting/plotly-net'>Plotly.NET</a>:</p>
 
-    <li>Show the plot.<br></li>
-    <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
-        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
-    </div>
-    <p>The Jupyter Notebook displays a candlestick chart of the Option contract's price.</p>
-</ol>
+<div class="csharp section-example-container">
+    <pre class="csharp">#load "../Initialize.csx"</pre>
+</div>
+	
+<div class="section-example-container">
+    <pre class="python"># Get the TSLA Option chain for January 1, 2024.
+qb = QuantBook()
+underlying_symbol = qb.add_equity("TSLA", data_normalization_mode=DataNormalizationMode.RAW).symbol
+qb.set_start_date(2024, 1, 1)
+chain = qb.option_chain(underlying_symbol).data_frame
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-equity-options-contract-candlestick-2022.png" alt="Candlestick shart of a contract's price">
-<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-equity-options-contract-candlestick-csharp.png" alt="Candlestick shart of a contract's price">
+# Select a contract from the chain.
+strike_distance = (chain.strike - chain.underlyinglastprice).abs()
+target_strike_distance = strike_distance.min()
+chain = chain.loc[strike_distance[strike_distance == target_strike_distance].index]
+contract_symbol = chain.sort_values('impliedvolatility').index[-1]
 
-<h4>Line Chart</h4>
-<p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
+# Add the target contract.
+qb.add_option_contract(contract_symbol, fill_forward=False)
 
-<ol>
-    <li>Get some historical data.</li>
-    <div class="section-example-container">
-        <pre class="python">history = qb.history(OpenInterest, contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31))</pre>
-        <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(contract_symbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));</pre>
-    </div>
+# Get the contract's open interest history.
+history = qb.history(OpenInterest, contract_symbol, timedelta(90))
+history.index = history.index.droplevel([0, 1, 2])
+history = history['openinterest'].unstack(0)[contract_symbol]
 
-    <li class="python">Drop the first three index levels of the&nbsp;<code>DataFrame</code> that returns.<br></li>
-    <div class="python section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0, 1, 2])</pre>
-    </div>
+# Plot the open interest history.
+history.plot(title=f'{contract_symbol.value} Open Interest')
+plt.show()</pre>
+    <pre class="csharp">#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
 
-    <li class="python">Select the open interest data.</li>
-    <div class="python section-example-container">
-        <pre class="python">history = history['openinterest'].unstack(level=0)</pre>
-    </div>
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+using QuantConnect.Indicators;
+using QuantConnect.Data.Market;
+using QuantConnect.Securities.Option;
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;
 
-	<li class="python">Rename the column to the <code>Symbol</code> of the contract.</li>
-    <div class="python section-example-container">
-        <pre class="python">history.columns = [
-    Symbol.get_alias(SecurityIdentifier.parse(x), equity_symbol)
-        for x in history.columns]</pre>
-    </div>
+// Get the TSLA Option chain for January 1, 2024.
+var qb = new QuantBook();
+var underlyingSymbol = qb.AddEquity("TSLA", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+qb.SetStartDate(2024, 1, 1);
+var chain = qb.OptionChain(underlyingSymbol);
 
-    <li class="python">Call the <code>plot</code> method with a title.</li>
-    <div class="python section-example-container">
-        <pre class="python">history.plot(title="Open Interest")</pre>
-    </div>
+// Select a contract from the chain.
+var targetStrikeDistance = chain
+    .Select(contract => Math.Abs(contract.Strike - contract.UnderlyingLastPrice))
+    .Min();
+var contractSymbol = chain
+    .Where(contract => Math.Abs(contract.Strike - contract.UnderlyingLastPrice) == targetStrikeDistance)
+    .OrderBy(contract => contract.ImpliedVolatility)
+    .Last()
+    .Symbol;
 
-    <li class="csharp">Create a <code>Line</code> chart.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+// Add the target contract.
+qb.AddOptionContract(contractSymbol, fillForward: false);
+
+// Get the contract's open interest history.
+var history = qb.History&lt;OpenInterest&gt;(contractSymbol, TimeSpan.FromDays(90));
+
+// Plot the open interest history.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
     history.Select(x => x.EndTime),
     history.Select(x => x.Value)
-);</pre>
-    </div>
-
-    <li class="csharp">Create a <code>Layout</code>.<br></li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
+);
+LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Open Interest");
-Title title = Title.init("SPY Open Interest");
-
+Title title = Title.init($"{contractSymbol.Value} Open Interest");
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
-layout.SetValue("title", title);</pre>
-    </div>
-
-    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">chart.WithLayout(layout);</pre>
-    </div>
-
-    <li>Show the plot.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.show()</pre>
-        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
-    </div>
-    <p>The Jupyter Notebook displays a line chart of open interest data.<br></p>
-</ol>
-
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-option-research-plot-line-chart.jpg" alt="Line chart of open interest">
-<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-option-research-plot-line-chart-csharp.png" alt="Line chart of open interest">
+layout.SetValue("title", title);
+chart.WithLayout(layout);
+HTML(GenericChart.toChartHTML(chart))
+</pre>
+</div>
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/equity-options-open-interest-example-python.png' alt='Line plot of the open interest for a TSLA Option contract'>
+<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/equity-options-open-interest-example-csharp.png' alt='Line plot of the open interest for a TSLA Option contract'>
