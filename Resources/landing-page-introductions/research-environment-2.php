@@ -1,6 +1,6 @@
 <p>The Research Environment is a <a rel="nofollow" target="_blank" href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html">Jupyter notebook</a>-based, interactive commandline environment where you can access <?=$localPlatform ? "your local data or our cloud data":"our data"?> through the <code>QuantBook</code> class. The environment supports both Python and C#. If you use Python, you can <a href='/docs/v2/research-environment/key-concepts/research-engine#05-Import-Project-Code'>import code from the code files in your project into the Research Environment</a> to aid development.</p>
 
-<p>Before you run backtests, we recommend testing your hypothesis in the Research Environment. It's easier to perform data analysis and <a href="/docs/v2/research-environment/charting">produce plots in the Research Environment</a> than in a backtest.</p>
+<p>Before you run backtests, we recommend testing your hypothesis in the Research Environment. It's easier to perform data analysis and <a href="/docs/v2/research-environment/charting">produce plots in the Research Environment</a> than in a backtest. <? if ($cloudPlatform) {?>The Research Environment also supports <a href='/docs/v2/research-environment/debugging'>debugging</a> for Python projects.<? } ?></p>
 
 <p>Before backtesting or live trading with machine learning models, you may find it beneficial to train them in the Research Environment, save them in the Object Store, and then load them from the Object Store into the backtesting and live trading environment</p>
 
