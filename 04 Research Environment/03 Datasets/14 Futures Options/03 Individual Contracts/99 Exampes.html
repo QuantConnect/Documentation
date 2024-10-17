@@ -1,0 +1,117 @@
+<p>The following examples demonstrate some common practices for analyzing individual Future Option contracts in the Research Environment.</p>
+
+<h4>Example 1: Contract Mid-Price History</h4>
+<p>The following notebook plots the historical mid-prices of an E-mini S&P 500 Future Option contract using <a class='python' href='/docs/v2/research-environment/charting/plotly'>Plotly</a><a class='csharp' href='/docs/v2/research-environment/charting/plotly-net'>Plotly.NET</a>:</p>
+
+<div class="csharp section-example-container">
+    <pre class="csharp">#load "../Initialize.csx"</pre>
+</div>
+
+<div class="section-example-container">
+    <pre class="python">import plotly.graph_objects as go
+
+# Add the underlying Future contract 
+# (the front-month ES Future contract as of December 12, 2023).
+qb = QuantBook()
+future = qb.add_future(Futures.Indices.SP_500_E_MINI)
+futures_contract_symbol = sorted(
+  qb.future_chain_provider.get_future_contract_list(future.symbol, datetime(2023, 12, 20)), 
+  key=lambda s: s.id.date
+)[0]
+qb.add_future_contract(futures_contract_symbol, fill_forward=False)
+
+# Get the Future Option chain as of 5 days before the underlying Future's expiry date.
+qb.set_start_date(futures_contract_symbol.id.date - timedelta(5))
+chain = qb.option_chain(futures_contract_symbol).data_frame
+
+# Select a Future Option contract from the chain.
+expiry = chain.expiry.min()
+fop_contract_symbol = chain[
+    (chain.expiry == expiry) & (chain.right == OptionRight.CALL)
+].sort_values('strike').index[50]
+
+# Add the target Future Option contract.
+qb.add_future_option_contract(fop_contract_symbol)
+
+# Get the Future Option contract quote history.
+history = qb.history(QuoteBar, fop_contract_symbol, datetime(2024, 2, 22), datetime(2024, 2, 23))
+
+# Plot the mid-price values of the quote history.
+go.Figure(
+    data=go.Candlestick(
+        x=history.index.levels[4],
+        open=history['open'],
+        high=history['high'],
+        low=history['low'],
+        close=history['close']
+    ), 
+    layout=go.Layout(
+        title=go.layout.Title(text=f'{fop_contract_symbol.value} OHLC'),
+        xaxis_title='Date',
+        yaxis_title='Price',
+        xaxis_rangeslider_visible=False
+    )
+).show()</pre>
+    <pre class="csharp">#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
+
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+using QuantConnect.Indicators;
+using QuantConnect.Data.Market;
+using QuantConnect.Securities;
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;
+
+// Add the underlying Future contract 
+// (the front-month ES Future contract as of December 12, 2023).
+var qb = new QuantBook();
+var future = qb.AddFuture(Futures.Indices.SP500EMini);
+var futuresContractSymbol = qb.FutureChainProvider
+    .GetFutureContractList(future.Symbol, new DateTime(2023, 12, 20))
+    .OrderBy(s => s.ID.Date)
+    .FirstOrDefault();
+qb.AddFutureContract(futuresContractSymbol, fillForward: false);
+
+// Get the Future Option chain as of 5 days before the underlying Future's expiry date.
+qb.SetStartDate(futuresContractSymbol.ID.Date.AddDays(-5));
+var chain = qb.OptionChain(futuresContractSymbol);
+
+// Select a Future Option contract from the chain.
+var expiry = chain.Select(contract => contract.Expiry).Min();
+var fopContractSymbol = chain
+    .Where(contract => contract.Expiry == expiry && contract.Right == OptionRight.Call)
+    .OrderBy(contract => contract.Strike)
+    .ToList()[50]
+    .Symbol;
+
+// Add the target Future Option contract.
+qb.AddFutureOptionContract(fopContractSymbol);
+
+// Get the Future Option contract quote history.
+var history = qb.History&lt;QuoteBar&gt;(fopContractSymbol, new DateTime(2024, 2, 22), new DateTime(2024, 2, 23));
+
+// Plot the mid-price values of the quote history.
+var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+    history.Select(x => x.Open),
+    history.Select(x => x.High),
+    history.Select(x => x.Low),
+    history.Select(x => x.Close),
+    history.Select(x => x.EndTime)
+);
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{fopContractSymbol} Price");
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+chart.WithLayout(layout);
+HTML(GenericChart.toChartHTML(chart))</pre>
+</div>
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/future-options-price-example-python.png' alt='Candlestick plot of the prices for an ES Future Option contract'>
+<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/future-options-price-example-csharp.png' alt='Candlestick plot of the prices for an ES Future Option contract'>
