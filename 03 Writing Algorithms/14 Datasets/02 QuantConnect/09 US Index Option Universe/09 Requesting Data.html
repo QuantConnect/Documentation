@@ -1,23 +1,30 @@
-<p>To add US Index Options data to your algorithm, call the <b class="csharp">AddIndexOption</b><b class="python">add_index_option</b> method. Save a reference to the Index Option <b>Symbol</b> so you can access the data later in your algorithm.</p>
+<p>To add US Index Options Universe data to your algorithm, call the <b class="csharp">AddIndexOption</b><b class="python">add_index_option</b> method. Save a reference to the Index Option <b>Symbol</b> so you can access the data later in your algorithm. To define which contracts should be in your universe, call the <b class="csharp">SetFilter</b><b class="python">set_filter</b> method of the <b>IndexOption</b> object.</p>
 
-<p>To set a contract filter, call the <b class="csharp">SetFilter</b><b class="python">set_filter</b> method of the Option object.</p>
+<p>The <b class="csharp">AddIndexOption</b><b class="python">add_index_option</b> method provides a daily stream of Option chain data. To get the most recent daily chain, call the <b class="csharp">OptionChain</b><b class="python">option_chain</b> method with the canonical Index Option Symbol. The <b class="csharp">OptionChain</b><b class="python">option_chain</b> method returns data on all the tradable contracts, not just the contracts that pass your universe filter.</p>
 
 <div class="section-example-container">
 <pre><code class="python">class IndexOptionsDataAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 1, 1);
-        self.set_end_date(2021, 6, 1);
-        self.set_cash(1000000);
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(1_000_000)
         self.universe_settings.asynchronous = True
         self.index_symbol = self.add_index('VIX').symbol
         
         standard_option = self.add_index_option(self.index_symbol)
         standard_option.set_filter(self._option_filter)
         self.standard_option_symbol = standard_option.symbol
+        standard_chain = self.option_chain(standard_option.symbol).data_frame
 
         weekly_option = self.add_index_option(self.index_symbol, "VIXW")
         weekly_option.set_filter(self._option_filter)
         self.weekly_option_symbol = weekly_option.symbol
+        weekly_chain = self.option_chain(weekly_option.symbol).data_frame
+        weekly_chain = weekly_chain[
+            weekly_chain.index.map(lambda symbol: not IndexOptionSymbol.is_standard(symbol))
+        ]
+        
 
     def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:
         # Contracts can be filtered by greeks, implied volatility, open interest:
@@ -29,7 +36,7 @@
             .rho(0.5, 3.0) \
             .implied_volatility(1, 3) \
             .open_interest(100,500)</code></pre>
-<pre class="csharp">namespace QuantConnect
+<pre><code class="csharp">namespace QuantConnect
 {
     public class IndexOptionsDataAlgorithm : QCAlgorithm
     {
@@ -46,10 +53,13 @@
             var standardOption = AddIndexOption(_indexSymbol);
             standardOption.SetFilter(OptionFilter);
             _standardOptionSymbol = standardOption.Symbol;
+            var standardChain = OptionChain(_standardOptionSymbol);
 
             var weeklyOption = AddIndexOption(_indexSymbol, "VIXW");
             weeklyOption.SetFilter(OptionFilter);
             _weeklyOptionSymbol = weeklyOption.Symbol;
+            var weeklyChain = OptionChain(_weeklyOptionSymbol)
+                .Where(contract => !IndexOptionSymbol.IsStandard(contract.Symbol));
         }
 
         private virtual OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
@@ -62,12 +72,12 @@
                 .Theta(-2.0m, -0.5m)
                 .Rho(0.5m, 3.0m)
                 .ImpliedVolatility(1.0m, 3.0m)
-                .OpenInterest(100m, 500m);
+                .OpenInterest(100, 500);
         }
     }
-}</pre>
+}</code></pre>
 </div>
 
 <p>The Index resolution must be less than or equal to the Index Option resolution. For example, if you set the Index resolution to minute, then you must set the Index Option resolution to minute, hour, or daily.</p>
 
-<p>For more information about creating US Index Option subscriptions, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data">Requesting Data</a>.</p>
+<p>For more information about creating US Index Option subscriptions, see <a href="/docs/v2/writing-algorithms/universes/index-options">Index Options</a>.</p>
