@@ -1,12 +1,75 @@
-<p>To add a universe of Future contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. This method returns an <code>Future</code> object, which contains the continuous contract <code class="csharp">Symbol</code><code class="python">symbol</code>. The <code><span style="color: rgb(49, 49, 49);">continuous contract </span>Symbol</code> is the key to access the contracts in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FutureChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. When you create the Future subscription, save a reference to the continuous contract <code class="csharp">Symbol</code><code class="python">symbol</code> so you can use it later in your algorithm.</p>
+<p>To add a universe of Future contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. This method returns an <code>Future</code> object, which contains the continuous contract <code class="csharp">Symbol</code><code class="python">symbol</code>. The continuous contract <code class="csharp">Symbol</code><code class="python">symbol</code> is the key to access the contracts in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FutureChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. The continuous contract <code class="csharp">Mapped</code><code class="python">mapped</code> property references the current contract in the continuous contract series. When you create the Future subscription, save a reference to the <code>Future</code> object so you can use it later in your algorithm.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">UniverseSettings.Asynchronous = true;
-_future = AddFuture(Futures.Currencies.BTC);
-_symbol = _future.Symbol;</pre>
-    <pre class="python">self.universe_settings.asynchronous = True
-self._future = self.add_future(Futures.Currencies.BTC)
-self._symbol = self._future.symbol</pre>
+    <pre class="csharp">public class BasicFutureAlgorithm : QCAlgorithm
+{
+    private Future _future;
+    public override void Initialize()
+    {
+        UniverseSettings.Asynchronous = true;
+        _future = AddFuture(Futures.Currencies.BTC,
+            extendedMarketHours: true,
+            dataMappingMode: DataMappingMode.LastTradingDay,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        _future.SetFilter(0, 62);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (Portfolio.Invested)
+        {
+            return;
+        }
+        data.Bars.TryGetValue(_future.Symbol, out var continuousTradeBar);
+        data.Bars.TryGetValue(_future.Mapped, out var mappedTradeBar);
+        MarketOrder(_future.Mapped, 1);
+    }
+
+    // Track events when security changes its ticker, allowing the algorithm to adapt to these changes.
+    public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+    {
+        foreach (var (symbol, changedEvent) in symbolChangedEvents)
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            var newSymbol = changedEvent.NewSymbol;
+            var quantity = Portfolio[oldSymbol].Quantity;
+
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
+            Liquidate(oldSymbol, tag: tag);
+            if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
+        }
+    }
+}</pre>
+    <pre class="python">class BasicFutureAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.universe_settings.asynchronous = True
+        self._future = self.add_future(Futures.Currencies.BTC,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.LAST_TRADING_DAY,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0)
+        self._future.set_filter(0,62)
+
+    def on_data(self, data):
+        if self.portfolio.invested:
+            return
+        continuous_trade_bar = data.bars.get(self._future.symbol)
+        mapped_trade_bar = data.bars.get(self._future.mapped)
+        self.market_order(self._future.mapped, 1)
+   
+    # Track events when security changes its ticker allowing algorithm to adapt to these changes.
+    def on_symbol_changed_events(self, symbol_changed_events):
+        for symbol, changed_event in  symbol_changed_events.items():
+            old_symbol = changed_event.old_symbol
+            new_symbol = changed_event.new_symbol
+            quantity = self.portfolio[old_symbol].quantity
+
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
+            self.liquidate(old_symbol, tag=tag)
+            if quantity: self.market_order(new_symbol, quantity, tag=tag)</pre>
 </div>
 
 <p>The following table describes the <code class="csharp">AddFuture</code><code class="python">add_future</code> method arguments:</p>
