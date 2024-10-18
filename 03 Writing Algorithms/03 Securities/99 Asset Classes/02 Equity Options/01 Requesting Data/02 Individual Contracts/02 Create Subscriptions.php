@@ -114,7 +114,7 @@ self._contract_symbol = chain[
     (chain.delta > 0.3) &
     (chain.delta < 0.7)
     # Select the contract with the largest open interest.
-].sort_values('openinterest').iloc[-1]</pre>
+].sort_values('openinterest').index[-1]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
