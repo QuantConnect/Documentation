@@ -7,16 +7,16 @@
     Adding all of the pairs is particularly useful for spotting arbitrage opportunities among the pairs.
 </p>
 <div class="section-example-container">
-    <pre class="csharp">public ForexExampleAlgorithm : QCAlgorithm
+    <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
-    private List&lt;Symbol&gt; _forexPairs;
+    private List&lt;Forex&gt; _forexPairs;
 
     public override void Initialize()
     {
         // Get all of the OANDA Forex pairs from the Symbol Properties Database.
         var symbolPropertiesList = SymbolPropertiesDatabase.GetSymbolPropertiesList(Market.Oanda, SecurityType.Forex);
         // Add all of the pairs. You don't need to specify the market because the Symbol object already does.
-        _forexPairs = symbolPropertiesList.Select(x =&gt; AddForex(x.Key.Symbol, Resolution.Daily).Symbol).ToList();
+        _forexPairs = symbolPropertiesList.Select(x =&gt; AddForex(x.Key.Symbol, Resolution.Daily)).ToList();
     }
 }</pre>
     <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
@@ -27,7 +27,5 @@
             Market.OANDA, SecurityType.FOREX
         )
         # Add all of the pairs. You don't need to specify the market because the Symbol object already does.
-        self._forex_pairs = [
-            self.add_forex(x.key.symbol, Resolution.DAILY).symbol for x in symbol_properties_list
-        ]</pre>
+        self._forex_pairs = [self.add_forex(x.key.symbol, Resolution.DAILY) for x in symbol_properties_list]</pre>
 </div>
