@@ -16,7 +16,7 @@
         // Get all of the OANDA Forex pairs from the Symbol Properties Database.
         var symbolPropertiesList = SymbolPropertiesDatabase.GetSymbolPropertiesList(Market.Oanda, SecurityType.Forex);
         // Add all of the pairs. You don't need to specify the market because the Symbol object already does.
-        _forexPairs = symbolPropertiesList.Select(x =&gt; AddForex(x.Key.Symbol).Symbol).ToList();
+        _forexPairs = symbolPropertiesList.Select(x =&gt; AddForex(x.Key.Symbol, Resolution.Daily).Symbol).ToList();
     }
 }</pre>
     <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
@@ -27,5 +27,7 @@
             Market.OANDA, SecurityType.FOREX
         )
         # Add all of the pairs. You don't need to specify the market because the Symbol object already does.
-        self._forex_pairs = [self.add_forex(x.key.symbol).symbol for x in symbol_properties_list]</pre>
+        self._forex_pairs = [
+            self.add_forex(x.key.symbol, Resolution.DAILY).symbol for x in symbol_properties_list
+        ]</pre>
 </div>
