@@ -1,24 +1,38 @@
-<h4>Example 1: Manual Universe</h4>
-<p>This example subscribes to extended market hours data for a list of U.S. stocks, to monitor price movements outside regular trading hours. Use the <code class="csharp">AddEquity</code><code class="csharp">self.add_equity</code> method with the <code class="csharp">extendedMarketHours</code><code class="csharp">extended_market_hours</code> argument set as <code class="csharp">true</code><code class="csharp">True</code> to stream data for these stocks during pre-market and after-hours sessions.</p>
-<div class="section-example-container">
-	<pre class="csharp">private readonly List&lt;Symbol&gt; _symbols = new();
+<p>The following examples demonstrate some common practices for requesting US Equity data.</p>
 
-public override void Initialize()
+<h4>Example 1: Add Multiple Assets</h4>
+<p>
+	The following algorithm adds extended market hours data for multiple US Equities.
+	Extended market hours enables you to monitor price movements during pre-market and after-hours trading sessions.
+</p>
+<div class="section-example-container">
+	<pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
 {
-    // List of tickers that you'd like to subscribe to their extended market hour data
-    var tickers = new string[] { "AAPL", "TSLA", "GOOG" };
-    // Subscribe to each tickers, with extended market hour data
-    _symbols = tickers.Select(ticker =&gt; AddEquity(ticker, extendedMarketHours: true));
+    private List&lt;Equity&gt; _equities = new();
+
+    public override void Initialize()
+    {
+        // Create a list of tickers you want to add.
+        var tickers = new string[] { "AAPL", "TSLA", "GOOG" };
+        // Add extended market hours data for each US Equity.
+        _equities = tickers.Select(ticker => AddEquity(ticker, extendedMarketHours: true)).ToList();
+    }
 }</pre>
-	<pre class="python">def initialize(self):
-    # List of tickers that you'd like to subscribe to their extended market hour data
-    tickers = ["AAPL", "TSLA", "GOOG"]
-    # Subscribe to each tickers, with extended market hour data
-    self.symbols = [self.add_equity(ticker, extended_market_hours=True) for ticker in tickers]</pre>
+	<pre class="python">class USEquityDemoAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        # Create a list of tickers you want to add.
+        tickers = ["AAPL", "TSLA", "GOOG"]
+        # Add extended market hours data for each US Equity.
+        self._equities = [self.add_equity(ticker, extended_market_hours=True) for ticker in tickers]</pre>
 </div>
 
-<h4>Example 2: Periodically Request Custom Data</h4>
-<p>You may want to use an external list of tickers to trade. This example demonstrates how to scrape a DropBox file using <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">bulk download</a>. The data format is a CSV file as follows:</p>
+<h4>Example 2: Import Custom Data</h4>
+<p>
+	You may want to use an external list of tickers to trade. 
+	This example demonstrates how to scrape a DropBox file using <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">bulk download</a>. 
+	The data format is a CSV file as follows:
+</p>
 <div class="section-example-container">
 	<pre>#ticker#source,source1,source2,source3,source4,source5
 AAPL,1.25,1.10,1.32,1.13,1.21
