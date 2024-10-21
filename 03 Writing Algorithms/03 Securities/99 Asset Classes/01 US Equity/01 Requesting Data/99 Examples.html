@@ -27,14 +27,12 @@
         self._equities = [self.add_equity(ticker, extended_market_hours=True) for ticker in tickers]</pre>
 </div>
 
-<h4>Example 2: Import Custom Data</h4>
+<h4>Example 2: Import External Trade Signals</h4>
 <p>
-	You may want to use an external list of tickers to trade. 
-	This example demonstrates how to scrape a DropBox file using <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">bulk download</a>. 
-	The data format is a CSV file as follows:
+	Say you source trading signals from outside your algorithm and can organize them into a CSV file with the following structure:
 </p>
 <div class="section-example-container">
-	<pre>#ticker#source,source1,source2,source3,source4,source5
+	<pre>#ticker,source1,source2,source3,source4,source5
 AAPL,1.25,1.10,1.32,1.13,1.21
 AMZN,1.15,1.05,1.07,1.11,1.03
 GOOG,0.97,0.99,0.98,1.04,0.95
@@ -42,77 +40,76 @@ META,1.04,1.03,1.10,1.04,0.98
 MSFT,0.92,0.96,0.98,1.01,0.98</pre>
 </div>
 
-<p>To periodically scrap the data, we need to set up a <a href="/docs/v2/writing-algorithms/scheduled-events">scheduled event</a> to download the data from DropBox and convert it into trading signals. Then we download the file from DropBox and convert it into trading signals. You need to use a DropBox query with suffix <code>?dl=1</code>.</p>
+<p>
+	The following algorithm uses a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> to periodically <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">pull the CSV file from Dropbox</a>, parse its signals, and place trades.
+	To determine the target weight for each asset, it takes the mean score from all the sources.
+	If the mean score is greater than 1, it allocates 20% of the portfolio to the asset. 
+	Otherwise, it allocates -20% to the asset.
+</p>
 <div class="section-example-container">
-	<pre class="csharp">private List&lt;Symbol&gt; _symbols = new();
-
-public override void Initialize()
+	<pre class="csharp">public class USEquityDemoAlgorithm : QCAlgorithm
 {
-    // Subscribe the known tickers from the alternative data
-    foreach (var ticker in new[] { "AAPL", "AMZN", "GOOG", "META", "MSFT" })
+    public override void Initialize()
     {
-        _symbols.Add(AddEquity(ticker, Resolution.Daily).Symbol);
+        SetStartDate(2020, 1, 10);
+        // Add the US Equities.
+        foreach (var ticker in new[] { "AAPL", "AMZN", "GOOG", "META", "MSFT" })
+        {
+            AddEquity(ticker, Resolution.Daily);
+        }
+        // Set up a Scheduled Event to download the data file and place orders.
+        Schedule.On(DateRules.MonthStart(), TimeRules.Midnight, DownloadDataAndPlaceOrders);
     }
 
-    // Set up a weekly scheduled event to download data and place order
-    Schedule.On(
-        DateRules.Every(DayOfWeek.Sunday),
-        TimeRules.At(8, 0),
-        DownloadDataAndPlaceOrder
-    );
-}
-
-private void DownloadDataAndPlaceOrder()
-{
-    // Download the data from DropBox
-    var file = Download("&lt;DropBoxUrlWith?dl=1&gt;");
-
-    // Convert the text file into trading signals
-    var signals = file.Split('\n')                 // split by line
-        .Skip(1)                                // skip the header row
-        .Select(x =&gt;
-        {
-            var items = x.Split(',');           // split each data entry by comma for CSV
-            // Parse data to numeric data for each source and average them as trading singal
-            return items.Skip(1)                // skip index column
-                .Select(score =&gt; decimal.Parse(score))
-                .Average();
-        })
-        .ToList();
-
-    // Place order according to signals
-    for (int i = 0; i &lt; signals.Count; i++)
+    private void DownloadDataAndPlaceOrders()
     {
-        var weight = signals[i] &gt;= 1 ? 0.2m : -0.2m;
-        SetHoldings(_symbols[i], weight);
+        // Download the file from DropBox.
+        var file = Download("&lt;DropBoxUrl&gt;&dl=1");
+
+        // Convert the text file into trading signals.
+        var signalByTicker = new Dictionary<string, decimal>();
+        var lines = file.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 1; i < lines.Length; i++)
+        {
+            var values = lines[i].Split(',');
+            signalByTicker[values[0]] = values.Skip(1).Select(decimal.Parse).ToArray().Average();
+        }
+
+        // Place orders according to the signals.
+        var targets = signalByTicker.Select(kvp => new PortfolioTarget(kvp.Key, kvp.Value >= 1m ? 0.2m : -0.2m)).ToList();
+        SetHoldings(targets, true);
     }
 }</pre>
 	<pre class="python">from io import StringIO
+
+
+class USEquityDemoAlgorithm(QCAlgorithm):
         
-def initialize(self):
-    self.symbols = []
-    # Subscribe the known tickers from the alternative data
-    for ticker in ["AAPL", "AMZN", "GOOG", "META", "MSFT"]:
-        self.symbols.append(self.add_equity(ticker, Resolution.DAILY).symbol)
+    def initialize(self):
+        self.set_start_date(2020, 1, 10)
 
-    # Set up a weekly scheduled event to download data and place order
-    self.schedule.on(
-        self.date_rules.every(DayOfWeek.SUNDAY),
-        self.time_rules.at(8, 0),
-        self.download_data_and_place_order
-    )
+        # Add the US Equities.
+        for ticker in ["AAPL", "AMZN", "GOOG", "META", "MSFT"]:
+            self.add_equity(ticker, Resolution.DAILY)
+        
+        # Set up a Scheduled Event to download the data file and place orders.
+        self.schedule.on(
+            self.date_rules.month_start(),
+            self.time_rules.midnight,
+            self._download_data_and_place_orders
+        )
 
-def download_data_and_place_order(self):
-    # Download the data from DropBox
-    file = self.download("&lt;DropBoxUrlWith?dl=1&gt;")
+    def _download_data_and_place_orders(self):
+        # Download the file from DropBox.
+        file = self.download("&lt;DropBoxUrl&gt;&dl=1")
 
-    # Convert the text file into trading signals
-    df = pd.read_csv(StringIO(file), index_col=0)
-    signals = df.mean(axis=1)
-    signals.index = self.symbols
+        # Convert the text file into trading signals.
+        signals = pd.read_csv(StringIO(file), index_col=0).mean(axis=1)
 
-    # Place order according to signals
-    for symbol, signal in signals.items():
-        weight = 0.2 if signal &gt;= 1 else -0.2
-        self.set_holdings(symbol, weight)</pre>
+        # Place orders according to the signals.
+        targets = [
+            PortfolioTarget(ticker, 0.2 if signal >= 1 else -0.2)
+            for ticker, signal in signals.items()
+        ]
+        self.set_holdings(targets, True)</pre>
 </div>
