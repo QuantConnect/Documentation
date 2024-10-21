@@ -1,0 +1,70 @@
+<p>The following examples demonstrate some common practices for handling Index data.</p>
+
+<h4>Example 1: Trading ES Future using RSI indicator of SPX</h4>
+<p>In this example, we will subscribe to SPX daily price data and use the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index">Relative Strength Index (RSI)</a> indicator to generate signals for the strategy. We will use these signals to create orders for the E-Mini S&P 500 futures contract. To do this, we need to subscribe to the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">continuous futures contract</a>. However, the continuous futures contract itself is not tradable. We must place orders for a specific futures contract. To access the currently selected contract in the continuous contract chain, use the <code class="csharp">Mapped</code><code class="python">mapped</code> property of the Future object. The strategy will go long on the front-month contract of the ES Future if the RSI is below 30 and exit if the RSI is above 70.</p>
+
+<div class="section-example-container">
+  <pre class="csharp">private Symbol _spx;
+private Future _es;
+private RelativeStrengthIndex _rsiIndicator;
+
+public override void Initialize()
+{
+    SetStartDate(2023, 1, 1);
+    SetEndDate(2024, 1, 1);
+
+    // Subscribe to SPX and ES future daily price data.
+    _spx = AddIndex("SPX", Resolution.Daily).Symbol;
+    _es = AddFuture(Futures.Indices.SP500EMini, Resolution.Daily, dataMappingMode: DataMappingMode.OpenInterest, leverage: 1);
+
+    // Create RSI indicator for the SPX index.
+    _rsiIndicator = RSI(_spx, 15);
+
+    // Create filter to only return front month, standard contract.
+    _es.SetFilter(futureFilterUniverse => futureFilterUniverse.StandardsOnly().FrontMonth());
+}
+
+public override void OnData(Slice slice)
+{
+    // Check if the indicator is warmed up.
+    if (!_rsiIndicator.IsReady)
+    {
+        return;
+    }
+
+    // Check the RSI current value for the SPX index and create an order if the RSI is < 30.
+    if (!Portfolio.Invested && _rsiIndicator.Current.Value < 30)
+    {
+        SetHoldings(_es.Mapped, 0.8);
+    }
+
+    // Liquidate the portfolio if the RSI is > 70.
+    if (Portfolio.Invested && _rsiIndicator.Current.Value > 70)
+    {
+        Liquidate(_es.Mapped);
+    }
+}</pre>
+  <pre class="python">def initialize(self) -&gt None:
+    self.set_start_date(2023,1,1)
+    self.set_end_date(2024,1,1)
+    # Subscribe to SPX and ES future daily price data.
+    self._spx = self.add_index("SPX", Resolution.DAILY).symbol
+    self._es = self.add_future(Futures.Indices.SP_500_E_MINI, Resolution.DAILY, data_mapping_mode=DataMappingMode.OPEN_INTEREST, leverage = 1)
+    # Create RSI indicator for the SPX index.
+    self.rsi_indicator = self.rsi(self._spx, 15)
+    # Create filter to only return front month, standard contract.
+    self._es.set_filter(lambda future_filter_universe: future_filter_universe.standards_only().front_month())
+
+def on_data(self, slice: Slice) -&gt None:
+    # Check if the indicator is warmed up.
+    if not self.rsi_indicator.is_ready:
+        return
+    
+    # Check the RSI current value for the SPX index and create an order if the RSI is < 30.
+    if not self.portfolio.invested and self.rsi_indicator.current.value < 30:
+        self.set_holdings(self._es.mapped, 0.8)
+
+    # Liquidate the portfolio if the RSI is > 70.
+    if self.portfolio.invested and self.rsi_indicator.current.value > 70:
+        self.liquidate(self._es.mapped)</pre>
+</div>
