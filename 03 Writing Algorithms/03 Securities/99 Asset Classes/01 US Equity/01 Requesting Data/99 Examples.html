@@ -29,7 +29,7 @@
 
 <h4>Example 2: Import External Trade Signals</h4>
 <p>
-	Say you source trading signals from outside your algorithm and can organize them into a CSV file on Dropbox with the following structure:
+	Say you source trading signals from outside your algorithm and organize them into a CSV file on Dropbox with the following structure:
 </p>
 <div class="section-example-container">
 	<pre>#ticker,source1,source2,source3,source4,source5
@@ -68,16 +68,15 @@ MSFT,0.92,0.96,0.98,1.01,0.98</pre>
 
         // Convert the text file into trading signals.
         var signalByTicker = new Dictionary&lt;string, decimal&gt;();
-        var lines = file.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 1; i < lines.Length; i++)
+        foreach (var line in file.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Skip(1))
         {
-            var values = lines[i].Split(',');
+            var values = line.Split(',');
             signalByTicker[values[0]] = values.Skip(1).Select(decimal.Parse).ToArray().Average();
         }
 
         // Place orders according to the signals.
-        var targets = signalByTicker.Select(kvp => new PortfolioTarget(kvp.Key, kvp.Value >= 1m ? 0.2m : -0.2m)).ToList();
-        SetHoldings(targets, true);
+        var targets = signalByTicker.Select(kvp => new PortfolioTarget(kvp.Key, kvp.Value >= 1m ? 0.2m : -0.2m));
+        SetHoldings(targets.ToList(), true);
     }
 }</pre>
 	<pre class="python">from io import StringIO
