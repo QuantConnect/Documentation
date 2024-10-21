@@ -23,10 +23,10 @@
     <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
     
     def initialize(self) -&gt; None:
-        # Get all of the OANDA Forex pairs from the Symbol Properties Database.
-        symbol_properties_list = self.symbol_properties_database.get_symbol_properties_list(
-            Market.OANDA, SecurityType.FOREX
-        )
-        # Add all of the pairs. You don't need to specify the market because the Symbol object already does.
-        self._forex_pairs = [self.add_forex(x.key.symbol, Resolution.DAILY) for x in symbol_properties_list]</pre>
+        self._forex_pairs = [
+            # Add all of the pairs. You don't need to specify the market because the Symbol object already does.
+            self.add_forex(x.key.symbol, Resolution.DAILY) 
+            # Get all of the OANDA Forex pairs from the Symbol Properties Database.
+            for x in self.symbol_properties_database.get_symbol_properties_list(Market.OANDA, SecurityType.FOREX)
+        ]</pre>
 </div>
