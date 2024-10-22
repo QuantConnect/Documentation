@@ -1,99 +1,121 @@
-<h4>Example 1: Split Adjustment On Raw Price</h4>
-<p>This example demonstrates resetting and warming up an indicator after a split, so the indicator isn't impacted by the price discontinuity.</p>
+<p>The following examples demonstrate some common practices for US Equity corporate actions.</p>
+
+<h4>Example 1: Resetting Indicators on Split Events</h4>
+<p>
+	The following algorithm adds raw TSLA data and uses it to update an <a href=''>Exponential Moving Average</a> (EMA) indicator.
+	When a split occurs, it <a href='/docs/v2/writing-algorithms/indicators/key-concepts#11-Reset-Indicators'>resets and warms up the indicator with scaled raw data</a> to ensure the indicator doesn't reflect price discontinuities.
+</p>
 <div class="section-example-container">
-	<pre class="csharp">private dynamic _spy;
-
-public override void Initialize()
+	<pre class="csharp">public class USEquityCorporateActionExampleAlgorithm : QCAlgorithm
 {
-    // Subscribe to raw data
-    _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw) as dynamic;
-    // Set up EMA indicator with duck typing
-    _spy.Ema = EMA(_spy.Symbol, 50);
-}
+    private dynamic _equity;
 
-public override void OnSplits(Splits splits)
-{
-    // Check if SPY has split in on-splits handler
-    if (splits.ContainsKey(_spy.Symbol))
+    public override void Initialize()
     {
-        // If so, reset the EMA indicator
-        _spy.Ema.Reset();
-        // Re-warm up with split adjusted historical data
-        foreach (var bar in History&lt;TradeBar&gt;(_spy.Symbol, 50, Resolution.Minute, dataNormalizationMode: DataNormalizationMode.SplitAdjusted))
+		    // Add raw US Equity data.
+        _equity = AddEquity("TSLA", Resolution.Daily, dataNormalizationMode: DataNormalizationMode.Raw);
+		    // Create an EMA indicator.
+        _equity.Ema = EMA(_equity.Symbol, 50);
+    }
+
+    public override void OnSplits(Splits splits)
+    {
+		    // Wait until the split has occurred.
+        var split = splits[_equity.Symbol];
+        if (split.Type != SplitType.SplitOccurred)
         {
-            _spy.Ema.Update(bar.EndTime, bar.Close);
+            return;
+        }
+		    // Reset the indicator.
+        _equity.Ema.Reset();
+		    // Warm up with scaled raw data.
+        var history = History&lt;TradeBar&gt;(
+            _equity.Symbol, _equity.Ema.WarmUpPeriod, dataNormalizationMode: DataNormalizationMode.ScaledRaw
+        );
+        foreach (var bar in history)
+        {
+            _equity.Ema.Update(bar.EndTime, bar.Close);
         }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to raw data
-    self.spy = self.add_equity("SPY", Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.RAW)
-    # Set up EMA indicator with duck typing
-    self.spy.ema = self.ema(self.spy.symbol, 50)
+	<pre class="python">class USEquityCorporateActionExampleAlgorithm(QCAlgorithm):
+        
+    def initialize(self) -> None:
+        # Add raw US Equity data.
+        self._equity = self.add_equity("TSLA", Resolution.DAILY, data_normalization_mode=DataNormalizationMode.RAW)
+        # Create an EMA indicator.
+        self._equity.ema = self.ema(self._equity.symbol, 50)
 
-def on_splits(self, splits: Splits) -&gt; None:
-    # Check if SPY has split in on-splits handler
-    if self.spy.symbol in splits:
-        # If so, reset the EMA indicator
-        self.spy.ema.reset()
-        # Re-warm up with split adjusted historical data
-        for bar in self.history[TradeBar](self.spy.symbol, 50, Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.SPLIT_ADJUSTED):
-            self.spy.ema.update(bar.end_time, bar.close)</pre>
+    def on_splits(self, splits: Splits) -> None:
+        # Wait until the split has occurred.
+        split = splits[self._equity.symbol]
+        if split.type != SplitType.SPLIT_OCCURRED:
+            return            
+        # Reset the indicator.
+        self._equity.ema.reset()
+        # Warm up with scaled raw data.
+        history = self.history[TradeBar](
+            self._equity.symbol, self._equity.ema.warm_up_period, data_normalization_mode=DataNormalizationMode.SCALED_RAW
+        )
+        for bar in history:
+            self._equity.ema.update(bar.end_time, bar.close)</pre>
 </div>
 
 <h4>Example 2: Reinvesting Dividend</h4>
-<p>Reinvesting dividends can significantly enhance long-term investment growth. When dividends are received, instead of cashing them out, investors can use these funds to purchase additional shares of the same stock or mutual fund. This example uses raw price data, and reinvests dividend payments into stock.</p>
+<p>
+	The following algorithm holds SPY and re-invests the dividend payments into additional shares. 
+</p>
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _spy;
-
-public override void Initialize()
+	<pre class="csharp">public class USEquityCorporateActionExampleAlgorithm : QCAlgorithm
 {
-    // Subscribe to raw data
-    _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-}
+    private Equity _spy;
 
-public override void OnData(Slice slice)
-{
-    // Invest if not
-    if (!Portfolio[_spy].Invested)
+    public override void Initialize()
     {
-        SetHoldings(_spy, 0.5m);
+        // Add raw Equity data.
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
     }
-}
 
-public override void OnDividends(Dividends dividends)
-{
-    // Check if SPY has dividend in on-dividends handler
-    if (dividends.ContainsKey(_spy))
+    public override void OnData(Slice slice)
     {
-        // Obtain the total dividend payment amount
-        var dividendPerShare = dividends[_spy].Distribution;
-        var totalDividendAmount = dividendPerShare * Portfolio[_spy].Quantity;
+        // Buy and hold.
+        if (!_spy.Holdings.Invested)
+        {
+            SetHoldings(_spy.Symbol, 0.5);
+        }
+    }
 
-        // Calculate the quantity to reinvest (all dividend)
-        var quantity = Math.Floor(totalDividendAmount / Securities[_spy].Price);    // round down
-        // Place order to reinvest
-        MarketOrder(_spy, quantity);
+    public override void OnDividends(Dividends dividends)
+    {
+        // Get the total dividend payment amount.
+        var totalDividendAmount = dividends[_spy.Symbol].Distribution * _spy.Holdings.Quantity;
+
+        // Calculate the number of shares you can buy with the dividend payment.
+        var quantity = Math.Floor(totalDividendAmount / _spy.Price);
+        if (quantity > 0)
+        {
+            // Place an order to re-invest the dividends.
+            MarketOrder(_spy.Symbol, quantity);
+        }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to raw data
-    self.spy = self.add_equity("SPY", Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.RAW).symbol
+	<pre class="python">class USEquityCorporateActionExampleAlgorithm(QCAlgorithm):
+        
+    def initialize(self) -> None:
+        # Add raw Equity data.
+        self._spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
 
-def on_data(self, slice: Slice) -&gt; None:
-    # Invest if not
-    if not self.portfolio[self.spy].invested:
-        self.set_holdings(self.spy, 0.5)
+    def on_data(self, slice: Slice) -> None:
+        # Buy and hold.
+        if not self._spy.holdings.invested:
+            self.set_holdings(self._spy.symbol, 0.5)
 
-def on_dividends(self, dividends: Dividends) -&gt; None:
-    # Check if SPY has dividend in on-dividends handler
-    if self.spy in dividends:
-        # Obtain the total dividend payment amount
-        dividend_per_share = dividends[self.spy].distribution
-        total_dividend_amount = dividend_per_share * self.portfolio[self.spy].quantity
-    
-        # Calculate the quantity to reinvest (all dividend)
-        quantity = np.floor(total_dividend_amount / self.securities[self.spy].price)     # round down
-        # Place order to reinvest
-        self.market_order(self.spy, quantity)</pre>
+    def on_dividends(self, dividends: Dividends) -> None:        
+        # Get the total dividend payment amount.
+        total_dividend_amount = dividends[self._spy.symbol].distribution * self._spy.holdings.quantity
+        # Calculate the number of shares you can buy with the dividend payment.
+        quantity = np.floor(total_dividend_amount / self._spy.price)
+        if quantity:
+            # Place an order to re-invest the dividends.
+            self.market_order(self._spy.symbol, quantity)</pre>
 </div>
