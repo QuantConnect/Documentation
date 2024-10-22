@@ -1,127 +1,187 @@
-<h4>Example 1: Short Penny Stock Gainers</h4>
-<p>This example builds a universe of low-cap penny stocks (below $1) that showed the greatest gain on the previous day. It uses an intraday Bollinger Band indicator to time entry and exit.</p>
+<p>The following examples demonstrate some common practices for shorting US Equities:</p>
+
+<h4>Example 1: Shorting Penny Stock Top Gainers</h4>
+<p>
+	The following algorithm example adds a universe of penny stocks that have experienced the greatest upward momentum over the last two trading days.
+	For each asset in the universe, it monitors the hourly <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/bollinger-bands'>Bollinger Bands</a>.
+	When an asset breaks above the upper band, it shorts the asset.
+	It exits each position when the asset drops 10% from the entry price or when it reverts back below the middle Bollinger Band.
+</p>
 <div class="section-example-container">
-	<pre class="csharp">// Dictionary to cache last price for gain calculation
-private Dictionary&lt;Symbol, decimal&gt; _symbolLastPrices = new();
-
-public override void Initialize()
+	<pre class="csharp">using QuantConnect.Data.Shortable;
+		
+public class USEquityShortingExampleAlgorithm : QCAlgorithm
 {
-    // Add universe filtering function to obtain the low-cap penny stocks top gainers
-    AddUniverse(Selection)
-}
+    private Dictionary&lt;Symbol, RateOfChange&gt; _rocBySymbol = new();
+    private Dictionary&lt;BollingerBands, Security&gt; _securityByBB = new();
 
-private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;Fundamental&gt; fundamental)
-{
-    // Select the small-cap penny stocks with a price less than $1.
-    var filtered = fundamental.Where(x =&gt; x.MarketCap &lt;= 5e6 && x.Price &lt;= 1).ToList();
-    
-    var pctGain = new Dictionary&lt;Symbol, decimal&gt;();
-    // Iterate filtered stocks to calculate best gainers
-    foreach (var f in filtered)
+    public override void Initialize()
     {
-        // If not in dictionary, save last price and exit
-        if (!_symbolLastPrices.TryGetValue(f.Symbol, out var lastPrice))
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        // Enable automatic indicator warm-up.
+        Settings.AutomaticIndicatorWarmUp = true;
+        // Add a universe of low-cap penny stocks that have high upward momentum.
+        AddUniverse(SelectAssets);
+    }
+
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamentals)
+    {
+        // Select all the penny stocks that have a momentum score.
+        var pennyStocks = new List&lt;Symbol&gt;();
+        foreach (var f in fundamentals)
         {
-            lastPrice = _symbolLastPrices[f.Symbol] = f.Price;
-            continue;
+            // Create a RateOfChange indicator for each asset.
+            if (!_rocBySymbol.ContainsKey(f.Symbol))
+            {
+                _rocBySymbol[f.Symbol] = new RateOfChange(1);
+            }
+            // Update the indicator and ensure it's ready.
+            if (!_rocBySymbol[f.Symbol].Update(f.EndTime, f.Price))
+            {
+                continue;
+            }
+            // Filter out assets above $5M market cap or $1 share price.
+            if (f.MarketCap > 5e6 || f.Price > 1)
+            {
+                continue;
+            }
+            pennyStocks.Add(f.Symbol);
         }
 
-        // Cache the 1-day percentage change
-        var pctChg = (f.Price - lastPrice) / lastPrice;
-        pctGain.Add(f.Symbol, pctChg);
-
-        // Update last price
-        _symbolLastPrices[f.Symbol] = f.Price;
+        // Select the 20 penny stocks with the greatest momentum.
+        return pennyStocks.OrderByDescending(symbol => _rocBySymbol[symbol].Current.Value).Take(20);
     }
 
-    // Return Symbols of the top 20 gainers
-    return pctGain.OrderByDescending(x =&gt; x.Value)
-        .Take(20)
-        .Select(x =&gt; x.Key);
-}
-
-public override void OnSecuritiesChanged(SecurityChanges changes)
-{
-    // Iterate new universe members to setup the indicators
-    foreach (var added in changes.AddedSecurities)
+    public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        var security = added as dynamic;
-        // Create an automatically updated BollingerBand indicator
-        security.BBands = BB(added.Symbol, 20, Resolution.Minute);
-        // Add a handler for trading
-        security.BBands.Updated += OnBBUpdate;
-    }
-}
-
-private void OnBBUpdate(object sender, IndicatorDataPoint point)
-{
-    var price = Securities[point.Symbol].Price;
-    // Check if the stock is invested
-    if (!Portfolio[point.Symbol].Invested)
-    {
-        // Trade if short sell criteria met
-        if (price &gt; sender.UpperBand.Current.Value)
+        // Iterate through the assets that entered the universe.
+        foreach (var security in changes.AddedSecurities)
         {
-            SetHoldings(point.Symbol, -0.05m);
+            // Set the shortable provider of the asset to ensure realistic short availability.
+            security.SetShortableProvider(new InteractiveBrokersShortableProvider());
+            // Create a BollingerBand indicator for this asset.
+            var bb = BB(security.Symbol, 20, 2, resolution: Resolution.Hour);
+            _securityByBB[bb] = security;
+            // Attach an event handler to the indicator to track its updates.
+            bb.Updated += OnBBUpdated;
+            (security as dynamic).Bbands = bb;
+        }
+
+        // Liquidate and remove the indicator updates for assets that leave the universe.
+        foreach (var security in changes.RemovedSecurities)
+        {
+            var bb = (security as dynamic).Bbands;
+            DeregisterIndicator(bb);
+            _securityByBB.Remove(bb);
+            Liquidate(security.Symbol);
         }
     }
-    else
+
+    private void OnBBUpdated(object indicator, IndicatorDataPoint _)
     {
-        // Exit if invested and price drop below middle band
-        if (price &lt; sender.MiddleBand.Current.Value)
+        var bb = (indicator as BollingerBands);
+        // When the indicator updates, ensure it's ready.
+        if (!bb.IsReady)
         {
-            Liquidate(point.Symbol)
+            return;
+        }
+        var security = _securityByBB[bb];
+        // Short the asset if the price is above the upper band.
+        if (!security.Holdings.Invested && security.Price > bb.UpperBand.Current.Value)
+        {
+            // Get the number of shares avaiable for shorting.
+            var shortableQuantity = security.ShortableProvider.ShortableQuantity(security.Symbol, Time);
+            if (shortableQuantity == null)
+            {
+                return;
+            }
+            // Calculate the target quantity.
+            var quantity = Math.Max(CalculateOrderQuantity(security.Symbol, -0.1m), -(int)shortableQuantity);
+            if (quantity != 0)
+            {
+                // Short the asset.
+                MarketOrder(security.Symbol, quantity);
+                // Place a take-profit order 10% below the current price.
+                LimitOrder(security.Symbol, -quantity, 0.9m * security.BidPrice);
+            }
+        }
+        // If the limit order isn't hit before the price drops below the middle band, 
+        // exit the position and cancel the limit order.
+        else if (security.Holdings.Invested && security.Price < bb.MiddleBand.Current.Value)
+        {
+            Liquidate(security.Symbol);
         }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    self.symbol_last_prices = None
-    # Add universe filtering function to obtain the low-cap penny stocks top gainers
-    self.add_universe(self.selection)
-
-def selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    symbols = []
-    market_caps = []
-    prices = []
-    # Iterate stocks to get market cap and price
-    for f in fundamental:
-        symbols.append(f.symbol)
-        market_caps.append(f.market_cap)
-        prices.append(f.price)
-    df = pd.DataFrame({"Symbol": symbols, "MarketCap": market_caps, "Price": prices}).set_index("Symbol")
+	<pre class="python">class USEquityShortingExampleAlgorithm(QCAlgorithm):
     
-    # Filter the stocks
-    df = df[(df["MarketCap"] &lt;= 5e6) & (df["Price"] &lt;= 1)]
+    _roc_by_symbol = {}
+    _security_by_bb = {}
 
-    # Calculate the percentage change
-    top_gainers = []
-    if self.symbol_last_prices:
-        pct_chg = (df["Price"] - self.symbol_last_prices["Price"]) / self.symbol_last_prices["Price"]
-        # Get the top 20 gainers
-        top_gainers = list(pct_chg.nlargest(20).index)
+    def initialize(self) -> None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        # Enable automatic indicator warm-up.
+        self.settings.automatic_indicator_warm_up = True
+        # Add a universe of low-cap penny stocks that have high upward momentum.
+        self.add_universe(self._select_assets)
 
-    # Update last price
-    self.symbol_last_prices = df
-    
-    return top_gainers
-	
-def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Iterate new members to create an automatically updated BollingerBand indicator
-    for added in changes.added_securities:
-        # Create a BollingerBand indicator
-        added._bbands = self.bb(added.symbol, 20, Resolution.MINUTE)
-        # Add a handler for trading
-        added._bbands.updated += self.on_bb_updated
+    def _select_assets(self, fundamentals: List[Fundamental]) -> List[Symbol]:
+        # Select all the penny stocks that have a momentum score.
+        penny_stocks = []
+        for f in fundamentals:
+            # Create a RateOfChange indicator for each asset.
+            if f.symbol not in self._roc_by_symbol:
+                self._roc_by_symbol[f.symbol] = RateOfChange(1)
+            # Update the indicator and ensure it's ready.
+            if not self._roc_by_symbol[f.symbol].update(f.end_time, f.price):
+                continue
+            # Filter out assets above $5M market cap or $1 share price.
+            if f.market_cap > 5e6 or f.price > 1:
+                continue
+            penny_stocks.append(f.symbol)
 
-def on_bb_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
-    price = self.securities[point.symbol].price
-    # Check if the stock is invested
-    if not self.portfolio[point.symbol].invested:
-        # Trade if short sell criteria met
-        if price &lt; sender.upper_band.current.value:
-            self.set_holdings(point.symbol, -0.05)
-    else:
-        # Exit if invested and price drop below middle band
-        price &lt; sender.middle_band.current.value:
-            self.liquidate(point.symbol)</pre>
+        # Select the 20 penny stocks with the greatest momentum.
+        return sorted(penny_stocks, key=lambda symbol: self._roc_by_symbol[symbol].current.value)[-20:]
+        
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        # Iterate through the assets that entered the universe.
+        for security in changes.added_securities:
+            # Set the shortable provider of the asset to ensure realistic short availability.
+            security.set_shortable_provider(InteractiveBrokersShortableProvider())
+            # Create a BollingerBand indicator for this asset.
+            security.bbands = self.bb(security.symbol, 20, 2, resolution=Resolution.HOUR)
+            self._security_by_bb[security.bbands] = security
+            # Attach an event handler to the indicator to track its updates.
+            security.bbands.updated += self.on_bb_updated
+        
+        # Liquidate and remove the indicator updates for assets that leave the universe.
+        for security in changes.removed_securities:
+            self.deregister_indicator(security.bbands)
+            self._security_by_bb.pop(security.bbands, None)
+            self.liquidate(security.symbol)
+
+    def on_bb_updated(self, bb: object, _: IndicatorDataPoint) -> None:
+        # When the indicator updates, ensure it's ready.
+        if not bb.is_ready:
+            return
+        security = self._security_by_bb[bb]
+        # Short the asset if the price is above the upper band.
+        if not security.holdings.invested and security.price > bb.upper_band.current.value:
+            # Get the number of shares avaiable for shorting.
+            shortable_quantity = security.shortable_provider.shortable_quantity(security.symbol, self.time)
+            if not shortable_quantity:
+                return
+            # Calculate the target quantity.
+            quantity = max(self.calculate_order_quantity(security.symbol, -0.1), -shortable_quantity)
+            if quantity: 
+                # Short the asset.
+                self.market_order(security.symbol, quantity)
+                # Place a take-profit order 10% below the current price.
+                self.limit_order(security.symbol, -quantity, 0.9 * security.bid_price)
+        # If the limit order isn't hit before the price drops below the middle band, 
+        # exit the position and cancel the limit order.
+        elif security.holdings.invested and security.price < bb.middle_band.current.value:
+            self.liquidate(security.symbol)</pre>
 </div>
