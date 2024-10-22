@@ -1,34 +1,35 @@
-<h4>Example 1: Use Market On Open Orders</h4>
-<p>In this example, we create an Market On Open order (MOO) to purchase 10 shares of SPY on July 1st, 2021 at 10:31 AM. The <code class="csharp">MarketOnOpenOrder</code><code class="python">market_on_open_order</code> method places a trade which fills when the market next opens. In this example it fills at 9:30 AM the following day. Market on open orders must be placed at least 15 minutes before market open.</p>
+<p>The following examples demonstrate some common practices related to our US Equity data preparation process.</p>
+
+<h4>Example 1: Trading at the Opening Auction</h4>
+<p>The following algorithm creates a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> that places a <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>Market On Open order</a>, which fill at the official opening auction price.</p>
 <div class="section-example-container">
-	<pre class="csharp">private Security _spy;
-
-public override void Initialize()
+	<pre class="csharp">public class USEquityDataPreparationExampleAlgorithm : QCAlgorithm
 {
-    SetStartDate(2021, 7, 1);
-    SetEndDate(2021, 7, 4);
-    // Subscribe to raw data of SPY.
-    _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw);
-}
-
-public override void OnData(Slice data)
-{
-    // Place an on market open order at 10:31 AM, July 1st, 2021 to be filled the following day open.
-    if (Time.Day == 1 && Time.Hour == 10 && Time.Minute == 31)
+    public override void Initialize()
     {
-        MarketOnOpenOrder(_spy.Symbol, 10);
+        SetStartDate(2021, 1, 1);
+        // Add Equity data.
+        var spy = AddEquity("SPY", extendedMarketHours: true).Symbol;
+        // Create a Scheduled Event that rebalances with market on open orders.
+        Schedule.On(
+            DateRules.EveryDay(spy), 
+            TimeRules.BeforeMarketOpen(spy, 30), 
+            () => MarketOnOpenOrder(spy, CalculateOrderQuantity(spy, 0.1m))
+        );
     }
 }</pre>
-	<pre class="python">def initialize(self): 
-    self.set_start_date(2021, 7, 1)
-    self.set_end_date(2021, 7, 3)
-    # Subscribe to raw data of SPY.
-    self.spy = self.add_equity("SPY", Resolution.MINUTE, data_normalization_mode=DataNormalizationMode.RAW)
-
-def on_data(self, data):
-    # Place an on market open order at 10:31 AM, July 1st, 2021  to be filled the following day open.
-    if self.time.day == 1 and self.time.hour == 10 and self.time.minute == 31:
-      self.market_on_open_order(self.spy.symbol, 10)</pre>
+	<pre class="python">class USEquityDataPreparationExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self): 
+        self.set_start_date(2021, 1, 1)
+        # Add Equity data.
+        spy = self.add_equity("SPY", extended_market_hours=True).symbol
+        # Create a Scheduled Event that rebalances with market on open orders.
+        self.schedule.on(
+            self.date_rules.every_day(spy), 
+            self.time_rules.before_market_open(spy, 30), 
+            lambda: self.market_on_open_order(spy, self.calculate_order_quantity(spy, 0.1))
+        )</pre>
 </div>
 
 <h4>Example 2: Demonstrate Using Tick Flags to Identify Opening Auction Tick</h4>
