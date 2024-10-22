@@ -76,8 +76,14 @@
         self.plot("Bid-Ask Spread", "spread", bid_ask_spread)</pre>
 </div>
 
-<h4>Example 2: 5-Minute EURUSD Trend</h4>
-<p>The following example estimates the trend of EURUSD using 200-bar <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> indicator. To smoothen the noise of the minute resolution data, we consolidate the data into 5-Minute <code>TradeBar</code> using <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#02-Consolidate-Trade-Bars">TradeBarConsolidator</a>. If the current EURUSD price is above the 200-bar EMA, it is consider overbrought and we short the Forex for a mean reversal strategy, we long on the oversold vice versa.</p>
+<h4>Example 2: 5-Minute EURUSD Trend Reversal</h4>
+<p>
+    The following algorithm applies a mean reveral strategy to EURUSD.
+    To smooth out the noise of minute resolution data, it <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/count-consolidators#03-Consolidate-Quote-Bars">consolidates the data into 5-minute bars</a> and then calculates their 200-bar <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> (EMA). 
+    After every time the indicator updates, the algorithm checks for a trading opportuniity.
+    When the current EURUSD price is below the EMA, it takes a long position. 
+    Otherwise, it takes a short position.
+</p>
 <div class="section-example-container">
     <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
@@ -88,83 +94,73 @@
         SetStartDate(2003, 1, 1);
         SetEndDate(2005, 1, 1);
 
-        // Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
+        // Add EURUSD minute data.
         _forex = AddForex("EURUSD", Resolution.Minute, Market.Oanda);
-        // Create an Exponential Moving Average indicator to estimate the trend of EURUSD.
+        // Create an EMA indicator to estimate the trend of EURUSD.
         _forex.ema = new ExponentialMovingAverage(200);
-        // Set up a handler to trade based on the updated EMA signal.
+        // Attach an event handler to the indicator to track its updates.
         (_forex.ema as ExponentialMovingAverage).Updated += OnUpdated;
-        // Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend.
+        // Create a consolidator that produces 5-minute quote bars to reduce reduce noise.
         var consolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(5));
-        // Update the EMA indicator with the smoothened price data to get the accurate trend.
+        // Define the consolidator handler so it updates the EMA with the consoildated bars.
         consolidator.DataConsolidated += (_, bar) =&gt; {
             _forex.ema.Update(bar.EndTime, bar.Close);
         };
-        // Warm up the indicator by updating the consolidator with historical data, such that the EMA trend detector can be used immediately.
-        foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 1000, Resolution.Minute))
+        // Warm up the indicator with historical data.
+        foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 100, Resolution.Minute))
         {
             consolidator.Update(bar);
         }
-        // Subscribe the consolidator to EURUSD data feed for auto-updating the consolidator.
+        // Subscribe the consolidator for automatic updates.
         SubscriptionManager.AddConsolidator(_forex.Symbol, consolidator);
     }
     
     private void OnUpdated(object sender, IndicatorDataPoint point)
     {
-        // Trade only by the warmed up indicator.
-        if (_forex.ema.IsReady)
+        // Wait until the indicator is ready.
+        if (!_forex.ema.IsReady)
         {
-            // Long if the current price is below EMA for mean reversal.
-            if (Securities[_forex.Symbol].Close &lt;= point.Value)
-            {
-                SetHoldings(_forex.Symbol, 0.5);
-            }
-            // Short if the the current price is above EMA for mean reversal.
-            else
-            {
-                SetHoldings(_forex.Symbol, -0.5);
-            }
+            return;
         }
+        // Rebalance the portfolio. If the current price is below the EMA, long. Otherwise, short.
+        SetHoldings(_forex.Symbol, _forex.Price <= point.Value ? 0.5m : -0.5m);
     }
 }</pre>
     <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+        
     def initialize(self) -&gt; None:
         self.set_start_date(2003, 1, 1)
         self.set_end_date(2005, 1, 1)
 
-        # Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
+        # Add EURUSD minute data.
         self._forex = self.add_forex("EURUSD", Resolution.MINUTE, Market.OANDA)
-        # Create an Exponential Moving Average indicator to estimate the trend of EURUSD.
+        # Create an EMA indicator to estimate the trend of EURUSD.
         self._forex.ema = ExponentialMovingAverage(200)
-        # Set up a handler to trade based on the updated EMA signal.
+        # Attach an event handler to the indicator to track its updates.
         self._forex.ema.updated += self.on_updated
-        # Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend.
+        # Create a consolidator that produces 5-minute quote bars to reduce reduce noise.
         consolidator = QuoteBarConsolidator(timedelta(minutes=5))
-        # Update the EMA indicator with the smoothened price data to get the accurate trend.
-        consolidator.DataConsolidated += self.on_consolidated
-        # Warm up the indicator by updating the consolidator with historical data, such that the EMA trend detector can be used immediately.
+        # Define the consolidator handler so it updates the EMA with the consoildated bars.
+        consolidator.DataConsolidated += lambda _, bar: self._forex.ema.update(bar.end_time, bar.close)
+        # Warm up the indicator with historical data.
         for bar in self.history[QuoteBar](self._forex.symbol, 100, Resolution.MINUTE):
             consolidator.update(bar)
-        # Subscribe the consolidator to EURUSD data feed for auto-updating the consolidator.
+        # Subscribe the consolidator for automatic updates.
         self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
     
-    def on_consolidated(self, sender: object, bar: QuoteBar) -&gt; None:
-        # Update the EMA indicator with the smoothened price data to get the accurate trend.
-        self._forex.ema.update(bar.end_time, bar.close)
-    
-    def on_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
-        # Trade only by the warmed up indicator.
-        if self._forex.ema.is_ready:
-            # Long if the current price is below EMA for mean reversal.
-            if self.securities[self._forex.symbol].close &lt;= point.value:
-                self.set_holdings(self._forex.symbol, 0.5)
-            # Short if the the current price is above EMA for mean reversal.
-            else:
-                self.set_holdings(self._forex.symbol, -0.5)</pre>
+    def on_updated(self, sender: object, point: IndicatorDataPoint) -> None:
+        # Wait until the indicator is ready.
+        if not self._forex.ema.is_ready:
+            return
+        # Rebalance the portfolio. If the current price is below the EMA, long. Otherwise, short.
+        self.set_holdings(self._forex.symbol, 0.5 if self._forex.price <= point.value else -0.5)</pre>
 </div>
 
 <h4>Example 3: New York Time Alignment</h4>
-<p>To line up the time for New York market close, you can set up a <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/calendar-consolidators">custom period consolidator</a> to get daily bars from 5pm to 5pm next day. It is useful on updating daily bar indicators upon New York market's information.</p>
+<p>
+    The following algorithm creates daily Forex bars that close at 4:30 PM Eastern Time (ET). 
+    This technique is helpful when you want to align the daily bars with the close of the New York.
+</p>
 <div class="section-example-container">
     <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
@@ -172,37 +168,47 @@
 
     public override void Initialize()
     {
-        // Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
+        // Add EURUSD minute data.
         _forex = AddForex("EURUSD", Resolution.Minute, Market.Oanda).Symbol;
-        // Create a custom period (5pm-5pm NY time based) daily bar consolidator.
-        var consolidator = new QuoteBarConsolidator(_ConsolidationPeriod);
-        // Subscribe the consolidator to EURUSD data feed to automatically update the consolidator.
+        // Create a daily bar consolidator with a custom period (4:30 PM-4:30 PM Eastern Time).
+        var consolidator = new QuoteBarConsolidator(ConsolidationPeriod);
+        // Attach a consolidation handler to plot the consolidated bars.
+        consolidator.DataConsolidated += (_, bar) => Plot("Consolidated Bar", "Close", bar.Close);
+        // Subscribe the consolidator for automatic updates.
         SubscriptionManager.AddConsolidator(_forex, consolidator);
     }
     
-    private CalendarInfo _ConsolidationPeriod(DateTime datetime)
+    private CalendarInfo _ConsolidationPeriod(DateTime dt)
     {
-        // Start time is set as the previous day's 5pm.
-        var timeSpan = new TimeSpan(17, 0, 0);
-        var start = datetime.Date.AddDays(-1) + timeSpan;
-        // Set period to 1 day, making 1-day bar until the next 5pm.
-        return new CalendarInfo(start, TimeSpan.FromDays(1));
+        // Set the start time to be 4:30 PM of the previous day.
+        var start = dt.Date.AddHours(16).AddMinutes(30);
+        var period = TimeSpan.FromDays(1);
+        if (dt.Hour < 17)
+        {
+            start = start - period;
+        }
+        // Set the period to 1 day to make daily bars.
+        return new CalendarInfo(start, period);
     }
 }</pre>
     <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+        
     def initialize(self) -&gt; None:
-        # Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
-        self._forex = self.add_forex("EURUSD", Resolution.MINUTE, Market.OANDA)
-        # Create a custom period (5pm-5pm NY time based) daily bar consolidator.
+        # Add EURUSD minute data.
+        self._forex = self.add_forex("EURUSD")
+        # Create a daily bar consolidator with a custom period (4:30 PM-4:30 PM Eastern Time).
         consolidator = QuoteBarConsolidator(self._consolidation_period)
-        # Subscribe the consolidator to EURUSD data feed to automatically update the consolidator.
+        # Attach a consolidation handler to plot the consolidated bars.
+        consolidator.data_consolidated += lambda _, bar: self.plot("Consolidated Bar", "Close", bar.close)
+        # Subscribe the consolidator for automatic updates.
         self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
     
-    def _consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
-        # Start time is set as the previous day's 5pm.
-        dt = dt.replace(hour=17, minute=0, second=0, microsecond=0)
+    def _consolidation_period(self, dt: datetime) -> CalendarInfo:
+        # Set the start time to be 4:30 PM of the previous day.
+        start = dt.replace(hour=16, minute=30, second=0, microsecond=0)
         period = timedelta(1)
-        start = dt - period
-        # Set period to 1 day, making 1-day bar until the next 5pm.
+        if dt.hour < 17:
+            start -= period
+        # Set the period to 1 day to make daily bars.
         return CalendarInfo(start, period)</pre>
 </div>
