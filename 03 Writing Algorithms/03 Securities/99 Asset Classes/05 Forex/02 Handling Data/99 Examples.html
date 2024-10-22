@@ -77,7 +77,7 @@
 </div>
 
 <h4>Example 2: 5-Minute EURUSD Trend</h4>
-<p>The following example estimates the trend of EURUSD using 20-bar <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> indicator. To smoothen the noise of the minute resolution data, we consolidate the data into 5-Minute <code>TradeBar</code> using <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#02-Consolidate-Trade-Bars">TradeBarConsolidator</a>. If the current EURUSD price is above the 20-bar EMA, it is consider bullish and we long the Forex, otherwise, we short the bearish trend.</p>
+<p>The following example estimates the trend of EURUSD using 200-bar <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> indicator. To smoothen the noise of the minute resolution data, we consolidate the data into 5-Minute <code>TradeBar</code> using <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#02-Consolidate-Trade-Bars">TradeBarConsolidator</a>. If the current EURUSD price is above the 200-bar EMA, it is consider overbrought and we short the Forex for a mean reversal strategy, we long on the oversold vice versa.</p>
 <div class="section-example-container">
     <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
@@ -85,10 +85,15 @@
 
     public override void Initialize()
     {
+        SetStartDate(2003, 1, 1);
+        SetEndDate(2005, 1, 1);
+
         // Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
         _forex = AddForex("EURUSD", Resolution.Minute, Market.Oanda);
         // Create an Exponential Moving Average indicator to estimate the trend of EURUSD.
-        _forex.ema = new ExponentialMovingAverage(20);
+        _forex.ema = new ExponentialMovingAverage(200);
+        // Set up a handler to trade based on the updated EMA signal.
+        (_forex.ema as ExponentialMovingAverage).Updated += OnUpdated;
         // Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend.
         var consolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(5));
         // Update the EMA indicator with the smoothened price data to get the accurate trend.
@@ -96,7 +101,7 @@
             _forex.ema.Update(bar.EndTime, bar.Close);
         };
         // Warm up the indicator by updating the consolidator with historical data, such that the EMA trend detector can be used immediately.
-        foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 100, Resolution.Minute))
+        foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 1000, Resolution.Minute))
         {
             consolidator.Update(bar);
         }
@@ -104,17 +109,17 @@
         SubscriptionManager.AddConsolidator(_forex.Symbol, consolidator);
     }
     
-    public override void OnData(Slice slice)
+    private void OnUpdated(object sender, IndicatorDataPoint point)
     {
-        // Trade only by the updated price and trend information.
-        if (slice.QuoteBars.ContainsKey(_forex.Symbol) && _forex.ema.IsReady)
+        // Trade only by the warmed up indicator.
+        if (_forex.ema.IsReady)
         {
-            // Long if the trend goes up (the current price above EMA).
-            if (slice.QuoteBars[_forex.Symbol].Close &gt;= _forex.ema.Current.Value)
+            // Long if the current price is below EMA for mean reversal.
+            if (Securities[_forex.Symbol].Close &lt;= point.Value)
             {
                 SetHoldings(_forex.Symbol, 0.5);
             }
-            // Short if the trend goes down (the current price below EMA).
+            // Short if the the current price is above EMA for mean reversal.
             else
             {
                 SetHoldings(_forex.Symbol, -0.5);
@@ -124,10 +129,15 @@
 }</pre>
     <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2003, 1, 1)
+        self.set_end_date(2005, 1, 1)
+
         # Add subscriptions to EURUSD with specific market to ensure the correct securities are selected.
         self._forex = self.add_forex("EURUSD", Resolution.MINUTE, Market.OANDA)
         # Create an Exponential Moving Average indicator to estimate the trend of EURUSD.
-        self._forex.ema = ExponentialMovingAverage(20)
+        self._forex.ema = ExponentialMovingAverage(200)
+        # Set up a handler to trade based on the updated EMA signal.
+        self._forex.ema.updated += self.on_updated
         # Create a 5-minute consolidator to smoothen the price data to reduce noise, since we focus on the trend.
         consolidator = QuoteBarConsolidator(timedelta(minutes=5))
         # Update the EMA indicator with the smoothened price data to get the accurate trend.
@@ -142,13 +152,13 @@
         # Update the EMA indicator with the smoothened price data to get the accurate trend.
         self._forex.ema.update(bar.end_time, bar.close)
     
-    def on_data(self, slice: Slice) -&gt; None:
-        # Trade only by the updated price and trend information.
-        if self._forex.symbol in slice.quote_bars and self._forex.ema.is_ready:
-            # Long if the trend goes up (the current price above EMA).
-            if slice.quote_bars[self._forex.symbol].close &gt;= self._forex.ema.current.value:
+    def on_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
+        # Trade only by the warmed up indicator.
+        if self._forex.ema.is_ready:
+            # Long if the current price is below EMA for mean reversal.
+            if self.securities[self._forex.symbol].close &lt;= point.value:
                 self.set_holdings(self._forex.symbol, 0.5)
-            # Short if the trend goes down (the current price below EMA).
+            # Short if the the current price is above EMA for mean reversal.
             else:
                 self.set_holdings(self._forex.symbol, -0.5)</pre>
 </div>
