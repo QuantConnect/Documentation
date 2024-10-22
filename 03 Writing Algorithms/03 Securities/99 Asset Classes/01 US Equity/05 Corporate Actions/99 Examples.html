@@ -12,23 +12,23 @@
 
     public override void Initialize()
     {
-		    // Add raw US Equity data.
+        // Add raw US Equity data.
         _equity = AddEquity("TSLA", Resolution.Daily, dataNormalizationMode: DataNormalizationMode.Raw);
-		    // Create an EMA indicator.
+        // Create an EMA indicator.
         _equity.Ema = EMA(_equity.Symbol, 50);
     }
 
     public override void OnSplits(Splits splits)
     {
-		    // Wait until the split has occurred.
+        // Wait until the split has occurred.
         var split = splits[_equity.Symbol];
         if (split.Type != SplitType.SplitOccurred)
         {
             return;
         }
-		    // Reset the indicator.
+        // Reset the indicator.
         _equity.Ema.Reset();
-		    // Warm up with scaled raw data.
+        // Warm up with scaled raw data.
         var history = History&lt;TradeBar&gt;(
             _equity.Symbol, _equity.Ema.WarmUpPeriod, dataNormalizationMode: DataNormalizationMode.ScaledRaw
         );
