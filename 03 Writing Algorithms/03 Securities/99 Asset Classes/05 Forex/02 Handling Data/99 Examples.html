@@ -103,9 +103,7 @@
         // Create a consolidator that produces 5-minute quote bars to reduce reduce noise.
         var consolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(5));
         // Define the consolidator handler so it updates the EMA with the consoildated bars.
-        consolidator.DataConsolidated += (_, bar) =&gt; {
-            _forex.ema.Update(bar.EndTime, bar.Close);
-        };
+        consolidator.DataConsolidated += (_, bar) =&gt; _forex.ema.Update(bar.EndTime, bar.Close);
         // Warm up the indicator with historical data.
         foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 100, Resolution.Minute))
         {
