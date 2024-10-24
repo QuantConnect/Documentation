@@ -88,9 +88,9 @@ ag = [x for x in fundamental if x.asset_classification.morningstar_industry_grou
 <p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. To get the industry of a stock, use the <code>MorningstarIndustryCode</code>.</p>
 <div class="section-example-container">
 <pre class="csharp">// List of securities in the Coal industry (more specific grouping according to Morningstar). 
-var coal = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
+var coal = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.Coal);</pre>
 <pre class="python"># List of securities in the Coal industry (more specific grouping according to Morningstar). 
-coal = [x for x in fundamental if x.asset_classification.morningstar_industry_code == MorningstarSectorCode.COAL]
+coal = [x for x in fundamental if x.asset_classification.morningstar_industry_code == MorningstarIndustryCode.COAL]
 </pre>
 </div>
 
