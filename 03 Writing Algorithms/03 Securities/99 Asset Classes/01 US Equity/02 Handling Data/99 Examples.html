@@ -1,13 +1,13 @@
 <h4>Example 1: Different Resolution Data</h4>
 <p>This example demonstrates using three different resolutions of data (Daily, Minutely, and Tick), and three types of data (TradeBar, QuoteBar, and Tick). We will buy AAPL if it fulfills the following condition:</p>
 <li>
-    <ol>Quote is above 16-day Fractal Adaptive Moving Average (FRAMA) of QQQ, which indicates the trend is up.</ol>
-    <ol>10-minute RSI of AAPL is below 30, which indicates AAPL is oversold.</ol>
+    <ol>16-day Fractal Adaptive Moving Average (FRAMA) of QQQ is rising, which indicates the trend is up.</ol>
+    <ol>10-minute RSI of AAPL is above, which indicates AAPL has large price movement of buying.</ol>
 </li>
 <p>We will short sell SPY if:</p>
 <li>
-    <ol>The bid or ask quote is below 16-day FRAMA of QQQ, signalling a down trend.</ol>
-    <ol>The 10-minute RSI of AAPL is above 70, indicating AAPL is overbrought.</ol>
+    <ol>16-day FRAMA of QQQ is down-going, signalling a down trend.</ol>
+    <ol>The 10-minute RSI of AAPL is above 70, indicating AAPL has large price movement of dropping.</ol>
 </li>
 <p>In both scenarios, we will exit the position when the price of AAPL crosses the FRAMA.</p>
 
@@ -28,8 +28,8 @@ public override void Initialize()
     // Instantiate a manual-updating RSI indicator to process AAPL minute quote bar
     _rsi = new RelativeStrengthIndex(10);
 
-    // Create a 1-minute consolidator to aggregate AAPL tick data into quote bar for RSI feeding
-    var consolidator = new TickQuoteBarConsolidator(TimeSpan.FromMinutes(1));
+    // Create a 5-minute consolidator to aggregate AAPL tick data into quote bar for RSI feeding while smoothing the price series
+    var consolidator = new TickQuoteBarConsolidator(TimeSpan.FromMinutes(5));
     // Subscribe the consolidator to AAPL's tick data
     SubscriptionManager.AddConsolidator(_aapl, consolidator);
     // Set up a handler that feed the consolidated quote bar to the RSI indicator
@@ -55,8 +55,8 @@ public override void Initialize()
     # Instantiate a manual-updating RSI indicator to process AAPL minute quote bar
     self._rsi = RelativeStrengthIndex(10)
 
-    # Create a 1-minute consolidator to aggregate AAPL tick data into quote bar for RSI feeding
-    consolidator = TickQuoteBarConsolidator(timedelta(minutes=1))
+    # Create a 5-minute consolidator to aggregate AAPL tick data into quote bar for RSI feeding while smoothing the price series
+    consolidator = TickQuoteBarConsolidator(timedelta(minutes=5))
     # Subscribe the consolidator to AAPL's tick data
     self.subscription_manager.add_consolidator(self.aapl, consolidator)
     # Set up a handler that feed the consolidated quote bar to the RSI indicator
@@ -81,34 +81,27 @@ def on_consolidated(self, sender: object, quote_bar: QuoteBar) -&gt; None:
     {
         // Get FRAMA of QQQ and RSI of AAPL
         var frama = _frama.Current.Value;
+        var prevFrama = _frama.Previous.Value;
         var rsi = _rsi.Current.Value;
-        // Get the last quote tick
-        var quotes = slice.Ticks[_aapl]
-            .Where(tick =&gt; tick.TickType == TickType.Quote)
-            .ToList();
-        if (quotes.Count == 0) return;
-        var lastQuote = quotes.MaxBy(tick =&gt; tick.Time);
-        // Only bid/ask price for the last tick, the other 0
-        var lastPrice = lastQuote.BidPrice + lastQuote.AskPrice;
 
         // Check if any AAPL position
         if (Portfolio[_aapl].Invested)
         {
             // If a long/short position price crosses FRAMA, we exit position
-            if ((Portfolio[_aapl].Quantity &gt; 0 && frama &gt; lastPrice) ||
-                (Portfolio[_aapl].Quantity &lt; 0 && frama &lt; lastPrice))
+            if ((Portfolio[_aapl].IsLong && frama &lt; prevFrama) ||
+                (Portfolio[_aapl].IsShort && frama &gt; prevFrama))
             {
                 Liquidate(_aapl);
             }
         }
         // If not, check if the buy condition is fulfilled
-        else if (frama &lt; lastPrice && rsi &lt;= 30)
+        else if (frama &gt; prevFrama && rsi &gt;= 70)
         {
             // Buy if buy condition is fulfilled
             SetHoldings(_aapl, 0.5m);
         }
         // Else, check if the sell condition is fulfilled
-        else if (frama &gt; lastPrice && rsi &gt;= 70)
+        else if (frama &lt; prevFrama && rsi &lt;= 30)
         {
             // Short sell if short condition is fulfilled
             SetHoldings(_aapl, -0.5m);
@@ -120,29 +113,21 @@ def on_consolidated(self, sender: object, quote_bar: QuoteBar) -&gt; None:
     if self.aapl in slice.ticks:
         # Get FRAMA of QQQ and RSI of AAPL
         frama = self._frama.current.value
+        prev_frama = self._qqq.frama.previous.value
         rsi = self._rsi.current.value
-        # Get the last bid quote tick
-        quotes = [tick for tick in slice.ticks[self.aapl] if tick.tick_type == TickType.QUOTE]
-        if not quotes:
-            return
-        last_quote = sorted(quotes,
-            key=lambda tick: tick.end_time,
-            reverse=True)[0]
-        # Only bid/ask price for the last tick, the other 0
-        last_price = last_quote.bid_price + last_quote.ask_price
     
         # Check if any AAPL position
         if self.portfolio[self.aapl].invested:
             # If a long/short position price crosses FRAMA, we exit position
-            if (self.portfolio[self.aapl].quantity &gt; 0 and frama &gt; last_price) \
-            or (self.portfolio[self.aapl].quantity &lt; 0 and frama &lt; last_price):
+            if (self.portfolio[self.aapl].is_long and frama &lt; prev_frama) \
+            or (self.portfolio[self.aapl].is_short and frama &gt; prev_frama):
                 self.liquidate(self.aapl)
         # If not, check if the buy condition is fulfilled
-        elif frama &lt; last_price and rsi &lt;= 30:
+        elif frama &gt; prev_frama and rsi &gt;= 70:
             # Buy if buy condition is fulfilled
             self.set_holdings(self.aapl, 0.5)
         # Else, check if the sell condition is fulfilled
-        elif frama &gt; last_price and rsi &gt;= 70:
+        elif frama &lt; prev_frama and rsi &lt;= 30:
             # Short sell if short condition is fulfilled
             self.set_holdings(self.aapl, -0.5)</pre>
 </div>
