@@ -4,6 +4,8 @@ include(DOCS_RESOURCES."/securities/option-contracts.php");
 
 $contractTypeName = "Option";
 $chainTypeName = "OptionChains";
+$csChainTypeName = "OptionChains";
+$pyChainTypeName = "option_chains";
 $variableName = "optionChains";
 include(DOCS_RESOURCES."/securities/open-interest.php"); 
 ?>
