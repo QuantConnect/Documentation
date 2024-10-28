@@ -77,7 +77,7 @@
         {
             return;
         }
-		// Select the Equities that are below their lower Bollinger Band.
+        // Select the Equities that are below their lower Bollinger Band.
         var selected = _universe.Selected
             .Select(symbol => (Securities[symbol] as dynamic))
             .Where(security => security.BB.IsReady && security.Price != 0 && security.Price < security.BB.LowerBand.Current.Value);
@@ -92,7 +92,7 @@
         self.set_start_date(2024, 1, 1)
         self.set_end_date(2024, 7, 1)
         self.settings.automatic_indicator_warm_up = True
-		# When a new asset enters the universe, seed its current price so you can trade it right away.
+        # When a new asset enters the universe, seed its current price so you can trade it right away.
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
         )
@@ -113,7 +113,7 @@
 
     def on_data(self, slice: Slice) -> None:
         # Ensure there are TradeBar objects in the current slice.
-		if not slice.bars:
+        if not slice.bars:
             return
         # Select the Equities that are below their lower Bollinger Band.
         securities = [self.securities[symbol] for symbol in self._universe.selected]
