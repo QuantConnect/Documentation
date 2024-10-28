@@ -108,7 +108,7 @@ class SelectionData
         
         # Select the Equities that are above their EMA and have a daily volume of $1B.
         # These assets are in an uptrend and are very liquid.
-        selected = [x for x in self._state_data.values() if x.is_above_ema and x.volume > 1_000_000_000]
+        selected = [x for x in self._selection_data_by_symbol.values() if x.is_above_ema and x.volume > 1_000_000_000]
             
         # Select the 10 most liquid Equities to avoid extra slippage.    
         return [ x.symbol for x in sorted(selected, key=lambda x: x.volume)[-10:] ]
