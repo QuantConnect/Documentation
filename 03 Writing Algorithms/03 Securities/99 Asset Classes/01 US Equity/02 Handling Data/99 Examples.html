@@ -1,133 +1,137 @@
-<h4>Example 1: Different Resolution Data</h4>
-<p>This example demonstrates using three different resolutions of data (Daily, Minutely, and Tick), and three types of data (TradeBar, QuoteBar, and Tick). We will buy AAPL if it fulfills the following condition:</p>
-<li>
-    <ol>16-day Fractal Adaptive Moving Average (FRAMA) of QQQ is rising, which indicates the trend is up.</ol>
-    <ol>10-minute RSI of AAPL is above, which indicates AAPL has large price movement of buying.</ol>
-</li>
-<p>We will short sell SPY if:</p>
-<li>
-    <ol>16-day FRAMA of QQQ is down-going, signalling a down trend.</ol>
-    <ol>The 10-minute RSI of AAPL is above 70, indicating AAPL has large price movement of dropping.</ol>
-</li>
-<p>In both scenarios, we will exit the position when the price of AAPL crosses the FRAMA.</p>
+<p>The following examples demonstrate some common practices for handling US Equity data.</p>
 
-<p>In the initialization phase, we will first need to subscribe to QQQ and AAPL with Daily and Tick resolution respectively as per the need of the trading logic. Then, instantiate the FRAMA and RSI indicators. Finally, <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#05-Consolidate-Quote-Ticks">create a consolidator</a> to aggregate AAPL ticks into quote bars to update the RSI indicator.</p>
+<h4>Example 1: Various Data Resolutions</h4>
+<p>
+	The following algorithm handles three data resolutions (Daily, Minute, and Tick) and three data formats (TradeBar, QuoteBar, and Tick). 
+	The Equity subscriptions provide the ticks and daily TradeBar objects.
+	To create the 5-minute QuoteBar objects, it <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#05-Consolidate-Quote-Ticks">consolidates</a> the AAPL ticks.
+</p>
+
+<p>
+	The algorithm enters a long position in AAPL when the following condition are met:
+</p>
+<ol>
+    <li>The 16-day <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/fractal-adaptive-moving-average'>Fractal Adaptive Moving Average</a> (FRAMA) of QQQ is increasing, which indicates the trend is up.</li>
+    <li>The <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index'>Relative Strength Index</a> (RSI) of AAPL is above 70, which indicates AAPL has been rising from large buying pressure.</li>
+</ol>
+<p>
+	The algorithm enters a short position in AAPL when the following condition are met:
+</p>
+<ol>
+    <li>The 16-day FRAMA of QQQ is rising, which indicates the trend is down.</li>
+    <li>The RSI of AAPL is above, which indicates AAPL has been declining from large selling pressure.</li>
+</ol>
+<p>The algorithm liquidates the portfolio when the FRAMA changes direction.</p>
+
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _qqq, _aapl;
-private FractalAdaptiveMovingAverage _frama;
-private RelativeStrengthIndex _rsi;
-
-public override void Initialize()
+	<pre class="csharp">public class USEquityExampleAlgorithm : QCAlgorithm
 {
-    // Subscribe QQQ and AAPL data
-    _qqq = AddEquity("QQQ", Resolution.Daily).Symbol;
-    _aapl = AddEquity("AAPL", Resolution.Tick).Symbol;
+    private dynamic _qqq, _aapl;
 
-    // Instantiate an automatic-updating FRAMA indicator to process daily QQQ data
-    _frama = FRAMA(_qqq, 16);
-    // Instantiate a manual-updating RSI indicator to process AAPL minute quote bar
-    _rsi = new RelativeStrengthIndex(10);
-
-    // Create a 5-minute consolidator to aggregate AAPL tick data into quote bar for RSI feeding while smoothing the price series
-    var consolidator = new TickQuoteBarConsolidator(TimeSpan.FromMinutes(5));
-    // Subscribe the consolidator to AAPL's tick data
-    SubscriptionManager.AddConsolidator(_aapl, consolidator);
-    // Set up a handler that feed the consolidated quote bar to the RSI indicator
-    consolidator.DataConsolidated += (_, quoteBar) =&gt;
+    public override void Initialize()
     {
-        _rsi.Update(quoteBar.EndTime, quoteBar.Close);
-    };
-    
-    // Warm up indicators
-    WarmUpIndicator(_qqq, _frama);
-    foreach (var quoteBar in History&lt;QuoteBar&gt;(_aapl, 10, Resolution.Minute))
-    {
-        _rsi.Update(quoteBar.EndTime, quoteBar.Close);
-    }
-}</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Subscribe QQQ and AAPL data
-    self.qqq = self.add_equity("QQQ", Resolution.DAILY).symbol
-    self.aapl = self.add_equity("AAPL", Resolution.TICK).symbol
-
-    # Instantiate an automatic-updating FRAMA indicator to process daily QQQ data
-    self._frama = self.frama(self.qqq, 16)
-    # Instantiate a manual-updating RSI indicator to process AAPL minute quote bar
-    self._rsi = RelativeStrengthIndex(10)
-
-    # Create a 5-minute consolidator to aggregate AAPL tick data into quote bar for RSI feeding while smoothing the price series
-    consolidator = TickQuoteBarConsolidator(timedelta(minutes=5))
-    # Subscribe the consolidator to AAPL's tick data
-    self.subscription_manager.add_consolidator(self.aapl, consolidator)
-    # Set up a handler that feed the consolidated quote bar to the RSI indicator
-    consolidator.data_consolidated += self.on_consolidated
-
-    # Warm up indicators
-    self.warm_up_indicator(self.qqq, self._frama)
-    for quote_bar in self.history[QuoteBar](self.aapl, 10, Resolution.MINUTE):
-        self._rsi.update(quote_bar.end_time, quote_bar.close)
-
-def on_consolidated(self, sender: object, quote_bar: QuoteBar) -&gt; None:
-    # Feed the consolidated quote bar to the RSI indicator
-    self._rsi.update(quote_bar.end_time, quote_bar.close)</pre>
-</div>
-
-<p>We check if our conditions are fulfilled in the <code class="csharp">OnData</code><code class="python">on_data</code> data handler and trade AAPL accordingly.</p>
-<div class="section-example-container">
-	<pre class="csharp">public override void OnData(Slice slice)
-{
-    // Check if AAPL tick is present, we only trade if so
-    if (slice.Ticks.ContainsKey(_aapl))
-    {
-        // Get FRAMA of QQQ and RSI of AAPL
-        var frama = _frama.Current.Value;
-        var prevFrama = _frama.Previous.Value;
-        var rsi = _rsi.Current.Value;
-
-        // Check if any AAPL position
-        if (Portfolio[_aapl].Invested)
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 2, 1);
+        
+        // Add QQQ and AAPL data.
+        _qqq = AddEquity("QQQ", Resolution.Daily);
+        _aapl = AddEquity("AAPL", Resolution.Tick);
+        
+        // Create the indicators.
+        _qqq.Frama = FRAMA(_qqq.Symbol, 16);
+        _aapl.Rsi = new RelativeStrengthIndex(10);
+        
+        // Create a 5-minute consolidator to aggregate AAPL tick data into quote bars.
+        var consolidator = new TickQuoteBarConsolidator(TimeSpan.FromMinutes(5));
+        // Subscribe the consolidator for automatic updates.
+        SubscriptionManager.AddConsolidator(_aapl.Symbol, consolidator);
+        // Attach an event handler to update the RSI indicator with the consolidated bars.
+        consolidator.DataConsolidated += (sender, bar) => _aapl.Rsi.Update(bar.EndTime, bar.Close);
+        
+        // Warm up the indicators.
+        WarmUpIndicator(_qqq.Symbol, _qqq.Frama);
+        var history = History&lt;QuoteBar&gt;(_aapl.Symbol, 10, Resolution.Minute);
+        foreach (var bar in history)
         {
-            // If a long/short position price crosses FRAMA, we exit position
-            if ((Portfolio[_aapl].IsLong && frama &lt; prevFrama) ||
-                (Portfolio[_aapl].IsShort && frama &gt; prevFrama))
+            _aapl.Rsi.Update(bar.EndTime, bar.Close);
+        }
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Ensure AAPL ticks are in the current slice.
+        if (!slice.Ticks.ContainsKey(_aapl.Symbol))
+        {
+            return;
+        }
+
+        // Get the indicator values.
+        var frama = _qqq.Frama.Current.Value;
+        var prevFrama = _qqq.Frama.Previous.Value;
+        var rsi = _aapl.Rsi.Current.Value;
+
+        // Check if we have an AAPL position.
+        if (_aapl.Holdings.Invested)
+        {
+            // If there is divergence between our position and the Frama direction, exit the position.
+            if ((_aapl.Holdings.IsLong && frama < prevFrama) || (_aapl.Holdings.IsShort && frama > prevFrama))
             {
-                Liquidate(_aapl);
+                Liquidate(_aapl.Symbol);
             }
         }
-        // If not, check if the buy condition is fulfilled
-        else if (frama &gt; prevFrama && rsi &gt;= 70)
+        // Look for a long entry.
+        else if (frama > prevFrama && rsi >= 70)
         {
-            // Buy if buy condition is fulfilled
-            SetHoldings(_aapl, 0.5m);
+            SetHoldings(_aapl.Symbol, 0.5);
         }
-        // Else, check if the sell condition is fulfilled
-        else if (frama &lt; prevFrama && rsi &lt;= 30)
+        // Look for a short entry.
+        else if (frama < prevFrama && rsi <= 30)
         {
-            // Short sell if short condition is fulfilled
-            SetHoldings(_aapl, -0.5m);
+            SetHoldings(_aapl.Symbol, -0.5);
         }
     }
 }</pre>
-	<pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    # Check if AAPL tick is present, we only trade if so
-    if self.aapl in slice.ticks:
-        # Get FRAMA of QQQ and RSI of AAPL
-        frama = self._frama.current.value
+	<pre class="python">class USEquityExampleAlgorithm(QCAlgorithm):
+        
+    def initialize(self) -> None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 2, 1)
+        # Add QQQ and AAPL data.
+        self._qqq = self.add_equity("QQQ", Resolution.DAILY)
+        self._aapl = self.add_equity("AAPL", Resolution.TICK)
+        # Create the indicators.
+        self._qqq.frama = self.frama(self._qqq.symbol, 16)
+        self._aapl.rsi = RelativeStrengthIndex(10)
+        # Create a 5-minute consolidator to aggregate AAPL tick data into quote bars.
+        consolidator = TickQuoteBarConsolidator(timedelta(minutes=5))
+        # Subscribe the consolidator for automatic updates.
+        self.subscription_manager.add_consolidator(self._aapl.symbol, consolidator)
+        # Attach an event handler handler to update the RSI indicator with the consolidated bars.
+        consolidator.data_consolidated += lambda _, bar: self._aapl.rsi.update(bar.end_time, bar.close)
+        # Warm up the indicators.
+        self.warm_up_indicator(self._qqq.symbol, self._qqq.frama)
+        for quote_bar in self.history[QuoteBar](self._aapl.symbol, 10, Resolution.MINUTE):
+            self._aapl.rsi.update(quote_bar.end_time, quote_bar.close)
+
+    def on_data(self, slice: Slice) -> None:
+        # Ensure AAPL ticks are in the current slice.
+        if self._aapl.symbol not in slice.ticks:
+            return
+        # Get the indicator values.
+        frama = self._qqq.frama.current.value
         prev_frama = self._qqq.frama.previous.value
-        rsi = self._rsi.current.value
+        rsi = self._aapl.rsi.current.value
     
-        # Check if any AAPL position
-        if self.portfolio[self.aapl].invested:
-            # If a long/short position price crosses FRAMA, we exit position
-            if (self.portfolio[self.aapl].is_long and frama &lt; prev_frama) \
-            or (self.portfolio[self.aapl].is_short and frama &gt; prev_frama):
-                self.liquidate(self.aapl)
-        # If not, check if the buy condition is fulfilled
-        elif frama &gt; prev_frama and rsi &gt;= 70:
-            # Buy if buy condition is fulfilled
-            self.set_holdings(self.aapl, 0.5)
-        # Else, check if the sell condition is fulfilled
-        elif frama &lt; prev_frama and rsi &lt;= 30:
-            # Short sell if short condition is fulfilled
-            self.set_holdings(self.aapl, -0.5)</pre>
+        # Check if we have an AAPL position.
+        if self._aapl.holdings.invested:
+            # If there is divergence between our position and the Frama direction, exit the position.
+            if (self._aapl.holdings.is_long and frama < prev_frama or
+                self._aapl.holdings.is_short and frama > prev_frama):
+                self.liquidate(self._aapl.symbol)
+        # Look for a long entry.
+        elif frama > prev_frama and rsi >= 70:
+            self.set_holdings(self._aapl.symbol, 0.5)
+        # Look for a short entry.
+        elif frama < prev_frama and rsi <= 30:
+            self.set_holdings(self._aapl.symbol, -0.5)</pre>
 </div>
