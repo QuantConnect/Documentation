@@ -1,150 +1,128 @@
 <p>The following examples demonstrate some common liquidity universes for US Equities.</p>
 
-<h4>Example 1: Minute-Resolution Liquid Universe</h4>
-<p>The following example <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 10 most liquid US Equities and subscribes to <a href='/docs/v2/writing-algorithms/universes/settings#02-Resolution'>minute data</a>:</p>
+<h4>Example 1: Minute-Resolution Universe</h4>
+<p>
+	The following example <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 10 most liquid US Equities and adds their <a href='/docs/v2/writing-algorithms/universes/settings#02-Resolution'>minute resolution</a> data:
+</p>
 <div class="section-example-container">
 	<pre class="csharp">public class MinuteLiquidUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        // Using asynchronous universe settings can efficiently use the computational resources.
+        // Use asynchronous universe selection to speed up your algorithm.
         UniverseSettings.Asynchronous = true;
-        // Minute resolution data can have orders filled more realistic and avoid stale fill.
+        // Use minute resolution data so orders fill at realistic prices.
         UniverseSettings.Resolution = Resolution.Minute;
-        // Add top 10 dollar volume universe to trade on the most liquid equities, which has the most informed information from market activities.
+        // Add a universe of the 10 most liquid US Equities.
         AddUniverse(Universe.DollarVolume.Top(10));
     }
 }</pre>
 	<pre class="python">class MinuteLiquidUniverseAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
-        # Using asynchronous universe settings can efficiently use the computational resources.
+        # Use asynchronous universe selection to speed up your algorithm.
         self.universe_settings.asynchronous = True
-        # Minute resolution data can have orders filled more realistic and avoid stale fill.
+        # Use minute resolution data so orders fill at realistic prices.
         self.universe_settings.resolution = Resolution.MINUTE
-        # Add top 10 dollar volume universe to trade on the most liquid equities, which has the most informed information from market activities.
+        # Add a universe of the 10 most liquid US Equities.
         self.add_universe(self.universe.dollar_volume.top(10))</pre>
 </div>
 
-<h4>Example 2: Low Bollinger Bands Liquid Universe</h4>
-<p>The following example <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 500 most liquid stocks. Among them, select the ones with 20-day Bollinger Bands below 2 standard deviations. Place <a href="">market-on-open orders</a> and bet them to revert to mean.</p>
+<h4>Example 2: Trade Liquid Assets off Bollinger Bands</h4>
+<p>
+	The following algorithm <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 500 most liquid US Equities as the universe. 
+	Each day, it forms a portfolio of the assets in the universe that are below their lower <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/bollinger-bands'>Bollinger Band</a>.
+</p>
 <div class="section-example-container">
 	<pre class="csharp">public class AsynchronousLiquidUniverseAlgorithm : QCAlgorithm
 {
-    private Dictionary&lt;Symbol, BollingerBands&gt; _bbBySymbols = new();
-    
+    private Universe _universe;
+
     public override void Initialize()
     {
-        // Using asynchronous universe settings can efficiently use the computational resources.
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 7, 1);
+        Settings.AutomaticIndicatorWarmUp = true;
+        // When a new asset enters the universe, seed its current price so you can trade it right away.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Use asynchronous universe selection to speed up the algorithm.
         UniverseSettings.Asynchronous = true;
-        // Subscribe to daily data for speed, accuracy is not affected since the trading frequency is only at daily market open.
+        // Use daily data. It doesn't affect accuracy since the trades fill at the daily market open.
         UniverseSettings.Resolution = Resolution.Daily;
-        AddUniverse(Universe.DollarVolume.Top(500));
-    }
-
-    public override void OnData(Slice slice)
-    {
-        // Update the BB indicators for the liquid stocks for trade singal generation.
-        foreach (var (symbol, bb) in _bbBySymbols)
-        {
-            bb.Update(Time, Securities[symbol].Price);
-        }
-
-        // Select the bottom 100 BB stocks, as predicted that their price will mean-revert up.
-        var bottom100BB = _bbBySymbols.OrderBy(kvp =&gt; kvp.Value)
-            .Take(100)
-            .Select(kvp =&gt; kvp.Key)
-            .ToList();
-        
-        // Liquidate the ones being mean-reverted already.
-        var nonLiquid = Portfolio.Where(kvp =&gt; kvp.Value.Invested)
-            .Select(kvp =&gt; kvp.Key)
-            .Except(bottom100BB)
-            .ToList();
-        foreach (var symbol in nonLiquid)
-        {
-            Liquidate(symbol);
-        }
-
-        // Place market-on-open orders to bet their mean-reversion
-        foreach (var symbol in bottom100BB)
-        {
-            if (!Portfolio[symbol].Invested)
-            {
-                MarketOnOpenOrder(symbol, 10);
-            }
-        }
+        // Add a universe of the 500 most liquid Equities.
+        _universe = AddUniverse(Universe.DollarVolume.Top(500));
     }
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        // Remove the non-liquid ones from the dictionary to release computational resources.
-        foreach (var removed in changes.RemovedSecurities)
+        // Create Bollinger Band indicators for the universe constituents.
+        foreach (var security in changes.AddedSecurities)
         {
-            _bbBySymbols.Remove(removed.Symbol);
+            (security as dynamic).BB = BB(security.Symbol, 60, 2);
         }
+        // Deregister the indicators when assets leave the universe.
+        foreach (var security in changes.RemovedSecurities)
+        {
+            DeregisterIndicator((security as dynamic).BB);
+        }
+    }
 
-        // Create BB indicators for the liquid stocks for further filtering later.
-        foreach (var added in changes.AddedSecurities)
+    public override void OnData(Slice slice)
+    {
+        // Ensure there are TradeBar objects in the current slice.
+        if (slice.Bars.Count == 0)
         {
-            if (!_bbBySymbols.TryGetValue(added.Symbol, out var bb))
-            {
-                bb = _bbBySymbols[added.Symbol] = new(60, 2);
-                // Warm up indicator to make it readily usable for filtering.
-                var history = History&lt;TradeBar&gt;(added.Symbol, 60, Resolution.Daily);
-                foreach (var bar in history)
-                {
-                    bb.Update(bar.EndTime, bar.Close);
-                }
-            }
+            return;
         }
+		// Select the Equities that are below their lower Bollinger Band.
+        var selected = _universe.Selected
+            .Select(symbol => (Securities[symbol] as dynamic))
+            .Where(security => security.BB.IsReady && security.Price != 0 && security.Price < security.BB.LowerBand.Current.Value);
+        // Form an equal-weighted portfolio with the selected assets.
+        var weight = 1m / selected.Count();
+        SetHoldings(selected.Select(security => new PortfolioTarget(security.Symbol, weight)).ToList(), true);
     }
 }</pre>
 	<pre class="python">class AsynchronousLiquidUniverseAlgorithm(QCAlgorithm):
 
-    bb_by_symbols = {}
-
-    def initialize(self) -&gt; None:
-        # Using asynchronous universe settings can efficiently use the computational resources.
+    def initialize(self) -> None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 7, 1)
+        self.settings.automatic_indicator_warm_up = True
+		# When a new asset enters the universe, seed its current price so you can trade it right away.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
+        )
+        # Use asynchronous universe selection to speed up the algorithm.
         self.universe_settings.asynchronous = True
-        # Subscribe to daily data for speed, accuracy is not affected since the trading frequency is only at daily market open.
+        # Use daily data. It doesn't affect accuracy since the trades fill at the daily market open.
         self.universe_settings.resolution = Resolution.DAILY
-        # Filter the top 500 most liquid equities for further filtering later.
-        # They trade more efficiently and have the most informed information from market activities for later filtering.
-        self.add_universe(self.universe.dollar_volume.top(500))
+        # Add a universe of the 500 most liquid Equities.
+        self._universe = self.add_universe(self.universe.dollar_volume.top(500))
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Update the BB indicators for the liquid stocks for trade singal generation.
-        for symbol, bb in self.bb_by_symbols.items():
-            bb.update(self.time, self.securities[symbol].price)
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        # Create Bollinger Band indicators for the universe constituents.
+        for security in changes.added_securities:
+            security.bb = self.bb(security.symbol, 60, 2)
+        # Deregister the indicators when assets leave the universe.
+        for security in changes.removed_securities:
+            self.deregister_indicator(security.bb)
 
-        # Select the bottom 100 BB stocks, as predicted that their price will mean-revert up.
-        bottom_100_bb = [x[0] for x in sorted(self.bb_by_symbols.items(), key=lambda x: x[1].current.value)[:100]]
-
-        # Liquidate the ones being mean-reverted already.
-        non_liquid = [symbol for symbol, holding in self.portfolio.items()
-                        if holding.invested and symbol not in bottom_100_bb]
-        for symbol in non_liquid:
-            self.liquidate(symbol)
-
-        # Place market-on-open orders to bet their mean-reversion
-        for symbol in bottom_100_bb:
-            self.market_on_open_order(symbol, 10)
-    
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Remove the non-liquid ones from the dictionary to release computational resources.
-        for removed in changes.removed_securities:
-            if removed.symbol in self.bb_by_symbols:
-                del self.bb_by_symbols[removed.symbol]
-        
-        # Create BB indicators for the liquid stocks for further filtering later.
-        for added in changes.added_securities:
-            if f.symbol not in self.bb_by_symbols:
-                self.bb_by_symbols[added.symbol] = BollingerBands(60, 2, Resolution.DAILY)
-                # Warm up indicator to make it readily usable for filtering.
-                history = self.history[TradeBar](added.symbol, 60, Resolution.DAILY)
-                for bar in history:
-                    self.bb_by_symbols[added.symbol].update(bar.end_time, bar.close)</pre>
+    def on_data(self, slice: Slice) -> None:
+        # Ensure there are TradeBar objects in the current slice.
+		if not slice.bars:
+            return
+        # Select the Equities that are below their lower Bollinger Band.
+        securities = [self.securities[symbol] for symbol in self._universe.selected]
+        selected = [
+            security for security in securities 
+            if security.bb.is_ready and security.price and security.price < security.bb.lower_band.current.value
+        ]
+        # Form an equal-weighted portfolio with the selected assets.
+        weight = 1 / len(selected)
+        self.set_holdings([PortfolioTarget(security.symbol, weight) for security in selected], True)</pre>
 </div>
 
 <p>For more examples, see the following algorithms:</p>
