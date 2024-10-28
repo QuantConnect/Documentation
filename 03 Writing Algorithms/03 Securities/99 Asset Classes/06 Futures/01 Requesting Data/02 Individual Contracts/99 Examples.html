@@ -1,0 +1,28 @@
+<p>The following examples demonstrate some common practices for requesting individual Future contract data.</p>
+
+<h4>Example 1: Extended Hours Continuous Future Contract</h4>
+<p>The following example demonstrates how to request data subscription of E-Mini S&P 500 Future contract with <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data/universes#03-Continous-Contracts">continuous contract</a> mapped by open interest using the <code class="csharp">dataMappingMode</code><code class="python">data_mapping_mode</code> argument. To also subscribe to extended market hours data, set the <code class="csharp">extendedMarketHours</code><code class="python">extended_market_hours</code> argument to <code class="csharp">true</code><code class="python">True</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">public FutureExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _future;
+
+    public override void Initialize()
+    {
+        // Map the continuous Future contract by highest open interest allows better liquidity.
+        // Usually it will be the front month contract, so it has lower interst rate and credit risk.
+        // Extended market hours trading allows flexibility and hedging during equity market close.
+        _future = AddFuture(Futures.Indices.SP500EMini,
+            extendedMarketHours: true,
+            dataMappingMode: DataMappingMode.OpenInterest).Symbol;
+    }
+}</pre>
+    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+    def initialize(self):
+        # Map the continuous Future contract by highest open interest allows better liquidity.
+        # Usually it will be the front month contract, so it has lower interst rate and credit risk.
+        # Extended market hours trading allows flexibility and hedging during equity market close.
+        self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST).symbol</pre>
+</div>
