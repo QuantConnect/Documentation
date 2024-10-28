@@ -49,7 +49,7 @@
 public class UpTrendLiquidUniverseAlgorithm : QCAlgorithm
 {    
     // Create a concurrent dictionary to store the EMA data for universe selection.
-    private ConcurrentDictionary&lt;Symbol, SelectionData&gt; _state_data = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
+    private ConcurrentDictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
 
     public override void Initialize()
     {
@@ -61,7 +61,7 @@ public class UpTrendLiquidUniverseAlgorithm : QCAlgorithm
     {
         return (from f in fundamental
             // Create/Update the EMA indicators of each stock.
-            let avg = _state_data.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(200))
+            let avg = _selectionDataBySymbol.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(200))
             where avg.Update(f.EndTime, f.AdjustedPrice)
             // Select the Equities that are above their EMA and have a daily volume of $1B.
             // These assets are in an uptrend and are very liquid.
