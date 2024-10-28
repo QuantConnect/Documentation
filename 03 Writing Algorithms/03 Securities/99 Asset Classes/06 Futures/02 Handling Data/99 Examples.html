@@ -1,7 +1,12 @@
 <p>The following examples demonstrate some common practices for handling Futures data.</p>
 
-<h4>Example 1: Rollover</h4>
-<p>Spot Future is referred as the the continuous Future contract, which is usually mapped by the front month contract or the contract with the most open interest. When a contract is expired or very close to expiry, traders will roll over the current contract with the next contract to avoid price settlement and subsequent handling fees while keeping the investment positions. In Lean, we can make use of the <code class="csharp">OnSymbolChangedEvents</code></p><code class="python">on_symbol_changed_events</code> event handler to perform the rolling over.</p>
+<h4>Example 1: Rollovers</h4>
+<p>
+    Spot Future is referred to as the continuous Future contract, which is usually mapped by the front month contract or the contract with the most open interest. 
+    When a contract expires or is very close to expiring, traders usually rollover from the current contract to the next contract to avoid price settlement and remain invested. 
+    The following algorithm demonstrates rolling over with <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>limit orders</a>.
+</p>
+
 <div class="section-example-container">
     <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
@@ -9,81 +14,108 @@
 
     public override void Initialize()
     {
-        // Seed the price with last known price as limit price for contract roll over.
-        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
-        // Setting the continuous contract mapping criteria for rolling over.
-        _future = AddFuture(Futures.Indices.SP500EMini,
+        // Add the E-mini Futures and set the continuous contract mapping criteria for the rollovers.
+        _future = AddFuture(
+            Futures.Indices.SP500EMini,
             extendedMarketHours: true,
             dataMappingMode: DataMappingMode.OpenInterest,
             dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-            contractDepthOffset: 0);
+            contractDepthOffset: 0
+        );
+        _future.SetFilter(0, 182);
     }
     
     public override void OnData(Slice slice)
     {
-        // Initial order.
-        if (!Portfolio.Invested)
+        // Place the initial order so you can start rolling over contracts later.
+        if (!Portfolio.Invested && Transactions.GetOpenOrders().Count == 0)
         {
-            // In live trading, you must order the mapped contract for a valid order.
+            // Buy the contract that's currently selected in the continous contract series.
             MarketOrder(_future.Mapped, 1m);
         }
     }
     
-    // Track events when security changes its ticker, allowing the algorithm to adapt to these changes.
+    // Track rollover events.
     public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
     {
         foreach (var (symbol, changedEvent) in symbolChangedEvents)
         {
             var oldSymbol = changedEvent.OldSymbol;
-            // The newly mapped contract might not be subscribed yet, request its data for valid ordering.
-            var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
-            // Quantity to roll over should be consistent.
+            var newSymbol = changedEvent.NewSymbol;
+            // The quantity to roll over should be consistent.
             var quantity = Portfolio[oldSymbol].Quantity;
-    
-            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
-            var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
+            // Rolling over: Liquidate the old mapped contract and switch to the newly mapped contract.
+            var tag = $"Rollover: {oldSymbol} -> {newSymbol}";
             Liquidate(oldSymbol, tag: tag);
             if (quantity != 0)
             {
-                // Place limit order since market on open order is not available for Futures and avoid extreme quote filling.
-                LimitOrder(newSymbol, quantity, Securities[newSymbol].Price, tag: tag);
+                // Place a limit order to avoid extreme quote filling.
+                var newContract = Securities[newSymbol];
+                LimitOrder(
+                    newSymbol, quantity, 
+                    // To avoid warnings, round the target limit price to a price that respects 
+                    // the minimum price variation for the Future.
+                    GetLimitPrice(newContract, newContract.Price), 
+                    tag: tag
+                );
             }
         }
     }
+
+    private decimal GetLimitPrice(Security security, decimal targetLimitPrice, bool roundUp = true)
+    {
+        var parameters = new GetMinimumPriceVariationParameters(security, targetLimitPrice);
+        var pip = security.PriceVariationModel.GetMinimumPriceVariation(parameters);
+        return ((int)(targetLimitPrice / pip) + (roundUp ? 1 : 0)) * pip;
+    }
 }</pre>
     <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+
     def initialize(self):
-        # Seed the price with last known price as limit price for contract roll over.
-        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
-        # Setting the continuous contract mapping criteria for rolling over.
-        self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+        # Add the E-mini Futures and set the continuous contract mapping criteria for the rollovers.
+        self._future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
             extended_market_hours=True,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
             data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-            contract_depth_offset=0)
+            contract_depth_offset=0
+        )
+        self._future.set_filter(0, 182)
     
     def on_data(self, data):
-        # Initial order.
-        if not self.portfolio.invested:
-            # In live trading, you must order the mapped contract for a valid order.
-            self.market_order(self._future.symbol, 1)
+        # Place the initial order so you can start rolling over contracts later.
+        if not self.portfolio.invested and not self.transactions.get_open_orders():
+            # Buy the contract that's currently selected in the continous contract series.
+            self.market_order(self._future.mapped, 1)
     
-    # Track events when security changes its ticker allowing algorithm to adapt to these changes.
+    # Track rollover events.
     def on_symbol_changed_events(self, symbol_changed_events):
         for symbol, changed_event in symbol_changed_events.items():
             old_symbol = changed_event.old_symbol
-            # The newly mapped contract might not be subscribed yet, request its data for valid ordering.
-            new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
-            # Quantity to roll over should be consistent.
+            new_symbol = changed_event.new_symbol
+            # The quantity to roll over should be consistent.
             quantity = self.portfolio[old_symbol].quantity
-    
-            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
-            tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
+            # Rolling over: Liquidate the old mapped contract and switch to the newly mapped contract.
+            tag = f"Rollover: {old_symbol} -> {new_symbol}"
             self.liquidate(old_symbol, tag=tag)
             if quantity:
-                # Place limit order since market on open order is not available for Futures and avoid extreme quote filling.
-                self.limit_order(new_symbol, quantity, self.security[new_symbol].price, tag=tag)</pre>
+                # Place a limit order to avoid extreme quote filling.
+                new_contract = self.securities[new_symbol]
+                self.limit_order(
+                    new_symbol, quantity, 
+                    # To avoid warnings, round the target limit price to a price that respects 
+                    # the minimum price variation for the Future.
+                    self._get_limit_price(new_contract, new_contract.price), 
+                    tag=tag
+                )
+    
+    def _get_limit_price(self, security, target_limit_price, round_up=True):
+        parameters = GetMinimumPriceVariationParameters(security, target_limit_price)
+        pip = security.price_variation_model.get_minimum_price_variation(parameters)
+        return (int(target_limit_price / pip) + int(round_up)) * pip</pre>
 </div>
+
+<!-- Waiting on Github Issue to be fixed 
 
 <h4>Example 2: Micro Gold vs Gold</h4>
 <p>The following example will demonstrate how to use <code class="csharp">SymbolPropertiesDatabase</code><code class="python">self.symbol_properties_database</code> to obtain the contract multipliers of both Micro Gold and Gold Future contracts. By means of that, it then invests $500k nominal value for each contract.</p>
@@ -157,3 +189,4 @@
             self.market_order(self.gold.mapped, gold_quantity)
             self.market_order(self.micro_gold.mapped, micro_gold_quantity)</pre>
 </div>
+-->
