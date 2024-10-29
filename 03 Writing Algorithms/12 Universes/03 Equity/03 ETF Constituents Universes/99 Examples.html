@@ -1,9 +1,11 @@
-<h4>Example 1: Arbitration Of Sparse-Replicated Portfolio of SPY</h4>
+<p>The following examples demonstrate some common practices for ETF constituent universes.</p>
+
+<h4>Example 1: Arbitrage Of Sparse-Replicated Portfolio of SPY</h4>
 <p>The following example selects the top 100 weighted constituents in SPY and buy them according to their constituted weights in SPY, while sell the SPY in equal size for a dollar-neutral portfolio. It is believed that the top 100 have better return than the rest due to their high popularity, such that extra alpha can be obtained from active selection and management fee decay from SPY.</p>
 <div class="section-example-container">
 <pre class="csharp">public class ETFConstituentsUniverseAlgorithm : QCAlgorithm
 {
-    private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+    private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new();
     private List&lt;Symbol&gt; _universe;
 
     public override void Initialize()
@@ -133,178 +135,164 @@
 
 <h4>Example 2: Uptrend SPY Universe</h4>
 <p>
-    The following example chains an ETF constituents universe and <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a>. 
-    It first selects all the constituents of the SPY ETF and then filters them down in the fundamental universe to select the assets that are trading above their average price over the last 200 days. 
+    The following example chains an ETF constituents universe and a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a>. 
+    It first selects all the constituents of the SPY ETF and then filters them down in the fundamental universe filter to select the assets that are trading above their average price over the last 200 days. 
     The output of the fundamental universe selection method is the output of the chained universe.
-    The <code>Fundamental</code> objects that the fundamental universe filter function recieves contains the prices of the ETF constituents. By chaining the ETF constituents universe into the fundamental universe, you can update the indicators with the price instead of making a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. 
+    The <code>Fundamental</code> objects that the fundamental universe filter function recieves contains the prices of the ETF constituents. 
+    By chaining the ETF constituents universe into the fundamental universe, you can update the indicators with the price instead of making a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. 
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class ChainedUniverseAlgorithm : QCAlgorithm
 {
-    public class ChainedUniverseAlgorithm : QCAlgorithm
+    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
+    private Universe _universe;
+
+    public override void Initialize()
     {
-        private Dictionary&lt;Symbol, SymbolData&gt; _weightBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
-        private List&lt;Symbol&gt; _universe;
-
-        public override void Initialize()
-        {
-            SetCash(100000);
-            SetStartDate(2023, 6, 1);
-            // Select from SPY constituents, select the ones with higher expectation of return within the market benchmark for extra alpha.
-            var spy = AddEquity("SPY", Resolution.Daily).Symbol;
-            AddUniverse(Universe.ETF(spy), FundamentalSelection);
-
-            // Trade daily on market open, since the trading signal is generated on daily resolution
-            Schedule.On(
-                DateRules.EveryDay(spy),
-                TimeRules.BeforeMarketOpen(spy, 0),
-                Rebalance
-            );
-        }
-
-        public IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
-        {
-            // Create and update an SMA indicator for each asset that enters the ETF for filtering the uptrend ones.
-            List&lt;Symbol&gt; universeSymbols = new List&lt;Symbol&gt;();
-            foreach (var f in fundamental)
-            {
-                universeSymbols.Add(f.Symbol);
-                if (!_weightBySymbol.ContainsKey(f.Symbol))
-                {
-                    // Instantiate for the ones newly added.
-                    _weightBySymbol[f.Symbol] = new SymbolData(this, f.Symbol);
-                }
-                // Update with adjusted price, since we concern about the overall return.
-                _weightBySymbol[f.Symbol].Update(Time, f.AdjustedPrice);
-            }
-
-            // Remove indicators for assets that are no longer in the ETF to release the computational resources
-            var symbolsToRemove = _weightBySymbol.Keys.Where(symbol =&gt; !universeSymbols.Contains(symbol)).ToList();
-            foreach (var symbol in symbolsToRemove)
-            {
-                _weightBySymbol.Remove(symbol);
-            }
-
-            // Filter the ones with SMA above the current adjusted price, as we estimate them to be in uptrend and still raising.
-            _universe = _weightBySymbol.Where(kvp =&gt; kvp.Value.IsAboveSma)
-                .Select(kvp =&gt; kvp.Key)
-                .ToList();
-
-            // Plot the results.
-            Plot("Universe", "Possible", fundamental.Count());
-            Plot("Universe", "Selected", _universe.Count);
-
-            return _universe;
-        }
-
-        private void Rebalance()
-        {
-            foreach (var kvp in Portfolio)
-            {
-                var symbol = kvp.Key;
-                var holding = kvp.Value;
-
-                if (_universe.Contains(symbol) &amp;&amp; !holding.Invested)
-                {
-                    // Invest for the ones above SMA to follow its uptrend.
-                    // Equal weighting investment to evenly dissipate capital risk.
-                    SetHoldings(symbol, 1m / _universe.Count);
-                }
-                else if (!_universe.Contains(symbol) &amp;&amp; holding.Invested)
-                {
-                    // Liquidate the stocks lost its uptrend and turn down
-                    Liquidate(symbol);
-                }
-            }
-        }
+        SetStartDate(2023, 6, 1);
+        // Seed the price of each asset that enters the universe with its last known price so you can trade it 
+        // on the same morning it enters the universe without getting warnings.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Add a chained universe that selects the SPY constituents trading above their 200-day SMA.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        _universe = AddUniverse(Universe.ETF(spy), FundamentalSelection);
+        // Trade daily at market open since the trading signal is generated on a daily resolution.
+        Schedule.On(DateRules.EveryDay(spy), TimeRules.AfterMarketOpen(spy, 1), Rebalance);
     }
 
-    public class SymbolData
+    public IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
     {
-        private SimpleMovingAverage _sma;
-        public bool IsAboveSma { get; private set; }
-
-        public SymbolData(QCAlgorithm algorithm, Symbol symbol, int period = 200)
+        // Create/Update an SMA indicator for each asset that enters the ETF.
+        var universeSymbols = new List&lt;Symbol&gt;();
+        foreach (var f in fundamental)
         {
-            // Create the SMA indicator for trend detection and filtering, warm up for its readiness to use immediately.
-            _sma = new SimpleMovingAverage(period);
-            algorithm.WarmUpIndicator(symbol, _sma, Resolution.Daily);
+            universeSymbols.Add(f.Symbol);
+            if (!_selectionDataBySymbol.ContainsKey(f.Symbol))
+            {
+                _selectionDataBySymbol[f.Symbol] = new SelectionData(this, f.Symbol);
+            }
+            _selectionDataBySymbol[f.Symbol].Update(Time, f.AdjustedPrice);
         }
 
-        public void Update(DateTime time, decimal value)
+        // Remove indicators for assets that are no longer in the ETF to release the computational resources.
+        var symbolsToRemove = _selectionDataBySymbol.Keys.Where(symbol => !universeSymbols.Contains(symbol)).ToList();
+        foreach (var symbol in symbolsToRemove)
         {
-            IsAboveSma = _sma.Update(time, value) &amp;&amp; value &gt; _sma.Current.Value;
+            _selectionDataBySymbol.Remove(symbol);
         }
+
+        // Select the Equities trading above their SMA as we estimate them to be in uptrend and still rising.
+        var selected = _selectionDataBySymbol.Where(kvp => kvp.Value.IsAboveSma)
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        // Plot the results.
+        Plot("Universe", "Possible", fundamental.Count());
+        Plot("Universe", "Selected", selected.Count);
+
+        return selected;
+    }
+
+    private void Rebalance()
+    {
+        // For an equal-weighted portfolio with the Equities that are above their SMA.
+        var symbols = _universe.Selected.Where(symbol => Securities[symbol].Price > 0);
+        if (symbols.Count() == 0)
+        {
+            return;
+        }
+        var weight = 1m / symbols.Count();
+        SetHoldings(symbols.Select(symbol => new PortfolioTarget(symbol, weight)).ToList(), true);
+    }
+}
+
+// Define a separate class to contain the SMA indicator.
+class SelectionData
+{
+    private SimpleMovingAverage _sma;
+    public bool IsAboveSma { get; private set; }
+
+    public SelectionData(QCAlgorithm algorithm, Symbol symbol, int period = 200)
+    {
+        // Create the SMA indicator for trend detection and filtering.
+        _sma = new SimpleMovingAverage(period);
+        // Warm up the SMA so you can immediately use it.
+        algorithm.WarmUpIndicator(symbol, _sma, Resolution.Daily);
+    }
+
+    public void Update(DateTime time, decimal value)
+    {
+        IsAboveSma = _sma.Update(time, value) && value > _sma.Current.Value;
     }
 }</pre>
 <pre class="python">class ChainedUniverseAlgorithm(QCAlgorithm):
-    _weight_by_symbol = {}
-    _universe = []
+
+    _selection_data_by_symbol = {}
     
     def initialize(self):
-        self.set_cash(100000)
         self.set_start_date(2023, 6, 1)
-        # Asynchronous can utilize computational resources more efficiently.
-        self.universe_settings.asynchronous = True
-        # Select from SPY constituents, select the ones with higher expectation of return within the market benchmark for extra alpha.
-        spy = self.add_equity("SPY", Resolution.DAILY).symbol
-        self.add_universe(self.universe.etf(spy), self._fundamental_selection)
-
-        # Trade daily on market open, since the trading signal is generated on daily resolution
-        self.schedule.on(
-            self.date_rules.every_day(spy),
-            self.time_rules.before_market_open(spy, 0),
-            self.rebalance
+        # Seed the price of each asset that enters the universe with its last known price so you can trade it 
+        # on the same morning it enters the universe without getting warnings.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
         )
+        # Add a chained universe that selects the SPY constituents trading above their 200-day SMA.
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self._universe = self.add_universe(self.universe.etf(spy), self._fundamental_selection)
+        # Trade daily at market open since the trading signal is generated on a daily resolution.
+        self.schedule.on(self.date_rules.every_day(spy), self.time_rules.after_market_open(spy, 1), self._rebalance)
     
-    def _fundamental_selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        # Create and update an SMA indicator for each asset that enters the ETF for filtering the uptrend ones.
+    def _fundamental_selection(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        # Create/Update an SMA indicator for each asset that enters the ETF.
         universe_symbols = []
         for f in fundamental:
             universe_symbols.append(f.symbol)
-            if f.symbol not in self._weight_by_symbol:
-                # Instantiate for the ones newly added.
-                self._weight_by_symbol[f.symbol] = SymbolData(self, f.symbol)
-            # Update with adjusted price, since we concern about the overall return.
-            self._weight_by_symbol[f.symbol].update(self.time, f.adjusted_price)
+            if f.symbol not in self._selection_data_by_symbol:
+                self._selection_data_by_symbol[f.symbol] = SelectionData(self, f.symbol)
+            self._selection_data_by_symbol[f.symbol].update(self.time, f.adjusted_price)
     
-        # Remove indicators for assets that are no longer in the ETF to release the computational resources
-        symbols_to_remove = [symbol for symbol in self._weight_by_symbol.keys() if symbol not in universe_symbols]
+        # Remove indicators for assets that are no longer in the ETF to release the computational resources.
+        symbols_to_remove = [symbol for symbol in self._selection_data_by_symbol.keys() if symbol not in universe_symbols]
         for symbol in symbols_to_remove:
-            self._weight_by_symbol.pop(symbol)
+            self._selection_data_by_symbol.pop(symbol)
 
-        # Filter the ones with SMA above the current adjusted price, as we estimate them to be in uptrend and still raising.
-        self._universe = [symbol for symbol, symbol_data in self._weight_by_symbol.items() if symbol_data.is_above_sma]
+        # Select the Equities trading above their SMA as we estimate them to be in uptrend and still rising.
+        selected = [symbol for symbol, selection_data in self._selection_data_by_symbol.items() if selection_data.is_above_sma]
             
         # Plot the results.
         self.plot("Universe", "Possible", len(list(fundamental)))
-        self.plot("Universe", "Selected", len(self._universe))
+        self.plot("Universe", "Selected", len(selected))
     
-        return self._universe
+        return selected
 
-    def rebalance(self) -&gt; None:
-        for symbol, holding in self.portfolio.items():
-            if symbol in self._universe and not holding.invested:
-                # Invest for the ones above SMA to follow its uptrend.
-                # Use 1% portfolio since there are about 100 stocks in SPY for equally dissipate capital risk.
-                self.set_holdings(symbol, 0.01)
-            elif symbol not in self._universe and holding.invested:
-                # Liquidate the stocks lost its uptrend and turn down
-                self.liquidate(symbol)
+    def _rebalance(self) -> None:
+        # Form an equal-weighted portfolio with the Equities that are above their SMA.
+        symbols = [symbol for symbol in self._universe.selected if self.securities[symbol].price]
+        if not symbols:
+            return
+        weight = 1 / len(symbols)
+        self.set_holdings([PortfolioTarget(symbol, weight) for symbol in symbols], True)
     
-class SymbolData(object):
+
+# Define a separate class to contain the SMA indicator.
+class SelectionData(object):
+
     def __init__(self, algorithm, symbol, period=200):
-        # Create the SMA indicator for trend detection and filtering, warm up for its readiness to use immediately.
+        #  Create the SMA indicator for trend detection and filtering.
         self._sma = SimpleMovingAverage(period)
+        # Warm up the SMA so you can immediately use it.
         algorithm.warm_up_indicator(symbol, self._sma, Resolution.DAILY)
     
     def update(self, time, value):
-        self.is_above_sma = self._sma.update(time, value) and value &gt; self._sma.current.value</pre>
+        self.is_above_sma = self._sma.update(time, value) and value > self._sma.current.value</pre>
 </div>
 
 
-
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
 
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Algorithms</div>
