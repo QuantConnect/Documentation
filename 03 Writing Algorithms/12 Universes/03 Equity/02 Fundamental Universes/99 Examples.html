@@ -164,7 +164,7 @@ public class HighRelativeVolumeUniverseAlgorithm : QCAlgorithm
     private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamental)
     {
         return (from f in fundamental
-            // Create/Update the volume SMA indicators for each stock.
+            // Create/Update the volume SMA indicator of each stock.
             let avg = _selectionDataBySymbol.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(f.Symbol, 10))
             where avg.Update(f.EndTime, f.Volume)
             // Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
@@ -208,9 +208,9 @@ class SelectionData
         self.add_universe(self._select_assets)
     
     def _select_assets(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        for f in fundamental:
-            # Create/Update the volume SMA indicators for each stock.
-            if f.symbol not in self._state_data:
+        # Create/Update the volume SMA indicator of each stock.
+	for f in fundamental:
+            if f.symbol not in self._selection_data_by_symbol:
                 self._selection_data_by_symbol[f.symbol] = SelectionData(f.symbol, 10)
             self._selection_data_by_symbol[f.symbol].update(f.end_time, f.adjusted_price, f.dollar_volume)
 
@@ -226,7 +226,7 @@ class SelectionData
 class SelectionData(object):
     
     def __init__(self, symbol, period):
-        self._symbol = symbol
+        self.symbol = symbol
         self.volume_ratio = 0
         # Create an SMA of volume to track the popularity of the stock.
         self._sma = SimpleMovingAverage(period)
@@ -238,8 +238,11 @@ class SelectionData(object):
 </div>
 
 
-<h4>Example 4: Take the top 10 "fastest moving" stocks with a 50-Day EMA &gt; 200 Day EMA</h4>
-<p>You can construct complex universe filters with the <code>SelectionData</code> helper class pattern. To view a full example of this algorithm, see the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs" class="csharp" rel="nofollow" target="_blank">EmaCrossUniverseSelectionAlgorithm</a><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/EmaCrossUniverseSelectionAlgorithm.py" class="python" rel="nofollow" target="_blank">EmaCrossUniverseSelectionAlgorithm</a> in the LEAN GitHub repository or take the <a href="/learning/task/153/">related Boot Camp lesson</a>.</p>
+<h4>Example 4: 10 "Fastest Moving" Stocks With a 50-Day EMA &gt; 200 Day EMA</h4>
+<p>
+	You can construct complex universe filters with the <code>SelectionData</code> helper class pattern. 
+	To view a full example of this algorithm, see the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs" class="csharp" rel="nofollow" target="_blank">EmaCrossUniverseSelectionAlgorithm</a><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/EmaCrossUniverseSelectionAlgorithm.py" class="python" rel="nofollow" target="_blank">EmaCrossUniverseSelectionAlgorithm</a> in the LEAN GitHub repository or take the <a href="/learning/task/153/">related Boot Camp lesson</a>.
+</p>
 
 <h4>Example 5: Piotroski F-Score</h4>
 <p>To view this example, see the <a href='/research/15728/piotroski-f-score-investing/p1'>Piotroski F-Score Investing</a> Research post.</p>
