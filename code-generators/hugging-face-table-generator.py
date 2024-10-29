@@ -1,10 +1,10 @@
 from requests import get
 
-REPOSITORIES = '''
+REPOSITORIES = '''Repo: FacebookAI/roberta-base. Revisions ['e2da8e2f811d1448a5b465c236feacd80ffbac7b']
 Repo: ProsusAI/finbert. Revisions ['4556d13015211d73dccd3fdd39d39232506f3e43']
-Repo: Salesforce/moirai-1.0-R-base. Revisions ['2149dc1c56c5d2684390ee4ec6fde58be4196c0c']
-Repo: Salesforce/moirai-1.0-R-large. Revisions ['2665aa4fcc9edc1402a3ad1243addfe32cd2178f']
-Repo: Salesforce/moirai-1.0-R-small. Revisions ['a34614afbe6b16fffbc11c77daba5aab3ed277fb']
+Repo: Salesforce/moirai-1.0-R-base. Revisions ['2149dc1c56c5d2684390ee4ec6fde58be4196c0c', '8ccee33f01eaafef96169c6ebc5204341d21bf7e']
+Repo: Salesforce/moirai-1.0-R-large. Revisions ['2665aa4fcc9edc1402a3ad1243addfe32cd2178f', '13a8633b35085404adb94fe9f9bcad486404cdb5']
+Repo: Salesforce/moirai-1.0-R-small. Revisions ['a34614afbe6b16fffbc11c77daba5aab3ed277fb', '79ae2f2a22a2a0424c53d7c50ed90afc960c2324']
 Repo: StephanAkkerman/FinTwitBERT-sentiment. Revisions ['da059da3b3bbcb43f9ed1aeb5ae61644010c7e1e']
 Repo: ahmedrachid/FinancialBERT-Sentiment-Analysis. Revisions ['656931965473ec085d195680bd62687b140c038f']
 Repo: amazon/chronos-t5-base. Revisions ['b6748377ca1c242cb95ed1187b8b3fe46942c023']
@@ -20,14 +20,14 @@ Repo: distilbert/distilbert-base-cased-distilled-squad. Revisions ['564e9b582944
 Repo: distilbert/distilbert-base-uncased. Revisions ['12040accade4e8a0f71eabdb258fecc2e7e948be']
 Repo: google-bert/bert-base-uncased. Revisions ['86b5e0934494bd15c9632b12f734a8a67f723594']
 Repo: google/gemma-7b. Revisions ['ff6768d9368919a1f025a54f9f5aa0ee591730bb', 'a0eac5b80dba224e6ed79d306df50b1e92c2125d']
+Repo: ibm-granite/granite-timeseries-ttm-r1. Revisions ['55a115da7eb15664eddd34c52523f51b304f9888']
 Repo: microsoft/deberta-base. Revisions ['0d1b43ccf21b5acd9f4e5f7b077fa698f05cf195']
 Repo: mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis. Revisions ['ae0eab9ad336d7d548e0efe394b07c04bcaf6e91']
 Repo: nickmuchi/deberta-v3-base-finetuned-finance-text-classification. Revisions ['e07986b01cb87923b2e1622356f8093e173ee9a8']
 Repo: nickmuchi/distilroberta-finetuned-financial-text-classification. Revisions ['396d9c2c093f87875c3fdfa03ad7eed792e776e9']
 Repo: nickmuchi/sec-bert-finetuned-finance-classification. Revisions ['15cae24ba4089500a7e18f340e0286160b1daf14']
 Repo: openai-community/gpt2. Revisions ['607a30d783dfa663caf39e06633721c8d4cfcd7e']
-Repo: yiyanghkust/finbert-tone. Revisions ['4921590d3c0c3832c0efea24c8381ce0bda7844b']
-'''
+Repo: yiyanghkust/finbert-tone. Revisions ['4921590d3c0c3832c0efea24c8381ce0bda7844b']'''
 
 EXAMPLES = {
     'chronos-t5' : '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/chronos-t5',
