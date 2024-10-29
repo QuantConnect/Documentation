@@ -266,64 +266,64 @@
             self.set_holdings(self.usdjpy, -1)</pre>
 </div>
 
-<h4>Example 3: Monthly Candlestick</h4>
-<p>Consolidate data into monthly <code>TradeBar</code> objects that start at midnight to create a monthly candlestick.</p>
+<h4>Example 3: Monthly Candlesticks</h4>
+<p>The following algorithm consolidates minute-resolution data into monthly <code>TradeBar</code> objects.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        // Request SPY for trading.
-        var spy = AddEquity("SPY").Symbol;
-        // Create a calendar consolidator for SPY monthly bar, in which the bar starts at midnight of the month start and ends at midnight of the month start.
+        // Add an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Create a consolidator that produces monthly TradeBar objects.
+        // This is the stardard way:
+        //var consolidator = new TradeBarConsolidator(Calendar.Monthly);
+        // However, you can acomplish the same thing with a custom period:
         var consolidator = new TradeBarConsolidator(CustomMonthly);
-        // Add a consolidation handler to create monthly candlestick bar.
-        consolidator.DataConsolidated += OnConsolidated;
-        // Subscribe the consolidator with SPY data feed to update it automatically.
-        SubscriptionManager.AddConsolidator(spy, consolidator);
+        // Add a consolidation handler that plots the monthly bars as candlesticks.
+        consolidator.DataConsolidated += (_, bar) => Plot(
+            "Monthly Candlestick", symbol.Value, bar.Open, bar.High, bar.Low, bar.Close
+        );
+        // Register the consolidator for automatic updates.
+        SubscriptionManager.AddConsolidator(symbol, consolidator);
     }
 
     public CalendarInfo CustomMonthly(DateTime dt)
     {
-        // Bar starts at month start midnight.
+        // Set the start time to the beginning of the month.
         var start = dt.AddDays(1 - dt.Day).Date;
-        // Set the end time as the midnight of the next month start.
-        var end = dt.AddMonths(1);
-        end = new DateTime(end.Year, end.Month, 1);
+        // Set the end time to the beginning of next month.
+        var end = start.AddMonths(1);
         return new CalendarInfo(start, (end - start));
     }
-
-    private void OnConsolidated(object sender, TradeBar bar)
-    {
-        // Plot the OHLC in a candlestick plot.
-        Plot("Monthly Candlestick", "SPY", bar.Open, bar.High, bar.Low, bar.Close);
-    }
 }</pre>
-    <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
-    
-    def initialize(self) -&gt; None:
-        # Request SPY for trading.
-        spy = self.add_equity("SPY").symbol
-        # Create a calendar consolidator for SPY monthly bar, in which the bar starts at midnight of the month start and ends at midnight of the month start.
-        consolidator = TradeBarConsolidator(self._custom_monthly)
-        # Add a consolidation handler to create monthly candlestick bar.
-        consolidator.data_consolidated += self.on_consolidated
-        # Subscribe the consolidator with SPY data feed to update it automatically.
-        self.subscription_manager.add_consolidator(spy, consolidator)
-    
-    def _custom_monthly(self, dt: datetime) -&gt; CalendarInfo:
-        # Bar starts at month start midnight.
-        start = dt.replace(day=1).date()
-        # To get month end time, make the day as "32" to ensure it rolls into the next month.
-        end = dt.replace(day=28) + timedelta(4)
-        # Set the end time as the midnight of the next month start.
-        end = (end - timedelta(end.day - 1)).date()
-        return CalendarInfo(start, end - start)
+    <pre class="python">from dateutil.relativedelta import relativedelta
 
-    def on_consolidated(self, sender: object, bar: TradeBar) -&gt; None:
-        # Plot the OHLC in a candlestick plot.
-        self.plot("Monthly Candlestick", "SPY", bar.open, bar.high, bar.low, bar.close)</pre>
+
+class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -> None:
+        # Add an asset.
+        symbol = self.add_equity("SPY").symbol
+        # Create a consolidator that produces monthly TradeBar objects.
+        # This is the stardard way:
+        #consolidator = TradeBarConsolidator(Calendar.MONTHLY)
+        # However, you can acomplish the same thing with a custom period:
+        consolidator = TradeBarConsolidator(self._custom_monthly)
+        # Add a consolidation handler that plots the monthly bars as candlesticks.
+        consolidator.data_consolidated += lambda _, bar: self.plot(
+            "Monthly Candlestick", symbol.value, bar.open, bar.high, bar.low, bar.close
+        )
+        # Register the consolidator for automatic updates.
+        self.subscription_manager.add_consolidator(symbol, consolidator)
+    
+    def _custom_monthly(self, dt: datetime) -> CalendarInfo:
+        # Set the start time to the beginning of the month.
+        start = dt.replace(day=1).date()
+        # Set the end time to the beginning of next month.
+        end = start + relativedelta(months=1)
+        return CalendarInfo(start, end - start)</pre>
 </div>
 
 <h4>Other Examples</h4>
