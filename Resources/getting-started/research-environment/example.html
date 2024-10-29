@@ -2,9 +2,26 @@
 <p class='csharp'>The following snippet demonstrates how to use the Research Environment to print the price of the S&amp;P 500 index ETF, SPY:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Load the required assembly files and data types
-#load "../Initialize.csx"
-#load "../QuantConnect.csx"
+	<pre class="csharp">// Load the required assembly files and data types in a separate cell.
+#load "../Initialize.csx"</pre>
+	<pre class="python"># Create a QuantBook
+qb = QuantBook()
+
+# Add an asset.
+symbol = qb.add_equity("SPY").symbol
+
+# Request some historical data.
+history = qb.history(symbol, 360, Resolution.DAILY)
+
+# Calculate the Bollinger Bands.
+bbdf = qb.indicator(BollingerBands(30, 2), symbol, 360, Resolution.DAILY)
+
+# Plot the data
+bbdf[['price', 'lowerband', 'middleband', 'upperband']].plot();</pre>
+</div>
+
+<div class="csharp section-example-container">
+	<pre class="csharp">#load "../QuantConnect.csx"
 using QuantConnect;
 using QuantConnect.Data;
 using QuantConnect.Algorithm;
@@ -23,20 +40,7 @@ foreach (var tradeBar in history)
 {
     Console.WriteLine($"{tradeBar.EndTime} :: {tradeBar.ToString()}");
 }</pre>
-	<pre class="python"># Create a QuantBook
-qb = QuantBook()
+</div>
 
-# Create a security subscription
-spy = qb.add_equity("SPY")
-
-# Request some historical data
-history = qb.history(qb.securities.keys(), 360, Resolution.DAILY)
-
-# Calculate the Bollinger Bands
-bbdf = qb.indicator(BollingerBands(30, 2), spy.symbol, 360, Resolution.DAILY)
-
-# Plot the data
-bbdf.drop('standarddeviation', axis='columns').plot()</pre>
 <img src="https://www.dropbox.com/s/6c3h1ndt3oo0ioc/notebook%203.PNG?dl=1" class="python docs-image" title="" alt="Bollinger Bands plotting in research environment">
 <img src="https://cdn.quantconnect.com/i/tu/reserach-keyconcept-csharp.png" class="csharp docs-image" title="" alt="Historical minute data of SPY">
-</div>
