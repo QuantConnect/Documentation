@@ -31,7 +31,7 @@ public class MyCustomUniverseDataClass : BaseData
             EndTime = Parse.DateTimeExact(items[0], "yyyy-MM-dd"),
             Symbol = Symbol.Create(items[1], SecurityType.Equity, Market.USA),
             CustomAttribute1 = int.Parse(items[2]),
-            CustomAttribute2 = decimal.Parse(items[3], NumberStyles.Any, CultureInfo.Invariant)
+            CustomAttribute2 = decimal.Parse(items[3], NumberStyles.Any, CultureInfo.InvariantCulture)
         };
     }
 }
