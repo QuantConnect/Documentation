@@ -1,125 +1,128 @@
 <p>The following examples demonstrate some common practices for dataless scheduled universes.</p>
 
 <h4>Example 1: Bulk Download Custom List</h4>
-<p>The following example directly download a dataframe file from dropbox, in which its only column contains a list of equity to be included in the universe on that day with the date as index. The dataless scheduled universe can then retrieve the required equities from that day.</p>
+<p>
+	The following algorithm <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>downloads</a> a CSV file from dropbox.
+	The first column in the file contains the universe date.
+	The second column in the file contains a list of Equity tickers that represent the universe for the day.
+	The dataless scheduled universe parses the file contents each trading day and sets the universe constituents.
+</p>
 <div class="section-example-container">
     <pre class="csharp">public class DatalessScheduledUniverseExampleAlgorithm : QCAlgorithm
 {
-    // A dictionary of date-stock list pairs for easy access.
-    private Dictionary&lt;DateTime, string&gt; _selections = new();
-    private List&lt;Symbol&gt; _universe = new();
+    // Create a dictionary for the universe data where the key is the date and
+    // the value is a comma-separated string of stock tickers.
+    private Dictionary&lt;DateTime, string&gt; _tickersByDate = new();
+    private Universe _universe;
 
     public override void Initialize()
     {
         SetStartDate(2015, 1, 1);
+        // Download the initial universe file.
+        DownloadUniverseFile();
+        // Add the custom universe.
+        UniverseSettings.ExtendedMarketHours = true;
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        var dateRule = DateRules.EveryDay(spy);
+        _universe = AddUniverse(new ScheduledUniverse(dateRule, TimeRules.At(8, 0), SelectAssets));
+        // Schedule rebalances for market open.
+        Schedule.On(dateRule, TimeRules.AfterMarketOpen(spy, 0), Rebalance);
+    }
 
-        // To download the list of stocks to be included in the universe of each day, make sure you set "dl=1" for dropbox links.
-        var file = Download("https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1");
-        // Map into a dictionary of date-stock list pairs for easy access. Remember to skip the header row
+    private void DownloadUniverseFile()
+    {
+        // Download the universe CSV file. Dropbox links require the "dl=1" URL parameter.
+        var file = Download(
+            "https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1"
+        );
+        // Convert the CSV file data into a dictionary where the key is the date and
+        // the value is a comma-separated string of stock tickers.
         foreach (var line in file.Split('\n').Skip(1))
         {
-            // Skip empty line
+            // Skip empty lines.
             if (line.IsNullOrEmpty())
             {
                 continue;
             }
-            
-            // CSV entry items are split by comma.
-            var items = line.Split(',');
-
-            var date = Parse.DateTimeExact(items[0], "yyyy-MM-dd").Date;
-            _selections[date] = String.Join(',', items.Skip(1));
+            var items = line.Split("\"");
+            var date = Parse.DateTimeExact(items[0].Split(",")[0], "yyyy-MM-dd").Date;
+            _tickersByDate[date] = items[1];
         }
-
-        // Daily weight signals from our custom universe data only requires daily resolution to trade with.
-        UniverseSettings.Resolution = Resolution.Daily;
-        // Filter using the custom dataset, our sample data is by daily basis.
-        AddUniverse(
-            new ScheduledUniverse(
-                DateRules.EveryDay(),
-                TimeRules.At(8, 0),
-                (dt) =&gt; {
-                    // Check if the date is in the selection dictionary with stocks selection, return empty list if not.
-                    if (!_selections.TryGetValue(dt.Date, out var stockListString))
-                    {
-                        return Enumerable.Empty&lt;Symbol&gt;();
-                    }
-
-                    // The stock list is in string format that each stock is split by ",".
-                    _universe = stockListString.Split(',')
-                        // All selections in list are US Equity.
-                        .Select(x =&gt; QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA))
-                        .ToList();
-                    return _universe;
-            }));
     }
 
-    public override void OnData(Slice slice)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(DateTime dt)
     {
-        var universeCount = _universe.Count;
-
-        // Invest equally to evenly dissipate capital risk. Since the resolution is daily, there is no issue for over rebalancing.
-        SetHoldings(_universe.Select(symbol =&gt; new PortfolioTarget(symbol, 1m / universeCount)).ToList());
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        // Liquidate the remove securities to free margin.
-        foreach (var removed in changes.RemovedSecurities)
+        // When live trading, re-download the CSV file each day to get the new rows.
+        if (LiveMode)
         {
-            Liquidate(removed.Symbol);
+            DownloadUniverseFile();
         }
+        // Get the current day's data from the CSV file.
+        if (!_tickersByDate.TryGetValue(dt.Date, out var tickers))
+        {
+            // If there isn't an entry for the current date, return an empty universe.
+            return Enumerable.Empty<Symbol>();
+        }
+        // Convert the stock tickers in the CSV file to Symbol objects.
+        return tickers
+            .Split(',')
+            .Select(x => QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA));
+    }
+
+    private void Rebalance()
+    {
+        // Form an equal-weighted portfolio of all the universe constituents.
+        var weight = 1m / _universe.Selected.Count;
+        SetHoldings(_universe.Selected.Select(symbol => new PortfolioTarget(symbol, weight)).ToList(), true);
     }
 }</pre>
-    <pre class="python">from AlgorithmImports import * 
-from io import StringIO
+    <pre class="python">from io import StringIO
+
 
 class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
     
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2015, 1, 1)
-
-        # To download the list of stocks to be included in the universe of each day, make sure you set "dl=1" for dropbox links.
-        file = self.download("https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1")
-        # Map into a dictionary of date-stock list pairs for easy access.
+        # Download the initial universe file.
+        self._download_universe_file()
+        # Add the custom universe.
+        self.universe_settings.extended_market_hours = True
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        date_rule = self.date_rules.every_day(spy)
+        self._universe = self.add_universe(
+            ScheduledUniverse(date_rule, self.time_rules.at(8, 0), self._select_assets)
+        )
+        # Schedule rebalances for market open.
+        self.schedule.on(date_rule, self.time_rules.after_market_open(spy, 0), self._rebalance)
+    
+    def _download_universe_file(self):
+        # Download the universe CSV file. Dropbox links require the "dl=1" URL parameter.
+        file = self.download(
+            "https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1"
+        )
+        # Convert the CSV file data into a dictionary where the key is the date and
+        # the value is a comma-separated string of stock tickers.
         df = pd.read_csv(StringIO(file), index_col=0).iloc[:, 0]
         df.index = pd.to_datetime(df.index).date
-        self.selections = df.to_dict()
+        self._tickers_by_date = df.to_dict()
 
-        # Daily weight signals from our custom universe data only requires daily resolution to trade with.
-        self.universe_settings.resolution = Resolution.DAILY
-        # Filter using the custom dataset, our sample data is by daily basis.
-        self.add_universe(
-            ScheduledUniverse(
-                self.date_rules.every_day(), 
-                self.time_rules.at(8, 0), 
-                self._select_symbols
-            ))
-    
-    def _select_symbols(self, dt: datetime) -&gt; List[Symbol]:
-        # Check if the date is in the selection dictionary with stocks selection, return empty list if not.
-        date = dt.date()
-        if date not in self.selections:
+    def _select_assets(self, dt: datetime) -> List[Symbol]:
+        # When live trading, re-download the CSV file each day to get the new rows.
+        if self.live_mode:
+            self._download_universe_file()
+        # Get the current day's data from the CSV file.
+        data = self._tickers_by_date.get(dt.date(), '')
+        # If there isn't an entry for the current date, return an empty universe.
+        if not data:
             return []
-        
-        self._universe = [
-            # All selections in list are US Equity.
-            Symbol.create(x, SecurityType.EQUITY, Market.USA)
-            # The stock list is in string format that each stock is split by ","
-            for x in self.selections[date].split(",")
-        ]
-        return self._universe
+        # Convert the stock tickers in the CSV file to Symbol objects.
+        return [Symbol.create(x, SecurityType.EQUITY, Market.USA) for x in data.split(",")]
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Invest equally to evenly dissipate capital risk. Since the resolution is daily, there is no issue for over rebalancing.
-        self.set_holdings([
-            PortfolioTarget(symbol, 1./len(self._universe)) for symbol in self._universe
-        ])
-
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate the remove securities to free margin.
-        for removed in changes.removed_securities:
-            self.liquidate(removed.symbol)</pre>
+    def _rebalance(self) -> None:
+        # Form an equal-weighted portfolio of all the universe constituents.
+        symbols = list(self._universe.selected)
+        weight = 1 / len(symbols)
+        self.set_holdings([PortfolioTarget(symbol, weight) for symbol in symbols], True)</pre>
 </div>
 
 <h4>Example 2: Quarter End Selection</h4>
