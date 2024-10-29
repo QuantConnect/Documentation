@@ -123,7 +123,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
 </div>
 
 <h4>Example 2: Quarter End Selection</h4>
-<p>The following example selects SPY on the last month of each quarter. For the remaining months, it selects no assets.</p>
+<p>The following algorithm selects SPY on the last month of each quarter. For the remaining months, it selects no assets.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
 {
@@ -150,18 +150,18 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
             ScheduledUniverse(
                 self.date_rules.month_start(), 
                 self.time_rules.at(8, 0), 
-                self._select_symbols
+                self._select_assets
             )
         )
         
-    def _select_symbols(self, dt: datetime) -> List[Symbol]:
+    def _select_assets(self, dt: datetime) -> List[Symbol]:
         if dt.month % 3 == 0:
             return [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
         return []</pre>
 </div>
 
 <h4>Example 3: Third Week VIX</h4>
-<p>Standard Options expire at end of the third week of each month. The following algorithm selects VIX-related products on the third week to trade the foreseeable increasing volatility:</p>
+<p>Standard <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options'>Options</a> expire at end of the third week of each month. The following algorithm selects VIX-related products on the third week to trade the foreseeable increase in volatility.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
 {
@@ -200,11 +200,11 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
             ScheduledUniverse(
                 self.date_rules.week_start(), 
                 self.time_rules.at(8, 0), 
-                self._select_symbols
+                self._select_assets
             )
         )
         
-    def _select_symbols(self, dt: datetime) -> List[Symbol]:
+    def _select_assets(self, dt: datetime) -> List[Symbol]:
         if dt.month == self._month:
             self._week += 1
             if self._week == 3:
