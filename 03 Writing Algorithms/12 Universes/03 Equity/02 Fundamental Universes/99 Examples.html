@@ -148,7 +148,9 @@ class SelectionData(object):
 	You can use this ratio to select assets that are above their 10-day SMA and sort the results by the Equities that have had the biggest jump since yesterday.
 </p>
 <div class="section-example-container">
-<pre class="csharp">public class HighRelativeVolumeUniverseAlgorithm : QCAlgorithm
+<pre class="csharp">using System.Collections.Concu
+
+public class HighRelativeVolumeUniverseAlgorithm : QCAlgorithm
 {    
     // Create a dictionary to store the EMA data for universe selection.
     private ConcurrentDictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
@@ -156,10 +158,10 @@ class SelectionData(object):
     public override void Initialize()
     {
         // Add a universe with custom selection rules for filtering.
-        AddUniverse(FundamentalFilterFunction);
+        AddUniverse(SelectAssets);
     }
     
-    private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamental)
     {
         return (from f in fundamental
             // Create/Update the volume SMA indicators for each stock.
@@ -203,9 +205,9 @@ class SelectionData
 
     def initialize(self) -&gt; None:
         # Add a universe with custom selection rules for filtering.
-        self.add_universe(self._fundamental_filter_function)
+        self.add_universe(self._select_assets)
     
-    def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _select_assets(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         for f in fundamental:
             # Create/Update the volume SMA indicators for each stock.
             if f.symbol not in self._state_data:
@@ -219,8 +221,10 @@ class SelectionData
         # for scalp-trading or intra-day movement.
         return [ x.symbol for x in sorted(selected, key=lambda x: x.volume_ratio)[-10:] ]
 
+
 # Define a separate class to contain and calculate the SMA of each Equity.
 class SelectionData(object):
+    
     def __init__(self, symbol, period):
         self._symbol = symbol
         self.volume_ratio = 0
