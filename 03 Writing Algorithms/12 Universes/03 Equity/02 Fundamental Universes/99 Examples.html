@@ -2,7 +2,7 @@
 <meta name="tag" content="fundamental universes">
 <p>The following examples demonstrate some common practices for fundamental universes.</p>
 
-<h4>Example 1: 500 Stocks That Are >$10 and Have >$10M in Daily Trading Volume</h4>
+<h4>Example 1: 500 Stocks >$10/Share and >$10M in Daily Trading Volume</h4>
 <p>
   The following algorithm selects the 500 most liquid US Equities above $10/share and $10M in daily volume.
 </p>
@@ -39,7 +39,7 @@
 
 <h4>Example 2: 10 Stocks Above Their 200-Day EMA With >$1B of Daily Trading Volume</h4>
 <p>
-  Another common request is to filter the universe by a technical indicator, such as only picking stocks above their 200-day EMA. 
+  Another common request is to filter the universe by a technical indicator, such as only picking stocks above their 200-day <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average'>Exponential Moving Average</a> (EMA). 
   The <code>Fundamental</code> object has adjusted price and volume information, so you can do any price-related analysis.
   The following algorithm defines a separate class to contain the indicator of each asset.
 </p>
@@ -132,39 +132,50 @@ class SelectionData(object):
             self.is_above_ema = price > self._ema.current.value</pre>
 </div>
 <p>
-In this example, the <code>SelectionData</code> class group variables for the universe selection and updates the indicator of each asset. We highly recommend you follow this pattern to keep your algorithm tidy and bug free. The following snippet shows an example implementation of the <code>SelectionData</code> class, but you can make this whatever you need to store your custom universe filters. Note that the preceding <code>SelectionData</code> class uses a <a href="/docs/v2/writing-algorithms/indicators/manual-indicators">manual</a> EMA indicator instead of the <a href="/docs/v2/writing-algorithms/indicators/automatic-indicators">automatic version</a>. For more information about universes that select assets based on indicators, see <a href="/docs/v2/writing-algorithms/indicators/indicator-universes">Indicator Universes</a>. You need to use a <code>SelectionData</code> class instead of assigning the EMA to the <code>Fundamental</code> object because you can't create custom <span class="csharp">properties</span><span class="python">attributes</span> on <code>Fundamental</code> objects like you can with <code>Security</code> objects.</p>
+    In this example, the <code>SelectionData</code> class group variables for the universe selection and updates the indicator of each asset. 
+	We highly recommend you follow this pattern to keep your algorithm tidy and bug free. 
+	The following snippet shows an example implementation of the <code>SelectionData</code> class, but you can make this whatever you need to store your custom universe filters. 
+	Note that the preceding <code>SelectionData</code> class uses a <a href="/docs/v2/writing-algorithms/indicators/manual-indicators">manual</a> EMA indicator instead of the <a href="/docs/v2/writing-algorithms/indicators/automatic-indicators">automatic version</a>. 
+	For more information about universes that select assets based on indicators, see <a href="/docs/v2/writing-algorithms/indicators/indicator-universes">Indicator Universes</a>. 
+	You need to use a <code>SelectionData</code> class instead of assigning the EMA to the <code>Fundamental</code> object because you can't create custom <span class="csharp">properties</span><span class="python">attributes</span> on <code>Fundamental</code> objects like you can with <code>Security</code> objects.
+</p>
 
-<h4>Example 3: Take 10 stocks that are the furthest above their 10-day SMA of volume</h4>
+<h4>Example 3: 10 Stocks Furthest Above their 10-day SMA of Volume</h4>
 <p>
-The process to get the 10-day SMA stock volume is the same process as in Example 2. First, you should define a <code>SelectionData</code> class that performs the averaging. This class tracks the ratio of today's volume relative to historical volumes. You can use this ratio to select assets that are above their 10-day simple moving average and sort the results by the ones that have had the biggest jump since yesterday.
+    The process to get the 10-day <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>Simple Moving Average</a> (SMA) stock volume is the same process as in Example 2. 
+	First, define a <code>SelectionData</code> class that performs the averaging. 
+	This class tracks the ratio of today's volume relative to historical volumes. 
+	You can use this ratio to select assets that are above their 10-day SMA and sort the results by the Equities that have had the biggest jump since yesterday.
 </p>
 <div class="section-example-container">
 <pre class="csharp">public class HighRelativeVolumeUniverseAlgorithm : QCAlgorithm
 {    
-    // A dictionary to save the Volume SMA data and calculated fields for filtering.
-    private ConcurrentDictionary&lt;Symbol, SelectionData&gt; _state_data = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
+    // Create a dictionary to store the EMA data for universe selection.
+    private ConcurrentDictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
 
     public override void Initialize()
     {
-        // Add universe with custom selection rules for filtering.
+        // Add a universe with custom selection rules for filtering.
         AddUniverse(FundamentalFilterFunction);
     }
     
     private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
     {
-        // ilter the ones with higher trading volume than SMA, indicating higher capital flow.
-        // Get the top 10 highest relative volume stocks, since they have the highest capactity for scalp-trading or intra-day movement.
         return (from f in fundamental
-            let avg = _state_data.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(10))
+            // Create/Update the volume SMA indicators for each stock.
+            let avg = _selectionDataBySymbol.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(f.Symbol, 10))
             where avg.Update(f.EndTime, f.Volume)
+            // Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
             where avg.VolumeRatio &gt; 1
+            // Select the 10 Equities with the highest relative volume, since they have the highest capactity
+            // for scalp-trading or intra-day movement.
             orderby avg.VolumeRatio descending
             select f.Symbol).Take(10);
     }
 }
 
-// Custom class to process SMA volume ratio information.
-private class SelectionData
+// Define a separate class to contain and calculate the SMA of each Equity.
+class SelectionData
 {
     public readonly Symbol Symbol;
     public readonly SimpleMovingAverage VolumeSma;
@@ -172,53 +183,52 @@ private class SelectionData
 
     public SelectionData(Symbol symbol, int period)
     {
-        // Create SMA of volume to track the popularity of the stock.
+        // Create an SMA of volume to track the popularity of the stock.
         Symbol = symbol;
         VolumeSma = new SimpleMovingAverage(period);
     }
     
     public bool Update(DateTime time, decimal value)
     {
-        // Update SMA with the updated data and calculate the relative volume position for filtering.
+        // Update the SMA with today's data and calculate the relative volume position for filtering.
         var ready = VolumeSma.Update(time, value);
         VolumeRatio = value / VolumeSma.Current.Value;
         return ready;
     }
 }</pre>
 <pre class="python">class HighRelativeVolumeUniverseAlgorithm(QCAlgorithm):
-    # A dictionary to save the Volume SMA data and calculated fields for filtering.
-    _state_data = { }
+    
+    # Create a dictionary to store the EMA data for universe selection.
+    _selection_data_by_symbol = {}
 
     def initialize(self) -&gt; None:
-        # Add universe with custom selection rules for filtering.
+        # Add a universe with custom selection rules for filtering.
         self.add_universe(self._fundamental_filter_function)
     
     def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         for f in fundamental:
-            # To create and update Volume SMA indicators for each stocks for estimating their popularity.
+            # Create/Update the volume SMA indicators for each stock.
             if f.symbol not in self._state_data:
-                self._state_data[f.symbol] = SelectionData(f.symbol, 10)
-            avg = self._state_data[f.symbol]
-            avg.update(f.end_time, f.adjusted_price, f.dollar_volume)
+                self._selection_data_by_symbol[f.symbol] = SelectionData(f.symbol, 10)
+            self._selection_data_by_symbol[f.symbol].update(f.end_time, f.adjusted_price, f.dollar_volume)
 
-        # Filter the ones with higher trading volume than SMA, indicating higher capital flow.
-        values = [sd for sd in self._state_data.values() if sd.volume_ratio &gt; 1]
+        # Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
+        selected = [sd for sd in self._selection_data_by_symbol.values() if sd.volume_ratio &gt; 1]
             
-        # Get the top 10 highest relative volume stocks, since they have the highest capactity for scalp-trading or intra-day movement.
-        values.sort(key=lambda sd: sd.volume_ratio, reverse=True)[:10]
+        # Select the 10 Equities with the highest relative volume, since they have the highest capactity
+        # for scalp-trading or intra-day movement.
+        return [ x.symbol for x in sorted(selected, key=lambda x: x.volume_ratio)[-10:] ]
 
-        return [ sd.symbol for sd in values ]
-
-# Custom class to process SMA volume ratio information.
+# Define a separate class to contain and calculate the SMA of each Equity.
 class SelectionData(object):
     def __init__(self, symbol, period):
         self._symbol = symbol
         self.volume_ratio = 0
-        # Create SMA of volume to track the popularity of the stock.
+        # Create an SMA of volume to track the popularity of the stock.
         self._sma = SimpleMovingAverage(period)
 
     def update(self, time, price, volume):
-        # Update SMA with the updated data and calculate the relative volume position for filtering.
+        # Update the SMA with today's data and calculate the relative volume position for filtering.ing.
         if self._sma.update(time, volume):
             self.volume_ratio = volume / self._sma.current.value</pre>
 </div>
