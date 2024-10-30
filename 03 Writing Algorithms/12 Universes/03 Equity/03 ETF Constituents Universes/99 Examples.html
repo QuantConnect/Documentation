@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for ETF constituent universes.</p>
 
 <h4>Example 1: Arbitrage Of Sparse-Replicated Portfolio of SPY</h4>
-<p>The following example selects the top 100 weighted constituents in SPY and buy them according to their constituted weights in SPY, while sell the SPY in equal size for a dollar-neutral portfolio. It is believed that the top 100 have better return than the rest due to their high popularity, such that extra alpha can be obtained from active selection and management fee decay from SPY.</p>
+<p>The following example selects the bottom 100 weighted constituents in SPY and sell them according to their constituted weights in SPY, while buy the SPY in equal size for a dollar-neutral portfolio. It is believed that the bottom 100 have negative excess return than the rest, such that extra alpha can be obtained from active selection from SPY.</p>
 <div class="section-example-container">
 <pre class="csharp">public class ETFConstituentsUniverseAlgorithm : QCAlgorithm
 {
@@ -17,7 +17,7 @@
         // To avoid over-trading and high transaction cost, refilter and rebalance weekly.
         UniverseSettings.Schedule.On(DateRules.WeekEnd());
 
-        // Select from SPY constituents, select the top 100 weighted.
+        // Select from SPY constituents, select the lowest 100 weighted, which is expected to perform worse.
         var spy = AddEquity("SPY", Resolution.Daily).Symbol;
         AddUniverse(Universe.ETF(spy, UniverseSettings, ETFConstituentsFilter));
         
@@ -49,9 +49,9 @@
             _weightBySymbol.Remove(symbol);
         }
 
-        // Filter the ones with top 100 weight in the ETF for extra-alpha active selection.
+        // Filter the ones with lowest 100 weight in the ETF for expected negative excess return active selection.
         _universe = _weightBySymbol.OrderByDescending(kvp =&gt; kvp.Value)
-            .Take(100)
+            .TakeLast(100)
             .Select(kvp =&gt; kvp.Key)
             .ToList();
 
@@ -64,19 +64,19 @@
         {
             if (_universe.Contains(symbol))
             {
-                // Buy the top 100 weighted stocks due to its popularity which may bring extra alpha.
-                // Only invest half the portfolio on buy side.
-                SetHoldings(symbol, _weightBySymbol[symbol] * 0.5m);
+                // Sell the lowest 100 weighted stocks due to expected negative excess return.
+                // Only invest half the portfolio on sell side.
+                SetHoldings(symbol, _weightBySymbol[symbol] * -0.5m);
             }
             else
             {
-                // Liquidate the stocks that is out of the top 100, which does not indicate extra alpha for active selection.
+                // Liquidate the stocks that is out of the bottom 100, which does not indicate extra alpha for active selection.
                 Liquidate(symbol);
             }
         }
 
-        // Short SPY to eliminate systematic risk and earn only the extra alpha and time decay.
-        SetHoldings("SPY", -0.5m);
+        // Buy SPY to eliminate systematic risk and earn only the extra alpha from the better overall market.
+        SetHoldings("SPY", 0.5m);
     }
 }</pre>
 <pre class="python">class ETFConstituentsUniverseAlgorithm(QCAlgorithm):
@@ -89,7 +89,7 @@
         # To avoid over-trading and high transaction cost, refilter and rebalance weekly.
         self.universe_settings.schedule.on(self.date_rules.week_end())
 
-        # Select from SPY constituents, select the top 100 weighted.
+        # Select from SPY constituents, select the lowest 100 weighted, which is expected to perform worse.
         spy = self.add_equity("SPY", Resolution.DAILY).symbol
         self.add_universe(self.universe.etf(spy, self.universe_settings, self._etf_constituents_filter))
 
@@ -113,8 +113,8 @@
         for symbol in symbols_to_remove:
             self._weight_by_symbol.pop(symbol)
 
-        # Filter the ones with top 100 weight in the ETF for extra-alpha active selection.
-        sorted_by_weight = sorted(self._weight_by_symbol.items(), key=lambda x: x[1], reverse=True)[:100]
+        # Filter the ones with lowest 100 weight in the ETF for expected negative excess return active selection.
+        sorted_by_weight = sorted(self._weight_by_symbol.items(), key=lambda x: x[1])[:100]
         self._universe = [x[0] for x in sorted_by_weight]
     
         return self._universe
@@ -122,15 +122,15 @@
     def rebalance(self) -&gt; None:
         for symbol in self.portfolio.keys():
             if symbol in self._universe:
-                # Buy the top 100 weighted stocks due to its popularity which may bring extra alpha.
-                # Only invest half the portfolio on buy side.
-                self.set_holdings(symbol, self._weight_by_symbol[symbol] * 0.5)
+                # Sell the lowest 100 weighted stocks due to expected negative excess return.
+                # Only invest half the portfolio on sell side.
+                self.set_holdings(symbol, self._weight_by_symbol[symbol] * -0.5)
             else:
                 # Liquidate the stocks that is out of the top 100, which does not indicate extra alpha for active selection.
                 self.liquidate(symbol)
         
-        # Short SPY to eliminate systematic risk and earn only the extra alpha and time decay.
-        self.set_holdings("SPY", -0.5)</pre>
+        # Buy SPY to eliminate systematic risk and earn only the extra alpha from the better overall market.
+        self.set_holdings("SPY", 0.5)</pre>
 </div>
 
 <h4>Example 2: SPY Constituents in an Uptrend</h4>
