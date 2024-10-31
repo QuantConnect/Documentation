@@ -9,16 +9,17 @@
 {
     // A dictionary to hold the updated sentiment score from the stocks with top sentiment score for position sizing.
     private Dictionary&lt;Symbol, decimal&gt; _sentimentScores = new();
-    // A day count variable to control the rebalancing time to be daily.
-    private int _day = -1;
 
     public override void Initialize()
-    {   
+    {
+        SetStartDate(2020, 1, 1);
+        // Weekly universe update since the signal is for the next 7 days.
+        UniverseSettings.Schedule.On(DateRules.WeekStart());
         // Select from Brain Sentiment dataset by sentiment factor.
         AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(
             altData =&gt; altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
                 // Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
-                .Where(x =&gt; x.TotalArticleMentions7Days.HasValue && x.Sentiment7Days.HasValue)
+                .Where(x =&gt; x.TotalArticleMentions7Days.HasValue &amp;&amp; x.Sentiment7Days.HasValue)
                 // Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
                 .Where(x =&gt; x.TotalArticleMentions7Days &gt; 0)
                 .OrderByDescending(x =&gt; x.Sentiment7Days)
@@ -31,43 +32,52 @@
                     return x.Symbol;
                 })
         );
+
+        // Weekly rebalance to allow time to digest the 7-day signal.
+        Schedule.On(
+            DateRules.WeekStart(),
+            TimeRules.At(9, 30),
+            Rebalance
+        );
     }
 
-    public override void OnData(Slice slice)
+    private void Rebalance()
     {
-        // Trade on daily basis from the daily-updated insights.
-        if (_day != slice.Time.Day)
+        // Calculate the sentiment score sum to normalize them for sizing.
+        var sentimentScoreSum = _sentimentScores.Sum(kvp =&gt; kvp.Value);
+
+        foreach (var (symbol, holding) in Portfolio)
         {
-            // Calculate the sentiment score sum to normalize them for sizing.
-            var sentimentScoreSum = _sentimentScores.Sum(kvp =&gt; kvp.Value);
-
-            foreach (var (symbol, holding) in Portfolio)
+            // If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
+            if (holding.Invested &amp;&amp; !_sentimentScores.ContainsKey(symbol))
             {
-                // If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
-                if (holding.Invested &amp;&amp; !_sentimentScores.ContainsKey(symbol))
-                {
-                    Liquidate(symbol);
-                }
-                // Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
-                else if (_sentimentScores.TryGetValue(symbol, out var score))
-                {
-                    SetHoldings(symbol, score / sentimentScoreSum);
-                }
+                Liquidate(symbol);
             }
-
-            _day = slice.Time.Day;
+            // Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
+            else if (_sentimentScores.TryGetValue(symbol, out var score))
+            {
+                SetHoldings(symbol, score / sentimentScoreSum);
+            }
         }
     }
 }</pre>
 	<pre class="python">class BrainSentimentUniverseAlgorithm(QCAlgorithm):
     # A dictionary to hold the updated sentiment score from the stocks with top sentiment score for position sizing.
     _sentiment_scores = {}
-    # A day count variable to control the rebalancing time to be daily.
-    _day = -1
 
     def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        # Weekly universe update since the signal is for the next 7 days.
+        self.universe_settings.schedule.on(self.date_rules.week_start())
         # Select from Brain Sentiment dataset by sentiment factor.
         self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
+
+        # Weekly rebalance to allow time to digest the 7-day signal.
+        self.schedule.on(
+            self.date_rules.week_start(),
+            self.time_rules.at(9, 30),
+            self.rebalance
+        )
     
     def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
         # Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
@@ -83,21 +93,17 @@
         # Return the symbols for the selected assets.
         return universe
     
-    def on_data(self, slice: Slice) -&gt; None:
-        # Trade on daily basis from the daily-updated insights.
-        if self._day != slice.time.day:
-            # Calculate the sentiment score sum to normalize them for sizing.
-            sentiment_score_sum = sum(list(self._sentiment_scores.values()))
+    def rebalance(self) -&gt; None:
+        # Calculate the sentiment score sum to normalize them for sizing.
+        sentiment_score_sum = sum(list(self._sentiment_scores.values()))
 
-            for symbol, holding in self.portfolio.items():
-                # If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
-                if holding.invested and symbol not in self._sentiment_scores:
-                    self.liquidate(symbol)
-                # Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
-                elif symbol in self._sentiment_scores:
-                    self.set_holdings(symbol, self._sentiment_scores[symbol] / sentiment_score_sum)
-
-            self._day = slice.time.day</pre>
+        for symbol, holding in self.portfolio.items():
+            # If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
+            if holding.invested and symbol not in self._sentiment_scores:
+                self.liquidate(symbol)
+            # Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
+            elif symbol in self._sentiment_scores:
+                self.set_holdings(symbol, self._sentiment_scores[symbol] / sentiment_score_sum)</pre>
 </div>
 
 <h4>Example 2: Insiders Trading Universe</h4>
