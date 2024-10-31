@@ -115,157 +115,137 @@
 <div class="section-example-container">
 	<pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
 {
+    private List&lt;Symbol&gt; _universe = new();
+
     public override void Initialize()
     {
+        // Keep each security in the universe for a minimum of 30 days to digest the insiders purchase sentiment.
+        UniverseSettings.MinimumTimeInUniverse = TimeSpan.FromDays(30);
         // Using QuiverInsiderTrading dataset for insider trade detection and filtering.
         AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altData =&gt;
         {
             // Select assets that insiders have purchased, which may provide extra confidence in their expected return.
             return from d in altData.OfType&lt;QuiverInsiderTradingUniverse&gt;()
-                   where d.Shares.HasValue &amp;&amp; d.Shares.Value &gt; 0m
+                   where d.SharesOwnedFollowing.HasValue &amp;&amp; d.Shares.HasValue
+                   &amp;&amp; d.SharesOwnedFollowing.Value &gt; 0m &amp;&amp; d.Shares.Value &gt; 0m
                    select d.Symbol;
         });
+    }
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Update universe to trade.
+        _universe.AddRange(changes.AddedSecurities.Select(x =&gt; x.Symbol).ToList());
+        // Equally invest in insider buying companies to evenly dissipate the capital risk.
+        SetHoldings(_universe.Select(x =&gt; new PortfolioTarget(x, 1m / _universe.Count)).ToList());
 
-        // To emit trade insights for all the filtered equities and hold for 3 months to let the insiders' future projection to realize.
-        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(92)));
-
-        // Invest equally to evenly dissipate capital risk from non-systematic risky events.
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
+        // Liquidate and remove from universe for the ones not being recently-purchase by insiders.
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            Liquidate(removed.Symbol);
+            _universe.Remove(removed.Symbol);
+        }
     }
 }</pre>
 	<pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
+    _universe = []
 
     def initialize(self) -&gt; None:
+        # Keep each security in the universe for a minimum of 30 days to digest the insiders purchase sentiment.
+        self.universe_settings.minimum_time_in_universe = timedelta(30)
         # Using QuiverInsiderTrading dataset for insider trade detection and filtering.
         # Select assets that insiders have purchased, which may provide extra confidence in their expected return.
         self.add_universe(
             QuiverInsiderTradingUniverse, 
             lambda alt_data: [x.symbol for x in alt_data if x.shares and x.shares &gt; 0]
         )
-    
-        # To emit trade insights for all the filtered equities and hold for 3 months to let the insiders' future projection to realize.
-        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(92)))
-    
-        # Invest equally to evenly dissipate capital risk from non-systematic risky events.
-        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_DAY))</pre>
+        
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Update universe to trade.
+        self._universe.extend([x.symbol for x in changes.added_securities])
+        # Equally invest in insider buying companies to evenly dissipate the capital risk.
+        self.set_holdings([PortfolioTarget(x, 1. / len(self._universe)) for x in self._universe])
+
+        # Liquidate and remove from universe for the ones not being recently-purchase by insiders.
+        for removed in changes.removed_securities:
+            self.liquidate(removed.symbol)
+            if removed.symbol in self._universe:
+                self._universe.remove(removed.symbol)</pre>
 </div>
 
 <h4>Example 3: Share Buyback Universe</h4>
 <p>The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/smart-insider/corporate-buybacks'>Corporate Buybacks</a> dataset to create a universe of US Equities that have announced an upcoming share buyback program:</p>
 <div class="section-example-container">
-	<pre class="csharp">public class InsiderBuyBackUniverseAlgorithm : QCAlgorithm
+	<pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
 {
     // A dictionary to hold the updated buyback size for position sizing.
     public Dictionary&lt;Symbol, decimal&gt; _buybackSize = new();
 
     public override void Initialize()
     {
+        SetStartDate(2021, 1, 1);
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
         AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(
             altData =&gt; altData.OfType&lt;SmartInsiderIntentionUniverse&gt;()
-                // Only select sufficiently large-cap companies to avoid fraud.
-                // A material buyback percentage size to have better confidence in its prospect.
-                .Where(d =&gt; d.Percentage &gt; 0.005m && d.USDMarketCap &gt; 10000000m)
+                // A material buyback size to have better confidence in its prospect.
+                .Where(d =&gt; d.AmountValue.HasValue &amp;&amp; d.AmountValue.Value &gt;= 5000000m)
                 .Select(d =&gt; {
                     // Update buyback size dictionary for sizing.
-                    _buybackSize[d.Symbol] = d.Percentage.Value;
+                    _buybackSize[d.Symbol] = d.AmountValue.Value;
                     return d.Symbol;
                 })
         );
-
-        // A custom alpha model that emit insight with weight as the buyback size.
-        AddAlpha(new InsiderBuybackSizeAlphaModel(this));
-
-        // To invest with position sizing according to the insight weight (buyback size).
-        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
     }
-}
-
-public class InsiderBuybackSizeAlphaModel : AlphaModel
-{
-    private InsiderBuyBackUniverseAlgorithm _algorithm;
-    // A dictionary to hold the updated buyback size for position sizing.
-    private Dictionary&lt;Symbol, decimal&gt; _buybackSize = new();
-
-    public InsiderBuybackSizeAlphaModel(InsiderBuyBackUniverseAlgorithm algorithm)
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        _algorithm = algorithm;
-    }
+        // Get the size of all buyback size to normalize the weightings.
+        var buybackSum = _buybackSize.Sum(x =&gt; x.Value);
+        // Equally invest in insider buying companies to evenly dissipate the capital risk.
+        SetHoldings(_buybackSize.Select(x =&gt; new PortfolioTarget(x.Key, x.Value / buybackSum)).ToList());
 
-    public override List&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-    {
-        var insights = new List&lt;Insight&gt;();
-
-        // Emit insights for the newly announced buyback coporates and hold for 3 months to let the future projection to realize.
-        foreach (var symbol in _buybackSize.Keys)
+        // Liquidate and remove from universe for the ones not being recently-purchase by insiders.
+        foreach (var removed in changes.RemovedSecurities)
         {
-            // Remove the disgested signals from the dictionary to avoid repeat rebalancing.
-            if (_buybackSize.Remove(symbol, out var size))
-            {
-                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(92), InsightDirection.Up, weight: size));
-            }
-        }
-
-        return insights;
-    }
-
-    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-    {
-        // Register the buyback size of the newly added equities on the buyback size dictionary for insight generation.
-        foreach (var added in changes.AddedSecurities)
-        {
-            _buybackSize[added.Symbol] = (double)_algorithm._buybackSize[added.Symbol];
+            Liquidate(removed.Symbol);
         }
     }
 }</pre>
-	<pre class="python">class InsiderBuyBackUniverseAlgorithm(QCAlgorithm):
-    # A dictionary to hold the updated buyback size for position sizing.
+	<pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
     _buyback_size = {}
 
     def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
+        )
         # Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
         self.add_universe(SmartInsiderIntentionUniverse, self.intention_selection)
-
-        # A custom alpha model that emit insight with weight as the buyback size.
-        self.add_alpha(InsiderBuybackSizeAlphaModel(self))
-    
-        # To invest with position sizing according to the insight weight (buyback size).
-        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel(Expiry.END_OF_MONTH))
     
     def intention_selection(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
         selected = []
         
         for d in alt_coarse:
-            # Only select sufficiently large-cap companies to avoid fraud.
             # A material buyback percentage size to have better confidence in its prospect.
-            if d.percentage and d.percentage &gt; 0.005 \
-            and d.usd_market_cap and d.usd_market_cap &gt; 100000000:
+            if d.amount_value and d.amount_value &gt; 5000000:
                 # Update buyback size dictionary for sizing.
-                _buyback_size[d.symbol] = d.percentage
+                self._buyback_size[d.symbol] = d.amount_value
                 selected.append(d.symbol)
 
         return selected
-    
-class InsiderBuybackSizeAlphaModel(AlphaModel):
-    # A dictionary to hold the updated buyback size for position sizing.
-    _buyback_size = {}
-
-    def __init__(self, algorithm: InsiderBuyBackUniverseAlgorithm) -&gt; None:
-        self._algorithm = algorithm
-    
-    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        insights = []
-    
-        # Emit insights for the newly announced buyback coporates and hold for 3 months to let the future projection to realize.
-        for symbol, size in self._buyback_size.copy().items():
-            insights.append(Insight.price(symbol, timedelta(92), InsightDirection.UP, weight=size))
-            # Remove the disgested signals from the dictionary to avoid repeat rebalancing.
-            del self._buyback_size[symbol]
-            
-        return insights
-    
-    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
-        # Register the buyback size of the newly added equities on the buyback size dictionary for insight generation.
-        for added in changes.added_securities:
-            self._buyback_size[added.symbol] = self._algorithm._buyback_size[added.symbol]</pre>
+        
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Liquidate and remove from universe for the ones not being recently-purchase by insiders.
+        for removed in changes.removed_securities:
+            self.liquidate(removed.symbol)
+            if removed.symbol in self._buyback_size:
+                self._buyback_size.pop(removed.symbol)
+        
+        # Get the size of all buyback size to normalize the weightings.
+        buyback_sum = sum(self._buyback_size.values())
+        # Equally invest in insider buying companies to evenly dissipate the capital risk.
+        self.set_holdings([PortfolioTarget(symbol, size / buyback_sum) for symbol, size in self._buyback_size.items()])</pre>
 </div>
