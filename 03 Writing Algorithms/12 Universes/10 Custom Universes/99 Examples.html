@@ -2,8 +2,34 @@
 
 <h4>Example 1: Data From Object Store</h4>
 <p>The following algorithm demonstrates how to read custom data that store in the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a> and filter from it. In this example, the custom data includes the weight for position sizing as well. We generate some random samples using the following code in the <a href="/docs/v2/research-environment">research environment</a> to save the custom universe data in the <code>df.csv</code> file in Object Store.</p>
-<div class="python section-example-container">
-    <pre>import random
+<div class="section-example-container">
+    <pre class="csharp">using MathNet.Numerics.Distributions;
+
+var qb = new QuantBook();
+
+var tickers = new List&lt;string&gt; { "SPY", "TLT", "GLD", "USO", "IWM" };
+var hist = qb.History&lt;TradeBar&gt;(Symbol.Create("SPY", SecurityType.Equity, Market.USA), new DateTime(2015, 1, 1), new DateTime(2024, 12, 31), Resolution.Daily).ToList();
+
+var contents = new List&lt;string&gt;();
+
+for (int i = 0; i &lt; hist.Count; i++)
+{
+    var random = new Random(i);
+
+    var date = hist[i].EndTime;
+    var equities = tickers.OrderBy(x =&gt; random.Next()).Take(3).ToList();
+    var weights = Dirichlet.Sample(random, new[] { 10d, 5d, 3d });
+
+    contents.AddRange(new [] {
+        $"{date:yyyy-MM-dd},{equities[0]},{weights[0]}",
+        $"{date:yyyy-MM-dd},{equities[1]},{weights[1]}",
+        $"{date:yyyy-MM-dd},{equities[2]},{weights[2]}"
+    });
+}
+
+var filePath = qb.ObjectStore.GetFilePath("df.csv");
+qb.ObjectStore.Save(filePath, string.Join("\n", contents));</pre>
+    <pre class="python">import random
 np.random.seed(0)
 
 equities = []
