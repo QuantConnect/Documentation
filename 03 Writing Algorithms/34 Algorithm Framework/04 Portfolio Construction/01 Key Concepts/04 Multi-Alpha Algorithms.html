@@ -9,7 +9,7 @@ public class MultipleAlphaPortfolioConstructionModel : PortfolioConstructionMode
 {
     protected override List&lt;Insight&gt; GetTargetInsights()
     {
-        return InsightCollection.GetActiveInsights(Algorithm.UtcTime).ToList();
+        return Algorithm.Insights.GetActiveInsights(Algorithm.UtcTime).ToList();
     }
 
     protected override Dictionary&lt;Insight, double&gt; DetermineTargetPercent(List&lt;Insight&gt; activeInsights)
@@ -21,7 +21,7 @@ public class MultipleAlphaPortfolioConstructionModel : PortfolioConstructionMode
 # The get_target_insights method retrieves current active insights, and determine_target_percent allocates portfolio weights accordingly for integrating and balancing multiple Alpha signals within the portfolio.
 class MultipleAlphaPortfolioConstructionModel(PortfolioConstructionModel):
     def get_target_insights(self) -&gt; List[Insight]:
-        return list(self.insight_collection.get_active_insights(self.algorithm.utc_time))
+        return self.algorithm.insights.get_active_insights(self.algorithm.utc_time)
 
     def determine_target_percent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
         return {}</pre>
