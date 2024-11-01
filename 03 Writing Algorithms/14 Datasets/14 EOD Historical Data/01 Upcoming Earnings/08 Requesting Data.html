@@ -1,0 +1,28 @@
+<p>This dataset is designed for universe selection. However, you can add Upcoming Earnings data to your algorithm using the <b class="csharp">AddData&lt;EODHDUpcomingEarnings&gt;</b><b class="python">add_data</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">class UpcomingEarningsDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self._dataset_symbol = self.add_data(EODHDUpcomingEarnings, "earnings").symbol</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class UpcomingEarningsDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol, _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _datasetSymbol = AddData&lt;EODHDUpcomingEarnings&gt;("earnings").Symbol;
+        }
+    }
+}</pre>
+</div>

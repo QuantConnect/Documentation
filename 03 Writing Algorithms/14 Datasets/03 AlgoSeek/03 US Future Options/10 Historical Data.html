@@ -5,52 +5,66 @@
 <p>To get historical US Future Options data in an algorithm, call the <b class="csharp">History</b><b class="python">history</b> method with the Future Option contract <b>Symbol</b>. If there is no data in the period you request, the history result is empty.</p>
 
 <div class="section-example-container">
-<pre class="python"># DataFrame
+<pre class="python"># DataFrame of trade and quote data
 history_df = self.history(contract.symbol, 100, Resolution.MINUTE)
+
+# DataFrame of open interest data
+history_oi_df = self.history(OpenInterest, contract.symbol, 100, Resolution.MINUTE)
 
 # TradeBar objects
 history_trade_bars = self.history[TradeBar](contract.symbol, 100, Resolution.MINUTE)
 
 # QuoteBar objects
-history_quote_bars = self.history[QuoteBar](contract.symbol, 100, Resolution.MINUTE)</pre>
+history_quote_bars = self.history[QuoteBar](contract.symbol, 100, Resolution.MINUTE)
+
+# OpenInterest objects
+history_oi = self.history[OpenInterest](contract.symbol, 100, Resolution.MINUTE)
+</pre>
 <pre class="csharp">// TradeBar objects 
 var historyTradeBars = History(contract.Symbol, 100, Resolution.Minute);
 
 // QuoteBar objects 
-var historyQuoteBars = History&lt;QuoteBar&gt;(contract.Symbol, 100, Resolution.Minute);</pre>
+var historyQuoteBars = History&lt;QuoteBar&gt;(contract.Symbol, 100, Resolution.Minute);
+
+// OpenInterest objects 
+var historyOpenInterest = History&lt;OpenInterest &gt;(contract.Symbol, 100, Resolution.Minute);</pre>
 </div>
 
 <p>For more information about historical data in algorithms, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.</p>
 
 <h4>Historical Data In Research</h4>
 
-<p>To get historical US Future Options data in the Research Environment for the entire Option chain of a Futures contract, call the <b class="csharp">OptionHistory</b><b class="python">option_history</b> method with the Futures contract <b>Symbol</b>.</p>
+<p>To get historical US Future Options data in the Research Environment, call the <b class="csharp">History</b><b class="python">history</b> or <b class="csharp">OptionHistory</b><b class="python">option_history</b> method. The <b class="csharp">History</b><b class="python">history</b> method returns the price, volume, and open interest history for some given Future Option contract(s). The <b class="csharp">OptionHistory</b><b class="python">option_history</b> method returns the price and volume history for the contracts that pass your daily universe filter.</p>
 
 <div class="section-example-container">
 <pre class="python">qb = QuantBook()
-future = qb.add_future(Futures.Indices.SP500E_MINI, Resolution.MINUTE)
-future_symbols = qb.future_chain_provider.get_future_contract_list(future.symbol, datetime(2021, 12, 20))
-future_contract_symbol = sorted(future_symbols, key=lambda s: s.id.date)[0]
+future = qb.add_future(Futures.Indices.SP_500_E_MINI)
+start_date = datetime(2024, 1, 2)
+future_contract_symbol = sorted(
+    qb.future_chain_provider.get_future_contract_list(future.symbol, start_date), 
+    key=lambda s: s.id.date
+)[0]
+history = qb.option_history(
+    future_contract_symbol, start_date, future_contract_symbol.id.date, Resolution.HOUR
+)
+history_df = history.data_frame
+expiries = history.get_expiry_dates()
+strikes = history.get_strikes()</pre>
+<pre><code class="csharp">var qb = new QuantBook();
+var future = qb.AddFuture(Futures.Indices.SP500EMini);
+var startDate = new DateTime(2024, 1, 2);
+var futureContractSymbol = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate)
+    .OrderBy(x => x.ID.Date)
+    .First();
+var history = qb.OptionHistory(
+    futureContractSymbol, startDate, futureContractSymbol.ID.Date, Resolution.Hour
+);
 
-start_time = datetime(2021, 12, 1)
-end_time = datetime(2021, 12, 10)
-option_history = qb.option_history(future_contract_symbol, start_time, end_time, Resolution.MINUTE)
-
-all_history = option_history.get_all_data()
-expiries = option_history.get_expiry_dates() 
-strikes = option_history.get_strikes()</pre>
-<pre class="csharp">var qb = new QuantBook();
-var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
-var futureSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, new DateTime(2021, 12, 20));
-var futureContractSymbol = futureSymbols.OrderBy(x =&gt; x.ID.Date).First();
-    
-var startTime = new DateTime(2021, 12, 1);
-var endTime = new DateTime(2021, 12, 10);
-var optionHistory = qb.OptionHistory(futureContractSymbol, startTime, endTime, Resolution.Minute);
-
-var contracts = optionHistory.SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys)).Distinct().ToList();
-var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();
-var strikes = contracts.Select(x =&gt; x.ID.StrikePrice).Distinct().ToList();</pre>
+var contracts = history
+    .SelectMany(x => x.OptionChains.SelectMany(y => y.Value.Contracts.Keys))
+    .Distinct().ToList();
+var expiries = contracts.Select(x => x.ID.Date).Distinct().ToList();
+var strikes = contracts.Select(x => x.ID.StrikePrice).Distinct().ToList();</code></pre>
 </div>
 
-<p>To get historical data for a single US Future Option contract, call the <b class="csharp">History</b><b class="python">history</b> method like you would in an algorithm but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/futures-options">Futures Options</a>.</p>
+<p>To get historical data for arbitrary US Equity Option contracts instead of just the that pass your universe filter, call the <b class="csharp">History</b><b class="python">history</b> method like you would in an algorithm, but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/futures-options/key-concepts">Key Concepts</a>.</p>

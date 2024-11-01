@@ -1,0 +1,35 @@
+<p>To get the current Upcoming Earnings data, call the <b class="csharp">Get&lt;EODHDUpcomingEarnings&gt;</b><b class="python">get(EODHDUpcomingEarnings)</b> method from the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> and index the result with the security <b>Symbol</b>. <b>Slice</b> objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your security at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    upcomings_earnings_for_symbol = slice.get(EODHDUpcomingEarnings).get(self._symbol)
+        if upcomings_earnings_for_symbol:
+            self.log(f"{self._symbol} will report earnings at {upcomings_earnings_for_symbol.report_date} {upcomings_earnings_for_symbol.report_time} with estimated EPS {upcomings_earnings_for_symbol.estimate}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var upcomingEarnings = slice.Get&lt;EODHDUpcomingEarnings&gt;();
+    if (upcomingEarnings.TryGetValue(_symbol, out var upcomingEarningsDataPoint))
+    {
+        Log($"{_symbol} will report earnings at {upcomingEarningsDataPoint.ReportDate} {upcomingEarningsDataPoint.ReportTime} with estimated EPS {upcomingEarningsDataPoint.Estimate}");
+    }
+}
+</pre>
+</div>
+
+<p>You can also iterate through all of the dataset objects in the current <b>Slice</b></p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for equity_symbol, upcomings_earnings_data_point in slice.get(EODHDUpcomingEarnings).items():
+        self.log(f"{equity_symbol} will report earnings at {upcomings_earnings_data_point.report_date} {upcomings_earnings_data_point.report_time} with estimated EPS {upcomings_earnings_data_point.estimate}")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;EODHDUpcomingEarnings&gt;())
+    {
+        var equitySymbol = kvp.Key;
+        var upcomingEarningsDataPoint = kvp.Value;
+        Log($"{equitySymbol} will report earnings at {upcomingEarningsDataPoint.ReportDate} {upcomingEarningsDataPoint.ReportTime} with estimated EPS {upcomingEarningsDataPoint.Estimate}");
+    }
+}</pre>
+</div>

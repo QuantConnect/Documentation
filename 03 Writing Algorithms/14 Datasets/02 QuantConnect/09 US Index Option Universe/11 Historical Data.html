@@ -2,43 +2,47 @@
 
 <h4>Historical Data In Algorithms</h4>
 
-<p>To get historical US Index Options data in an algorithm, call the <b class="csharp">History</b><b class="python">history</b> method with the Index Option chain <b>Symbol</b>. If there is no data in the period you request, the history result is empty.</p>
+<p>To get historical US Index Options Universe data in an algorithm, call the <b class="csharp">History&lt;OptionUniverse&gt;</b><b class="python">history</b> method with the canonical Index Option <b>Symbol</b>. This method returns data on all of the tradable contracts, not just the contracts that pass your universe filter. If there is no data in the period you request, the history result is empty.</p>
 
 <div class="section-example-container">
 <pre class="python"># DataFrame
-history_df = self.history(self.option_symbol, 3, Resolution.MINUTE)</pre>
+history_df = self.history(self.standard_option_symbol, timedelta(3))
 
-<pre><code class="csharp">// TradeBar objects 
-var history = History<OptionUniverse>(option, 3, Resolution.Daily).ToList();</code></pre>
+# OptionUniverse objects
+history = self.history[OptionUniverse](self.standard_option_symbol, timedelta(3))</pre>
+
+<pre class="csharp">// OptionUniverse objects 
+var history = History&lt;OptionUniverse&gt;(_standardOptionSymbol, TimeSpan.FromDays(3)).ToList();</pre>
 </div>
 
-<p>For more information about historical data in algorithms, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.</p>
+<p>For more information about Index Options Universe data in algorithms, see <a href="/docs/v2/writing-algorithms/universes/index-options#10-Historical-Data">Historical Data</a>.</p>
 
 <h4>Historical Data In Research</h4>
 
-<p>To get historical US Index Options data in the Research Environment for an entire Option chain, call the <b class="csharp">OptionHistory</b><b class="python">option_history</b> method with the canonical Option <b>Symbol</b>.</p>
+<p>To get historical US Index Options Universe data in the Research Environment, call the <b class="csharp">History&lt;OptionUniverse&gt;</b><b class="python">history</b> method with the canonical Option <b>Symbol</b>. This method returns data on all of the tradable contracts, not just the contracts that pass your universe filter.</p>
 
 <div class="section-example-container">
 <pre class="python">qb = QuantBook()
 index_symbol = qb.add_index('VIX').symbol
 option = qb.add_index_option(index_symbol) # or qb.add_index_option(index_symbol, "VIXW")
-option.set_filter(-2, 2, 0, 90)
-history = qb.option_history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))
+history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))</pre>
 
-all_history = history.get_all_data()
-expiries = history.get_expiry_dates() 
-strikes = history.get_strikes()</pre>
-
-
-<pre class="csharp">var qb = new QuantBook();
+<pre><code class="csharp">var qb = new QuantBook();
 var indexSymbol = qb.AddIndex("VIX").Symbol;
 var option = qb.AddIndexOption(indexSymbol); // or qb.AddIndexOption(indexSymbol, "VIXW");
-option.SetFilter(-2, 2, 0, 90);
-var history = qb.OptionHistory(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));
-
-var contracts = history.SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys)).Distinct().ToList();
-var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();
-var strikes = contracts.Select(x =&gt; x.ID.StrikePrice).Distinct().ToList();</pre>
+var history = qb.History&lt;OptionUniverse&gt;(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));
+foreach (var chain in history)
+{
+    var endTime = chain.EndTime;
+    var filteredContracts = chain.Data
+        .Select(contract => contract as OptionUniverse)
+        .Where(contract => contract.Greeks.Delta > 0.3m);
+    foreach (var contract in filteredContracts)
+    {
+        var price = contract.Price;
+        var iv = contract.ImpliedVolatility;
+    }
+}</code></pre>
 </div>
 
-<p>To get historical data for a single US Index Option contract, call the <b class="csharp">History</b><b class="python">history</b> method like you would in an algorithm but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/index-options">Index Options</a>.</p>
+<p>For more information about historical Index Options Universe data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/index-options/universes">Universes</a>.</p>

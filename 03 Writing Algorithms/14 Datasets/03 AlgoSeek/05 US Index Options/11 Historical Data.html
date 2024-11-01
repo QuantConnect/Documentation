@@ -5,28 +5,37 @@
 <p>To get historical US Index Options data in an algorithm, call the <b class="csharp">History</b><b class="python">history</b> method with the Index Option contract <b>Symbol</b>. If there is no data in the period you request, the history result is empty.</p>
 
 <div class="section-example-container">
-<pre class="python"># DataFrame
+<pre class="python"># DataFrame of trade and quote data
 history_df = self.history(contract.symbol, 100, Resolution.MINUTE)
+
+# DataFrame of open interest data
+history_oi_df = self.history(OpenInterest, contract.symbol, 100, Resolution.MINUTE)
 
 # TradeBar objects
 history_trade_bars = self.history[TradeBar](contract.symbol, 100, Resolution.MINUTE)
 
 # QuoteBar objects
-history_quote_bars = self.history[QuoteBar](contract.symbol, 100, Resolution.MINUTE)</pre>
+history_quote_bars = self.history[QuoteBar](contract.symbol, 100, Resolution.MINUTE)
+
+# OpenInterest objects
+history_oi = self.history[OpenInterest](contract.symbol, 100, Resolution.MINUTE)</pre>
 
 
 <pre class="csharp">// TradeBar objects 
 var historyTradeBars = History(contract.Symbol, 100, Resolution.Minute);
 
 // QuoteBar objects 
-var historyQuoteBars = History&lt;QuoteBar&gt;(contract.Symbol, 100, Resolution.Minute);</pre>
+var historyQuoteBars = History&lt;QuoteBar&gt;(contract.Symbol, 100, Resolution.Minute);
+
+// OpenInterest objects
+var historyOpenInterest = History&lt;OpenInterest&gt;(contract.Symbol, 100, Resolution.Minute);</pre>
 </div>
 
 <p>For more information about historical data in algorithms, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.</p>
 
 <h4>Historical Data In Research</h4>
 
-<p>To get historical US Index Options data in the Research Environment for an entire Option chain, call the <b class="csharp">OptionHistory</b><b class="python">option_history</b> method with the canonical Option <b>Symbol</b>.</p>
+<p>To get historical US Index Options data in the Research Environment, call the <b class="csharp">History</b><b class="python">history</b> or <b class="csharp">OptionHistory</b><b class="python">option_history</b> method. The <b class="csharp">History</b><b class="python">history</b> method returns the price, volume, and open interest history for some given Option contract(s). The <b class="csharp">OptionHistory</b><b class="python">option_history</b> method returns the price and volume history for the contracts that pass your daily universe filter.</p>
 
 <div class="section-example-container">
 <pre class="python">qb = QuantBook()
@@ -34,8 +43,7 @@ index_symbol = qb.add_index('VIX').symbol
 option = qb.add_index_option(index_symbol) # or qb.add_index_option(index_symbol, "VIXW")
 option.set_filter(-2, 2, 0, 90)
 history = qb.option_history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))
-
-all_history = history.get_all_data()
+history_df = history.data_frame
 expiries = history.get_expiry_dates() 
 strikes = history.get_strikes()</pre>
 
@@ -46,12 +54,14 @@ var option = qb.AddIndexOption(indexSymbol); // or qb.AddIndexOption(indexSymbol
 option.SetFilter(-2, 2, 0, 90);
 var history = qb.OptionHistory(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));
 
-var contracts = history.SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys)).Distinct().ToList();
+var contracts = history
+    .SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys))
+    .Distinct().ToList();
 var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();
 var strikes = contracts.Select(x =&gt; x.ID.StrikePrice).Distinct().ToList();</pre>
 </div>
 
-<p>To get historical data for a single US Index Option contract, call the <b class="csharp">History</b><b class="python">history</b> method like you would in an algorithm but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/index-options">Index Options</a>.</p>
+<p>To get historical data for arbitrary US Index Option contracts instead of just the that pass your universe filter, call the <b class="csharp">History</b><b class="python">history</b> method like you would in an algorithm, but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/index-options/key-concepts">Key Concepts</a>.</p>
 
 <h4>Historical Greeks and IV Data</h4>
 <p>To get historical data for the Greeks and implied volatility of Index Options, see the <a href='/datasets/quantconnect-us-index-option-universe'>US Index Option Universe</a> dataset.</p>
