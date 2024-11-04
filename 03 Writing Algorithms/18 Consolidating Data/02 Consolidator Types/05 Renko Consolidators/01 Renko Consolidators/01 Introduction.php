@@ -1,5 +1,5 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/consolidator-info/renko/introduction.html"); 
+echo @file_get_contents( DOCS_RESOURCES."/consolidators/consolidator-info/renko/introduction.html" );
 ?>
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/renko-bar.png" alt="RenkoBar sample">
 <?
