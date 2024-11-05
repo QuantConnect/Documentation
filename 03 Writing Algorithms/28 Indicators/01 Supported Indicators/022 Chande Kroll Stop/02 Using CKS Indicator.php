@@ -3,18 +3,18 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'WilliamsPercentR';
-$helperName = 'ZLEMA';
-$helperArguments = 'symbol, 10';
-$properties = array("Maximum","Minimum");
-$pyProperties = array("maximum","minimum");
+$typeName = 'ChandeKrollStop';
+$helperName = 'CKS';
+$helperArguments = 'symbol, 10, 1, 9';
+$properties = array("ShortStop","LongStop");
+$pyProperties = array("short_stop","long_stop");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '10';
+$constructorArguments = '10, 1, 9';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'williams-percent-r';
+$constructorBox = 'chande-kroll-stop';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

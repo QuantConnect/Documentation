@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'WilliamsPercentR';
-$helperName = 'ZLEMA';
-$helperArguments = 'symbol, 10';
+$helperName = 'WILR';
+$helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Maximum","Minimum");

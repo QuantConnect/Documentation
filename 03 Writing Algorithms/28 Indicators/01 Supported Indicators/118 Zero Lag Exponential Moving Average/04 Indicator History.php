@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ZeroLagExponentialMovingAverage';
-$helperName = 'ZeroLagExponentialMovingAverage';
-$helperArguments = 'symbol';
+$helperName = 'ZLEMA';
+$helperArguments = 'symbol, 10';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

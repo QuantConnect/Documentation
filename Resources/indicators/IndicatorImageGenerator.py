@@ -127,6 +127,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'CMF(symbol, 20)',
                 'columns' : []
             },
+            'chande-kroll-stop':
+            {
+                'code': ChandeKrollStop(10, 1, 9),
+                'title' : 'CKS(symbol, 10, 1, 9)',
+                'columns' : []
+            },
             'chande-momentum-oscillator':
             {
                 'code': ChandeMomentumOscillator(20),
@@ -613,7 +619,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'WILR(symbol, 20)',
                 'columns' : ['maximum', 'minimum']
             },
-            'williams-percent-r':
+            'zero-lag-exponential-moving-average':
             {
                 'code': ZeroLagExponentialMovingAverage(10),
                 'title' : 'ZLEMA(symbol, 10)',
