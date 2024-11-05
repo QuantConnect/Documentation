@@ -2,8 +2,15 @@
 Extensions of the <code>BuyingPowerModel</code> class should implement the following methods: </p>
 
 <div class="section-example-container">
-<pre class="csharp">// In the Initialize method, set the buying power model
-security.SetBuyingPowerModel(new MyBuyingPowerModel());
+<pre class="csharp">public class CustomBuyingPowerModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var security = AddEquity("SPY");
+        // Set the custom buying power model of the selected security to mimic its actual buying power in your used broker
+        security.SetBuyingPowerModel(new MyBuyingPowerModel());
+    }
+}
 
 // Define the custom buying power model
 class MyBuyingPowerModel : BuyingPowerModel
@@ -77,8 +84,11 @@ class MyBuyingPowerModel : BuyingPowerModel
         return base.GetBuyingPower(parameters);
     }
 }</pre>
-<pre class="python"># In the Initialize method, set the buying power model
-security.set_buying_power_model(MyBuyingPowerModel())
+<pre class="python">class CustomBuyingPowerModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        security = self.add_equity("SPY")
+        # Set the custom buying power model of the selected security to mimic its actual buying power in your used broker
+        security.set_buying_power_model(MyBuyingPowerModel())
 
 # Define the custom buying power model
 class MyBuyingPowerModel(BuyingPowerModel):

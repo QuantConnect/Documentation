@@ -28,14 +28,20 @@
     }
 ?>
 <div class='section-example-container'>
-<pre class='csharp'>// In the Initialize method, set the security initializer to seed initial the prices and models of assets.
-SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
+<pre class='csharp'>
+public class BrokerageModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // In the Initialize method, set the security initializer to seed initial the prices and models of assets.
+        SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
+    }
+}
 
-class MySecurityInitializer : BrokerageModelSecurityInitializer
+public class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
     <?=$classMemberC?>public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder<?=$extraParamsC?>)
         : base(brokerageModel, securitySeeder) <?=$contructorBodyC ?>
-    
     
     public override void Initialize(Security security)
     {
@@ -44,20 +50,19 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
         base.Initialize(security);
 
         // Next, overwrite <?=$comment?>
-        
         <?=$overwriteCodeC?>
-    
     }
 }</pre>
-<pre class='python'># In the Initialize method, set the security initializer to seed initial the prices and models of assets.
-self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
+<pre class='python'>class BrokerageModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # In the Initialize method, set the security initializer to seed initial the prices and models of assets.
+        self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
 
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
     def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder<?=$extraParamsPy?>) -> None:
         super().__init__(brokerage_model, security_seeder)<?=$contructorBodyPy?>
-
     
     def initialize(self, security: Security) -> None:
         # First, call the superclass definition.
@@ -65,6 +70,5 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         super().initialize(security)
 
         # Next, overwrite <?=$comment?>
-        
         <?=$overwriteCodePy?></pre>
 </div>

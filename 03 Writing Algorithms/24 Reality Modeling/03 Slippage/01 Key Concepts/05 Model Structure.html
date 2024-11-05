@@ -1,8 +1,15 @@
 <p>Slippage models should implement the <code>ISlippageModel</code> interface. Extensions of the <code>ISlippageModel</code> interface must implement the <code class="csharp">GetSlippageApproximation</code><code class="python">get_slippage_approximation</code> method, which calculates the slippage quantity.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// In the Initialize method, set the slippage model
-security.SetSlippageModel(new MySlippageModel());
+<pre class="csharp">public class CustomSlippageModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // In the Initialize method, set the custom slippage model for an added security to use the custom model
+        var security = AddEquity("SPY");
+        security.SetSlippageModel(new MySlippageModel());
+    }
+}
 
 // Define the custom slippage model
 public class MySlippageModel : ISlippageModel 
@@ -13,8 +20,11 @@ public class MySlippageModel : ISlippageModel
     }
 }
 </pre>
-<pre class="python"># In the Initialize method, set the slippage model
-security.set_slippage_model(MySlippageModel())
+<pre class="python">class CustomSlippageModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # In the Initialize method, set the custom slippage model for an added security to use the custom model
+        security = self.add_equity("SPY")
+        security.set_slippage_model(MySlippageModel())
 
 # Define the custom slippage model
 class MySlippageModel:

@@ -8,8 +8,15 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">// In the Initialize method, set the shortable provider
-security.SetShortableProvider(new MyShortableProvider());
+<pre class="csharp">public class CustomShortableProviderExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var security = AddEquity("SPY");
+        // Provide the selected security with your broker's shortable information
+        security.SetShortableProvider(new MyShortableProvider());
+    }
+}
 
 // Define the custom shortable provider  
 class MyShortableProvider : IShortableProvider
@@ -29,8 +36,11 @@ class MyShortableProvider : IShortableProvider
         return 10000;
     }
 }</pre>
-<pre class="python"># In the Initialize method, set the shortable provider
-security.set_shortable_provider(MyShortableProvider())
+<pre class="python">class CustomShortableProviderExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        security = self.add_equity("SPY")
+        # Provide the selected security with your broker's shortable information
+        security.set_shortable_provider(MyShortableProvider())
 
 # Define the custom shortable provider 
 class MyShortableProvider(NullShortableProvider):

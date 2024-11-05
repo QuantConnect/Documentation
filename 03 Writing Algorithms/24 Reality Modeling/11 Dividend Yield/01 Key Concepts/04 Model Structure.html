@@ -1,9 +1,16 @@
 <p>Dividend yield models must extend the <code>IDividendYieldModel</code> interface. Extensions of the <code>IDividendYieldModel</code> interface must implement a <code class="csharp">GetDividendYield</code><code class="python">get_dividend_yield</code> method. The <code class="csharp">GetDividendYield</code><code class="python">get_dividend_yield</code> method returns the dividend yield for a given date.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// Before creating the indicator, create the dividend yield model
-var dividendYieldModel = new MyDividendYieldModel();
-_iv = new ImpliedVolatility(symbol, RiskFreeInterestRateModel, dividendYieldModel, OptionPricingModelType.BlackScholes);
+<pre class="csharp">public class CustomDividendYieldModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var symbol = AddEquity("SPY").Symbol;
+        // Before creating the indicator, create the dividend yield model
+        var dividendYieldModel = new MyDividendYieldModel();
+        _iv = new ImpliedVolatility(symbol, RiskFreeInterestRateModel, dividendYieldModel, OptionPricingModelType.BlackScholes);
+    }
+}
 
 // Define the custom dividend yield model
 public class MyDividendYieldModel : IDividendYieldModel 
@@ -13,9 +20,12 @@ public class MyDividendYieldModel : IDividendYieldModel
         return 0.02m;
     }
 }</pre>
-<pre class="python"># Before creating the indicator, create the dividend yield model
-dividend_yield_model = MyDividendYieldModel()
-self.iv = ImpliedVolatility(symbol, self.risk_free_interest_rate_model, dividend_yield_model, OptionPricingModelType.BLACK_SCHOLES)
+<pre class="python">class CustomDividendYieldModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        symbol = self.add_equity("SPY").symbol
+        # Before creating the indicator, create the dividend yield model
+        dividend_yield_model = MyDividendYieldModel()
+        self.iv = ImpliedVolatility(symbol, self.risk_free_interest_rate_model, dividend_yield_model, OptionPricingModelType.BLACK_SCHOLES)
     
 # Define the custom dividend yield model
 class MyDividendYieldModel:

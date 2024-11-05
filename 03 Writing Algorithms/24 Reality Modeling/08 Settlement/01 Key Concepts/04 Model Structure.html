@@ -18,8 +18,15 @@
 </ul>
 
 <div class="section-example-container">
-<pre class='csharp'>// In the Initialize method, set the custom settlement model
-security.SetSettlementModel(new MySettlementModel());
+<pre class='csharp'>public class CustomSettlementModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        var security = AddEquity("SPY");
+        // Set the custom settlement model of the selected security to reflect actual scenario for more realistic margin available
+        security.SetSettlementModel(new MySettlementModel());
+    }
+}
 
 // Define the custom settlement model outside of the algorithm
 public class MySettlementModel : ISettlementModel
@@ -40,8 +47,11 @@ public class MySettlementModel : ISettlementModel
         return new CashAmount(0, "USD");
     }
 }</pre>
-<pre class='python'># In the Initialize method, set the custom settlement model
-security.set_settlement_model(MySettlementModel())
+<pre class='python'>class CustomSettlementModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        security = self.add_equity("SPY")
+        # Set the custom settlement model of the selected security to reflect actual scenario for more realistic margin available
+        security.set_settlement_model(MySettlementModel())
 
 # Define the custom settlement model outside of the algorithm
 class MySettlementModel:

@@ -5,8 +5,14 @@
 <p>The <code class="csharp">ExecuteMarginCall</code><code class="python">execute_margin_call</code> method receives the list of <code>SubmitOrderRequest</code> objects from the <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> method, executes some of them, and returns a list of <code>OrderTicket</code> objects.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// In the Initialize method, set the margin call model
-Portfolio.SetMarginCallModel(new MyMarginCallModel(Portfolio, DefaultOrderProperties));
+    <pre class="csharp">public class CustomMarginCallModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // Set margin call model for the whole portfolio, better with reference to your broker information
+        Portfolio.SetMarginCallModel(new MyMarginCallModel(Portfolio, DefaultOrderProperties));
+    }
+}
 
 // Define the custom margin call model  
 public class MyMarginCallModel : DefaultMarginCallModel
@@ -24,13 +30,15 @@ public class MyMarginCallModel : DefaultMarginCallModel
         return base.ExecuteMarginCall(generatedMarginCallOrders);
     }
 
-    public List&lt;SubmitOrderRequest&gt;<submitorderrequest> GetMarginCallOrders(out bool issueMarginCallWarning)
+    public List&lt;SubmitOrderRequest&gt; GetMarginCallOrders(out bool issueMarginCallWarning)
     {
         return base.GetMarginCallOrders(out issueMarginCallWarning);
     }
-}</submitorderrequest></pre>
-    <pre class="python"># In the Initialize method, set the margin call model
-self.portfolio.set_margin_call_model(MyMarginCallModel(self.portfolio, self.default_order_properties))
+}</pre>
+    <pre class="python">class CustomMarginCallModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Set margin call model for the whole portfolio, better with reference to your broker information
+        self.portfolio.set_margin_call_model(MyMarginCallModel(self.portfolio, self.default_order_properties))
         
 # Define the custom margin call model        
 class MyMarginCallModel(DefaultMarginCallModel):
