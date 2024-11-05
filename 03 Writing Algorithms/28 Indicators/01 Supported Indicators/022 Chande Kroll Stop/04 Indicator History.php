@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ChandeKrollStop';
-$helperName = 'ChandeKrollStop';
-$helperArguments = 'symbol';
+$helperName = 'CKS';
+$helperArguments = 'symbol, 10, 1, 9';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("ShortStop","LongStop");
