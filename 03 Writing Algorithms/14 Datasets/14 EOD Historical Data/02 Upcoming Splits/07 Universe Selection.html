@@ -1,0 +1,21 @@
+<p>To select a dynamic universe of US Equities based on the Upcoming Splits dataset, call the <b class="csharp">AddUniverse</b><b class="python">add_universe</b> method with a <b>EODHDUpcomingSplits</b> cast.</p>
+
+<div class="section-example-container">
+<pre class="python">def initialize(self) -&gt; None:
+    self._universe = self.add_universe(EODHDUpcomingSplits, self.universe_selection_filter)
+
+def universe_selection_filter(self, splits: List[EODHDUpcomingSplits]) -&gt; List[Symbol]:
+    return [d.symbol for d in splits if d.split_date &lt;= self.time + timedelta(3) and d.split_factor &gt; 1]</pre>
+<pre class="csharp">public override void Initialize()
+{
+    _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;(UniverseSelectionFilter);
+}
+
+private IEnumerable&lt;Symol&gt; UniverseSelectionFilter(IEnumerable&lt;EODHDUpcomingSplits&gt; splits)
+{
+    return from d in splits
+           where d.SplitDate &lt;= Time.AddDays(3) &amp;&amp; d.SplitFactor &gt; 1m
+           select d.Symbol;
+}</pre>
+</div>
+<p>For more information about universe settings, see <a href="/docs/v2/writing-algorithms/universes/settings">Settings</a>.</p>

@@ -1,0 +1,36 @@
+<p>To get the current Upcoming Splits data, call the <b class="csharp">Get&lt;EODHDUpcomingSplits&gt;</b><b class="python">get(EODHDUpcomingSplits)</b> method from the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> and index the result with the security <b>Symbol</b>. <b>Slice</b> objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your security at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    upcomings_splits = slice.get(EODHDUpcomingSplits)
+    if upcomings_splits and self._symbol in upcomings_splits:
+        upcomings_splits_data_point = upcomings_splits[self._symbol]
+        self.log(f"{self._symbol} will split at {upcomings_splits_data_point.split_date} with split factor {upcomings_splits_data_point.split_factor}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var upcomingSplits = slice.Get&lt;EODHDUpcomingSplits&gt;();
+    if (upcomingSplits.TryGetValue(_symbol, out var upcomingSplitsDataPoint))
+    {
+        Log($"{_symbol} will split at {upcomingSplitsDataPoint.SplitDate} with split factor {upcomingSplitsDataPoint.SplitFactor}");
+    }
+}
+</pre>
+</div>
+
+<p>You can also iterate through all of the dataset objects in the current <b>Slice</b></p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for equity_symbol, upcomings_splits_data_point in slice.get(EODHDUpcomingSplits).items():
+        self.log(f"{equity_symbol} will split at {upcomings_splits_data_point.split_date} with split factor {upcomings_splits_data_point.split_factor}")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;EODHDUpcomingSplits&gt;())
+    {
+        var equitySymbol = kvp.Key;
+        var upcomingSplitsDataPoint = kvp.Value;
+        Log($"{equitySymbol} will splits at {upcomingSplitsDataPoint.SplitDdate} with split factor {upcomingSplitsDataPoint.SplitFactor}");
+    }
+}</pre>
+</div>
