@@ -9,7 +9,7 @@
     public override void Initialize()
     {
         // Seed the security price to ensure the retrieval of the ATM calls at the initial filtering.
-        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Set the data normalization mode as raw for option strike-price comparability.
         _aapl = AddEquity("AAPL", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
     
@@ -24,7 +24,7 @@
     private void RefreshOptionList()
     {
         // Get all tradable option contracts for AAPL at the current time for filtering.
-        var contractSymbols = OptionChainProvider.GetOptionContractList(_aapl, Time);
+        var contractSymbols = OptionChain(_aapl);
         // Select the calls expires within 30 days and within $5 strike from ATM as leg of the covered call.
         // $5 buffer is given on selecting the ATM call due to price movement.
         _options = contractSymbols
@@ -67,7 +67,7 @@
     def initialize(self) -&gt; None:
         self.options = []
         # Seed the security price to ensure the retrieval of the ATM calls at the initial filtering.
-        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Set the data normalization mode as raw for option strike-price comparability.
         self.aapl = self.add_equity("AAPL", data_normalization_mode=DataNormalizationMode.RAW).symbol
         
@@ -80,7 +80,7 @@
     
     def refresh_option_list(self) -&gt; None:
         # Get all tradable option contracts for AAPL at the current time for filtering.
-        contract_symbols = self.option_chain_provider.get_option_contract_list(self.aapl, self.time)
+        contract_symbols = self.option_chain(self.aapl)
         # Select the calls expires within 30 days and within $5 strike from ATM as leg of the covered call.
         # $5 buffer is given on selecting the ATM call due to price movement.
         self.options = [self.add_option_contract(symbol).symbol for symbol in contract_symbols
@@ -118,7 +118,7 @@
     public override void Initialize()
     {
         // Seed the underlying security price to ensure accurate filtering for puts of $5 above/below current market price.
-        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Set the data normalization mode as raw for option strike-price comparability.
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
     
@@ -140,7 +140,7 @@
     private void RefreshOptionList()
     {
         // Get all tradable option contracts for SPY at the current time for filtering.
-        var contractSymbols = OptionChainProvider.GetOptionContractList(_spy, Time);
+        var contractSymbols = OptionChain(_spy);
         // Select the 0-DTE puts by setting expiry within 1 day.
         var filteredSymbols = contractSymbols
             .Where(symbol =&gt; symbol.ID.Date &lt; Time.AddDays(1) && symbol.ID.OptionRight == OptionRight.Put)
@@ -179,7 +179,7 @@
     def initialize(self) -&gt; None:
         self.options = []
         # Seed the underlying security price to ensure accurate filtering for puts of $5 above/below current market price.
-        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, new FuncSecuritySeeder(self.get_last_known_prices)))
         # Set the data normalization mode as raw for option strike-price comparability.
         self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
         
@@ -199,7 +199,7 @@
     
     def refresh_option_list(self) -&gt; None:
         # Get all tradable option contracts for SPY at the current time for filtering.
-        contract_symbols = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
+        contract_symbols = self.option_chain(self.spy)
         # Select the 0-DTE puts by setting expiry within 1 day.
         filtered_symbols = [symbol for symbol in contract_symbols
             if symbol.id.date &lt; self.time + timedelta(1) and symbol.id.option_right == OptionRight.PUT]
@@ -254,7 +254,7 @@
     private void Filter()
     {
         // Get all tradable option contracts for SPY at the current time for filtering.
-        var contractSymbols = OptionChainProvider.GetOptionContractList(_spy, Time);
+        var contractSymbols = OptionChain(_spy);
         // Filter the contracts tradable the whole week but expire soon to ensure liquidity.
         var expiry = contractSymbols.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(7))
             .Min(x =&gt; x.ID.Date);
@@ -310,7 +310,7 @@
     
     def filter(self) -&gt; None:
         # Get all tradable option contracts for SPY at the current time for filtering.
-        contract_symbols = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
+        contract_symbols = self.option_chain(self.spy)
         # Filter the contracts tradable the whole week but expire soon to ensure liquidity.
         expiry = min(x.id.date for x in contract_symbols if x.id.date &gt;= self.time + timedelta(7))
         filtered = [x for x in contract_symbols if x.id.date == expiry]
@@ -379,7 +379,7 @@
     private Symbol GetTargetContract(OptionRight right, decimal targetPrice)
     {
         // Get all tradable option contracts for SPY at the current time for filtering.
-        var contractSymbols = OptionChainProvider.GetOptionContractList(_spy, Time).ToList();
+        var contractSymbols = OptionChain(_spy).ToList();
         // Filter for the least-OTM contract that is off by the threshold to form the wheel.
         // Expiry is set to be at least 30 days to earn the time decay, which is highest in the last month.
         var expiry = contractSymbols.Where(x =&gt; x.ID.Date &gt; Time.AddDays(30))
@@ -418,7 +418,7 @@
         
     def get_target_contract(self, right: OptionRight, target_price: float) -&gt; Symbol:
         # Get all tradable option contracts for SPY at the current time for filtering.
-        contract_symbols = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
+        contract_symbols = self.option_chain(self.spy)
         # Filter for the least-OTM contract that is off by the threshold to form the wheel.
         # Expiry is set to be at least 30 days to earn the time decay, which is highest in the last month.
         expiry = min(x.id.date for x in contract_symbols)
