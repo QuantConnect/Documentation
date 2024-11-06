@@ -84,7 +84,7 @@
     public override void Initialize()
     {
         // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
-        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Subscribe to underlying data for ATM calculation using the update underlying price.
         // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
         _underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
@@ -130,7 +130,7 @@
     <pre class="python">class EquityOptionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
-        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         self.underlying = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
         # Subscribe to underlying data for ATM calculation using the update underlying price.
         # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
