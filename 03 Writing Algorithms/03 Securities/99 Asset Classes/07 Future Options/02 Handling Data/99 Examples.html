@@ -11,7 +11,7 @@
     public override void Initialize()
     {
         // Seed the security price to ensure the underlying price is available at the initial filtering.
-        SetSecurityInitializer((security) =&gt; new FuncSecuritySeeder(GetLastKnownPrices).SeedSecurity(security));
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Subscribe the underlying since the updated price is needed for filtering.
         _underlying = AddFuture(Futures.Indices.SP500EMini,
             dataMappingMode: DataMappingMode.OpenInterest,
@@ -31,7 +31,7 @@
     private void SelectionAndRebalance()
     {
         // Get all available put FOP contract for the mapped underlying contract, since the trade liquidity and volatility is the highest.
-        var contractSymbols = OptionChainProvider.GetOptionContractList(_underlying.Mapped, Time)
+        var contractSymbols = OptionChain(_underlying.Mapped)
             .Where(symbol =&gt; symbol.ID.OptionRight == OptionRight.Put)
             .ToList();
         // Select the ATM put expires the same date as the underlying. The max expiry of the FOP will expire the same time as the front month future.
@@ -50,7 +50,7 @@
     <pre class="python">class FutureOptionExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # Seed the security price to ensure the underlying price is available at the initial filtering.
-        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Subscribe the underlying since the updated price is needed for filtering.
         self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
@@ -68,7 +68,7 @@
     
     def selection_and_rebalance(self) -&gt; None:
         # Get all available put FOP contract for the mapped underlying contract, since the trade liquidity and volatility is the highest.
-        contract_symbols = self.option_chain_provider.get_option_contract_list(self.underlying.mapped, self.time)
+        contract_symbols = self.option_chain(self.underlying.mapped)
         contract_symbols = [symbol for symbol in contract_symbols if symbol.id.option_right == OptionRight.PUT]
         # Select the ATM put expires the same date as the underlying. The max expiry of the FOP will expire the same time as the front month future.
         expiry = max(symbol.id.date for symbol in contract_symbols)
