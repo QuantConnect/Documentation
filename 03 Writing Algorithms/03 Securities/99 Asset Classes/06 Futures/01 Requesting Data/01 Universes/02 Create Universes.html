@@ -1,5 +1,9 @@
 <p>To add a universe of Future contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. This method returns an <code>Future</code> object, which has a <code class="csharp">SetFilter</code><code class="python">set_filter</code> method you can call to filter the set of tradable contract down to just the contracts you want.</p>
 
+<h4>Example: Continous Future Filtering And Rollover</h4>
+<p>The following algorithm shows how to request continuous Futures data of E-Mini S&P 500, with a universe filter to obtain only the contracts expiring within 6 months. To access the data of the continuous Future contract and mapped contract, you need to call the <code class="csharp">Symbol</code></p><code class="python">symbol</code> and <code class="csharp">Mapped</code></p><code class="python">mapped</code> properties of the <code>Future</code> object respectively, while accessing all contracts in the filtered Future chain using <code class="csharp">FuturesChains</code></p><code class="python">future_chains</code> of the <code>Slice</code> object.</p>
+
+<p>To rollover the old mapped contract to the new one, you can refer to the below making use of the <code class="csharp">OnSymbolChangedEvents</code></p><code class="python">on_symbol_changed_events</code> event handler.</p>
 <div class="section-example-container">
     <pre class="csharp">public class BasicFutureAlgorithm : QCAlgorithm
 {
