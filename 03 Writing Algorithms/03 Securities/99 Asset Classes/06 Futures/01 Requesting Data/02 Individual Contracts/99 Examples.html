@@ -33,7 +33,7 @@
         # Get all the contracts that are currently tradable.
         contract_symbols = self.future_chain_provider.get_future_contract_list(self._future.symbol, self.time)
         # Get the contract with the closest expiry.
-        self._contract_symbol = sorted(contract_symbols, key=lambda x: x.id.date)[0]
+        self._contract_symbol = min(contract_symbols, key=lambda x: x.id.date)
         # Add the Futures contract.
         self.add_future_contract(self._contract_symbol)
         # Plot the contract price.

@@ -12,7 +12,7 @@
         var future = AddFuture(Futures.Indices.SP500EMini, extendedMarketHours: true);
         _future = future.Symbol;
         // We only want to hold position of the front month contract.
-        future.SetFilter((u) =&gt; u.OnlyApplyFilterAtMarketOpen().FrontMonth());
+        future.SetFilter(u =&gt; u.FrontMonth());
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -40,7 +40,7 @@
         future = self.add_future(Futures.Indices.SP_500_E_MINI, extended_market_hours=True)
         self._future = future.symbol
         # We only want to hold position of the front month contract.
-        future.set_filter(lambda u: u.only_apply_filter_at_market_open().front_month())
+        future.set_filter(lambda u: u.front_month())
     
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Liquidate if expired (or not being the front month contract anymore) and exit universe.
@@ -60,7 +60,7 @@
 <div class="section-example-container">
     <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
-    private dynamic _future;
+    private Future _future;
 
     public override void Initialize()
     {
@@ -69,20 +69,20 @@
             dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
             extendedMarketHours: true);
         // We only want to hold position of the front month contract.
-        (_future as Future).SetFilter((u) =&gt; u.OnlyApplyFilterAtMarketOpen().FrontMonth());
+        _future.SetFilter(u =&gt; u.FrontMonth());
         // Create a 252-day EMA indicator as a trend estimator.
-        _future.ema = EMA(_future.Symbol, 252, Resolution.Daily);
+        ((dynamic)_future).ema = EMA(_future.Symbol, 252, Resolution.Daily);
         // Warm up the EMA indicator to make it readily available.
-        WarmUpIndicator((Symbol)_future.Symbol, (ExponentialMovingAverage)_future.ema);
+        WarmUpIndicator(_future.Symbol, _future.Get&lt;ExponentialMovingAverage&gt;("ema"));
     }
     
     public override void OnData(Slice slice)
     {
         // Ensure the TradeBar data is available for the Future. Only use updated price data to update the indicator and make trading decision.
-        if (slice.Bars.ContainsKey(_future.Symbol))
+        if (slice.Bars.TryGetValue(_future.Symbol, out var bar))
         {
             // Buy the mapped contract if the trend is estimated to go up (price above EMA).
-            if (_future.ema.Current.Value &gt;= slice.Bars[_future.Symbol].Close)
+            if (_future.Get&lt;ExponentialMovingAverage&gt;("ema") >= bar.Close)
             {
                 SetHoldings(_future.Mapped, 0.1m);
             }
@@ -91,7 +91,7 @@
             {
                 SetHoldings(_future.Mapped, -0.1m);
             }
-        }
+         }
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -110,7 +110,7 @@
             data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
             extended_market_hours=True)
         # We only want to hold position of the front month contract.
-        self._future.set_filter(lambda u: u.only_apply_filter_at_market_open().front_month())
+        self._future.set_filter(lambda u: u.front_month())
         # Create a 252-day EMA indicator as a trend estimator.
         self._future.ema = self.ema(self._future.symbol, 252, Resolution.DAILY)
         # Warm up the EMA indicator to make it readily available.
@@ -118,9 +118,10 @@
     
     def on_data(self, slice: Slice) -&gt; None:
         # Ensure the TradeBar data is available for the Future. Only use updated price data to update the indicator and make trading decision.
-        if self._future.symbol in slice.bars:
+        bar = slice.bars.get(self._future.symbol)
+        if bar:
             # Buy the mapped contract if the trend is estimated to go up (price above EMA).
-            if self._future.ema.current.value &gt;= slice.bars[self._future.symbol].close:
+            if self._future.ema.current.value >= bar.close:
                 self.set_holdings(self._future.mapped, 0.1)
             # Short the mapped contract if the trend is estimated to go down (price below EMA).
             else:
@@ -145,7 +146,7 @@
         var future = AddFuture(Futures.Metals.MicroGold, extendedMarketHours: true);
         _future = future.Symbol;
         // Limit the expiration to within 6 months, as the longer the expiration, the higher the price uncertainty.
-        future.SetFilter((u) =&gt; u.OnlyApplyFilterAtMarketOpen().Expiration(0, 183));
+        future.SetFilter((u) =&gt; u.Expiration(0, 183));
     }
     
     public override void OnData(Slice slice)
@@ -183,7 +184,7 @@
         future = self.add_future(Futures.Metals.MICRO_GOLD, extended_market_hours=True)
         self._future = future.symbol
         # Limit the expiration to within 6 months, as the longer the expiration, the higher the price uncertainty.
-        future.set_filter(lambda u: u.only_apply_filter_at_market_open().expiration(0, 183))
+        future.set_filter(lambda u: u.expiration(0, 183))
     
     def on_data(self, slice: Slice) -&gt; None:
         # Get Future chain only for the selected Future contract.
