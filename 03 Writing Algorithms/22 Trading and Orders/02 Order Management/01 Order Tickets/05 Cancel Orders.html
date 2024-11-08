@@ -1,26 +1,45 @@
 <p>To cancel an order, call the <code class="csharp">Cancel</code><code class="python">cancel</code> method on the <code>OrderTicket</code>. The method returns an <code>OrderResponse</code> object to signal the success or failure of the cancel request.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// Create an order and save its ticket
-var ticket = LimitOrder("SPY", 100, 221.05, tag: "SPY Trade to Cancel");
+<pre class="csharp">private Symbol _symbol;
+private OrderTicket _ticket;
 
-// Cancel the order
-var response = ticket.Cancel("Canceled SPY trade");
-
-// Use the order response object to read the status
-if (response.IsSuccess)
+public override void Initialize()
 {
-    Debug("Order successfully canceled");
+    _symbol = AddEquity("SPY").Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Place order if not order yet and save the order ticket for later retrival.
+    if (_ticket == null && slice.Bars.TryGetValue(_symbol, out var bar))
+    {
+        _ticket = LimitOrder(_symbol, 10, bar.Close);
+    }
+    // If order is placed, cancel the order if it is not filled within 2 minutes.
+    else if (_ticket != null && _ticket.Time &lt;= slice.Time.AddMinutes(-2) && _ticket.Status == OrderStatus.Submitted)
+    {
+        // Cancel the order
+        var response = ticket.Cancel("Canceled SPY trade");
+
+        // Use the order response object to read the status
+        if (response.IsSuccess)
+        {
+            Debug("Order successfully canceled");
+        }
+    }
 }</pre>
-<pre class="python"> # Create an order and save its ticket
-ticket = self.limit_order("SPY", 100, 221.05, False, "SPY Trade to Cancel")
-
-# Cancel the order
-response = ticket.cancel("Canceled SPY Trade")
-
-# Use the order response object to read the status
-if response.is_success:
-    self.debug("Order successfully canceled")</pre>
+<pre class="python">def initialize(self) -&gt; None:
+    self._symbol = self.add_equity("SPY").symbol
+    self._ticket = None
+    
+def on_data(self, slice: Slice) -&gt; None:
+    # Place order if not invested and save the order ticket for later retrival.
+    if not self._ticket and self._symbol in slice.bars:
+        self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close)
+    # If order is placed, cancel the order if it is not filled within 2 minutes.
+    elif self._ticket != None and self._ticket.time &lt; slice.time - timedelta(minutes=2) and self._ticket.status == OrderStatus.SUBMITTED:
+        self._ticket.cancel()</pre>
 </div>
 
 <p>You can't cancel market orders because they are immediately transmitted to the brokerage. You also can't cancel any orders during <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up</a> and <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>.</p>

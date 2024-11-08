@@ -99,33 +99,57 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">// Create an order 
-var ticket = LimitOrder("SPY", 100, 221.05, tag: "New SPY trade");
+<pre class="csharp">private Symbol _symbol;
+private OrderTicket _ticket;
 
-// Update the order tag and limit price
-var response = ticket.Update(new UpdateOrderFields()
-{ 
-    Tag = "Our New Tag for SPY Trade",
-    LimitPrice = 222.00
-});
+public override void Initialize()
+{
+    _symbol = AddEquity("SPY").Symbol;
+}
 
-// Check the OrderResponse
-if (response.IsSuccess)
-{ 
-    Debug("Order updated successfully");
+public override void OnData(Slice slice)
+{
+    // Place order if not order yet and save the order ticket for later retrival.
+    if (_ticket == null && slice.Bars.TryGetValue(_symbol, out var bar))
+    {
+        _ticket = LimitOrder(_symbol, 10, bar.Close);
+    }
+    // If order is placed, update the limit price to be 90% of the orginal.
+    else if (_ticket != null && _ticket.Status == OrderStatus.Submitted)
+    {
+        // Update the order tag and limit price
+        var response = _ticket.Update(new UpdateOrderFields()
+        { 
+            Tag = "Our New Tag for SPY Trade",
+            LimitPrice = _ticket.Get(OrderField.LimitPrice * 0.9m)
+        });
+
+        // Check the OrderResponse
+        if (response.IsSuccess)
+        { 
+            Debug("Order updated successfully");
+        }
+    }
 }</pre>
-<pre class="python"> # Create an order 
-ticket = self.limit_order("SPY", 100, 221.05, False, "New SPY trade")
+<pre class="python">def initialize(self) -&gt; None:
+    self._symbol = self.add_equity("SPY").symbol
+    self._ticket = None
+    
+def on_data(self, slice: Slice) -&gt; None:
+    # Place order if not invested and save the order ticket for later retrival.
+    if not self._ticket and self._symbol in slice.bars:
+        self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close)
+    # If order is placed, update the limit price to be 90% of the orginal.
+    elif self._ticket != None and self._ticket.status == OrderStatus.SUBMITTED:
+        # Update the order tag and limit price
+        update_settings = UpdateOrderFields()
+        update_settings.limit_price = self._ticket.get(OrderField.LIMIT_PRICE) * 0.9
+        update_settings.tag = "Limit Price Updated for SPY Trade"
+        response = self._ticket.update(update_settings)
 
-# Update the order tag and limit price
-updateSettings = UpdateOrderFields()
-updateSettings.limit_price = 222.00
-updateSettings.tag = "Limit Price Updated for SPY Trade"
-response = ticket.update(updateSettings)
-
-# Check the OrderResponse
-if response.is_success:
-    self.debug("Order updated successfully")</pre>
+        # Check the OrderResponse
+        if response.is_success:
+            self.debug("Order updated successfully")</pre>
 </div>
 
 <?
@@ -139,15 +163,32 @@ include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
 include(DOCS_RESOURCES."/order-types/update-requests.html");
 ?>
 
-<h4>Workaround for Brokerages That Don’t Support Updates</h4>
+<h4>Workaround for Brokerages That Don't Support Updates</h4>
 
 <p>Not all brokerages fully support order updates. To check what functionality your brokerage supports for order updates, see the <span class='page-section-name'>Orders</span> section of the documentation for your <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models">brokerage model</a>. If your brokerage doesn't support order updates and you want to update an order, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel the order</a>. When you get an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> that confirms the order is no longer active, place a new order.</p>
 
 <div class="section-example-container">
-<pre class="csharp">public override void OnData(Slice slice)
+<pre class="csharp">private Symbol _symbol;
+private OrderTicket _ticket;
+
+public override void Initialize()
 {
-    // Cancel the order
-    _ticket.Cancel();
+    _symbol = AddEquity("SPY").Symbol;
+}
+
+public override void OnData(Slice slice)
+{
+    // Place order if not order yet and save the order ticket for later retrival.
+    if (_ticket == null && slice.Bars.TryGetValue(_symbol, out var bar))
+    {
+        _ticket = LimitOrder(_symbol, 10, bar.Close);
+    }
+    // If order is placed, cancel the order and place a new one as substituent.
+    else if (_ticket != null && _ticket.Status == OrderStatus.Submitted)
+    {
+        // Cancel the order
+        _ticket.Cancel();
+    }
 }
 
 public override void OnOrderEvent(OrderEvent orderEvent)
@@ -162,11 +203,19 @@ public override void OnOrderEvent(OrderEvent orderEvent)
         _ticket = LimitOrder(_ticket.Symbol, quantity, limitPrice);
     }
 }</pre>
-<pre class="python">def on_data(self, slice: Slice) -> None:
-    # Cancel the order
-    self._ticket.cancel()
+<pre class="python">def initialize(self) -&gt; None:
+    self._symbol = self.add_equity("SPY").symbol
+    self._ticket = None
+    
+def on_data(self, slice: Slice) -&gt; None:
+    # Place order if not invested and save the order ticket for later retrival.
+    if not self._ticket and self._symbol in slice.bars:
+        self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close)
+    # If order is placed, cancel the order and place a new one as substituent.
+    elif self._ticket != None and self._ticket.status == OrderStatus.SUBMITTED:
+        self._ticket.cancel()
 
-def on_order_event(self, order_event: OrderEvent) -> None:
+def on_order_event(self, order_event: OrderEvent) -&gt; None:
     if (self._ticket and order_event.order_id == self._ticket.order_id and
         order_event.status == OrderStatus.CANCELED):
         # Place a new order
