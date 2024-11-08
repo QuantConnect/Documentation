@@ -4663,6 +4663,103 @@ $ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
  </body>
 </html>
 
+<h3>Documentation Changes</h3>
+<html>
+ <body>
+  <p>
+   After the indicator was merged in the Lean engine, make sure you also ensure it is porperly documented in the documentation. Follow the below steps to do so:
+  </p>
+  <ol>
+   <li>
+    Create an issue in the
+    <a href="https://github.com/QuantConnect/Documentation/issues">
+     Documentation GitHub repository
+    </a>
+    regarding the required changes in the documentation.
+   </li>
+   <li>
+    Fork the Documentation GitHub repository and create a new branch named by
+    <code>
+     feature-&lt;ISSUE_NUMBER&gt;-&lt;INDICATOR_NAME&gt;-indicator
+    </code>
+    .
+   </li>
+   <li>
+    Edit the
+    <a href="https://github.com/QuantConnect/Documentation/blob/master/Resources/indicators/IndicatorImageGenerator.py">
+     IndicatorImageGenerator.py
+    </a>
+    file to include the details of the newly added indicator for documentation page generation.
+   </li>
+   <p>
+    If the indicator only involves 1 symbol and does not depend on other indicators, put it under the
+    <code>
+     indicators
+    </code>
+    dictionary.
+   </p>
+   <p>
+    If the indicator involves 2 or more symbols or it is a composite indicator, put it under the
+    <code>
+     special_indicators
+    </code>
+    dictionary.
+   </p>
+   <p>
+    If the indicator is an option-related indicator (e.g. option greeks indicator), put it under the
+    <code>
+     option_indicators
+    </code>
+    dictionary.
+   </p>
+   <p>
+    Format of the added member should be as below:
+   </p>
+   <div class="python section-example-container">
+    <pre>'&lt;hyphenated-title-case-of-the-indicator&gt;':
+{
+    'code': &lt;IndicatorConstructor&gt;(&lt;constructor-arguments&gt;),
+    'title' : '&lt;CSharpHelperMethod&gt;(&lt;helper-method-arguments&gt;)',
+    'columns' : [&lt;any-extra-series-of-the-indicator&gt;]
+},</pre>
+   </div>
+   <li>
+    Save the file and run the
+    <a href="https://github.com/QuantConnect/Documentation/blob/master/code-generators/writing-algorithm-api-reference-sphinx-code-generator.py">
+     API generator
+    </a>
+    . It will help generate the indicator reference page.
+   </li>
+   <li>
+    (Optional) Run the
+    <code>
+     IndicatorImageGenerator.py
+    </code>
+    in LeanCLI to obtain the generated plotly image of the indicator. You can retreive it from the
+    <code>
+     storage
+    </code>
+    folder from the root directory of the LeanCLI. Put it in the
+    <a href="https://github.com/QuantConnect/Documentation/tree/master/Resources/indicators/images">
+     Resource indicator image folder
+    </a>
+    by the name
+    <code>
+     &lt;hyphenated-title-case-of-the-indicator&gt;
+    </code>
+    .
+   </li>
+   <li>
+    Push the branch and start a
+    <a href="https://github.com/QuantConnect/Documentation/pulls">
+     pull request
+    </a>
+    on the documentation changes.
+   </li>
+  </ol>
+ </body>
+</html>
+
 <h3>Extra Steps for Moving Average Types</h3>
 <html>
  <body>
