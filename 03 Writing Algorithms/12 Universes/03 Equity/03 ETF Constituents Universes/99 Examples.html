@@ -222,12 +222,14 @@ class SelectionData
             self._selection_data_by_symbol[f.symbol].update(self.time, f.adjusted_price)
     
         # Remove indicators for assets that are no longer in the ETF to release the computational resources.
-        symbols_to_remove = [symbol for symbol in self._selection_data_by_symbol.keys() if symbol not in universe_symbols]
+        symbols_to_remove = [s for s in self._selection_data_by_symbol.keys() if s not in universe_symbols]
         for symbol in symbols_to_remove:
             self._selection_data_by_symbol.pop(symbol)
 
         # Select the Equities trading above their SMA as we estimate them to be in uptrend and still rising.
-        selected = [symbol for symbol, selection_data in self._selection_data_by_symbol.items() if selection_data.is_above_sma]
+        selected = [
+            symbol for symbol, selection_data in self._selection_data_by_symbol.items() if selection_data.is_above_sma
+        ]
             
         # Plot the results.
         self.plot("Universe", "Possible", len(list(fundamental)))
