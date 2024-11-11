@@ -112,7 +112,7 @@ public override void OnData(Slice slice)
     // Place order if not order yet and save the order ticket for later retrival.
     if (_ticket == null && slice.Bars.TryGetValue(_symbol, out var bar))
     {
-        _ticket = LimitOrder(_symbol, 10, bar.Close);
+        _ticket = LimitOrder(_symbol, 10, bar.Close * 0.98m);
     }
     // If order is placed, update the limit price to be 90% of the orginal.
     else if (_ticket != null && _ticket.Status == OrderStatus.Submitted)
@@ -124,10 +124,11 @@ public override void OnData(Slice slice)
             LimitPrice = _ticket.Get(OrderField.LimitPrice * 0.9m)
         });
 
-        // Check the OrderResponse
+        // Check if the update request is successfully submitted to the broker.
+        // Note that it may not represent the order is updated successfully: during the order updating process, it may be filled or canceled.
         if (response.IsSuccess)
         { 
-            Debug("Order updated successfully");
+            Debug("Order update request is submitted successfully");
         }
     }
 }</pre>
@@ -138,7 +139,7 @@ public override void OnData(Slice slice)
 def on_data(self, slice: Slice) -&gt; None:
     # Place order if not invested and save the order ticket for later retrival.
     if not self._ticket and self._symbol in slice.bars:
-        self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close)
+        self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close * 0.98)
     # If order is placed, update the limit price to be 90% of the orginal.
     elif self._ticket != None and self._ticket.status == OrderStatus.SUBMITTED:
         # Update the order tag and limit price
@@ -147,9 +148,10 @@ def on_data(self, slice: Slice) -&gt; None:
         update_settings.tag = "Limit Price Updated for SPY Trade"
         response = self._ticket.update(update_settings)
 
-        # Check the OrderResponse
+        # Check if the update request is successfully submitted to the broker.
+        # Note that it may not represent the order is updated successfully: during the order updating process, it may be filled or canceled.
         if response.is_success:
-            self.debug("Order updated successfully")</pre>
+            self.debug("Order update request is submitted successfully")</pre>
 </div>
 
 <?

@@ -21,7 +21,7 @@ public override void OnData(Slice slice)
     // Get the limit price if the order is filled.
     else if (Portfolio.Invested)
     {
-        var limitPrice = ticket.Get(OrderField.LimitPrice);
+        var limitPrice = _ticket.Get(OrderField.LimitPrice);
     }
 }</pre>
 <pre class="python">def initialize(self) -&gt; None:

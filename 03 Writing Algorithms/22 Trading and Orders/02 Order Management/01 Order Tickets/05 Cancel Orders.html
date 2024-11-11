@@ -22,10 +22,11 @@ public override void OnData(Slice slice)
         // Cancel the order
         var response = ticket.Cancel("Canceled SPY trade");
 
-        // Use the order response object to read the status
+        // Check if the cancel request is successfully submitted to the broker.
+        // Note that it may not represent the order is canceled successfully: during the order updating process, it may be filled.
         if (response.IsSuccess)
         {
-            Debug("Order successfully canceled");
+            Debug("Order cancel request successfully submitted");
         }
     }
 }</pre>
@@ -39,7 +40,12 @@ def on_data(self, slice: Slice) -&gt; None:
         self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close)
     # If order is placed, cancel the order if it is not filled within 2 minutes.
     elif self._ticket != None and self._ticket.time &lt; slice.time - timedelta(minutes=2) and self._ticket.status == OrderStatus.SUBMITTED:
-        self._ticket.cancel()</pre>
+        response = self._ticket.cancel("Canceled SPY trade")
+    
+        # Check if the cancel request is successfully submitted to the broker.
+        # Note that it may not represent the order is canceled successfully: during the order updating process, it may be filled.
+        if response.is_success:
+            self.debug("Order cancel request successfully submitted")</pre>
 </div>
 
 <p>You can't cancel market orders because they are immediately transmitted to the brokerage. You also can't cancel any orders during <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up</a> and <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>.</p>
