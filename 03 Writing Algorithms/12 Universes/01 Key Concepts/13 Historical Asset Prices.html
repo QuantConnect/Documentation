@@ -1,0 +1,90 @@
+<p>
+  LEAN supports over 100 <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicators</a> you can use to generate your trading signals.
+  However, in some cases, it's more efficient to maintain a matrix of historical prices for all the assets in your universe instead of using indicators.
+  For example, say you want to calculate the correlation coefficients between all $n$ asset in your universe using a 1-year lookback period.
+  If you were to use the <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/correlation'>Correlation</a> indicator, when a new asset enters the universe, you would usually need to make a 1-year <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a> for $n$ assets to <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#08-Warm-Up-Indicators'>warm-up</a> the $n$ new correlation indicators.
+  These large and frequent history requests can make your algorithm very slow.
+</p>
+
+<p>
+  The following algorithm demonstrates an alternative, more efficient approach.
+  It defines a DataFrame in the <a href='/docs/v2/writing-algorithms/initialization'><span class='python'>i</span><span class='csharp'>I</span>nitialize</a> method.
+  When a new asset enters the universe, it adds a column of historical prices for that asset to the DataFrame.
+  Then, each day, it adds a single row of daily prices to the DataFrame.
+  This approach reduces the size and frequency of history requests you need to make to get the data you need to generate trading signals.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">// TODO</pre>
+<pre class="python">class MaintainHistoricalDailyUniversePriceDataAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2010, 2, 1)
+        self.set_end_date(2010, 3, 1)
+        self.set_cash(1_000_000)
+
+        # Seed each asset's price with it's last known price so you can trade it 
+        # on the same day it enters the universe without throwing errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
+        )
+
+        # Add a universe of daily data.
+        self.universe_settings.resolution = Resolution.DAILY
+        self._universe = self.add_universe(
+            lambda fundamentals: [f.symbol for f in sorted(fundamentals, key=lambda f: f.market_cap)[-10:]]
+        )
+
+        # Create a DataFrame to store the historical data.
+        self._all_history = pd.DataFrame()
+        # Define the lookback period.
+        self._lookback = 252  # Trading days.
+
+        # Create a Scheduled Event to record new daily prices and
+        # rebelance the portfolio.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.schedule.on(
+            self.date_rules.every_day(spy),
+            self.time_rules.at(0, 1), # One minute after `on_securities_changed` runs (in backtests)
+            self._rebalance
+        )
+
+    def on_securities_changed(self, changes):
+        # Remove the historical prices of assets that leave the universe.
+        for security in changes.removed_securities:
+            if security.symbol in self._all_history.columns:
+                self._all_history.drop(security.symbol, axis=1, inplace=True)
+
+        # Warm-up the historical data of assets that enter the universe.
+        history = self.history([security.symbol for security in changes.added_securities], self._lookback, Resolution.DAILY)
+        if not history.empty:
+            # If you trade at market open, it might make more sense to generate signals
+            # based on daily opening prices.
+            self._all_history = self._all_history.join(history.open.unstack(0), how='outer')
+
+    def _rebalance(self):
+        # Add yesterday's open price to the DataFrame of historical prices.
+        self._all_history = pd.concat([
+            self._all_history, 
+            self.history(list(self._universe.selected), 1, Resolution.DAILY).open.unstack(0)
+        ])
+        # Yesterday's open price has been added twice for assets that just entered the universe.
+        # The first time was in `on_securities_changed` and the second time was in the line above.
+        # Let's drop rows with duplicate indices, then trim to lookback window size.
+        self._all_history = self._all_history.loc[~self._all_history.index.duplicated(keep='last')].iloc[-self._lookback:]
+
+        # Calculate asset signals for this rebalance.
+        # For example, set the signal to give greater weight to uncorrelated assets.
+        signal_by_symbol = 1/self._all_history.dropna(axis=1).corr().abs().sum()
+        signal_by_symbol /= signal_by_symbol.sum()
+
+        # Rebalance the portfolio based on the signals.
+        self.set_holdings([PortfolioTarget(symbol, signal) for symbol, signal in signal_by_symbol.items()], True)</pre>
+</div>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
