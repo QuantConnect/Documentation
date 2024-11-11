@@ -1,0 +1,49 @@
+<p>You must <a href="/docs/v2/research-environment/charting/plotly#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly#04-Get-Historical-Data">get some historical data</a> to create 3D charts.</p>
+
+<p>In this example, you create a 3D chart that shows the price of each asset on each dimension. Follow these steps to create the 3d chart:</p>
+
+<ol>
+    <li>Select the asset to plot on each dimension.</li>
+    <div class="section-example-container">
+        <pre class="python">x, y, z = symbols[:3]</pre>
+    </div>
+    
+    <li>Call the <code>Scatter3d</code> constructore with the data for the x, y, and z axes.</li>
+    <div class="section-example-container">
+        <pre class="python">scatter = go.Scatter3d(
+    x=history.loc[x].close, 
+    y=history.loc[y].close, 
+    z=history.loc[z].close,
+    mode='markers',
+    marker=dict(
+        size=2,
+        opacity=0.8
+    )
+)</pre>
+    </div>
+
+    <li>Call the <code>Layout</code> constructor with the axes titles and chart dimensions.</li>
+    <div class="section-example-container">
+        <pre class="python">layout = go.Layout(
+    scene=dict(
+        xaxis_title=f'{x.value} Price',
+        yaxis_title=f'{y.value} Price',
+        zaxis_title=f'{z.value} Price'
+    ),
+    width=700,
+    height=700
+)</pre>
+    </div>
+
+    <li>Call the <code>Figure</code> constructor with the <code>scatter</code> and <code>layout</code> variables.<br></li>
+    <div class="section-example-container">
+        <pre class="python">fig = go.Figure(scatter, layout)</pre>
+    </div>
+
+    <li>Call the <code>show</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays the 3d chart.</p>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-pie-3.png" alt="Plotly pie chart">
+</ol>
