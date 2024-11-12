@@ -1,0 +1,44 @@
+<p>You must <a href="/docs/v2/research-environment/charting/matplotlib#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/matplotlib#04-Get-Historical-Data">get some historical data</a> to create 3D charts.</p>
+
+<p>In this example, you create a 3D chart that shows the price of an asset on each dimension, i.e. the price correlation of 3 different symbols. Follow these steps to create the 3D chart:</p>
+
+<ol>
+    <li>Select the asset to plot on each dimension.</li>
+    <div class="section-example-container">
+        <pre class="python">x, y, z = symbols[:3]</pre>
+    </div>
+    
+    <li>Select the close price series of each symbol.</li>
+    <div class="section-example-container">
+        <pre class="python">x_hist = history.loc[x].close
+y_hist = history.loc[y].close
+z_hist = history.loc[z].close</pre>
+    </div>
+
+    <li>Construct the basic 3D plot layout.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(projection='3d')</pre>
+    </div>
+
+    <li>Call the <code>ax.scatter</code> method with the 3 price series to plot the graph.</li>
+    <div class="section-example-container">
+        <pre class="python">ax.scatter(x_hist, y_hist, z_hist)</pre>
+    </div>
+
+    <li>Update the x, y, and z axis labels.</li>
+    <div class="section-example-container">
+        <pre class="python">ax.set_xlabel(f"{x} Price")
+ax.set_ylabel(f"{y} Price")
+ax.set_zlabel(f"{z} Price")</pre>
+    </div>
+
+    <li>Display the 3D chart. Note that you need to zoom the chart to avoid z-axis cut off.</li>
+    <div class="section-example-container">
+        <pre class="python">ax.set_box_aspect(None, zoom=0.85)
+plt.show()</pre>
+    </div>
+
+    <p>The Jupyter Notebook displays the pie chart.</p>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/matplotlib-3d-scatter.png" alt="Matplotlib 3D chart">
+</ol>
