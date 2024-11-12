@@ -1,102 +1,108 @@
 <p>The following examples demonstrate some common practices for Custom Universe.</p>
 
-<h4>Example 1: Data From Object Store</h4>
-<p>The following algorithm demonstrates how to read custom data that store in the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a> and filter from it. In this example, the custom data includes the weight for position sizing as well. We generate some random samples using the following code in the <a href="/docs/v2/research-environment">research environment</a> to save the custom universe data in the <code>df.csv</code> file in Object Store.</p>
+<h4>Example 1: Sourcing from the Object Store</h4>
+<p>
+	This project demonstrates how to read custom data from the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a>, and then use it to define a universe and place trades. 
+	The following <a href="/docs/v2/research-environment">research environment</a> file generates the demo universe data, which contains a daily set of assets and their respective signals:
+</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">// Load the assembly files and data types in their own cell.
+#load "../Initialize.csx"</pre>
+</div>
+
 <div class="section-example-container">
-    <pre class="csharp">using MathNet.Numerics.Distributions;
+    <pre class="csharp">// Import the data types.
+#load "../QuantConnect.csx"
+using QuantConnect;
+using QuantConnect.Research;
+using QuantConnect.Data.Market;
+using MathNet.Numerics.Distributions;
 
+// Create a QuantBook.
 var qb = new QuantBook();
-
-var tickers = new List&lt;string&gt; { "SPY", "TLT", "GLD", "USO", "IWM" };
-var hist = qb.History&lt;TradeBar&gt;(Symbol.Create("SPY", SecurityType.Equity, Market.USA), new DateTime(2015, 1, 1), new DateTime(2024, 12, 31), Resolution.Daily).ToList();
-
+// Make a history request to get a list of trading days.
+var history = qb.History<TradeBar>(
+    Symbol.Create("SPY", SecurityType.Equity, Market.USA), 
+    new DateTime(2015, 1, 1), new DateTime(2024, 12, 31), Resolution.Daily
+).ToList();
+// Create a variable to store the file contents.
 var contents = new List&lt;string&gt;();
-
-for (int i = 0; i &lt; hist.Count; i++)
+// Define the list of possible assets.
+var tickers = new List<string> { "SPY", "TLT", "GLD", "USO", "IWM" };
+// Loop through the list of trading days.
+for (int i = 0; i < history.Count; i++)
 {
+    // Create a random number generator.
     var random = new Random(i);
-
-    var date = hist[i].EndTime;
-    var equities = tickers.OrderBy(x =&gt; random.Next()).Take(3).ToList();
+    // Select 3 of the assets and define their target portfolio weights.
+    var date = history[i].EndTime;
+    var equities = tickers.OrderBy(x => random.Next()).Take(3).ToList();
     var weights = Dirichlet.Sample(random, new[] { 10d, 5d, 3d });
-
+    // Append the target portfolio weights for this trading day to the file.
     contents.AddRange(new [] {
         $"{date:yyyy-MM-dd},{equities[0]},{weights[0]}",
         $"{date:yyyy-MM-dd},{equities[1]},{weights[1]}",
         $"{date:yyyy-MM-dd},{equities[2]},{weights[2]}"
     });
 }
-
-var filePath = qb.ObjectStore.GetFilePath("df.csv");
-qb.ObjectStore.Save(filePath, string.Join("\n", contents));</pre>
-    <pre class="python">import random
+// Save the file to the Object Store.
+Console.WriteLine(qb.ObjectStore.Save("portfolioTargets.csv", string.Join("\n", contents)));</pre>
+    <pre class="python"># Set a random seed to ensure reproducibility.
+import random
 np.random.seed(0)
-
-equities = []
+# Select the asset weights for each trading day.
 indices = [[x] * 3 for x in pd.bdate_range('2015-01-01', '2024-12-31')]
 weights = list(np.random.dirichlet((10, 5, 3), size=(len(indices),)).flatten())
-
+# Select the universe for each trading day.
+equities = []
 for i in range(len(indices)):
     random.seed(i)
     equities.extend(list(random.sample(["SPY", "TLT", "GLD", "USO", "IWM"], 3)))
-
+# Organize the data into a DataFrame.
 df = pd.DataFrame({"Date": [x for y in indices for x in y], "Symbol": equities, "Weight": weights})
-
+# Save the DataFrame as a CSV in the Object Store.
 qb = QuantBook()
-file_path = qb.object_store.get_file_path(f"df.csv")
+file_path = qb.object_store.get_file_path(f"portfolio-targets.csv")
 df.to_csv(file_path, index=False)</pre>
 </div>
 
-<p>To filter and invest using the custom data, we create a custom universe class inherited from the <code class="csharp">BaseData</code><code class="python">PythonData</code> class. Then, add the universe of this custom class to filter from it.</p>
-<p></p>
+<p>The following algorithm file reads the preceding CSV file from the Object Store and uses its contents to form the daily universe and place trades:</p>
 <div class="section-example-container">
     <pre class="csharp">public class CustomUniverseExampleAlgorithm : QCAlgorithm
 {
-    // A dictionary to hold the updated weight for position sizing.
-    public Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new();
+    // Create a dictionary to hold the target weight of each asset..
+    private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new();
+    private Universe _universe;
 
     public override void Initialize()
     {
         SetStartDate(2015, 1, 1);
-        // Daily weight signals from our custom universe data only requires daily resolution.
-        UniverseSettings.Resolution = Resolution.Daily;
-        // Filter using the custom dataset, our sample data is by daily basis.
-        AddUniverse&lt;CustomUniverseData&gt;("CustomUniverse", Resolution.Daily, (altCoarse) =&gt; {
-            // Clear weight dictionary to avoid outdated signals.
+        // Add a universe that reads from the Object Store.
+        _universe = AddUniverse&lt;CustomUniverseData&gt;("CustomUniverse", Resolution.Daily, (altCoarse) => {
+            // Clear the dictionary of asset weights.
             _weightBySymbol.Clear();
 
             var selected = new List&lt;Symbol&gt;();
             foreach (CustomUniverseData d in altCoarse)
             {
-                // Select the symbols that have a significant weight in the custom universe data to avoid small-size trade that friction and fee would erode the return.
-                if (d.Weight &gt; 0.05m)
+                // Select the symbols that have a significant weight in the custom universe data to avoid 
+                // small-size trades that erode returns.
+                if (d.Weight > 0.05m)
                 {
                     selected.Add(d.Symbol);
-                    // Cache the indicated weight in the custom data for investment size later.
+                    // Save the weight to use during the rebalance.
                     _weightBySymbol[d.Symbol] = d.Weight;
                 }
             }
-
             return selected;
         });
-    }
-
-    public override void OnData(Slice slice)
-    {
-        // Invest according to the custom data indicated weight. Since the resolution is daily, there is no issue for over rebalancing.
-        foreach (var (symbol, weight) in _weightBySymbol)
-        {
-            SetHoldings(symbol, weight);
-        }
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        // Liquidate the remove securities to free margin.
-        foreach (var removed in changes.RemovedSecurities)
-        {
-            Liquidate(removed.Symbol);
-        }
+        // Add a Scheduled Event to rebalance the portfolio.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        Schedule.On(
+            DateRules.EveryDay(spy), 
+            TimeRules.AfterMarketOpen(spy, 1), 
+            () => SetHoldings(_universe.Selected.Select(symbol => new PortfolioTarget(symbol, _weightBySymbol[symbol])).ToList(), true)
+        );
     }
 }
 
@@ -112,13 +118,13 @@ public class CustomUniverseData : BaseData
 
     public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
-        // The saved dataframe is in form of CSV saved in the object store.
-        return new SubscriptionDataSource("df.csv", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+        // The data is in the Object Store as a CSV.
+        return new SubscriptionDataSource("portfolioTargets.csv", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
     }
 
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) 
     {
-        // Skip header column.
+        // Skip the header row.
         if (!Char.IsDigit(line[0]))
         {
             return null;
@@ -127,7 +133,7 @@ public class CustomUniverseData : BaseData
         // CSV data is split by comma.
         var items = line.Split(",");
 
-        // Generate required data, then return an instance of your class.
+        // Parse the data from the CSV file.
         return new CustomUniverseData 
         {
             EndTime = Parse.DateTimeExact(items[0], "yyyy-MM-dd"),
@@ -196,6 +202,7 @@ class CustomUniverseData(PythonData):
         return data</pre>
 </div>
 
+<h4>Other Examples</h4>
 <p>For more examples, see the following algorithms:</p>
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Algorithms</div>
