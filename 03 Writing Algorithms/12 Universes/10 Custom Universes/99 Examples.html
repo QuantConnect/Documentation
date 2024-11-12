@@ -140,7 +140,9 @@ public class CustomUniverseData : BaseData
     def initialize(self) -> None:
         self.set_start_date(2015, 1, 1)
         # Add a universe that reads from the Object Store.
-        self._universe = self.add_universe(CustomUniverseData, "CustomUniverse", Resolution.DAILY, self._selector_function)
+        self._universe = self.add_universe(
+            CustomUniverseData, "CustomUniverse", Resolution.DAILY, self._selector_function
+        )
         # Add a Scheduled Event to rebalance the portfolio.
         spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
         self.schedule.on(
@@ -156,7 +158,7 @@ public class CustomUniverseData : BaseData
         # Select the symbols that have a significant weight in the custom universe data to avoid 
         # small-size trades that erode returns. Save the weight to use during the rebalance.
         self._weight_by_symbol = {d.symbol: d.weight for d in alt_coarse if d["weight"] > 0.05}
-        return self._weight_by_symbol.keys()
+        return list(self._weight_by_symbol.keys())
 
 
 class CustomUniverseData(PythonData):
