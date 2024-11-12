@@ -8,14 +8,127 @@
 
 <p>
   The following algorithm demonstrates an alternative, more efficient approach.
-  It defines a DataFrame in the <a href='/docs/v2/writing-algorithms/initialization'><span class='python'>i</span><span class='csharp'>I</span>nitialize</a> method.
-  When a new asset enters the universe, it adds a column of historical prices for that asset to the DataFrame.
-  Then, each day, it adds a single row of daily prices to the DataFrame, which covers all the assets in the universe.
+  It defines a <span class='csharp'><a href="/docs/v2/writing-algorithms/historical-data/rolling-window">RollingWindow</a> when constructing the algorithm class</span><span class='python'>DataFrame in the <a href='/docs/v2/writing-algorithms/initialization'>initialize</a> method</span>.
+  When a new asset enters the universe, it adds a column of historical prices for that asset to the <span class='csharp'>RollingWindow</span><span class='python'>DataFrame</span>.
+  Then, each day, it adds a single row of daily prices to the <span class='csharp'>RollingWindow</span><span class='python'>DataFrame</span>, which covers all the assets in the universe.
   This approach reduces the size and frequency of history requests you need to make to get the data.
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">// TODO</pre>
+<pre class="csharp">public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
+{
+    // Create Rolling Window collection to store the historical data.
+    private Dictionary&lt;Symbol, RollingWindow&lt;decimal&gt;&gt; _history = new();
+    // Define the lookback period.
+    private int _lookback = 252;
+    private Universe _universe;
+
+    public override void Initialize()
+    {
+        SetStartDate(2010, 2, 1);
+        SetEndDate(2010, 3, 1);
+        SetCash(1000000);
+
+        // Seed each asset's price with it's last known price so you can trade it 
+        // on the same day it enters the universe without throwing errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+
+        // Add a universe of daily data.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter for any coporate announced a material buyback plan, since they have confidence in their
+        // future prospect and the reduction in supply can drive their price up.
+        _universe = AddUniverse((fundamentals) =&gt; {
+            return (from Fundamental f in fundamentals
+                   orderby f.MarketCap descending
+                   select f.Symbol).Take(10);
+        });
+
+        // Create a Scheduled Event to record new daily prices and rebelance the portfolio.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        Schedule.On(
+            DateRules.EveryDay(spy),
+            TimeRules.At(9, 1),      // One minute after `on_securities_changed` runs (in backtests)
+            Rebalance
+        );
+    }
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Remove the historical prices of assets that leave the universe.
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            _history.Remove(removed.Symbol);
+        }
+
+        // Warm-up the historical data of assets that enter the universe.
+        var symbols = changes.AddedSecurities.Select(x =&gt; x.Symbol).ToList();
+        var history = History&lt;TradeBar&gt;(symbols, _lookback, Resolution.Daily);
+        foreach (var bars in history.SkipLast(1))
+        {
+            foreach (var (symbol, bar) in bars)
+            {
+                if (!_history.TryGetValue(symbol, out var symbolHistory))
+                {
+                    _history[symbol] = symbolHistory = new(_lookback);
+                }
+                
+                // If you trade at market open, it might make more sense to generate signals based on daily opening prices.
+                symbolHistory.Add(bar.Open);
+            }
+        }
+    }
+
+    private void Rebalance()
+    {
+        // Add yesterday's open price to the DataFrame of historical prices.
+        var history = History&lt;TradeBar&gt;(_history.Keys, 1, Resolution.Daily).First();
+        foreach (var (symbol, bar) in history)
+        {
+            _history[symbol].Add(bar.Open);
+        }
+
+        // Calculate asset signals for this rebalance.
+        // For example, set the signal to give greater weight to uncorrelated assets.
+        var minSize = _history.Values.Min(x =&gt; x.Count);
+        var symbols = _history.Keys.ToArray();
+        var priceMatrix = new double[minSize, _history.Count];
+        for (int i = 0; i &lt; minSize; i++)
+        {
+            for (int j = 0; j &lt; _history.Count; j++)
+            {
+                priceMatrix[i, j] = (double)_history[symbols[j]][i];
+            }
+        }
+        var correlation = Measures.Correlation(priceMatrix);
+        var signals = NormalizedRowAbsoluteSums(correlation);
+
+        // Rebalance the portfolio based on the signals.
+        SetHoldings(Enumerable.Range(0, signals.Length)
+            .Select(i =&gt; new PortfolioTarget(symbols[i], Convert.ToDecimal(signals[i])))
+            .ToList());
+    }
+
+    private double[] NormalizedRowAbsoluteSums(double[,] array)
+    {
+        var rows = array.GetLength(0);
+        var sums = new double[rows];
+
+        for (int i = 0; i &lt; rows; i++)
+        {
+            var rowSum = 0d;
+            for (int j = 0; j &lt; array.GetLength(1); j++)
+            {
+                rowSum += Math.Abs(array[i, j]);
+            }
+            sums[i] = rowSum;
+        }
+
+        var allSum = sums.Sum();
+        return sums.Select(x =&gt; x / allSum).ToArray();
+    }
+}</pre>
 <pre class="python">class MaintainHistoricalDailyUniversePriceDataAlgorithm(QCAlgorithm):
 
     def initialize(self):
