@@ -61,16 +61,14 @@ for i in range(len(indices)):
 # Organize the data into a DataFrame.
 df = pd.DataFrame({"Date": [x for y in indices for x in y], "Symbol": equities, "Weight": weights})
 # Save the DataFrame as a CSV in the Object Store.
-qb = QuantBook()
-file_path = qb.object_store.get_file_path(f"portfolio-targets.csv")
-df.to_csv(file_path, index=False)</pre>
+df.to_csv(QuantBook().object_store.get_file_path(f"portfolio-targets.csv"), index=False)</pre>
 </div>
 
 <p>The following algorithm file reads the preceding CSV file from the Object Store and uses its contents to form the daily universe and place trades:</p>
 <div class="section-example-container">
     <pre class="csharp">public class CustomUniverseExampleAlgorithm : QCAlgorithm
 {
-    // Create a dictionary to hold the target weight of each asset..
+    // Create a dictionary to hold the target weight of each asset.
     private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new();
     private Universe _universe;
 
@@ -79,29 +77,23 @@ df.to_csv(file_path, index=False)</pre>
         SetStartDate(2015, 1, 1);
         // Add a universe that reads from the Object Store.
         _universe = AddUniverse&lt;CustomUniverseData&gt;("CustomUniverse", Resolution.Daily, (altCoarse) => {
-            // Clear the dictionary of asset weights.
-            _weightBySymbol.Clear();
-
-            var selected = new List&lt;Symbol&gt;();
-            foreach (CustomUniverseData d in altCoarse)
-            {
-                // Select the symbols that have a significant weight in the custom universe data to avoid 
-                // small-size trades that erode returns.
-                if (d.Weight > 0.05m)
-                {
-                    selected.Add(d.Symbol);
-                    // Save the weight to use during the rebalance.
-                    _weightBySymbol[d.Symbol] = d.Weight;
-                }
-            }
-            return selected;
+            // Select the symbols that have a significant weight in the custom universe data to avoid 
+            // small-size trades that erode returns. Save the weight to use during the rebalance.
+            _weightBySymbol = altCoarse
+                .Select(d => d as CustomUniverseData)
+                .Where(d => d.Weight > 0.05m)
+                .ToDictionary(d => d.Symbol, d => d.Weight);
+            return _weightBySymbol.Keys;
         });
         // Add a Scheduled Event to rebalance the portfolio.
         var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         Schedule.On(
             DateRules.EveryDay(spy), 
             TimeRules.AfterMarketOpen(spy, 1), 
-            () => SetHoldings(_universe.Selected.Select(symbol => new PortfolioTarget(symbol, _weightBySymbol[symbol])).ToList(), true)
+            () => SetHoldings(
+                _universe.Selected.Select(symbol => new PortfolioTarget(symbol, _weightBySymbol[symbol])).ToList(), 
+                true
+            )
         );
     }
 }
@@ -111,15 +103,17 @@ public class CustomUniverseData : BaseData
     public decimal Weight;
     public override DateTime EndTime 
     {
-        // The universe weight is valid for 1 day.
+        // Set the data period to 1 day.
         get { return Time + QuantConnect.Time.OneDay; }
         set { Time = value - QuantConnect.Time.OneDay; }
     }
 
     public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
-        // The data is in the Object Store as a CSV.
-        return new SubscriptionDataSource("portfolioTargets.csv", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+        // Define the location and format of the data file.
+        return new SubscriptionDataSource(
+            "portfolioTargets.csv", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv
+        );
     }
 
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) 
@@ -129,74 +123,58 @@ public class CustomUniverseData : BaseData
         {
             return null;
         }
-
-        // CSV data is split by comma.
+        // Split the line by each comma.
         var items = line.Split(",");
 
         // Parse the data from the CSV file.
         return new CustomUniverseData 
         {
             EndTime = Parse.DateTimeExact(items[0], "yyyy-MM-dd"),
-            // All the symbols are US Equities.
             Symbol = Symbol.Create(items[1], SecurityType.Equity, Market.USA),
             Weight = decimal.Parse(items[2], NumberStyles.Any, CultureInfo.InvariantCulture)
         };
     }
 }</pre>
     <pre class="python">class CustomUniverseExampleAlgorithm(QCAlgorithm):
-    # A dictionary to hold the updated weight for position sizing.
-    _weight_by_symbol = {}
 
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2015, 1, 1)
-        # Daily weight signals from our custom universe data only requires daily resolution.
-        self.universe_settings.resolution = Resolution.DAILY
-        # Filter using the custom dataset, our sample data is by daily basis.
-        self.add_universe(CustomUniverseData, "CustomUniverse", Resolution.DAILY, self.selector_function)
+        # Add a universe that reads from the Object Store.
+        self._universe = self.add_universe(CustomUniverseData, "CustomUniverse", Resolution.DAILY, self._selector_function)
+        # Add a Scheduled Event to rebalance the portfolio.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.schedule.on(
+            self.date_rules.every_day(spy),
+            self.time_rules.after_market_open(spy, 1),
+            lambda: self.set_holdings(
+                [PortfolioTarget(symbol, self._weight_by_symbol[symbol]) for symbol in self._universe.selected],
+                True
+            )
+        )
     
-    def selector_function(self, alt_coarse: List[PythonData]) -&gt; List[Symbol]:
-        # Clear weight dictionary to avoid outdated signals.
-        self._weight_by_symbol.clear()
-        
-        selected = []
-        for d in alt_coarse:
-            # Select the symbols that have a significant weight in the custom universe data to avoid small-size trade that friction and fee would erode the return.
-            if d["weight"] &gt; 0.05:
-            	selected.append(d.symbol)
-                # Cache the indicated weight in the custom data for investment size later.
-            	self._weight_by_symbol[d.symbol] = d["weight"]
+    def _selector_function(self, alt_coarse: List[PythonData]) -> List[Symbol]:
+        # Select the symbols that have a significant weight in the custom universe data to avoid 
+        # small-size trades that erode returns. Save the weight to use during the rebalance.
+        self._weight_by_symbol = {d.symbol: d.weight for d in alt_coarse if d["weight"] > 0.05}
+        return self._weight_by_symbol.keys()
 
-        return selected
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Invest according to the custom data indicated weight. Since the resolution is daily, there is no issue for over rebalancing.
-        for symbol, weight in self._weight_by_symbol.items():
-            self.set_holdings(symbol, weight)
-
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate the remove securities to free margin.
-        for removed in changes.removed_securities:
-            self.liquidate(removed.symbol)
-    
 class CustomUniverseData(PythonData):
-    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -&gt; SubscriptionDataSource:
-        # The saved dataframe is in form of CSV saved in the object store.
+
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -> SubscriptionDataSource:
+        # Define the location and format of the data file.
         return SubscriptionDataSource("df.csv", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
 
-    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -&gt; BaseData:
-		# Skip header column.
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -> BaseData:
+        # Skip the header row.
         if not line[0].isnumeric():
             return None
-            
-        # CSV data is split by comma.
+        # Split the line by each comma.
         items = line.split(",")
-    
-        # Generate required data, then return an instance of your class.
+        # Parse the data from the CSV file.
         data = CustomUniverseData()
         data.end_time = datetime.strptime(items[0], "%Y-%m-%d")
-        # The universe weight is valid for 1 day.
         data.time = data.end_time - timedelta(1)
-        # All the symbols are US Equities.
         data.symbol = Symbol.create(items[1], SecurityType.EQUITY, Market.USA)
         data["weight"] = float(items[2])
         return data</pre>
