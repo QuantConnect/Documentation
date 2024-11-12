@@ -61,7 +61,7 @@ for i in range(len(indices)):
 # Organize the data into a DataFrame.
 df = pd.DataFrame({"Date": [x for y in indices for x in y], "Symbol": equities, "Weight": weights})
 # Save the DataFrame as a CSV in the Object Store.
-df.to_csv(QuantBook().object_store.get_file_path(f"portfolio-targets.csv"), index=False)</pre>
+df.to_csv(QuantBook().object_store.get_file_path("portfolio-targets.csv"), index=False)</pre>
 </div>
 
 <p>The following algorithm file reads the preceding CSV file from the Object Store and uses its contents to form the daily universe and place trades:</p>
@@ -163,7 +163,7 @@ class CustomUniverseData(PythonData):
 
     def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -> SubscriptionDataSource:
         # Define the location and format of the data file.
-        return SubscriptionDataSource("df.csv", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+        return SubscriptionDataSource("portfolio-targets.csv", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
 
     def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -> BaseData:
         # Skip the header row.
