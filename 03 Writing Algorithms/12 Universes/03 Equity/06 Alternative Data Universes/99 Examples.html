@@ -13,29 +13,32 @@
     public override void Initialize()
     {
         SetStartDate(2020, 1, 1);
-        // Weekly universe update since the signal is for the next 7 days.
-        UniverseSettings.Schedule.On(DateRules.WeekStart());
+        // Monthly universe update since the signal is for the next 30 days.
+        UniverseSettings.Schedule.On(DateRules.MonthStart());
         // Select from Brain Sentiment dataset by sentiment factor.
         AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(
-            altData =&gt; altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
-                // Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
-                .Where(x =&gt; x.TotalArticleMentions7Days.HasValue &amp;&amp; x.Sentiment7Days.HasValue)
-                // Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
-                .Where(x =&gt; x.TotalArticleMentions7Days &gt; 0)
-                .OrderByDescending(x =&gt; x.Sentiment7Days)
-                .Take(20)
-                // Return the symbols for the selected assets.
-                .Select(x =&gt; {
-                    // Update sentiment score dictionary to only holds the most updated sentiment score for sizing.
-                    _sentimentScores.Clear();
-                    _sentimentScores[x.Symbol] = x.Sentiment7Days.Value;
-                    return x.Symbol;
-                })
+            altData =&gt; {
+                // Update sentiment score dictionary to only holds the most updated sentiment score for sizing.
+                _sentimentScores.Clear();
+
+                return altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
+                    // Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
+                    .Where(x =&gt; x.TotalArticleMentions30Days.HasValue &amp;&amp; x.Sentiment30Days.HasValue)
+                    // Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
+                    .Where(x =&gt; x.TotalArticleMentions30Days &gt; 0)
+                    .OrderByDescending(x =&gt; x.Sentiment30Days)
+                    .Take(10)
+                    // Return the symbols for the selected assets.
+                    .Select(x =&gt; {
+                        _sentimentScores[x.Symbol] = x.Sentiment30Days.Value;
+                        return x.Symbol;
+                    });
+            }
         );
 
-        // Weekly rebalance to allow time to digest the 7-day signal.
+        // Monthly rebalance to allow time to digest the 30-day signal.
         Schedule.On(
-            DateRules.WeekStart(),
+            DateRules.MonthStart(),
             TimeRules.At(9, 30),
             Rebalance
         );
@@ -67,28 +70,28 @@
 
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
-        # Weekly universe update since the signal is for the next 7 days.
-        self.universe_settings.schedule.on(self.date_rules.week_start())
+        # Monthly universe update since the signal is for the next 30 days.
+        self.universe_settings.schedule.on(self.date_rules.month_start())
         # Select from Brain Sentiment dataset by sentiment factor.
         self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
 
-        # Weekly rebalance to allow time to digest the 7-day signal.
+        # Monthly rebalance to allow time to digest the 30-day signal.
         self.schedule.on(
-            self.date_rules.week_start(),
+            self.date_rules.month_start(),
             self.time_rules.at(9, 30),
             self.rebalance
         )
     
     def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
         # Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
-        alt_data = [x for x in alt_data if x.total_article_mentions_7_days and x.sentiment_7_days]
+        alt_data = [x for x in alt_data if x.total_article_mentions_30_days and x.total_article_mentions_30_days &gt; 0 and x.sentiment_30_days]
         # Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
-        selected = sorted(alt_data, key=lambda x: x.sentiment_7_days)[-20:]
+        selected = sorted(alt_data, key=lambda x: x.sentiment_30_days)[-10:]
         # Update sentiment score dictionary to only holds the most updated sentiment score for sizing.
         self._sentiment_scores.clear()
         universe = []
         for datum in selected:
-            self._sentiment_scores[datum.symbol] = datum.sentiment_7_days
+            self._sentiment_scores[datum.symbol] = datum.sentiment_30_days
             universe.append(datum.symbol)
         # Return the symbols for the selected assets.
         return universe
@@ -119,16 +122,17 @@
 
     public override void Initialize()
     {
+        SetStartDate(2016, 1, 1);
         // Keep each security in the universe for a minimum of 30 days to digest the insiders purchase sentiment.
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.FromDays(30);
         // Using QuiverInsiderTrading dataset for insider trade detection and filtering.
         AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altData =&gt;
         {
-            // Select assets that insiders have purchased, which may provide extra confidence in their expected return.
-            return from d in altData.OfType&lt;QuiverInsiderTradingUniverse&gt;()
-                   where d.SharesOwnedFollowing.HasValue &amp;&amp; d.Shares.HasValue
-                   &amp;&amp; d.SharesOwnedFollowing.Value &gt; 0m &amp;&amp; d.Shares.Value &gt; 0m
-                   select d.Symbol;
+            // Select assets that insiders have the most purchase, which may provide extra confidence in their expected return.
+            return (from d in altData.OfType&lt;QuiverInsiderTradingUniverse&gt;()
+                   where d.Shares.HasValue &amp;&amp; d.Shares.Value &gt; 0m
+                   orderby d.Shares.Value descending
+                   select d.Symbol).Take(10);
         });
     }
     
@@ -151,15 +155,19 @@
     _universe = []
 
     def initialize(self) -&gt; None:
+        self.set_start_date(2016, 1, 1)
         # Keep each security in the universe for a minimum of 30 days to digest the insiders purchase sentiment.
         self.universe_settings.minimum_time_in_universe = timedelta(30)
         # Using QuiverInsiderTrading dataset for insider trade detection and filtering.
-        # Select assets that insiders have purchased, which may provide extra confidence in their expected return.
-        self.add_universe(
-            QuiverInsiderTradingUniverse, 
-            lambda alt_data: [x.symbol for x in alt_data if x.shares and x.shares &gt; 0]
-        )
-        
+        self.add_universe(QuiverInsiderTradingUniverse, self.selection)
+
+    def selection(self, alt_data: List[QuiverInsiderTradingUniverse]) -&gt; None:
+        # Select assets that insiders have the most purchase, which may provide extra confidence in their expected return.
+        filtered = sorted([x for x in alt_data if x.shares and x.shares &gt; 0],
+                        key=lambda x: x.shares,
+                        reverse=True)[:10]
+        return [x.symbol for x in filtered]        
+
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Update universe to trade.
         self._universe.extend([x.symbol for x in changes.added_securities])
@@ -176,7 +184,7 @@
 <h4>Example 3: Share Buyback Universe</h4>
 <p>The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/smart-insider/corporate-buybacks'>Corporate Buybacks</a> dataset to create a universe of US Equities that have announced an upcoming share buyback program:</p>
 <div class="section-example-container">
-	<pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
+	<pre class="csharp">public class SmartInsiderIntentionUniverseAlgorithm : QCAlgorithm
 {
     // A dictionary to hold the updated buyback size for position sizing.
     public Dictionary&lt;Symbol, decimal&gt; _buybackSize = new();
@@ -187,6 +195,14 @@
         SetSecurityInitializer(
             new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
         );
+
+        // Allow a week to capitalize the sentiment.
+        Schedule.On(
+            DateRules.WeekStart(),
+            TimeRules.At(9, 30),
+            Rebalance
+        );
+        UniverseSettings.Schedule.On(DateRules.WeekStart());
         // Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
         AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(
             altData =&gt; altData.OfType&lt;SmartInsiderIntentionUniverse&gt;()
@@ -199,22 +215,26 @@
                 })
         );
     }
-    
-    public override void OnSecuritiesChanged(SecurityChanges changes)
+
+    private void Rebalance()
     {
         // Get the size of all buyback size to normalize the weightings.
         var buybackSum = _buybackSize.Sum(x =&gt; x.Value);
         // Equally invest in insider buying companies to evenly dissipate the capital risk.
         SetHoldings(_buybackSize.Select(x =&gt; new PortfolioTarget(x.Key, x.Value / buybackSum)).ToList());
-
+    }
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
         // Liquidate and remove from universe for the ones not being recently-purchase by insiders.
         foreach (var removed in changes.RemovedSecurities)
         {
+            _buybackSize.Remove(removed.Symbol);
             Liquidate(removed.Symbol);
         }
     }
 }</pre>
-	<pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
+	<pre class="python">class SmartInsiderIntentionUniverseAlgorithm(QCAlgorithm):
     _buyback_size = {}
 
     def initialize(self) -&gt; None:
@@ -222,6 +242,14 @@
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
         )
+
+        # Allow a week to capitalize the sentiment.
+        self.schedule.on(
+            self.date_rules.week_start(),
+            self.time_rules.at(9, 30),
+            self.rebalance
+        )
+        self.universe_settings.schedule.on(self.date_rules.week_start())
         # Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
         self.add_universe(SmartInsiderIntentionUniverse, self.intention_selection)
     
@@ -236,16 +264,17 @@
                 selected.append(d.symbol)
 
         return selected
+
+    def rebalance(self) -&gt; None:
+        # Get the size of all buyback size to normalize the weightings.
+        buyback_sum = sum(self._buyback_size.values())
+        # Equally invest in insider buying companies to evenly dissipate the capital risk.
+        self.set_holdings([PortfolioTarget(symbol, size / buyback_sum) for symbol, size in self._buyback_size.items()])
         
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Liquidate and remove from universe for the ones not being recently-purchase by insiders.
         for removed in changes.removed_securities:
             self.liquidate(removed.symbol)
             if removed.symbol in self._buyback_size:
-                self._buyback_size.pop(removed.symbol)
-        
-        # Get the size of all buyback size to normalize the weightings.
-        buyback_sum = sum(self._buyback_size.values())
-        # Equally invest in insider buying companies to evenly dissipate the capital risk.
-        self.set_holdings([PortfolioTarget(symbol, size / buyback_sum) for symbol, size in self._buyback_size.items()])</pre>
+                self._buyback_size.pop(removed.symbol)</pre>
 </div>
