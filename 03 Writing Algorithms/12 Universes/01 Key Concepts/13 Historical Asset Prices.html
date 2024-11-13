@@ -180,9 +180,12 @@
         # Trim the history to the lookback window size.
         self._all_history = self._all_history.iloc[-self._lookback:]
 
+        # To avoid trading errors, select the assets that have a price.
+        history = self._all_history[[symbol for symbol in self._all_history.columns if self.securities[symbol].price]]
+
         # Calculate asset signals for this rebalance.
         # For example, set the signal to give greater weight to uncorrelated assets.
-        signal_by_symbol = 1/self._all_history.dropna(axis=1).corr().abs().sum()
+        signal_by_symbol = 1/history.dropna(axis=1).corr().abs().sum()
         signal_by_symbol /= signal_by_symbol.sum()
 
         # Rebalance the portfolio based on the signals.
