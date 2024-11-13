@@ -52,7 +52,7 @@ def find_deepest_directories(directory):
 
     # Walk through the directory
     for root, dirs, files in os.walk(directory):
-        if not dirs:
+        if [x for x in files if not x.endswith(".json") and not x.startswith("00")]:
             deepest_dirs.append(root)  # Add to the existing list
 
     return deepest_dirs
@@ -63,9 +63,16 @@ def find_examples_html_in_directories(directories):
     for directory in directories:
         files = [f for f in os.listdir(directory) if isfile(join(directory, f))]
         directory = os.path.relpath(directory, start=str(Path.cwd()))
-        if all(not file.endswith("Examples.html") for file in files):
+        example_file = [file for file in files if file.endswith("Examples.html")]
+        if not example_file:
             any_examples[directory] = False
+            
         else:
+            with open(join(directory, example_file[0]), "r", encoding="utf-8") as file:
+                if file.read().strip().startswith("<div class=\"example-fieldset\">"):
+                    any_examples[directory] = False
+                    continue
+                
             any_examples[directory] = True
 
     return any_examples
