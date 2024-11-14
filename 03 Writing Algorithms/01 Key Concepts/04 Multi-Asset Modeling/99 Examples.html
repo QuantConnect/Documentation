@@ -1,0 +1,68 @@
+<p>The following examples demonstrate some common practices for multi-asset modeling.</p>
+
+<h4>Example 1: Futures Trading On BTC Portfolio</h4>
+<p>This algorithm demonstrates trading maximum-allowed order quantity of E-mini SP500 Future with an account holding only BTC cash position. Lean will automatically convert the BTC cash into base currency of the Future contract and calculate the maximum order quantity under the Future's buying power model.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class MultiAssetModelingAlgorithm : QCAlgorithm
+{
+    private Future _future;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 2, 1);
+        SetEndDate(2021, 3, 1);
+        // Simulate the portfolio is holding BTC cash initially.
+        // Note that the performance will also be affected by the BTC performance in the default account currency.
+        SetCash("BTC", 1000);
+
+        // Request ES future data for trading.
+        _future = AddFuture("ES", Resolution.Daily,
+            extendedMarketHours: true,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            contractDepthOffset: 0);
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        if (!Portfolio.Invested)
+        {
+            // Find the maximum order quantity given the current Future buying power model, using all the buying power we have.
+            var parameter = new GetMaximumOrderQuantityForTargetBuyingPowerParameters(Portfolio, _future, 1m, 0m);
+            var maximumQuantityResult = _future.BuyingPowerModel.GetMaximumOrderQuantityForTargetBuyingPower(parameter);
+            
+            // Order ES future with the maximum quantity allowed.
+            if (!maximumQuantityResult.IsError)
+            {
+                // We need to trade the mapped contract.
+                MarketOrder(_future.Mapped, maximumQuantityResult.Quantity);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 2, 1)
+        self.set_end_date(2021, 3, 1)
+        # Simulate the portfolio is holding BTC cash initially.
+        # Note that the performance will also be affected by the BTC performance in the default account currency.
+        self.set_cash("BTC", 1000)
+
+        # Request ES future data for trading.
+        self._future = self.add_future("ES", Resolution.DAILY,
+            extended_market_hours=True,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            contract_depth_offset=0)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if not self.portfolio.invested:
+            # Find the maximum order quantity given the current Future buying power model, using all the buying power we have.
+            parameter = GetMaximumOrderQuantityForTargetBuyingPowerParameters(self.portfolio, self._future, 1, 0)
+            maximum_quantity_result = self._future.buying_power_model.get_maximum_order_quantity_for_target_buying_power(parameter)
+
+            # Order ES future with the maximum quantity allowed.
+            if not maximum_quantity_result.is_error:
+                # We need to trade the mapped contract.
+                self.market_order(self._future.mapped, maximum_quantity_result.quantity)</pre>
+</div>
