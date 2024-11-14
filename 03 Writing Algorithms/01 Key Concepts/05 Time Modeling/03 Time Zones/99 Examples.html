@@ -1,0 +1,75 @@
+<p>The following examples demonstrate some common practices for time zone modeling.</p>
+
+<h4>Example 1: Futures Time Zone</h4>
+<p>The following algorithm changes its time zone to be the same as the EMini SP500 Futures exchange, i.e. Chicago time zone. It is more comparable on validating data across difference sources and more convenvient time notification without further conversion.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class TimeZoneModelingAlgorithm : QCAlgorithm
+{
+    private Future _future;
+    private OrderTicket _ticket;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 3, 1);
+
+        // Request ES future data for trading.
+        _future = AddFuture("ES", Resolution.Minute,
+            extendedMarketHours: true,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            contractDepthOffset: 0);
+        
+        // Set the time zone to be the same as the Future (Chicago). It will not change the outcome.
+        // It can be more easily compared to the trading hour of the Future.
+        SetTimeZone(_future.Exchange.TimeZone);
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        if (!Portfolio.Invested &amp;&amp; _ticket == null)
+        {
+            _ticket = LimitOrder(_future.Mapped, 1, Securities[_future.Mapped].Price * 0.995m);
+        }
+
+        // Cancel unfilled orders if it is placed more than 2 minutes to avoid stale fills.
+        if (_ticket.Status != OrderStatus.Filled &amp;&amp; _ticket.Time &lt; UtcTime.AddMinutes(-2))
+        {
+            _ticket.Cancel("Expired");
+            // You can change to different time zone and compare the log differences.
+            Log($"{Time} :: utc: {UtcTime} :: Order canceled due to placed over 2 minutes");
+
+            _ticket = null;
+        }
+    }
+}</pre>
+    <pre class="python">class TimeZoneModelingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 3, 1)
+        
+        # Request ES future data for trading.
+        self._future = self.add_future("ES", Resolution.Minute,
+            extended_market_hours=True,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            contract_depth_offset=0)
+
+        # Set the time zone to be the same as the Future (Chicago). It will not change the outcome.
+        # It can be more easily compared to the trading hour of the Future.
+        self.set_time_zone(self._future.exchange.time_zone)
+
+        self.ticket = None
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if not self.portfolio.invested and not self.ticket:
+            self.ticket = self.limit_order(self._future.mapped, 1, self.securities[self._future.mapped].price * 0.995)
+
+        # Cancel unfilled orders if it is placed more than 2 minutes to avoid stale fills.
+        if self.ticket.status != OrderStatus.Filled and self.ticket.time &lt; self.utc_time - timedelta(minutes=2):
+            self.ticket.cancel("Expired")
+            # You can change to different time zone and compare the log differences.
+            self.log(f"{self.time} :: utc: {self.utc_time} :: Order canceled due to placed over 2 minutes")
+
+            self.ticket = None</pre>
+</div>
