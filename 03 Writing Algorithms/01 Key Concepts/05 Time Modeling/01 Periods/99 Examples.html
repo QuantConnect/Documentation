@@ -1,0 +1,73 @@
+<p>The following examples demonstrate some common practices for period time modeling.</p>
+
+<h4>Example 1: Tick Signal Daily Security Bar</h4>
+<p>This example shows using a tick/pointwise signal from <a href="">Smart Insider Intention</a> dataset to buy AAPL in daily resolution. You can count down the holding trade days per each AAPL trade bar received to liquidate the position after 2 trading days.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class PeriodTimeModelingAlgorithm : QCAlgorithm
+{
+    private Symbol _aapl;
+    private Symbol _smartInsiderIntention;
+    // For counting down the holding days per opening position.
+    private int _holdDays = 0;
+
+    public override void Initialize()
+    {
+        SetStartDate(2016, 2, 1);
+        SetEndDate(2021, 3, 1);
+
+        // Subscribe in daily resolution can aids with counting down.
+        // We order with market on open order and will hold position for full day, so daily resolution is sufficient.
+        _aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+            
+        // Requesting insider trade intention as sentiment trading signal.
+        _smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Buy Apple whenever we receive a buyback intention or transaction notification due to volatility.
+        if (slice.ContainsKey(_smartInsiderIntention))
+        {
+            // Hold the position for 2 days to fully digest the insider intention sentiment.
+            MarketOnOpenOrder(_aapl, 100);
+            _holdDays = 2;
+        }
+
+        // Count down the holding day per each daily trade bar received.
+        if (Portfolio[_aapl].Invested &amp;&amp; slice.Bars.ContainsKey(_aapl) &amp;&amp; _holdDays-- &lt;= 0)
+        {
+            // Liquidate the position if 2 days were fully counted down.
+            Liquidate(_aapl);
+        }
+    }
+}</pre>
+    <pre class="python">class PeriodTimeModelingAlgorithm(QCAlgorithm):
+    def initialize(self) :
+        self.set_start_date(2016, 2, 1)
+        self.set_end_date(2021, 3, 1)
+        
+        # Subscribe in daily resolution can aids with counting down.
+        # We order with market on open order and will hold position for full day, so daily resolution is sufficient.
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+
+        # Requesting insider trade intention as sentiment trading signal.
+        self.smart_insider_intention = self.add_data(SmartInsiderIntention, self.aapl).symbol
+
+        # For counting down the holding days per opening position.
+        self.hold_days = 0
+
+    def on_data(self, slice: Slice):
+        # Buy Apple whenever we receive a buyback intention or transaction notification due to volatility.
+        if self.smart_insider_intention in slice:
+            # Hold the position for 2 days to fully digest the insider intention sentiment.
+            self.market_on_open_order(self.aapl, 100)
+            self.hold_days = 2
+
+        # Count down the holding day per each daily trade bar received.
+        if self.portfolio[self.aapl].invested and self.aapl in slice.bars:
+            self.hold_days -= 1
+
+            # Liquidate the position if 2 days were fully counted down.
+            if self.hold_days &lt;= 0:
+                self.liquidate(self.aapl)</pre>
+</div>
