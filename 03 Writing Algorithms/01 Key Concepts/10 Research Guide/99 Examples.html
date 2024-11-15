@@ -233,3 +233,84 @@ class DuckTypingAlgorithm(QCAlgorithm):
             self.coefficients = [0, 0]
             self.threshold = 100000000          # An arbitrary large number that the class A price will never reach.</pre>
 </div>
+
+<h4>Example 2: Data-Driven Research</h4>
+<p>By exploring the return pattern of SPY in 2020, we use that information to invest on 2021. Since the macroeconomic environment are similar (low interest rate), we assume the market seasonality would follow through. We can observe from the below figures that there exists an around 50-day cycle like a sine function, in which the next cycle starts around the Jan 2021. Hence, we switch long and short every 25 days in 2021.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/forward-trailing-return-line-plot.png">
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/return-heatmap-data-driven-research.png">
+<div class="section-example-container">
+    <pre class="csharp">public class DataDrivenResearchAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        // Request SPY data to trade it.
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+    }
+
+    public override void OnWarmupFinished()
+    {
+        // According to the data, the first cycle is downgoing.
+        SetHoldings(_spy, -1m);
+        // Schedule a switch in 25 days later.
+        Schedule.On(
+            DateRules.On(Time.AddDays(25)),
+            TimeRules.At(9, 30),
+            Switch
+        );
+    }
+
+    private void Switch()
+    {
+        // Switch long/short after the cycle change.
+        if (Portfolio[_spy].IsLong)
+        {
+            SetHoldings(_spy, -1m);
+        }
+        else
+        {
+            SetHoldings(_spy, 1m);
+        }
+
+        // Schedule the next switch in 25 days later.
+        Schedule.On(
+            DateRules.On(Time.AddDays(25)),
+            TimeRules.At(9, 30),
+            Switch
+        );
+    }
+}</pre>
+    <pre class="python">class DataDrivenResearchAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        # Request SPY data to trade it.
+        self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+
+    def on_warmup_finished(self) -&gt; None:
+        # According to the data, the first cycle is downgoing.
+        self.set_holdings(self.spy, -1)
+        # Schedule a switch in 25 days later.
+        self.schedule.on(
+            self.date_rules.On(self.time + timedelta(25)),
+            self.time_rules.at(9, 30),
+            self.switch
+        )
+
+    def switch(self) -&gt; None:
+        # Switch long/short after the cycle change.
+        if self.portfolio[self.spy].is_long:
+            self.set_holdings(self.spy, -1)
+        else:
+            self.set_holdings(self.spy, 1)
+
+        # Schedule the next switch in 25 days later.
+        self.schedule.on(
+            self.date_rules.On(self.time + timedelta(25)),
+            self.time_rules.at(9, 30),
+            self.switch
+        )</pre>
+</div>
