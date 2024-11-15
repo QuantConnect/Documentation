@@ -21,7 +21,9 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
+<pre class="csharp">using Accord.Statistics;
+  
+public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
 {
     // Create Rolling Window collection to store the historical data.
     private Dictionary&lt;Symbol, RollingWindow&lt;decimal&gt;&gt; _history = new();
@@ -96,14 +98,15 @@
             _history[symbol].Add(bar.Open);
         }
 
+        // To avoid trading errors, select the assets that have a price.
+        var symbols = _history.Keys.Where(symbol => Securities[symbol].Price > 0).ToArray();
+
         // Calculate asset signals for this rebalance.
         // For example, set the signal to give greater weight to uncorrelated assets.
-        var minSize = _history.Values.Min(x =&gt; x.Count);
-        var symbols = _history.Keys.ToArray();
-        var priceMatrix = new double[minSize, _history.Count];
-        for (int i = 0; i &lt; minSize; i++)
+        var priceMatrix = new double[_lookback, symbols.Count()];
+        for (int i = 0; i &lt; _lookback; i++)
         {
-            for (int j = 0; j &lt; _history.Count; j++)
+            for (int j = 0; j &lt; symbols.Count(); j++)
             {
                 priceMatrix[i, j] = (double)_history[symbols[j]][i];
             }
@@ -112,28 +115,33 @@
         var signals = NormalizedRowAbsoluteSums(correlation);
 
         // Rebalance the portfolio based on the signals.
-        SetHoldings(Enumerable.Range(0, signals.Length)
-            .Select(i =&gt; new PortfolioTarget(symbols[i], Convert.ToDecimal(signals[i])))
-            .ToList());
+        SetHoldings(
+            Enumerable
+                .Range(0, signals.Length)
+                .Select(i => new PortfolioTarget(symbols[i], Convert.ToDecimal(signals[i])))
+                .ToList(),
+            true
+        );
     }
 
     private double[] NormalizedRowAbsoluteSums(double[,] array)
     {
         var rows = array.GetLength(0);
-        var sums = new double[rows];
+        var rowAbsSums = new double[rows];
 
-        for (int i = 0; i &lt; rows; i++)
+        for (int i = 0; i < rows; i++)
         {
-            var rowSum = 0d;
-            for (int j = 0; j &lt; array.GetLength(1); j++)
+            var rowAbsSum = 0d;
+            for (int j = 0; j < array.GetLength(1); j++)
             {
-                rowSum += Math.Abs(array[i, j]);
+                rowAbsSum += Math.Abs(array[i, j]);
             }
-            sums[i] = rowSum;
+            rowAbsSums[i] = rowAbsSum;
         }
 
-        var allSum = sums.Sum();
-        return sums.Select(x =&gt; x / allSum).ToArray();
+        var inverseRowSums = rowAbsSums.Select(sum => 1.0d/sum);
+        var allSum = inverseRowSums.Sum();
+        return inverseRowSums.Select(x => x / allSum).ToArray();
     }
 }</pre>
 <pre class="python">class MaintainHistoricalDailyUniversePriceDataAlgorithm(QCAlgorithm):
