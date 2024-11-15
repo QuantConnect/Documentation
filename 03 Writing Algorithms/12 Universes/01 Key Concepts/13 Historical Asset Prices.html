@@ -8,9 +8,15 @@
 
 <p>
   The following algorithm demonstrates an alternative, more efficient approach.
-  It defines a <span class='csharp'><a href="/docs/v2/writing-algorithms/historical-data/rolling-window">RollingWindow</a> when constructing the algorithm class</span><span class='python'>DataFrame in the <a href='/docs/v2/writing-algorithms/initialization'>initialize</a> method</span>.
-  When a new asset enters the universe, it adds a column of historical prices for that asset to the <span class='csharp'>RollingWindow</span><span class='python'>DataFrame</span>.
-  Then, each day, it adds a single row of daily prices to the <span class='csharp'>RollingWindow</span><span class='python'>DataFrame</span>, which covers all the assets in the universe.
+  It defines a <span class='csharp'><code>Dictionary</code> when constructing the algorithm class</span><span class='python'>DataFrame in the <a href='/docs/v2/writing-algorithms/initialization'>initialize</a> method</span>.
+  <span class='python'>
+    When a new asset enters the universe, it adds a column of historical prices for that asset to the DataFrame.
+    Then, each day, it adds a single row of daily prices to the DataFrame, which covers all the assets in the universe.
+  </span>
+  <span class='csharp'>
+    When a new asset enters the universe, it adds a new key-value pair to the dictionary.
+    Then, each day, it adds yesterday's open price to each <a href='/docs/v2/writing-algorithms/historical-data/rolling-window'>RollingWindow</a> in the dictionary, which covers all the assets in the universe.
+  </span>
   This approach reduces the size and frequency of history requests you need to make to get the data.
 </p>
 
@@ -49,7 +55,7 @@
         var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         Schedule.On(
             DateRules.EveryDay(spy),
-            TimeRules.At(9, 1),      // One minute after `on_securities_changed` runs (in backtests)
+            TimeRules.At(9, 1),      // One minute after `OnSecuritiesChanged` runs (in backtests)
             Rebalance
         );
     }
