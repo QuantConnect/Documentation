@@ -41,7 +41,7 @@
             // Otherwise, do not hold a position if there is no deterministic trend.
             else
             {
-                SetHoldings(_aapl, 0m);
+                Liquidate();
             }
         }
     }
@@ -65,12 +65,12 @@
             # Trade on a rising trend, suggested by the current close is above the past hour open
             # and the past hour open is above the 6-hour bar open.
             if self.consolidator.working_bar.open &lt; bar.open &lt; bar.close:
-                self.set_holdings(self.aapl, 1.)
+                self.set_holdings(self.aapl, 1)
             # Trade on a down trend, suggested by the current close is below the past hour open
             # and the past hour open is below the 6-hour bar open.
             elif self.consolidator.working_bar.open &gt; bar.open &gt; bar.close:
-                self.set_holdings(self.aapl, -1.)
+                self.set_holdings(self.aapl, -1)
             # Otherwise, do not hold a position if there is no deterministic trend.
             else:
-                self.set_holdings(self.aapl, 0.)</pre>
+                self.liquidate()</pre>
 </div>
