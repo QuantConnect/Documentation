@@ -36,12 +36,6 @@ public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
         SetStartDate(2010, 1, 1);
         SetCash(1000000);
 
-        // Seed each asset's price with it's last known price so you can trade it 
-        // on the same day it enters the universe without throwing errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
-
         // Add a universe of daily data.
         UniverseSettings.Resolution = Resolution.Daily;
         // Filter for any coporate announced a material buyback plan, since they have confidence in their
@@ -56,7 +50,7 @@ public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
         var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         Schedule.On(
             DateRules.EveryDay(spy),
-            TimeRules.At(9, 1),      // One minute after `OnSecuritiesChanged` runs (in backtests)
+            TimeRules.At(0, 1),      // One minute after `OnSecuritiesChanged` runs (in backtests)
             Rebalance
         );
     }
@@ -71,7 +65,7 @@ public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
 
         // Warm-up the historical data of assets that enter the universe.
         var symbols = changes.AddedSecurities.Select(x =&gt; x.Symbol).ToList();
-        var history = History&lt;TradeBar&gt;(symbols, _lookback, Resolution.Daily);
+        var history = History&lt;TradeBar&gt;(symbols, _lookback+1, Resolution.Daily);
         foreach (var bars in history.SkipLast(1))
         {
             foreach (var (symbol, bar) in bars)
