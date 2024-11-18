@@ -11,7 +11,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Set PriceModel property to use the Crank-Nicolson finite-difference model to price the Options.
-option.PriceModel = OptionPriceModels.crank_nicolson_fd();</pre>
+option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
     <pre class="python">// Set price_model field to use the Crank-Nicolson finite-difference model to price the Options.
 option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
