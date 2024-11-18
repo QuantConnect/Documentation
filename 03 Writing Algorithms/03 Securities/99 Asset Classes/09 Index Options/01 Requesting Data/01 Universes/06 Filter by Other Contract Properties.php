@@ -1,5 +1,4 @@
 <? include(DOCS_RESOURCES."/universes/option/set-filter.php"); ?>
-<p>The following table describes the filter methods of the <code>OptionFilterUniverse</code> class:</p>
 
 <?
   $assetClass = "Option";
