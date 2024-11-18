@@ -1,0 +1,119 @@
+<p>The following examples demonstrate some common practices for crypto holdings.</p>
+
+<h4>Example 1: ETH-BTC Proxy Trading</h4>
+<p>The following algorithm trades trend-following of ETHBTC crypto pair using 20-day EMA indicator. In order to reduce friction (e.g. slippage), we trade the more liquid and popular BTCUSDT and ETHUSDT pair instead. For example, if ETHBTC is above EMA (uptrend), we buy ETHUSDT and sell BTCUSDT with the same size in USDT.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class CryptoHoldingsAlgorithm : QCAlgorithm
+{
+    private Symbol _btcusdt, _ethusdt, _ethbtc;
+    private ExponentialMovingAverage _ema;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2024, 1, 1);
+        SetAccountCurrency("USDT");
+        // Simulate an account with various crypto cash.
+        SetCash("USDT", 10000m);
+        SetCash("BTC", 0.13m);
+        SetCash("ETH", 2.5m);
+
+        // We would like to trade the EMA cross between 2 popular cryptos BTC & ETH,
+        // so request ETHBTC data to find trading oppotunity.
+        _ethbtc = AddCrypto("ETHBTC", Resolution.Minute, market: Market.Coinbase).Symbol;
+        // Trade through BTCUSDT & ETHUSDT though, since stable coin trades have lower friction cost and higher liquidity.
+        _btcusdt = AddCrypto("BTCUSDT", Resolution.Minute, market: Market.Coinbase).Symbol;
+        _ethusdt = AddCrypto("ETHUSDT", Resolution.Minute, market: Market.Coinbase).Symbol;
+
+        // Add automatic-updating EMA indicator for trend trade signal emission.
+        _ema = EMA(_ethbtc, 20, Resolution.Daily);
+        // Warm up the indicator for its readiness usage immediately.
+        WarmUpIndicator(_ethbtc, _ema, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_ethbtc, out var bar) &amp;&amp; _ema.IsReady &amp;&amp;
+        slice.Bars.TryGetValue(_btcusdt, out var btc) &amp;&amp; slice.Bars.TryGetValue(_ethusdt, out var eth))
+        {
+            // ETHBTC current price is higher than EMA, suggesting an uptrend.
+            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_btcusdt].IsShort)
+            {
+                // Calculate the order size needed to have equal BTC-ETH value exposure.
+                CalculateOrderSize(btc.Close, eth.Close, out var btcSize, out var ethSize);
+                // To follow the up trend of ETHBTC, sell BTCUSDT and buy ETHUSDT.
+                MarketOrder(_btcusdt, -btcSize);
+                MarketOrder(_ethusdt, ethSize);
+            }
+            // ETHBTC current price is below the EMA, suggesting a down trend.
+            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_btcusdt].IsLong)
+            {
+                // Calculate the order size needed to have equal BTC-ETH value exposure.
+                CalculateOrderSize(btc.Close, eth.Close, out var btcSize, out var ethSize);
+                // To follow the down trend of ETHBTC, buy BTCUSDT and sell ETHUSDT.
+                MarketOrder(_btcusdt, btcSize);
+                MarketOrder(_ethusdt, -ethSize);
+            }
+        }
+    }
+
+    private void CalculateOrderSize(decimal btcPrice, decimal ethPrice, out decimal btcSize, out decimal ethSize)
+    {
+        // Invest half the portfolio in the 2-leg trade, so it will be 1/4 per each leg.
+        var positionValue = Portfolio.TotalPortfolioValue * 0.25m;
+        // Calculate the extra position needed to hold BTC/ETH in the same size in terms of USDT in the 2-leg trade.
+        btcSize = (positionValue - Portfolio.CashBook["BTC"].ValueInAccountCurrency) / btcPrice;
+        ethSize = (positionValue - Portfolio.CashBook["ETH"].ValueInAccountCurrency) / ethPrice;
+    }
+}</pre>
+    <pre class="python">class CryptoHoldingsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2024, 1, 1)
+        self.set_account_currency("USDT")
+        # Simulate an account with various crypto cash.
+        self.set_cash("USDT", 10000)
+        self.set_cash("BTC", 0.13)
+        self.set_cash("ETH", 2.5)
+
+        # We would like to trade the EMA cross between 2 popular cryptos BTC & ETH,
+        # so request ETHBTC data to find trading oppotunity.
+        self.ethbtc = self.add_crypto("ETHBTC", Resolution.MINUTE, market=Market.COINBASE).symbol
+        # Trade through BTCUSDT & ETHUSDT though, since stable coin trades have lower friction cost and higher liquidity.
+        self.btcusdt = self.add_crypto("BTCUSDT", Resolution.MINUTE, market=Market.COINBASE).symbol
+        self.ethusdt = self.add_crypto("ETHUSDT", Resolution.MINUTE, market=Market.COINBASE).symbol
+
+        # Add automatic-updating EMA indicator for trend trade signal emission.
+        self._ema = self.ema(self.ethbtc, 20, Resolution.DAILY)
+        # Warm up the indicator for its readiness usage immediately.
+        self.warm_up_indicator(self.ethbtc, self._ema, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self.ethbtc)
+        btc = slice.bars.get(self.btcusdt)
+        eth = slice.bars.get(self.ethusdt)
+        if bar and self._ema.is_ready and btc and eth:
+            ema = self._ema.current.value
+            # ETHBTC current price is higher than EMA, suggesting an uptrend.
+            if bar.close &gt; ema and not self.portfolio[self.btcusdt].is_short:
+                # Calculate the order size needed to have equal BTC-ETH value exposure.
+                btc_size, eth_size = self.calculate_order_size(btc.close, eth.close)
+                # To follow the up trend of ETHBTC, sell BTCUSDT and buy ETHUSDT.
+                self.market_order(self.btcusdt, -btc_size)
+                self.market_order(self.ethusdt, eth_size)
+            # ETHBTC current price is below the EMA, suggesting a down trend.
+            elif bar.close &lt; ema and not self.portfolio[self.btcusdt].is_long:
+                # Calculate the order size needed to have equal BTC-ETH value exposure.
+                btc_size, eth_size = self.calculate_order_size(btc.close, eth.close)
+                # To follow the down trend of ETHBTC, buy BTCUSDT and sell ETHUSDT.
+                self.market_order(self.btcusdt, btc_size)
+                self.market_order(self.ethusdt, -eth_size)
+
+    def calculate_order_size(self, btc_price: float, eth_price: float) -&gt; Tuple[float]:
+        # Invest half the portfolio in the 2-leg trade, so it will be 1/4 per each leg.
+        position_value = self.portfolio.total_portfolio_value * 0.25
+        # Calculate the extra position needed to hold BTC/ETH in the same size in terms of USDT in the 2-leg trade.
+        btc_size = (position_value - self.portfolio.cash_book["BTC"].value_in_account_currency) / btc_price
+        eth_size = (position_value - self.portfolio.cash_book["ETH"].value_in_account_currency) / eth_price
+        return btc_size, eth_size</pre>
+</div>
