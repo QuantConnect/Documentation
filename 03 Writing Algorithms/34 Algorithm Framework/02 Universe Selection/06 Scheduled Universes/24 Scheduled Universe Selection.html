@@ -1,25 +1,27 @@
 <p>The <code>ScheduledUniverseSelectionModel</code> selects assets on the schedule you provide. To use this model, provide a <code>DateRule</code>, <code>TimeRule</code>, and a selector function. The <code>DateRule</code> and <code>TimeRule</code> define the selection schedule. The selector function receives a <code class="python">datetime</code><code class="csharp">DateTime</code> object and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the constituents of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
+	<pre class="csharp">// Enable asynchronous universe selection to speed up your algorithm.
 UniverseSettings.Asynchronous = true;
-// Schedule at midnight in the begining of each month, select SPY symbol if current month is October or QQQ otherwise.
+// Add a universe that selects assets at the beginning of each month.
 AddUniverseSelection(
     new ScheduledUniverseSelectionModel(
         DateRules.MonthStart(), 
         TimeRules.Midnight, 
+        // Select SPY for October. Otherwise, select QQQ.
         dt => new List&lt;Symbol&gt; { 
             QuantConnect.Symbol.Create(dt.Month == 10 ? "SPY" : "QQQ", SecurityType.Equity, Market.USA) 
         }
     )
 );</pre>
-	<pre class="python"># Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
+	<pre class="python"># Enable asynchronous universe selection to speed up your algorithm.
 self.universe_settings.asynchronous = True
-# Schedule at midnight in the begining of each month, select SPY symbol if current month is October or QQQ otherwise.
+# Add a universe that selects assets at the beginning of each month.
 self.add_universe_selection(
     ScheduledUniverseSelectionModel(
         self.date_rules.month_start(), 
         self.time_rules.midnight, 
+        # Select SPY for October. Otherwise, select QQQ.
         lambda dt: [Symbol.create("SPY" if dt.month == 10 else "QQQ", SecurityType.EQUITY, Market.USA)]
     )
 )</pre>
@@ -69,14 +71,14 @@ self.add_universe_selection(
 <p>To return the current universe constituents from the selector function, return <code>Universe.<span class="csharp">Unchanged</span><span class="python">UNCHANGED</span></code>.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00.
+	<pre class="csharp">// Add a universe that selects assets on Monday, Tuesday, and Thursday at 00:00, 06:00, 12:00, and 18:00 UTC.
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
     TimeRules.Every(TimeSpan.FromHours(6)),
-    SelectSymbols // selection function in algorithm.
+    SelectSymbols
 ));
 
-// Create selection function which returns symbol objects.
+// Define the selection function.
 private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
 {
     var tickers = new[] {"SPY", "AAPL", "IBM"};
@@ -84,14 +86,14 @@ private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
         QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 }
 </pre>
-	<pre class="python"># Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00.
+	<pre class="python"># Add a universe that selects assets on Monday, Tuesday, and Thursday at 00:00, 06:00, 12:00, and 18:00 UTC.
 self.add_universe_selection(ScheduledUniverseSelectionModel(
     self.date_rules.every(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY),
     self.time_rules.every(timedelta(hours = 6)),
     self.select_symbols # selection function in algorithm.
 ))
 
-# Create selection function which returns symbol objects.
+# Define the selection function.
 def select_symbols(self, date_time: datetime) -> List[Symbol]:
     tickers = ['SPY', 'AAPL', 'IBM']
     return [Symbol.create(ticker, SecurityType.EQUITY, Market.USA)
