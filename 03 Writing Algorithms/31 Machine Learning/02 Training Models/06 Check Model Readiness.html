@@ -1,13 +1,11 @@
 
 <p>In backtests, the <code class="csharp">Train</code><code class="python">train</code> method is synchronous, so it blocks your algorithm execution while the model trains. In live trading, the <code class="csharp">Train</code><code class="python">train</code> method is asynchronous, so ensure your model is trained before you continue the algorithm execution. Training occurs on a separate thread, so set a boolean flag to notify your algorithm of the model state. A <span class="new-term">semaphore</span> is a thread-safe flag you can use to synchronize program operations across different threads. <br></p>
 <div class="section-example-container">
-<pre class="python"># Example of using a flag to signal the model is ready to for use:
+<pre class="python"># Example of using a flag to signal the model is ready to use:
 class SemaphoreTrainingAlgorithm(QCAlgorithm):
 
-    # Model Object
-    model = None
-    # Model State Flag
-    model_is_training = False
+    model = None  # Model object
+    model_is_training = False  # Model state flag
 
     def initialize(self) -&gt; None: 
         self.train(self.my_training_method)
@@ -25,7 +23,7 @@ class SemaphoreTrainingAlgorithm(QCAlgorithm):
         # Once training is complete, use the model.
         result = self.model.predict()
 </pre>
-<pre class="csharp">// Example of using a flag to signal the model is ready to for use:
+<pre class="csharp">// Example of using a flag to signal the model is ready to use:
 public class SemaphoreTrainingAlgorithm : QCAlgorithm
 {
     // Initialize the model.
