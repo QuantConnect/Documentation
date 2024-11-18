@@ -53,16 +53,18 @@ public class LinkedCustomDataExampleAlgorithm : QCAlgorithm
     {
         SetStartDate(2011, 9, 13);
         SetEndDate(2021, 6, 20);
-        // Subscribe to Bitcoin and the custom dataset.
-        btc = AddCrypto("BTCUSD");
-        (btc as dynamic).dataSymbol = AddData&lt;Bitstamp&gt;(btc.Symbol.Value, Resolution.Daily).Symbol;
+        // Add Bitcoin and the custom dataset.
+        dynamic btc = AddCrypto("BTCUSD");
+        btc.dataSymbol = AddData<Bitstamp>(btc.Symbol.Value, Resolution.Daily).Symbol;
+        // Plot the price from the custom dataset.
+        PlotIndicator("BTC Price", Identity(btc.dataSymbol));
     }
 }
 
 // Define the custom data source.
 public class Bitstamp : BaseData
 {
-    // Declear the properties of the custom dataset.
+    // Declare the properties of the custom dataset.
     public int Timestamp = 0;
     public decimal Open = 0;
     public decimal High = 0;
@@ -74,14 +76,15 @@ public class Bitstamp : BaseData
     public decimal VolumeBTC = 0;
     public decimal VolumeUSD = 0;
 
-    // Override the GetSource method to load the data from its location.
+    // Define the GetSource method to load the data from its location.
     public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
         var source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv";
-        return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);  // RemoteFile means it's in online storage.
+        // RemoteFile in the next line means the data file in online storage.
+        return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
     }
 
-    // Override the Reader method to read the CSV rows.
+    // Define the Reader method to parse the CSV rows.
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
     {
         // Ignore empty rows.
@@ -127,18 +130,21 @@ class LinkedCustomDataExampleAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2011, 9, 13)
         self.set_end_date(2021, 6, 20)
-        # Subscribe to Bitcoin and the custom dataset.
-        self._btc = self.add_crypto('BTCUSD')
-        self._btc.data_symbol = self.add_data(Bitstamp, self._btc.symbol.value, Resolution.DAILY).symbol
+        # Add Bitcoin and the custom dataset.
+        btc = self.add_crypto('BTCUSD')
+        btc.data_symbol = self.add_data(Bitstamp, btc.symbol.value, Resolution.DAILY).symbol
+        # Plot the price from the custom dataset.
+        self.plot_indicator('BTC Price', self.identity(btc.data_symbol))
 
 # Define the custom data source.
 class Bitstamp(PythonData):
-    # Override the get_source method to load the data from its location.
+    # Define the get_source method to load the data from its location.
     def get_source(self, config, date, is_live_mode):
         source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)  # REMOTE_FILE means it's in online storage.
+        # REMOTE_FILE in the next line means the data file in online storage.
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
     
-    # Override the reader method to read the CSV rows.
+    # Define the reader method to parse the CSV rows.
     def reader(self, config, line, date, is_live_mode):
         # Ignore empty rows.
         if not line.strip():
@@ -152,7 +158,7 @@ class Bitstamp(PythonData):
         if not line[0].isdigit():
             return None
 
-        # Split the CSV data by its commas.
+        # Split the CSV row by its commas.
         data = line.split(',')
 
         # Ignore invalid data.
