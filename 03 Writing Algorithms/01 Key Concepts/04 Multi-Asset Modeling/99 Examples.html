@@ -3,66 +3,125 @@
 <h4>Example 1: Futures Trading On BTC Portfolio</h4>
 <p>This algorithm demonstrates trading maximum-allowed order quantity of E-mini SP500 Future with an account holding only BTC cash position. Lean will automatically convert the BTC cash into base currency of the Future contract and calculate the maximum order quantity under the Future's buying power model.</p>
 <div class="section-example-container">
-    <pre class="csharp">public class MultiAssetModelingAlgorithm : QCAlgorithm
+    <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
 {
-    private Future _future;
+    private Symbol _btcusdt, _btcFuture;
+    private decimal _threshold = 0.005m;
 
     public override void Initialize()
     {
-        SetStartDate(2021, 2, 1);
-        SetEndDate(2021, 3, 1);
-        // Simulate the portfolio is holding BTC cash initially.
-        // Note that the performance will also be affected by the BTC performance in the default account currency.
-        SetCash("BTC", 1000);
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 1, 1);
+        // Seed the last price to set the initial price of the BTCUSDT holdings.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        
+        // Simulate a cash Bybit account.
+        SetBrokerageModel(BrokerageName.Bybit, AccountType.Cash);
+        SetAccountCurrency("USDT");
 
-        // Request ES future data for trading.
-        _future = AddFuture("ES", Resolution.Daily,
-            extendedMarketHours: true,
-            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-            dataMappingMode: DataMappingMode.OpenInterest,
-            contractDepthOffset: 0);
+        // Request BTCUSD spot and future data to trade their price discrepancies.
+        var btcusdt = AddCrypto("BTCUSDT", Resolution.Minute, market: Market.Bybit);
+        _btcusdt = btcusdt.Symbol;
+        _btcFuture = AddCryptoFuture("BTCUSDT", Resolution.Minute, market: Market.Bybit).Symbol;
+
+        // Simulate the portfolio is holding BTC cash initially, via BTCUSDT position.
+        // Note that the performance will also be affected by the BTC performance in the default account currency.
+        Portfolio[_btcusdt].SetHoldings(averagePrice: btcusdt.Price, quantity: 2);
     }
-    
+
     public override void OnData(Slice slice)
     {
-        if (!Portfolio.Invested)
+        if (slice.QuoteBars.TryGetValue(_btcusdt, out var spot) &amp;&amp; slice.QuoteBars.TryGetValue(_btcFuture, out var future))
         {
-            // Find the maximum order quantity given the current Future buying power model, using all the buying power we have.
-            var parameter = new GetMaximumOrderQuantityForTargetBuyingPowerParameters(Portfolio, _future, 1m, 0m);
-            var maximumQuantityResult = _future.BuyingPowerModel.GetMaximumOrderQuantityForTargetBuyingPower(parameter);
-            
-            // Order ES future with the maximum quantity allowed.
-            if (!maximumQuantityResult.IsError)
+            // If the spot price is higher than the future price more than the threshold,
+            // Do arbitration by selling the spot BTC and buying the future.
+            if (spot.Close &gt;= future.Close * (1m + _threshold) &amp;&amp; !Portfolio[_btcusdt].IsShort)
             {
-                // We need to trade the mapped contract.
-                MarketOrder(_future.Mapped, maximumQuantityResult.Quantity);
+                Sell(_btcusdt, 1m);
+            }
+            // If the future price is higher than the spot price more than the threshold,
+            // Do arbitration by buying the spot BTC and selling the future.
+            if (future.Close &gt;= spot.Close * (1m + _threshold) &amp;&amp; !Portfolio[_btcusdt].IsLong)
+            {
+                Sell(_btcFuture, 1m);
             }
         }
     }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        // Order the buy-side of the arb only when the BTC was sold and USDT was obtained.
+        if (orderEvent.Quantity &lt; 0 &amp;&amp; orderEvent.Status == OrderStatus.Filled)
+        {
+            var toBuySymbol = orderEvent.Symbol == _btcusdt ? _btcFuture : _btcusdt;
+            // Calculate the initial margin needed, we need to sell the same amount of BTC to obtain sufficient USDT for trade.
+            var margin = CalculateInitialMargin(toBuySymbol);
+            // Check if USDT cash is sufficient to open the position.
+            if (Portfolio.CashBook["USDT"].Amount &gt;= margin)
+            {
+                Buy(toBuySymbol, 1m);
+            }
+        }
+    }
+
+    private decimal CalculateInitialMargin(Symbol toBuy)
+    {
+        // Calculate the initial margin of the symbol on the long side.
+        var security = Securities[toBuy];
+        var parameter = new InitialMarginParameters(security, 1m);
+        var initialMargin = security.BuyingPowerModel.GetInitialMarginRequirement(parameter);
+        return initialMargin.Value;
+    }
 }</pre>
     <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        self.set_start_date(2021, 2, 1)
-        self.set_end_date(2021, 3, 1)
-        # Simulate the portfolio is holding BTC cash initially.
-        # Note that the performance will also be affected by the BTC performance in the default account currency.
-        self.set_cash("BTC", 1000)
+    threshold = 0.005
 
-        # Request ES future data for trading.
-        self._future = self.add_future("ES", Resolution.DAILY,
-            extended_market_hours=True,
-            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
-            contract_depth_offset=0)
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2024, 1, 1)
+        # Seed the last price to set the initial price of the BTCUSDT holdings.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Simulate a cash Bybit account.
+        self.set_brokerage_model(BrokerageName.BYBIT, AccountType.Cash)
+        self.set_account_currency("USDT")
+
+        # Request BTCUSD spot and future data to trade their price discrepancies.
+        btcusdt = self.add_crypto("BTCUSDT", Resolution.MINUTE, market=Market.BYBIT)
+        self.btcusdt = btcusdt.symbol
+        self.btc_future = self.add_crypto_future("BTCUSDT", Resolution.MINUTE, market=Market.BYBIT).symbol
+
+        # Simulate the portfolio is holding BTC cash initially, via BTCUSDT position.
+        # Note that the performance will also be affected by the BTC performance in the default account currency.
+        self.portfolio[self.btcusdt].set_holdings(average_price=btcusdt.price, quantity=2)
 
     def on_data(self, slice: Slice) -&gt; None:
-        if not self.portfolio.invested:
-            # Find the maximum order quantity given the current Future buying power model, using all the buying power we have.
-            parameter = GetMaximumOrderQuantityForTargetBuyingPowerParameters(self.portfolio, self._future, 1, 0)
-            maximum_quantity_result = self._future.buying_power_model.get_maximum_order_quantity_for_target_buying_power(parameter)
+        spot = slice.quote_bars.get(self.btcusdt)
+        future = slice.quote_bars.get(self.btc_future)
+        if spot and future:
+            # If the spot price is higher than the future price more than the threshold,
+            # Do arbitration by selling the spot BTC and buying the future.
+            if spot.close &gt;= future.close * (1 + self.threshold) and not self.portfolio[self.btcusdt].is_short:
+                self.sell(self.btcusdt, 1)
+            # If the future price is higher than the spot price more than the threshold,
+            # Do arbitration by buying the spot BTC and selling the future.
+            if future.close &gt;= spot.close * (1 + self.threshold) and not self.portfolio[self.btcusdt].is_long:
+                self.sell(self.btc_future, 1)
 
-            # Order ES future with the maximum quantity allowed.
-            if not maximum_quantity_result.is_error:
-                # We need to trade the mapped contract.
-                self.market_order(self._future.mapped, maximum_quantity_result.quantity)</pre>
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        # Order the buy-side of the arb only when the BTC was sold and USDT was obtained.
+        if order_event.quantity &lt; 0 and order_event.status == OrderStatus.FILLED:
+            to_buy_symbol = self.btc_future if order_event.symbol == self.btcusdt else self.btcusdt
+            # Calculate the initial margin needed, we need to sell the same amount of BTC to obtain sufficient USDT for trade.
+            margin = self.calculate_initial_margin(to_buy_symbol)
+            # Check if USDT cash is sufficient to open the position.
+            if self.portfolio.cash_book["USDT"].amount &gt;= margin:
+                self.buy(to_buy_symbol, 1)
+
+    def calculate_initial_margin(self, to_buy: Symbol) -&gt; None:
+        # Calculate the initial margin of the symbol on the long side.
+        security = self.securities[to_buy]
+        parameter = InitialMarginParameters(security, 1)
+        initial_margin = security.buying_power_model.get_initial_margin_requirement(parameter)
+        return initial_margin.value</pre>
 </div>
