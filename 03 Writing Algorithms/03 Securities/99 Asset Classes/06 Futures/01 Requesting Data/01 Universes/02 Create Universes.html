@@ -3,9 +3,10 @@
 <div class="section-example-container">
     <pre class="csharp">public class BasicFutureAlgorithm : QCAlgorithm
 {
+    private Future _future;
     public override void Initialize()
     {
-        var future = AddFuture(
+        _future = AddFuture(
             Futures.Indices.SP500EMini,
             Resolution.Daily,
             extendedMarketHours: true,
@@ -13,7 +14,7 @@
             dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
             contractDepthOffset: 0
         );
-        future.SetFilter(0, 182);
+        _future.SetFilter(0, 182);
     }
 
     public override void OnData(Slice data)
@@ -30,7 +31,7 @@
     <pre class="python">class BasicFutureAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        future = self.add_future(
+        self.future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
             Resolution.DAILY,
             extended_market_hours=True,
@@ -38,7 +39,7 @@
             data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
             contract_depth_offset=0
         )
-        future.set_filter(0, 182)
+        self.future.set_filter(0, 182)
     
     def on_data(self, data):
         for continuous_symbol, chain in data.future_chains.items():
