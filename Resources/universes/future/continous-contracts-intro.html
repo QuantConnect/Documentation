@@ -1,23 +1,23 @@
 <p>By default, LEAN only subscribes to the continuous Future contract. A continuous Future contract represents a series of separate contracts stitched together to form a continuous price. If you need a lot of historical data to warm up an indicator, apply the indicator to the continuous contract price series. The <code>Future</code> object has a <code class="csharp">Symbol</code><code class="python">symbol</code> property and a <code class="csharp">Mapped</code><code class="python">mapped</code> property. The price of the <code class="csharp">Symbol</code><code class="python">symbol</code> property is the adjusted price of the continuous contract. The price of the <code class="csharp">Mapped</code><code class="python">mapped</code> property is the raw price of the currently selected contract in the continuous contract series.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the adjusted price of the continuous contract
+    <pre class="csharp">// Get the adjusted price of the continuous contract.
 var adjustedPrice = Securities[_future.Symbol].Price; 
 
-// Get the raw price of the currently selected contract in the continuous contract series
+// Get the raw price of the currently selected contract in the continuous contract series.
 var rawPrice = Securities[_future.Mapped].Price;</pre>
-    <pre class="python"># Get the adjusted price of the continuous contract
+    <pre class="python"># Get the adjusted price of the continuous contract.
 adjusted_price = self.securities[self._future.symbol].price 
 
-# Get the raw price of the currently selected contract in the continuous contract series
+# Get the raw price of the currently selected contract in the continuous contract series.
 raw_price = self.securities[self._future.mapped].price</pre>
 </div>
 
 <p>The continuous Futures contract isn't a <a href="/docs/v2/writing-algorithms/securities/key-concepts#05-Tradable-Status">tradable security</a>. You must place orders for a specific Futures contract. To access the currently selected contract in the continuous contract series, use the <code class="csharp">Mapped</code><code class="python">mapped</code> property of the <code>Future</code> object.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Place a market order for the currently selected contract in the continuous contract series
+    <pre class="csharp">// Place a market order for the currently selected contract in the continuous contract series.
 MarkerOrder(_future.Mapped, 1); </pre>
-    <pre class="python"># Place a market order for the currently selected contract in the continuous contract series
+    <pre class="python"># Place a market order for the currently selected contract in the continuous contract series.
 self.market_order(self._future.mapped, 1)</pre>
 </div>
