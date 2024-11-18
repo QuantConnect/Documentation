@@ -3,7 +3,7 @@
 <h4>Example 1: Set the Data Seed</h4>
 <p>
 	Some data feeds might not have data on its first fetch, making the algorithm prone to error. 
-	To avoid issues, <a href='/docs/v2/writing-algorithms/universes/settings#98-Configure-Universe-Securities'>set a seed</a> so the initial price of each asset is its last known price.
+	The following algorithm <a href='/docs/v2/writing-algorithms/universes/settings#98-Configure-Universe-Securities'>seeds the initial price of each asset</a> to its last known price to avoid issues.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">// Seed with the last known price of assets to prevent $0 security price errors.
@@ -19,20 +19,20 @@ def initialize(self):
 </div>
 
 <h4>Example 2: Enable Extended Market Hours</h4>
-<p>Some traders use pre-market data for filtering assets. To enable extended market hour data, adjust the <a href='/docs/v2/writing-algorithms/universes/settings'>universe settings</a>.</p>
+<p>Some traders use pre-market data for filtering assets. The following algorithm enables extended market hour data for assets in the universe.</p>
 <div class="section-example-container">
-	<pre class="csharp">// Request extended market hours to use pre/post market hours data for universe subscriptions.
+	<pre class="csharp">// Add a universe of assets with extended market hours data.
 public override void Initialize()
 {
     UniverseSettings.ExtendedMarketHours = true;
 }</pre>
-	<pre class="python"># Request extended market hours to use pre/post market hours data for universe subscriptions.
+	<pre class="python"># Add a universe of assets with extended market hours data.
 def initialize(self):
     self.universe_settings.extended_market_hours = True</pre>
 </div>
 
 <h4>Example 3: Train Models When the Warm Up Finishes</h4>
-<p>After warming up indicators or rolling windows, you can train machine learning models with the data.</p>
+<p>The following algorithm uses the <code class='csharp'>OnWarmupFinished</code><code class='python'>on_warmup_finished</code> event handler to train a model with data from the warm-up period.</p>
 <div class="section-example-container">
 	<pre class="csharp">// Train machine learning models after the algorithm warm up is done, so your models 
 // are ready as soon as the algorithm starts trading. 
@@ -46,6 +46,7 @@ def on_warmup_finished(self) -&gt; None:
     self.train(self.my_training_method)</pre>
 </div>
 
+<h4>Other Examples</h4>
 <p>For more examples, see the following algorithms:</p>
   <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
