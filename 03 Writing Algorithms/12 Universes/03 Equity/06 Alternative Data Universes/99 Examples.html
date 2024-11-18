@@ -2,118 +2,93 @@
 
 <h4>Example 1: Brain Sentiment Universe</h4>
 <p>
-    The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/brain/brain-sentiment-indicator'>Brain Sentiment Indicator</a> dataset to create a universe of US Equities that have some article mentions and the most positive sentiment. The selected equities will be invested according to their sentiment score. The more positive the sentiment, the higher the weighting.
+    The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/brain/brain-sentiment-indicator'>Brain Sentiment Indicator</a> dataset to create a universe of US Equities that have some article mentions and the most positive sentiment. 
+    It then forms a sentiment-weighted portfolio at the start of each month.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">public class BrainSentimentUniverseAlgorithm : QCAlgorithm
 {
-    // A dictionary to hold the updated sentiment score from the stocks with top sentiment score for position sizing.
-    private Dictionary&lt;Symbol, decimal&gt; _sentimentScores = new();
+    private Dictionary&lt;Symbol, decimal&gt; _sentimentBySymbol;
 
     public override void Initialize()
     {
-        SetStartDate(2020, 1, 1);
-        // Monthly universe update since the signal is for the next 30 days.
-        UniverseSettings.Schedule.On(DateRules.MonthStart());
-        // Select from Brain Sentiment dataset by sentiment factor.
-        AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(
-            altData =&gt; {
-                // Update sentiment score dictionary to only holds the most updated sentiment score for sizing.
-                _sentimentScores.Clear();
-
-                return altData.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
-                    // Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
-                    .Where(x =&gt; x.TotalArticleMentions30Days.HasValue &amp;&amp; x.Sentiment30Days.HasValue)
-                    // Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
-                    .Where(x =&gt; x.TotalArticleMentions30Days &gt; 0)
-                    .OrderByDescending(x =&gt; x.Sentiment30Days)
-                    .Take(10)
-                    // Return the symbols for the selected assets.
-                    .Select(x =&gt; {
-                        _sentimentScores[x.Symbol] = x.Sentiment30Days.Value;
-                        return x.Symbol;
-                    });
-            }
-        );
-
-        // Monthly rebalance to allow time to digest the 30-day signal.
-        Schedule.On(
-            DateRules.MonthStart(),
-            TimeRules.At(9, 30),
-            Rebalance
-        );
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 1, 1);
+        // Add an Equity universe that updates at the start of each month.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        UniverseSettings.Schedule.On(DateRules.MonthStart(spy));
+        AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(altData =>
+        {
+            _sentimentBySymbol = altData
+                .Select(x => x as BrainSentimentIndicatorUniverse)
+                // Select the assets with recent mentions and a sentiment score.
+                .Where(x => x.TotalArticleMentions30Days > 0 && x.Sentiment30Days.HasValue)
+                // Select the 10 assets with the greatest sentiment score.
+                .OrderByDescending(x => x.Sentiment30Days.Value)
+                .Take(10)
+                .ToDictionary(x => x.Symbol, x => x.Sentiment30Days.Value);
+            // Return the Symbol objects of the selected assets.
+            return _sentimentBySymbol.Keys;
+        });
+        // Create a Scheduled Event to rebalance the portfolio at the start of each month.
+        Schedule.On(DateRules.MonthStart(spy), TimeRules.At(9, 45), Rebalance);
     }
 
-    private void Rebalance()
+    public void Rebalance()
     {
-        // Calculate the sentiment score sum to normalize them for sizing.
-        var sentimentScoreSum = _sentimentScores.Sum(kvp =&gt; kvp.Value);
-
-        foreach (var (symbol, holding) in Portfolio)
-        {
-            // If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
-            if (holding.Invested &amp;&amp; !_sentimentScores.ContainsKey(symbol))
-            {
-                Liquidate(symbol);
-            }
-            // Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
-            else if (_sentimentScores.TryGetValue(symbol, out var score))
-            {
-                SetHoldings(symbol, score / sentimentScoreSum);
-            }
-        }
+        // To avoid trading errors, filter out the assets that don't have a price yet.
+        _sentimentBySymbol = _sentimentBySymbol
+            .Where(kvp => Securities[kvp.Key].Price > 0)
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        // Form a sentiment-weighted portfolio.
+        var sentimentScoreSum = _sentimentBySymbol.Values.Sum();
+        SetHoldings(
+            _sentimentBySymbol.Select(kvp => new PortfolioTarget(kvp.Key, kvp.Value / sentimentScoreSum)).ToList(), 
+            true
+        );
     }
 }</pre>
 	<pre class="python">class BrainSentimentUniverseAlgorithm(QCAlgorithm):
-    # A dictionary to hold the updated sentiment score from the stocks with top sentiment score for position sizing.
-    _sentiment_scores = {}
 
-    def initialize(self) -&gt; None:
-        self.set_start_date(2020, 1, 1)
-        # Monthly universe update since the signal is for the next 30 days.
-        self.universe_settings.schedule.on(self.date_rules.month_start())
-        # Select from Brain Sentiment dataset by sentiment factor.
+    def initialize(self) -> None:
+        self.set_start_date(2020, 6, 1)
+        self.set_end_date(2021, 1, 1)
+        # Add an Equity universe that updates at the start of each month.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
         self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
-
-        # Monthly rebalance to allow time to digest the 30-day signal.
-        self.schedule.on(
-            self.date_rules.month_start(),
-            self.time_rules.at(9, 30),
-            self.rebalance
-        )
+        # Create a Scheduled Event to rebalance the portfolio at the start of each month.
+        self.schedule.on(self.date_rules.month_start(spy), self.time_rules.at(9, 45), self._rebalance)
     
-    def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
-        # Make sure to select from the ones with recent mentions and sentiment score available for filtering and sizing.
-        alt_data = [x for x in alt_data if x.total_article_mentions_30_days and x.total_article_mentions_30_days &gt; 0 and x.sentiment_30_days]
-        # Select assets with some mentions and the greatest sentiment to maximize the expected return from sentiment factor.
+    def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:
+        # Select the assets with recent mentions and a sentiment score.
+        alt_data = [x for x in alt_data if x.total_article_mentions_30_days > 0 and x.sentiment_30_days]
+        # Select the 10 assets with the greatest sentiment score.
         selected = sorted(alt_data, key=lambda x: x.sentiment_30_days)[-10:]
-        # Update sentiment score dictionary to only holds the most updated sentiment score for sizing.
-        self._sentiment_scores.clear()
-        universe = []
-        for datum in selected:
-            self._sentiment_scores[datum.symbol] = datum.sentiment_30_days
-            universe.append(datum.symbol)
-        # Return the symbols for the selected assets.
-        return universe
+        # Save the sentiment scores for rebalancing later.
+        self._sentiment_by_symbol = {x.symbol: x.sentiment_30_days for x in selected}
+        # Return the Symbol objects of the selected assets.
+        return list(self._sentiment_by_symbol.keys())
     
-    def rebalance(self) -&gt; None:
-        # Calculate the sentiment score sum to normalize them for sizing.
-        sentiment_score_sum = sum(list(self._sentiment_scores.values()))
-
-        for symbol, holding in self.portfolio.items():
-            # If it is not the stock with high positive sentiment, liquidate for better opportunities with higher expected return.
-            if holding.invested and symbol not in self._sentiment_scores:
-                self.liquidate(symbol)
-            # Invest in the top sentiment stocks with sentiment score as size to maximize expected return.
-            elif symbol in self._sentiment_scores:
-                self.set_holdings(symbol, self._sentiment_scores[symbol] / sentiment_score_sum)</pre>
+    def _rebalance(self) -> None:
+        # To avoid trading errors, filter out the assets that don't have a price yet.
+        self._sentiment_by_symbol = {
+            symbol: sentiment for symbol, sentiment in self._sentiment_by_symbol.items() 
+            if self.securities[symbol].price
+        }
+        # Form a sentiment-weighted portfolio.
+        sentiment_score_sum = sum(list(self._sentiment_by_symbol.values()))
+        self.set_holdings(
+            [PortfolioTarget(symbol, sentiment/sentiment_score_sum) for symbol, sentiment in self._sentiment_by_symbol.items()], 
+            True
+        )</pre>
 </div>
 
 <h4>Example 2: Insiders Trading Universe</h4>
 <p>
 	Insiders have more information to evaluate the overall prospect of the company, so following their trades can be useful. 
 	The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/insider-trading'>Insider Trading</a> to create a universe of US Equities that insiders have recently purchased.
-    We invest equally into the companies with positive insider trades, which may provide extra confidence in their expected return, and hold for 3 months.
+        It then invest invest equally into the companies with positive insider trades, which may provide extra confidence in their expected return, and hold for 3 months.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
