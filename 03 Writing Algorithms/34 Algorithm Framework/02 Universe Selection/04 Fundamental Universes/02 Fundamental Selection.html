@@ -16,7 +16,7 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
 {
     return (from f in fundamental
             // Select symbols with fundamental data and a price above $10.
-            where f.HasFundamentalData && f.Price &gt; 10 && !Double.IsNaN(f.ValuationRatios.PERatio)
+            where f.Price &gt; 10 && !Double.IsNaN(f.ValuationRatios.PERatio)
             // Sort the assets in ascending order by their P/E ratio.
             orderby f.ValuationRatios.PERatio
             // Select the first 10 assets.
@@ -30,7 +30,7 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
 
 def _fundamental_filter_function(self, fundamental: List[Fundamental]):
     # Select symbols with fundamental data and a price above $10.
-    filtered = [f for f in fundamental if f.has_fundamental_data and f.price &gt; 10 and not np.isnan(f.valuation_ratios.pe_ratio)]
+    filtered = [f for f in fundamental if f.price &gt; 10 and not np.isnan(f.valuation_ratios.pe_ratio)]
     # Sort the assets in ascending order by their P/E ratio.
     sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
     # Select the first 10 assets.
@@ -73,9 +73,9 @@ def _fundamental_filter_function(self, fundamental: List[Fundamental]):
 <p>To move the selection function outside of the algorithm class, create a universe selection model that inherits the <code>FundamentalUniverseSelectionModel</code> class and override its <code class="csharp">Select</code><code class="python">select</code> method.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize, enable asynchronous universe settings for improved processing speed and 
-// add a custom universe selection model that selects undervalued, liquid stocks.
-UniverseSettings.Asynchronous = true;            
+	<pre class="csharp">// In the Initialize method, enable asynchronous universe selection to speed up your algorithm.
+UniverseSettings.Asynchronous = true;
+// Add a custom universe selection model that selects undervalued, liquid stocks.
 AddUniverseSelection(new LiquidAndLowPEUniverseSelectionModel());
 
 // Outside of the algorithm class, define the universe selection model.
@@ -95,9 +95,9 @@ public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelection
             .Select(x => x.Symbol);
     }
 }</pre>
-	<pre class="python"># In Initialize, enable asynchronous universe settings for improved processing speed and 
-# add a custom universe selection model that selects undervalued, liquid stocks.
+	<pre class="python"># In the initialize method, enable asynchronous universe selection to speed up your algorithm.
 self.universe_settings.asynchronous = True
+# Add a custom universe selection model that selects undervalued, liquid stocks.
 self.add_universe_selection(LiquidAndLowPEUniverseSelectionModel())
 
 # Outside of the algorithm class, define the universe selection model.
