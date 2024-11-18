@@ -1,10 +1,10 @@
 <p>The following examples demonstrate some common practices for handling data.</p>
 
-<h4>Example 1: Use QuoteBar Data</h4>
-<p>To increase the accuracy of indicator values for illiquid assets, update the indicator with the mid-price of a quote bar.</p>
+<h4>Example 1: Get QuoteBar Data</h4>
+<p>The following algorithm updates an indicator with the mid-price of a quote bar to increase the accuracy of the indicator values for illiquid assets.</p>
 <div class="section-example-container">
 	<pre class="csharp">private Symbol _symbol;
-// Initialize a new instance of a SimpleMovingAverage object
+// Initialize a new instance of a SimpleMovingAverage object.
 private SimpleMovingAverage _indicator = new(20);
 
 public override void Initialize()
@@ -14,13 +14,13 @@ public override void Initialize()
 
 public override void OnData(Slice slice)
 {
-    // Check if the QuoteBars received contain SPY quote data
+    // Check if the QuoteBars contain SPY quote data.
     if (slice.QuoteBars.ContainsKey(_symbol))
     {
         var quoteBar = slice.QuoteBars[_symbol];
-        // Calculate the mid price by averaging the bid and ask price
+        // Calculate the mid price by averaging the bid and ask price.
         var midPrice = (quoteBar.Bid.Close + quoteBar.Ask.Close) * 0.5m;
-        // Update the SMA indicator with the mid price
+        // Update the SMA indicator with the mid price.
         _indicator.Update(quoteBar.EndTime, midPrice);
     }
 }</pre>
@@ -29,17 +29,17 @@ public override void OnData(Slice slice)
     self._indicator = SimpleMovingAverage(20)
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Check if the QuoteBars received contain SPY quote data
+    # Check if the QuoteBars contain SPY quote data.
     if slice.quote_bars.contains_key(self._symbol):
         quote_bar = slice.quote_bars[self._symbol]
-        # Calculate the mid price by averaging the bid and ask price
+        # Calculate the mid price by averaging the bid and ask price.
         mid_price = (quote_bar.bid.close + quote_bar.ask.close) * 0.5
-        # Update the SMA indicator with the mid price
+        # Update the SMA indicator with the mid price.
         self._indicator.update(quote_bar.end_time, mid_price)</pre>
 </div>
 
-<h4>Example 2: Use Tick Data</h4>
-<p>To obtain the instant bid and ask size of the latest tick, use tick data.</p>
+<h4>Example 2: Get Tick Data</h4>
+<p>The following algorithm calculates the bid and ask sizes of the latest quote ticks.</p>
 <div class="section-example-container">
 	<pre class="csharp">private Symbol _symbol;
 // Set up variables to save the bid and ask sizes.
@@ -53,17 +53,17 @@ public override void Initialize()
 
 public override void OnData(Slice slice)
 {
-    // Check if the Ticks received contain SPY tick data
+    // Check if the Ticks object contain SPY tick data.
     if (slice.Ticks.ContainsKey(_symbol))
     {
-        // Reset the bid and ask size.
+        // Reset the bid and ask size variables.
         _bidSize = 0;
         _askSize = 0;
 
         var ticks = slice.Ticks[_symbol];
         
-        // Iterate all related ticks to calculate the bid and ask size.
-        // Make sure the tick data is a quote to obtain either bid and ask size.
+        // Iterate all related ticks to calculate the bid and ask sizes.
+        // Make sure the tick data is a quote instead of a trade.
         foreach (var tick in ticks.Where(tick =&gt; tick.TickType == TickType.Quote))
         {
             // Update the bid or ask size.
@@ -74,30 +74,30 @@ public override void OnData(Slice slice)
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
     self._symbol = self.add_equity("SPY", Resolution.TICK).symbol
-    # Set up variables to save the bid and ask price.
+    # Set up variables to save the bid and ask sizes.
     self._bid_size = 0
     self._ask_size = 0
 
 def on_data(self, slice: Slice) -&gt; None:
-    # Check if the Ticks received contain SPY tick data.
+    # Check if the Ticks object contain SPY tick data.
     if slice.ticks.contains_key(self._symbol):
-        # Reset the bid and ask size
+        # Reset the bid and ask size variables.
         self._bid_size = 0
         self._ask_size = 0
 
         ticks = slice.ticks[self._symbol]
 
-        # Iterate all related ticks to calculate the bid and ask size.
+        # Iterate all related ticks to calculate the bid and ask sizes.
         for tick in ticks:
-            # Make sure the tick data is a quote to obtain either bid and ask size.
+            # Make sure the tick data is a quote instead of a trade.
             if tick.tick_type == TickType.QUOTE:
                 # Update the bid or ask size.
                 self._bid_size += tick.bid_size
                 self._ask_size += tick.ask_size</pre>
 </div>
 
-<h4>Example 3: Fundamental Cache</h4>
-<p>To get the fundamentals of an Equity, use its <code>Fundamental</code> data cache.</p>
+<h4>Example 3: Get US Equity Fundamental Data</h4>
+<p>The following algorithm gets the latest fundamental data of a US Equity.</p>
 <div class="section-example-container">
 	<pre class="csharp">public override void OnData(Slice slice)
 {
@@ -119,15 +119,15 @@ def on_data(self, slice: Slice) -&gt; None:
         sector_code = fundamental.asset_classification.morningstar_sector_code</pre>
 </div>
 
-<h4>Example 4: Access Option Greeks</h4>
-<p>To get properties of an Option contract, use the <code class="csharp">OptionChains</code><code class="python">option_chains</code> property of the <code>Slice</code>.</p>
+<h4>Example 4: Get Option Greeks</h4>
+<p>The following algorithm gets SPY Option Greek values.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">private Symbol _symbol;
 
 public override void Initialize()
 {
-    // Subscribe to the Option data.
+    // Add an SPY Option universe.
     var option = AddOption("SPY");
     // Set the Option universe filter.
     option.SetFilter(x =&gt; x.IncludeWeeklys().Strikes(-5, 5).Expiration(0, 60));
@@ -154,7 +154,7 @@ public override void OnData(Slice slice)
     }
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
-    # Subscribe to the Option data.
+    # Add an SPY Option universe.
     option = self.add_option("SPY")
     # Set the Option universe filter.
     option.set_filter(lambda x: x.include_weeklys().strikes(-5, 5).expiration(0, 60))
@@ -177,15 +177,15 @@ def on_data(self, slice: Slice) -&gt; None:
 </div>
 
 <h4>Example 5: Get Asset Sentiment Values</h4>
-<p>The following example demonstrates how to get sentiment values from the <a href="/datasets/brain-sentiment-indicator">Brain Sentiment Indicator</a>:</p>
+<p>The following example gets sentiment values from the <a href="/datasets/brain-sentiment-indicator">Brain Sentiment Indicator</a> dataset.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">private Symbol _dataset7DaySymbol;
 
 public override void Initialize()
 {
+    // Add the 7-day sentiment data for AAPL.
     var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-    // Subscribe to 7-day sentiment data.
     _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(aapl).Symbol;
 }
 
@@ -200,8 +200,8 @@ public override void OnData(Slice slice)
     }
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
+    # Add the 7-day sentiment data for AAPL.
     aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
-    # Subscribe to 7-day sentiment data.
     self.dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, aapl).symbol
 
 def on_data(self, slice: Slice) -&gt; None:
