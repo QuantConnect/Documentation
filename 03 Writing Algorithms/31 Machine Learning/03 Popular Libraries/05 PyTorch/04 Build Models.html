@@ -28,31 +28,33 @@
     <li>Define a subclass of <code>nn.Module</code> to be the model.</li>
     <p>In this example, use the ReLU activation function for each layer.</p>
     <div class="section-example-container">
-        <pre class="python"># Define a feed-forward neural network with two hidden layers for learning complex features, ReLU activations to introduce non-linearity, and a single regression output for predicting continuous values.
+        <pre class="python"># Define a feed-forward neural network with two hidden layers for learning complex features, ReLU 
+# activations to introduce non-linearity, and a single regression output for predicting continuous values.
 class NeuralNetwork(nn.Module):
-    # Model Structure
+    # Define the model structure.
     def __init__(self):
         super(NeuralNetwork, self).__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(5, 5),   # input size, output size of the layer
-            nn.ReLU(),         # Relu non-linear transformation
+            nn.Linear(5, 5),   # input size, output size of the layer.
+            nn.ReLU(),         # Relu non-linear transformation.
             nn.Linear(5, 5),
             nn.ReLU(),  
-            nn.Linear(5, 1),   # Output size = 1 for regression
+            nn.Linear(5, 1),   # Output size = 1 for regression.
         )
     
-    # Feed-forward training/prediction
+    # Define the feed-forward training/prediction procedure.
     def forward(self, x):
-        x = torch.from_numpy(x).float()   # Convert to tensor in type float
+        x = torch.from_numpy(x).float()
         result = self.linear_relu_stack(x)
         return result</pre>
     </div>
 
     <li>Create an instance of the model and set its configuration to train on the GPU if it's available.</li>
     <div class="section-example-container">
-        <pre class="python"># Use GPU if available for faster computation, otherwise fallback to CPU, and move the model to the selected device.
+        <pre class="python"># Use GPU if it's available for faster computation. Otherwise, fallback to CPU.
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+# Initialize the model on the selected device.
 self.model = NeuralNetwork().to(device)</pre>
     </div>
 </ol>
