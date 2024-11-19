@@ -98,6 +98,8 @@
     public override void Initialize()
     {
         SetStartDate(2016, 1, 1);
+        SetEndDate(2018, 1, 1);
+
         // Keep each security in the universe for a minimum of 30 days to digest the insiders purchase sentiment.
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.FromDays(30);
         // Using QuiverInsiderTrading dataset for insider trade detection and filtering.
@@ -110,13 +112,17 @@
                    select d.Symbol).Take(10);
         });
     }
+
+    public override void OnData(Slice slice)
+    {
+        // Equally invest in insider buying companies to evenly dissipate the capital risk.
+        SetHoldings(_universe.Select(x =&gt; new PortfolioTarget(x, 1m / _universe.Count)).ToList());
+    }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
         // Update universe to trade.
         _universe.AddRange(changes.AddedSecurities.Select(x =&gt; x.Symbol).ToList());
-        // Equally invest in insider buying companies to evenly dissipate the capital risk.
-        SetHoldings(_universe.Select(x =&gt; new PortfolioTarget(x, 1m / _universe.Count)).ToList());
 
         // Liquidate and remove from universe for the ones not being recently-purchase by insiders.
         foreach (var removed in changes.RemovedSecurities)
@@ -141,13 +147,15 @@
         filtered = sorted([x for x in alt_data if x.shares and x.shares &gt; 0],
                         key=lambda x: x.shares,
                         reverse=True)[:10]
-        return [x.symbol for x in filtered]        
+        return [x.symbol for x in filtered]
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        # Equally invest in insider buying companies to evenly dissipate the capital risk.
+        self.set_holdings([PortfolioTarget(x, 1. / len(self._universe)) for x in self._universe])
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Update universe to trade.
         self._universe.extend([x.symbol for x in changes.added_securities])
-        # Equally invest in insider buying companies to evenly dissipate the capital risk.
-        self.set_holdings([PortfolioTarget(x, 1. / len(self._universe)) for x in self._universe])
 
         # Liquidate and remove from universe for the ones not being recently-purchase by insiders.
         for removed in changes.removed_securities:
@@ -167,6 +175,7 @@
     public override void Initialize()
     {
         SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
         SetSecurityInitializer(
             new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
         );
@@ -214,6 +223,7 @@
 
     def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
         )
