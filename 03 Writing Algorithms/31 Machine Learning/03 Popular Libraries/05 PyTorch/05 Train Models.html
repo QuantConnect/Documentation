@@ -3,7 +3,7 @@
 <h4>Warm Up Training Data</h4>
 <p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-    <pre class="python"># Initialize training data with a rolling window of size 252*2 days.
+    <pre class="python"># Fill a RollingWindow with 2 years of historical closing prices.
 training_length = 252*2
 self.training_data = RollingWindow[float](training_length)
 history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
@@ -14,7 +14,7 @@ for trade_bar in history:
 <h4>Define a Training Method</h4>
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
-    <pre class="python"># Prepare feature and label data for training by processing rolling window data to create time-series sequences for model training.
+    <pre class="python"># Prepare feature and label data for training by processing the RollingWindow data into a time series.
 def get_features_and_labels(self, n_steps=5):
     close_prices = list(self.training_data)[::-1]
 
@@ -31,23 +31,23 @@ def get_features_and_labels(self, n_steps=5):
 def my_training_method(self):
     features, labels = self.get_features_and_labels()
 
-    # Set the loss and optimization functions
-    # In this example, use the mean squared error as the loss function and stochastic gradient descent as the optimizer
+    # Set the loss and optimization functions.
+    # In this example, use the mean squared error as the loss function and stochastic gradient descent as the optimizer.
     loss_fn = nn.MSELoss()
     learning_rate = 0.001
     optimizer = torch.optim.SGD(self.model.parameters(), lr=learning_rate)
     
-    # Create a for-loop to train for preset number of epoch
+    # Loop through each epoch and train the model.
     epochs = 5
     for t in range(epochs):
-        # Create a for-loop to fit the model per batch
+        # Loop through each batch to train the model.
         for batch, (feature, label) in enumerate(zip(features, labels)):
-            # Compute prediction and loss
+            # Calculate the prediction and loss.
             pred = self.model(feature)
             real = torch.from_numpy(np.array(label).flatten()).float()
             loss = loss_fn(pred, real)
         
-            # Perform backpropagation
+            # Perform backpropagation.
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()</pre>
@@ -72,5 +72,5 @@ self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), se
     <pre class="python"># Add the latest bar to training data to ensure the model is trained with the most recent market data.
 def on_data(self, slice: Slice) -> None:
     if self._symbol in slice.Bars:
-        self.training_data.Add(slice.Bars[self._symbol].Close)</pre>
+        self.training_data.add(slice.bars[self._symbol].close)</pre>
 </div>
