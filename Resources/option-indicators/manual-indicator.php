@@ -8,6 +8,7 @@
     private List&lt;<?=$typeName?>&gt; _indicators = new();
     // Define the Option pricing model.
     private readonly OptionPricingModelType _optionPricingModel = OptionPricingModelType.ForwardTree;
+    private (Symbol option1, Symbol option2) _options;
 
     public override void Initialize()
     {
@@ -67,6 +68,8 @@
                         )
                     );
                 }
+
+                _options = (contracts[0], contracts[1]);
             }
         }
     }
@@ -104,6 +107,18 @@
                 // Get the current value of the <?=$typeName?> indicator.
                 var value = indicator.Current.Value;
             }
+        }
+
+        // Sell straddle as an example to trade.
+        if (!Portfolio.Invested)
+        {
+            Sell(_options.option1, 1);
+            Sell(_options.option2, 1);
+        }
+        // Liquidate any assigned positions.
+        if (Portfolio[_underlying].Invested)
+        {
+            Liquidate(_underlying);
         }
     }
 }</pre>
@@ -171,6 +186,8 @@
                     ) 
                 )
 
+            self._options = (call, put)
+
     def on_data(self, slice: Slice) -&gt; None:
         # Iterate through the indicators.
         for indicator in self._indicators:
@@ -196,7 +213,15 @@
                     indicator.update(data_point)
 
                 # Get the current value of the <?=$typeName?> indicator.
-                value = indicator.current.value</pre>
+                value = indicator.current.value
+        
+        # Sell straddle as an example to trade.
+        if not self.portfolio.invested:
+            self.sell(self._options[0], 1)
+            self.sell(self._options[1], 1)
+        # Liquidate any assigned positions.
+        if self.portfolio[self._underlying].invested:
+            self.liquidate(self._underlying)</pre>
 </div>
 
 <p>For more information about the <code><?=$typeName?></code> constructor, see <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/<?=$indicatorPage?>">Using <?=$helperMethod?> Indicator</a>.</p>

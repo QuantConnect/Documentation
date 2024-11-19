@@ -5,6 +5,7 @@
 {
     <?=$memberDeclarationsAutomaticC?>
     private List&lt;<?=$typeName?>&gt; _indicators = new();
+    private (Symbol option1, Symbol option2) _options;
 
     public override void Initialize()
     {
@@ -53,6 +54,8 @@
                 // Create and save the automatic <?=$typeName?> indicators.
                 _indicators.Add(<?=$helperMethod?>(contracts[0], contracts[1]));
                 _indicators.Add(<?=$helperMethod?>(contracts[1], contracts[0]));
+
+                _options = (contracts[0], contracts[1]);
             }
         }
     }
@@ -64,6 +67,18 @@
         {
             var symbol = indicator.OptionSymbol;
             var value = indicator.Current.Value;
+        }
+
+        // Sell straddle as an example to trade.
+        if (!Portfolio.Invested)
+        {
+            Sell(_options.option1, 1);
+            Sell(_options.option2, 1);
+        }
+        // Liquidate any assigned positions.
+        if (Portfolio[_underlying].Invested)
+        {
+            Liquidate(_underlying);
         }
     }
 }</pre>
@@ -119,10 +134,20 @@
             
             # Create and save the automatic <?=$typeName?> indicators.
             self._indicators.extend([self.<?=strtolower($helperMethod)?>(call, put), self.<?=strtolower($helperMethod)?>(put, call)])
+
+            self._options = (call, put)
         
     def on_data(self, slice: Slice) -&gt; None:
         # Get the <?=$typeName?> indicator of each contract.
         for indicator in self._indicators:
             symbol = indicator.option_symbol
-            value = indicator.current.value</pre>
+            value = indicator.current.value
+        
+        # Sell straddle as an example to trade.
+        if not self.portfolio.invested:
+            self.sell(self._options[0], 1)
+            self.sell(self._options[1], 1)
+        # Liquidate any assigned positions.
+        if self.portfolio[self._underlying].invested:
+            self.liquidate(self._underlying)</pre>
 </div>
