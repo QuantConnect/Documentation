@@ -8,34 +8,76 @@
 	The following example demonstrates adds the <a href="https://www.quantconnect.com/datasets/kavout-composite-factor-bundle">KavoutCompositeFactorBundle</a> when assets enter the universe.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
+	<pre class="csharp">public class RequestSecuritiesDataAlgorithm : QCAlgorithm
 {
-    // Iterate securities that entered the universe.
-    foreach (var security in changes.AddedSecurities)
+    public override void Initialize()
     {
-        // Subscribe to the factor data for the new security.
-        // Save the alternative data symbol in the security object.
-        security.AltDataSymbol = AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol, Resolution.Daily).Symbol;
+        // Add a universe of the 10 most liquid US Equities.
+        AddUniverse(Universe.DollarVolume.Top(10));
     }
-    
-    // Iterate securities that left the universe.
-    foreach (var security in changes.RemovedSecurities)
+
+    public override void OnData(Slice slice)
     {
-        // Unsubscribe from the altnerative data updates.
-        RemoveSecurity(security.AltDataSymbol);
+        // Invest by the updated Kavout Factor data.
+        var factorData = slice.Get&lt;KavoutCompositeFactorBundle&gt;();
+        if (factorData.Count > 0)
+        {
+            // Obtain the top 10 factor sum score symbols.
+            // Invest by equal weighting to dissipate capital risks.
+            var topFactorTargets = factorData.OrderByDescending(x =&gt; 
+                    x.Value.Growth + x.Value.ValueFactor + x.Value.Quality + x.Value.Momentum + x.Value.LowVolatility
+                )
+                .Take(10)
+                .Select(x =&gt; new PortfolioTarget(x.Key.Underlying, 0.1m))
+                .ToList();
+            SetHoldings(topFactorTargets);
+        }
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Iterate securities that entered the universe.
+        foreach (dynamic security in changes.AddedSecurities)
+        {
+            // Subscribe to the factor data for the new security.
+            // Save the alternative data symbol in the security object.
+            security.AltDataSymbol = AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol, Resolution.Daily).Symbol;
+        }
+        
+        // Iterate securities that left the universe.
+        foreach (dynamic security in changes.RemovedSecurities)
+        {
+            // Unsubscribe from the altnerative data updates.
+            RemoveSecurity(security.AltDataSymbol);
+        }
     }
 }</pre>
-	<pre class="python">def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-    # Iterate securities that entered the universe.
-    for security in changes.added_securities:
-        # Subscribe to the factor data for the new security.
-        # Save the alternative data symbol in the security object.
-        security.alt_data_symbol = self.add_data(KavoutCompositeFactorBundle, security.symbol, Resolution.DAILY).symbol
-    
-    # Iterate securities that left the universe.
-    for security in changes.removed_securities:
-        # Unsubscribe from the altnerative data updates.
-        self.remove_security(security.alt_data_symbol)</pre>
+	<pre class="python">class RequestSecuritiesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Add a universe of the 10 most liquid US Equities.
+        self.add_universe(self.universe.dollar_volume.top(10))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Invest by the updated Kavout Factor data.
+        factor_data = slice.get(KavoutCompositeFactorBundle)
+        if factor_data:
+            sorted_by_factor_score = sorted(factor_data.items(),
+                key=lambda x: x[1].growth + x[1].value_factor + x[1].quality + x[1].momentum + x[1].low_volatility,
+                reverse=True)[:10]
+            top_factor_targets = [PortfolioTarget(x[0].underlying, 0.1) for x in sorted_by_factor_score]
+            self.set_holdings(top_factor_targets)
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Iterate securities that entered the universe.
+        for security in changes.added_securities:
+            # Subscribe to the factor data for the new security.
+            # Save the alternative data symbol in the security object.
+            security.alt_data_symbol = self.add_data(KavoutCompositeFactorBundle, security.symbol, Resolution.DAILY).symbol
+        
+        # Iterate securities that left the universe.
+        for security in changes.removed_securities:
+            # Unsubscribe from the altnerative data updates.
+            self.remove_security(security.alt_data_symbol)</pre>
 </div>
 
 <h4>Example 2: Add Linked Custom Data</h4>

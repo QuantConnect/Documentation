@@ -1,213 +1,398 @@
 <p>The following examples demonstrate some common practices for handling data.</p>
 
 <h4>Example 1: Get QuoteBar Data</h4>
-<p>The following algorithm updates an <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> with the mid-price of a quote bar to increase the accuracy of the indicator values for illiquid assets.</p>
+<p>The following algorithm updates an <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> with the mid-price of a quote bar to increase the accuracy of the indicator values for illiquid assets. Then, make use of the SMA indicator to trade the SMA cross strategy.</p>
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _symbol;
-// Initialize a new instance of a SimpleMovingAverage object.
-private SimpleMovingAverage _indicator = new(20);
-
-public override void Initialize()
+	<pre class="csharp">public class HandlingSecuritiesDataAlgorithm : QCAlgorithm
 {
-    _symbol = AddEquity("SPY").Symbol;
-}
+    private Symbol _symbol;
+    // Initialize a new instance of a SimpleMovingAverage object.
+    private SimpleMovingAverage _indicator = new(250);
 
-public override void OnData(Slice slice)
-{
-    // Check if the QuoteBars contain SPY quote data.
-    if (slice.QuoteBars.ContainsKey(_symbol))
+    public override void Initialize()
     {
-        var quoteBar = slice.QuoteBars[_symbol];
-        // Calculate the mid price by averaging the bid and ask price.
-        var midPrice = (quoteBar.Bid.Close + quoteBar.Ask.Close) * 0.5m;
-        // Update the SMA indicator with the mid price.
-        _indicator.Update(quoteBar.EndTime, midPrice);
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 5, 1);
+
+        _symbol = AddEquity("SPY").Symbol;
+        
+        SetWarmUp(TimeSpan.FromDays(350));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Check if the QuoteBars contain SPY quote data.
+        if (slice.QuoteBars.ContainsKey(_symbol))
+        {
+            var quoteBar = slice.QuoteBars[_symbol];
+            // Calculate the mid price by averaging the bid and ask price.
+            var midPrice = (quoteBar.Bid.Close + quoteBar.Ask.Close) * 0.5m;
+            // Update the SMA indicator with the mid price.
+            _indicator.Update(quoteBar.EndTime, midPrice);
+
+            // Trade SMA cross strategy.
+            if (_indicator.IsReady)
+            {
+                if (_indicator &gt; midPrice)
+                {
+                    SetHoldings(_symbol, -0.5m);
+                }
+                else
+                {
+                    SetHoldings(_symbol, 0.5m);
+                }
+            }
+        }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    self._symbol = self.add_equity("SPY").symbol
-    self._indicator = SimpleMovingAverage(20)
+    <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 5, 1)
 
-def on_data(self, slice: Slice) -&gt; None:
-    # Check if the QuoteBars contain SPY quote data.
-    if slice.quote_bars.contains_key(self._symbol):
-        quote_bar = slice.quote_bars[self._symbol]
-        # Calculate the mid price by averaging the bid and ask price.
-        mid_price = (quote_bar.bid.close + quote_bar.ask.close) * 0.5
-        # Update the SMA indicator with the mid price.
-        self._indicator.update(quote_bar.end_time, mid_price)</pre>
+        self._symbol = self.add_equity("SPY").symbol
+        self._indicator = SimpleMovingAverage(250)
+        
+        self.set_warm_up(timedelta(350))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Check if the QuoteBars contain SPY quote data.
+        if slice.quote_bars.contains_key(self._symbol):
+            quote_bar = slice.quote_bars[self._symbol]
+            # Calculate the mid price by averaging the bid and ask price.
+            mid_price = (quote_bar.bid.close + quote_bar.ask.close) * 0.5
+            # Update the SMA indicator with the mid price.
+            self._indicator.update(quote_bar.end_time, mid_price)
+        
+            # Trade SMA cross strategy.
+            if self._indicator.is_ready:
+                if self._indicator.current.value &gt; mid_price:
+                    self.set_holdings(self._symbol, -0.5)
+                else:
+                    self.set_holdings(self._symbol, 0.5)</pre>
 </div>
 
 <h4>Example 2: Get Tick Data</h4>
-<p>The following algorithm calculates the bid and ask sizes of the latest quote ticks.</p>
+<p>The following algorithm calculates the bid and ask sizes of the latest SPY quote ticks. Then, buy SPY if bid size is greater than ask size, indicating supply is greater than demand. Else, sell if bid size is smaller than ask size, indicating supply is smaller than supply.</p>
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _symbol;
-// Set up variables to save the bid and ask sizes.
-private decimal _bidSize = 0m;
-private decimal _askSize = 0m;
-
-public override void Initialize()
+	<pre class="csharp">public class HandlingSecuritiesDataAlgorithm : QCAlgorithm
 {
-    _symbol = AddEquity("SPY", Resolution.Tick).Symbol;
-}
+    private Symbol _symbol;
+    // Set up variables to save the bid and ask sizes.
+    private decimal _bidSize = 0m;
+    private decimal _askSize = 0m;
+    private int _hour = -1;
 
-public override void OnData(Slice slice)
-{
-    // Check if the Ticks object contain SPY tick data.
-    if (slice.Ticks.ContainsKey(_symbol))
+    public override void Initialize()
     {
-        // Reset the bid and ask size variables.
-        _bidSize = 0;
-        _askSize = 0;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2019, 1, 5);
+        _symbol = AddEquity("SPY", Resolution.Tick).Symbol;
+    }
 
-        var ticks = slice.Ticks[_symbol];
-        
-        // Iterate all related ticks to calculate the bid and ask sizes.
-        // Make sure the tick data is a quote instead of a trade.
-        foreach (var tick in ticks.Where(tick =&gt; tick.TickType == TickType.Quote))
+    public override void OnData(Slice slice)
+    {
+        // Check if the Ticks object contain SPY tick data.
+        if (slice.Ticks.ContainsKey(_symbol))
         {
-            // Update the bid or ask size.
-            _bidSize += tick.BidSize;
-            _askSize += tick.AskSize;
+            var ticks = slice.Ticks[_symbol];
+            
+            // Iterate all related ticks to calculate the bid and ask sizes.
+            // Make sure the tick data is a quote instead of a trade.
+            foreach (var tick in ticks.Where(tick =&gt; tick.TickType == TickType.Quote))
+            {
+                // Update the bid or ask size.
+                _bidSize += tick.BidSize;
+                _askSize += tick.AskSize;
+            }
+        }
+
+        // Invest according to aggregated hour bid ask sizes.
+        if (slice.Time.Hour != _hour)
+        {
+            // Invest based on supply-demand relationship from all ticks.
+            // If bid size is above ask size, meaning supply is greater than demand, which drives the price up.
+            if (_bidSize &gt; _askSize)
+            {
+                SetHoldings(_symbol, 0.5m);
+            }
+            // Else, meaning supply is lower than demand, which drives the price down.
+            else
+            {
+                SetHoldings(_symbol, -0.5m);
+            }
+
+            // Reset the bid and ask size variables.
+            _bidSize = 0;
+            _askSize = 0;
+
+            _hour = slice.Time.Hour;
         }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    self._symbol = self.add_equity("SPY", Resolution.TICK).symbol
+    <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     # Set up variables to save the bid and ask sizes.
-    self._bid_size = 0
-    self._ask_size = 0
+    _bid_size = 0
+    _ask_size = 0
+    _hour = -1
 
-def on_data(self, slice: Slice) -&gt; None:
-    # Check if the Ticks object contain SPY tick data.
-    if slice.ticks.contains_key(self._symbol):
-        # Reset the bid and ask size variables.
-        self._bid_size = 0
-        self._ask_size = 0
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2019, 1, 5)
+        self._symbol = self.add_equity("SPY", Resolution.TICK).symbol
 
-        ticks = slice.ticks[self._symbol]
+    def on_data(self, slice: Slice) -&gt; None:
+        # Check if the Ticks object contain SPY tick data.
+        if slice.ticks.contains_key(self._symbol):
+            ticks = slice.ticks[self._symbol]
 
-        # Iterate all related ticks to calculate the bid and ask sizes.
-        for tick in ticks:
-            # Make sure the tick data is a quote instead of a trade.
-            if tick.tick_type == TickType.QUOTE:
-                # Update the bid or ask size.
-                self._bid_size += tick.bid_size
-                self._ask_size += tick.ask_size</pre>
+            # Iterate all related ticks to calculate the bid and ask sizes.
+            for tick in ticks:
+                # Make sure the tick data is a quote instead of a trade.
+                if tick.tick_type == TickType.QUOTE:
+                    # Update the bid or ask size.
+                    self._bid_size += tick.bid_size
+                    self._ask_size += tick.ask_size
+            
+        # Invest according to aggregated hour bid ask sizes.
+        if slice.time.hour != self._hour:
+            # Invest based on supply-demand relationship from all ticks.
+            # If bid size is above ask size, meaning supply is greater than demand, which drives the price up.
+            if self._bid_size &gt; self._ask_size:
+                self.set_holdings(self._symbol, 0.5)
+            # Else, meaning supply is lower than demand, which drives the price down.
+            else:
+                self.set_holdings(self._symbol, -0.5)
+            
+            # Reset the bid and ask size variables.
+            self._bid_size = 0
+            self._ask_size = 0
+        
+            self._hour = slice.time.hour</pre>
 </div>
 
 <h4>Example 3: Get US Equity Fundamental Data</h4>
-<p>The following algorithm gets the latest <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-fundamentals'>fundamental data</a> of all the US Equities in the algorithm.</p>
+<p>The following algorithm gets the latest <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-fundamentals'>fundamental data</a> of all the US Equities in the algorithm. We invest in the stocks with the highest PE Ratio equally to ride on the popularity.</p>
 <div class="section-example-container">
-	<pre class="csharp">public override void OnData(Slice slice)
+	<pre class="csharp">public class HandlingSecuritiesDataAlgorithm : QCAlgorithm
 {
-    // Iterate active security objects.
-    foreach (var security in ActiveSecurities.Values)
+    public override void Initialize()
     {
-        // Get the Fundamental cache.
-        var fundamental = security.Fundamentals;
-        // Get the sector code.
-        var sectorCode = fundamental.AssetClassification.MorningstarSectorCode;
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+
+        // Request data for a selected list of equities for trading.
+        foreach (var ticker in new[] { "AAPL", "MSFT", "TSLA", "GOOG", "AMZN" })
+        {
+            AddEquity(ticker);
+        }
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var peRatios = new Dictionary&lt;Symbol, double&gt;();
+
+        // Iterate active security objects.
+        foreach (var security in ActiveSecurities.Values)
+        {
+            // Get the Fundamental cache.
+            var fundamental = security.Fundamentals;
+            // Get the sector code.
+            var sectorCode = fundamental.AssetClassification.MorningstarSectorCode;
+
+            peRatios[security.Symbol] = fundamental.ValuationRatios.PERatio;
+        }
+        
+        // Sort by PE ratio to get the most popular stocks.
+        var sortedByPeRatio = peRatios.OrderByDescending(x =&gt; x.Value)
+            .ToDictionary(x =&gt; x.Key, x =&gt; x.Value);
+        var targets = sortedByPeRatio
+            .Take(3)
+            .Select(x =&gt; new PortfolioTarget(x.Key, 1m / 3m))
+            .ToList();
+        targets.AddRange(sortedByPeRatio
+            .TakeLast(2)
+            .Select(x =&gt; new PortfolioTarget(x.Key, 0m))
+            .ToList());
+        // Invest equally in the highest PE Ratio stocks for evenly dissipate capital risk.
+        SetHoldings(targets);
     }
 }</pre>
-	<pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    # Iterate active security objects.
-    for security in self.active_securities.values():
-        # Get the Fundamental cache.
-        fundamental = security.fundamentals
-        # Get the sector code.
-        sector_code = fundamental.asset_classification.morningstar_sector_code</pre>
+	<pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+
+        # Request data for a selected list of equities for trading.
+        for ticker in ["AAPL", "MSFT", "TSLA", "GOOG", "AMZN"]:
+            self.add_equity(ticker)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        pe_ratios = {}
+
+        # Iterate active security objects.
+        for kvp in self.active_securities:
+            symbol = kvp.key
+            security = kvp.value
+            
+            # Get the Fundamental cache.
+            fundamental = security.fundamentals
+            # Get the sector code.
+            sector_code = fundamental.asset_classification.morningstar_sector_code
+        
+            pe_ratios[symbol] = fundamental.valuation_ratios.pe_ratio
+        
+        # Sort by PE ratio to get the most popular stocks.
+        sorted_by_pe_ratio = sorted(pe_ratios.items(), key=lambda x: x[1])
+        targets = [PortfolioTarget(x[0], 1/3) for x in sorted_by_pe_ratio[-3:]]
+        targets.extend([PortfolioTarget(x[0], 0) for x in sorted_by_pe_ratio[:2]])
+        # Invest equally in the highest PE Ratio stocks for evenly dissipate capital risk.
+        self.set_holdings(targets)</pre>
 </div>
 
 <h4>Example 4: Get Option Greeks</h4>
-<p>The following algorithm gets SPY <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts'>Option Greek</a> values.</p>
+<p>The following algorithm gets SPY <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts'>Option Greek</a> values. Sell a straddle with the ATM options, selected by Option Delta (closest to 0.5).</p>
 
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _symbol;
-
-public override void Initialize()
+	<pre class="csharp">public class HandlingSecuritiesDataAlgorithm : QCAlgorithm
 {
-    // Add an SPY Option universe.
-    var option = AddOption("SPY");
-    // Set the Option universe filter.
-    option.SetFilter(x =&gt; x.IncludeWeeklys().Strikes(-5, 5).Expiration(0, 60));
-    // Save a reference of the canonical symbol.
-    _symbol = option.Symbol;
-}
+    private Symbol _symbol;
 
-public override void OnData(Slice slice)
-{
-    // Try to get the Option contracts within the Option chain.
-    if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+    public override void Initialize()
     {
-        foreach (var contract in chain)
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 4, 1);
+
+        // Add an SPY Option universe.
+        var option = AddOption("SPY");
+        // Set the Option universe filter.
+        option.SetFilter(x =&gt; x.IncludeWeeklys().Strikes(-5, 5).Expiration(7, 60));
+        // Save a reference of the canonical symbol.
+        _symbol = option.Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Try to get the Option contracts within the Option chain.
+        if (!Portfolio.Invested &amp;&amp; slice.OptionChains.TryGetValue(_symbol, out var chain))
         {
-            // Get the implied volatility and greeks of each Option contract.
-            var iv = contract.ImpliedVolatility;
-            var greeks = contract.Greeks;
-            var delta = greeks.Delta;
-            var gamma = greeks.Gamma;
-            var vega = greeks.Vega;
-            var theta = greeks.Theta;
-            var rho = greeks.Rho;
+            foreach (var contract in chain)
+            {
+                // Get the implied volatility and greeks of each Option contract.
+                var iv = contract.ImpliedVolatility;
+                var greeks = contract.Greeks;
+                var delta = greeks.Delta;
+                var gamma = greeks.Gamma;
+                var vega = greeks.Vega;
+                var theta = greeks.Theta;
+                var rho = greeks.Rho;
+            }
+
+            // Invest in a straddle strategy to capitalize the volatility
+            // Trade the ATM options with the closest expiry after 7 days.
+            var expiry = chain.Min(x =&gt; x.Expiry);
+            var selected = chain.Where(x =&gt; x.Expiry == expiry)
+                .MinBy(x =&gt; Math.Abs(x.Greeks.Delta - 0.5m));
+            var optionStrategy = OptionStrategies.Straddle(selected.Symbol.Canonical, selected.Strike, selected.Expiry);
+            Sell(optionStrategy, 1);
         }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Add an SPY Option universe.
-    option = self.add_option("SPY")
-    # Set the Option universe filter.
-    option.set_filter(lambda x: x.include_weeklys().strikes(-5, 5).expiration(0, 60))
-    # Save a reference of the canonical symbol.
-    self._symbol = option.symbol
+	<pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 4, 1)
 
-def on_data(self, slice: Slice) -&gt; None:
-    # Try to get the Option contracts within the Option chain.
-    chain = slice.option_chains.get(self._symbol)
-    if chain:
-        for contract in chain:
-            # Get the implied volatility and greeks of each Option contract.
-            iv = contract.implied_volatility
-            greeks = contract.greeks
-            delta = greeks.delta
-            gamma = greeks.gamma
-            vega = greeks.vega
-            theta = greeks.theta
-            rho = greeks.rho</pre>
+        # Add an SPY Option universe.
+        option = self.add_option("SPY")
+        # Set the Option universe filter.
+        option.set_filter(lambda x: x.include_weeklys().strikes(-5, 5).expiration(0, 60))
+        # Save a reference of the canonical symbol.
+        self._symbol = option.symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Try to get the Option contracts within the Option chain.
+        chain = slice.option_chains.get(self._symbol)
+        if not self.portfolio.invested and chain:
+            for contract in chain:
+                # Get the implied volatility and greeks of each Option contract.
+                iv = contract.implied_volatility
+                greeks = contract.greeks
+                delta = greeks.delta
+                gamma = greeks.gamma
+                vega = greeks.vega
+                theta = greeks.theta
+                rho = greeks.rho
+
+            # Invest in a straddle strategy to capitalize the volatility
+            # Trade the ATM options with the closest expiry after 7 days.
+            expiry = min(x.expiry for x in chain)
+            selected = sorted([x for x in chain if x.expiry == expiry],
+                key=lambda x: abs(x.greek.delta - 0.5))[0]
+            option_strategy = OptionStrategies.straddle(selected.symbol.canonical, selected.strike, selected.expiry)
+            self.sell(option_strategy, 1)</pre>
 </div>
 
 <h4>Example 5: Get Asset Sentiment Values</h4>
-<p>The following example gets sentiment values from the <a href="/datasets/brain-sentiment-indicator">Brain Sentiment Indicator</a> dataset.</p>
+<p>The following example gets sentiment values from the <a href="/datasets/brain-sentiment-indicator">Brain Sentiment Indicator</a> dataset. We long AAPL if its sentiment is positive.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">private Symbol _dataset7DaySymbol;
-
-public override void Initialize()
+	<pre class="csharp">public class HandlingSecuritiesDataAlgorithm : QCAlgorithm
 {
-    // Add the 7-day sentiment data for AAPL.
-    var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-    _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(aapl).Symbol;
-}
+    private Symbol _dataset7DaySymbol;
 
-public override void OnData(Slice slice)
-{
-    // Check if the current slice contains the 7-day sentiment data.
-    if (slice.ContainsKey(_dataset7DaySymbol))
+    public override void Initialize()
     {
-        var dataPoint = slice[_dataset7DaySymbol];
-        // Log the sentiment value.
-        Log($"{_dataset7DaySymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}");
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 4, 1);
+
+        // Add the 7-day sentiment data for AAPL.
+        var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(aapl).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Check if the current slice contains the 7-day sentiment data.
+        if (slice.ContainsKey(_dataset7DaySymbol))
+        {
+            var dataPoint = slice[_dataset7DaySymbol];
+            // Log the sentiment value.
+            Log($"{_dataset7DaySymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}");
+
+            // Invest if the sentiment score is above 0, which indicates positive sentiment.
+            if (dataPoint.Sentiment &gt; 0m)
+            {
+                MarketOrder(dataPoint.Symbol, 1);
+            }
+            // Liquidate otherwise.
+            else if (dataPoint.Sentiment &lt; 0m && Portfolio[dataPoint.Symbol].Invested)
+            {
+                Liquidate(dataPoint.Symbol);
+            }
+        }
     }
 }</pre>
-	<pre class="python">def initialize(self) -&gt; None:
-    # Add the 7-day sentiment data for AAPL.
-    aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
-    self.dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, aapl).symbol
+	<pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 4, 1)
 
-def on_data(self, slice: Slice) -&gt; None:
-    # Check if the current slice contains the 7-day sentiment data.
-    if slice.contains_key(self.dataset_7day_symbol):
-        data_point = slice[self.dataset_7day_symbol]
-        # Log the sentiment value.
-        self.log(f"{self.dataset_7day_symbol} sentiment at {slice.time}: {data_point.sentiment}")</pre>
+        # Add the 7-day sentiment data for AAPL.
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, self.aapl).symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Check if the current slice contains the 7-day sentiment data.
+        if slice.contains_key(self.dataset_7day_symbol):
+            data_point = slice[self.dataset_7day_symbol]
+            # Log the sentiment value.
+            self.log(f"{self.dataset_7day_symbol} sentiment at {slice.time}: {data_point.sentiment}")
+        
+            # Invest if the sentiment score is above 0, which indicates positive sentiment.
+            if data_point.sentiment &gt; 0:
+                self.market_order(self.aapl, 1)
+            # Liquidate otherwise.
+            elif data_point.sentiment &lt; 0 and self.portfolio[self.aapl].invested:
+                self.liquidate(self.aapl)</pre>
 </div>
