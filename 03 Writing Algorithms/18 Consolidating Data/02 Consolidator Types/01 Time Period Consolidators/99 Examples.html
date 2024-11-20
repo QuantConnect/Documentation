@@ -1,3 +1,108 @@
+<p>The following examples demonstrate some common practices for implementing time period consolidators.</p>
+
+<h4>Example 1: RSI-MACD Trading</h4>
+<p>The following algorithm utilizes a 5-minute trade bar consolidator to feed the smoothed trade bar to a RSI indicator and a 15-minute quote bar consolidator to feed the smoothed quote bar to a MACD indicator, generating trade entry signals during uptrend and oversold conditions, while exit when the trend turns down.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class TimePeriodConsolidatorAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    // Create RSI and MACD indicators for trade signal generation.
+    private RelativeStrengthIndex _rsi = new(14);
+    private MovingAverageConvergenceDivergence _macd = new(12, 26, 9);
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 2, 1);
+        
+        // Request SPY data to feed to indicators and trade.
+        _spy = AddEquity("SPY").Symbol;
+
+        // Create a 5-minute trade bar consolidator to feed the smoothed bar to RSI indicator for price action entry signal.
+        var rsiConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
+        rsiConsolidator.DataConsolidated += (_, bar) =&gt; {
+            _rsi.Update(bar.EndTime, bar.Close);
+        };
+        // Create a 15-minute quote bar consolidator to feed the smoothed bar to MACD consolidator for trend entry/exit signal.
+        var macdConsolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(15));
+        macdConsolidator.DataConsolidated += (_, bar) =&gt; {
+            _macd.Update(bar.EndTime, bar.Close);
+        };
+
+        // Subscribe the consolidators to SPY data to automatic updating the indicators.
+        SubscriptionManager.AddConsolidator(_spy, rsiConsolidator);
+        SubscriptionManager.AddConsolidator(_spy, macdConsolidator);
+
+        // Warm up the indicators by updating the consolidators with historical data.
+        var tradeBars = History&lt;TradeBar&gt;(_spy, 5 * 14, Resolution.Minute);
+        foreach (var bar in tradeBars)
+        {
+            rsiConsolidator.Update(bar);
+        }
+        var quoteBars = History&lt;QuoteBar&gt;(_spy, 15 * 26, Resolution.Minute);
+        foreach (var bar in quoteBars)
+        {
+            macdConsolidator.Update(bar);
+        }
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Entry rule: MACD histogram is positive (positive trend) and RSI is below 30 (oversold) to maximize return.
+        if (_rsi &lt; 30 &amp;&amp; _macd.Histogram &gt; 0 &amp;&amp; !Portfolio[_spy].IsLong)
+        {
+            SetHoldings(_spy, 0.5m);
+        }
+        // Exit rule: MACD histogram is below 0 (negative trend)
+        else if (_macd.Histogram &lt; 0 &amp;&amp; Portfolio[_spy].IsLong)
+        {
+            Liquidate(_spy);
+        }
+    }
+}</pre>
+    <pre class="python">class UniverseSettingsAlgorithm(QCAlgorithm):
+    # Create RSI and MACD indicators for trade signal generation.
+    _rsi = RelativeStrengthIndex(14)
+    _macd = MovingAverageConvergenceDivergence(12, 26, 9)
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 2, 1)
+        
+        # Request SPY data to feed to indicators and trade.
+        self.spy = self.add_equity("SPY").symbol
+
+        # Create a 5-minute trade bar consolidator to feed the smoothed bar to RSI indicator for price action entry signal.
+        rsi_consolidator = TradeBarConsolidator(timedelta(minutes=5))
+        rsi_consolidator.data_consolidated += lambda _, bar: self._rsi.update(bar.end_time, bar.close)
+        # Create a 15-minute quote bar consolidator to feed the smoothed bar to MACD consolidator for trend entry/exit signal.
+        macd_consolidator = QuoteBarConsolidator(timedelta(minutes=15))
+        macd_consolidator.data_consolidated += lambda _, bar: self._macd.update(bar.end_time, bar.close)
+
+        # Subscribe the consolidators to SPY data to automatic updating the indicators.
+        self.subscription_manager.add_consolidator(self.spy, rsi_consolidator)
+        self.subscription_manager.add_consolidator(self.spy, macd_consolidator)
+
+        # Warm up the indicators by updating the consolidators with historical data.
+        trade_bars = self.history[TradeBar](self.spy, 5*14, Resolution.MINUTE)
+        for bar in trade_bars:
+            rsi_consolidator.update(bar)
+        quote_bars = self.history[QuoteBar](self.spy, 15*26, Resolution.MINUTE)
+        for bar in quote_bars:
+            macd_consolidator.update(bar)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Entry rule: MACD histogram is positive (positive trend) and RSI is below 30 (oversold) to maximize return.
+        if self._rsi.current.value &lt; 30 and self._macd.histogram.current.value &gt; 0 and not self.portfolio[self.spy].is_long:
+            self.set_holdings(self.spy, 0.5)
+        # Exit rule: MACD histogram is below 0 (negative trend)
+        elif self._macd.histogram.current.value &lt; 0 and self.portfolio[self.spy].is_long:
+            self.liquidate(self.spy)</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
   <div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     
