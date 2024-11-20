@@ -1,0 +1,99 @@
+<p>The following examples demonstrate some common practices for duck typing.</p>
+
+<h4>Example 1: Store EMA Indicator</h4>
+<p>The following example implements a trend-following strategy using the EMA indicator for the top 20 liquid equities. It uses duck typing to store the EMA indicator in each <a href="/docs/v2/writing-algorithms/securities/key-concepts">Security object</a>, so the indicator is discarded together with the <code>Security</code> when it is removed from the universe.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class DuckTypingAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 6, 1);
+        // Weekly renewal on the universe to allow time to capitalize on the trend.
+        UniverseSettings.Schedule.On(DateRules.WeekStart());
+        // Trade on the top 20 liquid equities since they have higher volume and price movements.
+        _universe = AddUniverse(Universe.DollarVolume.Top(20));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        foreach (var (symbol, security) in _universe.Members)
+        {
+            // Trade on updated price data.
+            if (slice.Bars.TryGetValue(symbol, out var bar))
+            {
+                var ema = (security as dynamic).ema;
+                // Switch to long if the current price is above EMA, suggesting an uptrend.
+                if (bar.Close &gt; ema &amp;&amp; !Portfolio[symbol].IsLong)
+                {
+                    SetHoldings(symbol, 0.025m);
+                }
+                // Switch to short if the current price is below EMA, suggesting a downtrend.
+                else if (bar.Close &lt; ema &amp;&amp; !Portfolio[symbol].IsShort)
+                {
+                    SetHoldings(symbol, -0.025m);
+                }
+            }
+        }
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            // Liquidate if it is no longer in the top 50 liquidity stocks.
+            Liquidate(removed.Symbol);
+            // Release resources that update automatic indicators
+            DeregisterIndicator(removed.Get<ExponentialMovingAverage>("ema"));
+        }
+        
+        foreach (var added in changes.AddedSecurities)
+        {
+            // Use duck typing to create an EMA indicator for trend trading.
+            // Discarded together when the security is removed from the universe, you won't need to handle it.
+            var security = added as dynamic;
+            security.ema = EMA(added.Symbol, 60, Resolution.Daily);
+            // Warm up the EMA indicator to ensure its readiness for immediate usage.
+            WarmUpIndicator(added.Symbol, (ExponentialMovingAverage)security.ema, Resolution.Daily);
+        }
+    }
+}</pre>
+    <pre class="python">class DuckTypingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 6, 1)
+        # Weekly renewal on the universe to allow time to capitalize on the trend.
+        self.universe_settings.schedule.on(self.date_rules.week_start())
+        # Trade on the top 20 liquid equities since they have higher volume and hence price movements.
+        self._universe = self.add_universe(self.universe.dollar_volume.top(20))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        for kvp in self._universe.members:
+            symbol, security = kvp.key, kvp.value
+
+            # Trade on updated price data.
+            bar = slice.bars.get(symbol)
+            if bar:
+                ema = security.ema.current.value
+                # Switch to long if the current price is above EMA, suggesting an uptrend.
+                if bar.close &gt; ema and not self.portfolio[symbol].is_long:
+                    self.set_holdings(symbol, 0.025)
+                elif bar.close &lt; ema and not self.portfolio[symbol].is_short:
+                    self.set_holdings(symbol, -0.025)
+                
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        for removed in changes.removed_securities:
+            # Liquidate if it is not in the top 50 liquidity stocks anymore.
+            self.liquidate(removed.symbol)
+            # Release resources that update automatic indicators
+            self.deregister_indicator(removed.ema)
+
+        for added in changes.added_securities:
+            # Use duck typing to create an EMA indicator for trend trading.
+            # Discarded together when the security is removed from the universe, you won't need to handle it.
+            added.ema = self.ema(added.symbol, 60, Resolution.DAILY)
+            # Warm up the EMA indicator to ensure its readiness for immediate usage.
+            self.warm_up_indicator(added.symbol, added.ema, Resolution.DAILY)</pre>
+</div>
