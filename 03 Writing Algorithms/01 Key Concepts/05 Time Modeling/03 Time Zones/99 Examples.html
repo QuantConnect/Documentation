@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for time zone modeling.</p>
 
 <h4>Example 1: Futures Time Zone</h4>
-<p>The following algorithm changes its time zone to be the same as the EMini SP500 Futures exchange, i.e. Chicago time zone. It is more comparable on validating data across difference sources and more convenvient time notification without further conversion.</p>
+<p>The following algorithm changes its time zone to be the same as the EMini SP500 Futures exchange, i.e., Chicago time zone. It is comparable in validating data across different sources and has a more convenient time notification without further conversion.</p>
 <div class="section-example-container">
     <pre class="csharp">public class TimeZoneModelingAlgorithm : QCAlgorithm
 {
@@ -20,8 +20,9 @@
             dataMappingMode: DataMappingMode.OpenInterest,
             contractDepthOffset: 0);
         
-        // Set the time zone to be the same as the Future (Chicago). Performance of the backtest will not be altered by this change.
+        // Set the time zone to be the same as the Future (Chicago).
         // It will make the time in the backtest more comparable and easily analyzed with any other data sources.
+        // Performance of the backtest will only be altered by this change if the trading logic depends on the Time property.
         SetTimeZone(_future.Exchange.TimeZone);
     }
     
@@ -32,11 +33,11 @@
             _ticket = LimitOrder(_future.Mapped, 1, Securities[_future.Mapped].Price * 0.995m);
         }
 
-        // Cancel unfilled orders if it is not filled within 2 minutes to avoid stale fills.
-        // Note that the Time property in the order ticket is in UTC timezone.
+        // Cancel unfilled orders if they are not filled within 2 minutes to avoid stale fills.
+        // Note that the Time property in the order ticket is in the UTC timezone.
         if (_ticket.Status != OrderStatus.Filled &amp;&amp; _ticket.Time.AddMinutes(2) &lt; UtcTime)
         {
-            // You can change to different time zone and compare the log differences.
+            // You can change to a different time zone and compare the log differences.
             _ticket.Cancel($"{Time} :: utc: {UtcTime} :: Order canceled due to placed over 2 minutes");
 
             _ticket = null;
@@ -55,8 +56,9 @@
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
             contract_depth_offset=0)
 
-        # Set the time zone to be the same as the Future (Chicago). Performance of the backtest will not be altered by this change.
+        # Set the time zone to be the same as the Future (Chicago).
         # It will make the time in the backtest more comparable and easily analyzed with any other data sources.
+        # Performance of the backtest will only be altered by this change if the trading logic depends on the Time property.
         self.set_time_zone(self._future.exchange.time_zone)
 
         self.ticket = None
@@ -65,10 +67,10 @@
         if not self.portfolio.invested and not self.ticket:
             self.ticket = self.limit_order(self._future.mapped, 1, self.securities[self._future.mapped].price * 0.995)
 
-        # Cancel unfilled orders if it is not filled within 2 minutes to avoid stale fills.
+        # Cancel unfilled orders if they are not filled within 2 minutes to avoid stale fills.
         # Note that the Time property in the order ticket is in UTC timezone.
         if self.ticket.status != OrderStatus.Filled and self.ticket.time + timedelta(minutes=2) &lt; self.utc_time:
-            # You can change to different time zone and compare the log differences.
+            # You can change to a different time zone and compare the log differences.
             self.ticket.cancel(f"{self.time} :: utc: {self.utc_time} :: Order canceled due to placed over 2 minutes")
 
             self.ticket = None</pre>
