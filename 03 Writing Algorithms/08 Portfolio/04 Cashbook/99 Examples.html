@@ -1,0 +1,154 @@
+<p>The following examples demonstrate some common practices for controlling the portfolio cashbook.</p>
+
+<h4>Example 1: Dollar Cost Averaging</h4>
+<p>The following algorithm deposits $1000 USD on every month start and buy SPY with the deposited cash. It results into a dollar cost averaging investment strategy on the overall market.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class PortfolioCashbookAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private decimal _deposit = 1000m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        SetCash(1);
+
+        // Request SPY data for trading the overall market representative.
+        _spy = AddEquity("SPY").Symbol;
+
+        // Deposit each month start and invest in SPY by dollar cost averaging.
+        Schedule.On(
+            DateRules.MonthStart(_spy),
+            TimeRules.AfterMarketOpen(_spy, 0),
+            DepositAndRebalance
+        );
+
+        // To warm up the price data of SPY to calculate the quantity to be brought.
+        SetWarmUp(1);
+    }
+
+    private void DepositAndRebalance()
+    {
+        // Deposit the preset level ($1000) of the account currency in month start.
+        // Simulate the monthly salary deposit for dollar cost averaging investment in the market.
+        Portfolio.CashBook[AccountCurrency].AddAmount(_deposit);
+
+        // Calculate the number of shares can be invested by the deposited amount.
+        var quantity = Math.Floor(_deposit / Securities[_spy].Price);
+        MarketOrder(_spy, quantity);
+    }
+}</pre>
+    <pre class="python">class PortfolioCashbookAlgorithm(QCAlgorithm):
+    deposit = 1000
+
+    def initialize(self) -> None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        self.set_cash(1)
+
+        # Request SPY data for trading the overall market representative.
+        self.spy = self.add_equity("SPY").symbol
+
+        # Deposit each month start and invest in SPY by dollar cost averaging.
+        self.schedule.on(
+            self.date_rules.month_start(self.spy),
+            self.time_rules.after_market_open(self.spy, 0),
+            self.deposit_and_rebalance
+        )
+        
+        # To warm up the price data of SPY to calculate the quantity to be brought.
+        self.set_warm_up(1)
+    
+    def deposit_and_rebalance(self) -> None:
+        # Deposit the preset level ($1000) of the account currency in month start.
+        # Simulate the monthly salary deposit for dollar cost averaging investment in the market.
+        self.portfolio.cash_book[self.account_currency].add_amount(self.deposit)
+
+        # Calculate the number of shares can be invested by the deposited amount.
+        quantity = self.deposit // self.securities[self.spy].price
+        self.market_order(self.spy, quantity)</pre>
+</div>
+
+<h4>Example 2: Crypto Cashbook</h4>
+<p>This example trades an EMA cross strategy on the ETH-BTC crypto pair in a cash account. To obtain the maximum tradable order size, we need to make use of the cash book and check the amount of BTC in long ETHBTC trades and in short ETHBTC trades to avoid insufficient initial margin for the trades.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class PortfolioCashbookAlgorithm : QCAlgorithm
+{
+    private Symbol _btcusdt, _ethusdt, _ethbtc;
+    private ExponentialMovingAverage _ema;
+    // Set a buffer to avoid insufficient margin due to the price fluctuation.
+    private decimal _buffer = 0.01m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 8, 1);
+        SetEndDate(2021, 9, 1);
+        // Set the account currency as USDT and set the starting cash in a cash account.
+        SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
+        SetAccountCurrency("USDT", 100);
+        SetCash("BTC", 100);
+        SetCash("ETH", 2000);
+
+        // We would like to trade the EMA cross between 2 popular cryptos BTC & ETH,
+        // so request ETHBTC data to find trading oppotunity.
+        _ethbtc = AddCrypto("ETHBTC", Resolution.Minute, market: Market.Coinbase).Symbol;
+
+        // Add automatic-updating EMA indicator for trend trade signal emission.
+        _ema = EMA(_ethbtc, 50, Resolution.Daily);
+        // Warm up the indicator for its readiness usage immediately.
+        WarmUpIndicator(_ethbtc, _ema, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_ethbtc, out var bar) &amp;&amp; _ema.IsReady)
+        {
+            // ETHBTC current price is higher than EMA, suggesting an uptrend.
+            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_ethbtc].IsLong)
+            {
+                // Convert to corresponding quantity of the quote currency.
+                MarketOrder(_ethbtc, Portfolio.CashBook["BTC"].Amount * (1m - _buffer) / bar.Close);
+            }
+            // ETHBTC current price is below the EMA, suggesting a down trend.
+            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_ethbtc].IsShort)
+            {
+                MarketOrder(_ethbtc, -Portfolio.CashBook["ETH"].Amount * (1m - _buffer));
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class PortfolioCashbookAlgorithm(QCAlgorithm):
+
+    buffer = 0.01
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 8, 1)
+        self.set_end_date(2021, 9, 1)
+        # Set the account currency as USDT and set the starting cash in a cash account.
+        self.set_brokerage_model(BrokerageName.COINBASE, AccountType.CASH)
+        self.set_account_currency("USDT", 100)
+        self.set_cash("BTC", 100)
+        self.set_cash("ETH", 2000)
+
+        # We would like to trade the EMA cross between 2 popular cryptos BTC & ETH,
+        # so request ETHBTC data to find trading oppotunity.
+        self.ethbtc = self.add_crypto("ETHBTC", Resolution.MINUTE, Market.COINBASE).symbol
+
+        # Add automatic-updating EMA indicator for trend trade signal emission.
+        self._ema = self.ema(self.ethbtc, 50, Resolution.DAILY)
+        # Warm up the indicator for its readiness usage immediately.
+        self.warm_up_indicator(self.ethbtc, self._ema, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self.ethbtc)
+        if bar and self._ema.is_ready:
+            ema = self._ema.current.value
+            # ETHBTC current price is higher than EMA, suggesting an uptrend.
+            if bar.close &gt; ema and not self.portfolio[self.ethbtc].is_long:
+                # Convert to corresponding quantity of the quote currency.
+                self.market_order(self.ethbtc, self.portfolio.cash_book["BTC"].amount * (1 - self.buffer) / bar.close)
+            # ETHBTC current price is below the EMA, suggesting a down trend.
+            elif bar.close &lt; ema and not self.portfolio[self.ethbtc].is_short:
+                self.market_order(self.ethbtc, -self.portfolio.cash_book["ETH"].amount)</pre>
+</div>
