@@ -1,0 +1,102 @@
+<p>The following examples demonstrate some common practices for using the security identifier.</p>
+
+<h4>Example 1: Future Contract Expiry</h4>
+<p>The below example demonstrates the use of the security identifier of a Future contract to access its expiry date for contract selection and schedule a singular non-repeating event to rollover using <code class="csharp">future.Symbol.ID.Date</code><code class="python">future.symbol.id.date</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class SecurityIdentifierExampleAlgorithm : QCAlgorithm
+{
+    private Future _future;
+    private OrderTicket _ticket;
+    private ScheduledEvent _lastScheduledEvent;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        // Seed the price data to allow the mapped contract to fill despite sparse data.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+    }
+
+    public override void OnWarmupFinished()
+    {
+        // Since we do not subscribe to any data source, we can use the OnWarmupFinished event handler instead of OnData for the initial position.
+        var es = QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
+        OpenFuturePosition(es, Time.AddDays(30), 1);
+    }
+
+    private void OpenFuturePosition(Symbol symbol, DateTime minExpiry, decimal quantity)
+    {
+        // Select the next mapped future contract with the nearest expiry,
+        // which should be further than the current contract.
+        var selected = FutureChainProvider.GetFutureContractList(symbol, Time)
+            .Where(x =&gt; x.ID.Date &gt; minExpiry)
+            .MinBy(x =&gt; x.ID.Date);
+        // Subscribe to its data to trade it.
+        _future = AddFutureContract(selected, extendedMarketHours: true);
+
+        // Buy back the corresponding number of contracts as the previous mapped contract.
+        MarketOrder(_future.Symbol, quantity);
+
+        // Schedule the next rollover to be 1 week before the expiry to avoid excessive volatility.
+        // It will only be triggered once 7 days before the expiry and discarded afterward.
+        if (_lastScheduledEvent != null) Schedule.Remove(_lastScheduledEvent);
+        Schedule.On(
+            DateRules.On(new[] { _future.Symbol.ID.Date.AddDays(-7) }),
+            TimeRules.At(9, 30),
+            RollOver
+        );
+    }
+
+    private void RollOver()
+    {
+        // Save the current number of contracts to roll over to the next mapped contract.
+        var quantity = _future.Holdings.Quantity;
+        // Liquidate the to-be-expired contract to roll over the position.
+        Liquidate(_future.Symbol);
+
+        OpenFuturePosition(_future.Symbol.Canonical, _future.Symbol.ID.Date, quantity);
+    }
+}</pre>
+    <pre class="python">class SecurityIdentifierExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        # Seed the price data in order to allow the mapped contract to fill despite sparse data.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self._last_scheduled_event = None
+        
+    def on_warmup_finished(self) -&gt; None:
+        # Since we do not subscribe to any data source, we can use the on_warmup_finished event handler instead of OnData for the initial position.
+        es = Symbol.Create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)
+        self.open_future_position(es, self.time + timedelta(30), 1)
+
+    def open_future_position(self, symbol: Symbol, min_expiry: DateTime, quantity: float) -&gt; None:
+        # Select the next mapped future contract with the nearest expiry,
+        # which should be further than the current contract.
+        future_list = self.future_chain_provider.get_future_contract_list(symbol, self.time)
+        selected = sorted([x for x in future_list if x.id.date &gt; min_expiry],
+                          key=lambda x: x.id.date)[0]
+        # Subscribe to its data to trade it.
+        self._future = self.add_future_contract(selected, extended_market_hours=True)
+
+        # Buy back the corresponding number of contracts as the previous mapped contract.
+        self.market_order(self._future.symbol, quantity)
+
+        # Schedule the next rollover to be 1 week before the expiry to avoid excessive volatility.
+        # It will only be triggered once 7 days before the expiry and discarded afterward.
+        if self._last_scheduled_event:
+            self.schedule.remove(self._last_scheduled_event)
+        self.schedule.on(
+            self.date_rules.on([self._future.symbol.id.date - timedelta(7)]),
+            self.time_rules.at(9, 30),
+            self.roll_over
+        )
+
+    def roll_over(self) -&gt; None:
+        # Save the current number of contracts to roll over to the next mapped contract.
+        quantity = self._future.holdings.quantity
+        # Liquidate the to-be-expired contract to roll over the position.
+        self.liquidate(self._future.symbol)
+
+        self.open_future_position(self._future.symbol.canonical, self._future.symbol.id.date, quantity)</pre>
+</div>
