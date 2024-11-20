@@ -1,0 +1,319 @@
+<p>The following examples demonstrate some common practices for applying research.</p>
+
+<h4>Example 1: Hypothesis-Driven Research</h4>
+<p>The following example hypothesized that 2 different classes of Google stocks are cointegrated with each other, and we can capitalize spread reversal from occasional, irrational price divergence. To prove it, we make use of the augmented Dickey-Fuller test to verify the cointegration relationship.</p>
+<div class="section-example-container">
+    <pre class="csharp">using Accord.Statistics;
+using MathNet.Numerics.LinearRegression;
+
+public class HypothesisDrivenResearchAlgorithm : QCAlgorithm
+{
+    private Symbol _goog1, _goog2;
+    // The threshold that the spread/residual of the cointegrated series triggers a trade.
+    private decimal _thresold;
+    // Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
+    private decimal[] _coefficients = new[] { 0m, 0m };
+    // Store the price series of each symbol for cointegration calculation.
+    private Dictionary&lt;Symbol, RollingWindow&lt;double&gt;&gt; _windows = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2023, 1, 1);
+        
+        // Subscribe to 2 classes of Google stocks to trade their price divergence.
+        _goog1 = AddEquity("GOOGL", Resolution.Minute).Symbol;      // Class A
+        _goog2 = AddEquity("GOOG", Resolution.Minute).Symbol;       // Class C
+
+        foreach (var symbol in new[] { _goog1, _goog2 })
+        {
+            _windows[symbol] = new(252);
+
+            // Add a consolidator to aggregate a daily bar to update the window's daily price series.
+            var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(1));
+            consolidator.DataConsolidated += (_, bar) =&gt; {
+                _windows[bar.Symbol].Add((double)bar.Close);
+            };
+            // Subscribe the consolidator to update automatically.
+            SubscriptionManager.AddConsolidator(symbol, consolidator);
+
+            // Warm up the rolling window's daily price series with historical data.
+            var history = History&lt;TradeBar&gt;(symbol, 253, Resolution.Daily);
+            foreach (var bar in history)
+            {
+                consolidator.Update(bar);
+            }
+        }
+
+        // Adjust the cointegration factor between the 2 classes' monthly price series.
+        Schedule.On(
+            DateRules.MonthStart(),
+            TimeRules.At(0, 1),
+            CalculateCointegration
+        );
+
+        CalculateCointegration();
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.QuoteBars.TryGetValue(_goog1, out var bar1) &amp;&amp; slice.QuoteBars.TryGetValue(_goog2, out var bar2))
+        {
+            // Calculate the current cointegrated series spread.
+            var residual = _coefficients[0] * bar2.Close + _coefficients[1] - bar1.Close;
+
+            // If the residual is lower than the negative threshold, it means class A price is much higher than what it should be compared to class C.
+            // We sell class A and buy class C to bet on their price convergence.
+            if (residual &lt; -_thresold &amp;&amp; !Portfolio[_goog1].IsShort)
+            {
+                SetHoldings(_goog1, -0.5m);
+                SetHoldings(_goog2, 0.5m * _coefficients[0]);
+            }
+            // If the residual is higher than the threshold, it means class A price is much lower than what it should be compared to class C.
+            // We buy class A and sell class C to bet on their price convergence.
+            else if (residual &gt; _thresold &amp;&amp; !Portfolio[_goog1].IsLong)
+            {
+                SetHoldings(_goog1, 0.5m);
+                SetHoldings(_goog2, -0.5m * _coefficients[0]);
+            }
+            // Close positions of the price are converged.
+            else if ((Portfolio[_goog1].IsShort &amp;&amp; residual &gt; 0m) || (Portfolio[_goog1].IsLong &amp;&amp; residual &lt; 0m))
+            {
+                Liquidate();
+            }
+        }
+    }
+
+    private void CalculateCointegration()
+    {
+        // Lag direction is unimportant; it is just a sign flip in the linear regression, so we don't need to flip the window order.
+        var y = _windows[_goog1].ToArray();
+        var x = _windows[_goog2].ToArray();
+
+        // Perform Linear Regression on both price series to investigate their relationship.
+        var regressionResult = SimpleRegression.Fit(x, y);
+        var intercept = regressionResult.Item1;
+        var slope = regressionResult.Item2;
+
+        // Calculate the residuals series to check if it is stationary, meaning if the 2 price series move together.
+        var residuals = new double[x.Length];
+        for (int i = 0; i &lt; x.Length; i++)
+        {
+            residuals[i] = y[i] - (intercept + slope * x[i]);
+        }
+
+        // Check if the residuals are stationary using the augmented Dickey-Fuller test.
+        if (ADFTest(residuals))
+        {
+            // If cointegrated, update the positional sizing ratio and the spread threshold of the trade trigger.
+            _coefficients = new[] { Convert.ToDecimal(slope), Convert.ToDecimal(intercept) };
+            _thresold = 2m * Convert.ToDecimal(Measures.StandardDeviation(residuals));
+        }
+        else
+        {
+            // If not cointegrated, liquidate and set the size to zeros for no positions.
+            Liquidate();
+            _coefficients = new[] { 0m, 0m };
+            _thresold = 100000000m;             // An arbitrarily large number that the class A price will never reach.
+        }
+    }
+
+    private static bool ADFTest(double[] series)
+    {
+        var n = series.Length;
+        var lagged = new double[n - 1];
+        var differences = new double[n - 1];
+        
+        // Fit linear regression for the residual series on unit root: ΔY_t = α + βY_{t-1} + ε_t.
+        for (int i = 1; i &lt; n; i++)
+        {
+            lagged[i - 1] = series[i - 1];
+            differences[i - 1] = series[i] - series[i - 1];
+        }
+
+        var regressionResult = SimpleRegression.Fit(lagged, differences);
+        var alpha = regressionResult.Item1;  // Intercept
+        var beta = regressionResult.Item2;   // Coefficient of lagged term
+
+        // Calculate the ADF statistic and check if the null hypothesis is rejected.
+        var adfStatistic = beta / Measures.StandardError(differences);
+
+        // Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        // Which means no unit root for difference series and the residuals are stationary.
+        return adfStatistic &lt;= -3.45d;
+    }
+}</pre>
+    <pre class="python">from sklearn.linear_model import LinearRegression
+from statsmodels.tsa.stattools import adfuller
+
+class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
+    # The threshold that the spread/residual of the cointegrated series triggers a trade.
+    threshold = 0
+    # Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
+    coefficients = [0, 0]
+    # Store the price series of each symbol for cointegration calculation.
+    windows = {}
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2023, 1, 1)
+
+        # Subscribe to 2 classes of Google stocks to trade their price divergence.
+        self.goog1 = self.add_equity("GOOGL", Resolution.MINUTE).symbol        # Class A
+        self.goog2 = self.add_equity("GOOG", Resolution.MINUTE).symbol         # Class C
+
+        for symbol in [self.goog1, self.goog2]:
+            self.windows[symbol] = RollingWindow[float](252)
+
+            # Add a consolidator to aggregate a daily bar to update the window's daily price series.
+            consolidator = TradeBarConsolidator(timedelta(1))
+            consolidator.data_consolidated += lambda _, bar: self.windows[bar.symbol].add(bar.close)
+            # Subscribe to the consolidator to update automatically.
+            self.subscription_manager.add_consolidator(symbol, consolidator)
+
+            # Warm up the rolling window's daily price series with historical data.
+            history = self.history[TradeBar](symbol, 253, Resolution.DAILY)
+            for bar in history:
+                consolidator.update(bar)
+
+        # Adjust the cointegration factor between the 2 classes' monthly price series.
+        self.schedule.on(
+            self.date_rules.month_start(),
+            self.time_rules.at(0, 1),
+            self.calculate_cointegration
+        )
+
+        self.calculate_cointegration()
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar1 = slice.quote_bars.get(self.goog1)
+        bar2 = slice.quote_bars.get(self.goog2)
+        if bar1 and bar2:
+            # Calculate the current cointegrated series spread.
+            residual = self.coefficients[0] * bar2.close + self.coefficients[1] - bar1.close
+
+            # If the residual is lower than the negative threshold, it means class A's price is much higher than it should be compared to class C.
+            # We sell class A and buy class C to bet on their price convergence.
+            if residual &lt; -self.threshold and not self.portfolio[self.goog1].is_short:
+                self.set_holdings(self.goog1, -0.5)
+                self.set_holdings(self.goog2, 0.5 * self.coefficients[0])
+            # If the residual is higher than the threshold, it means class A price is much lower than what it should be compared to class C.
+            # We buy class A and sell class C to bet on their price convergence.
+            elif residual &gt; self.threshold and not self.portfolio[self.goog1].is_long:
+                self.set_holdings(self.goog1, 0.5)
+                self.set_holdings(self.goog2, -0.5 * self.coefficients[0])
+            # Close positions of the price are converged.
+            elif (self.portfolio[self.goog1].is_short and residual &gt; 0) or (self.portfolio[self.goog1].is_long and residual &lt; 0):
+                self.liquidate()
+                
+    def calculate_cointegration(self) -&gt; None:
+        # Lag direction is unimportant; it is just a sign flip in the linear regression, so we don't need to flip the window order.
+        y = np.array(list(self.windows[self.goog1])).reshape(-1, 1)
+        x = np.array(list(self.windows[self.goog2])).reshape(-1, 1)
+
+        # Perform Linear Regression on both price series to investigate their relationship.
+        lr = LinearRegression().fit(x, y)
+        slope = lr.coef_[0]
+        intercept = lr.intercept_
+
+        # Calculate the residuals series to check if it is stationary, meaning if the 2 price series move together.
+        residuals = y - (intercept + slope * x)
+
+        # Check if the residuals are stationary using the augmented Dickey-Fuller test.
+        # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        # Which means no unit root for difference series and the residuals are stationary.
+        adf_reject = adfuller(residuals)[0] &lt;= -3.45
+        if adf_reject:
+            # If cointegrated, update the positional sizing ratio and the spread threshold of the trade trigger.
+            self.coefficients = [slope, intercept]
+            self.threshold = 2 * np.std(residuals)
+        else:
+            # If not cointegrated, liquidate and set the size to zeros for no positions.
+            self.liquidate()
+            self.coefficients = [0, 0]
+            self.threshold = 100000000          # An arbitrarily large number that the class A price will never reach.</pre>
+</div>
+
+<h4>Example 2: Data-Driven Research</h4>
+<p>By exploring the return pattern of SPY in 2020, we use that information to invest in 2021. Since the macroeconomic environment is similar (low interest rate), we assume the market seasonality would follow through. We can observe from the figures below that an around 50-day cycle, like a sine function, exists, and the next cycle starts around Jan 2021. Hence, we switch long and short every 25 days in 2021.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/forward-trailing-return-line-plot.png">
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/return-heatmap-data-driven-research.png">
+<div class="section-example-container">
+    <pre class="csharp">public class DataDrivenResearchAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private ScheduledEvent _lastScheduledEvent;
+        
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        // Request SPY data to trade it.
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+    }
+
+    public override void OnWarmupFinished()
+    {
+        // According to the data, the first cycle is downgoing.
+        SetHoldings(_spy, -1m);
+        // Schedule a switch in 25 days later.
+        _lastScheduledEvent = Schedule.On(
+            DateRules.On(Time.AddDays(25)),
+            TimeRules.At(9, 30),
+            Switch
+        );
+    }
+
+    private void Switch()
+    {
+        // Switch long/short after the cycle change.
+        if (Portfolio[_spy].IsLong)
+        {
+            SetHoldings(_spy, -1m);
+        }
+        else
+        {
+            SetHoldings(_spy, 1m);
+        }
+
+        // Schedule the next switch in 25 days later.
+        Schedule.Remove(_lastScheduledEvent);
+        _lastScheduledEvent = Schedule.On(
+            DateRules.On(Time.AddDays(25)),
+            TimeRules.At(9, 30),
+            Switch
+        );
+    }
+}</pre>
+    <pre class="python">class DataDrivenResearchAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        # Request SPY data to trade it.
+        self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+
+    def on_warmup_finished(self) -&gt; None:
+        # According to the data, the first cycle is downgoing.
+        self.set_holdings(self.spy, -1)
+        # Schedule a switch 25 days later.
+        self.last_scheduled_event = self.schedule.on(
+            self.date_rules.On(self.time + timedelta(25)),
+            self.time_rules.at(9, 30),
+            self.switch
+        )
+
+    def switch(self) -&gt; None:
+        # Switch long/short after the cycle change.
+        if self.portfolio[self.spy].is_long:
+            self.set_holdings(self.spy, -1)
+        else:
+            self.set_holdings(self.spy, 1)
+
+        # Schedule the next switch 25 days later.
+        self.schedule.remove(self.last_scheduled_event)
+        self.last_scheduled_event = self.schedule.on(
+            self.date_rules.On(self.time + timedelta(25)),
+            self.time_rules.at(9, 30),
+            self.switch
+        )</pre>
+</div>
