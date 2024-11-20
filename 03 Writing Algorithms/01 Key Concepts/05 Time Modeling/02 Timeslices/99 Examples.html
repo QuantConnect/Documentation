@@ -1,0 +1,76 @@
+<p>The following examples demonstrate some common practices for timeslices time modeling.</p>
+
+<h4>Example 1: 6-Hour Consolidated Bars</h4>
+<p></p>
+<div class="section-example-container">
+    <pre class="csharp">public class TimeslicesTimeModelingAlgorithm : QCAlgorithm
+{
+    private Symbol _aapl;
+    private TradeBarConsolidator _consolidator;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+
+        // Request AAPL data to trade it. We need a resolution denser than 6-hour for the consolidator.
+        _aapl = AddEquity("AAPL", Resolution.Hour).Symbol;
+            
+        // Create a 6-hour consolidator for smoothing the noise.
+        _consolidator = new TradeBarConsolidator(TimeSpan.FromHours(6));
+        // Subscribe the consolidator to update with the security's data automatically.
+        SubscriptionManager.AddConsolidator(_aapl, _consolidator);
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_aapl, out var bar) &amp;&amp; _consolidator.WorkingBar != null)
+        {
+            // Trade on a rising trend, suggested by the current close is above the past hour open
+            // and the past hour open is above the 6-hour bar open.
+            if (_consolidator.WorkingBar.Open &lt; bar.Open &amp;&amp; bar.Open &lt; bar.Close)
+            {
+                SetHoldings(_aapl, 1m);
+            }
+            // Trade on a down trend, suggested by the current close is below the past hour open
+            // and the past hour open is below the 6-hour bar open.
+            else if (_consolidator.WorkingBar.Open &gt; bar.Open &amp;&amp; bar.Open &gt; bar.Close)
+            {
+                SetHoldings(_aapl, -1m);
+            }
+            // Otherwise, do not hold a position if there is no deterministic trend.
+            else
+            {
+                Liquidate();
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class TimeslicesTimeModelingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        
+        # Request AAPL data to trade it. We need a resolution denser than 6-hour for the consolidator.
+        self.aapl = self.add_equity("AAPL", Resolution.Hour).symbol
+
+        # Create a 6-hour consolidator for smoothing the noise.
+        self.consolidator = TradeBarConsolidator(timedelta(hours=6))
+        # Subscribe the consolidator to update with the security's data automatically.
+        self.subscription_manager.add_consolidator(self.aapl, self.consolidator)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self.aapl)
+        if bar and self.consolidator.working_bar is not None:
+            # Trade on a rising trend, suggested by the current close is above the past hour open
+            # and the past hour open is above the 6-hour bar open.
+            if self.consolidator.working_bar.open &lt; bar.open &lt; bar.close:
+                self.set_holdings(self.aapl, 1)
+            # Trade on a down trend, suggested by the current close is below the past hour open
+            # and the past hour open is below the 6-hour bar open.
+            elif self.consolidator.working_bar.open &gt; bar.open &gt; bar.close:
+                self.set_holdings(self.aapl, -1)
+            # Otherwise, do not hold a position if there is no deterministic trend.
+            else:
+                self.liquidate()</pre>
+</div>
