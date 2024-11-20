@@ -20,18 +20,12 @@
 
         // Create a 5-minute trade bar consolidator to feed the smoothed bar to RSI indicator for price action entry signal.
         var rsiConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
-        rsiConsolidator.DataConsolidated += (_, bar) =&gt; {
-            _rsi.Update(bar.EndTime, bar.Close);
-        };
         // Create a 15-minute quote bar consolidator to feed the smoothed bar to MACD consolidator for trend entry/exit signal.
         var macdConsolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(15));
-        macdConsolidator.DataConsolidated += (_, bar) =&gt; {
-            _macd.Update(bar.EndTime, bar.Close);
-        };
 
         // Subscribe the consolidators to SPY data to automatic updating the indicators.
-        SubscriptionManager.AddConsolidator(_spy, rsiConsolidator);
-        SubscriptionManager.AddConsolidator(_spy, macdConsolidator);
+        RegisterIndicator(_spy, _rsi, rsiConsolidator);
+        RegisterIndicator(_spy, _macd, macdConsolidator);
 
         // Warm up the indicators by updating the consolidators with historical data.
         var tradeBars = History&lt;TradeBar&gt;(_spy, 5 * 14, Resolution.Minute);
@@ -74,14 +68,12 @@
 
         # Create a 5-minute trade bar consolidator to feed the smoothed bar to RSI indicator for price action entry signal.
         rsi_consolidator = TradeBarConsolidator(timedelta(minutes=5))
-        rsi_consolidator.data_consolidated += lambda _, bar: self._rsi.update(bar.end_time, bar.close)
         # Create a 15-minute quote bar consolidator to feed the smoothed bar to MACD consolidator for trend entry/exit signal.
         macd_consolidator = QuoteBarConsolidator(timedelta(minutes=15))
-        macd_consolidator.data_consolidated += lambda _, bar: self._macd.update(bar.end_time, bar.close)
 
         # Subscribe the consolidators to SPY data to automatic updating the indicators.
-        self.subscription_manager.add_consolidator(self.spy, rsi_consolidator)
-        self.subscription_manager.add_consolidator(self.spy, macd_consolidator)
+        self.register_indicator(self.spy, self._rsi, rsi_consolidator)
+        self.register_indicator(self.spy, self._macd, macd_consolidator)
 
         # Warm up the indicators by updating the consolidators with historical data.
         trade_bars = self.history[TradeBar](self.spy, 5*14, Resolution.MINUTE)
