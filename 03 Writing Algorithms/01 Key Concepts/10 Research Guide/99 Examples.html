@@ -1,12 +1,12 @@
 <p>The following examples demonstrate some common practices for applying research.</p>
 
 <h4>Example 1: Hypothesis-Driven Research</h4>
-<p>The following example hypothesized that 2 difference classes of Google stocks are cointegrated with each other, and we can capitalize spread reversal from occasional, irrational price divergence. To prove it, we make use of augmented Dickey-Fuller test to verify the cointegration relationship.</p>
+<p>The following example hypothesized that 2 different classes of Google stocks are cointegrated with each other, and we can capitalize spread reversal from occasional, irrational price divergence. To prove it, we make use of the augmented Dickey-Fuller test to verify the cointegration relationship.</p>
 <div class="section-example-container">
     <pre class="csharp">using Accord.Statistics;
 using MathNet.Numerics.LinearRegression;
 
-public class DuckTypingAlgorithm : QCAlgorithm
+public class HypothesisDrivenResearchAlgorithm : QCAlgorithm
 {
     private Symbol _goog1, _goog2;
     // The threshold that the spread/residual of the cointegrated series triggers a trade.
@@ -21,7 +21,7 @@ public class DuckTypingAlgorithm : QCAlgorithm
         SetStartDate(2019, 1, 1);
         SetEndDate(2023, 1, 1);
         
-        // Subscribe to 2 classes of Google stocks in order to trade their price divergence.
+        // Subscribe to 2 classes of Google stocks to trade their price divergence.
         _goog1 = AddEquity("GOOGL", Resolution.Minute).Symbol;      // Class A
         _goog2 = AddEquity("GOOG", Resolution.Minute).Symbol;       // Class C
 
@@ -29,7 +29,7 @@ public class DuckTypingAlgorithm : QCAlgorithm
         {
             _windows[symbol] = new(252);
 
-            // Add a consolidator to aggregate a daily bar for updating the window's daily price series.
+            // Add a consolidator to aggregate a daily bar to update the window's daily price series.
             var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(1));
             consolidator.DataConsolidated += (_, bar) =&gt; {
                 _windows[bar.Symbol].Add((double)bar.Close);
@@ -45,7 +45,7 @@ public class DuckTypingAlgorithm : QCAlgorithm
             }
         }
 
-        // Adjust the cointegration factor between the 2 classes price series each month.
+        // Adjust the cointegration factor between the 2 classes' monthly price series.
         Schedule.On(
             DateRules.MonthStart(),
             TimeRules.At(0, 1),
@@ -62,14 +62,14 @@ public class DuckTypingAlgorithm : QCAlgorithm
             // Calculate the current cointegrated series spread.
             var residual = _coefficients[0] * bar2.Close + _coefficients[1] - bar1.Close;
 
-            // If the residual is lower than negative threshold, it means class A price is much higher than what it should be compared to class C.
+            // If the residual is lower than the negative threshold, it means class A price is much higher than what it should be compared to class C.
             // We sell class A and buy class C to bet on their price convergence.
             if (residual &lt; -_thresold &amp;&amp; !Portfolio[_goog1].IsShort)
             {
                 SetHoldings(_goog1, -0.5m);
                 SetHoldings(_goog2, 0.5m * _coefficients[0]);
             }
-            // If the residual is higher than threshold, it means class A price is much lower than what it should be compared to class C.
+            // If the residual is higher than the threshold, it means class A price is much lower than what it should be compared to class C.
             // We buy class A and sell class C to bet on their price convergence.
             else if (residual &gt; _thresold &amp;&amp; !Portfolio[_goog1].IsLong)
             {
@@ -86,11 +86,11 @@ public class DuckTypingAlgorithm : QCAlgorithm
 
     private void CalculateCointegration()
     {
-        // Lag direction is not important, it is just a sign flip in the linear regression, so we don't need to flip the window order.
+        // Lag direction is unimportant; it is just a sign flip in the linear regression, so we don't need to flip the window order.
         var y = _windows[_goog1].ToArray();
         var x = _windows[_goog2].ToArray();
 
-        // Perform Linear Regression on both price series in order to investigate their relationship.
+        // Perform Linear Regression on both price series to investigate their relationship.
         var regressionResult = SimpleRegression.Fit(x, y);
         var intercept = regressionResult.Item1;
         var slope = regressionResult.Item2;
@@ -102,10 +102,10 @@ public class DuckTypingAlgorithm : QCAlgorithm
             residuals[i] = y[i] - (intercept + slope * x[i]);
         }
 
-        // Check if the residuals are stationary using augmented dickey fuller test.
+        // Check if the residuals are stationary using the augmented Dickey-Fuller test.
         if (ADFTest(residuals))
         {
-            // If cointegrated, update the positional sizing ratio and the spread threshold of trade trigger.
+            // If cointegrated, update the positional sizing ratio and the spread threshold of the trade trigger.
             _coefficients = new[] { Convert.ToDecimal(slope), Convert.ToDecimal(intercept) };
             _thresold = 2m * Convert.ToDecimal(Measures.StandardDeviation(residuals));
         }
@@ -114,7 +114,7 @@ public class DuckTypingAlgorithm : QCAlgorithm
             // If not cointegrated, liquidate and set the size to zeros for no positions.
             Liquidate();
             _coefficients = new[] { 0m, 0m };
-            _thresold = 100000000m;             // An arbitrary large number that the class A price will never reach.
+            _thresold = 100000000m;             // An arbitrarily large number that the class A price will never reach.
         }
     }
 
@@ -146,7 +146,7 @@ public class DuckTypingAlgorithm : QCAlgorithm
     <pre class="python">from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.stattools import adfuller
 
-class DuckTypingAlgorithm(QCAlgorithm):
+class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
     # The threshold that the spread/residual of the cointegrated series triggers a trade.
     threshold = 0
     # Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
@@ -158,17 +158,17 @@ class DuckTypingAlgorithm(QCAlgorithm):
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2023, 1, 1)
 
-        # Subscribe to 2 classes of Google stocks in order to trade their price divergence.
+        # Subscribe to 2 classes of Google stocks to trade their price divergence.
         self.goog1 = self.add_equity("GOOGL", Resolution.MINUTE).symbol        # Class A
         self.goog2 = self.add_equity("GOOG", Resolution.MINUTE).symbol         # Class C
 
         for symbol in [self.goog1, self.goog2]:
             self.windows[symbol] = RollingWindow[float](252)
 
-            # Add a consolidator to aggregate a daily bar for updating the window's daily price series.
+            # Add a consolidator to aggregate a daily bar to update the window's daily price series.
             consolidator = TradeBarConsolidator(timedelta(1))
             consolidator.data_consolidated += lambda _, bar: self.windows[bar.symbol].add(bar.close)
-            # Subscribe the consolidator to update automatically.
+            # Subscribe to the consolidator to update automatically.
             self.subscription_manager.add_consolidator(symbol, consolidator)
 
             # Warm up the rolling window's daily price series with historical data.
@@ -176,7 +176,7 @@ class DuckTypingAlgorithm(QCAlgorithm):
             for bar in history:
                 consolidator.update(bar)
 
-        # Adjust the cointegration factor between the 2 classes price series each month.
+        # Adjust the cointegration factor between the 2 classes' monthly price series.
         self.schedule.on(
             self.date_rules.month_start(),
             self.time_rules.at(0, 1),
@@ -192,12 +192,12 @@ class DuckTypingAlgorithm(QCAlgorithm):
             # Calculate the current cointegrated series spread.
             residual = self.coefficients[0] * bar2.close + self.coefficients[1] - bar1.close
 
-            # If the residual is lower than negative threshold, it means class A price is much higher than what it should be compared to class C.
+            # If the residual is lower than the negative threshold, it means class A's price is much higher than it should be compared to class C.
             # We sell class A and buy class C to bet on their price convergence.
             if residual &lt; -self.threshold and not self.portfolio[self.goog1].is_short:
                 self.set_holdings(self.goog1, -0.5)
                 self.set_holdings(self.goog2, 0.5 * self.coefficients[0])
-            # If the residual is higher than threshold, it means class A price is much lower than what it should be compared to class C.
+            # If the residual is higher than the threshold, it means class A price is much lower than what it should be compared to class C.
             # We buy class A and sell class C to bet on their price convergence.
             elif residual &gt; self.threshold and not self.portfolio[self.goog1].is_long:
                 self.set_holdings(self.goog1, 0.5)
@@ -207,11 +207,11 @@ class DuckTypingAlgorithm(QCAlgorithm):
                 self.liquidate()
                 
     def calculate_cointegration(self) -&gt; None:
-        # Lag direction is not important, it is just a sign flip in the linear regression, so we don't need to flip the window order.
+        # Lag direction is unimportant; it is just a sign flip in the linear regression, so we don't need to flip the window order.
         y = np.array(list(self.windows[self.goog1])).reshape(-1, 1)
         x = np.array(list(self.windows[self.goog2])).reshape(-1, 1)
 
-        # Perform Linear Regression on both price series in order to investigate their relationship.
+        # Perform Linear Regression on both price series to investigate their relationship.
         lr = LinearRegression().fit(x, y)
         slope = lr.coef_[0]
         intercept = lr.intercept_
@@ -219,30 +219,31 @@ class DuckTypingAlgorithm(QCAlgorithm):
         # Calculate the residuals series to check if it is stationary, meaning if the 2 price series move together.
         residuals = y - (intercept + slope * x)
 
-        # Check if the residuals are stationary using augmented dickey fuller test.
+        # Check if the residuals are stationary using the augmented Dickey-Fuller test.
         # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
         # Which means no unit root for difference series and the residuals are stationary.
         adf_reject = adfuller(residuals)[0] &lt;= -3.45
         if adf_reject:
-            # If cointegrated, update the positional sizing ratio and the spread threshold of trade trigger.
+            # If cointegrated, update the positional sizing ratio and the spread threshold of the trade trigger.
             self.coefficients = [slope, intercept]
             self.threshold = 2 * np.std(residuals)
         else:
             # If not cointegrated, liquidate and set the size to zeros for no positions.
             self.liquidate()
             self.coefficients = [0, 0]
-            self.threshold = 100000000          # An arbitrary large number that the class A price will never reach.</pre>
+            self.threshold = 100000000          # An arbitrarily large number that the class A price will never reach.</pre>
 </div>
 
 <h4>Example 2: Data-Driven Research</h4>
-<p>By exploring the return pattern of SPY in 2020, we use that information to invest on 2021. Since the macroeconomic environment are similar (low interest rate), we assume the market seasonality would follow through. We can observe from the below figures that there exists an around 50-day cycle like a sine function, in which the next cycle starts around the Jan 2021. Hence, we switch long and short every 25 days in 2021.</p>
+<p>By exploring the return pattern of SPY in 2020, we use that information to invest in 2021. Since the macroeconomic environment is similar (low interest rate), we assume the market seasonality would follow through. We can observe from the figures below that an around 50-day cycle, like a sine function, exists, and the next cycle starts around Jan 2021. Hence, we switch long and short every 25 days in 2021.</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/forward-trailing-return-line-plot.png">
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/return-heatmap-data-driven-research.png">
 <div class="section-example-container">
     <pre class="csharp">public class DataDrivenResearchAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
-
+    private ScheduledEvent _lastScheduledEvent;
+        
     public override void Initialize()
     {
         SetStartDate(2021, 1, 1);
@@ -256,7 +257,7 @@ class DuckTypingAlgorithm(QCAlgorithm):
         // According to the data, the first cycle is downgoing.
         SetHoldings(_spy, -1m);
         // Schedule a switch in 25 days later.
-        Schedule.On(
+        _lastScheduledEvent = Schedule.On(
             DateRules.On(Time.AddDays(25)),
             TimeRules.At(9, 30),
             Switch
@@ -276,7 +277,8 @@ class DuckTypingAlgorithm(QCAlgorithm):
         }
 
         // Schedule the next switch in 25 days later.
-        Schedule.On(
+        Schedule.Remove(_lastScheduledEvent);
+        _lastScheduledEvent = Schedule.On(
             DateRules.On(Time.AddDays(25)),
             TimeRules.At(9, 30),
             Switch
@@ -293,8 +295,8 @@ class DuckTypingAlgorithm(QCAlgorithm):
     def on_warmup_finished(self) -&gt; None:
         # According to the data, the first cycle is downgoing.
         self.set_holdings(self.spy, -1)
-        # Schedule a switch in 25 days later.
-        self.schedule.on(
+        # Schedule a switch 25 days later.
+        self.last_scheduled_event = self.schedule.on(
             self.date_rules.On(self.time + timedelta(25)),
             self.time_rules.at(9, 30),
             self.switch
@@ -307,8 +309,9 @@ class DuckTypingAlgorithm(QCAlgorithm):
         else:
             self.set_holdings(self.spy, 1)
 
-        # Schedule the next switch in 25 days later.
-        self.schedule.on(
+        # Schedule the next switch 25 days later.
+        self.schedule.remove(self.last_scheduled_event)
+        self.last_scheduled_event = self.schedule.on(
             self.date_rules.On(self.time + timedelta(25)),
             self.time_rules.at(9, 30),
             self.switch
