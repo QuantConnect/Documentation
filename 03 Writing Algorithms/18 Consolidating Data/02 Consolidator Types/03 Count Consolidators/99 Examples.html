@@ -1,4 +1,96 @@
-  <div class="example-fieldset"> 
+<p>The following examples demonstrate some common practices for implementing count consolidator.</p>
+
+<h4>Example 1: Tick Count Consolidator</h4>
+<p></p>
+<div class="section-example-container">
+    <pre class="csharp">public class CountConsolidatorAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    // Create EMA indicators for trade signal generation.
+    private ExponentialMovingAverage _ema = new(200);
+    // Day variable to control trade daily on open.
+    private int _day = -1;
+
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 2, 1);
+        
+        // Request SPY data to feed to indicators and trade.
+        _spy = AddEquity("SPY", Resolution.Tick).Symbol;
+
+        // Create a 10000 trade tick consolidator to feed the "volume" bar to EMA indicator for trend entry/exit signal.
+        var tickConsolidator = new TickConsolidator(10000);
+
+        // Subscribe the consolidators to SPY data to automatic updating the indicators.
+        RegisterIndicator(_spy, _ema, tickConsolidator);
+
+        SetWarmUp(120);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_ema.IsReady &amp;&amp; slice.Ticks.TryGetValue(_spy, out var ticks) &amp;&amp; slice.Time.Day != _day)
+        {
+            // Obtain the lastest quote price from the latest tick.
+            var lastTick = ticks.MaxBy(x =&gt; x.EndTime);
+
+            // Trade the trend by EMA crosses.
+            if (lastTick.Price &gt; _ema &amp;&amp; !Portfolio[_spy].IsLong)
+            {
+                SetHoldings(_spy, 0.5m);
+            }
+            else if (lastTick.Price &lt; _ema &amp;&amp; !Portfolio[_spy].IsShort)
+            {
+                SetHoldings(_spy, -0.5m);
+            }
+
+            _day = slice.Time.Day;
+        }
+    }
+}</pre>
+    <pre class="python">class CountConsolidatorAlgorithm(QCAlgorithm):
+    # Create EMA indicators for trade signal generation.
+    _ema = ExponentialMovingAverage(14)
+    # Day variable to control trade daily on open.
+    _day = -1
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 2, 1)
+        
+        # Request SPY data to feed to indicators and trade.
+        self.spy = self.add_equity("SPY", Resolution.TICK).symbol
+
+        # Create a 10000 trade tick consolidator to feed the "volume" bar to EMA indicator for trend entry/exit signal.
+        tick_consolidator = TickConsolidator(10000)
+
+        # Subscribe the consolidators to SPY data to automatic updating the indicators.
+        self.register_indicator(self.spy, self._ema, tick_consolidator)
+
+        self.set_warm_up(120)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        ticks = slice.ticks.get(self.spy)
+        if self._ema.is_ready and ticks and self._day == slice.time.day:
+            # Obtain the lastest quote price from the latest tick.
+            last_tick = sorted(ticks, key=lambda x: x.end_time, reverse=True)[0]
+
+            ema = self._ema.current.value
+
+            # Trade the trend by EMA crosses.
+            if last_tick.price &gt; ema and not self.portfolio[self.spy].is_long:
+                self.set_holdings(self.spy, 0.5)
+            elif last_tick.price &lt; ema and not self.portfolio[self.spy].is_short:
+                self.set_holdings(self.spy, -0.5)
+
+            self._day = slice.time.day</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DataConsolidationAlgorithm.py" target="_BLANK">
