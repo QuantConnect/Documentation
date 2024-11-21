@@ -103,7 +103,7 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 <p>To move the Future chain Symbol selector and the contract selection function outside of the algorithm class, create a universe selection model that inherits the FundamentalUniverseSelectionModel class and override its Select method.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In the Initialize method, define the algorithm settings and add data.
+	<pre class="csharp">// In the Initialize method, define the universe settings and add data.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
 
@@ -129,7 +129,7 @@ class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
         return filter.FrontMonth();
     }
 }</pre>
-	<pre class="python"># In the initialize method, define the algorithm settings and add data.
+	<pre class="python"># In the initialize method, define the universe settings and add data.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(FrontMonthFutureUniverseSelectionModel())
 
