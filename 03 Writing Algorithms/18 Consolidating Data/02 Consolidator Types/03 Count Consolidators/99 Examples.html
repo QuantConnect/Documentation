@@ -72,7 +72,7 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         ticks = slice.ticks.get(self.spy)
-        if self._ema.is_ready and ticks and self._day == slice.time.day:
+        if self._ema.is_ready and ticks and self._day != slice.time.day:
             # Obtain the lastest quote price from the latest tick.
             last_tick = sorted(ticks, key=lambda x: x.end_time, reverse=True)[0]
 
