@@ -122,7 +122,7 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new GoldOpenInterestFutureUniverseSelectionModel(this));
 
-// Outside of the algorithm class, define the universe selection class.
+// Outside of the algorithm class, define the universe selection model.
 class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseSelectionModel
 {
     public GoldOpenInterestFutureUniverseSelectionModel(QCAlgorithm algorithm, 
@@ -140,9 +140,9 @@ class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseS
 self.universe_settings.asynchronous = True
 self.add_universe_selection(GoldOpenInterestFutureUniverseSelectionModel(self))
     
-# Outside of the algorithm class, define the universe selection class.
+# Outside of the algorithm class, define the universe selection model.
 class GoldOpenInterestFutureUniverseSelectionModel(OpenInterestFutureUniverseSelectionModel):
-    def __init__(self, algorithm: QCAlgorithm, chain_contracts_lookup_limit: int = 6, results_limit: int = 1):
+    def __init__(self, algorithm: QCAlgorithm, chain_contracts_lookup_limit: int=6, results_limit: int=1):
         super().__init__(algorithm, self.select_future_chain_symbols, chain_contracts_lookup_limit, results_limit)
 
     def select_future_chain_symbols(self, utcTime: datetime) -> List[Symbol]:
