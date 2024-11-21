@@ -150,7 +150,8 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
             yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
         }
     }
-    // Create a filter to return contracts that have the strike price within 1 strike level and expire within 7 days.
+    
+    // Create a filter to select contracts that have the strike price within 1 strike level and expire within 7 days.
     protected override OptionFilterUniverse Filter(OptionFilterUniverse filter)
     {
         return filter.Strikes(-1, -1).Expiration(0, 7).CallsOnly();
@@ -180,7 +181,8 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
         future_contract_symbols = self.algo.future_chain_provider.get_future_contract_list(future_symbol, self.algo.time)
         return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]
-    #  Create a filter to return contracts that have the strike price within 1 strike level and expire within 7 days.
+        
+    # Create a filter to select contracts that have the strike price within 1 strike level and expire within 7 days.
     def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
         return option_filter_universe.strikes(-1, -1).expiration(0, 7).calls_only()</pre>
 </div>
