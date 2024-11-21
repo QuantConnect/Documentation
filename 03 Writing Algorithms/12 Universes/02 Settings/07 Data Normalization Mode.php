@@ -6,14 +6,14 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Pipe raw price data (unadjusted for splits and dividends) into the algorithm. 
-// Raw data is required for Options and useful for more accurately modeling historical periods.
+// Equity Options require raw data and it improves the accuracy of modeling historical periods. 
 UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-// Add the top 50 most liquid Equities to the universe.
+// Add a universe of the 50 most liquid US Equities.
 AddUniverse(Universe.DollarVolume.Top(50));</pre>
     <pre class="python"># Pipe raw price data (unadjusted for splits and dividends) into the algorithm. 
-# Raw data is required for Options and useful for more accurately modeling historical periods.
+# Equity Options require raw data and it improves the accuracy of modeling historical periods. 
 self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-# Add the top 50 most liquid Equities to the universe.
+# Add a universe of the 50 most liquid US Equities.
 self.add_universe(self.universe.dollar_volume.top(50))</pre>
 </div>
 
