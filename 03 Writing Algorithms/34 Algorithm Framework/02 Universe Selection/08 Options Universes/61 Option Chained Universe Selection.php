@@ -14,7 +14,7 @@ AddUniverseSelection(
     )
 );</pre>
 	<pre class="python"># Configure the universe to use price data unadjusted for splits and dividends ("raw") into the algorithm. 
-// Options require raw Equity prices.
+# Options require raw Equity prices.
 self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
 self.universe_settings.asynchronous = True
 self.add_universe_selection(
