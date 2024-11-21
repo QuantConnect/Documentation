@@ -3,22 +3,18 @@
 <h4>Warm Up Training Data</h4>
 <p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-    <pre class="python"># Create a 2 year (252 trading days per year) period.
+    <pre class="python"># Fill a RollingWindow with 2 years of historical closing prices.
 training_length = 252*2
-# Create a rolling window to store training data.
 self.training_data = RollingWindow[float](training_length)
-# Get 2 years of daily data.
 history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
 for trade_bar in history:
-    # Populate the training_data window with the close price data.
     self.training_data.add(trade_bar.close)</pre>
 </div>
 
 <h4>Define a Training Method</h4>
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
-    <pre class="python"># Prepare feature and label data for training by processing rolling window data to create time-series sequences for 
-# model training.
+    <pre class="python"># Prepare feature and label data for training by processing the RollingWindow data into a time series.
 def get_features_and_labels(self, n_steps=5):
     # Create a list of close prices from the rolling window.
     close_prices = np.array(list(self.training_data)[::-1])
@@ -45,7 +41,7 @@ def get_features_and_labels(self, n_steps=5):
 def my_training_method(self):
     # Instantiate the DMatrix object with the features and labels array.
     d_matrix = self.get_features_and_labels()
-    # Instantiate the parameters for the XGBoost model.
+    # Define the parameters for the XGBoost model.
     params = {
         'booster': 'gbtree',
         'colsample_bynode': 0.8,
@@ -75,7 +71,7 @@ self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), se
 <h4>Update Training Data</h4>
 <p>To update the training data as the algorithm executes, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
 <div class="section-example-container">
-    <pre class="python"># Add the latest bar to training data to ensure the model is trained with the most recent market data.
+    <pre class="python"># Add the latest price to the training data to ensure the model is trained with the most recent market data.
 def on_data(self, slice: Slice) -&gt; None:
     if self._symbol in slice.bars:
         # Update the training data with new most recent close price. 
