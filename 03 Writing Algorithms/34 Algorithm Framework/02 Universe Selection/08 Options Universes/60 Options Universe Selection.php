@@ -1,24 +1,26 @@
 <p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options, Index Options, and Future Options you specify. To use this model, provide a <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> and a selector function. The <code class="csharp">refreshInterval</code><code class="python">refresh_interval</code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
+	<pre class="csharp">// Run universe selection asynchronously to speed up your algorithm. 
+// In this case, you can't rely on the method or algorithm state between filter calls.
 UniverseSettings.Asynchronous = true;
-// Select SPY option symbol for the future universe.
+// Add a universe of SPY Options.
 AddUniverseSelection(
     new OptionUniverseSelectionModel(
-	// Refresh the universe daily.
+        // Refresh the universe daily.
         TimeSpan.FromDays(1), 
         _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
     )
 );</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
-# Run universe selection asynchronously to speed up your algorithm. This means you cannot rely on method or algorithm state between filter calls.
+# Run universe selection asynchronously to speed up your algorithm. 
+# In this case, you can't rely on the method or algorithm state between filter calls.
 self.universe_settings.asynchronous = True
-# Select SPY option symbol for the future universe.
+# Add a universe of SPY Options.
 self.set_universe_selection(
     OptionUniverseSelectionModel(
-	# Refresh the universe daily.
+        # Refresh the universe daily.
         timedelta(1), lambda _: [Symbol.create("SPY", SecurityType.OPTION, Market.USA)]
     )
 )</pre>
@@ -60,7 +62,7 @@ self.set_universe_selection(
 <p>The following example shows how to define the Option chain Symbol selector as an isolated method:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Define option chain symbol selector to subscribe to SP500 E-mini futures options security in the algorithm.
+	<pre class="csharp">// In the Initialize method, add the OptionUniverseSelectionModel with a custom selection function.
 public override void Initialize()
 {
     AddUniverseSelection(
@@ -68,6 +70,7 @@ public override void Initialize()
     );
 }
 
+// Define the selection function.
 private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
 {
     // Equity Options example:
@@ -86,14 +89,15 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
         yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
     }
 }</pre>
-	<pre class="python"># Define option chain symbol selector to subscribe to SP500 E-mini futures options security in the algorithm.
-from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
+	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
+# In the initialize method, add the OptionUniverseSelectionModel with a custom selection function.
 def initialize(self) -&gt; None:
     self.add_universe_selection(
         OptionUniverseSelectionModel(timedelta(days=1), self.select_option_chain_symbols)
     )
 
+# Define the selection function.
 def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     # Equity Options example:
     #tickers = ["SPY", "QQQ", "TLT"]
@@ -118,11 +122,11 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 <p>To move the Option chain Symbol selector outside of the algorithm class, create a universe selection model that inherits the <code>OptionUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// Setup algorithm settings and request data in initialize.
+	<pre class="csharp">// In the Initialize method, define the universe settings and add data.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(this));
 
-// Outside of the algorithm class
+// Outside of the algorithm class, define the universe selection model.
 class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUniverseSelectionModel
 {
     public EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(QCAlgorithm algorithm)
@@ -153,11 +157,11 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
     }
 }
 </pre>
-	<pre class="python"># Setup algorithm settings and request data in initialize.
+	<pre class="python"># In the initialize method, define the universe settings and add data.
 self.universe_settings.asynchronous = True
 self.add_universe_settings(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
 
-# Outside of the algorithm class
+# Outside of the algorithm class, define the universe selection model.
 class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseSelectionModel):
     def __init__(self, algorithm):
         self.algo = algorithm
