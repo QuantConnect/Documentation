@@ -7,7 +7,7 @@ UniverseSettings.Asynchronous = true;
 // Add a universe of E-mini S&P 500 Futures contracts.
 AddUniverseSelection(
     new FutureUniverseSelectionModel(
-	// Refresh the universe daily.
+        // Refresh the universe daily.
         TimeSpan.FromDays(1), 
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
     )
@@ -19,7 +19,7 @@ self.universe_settings.asynchronous = True
 # Add a universe of E-mini S&P 500 Futures contracts.
 self.add_universe_selection(
     FutureUniverseSelectionModel(
-	# Refresh the universe daily.
+        # Refresh the universe daily.
         timedelta(1), 
         lambda _: [Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
     )
