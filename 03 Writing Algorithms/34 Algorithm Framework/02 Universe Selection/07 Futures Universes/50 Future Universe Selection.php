@@ -111,12 +111,12 @@ AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
 class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
 {
     public FrontMonthFutureUniverseSelectionModel()
-	// Refresh the universe daily.
+        // Refresh the universe daily.
         : base(TimeSpan.FromDays(1), SelectFutureChainSymbols) {}
 
     private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
     {
-	// Add E-mini S&P 500 and Gold Futures to the universe.
+        // Add E-mini S&P 500 and Gold Futures to the universe.
         return new List&lt;Symbol&gt; {
             QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
             QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
@@ -125,7 +125,7 @@ class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
 
     protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
     {
-	// Select the front month contracts.
+        // Select the front month contracts.
         return filter.FrontMonth();
     }
 }</pre>
@@ -136,18 +136,18 @@ self.add_universe_selection(FrontMonthFutureUniverseSelectionModel())
 # Outside of the algorithm class, define the universe selection model.
 class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
     def __init__(self) -> None:
-	# Refresh the universe daily.
+        # Refresh the universe daily.
         super().__init__(timedelta(1), self.select_future_chain_symbols)
 
     def select_future_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
-	# Add E-mini S&P 500 and Gold Futures to the universe.
+        # Add E-mini S&P 500 and Gold Futures to the universe.
         return [ 
             Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
             Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX) 
         ]
 
     def filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
-	# Select the front month contracts.
+        # Select the front month contracts.
         return filter.front_month()</pre>
 </div>
 
