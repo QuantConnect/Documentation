@@ -25,7 +25,8 @@
     <li>Create a custom <code>gym</code> environment class.</li>
     <p>In this example, create a custom environment with the previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.</p>
     <div class="section-example-container">
-        <pre class="python"># Example of a custom environment with the previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.
+        <pre class="python"># Define a custom environment with the previous 5 bars as the observation and 
+# portfolio growth as the reward.
 class TradingEnv(gym.Env):
     FLAT = 0
     LONG = 1
@@ -39,24 +40,25 @@ class TradingEnv(gym.Env):
         self.trading_cost = 0.01
         self.reward = 1
         
-        # The number of step the training has taken, starts at 5 since we're using the previous 5 data for observation.
+        # The number of step the training has taken. It starts at 5 since we're using the previous 5 
+        # bars for the observation.
         self.current_step = 5
         # The last action
         self.last_action = 0
 
-        # Define action and observation space
+        # Define the action and observation spaces.
         # Example when using discrete actions, we have 3: LONG, SHORT and FLAT.
         n_actions = 3
         self.action_space = gym.spaces.Discrete(n_actions)
-        # The observation will be the coordinate of the agent, shape for (5 previous data poionts, OHLCV)
+        # The observation will be the coordinate of the agent, shape for (5 previous data points, OHLCV)
         self.observation_space = gym.spaces.Box(low=-2, high=2, shape=(5, 5, 5), dtype=np.float64)
 
     def reset(self):
-        # Reset the number of step the training has taken
+        # Reset the number of step the training has taken.
         self.current_step = 5
-        # Reset the last action
+        # Reset the last action.
         self.last_action = 0
-        # must return np.array type
+        # This method must return the np.array.
         return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32)
 
     def step(self, action):
@@ -75,7 +77,7 @@ class TradingEnv(gym.Env):
         # Have we iterate all data points?
         done = (self.current_step == self.ret.shape[0]-1)
 
-        # Reward as return
+        # Reward as return.
         return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32), self.reward, done, {}</pre>
     </div>
 
@@ -87,13 +89,15 @@ obs, rewards = self.get_observations_and_rewards()</pre>
 
     <li>Initialize the environment with the observations and results.</li>
     <div class="section-example-container">
-        <pre class="python"># Initialize the trading environment with observations and rewards to provide the necessary data for simulating trading actions and feedback during model training.
+        <pre class="python"># Initialize the trading environment with the observations and rewards to provide the necessary 
+# data for simulating trading actions and feedback during training.
 self.env = TradingEnv(obs, rewards)</pre>
     </div>
 
     <li>Call the <code>DQN</code> constructor with the learning policy and the&nbsp;<code>gym</code> environment.</li>
     <div class="section-example-container">
-        <pre class="python"># Initialize the Deep Q-Network model with the environment to train and evaluate the policy using Q-learning for action-value estimation.
+        <pre class="python"># Initialize the Deep Q-Network model with the environment to train and evaluate the policy
+# using Q-learning for action-value estimation.
 self.model = DQN(MlpPolicy, env)</pre>
     </div>
 </ol>
