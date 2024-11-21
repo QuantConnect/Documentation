@@ -1,16 +1,20 @@
 <p>The <code>OpenInterestFutureUniverseSelectionModel</code> is an extension of the <code>FutureUniverseSelectionModel</code> that selects the contract with the greatest open interest on a daily basis.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Enable asynchronous universe settings for faster performance and use OpenInterestFutureUniverseSelectionModel with a custom function to select E-mini S&P 500 futures, incorporating contracts with high open interest into the trading universe.
+    <pre class="csharp">// Enable asynchronous universe settings for faster performance.
 UniverseSettings.Asynchronous = true;
+// Add an OpenInterestFutureUniverseSelectionModel for E-mini S&P 500 Futures, incorporating contracts with high 
+// open interest into the trading universe.
 AddUniverseSelection(
     new OpenInterestFutureUniverseSelectionModel(
         this, 
         utcTime => new[] { QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }
     )
 );</pre>
-    <pre class="python"># Enable asynchronous universe settings for faster performance and use OpenInterestFutureUniverseSelectionModel with a custom function to select E-mini S&P 500 futures, incorporating contracts with high open interest into the trading universe.
+    <pre class="python"># Enable asynchronous universe settings for faster performance.
 self.universe_settings.asynchronous = True
+# Add an OpenInterestFutureUniverseSelectionModel for E-mini S&P 500 Futures, incorporating contracts with high 
+# open interest into the trading universe.
 self.add_universe_selection(
     OpenInterestFutureUniverseSelectionModel(
         self, 
@@ -77,7 +81,7 @@ self.add_universe_selection(
 <p>The following example shows how to define the Future chain Symbol selector as an isolated method:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Setup algorithm settings and request data in initialize.
+    <pre class="csharp">// In the Initialize method, define the universe settings and add a universe.
 public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;  
@@ -86,7 +90,7 @@ public override void Initialize()
     );
 }
 
-// Create selection function which returns symbol objects.
+// Define the selection function, which returns Symbol objects.
 private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
 {
     return new[] {
@@ -96,14 +100,14 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
 }
 
 </pre>
-    <pre class="python"># Setup algorithm settings and request data in initialize.
+    <pre class="python"># In the Initialize method, define the universe settings and add a universe.
 def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True
     self.add_universe_selection(
         OpenInterestFutureUniverseSelectionModel(self, self.select_future_chain_symbols)
     )
 
-# Create selection function which returns symbol objects.
+# Define the selection function, which returns Symbol objects.
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ 
         Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
@@ -114,11 +118,11 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 <p>To move the Future chain Symbol selector outside of the algorithm class, create a universe selection model that inherits the <code>OpenInterestFutureUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Setup algorithm settings and request data in initialize.
+    <pre class="csharp">// In the Initialize method, define the universe settings and add a universe.
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new GoldOpenInterestFutureUniverseSelectionModel(this));
 
-// Outside of the algorithm class
+// Outside of the algorithm class, define the universe selection class.
 class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseSelectionModel
 {
     public GoldOpenInterestFutureUniverseSelectionModel(QCAlgorithm algorithm, 
@@ -132,11 +136,11 @@ class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseS
         };
     }
 }</pre>
-    <pre class='python'># Create selection function which returns symbol objects.
+    <pre class='python'># In the Initialize method, define the universe settings and add a universe.
 self.universe_settings.asynchronous = True
 self.add_universe_selection(GoldOpenInterestFutureUniverseSelectionModel(self))
     
-# Outside of the algorithm class
+# Outside of the algorithm class, define the universe selection class.
 class GoldOpenInterestFutureUniverseSelectionModel(OpenInterestFutureUniverseSelectionModel):
     def __init__(self, algorithm: QCAlgorithm, chain_contracts_lookup_limit: int = 6, results_limit: int = 1):
         super().__init__(algorithm, self.select_future_chain_symbols, chain_contracts_lookup_limit, results_limit)
