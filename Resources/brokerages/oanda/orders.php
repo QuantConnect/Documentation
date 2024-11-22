@@ -1,5 +1,5 @@
 <h4>Order Types</h4>
-<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our Oanda integration" : "the <code>OandaBrokerageModel</code>" ?> supports:</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our OANDA integration" : "the <code>OANDABrokerageModel</code>" ?> supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>
@@ -37,9 +37,9 @@
 
 <h4>Time In Force</h4>
 <p><?php if ($writingAlgorithms) { ?>
-  The <code>OandaBrokerageModel</code> the <code class='csharp'>GoodTilCanceled</code><code class='python'>GOOD_TIL_CANCELED</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a>. 
+  The <code>OANDABrokerageModel</code> the <code class='csharp'>GoodTilCanceled</code><code class='python'>GOOD_TIL_CANCELED</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a>. 
 <?php } else { ?>
-  We model the <code class='csharp'>GoodTilCanceled</code><code class='python'>GOOD_TIL_CANCELED</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> from the Oanda API. 
+  We model the <code class='csharp'>GoodTilCanceled</code><code class='python'>GOOD_TIL_CANCELED</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> from the OANDA API. 
 <?php } ?></p>
 
 <?php if ($writingAlgorithms) { ?>
@@ -53,4 +53,4 @@ self.limit_order(self._symbol, quantity, limit_price)</pre>
 
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>OandaBrokerageModel</code> supports" : "We model the Oanda API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>OANDABrokerageModel</code> supports" : "We model the OANDA API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>

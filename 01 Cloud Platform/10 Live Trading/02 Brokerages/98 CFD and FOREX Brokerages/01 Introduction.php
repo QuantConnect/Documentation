@@ -1,0 +1,5 @@
+<? include(DOCS_RESOURCES."/landing-page-introductions/individual-brokerages.php"); ?>
+
+<p>QuantConnect integrates with <a rel="nofollow" target="_blank" href="https://www.oanda.com/">OANDA</a> for CFD and FOREX trading. OANDA was founded by Dr. Michael Stumm and Dr. Richard Olsen in 1995 with the goal to "transform all aspects of how the world interacts with currencies, whether that be trading or utilizing currency data and information". OANDA provides access to trading Forex and CFDs for clients in over 240 countries and territories with <a rel="nofollow" target="_blank" href="https://www.oanda.com/ca-en/trading/deposits-and-withdrawals/">no minimum deposit</a>. OANDA also provides demo accounts, advanced charting tools, and educational content</p>
+
+<p>To view the implementation of the OANDA brokerage integration, see the <a href='https://github.com/QuantConnect/Lean.Brokerages.OANDA' rel='nofollow' target="_blank">Lean.Brokerages.OANDA repository</a>.</p>

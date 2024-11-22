@@ -1,9 +1,9 @@
 <?
-$brokerageName = "Oanda";
+$brokerageName = "OANDA";
 $cashState = false;
 $holdingsState = false;
 $secondBullet = "";
-$authentication = "<li>Enter your Oanda account Id and access token.</li>";
+$authentication = "<li>Enter your OANDA account Id and access token.</li>";
 $authentication .= file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/oanda.html");
 $authentication .= "<li>Click the <span class='field-name'>Environment</span> field and then click one of the environments.</li>
 
