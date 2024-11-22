@@ -12,6 +12,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-ao.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-apo.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-aps.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-ar.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-arima.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-aroon.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-asi.html"); ?>
@@ -72,6 +73,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-pphl.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-ppo.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-psar.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-pso.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-r.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rc.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rdv.html"); ?>
