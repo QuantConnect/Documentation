@@ -1,0 +1,103 @@
+<p>The following examples demonstrate some common practices for updating indicators using consolidator.</p>
+
+<h4>Example 1: Hammer Pattern With 5-Minute Consolidator</h4>
+<p>The following algorithm trades Hammer and Inverted Hammer candlestick patterns. The candles are constructed with 5-minute SPY trade bars consolidated by a 5-minute <code>TradeBarConsolidator</code>, while automatically updating with the <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method. Both patterns are bullish indicating, so we buy SPY if the pattern signaled.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class ConsolidatorUpdatingIndicatorsAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private Hammer _hammer = new();
+    private InvertedHammer _invertedHammer = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 10, 1);
+        SetEndDate(2022, 1, 1);
+        
+        // Request SPY data for signal generation and trading.
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+
+        // The candlestick patterns are based on 5-minute consolidated trade bar.
+        var consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
+        // Subscribe for automatically updating the indicators with the 5-minute consolidator.
+        RegisterIndicator(_spy, _hammer, consolidator);
+        RegisterIndicator(_spy, _invertedHammer, consolidator);
+        // Add event handler on candlestick indicators updated to trade the pattern.
+        _hammer.Updated += OnUpdated;
+        _invertedHammer.Updated += OnUpdated;
+
+        SetWarmUp(1);
+    }
+
+    private void OnUpdated(object sender, IndicatorDataPoint point)
+    {
+        // Both Hammer and Inverted Hammer pattern indicates bullish movement, we buy SPY.
+        if (point.Value == 1 &amp;&amp; !Portfolio[_spy].IsLong)
+        {
+            SetHoldings(_spy, 0.5m);
+        }
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        if (orderEvent.Status == OrderStatus.Filled)
+        {
+            if (orderEvent.Ticket.OrderType == OrderType.Market)
+            {
+                // Stop loss order at 1%.
+                var stopPrice = orderEvent.FillQuantity &gt; 0m ? orderEvent.FillPrice * 0.99m : orderEvent.FillPrice * 1.01m;
+                StopMarketOrder(_spy, -Portfolio[_spy].Quantity, stopPrice);
+                // Take profit order at 2%.
+                var takeProfitPrice = orderEvent.FillQuantity &gt; 0m ? orderEvent.FillPrice * 1.02m : orderEvent.FillPrice * 0.98m;
+                LimitOrder(_spy, -Portfolio[_spy].Quantity, takeProfitPrice);
+            }
+            else if (orderEvent.Ticket.OrderType == OrderType.StopMarket || orderEvent.Ticket.OrderType == OrderType.Limit)
+            {
+                // Cancel any open order if stop loss or take profit order filled.
+                Transactions.CancelOpenOrders();
+            }
+        }
+    }
+}</pre>
+    <pre class="python">from QuantConnect.Indicators.CandlestickPatterns import *
+
+class ConsolidatorUpdatingIndicatorsAlgorithm(QCAlgorithm):
+    hammer = Hammer()
+    inverted_hammer = InvertedHammer()
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 10, 1)
+        self.set_end_date(2022, 1, 1)
+        
+        # Request SPY data for signal generation and trading.
+        self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+
+        # The candlestick patterns are based on 5-minute consolidated trade bar.
+        consolidator = TradeBarConsolidator(timedelta(minutes=5))
+        # Subscribe for automatically updating the indicators with the 5-minute consolidator.
+        self.register_indicator(self.spy, self.hammer, consolidator)
+        self.register_indicator(self.spy, self.inverted_hammer, consolidator)
+        # Add event handler on candlestick indicators updated to trade the pattern.
+        self.hammer.updated += self.on_updated
+        self.inverted_hammer.updated += self.on_updated
+
+        self.set_warm_up(1)
+
+    def on_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
+        # Both Hammer and Inverted Hammer pattern indicates bullish movement, we buy SPY.
+        if point.value == 1 and not self.portfolio[self.spy].is_long:
+            self.set_holdings(self.spy, 0.5)
+
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        if order_event.status == OrderStatus.FILLED:
+            if order_event.ticket.order_type == OrderType.MARKET:
+                # Stop loss order at 1%.
+                stop_price = order_event.fill_price * (0.99 if order_event.fill_quantity &gt; 0 else 1.01)
+                self.stop_market_order(self.spy, -self.portfolio[self.spy].quantity, stop_price)
+                # Take profit order at 2%.
+                take_profit_price = order_event.fill_price * (1.02 if order_event.fill_quantity &gt; 0 else 0.98)
+                self.limit_order(self.spy, -self.portfolio[self.spy].quantity, take_profit_price)
+            elif order_event.ticket.order_type == OrderType.STOP_MARKET or order_event.ticket.order_type == OrderType.LIMIT:
+                # Cancel any open order if stop loss or take profit order filled.
+                self.transactions.cancel_open_orders()</pre>
+</div>
