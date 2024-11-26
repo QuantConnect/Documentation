@@ -41,7 +41,7 @@
     def on_data(self, data):
         if self._contract_symbol:
             return
-        chain = self.option_chain(self._underlying).data_frame
+        chain = self.option_chain(self._underlying, flatten=True).data_frame
         expiry = chain.expiry.min()
         self._contract_symbol = chain[
             (chain.expiry == expiry) &
@@ -102,7 +102,7 @@ _contractSymbol = chain
     // Get the Symbol of the target contract.
     .Symbol;</pre>
     <pre class="python"># Get the contracts available to trade (in DataFrame format).
-chain = self.option_chain(self._underlying).data_frame
+chain = self.option_chain(self._underlying, flatten=True).data_frame
 
 # Select a contract.
 expiry = chain.expiry.min()
