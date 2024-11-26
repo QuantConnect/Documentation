@@ -1,0 +1,90 @@
+<p>The following examples demonstrate some common practices for position sizing.</p>
+
+<h4>Example 1: Covered Call</h4>
+<p></p>
+<div class="section-example-container">
+    <pre class="csharp">public class PositionSizingAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2023, 8, 1);
+        // Seed the price data to make sure price data is ready for contract filtering.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        
+        // Request SPY data for trading, trade on daily signals so we use daily resolution.
+        // We use raw price data to fairly compare the strike price for ATM contract selection.
+        _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+        
+        // Set a scheduled event to rebalance the covered call positions.
+        Schedule.On(
+            DateRules.WeekStart(_spy),
+            TimeRules.AfterMarketOpen(_spy),
+            Rebalance
+        );
+    }
+
+    private void Rebalance()
+    {
+        var optionChain = OptionChain(_spy);
+        // Filter for the calls within 1-week expiry.
+        var expiry = optionChain.Where(x =&gt; x.Expiry &lt;= Time.AddDays(6))
+            .Max(x =&gt; x.Expiry);
+        // Select the ATM call.
+        var atmCall = optionChain.Where(x =&gt; x.Right == OptionRight.Call &amp;&amp; x.Expiry == expiry)
+            .OrderBy(x =&gt; Math.Abs(x.Strike - Securities[_spy].Price))
+            .First();
+        var atmCallSymbol = AddOptionContract(atmCall).Symbol;
+
+        // Calculate the order size for the covered call.
+        var quantity = (int)Math.Floor(CalculateOrderQuantity(_spy, 0.5) / 100m);
+        // Covered call involves 100 shares of SPY and -1 ATM call contract.
+        ComboMarketOrder(new List&lt;Leg&gt; {
+            Leg.Create(_spy, 100),
+            Leg.Create(atmCallSymbol, -1)
+        }, quantity,
+        asynchronous: false);
+    }
+}</pre>
+    <pre class="python">class PositionSizingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 8, 1)
+        # Seed the price data to make sure price data is ready for contract filtering.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        
+        # Request SPY data for trading, trade on daily signals so we use daily resolution.
+        # We use raw price data to fairly compare the strike price for ATM contract selection.
+        self.spy = self.add_equity(
+            "SPY",
+            Resolution.MINUTE,
+            data_normalization_mode=DataNormalizationMode.RAW
+        ).symbol
+        
+        # Set a scheduled event to rebalance the covered call positions.
+        self.schedule.on(
+            self.date_rules.week_start(self.spy),
+            self.time_rules.after_market_open(self.spy),
+            self.rebalance
+        )
+
+    def rebalance(self) -&gt; None:
+        option_chain = self.option_chain(self.spy)
+        # Filter for the calls within 1-week expiry.
+        expiry = max(x.expiry for x in option_chain if x.expiry &lt;= self.time + timedelta(6))
+        filtered = [x for x in option_chain if x.right == OptionRight.CALL and x.expiry == expiry]
+        # Select the ATM call.
+        atm_call = sorted(filtered, key=lambda x: abs(x.strike - self.securities[self.spy].price))[0]
+        atm_call = self.add_option_contract(atm_call).symbol
+
+        # Calculate the order size for the covered call.
+        quantity = self.calculate_order_quantity(self.spy, 0.5) // 100
+        # Covered call involves 100 shares of SPY and -1 ATM call contract.
+        self.combo_market_order([
+            Leg.create(self.spy, 100),
+            Leg.create(atm_call, -1)
+        ], quantity,
+        asynchronous=True)</pre>
+</div>
