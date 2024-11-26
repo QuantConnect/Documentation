@@ -1,66 +1,47 @@
 <p>The following examples demonstrate some common practices for consolidator history.</p>
 
-<h4>Example 1: Tweezer Candlestick Pattern</h4>
-<p>The following algorithm trades tweezer candlestick pattern on SPY 5-minute trade bar in both top and bottom side. To do so, we need to create a 5-minute trade bar consoldiator and a rolling window to hold 2 trade bars to check if the trade conditions are fulfilled.</p>
+<h4>Example 1: Price Action</h4>
+<p>The following algorithm trades breakout price action on SPY 5-minute trade bar. To do so, we need to create a 5-minute trade bar consoldiator and a rolling window to hold 3 trade bars to check if the trade conditions are fulfilled.</p>
 <div class="section-example-container">
     <pre class="csharp">public class ConsolidatorHistoryAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
-    // To hold 4 consolidated trade bars to check if Tweezer pattern is found.
-    private RollingWindow&lt;TradeBar&gt; _window = new(4);
-    // Accepted buffer on the price level difference between last 2 candles.
-    private decimal _buffer = 0.1m;
+    // To hold 3 consolidated trade bars to identify a breakout pattern.
+    private RollingWindow&lt;TradeBar&gt; _windows = new(3);
 
     public override void Initialize()
     {
-        SetStartDate(2021, 9, 1);
+        SetStartDate(2021, 10, 1);
         SetEndDate(2022, 1, 1);
         
         // Request SPY data for signal generation and trading.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
-        // The Tweezer pattern is based on 5-minute consolidated trade bar.
+        // The breakout is based on 5-minute consolidated trade bar.
         var consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
         // Subscribe for automatically updating the consolidator with SPY data.
         SubscriptionManager.AddConsolidator(_spy, consolidator);
-        // Add a consolidator handler to check Tweezer condition is fulfilled and trade.
+        // Add a consolidator handler to check breakout condition is fulfilled and trade.
         consolidator.DataConsolidated += OnConsolidated;
 
-        SetWarmUp(1);
+        SetWarmUp(TimeSpan.FromDays(1));
     }
 
     private void OnConsolidated(object sender, TradeBar bar)
     {
-        // Update the consolidator history rolling window.
-        _window.Add(bar);
+        _windows.Add(bar);
 
-        if (_window.IsReady)
+        if (_windows.IsReady)
         {
-            // Check if Tweezer Top condition is matched:
-            // 1. Similar high of the last 2 candles.
-            // 2. 2nd last bar's close is similar to the last bar's open.
-            // 3. 2nd last bar is green and last bar is red.
-            // 4. 4th-2nd last bar price is rising.
-            // If so, the Tweezer Top pattern suggests bearish, so we short sell SPY.
-            if (Math.Abs(_window[1].High - _window[0].High) &lt; _buffer &amp;&amp;
-                Math.Abs(_window[1].Close - _window[0].Open) &lt; _buffer &amp;&amp;
-                _window[1].Close &gt; _window[1].Open &amp;&amp; _window[0].Close &lt; _window[0].Open &amp;&amp;
-                _window[3].Close &lt; _window[2].Close &amp;&amp; _window[2].Close &lt; _window[1].Close &amp;&amp;
-                !Portfolio[_spy].IsShort)
-            {
-                SetHoldings(_spy, -0.5m);
-            }
-            // Check if Tweezer Bottom condition is matched:
-            // 1. Similar low of the last 2 candles.
-            // 2. 2nd last bar's close is similar to the last bar's open.
-            // 3. 2nd last bar is red and last bar is green.
-            // 4. 4th-2nd last bar price is dropping.
-            // If so, the Tweezer Bottom pattern suggests bullish, so we buy SPY.
-            else if (Math.Abs(_window[1].Low - _window[0].Low) &lt; _buffer &amp;&amp;
-                Math.Abs(_window[1].Close - _window[0].Open) &lt; _buffer &amp;&amp;
-                _window[1].Close &lt; _window[1].Open &amp;&amp; _window[0].Close &gt; _window[0].Open &amp;&amp;
-                _window[3].Close &gt; _window[2].Close &amp;&amp; _window[2].Close &gt; _window[1].Close &amp;&amp;
-                !Portfolio[_spy].IsLong)
+            // Buy if the the breakout price action fulfilled.
+            // 1. Increasing price trend.
+            // 2. The last 3 bars are green.
+            // 3. The 3rd and 2nd last bars range is decreasing.
+            // 4. The last bar exceed the 2nd last bar by double of the 2nd last bar's range.
+            var secondLastRange = _windows[1].Close - _windows[1].Open;
+            if (bar.Close &gt; _windows[1].Close &amp;&amp; _windows[1].Close &gt; _windows[2].Close &amp;&amp;
+            _windows[2].Close &gt; _windows[2].Open &amp;&amp; _windows[1].Close &gt; _windows[1].Open &amp;&amp; _windows[0].Close &gt; _windows[0].Open &amp;&amp;
+            _windows[2].Close - _windows[2].Open &gt; secondLastRange &amp;&amp; bar.Close &gt; _windows[1].Close + 2 * secondLastRange)
             {
                 SetHoldings(_spy, 0.5m);
             }
@@ -89,65 +70,49 @@
     }
 }</pre>
     <pre class="python">class ConsolidatorHistoryAlgorithm(QCAlgorithm):
-    # To hold 4 consolidated trade bars to check if Tweezer pattern is found.
-    windows = RollingWindow[TradeBar](4)
-    # Accepted buffer on the price level difference between last 2 candles.
-    buffer = 0.1
+    # To hold 3 consolidated trade bars to identify a breakout pattern.
+    windows = RollingWindow[TradeBar](3)
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 9, 1)
+        self.set_start_date(2021, 10, 1)
         self.set_end_date(2022, 1, 1)
         
         # Request SPY data for signal generation and trading.
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
-        # The Tweezer pattern is based on 5-minute consolidated trade bar.
+        # The breakout is based on 5-minute consolidated trade bar.
         consolidator = TradeBarConsolidator(timedelta(minutes=5))
         # Subscribe for automatically updating the consolidator with SPY data.
         self.subscription_manager.add_consolidator(self.spy, consolidator)
-        # Add a consolidator handler to check Tweezer condition is fulfilled and trade.
+        # Add a consolidator handler to check breakout condition is fulfilled and trade.
         consolidator.data_consolidated += self.on_consolidated
 
-        self.set_warm_up(1)
+        self.set_warm_up(timedelta(15))
 
     def on_consolidated(self, sender: object, bar: TradeBar) -&gt; None:
-        # Update the consolidator history rolling window.
         self.windows.add(bar)
 
         if self.windows.is_ready:
-            # Check if Tweezer Top condition is matched:
-            # 1. Similar high of the last 2 candles.
-            # 2. 2nd last bar's close is similar to the last bar's open.
-            # 3. 2nd last bar is green and last bar is red.
-            # 4. 4th-2nd last bar price is rising.
-            # If so, the Tweezer Top pattern suggests bearish, so we short sell SPY.
-            if abs(self.windows[1].high - self.windows[0].high) &lt; self.buffer and \
-            abs(self.windows[1].close - self.windows[0].open) &lt; self.buffer and \
-            self.windows[1].close &gt; self.windows[1].open and self.windows[0].close &lt; self.windows[0].open and \
-            self.windows[3].close &lt; self.windows[2].close &lt; self.windows[1].close and \
-            not self.portfolio[self.spy].is_short:
-                self.set_holdings(self.spy, -0.5)
-            # Check if Tweezer Bottom condition is matched:
-            # 1. Similar low of the last 2 candles.
-            # 2. 2nd last bar's close is similar to the last bar's open.
-            # 3. 2nd last bar is red and last bar is green.
-            # 4. 4th-2nd last bar price is dropping.
-            # If so, the Tweezer Bottom pattern suggests bullish, so we buy SPY.
-            elif abs(self.windows[1].low - self.windows[0].low) &lt; self.buffer and \
-            abs(self.windows[1].close - self.windows[0].open) &lt; self.buffer and \
-            self.windows[1].close &lt; self.windows[1].open and self.windows[0].close &gt; self.windows[0].open and \
-            self.windows[3].close &gt; self.windows[2].close &gt; self.windows[1].close and \
-            not self.portfolio[self.spy].is_long:
+            # Buy if the the breakout price action fulfilled.
+            # 1. Increasing price trend.
+            # 2. The last 3 bars are green.
+            # 3. The 3rd and 2nd last bars range is decreasing.
+            # 4. The last bar exceed the 2nd last bar by double of the 2nd last bar's range.
+            second_last_range = self.windows[1].close - self.windows[1].open
+            if bar.close &gt; self.windows[1].close and self.windows[1].close &gt; self.windows[2].close and\
+            self.windows[2].close &gt; self.windows[2].open and self.windows[1].close &gt; self.windows[1].open and\
+            self.windows[0].close &gt; self.windows[0].open and self.windows[2].close - self.windows[2].open &gt; second_last_range and\
+            bar.close &gt; self.windows[1].close + 2 * second_last_range:
                 self.set_holdings(self.spy, 0.5)
 
     def on_order_event(self, order_event: OrderEvent) -&gt; None:
         if order_event.status == OrderStatus.FILLED:
             if order_event.ticket.order_type == OrderType.MARKET:
                 # Stop loss order at 1%.
-                stop_price = order_event.fill_price * (0.99 if order_event.fill_quantity &gt; 0 else 1.01)
+                stop_price = order_event.fill_price * 0.99 if order_event.fill_quantity &gt; 0 else order_event.fill_price * 1.01
                 self.stop_market_order(self.spy, -self.portfolio[self.spy].quantity, stop_price)
                 # Take profit order at 2%.
-                take_profit_price = order_event.fill_price * (1.02 if order_event.fill_quantity &gt; 0 else 0.98)
+                take_profit_price = order_event.fill_price * 1.02 if order_event.fill_quantity &gt; 0 else order_event.fill_price * 0.98
                 self.limit_order(self.spy, -self.portfolio[self.spy].quantity, take_profit_price)
             elif order_event.ticket.order_type == OrderType.STOP_MARKET or order_event.ticket.order_type == OrderType.LIMIT:
                 # Cancel any open order if stop loss or take profit order filled.
