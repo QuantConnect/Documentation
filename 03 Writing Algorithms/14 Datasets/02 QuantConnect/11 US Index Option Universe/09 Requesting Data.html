@@ -15,12 +15,12 @@
         standard_option = self.add_index_option(self.index_symbol)
         standard_option.set_filter(self._option_filter)
         self.standard_option_symbol = standard_option.symbol
-        standard_chain = self.option_chain(standard_option.symbol).data_frame
+        standard_chain = self.option_chain(standard_option.symbol, flatten=True).data_frame
 
         weekly_option = self.add_index_option(self.index_symbol, "VIXW")
         weekly_option.set_filter(self._option_filter)
         self.weekly_option_symbol = weekly_option.symbol
-        weekly_chain = self.option_chain(weekly_option.symbol).data_frame
+        weekly_chain = self.option_chain(weekly_option.symbol, flatten=True).data_frame
         weekly_chain = weekly_chain[
             weekly_chain.index.map(lambda symbol: not IndexOptionSymbol.is_standard(symbol))
         ]
