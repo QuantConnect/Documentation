@@ -1,0 +1,195 @@
+<p>The following backtest verifies the <code class="csharp">ComboLegLimitOrder</code><code class="python">combo_leg_limit_order</code> behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:</p>
+
+<table class="qc-table table" id="research-nodes-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2015-12-24T09:31:00Z</td>
+            <td>GOOG 16011SC00745000</td>
+            <td>16.10</td>
+            <td>2</td>
+            <td>Buy</td>
+            <td>Filled</td>
+            <td>32.20</td>
+            <td>Update #72</td>
+        </tr>
+        <tr>
+            <td>2015-12-24T09:31:00Z</td>
+            <td>GOOG 160115C00747500</td>
+            <td>14.11515</td>
+            <td>-2</td>
+            <td>Sell</td>
+            <td>Filled</td>
+            <td>-28.2303</td>
+            <td>Update #72</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#research-nodes-table td:nth-child(3), 
+#research-nodes-table th:nth-child(3), 
+#research-nodes-table td:nth-child(4), 
+#research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(7), 
+#research-nodes-table th:nth-child(7) {
+    text-align: right;
+}
+</style>
+
+<p>On December 24, 2015 at 9:31 AM Eastern Time (ET), the algorithm places a combo leg limit order to buy one GOOG 16011SC00745000 contract and sell two GOOG 160115C00747500 contracts. The limit price of both orders is 99.9% of the respective contract price, which is $16.2837 for GOOG 16011SC00745000 and $14.83515 for GOOG 160115C00747500. The combo order doesn't fill immediately, so the algorithm updates the leg orders at each time step. During the first update, the algorithm sets the quantity of the GOOG 160115C00747500 leg to -2. During each update, the limit price moves $0.01 closer to the market. That is, the limit price of GOOG 16011SC00745000 increases by $0.01 and the limit price of GOOG 160115C00747500 decreases by $0.01. After the 72nd update, the ask low price is below the limit price of the leg to buy GOOG 16011SC00745000 and the bid high price is above the limit price of the leg to sell GOOG 160115C00747500, so the <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#13-Combo-Leg-Limit-Orders'>fill model</a> fills the combo leg limit order at 10:44 AM ET.</p>
+
+<p>To reproduce these results, backtest the following algorithm:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class ComboLegLimitOrderAlgorithm : QCAlgorithm
+{
+    private List&lt;OrderTicket&gt; _tickets = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2015, 12, 24);
+        SetEndDate(2015, 12, 31);
+        SetCash(100000);
+        
+        var option = AddOption("GOOG");
+        option.SetFilter(minStrike: -2, maxStrike: 2, minExpiry: TimeSpan.FromDays(0), maxExpiry: TimeSpan.FromDays(180));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_tickets.IsNullOrEmpty())
+        {
+            foreach (var kvp in slice.OptionChains)
+            {
+                // Select contracts
+                var contracts = kvp.Value.Where(contract =&gt; contract.Right == OptionRight.Call)
+                    .GroupBy(x =&gt; x.Expiry)
+                    .OrderBy(grouping =&gt; grouping.Key)
+                    .First()
+                    .OrderBy(x =&gt; x.Strike)
+                    .ToList();
+
+                if (contracts.Count &lt; 2)
+                {
+                    return;
+                }
+
+                // Create order legs
+                var legs = new List&lt;Leg&gt;()
+                {
+                    Leg.Create(contracts[0].Symbol, 1, slice[contracts[0].Symbol].Close * 0.999m),
+                    Leg.Create(contracts[1].Symbol, -2, slice[contracts[1].Symbol].Close * 0.999m)
+                };
+
+                // Place order
+                _tickets = ComboLegLimitOrder(legs, 1);
+            }
+        }
+        else
+        {
+            if (Time.Hour == 10 && Time.Minute == 45)
+            {
+                Quit();
+                return;
+            }
+
+            foreach (var ticket in _tickets)
+            {
+                var orderDirection = Math.Sign(ticket.Quantity);
+                var limitPrice = ticket.Get(OrderField.LimitPrice);
+
+                // Log the limit prices and contract prices
+                var quoteBar = slice.QuoteBars[ticket.Symbol];
+                var currentPrice = orderDirection == 1 ? quoteBar.Ask.Low : quoteBar.Bid.High;
+                var readyToFill = orderDirection == 1 ? currentPrice &lt; limitPrice : currentPrice &gt; limitPrice;
+                Log($"{Time} - {ticket.Symbol}. Current price: {currentPrice}; Limit price: {Math.Round(limitPrice, 2)}; Order direction: {orderDirection}; Ready to fill: {readyToFill}");
+
+                // Update the leg orders
+                var response = ticket.Update(new UpdateOrderFields() 
+                {
+                    Quantity = 2 * orderDirection,
+                    LimitPrice = limitPrice + 0.01m * orderDirection,
+                    Tag = $"Update #{ticket.UpdateRequests.Count + 1}"
+                });
+            }
+        }
+    }
+    
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        if (orderEvent.Status == OrderStatus.Filled)
+        {
+            Log($"{Time} -- Order {orderEvent.OrderId} filled at {orderEvent.FillPrice}");
+        }
+    }
+}</pre>
+    <pre class="python">class ComboLegLimitOrderAlgorithm(QCAlgorithm):
+    
+    def initialize(self):
+        self.set_start_date(2015, 12, 24) 
+        self.set_end_date(2015, 12, 24)
+        self.set_cash(100000) 
+        option = self.add_option("GOOG")
+        option.set_filter(min_strike=-2, max_strike=2, min_expiry=timedelta(days=0), max_expiry=timedelta(days=180))
+        
+        self.tickets = []
+
+    def on_data(self, slice: Slice):
+        if len(self.tickets) == 0:
+            for canonical_symbol, chain in slice.option_chains.items():
+                # Select contracts
+                contracts = [contract for contract in chain if contract.right == OptionRight.CALL]
+                contracts = [(key, list(group)) for key, group in itertools.groupby(contracts, key=lambda x: x.expiry)]
+                contracts.sort(key=lambda x: x[0])
+                contracts = contracts[0][1]
+                contracts.sort(key=lambda x: x.strike)
+
+                if len(contracts) &lt; 2:
+                    return
+
+                # Create order legs   
+                quantities = [1, -2]
+                legs = []
+                for i, contract in enumerate(contracts[:2]):
+                    legs.append(Leg.create(contract.symbol, quantities[i], slice[contract.symbol].close * .999))
+
+                # Place order
+                self.tickets = self.combo_leg_limit_order(legs, 1)
+        else:
+            if self.time.hour == 10 and self.time.minute == 45:
+                self.quit()
+                return
+
+            for ticket in self.tickets:
+                order_direction = np.sign(ticket.quantity)
+                limit_price = ticket.get(OrderField.LIMIT_PRICE)
+
+                # Log the limit prices and contract prices
+                quote_bar = slice.quote_bars[ticket.symbol]
+                current_price = quote_bar.ask.low if order_direction == 1 else quote_bar.bid.high
+                ready_to_fill = current_price &lt; limit_price if order_direction == 1 else current_price &gt; limit_price
+                self.log(f"{self.time} - {ticket.symbol}. Current price: {current_price}; Limit price: {round(limit_price, 2)}; Direction: {order_direction}; Ready to fill: {ready_to_fill}")
+
+                # Update the leg orders
+                update_settings = UpdateOrderFields()
+                update_settings.quantity = 2 * order_direction
+                update_settings.limit_price = limit_price + 0.01 * order_direction
+                update_settings.tag = f"Update #{len(ticket.update_requests) + 1}"
+                response = ticket.update(update_settings)
+
+    def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
+        if orderEvent.status == OrderStatus.FILLED:
+            self.log(f"{self.time} -- Order {orderEvent.order_id} filled at {orderEvent.fill_price}")</pre>
+</div>
