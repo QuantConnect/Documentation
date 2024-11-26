@@ -54,6 +54,45 @@
 
 <p>To reproduce these results, backtest the following algorithm:</p>
 
-<div class="python"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_9118089d895a1b1e199b52f493f9e809.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+<div class="section-example-container">
+    <pre class="csharp">public class MarketOrderAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
 
-<div class="csharp"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src=" https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_75457eb9d37d5d05e239e8ba59eee975.html " style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+    public override void Initialize()
+    {
+        SetStartDate(2021, 7, 1);
+        SetEndDate(2021, 7, 4);
+        SetCash(100000);
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+        _symbol = AddEquity("SPY").Symbol;
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested && Time.Day == 1)
+        {
+            MarketOrder(_symbol, 10);
+        }
+        else if (Portfolio.Invested && Time.Day == 2)
+        {
+            MarketOrder(_symbol, -10);
+        }
+    }
+}</pre>
+    <pre class="python">class MarketOrderAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2021, 7, 1)
+        self.set_end_date(2021, 7, 3)
+        self.set_cash(100000)
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        self.add_equity("SPY")
+
+    def on_data(self, data):
+        if not self.portfolio.invested and self.time.day == 1:
+            self.market_order("SPY", 10)
+
+        elif self.portfolio.invested and self.time.day != 1:
+            self.market_order("SPY", -10)</pre>
+</div>
