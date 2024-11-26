@@ -1,0 +1,178 @@
+<p>The following backtest verifies the <code class="csharp">ComboLimitOrder</code><code class="python">combo_limit_order</code> behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:</p>
+
+<table class="qc-table table" id="research-nodes-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2015-12-24T09:31:00Z</td>
+            <td>GOOG 16011SC00745000</td>
+            <td>16.50</td>
+            <td>1</td>
+            <td>Buy</td>
+            <td>Filled</td>
+            <td>16.50</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2015-12-24T09:31:00Z</td>
+            <td>GOOG 160115C00747500</td>
+            <td>14.60</td>
+            <td>-1</td>
+            <td>Sell</td>
+            <td>Filled</td>
+            <td>-14.60</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#research-nodes-table td:nth-child(3), 
+#research-nodes-table th:nth-child(3), 
+#research-nodes-table td:nth-child(4), 
+#research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(7), 
+#research-nodes-table th:nth-child(7) {
+    text-align: right;
+}
+</style>
+
+<p>On December 24, 2015 at 9:31 AM Eastern Time (ET), the algorithm places a combo limit order to buy one GOOG 16011SC00745000 contract and sell one GOOG 160115C00747500 contracts. The limit price is 75% of the contract spread, which equals $2.02. The combo order doesn't fill immediately because the contract spread $2.40 &gt; $2.02. By 9:36 AM, the spread drops to $1.90, which is below the limit price, so the <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#12-Combo-Limit-Orders">fill model</a> fills the combo limit order.</p>
+
+<p>To reproduce these results, backtest the following algorithm:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class ComboMarketOrderAlgorithm : QCAlgorithm
+{
+    private List&lt;OrderTicket&gt; _tickets = new();
+    private decimal _limitPrice;
+    public override void Initialize()
+    {
+        SetStartDate(2015, 12, 24);
+        SetEndDate(2015, 12, 24);
+        SetCash(100000);
+        
+        var option = AddOption("GOOG");
+        option.SetFilter(minStrike: -2, maxStrike: 2, minExpiry: TimeSpan.FromDays(0), maxExpiry: TimeSpan.FromDays(180));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_tickets.IsNullOrEmpty())
+        {
+            foreach (var kvp in slice.OptionChains)
+            {
+                // Select contracts
+                var contracts = kvp.Value.Where(contract =&gt; contract.Right == OptionRight.Call)
+                    .GroupBy(x =&gt; x.Expiry)
+                    .OrderBy(grouping =&gt; grouping.Key)
+                    .First()
+                    .OrderBy(x =&gt; x.Strike)
+                    .ToList();
+
+                if (contracts.Count &lt; 2)
+                {
+                    return;
+                }
+
+                // Create order legs
+                var legs = new List&lt;Leg&gt;()
+                {
+                    Leg.Create(contracts[0].Symbol, 1),
+                    Leg.Create(contracts[1].Symbol, -1)
+                };
+
+                // Calculate limit price
+                _limitPrice = Math.Round((slice.QuoteBars[contracts[0].Symbol].Ask.Low - slice.QuoteBars[contracts[1].Symbol].Bid.Low) * 0.75m, 2);
+
+                // Place order
+                _tickets = ComboLimitOrder(legs, 1, _limitPrice);
+            }
+        }
+        else
+        {
+            if (Time.Hour == 9 && Time.Minute == 37)
+            {
+                Quit();
+                return;
+            }
+
+            // Log the limit price and aggregate contract price
+            var price = 0.0m;
+            foreach (var ticket in _tickets)
+            {
+                var quoteBar = slice.QuoteBars[ticket.Symbol];
+                price += (ticket.Quantity &gt; 0 ? quoteBar.Ask : quoteBar.Bid).Low * Math.Sign(ticket.Quantity);
+            }
+            Log($"{Time}. Limit price: {_limitPrice}; Aggregate price: {Math.Round(price, 2)}; Ready to fill: {price &lt; _limitPrice}");
+        }
+    }
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        if (orderEvent.Status == OrderStatus.Filled)
+        {
+            Log($"{Time} -- Order {orderEvent.OrderId} filled at {orderEvent.FillPrice}");
+        }
+    }
+}</pre>
+    <pre class="python">class ComboMarketOrderAlgorithm(QCAlgorithm):
+    
+    def initialize(self):
+        self.set_start_date(2015, 12, 24) 
+        self.set_end_date(2015, 12, 24)
+        self.set_cash(100000) 
+        option = self.add_option("GOOG")
+        option.set_filter(min_strike=-2, max_strike=2, min_expiry=timedelta(days=0), max_expiry=timedelta(days=180))
+        
+        self.tickets = []
+
+    def on_data(self, slice: Slice):
+        if len(self.tickets) == 0:
+            for canonical_symbol, chain in slice.option_chains.items():
+                # Select contracts
+                contracts = [contract for contract in chain if contract.right == OptionRight.CALL]
+                contracts = [(key, list(group)) for key, group in itertools.groupby(contracts, key=lambda x: x.expiry)]
+                contracts.sort(key=lambda x: x[0])
+                contracts = contracts[0][1]
+                contracts.sort(key=lambda x: x.strike)
+
+                if len(contracts) &lt; 2:
+                    return
+
+                # Create order legs   
+                quantities = [1, -1]
+                legs = []
+                for i, contract in enumerate(contracts[:2]):
+                    legs.append(Leg.create(contract.symbol, quantities[i]))
+
+                # Calculate limit price
+                self.limit_price = round((slice.quote_bars[contracts[0].symbol].ask.low - slice.quote_bars[contracts[1].symbol].bid.low) * 0.75, 2) 
+
+                # Place order
+                self.tickets = self.combo_limit_order(legs, 1, self.limit_price)
+        else:
+            if self.time.hour == 9 and self.time.minute == 37:
+                self.quit()
+                return
+
+            price = 0
+            for ticket in self.tickets:
+                quote_bar = slice.quote_bars[ticket.symbol]
+                price += ((quote_bar.ask if ticket.quantity &gt; 0 else quote_bar.bid).low * np.sign(ticket.quantity))
+            self.log(f"{self.time}. Limit price: {self.limit_price}; Aggregate price: {round(price, 2)}; Ready to fill: {price &lt; self.limit_price}")
+
+    def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
+        if orderEvent.status == OrderStatus.FILLED:
+            self.log(f"{self.time} -- Order {orderEvent.order_id} filled at {orderEvent.fill_price}")</pre>
+</div>
