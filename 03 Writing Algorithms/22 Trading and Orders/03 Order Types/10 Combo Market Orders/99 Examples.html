@@ -1,0 +1,116 @@
+<p>The following backtest verifies the <code class="csharp">ComboMarketOrder</code><code class="python">combo_market_order</code> behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:</p>
+
+<table class="qc-table table" id="research-nodes-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2015-12-24T09:31:00Z</td>
+            <td>GOOG 16011SC00745000</td>
+            <td>16.90</td>
+            <td>1</td>
+            <td>Buy</td>
+            <td>Filled</td>
+            <td>16.90</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2015-12-24T09:31:00Z</td>
+            <td>GOOG 160115C00747500</td>
+            <td>14.20</td>
+            <td>-1</td>
+            <td>Sell</td>
+            <td>Filled</td>
+            <td>-14.20</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#research-nodes-table td:nth-child(3), 
+#research-nodes-table th:nth-child(3), 
+#research-nodes-table td:nth-child(4), 
+#research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(7), 
+#research-nodes-table th:nth-child(7) {
+    text-align: right;
+}
+</style>
+
+<p>On December 24, 2015, the algorithm buys GOOG 16011SC00745000 at $16.90 and sells GOOG 160115C00747500 at $14.20. The <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#11-Combo-Market-Orders">fill model</a> fills the buy order at the ask close price and fills the sell order at the bid close price.</p>
+
+<p>To reproduce these results, backtest the following algorithm:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class ComboMarketOrderAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2015, 12, 24);
+        SetEndDate(2015, 12, 31);
+        SetCash(100000);
+        var option = AddOption("GOOG");
+        option.SetFilter(minStrike: -2, maxStrike: 2, minExpiry: TimeSpan.FromDays(0), maxExpiry: TimeSpan.FromDays(180));
+
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested)
+        {
+            return;
+        }
+        foreach (var kvp in slice.OptionChains)
+        {
+            var contracts = kvp.Value.Contracts.Values.ToList();
+            if (contracts.Count &lt; 2) 
+            {
+                return;
+            }
+
+            var legs = new List&lt;Leg&gt;()
+            {
+                Leg.Create(contracts[0].Symbol, 1),
+                Leg.Create(contracts[1].Symbol, -1)
+            };
+            
+            var tickets = ComboMarketOrder(legs, 1);
+        }
+    }
+}</pre>
+    <pre class="python">class ComboMarketOrderAlgorithm(QCAlgorithm):
+    
+    def initialize(self):
+        self.set_start_date(2015, 12, 24) 
+        self.set_end_date(2015, 12, 24)
+        self.set_cash(100000) 
+        option = self.add_option("GOOG")
+        option.set_filter(min_strike=-2, max_strike=2, min_expiry=timedelta(days=0), max_expiry=timedelta(days=180))
+
+    def on_data(self, data: Slice):
+        if self.portfolio.invested:
+            return
+        
+        for canonical_symbol, chain in data.option_chains.items():
+            contracts = [c for c in chain][:2]
+            if len(contracts) &lt; 2:
+                return
+
+            quantities = [1, -1]
+            legs = []
+            for i, contract in enumerate(contracts):
+                legs.append(Leg.create(contract.symbol, quantities[i]))
+            
+            tickets = self.combo_market_order(legs, 1)</pre>
+</div>
