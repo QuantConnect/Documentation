@@ -1,0 +1,159 @@
+<p>The following backtest verifies the <code class="csharp">ExerciseOption</code><code class="python">exercise_option</code> behavior. The following table shows the first three trades in the backtest:</p>
+
+<table class="qc-table table" id="research-nodes-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2021-07-01T09:31:00Z</td>
+            <td>SPY 221216C00085000</td>
+            <td>345.30</td>
+            <td>1</td>
+            <td>Buy Market</td>
+            <td>Filled</td>
+            <td>34530.00</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2021-07-01T09:31:00Z</td>
+            <td>SPY 221216C00085000</td>
+            <td>0.00</td>
+            <td>-1</td>
+            <td>Sell Option Exercise</td>
+            <td>Filled</td>
+            <td>0.00</td>
+            <td>Automatic Exercise</td>
+        </tr>
+        <tr>
+            <td>2021-07-01T09:31:00Z</td>
+            <td>SPY</td>
+            <td>85.00</td>
+            <td>100</td>
+            <td>Sell Option Exercise</td>
+            <td>Filled</td>
+            <td>8500.00</td>
+            <td>Option Exercise</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#research-nodes-table td:nth-child(3), 
+#research-nodes-table th:nth-child(3), 
+#research-nodes-table td:nth-child(4), 
+#research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(7), 
+#research-nodes-table th:nth-child(7) {
+    text-align: right;
+}
+</style>
+
+<p>The algorithm first brought a deep ITM option based on the set option selection conditions by $345.30, then exercise it actively, so 100 shares of SPY (in which 1 contract represents) was brought at its strike price at $85.00, with the option discarded from the portfolio.</p>
+
+<p>To reproduce these results, backtest the following algorithm:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class OptionExerciseOrderAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private decimal _strike;
+    private Symbol _contract;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 7, 1);
+        SetEndDate(2021, 7, 4);
+        SetCash(100000);
+    
+        SetSecurityInitializer(CustomSecurityInitializer);
+    
+        var spy = AddEquity("SPY", Resolution.Minute);
+        _spy = spy.Symbol;
+    }
+
+    private void CustomSecurityInitializer(Security security)
+    {
+        security.SetDataNormalizationMode(DataNormalizationMode.Raw);
+        foreach (var bar in GetLastKnownPrices(security.Symbol))
+        {
+            security.SetMarketPrice(bar);
+        }
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            var contracts = OptionChainProvider.GetOptionContractList(_spy, Time);
+            contracts = from contract in contracts
+                        where contract.ID.OptionRight == OptionRight.Call
+                        orderby contract.ID.StrikePrice ascending
+                        select contract;
+            if (contracts.Count() == 0) return;
+            
+            _strike = contracts.First().ID.StrikePrice;
+
+            contracts = from contract in contracts
+                        where contract.ID.StrikePrice == _strike
+                        orderby contract.ID.Date ascending
+                        select contract;
+            
+            _contract = contracts.First();
+            AddOptionContract(_contract, Resolution.Minute);
+
+            Buy(_contract, 1);
+        }
+
+        if (Portfolio[_contract].Invested && _strike &lt; Securities[_spy].Price)
+        {
+            ExerciseOption(_contract, 1);
+            Quit();
+        }
+    }
+}</pre>
+    <pre class="python">class OptionExerciseOrderAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2021, 7, 1)
+        self.set_end_date(2021, 7, 31)
+        self.set_cash(100000)
+
+        self.set_security_initializer(self.custom_security_initializer)
+        
+        spy = self.add_equity("SPY", Resolution.MINUTE)
+        self.spy = spy.symbol
+    
+    def custom_security_initializer(self, security):
+        security.set_data_normalization_mode(DataNormalizationMode.RAW)
+        for bar in self.get_last_known_prices(security.symbol):
+            security.set_market_price(bar)
+
+    def on_data(self, data):
+        if not self.portfolio.invested:
+            contracts = self.option_chain_provider.get_option_contract_list(self.spy, self.time)
+            contracts = sorted([x for x in contracts if x.id.option_right == OptionRight.CALL], key=lambda x: x.id.strike_price)
+            if not contracts: return
+            
+            self.strike = contracts[0].id.strike_price
+
+            contracts = sorted([x for x in contracts if x.id.strike_price == self.strike], key=lambda x: x.id.date)
+            
+            self.contract = contracts[0]
+            self.add_option_contract(self.contract, Resolution.MINUTE)
+
+            self.buy(self.contract, 1)
+
+        if self.portfolio[self.contract].invested and self.strike &lt; self.securities[self.spy].price:
+            self.exercise_option(self.contract, 1)
+            self.quit()</pre>
+</div>
