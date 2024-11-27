@@ -46,7 +46,7 @@
         var targets = Enumerable.Range(0, weights.Length)
             .Select(i =&gt; new PortfolioTarget(symbols[i], Convert.ToDecimal(weights[i])))
             .ToList();
-        SetHoldings(targets);
+        SetHoldings(targets, liquidateExistingHoldings: true);
     }
 
     private double[,] GetReturns(List&lt;DataDictionary&lt;TradeBar&gt;&gt; history, List&lt;Symbol&gt; symbols)
@@ -67,15 +67,6 @@
             }
         }
         return returns;
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        // Liquidate any existing positions if the security is not popular anymore.
-        foreach (var removed in changes.RemovedSecurities)
-        {
-            Liquidate(removed.Symbol);
-        }
     }
 }</pre>
     <pre class="python">from Portfolio.MaximumSharpeRatioPortfolioOptimizer import MaximumSharpeRatioPortfolioOptimizer
@@ -112,12 +103,7 @@ class HistoricalRequestAlgorithm(QCAlgorithm):
 
         # Rebalance the portfolio according to the optimized weights.
         targets = [PortfolioTarget(symbol, size) for symbol, size in zip(symbols, weights)]
-        self.set_holdings(targets)
-
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate any existing positions if the security is not popular anymore.
-        for removed in changes.removed_securities:
-            self.liquidate(removed.symbol)</pre>
+        self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
 </div>
 
 <h4>Other Examples</h4>
