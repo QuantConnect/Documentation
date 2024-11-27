@@ -32,7 +32,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">// Get the Option contracts that were tradable on January 1st, 2024.
 var chain = qb.OptionChain(underlyingSymbol);</pre>
     <pre class="python"># Get the Option contracts that were tradable on January 1st, 2024.
-chain = qb.option_chain(underlying_symbol)</pre>
+chain = qb.option_chain(underlying_symbol, flatten=True)</pre>
     </div>
     <p>
       This method returns an <code>OptionChain</code> object, which represent an entire chain of Option contracts for a single underlying security.
