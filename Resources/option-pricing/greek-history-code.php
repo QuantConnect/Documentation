@@ -29,7 +29,6 @@
 
         # DataFrame example:
         history_df = self.history(option.symbol, 5, flatten=True)
-
         # OptionUniverse objects example:
         history = self.history[OptionUniverse](option.symbol, 5)
         for chain in history:
