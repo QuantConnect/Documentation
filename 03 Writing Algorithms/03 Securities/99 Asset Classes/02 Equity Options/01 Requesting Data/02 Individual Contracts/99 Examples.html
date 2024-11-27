@@ -1,3 +1,5 @@
+<p>The following examples demonstrate some common practices for requesting individual Equity Option contract data.</p>
+
 <h4>Example 1: Covered Call</h4>
 <p>A cover call consists of a short call and with a lot of the underlying equity. Although it capped the maximum profit if the underlying skyrocketted, it also provide extra credit received while speculating the underlying will rise.</p>
 <div class="section-example-container">
@@ -64,8 +66,11 @@
     }
 }</pre>
     <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
-        self.options = []
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2019, 1, 1)
+        self._chain = pd.DataFrame()
         # Seed the security price to ensure the retrieval of the ATM calls at the initial filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Set the data normalization mode as raw for option strike-price comparability.
@@ -80,20 +85,26 @@
     
     def refresh_option_list(self) -&gt; None:
         # Get all tradable option contracts for AAPL at the current time for filtering.
-        contract_symbols = self.option_chain(self.aapl)
+        chain = self.option_chain(self.aapl, flatten=True).data_frame
+        if chain.empty:
+            return
         # Select the calls expires within 30 days and within $5 strike from ATM as leg of the covered call.
         # $5 buffer is given on selecting the ATM call due to price movement.
-        self.options = [self.add_option_contract(symbol).symbol for symbol in contract_symbols
-            if symbol.id.date &lt; self.time + timedelta(30) \
-            and symbol.id.option_right == OptionRight.CALL \
-            and abs(symbol.id.strike_price - self.securities[self.aapl].price) &lt;= 5]
+        expiry_threshold = self.time + timedelta(30)
+        self._chain = chain[
+            (chain.expiry < expiry_threshold) &
+            (chain.right == OptionRight.CALL) &
+            (abs(chain.strike - chain.underlyinglastprice) <= 5)
+        ]
+        for symbol in self._chain.index:
+            self.add_option_contract(symbol)
     
     def on_data(self, slice: Slice) -&gt; None:
-        if not self.portfolio.invested and self.aapl in slice.bars and self.options:
+        if not self.portfolio.invested and self.aapl in slice.bars and not self._chain.empty:
             # To form a covered call, get the contract closest to ATM and expiry.
-            expiry = min(x.id.date for x in self.options)
-            contract = sorted([x for x in self.options if x.id.date == expiry],
-                key=lambda x: abs(x.id.strike_price - self.securities[self.aapl].price))[0]
+            self._chain['abs_moneyness'] = abs(self._chain.strike - self._chain.underlyinglastprice)
+            expiry = self._chain.expiry.min()
+            contract = self._chain[self._chain.expiry == expiry].sort_values('abs_moneyness').index[0]
                 
             # Covered call involves shorting 1 ATM call and ordering 1 lot of underlying.
             self.market_order(contract, -1)
