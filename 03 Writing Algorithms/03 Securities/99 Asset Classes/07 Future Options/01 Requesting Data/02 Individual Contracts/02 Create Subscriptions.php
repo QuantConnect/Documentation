@@ -85,7 +85,7 @@
                 self.add_future_option_contract(symbol)
 
     def _select_option_contract(self, future_contract_symbol):
-        chain = self.option_chain(future_contract_symbol).data_frame
+        chain = self.option_chain(future_contract_symbol, flatten=True).data_frame
         expiry = chain.expiry.min()
         return chain[
             (chain.expiry == expiry) & (chain.right == OptionRight.CALL) 
