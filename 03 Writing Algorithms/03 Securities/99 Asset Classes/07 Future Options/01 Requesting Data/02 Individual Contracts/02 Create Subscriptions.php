@@ -139,7 +139,7 @@ _contractSymbol = chain
     .OrderBy(contract =&gt; contract.Strike)
     .Select(contract =&gt; contract.Symbol).FirstOrDefault();</pre>
     <pre class="python"># Get the contracts available to trade (in DataFrame format).
-chain = self.option_chain(future_contract_symbol).data_frame
+chain = self.option_chain(future_contract_symbol, flatten=True).data_frame
 
 # Select a contract.
 expiry = chain.expiry.min()
