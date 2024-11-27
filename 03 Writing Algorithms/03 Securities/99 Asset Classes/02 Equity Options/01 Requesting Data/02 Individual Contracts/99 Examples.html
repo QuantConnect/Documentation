@@ -238,119 +238,76 @@
         self.liquidate()</pre>
 </div>
 
-<h4>Example 3: Filter Option Contracts By Option Greeks indicator</h4>
-<p>In this example, we demonstrate filtering option contracts by <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/delta">Delta</a>, an Option Greeks indicator. We filter all the call contracts with <code>Delta</code> greater than 0.99 that expires just more than 7 days later on Monday morning. This filter is useful when creating a hedge replicate portfolio for arbitration.</p>
+<h4>Example 3: Select Option Contracts by Greeks</h4>
+<p>The following algorithm creates a weekly <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> that adds a universe of contracts with a <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/delta">Delta</a> >= 0.99. This universe is useful for creating a hedge replicate portfolio for arbitrage.</p>
 <div class="section-example-container">
     <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
 {
-    private Symbol _spy;
-    private DividendYieldProvider _dividendYieldModel;
-    private List&lt;Symbol&gt; _universe = new();
+    private Symbol _underlying;
+    private List&lt;Option&gt; _universe = new();
     
     public override void Initialize()
     {
-        // Set the data normalization mode as raw for option strike-price comparability.
-        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-        // Instantiate a dividend yield provider to calculate accurate greeks later.
-        _dividendYieldModel = new DividendYieldProvider(_spy);
-    
-        // Scheduled week start filtering to obtain the contracts to be traded for the week.
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2019, 6, 1);
+        // Add the underlying asset with raw data to enable option strike-price comparability.
+        _underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;        
+        // Add a Scheduled Event to select the Option contracts to trade each week.
         Schedule.On(
-            DateRules.Every(DayOfWeek.Monday),
+            DateRules.WeekStart(_underlying),
             TimeRules.At(7, 30),
-            Filter
+            AddContracts
         );
     }
     
-    private void Filter()
+    private void AddContracts()
     {
-        // Get all tradable option contracts for SPY at the current time for filtering.
-        var contractSymbols = OptionChain(_spy);
-        // Filter the contracts tradable the whole week but expire soon to ensure liquidity.
-        var expiry = contractSymbols.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(7))
-            .Min(x =&gt; x.ID.Date);
-        var filtered = contractSymbols.Where(x =&gt; x.ID.Date == expiry).ToList();
-    
-        // Group by strike price to create Delta that take both call and put input.
-        var symbolDelta = new Dictionary&lt;Symbol, decimal&gt;();
-        foreach (var strike in filtered.Select(x =&gt; x.ID.StrikePrice).Distinct())
+        _universe.Clear();
+        // Get all the tradable Option contracts for SPY at the current time.
+        var chain = OptionChain(_underlying);
+        // Add the contracts that have the nearest expiry after 7 days and a delta >= 0.99.
+        var expiryThreshold = Time.AddDays(7);
+        var contracts = chain.Where(contract => contract.Expiry >= expiryThreshold);
+        if (!contracts.IsNullOrEmpty())
         {
-            // There should only be 1 call and put per strike, make sure both are present to feed into the Delta indicator.
-            var call = filtered.SingleOrDefault(x =&gt; 
-                x.ID.StrikePrice == strike && x.ID.OptionRight == OptionRight.Call);
-            var put = filtered.SingleOrDefault(x =&gt; 
-                x.ID.StrikePrice == strike && x.ID.OptionRight == OptionRight.Put);
-            if (call == null || put == null) continue;
-    
-            // Since positive delta must be a call, save the call symbol and delta in the dictionary for later sorting.
-            var delta = GetDelta(call, put);
-            symbolDelta.Add(call, delta);
+            var expiry = contracts.Select(contract => contract.Expiry).Min();
+            _universe = contracts
+                .Where(contract => contract.Expiry == expiry & contract.Greeks.Delta >= 0.99m)
+                .Select(contract => AddOptionContract(contract.Symbol))
+                .ToList();
         }
-    
-        // Select the calls using the dictionary with delta filtering, request for the individual contract data for trading.
-        _universe = symbolDelta.Where(kvp =&gt; kvp.Value &gt;= 0.99m)
-            .Select(x =&gt; AddOptionContract(x.Key).Symbol)
-            .ToList();
-    }
-    
-    private decimal GetDelta(Symbol call, Symbol put)
-    {
-        // Use both call and put with interest rate and dividend yield provider to obtain accurate OTM contract IV as IV for both call and put.
-        // For American option, Forward Tree option pricing model is more accurate.
-        var delta = new Delta(call, RiskFreeInterestRateModel, _dividendYieldModel, put, OptionPricingModelType.ForwardTree);
-        // Warm up the indicator using both mirror contract pairs and the underlying to calculate the delta.
-        IndicatorHistory(delta, new[] { call, put, _spy }, 1);
-        // Return the latest delta value.
-        return delta.Current.Value;
+        // Plot the number of contracts in the universe.
+        Plot("Universe", "Size", _universe.Count);
     }
 }</pre>
     <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        self._universe = []
-        # Set the data normalization mode as raw for option strike-price comparability.
-        self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
-        # Instantiate a dividend yield provider to calculate accurate greeks later.
-        self.dividend_yield_provider = DividendYieldProvider(self.spy)
-    
-        # Scheduled week start filtering to obtain the contracts to be traded for the week.
+
+    def initialize(self) -> None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2019, 6, 1)
+        # Add the underlying asset with raw data to enable option strike-price comparability.
+        self._underlying = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol    
+        # Add a Scheduled Event to select the Option contracts to trade each week.
         self.schedule.on(
-            self.date_rules.every(DayOfWeek.MONDAY),
+            self.date_rules.week_start(self._underlying),
             self.time_rules.at(7, 30),
-            self.filter
+            self._add_contracts
         )
     
-    def filter(self) -&gt; None:
-        # Get all tradable option contracts for SPY at the current time for filtering.
-        contract_symbols = self.option_chain(self.spy)
-        # Filter the contracts tradable the whole week but expire soon to ensure liquidity.
-        expiry = min(x.id.date for x in contract_symbols if x.id.date &gt;= self.time + timedelta(7))
-        filtered = [x for x in contract_symbols if x.id.date == expiry]
-    
-        # Group by strike price to create Delta that take both call and put input.
-        symbol_delta = {}
-        for strike in set(x.id.strike_price for x in filtered):
-            # There should only be 1 call and put per strike, make sure both are present to feed into the Delta indicator.
-            call = next(filter(lambda x: x.id.option_right == OptionRight.CALL and x.id.strike_price == strike, filtered), None)
-            put = next(filter(lambda x: x.id.option_right == OptionRight.PUT and x.id.strike_price == strike, filtered), None)
-            if not call or not put:
-                continue
-            
-            # Since positive delta must be a call, save the call symbol and delta in the dictionary for later sorting.
-            delta = self.get_delta(call, put)
-            symbol_delta[call] = delta
-        
-        # Select the calls using the dictionary with delta filtering, request for the individual contract data for trading.
-        self._universe = [self.add_option_contract(call).symbol 
-            for call, delta in symbol_delta.items() if delta &gt;= 0.99]
-        
-    def get_delta(self, call: Symbol, put: Symbol) -&gt; float:
-        # Use both call and put with interest rate and dividend yield provider to obtain accurate OTM contract IV as IV for both call and put.
-        # For American option, Forward Tree option pricing model is more accurate.
-        delta = Delta(call, self.risk_free_interest_rate_model, self.dividend_yield_provider, put, OptionPricingModelType.FORWARD_TREE)
-        # Warm up the indicator using both mirror contract pairs and the underlying to calculate the delta.
-        self.indicator_history(delta, [call, put, self.spy], 1)
-        # Return the latest delta value.
-        return delta.current.value</pre>
+    def _add_contracts(self) -> None:
+        self._universe = []
+        # Get all the tradable Option contracts for SPY at the current time.
+        chain = self.option_chain(self._underlying, flatten=True).data_frame
+        if not chain.empty:
+            # Add the contracts that have the nearest expiry after 7 days and a delta >= 0.99.
+            expiry_threshold = self.time + timedelta(7)
+            expiry = chain[chain.expiry >= expiry_threshold].expiry.min()
+            self._universe = [
+                self.add_option_contract(symbol) 
+                for symbol in chain[(chain.expiry == expiry) & (chain.delta >= 0.99)].index
+            ]
+        # Plot the number of contracts in the universe.
+        self.plot('Universe', 'Size', len(self._universe))</pre>
 </div>
 
 <h4>Example 4: Wheel Strategy</h4>
