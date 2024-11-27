@@ -1,5 +1,5 @@
 <p class="csharp">To get historical Cryptocurrency universe data, call the <code class="csharp">History</code><code class="python">history</code> method with the <code>Universe</code> object and the lookback period. The return type is a <code>IEnumerable&lt;BaseDataCollection&gt;</code> and you have to cast its items to <code>CryptoUniverse</code>.</p>
-<p class="python">To get historical Cryptocurrency universe data, call the <code class="csharp">History</code><code class="python">history</code> method with the <code>Universe</code> object and the lookback period. The return type is a multi-index <code>pandas.Series</code> of <code>CryptoUniverse</code> list.</p>
+<p class="python">To get historical Cryptocurrency universe data, call the <code class="csharp">History</code><code class="python">history</code> method with the <code>Universe</code> object and the lookback period. The return type is a multi-index <code>pandas.Series</code> or <code>pandas.DataFrame</code> containing <code>CryptoUniverse</code> data.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// Get 30 days of history for the Crypto universe.
@@ -12,7 +12,11 @@ foreach (var universeDay in history)
     }
 }</pre>
      <pre class="python"># Get 30 days of history for the Crypto universe.
-history = self.history(self._universe, 30, Resolution.DAILY)
+# DataFrame object:
+df_history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
+         
+# Series object:
+series_history = self.history(self._universe, 30, Resolution.DAILY)
 for (univere_symbol, time), universe_day in history.items():
     for universe_item in universe_day:
         self.log(f"{universe_item.symbol} price at {universe_item.end_time}: {universe_item.close}")</pre>
