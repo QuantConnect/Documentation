@@ -22,7 +22,7 @@ qb.add_future_contract(futures_contract_symbol, fill_forward=False)
 
 # Get the Future Option chain as of 5 days before the underlying Future's expiry date.
 qb.set_start_date(futures_contract_symbol.id.date - timedelta(5))
-chain = qb.option_chain(futures_contract_symbol).data_frame
+chain = qb.option_chain(futures_contract_symbol, flatten=True).data_frame
 
 # Select a Future Option contract from the chain.
 expiry = chain.expiry.min()
