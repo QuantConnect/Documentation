@@ -12,8 +12,12 @@ foreach (var constituents in history)
         Log($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
     }
 }</pre>
-     <pre class="python">history = self.history(self.universe, 30, Resolution.DAILY)
-for (universe_symbol, time), constituents in history.items():
+     <pre class="python"># DataFrame example where the columns are the ETFConstituentUniverse attributes: 
+df_history = self.history(self.universe, 30, Resolution.DAILY, flatten=True)
+
+# Series example where the values are lists of ETFConstituentUniverse objects: 
+series_history = self.history(self.universe, 30, Resolution.DAILY)
+for (universe_symbol, time), constituents in series_history.items():
     for constituent in constituents:
         self.log(f'{constituent.symbol} weight at {constituent.end_time}: {constituent.weight}')</pre>
 </div>
@@ -30,8 +34,12 @@ foreach (var constituents in universeHistory )
         Console.WriteLine($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
     }
 }</pre>
-     <pre class="python">universe_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
-for (universe_symbol, time), constituents in universe_history.items():
+     <pre class="python"># DataFrame example where the columns are the ETFConstituentUniverse attributes: 
+df_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)
+
+# Series example where the values are lists of ETFConstituentUniverse objects: 
+series_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
+for (universe_symbol, time), constituents in series_history.items():
     for constituent in constituents:
        print(f"{constituent.symbol} weight at {constituent.end_time}: {constituent.weight}")</pre>
 </div>
