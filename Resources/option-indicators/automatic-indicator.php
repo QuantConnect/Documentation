@@ -103,7 +103,7 @@
         self._indicators = [indicator for indicator in self._indicators if indicator.option_symbol.id.date > self.time]
         
         # Get all the tradable Option contracts.
-        chain = self.option_chain(<?=$underlyingSymbolPy?>).data_frame
+        chain = self.option_chain(<?=$underlyingSymbolPy?>, flatten=True).data_frame
         if chain.empty:
             return
 
