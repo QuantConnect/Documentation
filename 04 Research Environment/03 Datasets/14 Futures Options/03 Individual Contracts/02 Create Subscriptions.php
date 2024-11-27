@@ -41,7 +41,7 @@ qb.add_future_contract(futures_contract_symbol, fill_forward=False)</pre>
   	<li>Call the <code class='csharp'>OptionChain</code><code class='python'>option_chain</code> method with the underlying Futures contract <code>Symbol</code>.</li>
   	<div class="section-example-container">
   		<pre class="csharp">var chain = qb.OptionChain(futuresContractSymbol);</pre>
-  		<pre class="python">chain = qb.option_chain(futures_contract_symbol).data_frame</pre>
+  		<pre class="python">chain = qb.option_chain(futures_contract_symbol, flatten=True).data_frame</pre>
   	</div>
     <p>
       This method returns an <code>OptionChain</code> object, which represent an entire chain of Option contracts for a single underlying security.
