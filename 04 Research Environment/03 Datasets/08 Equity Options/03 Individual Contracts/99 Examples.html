@@ -14,7 +14,7 @@
 qb = QuantBook()
 underlying_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
 qb.set_start_date(2024, 1, 1)
-chain = qb.option_chain(underlying_symbol).data_frame
+chain = qb.option_chain(underlying_symbol, flatten=True).data_frame
 
 # Select a contract from the chain.
 expiry = chain.expiry.min()
@@ -121,7 +121,7 @@ HTML(GenericChart.toChartHTML(chart))</pre>
 qb = QuantBook()
 underlying_symbol = qb.add_equity("TSLA", data_normalization_mode=DataNormalizationMode.RAW).symbol
 qb.set_start_date(2024, 1, 1)
-chain = qb.option_chain(underlying_symbol).data_frame
+chain = qb.option_chain(underlying_symbol, flatten=True).data_frame
 
 # Select a contract from the chain.
 strike_distance = (chain.strike - chain.underlyinglastprice).abs()
