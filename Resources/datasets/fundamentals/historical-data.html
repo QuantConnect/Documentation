@@ -19,7 +19,7 @@ foreach (var fundamental in collectionHistory)
 </pre>
      <pre class="python">ibm = Symbol.create("IBM", SecurityType.EQUITY, Market.USA)
 
-# Multi-index DataFrame objects
+# DataFrame of fundamental data for a given asset
 df_history = self.history(Fundamental, ibm, timedelta(30), flatten=True)
 
 # Fundamental objects
@@ -28,7 +28,10 @@ fundamental_history = self.history[Fundamental](ibm, timedelta(30))
 # Fundamentals objects for all US Equities (including delisted companies)
 fundamentals_history = self.history[Fundamentals](timedelta(30))
 
-# Multi-index Series objects of list of Fundamental objects
+# DataFrame of fundamental data for universe constituents
+df_history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
+
+# Series of fundamental data for universe constituents
 series_history = self.history(self._universe, 30, Resolution.DAILY)
 for (universe_symbol, time), fundamental in series_history.items():
     highest_market_cap = sorted(fundamental, key=lambda x: x.market_cap)[-5:]</pre>
