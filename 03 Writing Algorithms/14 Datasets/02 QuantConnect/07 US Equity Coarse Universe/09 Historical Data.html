@@ -37,7 +37,7 @@ df_history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
 # Series of fundamental data for universe constituents
 series_history = self.history(self._universe, 30, Resolution.DAILY)
 for (universe_symbol, time), fundamental in series_history.items():
-    highest_market_cap = sorted(fundamental, key=lambda x: x.market_cap)[-5:]</pre>
+    highest_market_cap = sorted(fundamental, key=lambda x: x.dollar_volume)[-5:]</pre>
 </div>
 
 <h4>Historical Universe Data in Research</h4>
@@ -57,9 +57,9 @@ df_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatt
 
 # Series of fundamental data for universe constituents
 series_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
-for (universe_symbol, time), fundamentals in universe_history.items():
+for (universe_symbol, time), fundamentals in series_history.items():
     for fundamental in fundamentals:
-        print(f"{fundamental.symbol} market cap at {fundamental.end_time}: {fundamental.market_cap}")</pre>
+        print(f"{fundamental.symbol} dollar volume at {fundamental.end_time}: {fundamental.dollar_volume}")</pre>
 </div>
 
 <p>For more information about historical US Equity fundamental data, see <a href="/docs/v2/research-environment/datasets/equity-fundamental-data">Equity Fundamental Data</a>.</p>
