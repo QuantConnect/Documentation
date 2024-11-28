@@ -18,7 +18,7 @@ var collectionHistory = History(_universe, 30, Resolution.Daily);
 foreach (var fundamental in collectionHistory)
 {
     // Cast to Fundamental is required
-    var highestMarketCap = fundamental.OfType&lt;Fundamental&gt;().OrderByDescending(x =&gt; x.MarketCap).Take(5);
+    var mostLiquid = fundamental.OfType&lt;Fundamental&gt;().OrderByDescending(x =&gt; x.DollarVolume).Take(5);
 }</pre>
      <pre class="python">ibm = Symbol.create("IBM", SecurityType.EQUITY, Market.USA)
 
@@ -37,7 +37,7 @@ df_history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
 # Series of fundamental data for universe constituents
 series_history = self.history(self._universe, 30, Resolution.DAILY)
 for (universe_symbol, time), fundamental in series_history.items():
-    highest_market_cap = sorted(fundamental, key=lambda x: x.dollar_volume)[-5:]</pre>
+    most_liquid = sorted(fundamental, key=lambda x: x.dollar_volume)[-5:]</pre>
 </div>
 
 <h4>Historical Universe Data in Research</h4>
@@ -49,7 +49,7 @@ foreach (var fundamentals in universeHistory)
 {
     foreach (Fundamental fundamental in fundamentals)
     {
-        Console.WriteLine($"{fundamental.Symbol} market cap at {fundamental.EndTime}: {fundamental.MarketCap}");
+        Console.WriteLine($"{fundamental.Symbol} dollar volume at {fundamental.EndTime}: {fundamental.DollarVolume}");
     }
 }</pre>
      <pre class="python"># DataFrame of fundamental data for universe constituents
