@@ -50,21 +50,21 @@ history = qb.option_history(
 history_df = history.data_frame
 expiries = history.get_expiry_dates()
 strikes = history.get_strikes()</pre>
-<pre><code class="csharp">var qb = new QuantBook();
+<pre class="csharp">var qb = new QuantBook();
 var future = qb.AddFuture(Futures.Indices.SP500EMini);
 var startDate = new DateTime(2024, 1, 2);
 var futureContractSymbol = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate)
-    .OrderBy(x => x.ID.Date)
+    .OrderBy(x =&gt; x.ID.Date)
     .First();
 var history = qb.OptionHistory(
     futureContractSymbol, startDate, futureContractSymbol.ID.Date, Resolution.Hour
 );
 
 var contracts = history
-    .SelectMany(x => x.OptionChains.SelectMany(y => y.Value.Contracts.Keys))
+    .SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys))
     .Distinct().ToList();
-var expiries = contracts.Select(x => x.ID.Date).Distinct().ToList();
-var strikes = contracts.Select(x => x.ID.StrikePrice).Distinct().ToList();</code></pre>
+var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();
+var strikes = contracts.Select(x =&gt; x.ID.StrikePrice).Distinct().ToList();</pre>
 </div>
 
 <p>To get historical data for arbitrary US Equity Option contracts instead of just the that pass your universe filter, call the <b class="csharp">History</b><b class="python">history</b> method like you would in an algorithm, but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/futures-options/key-concepts">Key Concepts</a>.</p>
