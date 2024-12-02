@@ -1,0 +1,64 @@
+<p>The following examples demonstrate some common practices for securities.</p>
+
+<h4>Example 1: Accessing Properties</h4>
+<p>The following example shows how to access various propeties of the <code>Security</code> object.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class SecuritiesUsageAlgorithm : QCAlgorithm
+{
+    private Equity _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2023, 1, 2);
+        
+        _spy = AddEquity("SPY");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // OHLCV data.
+        var price = _spy.Close;
+        var volume = _spy.Volume;
+        // Quote data.
+        var quoteSize = _spy.BidSize;
+        var quotePrice = _spy.AskPrice;
+        // Symbol Properties.
+        var lotSize = _spy.SymbolProperties.LotSize;
+        // Fundamentals cached data.
+        var peRatio = _spy.Fundamentals.ValuationRatios.PERatio;
+        // Properties, e.g. is tradeble, is market open, leverage, ...
+        var marketOpen = _spy.IsMarketOpen;
+        var leverage = _spy.Leverage;
+        // Models, e.g. margin model, buying power model, ...
+        var marginModel = _spy.MarginModel;
+        // Portfolio Holdings reference.
+        var holding = _spy.Holdings;
+    }
+}</pre>
+    <pre class="python">class SecuritiesUsageAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 1, 2)
+
+        self.spy = self.add_equity("SPY")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # OHLCV data.
+        price = self.spy.close
+        volume = self.spy.volume
+        # Quote data.
+        quote_size = self.spy.bid_size
+        quote_price = self.spy.ask_price
+        # Symbol Properties.
+        lot_size = self.spy.symbol_properties.lot_size
+        # Fundamentals cached data.
+        pe_ratio = self.spy.fundamentals.valuation_ratios.pe_ratio
+        # Properties, e.g. is tradeble, is market open, leverage, ...
+        market_open = self.spy.is_market_open
+        leverage = self.spy.leverage
+        # Models, e.g. margin model, buying power model, ...
+        margin_model = self.spy.margin_model
+        # Portfolio Holdings reference.
+        holding = self.spy.holdings</pre>
+</div>
