@@ -50,17 +50,20 @@
         }
     }
 
-    // Implements a custom fill model that partially filled each order with 100 shares at most.
+    /// Implements a custom fill model that partially filled each order with ratio of the previous trade bar.
     private class CustomPartialFillModel : FillModel
     {
         private readonly QCAlgorithm _algorithm;
         private readonly Dictionary&lt;int, decimal&gt; _absoluteRemainingByOrderId;
+        // Save the ratio of the volume of the previous bar to fill the order.
+        private decimal _ratio;
 
-        public CustomPartialFillModel(QCAlgorithm algorithm)
+        public CustomPartialFillModel(QCAlgorithm algorithm, decimal ratio = 0.5m)
             : base()
         {
             _algorithm = algorithm;
             _absoluteRemainingByOrderId = new Dictionary&lt;int, decimal&gt;();
+            _ratio = ratio;
         }
 
         public override OrderEvent MarketFill(Security asset, MarketOrder order)
@@ -73,8 +76,8 @@
 
             var fill = base.MarketFill(asset, order);
 
-            // Partially filled each order with 100 shares.
-            fill.FillQuantity = Math.Sign(order.Quantity) * 100;
+            // Partially filled each order with at most 50% of the previous bar.
+            fill.FillQuantity = Math.Sign(order.Quantity) * asset.Volume * _ratio;
             if (Math.Min(Math.Abs(fill.FillQuantity), absoluteRemaining) == absoluteRemaining)
             {
                 fill.FillQuantity = Math.Sign(order.Quantity) * absoluteRemaining;
@@ -122,19 +125,21 @@
         if order_event.status == OrderStatus.PARTIALLY_FILLED:
             self.transactions.cancel_open_orders()
 
-# Implements a custom fill model that partially filled each order with 100 shares at most.
+# Implements a custom fill model that partially filled each order with ratio of the previous trade bar.
 class CustomPartialFillModel(FillModel):
-    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+    def __init__(self, algorithm: QCAlgorithm, ratio: float = 0.5) -&gt; None:
         self.algorithm = algorithm
         self.absolute_remaining_by_order_id = {}
+        # Save the ratio of the volume of the previous bar to fill the order.
+        self.ratio = ratio
 
     def market_fill(self, asset: Security, order: MarketOrder) -&gt; None:
         absolute_remaining = self.absolute_remaining_by_order_id.get(order.id, order. AbsoluteQuantity)
 
         fill = super().market_fill(asset, order)
 
-        # Partially filled each order with 100 shares.
-        fill.fill_quantity = np.sign(order.quantity) * 100
+        # Partially filled each order with at most 50% of the previous bar.
+        fill.fill_quantity = np.sign(order.quantity) * asset.volume * self.ratio
         if (min(abs(fill.fill_quantity), absolute_remaining) == absolute_remaining):
             fill.fill_quantity = np.sign(order.quantity) * absolute_remaining
             fill.status = OrderStatus.FILLED
