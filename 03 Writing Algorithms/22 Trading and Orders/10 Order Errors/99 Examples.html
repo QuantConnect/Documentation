@@ -1,4 +1,4 @@
-<p>The following examples demonstrate some common practices for handling order error.</p>
+<p>The following examples demonstrate common practices for handling order errors.</p>
 
 <h4>Example 1: Pre-Open Order Error</h4>
 <p>The following algorithm simulate extended market hour trading on <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/tradier">Tradier Brokerage</a>. We place a market-on-open order at 7:30am and expect the order cannot submit to the broker since it is not supported, resulting into an error.</p>
@@ -11,13 +11,13 @@
     {
         SetStartDate(2022, 1, 1);
         SetEndDate(2022, 1, 5);
-        // Simulate tradier brokerage, which does not support market on open order.
+        // Simulate Tradier brokerage, which does not support the market-on-open orders.
         SetBrokerageModel(BrokerageName.TradierBrokerage, AccountType.Cash);
 
         // Request extended market hour SPY data for trading.
         _spy = AddEquity("SPY", extendedMarketHours: true).Symbol;
 
-        // Set a schedule event to trade 2 hours pre-open to place the market-on-open-order.
+        // Set a scheduled event to trade 2 hours pre-open to place the market-on-open-order.
         Schedule.On(
             DateRules.EveryDay(_spy),
             TimeRules.BeforeMarketOpen(_spy, 120),
@@ -27,7 +27,7 @@
 
     private void OpenPosition()
     {
-        // Buy on market open, which should will result in error since Tradier does not support it.
+        // Buy on market open will result in an error since Tradier does not support it.
         MarketOnOpenOrder(_spy, 10);
     }
 
@@ -44,13 +44,13 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2022, 1, 5)
-        # Simulate tradier brokerage, which does not support market on open order.
+        # Simulate Tradier brokerage, which does not support the market-on-open orders.
         self.set_brokerage_model(BrokerageName.TRADIER_BROKERAGE, AccountType.CASH)
 
         # Request extended market hour SPY data for trading.
         self.spy = self.add_equity("SPY", extended_market_hours=True).symbol
 
-        # Set a schedule event to trade 2 hours pre-open to place the market-on-open-order.
+        # Set a scheduled event to trade 2 hours pre-open to place the market-on-open-order.
         self.schedule.on(
             self.date_rules.every_day(self.spy),
             self.time_rules.before_market_open(self.spy, 120),
@@ -58,7 +58,7 @@
         )
 
     def open_position(self) -&gt; None:
-        # Buy on market open, which should will result in error since Tradier does not support it.
+        # Buy on market open will result in an error since Tradier does not support it.
         self.market_on_open_order(self.spy, 10)
 
     # It will be triggered on live trading.
