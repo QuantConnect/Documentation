@@ -113,11 +113,12 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         bar = slice.bars.get(self.carz)
-        if bar:
+        if bar and self._ema.is_ready:
+            ema = self._ema.current.value
             # Trade EMA cross on CARZ for trend following strategy.
-            if bar.close &gt; self._ema and not self.portfolio[self.carz].is_long:
+            if bar.close &gt; ema and not self.portfolio[self.carz].is_long:
                 self.set_holdings(self.carz, 0.5)
-            elif bar.close &lt; self._ema and not self.portfolio[self.carz].is_short:
+            elif bar.close &lt; ema and not self.portfolio[self.carz].is_short:
                 self.set_holdings(self.carz, -0.5)
 
     def on_order_event(self, order_event: OrderEvent) -&gt; None:
