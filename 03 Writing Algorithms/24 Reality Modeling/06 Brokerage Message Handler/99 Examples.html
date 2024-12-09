@@ -1,3 +1,125 @@
+<p>The following examples demonstrate some common practices for implementing a custom brokerage message handler.</p>
+
+<h4>Example 1: Notification</h4>
+<p>The following algorithm buys and holds SPY. It implemented a custom brokerage message handler to send notifications to user through email and SMS in cases of disconnection, reconnections, and outside trades happened.</p>
+<div class="section-example-container">
+    <pre class="csharp">namespace QuantConnect
+{
+    public class CustomBrokerageMessageHandlerAlgorithm : QCAlgorithm
+    {
+        private Symbol _spy;
+
+        public override void Initialize()
+        {
+            // To simulate the connection to IB brokerage.
+            SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
+            // Set the brokerage message handler to our custom model.
+            SetBrokerageMessageHandler(new CustomBrokerageMessageHandler(this));
+
+            // Request SPY data for trading.
+            _spy = AddEquity("SPY").Symbol;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Buy and hold SPY as strategy.
+            if (!Portfolio.Invested)
+            {
+                SetHoldings(_spy, 1m);
+            }
+        }
+    }
+
+    // Define the custom brokerage message handler.
+    public class CustomBrokerageMessageHandler : DefaultBrokerageMessageHandler
+    {
+        private readonly IAlgorithm _algorithm;
+        public CustomBrokerageMessageHandler(IAlgorithm algorithm) 
+            : base(algorithm)
+        { 
+            _algorithm = algorithm; 
+        }
+
+        public void HandleMessage(BrokerageMessageEvent message)
+        {
+            // Notify user by SMS on disconnection of the algorithm instance from the brokerage.
+            if (message.Type == BrokerageMessageType.Disconnect)
+            {
+                _algorithm.Notify.Sms(
+                    phoneNumber: "&lt;YOUR_PHONE_NUMBER&gt;",
+                    message: "Your QC Algorithm instance 'CustomBrokerageMessageHandlerAlgorithm' was disconnected from the IB brokerage."
+                );
+            }
+            // Notify user by SMS on reconnection of the algorithm instance to the brokerage after disconnection.
+            else if (message.Type == BrokerageMessageType.Reconnect)
+            {
+                _algorithm.Notify.Sms(
+                    phoneNumber: "&lt;YOUR_PHONE_NUMBER&gt;",
+                    message: "Your QC Algorithm instance 'CustomBrokerageMessageHandlerAlgorithm' was reconnected to the IB brokerage."
+                );
+            }
+        }
+
+        public bool HandleOrder(NewBrokerageOrderNotificationEventArgs eventArgs)
+        {
+            // Notify user by eamil on receiving an order from outside of the algorithm.
+            _algorithm.Notify.Email(
+                address: "&lt;YOUR_EMAIL_ADDRESS@example.com&gt;",
+                subject: "Outside Order",
+                message: "Your QC Algorithm instance 'CustomBrokerageMessageHandlerAlgorithm' detected an outside order from the IB brokerage, it has been processed to the algorithm."
+            );
+            // Process a new order placed through the brokerage's website or third-party software to handle it in the algorithm instance.
+            return true;
+        }
+    }
+}</pre>
+    <pre class="python">class CustomBrokerageMessageHandlerAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # To simulate the connection to IB brokerage.
+        self.set_brokerage_model(BrokerageName.INTERACTIVE_BROKERS_BROKERAGE, AccountType.MARGIN)
+        # Set the brokerage message handler to our custom model.
+        self.set_brokerage_message_handler(CustomBrokerageMessageHandler(self))
+
+        # Request SPY data for trading.
+        self.spy = self.add_equity("SPY").symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Buy and hold SPY as strategy.
+        if not self.portfolio.invested:
+            self.set_holdings(self.spy, 1)
+
+class CustomBrokerageMessageHandler(DefaultBrokerageMessageHandler):
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        self._algorithm = algorithm
+
+    def handle_message(self, message: BrokerageMessageEvent) -&gt; None:
+        # Notify user by SMS on disconnection of the algorithm instance from the brokerage.
+        if message.type == BrokerageMessageType.DISCONNECT:
+            self._algorithm.notify.sms(
+                phone_number="&lt;YOUR_PHONE_NUMBER&gt;",
+                message="Your QC Algorithm instance 'CustomBrokerageMessageHandlerAlgorithm' was disconnected from the IB brokerage."
+            )
+        # Notify user by SMS on reconnection of the algorithm instance to the brokerage after disconnection.
+        elif message.type == BrokerageMessageType.RECONNECT:
+            self._algorithm.notify.sms(
+                phone_number="&lt;YOUR_PHONE_NUMBER&gt;",
+                message="Your QC Algorithm instance 'CustomBrokerageMessageHandlerAlgorithm' was reconnected to the IB brokerage."
+            )
+
+    def handle_order(self, event_args: NewBrokerageOrderNotificationEventArgs) -&gt; bool:
+        # Notify user by eamil on receiving an order from outside of the algorithm.
+        self._algorithm.notify.email(
+            address="&lt;YOUR_EMAIL_ADDRESS@example.com&gt;",
+            subject="Outside Order",
+            message="Your QC Algorithm instance 'CustomBrokerageMessageHandlerAlgorithm' detected an outside order from the IB brokerage, it has been processed to the algorithm."
+        )
+        # Process a new order placed through the brokerage's website or third-party software to handle it in the algorithm instance.
+        return True</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
 <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
    
