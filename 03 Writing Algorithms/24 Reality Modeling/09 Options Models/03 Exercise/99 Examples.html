@@ -82,7 +82,7 @@
     }
 }</pre>
     <pre class="python">class OptionExerciseModelAlgorithm(QCAlgorithm):
-    def __init__(self) -&gt; None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2017, 4, 1)
         self.set_end_date(2017, 6, 30)
         
@@ -102,8 +102,8 @@
         chain = slice.option_chains.get(self.goog)
         if chain and not self.portfolio.invested:
             # Only 1 strike and expiry for the straddle universe.
-            strike = chain[0].strike
-            expiry = chain[0].expiry
+            strike = list(chain)[0].strike
+            expiry = list(chain)[0].expiry
             # Open the straddle position.
             option_straddle = OptionStrategies.straddle(self.goog, strike, expiry)
             self.buy(option_straddle, 5)
@@ -114,17 +114,18 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
         # Set the custom Option exercise model for Option securities
         if security.type == SecurityType.OPTION:
-            security.set_option_exercise_model(MyOptionExerciseModel())
+            Option(security).set_option_exercise_model(MyOptionExerciseModel())
 
 # Define the custom Option exercise model outside of the algorithm
 class MyOptionExerciseModel(DefaultExerciseModel):
     def option_exercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
         in_the_money = option.is_auto_exercised(option.underlying.close)
         underlying = option.underlying
-        utc_time = option.LocalTime.ConvertToUtc(option.Exchange.TimeZone)
+        utc_time = option.local_time.convert_to_utc(option.exchange.time_zone)
         # Cash settle: using payoff.
         payoff = option.get_intrinsic_value(underlying.close)
 
+        # Only liquidate option positions, but not adding equity positions.
         order_event = OrderEvent(
             order.id,
             option.symbol,
