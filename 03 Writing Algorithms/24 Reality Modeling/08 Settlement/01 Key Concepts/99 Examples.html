@@ -1,0 +1,79 @@
+<p>The following examples demonstrate some common practices for implementing settlement model.</p>
+
+<h4>Example 1: 2-day Settlement</h4>
+<p>The following algorithm simulates Interactive Brokers cash account. According to IB's website, cash positions will be settled in 48 hours. Thus, we can implement <code>DelayedSettlementModel</code> to mimic that. We hold intra-day position of SPY to implement the settlement logic.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class SettlementModelAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 10, 1);
+        SetEndDate(2024, 10, 1);
+
+        // Simulate a cash account of IB.
+        SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Cash);
+        // We need to set the settlement model in the security initializer.
+        SetSecurityInitializer(CustomSecurityInitializer);
+
+        // Request SPY data for trading.
+        _spy = AddEquity("SPY").Symbol;
+    }
+
+    private void CustomSecurityInitializer(Security security)
+    {
+        // IB settles cash in 48 hours.
+        security.SetSettlementModel(new DelayedSettlementModel(2, new TimeSpan(0, 0, 0)));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade based on updated data.
+        if (slice.Bars.TryGetValue(_spy, out var bar) &amp;&amp; !Portfolio.Invested)
+        {
+            // Order based on the current available cash.
+            var quantity = Math.Floor((Portfolio.Cash - Portfolio.UnsettledCash) / bar.Close);
+            if (quantity &gt; 0)
+            {
+                MarketOrder(_spy, quantity);
+            }
+        }
+
+        // Exit position before market close, we only hold intraday position.
+        if (slice.Time.Hour == 15 &amp;&amp; slice.Time.Minute == 45)
+        {
+            Liquidate();
+        }
+    }
+}</pre>
+    <pre class="python">class SettlementModelAlgorithm(QCAlgorithm):
+    def __init__(self) -&gt; None:
+        self.set_start_date(2023, 10, 1)
+        self.set_end_date(2024, 10, 1)
+        
+        # Simulate a cash account of IB.
+        self.set_brokerage_model(BrokerageName.INTERACTIVE_BROKERS_BROKERAGE, AccountType.CASH)
+        # We need to set the settlement model in the security initializer.
+        self.set_security_initializer(self.custom_security_initializer)
+    
+        # Request SPY data for trading.
+        self.spy = self.add_equity("SPY").symbol
+    
+    def custom_security_initializer(self, security: Security) -&gt; None:
+        # IB settles cash in 48 hours.
+        security.set_settlement_model(DelayedSettlementModel(2, timedelta(hours=0)))
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade based on updated data.
+        bar = slice.bars.get(self.spy)
+        if bar and not self.portfolio.invested:
+            # Order based on the current available cash.
+            quantity = (self.portfolio.cash - self.portfolio.unsettled_cash) // bar.close
+            if quantity &gt; 0:
+                self.market_order(self.spy, quantity)
+        
+        # Exit position before market close, we only hold intraday position.
+        if slice.time.hour == 15 and slice.time.minute == 45:
+            self.liquidate()</pre>
+</div>
