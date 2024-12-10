@@ -31,7 +31,7 @@
         {
             // Seed the security price to ensure the underlying price is available at the initial filtering.
             security.SetMarketPrice(GetLastKnownPrice(security));
-            // Do not allow any buying power for options, such that only hedging strategy with 0 margin is allowed.
+            // Always sufficient
             security.SetBuyingPowerModel(new NullBuyingPowerModel());
         }
 
@@ -67,7 +67,7 @@
     }
 }</pre>
     <pre class="python">class BuyingPowerModelAlgorithm(QCAlgorithm):
-    def __init__(self) -&gt; None:
+    def Initialize(self) -&gt; None:
         self.set_start_date(2023, 10, 1)
         self.set_end_date(2024, 10, 1)
         self.set_cash(10000)
@@ -92,7 +92,10 @@
     def rebalance(self) -&gt; None:
         # Select the week-end expiring ATM put for the protective put strategy.
         chain = self.option_chain(self.spy)
-        atm_put_contract = sorted([x for x in chain if x.right == OptionRight.PUT and x.expiry == self.time + timedelta(6)],
+        filtered = [x for x in chain if x.right == OptionRight.PUT and x.expiry &lt;= self.time + timedelta(6)]
+        if not filtered: 
+            return
+        atm_put_contract = sorted(filtered,
             key=lambda x: (-abs(x.strike - x.underlying_last_price), x.expiry),
             reverse=True)[0]
         # Request the ATM put data for trading.
