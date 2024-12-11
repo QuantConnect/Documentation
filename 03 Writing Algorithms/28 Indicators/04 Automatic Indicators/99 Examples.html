@@ -1,0 +1,128 @@
+<p>The following examples demonstrate some common practices for using automatic indicators.</p>
+
+<h4>Example 1: Trade With Automatic Indicators</h4>
+<p>The following algorithm selects the top 20 liquid stocks. Then, we hold the stocks with price &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">EMA</a> &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">SMA</a>, which indicates an upward accelerating trend, with aid of automatic indicators.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class AutomaticIndicatorAlgorithm : QCAlgorithm
+{
+    private Dictionary&lt;Symbol, SymbolData&gt; _symbolData = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 2, 1);
+        
+        // Select the top 20 liquid stocks for popularity stocks to trade trend more efficiently.
+        AddUniverse(Universe.DollarVolume.Top(20));
+
+        // Set a scheduled event to rebalance daily on the daily indicator signals.
+        Schedule.On(
+            DateRules.EveryDay(),
+            TimeRules.At(9, 31),
+            Rebalance
+        );
+    }
+
+    private void Rebalance()
+    {
+        var symbolsToBuy = new List&lt;Symbol&gt;();
+        
+        foreach (var (symbol, symbolData) in _symbolData)
+        {
+            // Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
+            if (symbolData.IsReady &amp;&amp; Securities[symbol].Price &gt; symbolData.Ema &amp;&amp; symbolData.Ema &gt; symbolData.Sma)
+            {
+                symbolsToBuy.Add(symbol);
+            }
+        }
+
+        // Equally invest into the selected stocks to evenly dissipate the capital risk.
+        var count = symbolsToBuy.Count;
+        if (count &gt; 0)
+        {
+            var targets = symbolsToBuy.Select(symbol =&gt; new PortfolioTarget(symbol, 1m / count)).ToList();
+            // Liquidate the positions that are not in upward trend or not being popular anymore.
+            SetHoldings(targets, liquidateExistingHoldings: true);
+        }
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var added in changes.AddedSecurities)
+        {
+            // Instantiate a new instance of SymbolData object to hold indicators to use.
+            _symbolData[added.Symbol] = new SymbolData(this, added.Symbol);
+        }
+
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            // Remove the data subscription of indicators to release computation resources when leaving the universe.
+            _symbolData.Remove(removed.Symbol);
+        }
+    }
+
+    private class SymbolData
+    {
+        public Symbol Symbol { get; set; }
+        public ExponentialMovingAverage Ema { get; set; }
+        public SimpleMovingAverage Sma { get; set; }
+
+        public bool IsReady =&gt; Ema.IsReady &amp;&amp; Sma.IsReady;
+
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+        {
+            Symbol = symbol;
+
+            // In this example, we hold an EMA and a SMA manual indicator as example.
+            Ema = algorithm.EMA(symbol, 20, Resolution.Daily);
+            Sma = algorithm.SMA(symbol, 20, Resolution.Daily);
+
+            // Warm up the indicators for their readiness to use immediately.
+            algorithm.WarmUpIndicator(symbol, Ema, Resolution.Daily);
+            algorithm.WarmUpIndicator(symbol, Sma, Resolution.Daily);
+        }
+    }
+}</pre>
+    <pre class="python">class AutomaticIndicatorAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 2, 1)
+
+        # Select the top 20 liquid stocks for popularity stocks to trade trend more efficiently.
+        self._universe = self.add_universe(self.universe.dollar_volume.top(20))
+
+        # Set a scheduled event to rebalance daily on the daily indicator signals.
+        self.schedule.on(
+            self.date_rules.every_day(),
+            self.time_rules.at(9, 31),
+            self.rebalance
+        )
+                
+    def rebalance(self) -&gt; None:
+        symbols_to_buy = []
+
+        for kvp in self._universe.members:
+            symbol = kvp.key
+            security = kvp.value
+            # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
+            if security.price &gt; security.ema.current.value &gt; security.sma.current.value:
+                symbols_to_buy.append(symbol)
+
+        # Equally invest into the selected stocks to evenly dissipate the capital risk.
+        count = len(symbols_to_buy)
+        if count &gt; 0:
+            targets = [PortfolioTarget(symbol, 1 / count) for symbol in symbols_to_buy]
+            # Liquidate the positions that are not in upward trend or not being popular anymore.
+            self.set_holdings(targets, liquidate_existing_holdings=True)
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        for added in changes.added_securities:
+            symbol = added.symbol
+            # Create EMA & SMA indicators for trade signal generation. Use duck typing to save the indicator instances.
+            added.ema = self.ema(symbol, 20, Resolution.DAILY)
+            added.sma = self.sma(symbol, 20, Resolution.DAILY)
+
+            # Warm up the indicators for their readiness to use immediately.
+            self.warm_up_indicator(symbol, added.ema, Resolution.DAILY)
+            self.warm_up_indicator(symbol, added.sma, Resolution.DAILY)</pre>
+</div>
