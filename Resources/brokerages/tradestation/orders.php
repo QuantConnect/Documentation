@@ -5,11 +5,11 @@
 <table class="qc-table table" id='order-types-table'>
    <thead>
       <tr>
-        <th style='width: 50%'>Order Type</th>
-        <th style='width: 25%'>Equity</th>
-        <th style='width: 25%'>Equity Options</th>
-        <th style='width: 25%'>Index Options</th>
-        <th style='width: 25%'>Futures</th>
+        <th style='width: 20%'>Order Type</th>
+        <th style='width: 20%'>Equity</th>
+        <th style='width: 20%'>Equity Options</th>
+        <th style='width: 20%'>Index Options</th>
+        <th style='width: 20%'>Futures</th>
       </tr>
    </thead>
    <tbody>
