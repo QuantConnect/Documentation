@@ -143,14 +143,13 @@
 }</pre>
     <pre class="python">class ManualIndicatorAlgorithm(QCAlgorithm):
     maximum_by_symbol = {}
-    symbol_data = {}
 
     def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2021, 2, 1)
 
         # Select a popularity-based universe with indicators in a Selection function.
-        self.add_universe(self.selection)
+        self._universe = self.add_universe(self.selection)
 
         # Set a scheduled event to rebalance daily on the daily indicator signals.
         self.schedule.on(
@@ -186,9 +185,11 @@
     def rebalance(self) -&gt; None:
         symbols_to_buy = []
 
-        for symbol, symbol_data in self.symbol_data.items():
+        for kvp in self._universe.members:
+            symbol = kvp.key
+            security = kvp.value
             # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
-            if symbol_data.is_ready and self.securities[symbol].price &gt; symbol_data.ema.current.value &gt; symbol_data.sma.current.value:
+            if security.price &gt; security.ema.current.value &gt; security.sma.current.value:
                 symbols_to_buy.append(symbol)
 
         # Equally invest into the selected stocks to evenly dissipate the capital risk.
@@ -200,40 +201,21 @@
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for added in changes.added_securities:
-            # Instantiate a new instance of SymbolData object to hold indicators to use.
-            self.symbol_data[added.symbol] = SymbolData(self, added.symbol)
+            symbol = added.symbol
+            # Create an EMA and a SMA manual indicator for trade signal generation.
+            added.ema = ExponentialMovingAverage(20)
+            added.sma = SimpleMovingAverage(20)
+
+            # Warm up the indicators for their readiness to use immediately.
+            self.warm_up_indicator(symbol, added.ema, Resolution.DAILY)
+            self.warm_up_indicator(symbol, added.sma, Resolution.DAILY)
+
+            # Subscribe the indicators to update with daily price data for updated trade signal generation.
+            self.register_indicator(symbol, added.ema, Resolution.DAILY)
+            self.register_indicator(symbol, added.sma, Resolution.DAILY)
 
         for removed in changes.removed_securities:
-            # Remove the data subscription of indicators to release computation resources when leaving the universe.
-            symbol_data = self.symbol_data.pop(removed.symbol, None)
-            if symbol_data:
-                symbol_data.dispose()
-
-class SymbolData:
-    def __init__(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
-        self.algorithm = algorithm
-        self.symbol = symbol
-
-        # Create an EMA and a SMA manual indicator for trade signal generation.
-        self.ema = ExponentialMovingAverage(20)
-        self.sma = SimpleMovingAverage(20)
-
-        # Warm up the indicators for their readiness to use immediately.
-        algorithm.warm_up_indicator(symbol, self.ema, Resolution.DAILY)
-        algorithm.warm_up_indicator(symbol, self.sma, Resolution.DAILY)
-
-        # Subscribe the indicators to update with daily price data for updated trade signal generation.
-        algorithm.register_indicator(symbol, self.ema, Resolution.DAILY)
-        algorithm.register_indicator(symbol, self.sma, Resolution.DAILY)
-
-    def dispose(self) -&gt; None:
-        self.ema.reset()
-        self.sma.reset()
-        # Cancel data subscription to release computation resources.
-        self.algorithm.deregister_indicator(self.ema)
-        self.algorithm.deregister_indicator(self.sma)
-
-    @property
-    def is_ready(self) -&gt; bool:
-        return self.ema.is_ready and self.sma.is_ready</pre>
+            # Cancel data subscription to release computation resources when leaving the universe.
+            self.deregister_indicator(removed.ema)
+            self.deregister_indicator(removed.sma)</pre>
 </div>
