@@ -1,6 +1,4 @@
-<p>The following examples demonstrate some common practices for using manual indicators.</p>
-
-<h4>Example 1: Universe Selection And Trade Logic</h4>
+<h4>Example <?=$number?>: Universe Selection</h4>
 <p>The following algorithm selects the stocks which is within 5% of the 1-year maximum price among the top 100 liquid stocks. To do so, we make use of <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/maximum">Maximum</a> indicator to do so. Then, we hold the stocks with price &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">EMA</a> &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">SMA</a>, which indicates an upward accelerating trend.</p>
 <div class="section-example-container">
     <pre class="csharp">public class ManualIndicatorAlgorithm : QCAlgorithm

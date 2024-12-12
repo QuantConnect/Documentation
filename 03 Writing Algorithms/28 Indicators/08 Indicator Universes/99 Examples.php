@@ -1,4 +1,14 @@
-  <div class="example-fieldset">
+<p>The following examples demonstrate some common practices for using indicator universes.</p>
+
+<? 
+$number = 1;
+include(DOCS_RESOURCES."/examples/manual-indicator-universe-selection.php");
+?>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
     
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/EmaCrossUniverseSelectionAlgorithm.py" target="_BLANK">
