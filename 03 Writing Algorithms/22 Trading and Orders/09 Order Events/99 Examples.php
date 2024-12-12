@@ -148,5 +148,7 @@ class CustomPartialFillModel(FillModel):
         return fill</pre>
 </div>
 
-<h4>Example 2: Take Profit Stop Loss</h4>
-<? include(DOCS_RESOURCES."/securities/active-securities.php"); ?>
+<? 
+$number = 2;
+include(DOCS_RESOURCES."/examples/take-profit-stop-loss-example.php");
+?>
