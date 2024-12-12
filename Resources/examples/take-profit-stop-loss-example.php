@@ -1,3 +1,4 @@
+<h4>Example <?=$number?>: Price Actions</h4>
 <p>Using <code>RollingWindow</code> to cache the last 3 trade bars, the following algorithm could identify volume contraction breakout price action pattern and buy SPY accordingly to ride on the capital inflow. We take 2% profit and stop loss at 1% in <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">public class RollingWindowAlgorithm : QCAlgorithm
