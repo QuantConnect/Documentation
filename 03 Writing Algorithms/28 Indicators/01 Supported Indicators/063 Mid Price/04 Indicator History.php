@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'MidPrice';
 $helperName = 'MIDPRICE';
+$pyHelperName = 'midprice';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

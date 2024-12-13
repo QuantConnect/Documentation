@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'WilderSwingIndex';
 $helperName = 'SI';
+$pyHelperName = 'si';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Momentum';
 $helperName = 'MOM';
+$pyHelperName = 'mom';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

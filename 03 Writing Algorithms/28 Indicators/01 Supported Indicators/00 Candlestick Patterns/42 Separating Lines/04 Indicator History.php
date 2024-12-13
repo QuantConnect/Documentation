@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'SeparatingLines';
 $helperName = 'SeparatingLines';
+$pyHelperName = 'separating_lines';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Vortex';
 $helperName = 'VTX';
+$pyHelperName = 'vtx';
 $helperArguments = 'symbol, 14';
 $hasReference = false;
 $isOptionIndicator = false;

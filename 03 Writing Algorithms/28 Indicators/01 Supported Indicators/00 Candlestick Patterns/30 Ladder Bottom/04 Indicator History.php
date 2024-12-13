@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'LadderBottom';
 $helperName = 'LadderBottom';
+$pyHelperName = 'ladder_bottom';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'MatchingLow';
 $helperName = 'MatchingLow';
+$pyHelperName = 'matching_low';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

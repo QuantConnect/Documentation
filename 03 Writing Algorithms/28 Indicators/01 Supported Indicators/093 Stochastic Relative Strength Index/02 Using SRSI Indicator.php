@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'StochasticRelativeStrengthIndex';
 $helperName = 'SRSI';
+$pyHelperName = 'srsi';
 $helperArguments = 'symbol, 14, 14, 3, 3';
 $properties = array("K","D");
 $pyProperties = array("k","d");

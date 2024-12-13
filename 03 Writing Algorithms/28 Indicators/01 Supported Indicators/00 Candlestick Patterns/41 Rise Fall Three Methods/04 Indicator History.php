@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'RiseFallThreeMethods';
 $helperName = 'RiseFallThreeMethods';
+$pyHelperName = 'rise_fall_three_methods';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

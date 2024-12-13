@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'OnNeck';
 $helperName = 'OnNeck';
+$pyHelperName = 'on_neck';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

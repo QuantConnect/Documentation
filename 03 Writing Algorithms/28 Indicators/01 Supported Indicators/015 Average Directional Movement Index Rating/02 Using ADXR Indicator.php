@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AverageDirectionalMovementIndexRating';
 $helperName = 'ADXR';
+$pyHelperName = 'adxr';
 $helperArguments = 'symbol, 20';
 $properties = array("ADX");
 $pyProperties = array("adx");

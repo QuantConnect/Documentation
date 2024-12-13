@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ShortLineCandle';
 $helperName = 'ShortLineCandle';
+$pyHelperName = 'short_line_candle';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

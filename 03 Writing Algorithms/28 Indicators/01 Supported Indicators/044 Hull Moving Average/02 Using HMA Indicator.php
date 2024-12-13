@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'HullMovingAverage';
 $helperName = 'HMA';
+$pyHelperName = 'hma';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

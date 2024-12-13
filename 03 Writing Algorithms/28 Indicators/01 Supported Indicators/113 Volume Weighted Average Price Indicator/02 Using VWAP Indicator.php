@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'VolumeWeightedAveragePriceIndicator';
 $helperName = 'VWAP';
+$pyHelperName = 'vwap';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

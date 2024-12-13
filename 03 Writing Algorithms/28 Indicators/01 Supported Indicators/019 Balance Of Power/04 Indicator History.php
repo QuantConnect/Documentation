@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'BalanceOfPower';
 $helperName = 'BOP';
+$pyHelperName = 'bop';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

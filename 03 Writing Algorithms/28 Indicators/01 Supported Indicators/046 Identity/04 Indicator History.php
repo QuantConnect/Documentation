@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Identity';
 $helperName = 'Identity';
+$pyHelperName = 'identity';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

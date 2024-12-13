@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'KaufmanEfficiencyRatio';
 $helperName = 'KER';
+$pyHelperName = 'ker';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

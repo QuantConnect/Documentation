@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'EaseOfMovementValue';
 $helperName = 'EMV';
+$pyHelperName = 'emv';
 $helperArguments = 'symbol, 1, 10000';
 $properties = array();
 $pyProperties = array();

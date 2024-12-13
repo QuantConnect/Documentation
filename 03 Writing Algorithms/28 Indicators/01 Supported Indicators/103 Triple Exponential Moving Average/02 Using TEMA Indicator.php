@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'TripleExponentialMovingAverage';
 $helperName = 'TEMA';
+$pyHelperName = 'tema';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

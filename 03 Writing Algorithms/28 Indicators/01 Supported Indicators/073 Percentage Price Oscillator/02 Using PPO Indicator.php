@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'PercentagePriceOscillator';
 $helperName = 'PPO';
+$pyHelperName = 'ppo';
 $helperArguments = 'symbol, 10, 20, MovingAverageType.Simple';
 $properties = array("Fast","Slow","Signal","Histogram");
 $pyProperties = array("fast","slow","signal","histogram");

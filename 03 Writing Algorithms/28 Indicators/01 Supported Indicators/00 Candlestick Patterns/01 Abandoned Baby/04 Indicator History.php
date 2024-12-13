@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'AbandonedBaby';
 $helperName = 'AbandonedBaby';
+$pyHelperName = 'abandoned_baby';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

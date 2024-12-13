@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'MomentumPercent';
 $helperName = 'MOMP';
+$pyHelperName = 'momp';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

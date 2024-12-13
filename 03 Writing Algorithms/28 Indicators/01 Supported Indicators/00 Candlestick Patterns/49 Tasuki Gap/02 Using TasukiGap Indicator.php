@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'TasukiGap';
 $helperName = 'TasukiGap';
+$pyHelperName = 'tasuki_gap';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

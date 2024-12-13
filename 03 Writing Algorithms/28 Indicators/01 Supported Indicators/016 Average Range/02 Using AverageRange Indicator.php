@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AverageRange';
 $helperName = 'AverageRange';
+$pyHelperName = 'average_range';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

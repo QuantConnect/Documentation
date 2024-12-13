@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'MidPoint';
 $helperName = 'MIDPOINT';
+$pyHelperName = 'midpoint';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

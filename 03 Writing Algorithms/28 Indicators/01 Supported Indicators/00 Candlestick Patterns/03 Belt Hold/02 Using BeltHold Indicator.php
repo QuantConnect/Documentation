@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'BeltHold';
 $helperName = 'BeltHold';
+$pyHelperName = 'belt_hold';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

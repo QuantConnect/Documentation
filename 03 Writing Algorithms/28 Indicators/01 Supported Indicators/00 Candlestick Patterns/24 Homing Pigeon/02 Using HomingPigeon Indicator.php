@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'HomingPigeon';
 $helperName = 'HomingPigeon';
+$pyHelperName = 'homing_pigeon';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

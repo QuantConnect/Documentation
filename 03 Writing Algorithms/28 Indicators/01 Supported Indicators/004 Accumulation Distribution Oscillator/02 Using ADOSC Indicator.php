@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AccumulationDistributionOscillator';
 $helperName = 'ADOSC';
+$pyHelperName = 'adosc';
 $helperArguments = 'symbol, 10, 2';
 $properties = array();
 $pyProperties = array();

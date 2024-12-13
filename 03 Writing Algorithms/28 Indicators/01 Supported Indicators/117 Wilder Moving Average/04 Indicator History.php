@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'WilderMovingAverage';
 $helperName = 'WWMA';
+$pyHelperName = 'wwma';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

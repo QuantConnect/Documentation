@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RateOfChangePercent';
 $helperName = 'ROCP';
+$pyHelperName = 'rocp';
 $helperArguments = 'symbol, 10';
 $properties = array();
 $pyProperties = array();

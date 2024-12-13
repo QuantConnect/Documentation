@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Minimum';
 $helperName = 'MIN';
+$pyHelperName = 'min';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

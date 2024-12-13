@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Counterattack';
 $helperName = 'Counterattack';
+$pyHelperName = 'counterattack';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

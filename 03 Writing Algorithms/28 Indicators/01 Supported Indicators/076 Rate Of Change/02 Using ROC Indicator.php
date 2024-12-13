@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RateOfChange';
 $helperName = 'ROC';
+$pyHelperName = 'roc';
 $helperArguments = 'symbol, 10';
 $properties = array();
 $pyProperties = array();

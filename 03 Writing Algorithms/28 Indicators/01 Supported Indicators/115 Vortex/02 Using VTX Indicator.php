@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Vortex';
 $helperName = 'VTX';
+$pyHelperName = 'vtx';
 $helperArguments = 'symbol, 14';
 $properties = array("PlusVortex","MinusVortex");
 $pyProperties = array("plus_vortex","minus_vortex");

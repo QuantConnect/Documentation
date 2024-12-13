@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'LeastSquaresMovingAverage';
 $helperName = 'LSMA';
+$pyHelperName = 'lsma';
 $helperArguments = 'symbol, 20';
 $properties = array("Intercept","Slope");
 $pyProperties = array("intercept","slope");

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'VariableIndexDynamicAverage';
 $helperName = 'VIDYA';
+$pyHelperName = 'vidya';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

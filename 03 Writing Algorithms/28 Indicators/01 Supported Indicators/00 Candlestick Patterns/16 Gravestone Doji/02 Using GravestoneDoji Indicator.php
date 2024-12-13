@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'GravestoneDoji';
 $helperName = 'GravestoneDoji';
+$pyHelperName = 'gravestone_doji';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

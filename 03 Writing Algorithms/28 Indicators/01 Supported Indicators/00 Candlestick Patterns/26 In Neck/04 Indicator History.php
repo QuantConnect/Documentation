@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'InNeck';
 $helperName = 'InNeck';
+$pyHelperName = 'in_neck';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

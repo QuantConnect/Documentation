@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RelativeStrengthIndex';
 $helperName = 'RSI';
+$pyHelperName = 'rsi';
 $helperArguments = 'symbol, 14';
 $properties = array("AverageLoss","AverageGain");
 $pyProperties = array("average_loss","average_gain");

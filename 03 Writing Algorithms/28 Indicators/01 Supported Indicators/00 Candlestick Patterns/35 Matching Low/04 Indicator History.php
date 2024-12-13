@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'MatchingLow';
 $helperName = 'MatchingLow';
+$pyHelperName = 'matching_low';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

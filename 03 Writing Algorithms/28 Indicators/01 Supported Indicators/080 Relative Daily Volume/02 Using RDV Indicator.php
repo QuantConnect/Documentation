@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RelativeDailyVolume';
 $helperName = 'RDV';
+$pyHelperName = 'rdv';
 $helperArguments = 'symbol, 2';
 $properties = array();
 $pyProperties = array();

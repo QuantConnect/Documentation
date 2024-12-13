@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'SimpleMovingAverage';
 $helperName = 'SMA';
+$pyHelperName = 'sma';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

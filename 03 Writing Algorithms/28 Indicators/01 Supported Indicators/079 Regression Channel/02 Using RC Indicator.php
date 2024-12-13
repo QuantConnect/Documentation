@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RegressionChannel';
 $helperName = 'RC';
+$pyHelperName = 'rc';
 $helperArguments = 'symbol, 20, 2';
 $properties = array("LinearRegression","UpperChannel","LowerChannel","Intercept","Slope");
 $pyProperties = array("linear_regression","upper_channel","lower_channel","intercept","slope");

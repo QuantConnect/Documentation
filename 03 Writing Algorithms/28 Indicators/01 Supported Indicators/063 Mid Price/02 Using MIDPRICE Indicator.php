@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MidPrice';
 $helperName = 'MIDPRICE';
+$pyHelperName = 'midprice';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

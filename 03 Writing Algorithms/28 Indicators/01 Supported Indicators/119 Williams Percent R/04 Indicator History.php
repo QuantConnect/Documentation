@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'WilliamsPercentR';
 $helperName = 'WILR';
+$pyHelperName = 'wilr';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

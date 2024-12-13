@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Sum';
 $helperName = 'SUM';
+$pyHelperName = 'sum';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

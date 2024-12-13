@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'McClellanOscillator';
 $helperName = 'MOSC';
+$pyHelperName = 'mosc';
 $helperArguments = '[symbol, reference]';
 $properties = array("EMAFast","EMASlow","ADDifference");
 $pyProperties = array("ema_fast","ema_slow","ad_difference");

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'DragonflyDoji';
 $helperName = 'DragonflyDoji';
+$pyHelperName = 'dragonfly_doji';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'DojiStar';
 $helperName = 'DojiStar';
+$pyHelperName = 'doji_star';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

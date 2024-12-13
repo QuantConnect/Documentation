@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ChoppinessIndex';
 $helperName = 'CHOP';
+$pyHelperName = 'chop';
 $helperArguments = 'symbol, 14';
 $properties = array();
 $pyProperties = array();

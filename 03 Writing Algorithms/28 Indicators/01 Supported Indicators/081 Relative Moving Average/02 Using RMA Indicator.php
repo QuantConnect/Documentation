@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RelativeMovingAverage';
 $helperName = 'RMA';
+$pyHelperName = 'rma';
 $helperArguments = 'symbol, 20';
 $properties = array("ShortAverage","MediumAverage","LongAverage");
 $pyProperties = array("short_average","medium_average","long_average");

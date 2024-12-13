@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'LongLineCandle';
 $helperName = 'LongLineCandle';
+$pyHelperName = 'long_line_candle';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

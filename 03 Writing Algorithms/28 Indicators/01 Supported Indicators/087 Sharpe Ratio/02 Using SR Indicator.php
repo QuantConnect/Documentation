@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'SharpeRatio';
 $helperName = 'SR';
+$pyHelperName = 'sr';
 $helperArguments = 'symbol, 22, 0.03';
 $properties = array();
 $pyProperties = array();

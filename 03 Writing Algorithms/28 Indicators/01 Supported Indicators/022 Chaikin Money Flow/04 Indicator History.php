@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ChaikinMoneyFlow';
 $helperName = 'CMF';
+$pyHelperName = 'cmf';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

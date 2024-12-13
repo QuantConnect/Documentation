@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'IchimokuKinkoHyo';
 $helperName = 'ICHIMOKU';
+$pyHelperName = 'ichimoku';
 $helperArguments = 'symbol, 9, 26, 17, 52, 26, 26';
 $hasReference = false;
 $isOptionIndicator = false;

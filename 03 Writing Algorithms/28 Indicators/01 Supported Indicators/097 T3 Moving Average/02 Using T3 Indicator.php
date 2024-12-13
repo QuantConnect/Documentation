@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'T3MovingAverage';
 $helperName = 'T3';
+$pyHelperName = 't3';
 $helperArguments = 'symbol, 30, 0.7';
 $properties = array();
 $pyProperties = array();

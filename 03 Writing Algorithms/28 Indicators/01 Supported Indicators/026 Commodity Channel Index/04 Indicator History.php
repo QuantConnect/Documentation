@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'CommodityChannelIndex';
 $helperName = 'CCI';
+$pyHelperName = 'cci';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

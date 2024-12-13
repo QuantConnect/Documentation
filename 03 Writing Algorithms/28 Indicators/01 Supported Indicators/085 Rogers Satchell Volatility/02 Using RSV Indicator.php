@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RogersSatchellVolatility';
 $helperName = 'RSV';
+$pyHelperName = 'rsv';
 $helperArguments = 'symbol, 30';
 $properties = array();
 $pyProperties = array();

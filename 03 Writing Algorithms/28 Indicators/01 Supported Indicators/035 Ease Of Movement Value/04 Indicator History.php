@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'EaseOfMovementValue';
 $helperName = 'EMV';
+$pyHelperName = 'emv';
 $helperArguments = 'symbol, 1, 10000';
 $hasReference = false;
 $isOptionIndicator = false;

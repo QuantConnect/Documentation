@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ZeroLagExponentialMovingAverage';
 $helperName = 'ZLEMA';
+$pyHelperName = 'zlema';
 $helperArguments = 'symbol, 10';
 $properties = array();
 $pyProperties = array();

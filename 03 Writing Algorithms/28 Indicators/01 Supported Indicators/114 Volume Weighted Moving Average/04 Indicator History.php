@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'VolumeWeightedMovingAverage';
 $helperName = 'VWMA';
+$pyHelperName = 'vwma';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

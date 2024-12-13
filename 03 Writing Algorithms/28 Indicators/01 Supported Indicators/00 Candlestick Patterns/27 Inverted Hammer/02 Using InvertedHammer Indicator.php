@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'InvertedHammer';
 $helperName = 'InvertedHammer';
+$pyHelperName = 'inverted_hammer';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

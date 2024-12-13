@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AugenPriceSpike';
 $helperName = 'APS';
+$pyHelperName = 'aps';
 $helperArguments = 'symbol, 3';
 $hasReference = false;
 $isOptionIndicator = false;

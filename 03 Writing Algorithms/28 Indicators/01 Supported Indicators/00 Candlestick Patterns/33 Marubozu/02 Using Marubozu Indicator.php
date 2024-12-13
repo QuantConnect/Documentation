@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Marubozu';
 $helperName = 'Marubozu';
+$pyHelperName = 'marubozu';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

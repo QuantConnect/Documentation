@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'SmoothedOnBalanceVolume';
 $helperName = 'SOBV';
+$pyHelperName = 'sobv';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

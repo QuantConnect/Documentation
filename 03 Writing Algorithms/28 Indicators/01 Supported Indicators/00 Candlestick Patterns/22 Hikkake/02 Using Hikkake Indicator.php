@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Hikkake';
 $helperName = 'Hikkake';
+$pyHelperName = 'hikkake';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

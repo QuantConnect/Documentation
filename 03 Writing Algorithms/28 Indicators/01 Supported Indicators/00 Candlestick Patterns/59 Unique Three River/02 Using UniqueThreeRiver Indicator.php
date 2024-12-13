@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'UniqueThreeRiver';
 $helperName = 'UniqueThreeRiver';
+$pyHelperName = 'unique_three_river';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

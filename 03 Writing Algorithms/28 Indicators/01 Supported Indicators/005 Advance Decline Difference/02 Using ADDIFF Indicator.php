@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineDifference';
 $helperName = 'ADDIFF';
+$pyHelperName = 'addiff';
 $helperArguments = '[symbol, reference]';
 $properties = array();
 $pyProperties = array();

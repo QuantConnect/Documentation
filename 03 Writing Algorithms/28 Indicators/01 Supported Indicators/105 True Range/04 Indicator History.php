@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'TrueRange';
 $helperName = 'TR';
+$pyHelperName = 'tr';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

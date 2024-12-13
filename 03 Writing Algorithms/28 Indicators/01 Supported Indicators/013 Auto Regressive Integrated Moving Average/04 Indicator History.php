@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AutoRegressiveIntegratedMovingAverage';
 $helperName = 'ARIMA';
+$pyHelperName = 'arima';
 $helperArguments = 'symbol, 1, 1, 1, 20';
 $hasReference = false;
 $isOptionIndicator = false;

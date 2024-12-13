@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'DeMarkerIndicator';
 $helperName = 'DEM';
+$pyHelperName = 'dem';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

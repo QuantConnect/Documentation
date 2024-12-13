@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AwesomeOscillator';
 $helperName = 'AO';
+$pyHelperName = 'ao';
 $helperArguments = 'symbol, 10, 20, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

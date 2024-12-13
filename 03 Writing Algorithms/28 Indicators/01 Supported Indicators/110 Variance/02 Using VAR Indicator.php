@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Variance';
 $helperName = 'VAR';
+$pyHelperName = 'var';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

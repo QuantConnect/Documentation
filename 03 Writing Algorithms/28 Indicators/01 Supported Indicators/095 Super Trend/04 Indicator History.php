@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'SuperTrend';
 $helperName = 'STR';
+$pyHelperName = 'str';
 $helperArguments = 'symbol, 20, 2, MovingAverageType.Wilders';
 $hasReference = false;
 $isOptionIndicator = false;

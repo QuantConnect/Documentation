@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'SmoothedOnBalanceVolume';
 $helperName = 'SOBV';
+$pyHelperName = 'sobv';
 $helperArguments = 'symbol, 20';
 $properties = array("OnBalanceVolume");
 $pyProperties = array("on_balance_volume");

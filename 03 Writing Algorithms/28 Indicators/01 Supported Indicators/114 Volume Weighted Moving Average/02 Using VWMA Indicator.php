@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'VolumeWeightedMovingAverage';
 $helperName = 'VWMA';
+$pyHelperName = 'vwma';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

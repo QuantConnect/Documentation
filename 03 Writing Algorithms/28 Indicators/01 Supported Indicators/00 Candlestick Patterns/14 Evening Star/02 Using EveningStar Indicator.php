@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'EveningStar';
 $helperName = 'EveningStar';
+$pyHelperName = 'evening_star';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

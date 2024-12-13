@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'CommodityChannelIndex';
 $helperName = 'CCI';
+$pyHelperName = 'cci';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $properties = array("TypicalPriceAverage","TypicalPriceMeanDeviation");
 $pyProperties = array("typical_price_average","typical_price_mean_deviation");

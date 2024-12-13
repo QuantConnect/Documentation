@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'TargetDownsideDeviation';
 $helperName = 'TDD';
+$pyHelperName = 'tdd';
 $helperArguments = 'symbol, 50';
 $properties = array();
 $pyProperties = array();

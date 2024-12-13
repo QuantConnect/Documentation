@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Engulfing';
 $helperName = 'Engulfing';
+$pyHelperName = 'engulfing';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

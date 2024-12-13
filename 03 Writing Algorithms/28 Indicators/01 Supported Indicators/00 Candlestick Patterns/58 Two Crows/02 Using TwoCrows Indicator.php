@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'TwoCrows';
 $helperName = 'TwoCrows';
+$pyHelperName = 'two_crows';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

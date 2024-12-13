@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Correlation';
 $helperName = 'C';
+$pyHelperName = 'c';
 $helperArguments = 'symbol, reference, 20, correlationType=CorrelationType.Pearson';
 $properties = array();
 $pyProperties = array();

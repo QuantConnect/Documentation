@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'KaufmanEfficiencyRatio';
 $helperName = 'KER';
+$pyHelperName = 'ker';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

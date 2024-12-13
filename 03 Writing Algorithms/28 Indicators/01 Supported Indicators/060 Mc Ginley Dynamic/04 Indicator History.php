@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'McGinleyDynamic';
 $helperName = 'MGD';
+$pyHelperName = 'mgd';
 $helperArguments = 'symbol, 10';
 $hasReference = false;
 $isOptionIndicator = false;

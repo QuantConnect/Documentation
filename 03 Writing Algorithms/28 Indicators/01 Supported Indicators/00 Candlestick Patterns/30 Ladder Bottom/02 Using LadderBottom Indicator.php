@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'LadderBottom';
 $helperName = 'LadderBottom';
+$pyHelperName = 'ladder_bottom';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

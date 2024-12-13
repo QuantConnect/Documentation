@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'SortinoRatio';
 $helperName = 'SORTINO';
+$pyHelperName = 'sortino';
 $helperArguments = 'symbol, 22';
 $properties = array();
 $pyProperties = array();

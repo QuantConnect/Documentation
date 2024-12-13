@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Breakaway';
 $helperName = 'Breakaway';
+$pyHelperName = 'breakaway';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();
