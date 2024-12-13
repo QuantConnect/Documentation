@@ -1,5 +1,5 @@
 <h4>Example <?=$number?>: Universe Selection</h4>
-<p>The following algorithm selects the stocks which is within 5% of the 1-year maximum price among the top 100 liquid stocks. To do so, we make use of <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/maximum">Maximum</a> indicator to do so. Then, we hold the stocks with price &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">EMA</a> &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">SMA</a>, which indicates an upward accelerating trend.</p>
+<p>The following algorithm selects the stocks within 5% of the 1-year maximum price among the top 100 liquid stocks. To do so, we make use of <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/maximum">Maximum</a> indicator to do so. Then, we hold the stocks with price &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">EMA</a> &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">SMA</a>, which indicates an upward accelerating trend.</p>
 <div class="section-example-container">
     <pre class="csharp">public class ManualIndicatorAlgorithm : QCAlgorithm
 {
@@ -51,7 +51,7 @@
             }
 
             // Select to trade if the current price is within 5% of the maximum price of the last year.
-            // Close to maximum price provide evidence of high popularity for the fund to support trend.
+            // Close to the maximum price provides evidence of high popularity for the fund to support the trend.
             if (f.AdjustedPrice &gt;= maximum * 0.95m)
             {
                 selected.Add(f.Symbol);
@@ -67,19 +67,19 @@
         
         foreach (var (symbol, symbolData) in _symbolData)
         {
-            // Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
+            // Buy the stocks whose prices are above the EMA and the EMA is above the SMA, meaning their trend is upward accelerating.
             if (symbolData.IsReady &amp;&amp; Securities[symbol].Price &gt; symbolData.Ema &amp;&amp; symbolData.Ema &gt; symbolData.Sma)
             {
                 symbolsToBuy.Add(symbol);
             }
         }
 
-        // Equally invest into the selected stocks to evenly dissipate the capital risk.
+        // Equally invest in selected stocks to dissipate capital risk evenly.
         var count = symbolsToBuy.Count;
         if (count &gt; 0)
         {
             var targets = symbolsToBuy.Select(symbol =&gt; new PortfolioTarget(symbol, 1m / count)).ToList();
-            // Liquidate the positions that are not in upward trend or not being popular anymore.
+            // Liquidate the positions that are not on an upward trend or are not popular anymore.
             SetHoldings(targets, liquidateExistingHoldings: true);
         }
     }
@@ -116,15 +116,15 @@
             _algorithm = algorithm;
             Symbol = symbol;
 
-            // Create an EMA and a SMA manual indicator for trade signal generation.
+            // Create an EMA and an SMA manual indicator for trade signal generation.
             Ema = new ExponentialMovingAverage(20);
             Sma = new SimpleMovingAverage(20);
 
-            // Warm up the indicators for their readiness to use immediately.
+            // Warm up the indicators to ensure their readiness to use them immediately.
             algorithm.WarmUpIndicator(symbol, Ema, Resolution.Daily);
             algorithm.WarmUpIndicator(symbol, Sma, Resolution.Daily);
 
-            // Subscribe the indicators to update with daily price data for updated trade signal generation.
+            // Subscribe to the indicators to update daily price data for updated trade signal generation.
             algorithm.RegisterIndicator(symbol, Ema, Resolution.Daily);
             algorithm.RegisterIndicator(symbol, Sma, Resolution.Daily);
         }
@@ -165,7 +165,7 @@
         for f in filtered:
             if f.symbol not in self.maximum_by_symbol:
                 self.maximum_by_symbol[f.symbol] = Maximum(252)
-                # Warm up the Maximum indicator for its readiness to use immediately.
+                # Warm up the Maximum indicator to its readiness to use immediately.
                 history = self.history[TradeBar](f.symbol, 252, Resolution.DAILY)
                 for bar in history:
                     self.maximum_by_symbol[f.symbol].update(bar.end_time, bar.close)
@@ -174,41 +174,39 @@
                 self.maximum_by_symbol[f.symbol].update(f.end_time, f.adjusted_price)
 
             # Select to trade if the current price is within 5% of the maximum price of the last year.
-            # Close to maximum price provide evidence of high popularity for the fund to support trend.
+            # Close to the maximum price provides evidence of high popularity for the fund to support the trend.
             if f.adjusted_price &gt;= self.maximum_by_symbol[f.symbol].current.value * 0.95:
                 selected.append(f.symbol)
 
         return selected
                 
     def rebalance(self) -&gt; None:
-        symbols_to_buy = []
+        def to_buy(symbol):
+            security = self.securities[symbol]
+            # Buy the stocks whose prices are above the EMA and the EMA is above the SMA, meaning their trend is upward accelerating.
+            return security.price &gt; security.ema.current.value &gt; security.sma.current.value
 
-        for kvp in self._universe.members:
-            symbol = kvp.key
-            security = kvp.value
-            # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
-            if security.price &gt; security.ema.current.value &gt; security.sma.current.value:
-                symbols_to_buy.append(symbol)
+        symbols_to_buy = [symbol for symbol in self._universe.selected if to_buy(symbol)]
 
-        # Equally invest into the selected stocks to evenly dissipate the capital risk.
+        # Equally invest in the selected stocks to dissipate the capital risk evenly.
         count = len(symbols_to_buy)
         if count &gt; 0:
             targets = [PortfolioTarget(symbol, 1 / count) for symbol in symbols_to_buy]
-            # Liquidate the positions that are not in upward trend or not being popular anymore.
+            # Liquidate the positions that are not on an upward trend or are not popular anymore.
             self.set_holdings(targets, liquidate_existing_holdings=True)
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for added in changes.added_securities:
             symbol = added.symbol
-            # Create an EMA and a SMA manual indicator for trade signal generation.
+            # Create an EMA and an SMA manual indicator for trade signal generation.
             added.ema = ExponentialMovingAverage(20)
             added.sma = SimpleMovingAverage(20)
 
-            # Warm up the indicators for their readiness to use immediately.
+            # Warm up the indicators to ensure their readiness to use them immediately.
             self.warm_up_indicator(symbol, added.ema, Resolution.DAILY)
             self.warm_up_indicator(symbol, added.sma, Resolution.DAILY)
 
-            # Subscribe the indicators to update with daily price data for updated trade signal generation.
+            # Subscribe to the indicators to update daily price data for updated trade signal generation.
             self.register_indicator(symbol, added.ema, Resolution.DAILY)
             self.register_indicator(symbol, added.sma, Resolution.DAILY)
 
