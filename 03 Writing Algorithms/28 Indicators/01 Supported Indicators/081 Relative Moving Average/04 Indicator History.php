@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'RelativeMovingAverage';
 $helperName = 'RMA';
+$pyHelperName = 'rma';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

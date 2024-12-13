@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AutoRegressiveIntegratedMovingAverage';
 $helperName = 'ARIMA';
+$pyHelperName = 'arima';
 $helperArguments = 'symbol, 1, 1, 1, 20';
 $properties = array();
 $pyProperties = array();

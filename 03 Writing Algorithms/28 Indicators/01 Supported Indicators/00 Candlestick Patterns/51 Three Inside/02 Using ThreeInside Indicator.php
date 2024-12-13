@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ThreeInside';
 $helperName = 'ThreeInside';
+$pyHelperName = 'three_inside';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

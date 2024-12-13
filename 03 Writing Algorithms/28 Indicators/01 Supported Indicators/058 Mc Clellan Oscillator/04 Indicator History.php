@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'McClellanOscillator';
 $helperName = 'MOSC';
+$pyHelperName = 'mosc';
 $helperArguments = '[symbol, reference]';
 $hasReference = true;
 $isOptionIndicator = false;

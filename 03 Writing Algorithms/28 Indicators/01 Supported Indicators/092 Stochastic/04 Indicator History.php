@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Stochastic';
 $helperName = 'STO';
+$pyHelperName = 'sto';
 $helperArguments = 'symbol, 20, 10, 20';
 $hasReference = false;
 $isOptionIndicator = false;

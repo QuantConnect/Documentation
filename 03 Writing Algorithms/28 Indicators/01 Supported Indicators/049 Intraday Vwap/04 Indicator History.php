@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'IntradayVwap';
 $helperName = 'VWAP';
+$pyHelperName = 'vwap';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

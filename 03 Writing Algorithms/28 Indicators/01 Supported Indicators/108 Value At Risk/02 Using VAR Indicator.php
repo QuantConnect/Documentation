@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ValueAtRisk';
 $helperName = 'VAR';
+$pyHelperName = 'var';
 $helperArguments = 'symbol, 252, 0.95';
 $properties = array();
 $pyProperties = array();

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'KeltnerChannels';
 $helperName = 'KCH';
+$pyHelperName = 'kch';
 $helperArguments = 'symbol, 20, 2, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

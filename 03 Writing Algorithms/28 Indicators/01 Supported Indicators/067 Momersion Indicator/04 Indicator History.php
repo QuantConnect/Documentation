@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'MomersionIndicator';
 $helperName = 'MomersionIndicator';
+$pyHelperName = 'momersion_indicator';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'FractalAdaptiveMovingAverage';
 $helperName = 'FRAMA';
+$pyHelperName = 'frama';
 $helperArguments = 'symbol, 20, 198';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'StickSandwich';
 $helperName = 'StickSandwich';
+$pyHelperName = 'stick_sandwich';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

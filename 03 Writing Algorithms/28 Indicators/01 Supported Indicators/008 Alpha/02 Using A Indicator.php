@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Alpha';
 $helperName = 'A';
+$pyHelperName = 'a';
 $helperArguments = 'symbol, reference, 20';
 $properties = array();
 $pyProperties = array();

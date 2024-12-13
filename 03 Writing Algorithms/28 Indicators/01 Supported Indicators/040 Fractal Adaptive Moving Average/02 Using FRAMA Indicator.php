@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'FractalAdaptiveMovingAverage';
 $helperName = 'FRAMA';
+$pyHelperName = 'frama';
 $helperArguments = 'symbol, 20, 198';
 $properties = array();
 $pyProperties = array();

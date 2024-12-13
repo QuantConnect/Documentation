@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ImpliedVolatility';
 $helperName = 'IV';
+$pyHelperName = 'iv';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $properties = array("OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");
 $pyProperties = array("option_symbol","risk_free_rate","dividend_yield","price","opposite_price","underlying_price");

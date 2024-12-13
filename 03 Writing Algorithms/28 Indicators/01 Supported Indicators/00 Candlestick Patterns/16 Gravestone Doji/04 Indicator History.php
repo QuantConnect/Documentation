@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'GravestoneDoji';
 $helperName = 'GravestoneDoji';
+$pyHelperName = 'gravestone_doji';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'InternalBarStrength';
 $helperName = 'IBS';
+$pyHelperName = 'ibs';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

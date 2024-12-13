@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AugenPriceSpike';
 $helperName = 'APS';
+$pyHelperName = 'aps';
 $helperArguments = 'symbol, 3';
 $properties = array();
 $pyProperties = array();

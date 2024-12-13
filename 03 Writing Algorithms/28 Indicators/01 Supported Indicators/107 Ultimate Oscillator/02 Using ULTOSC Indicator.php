@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'UltimateOscillator';
 $helperName = 'ULTOSC';
+$pyHelperName = 'ultosc';
 $helperArguments = 'symbol, 5, 10, 20';
 $properties = array();
 $pyProperties = array();

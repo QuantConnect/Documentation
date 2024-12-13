@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'NormalizedAverageTrueRange';
 $helperName = 'NATR';
+$pyHelperName = 'natr';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Theta';
 $helperName = 'T';
+$pyHelperName = 't';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $hasReference = false;
 $isOptionIndicator = true;

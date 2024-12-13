@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'WilderAccumulativeSwingIndex';
 $helperName = 'ASI';
+$pyHelperName = 'asi';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

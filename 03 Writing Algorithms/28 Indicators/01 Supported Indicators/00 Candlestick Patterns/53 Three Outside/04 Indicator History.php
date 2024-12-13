@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ThreeOutside';
 $helperName = 'ThreeOutside';
+$pyHelperName = 'three_outside';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

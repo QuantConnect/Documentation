@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'RegressionChannel';
 $helperName = 'RC';
+$pyHelperName = 'rc';
 $helperArguments = 'symbol, 20, 2';
 $hasReference = false;
 $isOptionIndicator = false;

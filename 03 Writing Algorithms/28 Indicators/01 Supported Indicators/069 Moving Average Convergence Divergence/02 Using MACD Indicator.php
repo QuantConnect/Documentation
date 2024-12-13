@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MovingAverageConvergenceDivergence';
 $helperName = 'MACD';
+$pyHelperName = 'macd';
 $helperArguments = 'symbol, 12, 26, 9, MovingAverageType.Exponential';
 $properties = array("Fast","Slow","Signal","Histogram");
 $pyProperties = array("fast","slow","signal","histogram");

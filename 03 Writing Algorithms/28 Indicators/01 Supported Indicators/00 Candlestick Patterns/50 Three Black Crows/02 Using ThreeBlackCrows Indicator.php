@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ThreeBlackCrows';
 $helperName = 'ThreeBlackCrows';
+$pyHelperName = 'three_black_crows';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

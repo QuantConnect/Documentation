@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Stochastic';
 $helperName = 'STO';
+$pyHelperName = 'sto';
 $helperArguments = 'symbol, 20, 10, 20';
 $properties = array("FastStoch","StochK","StochD");
 $pyProperties = array("fast_stoch","stoch_k","stoch_d");

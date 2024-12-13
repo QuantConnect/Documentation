@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'RelativeVigorIndex';
 $helperName = 'RVI';
+$pyHelperName = 'rvi';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

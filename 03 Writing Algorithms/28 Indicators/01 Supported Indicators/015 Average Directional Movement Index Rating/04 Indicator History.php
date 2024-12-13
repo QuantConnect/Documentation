@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AverageDirectionalMovementIndexRating';
 $helperName = 'ADXR';
+$pyHelperName = 'adxr';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineDifference';
 $helperName = 'ADDIFF';
+$pyHelperName = 'addiff';
 $helperArguments = '[symbol, reference]';
 $hasReference = true;
 $isOptionIndicator = false;

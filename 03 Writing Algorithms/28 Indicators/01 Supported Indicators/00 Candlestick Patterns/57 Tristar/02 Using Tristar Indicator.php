@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Tristar';
 $helperName = 'Tristar';
+$pyHelperName = 'tristar';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'MeanAbsoluteDeviation';
 $helperName = 'MAD';
+$pyHelperName = 'mad';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

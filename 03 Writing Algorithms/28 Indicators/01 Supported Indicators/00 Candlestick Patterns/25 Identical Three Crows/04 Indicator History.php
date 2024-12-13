@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'IdenticalThreeCrows';
 $helperName = 'IdenticalThreeCrows';
+$pyHelperName = 'identical_three_crows';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

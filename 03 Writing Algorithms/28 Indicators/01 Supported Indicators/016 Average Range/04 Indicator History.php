@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AverageRange';
 $helperName = 'AverageRange';
+$pyHelperName = 'average_range';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

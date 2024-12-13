@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ForceIndex';
 $helperName = 'FI';
+$pyHelperName = 'fi';
 $helperArguments = 'symbol, 13';
 $hasReference = false;
 $isOptionIndicator = false;

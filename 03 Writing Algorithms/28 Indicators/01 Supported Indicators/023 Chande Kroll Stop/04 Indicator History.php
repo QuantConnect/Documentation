@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ChandeKrollStop';
 $helperName = 'CKS';
+$pyHelperName = 'cks';
 $helperArguments = 'symbol, 10, 1, 9';
 $hasReference = false;
 $isOptionIndicator = false;

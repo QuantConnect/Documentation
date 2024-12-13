@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'BollingerBands';
 $helperName = 'BB';
+$pyHelperName = 'bb';
 $helperArguments = 'symbol, 30, 2';
 $hasReference = false;
 $isOptionIndicator = false;

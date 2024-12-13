@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'RateOfChangePercent';
 $helperName = 'ROCP';
+$pyHelperName = 'rocp';
 $helperArguments = 'symbol, 10';
 $hasReference = false;
 $isOptionIndicator = false;

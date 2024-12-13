@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'StalledPattern';
 $helperName = 'StalledPattern';
+$pyHelperName = 'stalled_pattern';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

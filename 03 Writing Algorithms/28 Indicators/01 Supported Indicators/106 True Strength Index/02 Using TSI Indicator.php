@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'TrueStrengthIndex';
 $helperName = 'TSI';
+$pyHelperName = 'tsi';
 $helperArguments = 'symbol, 25, 13, 7, MovingAverageType.Exponential';
 $properties = array("Signal");
 $pyProperties = array("signal");

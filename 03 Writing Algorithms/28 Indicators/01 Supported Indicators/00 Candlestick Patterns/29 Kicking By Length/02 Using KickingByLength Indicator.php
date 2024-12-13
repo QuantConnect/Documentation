@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'KickingByLength';
 $helperName = 'KickingByLength';
+$pyHelperName = 'kicking_by_length';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

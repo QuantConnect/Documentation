@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Beta';
 $helperName = 'B';
+$pyHelperName = 'b';
 $helperArguments = 'symbol, reference, 20';
 $properties = array();
 $pyProperties = array();

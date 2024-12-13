@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'VariableIndexDynamicAverage';
 $helperName = 'VIDYA';
+$pyHelperName = 'vidya';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

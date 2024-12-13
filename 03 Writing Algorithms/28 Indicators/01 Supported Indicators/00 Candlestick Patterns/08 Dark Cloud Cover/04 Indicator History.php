@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'DarkCloudCover';
 $helperName = 'DarkCloudCover';
+$pyHelperName = 'dark_cloud_cover';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

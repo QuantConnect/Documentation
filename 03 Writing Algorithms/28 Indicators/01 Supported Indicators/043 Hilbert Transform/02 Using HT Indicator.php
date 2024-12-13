@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'HilbertTransform';
 $helperName = 'HT';
+$pyHelperName = 'ht';
 $helperArguments = 'symbol, 7, 0.635, 0.338';
 $properties = array("InPhase","Quadrature");
 $pyProperties = array("in_phase","quadrature");

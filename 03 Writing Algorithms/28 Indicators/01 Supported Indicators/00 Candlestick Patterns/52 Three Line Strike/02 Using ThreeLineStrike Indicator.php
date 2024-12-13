@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ThreeLineStrike';
 $helperName = 'ThreeLineStrike';
+$pyHelperName = 'three_line_strike';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

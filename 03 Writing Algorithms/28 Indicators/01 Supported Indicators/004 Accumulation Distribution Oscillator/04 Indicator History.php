@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AccumulationDistributionOscillator';
 $helperName = 'ADOSC';
+$pyHelperName = 'adosc';
 $helperArguments = 'symbol, 10, 2';
 $hasReference = false;
 $isOptionIndicator = false;

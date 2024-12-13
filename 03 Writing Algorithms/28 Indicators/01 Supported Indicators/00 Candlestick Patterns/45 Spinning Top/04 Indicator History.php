@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'SpinningTop';
 $helperName = 'SpinningTop';
+$pyHelperName = 'spinning_top';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

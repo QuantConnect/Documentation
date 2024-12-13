@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ChandeMomentumOscillator';
 $helperName = 'CMO';
+$pyHelperName = 'cmo';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

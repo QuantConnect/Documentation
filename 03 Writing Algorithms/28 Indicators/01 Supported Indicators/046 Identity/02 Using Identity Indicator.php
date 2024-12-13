@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Identity';
 $helperName = 'Identity';
+$pyHelperName = 'identity';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

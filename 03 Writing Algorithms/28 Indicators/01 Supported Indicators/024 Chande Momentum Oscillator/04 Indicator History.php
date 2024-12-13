@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ChandeMomentumOscillator';
 $helperName = 'CMO';
+$pyHelperName = 'cmo';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ShootingStar';
 $helperName = 'ShootingStar';
+$pyHelperName = 'shooting_star';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

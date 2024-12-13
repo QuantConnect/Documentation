@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'TasukiGap';
 $helperName = 'TasukiGap';
+$pyHelperName = 'tasuki_gap';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

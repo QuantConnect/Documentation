@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Counterattack';
 $helperName = 'Counterattack';
+$pyHelperName = 'counterattack';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

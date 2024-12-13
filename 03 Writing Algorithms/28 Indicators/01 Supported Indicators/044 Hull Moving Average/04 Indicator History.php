@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'HullMovingAverage';
 $helperName = 'HMA';
+$pyHelperName = 'hma';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

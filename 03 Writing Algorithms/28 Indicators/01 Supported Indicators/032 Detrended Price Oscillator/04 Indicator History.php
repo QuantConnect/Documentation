@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'DetrendedPriceOscillator';
 $helperName = 'DPO';
+$pyHelperName = 'dpo';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

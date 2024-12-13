@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'InvertedHammer';
 $helperName = 'InvertedHammer';
+$pyHelperName = 'inverted_hammer';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

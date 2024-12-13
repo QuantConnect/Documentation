@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AverageTrueRange';
 $helperName = 'ATR';
+$pyHelperName = 'atr';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $properties = array("TrueRange");
 $pyProperties = array("True_range");

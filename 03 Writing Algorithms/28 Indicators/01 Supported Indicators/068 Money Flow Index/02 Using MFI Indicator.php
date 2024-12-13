@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MoneyFlowIndex';
 $helperName = 'MFI';
+$pyHelperName = 'mfi';
 $helperArguments = 'symbol, 20';
 $properties = array("PositiveMoneyFlow","NegativeMoneyFlow");
 $pyProperties = array("positive_money_flow","negative_money_flow");

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'FisherTransform';
 $helperName = 'FISH';
+$pyHelperName = 'fish';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

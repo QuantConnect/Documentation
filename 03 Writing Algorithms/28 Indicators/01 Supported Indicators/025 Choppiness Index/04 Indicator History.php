@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ChoppinessIndex';
 $helperName = 'CHOP';
+$pyHelperName = 'chop';
 $helperArguments = 'symbol, 14';
 $hasReference = false;
 $isOptionIndicator = false;

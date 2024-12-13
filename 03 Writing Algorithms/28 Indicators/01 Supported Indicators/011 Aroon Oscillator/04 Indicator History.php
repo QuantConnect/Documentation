@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AroonOscillator';
 $helperName = 'AROON';
+$pyHelperName = 'aroon';
 $helperArguments = 'symbol, 10, 20';
 $hasReference = false;
 $isOptionIndicator = false;

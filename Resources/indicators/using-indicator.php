@@ -52,19 +52,19 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=strtolower($helperName)?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+        self._<?=$pyHelperName?> = self.<?=$helperPrefix?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
-        if self._<?=strtolower($helperName)?>.is_ready:
-            # The current value of self._<?=strtolower($helperName)?> is represented by self._<?=strtolower($helperName)?>.current.value
-            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self._<?=strtolower($helperName)?>.current.value)
-            <? if (count($pyProperties) + count($otherPyProperties) > 0) { ?># Plot all attributes of self._<?=strtolower($helperName)?><? } ?>
+        if self._<?=$pyHelperName?>.is_ready:
+            # The current value of self._<?=$pyHelperName?> is represented by self._<?=$pyHelperName?>.current.value
+            self.plot("<?=$typeName?>", "<?=$pyHelperName?>", self._<?=$pyHelperName?>.current.value)
+            <? if (count($pyProperties) + count($otherPyProperties) > 0) { ?># Plot all attributes of self._<?=$pyHelperName?><? } ?>
 
 <? foreach ($pyProperties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=strtolower($helperName)?>.<?=$property?>.current.value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=$pyHelperName?>.<?=$property?>.current.value)
 <? } ?>
 <? foreach ($otherPyProperties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=strtolower($helperName)?>.<?=$property?>)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=$pyHelperName?>.<?=$property?>)
 <? } ?>
 </pre>
 </div>
@@ -119,7 +119,7 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.HOUR)
 <?}?>
-        self._<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=strtolower($helperName)?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
+        self._<?=$pyHelperName?> = self.<?=$helperPrefix?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
 </pre>
 </div>
 <? } ?>
@@ -201,34 +201,34 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self._<?=$pyHelperName?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._<?=strtolower($helperName)?>.update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self._symbol, bar.end_time, bar.close)<? } else { ?><?=$updateParameterValue?><? } ?>)
+            self._<?=$pyHelperName?>.update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self._symbol, bar.end_time, bar.close)<? } else { ?><?=$updateParameterValue?><? } ?>)
 <? if($hasReference) { ?>
         bar = slice.bars.get(self.referece)
         if bar:
-            self._<?=strtolower($helperName)?>.update(<?=$updateParameterValue?>)
+            self._<?=$pyHelperName?>.update(<?=$updateParameterValue?>)
 <?} else if($isOptionIndicator) { ?>
         bar = slice.quote_bars.get(self.option)
         if bar:
-            self._<?=strtolower($helperName)?>.update(IndicatorDataPoint(self.option, bar.end_time, bar.close))
+            self._<?=$pyHelperName?>.update(IndicatorDataPoint(self.option, bar.end_time, bar.close))
         bar = slice.quote_bars.get(self.mirror_option)
         if bar:
-            self._<?=strtolower($helperName)?>.update(IndicatorDataPoint(self.mirror_option, bar.end_time, bar.close))
+            self._<?=$pyHelperName?>.update(IndicatorDataPoint(self.mirror_option, bar.end_time, bar.close))
 <?}?>
-        if self._<?=strtolower($helperName)?>.is_ready:
-            # The current value of self._<?=strtolower($helperName)?> is represented by self._<?=strtolower($helperName)?>.current.value
-            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self._<?=strtolower($helperName)?>.current.value)
-            <? if (count($pyProperties) + count($otherPyProperties) > 0) { ?># Plot all attributes of self._<?=strtolower($helperName)?><? } ?>
+        if self._<?=$pyHelperName?>.is_ready:
+            # The current value of self._<?=$pyHelperName?> is represented by self._<?=$pyHelperName?>.current.value
+            self.plot("<?=$typeName?>", "<?=$pyHelperName?>", self._<?=$pyHelperName?>.current.value)
+            <? if (count($pyProperties) + count($otherPyProperties) > 0) { ?># Plot all attributes of self._<?=$pyHelperName?><? } ?>
 
 <? foreach ($pyProperties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=strtolower($helperName)?>.<?=$property?>.current.value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=$pyHelperName?>.<?=$property?>.current.value)
 <? } ?>
 <? foreach ($otherPyProperties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=strtolower($helperName)?>.<?=$property?>)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=$pyHelperName?>.<?=$property?>)
 <? } ?>
 </pre>
 </div>
@@ -293,23 +293,23 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
-        self.register_indicator(self._symbol, self._<?=strtolower($helperName)?>, Resolution.DAILY)
+        self._<?=$pyHelperName?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self.register_indicator(self._symbol, self._<?=$pyHelperName?>, Resolution.DAILY)
 <? if($hasReference) { ?>
-        self.register_indicator(reference, self._<?=strtolower($helperName)?>, Resolution.DAILY)
+        self.register_indicator(reference, self._<?=$pyHelperName?>, Resolution.DAILY)
 <?} else if($isOptionIndicator) { ?>
-        self.register_indicator(self.option, self._<?=strtolower($helperName)?>, Resolution.DAILY)
-        self.register_indicator(self.mirror_option, self._<?=strtolower($helperName)?>, Resolution.DAILY)
+        self.register_indicator(self.option, self._<?=$pyHelperName?>, Resolution.DAILY)
+        self.register_indicator(self.mirror_option, self._<?=$pyHelperName?>, Resolution.DAILY)
 <?}?>
 
     def on_data(self, slice: Slice) -> None:
-        if self._<?=strtolower($helperName)?>.is_ready:
-            # The current value of self._<?=strtolower($helperName)?> is represented by self._<?=strtolower($helperName)?>.current.value
-            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self._<?=strtolower($helperName)?>.current.value)
-            <? if (count($pyProperties) > 0) { ?># Plot all attributes of self._<?=strtolower($helperName)?><? } ?>
+        if self._<?=$pyHelperName?>.is_ready:
+            # The current value of self._<?=$pyHelperName?> is represented by self._<?=$pyHelperName?>.current.value
+            self.plot("<?=$typeName?>", "<?=$pyHelperName?>", self._<?=$pyHelperName?>.current.value)
+            <? if (count($pyProperties) > 0) { ?># Plot all attributes of self._<?=$pyHelperName?><? } ?>
 
 <? foreach ($pyProperties as $property) { ?>
-            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=strtolower($helperName)?>.<?=$property?>.current.value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self._<?=$pyHelperName?>.<?=$property?>.current.value)
 <? } ?>
 </pre>
 </div>

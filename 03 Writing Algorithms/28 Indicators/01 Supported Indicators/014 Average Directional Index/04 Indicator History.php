@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AverageDirectionalIndex';
 $helperName = 'ADX';
+$pyHelperName = 'adx';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

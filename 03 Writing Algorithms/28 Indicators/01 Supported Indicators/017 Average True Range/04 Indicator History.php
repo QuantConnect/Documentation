@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AverageTrueRange';
 $helperName = 'ATR';
+$pyHelperName = 'atr';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'SchaffTrendCycle';
 $helperName = 'STC';
+$pyHelperName = 'stc';
 $helperArguments = 'symbol, 5, 10, 20, MovingAverageType.Exponential';
 $properties = array();
 $pyProperties = array();

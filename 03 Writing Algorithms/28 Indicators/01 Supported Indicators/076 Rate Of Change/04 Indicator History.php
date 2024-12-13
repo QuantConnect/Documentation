@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'RateOfChange';
 $helperName = 'ROC';
+$pyHelperName = 'roc';
 $helperArguments = 'symbol, 10';
 $hasReference = false;
 $isOptionIndicator = false;

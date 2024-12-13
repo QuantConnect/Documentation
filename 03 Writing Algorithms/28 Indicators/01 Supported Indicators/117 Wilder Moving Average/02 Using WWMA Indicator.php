@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'WilderMovingAverage';
 $helperName = 'WWMA';
+$pyHelperName = 'wwma';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

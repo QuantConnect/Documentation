@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'KickingByLength';
 $helperName = 'KickingByLength';
+$pyHelperName = 'kicking_by_length';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

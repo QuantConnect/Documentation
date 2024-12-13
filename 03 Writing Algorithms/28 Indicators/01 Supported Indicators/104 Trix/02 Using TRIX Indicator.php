@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Trix';
 $helperName = 'TRIX';
+$pyHelperName = 'trix';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

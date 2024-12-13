@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'LinearWeightedMovingAverage';
 $helperName = 'LWMA';
+$pyHelperName = 'lwma';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

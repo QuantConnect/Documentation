@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'HeikinAshi';
 $helperName = 'HeikinAshi';
+$pyHelperName = 'heikin_ashi';
 $helperArguments = 'symbol';
 $properties = array("Open","High","Low","Close","Volume");
 $pyProperties = array("open","high","low","close","volume");

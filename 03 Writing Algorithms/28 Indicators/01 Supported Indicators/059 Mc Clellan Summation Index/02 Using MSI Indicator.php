@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'McClellanSummationIndex';
 $helperName = 'MSI';
+$pyHelperName = 'msi';
 $helperArguments = '[symbol, reference]';
 $properties = array("McClellanOscillator");
 $pyProperties = array("mc_clellan_oscillator");

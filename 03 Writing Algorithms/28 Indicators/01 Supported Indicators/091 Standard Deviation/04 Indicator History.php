@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'StandardDeviation';
 $helperName = 'STD';
+$pyHelperName = 'std';
 $helperArguments = 'symbol, 22';
 $hasReference = false;
 $isOptionIndicator = false;

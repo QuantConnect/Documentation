@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'HilbertTransform';
 $helperName = 'HT';
+$pyHelperName = 'ht';
 $helperArguments = 'symbol, 7, 0.635, 0.338';
 $hasReference = false;
 $isOptionIndicator = false;

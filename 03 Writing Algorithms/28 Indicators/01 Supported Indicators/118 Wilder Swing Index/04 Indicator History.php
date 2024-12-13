@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'WilderSwingIndex';
 $helperName = 'SI';
+$pyHelperName = 'si';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

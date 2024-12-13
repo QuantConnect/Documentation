@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'DarkCloudCover';
 $helperName = 'DarkCloudCover';
+$pyHelperName = 'dark_cloud_cover';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

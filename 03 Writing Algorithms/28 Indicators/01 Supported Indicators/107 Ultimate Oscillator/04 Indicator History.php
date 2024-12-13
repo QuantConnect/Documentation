@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'UltimateOscillator';
 $helperName = 'ULTOSC';
+$pyHelperName = 'ultosc';
 $helperArguments = 'symbol, 5, 10, 20';
 $hasReference = false;
 $isOptionIndicator = false;

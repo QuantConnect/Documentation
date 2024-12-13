@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'MatHold';
 $helperName = 'MatHold';
+$pyHelperName = 'mat_hold';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

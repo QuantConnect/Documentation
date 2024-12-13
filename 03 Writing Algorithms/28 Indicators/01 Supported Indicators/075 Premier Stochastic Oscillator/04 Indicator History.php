@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'PremierStochasticOscillator';
 $helperName = 'PremierStochasticOscillator';
+$pyHelperName = 'premier_stochastic_oscillator';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

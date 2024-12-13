@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'DeMarkerIndicator';
 $helperName = 'DEM';
+$pyHelperName = 'dem';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $properties = array();
 $pyProperties = array();

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'FilteredIdentity';
 $helperName = 'FilteredIdentity';
+$pyHelperName = 'filtered_identity';
 $helperArguments = 'symbol, filter = lambda x: x.Close > x.Open';
 $properties = array();
 $pyProperties = array();

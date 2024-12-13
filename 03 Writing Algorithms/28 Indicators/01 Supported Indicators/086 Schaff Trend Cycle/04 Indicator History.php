@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'SchaffTrendCycle';
 $helperName = 'STC';
+$pyHelperName = 'stc';
 $helperArguments = 'symbol, 5, 10, 20, MovingAverageType.Exponential';
 $hasReference = false;
 $isOptionIndicator = false;

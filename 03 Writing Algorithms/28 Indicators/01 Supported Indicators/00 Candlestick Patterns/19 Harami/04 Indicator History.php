@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Harami';
 $helperName = 'Harami';
+$pyHelperName = 'harami';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

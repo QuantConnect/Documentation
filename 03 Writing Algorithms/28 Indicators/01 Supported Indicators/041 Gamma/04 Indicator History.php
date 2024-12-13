@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Gamma';
 $helperName = 'G';
+$pyHelperName = 'g';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $hasReference = false;
 $isOptionIndicator = true;

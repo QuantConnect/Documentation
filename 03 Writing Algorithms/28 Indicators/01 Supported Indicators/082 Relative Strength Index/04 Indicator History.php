@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'RelativeStrengthIndex';
 $helperName = 'RSI';
+$pyHelperName = 'rsi';
 $helperArguments = 'symbol, 14';
 $hasReference = false;
 $isOptionIndicator = false;

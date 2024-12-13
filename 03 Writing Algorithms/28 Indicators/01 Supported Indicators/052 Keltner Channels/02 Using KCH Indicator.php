@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'KeltnerChannels';
 $helperName = 'KCH';
+$pyHelperName = 'kch';
 $helperArguments = 'symbol, 20, 2, MovingAverageType.Simple';
 $properties = array("MiddleBand","UpperBand","LowerBand","AverageTrueRange");
 $pyProperties = array("middle_band","upper_band","lower_band","average_True_range");

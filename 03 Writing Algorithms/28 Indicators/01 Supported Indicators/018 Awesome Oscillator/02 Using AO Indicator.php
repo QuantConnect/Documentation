@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AwesomeOscillator';
 $helperName = 'AO';
+$pyHelperName = 'ao';
 $helperArguments = 'symbol, 10, 20, MovingAverageType.Simple';
 $properties = array("SlowAo","FastAo");
 $pyProperties = array("slow_ao","fast_ao");

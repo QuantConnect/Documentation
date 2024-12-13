@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ConcealedBabySwallow';
 $helperName = 'ConcealedBabySwallow';
+$pyHelperName = 'concealed_baby_swallow';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
