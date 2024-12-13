@@ -1,10 +1,11 @@
-<p>The following examples demonstrate some common practices for using shortable provider.</p>
+<p>The following examples demonstrate some common practices for using a shortable provider.</p>
 
 <h4>Example 1: Sizing By Shortable Quantity</h4>
-<p>The following algorithm trades arbitrage of price divergence of class A and class C of Google stocks using cointegration analysis. However, the position sizing maybe limited by the available quantity to be shorted of the brokerage, breaking the paired trade. Thus, we need to make use of the <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> method of the shortable provider to calculate the quantity.</p>
+<p>The following algorithm trades arbitrage of price divergence of class A and class C of Google stocks using cointegration analysis. However, the position sizing may be limited by the available quantity to be shorted by the brokerage, breaking the paired trade. Thus, we need to make use of the <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> method of the shortable provider to calculate the quantity.</p>
 <div class="section-example-container">
     <pre class="csharp">using Accord.Statistics;
 using MathNet.Numerics.LinearRegression;
+using QuantConnect.Data.Shortable;
 
 public class ShortableProviderAlgorithm : QCAlgorithm
 {
@@ -26,7 +27,7 @@ public class ShortableProviderAlgorithm : QCAlgorithm
         var goog2 = AddEquity("GOOG", Resolution.Daily);
         _goog1 = goog1.Symbol;          // Class A
         _goog2 = goog2.Symbol;          // Class C
-        // Set the shortable providers, to realistically simulate the available shares ot trade of the brokerage.
+        // Set the shortable providers to simulate the available shares to trade realistically. 
         goog1.SetShortableProvider(new InteractiveBrokersShortableProvider());
         goog2.SetShortableProvider(new InteractiveBrokersShortableProvider());
 
@@ -146,7 +147,7 @@ public class ShortableProviderAlgorithm : QCAlgorithm
         var adfStatistic = beta / Measures.StandardError(differences);
 
         // Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
-        // Which means no unit root for difference series and the residuals are stationary.
+        // This means no unit root exists for the difference series, and the residuals are stationary.
         return adfStatistic &lt;= -3.45d;
     }
 }</pre>
@@ -158,8 +159,6 @@ class ShortableProviderAlgorithm(QCAlgorithm):
     threshold = 0
     # Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
     coefficients = [0, 0]
-    # Store the price series of each symbol for cointegration calculation.
-    windows = {}
 
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
@@ -170,18 +169,18 @@ class ShortableProviderAlgorithm(QCAlgorithm):
         goog2 = self.add_equity("GOOG", Resolution.DAILY)         # Class C
         self.goog1 = goog1.symbol
         self.goog2 = goog2.symbol
-        # Set the shortable providers, to realistically simulate the available shares ot trade of the brokerage. 
+        # Set the shortable providers to simulate the available shares to trade realistically. 
         goog1.set_shortable_provider(InteractiveBrokersShortableProvider())
         goog2.set_shortable_provider(InteractiveBrokersShortableProvider())
 
         # Use rolling windows to save the price data for cointegration analysis.
-        self.windows[self.goog1] = RollingWindow[float](252)
-        self.windows[self.goog2] = RollingWindow[float](252)
+        goog1.window = RollingWindow[float](252)
+        goog2.window = RollingWindow[float](252)
         # Warm up the rolling windows.
         history = self.history[TradeBar]([self.goog1, self.goog2], 252, Resolution.DAILY)
         for bar in history:
-            self.windows[self.goog1].add(bar[self.goog1].close)
-            self.windows[self.goog2].add(bar[self.goog2].close)
+            goog1.window.add(bar[self.goog1].close)
+            goog2.window.add(bar[self.goog2].close)
 
         # Adjust the cointegration factor between the 2 classes' monthly price series.
         self.schedule.on(
@@ -196,8 +195,8 @@ class ShortableProviderAlgorithm(QCAlgorithm):
         bar2 = slice.bars.get(self.goog2)
         if bar1 and bar2:
             # Update the rolling windows for cointegration analysis.
-            self.windows[self.goog1].add(bar1.close)
-            self.windows[self.goog2].add(bar2.close)
+            self.securities[self.goog1].window.add(bar1.close)
+            self.securities[self.goog2].window.add(bar2.close)
 
             # Calculate the current cointegrated series spread.
             residual = self.coefficients[0] * bar2.close + self.coefficients[1] - bar1.close
@@ -225,8 +224,8 @@ class ShortableProviderAlgorithm(QCAlgorithm):
                 
     def calculate_cointegration(self) -&gt; None:
         # Lag direction is unimportant; it is just a sign flip in the linear regression, so we don't need to flip the window order.
-        y = np.array(list(self.windows[self.goog1])).reshape(-1, 1)
-        x = np.array(list(self.windows[self.goog2])).reshape(-1, 1)
+        y = np.array(list(self.securities[self.goog1].window)).reshape(-1, 1)
+        x = np.array(list(self.securities[self.goog2].window)).reshape(-1, 1)
 
         # Perform Linear Regression on both price series to investigate their relationship.
         lr = LinearRegression().fit(x, y)
@@ -238,7 +237,7 @@ class ShortableProviderAlgorithm(QCAlgorithm):
 
         # Check if the residuals are stationary using the augmented Dickey-Fuller test.
         # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
-        # Which means no unit root for difference series and the residuals are stationary.
+        # This means no unit root exists for the difference series, and the residuals are stationary.
         adf_reject = adfuller(residuals)[0] &lt;= -3.45
         if adf_reject:
             # If cointegrated, update the positional sizing ratio and the spread threshold of the trade trigger.
