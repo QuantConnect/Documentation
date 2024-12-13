@@ -53,26 +53,26 @@
         self._mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 225, datetime(2024, 7, 12))
         self.add_option_contract(self._mirror_option, Resolution.DAILY)
 <?}?>
-        <?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=strtolower($helperName)?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+        <?=$pyHelperName?> = self.<?=$helperPrefix?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 <? if($hasReference) { ?>
-        count_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self._reference], 100, Resolution.MINUTE)
-        timedelta_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self._reference], timedelta(days=10), Resolution.MINUTE)
-        time_period_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self._reference], datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
+        count_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._reference], 100, Resolution.MINUTE)
+        timedelta_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._reference], timedelta(days=10), Resolution.MINUTE)
+        time_period_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._reference], datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
 <? } else if($isOptionIndicator) { ?>
-        count_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self._option, self._mirror_option], 100, Resolution.MINUTE)
-        timedelta_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self._option, self._mirror_option], timedelta(days=10), Resolution.MINUTE)
-        time_period_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, [self._symbol, self._option, self._mirror_option], datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
+        count_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._option, self._mirror_option], 100, Resolution.MINUTE)
+        timedelta_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._option, self._mirror_option], timedelta(days=10), Resolution.MINUTE)
+        time_period_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._option, self._mirror_option], datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
 <? } else { ?>
-        count_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, self._symbol, 100, Resolution.MINUTE)
-        timedelta_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, self._symbol, timedelta(days=10), Resolution.MINUTE)
-        time_period_indicator_history = self.indicator_history(<?=strtolower($helperName)?>, self._symbol, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
+        count_indicator_history = self.indicator_history(<?=$pyHelperName?>, self._symbol, 100, Resolution.MINUTE)
+        timedelta_indicator_history = self.indicator_history(<?=$pyHelperName?>, self._symbol, timedelta(days=10), Resolution.MINUTE)
+        time_period_indicator_history = self.indicator_history(<?=$pyHelperName?>, self._symbol, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
 <? } ?></pre>
 </div>
 
 <p>To make the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method update the indicator with an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields'>alternative price field</a> instead of the close (or mid-price) of each bar, pass a <code>selector</code> argument.</p>
 <div class="section-example-container">
     <pre class="csharp">var indicatorHistory = IndicatorHistory(<?=strtolower($helperName)?>, 100, Resolution.Minute, (bar) =&gt; ((TradeBar)bar).High);</pre>
-    <pre class="python">indicator_history = self.indicator_history(<?=strtolower($helperName)?>, 100, Resolution.MINUTE, lambda bar: bar.high)
+    <pre class="python">indicator_history = self.indicator_history(<?=$pyHelperName?>, 100, Resolution.MINUTE, lambda bar: bar.high)
 indicator_history_df = indicator_history.data_frame</pre>
 </div>
 
