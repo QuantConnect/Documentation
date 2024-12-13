@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for implementing custom indicators.</p>
 
 <h4>Example 1: Custom Money Flow Index</h4>
-<p>The following algorithm implements a custom Money Flow Index indicator. Using the average money flow direction, we estimates the supply-demand balance of SPY and trade accordingly.</p>
+<p>The following algorithm implements a custom Money Flow Index indicator. We estimate the supply-demand balance of SPY and trade using the average money flow direction.</p>
 <div class="section-example-container">
     <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
 {
@@ -13,13 +13,13 @@
         SetStartDate(2022, 1, 1);
         SetEndDate(2022, 6, 1);
 
-        // Request daily SPY data for feeding the indicators to generate trade signals and trade.
+        // Request daily SPY data to feed the indicators to generate trade signals and trade.
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
 
-        // Create a custom money flow index to generate trade signal.
+        // Create a custom money flow index to generate a trade signal.
         _customMfi = new CustomMoneyFlowIndex(20);
 
-        // Warm up for immediately usage of indicators.
+        // Warm up for immediate usage of indicators.
         SetWarmUp(20, Resolution.Daily);
     }
 
@@ -30,12 +30,12 @@
             // Update the custom MFI with the updated trade bar to obtain the updated trade signal.
             _customMfi.Update(bar);
 
-            // Buy if the positive money flow is above negative, indicated demand greater than supply, driving up the price.
+            // Buy if the positive money flow is above the negative, which indicates demand is greater than supply, driving up the price.
             if (_customMfi &gt; 50)
             {
                 SetHoldings(_spy, 1);
             }
-            // Sell if the positive money flow is below negative, indicated demand less than supply, driving down the price.
+            // Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
             else
             {
                 SetHoldings(_spy, -1);
@@ -93,13 +93,13 @@ class CustomIndicatorsAlgorithm(QCAlgorithm):
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2022, 6, 1)
 
-        # Request daily SPY data for feeding the indicators to generate trade signals and trade.
+        # Request daily SPY data to feed the indicators to generate trade signals and trade.
         self.spy = self.add_equity("SPY").symbol
 
-        # Create a custom money flow index to generate trade signal.
+        # Create a custom money flow index to generate a trade signal.
         self.custom_mfi = CustomMoneyFlowIndex(20)
 
-        # Warm up for immediately usage of indicators.
+        # Warm up for immediate usage of indicators.
         self.set_warm_up(20, Resolution.DAILY)
 
     def on_data(self, slice: Slice) -&gt; None:
@@ -108,10 +108,10 @@ class CustomIndicatorsAlgorithm(QCAlgorithm):
             # Update the custom MFI with the updated trade bar to obtain the updated trade signal.
             self.custom_mfi.update(bar)
 
-            # Buy if the positive money flow is above negative, indicated demand greater than supply, driving up the price.
+            # Buy if the positive money flow is above negative, indicating demand is greater than supply, driving up the price.
             if self.custom_mfi.current.value &gt; 50:
                 self.set_holdings(self.spy, 1)
-            # Sell if the positive money flow is below negative, indicated demand less than supply, driving down the price.
+            # Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
             else:
                 self.set_holdings(self.spy, -1)
 
@@ -131,7 +131,7 @@ class CustomMoneyFlowIndex(PythonIndicator):
         typical_price = (input.high + input.low + input.close) / 3
         money_flow = typical_price * input.volume
             
-        # We need to avoid double rounding errors.
+        # We need to avoid double-rounding errors.
         if abs(self.previous_typical_price / typical_price - 1) &lt; 1e-10:
             self.previous_typical_price = typical_price
         
@@ -148,12 +148,12 @@ class CustomMoneyFlowIndex(PythonIndicator):
         if total_money_flow != 0:
             self.value *= positive_money_flow_sum / total_money_flow
     
-        # Set the is_ready porperty to be receiving the required number of bar to fill all window.
+        # Set the is_ready property to receive the required bars to fill all windows.
         return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
 </div>
 
 <h4>Example 2: Multiple Symbol Custom Indicator</h4>
-<p>The following algorithm implements a custom Cointegration price divergence indicator, involving 2 symbols: GOOGL & GOOG. It trades the arbitrage between 2 cointegrated stocks on their price convergence after deviating more than 2 standard deviations.</p>
+<p>The following algorithm implements a custom Cointegration price divergence indicator involving 2 symbols: GOOGL & GOOG. It trades the arbitrage between 2 cointegrated stocks on their price convergence after deviating more than 2 standard deviations.</p>
 <div class="section-example-container">
     <pre class="csharp">using Accord.Statistics;
 using MathNet.Numerics.LinearRegression;
@@ -167,19 +167,19 @@ public class CombiningIndicatorsAlgorithm : QCAlgorithm
         SetStartDate(2019, 1, 1);
         SetEndDate(2023, 1, 1);
 
-        // Request 2 classes of Google stock data for feeding the indicators to generate trade signals and trade.
+        // Request 2 classes of Google stock data to feed the indicators and generate trade signals.
         var goog1 = AddEquity("GOOGL").Symbol;
         var goog2 = AddEquity("GOOG").Symbol;
 
-        // Create a custom money flow index to generate trade signal.
+        // Create a custom money flow index to generate a trade signal.
         var cointegration = new Cointegration(this, goog1, goog2, 252, DateRules.MonthStart());
-        // Add a handler to trade on update.
+        // Add a handler to trade on updates.
         cointegration.Updated += OnUpdated;
         // Register the indicator to update automatically with daily data.
         RegisterIndicator(goog1, cointegration, Resolution.Daily);
         RegisterIndicator(goog2, cointegration, Resolution.Daily);
 
-        // Warm up for immediately usage of indicators.
+        // Warm up for immediate usage of indicators.
         WarmUpIndicator(goog1, cointegration, Resolution.Daily);
         WarmUpIndicator(goog2, cointegration, Resolution.Daily);
     }
@@ -216,7 +216,7 @@ public class CombiningIndicatorsAlgorithm : QCAlgorithm
 
 public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicatorWarmUpPeriodProvider
 {
-    // The standard deviation of the residuals, such that returned indicator value is realtive to the SD.
+    // The standard deviation of the residuals, such that the returned indicator value is relative to the SD.
     private decimal _residualSD = 1e10m;
     // Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
     private decimal[] _coefficients = new[] { 0m, 0m };
@@ -275,7 +275,7 @@ public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicator
 
     protected override IndicatorResult ValidateAndComputeNextValue(IndicatorDataPoint input)
     {
-        // If no cointegration relationship was found, always return invalid result.
+        // If no cointegration relationship is found, an invalid result will always be returned.
         if (_coefficients.All(x =&gt; x == 0m))
         {
             return new IndicatorResult(0m, IndicatorStatus.ValueNotReady);
@@ -285,7 +285,7 @@ public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicator
         
     protected override decimal ComputeNextValue(IndicatorDataPoint input)
     {
-        // Calculate the updated cointegrated series spread only if all symbol datapoints are updated.
+        // Calculate the updated cointegrated series spread only if all symbol data points are updated.
         if (_windows.All(kvp =&gt; kvp.Value[0].EndTime == input.EndTime))
         {
             return (_coefficients[0] * _windows[Symbol2][0].Value + _coefficients[1] - _windows[Symbol1][0].Value) / _residualSD;
@@ -350,7 +350,7 @@ public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicator
         var adfStatistic = beta / Measures.StandardError(differences);
 
         // Reject the null hypothesis of a unit root is present if test statistic &lt;= critical value
-        // Which means no unit root for difference series and the residuals are stationary.
+        //This means no unit root exists for the difference series, and the residuals are stationary.
         var critical = -1.941d + -0.2686d / N + -3.365d / N / N + 31.223d / N / N / N;
         return adfStatistic &lt;= critical;
     }
@@ -363,19 +363,19 @@ class CustomIndicatorsAlgorithm(QCAlgorithm):
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2023, 1, 1)
 
-        # Request 2 classes of Google stock data for feeding the indicators to generate trade signals and trade.
+        # Request 2 classes of Google stock data to feed the indicators to generate trade signals and trade.
         goog1 = self.add_equity("GOOGL").symbol
         goog2 = self.add_equity("GOOG").symbol
 
-        # Create a custom money flow index to generate trade signal.
+        # Create a custom money flow index to generate a trade signal.
         self.cointegration = Cointegration(self, goog1, goog2, 252, self.date_rules.month_start())
-        # Add a handler to trade on update.
+        # Add a handler to trade on updates.
         self.cointegration.updated += self.on_updated
         # Register the indicator to update automatically with daily data.
         self.register_indicator(goog1, self.cointegration, Resolution.DAILY)
         self.register_indicator(goog2, self.cointegration, Resolution.DAILY)
 
-        # Warm up for immediately usage of indicators.
+        # Warm up for immediate usage of indicators.
         self.warm_up_indicator(goog1, self.cointegration, Resolution.DAILY)
         self.warm_up_indicator(goog2, self.cointegration, Resolution.DAILY)
 
@@ -398,7 +398,7 @@ class CustomIndicatorsAlgorithm(QCAlgorithm):
                 self.liquidate()
 
 class Cointegration(PythonIndicator):
-    # The standard deviation of the residuals, such that returned indicator value is realtive to the SD.
+    # The standard deviation of the residuals is such that the returned indicator value is relative to the SD.
     _residual_sd = 1e10
     # Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
     _coefficients = [0, 0]
@@ -439,7 +439,7 @@ class Cointegration(PythonIndicator):
         window.add(IndicatorDataPoint(input.symbol, input.end_time, input.value))
 
         if not all(x == 0 for x in self._coefficients):
-            # Calculate the updated cointegrated series spread only if all symbol datapoints are updated.
+            # Calculate the updated cointegrated series spread only if all symbol data points are updated.
             if all(window[0].end_time == input.end_time for window in self._windows.values()):
                 self.value = (self._coefficients[0] * self._windows[self.symbol2][0].value + self._coefficients[1] - self._windows[self.symbol1][0].value) / self._residual_sd
 
@@ -459,7 +459,7 @@ class Cointegration(PythonIndicator):
         residuals = y - (intercept + slope * x)
 
         # Check if the residuals are stationary using the augmented Dickey-Fuller test.
-        # Which means no unit root for difference series and the residuals are stationary.
+        # This means no unit root exists for the difference series, and the residuals are stationary.
         critical = -1.941 + -0.2686 / self.warm_up_period + -3.365 / self.warm_up_period**2 + 31.223 / self.warm_up_period**3
         adf_reject = adfuller(residuals)[0] &lt;= -3.45
         if adf_reject:
