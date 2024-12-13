@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for implementing custom margin interest rate model.</p>
+<p>The following examples demonstrate some common practices for implementing a custom margin interest rate model.</p>
 
 <h4>Example 1: Based On Interest Rate</h4>
-<p>The following algorithm buys and holds SPY, with 2x leverage and holds 1.5x of portfolio value. Hence, there will be borrowed funds from the broker, which is susceptible for margin interest. We implement a custom margin interest rate model to simulate the Interactive Brokers margin interest deduction. While following daily accural and monthly accounting of the margin interest, we simplify the rate from tiered to fixed at 1% above the current interest rate.</p>
+<p>The following algorithm buys and holds SPY, with 2x leverage and holds 1.5x of portfolio value. Hence, funds will be borrowed from the broker and are susceptible to margin interest. We implement a custom margin interest rate model to simulate the Interactive Brokers margin interest deduction. While following daily accrual and monthly accounting of the margin interest, we simplify the rate from tiered to fixed at 1% above the current interest rate.</p>
 <div class="section-example-container">
     <pre class="csharp">public class MarginInterestRateModelAlgorithm : QCAlgorithm
 {
@@ -40,7 +40,7 @@
         {
             // Save the algorithm instance since we need to access the at-the-time interest rate to calculate the margin rate.
             _algorithm = algorithm;
-            // IBKR accrues interest on a daily basis and posts actual interest monthly on the third business day of the following month.
+            // IBKR accrues interest daily and posts actual interest monthly on the third business day of the following month.
             algorithm.Schedule.On(
                 algorithm.DateRules.MonthStart(symbol, 3),
                 algorithm.TimeRules.At(0, 0),
@@ -50,29 +50,29 @@
 
         private void MarginDeduction()
         {
-            foreach (var (cash, accuredInterest) in _accruedMarginInterest)
+            foreach (var (cash, accruedInterest) in _accruedMarginInterest)
             {
-                // Monthly deduction of cash position with accured interests.
-                cash.AddAmount(accuredInterest);
-                // Reset the accured interest accumulator.
+                // Monthly deduction of cash position with accrued interests.
+                cash.AddAmount(accruedInterest);
+                // Reset the accrued interest accumulator.
                 _accruedMarginInterest[cash] = 0m;
             }
         }
 
         public void ApplyMarginInterestRate(MarginInterestRateParameters marginInterestRateParameters) 
         {
-            // IBKR accrues interest on a daily basis for overnight positions only.
+            // IBKR accrues interest daily for overnight positions only.
             if (_algorithm.Time.Hour == 16)
             {
                 var holdings = marginInterestRateParameters.Security.Holdings;
                 // Calculate the borrowed capital. The margin interest will only applied to the borrowed capital.
                 var borrowedValue = holdings.UnleveredAbsoluteHoldingsCost - holdings.AbsoluteHoldingsCost;
-                // Margin interest rate is set as 1% above the current risk free interest rate.
+                // Margin interest rate is 1% above the current risk-free interest rate.
                 var marginRate = _algorithm.RiskFreeInterestRateModel.GetInterestRate(_algorithm.Time) + 0.01m;
-                // Deduct the margin interest on the account cash position by the margin rate multipling the borrowed sum.
+                // Deduct the margin interest on the account cash position by the margin rate, multiplying the borrowed sum.
                 var cash = holdings.GetQuantityValue(holdings.Quantity).Cash;
                 _accruedMarginInterest.TryAdd(cash, 0m);
-                // Daily rate will simply divide by 365.
+                // Daily rate will be divided by 365.
                 _accruedMarginInterest[cash] += borrowedValue * marginRate / 365m;
                 
             }
@@ -89,7 +89,7 @@
         # Request SPY data for trading.
         equity = self.add_equity("SPY")
         self.spy = equity.symbol
-        # Set custom margin interest rate model for the SPY security to mimic IB margin interest deduction.
+        # Set a custom margin interest rate model for the SPY security to mimic IB margin interest deduction.
         equity.set_margin_interest_rate_model(MyMarginInterestRateModel(self, self.spy))
         
     def on_data(self, slice: Slice) -&gt; None:
@@ -99,12 +99,12 @@
 
 # Define the custom margin interest rate model
 class MyMarginInterestRateModel:
-    accured_margin_interest = {}
+    accrued_margin_interest = {}
 
     def __init__(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
-        # Save the algorithm instance since we need to access the at-the-time interest rate to calculate the margin rate.
+        # Save the algorithm instance since we must access the at-the-time interest rate to calculate the margin rate.
         self.algorithm = algorithm
-        # IBKR accrues interest on a daily basis and posts actual interest monthly on the third business day of the following month.
+        # IBKR accrues interest daily and posts actual interest monthly on the third business day of the following month.
         algorithm.schedule.on(
             algorithm.date_rules.month_start(symbol, 3),
             algorithm.time_rules.at(0, 0),
@@ -112,24 +112,24 @@ class MyMarginInterestRateModel:
         )
 
     def margin_deduction(self) -&gt; None:
-        for cash, accured_interest in self.accured_margin_interest.items():
-            # Monthly deduction of cash position with accured interests.
-            cash.add_amount(accured_interest)
-            # Reset the accured interest accumulator.
-            self.accured_margin_interest[cash] = 0
+        for cash, accrued_interest in self.accrued_margin_interest.items():
+            # Monthly deduction of cash position with accrued interests.
+            cash.add_amount(accrued_interest)
+            # Reset the accrued interest accumulator.
+            self.accrued_margin_interest[cash] = 0
 
     def apply_margin_interest_rate(self, margin_interest_rate_parameters: MarginInterestRateParameters) -&gt; None:
-        # IBKR accrues interest on a daily basis for overnight positions only.
+        # IBKR accrues interest daily for overnight positions only.
         if self.algorithm.time.hour == 16:
             holdings = margin_interest_rate_parameters.security.holdings
             # Calculate the borrowed capital. The margin interest will only applied to the borrowed capital.
             borrowed_value = holdings.unlevered_absolute_holdings_cost - holdings.absolute_holdings_cost
-            # Margin interest rate is set as 1% above the current risk free interest rate.
+            # Margin interest rate is 1% above the current risk-free interest rate.
             margin_rate = self.algorithm.risk_free_interest_rate_model.get_interest_rate(self.algorithm.time) + 0.01
-            # Deduct the margin interest on the account cash position by the margin rate multipling the borrowed sum.
+            # Deduct the margin interest on the account cash position by the margin rate, multiplying the borrowed sum.
             cash = holdings.get_quantity_value(holdings.quantity).cash
-            if cash not in self.accured_margin_interest:
-                self.accured_margin_interest[cash] = 0
-            # Daily rate will simply divide by 365.
-            self.accured_margin_interest[cash] += borrowed_value * margin_rate / 365</pre>
+            if cash not in self.accrued_margin_interest:
+                self.accrued_margin_interest[cash] = 0
+            # Daily rate will be divided by 365.
+            self.accrued_margin_interest[cash] += borrowed_value * margin_rate / 365</pre>
 </div>
