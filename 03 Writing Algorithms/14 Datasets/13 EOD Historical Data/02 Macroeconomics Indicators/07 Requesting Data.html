@@ -1,0 +1,33 @@
+<p>To add Macroeconomic Indicators data to your algorithm, call the <b class="csharp">AddData&lt;EODHDMacroIndicators&gt;</b><b class="python">add_data</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self.dataset_symbol = self.add_data(
+            EODHDMacroIndicators,
+            EODHD.MacroIndicators.UnitedStates.GDP_CURRENT_USD    # Country.UNITED_STATES
+        ).symbol</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
+    {
+        private Symbol _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+
+            _datasetSymbol = AddData&lt;EODHDMacroIndicators&gt;(
+                EODHD.MacroIndicators.UnitedStates.GdpCurrentUsd
+            ).Symbol;
+            // _datasetSymbol = AddData&lt;EODHDMacroIndicators&gt;(Country.UnitedStates).Symbol;
+        }
+    }
+}</pre>
+</div>
