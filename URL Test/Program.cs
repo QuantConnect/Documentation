@@ -255,6 +255,16 @@ namespace UrlCheck
         {
             Dictionary<string, List<string>> urlFiles = new();
 
+            // Parse documentation-map.json urls.
+            var mapJson = "documentation-map.json";
+            var jsonString = File.ReadAllText($"../{mapJson}");
+            var jsonDocument = JsonDocument.Parse(jsonString);
+            foreach (var property in jsonDocument.RootElement.EnumerateObject())
+            {
+                var convertedUrl = UrlConversion(property.Value.GetString(), mapJson, string.Empty, out string _, out bool _, out string _);
+                urlFiles.Add(convertedUrl, mapJson);
+            }
+
             var allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
                 .Where(filter)
                 .OrderBy(x => x);
@@ -293,37 +303,8 @@ namespace UrlCheck
                             continue;
                         }
 
-                        if (Regex.IsMatch(url, @"github.com/QuantConnect/Lean/issues/\d+"))
-                        {
-                            url = url.Replace("github.com", "api.github.com/repos").Replace("www", String.Empty);
-                        }
-
-                        if (!url.Contains("http"))
-                        {
-                            if (url[0] == '#')
-                            {
-                                var old_url = url;
-                                url = pathToLink(file, 1) + url;
-                                lines[i] = line = line.Replace(old_url, url.Replace(root, "/"));
-                                hasRelativeLink = true;
-                            }
-                            else if (url.Contains("mailto:"))
-                            {
-                            }
-                            else if (url[0] != '/')
-                            {
-                                url = pathToLink(file, 2) + $"/{url}";
-                            }
-                            else
-                            {
-                                url = $"{root}{url.Remove(0, 1)}";
-                            }
-
-                            if (leanIoFolder.Any(file.Contains))
-                            {
-                                urlLeanIo = url.Replace(root, leanIo);
-                            }
-                        }
+                        url = UrlConversion(url, file, line, out urlLeanIo, out hasRelativeLink, out string convertedLine);
+                        lines[i] = convertedLine;
 
                         if (url.Contains("sources")) continue;
 
@@ -357,6 +338,47 @@ namespace UrlCheck
             }
 
             return urlFiles;
+        }
+
+        private static string UrlConversion(string url, string file, string line, out string urlLeanIo, out bool hasRelativeLink, out string convertedLine)
+        {
+            urlLeanIo = string.Empty;
+            hasRelativeLink = false;
+            convertedLine = line;
+
+            if (Regex.IsMatch(url, @"github.com/QuantConnect/Lean/issues/\d+"))
+            {
+                url = url.Replace("github.com", "api.github.com/repos").Replace("www", String.Empty);
+            }
+
+            if (!url.Contains("http"))
+            {
+                if (url[0] == '#')
+                {
+                    var old_url = url;
+                    url = pathToLink(file, 1) + url;
+                    convertedLine = line.Replace(old_url, url.Replace(root, "/"));
+                    hasRelativeLink = true;
+                }
+                else if (url.Contains("mailto:"))
+                {
+                }
+                else if (url[0] != '/')
+                {
+                    url = pathToLink(file, 2) + $"/{url}";
+                }
+                else
+                {
+                    url = $"{root}{url.Remove(0, 1)}";
+                }
+
+                if (leanIoFolder.Any(file.Contains))
+                {
+                    urlLeanIo = url.Replace(root, leanIo);
+                }
+            }
+
+            return url;
         }
 
         private static Dictionary<string, List<string>> GetStrategyPhpUrls()
