@@ -127,10 +127,49 @@ var result = HTML(GenericChart.toChartHTML(chart));</pre>
     </div>
 </ol>
 
-<div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-    <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-    <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-    <iframe class="csharp qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_5fb5f5b1bb065a42ef70d4736b10c806.html"></iframe>
-    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_c1fd8405f031751c0c18b47f06e95280.html"></iframe>
-    </div>
+<div class="section-example-container">
+    <pre class="csharp">public class ObjectStoreChartingAlgorithm : QCAlgorithm
+{
+    private SimpleMovingAverage _sma;
+    private string _content;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);   //Set Start Date
+        SetCash(100000);            //Set Strategy Cash
+        
+        AddEquity("SPY", Resolution.Minute);
+        // Create SMA indicator for referencing.
+        _sma = SMA("SPY", 22);
+    }
+
+    public override void OnData(Slice data)
+    {
+        // Cache the indicator data point to save it.
+        _content += $"{_sma.Current.EndTime},{_sma}\n";
+    }
+
+    public override void OnEndOfAlgorithm()
+    {
+        // Save the indicator values to object store for logging.
+        ObjectStore.Save("sma_values_csharp", _content);
+    }
+}</pre>
+    <pre class="python">class ObjectStoreChartingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)  # Set Start Date
+        self.set_cash(100000)           # Set Strategy Cash
+        self.add_equity("SPY", Resolution.MINUTE)
+        
+        self.content = ''
+        # Create SMA indicator for referencing.
+        self.sma = self.SMA("SPY", 22)
+        
+    def on_data(self, data: Slice) -&gt; None:
+        # Cache the indicator data point to save it.
+        self.content += f'{self.sma.current.end_time},{self.sma.current.value}\n'
+
+    def on_end_of_algorithm(self) -&gt; None:
+        # Save the indicator values to object store for logging.
+        self.object_store.save('sma_values_python', self.content)</pre>
 </div>
