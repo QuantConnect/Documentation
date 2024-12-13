@@ -1,3 +1,294 @@
+<p>The following examples demonstrate some common practices for combining indicators.</p>
+
+<h4>Example 1: Volatility</h4>
+<p>The following algorithm trades a volatility strategy. By comparing SMA and the current value of the standard deviation of the return, we can estimate the current volatility regime is above or below average to trade the price volatility through strangle.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
+{
+    private Symbol _spy, _option;
+    private SimpleMovingAverage _sma;
+    private StandardDeviation _sd;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 6, 1);
+
+        // Request daily SPY data to feed the indicators and generate trade signals.
+        // Use Raw data normalization mode to compare the strike price fairly.
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+
+        // Request option data to trade.
+        var option = AddOption(_spy);
+        _option = option.Symbol;
+        // Filter for 7-day expiring options with $5 apart from the current price to trade volatility using strangle.
+        option.SetFilter((universe) =&gt; universe.IncludeWeeklys().Strangle(7, 5, -5));
+
+        // Create a return indicator to get the daily return of SPY.
+        var ret = ROC(_spy, 1, Resolution.Daily);
+        // Create an SD indicator to measure the 252-day SD of return to measure SPY's volatility.
+        _sd = IndicatorExtensions.Of(new StandardDeviation(252), ret);
+        // Create a 20-day SMA indicator of the SD indicator to compare the average volatility.
+        _sma = IndicatorExtensions.Of(new SimpleMovingAverage(20), _sd);
+
+        // Warm up for immediate usage of indicators.
+        SetWarmUp(400, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!Portfolio.Invested &amp;&amp; slice.OptionChains.TryGetValue(_option, out var chain))
+        {
+            // Create a strangle strategy to trade the volatility forecast.
+            var otmCallStrike = chain.Max(x =&gt; x.Strike);
+            var otmPutStrike = chain.Min(x =&gt; x.Strike);
+            var expiry = chain.Min(x =&gt; x.Expiry);
+            var strangle = OptionStrategies.Strangle(_option, otmCallStrike, otmPutStrike, expiry);
+
+            // If the current STD is above its SMA, we estimate the volatility will remain high due to volatility clustering.
+            // Thus, we long the strangle to earn from the price displacement from the current level.
+            if (_sd &gt; _sma)
+            {
+                Buy(strangle, 2);
+            }
+            // If the current STD is below its SMA, we estimate the volatility will remain lower due to volatility clustering.
+            // Thus, we short the strangle to earn from the price staying at the current level.
+            if (_sd &lt; _sma)
+            {
+                Sell(strangle, 2);
+            }
+        }
+        else if (Portfolio[_spy].Invested)
+        {
+            // Liquidate any assigned underlying positions.
+            Liquidate(_spy);
+        }
+    }
+}</pre>
+    <pre class="python">class CombiningIndicatorsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 6, 1)
+
+        # Request daily SPY data to feed the indicators and generate trade signals.
+        # Use Raw data normalization mode to compare the strike price fairly.
+        self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+
+        # Request option data to trade.
+        option = self.add_option(self.spy)
+        self._option = option.symbol
+        # Filter for 7-day expiring options with $5 apart from the current price to trade volatility using strangle.
+        option.set_filter(lambda universe: universe.include_weeklys().strangle(7, 5, -5))
+
+        # Create a return indicator to get the daily return of SPY.
+        ret = self.roc(self.spy, 1, Resolution.DAILY)
+        # Create an SD indicator to measure the 252-day SD of return to measure SPY's volatility.
+        self._sd = IndicatorExtensions.of(StandardDeviation(252), ret)
+        # Create a 20-day SMA indicator of the SD indicator to compare the average volatility.
+        self._sma = IndicatorExtensions.of(SimpleMovingAverage(20), self._sd)
+
+        # Warm up for immediate usage of indicators.
+        self.set_warm_up(400, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        chain = slice.option_chains.get(self._option)
+        if not self.portfolio.invested and chain:
+            # Create a strangle strategy to trade the volatility forecast.
+            sorted_strike = sorted([x.strike for x in chain])
+            otm_call_strike = sorted_strike[-1]
+            otm_put_strike = sorted_strike[0]
+            expiry = list(chain)[0].expiry
+            strangle = OptionStrategies.strangle(self._option, otm_call_strike, otm_put_strike, expiry)
+
+            # If the current STD is above its SMA, we estimate the volatility will remain high due to volatility clustering.
+            # Thus, we long the strangle to earn from the price displacement from the current level.
+            if self._sd.current.value &gt; self._sma.current.value:
+                self.buy(strangle, 2)
+            # If the current STD is below its SMA, we estimate the volatility will remain lower due to volatility clustering.
+            # Thus, we short the strangle to earn from the price staying at the current level.
+            elif self._sd.current.value &lt; self._sma.current.value:
+                self.sell(strangle, 2)
+
+        elif self.portfolio[self.spy].invested:
+            # Liquidate any assigned underlying positions.
+            self.liquidate(self.spy)</pre>
+</div>
+
+<h4>Example 2: Displaced SMA Ribbon</h4>
+<p>The following algorithm trades trends indicated by SMA crossings. We use the <code class="csharp">IndicatorExtensions to confirm the trend better.Of</code><code class="python">IndicatorExtensions.of</code> method to create a Delay indicator on SMA indicator.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class DisplacedMovingAverageRibbon : QCAlgorithm
+{
+    private Symbol _spy;
+    private IndicatorBase&lt;IndicatorDataPoint&gt;[] _ribbon;
+
+    public override void Initialize()
+    {
+        SetStartDate(2009, 1, 1);
+        SetEndDate(2015, 1, 1);
+
+        // Request daily SPY data for feeding indicator and trading.
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        // Create 6 15-day SMA indicators, with a 5-day delay between each indicator.
+        const int count = 6;
+        const int offset = 5;
+        const int period = 15;
+
+        // Define our sma as the base of the ribbon.
+        var sma = new SimpleMovingAverage(period);
+
+        _ribbon = Enumerable.Range(0, count).Select(x =&gt;
+        {
+            // Define our offset to the zero SMA; these various offsets will create our 'displaced' ribbon.
+            var delay = new Delay(offset*(x+1));
+            // Using Delay indicator to create displaced SMA indicators.
+            var delayedSma = delay.Of(sma);
+            // Register our new 'delayed_sma' for automatic updates on a daily resolution.
+            RegisterIndicator(_spy, delayedSma, Resolution.Daily, data =&gt; data.Value);
+            return delayedSma;
+        }).ToArray();
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade only on updated data with ready-to-use indicators.
+        if (!_ribbon.All(x =&gt; x.IsReady)) return;
+        if (!slice.Bars.TryGetValue(_spy, out var data))
+        {
+            return;
+        }
+        // Plot indicators each time they update.
+        Plot("Ribbon", "Price", data.Price);
+        Plot("Ribbon", _ribbon);
+
+        var values = _ribbon.Select(x =&gt; x.Current.Value).ToArray();
+        var holding = Portfolio[_spy];
+        // Buy SPY if the trend is upward.
+        if (holding.Quantity &lt;= 0 &amp;&amp; IsAscending(values))
+        {
+            SetHoldings(_spy, 1.0);
+        }
+        // Liquidate if the trend is downwards.
+        else if (holding.Quantity &gt; 0 &amp;&amp; IsDescending(values))
+        {
+            Liquidate(_spy);
+        }
+    }
+
+    // Returns true if the SMA values are in ascending order, indicating an upward trend
+    private bool IsAscending(IEnumerable&lt;decimal&gt; values)
+    {
+        decimal? last = null;
+        foreach (var val in values)
+        {
+            if (last == null)
+            {
+                last = val;
+                continue;
+            }
+
+            if (last.Value &lt; val)
+            {
+                return false;
+            }
+            last = val;
+        }
+        return true;
+    }
+
+    // Returns true if the SMA values are in descending order, indicating a downward trend
+    private bool IsDescending(IEnumerable&lt;decimal&gt; values)
+    {
+        decimal? last = null;
+        foreach (var val in values)
+        {
+            if (last == null)
+            {
+                last = val;
+                continue;
+            }
+
+            if (last.Value &gt; val)
+            {
+                return false;
+            }
+            last = val;
+        }
+        return true;
+    }
+}</pre>
+    <pre class="python">class DisplacedMovingAverageRibbon(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2009, 1, 1)
+        self.set_end_date(2015, 1, 1)
+
+        # Request daily SPY data for feeding indicator and trading.
+        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        # Create 6 15-day SMA indicators, with a 5-day delay between each indicator.
+        count = 6
+        offset = 5
+        period = 15
+        self.ribbon = []
+        # Define our sma as the base of the ribbon.
+        self.sma = SimpleMovingAverage(period)
+        
+        for x in range(count):
+            # Define our offset to the zero SMA. These various offsets will create our 'displaced' ribbon.
+            delay = Delay(offset*(x+1))
+            # Using Delay indicator to create displaced SMA indicators.
+            delayed_sma = IndicatorExtensions.of(delay, self.sma)
+            # Register our new 'delayed_sma' for automatic updates on a daily resolution.
+            self.register_indicator(self.spy, delayed_sma, Resolution.DAILY)
+            self.ribbon.append(delayed_sma)
+
+        # Plot indicators each time they update using the PlotIndicator function.
+        for i in self.ribbon:
+            self.plot_indicator("Ribbon", i) 
+
+    def on_data(self, data: Slice) -&gt; None:
+        # Trade only on updated data with ready-to-use indicators.
+        if data[self.spy] is None: return
+        if not all(x.is_ready for x in self.ribbon): return
+        self.plot("Ribbon", "Price", data[self.spy].price)
+
+        values = [x.current.value for x in self.ribbon]
+        holding = self.portfolio[self.spy]
+        # Buy SPY if the trend is upward.
+        if (holding.quantity &lt;= 0 and self.is_ascending(values)):
+            self.set_holdings(self.spy, 1.0)
+        # Liquidate if the trend is downwards.
+        elif (holding.quantity &gt; 0 and self.is_descending(values)):
+            self.liquidate(self.spy)
+    
+    # Returns true if the SMA values are in ascending order, indicating an upward trend
+    def is_ascending(self, values: List[float]) -&gt; None:
+        last = None
+        for val in values:
+            if last is None:
+                last = val
+                continue
+            if last &lt; val:
+                return False
+            last = val
+        return True
+    
+    # Returns true if the SMA values are in descending order, indicating a downward trend
+    def is_descending(self, values: List[float]) -&gt; None:
+        last = None
+        for val in values:
+            if last is None:
+                last = val
+                continue
+            if last &gt; val:
+                return False
+            last = val
+        return True</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
 
 <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithm</div>
