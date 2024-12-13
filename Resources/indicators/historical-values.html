@@ -1,0 +1,51 @@
+<p>The <code class="csharp">Window</code><code class="python">window</code> property of the indicators is a built-in <code>RollingWindow</code> that stores historical values. It holds a collection of <code>IndicatorDataPoint</code> objects, enabling quick access to the most recent historical indicator values for analysis, calculations, or comparisons in trading and financial strategies.</p>
+
+<p>Default size of the in-built <code>RollignWindow</code> is 2, but you can adjust its size by setting the <code class="csharp">Size</code><code class="python">size</code> according to your need.</p>
+
+<p>To warm up the indicator together with its <code>RollignWindow</code>, you can call the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method to do so.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class IndicatorRolingWindowAlgorithm : QCAlgorithm
+{
+    // Manual SMA indicator example.
+    private SimpleMovingAverage _sma = new(20);
+    private Beta _beta;
+
+    public override void Initialize()
+    {
+        var spy = AddEquity("SPY").Symbol;
+        var qqq = AddEquity("QQQ").Symbol;
+
+        // Automatic Beta indicator example.
+        _beta = B(spy, qqq, 20);
+
+        // Adjust the window size to 5 to access the previous 5 indicator data points.
+        _sma.Window.Size = 5;
+        _beta.Window.Size = 5;
+        
+        // Warm up the indicator for immediate usage; also, warm up the window. 
+        // You can use IndicatorHistory to control the number of bars you warm up with.
+        IndicatorHistory(_sma, spy, _sma.WarmUpPeriod + _sma.Window.Size, Resolution.Daily);
+        // For indicators using 2+ symbols, use an iterable symbol list.
+        IndicatorHistory(_beta, new[] { spy, qqq }, _beta.WarmUpPeriod + _beta.Window.Size, Resolution.Daily);
+    }
+}</pre>
+    <pre class="python">class IndicatorRolingWindowAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        spy = self.add_equity("SPY").symbol
+        qqq = self.add_equity("QQQ").symbol
+    
+        # Manual SMA indicator example.
+        self._sma = SimpleMovingAverage(20)
+        # Automatic Beta indicator example.
+        self._beta = self.b(spy, qqq, 20)
+    
+        # Adjust the window size to 5 to access the previous 5 indicator data points.
+        self._sma.window.size = 5
+        self._beta.window.size = 5
+    
+        # Warm up the indicator for immediate usage; also, warm up the window. 
+        # You can use indicator_history to control the number of bars to warm up with.self.indicator_history(self._sma, spy, self._sma.warm_up_period + self._sma.window.size, Resolution.DAILY)
+        # For indicators using 2+ symbols, use an iterable symbol list.
+        self.indicator_history(self._beta, [spy, qqq], self._beta.warm_up_period + self._beta.window.size, Resolution.DAILY)</pre>
+</div>
