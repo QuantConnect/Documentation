@@ -1,77 +1,89 @@
-<p>The following examples demonstrate some common practices for implementing custom buying power model.</p>
+<p>The following examples demonstrate some common practices for implementing a custom buying power model.</p>
 
 <h4>Example 1: Always Sufficient Buying Power</h4>
-<p>The following algorithm trades protective call strategy. Sometimes, the margin requirement of the brokerage is different from the algorithm default. To avoid error on order submission in the algorithm level, we can use <code>NullBuyingPowerModel</code> to disable buying power limitation, such that the order is sent directly to the broker.</p>
+<p>The following algorithm trades protective call strategy. Sometimes, the brokerage's margin requirement differs from the algorithm's default. To avoid errors on order submission at the algorithm level, we can use the <code class="csharp">SecurityPositionGroupModel.Null</code><code class="python">SecurityPositionGroupModel.NULL</code> and <code>NullBuyingPowerModel</code> to disable buying power limitation so the order is sent directly to the broker.</p>
 <div class="section-example-container">
-    <pre class="csharp">namespace QuantConnect
+    <pre class="csharp">using QuantConnect.Securities.Positions;
+
+public class BuyingPowerModelAlgorithm : QCAlgorithm
 {
-    public class BuyingPowerModelAlgorithm : QCAlgorithm
+    private Symbol _spy;
+
+    public override void Initialize()
     {
-        private Symbol _spy;
+        SetStartDate(2023, 10, 1);
+        SetEndDate(2024, 10, 1);
+        SetSecurityInitializer(new CustomSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 
-        public override void Initialize()
+        // Disable the validations of the default position group buying power model
+        // that evaluates the buying power of multi-leg strategies 
+        Portfolio.SetPositions(SecurityPositionGroupModel.Null);
+
+        // Request SPY data for trading. Set the data normalization mode to raw to allow for a fair comparison in strike price.
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+
+        // Set a scheduled event to rebalance the protective put strategy.
+        Schedule.On(
+            DateRules.WeekStart(_spy),
+            TimeRules.AfterMarketOpen(_spy, 0),
+            Rebalance
+        );
+    }
+
+    private void Rebalance()
+    {
+        // Select the weekend expiring ATM put for the protective put strategy.
+        var atmPutContract = OptionChain(_spy)
+            .Where(x =&gt; x.Right == OptionRight.Put &amp;&amp; x.Expiry &lt; Time.AddDays(6))
+            .OrderByDescending(x =&gt; x.Expiry)
+            .ThenBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
+            .First();
+        // Request the ATM put data for trading.
+        var atmPut = AddOptionContract(atmPutContract).Symbol;
+
+        if (Portfolio[_spy].Invested)
         {
-            SetStartDate(2023, 10, 1);
-            SetEndDate(2024, 10, 1);
-            SetSecurityInitializer(CustomSecurityInitializer);
-
-            // Request SPY data for trading. Set the data normalization mode as raw to allow fair comparison in strike price.
-            _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-
-            // Set a scheduled event to rebalance the protective put strategy.
-            Schedule.On(
-                DateRules.WeekStart(_spy),
-                TimeRules.AfterMarketOpen(_spy, 0),
-                Rebalance
-            );
+            // If SPY is not assigned, we only need to buy the put.
+            MarketOrder(atmPut, 1, tag: "Protective Put");
+            return;
         }
 
-        private void CustomSecurityInitializer(Security security)
-        {
-            // Seed the security price to ensure the underlying price is available at the initial filtering.
-            security.SetMarketPrice(GetLastKnownPrice(security));
-            // Always sufficient
-            security.SetBuyingPowerModel(new NullBuyingPowerModel());
-        }
+        // Order the protective put strategy by combo order.
+        ComboMarketOrder(
+            new List&lt;Leg&gt; () {
+                Leg.Create(_spy, 100),
+                Leg.Create(atmPut, 1)
+            },
+            1,
+            tag: "Protective Put"
+        );
+    }
+}
+public class CustomSecurityInitializer : BrokerageModelSecurityInitializer
+{
+    public CustomSecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
+        : base(brokerageModel, securitySeeder)
+    {
+    }
 
-        private void Rebalance()
-        {
-            // Select the week-end expiring ATM put for the protective put strategy.
-            var atmPutContract = OptionChain(_spy)
-                .Where(x =&gt; x.Right == OptionRight.Put &amp;&amp; x.Expiry &lt; Time.AddDays(6))
-                .OrderByDescending(x =&gt; x.Expiry)
-                .ThenBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
-                .First();
-            // Request the ATM put data for trading.
-            var atmPut = AddOptionContract(atmPutContract).Symbol;
-
-            if (Portfolio[_spy].Invested)
-            {
-                // If SPY is not being assigned, we only need to buy the put.
-                MarketOrder(atmPut, 1, tag: "Protective Put");
-            }
-            else
-            {
-                // Order the protective put strategy by combo order.
-                ComboMarketOrder(
-                    new List&lt;Leg&gt; () {
-                        Leg.Create(_spy, 100),
-                        Leg.Create(atmPut, 1)
-                    },
-                    1,
-                    tag: "Protective Put"
-                );
-            }
-        }
+    public override void Initialize(Security security)
+    {
+        base.Initialize(security);
+        // Do not allow buying power for options; only a hedging strategy with 0 margin is allowed.
+        security.SetBuyingPowerModel(new NullBuyingPowerModel());
     }
 }</pre>
     <pre class="python">class BuyingPowerModelAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
         self.set_start_date(2023, 10, 1)
         self.set_end_date(2024, 10, 1)
-        self.set_security_initializer(self.custom_security_initializer)
+        self.set_security_initializer(CustomSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
     
-        # Request SPY data for trading. Set the data normalization mode as raw to allow fair comparison in strike price.
+        # Disable the validations of the default position group buying power model
+        # that evaluates the buying power of multi-leg strategies 
+        self.portfolio.set_positions(SecurityPositionGroupModel.NULL)
+
+        # Request SPY data for trading. Set the data normalization mode to raw to allow for a fair comparison in strike price.
         self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
     
         # Set a scheduled event to rebalance the protective put strategy.
@@ -80,15 +92,9 @@
             self.time_rules.after_market_open(self.spy, 0),
             self.rebalance
         )
-    
-    def custom_security_initializer(self, security: Security) -&gt; None:
-        # Seed the security price to ensure the underlying price is available at the initial filtering.
-        security.set_market_price(self.get_last_known_price(security))
-        # Do not allow any buying power for options, such that only hedging strategy with 0 margin is allowed.
-        security.set_buying_power_model(NullBuyingPowerModel())
-    
+
     def rebalance(self) -&gt; None:
-        # Select the week-end expiring ATM put for the protective put strategy.
+        # Select the weekend expiring ATM put for the protective put strategy.
         chain = self.option_chain(self.spy)
         filtered = [x for x in chain if x.right == OptionRight.PUT and x.expiry &lt;= self.time + timedelta(6)]
         if not filtered: 
@@ -100,7 +106,7 @@
         atm_put = self.add_option_contract(atm_put_contract).symbol
     
         if self.portfolio[self.spy].invested:
-            # If SPY is not being assigned, we only need to buy the put.
+            # If SPY is not assigned, we only need to buy the put.
             self.market_order(atm_put, 1, tag="Protective Put")
         else:
             # Order the protective put strategy by combo order.
@@ -110,7 +116,15 @@
                 ],
                 1,
                 tag="Protective Put"
-            )</pre>
+            )
+
+class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder):
+        super().__init__(brokerage_model, security_seeder)
+    def initialize(self, security: Security):
+        super().initialize(security)
+        # Do not allow buying power for options; only a hedging strategy with 0 margin is allowed.
+        security.SetBuyingPowerModel(NullBuyingPowerModel())</pre>
 </div>
 
 <h4>Other Examples</h4>
