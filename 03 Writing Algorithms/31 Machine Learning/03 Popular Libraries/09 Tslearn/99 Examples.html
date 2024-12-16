@@ -1,0 +1,65 @@
+<p>The following examples demonstrate some common practices for using <code>Tslearn</code> library.</p>
+
+<h4>Example 1: Dynamic Time Wrapping (DTW) Clustering</h4>
+<p>The below algorithm makes use of <code>Tslearn</code> library to cluster stocks based on their recent year's price movement through DTW Barycenter Averaging. Then, we invest each cluster equally, while investing stocks within cluster equally as well. To ensure the model applicable to the current market environment, we recalibrate the model on every Sunday.</p>
+<div class="section-example-container">
+    <pre class="python">from tslearn.barycenters import softdtw_barycenter
+from tslearn.clustering import TimeSeriesKMeans
+import joblib
+
+class TslearnExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 7, 4)
+        self.set_cash(100000)
+        tickers = ["SPY", "QQQ", "DIA", 
+                "AAPL", "MSFT", "TSLA", 
+                "IEF", "TLT", "SHV", "SHY", 
+                "GLD", "IAU", "SLV", 
+                "USO", "XLE", "XOM"]
+        self.symbols = [self.add_equity(ticker, Resolution.DAILY).symbol for ticker in tickers]
+
+        training_length = 252
+        self.training_data = {}
+        history = self.history(self.symbols, training_length, Resolution.DAILY).unstack(0).close
+        for symbol in self.symbols:
+            self.training_data[symbol] = RollingWindow[float](training_length)
+            for close_price in history[symbol]:
+                self.training_data[symbol].add(close_price)
+
+        self.model = TimeSeriesKMeans(n_clusters=6,   # We have 6 main groups
+                                          metric="dtw")
+
+        self.train(self.my_training_method)
+        self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
+        
+    def get_features(self) -&gt; None:
+        close_price = pd.DataFrame({symbol: list(data)[::-1] for symbol, data in self.training_data.items()})
+        log_price = np.log(close_price)
+        log_normal_price = (log_price - log_price.mean()) / log_price.std()
+
+        return log_normal_price
+
+    def my_training_method(self) -&gt; None:
+        features = self.get_features()
+        self.model.fit(features.T.values)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        for symbol in self.symbols:
+            if symbol in slice.bars:
+                self.training_data[symbol].add(slice.bars[symbol].close)
+
+        features = self.get_features()
+        self.labels = self.model.predict(features.T.values)
+
+        for i in set(self.labels):
+            assets_in_cluster = features.columns[[n for n, k in enumerate(self.labels) if k == i]]
+            size = 1/6/len(assets_in_cluster)
+            self.set_holdings([PortfolioTarget(symbol, size) for symbol in assets_in_cluster])
+
+    def on_end_of_algorithm(self) -&gt; None:
+        model_key = "model_test.hdf5"
+        file_name = self.object_store.get_file_path(model_key)
+        import os
+        os.remove(file_name)
+        self.model.to_hdf5(file_name)</pre>
+</div>
