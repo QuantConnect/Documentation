@@ -25,16 +25,12 @@
 
     private void Rebalance()
     {
-        var symbolsToBuy = new List&lt;Symbol&gt;();
-        
-        foreach (var (symbol, symbolData) in _symbolData)
-        {
-            // Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
-            if (symbolData.IsReady &amp;&amp; Securities[symbol].Price &gt; symbolData.Ema &amp;&amp; symbolData.Ema &gt; symbolData.Sma)
-            {
-                symbolsToBuy.Add(symbol);
-            }
-        }
+        // Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
+        var symbolsToBuy = _symbolData.Where(
+                kvp =&gt; kvp.Value.IsReady &amp;&amp; Securities[kvp.Key].Price &gt; kvp.Value.Ema &amp;&amp; kvp.Value.Ema &gt; kvp.Value.Sma
+            )
+            .Select(kvp =&gt; kvp.Key)
+            .ToList();
 
         // Equally invest into the selected stocks to evenly dissipate the capital risk.
         var count = symbolsToBuy.Count;
@@ -57,12 +53,16 @@
         foreach (var removed in changes.RemovedSecurities)
         {
             // Remove the data subscription of indicators to release computation resources when leaving the universe.
-            _symbolData.Remove(removed.Symbol);
+            if (_symbolData.Remove(removed.Symbol, out var symbolData))
+            {
+                symbolData.Dispose();
+            }
         }
     }
 
     private class SymbolData
     {
+        private QCAlgorithm _algorithm;
         public Symbol Symbol { get; set; }
         public ExponentialMovingAverage Ema { get; set; }
         public SimpleMovingAverage Sma { get; set; }
@@ -71,6 +71,7 @@
 
         public SymbolData(QCAlgorithm algorithm, Symbol symbol)
         {
+            _algorithm = algorithm;
             Symbol = symbol;
 
             // In this example, we hold an EMA and a SMA manual indicator as example.
@@ -80,6 +81,13 @@
             // Warm up the indicators for their readiness to use immediately.
             algorithm.WarmUpIndicator(symbol, Ema, Resolution.Daily);
             algorithm.WarmUpIndicator(symbol, Sma, Resolution.Daily);
+        }
+
+        public void Dispose()
+        {
+            // Unhook the data subscription of updating the indicators to free up computation resources.
+            _algorithm.DeregisterIndicator(Ema);
+            _algorithm.DeregisterIndicator(Sma);
         }
     }
 }</pre>
@@ -99,14 +107,9 @@
         )
                 
     def rebalance(self) -&gt; None:
-        symbols_to_buy = []
-
-        for kvp in self._universe.members:
-            symbol = kvp.key
-            security = kvp.value
-            # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
-            if security.price &gt; security.ema.current.value &gt; security.sma.current.value:
-                symbols_to_buy.append(symbol)
+        # # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trned is upward accelerating.
+        symbols_to_buy = [kvp.key for kvp in self._universe.members
+            if kvp.value.price &gt; kvp.value.ema.current.value &gt; kvp.value.sma.current.value]
 
         # Equally invest into the selected stocks to evenly dissipate the capital risk.
         count = len(symbols_to_buy)
@@ -124,5 +127,10 @@
 
             # Warm up the indicators for their readiness to use immediately.
             self.warm_up_indicator(symbol, added.ema, Resolution.DAILY)
-            self.warm_up_indicator(symbol, added.sma, Resolution.DAILY)</pre>
+            self.warm_up_indicator(symbol, added.sma, Resolution.DAILY)
+
+        for removed in changes.removed_securities:
+            # Remove the data subscription of indicators to release computation resources when leaving the universe.
+            self.deregister_indicator(removed.ema)
+            self.deregister_indicator(removed.sma)</pre>
 </div>
