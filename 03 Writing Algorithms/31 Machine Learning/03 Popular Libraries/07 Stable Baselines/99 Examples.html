@@ -10,21 +10,28 @@ class StableBaselinesExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2022, 7, 4)
         self.set_cash(100000)
+        # Request SPY data for model training, prediction and trading.
         self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
 
+        # 2-year data to train the model.
         training_length = 252*2
         self.training_data = RollingWindow[TradeBar](training_length)
+        # Warm up the training dataset to train the model immediately.
         history = self.history[TradeBar](self.spy, training_length, Resolution.DAILY)
         for trade_bar in history:
             self.training_data.add(trade_bar)
 
+        # Train the model to use the prediction right away.
         self.train(self.my_training_method)
+        # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
         
     def get_observations_and_rewards(self, n_step=5) -&gt; None:
+        # Train and predict the return data, which is more normalized and stationary.
         training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.training_data)[::-1])
         daily_pct_change = training_df['close'].pct_change().dropna()
 
+        # Stack the data for 5-day OHLCV data per each observation to train with.
         obs = []
         rewards = []
         for i in range(len(daily_pct_change)-n_step):
@@ -36,16 +43,20 @@ class StableBaselinesExampleAlgorithm(QCAlgorithm):
         return obs, rewards
 
     def my_training_method(self) -&gt; None:
+        # Prepare the processed training data.
         obs, rewards = self.get_observations_and_rewards()
+        # Recalibrate the model based on updated data.
         self.env = TradingEnv(obs, rewards)
         self.model = DQN("MlpPolicy", self.env)
         self.model.learn(total_timesteps=500)
 
     def on_data(self, data) -&gt; None:
+        # Get best reward action by the updated features.
         features, _ = self.get_observations_and_rewards()
         action, _ = self.model.predict(features[-5:], deterministic=True)
         _, _, _, _ = self.env.step(action)
 
+        # Order based on the best-rewarded actions upon the current observation.
         if action == 0:
             self.liquidate(self.spy)
         elif action == 1:
@@ -87,6 +98,7 @@ class TradingEnv(gym.Env):
         return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32)
 
     def step(self, action):
+        # Reward is stacking up the return.
         if action == self.LONG:
             self.reward *= 1 + self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
         elif action == self.SHORT:
@@ -102,6 +114,6 @@ class TradingEnv(gym.Env):
         # Have we iterate all data points?
         done = (self.current_step == self.ret.shape[0]-1)
 
-        # Reward as return
+        # Reward as return.
         return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32), self.reward, done, {}</pre>
 </div>

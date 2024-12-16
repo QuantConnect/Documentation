@@ -12,27 +12,35 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
         self.set_start_date(2022, 9, 1)
         self.set_end_date(2023, 9, 1)
         self.set_cash(100000)
+        # Request SPY data for model training, prediction and trading.
         self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
+        # 2-year data to train the model.
         training_length = 252*2
         self.training_data = RollingWindow[float](training_length)
+        # Warm up the training dataset to train the model immediately.
         history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
         for trade_bar in history:
             self.training_data.add(trade_bar.close)
 
+        # Retrieve already trained model from object store to use immediately.
         if self.object_store.contains_key("model"):
             file_name = self.object_store.get_file_path("model")
             self.model = joblib.load(file_name)
+        # Create a MLP model otherwise to predict price movement.
         else:
             device = 'cuda' if torch.cuda.is_available() else 'cpu'
             self.model = NeuralNetwork().to(device)
+            # Train the model to use the prediction right away.
             self.train(self.my_training_method)
             
+        # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
         
     def get_features_and_labels(self, n_steps=5) -&gt; None:
         close_prices = list(self.training_data)[::-1]
 
+        # Stack the data for 5-day OHLCV data per each sample to train with.
         features = []
         labels = []
         for i in range(len(close_prices)-n_steps):
@@ -44,25 +52,26 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
         return features, labels
 
     def my_training_method(self) -&gt; None:
+        # Prepare the processed training data.
         features, labels = self.get_features_and_labels()
 
-        # Set the loss and optimization functions
-        # In this example, use the mean squared error as the loss function and stochastic gradient descent as the optimizer
+        # Set the loss and optimization functions.
+        # In this example, use the mean squared error as the loss function and stochastic gradient descent as the optimizer.
         loss_fn = nn.MSELoss()
         learning_rate = 0.001
         optimizer = torch.optim.SGD(self.model.parameters(), lr=learning_rate)
         
-        # Create a for-loop to train for preset number of epoch
+        # Create a for-loop to train for preset number of epoch.
         epochs = 5
         for t in range(epochs):
             # Create a for-loop to fit the model per batch
             for batch, (feature, label) in enumerate(zip(features, labels)):
-                # Compute prediction and loss
+                # Compute prediction and loss.
                 pred = self.model(feature)
                 real = torch.from_numpy(np.array(label).flatten()).float()
                 loss = loss_fn(pred, real)
             
-                # Perform backpropagation
+                # Perform backpropagation.
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
@@ -71,6 +80,7 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
         if self.symbol in slice.bars:
             self.training_data.add(slice.bars[self.symbol].close)
 
+            # Get prediction by the updated features.
             features, __ = self.get_features_and_labels()
             prediction = self.model(features[-1].reshape(1, -1))
             if isinstance(prediction, np.ndarray):
@@ -78,12 +88,15 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
             elif isinstance(prediction, torch.Tensor):
                 prediction = float(prediction.detach().numpy()[-1])
             
+            # If the predicted direction is going upward, buy SPY.
             if prediction &gt; slice.bars[self.symbol].price:
                 self.set_holdings(self.symbol, 1)
+            # If the predicted direction is going downward, sell SPY.
             elif prediction &lt; slice.bars[self.symbol].price:            
                 self.set_holdings(self.symbol, -1)
 
     def on_end_of_algorithm(self) -&gt; None:
+        # Store the model to object store to retrieve it in other instances in case the algorithm stops.
         model_key = "model"
         file_name = self.object_store.get_file_path(model_key)
         joblib.dump(self.model, file_name)
