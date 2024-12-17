@@ -102,7 +102,8 @@
     {
         // Get the Option chain.
         var chain = OptionChain(_equity.Symbol);
-        // Select the contracts that are first to expire after 30 days since they have greater premiums and theta to collect.
+        // Select the contracts that are first to expire after 30 days since they have greater premiums and theta 
+        // to collect.
         var expiry = chain.Where(x =&gt; x.Expiry &gt; Time.AddDays(30))
             .Min(x =&gt; x.Expiry);
         // Select the OTM Option contract to start the wheel or covered call.
@@ -135,7 +136,8 @@
 
     public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
     {
-        // After the put is assigned, look for an OTM call to form a covered call with the assigned underlying position.
+        // After the put is assigned, look for an OTM call to form a covered call with the assigned underlying 
+        // position.
         var symbol = GetTargetContract(OptionRight.Call, _equity.Price * (1m + _otmThreshold));
         MarketOrder(symbol, -_equity.Holdings.Quantity / 100m);
     }
@@ -159,7 +161,8 @@
     def _get_target_contract(self, right: OptionRight, target_price: float) -> Symbol:
         # Get the Option chain.
         chain = self.option_chain(self._equity.symbol, flatten=True).data_frame
-        # Select the contracts that are first to expire after 30 days since they have greater premiums and theta to collect.
+        # Select the contracts that are first to expire after 30 days since they have greater premiums and theta 
+        # to collect.
         expiry_threshold = self.time + timedelta(30)
         expiry = chain[chain.expiry > expiry_threshold].expiry.min()
         # Select the OTM Option contract to start the wheel or covered call.
@@ -178,7 +181,8 @@
             self.set_holdings(symbol, -0.2)
     
     def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
-        # After the put is assigned, look for an OTM call to form a covered call with the assigned underlying position.
+        # After the put is assigned, look for an OTM call to form a covered call with the assigned underlying 
+        # position.
         symbol = self._get_target_contract(OptionRight.CALL, self._equity.price * (1+self._otm_threshold))
         self.market_order(symbol, -self._equity.holdings.quantity / 100)</pre>
 </div>
