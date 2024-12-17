@@ -16,11 +16,7 @@
         AddUniverse(Universe.DollarVolume.Top(20));
 
         // Set a Scheduled Event to rebalance at the start of each day with the daily indicator signals.
-        Schedule.On(
-            DateRules.EveryDay(),
-            TimeRules.At(9, 31),
-            Rebalance
-        );
+        Schedule.On(DateRules.EveryDay(), TimeRules.At(9, 31), Rebalance);
     }
 
     private void Rebalance()
@@ -92,6 +88,7 @@
     }
 }</pre>
     <pre class="python">class AutomaticIndicatorAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2021, 2, 1)
@@ -100,11 +97,7 @@
         self._universe = self.add_universe(self.universe.dollar_volume.top(20))
 
         # Set a Scheduled Event to rebalance at the start of each day with the daily indicator signals.
-        self.schedule.on(
-            self.date_rules.every_day(),
-            self.time_rules.at(9, 31),
-            self._rebalance
-        )
+        self.schedule.on(self.date_rules.every_day(), self.time_rules.at(9, 31), self._rebalance)
                 
     def _rebalance(self) -&gt; None:
         # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trend is upward and accelerating.
