@@ -103,5 +103,5 @@ var optionModel = OptionPricingModelType.ForwardTree;</pre>
     </div>
 </ol>
 
-<img class='python docs-image' src='<?=$imgLinkPy?>'>
+<img class='python docs-image' alt='DataFrame result of the preceding code snippets, containing the greeks and IV history.' src='<?=$imgLinkPy?>'>
 <p class='python'>The DataFrame can have NaN entries if there is no data for the contracts or the underlying asset at a moment in time.</p>
