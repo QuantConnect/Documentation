@@ -101,8 +101,11 @@
                 
     def _rebalance(self) -&gt; None:
         # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trend is upward and accelerating.
-        symbols_to_buy = [kvp.key for kvp in self._universe.members
-            if kvp.value.price &gt; kvp.value.ema.current.value &gt; kvp.value.sma.current.value]
+        securities = [self.securities[symbol] for symbol in self._universe.selected]
+        symbols_to_buy = [
+            security.symbol for security in securities 
+            if security.price > security.ema.current.value > security.sma.current.value
+        ]
 
         # Equally invest in the selected stocks to evenly distribute the capital risk.
         count = len(symbols_to_buy)
