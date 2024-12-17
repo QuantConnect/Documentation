@@ -1,4 +1,4 @@
-<p>The following examples demonstrate some common practices for handling option assignment.</p>
+<p>The following examples demonstrate some common practices for handling Option assignment.</p>
 
 <h4>Example 1: Liquidate After Assignment</h4>
 <p>
@@ -76,11 +76,11 @@
 </div>
 
 <h4>Example 2: Wheel Strategy</h4>
-<p>The following algorithm demonstrates a <a href='/research/17871/automating-the-wheel-strategy/'>wheel Option strategy</a>. The strategy is split into separate parts: sell puts and sell covered call.</p>
+<p>The following algorithm demonstrates a <a href='/research/17871/automating-the-wheel-strategy/'>wheel Option strategy</a>. The strategy is split into separate parts to generate consistent income: selling puts and selling covered call.</p>
 <div class="section-example-container">
     <pre class="csharp">public class WheelStrategyAlgorithm : QCAlgorithm
 {
-    // OTM threshold: the greater its value, the lower the risk of assignment, although the premium collected is lowered.
+    // Define the OTM threshold. A greater value means lower risk of assignment but lower premiums to collect.
     private readonly decimal _otmThreshold = 0.05m;
     private Equity _equity;
 
@@ -90,19 +90,22 @@
         SetEndDate(2021, 6, 1);
         SetCash(1000000);
 
-        // Seed the initial price of the security to ensure the first contract selection can make use of the underlying price.
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
-        // Request SPY data for trading, make sure the data normalization mode is raw for fair strike price comparison.
+        // Seed the initial price of the each new security so we can add and trade contracts in the same time step.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Add SPY data for trading. Use raw data normalization mode to enable fair strike price comparison.
         _equity = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
     }
 
     private Symbol GetTargetContract(OptionRight right, decimal targetPrice)
     {
+        // Get the Option chain.
         var chain = OptionChain(_equity.Symbol);
-        // Select the ones with more than 30-day expiry for higher premium and theta value to collect.
+        // Select the contracts that are first to expire after 30 days since they have greater premiums and theta to collect.
         var expiry = chain.Where(x =&gt; x.Expiry &gt; Time.AddDays(30))
             .Min(x =&gt; x.Expiry);
-        // Select the OTM option contract to start the wheel or covered call.
+        // Select the OTM Option contract to start the wheel or covered call.
         Symbol symbol;
         if (right == OptionRight.Call)
         {
@@ -116,7 +119,7 @@
                 .OrderByDescending(x =&gt; x.Strike)
                 .First();
         }
-        // Subscribe to the option contract data for trading.
+        // Add the Option contract to the algorithm.
         return AddOptionContract(symbol).Symbol;
     }
 
@@ -132,13 +135,13 @@
 
     public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
     {
-        // After the put being assigned, look for an OTM call to form a covered call with the assigned underlying position.
+        // After the put is assigned, look for an OTM call to form a covered call with the assigned underlying position.
         var symbol = GetTargetContract(OptionRight.Call, _equity.Price * (1m + _otmThreshold));
         MarketOrder(symbol, -_equity.Holdings.Quantity / 100m);
     }
 }</pre>
     <pre class="python">class WheelStrategyAlgorithm(QCAlgorithm):
-    # OTM threshold: the greater its value, the lower the risk of assignment, although the premium collected is lowered.
+    # Define the OTM threshold. A greater value means lower risk of assignment but lower premiums to collect.
     _otm_threshold = 0.05
 
     def initialize(self):
@@ -146,23 +149,26 @@
         self.set_end_date(2021, 6, 1)
         self.set_cash(1000000)
 
-        # Seed the initial price of the security to ensure the first contract selection can make use of the underlying price.
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
-        # Request SPY data for trading, make sure the data normalization mode is raw for fair strike price comparison.
+        # Seed the initial price of the each new security so we can add and trade contracts in the same time step.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
+        )
+        # Add SPY data for trading. Use raw data normalization mode to enable fair strike price comparison.
         self._equity = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.Raw)
         
-    def _get_target_contract(self, right: OptionRight, target_price: float) -&gt; Symbol:
-        contract_symbols = self.option_chain(self._equity.symbol)
-        # Select the ones with more than 30-day expiry for higher premium and theta value to collect.
-        expiry = min([s.expiry for s in contract_symbols if s.expiry &gt; self.time + timedelta(30)])
-        # Select the OTM option contract to start the wheel or covered call.
-        filtered_symbols = [
-            s for s in contract_symbols 
-            if (s.id.date == expiry and s.id.option_right == right and 
-                (s.id.strike_price &lt;= target_price if right == OptionRight.PUT else s.id.strike_price &gt;= target_price))
-        ]
-        symbol = sorted(filtered_symbols, key=lambda s: s.id.strike_price, reverse=right == OptionRight.PUT)[0]
-        # Subscribe to the option contract data for trading.
+    def _get_target_contract(self, right: OptionRight, target_price: float) -> Symbol:
+        # Get the Option chain.
+        chain = self.option_chain(self._equity.symbol, flatten=True).data_frame
+        # Select the contracts that are first to expire after 30 days since they have greater premiums and theta to collect.
+        expiry_threshold = self.time + timedelta(30)
+        expiry = chain[chain.expiry > expiry_threshold].expiry.min()
+        # Select the OTM Option contract to start the wheel or covered call.
+        symbol = chain[
+            (chain.expiry == expiry) &
+            (chain.right == right) &
+            (chain.strike <= target_price if right == OptionRight.PUT else chain.strike >= target_price)
+        ].sort_values('strike', ascending=right == OptionRight.CALL).index[0]
+        # Add the Option contract to the algorithm.
         return self.add_option_contract(symbol).symbol
 
     def on_data(self, slice: Slice) -&gt; None:
@@ -172,7 +178,7 @@
             self.set_holdings(symbol, -0.2)
     
     def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
-        # After the put being assigned, look for an OTM call to form a covered call with the assigned underlying position.
+        # After the put is assigned, look for an OTM call to form a covered call with the assigned underlying position.
         symbol = self._get_target_contract(OptionRight.CALL, self._equity.price * (1+self._otm_threshold))
         self.market_order(symbol, -self._equity.holdings.quantity / 100)</pre>
 </div>
