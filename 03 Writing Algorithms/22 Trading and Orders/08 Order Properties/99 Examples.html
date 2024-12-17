@@ -36,7 +36,8 @@
         {
             var currentPrice = Securities[_spy].Price;
 
-            // Define the order properties to trade in pre-market. The order will only valid for 3 minutes to avoid stale fills.
+            // Define the order properties to trade in pre-market. The order will only valid for 3 minutes to avoid 
+            // stale fills.
             var orderProperties = new InteractiveBrokersOrderProperties
             {
                 TimeInForce = TimeInForce.GoodTilDate(Time.AddMinutes(3)),
@@ -87,10 +88,11 @@
         self.set_warm_up(timedelta(1))
     
     def _open_position(self) -&gt; None:
-        if self.last_price:
+        if self._last_price:
             current_price = self.securities[self._spy].price
 
-            # Define the order properties to trade in pre-market. The order will only valid for 3 minutes to avoid stale fills.
+            # Define the order properties to trade in pre-market. The order will only valid for 3 minutes to avoid 
+            # stale fills.
             order_properties = OrderProperties()
             order_properties.time_in_force = TimeInForce.good_til_date(self.time + timedelta(minutes=3))
             order_properties.outside_regular_trading_hours = True
@@ -98,7 +100,7 @@
             # Buy if the overnight direction is upward, indicating positive market sentiment.
             # Sell if the overnight direction is downward, indicating negative market sentiment.
             # Note that pre-market orders do not accept market order.
-            quantity = 10 if current_price &gt; self.last_price else -10
+            quantity = 10 if current_price &gt; self._last_price else -10
             self.limit_order(self._spy, quantity, current_price, order_properties=order_properties)    
 
     def _get_last_price(self) -&gt; None:
