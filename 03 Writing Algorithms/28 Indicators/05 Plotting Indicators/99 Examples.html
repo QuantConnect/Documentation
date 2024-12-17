@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for plotting indicators.</p>
 
 <h4>Example 1: SMA Ribbon</h4>
-<p>The following algorithm trades SMA crossings, which involves 5 SMA indicators to form a SMA ribbon. To better visualize them, we can plot the indicators with different colors.</p>
+<p>The following algorithm trades <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>simple moving average</a> (SMA) crossings, which involves five SMA indicators to form an SMA ribbon. To visualize the ribbon, it plots each indicator with a different color.</p>
 <div class="section-example-container">
     <pre class="csharp">public class PlottingIndicatorAlgorithm : QCAlgorithm
 {
@@ -13,31 +13,25 @@
         SetStartDate(2019, 1, 1);
         SetEndDate(2021, 7, 1);
         
-        // Request SPY data for feed to indicator and trading.
+        // Add SPY data to update indicators and trade.
         _spy = AddEquity("SPY", Resolution.Daily).Symbol;
 
-        // Create chart to plot the ribbon. To better visualize the plot, use different colors per series.
+        // Create a chart to plot the ribbon. To better visualize the plot, use different colors per series.
         var chart = new Chart("Ribbon");
-        var priceSeries = new Series("Price", SeriesType.Candle, "$");
-        var sma10Series = new Series("SMA10", SeriesType.Line, "$", Color.Violet);
-        var sma20Series = new Series("SMA20", SeriesType.Line, "$", Color.Blue);
-        var sma30Series = new Series("SMA30", SeriesType.Line, "$", Color.Green);
-        var sma40Series = new Series("SMA40", SeriesType.Line, "$", Color.Yellow);
-        var sma50Series = new Series("SMA50", SeriesType.Line, "$", Color.Red);
-        chart.AddSeries(priceSeries);
-        chart.AddSeries(sma10Series);
-        chart.AddSeries(sma20Series);
-        chart.AddSeries(sma30Series);
-        chart.AddSeries(sma40Series);
-        chart.AddSeries(sma50Series);
+        chart.AddSeries(new Series("Price", SeriesType.Candle, "$"));
+        chart.AddSeries(new Series("SMA10", SeriesType.Line, "$", Color.Violet));
+        chart.AddSeries(new Series("SMA20", SeriesType.Line, "$", Color.Blue));
+        chart.AddSeries(new Series("SMA30", SeriesType.Line, "$", Color.Green));
+        chart.AddSeries(new Series("SMA40", SeriesType.Line, "$", Color.Yellow));
+        chart.AddSeries(new Series("SMA50", SeriesType.Line, "$", Color.Red));
 
         // Create 5 SMA indicators to create the SMA ribbon.
         _smas = new[]{10, 20, 30, 40, 50}.ToDictionary(k =&gt; k, v =&gt;
         {
             var sma = SMA(_spy, v, Resolution.Daily);
-            // Plot the indicator value to create the ribbon when the indicator got updated.
+            // Plot the indicator value to create the ribbon when the indicator updates.
             sma.Updated += (_, point) =&gt; Plot("Ribbon", $"SMA{v}", point.Value);
-            // Warm up the indicators for their readiness to use immediately.
+            // Warm up the indicator so it's ready to use immediately.
             WarmUpIndicator(_spy, sma);
             return sma;
         });
@@ -47,7 +41,7 @@
     {
         if (slice.Bars.TryGetValue(_spy, out var bar))
         {
-            // Plot the candlestick when daily bar received.
+            // Plot the candlestick when you get the daily bar.
             Plot("Ribbon", "Price", bar.Open, bar.High, bar.Low, bar.Close);
 
             // Follow strong upward trend.
@@ -60,7 +54,7 @@
             {
                 SetHoldings(_spy, -1m);
             }
-            // Liquidate positions if trend is less deterministic.
+            // Liquidate positions if the trend is less deterministic.
             else
             {
                 Liquidate();
@@ -70,21 +64,21 @@
 
     public bool IsUptrend(decimal price, IDictionary&lt;int, SimpleMovingAverage&gt; smas)
     {
-        // Uptrend indicated by price is above all SMAs and SMAs are increasing by closer periods.
+        // Uptrend occurs when price is above all SMAs and shorter SMAs are above longer SMAs.
         var smasList = smas.OrderBy(kvp =&gt; kvp.Key)
             .Select(kvp =&gt; kvp.Value)
             .ToList();
-        return Enumerable.Range(1, smasList.Count).All(i =&gt; smasList[i] &lt; smasList[i-1])
+        return Enumerable.Range(1, smasList.Count-1).All(i =&gt; smasList[i] &lt; smasList[i-1])
             &amp;&amp; price &gt; smasList[0];
     }
 
     public bool IsDowntrend(decimal price, IDictionary&lt;int, SimpleMovingAverage&gt; smas)
     {
-        // Downtrend indicated by price is below all SMAs and SMAs are decreasing by closer periods.
+        // Downtrend occurs when price is below all SMAs and shorter SMAs are below longer SMAs.
         var smasList = smas.OrderBy(kvp =&gt; kvp.Key)
             .Select(kvp =&gt; kvp.Value)
             .ToList();
-        return Enumerable.Range(1, smasList.Count).All(i =&gt; smasList[i] &gt; smasList[i-1])
+        return Enumerable.Range(1, smasList.Count-1).All(i =&gt; smasList[i] &gt; smasList[i-1])
             &amp;&amp; price &lt; smasList[0];
     }
 }</pre>
@@ -94,58 +88,52 @@
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2021, 7, 1)
         
-        # Request SPY data for feed to indicator and trading.
-        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        # Add SPY data to update indicators and trade.
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
 
-        # Create chart to plot the ribbon. To better visualize the plot, use different colors per series.
+        # Create a chart to plot the ribbon. To better visualize the plot, use different colors per series.
         chart = Chart("Ribbon")
-        price_series = Series("Price", SeriesType.CANDLE, "$")
-        sma10_series = Series("SMA10", SeriesType.LINE, "$", Color.VIOLET)
-        sma20_series = Series("SMA20", SeriesType.LINE, "$", Color.BLUE)
-        sma30_series = Series("SMA30", SeriesType.LINE, "$", Color.GREEN)
-        sma40_series = Series("SMA40", SeriesType.LINE, "$", Color.YELLOW)
-        sma50_series = Series("SMA50", SeriesType.LINE, "$", Color.RED)
-        chart.add_series(price_series)
-        chart.add_series(sma10_series)
-        chart.add_series(sma20_series)
-        chart.add_series(sma30_series)
-        chart.add_series(sma40_series)
-        chart.add_series(sma50_series)
+        chart.add_series(Series("Price", SeriesType.CANDLE, "$"))
+        chart.add_series(Series("SMA10", SeriesType.LINE, "$", Color.VIOLET))
+        chart.add_series(Series("SMA20", SeriesType.LINE, "$", Color.BLUE))
+        chart.add_series(Series("SMA30", SeriesType.LINE, "$", Color.GREEN))
+        chart.add_series(Series("SMA40", SeriesType.LINE, "$", Color.YELLOW))
+        chart.add_series(Series("SMA50", SeriesType.LINE, "$", Color.RED))
 
         # Create 5 SMA indicators to create the SMA ribbon.
-        self.smas = {n: self.create_sma(n) for n in [10, 20, 30, 40, 50]}
+        self._smas = {n: self._create_sma(n) for n in [10, 20, 30, 40, 50]}
 
-    def create_sma(self, n: int) -&gt; SimpleMovingAverage:
-        sma = self.sma(self.spy, n, Resolution.DAILY)
-        # Plot the indicator value to create the ribbon when the indicator got updated.
+    def _create_sma(self, n: int) -&gt; SimpleMovingAverage:
+        sma = self.sma(self._spy, n, Resolution.DAILY)
+        # Plot the indicator value to create the ribbon when the indicator updates.
         sma.updated += lambda sender, point: self.plot("Ribbon", f"SMA{n}", point.value)
-        # Warm up the indicators for their readiness to use immediately.
-        self.warm_up_indicator(self.spy, sma)
+        # Warm up the indicator so it's ready to use immediately.
+        self.warm_up_indicator(self._spy, sma)
         return sma
 
     def on_data(self, slice: Slice) -&gt; None:
-        bar = slice.bars.get(self.spy)
+        bar = slice.bars.get(self._spy)
         if bar:
-            # Plot the candlestick when daily bar received.
+            # Plot the candlestick when you get the daily bar.
             self.plot("Ribbon", "Price", bar.open, bar.high, bar.low, bar.close)
 
             # Follow strong upward trend.
-            if self.is_uptrend(bar.close, self.smas):
-                self.set_holdings(self.spy, 1)
+            if self._is_uptrend(bar.close, self._smas):
+                self.set_holdings(self._spy, 1)
             # Follow strong downward trend.
-            elif self.is_downtrend(bar.close, self.smas):
-                self.set_holdings(self.spy, -1)
-            # Liquidate positions if trend is less deterministic.
+            elif self._is_downtrend(bar.close, self._smas):
+                self.set_holdings(self._spy, -1)
+            # Liquidate positions if the trend is less deterministic.
             else:
                 self.liquidate()
 
-    def is_uptrend(self, price: float, smas: List[SimpleMovingAverage]) -&gt; bool:
-        # Uptrend indicated by price is above all SMAs and SMAs are increasing by closer periods.
+    def _is_uptrend(self, price: float, smas: List[SimpleMovingAverage]) -&gt; bool:
+        # Uptrend occurs when price is above all SMAs and shorter SMAs are above longer SMAs.
         smas_list = [x[1].current.value for x in sorted(smas.items(), key=lambda x: x[0])]
         return all([smas_list[i] &lt; smas_list[i-1] for i in range(1, len(smas_list))]) and price &gt; smas_list[0]
 
-    def is_downtrend(self, price: float, smas: List[SimpleMovingAverage]) -&gt; bool:
-        # Downtrend indicated by price is below all SMAs and SMAs are decreasing by closer periods.
+    def _is_downtrend(self, price: float, smas: List[SimpleMovingAverage]) -&gt; bool:
+        # Downtrend occurs when price is below all SMAs and shorter SMAs are below longer SMAs.
         smas_list = [x[1].current.value for x in sorted(smas.items(), key=lambda x: x[0])]
         return all([smas_list[i] &gt; smas_list[i-1] for i in range(1, len(smas_list))]) and price &lt; smas_list[0]</pre>
 </div>
