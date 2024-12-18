@@ -1,0 +1,49 @@
+<p>You can train the model at the beginning of your algorithm and you can periodically re-train it as the algorithm executes.</p>
+
+<h4>Warm Up Training Data</h4>
+<p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
+<div class="section-example-container">
+    <pre class="python">def initialize(self) -&gt; None:
+    # Create a rolling window to save the spx and ndx price for fitting the copula on their relationship.
+    # We use the recent 1 year to fit the model.
+    self.windows = {self.spx: RollingWindow[float](252), self.ndx: RollingWindow[float](252)}
+    # Warm up the rolling windows with historical data for its immediate use.
+    for bar in self.history[TradeBar](self.spx, 252, Resolution.DAILY):
+        self.windows[self.spx].add(bar.close)
+    for bar in self.history[TradeBar](self.ndx, 252, Resolution.DAILY):
+        self.windows[self.ndx].add(bar.close)</pre>
+</div>
+
+<h4>Define a Training Method</h4>
+<p>To train the model, define a method that fits the model with the training data.</p>
+<div class="section-example-container">
+    <pre class="python">def fit_copula(self) -&gt; None:
+    # Obtain the historical price series of the spx and ndx for fitting the copula.
+    # Note that we need to invert the rolling window series.
+    spx_prices = np.array(list(self.windows[self.spx]))[::-1]
+    ndx_prices = np.array(list(self.windows[self.ndx]))[::-1]
+    # Fit the copula.
+    self.copula_trader.fit_bivariate_copula(spx_prices, ndx_prices)</pre>
+</div>
+
+<h4>Set Training Schedule</h4>
+<p>To train the model at the beginning of your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method.</p>
+<div class="section-example-container">
+    <pre class="python"># Fit the copula model for initial usage.
+self.train(self.fit_copula)</pre>
+</div>
+
+<p>To periodically re-train the model as your algorithm executes, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">Train</code><code class="python">train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
+<div class="section-example-container">
+    <pre class="python"># Recalibrate the copula on every month to keep its accuracy updated.
+self.train(self.date_rules.month_start(), self.time_rules.at(8,0), self.fit_copula)</pre>
+</div>
+
+<h4>Update Training Data</h4>
+<p>To update the training data as the algorithm executes, make use of a <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">consolidator</a> to automatically update the rolling windows when a daily bar is consolidated through a consolidator handler.</p>
+<div class="section-example-container">
+    <pre class="python">def initialize(self) -&gt; None:
+    # Set a daily consolidator to update the rolling windows automatically.
+    self.consolidate(self.spx, Resolution.DAILY, lambda bar: self.windows[bar.symbol].add(bar.close))
+    self.consolidate(self.ndx, Resolution.DAILY, lambda bar: self.windows[bar.symbol].add(bar.close))</pre>
+</div>

@@ -1,0 +1,238 @@
+<p>In this example, we trade option mispricing arbitration using the copula model. More precisely, we are using the copula model to generate forward price series samples to price the options and do arbitration between options of the 2 correlated underlying. Since the copula can provide a distribution more accurately, we have an edge on the option pricing information.</p>
+
+<p>Follow the below steps to trade the above logic:</p>
+<ol>
+    <li>Create a method to generate the forward price series samples of the 2 underlyings.</li>
+    <div class="section-example-container">
+        <pre class="python">class CopulaTrader:
+    def _get_simulated_paths(self, current_security1_price: float, current_security2_price: float, expiry: datetime, current: datetime, n_samples: int) -&gt; Tuple[float, float]:
+        # Get the year till expiry.
+        dtm = (expiry - current).total_seconds() / 60 / 60 / 24
+        
+        future_log_prices = np.log(np.array([[[current_security1_price, current_security2_price]] * n_samples]))
+        # Convert to estimated trading days left.
+        for _ in range(int(dtm / 252 * 365)):
+            # The future price is simulated from N stochastic simulations.
+            future_log_diff = self.copula.sample(n_samples)
+            # Convert the daily log-difference into future price.
+            security1_log_diff = self.security1_scaler.inverse_transform(future_log_diff[:, 0].reshape(-1, 1))
+            security2_log_diff = self.security2_scaler.inverse_transform(future_log_diff[:, 1].reshape(-1, 1))
+            log_diff = np.column_stack((security1_log_diff, security2_log_diff))
+            future_log_prices = np.concatenate([future_log_prices, np.array([future_log_prices[-1, :, :] + log_diff])], axis=0)
+        
+        self.paths = np.exp(future_log_prices)
+        # Return the ultimate price at the last iteration, convert back to price from log-price.
+        return self.paths[-1], dtm</pre>
+    </div>
+
+    <li>Create a method to price the options through averaging the payoff over all simulated paths.</li>
+    <div class="section-example-container">
+        <pre class="python">class CopulaTrader:
+    def _calculate_fair_option_price(self, future_prices: np.ndarray, ttm: float, strike: float, right: OptionRight, interest_rate: float, dividend_yield: float, security2: bool = False) -&gt; float:
+        select_col = 1 if security2 else 0
+        future_prices = future_prices[:, select_col]
+        
+        # Average of option payoffs among simulation paths. Make use of vectorize calculation here instead of util method.
+        option_prices = np.maximum(future_prices - strike, 0) if right == OptionRight.CALL else np.maximum(strike - future_prices, 0)
+        # Adjust the continuous dividend payoff yield and interest rate.
+        return np.exp((dividend_yield - interest_rate) * ttm) * np.mean(option_prices)</pre>
+    </div>
+
+    <li>Create a method to calculate the probability of winning (price converges to our model).</li>
+    <p>We use the ratio of paths that the underlyings ever reach the strikes of the options, since ATM options are most efficiently priced and equal among all option pricing engine.</p>
+    <div class="section-example-container">
+        <pre class="python">class CopulaTrader:
+    def _ratio_reached(self, data: np.ndarray, point: np.ndarray) -&gt; float:
+        # Count how many paths ever reached the point.
+        count = 0
+        for i in range(data.shape[1]):
+            if point[0] &lt;= max(data[:, i, 0]) and point[1] &lt;= max(data[:, i, 1]) and point[0] &gt;= min(data[:, i, 0]) and point[1] &gt;= min(data[:, i, 1]):
+                count += 1
+        # Calculate the ratio of paths that the point has ever been reached.
+        return count / data.shape[1]</pre>
+    </div>
+
+    <li>Create a method to calculate the aboves and output the mispriced option pairs.</li>
+    <div class="section-example-container">
+        <pre class="python">class CopulaTrader:
+    def scan_option_mispricing_combinations(self, security1_options: List[OptionContract], security2_options: List[OptionContract], current_security1_price: float, current_security2_price: float,
+        current: datetime, n_samples: int = 1000) -&gt; List[Tuple[OptionContract, OptionContract, float, float]]:
+        # Get the simluated price series till the expiry. Note that you should use single expiry for all contracts for easier handling and stable theta.
+        future_prices, dtm = self._get_simulated_paths(current_security1_price, current_security2_price, security1_options[0].expiry, current, n_samples)
+        
+        mispriced_pairs = []
+        interest_rate = self.interest_rate_provider.get_interest_rate(current)
+        security1_dividend_yield = self.security1_dividend_yield_provider.get_dividend_yield(current)
+        security2_dividend_yield = self.security2_dividend_yield_provider.get_dividend_yield(current)
+
+        # Separate call and put options to avoid mixed right pairs, in order to keep theta close to 0.
+        for right in [OptionRight.CALL, OptionRight.PUT]:
+            sorted_security1_options = sorted([contract for contract in security1_options if contract.right == right], key=lambda x: x.strike)
+            sorted_security2_options = sorted([contract for contract in security2_options if contract.right == right], key=lambda x: x.strike)
+            ttm = dtm / 365
+
+            # Calculate the security1-security2 fair prices and spot any significant mispricing.
+            for i, security1_option in enumerate(sorted_security1_options):
+                for j, security2_option in enumerate(sorted_security2_options):
+                    # Skip the pairs already being traded.
+                    if (security1_option.symbol, security2_option.symbol) in [(y.symbol for y in x[0]) for x in self.traded_pairs]:
+                        continue
+                    
+                    # Calculate the probability of price converges. Since the ATM options are the most efficiently priced, we use that as a proxy for our win rate.
+                    # The probability will be based on the whether the simulated paths have ever reached the point (so it was ever ATM).
+                    prob = self._ratio_reached(self.paths, [security1_option.strike, security2_option.strike])
+
+                    security1_price = self._calculate_fair_option_price(future_prices, ttm, security1_option.strike, right, interest_rate, security1_dividend_yield, False)
+                    security2_price = self._calculate_fair_option_price(future_prices, ttm, security2_option.strike, right, interest_rate, security2_dividend_yield, True)
+                    # Add to trade stacks only if the mispricing is opposite in direction and above profit threshold.
+                    security1_price_divergence = security1_price - security1_option.ask_price
+                    security2_price_divergence = security2_price - security2_option.bid_price
+                    price_divergence1 = security1_price_divergence - security2_price_divergence
+                    price_divergence2 = security1_price - security1_option.bid_price - security2_price + security2_option.ask_price
+                    price_divergence = price_divergence1 if abs(price_divergence1) &gt; abs(price_divergence2) else price_divergence1
+                    if abs(price_divergence) &gt; self.misprice_threshold and np.sign(security1_price_divergence) != np.sign(security2_price_divergence):
+                        mispriced_pairs.append((security1_option, security2_option, price_divergence, prob))
+        
+        self._algorithm.debug(f"Found {len(mispriced_pairs)} mispriced option contract pairs.")
+
+        return mispriced_pairs</pre>
+    </div>
+
+    <li>Create a method to get the optimal position sizings for the top-expected-return trading opportnities.</li>
+    <div class="section-example-container">
+        <pre class="python">class CopulaTrader:
+    def trade_options(self, mispriced_pairs: List[Tuple[OptionContract, OptionContract, float, float]], fund: float, contract_multiplier: int = 100) -&gt; Dict[OptionContract, int]:
+        orders = {}
+        total_pct = 0
+
+        # Only trade on the top 10 expected return pairs.
+        top_expected_ret = sorted(mispriced_pairs, key=lambda x: abs(x[2]) * x[3], reverse=True)[:10]
+        for security1_option, security2_option, price_divergence, prob in top_expected_ret:
+            # Calculate the order size of the mispricing pairs.
+            contract1_price = security1_option.ask_price if price_divergence &gt; 0 else security1_option.bid_price
+            contract2_price = security2_option.ask_price if price_divergence &lt; 0 else security2_option.bid_price
+            security1_option_order_size, security2_option_order_size, order_pct = self._calculate_order_size(price_divergence, fund, prob, contract1_price, contract2_price, contract_multiplier)
+            # Only order those with positive Kelly sizing and keep the exposure to cash only.
+            # Keep 5% buffer to avoid order errors.
+            if order_pct and total_pct + order_pct &lt;= 0.95:
+                if security1_option not in orders:
+                    orders[security1_option] = 0
+                if security2_option not in orders:
+                    orders[security2_option] = 0
+            # Aggregate the overall order sizes between all pairs.
+                orders[security1_option] += security1_option_order_size
+                orders[security2_option] += security2_option_order_size
+                total_pct += order_pct
+                self.traded_pairs.append(((security1_option, security2_option), (security1_option_order_size, security2_option_order_size)))
+
+        return orders
+            
+    def _calculate_order_size(self, price_divergence: float, fund: float, prob_win: float, security1_option_price: float, security2_option_price: float, contract_multiplier: int) -&gt; Tuple[int, int, float]:
+        # The profit percentage is based on the option prices.
+        capital = security1_option_price + security2_option_price
+        profit_pct = abs(price_divergence) / capital
+        # Assume no recovery at expiry if the price does not converges, while no extra loss will be paid.
+        # To improve, you may use a continuous distribution to model the aggregated profit.
+        # Keep at most 5% per trade, since option has leverage effect.
+        order_pct = min(prob_win - (1 - prob_win) / profit_pct, 0.05)
+        # The order size should be the shared by both side of the legs.
+        order_size = order_pct * fund / capital // contract_multiplier
+        order_pct = order_size * capital / fund
+        # If the optimal order size is negative, do not place order.
+        if order_pct &lt; 0:
+            return 0, 0, 0
+        # If price divergence above 0, meaning security1 option is underpriced and the security2 option is overpriced, so we buy the security1 option and sell the security2 option.
+        if price_divergence &gt; 0:
+            return order_size, -order_size, order_pct
+        # Vice versa otherwise.
+        return -order_size, order_size, order_pct</pre>
+    </div>
+
+    <li>Create a method to handle the portfolio and exit the positions when price converges.</li>
+    <div class="section-example-container">
+        <pre class="python">class CopulaTrader:
+    def exit_trades(self, current: datetime) -&gt; Dict[OptionContract, int]:
+        # Get the parameters for fair price calculation.
+        interest_rate = self.interest_rate_provider.get_interest_rate(current)
+        security1_dividend_yield = self.security1_dividend_yield_provider.get_dividend_yield(current)
+        security2_dividend_yield = self.security2_dividend_yield_provider.get_dividend_yield(current)
+
+        exit_positions = {}
+        for ((contract1, contract2), (size1, size2)) in self.traded_pairs.copy():
+            # Get the simluated price series till the expiry.
+            future_prices = self.paths[-1]
+            ttm = (contract1.expiry - current).total_seconds() / 60 / 60 / 24 / 365
+            # Check if the price discrepancy converges (relatively).
+            contract1_price = self._calculate_fair_option_price(future_prices, ttm, contract1.strike, contract1.right, interest_rate, security1_dividend_yield, False)
+            contract2_price = self._calculate_fair_option_price(future_prices, ttm, contract2.strike, contract2.right, interest_rate, security2_dividend_yield, True)
+            contract1.mid_price = (contract1.bid_price + contract1.ask_price) * 0.5
+            contract2.mid_price = (contract2.bid_price + contract2.ask_price) * 0.5
+            contract1_divergence = contract1_price - contract1.mid_price
+            contract2_divergence = contract2_price - contract2.mid_price
+            price_divergence = contract1_divergence - contract2_divergence
+            
+            # If so, place the opposite size to exit the positions.
+            if (size1 &gt; 0 and price_divergence &lt;= 0) or (size1 &lt; 0 and price_divergence &gt;= 0):
+                if contract1 not in exit_positions:
+                    exit_positions[contract1] = 0
+                if contract2 not in exit_positions:
+                    exit_positions[contract2] = 0
+                exit_positions[contract1] -= size1
+                exit_positions[contract2] -= size2
+                # Remove the record and allow the pair to be traded again.
+                self.traded_pairs.remove(((contract1, contract2), (size1, size2)))
+
+        return exit_positions</pre>
+    </div>
+
+    <li>Create a method in the base algorithm to open trades. Schedule its run.</li>
+    <p>To simply implementation, this example will only open trades after the previous positions are all expired, but you can change it to scan by some time interval.</p>
+    <div class="section-example-container">
+        <pre class="python">class CopulaOptionTradingAlgorithm(QCAlgorithm):
+    def open_trades(self) -&gt; None:
+        # Obtain the option chain of the spx and the ndx for trading.
+        spx_options = self.option_chain(self.spx)
+        ndx_options = self.option_chain(self.ndx)
+        # Only use European options since the computation of averaging option payoff to price is more efficient.
+        # Only include the ones within 5% of the current price, since they are more liquid and less susceptible from slippage.
+        spx_price = self.securities[self.spx].price
+        ndx_price = self.securities[self.ndx].price
+        european_spx_options = [contract for contract in spx_options if contract.style == OptionStyle.EUROPEAN and spx_price * 1.05 &gt; contract.strike &gt; spx_price * 0.95]
+        european_ndx_options = [contract for contract in ndx_options if contract.style == OptionStyle.EUROPEAN and ndx_price * 1.05 &gt; contract.strike &gt; ndx_price * 0.95]
+        # Get the nearest expiry after 7 days to trade them. We use a single expiry to trade with more stable theta.
+        expiry = min(set(contract.expiry for contract in european_spx_options if contract.expiry &gt; self.time + timedelta(7)) \
+            .intersection(set(contract.expiry for contract in european_ndx_options if contract.expiry &gt; self.time + timedelta(7))))
+        filtered_spx_options = [contract for contract in european_spx_options if contract.expiry == expiry]
+        filtered_ndx_options = [contract for contract in european_ndx_options if contract.expiry == expiry]
+
+        # Use simulations to price options by the fitted copula distributions to spot mispricing option pairs.
+        mispriced_option_pairs = self.copula_trader.scan_option_mispricing_combinations(filtered_spx_options, filtered_ndx_options, spx_price, ndx_price, self.time, self.n_samples)
+        # Obtain the trading plan from the mispriced options, calculated using Kelly Criterion.
+        trade_plan = self.copula_trader.trade_options(mispriced_option_pairs, self.portfolio.cash, 100)
+        # Order both plans. Request the option contract data to trade it.
+        for contract, size in trade_plan.items():
+            symbol = self.add_option_contract(contract).symbol
+            self.market_order(symbol, size)
+
+        # Schedule the next option trades to be after the current selected expiry to simplify path calculation.
+        # You do not need this part if you opt to scan trading opportunities every some time interval. Just call this method in on_data method will work.
+        next_trading_day = self.securities[self.spx].exchange.hours.get_next_trading_day(expiry)
+        self.schedule.on(
+            self.date_rules.on(next_trading_day),
+            self.time_rules.after_market_open(self.spx, 1), 
+            self.open_trades
+        )</pre>
+    </div>
+
+    <li>Scan every N minutes to exit the positions if the price discrepancy between a pair is converged.</p>
+    <div class="section-example-container">
+        <pre class="python">class CopulaOptionTradingAlgorithm(QCAlgorithm):
+    def on_data(self, slice: Slice) -&gt; None:
+        # Scan every 5 minutes to check price convergence.
+        if slice.time.minute % 5 == 0:
+            exit_plan = self.copula_trader.exit_trades(self.time)
+            # Exit the paired positions when the price converges.
+            for contract, size in exit_plan.items():
+                self.market_order(contract.symbol, size)</pre>
+    </div>
+</ol>
