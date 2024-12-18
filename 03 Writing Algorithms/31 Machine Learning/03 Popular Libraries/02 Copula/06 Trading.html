@@ -190,33 +190,37 @@
     <div class="section-example-container">
         <pre class="python">class CopulaOptionTradingAlgorithm(QCAlgorithm):
     def open_trades(self) -&gt; None:
-        # Obtain the option chain of the spx and the ndx for trading.
-        spx_options = self.option_chain(self.spx)
-        ndx_options = self.option_chain(self.ndx)
-        # Only use European options since the computation of averaging option payoff to price is more efficient.
-        # Only include the ones within 5% of the current price, since they are more liquid and less susceptible from slippage.
-        spx_price = self.securities[self.spx].price
-        ndx_price = self.securities[self.ndx].price
-        european_spx_options = [contract for contract in spx_options if contract.style == OptionStyle.EUROPEAN and spx_price * 1.05 &gt; contract.strike &gt; spx_price * 0.95]
-        european_ndx_options = [contract for contract in ndx_options if contract.style == OptionStyle.EUROPEAN and ndx_price * 1.05 &gt; contract.strike &gt; ndx_price * 0.95]
-        # Get the nearest expiry after 7 days to trade them. We use a single expiry to trade with more stable theta.
-        expiry = min(set(contract.expiry for contract in european_spx_options if contract.expiry &gt; self.time + timedelta(7)) \
-            .intersection(set(contract.expiry for contract in european_ndx_options if contract.expiry &gt; self.time + timedelta(7))))
-        filtered_spx_options = [contract for contract in european_spx_options if contract.expiry == expiry]
-        filtered_ndx_options = [contract for contract in european_ndx_options if contract.expiry == expiry]
+        next_trading_day = self.securities[self.spx].exchange.hours.get_next_trading_day(self.time)
+        
+        if self.copula_trader.copula is not None:
+            self.copula_trader.traded_pairs = []
+            # Obtain the option chain of the spx and the ndx for trading.
+            spx_options = self.option_chain(self.spx)
+            ndx_options = self.option_chain(self.ndx)
+            # Only use European options since the computation of averaging option payoff to price is more efficient.
+            # Only include the ones within 5% of the current price, since they are more liquid and less susceptible from slippage.
+            spx_price = self.securities[self.spx].price
+            ndx_price = self.securities[self.ndx].price
+            european_spx_options = [contract for contract in spx_options if contract.style == OptionStyle.EUROPEAN and spx_price * 1.05 &gt; contract.strike &gt; spx_price * 0.95]
+            european_ndx_options = [contract for contract in ndx_options if contract.style == OptionStyle.EUROPEAN and ndx_price * 1.05 &gt; contract.strike &gt; ndx_price * 0.95]
+            # Get the nearest expiry after 7 days to trade them. We use a single expiry to trade with more stable theta.
+            expiry = min(set(contract.expiry for contract in european_spx_options if contract.expiry &gt; self.time + timedelta(7)) \
+                .intersection(set(contract.expiry for contract in european_ndx_options if contract.expiry &gt; self.time + timedelta(7))))
+            filtered_spx_options = [contract for contract in european_spx_options if contract.expiry == expiry]
+            filtered_ndx_options = [contract for contract in european_ndx_options if contract.expiry == expiry]
 
-        # Use simulations to price options by the fitted copula distributions to spot mispricing option pairs.
-        mispriced_option_pairs = self.copula_trader.scan_option_mispricing_combinations(filtered_spx_options, filtered_ndx_options, spx_price, ndx_price, self.time, self.n_samples)
-        # Obtain the trading plan from the mispriced options, calculated using Kelly Criterion.
-        trade_plan = self.copula_trader.trade_options(mispriced_option_pairs, self.portfolio.cash, 100)
-        # Order both plans. Request the option contract data to trade it.
-        for contract, size in trade_plan.items():
-            symbol = self.add_option_contract(contract).symbol
-            self.market_order(symbol, size)
+            # Use simulations to price options by the fitted copula distributions to spot mispricing option pairs.
+            mispriced_option_pairs = self.copula_trader.scan_option_mispricing_combinations(filtered_spx_options, filtered_ndx_options, spx_price, ndx_price, self.time, self.n_samples)
+            # Obtain the trading plan from the mispriced options, calculated using Kelly Criterion.
+            trade_plan = self.copula_trader.trade_options(mispriced_option_pairs, self.portfolio.cash, 100)
+            # Order both plans. Request the option contract data to trade it.
+            for contract, size in trade_plan.items():
+                symbol = self.add_option_contract(contract).symbol
+                self.market_order(symbol, size)
 
-        # Schedule the next option trades to be after the current selected expiry to simplify path calculation.
-        # You do not need this part if you opt to scan trading opportunities every some time interval. Just call this method in on_data method will work.
-        next_trading_day = self.securities[self.spx].exchange.hours.get_next_trading_day(expiry)
+            next_trading_day = self.securities[self.spx].exchange.hours.get_next_trading_day(expiry)
+
+        # Schedule the next option trades to be after the current selected expiry/today to simplify path calculation.
         self.schedule.on(
             self.date_rules.on(next_trading_day),
             self.time_rules.after_market_open(self.spx, 1), 
