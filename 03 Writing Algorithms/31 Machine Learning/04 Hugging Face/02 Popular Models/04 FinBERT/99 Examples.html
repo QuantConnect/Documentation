@@ -1,0 +1,312 @@
+<p>The following examples demonstrate usage of the FinBERT model.</p>
+
+<h4>Example 1: 10-day Sentiment Score</h4>
+<p>
+  The following algorithm selects a volatile asset at the beginning of each month. 
+  It gets the <a href='/datasets/tiingo-news-feed'>Tiingo News</a> articles that were released for the asset over the previous 10 days and then feeds them into the pre-trained FinBERT model.
+  It then aggregates the sentiment scores of all the news releases.
+  If the aggregated sentiment score is positive, it enters a long position for the month.
+  If it's negative, it enters a short position for the month.
+</p>
+<div class="section-example-container">
+  <pre class="python">import tensorflow as tf
+from transformers import TFBertForSequenceClassification, BertTokenizer, set_seed
+from pathlib import Path
+# endregion
+
+class FinbertBaseModelAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2023, 1, 1)
+        self.set_cash(100_000)
+
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self._universe = self.add_universe(
+            lambda fundamental: [
+                self.history(
+                    [f.symbol for f in sorted(fundamental, key=lambda f: f.dollar_volume)[-10:]], 
+                    timedelta(365), Resolution.DAILY
+                )['close'].unstack(0).pct_change().iloc[1:].std().idxmax()
+            ]
+        )
+
+        set_seed(1, True)
+        
+        # Load the tokenizer and the model
+        model_path = "ProsusAI/finbert"
+        self._tokenizer = BertTokenizer.from_pretrained(model_path, local_files_only=True)
+        self._model = TFBertForSequenceClassification.from_pretrained(model_path, local_files_only=True)
+
+        self._last_rebalance_time = datetime.min
+        self.schedule.on(
+            self.date_rules.month_start(spy, 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+
+        self.set_warm_up(timedelta(30))
+
+    def on_warmup_finished(self):
+        self._trade()
+
+    def on_securities_changed(self, changes):
+        for security in changes.removed_securities:
+            self.remove_security(security.dataset_symbol)
+        for security in changes.added_securities:
+            security.dataset_symbol = self.add_data(TiingoNews, security.symbol).symbol
+
+    def _trade(self):
+        if self.is_warming_up or self.time - self._last_rebalance_time &lt; timedelta(14):
+            return
+
+        # Get the target security.
+        security = self.securities[list(self._universe.selected)[0]]
+
+        # Get the latest news articles.
+        articles = self.history[TiingoNews](security.dataset_symbol, 10, Resolution.DAILY)
+        article_text = [article.description for article in articles]
+        if not article_text:
+            return
+
+        # Prepare the input sentences
+        inputs = self._tokenizer(article_text, padding=True, truncation=True, return_tensors='tf')
+
+        # Get the model outputs
+        outputs = self._model(**inputs)
+
+        # Apply softmax to the outputs to get probabilities
+        scores = tf.nn.softmax(outputs.logits, axis=-1).numpy()
+        self.log(f"{str(scores)}")
+        scores = self._aggregate_sentiment_scores(scores)
+        
+        self.plot("Sentiment Probability", "Negative", scores[0])
+        self.plot("Sentiment Probability", "Neutral", scores[1])
+        self.plot("Sentiment Probability", "Positive", scores[2])
+
+        # Rebalance
+        weight = 1 if scores[2] &gt; scores[0] else -0.25
+        self.set_holdings(security.symbol, weight, True)
+        self._last_rebalance_time = self.time
+
+    def _aggregate_sentiment_scores(self, sentiment_scores):
+        n = sentiment_scores.shape[0]
+        
+        # Generate exponentially increasing weights
+        weights = np.exp(np.linspace(0, 1, n))
+        
+        # Normalize weights to sum to 1
+        weights /= weights.sum()
+        
+        # Apply weights to sentiment scores
+        weighted_scores = sentiment_scores * weights[:, np.newaxis]
+        
+        # Aggregate weighted scores by summing them
+        aggregated_scores = weighted_scores.sum(axis=0)
+        
+        return aggregated_scores</pre>
+</div>
+<div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+    <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+    <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+        <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_530ea2124049753b4c81fb70a0ca2de3.html"></iframe>
+    </div>
+</div>
+
+<h4>Example 2: 30-day Sentiment Score With Fine Tuning</h4>
+<p>
+  The following algorithm selects a volatile asset at the beginning of each month. 
+  It gets the Tiingo News articles that were released for the asset over the previous 30 days to generate the training set.
+  The label is the market return that occurs from the current news release to the next news release.
+  The algorithm then fine-tunes the model, calculates the sentiment, and rebalances the portfolio.
+</p>
+<div class="section-example-container">
+  <pre class="python">import tensorflow as tf
+from transformers import TFBertForSequenceClassification, BertTokenizer, set_seed
+from pathlib import Path
+from datasets import Dataset
+import pytz
+import torch
+# endregion
+
+class FinbertBaseModelAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2023, 1, 1)
+        self.set_cash(100_000)
+
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self._universe = self.add_universe(
+            lambda fundamental: [
+                self.history(
+                    [f.symbol for f in sorted(fundamental, key=lambda f: f.dollar_volume)[-10:]], 
+                    timedelta(365), Resolution.DAILY
+                )['close'].unstack(0).pct_change().iloc[1:].std().idxmax()
+            ]
+        )
+
+        set_seed(1, True)
+        
+        self._last_rebalance_time = datetime.min
+        self.schedule.on(
+            self.date_rules.month_start(spy, 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+
+        self.set_warm_up(timedelta(30))
+
+        self._model_name = "ProsusAI/finbert"
+        self._tokenizer = BertTokenizer.from_pretrained(self._model_name) 
+
+    def on_warmup_finished(self):
+        self._trade()
+
+    def on_securities_changed(self, changes):
+        for security in changes.removed_securities:
+            self.remove_security(security.dataset_symbol)
+        for security in changes.added_securities:
+            security.dataset_symbol = self.add_data(
+                TiingoNews, security.symbol
+            ).symbol
+
+    def _trade(self):
+        if (self.is_warming_up or 
+            self.time - self._last_rebalance_time &lt; timedelta(14)):
+            return
+
+        # Get the target security.
+        security = self.securities[list(self._universe.selected)[0]]
+
+        # Get samples to fine-tune the model
+        samples = pd.DataFrame(columns=['text', 'label'])
+        news_history = self.history(security.dataset_symbol, 30, Resolution.DAILY)
+        if news_history.empty:
+            return
+        news_history = news_history.loc[security.dataset_symbol]['description']
+        asset_history = self.history(
+            security.symbol, timedelta(30), Resolution.SECOND
+        ).loc[security.symbol]['close']
+        for i in range(len(news_history.index)-1):
+            # Get factor (article description).
+            factor = news_history.iloc[i]
+            if not factor:
+                continue
+
+            # Get the label (the market reaction to the news, for now).
+            release_time = self._convert_to_eastern(news_history.index[i])
+            next_release_time = self._convert_to_eastern(news_history.index[i+1])
+            reaction_period = asset_history[
+                (asset_history.index &gt; release_time) &
+                (asset_history.index &lt; next_release_time + timedelta(seconds=1))
+            ]
+            if reaction_period.empty:
+                continue
+            label = (
+                (reaction_period.iloc[-1] - reaction_period.iloc[0]) 
+                / reaction_period.iloc[0]
+            )
+            
+            # Save the training sample.
+            samples.loc[len(samples), :] = [factor, label]
+
+        samples = samples.iloc[-100:]
+        
+        if samples.shape[0] &lt; 10:
+            self.liquidate()
+            return
+        
+        # Classify the market reaction into positive/negative/neutral.
+        # 75% of the most negative labels =&gt; class 0 (negative)
+        # 75% of the most postiive labels =&gt; class 2 (positive)
+        # Remaining labels                =&gt; class 1 (netural)
+        sorted_samples = samples.sort_values(by='label', ascending=False).reset_index(drop=True)
+        percent_signed = 0.75
+        positive_cutoff = (
+            int(percent_signed 
+            * len(sorted_samples[sorted_samples.label &gt; 0]))
+        )
+        negative_cutoff = (
+            len(sorted_samples) 
+            - int(percent_signed * len(sorted_samples[sorted_samples.label &lt; 0]))
+        )
+        sorted_samples.loc[list(range(negative_cutoff, len(sorted_samples))), 'label'] = 0
+        sorted_samples.loc[list(range(positive_cutoff, negative_cutoff)), 'label'] = 1
+        sorted_samples.loc[list(range(0, positive_cutoff)), 'label'] = 2       
+
+        # Load the pre-trained model.
+        model = TFBertForSequenceClassification.from_pretrained(
+            self._model_name, num_labels=3, from_pt=True
+        )
+        # Compile the model.
+        model.compile(
+            optimizer=tf.keras.optimizers.Adam(learning_rate=3e-5), 
+            loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+        )
+        # Create the training dataset.
+        dataset = Dataset.from_pandas(sorted_samples)
+        dataset = dataset.map(
+            lambda sample: self._tokenizer(
+                sample['text'], padding='max_length', truncation=True
+            )
+        )
+        dataset = model.prepare_tf_dataset(
+            dataset, shuffle=True, tokenizer=self._tokenizer
+        )
+        # Train the model.
+        model.fit(dataset, epochs=2)
+        # Prepare the input sentences.
+        inputs = self._tokenizer(
+            list(samples['text'].values), padding=True, truncation=True, 
+            return_tensors='tf'
+        )
+
+        # Get the model outputs.
+        outputs = model(**inputs) 
+
+        # Apply softmax to the outputs to get probabilities.
+        scores = tf.nn.softmax(outputs.logits, axis=-1).numpy()
+        scores = self._aggregate_sentiment_scores(scores)
+        
+        self.plot("Sentiment Probability", "Negative", scores[0])
+        self.plot("Sentiment Probability", "Neutral", scores[1])
+        self.plot("Sentiment Probability", "Positive", scores[2])
+
+        # Rebalance.
+        weight = 1 if scores[2] &gt; scores[0] else -0.25
+        self.set_holdings(security.symbol, weight, True)
+        self._last_rebalance_time = self.time
+
+    def _convert_to_eastern(self, dt):
+        return dt.astimezone(pytz.timezone('US/Eastern')).replace(tzinfo=None)
+
+    def _aggregate_sentiment_scores(self, sentiment_scores):
+        n = sentiment_scores.shape[0]
+        
+        # Generate exponentially increasing weights
+        weights = np.exp(np.linspace(0, 1, n))
+        
+        # Normalize weights to sum to 1
+        weights /= weights.sum()
+        
+        # Apply weights to sentiment scores
+        weighted_scores = sentiment_scores * weights[:, np.newaxis]
+        
+        # Aggregate weighted scores by summing them
+        aggregated_scores = weighted_scores.sum(axis=0)
+        
+        return aggregated_scores</pre>
+</div>
+<div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+    <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+    <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+        <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_68a7bf0fa1c605b266e8058d6cf07ada.html"></iframe>
+    </div>
+</div>
+
+<p>These algorithms require a GPU node.</p>
