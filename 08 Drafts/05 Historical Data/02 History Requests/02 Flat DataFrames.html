@@ -1,0 +1,27 @@
+<p class='csharp'>To get a DataFrame of historical data, use Python.</p>
+
+<div class='python'>
+  <p>
+    Most history requests return a flat DataFrame by default, where there is one column for each data point attribute.
+    Universe history requests return a Series where the values in the Series are lists of the universe data objects.
+    For example, the following code snippet returns Series where each value is a <code>List[ETFConstituentUniverse]</code>:
+  </p>
+
+  <div class="section-example-container">
+      <pre class="python"># Add a ETF constituents universe for SPY.
+universe = self.add_universe(self.universe.etf('SPY'))
+# Get the trailing 5 days of universe data.
+history = self.history(universe, 5, Resolution.DAILY)</pre>
+  </div>
+
+  <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-request-series-of-lists.png' alt='Pandas series where each value is a list of ETFConstituentsUniverse objects.'>
+
+  <p>To get the data into a DataFrame instead, set the <code>flatten</code> argument to <code>True</code>. In this case, the DataFrame has one column for each data point attribute.</p>
+  <div class="section-example-container">
+      <pre class="python"># Get the trailing 5 days of universe data in DataFrame format 
+# so you can perform DataFrame wrangling operations.
+history = self.history(universe, 5, Resolution.DAILY, flatten=True)</pre>
+  </div>
+
+  <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-request-flat-dataframe.png' alt='Pandas DataFrame with columns for the ETFConstituentsUniverse object attributes.'>
+</div>
