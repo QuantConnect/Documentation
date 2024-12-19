@@ -14,9 +14,9 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
 
 <div class="section-example-container">
     <pre class="csharp">// Get the dividends that a stock paid over the last 2 years. 
-var history = History&lt;Dividend&gt;(symbol, TimeSpan.FromDays(5*365);</pre>
+var history = History&lt;Dividend&gt;(symbol, TimeSpan.FromDays(2*365);</pre>
     <pre class="python"># Get the dividends that a stock paid over the last 2 years in DataFrame format. 
-history = self.history(Dividend, symbol, timedelta(5*365))</pre>
+history = self.history(Dividend, symbol, timedelta(2*365))</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical dividend payments for a stocks.'>
@@ -25,5 +25,5 @@ history = self.history(Dividend, symbol, timedelta(5*365))</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the dividends that a stock paid over the last 2 years in Dividend format. 
-history = self.history[Dividend](symbol, timedelta(5*365))</pre>
+history = self.history[Dividend](symbol, timedelta(2*365))</pre>
 </div>
