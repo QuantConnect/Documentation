@@ -29,6 +29,6 @@ history = self.history(universe, timedelta(30), flatten=True)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the historical universe data over the last 30 days in a Series where
-the values in the series are lists of the universe selection objects.
+# the values in the series are lists of the universe selection objects.
 history = self.history(universe, timedelta(30), flatten=False)</pre>
 </div>
