@@ -1,0 +1,44 @@
+<p>The following examples demonstrate some common practices for implementing manual universe selection model.</p>
+
+<h4>Example 1: Crypto List Selection Model</h4>
+<p>The following algorithm selects a list of preset cryptos, given we have information that they will perform better. So, we can make use of <code>ManualUniverseSelectionModel</code> to select this list and buy the listed cryptos.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkManualUniverseSelectionAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2024, 12, 1);
+        SetCash(100000);
+        
+        // Add universe selection model to select the most liquid cryptos manually.
+        var symbols = new [] {
+            QuantConnect.Symbol.Create("BTCUSD", SecurityType.Crypto, Market.Coinbase),
+            QuantConnect.Symbol.Create("ETHUSD", SecurityType.Crypto, Market.Coinbase)
+        };
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+
+        // Sent insights to buy and hold the most liquid cryptos.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // Evenly dissipate the capital risk among selected cryptos.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}</pre>
+    <pre class="python">class FrameworkManualUniverseSelectionAlgorithm(QCAlgorithm):
+	def initialize(self) -&gt; None:
+		self.set_start_date(2019, 1, 1)
+		self.set_end_date(2024, 12, 1)
+		self.set_cash(100000)
+	
+		# Add universe selection model to select the most liquid cryptos manually.
+		symbols = [
+			Symbol.create("BTCUSD", SecurityType.CRYPTO, Market.COINBASE), 
+			Symbol.create("ETHUSD", SecurityType.CRYPTO, Market.COINBASE)
+		]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))
+	
+		# Sent insights to buy and hold the most liquid cryptos for a week.
+		self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+		# Evenly dissipate the capital risk among selected cryptos.
+		self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
+</div>
