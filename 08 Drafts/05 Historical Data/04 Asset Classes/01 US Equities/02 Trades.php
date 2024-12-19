@@ -1,13 +1,14 @@
 <?
 $imgLink = "https://cdn.quantconnect.com/i/tu/history-tradebar-dataframe-us-equities.png";
+$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#05-Ticks";
 ?>
 
 <p class='csharp'>
-  To get historical trade data, call the <code>History&lt;TradeBar&gt;</code> method with an asset's <code>Symbol</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>trade data</a>, call the <code>History&lt;TradeBar&gt;</code> method with an asset's <code>Symbol</code>.
 </p>
 
 <p class='python'>
-  To get historical trade data, call the <code>history</code> method with the <code>TradeBar</code> type and an asset's <code>Symbol</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>trade data</a>, call the <code>history</code> method with the <code>TradeBar</code> type and an asset's <code>Symbol</code>.
   This method returns a DataFrame with columns for the open, high, low, close, and volume.
 </p>
 
