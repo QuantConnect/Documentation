@@ -27,3 +27,5 @@ history = self.history(<?=$datasetClass?>, dataset_symbol, 5, Resolution.DAILY)<
     <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in <?=$datasetClass?> format. 
 history = self.history[<?=$datasetClass?>](symbol, 5, Resolution.DAILY)</pre>
 </div>
+
+<p>For information on historical data for other alternative datasets, see the documentation in the <a href='/datasets/'>Dataset Market</a>.</p>
