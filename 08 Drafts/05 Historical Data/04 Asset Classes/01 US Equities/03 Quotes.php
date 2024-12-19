@@ -15,9 +15,9 @@ $resolutionLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equit
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the 5 trailing daily QuoteBar objects of an asset. 
+    <pre class="csharp">// Get the 5 trailing minute QuoteBar objects of an asset. 
 var history = History&lt;TradeBar&gt;(symbol, 5, Resolution.Minute);</pre>
-    <pre class="python"># Get the 5 trailing daily QuoteBar objects of an asset in DataFrame format. 
+    <pre class="python"># Get the 5 trailing minute QuoteBar objects of an asset in DataFrame format. 
 history = self.history(QuoteBar, symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
@@ -26,7 +26,7 @@ history = self.history(QuoteBar, symbol, 5, Resolution.MINUTE)</pre>
 <p class='python'>To get a list of <code>QuoteBar</code> objects instead of a DataFrame, call the <code>history[QuoteBar]</code> method.</p>
 
 <div class="python section-example-container">
-    <pre class="python"># Get the 5 trailing daily QuoteBar objects of an asset in QuoteBar format. 
+    <pre class="python"># Get the 5 trailing minute QuoteBar objects of an asset in QuoteBar format. 
 history = self.history[QuoteBar](symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
