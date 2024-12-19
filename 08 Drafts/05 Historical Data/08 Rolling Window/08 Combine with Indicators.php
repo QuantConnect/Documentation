@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/indicators/historical-values.html"); ?>
