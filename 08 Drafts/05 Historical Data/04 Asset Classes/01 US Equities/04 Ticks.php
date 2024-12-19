@@ -8,7 +8,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-tick-dataframe-us-equities
 </p>
 
 <p class='python'>
-  To get historical trade data, call the <code>history</code> method with an asset's <code>Symbol</code> and <code>Resolution.Tick</code>.
+  To get historical tick data, call the <code>history</code> method with an asset's <code>Symbol</code> and <code>Resolution.TICK</code>.
   This method returns a DataFrame that contains data on bids, asks, and trades.
 </p>
 
