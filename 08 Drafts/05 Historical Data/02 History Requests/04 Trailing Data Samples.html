@@ -1,0 +1,19 @@
+<p>
+  To get historical data for a trailing time period, call <code class='python'>history</code><code class='csharp'>History</code> method with an an integer and a <code>Resolution</code>. 
+  For example, if you pass an asset <code>Symbol</code>, 15, and <code class='python'>Resolution.MINUTE</code><code class='python'>Resolution.Minute</code> as the arguments, it returns the data of the asset during the most recent 60 minutes of the asset's <a href='/docs/v2/writing-algorithms/securities/market-hours'>market hours</a>.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Get the minute-resolution TradeBar data of an asset over the trailing 15 minutes.
+var history = History&lt;TradeBar&gt;(symbol, 15, Resolution.Minute);</pre>
+    <pre class="python"># Get the minute-resolution TradeBar data of an asset over the trailing 15 days.
+history = self.history(TradeBar, symbol, 15, Resolution.MINUTE)</pre>
+</div>
+
+<img src='https://cdn.quantconnect.com/i/tu/history-request-time-period.png' class='python docs-image' alt='DataFrame of OHLCV data for SPY over the last 3 days.'>
+
+<p>
+  If there is data missing for the time period you request, the result has less samples than you request.
+  For instance, say an asset had no trading activity during the last 15 minutes of the trading day and you request the 10 most recent minute bars at market close, 4 PM Eastern Standard Time (ET). 
+  In this case, you won't get any data because LEAN will try to fetch data from 3:50 PM ET to 4 PM ETF since the market was open during that time, but there were no trades for the asset.
+</p>
