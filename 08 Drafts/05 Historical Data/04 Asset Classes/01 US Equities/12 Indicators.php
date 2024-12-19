@@ -55,6 +55,6 @@ history = self.indicator_history(beta, [target_symbol, reference_symbol], 10, Re
 
 <p class='csharp'>If you already have a list of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects, you can pass them to the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method to avoid the internal history request.</p>
 <div class="csharp section-example-container">
-	<pre class="csharp">var slices = History(new[] {_symbol}, 30, Resolution.Daily);
-var history = IndicatorHistory(_sma, slices);</pre>
+	<pre class="csharp">var slices = History(new[] {symbol}, 30, Resolution.Daily);
+var history = IndicatorHistory(indicator, slices);</pre>
 </div>
