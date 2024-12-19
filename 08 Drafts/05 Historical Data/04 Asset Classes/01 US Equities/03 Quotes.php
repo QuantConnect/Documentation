@@ -2,7 +2,7 @@
 $assetClass = "US Equities";
 $imgLink = "https://cdn.quantconnect.com/i/tu/history-quotebar-dataframe-us-equities.png";
 $resolutionLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#03-Resolutions";
-$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#05-Ticks";
+$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#04-Quotes";
 ?>
 
 <p class='csharp'>
