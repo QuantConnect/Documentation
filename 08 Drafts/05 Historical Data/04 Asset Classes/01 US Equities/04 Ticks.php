@@ -29,4 +29,4 @@ history = self.history(symbol, timedelta(2), Resolution.TICK)</pre>
 history = self.history[Tick](symbol, timedelta(2), Resolution.TICK)</pre>
 </div>
 
-<p>Tick history requests only accept a trialing period of time or start and end dates. You can't just request a trailing number of ticks.</p>
+<p>Tick history requests only accept a trialing period of time or start and end dates. These history requests don't work if you provide a <code>period</code> argument, requesting a specific nubmer of trailing ticks.</p>
