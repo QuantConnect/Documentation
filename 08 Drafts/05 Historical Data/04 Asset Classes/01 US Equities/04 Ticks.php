@@ -1,14 +1,15 @@
 <?
 $imgLink = "https://cdn.quantconnect.com/i/tu/history-tick-dataframe-us-equities.png";
+$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#05-Ticks";
 ?>
 
 <p class='csharp'>
-  To get historical tick data, call the <code>History&lt;Tick&gt;</code> method with an asset's <code>Symbol</code> and <code>Resolution.Tick</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>tick data</a>, call the <code>History&lt;Tick&gt;</code> method with an asset's <code>Symbol</code> and <code>Resolution.Tick</code>.
   This history request works when you request ticks over a trailing period of time or between start and end times.
 </p>
 
 <p class='python'>
-  To get historical tick data, call the <code>history</code> method with an asset's <code>Symbol</code> and <code>Resolution.TICK</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>tick data</a>, call the <code>history</code> method with an asset's <code>Symbol</code> and <code>Resolution.TICK</code>.
   This method returns a DataFrame that contains data on bids, asks, and trades.
 </p>
 
