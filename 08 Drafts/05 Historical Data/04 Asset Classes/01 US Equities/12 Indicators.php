@@ -1,6 +1,5 @@
 <?
-$imgLink = "https://cdn.quantconnect.com/i/tu/history-deslisting-dataframe-us-equities.png";
-$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#05-Delistings";
+$imgLink = "https://cdn.quantconnect.com/i/tu/history-indicator-dataframe-us-equities.png";
 ?>
 
 <p>
@@ -21,7 +20,7 @@ history = self.indicator_history(SimpleMovingAverage(21), symbol, 5, Resolution.
 history_df = history.data_frame</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
+<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical indicator values for an asset.'>
 
 <p>
   The <code class='csharp'>IndicatorHistory</code><code class='python'>indicator_history</code> method resets your indicator, makes a history request, and updates the indicator with the historical data.
