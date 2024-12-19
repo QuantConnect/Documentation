@@ -1,0 +1,89 @@
+<p>The following examples demonstrate some common practices for using <code>Keras</code> library.</p>
+
+<h4>Example 1: Multi-layer Perceptron Model</h4>
+<p>The below algorithm makes use of <code>Keras</code> library to predict the future price movement using the previous 5 OHLCV data. The model is built with multi-layer perceptrons, ReLu activation function, and Adam optimization. It is trained using rolling 2-year data. To ensure the model applicable to the current market environment, we recalibrate the model on every Sunday.</p>
+<div class="section-example-container">
+    <pre class="python">from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.optimizers import Adam
+
+class KerasExampleAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2021, 7, 5)  # Set Start Date
+        self.set_cash(100000)  # Set Strategy Cash
+        # Request SPY data for model training, prediction and trading.
+        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        # Retrieve already trained model from object store to use immediately.
+        model_key = "model.keras"
+        if self.object_store.contains_key(model_key):
+            file_name = self.object_store.get_file_path(model_key)
+            self.model = load_model(file_name)
+        
+        # Create a MLP model otherwise to predict price movement.
+        else:
+            self.model = Sequential([Dense(10, input_shape=(5,5), activation='relu'),
+                            Dense(10, activation='relu'),
+                            Flatten(),
+                            Dense(1)])
+            self.model.compile(loss='mse',
+                    optimizer=Adam(),
+                    metrics=['mae', 'mse'])
+
+        # 2-year data to train the model.
+        training_length = 252*2
+        self.training_data = RollingWindow[TradeBar](training_length)
+        # Warm up the training dataset to train the model immediately.
+        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
+        for trade_bar in history:
+            self.training_data.add(trade_bar)
+
+        # Train the model to use the prediction right away.
+        self.train(self.my_training_method)
+        # Recalibrate the model weekly to ensure its accuracy on the updated domain.
+        self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), self.my_training_method)
+            
+    def get_features_and_labels(self, n_steps=5) -&gt; Tuple[float, float]:
+        # Train and predict the return data, which is more normalized and stationary.
+        training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.training_data)[::-1])
+        daily_pct_change = training_df.pct_change().dropna()
+
+        # Stack the data for 5-day OHLCV data per each sample to train with.
+        features = []
+        labels = []
+        for i in range(len(daily_pct_change)-n_steps):
+            features.append(daily_pct_change.iloc[i:i+n_steps].values)
+            labels.append(daily_pct_change['close'].iloc[i+n_steps])
+        features = np.array(features)
+        labels = np.array(labels)
+
+        return features, labels
+
+    def my_training_method(self) -&gt; None:
+        # Prepare the processed training data.
+        features, labels = self.get_features_and_labels()
+        # Recalibrate the model based on updated data.
+        self.model.fit(features, labels, epochs=5)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.symbol in slice.bars:
+            self.training_data.add(slice.bars[self.symbol])
+
+        # Get prediction by the updated features.
+        features, _ = self.get_features_and_labels()
+        features = features[-1].reshape(1, 5, 5)
+        prediction = float(self.model.predict(features)[-1])
+
+        # If the predicted direction is going upward, buy SPY.
+        if prediction &gt; 0:
+            self.set_holdings(self.symbol, 1)
+        # If the predicted direction is going downward, sell SPY.
+        elif prediction &lt; 0:            
+            self.set_holdings(self.symbol, -1)
+
+    def on_end_of_algorithm(self):
+        # Store the model to object store to retrieve it in other instances in case the algorithm stops.
+        model_key = "model.keras"
+        file_name = self.object_store.get_file_path(model_key)
+        self.model.save(file_name)</pre>
+</div>

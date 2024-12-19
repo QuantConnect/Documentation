@@ -1,0 +1,120 @@
+<p>The following examples demonstrate some common practices for using <code>Aesera</code> library.</p>
+
+<h4>Example 1: Aesera</h4>
+<p>The below algorithm makes use of <code>Aesera</code> library to predict the future price movement using the previous 5 OHLCV data. The model is trained using rolling 2-year data. To ensure the model applicable to the current market environment, we recalibrate the model on every Sunday.</p>
+<div class="section-example-container">
+    <pre class="python">import aesara
+import aesara.tensor as at
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+import joblib
+
+class AeseraExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 7, 1)
+        self.set_end_date(2022, 10, 1)
+        self.set_cash(100000)
+        # Request SPY data for model training, prediction and trading.
+        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        # 2-year data to train the model.
+        training_length = 252*2
+        self.training_data = RollingWindow[TradeBar](training_length)
+        # Warm up the training dataset to train the model immediately.
+        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
+        for trade_bar in history:
+            self.training_data.add(trade_bar)
+
+        # Retrieve already trained model from object store to use immediately.
+        #if self.object_store.contains_key("train") and self.object_store.contains_key("predict"):
+        #    train_file_name = self.object_store.get_file_path("train")
+        #    predict_file_name = self.object_store.get_file_path("predict")
+        #    self.predict = joblib.load(train_file_name)
+        #    self.predict = joblib.load(predict_file_name)
+        #else:
+        # Declare Aesara symbolic variables.
+        x = at.dmatrix("x")
+        y = at.dvector("y")
+
+        # initialize the weight vector w randomly.
+        # this and the following bias variable b
+        # are shared so they keep their values
+        # between training iterations (updates)
+        rng = np.random.default_rng(100)
+        w = aesara.shared(rng.standard_normal(5), name="w")
+        # initialize the bias term.
+        b = aesara.shared(0., name="b")
+
+        # Construct Aesara expression graph.
+        p_1 = 1 / (1 + at.exp(-at.dot(x, w) - b))       # Probability that target = 1
+        prediction = p_1 &gt; 0.5                          # The prediction thresholded
+        xent = y * at.log(p_1) - (1-y) * at.log(1-p_1)  # Cross-entropy log-loss function
+        cost = xent.mean() + 0.01 * (w ** 2).sum()      # The cost to minimize
+        gw, gb = at.grad(cost, [w, b])                  # Compute the gradient of the cost
+                                                        # w.r.t weight vector w and
+                                                        # bias term b (we shall
+                                                        # return to this in a
+                                                        # following section of this
+                                                        # tutorial)
+
+        # Compile the model and train it later.
+        self._train = aesara.function(
+                inputs=[x, y],
+                outputs=[prediction, xent],
+                updates=((w, w - 0.1 * gw), (b, b - 0.1 * gb)))
+        self.predict = aesara.function(inputs=[x], outputs=prediction)
+
+        # Train the model to use the prediction right away.
+        self.train(self.my_training_method)
+        # Recalibrate the model weekly to ensure its accuracy on the updated domain.
+        self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
+
+    def get_features_and_labels(self, n_steps=5) -&gt; None:
+        # Train and predict the return data, which is more normalized and stationary.
+        training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.training_data)[::-1])['close']
+
+        # Stack the data for 5-day OHLCV data per each sample to train with.
+        features = []
+        for i in range(1, n_steps + 1):
+            close = training_df.shift(i)[n_steps:-1]
+            close.name = f"close-{i}"
+            features.append(close)
+        features = pd.concat(features, axis=1)
+        # Normalize using the 5 day interval.
+        features = MinMaxScaler().fit_transform(features.T).T[4:]
+        
+        Y = training_df.pct_change().shift(-1)[n_steps*2-1:-1].reset_index(drop=True)
+        # Train to predict the direction only.
+        labels = np.array([1 if y &gt; 0 else 0 for y in Y])   # binary class
+
+        return features, labels
+
+    def my_training_method(self) -&gt; None:
+        # Prepare the processed training data.
+        features, labels = self.get_features_and_labels()
+        D = (features, labels)
+        # Recalibrate the model based on updated data.
+        self._train(D[0], D[1])
+
+        # Store the model to object store to retrieve it in other instances in case the algorithm stops.
+        model_key = "model_test_aesera"
+        file_name = self.object_store.get_file_path(model_key)
+        joblib.dump(self.predict, file_name)
+        self.object_store.save(model_key)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.symbol in slice.bars:
+            self.training_data.add(slice.bars[self.symbol])
+
+        # Get prediction using the latest 5 OHLCV.
+        features, _ = self.get_features_and_labels()
+        prediction = self.predict(features[-1].reshape(1, -1))
+        prediction = float(prediction)
+
+        # If the predicted direction is going upward, buy SPY.
+        if prediction == 1:
+            self.set_holdings(self.symbol, 1)
+        # If the predicted direction is going downward, sell SPY.
+        elif prediction == 0:            
+            self.set_holdings(self.symbol, -1)</pre>
+</div>
