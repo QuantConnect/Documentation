@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/rolling-window/adjust-size.html"); ?>
