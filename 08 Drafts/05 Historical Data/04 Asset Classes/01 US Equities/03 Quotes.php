@@ -25,7 +25,7 @@ history = self.history(QuoteBar, symbol, 5, Resolution.MINUTE)</pre>
 <p class='python'>To get a list of <code>QuoteBar</code> objects instead of a DataFrame, call the <code>history[QuoteBar]</code> method.</p>
 
 <div class="python section-example-container">
-    <pre class="python"># Get the 5 trailing daily TradeBar objects of an asset in TradeBar format. 
+    <pre class="python"># Get the 5 trailing daily QuoteBar objects of an asset in QuoteBar format. 
 history = self.history[QuoteBar](symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
