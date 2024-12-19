@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for liquidating positions.</p>
 
 <h4>Example 1: Liquidate Universe Removal</h4>
-<p>The following algorithm holds equal positions for the top 10 liquid universe to follow their hype, while updating weekly. When a stock is removed from the universe, we liquidate the position in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.</p>
+<p>The following algorithm holds equal positions for the top 10 liquid universe to follow their hype while updating weekly. When a stock is removed from the universe, we liquidate the position in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.</p>
 <div class="section-example-container">
     <pre class="csharp">public class LiquidatingPositionsAlgorithm : QCAlgorithm
 {
@@ -12,7 +12,7 @@
         SetStartDate(2023, 1, 1);
         SetEndDate(2023, 8, 1);
 
-        // Update the universe weekly to allow time to capitalize the hype.
+        // Update the universe weekly to allow time to capitalize on the hype.
         UniverseSettings.Schedule.On(DateRules.WeekStart());
         // Filter for the 10 most popular stocks to invest the hype.
         _universe = AddUniverse(Universe.DollarVolume.Top(10));
@@ -27,7 +27,7 @@
 
     private void Rebalance()
     {
-        // Evenly invest in the universe members to equally dissipate the capital risk.
+        // Evenly invest in the universe members to dissipate the capital risk equally.
         var count = _universe.Members.Count;
         var targets = _universe.Members.Select(x =&gt; new PortfolioTarget(x.Key, 1m / count)).ToList();
         SetHoldings(targets);
@@ -35,8 +35,8 @@
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        // Liquidate the ones leaving the universe, since they are not the most popular.
-        // Note that the liquidation will be market on open orders due to the time of securities removal.
+        // Liquidate the ones leaving the universe since they are not the most popular.
+        // Note that the liquidation will be market-on-open orders due to the time of securities removal.
         foreach (var removed in changes.RemovedSecurities)
         {
             Liquidate(removed.Symbol);
@@ -48,7 +48,7 @@
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2023, 8, 1)
         
-        # Update the universe weekly to allow time to capitalize the hype.
+        # Update the universe weekly to allow time to capitalize on the hype.
         self.universe_settings.schedule.on(self.date_rules.week_start())
         # Filter for the 10 most popular stocks to invest the hype.
         self._universe = self.add_universe(self.universe.dollar_volume.top(10))
@@ -61,20 +61,20 @@
         )
 
     def rebalance(self) -&gt; None:
-        # Evenly invest in the universe members to equally dissipate the capital risk.
+        # Evenly invest in the universe members to dissipate the capital risk equally.
         count = len(self._universe.members)
         targets = [PortfolioTarget(x.key, 1 / count) for x in self._universe.members]
         self.set_holdings(targets)
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate the ones leaving the universe, since they are not the most popular.
-        # Note that the liquidation will be market on open orders due to the time of securities removal.
+        # Liquidate the ones leaving the universe since they are not the most popular.
+        # Note that the liquidation will be market-on-open orders due to the time of securities removal.
         for removed in changes.removed_securities:
             self.liquidate(removed.symbol)</pre>
 </div>
 
 <h4>Example 2: Liquidate Existing Positions</h4>
-<p>The below example trades the same strategy as the previous example, but instead of liquidating the positions when the stocks leave the universe, we liquidate the position using the <code class="csharp">liquidateExistingHoldings</code><code class="python">liquidate_existing_holdings</code> argument in the <code class="csharp">SetHoldings</code><code class="python">set_holdings</code>. Note that the time of the liquidation will have a bit delay due to the time of the scheduled event.</p>
+<p>The example below trades the same strategy as the previous one. Still, instead of liquidating the positions when the stocks leave the universe, we liquidate the position using the <code class="csharp">liquidateExistingHoldings</code><code class="python">liquidate_existing_holdings</code> argument in the <code class="csharp">SetHoldings</code><code class="python">set_holdings</code>. Note that the time of the liquidation will be slightly delayed due to the time of the scheduled event.</p>
 <div class="section-example-container">
     <pre class="csharp">public class LiquidatingPositionsAlgorithm : QCAlgorithm
 {
@@ -85,7 +85,7 @@
         SetStartDate(2023, 1, 1);
         SetEndDate(2023, 8, 1);
 
-        // Update the universe weekly to allow time to capitalize the hype.
+        // Update the universe weekly to allow time to capitalize on the hype.
         UniverseSettings.Schedule.On(DateRules.WeekStart());
         // Filter for the 10 most popular stocks to invest the hype.
         _universe = AddUniverse(Universe.DollarVolume.Top(10));
@@ -100,7 +100,7 @@
 
     private void Rebalance()
     {
-        // Evenly invest in the universe members to equally dissipate the capital risk.
+        // Evenly invest in the universe members to dissipate the capital risk equally.
         var count = _universe.Members.Count;
         var targets = _universe.Members.Select(x =&gt; new PortfolioTarget(x.Key, 1m / count)).ToList();
         // We can use `liquidateExistingHoldings` arguments to liquidate the ones not in the universe anymore.
@@ -112,12 +112,12 @@
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2023, 8, 1)
         
-        # Update the universe weekly to allow time to capitalize the hype.
+        # Update the universe weekly to allow time to capitalize on the hype.
         self.universe_settings.schedule.on(self.date_rules.week_start())
         # Filter for the 10 most popular stocks to invest the hype.
         self._universe = self.add_universe(self.universe.dollar_volume.top(10))
 
-        # Set a schedule event to rebalance weekly.
+        # Set a scheduled event to rebalance weekly.
         self.schedule.on(
             self.date_rules.week_start(),
             self.time_rules.at(9, 31),
@@ -125,7 +125,7 @@
         )
 
     def rebalance(self) -&gt; None:
-        # Evenly invest in the universe members to equally dissipate the capital risk.
+        # Evenly invest in the universe members to dissipate the capital risk equally.
         count = len(self._universe.members)
         targets = [PortfolioTarget(x.key, 1 / count) for x in self._universe.members]
         # We can use `liquidate_existing_holdings` arguments to liquidate the ones not in the universe anymore.
@@ -133,7 +133,7 @@
 </div>
 
 <h4>Example 3: Liquidate Upon Assignment</h4>
-<p>The following algorithm sells SPY ATM puts weekly to earn the premium when SPY price is rising. In case where the price of SPY drops and the put is being assigned, we liquidate the SPY position in the <code class="csharp">OnAssignmentOrderEvent</code><code class="python">on_assignment_order_event</code>.</p>
+<p>The following algorithm sells SPY ATM puts weekly to earn the premium when SPY price is rising. In the case where the price of SPY drops and the put is being assigned, we liquidate the SPY position in the <code class="csharp">OnAssignmentOrderEvent</code><code class="python">on_assignment_order_event</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">public class LiquidatingPositionsAlgorithm : QCAlgorithm
 {
@@ -143,11 +143,11 @@
     {
         SetStartDate(2023, 1, 1);
         SetEndDate(2023, 8, 1);
-        // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        // Seed the price with the last known price to ensure the underlying price data is available on initial option contract filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 
         // Request SPY data for option selection using its price.
-        // Use raw data normalization mode since we need to compare SPY price with the strike price.
+        // Use raw data normalization mode since we need to compare the SPY price with the strike price.
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
 
         // Set a schedule event to rebalance weekly.
@@ -183,14 +183,14 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2023, 8, 1)
-        # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        # Seed the price with the last known price to ensure the underlying price data is available on initial option contract filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         
         # Request SPY data for option selection using its price.
-        # Use raw data normalization mode since we need to compare SPY price with the strike price.
+        # Use raw data normalization mode since we need to compare the SPY price with the strike price.
         self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
 
-        # Set a schedule event to rebalance weekly.
+        # Set a scheduled event to rebalance weekly.
         self.schedule.on(
             self.date_rules.week_start(),
             self.time_rules.at(9, 31),
