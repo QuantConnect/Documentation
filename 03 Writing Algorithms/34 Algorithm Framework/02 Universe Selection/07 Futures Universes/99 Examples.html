@@ -178,8 +178,8 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
 
 class FrameworkFutureUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2022, 2, 1)
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2024, 12, 1)
         self.set_cash(100000)
 
         # It is usual to trade Futures during extended market hours.
@@ -193,8 +193,7 @@ class FrameworkFutureUniverseSelectionAlgorithm(QCAlgorithm):
         # Sent insights to buy and hold the selected securities.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
         # To order only a single contract to control risk exposure and avoid over-leveraging.
-        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
-
+        self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
 
 class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
     '''Creates futures chain universes that select the front month contract and runs a user
