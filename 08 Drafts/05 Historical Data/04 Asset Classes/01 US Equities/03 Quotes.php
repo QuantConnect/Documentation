@@ -1,4 +1,5 @@
 <?
+$assetClass = "US Equities";
 $imgLink = "https://cdn.quantconnect.com/i/tu/history-quotebar-dataframe-us-equities.png";
 $resolutionLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#03-Resolutions";
 ?>
@@ -29,4 +30,4 @@ history = self.history(QuoteBar, symbol, 5, Resolution.MINUTE)</pre>
 history = self.history[QuoteBar](symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
-<p>The resolution of data you request must support QuoteBar data. Otherwise, the history request won't return any data. To check the resolutions that support QuoteBar data, see <a href='<?=$resolutionLink?>'>Resolutions</a>.</p>
+<p>The resolution of data you request must support <code>QuoteBar</code> data. Otherwise, the history request won't return any data. To check which resolutions for <?=$assetClass?> support <code>QuoteBar</code> data, see <a href='<?=$resolutionLink?>'>Resolutions</a>.</p>
