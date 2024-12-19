@@ -2,14 +2,15 @@
 $assetClass = "US Equities";
 $imgLink = "https://cdn.quantconnect.com/i/tu/history-quotebar-dataframe-us-equities.png";
 $resolutionLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#03-Resolutions";
+$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#05-Ticks";
 ?>
 
 <p class='csharp'>
-  To get historical quote data, call the <code>History&lt;QuoteBar&gt;</code> method with an asset's <code>Symbol</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>quote data</a>, call the <code>History&lt;QuoteBar&gt;</code> method with an asset's <code>Symbol</code>.
 </p>
 
 <p class='python'>
-  To get historical trade data, call the <code>history</code> method with the <code>QuoteBar</code> type and an asset's <code>Symbol</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>quote data</a>, call the <code>history</code> method with the <code>QuoteBar</code> type and an asset's <code>Symbol</code>.
   This method returns a DataFrame with columns for the open, high, low, close, and size of the bid and ask quotes.
   The columns that don't start with "bid" or "ask" are the mean of the quote prices on both sides of the market.
 </p>
