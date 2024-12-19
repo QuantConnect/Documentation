@@ -4,7 +4,7 @@ $resolutionLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equit
 ?>
 
 <p class='csharp'>
-  To get historical trade data, call the <code>History&lt;QuoteBar&gt;</code> method with an asset's <code>Symbol</code>.
+  To get historical quote data, call the <code>History&lt;QuoteBar&gt;</code> method with an asset's <code>Symbol</code>.
 </p>
 
 <p class='python'>
