@@ -19,7 +19,7 @@ var history = History&lt;Split&gt;(symbol, TimeSpan.FromDays(5*365);</pre>
 history = self.history(Split, symbol, timedelta(5*365))</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of open, high, low, close, and volume for an asset.'>
+<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical stock splits for AAPL.'>
 
 <p class='python'>To get a list of <code>Split</code> objects instead of a DataFrame, call the <code>history[Split]</code> method.</p>
 
