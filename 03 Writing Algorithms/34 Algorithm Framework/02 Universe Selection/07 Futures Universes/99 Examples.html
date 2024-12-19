@@ -1,0 +1,226 @@
+<p>The following examples demonstrate some common practices for implementing Futures universe selection model.</p>
+
+<h4>Example 1: Front Month Contracts</h4>
+<p>The following algorithm selects a list of Futures to equally buy and hold them. To ensure the liquidity and efficiency, we will select only the front month contracts of them. We can do so in the algorithm framework through a child class inheriting the <code>FutureUniverseSelectionModel</code>, while providing the list of Futures and overriding the <code class="csharp">Filter</code><code class="python">filter</code> method to select the front month contracts.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkFutureUniverseSelectionAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 2, 1);
+        SetCash(100000);
+        
+        // It is usual to trade Futures during extended market hours.
+        UniverseSettings.ExtendedMarketHours = true;
+        // Add a fundamental universe with custom selection rules for filtering.
+        AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel(10));
+
+        // Sent insights to buy and hold the selected securities.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+        // Evenly dissipate the capital risk among selected securities.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+
+    private class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
+    {
+        /// Creates futures chain universes that select the front month contract and runs a user
+        /// defined futureChainSymbolSelector every day to enable choosing different futures chains
+        public FrontMonthFutureUniverseSelectionModel(int rebalancePeriod)
+            : base(TimeSpan.FromDays(rebalancePeriod), SelectFutureChainSymbols)
+        {
+        }
+
+        protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
+        {
+            // Defines the futures chain universe filter to select only the front month contracts at market open.
+            return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+        }
+
+        private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
+        {
+            return new List&lt;Symbol&gt;()
+            {
+                QuantConnect.Symbol.Create(Futures.Indices.VIX, SecurityType.Future, Market.CFE),
+                QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+                QuantConnect.Symbol.Create(Futures.Indices.NASDAQ100EMini, SecurityType.Future, Market.CME),
+                QuantConnect.Symbol.Create(Futures.Indices.Dow30EMini, SecurityType.Future, Market.CBOT),
+                QuantConnect.Symbol.Create(Futures.Energies.Gasoline, SecurityType.Future, Market.NYMEX),
+                QuantConnect.Symbol.Create(Futures.Energies.HeatingOil, SecurityType.Future, Market.NYMEX),
+                QuantConnect.Symbol.Create(Futures.Energies.NaturalGas, SecurityType.Future, Market.NYMEX),
+                QuantConnect.Symbol.Create(Futures.Grains.Corn, SecurityType.Future, Market.CBOT),
+                QuantConnect.Symbol.Create(Futures.Grains.Oats, SecurityType.Future, Market.CBOT),
+                QuantConnect.Symbol.Create(Futures.Grains.Soybeans, SecurityType.Future, Market.CBOT),
+                QuantConnect.Symbol.Create(Futures.Grains.Wheat, SecurityType.Future, Market.CBOT),
+            };
+        }
+    }
+}</pre>
+    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+class FrameworkFutureUniverseSelectionAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 2, 1)
+        self.set_cash(100000)
+
+        # It is usual to trade Futures during extended market hours.
+        self.universe_settings.extended_market_hours = True
+        # Add a universe with custom selection rules for filtering.
+        self.add_universe_selection(FrontMonthFutureUniverseSelectionModel(7))
+
+        # Sent insights to buy and hold the selected securities.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Evenly dissipate the capital risk among selected securities.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+
+class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
+    '''Creates futures chain universes that select the front month contract and runs a user
+    defined futureChainSymbolSelector every day to enable choosing different futures chains'''
+    def __init__(self, rebalance_period: int = 7) -&gt; None:
+        super().__init__(timedelta(rebalance_period), self.select_future_chain_symbols)
+
+    def filter(self, filter: FutureFilterUniverse) -&gt; FutureFilterUniverse:
+        # Defines the futures chain universe filter to select only the front month contracts at market open.
+        return (filter.front_month()
+                      .only_apply_filter_at_market_open())
+
+    def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+        return [
+            Symbol.create(Futures.Indices.VIX, SecurityType.FUTURE, Market.CFE),
+            Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
+            Symbol.create(Futures.Indices.NASDAQ_100_E_MINI, SecurityType.FUTURE, Market.CME),
+            Symbol.create(Futures.Indices.DOW_30_E_MINI, SecurityType.FUTURE, Market.CBOT),
+            Symbol.create(Futures.Energies.GASOLINE, SecurityType.FUTURE, Market.NYMEX),
+            Symbol.create(Futures.Energies.HEATING_OIL, SecurityType.FUTURE, Market.NYMEX),
+            Symbol.create(Futures.Energies.NATURAL_GAS, SecurityType.FUTURE, Market.NYMEX),
+            Symbol.create(Futures.Grains.CORN, SecurityType.FUTURE, Market.CBOT),
+            Symbol.create(Futures.Grains.OATS, SecurityType.FUTURE, Market.CBOT),
+            Symbol.create(Futures.Grains.SOYBEANS, SecurityType.FUTURE, Market.CBOT),
+            Symbol.create(Futures.Grains.WHEAT, SecurityType.FUTURE, Market.CBOT),
+        ]</pre>
+</div>
+
+<h4>Example 2: Seasonal Contracts</h4>
+<p>Some Futures exhibit seasonality effect, i.e. yearly cycle in its price fluctuation. Studies shows that Natural Gas contract has yearly cycle on maximizing its price at early December and minimizing at early April. It might be due to high demand of natural gas during winter on warming. The following algorithm will hold Natural Gas contracts from summer to winter with a similar universe selection model in Example 1, but using a custom selection function with time argument to select the contract.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkFutureUniverseSelectionAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2024, 12, 1);
+        SetCash(100000);
+        
+        // It is usual to trade Futures during extended market hours.
+        UniverseSettings.ExtendedMarketHours = true;
+        // We hold the Future and will not frequently trade it, using Daily resolution is sufficient for computational efficiency.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Add a fundamental universe with custom selection rules for filtering.
+        // Rescan every week to ensure we are on our plan.
+        AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel(7));
+
+        // Sent insights to buy and hold the selected securities.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // To order only a single contract to control risk exposure and avoid over-leveraging.
+        SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+    }
+
+    private class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
+    {
+        /// Creates futures chain universes that select the front month contract and runs a user
+        /// defined futureChainSymbolSelector every day to enable choosing different futures chains
+        public FrontMonthFutureUniverseSelectionModel(int rebalancePeriod)
+            : base(TimeSpan.FromDays(rebalancePeriod), SelectFutureChainSymbols)
+        {
+        }
+
+        protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
+        {
+            // Defines the futures chain universe filter to select only the front month contracts at market open.
+            return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+        }
+
+        private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
+        {
+            // We hold Natural Gas from summer to winter, since it is in upward cycle.
+            if (utcTime.Month &gt;= 4 &amp;&amp; utcTime.Month &lt;= 11)
+            {
+                return new List&lt;Symbol&gt;()
+                {
+                    QuantConnect.Symbol.Create(Futures.Energies.NaturalGas, SecurityType.Future, Market.NYMEX)
+                };
+            }
+            // We do not hold any contracts during the time of downward cycle.
+            return new List&lt;Symbol&gt;();
+        }
+    }
+
+    private class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+    {
+        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        {
+            var targets = new List&lt;PortfolioTarget&gt;();
+            foreach (var insight in insights)
+            {
+                if (algorithm.Securities[insight.Symbol].IsTradable)
+                {
+                    // Use integer target to create a portfolio target to trade a single contract
+                    targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
+                }
+            }
+            return targets;
+        }
+    }
+}</pre>
+    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+class FrameworkFutureUniverseSelectionAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 2, 1)
+        self.set_cash(100000)
+
+        # It is usual to trade Futures during extended market hours.
+        self.universe_settings.extended_market_hours = True
+        # We hold the Future and will not frequently trade it, using Daily resolution is sufficient for computational efficiency.
+        self.universe_settings.resolution = Resolution.DAILY
+        # Add a universe with custom selection rules for filtering.
+        # Rescan every week to ensure we are on our plan.
+        self.add_universe_selection(FrontMonthFutureUniverseSelectionModel(7))
+
+        # Sent insights to buy and hold the selected securities.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # To order only a single contract to control risk exposure and avoid over-leveraging.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+
+class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
+    '''Creates futures chain universes that select the front month contract and runs a user
+    defined futureChainSymbolSelector every day to enable choosing different futures chains'''
+    def __init__(self, rebalance_period: int = 7) -&gt; None:
+        super().__init__(timedelta(rebalance_period), self.select_future_chain_symbols)
+
+    def filter(self, filter: FutureFilterUniverse) -&gt; FutureFilterUniverse:
+        # Defines the futures chain universe filter to select only the front month contracts at market open.
+        return (filter.front_month().only_apply_filter_at_market_open())
+
+    def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+        # We hold Natural Gas from summer to winter, since it is in upward cycle.
+        if 4 &lt;= utc_time.month &lt;= 11:
+            return [
+                Symbol.create(Futures.Energies.NATURAL_GAS, SecurityType.FUTURE, Market.NYMEX)
+            ]
+        # We do not hold any contracts during the time of downward cycle.
+        return []
+
+class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        targets = []
+        for insight in insights:
+            if algorithm.securities[insight.symbol].is_tradable:
+                # Use integer target to create a portfolio target to trade a single contract
+                targets.append(PortfolioTarget(insight.symbol, insight.direction))
+        return targets</pre>
+</div>
