@@ -1,4 +1,152 @@
-  <div class="example-fieldset">
+<p>The following examples demonstrate some common practices for implementing a custom slippage model.</p>
+
+<h4>Example 1: Volume Ratio Capped Slippage Model</h4>
+<p>The following algorithm trades the microeconomic demand popularity gap between the top 10 and bottom 10 liquid constituents of QQQ. A custom slippage model simulates the slippage on less liquid stock fills. The slippage percent is set to be 2% multiplied by the ratio of the order quantity to the previous minute bar's volume, maximized at 2%.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class RealityModelingSlippageAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _longs = new();
+    private List&lt;Symbol&gt; _shorts = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        SetSecurityInitializer(new CustomSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Request extended market hour QQQ data for trading.
+        var qqq = AddEquity("QQQ").Symbol;
+
+        // Weekly portfolio updating to allow time to capitalize on the popularity gap.
+        UniverseSettings.Schedule.On(DateRules.WeekStart());
+        // Add universe to trade on the most and least liquid stocks among QQQ constituents.
+        AddUniverse(
+            // First, we select all QQQ constituents for the next filter on liquidity.
+            Universe.ETF(qqq, Market.USA, UniverseSettings, (constituents) =&gt; constituents.Select(c =&gt; c.Symbol)),
+            FundamentalSelection
+        );
+
+        // Set a scheduled event to rebalance the portfolio at the start of every week.
+        Schedule.On(
+            DateRules.WeekStart(qqq),
+            TimeRules.AfterMarketOpen(qqq),
+            Rebalance
+        );
+    }
+
+    private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamentals)
+    {
+        var sortedByDollarVolume = fundamentals.OrderBy(x =&gt; x.DollarVolume).ToList();
+        // Add the 10 most liquid stocks to the universe to long later.
+        _longs = sortedByDollarVolume.TakeLast(10)
+            .Select(x =&gt; x.Symbol)
+            .ToList();
+        // Add the 10 least liquid stocks to the universe to short later.
+        _shorts = sortedByDollarVolume.Take(10)
+            .Select(x =&gt; x.Symbol)
+            .ToList();
+
+        return _longs.Union(_shorts);
+    }
+
+    private void Rebalance()
+    {
+        // Equally invest in the selected stocks to dissipate capital risk evenly.
+        // Dollar neutral of long and short stocks to eliminate systematic risk, only capitalize the popularity gap.
+        var targets = _longs.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)).ToList();
+        targets.AddRange(_shorts.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)).ToList());
+
+        // Liquidate the stocks that are not the most and least popular to release funds for trades with higher expected returns.
+        SetHoldings(targets, liquidateExistingHoldings: true);
+    }
+
+    internal class CustomSlippageModel : ISlippageModel 
+    {
+        public decimal GetSlippageApproximation(Security asset, Order order) 
+        {
+            // We set a maximum 2% slippage that is linearly linked to the ratio of the order size versus the previous bar's volume.
+            return asset.Price * 0.02m * Math.Min(1m, order.AbsoluteQuantity / asset.Volume);
+        }
+    }
+
+    internal class CustomSecurityInitializer : BrokerageModelSecurityInitializer
+    {
+        public CustomSecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
+            : base(brokerageModel, securitySeeder)
+        {
+        }
+
+        public override void Initialize(Security security)
+        {
+            base.Initialize(security);
+            // To set the slippage model to the custom one for all stocks entering the universe.
+            security.SetSlippageModel(new CustomSlippageModel());
+        }
+    }
+}</pre>
+    <pre class="python">class RealityModelingSlippageAlgorithm(QCAlgorithm):
+    longs = []
+    shorts = []
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        self.set_security_initializer(CustomSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        
+        # Request extended market hour QQQ data for trading.
+        qqq = self.add_equity("QQQ").symbol
+        
+        # Weekly portfolio updating to allow time to capitalize on the popularity gap.
+        self.universe_settings.schedule.on(self.date_rules.week_start())
+        # Add universe to trade on the most and least liquid stocks among QQQ constituents.
+        self.add_universe(
+            self.universe.etf(qqq, Market.USA, self.universe_settings, lambda constituents: [c.symbol for c in constituents]),
+            self.fundamental_selection
+        )
+        
+        # Set a scheduled event to rebalance the portfolio at the start of every week.
+        self.schedule.on(
+            self.date_rules.every_day(qqq),
+            self.time_rules.after_market_open(qqq),
+            self.rebalance
+        )
+
+    def fundamental_selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(fundamentals, key=lambda f: f.dollar_volume)
+        # Add the 10 most liquid stocks to the universe to long later.
+        self.longs = [f.symbol for f in sorted_by_dollar_volume[-10:]]
+        # Add the 10 least liquid stocks to the universe to short later.
+        self.shorts = [f.symbol for f in sorted_by_dollar_volume[:10]]
+
+        return self.longs + self.shorts
+
+    def rebalance(self) -&gt; None:
+        # Equally invest in the selected stocks to dissipate capital risk evenly.
+        # Dollar neutral of long and short stocks to eliminate systematic risk, only capitalize the popularity gap.
+        targets = [PortfolioTarget(symbol, 0.05) for symbol in self.longs]
+        targets += [PortfolioTarget(symbol, -0.05) for symbol in self.shorts]
+
+        # Liquidate the stocks that are not the most and least popular to release funds for trades with higher expected returns.
+        self.set_holdings(targets, liquidate_existing_holdings=True)
+
+class CustomSlippageModel:
+    def get_slippage_approximation(self, asset: Security, order: Order) -&gt; float:
+        # We set a maximum 2% slippage that is linearly linked to the ratio of the order size versus the previous bar's volume.
+        return asset.price * 0.02 * min(1, order.absolute_quantity / asset.volume)
+
+class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
+    def __init__(self, brokerage_model, security_seeder):
+        super().__init__(brokerage_model, security_seeder)
+    def initialize(self, security):
+        super().initialize(security)
+        # To set the slippage model to the custom one for all stocks entering the universe.
+        security.set_slippage_model(CustomSlippageModel())</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
    
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">
