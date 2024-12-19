@@ -22,7 +22,7 @@ var history = History&lt;TradeBar&gt;(symbol, 5, Resolution.Minute);</pre>
 history = self.history(QuoteBar, symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of open, high, low, close, and volume for an asset.'>
+<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical quotes for an asset.'>
 
 <p class='python'>To get a list of <code>QuoteBar</code> objects instead of a DataFrame, call the <code>history[QuoteBar]</code> method.</p>
 
