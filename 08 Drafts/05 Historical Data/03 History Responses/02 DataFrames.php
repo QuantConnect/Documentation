@@ -7,16 +7,20 @@
   </p>
   
   <div class="section-example-container">
-      <pre class="python">history = self.history(symbols, 5, Resolution.DAILY)</pre>
+      <pre class="python">history = self.history(symbols, 3, Resolution.DAILY)</pre>
   </div>
 
+  <img src='https://cdn.quantconnect.com/i/tu/history-response-dataframe.png' alt='DataFrame of daily OHLCV values for two assets.'>
+
   <p>
-    If you request a <code>DataFrame</code>, LEAN unpacks the data from <code>Slice</code> objects to populate the <code>DataFrame</code>. 
-    If you intend to use the data in the <code>DataFrame</code> to create <code>TradeBar</code> or <code>QuoteBar</code> objects, request that the history request returns the data type you need. 
-    Otherwise, LEAN will waste computational resources populating the <code>DataFrame</code>.
+    The structure of the DataFrame depends on the dataset.
+    In most cases, there is a mulit-index that contains the <code>Symbol</code> and a timestamp.
+    The timestamps in the DataFrame are based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>.
   </p>
   
   <p>
-    The timestamps in the <code>DataFrame</code> are based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>.
+    If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
+    If you intend to use the data in the DataFrame to create <code>TradeBar</code> or <code>QuoteBar</code> objects, request that the history request returns the data type you need. 
+    Otherwise, LEAN will waste computational resources populating the DataFrame.
   </p>
 </div>
