@@ -21,7 +21,7 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data.'>
 
-<p class='python'>To get a list of alternative objects instead of a DataFrame, call the <code>history[<span class='placeholder-text'>alternativeDataClass</span>]</code> method.</p>
+<p class='python'>To get a list of dataset objects instead of a DataFrame, call the <code>history[<span class='placeholder-text'>alternativeDataClass</span>]</code> method.</p>
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in <?=$datasetClass?> format. 
