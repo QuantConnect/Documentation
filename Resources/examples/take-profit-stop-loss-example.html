@@ -1,9 +1,9 @@
-<p>Using <code>RollingWindow</code> to cache the last 3 trade bars, the following algorithm could identify volume contraction breakout price action pattern and buy SPY accordingly to ride on the capital inflow. We take 2% profit and stop loss at 1% in <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code>.</p>
+<p>Using <code>RollingWindow</code> to cache the last 3 trade bars, the following algorithm could identify volume contraction breakout price action patterns and buy SPY accordingly to ride on the capital inflow. We take 2% profit and stop loss at 1% in <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">public class RollingWindowAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
-    // Set up a rolling window to hold the last 3 trade bars for price action detection as trade signal.
+    // Set up a rolling window to hold the last 3 trade bars for price action detection as a trade signal.
     private RollingWindow&lt;TradeBar&gt; _windows = new(3);
 
     public override void Initialize()
@@ -39,11 +39,11 @@
 
     private bool ContractionAction()
     {
-        // We trade contraction type price action, where the buying preesure is increasing.
+        // We trade contraction-type price action, where the buying pressure is increasing.
         // 1. The last 3 bars are green.
         // 2. The price is increasing in trend.
-        // 3. The trading Volume is increasing as well.
-        // 4. The range of the bars are decreasing.
+        // 3. The trading volume is increasing as well.
+        // 4. The range of the bars is decreasing.
         return _windows[2].Close &gt; _windows[2].Open &amp;&amp;
             _windows[1].Close &gt; _windows[1].Open &amp;&amp;
             _windows[0].Close &gt; _windows[0].Open &amp;&amp;
@@ -88,7 +88,7 @@
         # Request SPY data for signal generation and trading.
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
-        # Set up a rolling window to hold the last 3 trade bars for price action detection as trade signal.
+        # Set up a rolling window to hold the last 3 trade bars for price action detection as a trade signal.
         self.windows = RollingWindow[TradeBar](3)
         # Warm up for the rolling window.
         history = self.history[TradeBar](self.spy, 3, Resolution.MINUTE)
@@ -106,11 +106,11 @@
             self.windows.add(bar)
 
     def contraction_action(self) -&gt; None:
-        # We trade contraction type price action, where the buying preesure is increasing.
+        # We trade contraction-type price action, where the buying pressure is increasing.
         # 1. The last 3 bars are green.
         # 2. The price is increasing in trend.
         # 3. The trading volume is increasing as well.
-        # 4. The range of the bars are decreasing.
+        # 4. The range of the bars is decreasing.
         return self.windows[2].close &gt; self.windows[2].open and \
             self.windows[1].close &gt; self.windows[1].open and \
             self.windows[0].close &gt; self.windows[0].open and \
