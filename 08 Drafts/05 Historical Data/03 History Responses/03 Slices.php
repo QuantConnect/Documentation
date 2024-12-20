@@ -1,0 +1,1 @@
+<p>If you don't provide <code>Symbol</code> objects when you make a history request, you get <code>Slice</code> objects that contain <?=!$researchEnvironment ? "the entire universe" : "all of the assets you created subscriptions for in the notebook" ?>.</p>
