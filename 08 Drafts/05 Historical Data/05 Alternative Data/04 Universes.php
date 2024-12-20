@@ -3,11 +3,11 @@ $imgLink = "";
 ?>
 
 <p class='csharp'>
-  To get historical <a href='/docs/v2/writing-algorithms/universes/equity/alternative-data-universes'>universe data for an alternative dataset</a>, call the <code>History</code> method with the <code>Universe</code> object.
+  To get historical data for an <a href='/docs/v2/writing-algorithms/universes/equity/alternative-data-universes'>alternative data universe</a>, call the <code>History</code> method with the <code>Universe</code> object.
 </p>
 
 <p class='python'>
-  To get historical <a href='/docs/v2/writing-algorithms/universes/equity/alternative-data-universes'>universe data for an alternative dataset</a>, call the <code>history</code> method with the <code>Universe</code> object.
+  To get historical data for an <a href='/docs/v2/writing-algorithms/universes/equity/alternative-data-universes'>alternative data universe</a>, call the <code>history</code> method with the <code>Universe</code> object.
   Set the <code>flatten</code> argument to <code>True</code> to get a DataFrame that has columns for the data point attributes.
 </p>
 
