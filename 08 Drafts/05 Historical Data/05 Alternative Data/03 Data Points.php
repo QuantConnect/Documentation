@@ -45,4 +45,3 @@ history = self.history(dataset_symbol, 1, Resolution.DAILY, flatten=True)</pre>
   <img src='https://cdn.quantconnect.com/i/tu/regalytics-dataframe-history.png' class='docs-image' alt='DataFrame of regulatory alerts.'>
 </div>
 
-<p>For information on historical data for other alternative datasets, see the documentation in the <a href='/datasets/'>Dataset Market</a>.</p>
