@@ -7,7 +7,8 @@
   </p>
   
   <div class="section-example-container">
-      <pre class="python">history = self.history(symbols, 3, Resolution.DAILY)</pre>
+      <pre class="python"># Get 3 days of daily data for some assets.
+history = self.history(symbols, 3, Resolution.DAILY)</pre>
   </div>
 
   <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-response-dataframe.png' alt='DataFrame of daily OHLCV values for two assets.'>
