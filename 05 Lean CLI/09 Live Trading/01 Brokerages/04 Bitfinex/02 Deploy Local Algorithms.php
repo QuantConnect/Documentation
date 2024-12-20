@@ -9,7 +9,7 @@ $brokerageDetails = "
 API key: bbbMsqbxjytVM9cGvnLpKguz9rZf2T5qACxaVx7E8Mm
 API secret: *******************************************</pre>
 </div>
-To create new API credentials, see the <a rel='nofollow' href='https://www.bitfinex.com/api' target='_blank'>API Management page</a> on the Bitfinex website.
+To create new API credentials, see the <a rel='nofollow' href='https://setting.bitfinex.com/api' target='_blank'>API Management page</a> on the Bitfinex website.
 </li>
 ";
 
