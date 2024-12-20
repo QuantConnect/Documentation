@@ -1,0 +1,2 @@
+<? include(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/charles-schwab.html"); ?>
+<p>The Charles Schwab data feeds are streams of Equity, Equity Option, Index, and Index Option prices directly from Charles Schwab. If you use this data feed and request historical data, the historical data comes from Charles Schwab.</p>
