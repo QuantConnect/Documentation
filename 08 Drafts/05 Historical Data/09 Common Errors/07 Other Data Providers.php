@@ -1,2 +1,1 @@
-
-E.g. IB is slow and leads to timeout if we request or warm up too many symbols (e.g. options)	
+<p>For more information about the other data providers, see <a href='/docs/v2/cloud-platform/datasets'>Datasets</a>.</p>
