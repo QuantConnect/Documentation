@@ -18,7 +18,7 @@ var universe = AddUniverse(Universe.DollarVolume.Top(3));
 // Get the historical universe data over the last 30 days.
 var history = History(universe, TimeSpan.FromDays(30));</pre>
     <pre class="python"># Add the universe and save a reference to the Universe object.
-// Get the historical universe data over the last 30 days in DataFrame format.
+# Get the historical universe data over the last 30 days in DataFrame format.
 history = self.history(universe, timedelta(30), flatten=True)</pre>
 </div>
 
