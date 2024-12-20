@@ -32,7 +32,7 @@ history = self.history[<?=$datasetClass?>](symbol, 5, Resolution.DAILY)</pre>
 <div class='python'>
   <p>
     Some alternative datasets provide multiple entries per <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>. 
-    For example, the <a href='/datasets/regalytics-us-regulatory-alerts'>US Regulatory Alerts</a> can provide multiple alerts per day.
+    For example, the <a href='/datasets/regalytics-us-regulatory-alerts'>US Regulatory Alerts</a> dataset can provide multiple alerts per day.
     In this case, to organize the data into a DataFrame, set the <code>flatten</code> argument to <code>True</code>.
   </p>
 
