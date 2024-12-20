@@ -17,7 +17,7 @@ var history = History(symbols, 3);</pre>
 
 <div class="section-example-container">
       <pre class="csharp">// Get the latest 3 data points of all the securities/datasets in the <?=$writingEnvironment ? "algorithm" : "notebook" ?>, packaged into Slice objects.
-history = self.history(symbols, 3)</pre>
+var history = History(symbols, 3);</pre>
       <pre class="python"># Get the latest 3 data points of all the securities/datasets in the <?=$writingEnvironment ? "algorithm" : "notebook" ?>, packaged into Slice objects.
 history = self.history(3)</pre>
 </div>
