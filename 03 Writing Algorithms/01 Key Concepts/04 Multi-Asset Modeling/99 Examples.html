@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for multi-asset modeling.</p>
 
 <h4>Example 1: BTC Spot-Crypto Future Arbitration</h4>
-<p>This algorithm demonstrates an arbitration between spot and Crypto Future BTCUSDT using a BTC cash account. If one's price is above 0.5% of another, we sell the relatively-overpriced one and buy the counter side. To ensure the cash position is sufficient to open the buy position, we order the buy side after the sell side is filled and the cash is replenished.</p>
+<p>This algorithm demonstrates an arbitration between Spot and Crypto Future BTCUSDT using a BTC cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. To ensure the cash position is sufficient to open the buy position, we order the buy side after the sell side is filled and the cash is replenished.</p>
 <div class="section-example-container">
     <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
 {
@@ -10,7 +10,7 @@
 
     public override void Initialize()
     {
-        SetStartDate(2020, 1, 1);
+        SetStartDate(2022, 5, 1);
         SetEndDate(2024, 1, 1);
         // Seed the last price to set the initial price of the BTCUSDT holdings.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
@@ -24,7 +24,7 @@
         _btcusdt = btcusdt.Symbol;
         _btcFuture = AddCryptoFuture("BTCUSDT", Resolution.Minute, market: Market.Bybit).Symbol;
 
-        // Simulate the portfolio is holding BTC cash initially, via BTCUSDT position.
+        // Simulate the portfolio is holding BTC cash initially via BTCUSDT position.
         // Note that the performance will also be affected by the BTC performance in the default account currency.
         Portfolio[_btcusdt].SetHoldings(averagePrice: btcusdt.Price, quantity: 2);
     }
@@ -50,11 +50,11 @@
 
     public override void OnOrderEvent(OrderEvent orderEvent)
     {
-        // Order the buy-side of the arb only when the BTC was sold and USDT was obtained.
+        // Order the buy-side of the arb only when the BTC is sold and USDT is obtained.
         if (orderEvent.Quantity &lt; 0 &amp;&amp; orderEvent.Status == OrderStatus.Filled)
         {
             var toBuySymbol = orderEvent.Symbol == _btcusdt ? _btcFuture : _btcusdt;
-            // Calculate the initial margin needed, we need to sell the same amount of BTC to obtain sufficient USDT for trade.
+            // Calculate the initial margin needed. We must sell the same amount of BTC to obtain sufficient USDT for trade.
             var margin = CalculateInitialMargin(toBuySymbol);
             // Check if USDT cash is sufficient to open the position.
             if (Portfolio.CashBook["USDT"].Amount &gt;= margin)
@@ -77,7 +77,7 @@
     threshold = 0.005
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2020, 1, 1)
+        self.set_start_date(2022, 5, 1)
         self.set_end_date(2024, 1, 1)
         # Seed the last price to set the initial price of the BTCUSDT holdings.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
@@ -91,7 +91,7 @@
         self.btcusdt = btcusdt.symbol
         self.btc_future = self.add_crypto_future("BTCUSDT", Resolution.MINUTE, market=Market.BYBIT).symbol
 
-        # Simulate the portfolio is holding BTC cash initially, via BTCUSDT position.
+        # Simulate the portfolio is holding BTC cash initially via BTCUSDT position.
         # Note that the performance will also be affected by the BTC performance in the default account currency.
         self.portfolio[self.btcusdt].set_holdings(average_price=btcusdt.price, quantity=2)
 
@@ -109,7 +109,7 @@
                 self.sell(self.btc_future, 1)
 
     def on_order_event(self, order_event: OrderEvent) -&gt; None:
-        # Order the buy-side of the arb only when the BTC was sold and USDT was obtained.
+        # Order the buy-side of the arb only when the BTC is sold and USDT is obtained.
         if order_event.quantity &lt; 0 and order_event.status == OrderStatus.FILLED:
             to_buy_symbol = self.btc_future if order_event.symbol == self.btcusdt else self.btcusdt
             # Calculate the initial margin needed, we need to sell the same amount of BTC to obtain sufficient USDT for trade.
@@ -127,7 +127,7 @@
 </div>
 
 <h4>Example 2: BTC Spot-Future Arbitration</h4>
-<p>This algorithm implements a similar logic of the above example of an arbitration algorithm between spot BTCUSD and Future BTC using a cash account. If one's price is above 0.5% of another, we sell the relatively-overpriced one and buy the counter side. Note that we need to calculate the future value of the Future to fairly compared to the spot BTC. Also, we need to rollover any Futures contracts.</p>
+<p>This algorithm implements a similar logic to the above example of an arbitration algorithm between spot BTCUSD and Future BTC using a cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. Note that we need to calculate the future value of the Future fairly compared to the spot BTC. Also, we need to rollover any Futures contracts.</p>
 <div class="section-example-container">
     <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
 {
@@ -154,7 +154,7 @@
         var mappedFuture = _btcFuture.Mapped;
         if (slice.QuoteBars.TryGetValue(_btcusd, out var spot) &amp;&amp; slice.QuoteBars.TryGetValue(_btcFuture.Symbol, out var future))
         {
-            // Use forward price to fairly compare to spot BTC price.
+            // Use forward price to compare to spot BTC price fairly.
             var discountFactor = RiskFreeInterestRateModel.GetInterestRate(slice.Time) * (mappedFuture.ID.Date - slice.Time).Days / 365m;
             var btcFutureFV = future.Close * Convert.ToDecimal(Math.Exp((double)discountFactor));
             // If the spot price is higher than the future price more than the threshold,
@@ -182,7 +182,7 @@
         if (slice.SymbolChangedEvents.TryGetValue(_btcFuture.Symbol, out var changedEvent))
         {
             var oldSymbol = changedEvent.OldSymbol;
-            // Subscribe to the new symbol's data for trading.
+            // Subscribe to the trading data for the new symbol.
             var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
             var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -&gt; {newSymbol}";
             var quantity = Portfolio[oldSymbol].Quantity;
@@ -199,7 +199,7 @@
     threshold = 0.005
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2020, 1, 1)
+        self.set_start_date(2021, 1, 1)
         self.set_end_date(2024, 1, 1)
         # Set cash to sell Futures.
         self.set_cash(10000000)
@@ -207,36 +207,36 @@
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
 
         # Request BTCUSD spot and future data to trade their price discrepancies.
-        self.btcusdt = self.add_crypto("BTCUSDT", Resolution.MINUTE, market=Market.COINBASE).symbol
+        self.btcusd = self.add_crypto("BTCUSD", Resolution.MINUTE, market=Market.COINBASE).symbol
         self.btc_future = self.add_future(Futures.Currencies.BTC, Resolution.MINUTE, data_mapping_mode=DataMappingMode.OPEN_INTEREST)
 
     def on_data(self, slice: Slice) -&gt; None:
-        mapped_future = self.btc_future.symbol
-        spot = slice.quote_bars.get(self.btcusdt)
+        mapped_future = self.btc_future.mapped
+        spot = slice.quote_bars.get(self.btcusd)
         future = slice.quote_bars.get(mapped_future)
         if spot and future:
-            # Use forward price to fairly compare to spot BTC price.
+            # Use forward price fairly to compare to the spot BTC price.
             discount_factor = self.risk_free_interest_rate_model.get_interest_rate(slice.time) * (mapped_future.id.date - slice.time).total_seconds() / 60 / 60 / 24 / 365
             btc_future_fv = future.close * np.exp(discount_factor)
             # If the spot price is higher than the future price more than the threshold,
             # Do arbitration by selling the spot BTC and buying the future.
-            if spot.close &gt;= btc_future_fv * (1 + self.threshold) and not self.portfolio[self.btcusdt].is_short:
-                self.sell(self.btcusdt, self.btc_future.symbol_properties.contract_multiplier)
+            if spot.close &gt;= btc_future_fv * (1 + self.threshold) and not self.portfolio[self.btcusd].is_short:
+                self.sell(self.btcusd, self.btc_future.symbol_properties.contract_multiplier)
                 self.buy(mapped_future, 1)
             # If the future price is higher than the spot price more than the threshold,
             # Do arbitration by buying the spot BTC and selling the future.
-            elif btc_future_fv &gt;= spot.close * (1 + self.threshold) and not self.portfolio[self.btcusdt].is_long:
+            elif btc_future_fv &gt;= spot.close * (1 + self.threshold) and not self.portfolio[self.btcusd].is_long:
                 self.sell(mapped_future, 1)
-                self.buy(self.btcusdt, self.btc_future.symbol_properties.contract_multiplier)
+                self.buy(self.btcusd, self.btc_future.symbol_properties.contract_multiplier)
             # Capitalize the arbitrage positions when prices converge.
-            elif (btc_future_fv &lt;= spot.close and self.portfolio[self.btcusdt].is_long) or (spot.close &lt;= btc_future_fv and self.portfolio[self.btcusdt].is_short):
+            elif (btc_future_fv &lt;= spot.close and self.portfolio[self.btcusd].is_long) or (spot.close &lt;= btc_future_fv and self.portfolio[self.btcusd].is_short):
                 self.liquidate()
                 
         # Get Symbol Change Event of the Continuous Future (change in mapped contract) to roll over.
         changed_event = slice.symbol_changed_events.get(self.btc_future.symbol)
         if changed_event:
             old_symbol = changed_event.old_symbol
-            # Subscribe to the new symbol's data for trading.
+            # Subscribe to the trading data for the new symbol.
             new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
             tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -&gt; {new_symbol}"
             quantity = self.portfolio[old_symbol].quantity
