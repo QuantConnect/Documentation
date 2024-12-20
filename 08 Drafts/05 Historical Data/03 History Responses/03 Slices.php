@@ -8,7 +8,7 @@
 var history = History(symbols, 3);</pre>
 </div>
 
-<p class='csharp'>If you don't pass any <code>Symbol</code> objects, you get data for all the data subscriptions in your <?=$writingEnvironment ? "algorithm" : "notebook" ?>.</p>
+<p class='csharp'>If you don't pass any <code>Symbol</code> objects, it returns data for all the data subscriptions in your <?=$writingEnvironment ? "algorithm" : "notebook" ?>.</p>
 
 <p class='python'>
   To request <code>Slice</code> objects of historical data, call the <code>history</code> method without providing any <code>Symbol</code> objects.
