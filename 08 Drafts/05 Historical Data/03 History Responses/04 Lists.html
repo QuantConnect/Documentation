@@ -1,4 +1,62 @@
 <p>
+  To request a list of objects containing the historical data, call one of the <code class='csharp'>History&lt;<span class='placeholder-text'>Type</span>&gt;</code><code class='python'>history[<span class='placeholder-text'>Type</span>]</code> methods. 
+  The following table shows the return type for each method call:
+</p>
+
+<table class='qc-table table'>
+    <thead>
+        <tr>
+            <th>Input Generic <code class='csharp'>&lt;<span class='placeholder-text'>Type</span>&gt;</code><code class='csharp'>[<span class='placeholder-text'>Type</span>]</code></th>
+            <th>Input <code>Symbol</code> Type</th>
+            <th>Return Data Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+	          <td><code>TradeBar</code></td>
+	          <td><code>Symbol</code></td>
+	          <td><code class='python'>List[TradeBar]</code><code class='csharp'>List&lt;TradeBar&gt;</code></td>
+        </tr>
+        <tr>
+	          <td><code>TradeBar</code></td>
+	          <td><code class='python'>List[Symbol]</code><code class='csharp'>List&lt;Symbol&gt;</code></td>
+	          <td><code class='python'>List[TradeBars]</code><code class='csharp'>List&lt;TradeBars&gt;</code></td>
+        </tr>
+        <tr>
+	          <td><code>QuoteBar</code></td>
+	          <td><code>Symbol</code></td>
+	          <td><code class='python'>List[QuoteBar]</code><code class='csharp'>List&lt;QuoteBar&gt;</code></td>
+        </tr>
+        <tr>
+	          <td><code>QuoteBar</code></td>
+	          <td><code class='python'>List[Symbol]</code><code class='csharp'>List&lt;Symbol&gt;</code></td>
+	          <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBars&gt;</code></td>
+        </tr>
+        <tr>
+	          <td><code>Tick</code></td>
+	          <td><code>Symbol</code></td>
+	          <td><code class='python'>List[Tick]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
+        </tr>
+        <tr>
+	          <td><code>Tick</code></td>
+	          <td><code class='python'>List[Symbol]</code><code class='csharp'>List&lt;Symbol&gt;</code></td>
+	          <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
+        </tr>
+
+	      <tr>
+	          <td><code class='placeholder-text'>alternativeDataClass</code><br>(ex: <code>CBOE</code>)</td>
+            <td><code>Symbol</code></td>
+	          <td><span class='python'><code>List[<span class='placeholder-text'>alternativeDataClass</span>]</code><br>(ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>alternativeDataClass</span>&gt;</code><br>(ex: <code>List&lt;CBOE&gt;</code>)</span></td>
+        </tr>
+      	<tr>
+	          <td><code class='placeholder-text'>alternativeDataClass</code><br>(ex: <code>CBOE</code>)</td>
+	          <td><code class='python'>List[Symbol]</code><code class='csharp'>List&lt;Symbol&gt;</code></td>
+	          <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>alternativeDataClass</span>]]</code><br>(ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>alternativeDataClass</span>&gt;&gt;</code><br>(ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
   When your history request returns a list of objects, the <code class="csharp">Time</code><code class="python">time</code> properties of these objects are based on the <?=$writingAlgorithms ? "algorithm" : "notebook" ?> time zone, but the <code class="csharp">EndTime</code><code class="python">end_time</code> properties of the individual objects in the list are based on the <span class='python'>data time zone</span><span class='csharp'><a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a></span>. 
   The <code class="csharp">EndTime</code><code class="python">end_time</code> is the end of the sampling period and when the data is actually available. 
   For daily US Equity data, this results in data points appearing on Saturday and skipping Monday.
