@@ -1,0 +1,226 @@
+<p>The following examples demonstrate some common practices for implementing framework ETF constituent universe selection model.</p>
+
+<h4>Example 1: Weighted ETF Constituents</h4>
+<p>A subset of the SPY constituents outperform the SPY while many of the constituents underperform the overall index. In an attempt to buy the ETF constituents that outperform the index, the following algorithm buys the top 50 weighted assets in the ETF. In this example, we will pass a function to the <code>ETFConstituentsUniverseSelectionModel</code> for selection.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkETFConstituentsUniverseSelectionAlgorithm : QCAlgorithm
+{
+    public Dictionary&lt;Symbol, double&gt; EtfWeightBySymbol { get; set; } = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 6, 1);
+        SetEndDate(2023, 8, 1);
+        SetCash(10000000);
+        
+        // Add a universe of the SPY constituents.
+        AddUniverseSelection(
+            new ETFConstituentsUniverseSelectionModel("SPY", universeFilterFunc: ETFConstituentsFilter)
+        );
+        // Add Alpha model to trade based on the contituents weights.
+        AddAlpha(new EtfAlphaModel(this));
+        // Position sizing was handled by insight weight (from ETF weight).
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+    }
+
+    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    {
+        // Cache the constituent weights in a dictionary for filtering and position sizing.
+        EtfWeightBySymbol = constituents
+            .Where(c =&gt; c.Weight.HasValue)
+            .ToDictionary(c =&gt; c.Symbol, c =&gt; (double)c.Weight.Value);
+        // Select the 50 consituents with the largest weight in the ETF.
+        // They should have positive excess return.
+        return EtfWeightBySymbol
+            .OrderByDescending(x =&gt; x.Value)
+            .Take(50)
+            .Select(x =&gt; x.Key);
+    }
+}
+
+public class EtfAlphaModel : AlphaModel
+{
+    private FrameworkETFConstituentsUniverseSelectionAlgorithm _algorithm;
+    private static int _day = -1;
+
+    public EtfAlphaModel(FrameworkETFConstituentsUniverseSelectionAlgorithm algorithm)
+    {
+        _algorithm = algorithm;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        // Daily rebalance only.
+        if (slice.Time.Day == _day)
+        {
+            return insights;
+        }
+
+        foreach (var (symbol, weight) in _algorithm.EtfWeightBySymbol)
+        {
+            // Get the ETF weight of all the assets currently in the universe.  
+            // To avoid trading errors, skip assets that have no price yet.
+            if (slice.Bars.ContainsKey(symbol))
+            {
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up, weight: weight));
+            }
+        }
+
+        _day = slice.Time.Day;
+
+        return insights;
+    }
+}</pre>
+    <pre class="python">class FrameworkETFConstituentsUniverseSelectionAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 6, 1)
+        self.set_end_date(2023, 8, 1)
+        self.set_cash(10000000)
+
+        self.etf_weight_by_symbol = {}
+
+        # Add a universe of the SPY constituents.
+        self.add_universe_selection(
+            ETFConstituentsUniverseSelectionModel("SPY", universe_filter_func=self._etf_constituents_filter)
+        )
+        # Add Alpha model to trade based on the contituents weights.
+        self.add_alpha(EtfAlphaModel(self))
+        # Position sizing was handled by insight weight (from ETF weight).
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+
+    def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Cache the constituent weights in a dictionary for filtering and position sizing.
+        self.etf_weight_by_symbol = {x.symbol: x.weight for x in constituents if x.weight}
+        # Select the 50 consituents with the largest weight in the ETF.
+        # They should have positive excess return.
+        return [x[0] for x in sorted(self.etf_weight_by_symbol.items(), key=lambda x: x[1], reverse=True)[:50]]
+
+class EtfAlphaModel(AlphaModel):
+    def __init__(self, algorithm: FrameworkETFConstituentsUniverseSelectionAlgorithm) -&gt; None:
+        self._algorithm = algorithm
+        self._day = -1
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        # Daily rebalance only.
+        if self._day == slice.time.day:
+            return insights
+
+        for symbol, weight in self._algorithm.etf_weight_by_symbol.items():
+            # Get the ETF weight of all the assets currently in the universe.  
+            # To avoid trading errors, skip assets that have no price yet.
+            if symbol in slice.bars:
+                insights.append(Insight.price(symbol, timedelta(1), InsightDirection.UP, weight=weight))
+
+        self._day = slice.time.day
+
+        return insights</pre>
+</div>
+
+<h4>Example 2: Weight Trend Selection</h4>
+<p>The following algorithm trades the QQQ constituents that has upward trend of its weight constitution, indicated by an EMA indicator, suggesting its price trend is outperforming other constituents or its weight was promoted by the NASDAQ index which brings positive sentiment. To better utilize the EMA indicator, we inherit the <code>ETFConstituentsUniverseSelectionModel</code> superclass to create a custom universe selection model.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkETFConstituentsUniverseSelectionAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2023, 6, 1);
+        SetEndDate(2023, 8, 1);
+        SetCash(10000000);
+        
+        // Add a universe of the SPY constituents.
+        AddUniverseSelection(
+            new UptrendETFUniverseSelectionModel("QQQ")
+        );
+        // Add Alpha model to trade based on the selections.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+        // Equally invest into insights to evenly dissipate the capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Warm up the indicators.
+        SetWarmUp(60, Resolution.Daily);
+    }
+}
+
+class UptrendETFUniverseSelectionModel : ETFConstituentsUniverseSelectionModel
+{
+    private static Dictionary&lt;Symbol, ExponentialMovingAverage&gt; _emaBySymbol = new();
+    
+    public UptrendETFUniverseSelectionModel(string etfTicker)
+        : base(etfTicker, universeFilterFunc: ETFConstituentsFilter)
+    {
+    }
+
+    private static IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    {
+        // Remove the ones not in the ETF anymore.
+        var toRemove = new HashSet&lt;Symbol&gt;(constituents.Select(x =&gt; x.Symbol).Except(_emaBySymbol.Keys));
+        foreach (var symbol in toRemove)
+        {
+            _emaBySymbol.Remove(symbol);
+        }
+
+        foreach (var c in constituents)
+        {
+            if (_emaBySymbol.TryGetValue(c.Symbol, out var ema) &amp;&amp; c.Weight.HasValue)
+            {
+                // Update EMA with the latest weight.
+                ema.Update(c.EndTime, c.Weight.Value);
+            }
+            else
+            {
+                // Create a EMA to filter by trend.
+                _emaBySymbol[c.Symbol] = new ExponentialMovingAverage(60);
+            }
+        }
+
+        // Select the ones with increasing trend of constituent weight.
+        return _emaBySymbol.Where(kvp =&gt; kvp.Value.IsReady &amp;&amp; kvp.Value &gt; kvp.Value.Previous)
+            .Select(kvp =&gt; kvp.Key);
+    }
+}</pre>
+    <pre class="python">class FrameworkETFConstituentsUniverseSelectionAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 6, 1)
+        self.set_end_date(2023, 8, 1)
+        self.set_cash(10000000)
+
+        # Add a universe of the SPY constituents.
+        self.add_universe_selection(
+            UptrendETFUniverseSelectionModel("QQQ")
+        )
+        # Add Alpha model to trade based on the selections.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
+        # Equally invest into insights to evenly dissipate the capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Warm up the indicators.
+        self.set_warm_up(60, Resolution.DAILY)
+
+class UptrendETFUniverseSelectionModel(ETFConstituentsUniverseSelectionModel):
+    ema_by_symbol = {}
+
+    def __init__(self, etf_ticker: str) -&gt; None:
+        super().__init__(etf_ticker, universe_filter_func=self.etf_constituent_filter)
+
+    def etf_constituent_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Remove the ones not in the ETF anymore.
+        to_remove = set(self.ema_by_symbol.keys()).difference(set([x.symbol for x in constituents]))
+        for symbol in to_remove:
+            del self.ema_by_symbol[symbol]
+
+        for c in constituents:
+            symbol = c.symbol
+            if symbol in self.ema_by_symbol and c.weight:
+                # Update EMA with the latest weight.
+                self.ema_by_symbol[symbol].update(c.EndTime, c.weight)
+            else:
+                # Create a EMA to filter by trend.
+                self.ema_by_symbol[symbol] = ExponentialMovingAverage(60)
+
+        # Select the ones with increasing trend of constituent weight.
+        return [symbol for symbol, ema in self.ema_by_symbol.items() if ema.is_ready and ema.current.value &gt; ema.previous.value]</pre>
+</div>
