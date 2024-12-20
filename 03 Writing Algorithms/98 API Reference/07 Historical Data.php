@@ -4,6 +4,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-history-provider.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-warm-up.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-warmup.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-warm-up-indicator.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-is-warming-up.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
