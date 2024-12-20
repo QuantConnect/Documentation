@@ -10,7 +10,7 @@
       <pre class="python">history = self.history(symbols, 3, Resolution.DAILY)</pre>
   </div>
 
-  <img src='https://cdn.quantconnect.com/i/tu/history-response-dataframe.png' alt='DataFrame of daily OHLCV values for two assets.'>
+  <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-response-dataframe.png' alt='DataFrame of daily OHLCV values for two assets.'>
 
   <p>
     The structure of the DataFrame depends on the dataset.
