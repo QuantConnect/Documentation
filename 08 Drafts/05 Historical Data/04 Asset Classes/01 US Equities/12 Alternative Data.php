@@ -31,7 +31,7 @@ history = self.history[<?=$datasetClass?>](symbol, 5, Resolution.DAILY)</pre>
 <!-- This part is only for US Equities. Not all asset classes -->
 <div class='python'>
   <p>
-    Some alternative datasets provide multiple entries per asset per day. 
+    Some alternative datasets provide multiple entries per asset per <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>. 
     For example, the <a href='/datasets/extractalpha-true-beats'>True Beats dataset</a> provides EPS and revenue predictions for several upcoming quarters per asset per day.
     In this case, to organize the data into a DataFrame, set the <code>flatten</code> argument to <code>True</code>.
   </p>
