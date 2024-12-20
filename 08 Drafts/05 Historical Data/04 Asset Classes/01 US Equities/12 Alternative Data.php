@@ -8,7 +8,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-alt-data-dataframe-us-equi
 </p>
 
 <p class='python'>
-  To get historical alternative data, call the <code>history</code> method with the alternative data type and the dataset <code>Symbol</code>.
+  To get historical alternative data, call the <code>history</code> method with the dataset <code>Symbol</code>.
   This method returns a DataFrame that contains the data point attributes.
 </p>
 
@@ -16,7 +16,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-alt-data-dataframe-us-equi
     <pre class="csharp">// Get the trailing 5 days of <?=$datasetClass?> data for an asset.
 var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
     <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in DataFrame format.
-history = self.history(<?=$datasetClass?>, dataset_symbol, 5, Resolution.DAILY)</pre>
+history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data for an asset.'>
