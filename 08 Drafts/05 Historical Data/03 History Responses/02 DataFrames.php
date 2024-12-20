@@ -13,7 +13,7 @@
   <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-response-dataframe.png' alt='DataFrame of daily OHLCV values for two assets.'>
 
   <p>
-    The structure of the DataFrame depends on the dataset.
+    The structure of the DataFrame depends on the <a href='/datasets'>dataset</a>.
     In most cases, there is a mulit-index that contains the <code>Symbol</code> and a timestamp.
     The timestamps in the DataFrame are based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>.
   </p>
