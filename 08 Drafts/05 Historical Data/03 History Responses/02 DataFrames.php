@@ -3,7 +3,7 @@
 <div class='python'>
   <p>
     The most popular return type is a DataFrame. 
-    To request a DataFrame of historical data, call the <code>history</code> method with atleast one <code>Symbol</code> object and omit the <code>[Type]</code> configuration.
+    To request a DataFrame of historical data, call the <code>history</code> method with atleast one <code>Symbol</code> object.
   </p>
   
   <div class="section-example-container">
