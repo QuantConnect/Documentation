@@ -9,13 +9,17 @@ foreach (var bets in universeHistory)
 {
     foreach (QuiverWallStreetBetsUniverse bet in bets)
     {
-        Log($"{bet.Symbol} rank at {bet.EndTime}: {bet.Rank}");
+        Log($"{bet.Symbol} mentions at {bet.EndTime}: {bet.Mentions}");
     }
 }</pre>
-     <pre class="python">universe_history = self.history(self._universe, 30, Resolution.DAILY)
-for (univere_symbol, time), pages in universe_history.items():
-    for page in pages:
-        self.log(f"{page.symbol} week percent change at {page.end_time}: {page.week_percent_change}")</pre>
+     <pre class="python"># DataFrame example where the columns are the QuiverWallStreetBetsUniverse attributes: 
+history_df = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
+
+# Series example where the values are lists of QuiverWallStreetBetsUniverse objects: 
+universe_history = self.history(self._universe, 30, Resolution.DAILY)
+for (univere_symbol, time), bets in universe_history.items():
+    for bet in bets:
+        self.log(f"{bet.symbol} mentions at {bet.end_time}: {bet.mentions}")</pre>
 </div>
 
 <h4>Historical Universe Data in Research</h4>
@@ -29,10 +33,14 @@ for (univere_symbol, time), pages in universe_history.items():
         Log($"{bet.Symbol} rank at {bet.EndTime}: {bet.Rank}");
     }
 }</pre>
-     <pre class="python">universe_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
-for (univere_symbol, time), pages in universe_history.items():
-    for page in pages:
-        print(f"{page.symbol} week percent change at {page.end_time}: {page.week_percent_change}")</pre>
+     <pre class="python"># DataFrame example where the columns are the QuiverWallStreetBetsUniverse attributes: 
+history_df = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)
+
+# Series example where the values are lists of QuiverWallStreetBetsUniverse objects: 
+universe_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
+for (univere_symbol, time), bets in universe_history.items():
+    for bet in bets:
+        print(f"{bet.symbol} rank at {bet.end_time}: {bet.rank}")</pre>
 </div>
 
 <p>You can call the <b class="csharp">History</b><b class="python">history</b> method in Research.</p>

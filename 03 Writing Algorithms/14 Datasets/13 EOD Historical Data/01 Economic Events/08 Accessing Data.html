@@ -1,0 +1,38 @@
+<p>To get the current Economic Events data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    events = slice.get(EODHDEconomicEvents).get(self.dataset_symbol)
+    for event in events:
+        self.log(f"{event.event_type} of {event.country} over {event.event_period} with be held at {event.event_time} with estimated value {event.estimate}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.Get&lt;EODHDEconomicEvents&gt;().TryGetValue(_datasetSymbol, out var economicEvents))
+    {
+        foreach (EODHDEconomicEvent economicEvent in economicEvents)
+        {
+           Log($"{economicEvent.EventType} of {economicEvent.Country} over {economicEvent.EventPeriod} with be held at {economicEvent.EventTime} with estimated value {economicEvent.Estimate}");
+        }
+    }
+}</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b class="csharp">Get</b><b class="python">get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for symbol, events in slice.get(EODHDEconomicEvents).items():
+        for event in events:
+            self.log(f"{event.event_type} of {event.country} over {event.event_period} with be held at {event.event_time} with estimated value {event.estimate}")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var (symbol, economicEvents) in slice.Get&lt;EODHDEconomicEvents&gt;())
+    {
+        foreach (EODHDEconomicEvent economicEvent in economicEvents)
+        {
+           Log($"{economicEvent.EventType} of {economicEvent.Country} over {economicEvent.EventPeriod} with be held at {economicEvent.EventTime} with estimated value {economicEvent.Estimate}");
+        }
+    }
+}</pre>
+</div>

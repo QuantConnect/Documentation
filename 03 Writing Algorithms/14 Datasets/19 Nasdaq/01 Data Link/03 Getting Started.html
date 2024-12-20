@@ -6,31 +6,31 @@
 # For premium datasets, provide your API Key
 # NasdaqDataLink.set_auth_pre(self.get_parameter("nasdaq-data-link-api-key"))
 
-self.pe_ratio_symbol = self.add_data(NasdaqDataLink, "MULTPL/SP500_PE_RATIO_MONTH", Resolution.DAILY).symbol
+self.bitcoin_chain_symbol = self.add_data(NasdaqDataLink, "QDL/BCHAIN", Resolution.DAILY).symbol
 # This dataset has one data column ("Value")
 
-self.position_change_symbol = self.add_data(NasdaqCustomColumns, "CFTC/066393_FO_L_CHG", Resolution.DAILY).symbol
+self.bitfinex_exchange_rate_symbol = self.add_data(NasdaqCustomColumns, "QDL/BITFINEX", Resolution.DAILY).symbol
 # This dataset has multiple data columns. Create a subclass to set the default value column.
 
 class NasdaqCustomColumns(NasdaqDataLink):
     def __init__(self) -&gt; None:
-        # Select the column "open interest - change".
-        self.value_column_name = "open interest - change"</pre>
+        # Select the column "mid".
+        self.value_column_name = "mid"</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
 // For premium datasets, provide your API Key
 // NasdaqDataLink.SetAuthCode(GetParameter("nasdaq-data-link-api-key"));
 
-_peRatioSymbol = AddData&lt;NasdaqDataLink&gt;("MULTPL/SP500_PE_RATIO_MONTH", Resolution.Daily).Symbol;
+_bitcoinChainSymbol = AddData&lt;NasdaqDataLink&gt;("QDL/BCHAIN", Resolution.Daily).Symbol;
 // This dataset has one data column ("Value")
 
-_positionChangeSymbol = AddData&lt;NasdaqCustomColumns&gt;("CFTC/066393_FO_L_CHG", Resolution.Daily).Symbol;
+_bitfinexExchangeRateSymbol = AddData&lt;NasdaqCustomColumns&gt;("QDL/BITFINEX", Resolution.Daily).Symbol;
 // This dataset has multiple data columns. Create a subclass to set the default value column.
 
 public class NasdaqCustomColumns : NasdaqDataLink
 {
-    // Select the column "open interest - change"
-    public NasdaqCustomColumns() : base(valueColumnName: "open interest - change") { }
+    // Select the column "mid"
+    public NasdaqCustomColumns() : base(valueColumnName: "mid") { }
 }</pre>
 </div>
 

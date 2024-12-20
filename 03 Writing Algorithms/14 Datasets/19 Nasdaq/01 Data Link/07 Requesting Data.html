@@ -10,23 +10,23 @@
         # For premium datasets, provide your API Key
         # NasdaqDataLink.set_auth_pre(self.get_parameter("nasdaq-data-link-api-key"))
 
-        self.pe_ratio_symbol = self.add_data(NasdaqDataLink, "MULTPL/SP500_PE_RATIO_MONTH", Resolution.DAILY).symbol
+        self.bitcoin_chain_symbol = self.add_data(NasdaqDataLink, "QDL/BCHAIN", Resolution.DAILY).symbol
         # This dataset has one data column ("Value")
-        # Source : https://data.nasdaq.com/data/MULTPL/SP500_PE_RATIO_MONTH-sp-500-pe-ratio-by-month
+        # Source : https://data.nasdaq.com/databases/BCHAIN
 
-        self.position_change_symbol = self.add_data(NasdaqCustomColumns, "CFTC/066393_FO_L_CHG", Resolution.DAILY).symbol
+        self.bitfinex_exchange_rate_symbol = self.add_data(NasdaqCustomColumns, "QDL/BITFINEX", Resolution.DAILY).symbol
         # This dataset has multiple data columns
-        # Source: https://data.nasdaq.com/data/CFTC/066393_FO_L_CHG-commitment-of-traders-propane-argus-far-east-mini-ifed-futures-and-options-change-in-positions-legacy-format-066393
+        # Source: https://data.nasdaq.com/databases/BITFINEX
 
 class NasdaqCustomColumns(NasdaqDataLink):
     def __init__(self) -&gt; None:
-        # Select the column "open interest - change".
-        self.value_column_name = "open interest - change"</pre>
+        # Select the column "mid".
+        self.value_column_name = "mid"</pre>
 <pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
 {
     public class NasdaqDataLinkDataAlgorithm : QCAlgorithm
     {
-        private Symbol _peRatioSymbol, _positionChangeSymbol;
+        private Symbol _bitcoinChainSymbol , _bitfinexExchangeRateSymbol ;
 
         public override void Initialize()
         {
@@ -37,20 +37,20 @@ class NasdaqCustomColumns(NasdaqDataLink):
             // For premium datasets, provide your API Key
             // NasdaqDataLink.SetAuthCode(GetParameter("nasdaq-data-link-api-key"));
 
-            _peRatioSymbol = AddData&lt;NasdaqDataLink&gt;("MULTPL/SP500_PE_RATIO_MONTH", Resolution.Daily).Symbol;
-            // This dataset has one data column ("Value")
-            // Source : https://data.nasdaq.com/data/MULTPL/SP500_PE_RATIO_MONTH-sp-500-pe-ratio-by-month
+           _bitcoinChainSymbol = AddData&lt;NasdaqDataLink&gt;("QDL/BCHAIN", Resolution.Daily).Symbol;
+           // This dataset has one data column ("Value")
+            // Source : https://data.nasdaq.com/databases/BCHAIN
 
-            _positionChangeSymbol = AddData&lt;NasdaqCustomColumns&gt;("CFTC/066393_FO_L_CHG", Resolution.Daily).Symbol;
+            _bitfinexExchangeRateSymbol = AddData&lt;NasdaqCustomColumns&gt;("QDL/BITFINEX", Resolution.Daily).Symbol;
             // This dataset has multiple data columns
-            // Source: https://data.nasdaq.com/data/CFTC/066393_FO_L_CHG-commitment-of-traders-propane-argus-far-east-mini-ifed-futures-and-options-change-in-positions-legacy-format-066393
+            // Source: https://data.nasdaq.com/databases/BITFINEX
         }
     }
 
     public class NasdaqCustomColumns : NasdaqDataLink
     {
-        // Select the column "open interest - change".
-        public NasdaqCustomColumns() : base(valueColumnName: "open interest - change") { }
+        // Select the column "mid"
+        public NasdaqCustomColumns() : base(valueColumnName: "mid") { }
     }
 }</pre>
 </div>

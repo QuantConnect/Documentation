@@ -21,11 +21,19 @@ foreach (var transactions in transactionHistory)
         Log($"{transaction.Symbol.Value} amount at {transaction.EndTime}: {transaction.Amount}");
     }
 }</pre>
-     <pre class="python">intention_universe_history = self.history(self.intention_universe, 30, Resolution.DAILY)
+     <pre class="python"># DataFrame example where the columns are the SmartInsiderIntentionUniverse attributes: 
+intention_history_df = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
+
+# Series example where the values are lists of SmartInsiderIntentionUniverse objects: 
+intention_universe_history = self.history(self.intention_universe, 30, Resolution.DAILY)
 for (_, time), intentions in intention_universe_history.items():
     for intention in intentions:
         self.log(f"{intention.symbol.value} amount value at {intention.end_time}: {intention.amount_value}")
 
+# DataFrame example where the columns are the SmartInsiderTransactionUniverse attributes: 
+transaction_history_df = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
+
+# Series example where the values are lists of SmartInsiderTransactionUniverse objects: 
 transaction_universe_history = self.history(self.transaction_universe, 30, Resolution.DAILY)
 for (_, time), transactions in transaction_universe_history.items():
     for transaction in transactions:
@@ -53,11 +61,19 @@ foreach (var transactions in transactionHistory)
         Console.WriteLine($"{transaction.Symbol.Value} amount at {transaction.EndTime}: {transaction.Amount}");
     }
 }</pre>
-     <pre class="python">intention_universe_history = qb.universe_history(intention_universe, qb.time-timedelta(30), qb.time)
+     <pre class="python"># DataFrame example where the columns are the SmartInsiderIntentionUniverse attributes: 
+intention_history_df = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)
+
+# Series example where the values are lists of SmartInsiderIntentionUniverse objects: 
+intention_universe_history = qb.universe_history(intention_universe, qb.time-timedelta(30), qb.time)
 for (_, time), intentions in intention_universe_history.items():
     for intention in intentions:
         print(f"{intention.symbol.value} amount value at {intention.end_time}: {intention.amount_value}")
 
+# DataFrame example where the columns are the SmartInsiderTransactionUniverse attributes: 
+transaction_history_df = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)
+
+# Series example where the values are lists of SmartInsiderTransactionUniverse objects: 
 transaction_universe_history = qb.universe_history(transaction_universe, qb.time-timedelta(30), qb.time)
 for (_, time), transactions in transaction_universe_history.items():
     for transaction in transactions:
