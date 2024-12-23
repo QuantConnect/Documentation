@@ -14,11 +14,11 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/fred-dataframe-history.png";
 
 <div class="section-example-container">
     <pre class="csharp">// Get the Symbol of a dataset.
-var datasetSymbol = AddData&lt;<?=$datasetClass?>&gt;("RVXCLS");
+var datasetSymbol = AddData&lt;<?=$datasetClass?>&gt;("RVXCLS").Symbol;
 // Get the trailing 5 days of <?=$datasetClass?> data.
 var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
     <pre class="python"># Get the Symbol of a dataset.
-dataset_symbol = self.add_data(Fred, 'RVXCLS').Symbol
+dataset_symbol = self.add_data(Fred, 'RVXCLS').symbol
 # Get the trailing 5 days of <?=$datasetClass?> data in DataFrame format.
 history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
