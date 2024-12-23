@@ -1,0 +1,253 @@
+<p>The following examples demonstrate some common practices for implementing framework alpha model.</p>
+
+<h4>Example 1: EMA Cross On Liquid Stocks</h4>
+<p>The following algorithm selects the top 500 liquid US stocks traded in popular exchanges using <code>QC500UniverseSelectionModel</code>. Then, emit trade signals based on 60-day versus 200-day EMA cross on trend changes through <code>EmaCrossAlphaModel</code>. Each signal will weight equally.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkAlphaModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2023, 8, 1);
+
+        // Add a universe of liquid equities since they have capital to support demand and trend.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Using a EMA cross alpha model to trade on medium versus long term trends.
+        AddAlpha(new EmaCrossAlphaModel(60, 200, Resolution.Daily));
+        // Equally invested in insights to evenly dissipate capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}</pre>
+    <pre class="python">class FrameworkAlphaModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 8, 1)
+
+        # Add a universe of liquid equities since they have capital to support demand and trend.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Using a EMA cross alpha model to trade on medium versus long term trends.
+        self.add_alpha(EmaCrossAlphaModel(60, 200, Resolution.DAILY))
+        # Equally invested in insights to evenly dissipate capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
+</div>
+
+<h4>Example 2: Interest Rate Effect On Forex</h4>
+<p>The following algorithm implements a custom alpha model that using interest rate cycle as signals to trade Forex. We trade the top 6 forexes, which are AUDUSD, EURUSD, GBPUSD, USDCAD, USDCHF, and USDJPY. For the ones with USD as quote currencies, we buy them during US interest rate down cycle, since USD is relatively weak, while shorting them during up cycle. Vice versa for the ones with USD as base currencies.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkAlphaModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 12, 1);
+        
+        // Use daily resolution since the interest rate signal is on daily basis.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Add a universe of selected list of Forex.
+        var forex = new[] {
+            QuantConnect.Symbol.Create("AUDUSD", SecurityType.Forex, Market.Oanda),
+            QuantConnect.Symbol.Create("EURUSD", SecurityType.Forex, Market.Oanda),
+            QuantConnect.Symbol.Create("GBPUSD", SecurityType.Forex, Market.Oanda),
+            QuantConnect.Symbol.Create("USDCAD", SecurityType.Forex, Market.Oanda),
+            QuantConnect.Symbol.Create("USDCHF", SecurityType.Forex, Market.Oanda),
+            QuantConnect.Symbol.Create("USDJPY", SecurityType.Forex, Market.Oanda)
+        };
+        AddUniverseSelection(new ManualUniverseSelectionModel(forex));
+        // Using a custom alpha model to trade forex based on interest rate.
+        AddAlpha(new InterestRateAlphaModel(this));
+        // Equally invested in insights to evenly dissipate capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+
+    private class InterestRateAlphaModel : AlphaModel
+    {
+        private QCAlgorithm _algorithm;
+        private bool _wasRising;
+        // Use a 365d SMA indicator of daily interest rate to estimate if the interest rate cycle is upward or downward.
+        private SimpleMovingAverage _sma = new(365);
+
+        public InterestRateAlphaModel(QCAlgorithm algorithm)
+        {
+            _algorithm = algorithm;
+
+            // Warm up the SMA indicator.
+            var current = algorithm.Time;
+            var provider = algorithm.RiskFreeInterestRateModel;
+            for (DateTime dt = current.AddDays(-365); dt &lt;= current; dt = dt.AddDays(1))
+            {
+                var rate = provider.GetInterestRate(dt);
+                _sma.Update(dt, rate);
+                _wasRising = rate &gt; _sma;
+            }
+
+            // Set schedule to update the interest rate trend indicator on every day.
+            algorithm.Schedule.On(
+                algorithm.DateRules.EveryDay(),
+                algorithm.TimeRules.At(0, 1),
+                UpdateInterestRate
+            );
+        }
+
+        private void UpdateInterestRate()
+        {
+            // Update interest rate to the SMA indicator to estimate its trend.
+            var rate = _algorithm.RiskFreeInterestRateModel.GetInterestRate(_algorithm.Time);
+            _sma.Update(_algorithm.Time, rate);
+            _wasRising = rate &gt; _sma;
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+            
+            // Split the forexes by whether the quote currency is USD.
+            var quoteUSD = new List&lt;Symbol&gt;();
+            var baseUSD = new List&lt;Symbol&gt;();
+            foreach (var (symbol, security) in algorithm.Securities)
+            {
+                if (security.QuoteCurrency.Symbol == Currencies.USD)
+                {
+                    quoteUSD.Add(symbol);
+                }
+                else
+                {
+                    baseUSD.Add(symbol);
+                }
+            }
+            
+            var rate = algorithm.RiskFreeInterestRateModel.GetInterestRate(algorithm.Time);
+            // During rising interest rate cycle, long the forexes which USD as base currency, short the ones which USD as quote currency.
+            if (rate &gt; _sma)
+            {
+                insights.AddRange(
+                    baseUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)).ToList()
+                );
+                insights.AddRange(
+                    quoteUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)).ToList()
+                );
+            }
+            // During downward interest rate cycle, short the forexes which USD as base currency, long the ones which USD as quote currency.
+            else if (rate &lt; _sma)
+            {
+                insights.AddRange(
+                    baseUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)).ToList()
+                );
+                insights.AddRange(
+                    quoteUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)).ToList()
+                );
+            }
+            // If the interest rate cycle is steady for long, we expect a flip in the cycle coming up.
+            else if (_wasRising)
+            {
+                insights.AddRange(
+                    baseUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)).ToList()
+                );
+                insights.AddRange(
+                    quoteUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)).ToList()
+                );
+            }
+            else
+            {
+                insights.AddRange(
+                    baseUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)).ToList()
+                );
+                insights.AddRange(
+                    quoteUSD.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)).ToList()
+                );
+            }
+
+            return insights;
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkAlphaModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2024, 12, 1)
+
+        # Use daily resolution since the interest rate signal is on daily basis.
+        self.universe_settings.resolution = Resolution.DAILY
+        # Add a universe of selected list of Forex.
+        forex = [
+            Symbol.create("AUDUSD", SecurityType.FOREX, Market.OANDA),
+            Symbol.create("EURUSD", SecurityType.FOREX, Market.OANDA),
+            Symbol.create("GBPUSD", SecurityType.FOREX, Market.OANDA),
+            Symbol.create("USDCAD", SecurityType.FOREX, Market.OANDA),
+            Symbol.create("USDCHF", SecurityType.FOREX, Market.OANDA),
+            Symbol.create("USDJPY", SecurityType.FOREX, Market.OANDA)
+        ]
+        self.add_universe_selection(ManualUniverseSelectionModel(forex))
+        # Using a custom alpha model to trade forex based on interest rate.
+        self.add_alpha(InterestRateAlphaModel(self))
+        # Equally invested in insights to evenly dissipate capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+class InterestRateAlphaModel(AlphaModel):
+    # Use a 365d SMA indicator of daily interest rate to estimate if the interest rate cycle is upward or downward.
+    _sma = SimpleMovingAverage(365)
+
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        self._algorithm = algorithm
+
+        # Warm up the SMA indicator.
+        current = algorithm.time
+        provider = algorithm.risk_free_interest_rate_model
+        dt = current - timedelta(365)
+        while dt &lt;= current:
+            rate = provider.get_interest_rate(dt)
+            self._sma.update(dt, rate)
+            self._was_rising = rate &gt; self._sma.current.value
+            dt += timedelta(1)
+
+        # Set schedule to update the interest rate trend indicator on every day.
+        algorithm.schedule.on(
+            algorithm.date_rules.every_day(),
+            algorithm.time_rules.at(0, 1),
+            self.update_interest_rate
+        )
+
+    def update_interest_rate(self) -&gt; None:
+        # Update interest rate to the SMA indicator to estimate its trend.
+        rate = self._algorithm.risk_free_interest_rate_model.get_interest_rate(self._algorithm.time)
+        self._sma.update(self._algorithm.time, rate)
+        self._was_rising = rate &gt; self._sma.current.value
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+        
+        # Split the forexes by whether the quote currency is USD.
+        quote_usd = []
+        base_usd = []
+        for symbol, security in algorithm.securities.items():
+            if security.quote_currency.symbol == Currencies.USD:
+                quote_usd.append(symbol)
+            else:
+                base_usd.append(symbol)
+
+        rate = algorithm.risk_free_interest_rate_model.get_interest_rate(algorithm.time)
+        # During rising interest rate cycle, long the forexes which USD as base currency, short the ones which USD as quote currency.
+        if rate &gt; self._sma.current.value:
+            insights.extend(
+                [Insight.price(symbol, timedelta(1), InsightDirection.UP) for symbol in base_usd] + 
+                [Insight.price(symbol, timedelta(1), InsightDirection.DOWN) for symbol in quote_usd]
+            )
+        # During downward interest rate cycle, short the forexes which USD as base currency, long the ones which USD as quote currency.
+        elif rate &lt; self._sma.current.value:
+            insights.extend(
+                [Insight.price(symbol, timedelta(1), InsightDirection.DOWN) for symbol in base_usd] + 
+                [Insight.price(symbol, timedelta(1), InsightDirection.UP) for symbol in quote_usd]
+            )
+        # If the interest rate cycle is steady for long, we expect a flip in the cycle coming up.
+        elif self._was_rising:
+            insights.extend(
+                [Insight.price(symbol, timedelta(1), InsightDirection.DOWN) for symbol in base_usd] + 
+                [Insight.price(symbol, timedelta(1), InsightDirection.UP) for symbol in quote_usd]
+            )
+        else:
+            insights.extend(
+                [Insight.price(symbol, timedelta(1), InsightDirection.UP) for symbol in base_usd] + 
+                [Insight.price(symbol, timedelta(1), InsightDirection.DOWN) for symbol in quote_usd]
+            )
+
+        return insights</pre>
+</div>
