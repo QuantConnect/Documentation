@@ -1,12 +1,7 @@
 <p>The following example gets the history of a <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-universes/key-concepts'>custom data universe</a>:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add a custom data universe.
-var universe = AddUniverse&lt;CoinGecko&gt;();
-// Get 365 days of history for the universe.
-var history = History(universe, TimeSpan.FromDays(365));
-    
-// Define the custom data class outside of the algorithm class.
+    <pre class="csharp">// Define the custom data class outside of the algorithm class.
 public class StockDataSource : BaseData
 {
     public List&lt;string&gt; Symbols { get; set; } = new();
@@ -33,13 +28,13 @@ public class StockDataSource : BaseData
         catch { return null; }
         return stocks;
     }
-}</pre>
-    <pre class="python"># Add a custom data universe.
-universe = self.add_universe(StockDataSource)
-# Add a custom data universe.
-history = self.history(universe, datetime(2018, 1, 1), datetime(2018, 1, 10), flatten=True)
+}
     
-# Define the custom data class outside of the algorithm class.    
+// In the Initialize method, add a custom data universe.
+var universe = AddUniverse&lt;StockDataSource&gt;("StockDataSource", Resolution.Daily);
+// Get 365 days of history for the universe.
+var history = History(universe, TimeSpan.FromDays(365));</pre>
+    <pre class="python"># Define the custom data class outside of the algorithm class.    
 class StockDataSource(PythonData):
 
     def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live: bool) -> SubscriptionDataSource:
@@ -61,7 +56,12 @@ class StockDataSource(PythonData):
             stocks["Symbols"] = csv[1:]
         except ValueError:
             return None
-        return stocks</pre>
+        return stocks
+    
+# In the initialize method, add a custom data universe.
+universe = self.add_universe(StockDataSource)
+# Add a custom data universe.
+history = self.history(universe, datetime(2018, 1, 1), datetime(2018, 1, 10), flatten=True)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-custom-data.png' class='python docs-image' alt='DataFrame of the custom data universe.'>
