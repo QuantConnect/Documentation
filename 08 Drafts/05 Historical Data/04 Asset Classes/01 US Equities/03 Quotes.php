@@ -19,7 +19,7 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("SPY").Symbol;
 // Get the 5 trailing minute QuoteBar objects of the asset. 
-var history = History&lt;TradeBar&gt;(symbol, 5, Resolution.Minute);</pre>
+var history = History&lt;QuoteBar&gt;(symbol, 5, Resolution.Minute);</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('SPY').symbol
 # Get the 5 trailing minute QuoteBar objects of the asset in DataFrame format. 
