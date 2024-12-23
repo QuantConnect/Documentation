@@ -1,5 +1,5 @@
 <?
-$imgLink = "";
+$imgLink = "https://cdn.quantconnect.com/i/tu/universe-dataframe-us-etf-constituents.png";
 $dataTypeLink = "/docs/v2/writing-algorithms/universes/equity";
 ?>
 
@@ -13,16 +13,16 @@ $dataTypeLink = "/docs/v2/writing-algorithms/universes/equity";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add the universe and save a reference to the Universe object.
-var universe = AddUniverse(Universe.DollarVolume.Top(3));
-// Get the historical universe data over the last 30 days.
-var history = History(universe, TimeSpan.FromDays(30));</pre>
-    <pre class="python"># Add the universe and save a reference to the Universe object.
-# Get the historical universe data over the last 30 days in DataFrame format.
-history = self.history(universe, timedelta(30), flatten=True)</pre>
+    <pre class="csharp">// Add a universe of US Equities based on the constituents of an ETF.
+var universe = AddUniverse(Universe.ETF("SPY");
+// Get 5 days of history for the universe.
+var history = History(universe, TimeSpan.FromDays(5));</pre>
+    <pre class="python"># Add a universe of US Equities based on the constituents of an ETF.
+universe = self.add_universe(self.universe.etf('SPY'))
+# Get 5 days of history for the universe.
+history = self.history(universe, timedelta(5), flatten=True)</pre>
 </div>
 
-<b>TODO:</b>
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of universe data for an asset.'>
 
 <p class='python'>To get the data in the format of the objects that you receive in your universe filter function instead of a DataFrame, use <code>flatten=False</code>.</p>
