@@ -42,20 +42,20 @@ def __library_to_code_block(maxlen, libraries):
         html += format_output(key, value, maxlen) + '\n'
     return html
 
-def __read_libraries_from_file(filename):
+def __read_libraries_from_file(filename, sep='=='):
     with open(filename, mode='r', encoding='utf-8') as f:
         def line_to_kvp(line):
-            csv = line.split('==')
+            csv = [x for x in line.split(sep) if x]
             return csv[0],csv[1][:-1]
         lines = [__process_pip_line(line) for line in f.readlines()]
-        libraries = dict([line_to_kvp(line) for line in lines if '==' in line])
+        libraries = dict([line_to_kvp(line) for line in lines if sep in line])
         return len(max(libraries.keys(), key=len)), libraries
 
 if __name__ == '__main__':
     __create_csharp_libraries_file()
     __create_python_libraries_file()
     
-    package_reference = '''<PackageReference Include="Accord" Version="3.6.0" />
+    package_reference = '''    <PackageReference Include="Accord" Version="3.6.0" />
     <PackageReference Include="Accord.Audio" Version="3.6.0" />
     <PackageReference Include="Accord.Fuzzy" Version="3.6.0" />
     <PackageReference Include="Accord.Genetic" Version="3.6.0" />
@@ -63,36 +63,40 @@ if __name__ == '__main__':
     <PackageReference Include="Accord.MachineLearning.GPL" Version="3.6.0" />
     <PackageReference Include="Accord.Math" Version="3.6.0" />
     <PackageReference Include="Accord.Statistics" Version="3.6.0" />
+    <PackageReference Include="csnumerics" Version="1.0.2" />
     <PackageReference Include="Deedle" Version="2.1.0" />
     <PackageReference Include="DynamicInterop" Version="0.9.1" />
-    <PackageReference Include="Google.OrTools" Version="9.6.2534" />
+    <PackageReference Include="Google.OrTools" Version="9.11.4210" />
     <PackageReference Include="MathNet.Filtering" Version="0.7.0" />
     <PackageReference Include="MathNet.Filtering.Kalman" Version="0.7.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
-    <PackageReference Include="Microsoft.Data.Analysis" Version="0.20.1" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="2.0.1" />
-    <PackageReference Include="Microsoft.ML.DataView" Version="2.0.1" />
-    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.20.1" />
-    <PackageReference Include="Microsoft.ML.FastTree" Version="2.0.1" />
-    <PackageReference Include="Microsoft.ML.LightGbm" Version="2.0.1" />
-    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="2.0.1" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.15.1" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="2.0.1" />
-    <PackageReference Include="Microsoft.ML.TimeSeries" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Data.Analysis" Version="0.22.0" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="4.0.0" />
+    <PackageReference Include="Microsoft.ML.DataView" Version="4.0.0" />
+    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.22.0" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="4.0.0" />
+    <PackageReference Include="Microsoft.ML.LightGbm" Version="4.0.0" />
+    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="4.0.0" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="4.0.0" />
+    <PackageReference Include="Microsoft.ML.TimeSeries" Version="4.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NodaTime" Version="3.0.5" />
-    <PackageReference Include="OpenAI" Version="1.7.2" />
-    <PackageReference Include="QLNet" Version="1.13.0" />
+    <PackageReference Include="OpenAI" Version="2.1.0" />
+    <PackageReference Include="QLNet" Version="1.13.1" />
     <PackageReference Include="R.NET" Version="1.9.0" />
-    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.21" />
+    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.42" />
+    <PackageReference Include="QuantConnect.PredictNowNET" Version="1.0.2" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
-    <PackageReference Include="Catalyst" Version="1.0.39645" />
+    <PackageReference Include="Catalyst" Version="1.0.54164" />
     <PackageReference Include="Catalyst.Models.English" Version="1.0.30952" />
     <PackageReference Include="CNTK.CPUOnly" Version="2.8.0-rc0.dev20200201" />
-    <PackageReference Include="LibTopoART" Version="0.97.0" />
-    <PackageReference Include="Microsoft.ML" Version="2.0.1" />
+    <PackageReference Include="LibTopoART" Version="0.98.0" />
+    <PackageReference Include="Microsoft.ML" Version="4.0.0" />
     <PackageReference Include="NumSharp" Version="0.30.0" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist-Linux-GPU" Version="2.11.1" />
     <PackageReference Include="SharpLearning.DecisionTrees" Version="0.31.8" />
     <PackageReference Include="SharpLearning.AdaBoost" Version="0.31.8" />
     <PackageReference Include="SharpLearning.RandomForest" Version="0.31.8" />
@@ -108,10 +112,13 @@ if __name__ == '__main__':
     <PackageReference Include="SharpLearning.FeatureTransformations" Version="0.31.8" />
     <PackageReference Include="SharpLearning.XGBoost" Version="0.31.8" />
     <PackageReference Include="SharpNeatLib" Version="2.4.4" />
-    <PackageReference Include="TensorFlow.Keras" Version="0.11.2" />
-    <PackageReference Include="TensorFlow.NET" Version="0.110.2" />
-    <PackageReference Include="Plotly.NET" Version="3.0.1" />
-    <PackageReference Include="Plotly.NET.Interactive" Version="3.0.2" />'''
+    <PackageReference Include="TensorFlow.Keras" Version="0.15.0" />
+    <PackageReference Include="TensorFlow.NET" Version="0.150.0" />
+    <PackageReference Include="Plotly.NET" Version="5.1.0" />
+    <PackageReference Include="Plotly.NET.CSharp" Version="0.13.0" />
+    <PackageReference Include="Plotly.NET.Interactive" Version="5.0.0" />
+    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.41" />
+    <PackageReference Include="NodaTime" Version="3.0.5" />'''
 
     cloud_added = {}
     for line in package_reference.split('\n'):
@@ -257,16 +264,7 @@ if __name__ == '__main__':
 
         html += '</div>'
         fp.write(html)
-
-    for enviroment in ['autogluon','autokeras']:
-        with open(RESOURCE / f'supported-libraries-foundation-{enviroment}.html', mode='w', encoding='utf-8') as fp:
-            maxlen, libraries = __read_libraries_from_file(RESOURCE / f'{enviroment}.txt')
-            fp.write(f'''
-<div class="section-example-container"><pre class="python">
-{__library_to_code_block(maxlen, libraries)}
-</pre></div>
-''')
-        
+    
     html = '''<style> 
 .centered {text-align: center; }
 </style>
