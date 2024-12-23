@@ -13,9 +13,13 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the dividends that a stock paid over the last 2 years. 
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("AAPL").Symbol;
+// Get the dividends that the stock paid over the last 2 years. 
 var history = History&lt;Dividend&gt;(symbol, TimeSpan.FromDays(2*365);</pre>
-    <pre class="python"># Get the dividends that a stock paid over the last 2 years in DataFrame format. 
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('AAPL').symbol
+# Get the dividends that the stock paid over the last 2 years in DataFrame format. 
 history = self.history(Dividend, symbol, timedelta(2*365))</pre>
 </div>
 
