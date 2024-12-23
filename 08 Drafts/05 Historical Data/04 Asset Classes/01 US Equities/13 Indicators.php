@@ -49,7 +49,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
 <div class="section-example-container">
 	<pre class="csharp">// Add the target and reference assets.
 var targetSymbol = AddEquity("AAPL").Symbol;
-referenceSymbol = AddEquity("SPY").Symbol;
+var referenceSymbol = AddEquity("SPY").Symbol;
 // Create a 21-period Beta indicator.
 var beta = new Beta("", targetSymbol, referenceSymbol, 21);
 // Get the historical values of the indicator over the last 10 trading days.
