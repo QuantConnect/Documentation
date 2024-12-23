@@ -2,15 +2,27 @@
 
 <ol>
     <li>Create a new project.</li>
+    <p>
+        Projects contain files to run backtests, launch research notebooks, perform parameter optimizations, and deploy live trading strategies. 
+        You need to create projects in order to create strategies and share your work with other members.
+    </p>
     <p>The process to create a new project depends on if you use the <a href='/docs/v2/cloud-platform/projects/getting-started#03-Create-Projects'>Cloud Platform</a>, <a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>Local Platform</a>, or <a href='/docs/v2/lean-cli/projects/project-management#02-Create-Projects'>CLI</a>.</p>
 
     <li>In the <code class='python'>initialize</code><code class='csharp'>Initialize</code> method, <a href='/docs/v2/writing-algorithms/securities/requesting-data'>add an asset</a>.</li>
+    <p>
+        The <code class="csharp">Initialize</code><code class="python">initialize</code> method is the entry point of your algorithm where you define a series of settings, including security subscriptions, starting cash balances, and warm-up periods. 
+        LEAN only calls the <code class="csharp">Initialize</code><code class="python">initialize</code> method one time, at the start of your algorithm.
+    </p>
     <div class="section-example-container">
         <pre class="csharp">var spy = AddEquity("SPY");</pre>
         <pre class="python">spy = self.add_equity('SPY')</pre>
     </div>
 
     <li>Call the <code class='python'>history</code><code class='csharp'>History</code> method with the asset's <a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers'>Symbol</a> and a lookback period.</li>
+    <p> 
+        <code>Symbol</code> objects are a way to identify or "finger-print" tradable assets so that no further database look-up is required. 
+        All QuantConnect and LEAN Algorithm API methods use <code>Symbol</code> objects to identify assets.
+    </p>
     <div class="section-example-container">
         <pre class="csharp">var history = History(spy.Symbol, 10, Resolution.Daily);</pre>
         <pre class="python">history = self.history(spy.symbol, 10, Resolution.DAILY)</pre>
