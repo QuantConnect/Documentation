@@ -4,9 +4,13 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the daily-resolution TradeBar data of an asset during 2020.
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("SPY").Symbol;
+// Get the daily-resolution TradeBar data of the asset during 2020.
 var history = History&lt;TradeBar&gt;(symbol, new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), Resolution.Daily);</pre>
-    <pre class="python"># Get the daily-resolution TradeBar data of an asset during 2020.
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('SPY').symbol
+# Get the daily-resolution TradeBar data of the asset during 2020.
 history = self.history(TradeBar, symbol, datetime(2020, 1, 1), datetime(2021, 1, 1), Resolution.DAILY)</pre>
 </div>
 
