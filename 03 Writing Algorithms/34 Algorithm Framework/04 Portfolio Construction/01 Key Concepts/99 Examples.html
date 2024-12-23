@@ -115,5 +115,52 @@
         }
     }
 }</pre>
-    <pre class="python"></pre>
+    <pre class="python">class FrameworkPortfolioConstructionModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 5, 1)
+        self.set_end_date(2024, 7, 1)
+        self.set_cash(1000000)
+
+        # Set to raw data normalization for strike and underlying price fair comparison.
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        # Add a universe of the market representative SPY.
+        spy = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.add_universe_selection(ManualUniverseSelectionModel(spy))
+        # Emit insights for all selected ETFs. Each insight lasts for 7 days for the option hedge expiry.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Using a custom PCM to control the order size and hedge option position ordering, with 10% OTM threshold.
+        self.set_portfolio_construction(ProtectivePositionPortfolioConstructionModel(0.1))
+
+class ProtectivePositionPortfolioConstructionModel(PortfolioConstructionModel):
+    def __init__(self, threshold: float) -&gt; None:
+        self.threshold = threshold
+
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        targets = []
+        if not insights:
+            return targets
+
+        # Equally invest in each position group to dissipate the capital risk.
+        fund_per_insight = algorithm.portfolio.total_portfolio_value / len(insights)
+
+        for insight in insights:
+            underlying = insight.symbol
+            # Hedge position option right: long position should purchase OTM put, while short should purchase OTM call.
+            right = OptionRight.PUT if insight.direction == InsightDirection.UP else OptionRight.CALL
+            threshold = 1 - self.threshold if insight.direction == InsightDirection.UP else 1 + self.threshold
+
+            # Select protective optoin position expiring in 7 days.
+            hedge = sorted([x for x in algorithm.option_chain(underlying) if x.expiry &lt; algorithm.time + timedelta(7) and x.right == right],
+                           key=lambda x: (x.expiry, -abs(x.strike - x.underlying_last_price * threshold)),
+                           reverse=True)[0]
+            # Request the protective position data for trading.
+            hedge_symbol = algorithm.add_option_contract(hedge).symbol
+
+            # Each insight will be order by position group of the underlying and the hedging option position.
+            contract_multiplier = algorithm.securities[underlying].symbol_properties.contract_multiplier
+            quantity = fund_per_insight // (contract_multiplier * (hedge.bid_price + hedge.underlying_last_price))
+            targets.append(PortfolioTarget(underlying, int(quantity * contract_multiplier)))
+            targets.append(PortfolioTarget(hedge_symbol, int(quantity)))
+
+        return targets</pre>
 </div>
