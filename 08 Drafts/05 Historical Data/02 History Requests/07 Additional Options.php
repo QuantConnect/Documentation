@@ -55,15 +55,16 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
 <div class='section-example-container'>
     <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.add_future(Futures.Currencies.BTC)
 history = <?=$pyVar?>.history(
-    tickers=[<?=$pyFutureVar?>future.symbol], 
+    symbols=[<?=$pyFutureVar?>future.symbol], 
     start=<?=$pyVar?>.time - timedelta(days=15), 
     end=<?=$pyVar?>.time, 
     resolution=Resolution.MINUTE, 
     fill_forward=False, 
     extended_market_hours=False, 
-    dataMappingMode=DataMappingMode.OPEN_INTEREST, 
-    dataNormalizationMode=DataNormalizationMode.RAW, 
-    contractDepthOffset=0)</pre>
+    data_mapping_mode=DataMappingMode.OPEN_INTEREST, 
+    data_normalization_mode=DataNormalizationMode.RAW, 
+    contract_depth_offset=0
+)</pre>
     <pre class='csharp'>var future = <?=$cVar?>AddFuture(Futures.Currencies.BTC);
 var history = <?=$cVar?>History(
     symbols: new[] {future.Symbol}, 
