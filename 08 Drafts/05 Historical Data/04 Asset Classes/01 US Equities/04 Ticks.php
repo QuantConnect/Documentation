@@ -14,9 +14,13 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the trailing 2 days of ticks for an asset.
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("SPY").Symbol;
+// Get the trailing 2 days of ticks for the asset.
 var history = History&lt;Tick&gt;(symbol, TimeSpan.FromDays(2), Resolution.Tick);</pre>
-    <pre class="python"># Get the trailing 2 days of ticks for an asset in DataFrame format.
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('SPY').symbol
+# Get the trailing 2 days of ticks for the asset in DataFrame format.
 history = self.history(symbol, timedelta(2), Resolution.TICK)</pre>
 </div>
 
