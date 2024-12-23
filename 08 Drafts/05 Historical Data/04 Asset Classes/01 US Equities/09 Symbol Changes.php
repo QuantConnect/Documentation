@@ -13,9 +13,13 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the symbol changes of a stock over the last 10 years. 
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("META").Symbol;
+// Get the symbol changes of the stock over the last 10 years. 
 var history = History&lt;SymbolChangedEvent&gt;(symbol, TimeSpan.FromDays(10*365);</pre>
-    <pre class="python"># Get the symbol changes of a stock over the last 10 years in DataFrame format. 
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('META').symbol
+# Get the symbol changes of the stock over the last 10 years in DataFrame format. 
 history = self.history(SymbolChangedEvent, symbol, timedelta(10*365))</pre>
 </div>
 
