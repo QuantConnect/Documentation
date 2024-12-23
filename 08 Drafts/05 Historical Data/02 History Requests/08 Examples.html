@@ -1,0 +1,121 @@
+<p>The following examples demonstrate some common practices for trading using historical requests.</p>
+
+<h4>Example 1: Mean-Variance Portfolio</h4>
+<p>The following algorithm constructs a monthly rebalance mean-variance portfolio using the top 20 liquid equities. The position sizing can be optimized by 1-year historical daily return of the universe members.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class HistoricalRequestAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+    private IPortfolioOptimizer _optimizer;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 4, 1);
+        SetEndDate(2020, 9, 30);
+        
+        // Monthly renewal of the top 20 liquid universe to trade popular stocks.
+        UniverseSettings.Schedule.On(DateRules.MonthStart());
+        _universe = AddUniverse(Universe.DollarVolume.Top(20));
+
+        // Instantiate the optimizer to perform mean-variance optimization.
+        // Mean-variance optimization will not consider a risk-free rate, so we use 0.
+        _optimizer = new MaximumSharpeRatioPortfolioOptimizer(0, 1, 0);
+
+        // Set a scheduled event to rebalance the portfolio at the start of every month.
+        Schedule.On(
+            DateRules.MonthStart(),
+            TimeRules.At(9, 31),
+            Rebalance
+        );
+    }
+
+    private void Rebalance()
+    {
+        // Historical data request to get 1-year data for optimization.
+        var symbols = _universe.Selected.ToList();
+        var history = History&lt;TradeBar&gt;(symbols, 253, Resolution.Daily)
+            .Where(x =&gt; symbols.All(y =&gt; x.ContainsKey(y)) &amp;&amp; x.All(y =&gt; y.Value.Close &gt; 0m))
+            .ToList();
+        // Daily return on the universe members to calculate the optimized weights.
+        var returns = GetReturns(history, symbols);
+
+        // Calculate the optimized weights.
+        var weights = _optimizer.Optimize(returns);
+
+        // Rebalance the portfolio according to the optimized weights.
+        var targets = Enumerable.Range(0, weights.Length)
+            .Select(i =&gt; new PortfolioTarget(symbols[i], Convert.ToDecimal(weights[i])))
+            .ToList();
+        SetHoldings(targets, liquidateExistingHoldings: true);
+    }
+
+    private double[,] GetReturns(List&lt;DataDictionary&lt;TradeBar&gt;&gt; history, List&lt;Symbol&gt; symbols)
+    {
+        // Create a 2d array of historical daily returns from historical price data.
+        var returns = new double[history.Count, symbols.Count];
+        for (int j = 0; j &lt; symbols.Count; j++)
+        {
+            var lastPrice = 0m;
+            for (int i = 0; i &lt; history.Count; i++)
+            {
+                var current = history[i][symbols[j]].Close;
+                if (i &gt; 0)
+                {
+                    returns[i, j] = (double)((current - lastPrice) / lastPrice);
+                }
+                lastPrice = current;
+            }
+        }
+        return returns;
+    }
+}</pre>
+    <pre class="python">from Portfolio.MaximumSharpeRatioPortfolioOptimizer import MaximumSharpeRatioPortfolioOptimizer
+
+class HistoricalRequestAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 4, 1)
+        self.set_end_date(2020, 9, 30)
+        
+        # Monthly renewal of the top 20 liquid universe to trade popular stocks.
+        self.universe_settings.schedule.on(self.date_rules.month_start())
+        self._universe = self.add_universe(self.universe.dollar_volume.top(20))
+
+        # Instantiate the optimizer to perform mean-variance optimization.
+        # Mean-variance optimization will not consider a risk-free rate, so we use 0.
+        self._optimizer = MaximumSharpeRatioPortfolioOptimizer(0.0, 1.0, 0.0)
+
+        # Set a scheduled event to rebalance the portfolio at the start of every month.
+        self.schedule.on(
+            self.date_rules.month_start(), 
+            self.time_rules.at(9, 31),
+            self.rebalance
+        )
+
+    def rebalance(self) -&gt; None:
+        # Historical data request to get 1-year data for optimization.
+        symbols = self._universe.selected
+        history = self.history(symbols, 253, Resolution.DAILY).close.unstack(0).dropna()
+        # Daily return on the universe members to calculate the optimized weights.
+        returns = history.pct_change().dropna()
+
+        # Calculate the optimized weights.
+        weights = self._optimizer.optimize(returns)
+
+        # Rebalance the portfolio according to the optimized weights.
+        targets = [PortfolioTarget(symbol, size) for symbol, size in zip(symbols, weights)]
+        self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset">
+    <div class="example-legend">Demonstration Algorithm</div>
+    
+    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/HistoryAlgorithm.py" target="_BLANK">
+        HistoryAlgorithm.py  <span class="badge-python pull-right">Python</span>
+    </a>
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/HistoryAlgorithm.cs" target="_BLANK">
+        HistoryAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
+    </a>
+</div>
