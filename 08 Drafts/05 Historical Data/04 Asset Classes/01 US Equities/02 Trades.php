@@ -13,9 +13,13 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the 5 trailing daily TradeBar objects of an asset. 
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("SPY").Symbol;
+// Get the 5 trailing daily TradeBar objects of the asset. 
 var history = History&lt;TradeBar&gt;(symbol, 5, Resolution.Daily);</pre>
-    <pre class="python"># Get the 5 trailing daily TradeBar objects of an asset in DataFrame format. 
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('SPY').symbol
+# Get the 5 trailing daily TradeBar objects of the asset in DataFrame format. 
 history = self.history(TradeBar, symbol, 5, Resolution.DAILY)</pre>
 </div>
 
