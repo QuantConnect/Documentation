@@ -1,5 +1,3 @@
-<? include(DOCS_RESOURCES."/datasets/warm-up-introduction.html"); ?>
-
 <p>Follow these steps to add a warm-up period to the start of your algorithm:</p>
 
 <ol>
