@@ -13,9 +13,13 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the splits that occured for a stock over the last 5 years. 
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("AAPL").Symbol;
+// Get the splits that occured for the stock over the last 5 years. 
 var history = History&lt;Split&gt;(symbol, TimeSpan.FromDays(5*365);</pre>
-    <pre class="python"># Get the splits that occured for a stock over the last 5 years in DataFrame format. 
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('AAPL').symbol
+# Get the splits that occured for the stock over the last 5 years in DataFrame format. 
 history = self.history(Split, symbol, timedelta(5*365))</pre>
 </div>
 
