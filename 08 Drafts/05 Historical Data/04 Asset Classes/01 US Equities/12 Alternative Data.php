@@ -20,7 +20,7 @@ var datasetSymbol = AddData&lt;QuiverWallStreetBets&gt;(symbol).Symbol;
 // Get the trailing 5 days of <?=$datasetClass?> data for the asset.
 var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
     <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('GME).symbol
+symbol = self.add_equity('GME').symbol
 # Add the alternative dataset and save a reference to its Symbol.
 dataset_symbol = self.add_data(QuiverWallStreetBets, symbol).symbol
 # Get the trailing 5 days of <?=$datasetClass?> data for the asset in DataFrame format.
