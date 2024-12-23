@@ -1,5 +1,5 @@
 <?
-$imgLink = "";
+$imgLink = "https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equity-alternative-data.png";
 ?>
 
 <p class='csharp'>
@@ -12,14 +12,17 @@ $imgLink = "";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the historical universe data over the last 30 days.
-var history = History(universe, TimeSpan.FromDays(30));</pre>
-    <pre class="python"># Get the historical universe data over the last 30 days in DataFrame format.
-history = self.history(universe, timedelta(30), flatten=True)</pre>
+    <pre class="csharp">// Add a universe of US Equities based on an alternative dataset.
+var universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
+// Get 5 days of history for the universe.
+var history = History(universe, TimeSpan.FromDays(5));</pre>
+    <pre class="python"># Add a universe of US Equities based on an alternative dataset.
+universe = self.add_universe(BrainStockRankingUniverse)
+# Get 5 days of history for the universe.
+history = self.history(universe, timedelta(5), flatten=True)</pre>
 </div>
 
-<b>TODO:</b>
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of universe data for an asset.'>
+<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of the last 5 days of a US Equity alternative data universe.'>
 
 <p class='python'>To get the data in the format of the objects that you receive in your universe filter function instead of a DataFrame, use <code>flatten=False</code>.</p>
 
