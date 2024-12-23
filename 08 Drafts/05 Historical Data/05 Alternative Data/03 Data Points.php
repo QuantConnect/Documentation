@@ -13,9 +13,13 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/fred-dataframe-history.png";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the trailing 5 days of <?=$datasetClass?> data.
+    <pre class="csharp">// Get the Symbol of a dataset.
+var datasetSymbol = AddData&lt;<?=$datasetClass?>&gt;("RVXCLS");
+// Get the trailing 5 days of <?=$datasetClass?> data.
 var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
-    <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data in DataFrame format.
+    <pre class="python"># Get the Symbol of a dataset.
+dataset_symbol = self.add_data(Fred, 'RVXCLS').Symbol
+# Get the trailing 5 days of <?=$datasetClass?> data in DataFrame format.
 history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
@@ -25,7 +29,7 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in <?=$datasetClass?> format. 
-history = self.history[<?=$datasetClass?>](symbol, 5, Resolution.DAILY)</pre>
+history = self.history[<?=$datasetClass?>](dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 
