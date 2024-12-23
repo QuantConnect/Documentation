@@ -7,7 +7,9 @@
   </p>
   
   <div class="section-example-container">
-      <pre class="python"># Get 3 days of daily data for some assets.
+      <pre class="python"># Get the Symbol objects of some assets.
+symbols = [self.add_equity(ticker).symbol for ticker in ['SPY', 'QQQ']]
+# Get 3 days of daily data for the assets.
 history = self.history(symbols, 3, Resolution.DAILY)</pre>
   </div>
 
