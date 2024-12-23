@@ -13,9 +13,13 @@ $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the deslistings of an asset over the last 10 years. 
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("BBBY").Symbol;
+// Get the deslistings of the asset over the last 10 years. 
 var history = History&lt;Delisting&gt;(symbol, TimeSpan.FromDays(10*365);</pre>
-    <pre class="python"># Get the deslistings of an asset over the last 10 years in DataFrame format.
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('BBBY').symbol
+# Get the deslistings of the asset over the last 10 years in DataFrame format.
 history = self.history(Delisting, symbol, timedelta(10*365))</pre>
 </div>
 
