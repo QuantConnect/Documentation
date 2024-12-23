@@ -13,9 +13,17 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-alt-data-dataframe-us-equi
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the trailing 5 days of <?=$datasetClass?> data for an asset.
+    <pre class="csharp">// Get the Symbol of an asset.
+var symbol = AddEquity("GME").Symbol;
+// Add the alternative dataset and save a reference to its Symbol.
+var datasetSymbol = AddData&lt;QuiverWallStreetBets&gt;(symbol).Symbol;
+// Get the trailing 5 days of <?=$datasetClass?> data for the asset.
 var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
-    <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in DataFrame format.
+    <pre class="python"># Get the Symbol of an asset.
+symbol = self.add_equity('GME).symbol
+# Add the alternative dataset and save a reference to its Symbol.
+dataset_symbol = self.add_data(QuiverWallStreetBets, symbol).symbol
+# Get the trailing 5 days of <?=$datasetClass?> data for the asset in DataFrame format.
 history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
