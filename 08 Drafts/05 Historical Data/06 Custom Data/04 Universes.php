@@ -17,7 +17,9 @@ AddUniverse&lt;StockDataSource&gt;("myStockDataSource", Resolution.Daily, data =
 // Get the historical universe data over the last 5 days.
 var history = History(universe, TimeSpan.FromDays(5));</pre>
     <pre class="python"># Add a universe of custom data and save a reference to it.
-universe = self.add_universe(StockDataSource, "my-stock-data-source", Resolution.DAILY, lambda data: [x.symbol for x in data])
+universe = self.add_universe(
+    StockDataSource, "my-stock-data-source", Resolution.DAILY, lambda data: [x.symbol for x in data]
+)
 # Get the historical universe data over the last 5 days in DataFrame format.
 history = self.history(universe, timedelta(5))</pre>
 </div>
