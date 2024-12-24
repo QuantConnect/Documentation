@@ -3,7 +3,7 @@
 <div class="section-example-container">
     <pre class="csharp">// Add an asset and save a reference to the Equity object.
 var security = AddEquity("SPY");
-// Set the shortable provider to the IB shortable provider.
+// Overwrite the default shortable provider to one that provides data.
 security.SetShortableProvider(new InteractiveBrokersShortableProvider());
 // Select a time in the past.
 var t = Time.AddDays(-30);
@@ -13,7 +13,7 @@ var rebateRate = security.ShortableProvider.RebateRate(security.Symbol, t);
 var shortableQuantity = security.ShortableProvider.ShortableQuantity(security.Symbol, t);</pre>
     <pre class="python"># Add an asset and save a reference to its Equity object.
 security = self.add_equity('SPY')
-# Set the shortable provider to the IB shortable provider.
+# Overwrite the default shortable provider to one that provides data.
 security.set_shortable_provider(InteractiveBrokersShortableProvider())
 # Select a time in the past.
 t = self.time - timedelta(30)
