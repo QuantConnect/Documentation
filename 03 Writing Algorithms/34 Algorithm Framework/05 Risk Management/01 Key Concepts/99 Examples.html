@@ -64,7 +64,7 @@ public class FrameworkRiskManagementAlgorithm : QCAlgorithm
         // Add a universe of the most liquid stocks since their trend is more capital supported.
         AddUniverseSelection(new QC500UniverseSelectionModel());
         // Emit insights all for selected stocks, rebalancing every 2 weeks.
-        AddAlpha(new EmaCrossAlphaModel(20, 60, Resolution.Daily));
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(14)));
         // Equal weighting on each insight to evenly dissipate capital risk.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
 
