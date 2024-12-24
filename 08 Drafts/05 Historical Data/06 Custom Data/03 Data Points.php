@@ -20,10 +20,7 @@ public class MyCustomDataType : BaseData
     public decimal Low;
     public decimal Close;
 
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config,
-        DateTime date,
-        bool isLiveMode)
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
         if (!isLiveMode)
         {
@@ -33,11 +30,7 @@ public class MyCustomDataType : BaseData
         return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", SubscriptionTransportMedium.RemoteFile);
     }
 
-    public override BaseData Reader(
-        SubscriptionDataConfig config,
-        string line,
-        DateTime date,
-        bool isLiveMode)
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
     {
         if (string.IsNullOrWhiteSpace(line.Trim()))
         {
@@ -72,28 +65,17 @@ var history = History&lt;MyCustomDataType&gt;(datasetSymbol, 5, Resolution.Daily
     <pre class="python"># Define the custom data class outside of the algorithm class.
 class MyCustomDataType(PythonData):
 
-    def get_source(self,
-         config: SubscriptionDataConfig,
-         date: datetime,
-         is_live: bool) -&gt; SubscriptionDataSource:
-
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live: bool) -&gt; SubscriptionDataSource:
         if not is_live:
             # In a backtest, load the file from the ObjectStore to increase the speed of the algorithm.
             return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
         return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", SubscriptionTransportMedium.REMOTE_FILE)
 
-    def reader(self,
-         config: SubscriptionDataConfig,
-         line: str,
-         date: datetime,
-         is_live: bool) -&gt; BaseData:
-
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live: bool) -&gt; BaseData:
         if not (line.strip()):
             return None
-
         index = MyCustomDataType()
         index.symbol = config.symbol
-
         try:
             data = line.split(',')
             index.time = datetime.strptime(data[0], "%Y-%m-%d")
@@ -103,11 +85,9 @@ class MyCustomDataType(PythonData):
             index["high"] = float(data[2])
             index["low"] = float(data[3])
             index["close"] = float(data[4])
-
         except ValueError:
             # Do nothing
             return None
-
         return index
 
 
