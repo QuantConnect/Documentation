@@ -5,7 +5,8 @@
 var security = AddEquity("SPY");
 // Set the shortable provider to the IB shortable provider.
 security.SetShortableProvider(new InteractiveBrokersShortableProvider());
-// var t = Time.AddDays(-30);
+// Select a time in the past.
+var t = Time.AddDays(-30);
 // Pass the time argument to shortable provider to get historical values.
 var feeRate = security.ShortableProvider.FeeRate(security.Symbol, t);
 var rebateRate = security.ShortableProvider.RebateRate(security.Symbol, t);
