@@ -12,11 +12,11 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-universe-dataframe-
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add a universe of custom data and save a reference to it.
+    <pre class="csharp">// Add a universe from a custom data source and save a reference to it.
 AddUniverse&lt;StockDataSource&gt;("myStockDataSource", Resolution.Daily, data => data.Select(x => x.Symbol));
 // Get the historical universe data over the last 5 days.
 var history = History(universe, TimeSpan.FromDays(5));</pre>
-    <pre class="python"># Add a universe of custom data and save a reference to it.
+    <pre class="python"># Add a universe from a custom data source and save a reference to it.
 universe = self.add_universe(
     StockDataSource, "my-stock-data-source", Resolution.DAILY, lambda data: [x.symbol for x in data]
 )
