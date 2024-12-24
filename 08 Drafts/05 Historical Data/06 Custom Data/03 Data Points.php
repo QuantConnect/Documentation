@@ -36,8 +36,8 @@ history = self.history[MyCustomDataType](dataset_symbol, 5, Resolution.DAILY)</p
 
 <div class='python'>
   <p>
-    If the <code class='python'>get_source</code><code class='csharp'>GetSource</code> method of your custom data class returns a <code>SubscriptionDataSource</code> that uses <code class='python'>FileFormat.UNFOLDING_COLLECTION</code><code class='csharp'>FileFormat.UnfoldingCollection</code>, the dataset provide multiple entries per <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>. 
-    In this case, to organize the data into a DataFrame, set the <code>flatten</code> argument to <code>True</code>.
+    If the dataset provide multiple entries per <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>, in the <code class='python'>get_source</code><code class='csharp'>GetSource</code> method of your custom data class, return a <code>SubscriptionDataSource</code> that uses <code class='python'>FileFormat.UNFOLDING_COLLECTION</code><code class='csharp'>FileFormat.UnfoldingCollection</code>. 
+    To get the historical data of this custom data type in a DataFrame, set the <code>flatten</code> argument to <code>True</code>.
   </p>
 
   <div class="section-example-container">
