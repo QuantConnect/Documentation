@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Add an asset and save a reference to the Equity object.
-var security = AddEquity("SPY);
+var security = AddEquity("SPY");
 // Set the shortable provider to the IB shortable provider.
 security.SetShortableProvider(new InteractiveBrokersShortableProvider());
 // var t = Time - TimeSpan.FromDays(30);
