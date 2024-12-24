@@ -25,9 +25,14 @@ public class MyCustomDataType : BaseData
         if (!isLiveMode)
         {
             // In a backtest, load the file from the ObjectStore to increase the speed of the algorithm.
-            return new SubscriptionDataSource("&lt;CustomDataKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+            return new SubscriptionDataSource(
+                "&lt;CustomDataKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv
+            );
         }
-        return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", SubscriptionTransportMedium.RemoteFile);
+        return new SubscriptionDataSource(
+            "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", 
+            SubscriptionTransportMedium.RemoteFile
+        );
     }
 
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
@@ -68,8 +73,13 @@ class MyCustomDataType(PythonData):
     def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live: bool) -&gt; SubscriptionDataSource:
         if not is_live:
             # In a backtest, load the file from the ObjectStore to increase the speed of the algorithm.
-            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
-        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", SubscriptionTransportMedium.REMOTE_FILE)
+            return SubscriptionDataSource(
+                "&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV
+            )
+        return SubscriptionDataSource(
+            "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-data-example.csv", 
+            SubscriptionTransportMedium.REMOTE_FILE
+        )
 
     def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live: bool) -&gt; BaseData:
         if not (line.strip()):
