@@ -12,9 +12,12 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-dataframe-history.p
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the trailing 5 days of MyCustomDataType data.
+    <pre class="csharp">var symbol = AddData&lt;MyCustomDataType&gt;("MyCustomDataType", Resolution.Daily).Symbol;
+// Get the trailing 5 days of MyCustomDataType data.
 var history = History&lt;MyCustomDataType&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
-    <pre class="python"># Get the trailing 5 days of MyCustomDataType data in DataFrame format.
+    <pre class="python"># Add a custom dataset and save a reference to it's Symbol.
+dataset_symbol = self.add_data(MyCustomDataType, "MyCustomDataType", Resolution.DAILY).symbol
+# Get the trailing 5 days of MyCustomDataType data in DataFrame format.
 history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
