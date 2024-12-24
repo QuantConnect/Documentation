@@ -1,0 +1,353 @@
+<p>The following examples demonstrate some common practices for implementing execution model.</p>
+
+<h4>Example 1: Iceberg Execution</h4>
+<p>The following algorithm simulates an account with large capital that holds the most liquid stocks equally. To hide footprint and avoid large market impact that might erode the profit margin, we can set up an iceberg execution system, submitting only 10% volume of the bid/ask side order book with respect to the order direction.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 4, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000000);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights all for selected stocks.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // Equal weighting on each insight to evenly dissipate capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Iceberg ordering to hide traces and avoid market impact.
+        // Since quote data will be used, make sure the asset class and resolution is compatible.
+        SetExecution(new IcebergExecutionModel(0.1m));
+    }
+
+    private class IcebergExecutionModel : ExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+        // The maximum order size taken from the order book in percentage.
+        private readonly decimal _maximumOrderQuantityPercentVolume;
+
+        public IcebergExecutionModel(decimal orderPercentVolume = 0.1m)
+        {
+            _maximumOrderQuantityPercentVolume = orderPercentVolume;
+        }
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+        {
+            // update the complete set of portfolio targets with the new targets
+            _targetsCollection.AddRange(targets);
+
+            // for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+            if (!_targetsCollection.IsEmpty)
+            {
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                {
+                    var symbol = target.Symbol;
+
+                    // calculate remaining quantity to be ordered
+                    var unorderedQuantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
+                    // adjust order size to respect maximum order size based on a percentage of current volume
+                    var orderSize = GetOrderSizeForPercentVolume(algorithm.Securities[symbol], _maximumOrderQuantityPercentVolume, unorderedQuantity);
+
+                    if (orderSize != 0)
+                    {
+                        algorithm.MarketOrder(symbol, orderSize);
+                    }
+                }
+
+                _targetsCollection.ClearFulfilled(algorithm);
+            }
+        }
+
+        private static decimal GetOrderSizeForPercentVolume(Security security, decimal maximumPercentCurrentVolume, decimal desiredOrderSize)
+        {
+            // Take N% from the order book according to the order direction.
+            var maxOrderSize = maximumPercentCurrentVolume * (desiredOrderSize &gt; 0 ? security.BidSize : security.AskSize);
+            var orderSize = Math.Min(maxOrderSize, Math.Abs(desiredOrderSize));
+
+            return Math.Sign(desiredOrderSize) * OrderSizing.AdjustByLotSize(security, orderSize);
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkExecutionModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 4, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000000)
+
+        # Add a universe of the most liquid stocks since their trend is more capital supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights all for selected stocks.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Equal weighting on each insight to evenly dissipate capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Iceberg ordering to hide traces and avoid market impact.
+        # Since quote data will be used, make sure the asset class and resolution is compatible.
+        self.set_execution(IcebergExecutionModel(0.1))
+
+class IcebergExecutionModel(ExecutionModel):
+    def __init__(self, order_percent_volume: float = 0.1) -&gt; None:
+        self.targets_collection = PortfolioTargetCollection()
+        # The maximum order size taken from the order book in percentage.
+        self.maximum_order_quantity_percent_volume = order_percent_volume
+
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+        # update the complete set of portfolio targets with the new targets
+        self.targets_collection.add_range(targets)
+
+        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+        if not self.targets_collection.is_empty:
+            for target in self.targets_collection.order_by_margin_impact(algorithm):
+                symbol = target.symbol
+
+                # calculate remaining quantity to be ordered
+                unordered_quantity = OrderSizing.get_unordered_quantity(algorithm, target)
+                # adjust order size to respect maximum order size based on a percentage of current volume
+                order_size = self.get_order_size_for_percent_volume(algorithm.securities[symbol], self.maximum_order_quantity_percent_volume, unordered_quantity)
+
+                if order_size != 0:
+                    algorithm.market_order(symbol, order_size)
+
+            self.targets_collection.clear_fulfilled(algorithm)
+
+    def get_order_size_for_percent_volume(self, security: Security, maximum_percent_current_volume: float, desired_order_size: float) -&gt; float:
+        # Take N% from the order book according to the order direction.
+        max_order_size = maximum_percent_current_volume * (security.bid_size if desired_order_size &gt; 0 else security.ask_size)
+        order_size = min(max_order_size, abs(desired_order_size))
+        return np.sign(desired_order_size) * OrderSizing.adjust_by_lot_size(security, order_size)</pre>
+</div>
+
+<h4>Example 2: Bracket Order</h4>
+<p>The following algorithm uses a custom execution model to add bracket orders for the base order to control risk. To do so, we need to set criteria on checking if the bracket order should be emitted, as well as handling the cancellation of the other order if one side of the bracket is being filled.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 4, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000000);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights all for selected stocks.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // Equal weighting on each insight to evenly dissipate capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // To place bracket orders besides basic order as well.
+        SetExecution(new BracketExecutionModel());
+    }
+
+    private class BracketExecutionModel : ExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+        // The take profit percent of the bracket order.
+        private readonly decimal _takeProfit;
+        // The stop loss percent of the bracket order.
+        private readonly decimal _stopLoss;
+        // A dictionary to save the order tickets of the bracket orders.
+        private Dictionary&lt;Symbol, BracketOrder&gt; _orderBySymbol = new();
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+        {
+            _targetsCollection.AddRange(targets);
+            // for performance we if empty, OrderByMarginImpact and ClearFulfilled are expensive to call
+            if (!_targetsCollection.IsEmpty)
+            {
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                {
+                    var security = algorithm.Securities[target.Symbol];
+
+                    // calculate remaining quantity to be ordered
+                    var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target, security, true);
+
+                    if (quantity != 0)
+                    {
+                        if (security.BuyingPowerModel.AboveMinimumOrderMarginPortfolioPercentage(security, quantity,
+                            algorithm.Portfolio, algorithm.Settings.MinimumOrderMarginPortfolioPercentage))
+                        {
+                            var ticket = algorithm.MarketOrder(security, quantity);
+                            // Only bracket the base order.
+                            if (!_orderBySymbol.ContainsKey(target.Symbol))
+                            {
+                                _orderBySymbol[target.Symbol] = new BracketOrder(algorithm, ticket, _takeProfit, _stopLoss);
+                            }
+                        }
+                        else if (!PortfolioTarget.MinimumOrderMarginPercentageWarningSent.HasValue)
+                        {
+                            // will trigger the warning if it has not already been sent
+                            PortfolioTarget.MinimumOrderMarginPercentageWarningSent = false;
+                        }
+                    }
+                }
+
+                _targetsCollection.ClearFulfilled(algorithm);
+            }
+
+            foreach (var (symbol, helper) in _orderBySymbol.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value))
+            {
+                // Check if any order is filled and supplementary bracket orders are needed.
+                helper.CheckPlaceBracketOrder();
+                // Check if any of the bracket order is filled to cancel the other.
+                var canceled = helper.CheckCancelRemainingOrders();
+                if (canceled)
+                {
+                    _orderBySymbol.Remove(symbol);
+                }
+            }
+        }
+
+        private class BracketOrder
+        {
+            private readonly QCAlgorithm _algorithm;
+            private OrderTicket _ticket;
+            private OrderTicket _takeProfit = null;
+            private OrderTicket _stopLoss = null;
+            private readonly decimal _takeProfitPercent;
+            private readonly decimal _stopLossPercent;
+
+            public BracketOrder(QCAlgorithm algorithm, OrderTicket ticket, decimal takeProfit, decimal stopLoss)
+            {
+                _algorithm = algorithm;
+                _ticket = ticket;
+                _takeProfitPercent = takeProfit;
+                _stopLossPercent = stopLoss;
+            }
+
+            public void CheckPlaceBracketOrder()
+            {
+                // Place bracket orders when base is filled.
+                if (_takeProfit == null && _ticket.Status == OrderStatus.Filled)
+                {
+                    var quantity = _ticket.Quantity;
+                    var takeProfitPrice = _ticket.AverageFillPrice * (quantity &gt; 0 ? 1m + _takeProfitPercent : 1m - _takeProfitPercent);
+                    var stopLossPrice = _ticket.AverageFillPrice * (quantity &gt; 0 ? 1m - _stopLossPercent : 1m + _stopLossPercent);
+                    // Take profit order.
+                    _takeProfit = _algorithm.LimitOrder(_ticket.Symbol, -quantity, takeProfitPrice);
+                    // Stop loss order.
+                    _stopLoss = _algorithm.StopMarketOrder(_ticket.Symbol, -quantity, stopLossPrice);
+                }
+            }
+
+            public bool CheckCancelRemainingOrders()
+            {
+                // Cancel the stop loss if profit is taken.
+                if (_takeProfit != null && _takeProfit.Status == OrderStatus.Filled)
+                {
+                    _stopLoss.Cancel();
+                    _algorithm.Insights.Cancel(new[] { _ticket.Symbol });
+                    return true;
+                }
+                // Cancel the take profit if stop loss is hit.
+                else if (_stopLoss != null && _stopLoss.Status == OrderStatus.Filled)
+                {
+                    _takeProfit.Cancel();
+                    _algorithm.Insights.Cancel(new[] { _ticket.Symbol });
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkExecutionModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 4, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000000)
+
+        # Add a universe of the most liquid stocks since their trend is more capital supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights all for selected stocks.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Equal weighting on each insight to evenly dissipate capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # To place bracket orders besides basic order as well.
+        self.set_execution(BracketExecutionModel())
+
+class BracketExecutionModel(ExecutionModel):
+    def __init__(self, take_profit: float = 0.1, stop_loss: float = 0.05) -&gt; None:
+        self.targets_collection = PortfolioTargetCollection()
+        # The take profit percent of the bracket order.
+        self.take_profit = take_profit
+        # The stop loss percent of the bracket order.
+        self.stop_loss = stop_loss
+        # A dictionary to save the order tickets of the bracket orders.
+        self.orders_by_symbol = {}
+
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+        self.targets_collection.add_range(targets)
+        if not self.targets_collection.is_empty:
+            for target in self.targets_collection.order_by_margin_impact(algorithm):
+                security = algorithm.securities[target.symbol]
+                # calculate remaining quantity to be ordered
+                quantity = OrderSizing.get_unordered_quantity(algorithm, target, security, True)
+
+                if quantity != 0:
+                    above_minimum_portfolio = BuyingPowerModelExtensions.above_minimum_order_margin_portfolio_percentage(
+                        security.buying_power_model,
+                        security,
+                        quantity,
+                        algorithm.portfolio,
+                        algorithm.settings.minimum_order_margin_portfolio_percentage)
+                    # Place orders and save the ticket for bracket orders later.
+                    if above_minimum_portfolio:
+                        ticket = algorithm.market_order(security, quantity)
+                        # Only bracket the base order.
+                        if target.symbol not in self.orders_by_symbol:
+                            self.orders_by_symbol[target.symbol] = BracketOrder(algorithm, ticket, self.take_profit, self.stop_loss)
+                    elif not PortfolioTarget.minimum_order_margin_percentage_warning_sent:
+                        # will trigger the warning if it has not already been sent
+                        PortfolioTarget.minimum_order_margin_percentage_warning_sent = False
+
+            self.targets_collection.clear_fulfilled(algorithm)
+
+        for symbol, helper in self.orders_by_symbol.copy().items():
+            # Check if any order is filled and supplementary bracket orders are needed.
+            helper.check_place_bracket_order()
+            # Check if any of the bracket order is filled to cancel the other.
+            canceled = helper.check_cancel_remaining_orders()
+            if canceled:
+                del self.orders_by_symbol[symbol]
+
+class BracketOrder:
+    def __init__(self, algorithm: QCAlgorithm, ticket: OrderTicket, take_profit: float, stop_loss: float) -&gt; None:
+        self.algorithm = algorithm
+        self.ticket = ticket
+        self.take_profit_ticket = None
+        self.stop_loss_ticket = None
+        # The take profit percent of the bracket order.
+        self.take_profit = take_profit
+        # The stop loss percent of the bracket order.
+        self.stop_loss = stop_loss
+
+    def check_place_bracket_order(self) -&gt; None:
+        # Place bracket orders when base is filled.
+        if not self.take_profit_ticket and self.ticket.status == OrderStatus.FILLED:
+            quantity = self.ticket.quantity
+            take_profit_price = self.ticket.average_fill_price * (1 + self.take_profit if quantity &gt; 0 else 1 - self.take_profit)
+            stop_loss_price = self.ticket.average_fill_price * (1 - self.stop_loss if quantity &gt; 0 else 1 + self.stop_loss)
+            # Take profit order.
+            self.take_profit_ticket = self.algorithm.limit_order(self.ticket.symbol, -quantity, take_profit_price)
+            # Stop Loss order.
+            self.stop_loss_ticket = self.algorithm.stop_market_order(self.ticket.symbol, -quantity, stop_loss_price)
+
+    def check_cancel_remaining_orders(self) -&gt; bool:
+        # Cancel the stop loss if profit is taken.
+        if self.take_profit_ticket and self.take_profit_ticket.status == OrderStatus.FILLED:
+            self.stop_loss_ticket.cancel()
+            self.algorithm.insights.cancel([self.ticket.symbol])
+            return True
+        # Cancel the take profit if stop loss is hit.
+        elif self.stop_loss_ticket and self.stop_loss_ticket.status == OrderStatus.FILLED:
+            self.take_profit_ticket.cancel()
+            self.algorithm.insights.cancel([self.ticket.symbol])
+            return True
+        return False</pre>
+</div>
