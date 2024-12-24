@@ -1,4 +1,4 @@
-<p>To get historical values for the borrow fee rate, borrow rebate rate, or shortable quantity of a US Equity, call the <code class="csharp">FeeRate</code><code class="python">fee_rate</code>, <code class="csharp">RebateRate</code><code class="python">rebate_rate</code>, or <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> methods of the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a>.</p>
+<p>To get historical values for the borrow fee rate, borrow rebate rate, or shortable quantity of a US Equity, call the <code class="csharp">FeeRate</code><code class="python">fee_rate</code>, <code class="csharp">RebateRate</code><code class="python">rebate_rate</code>, or <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> methods of its <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// Add an asset and save a reference to the Equity object.
