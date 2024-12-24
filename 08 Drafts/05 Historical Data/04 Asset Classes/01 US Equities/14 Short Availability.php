@@ -10,7 +10,7 @@ security.SetShortableProvider(new InteractiveBrokersShortableProvider());
 var feeRate = security.ShortableProvider.FeeRate(security.Symbol, t);
 var rebateRate = security.ShortableProvider.RebateRate(security.Symbol, t);
 var shortableQuantity = security.ShortableProvider.ShortableQuantity(security.Symbol, t);</pre>
-    <pre class="python"># Add an asset and save a reference to its Security object.
+    <pre class="python"># Add an asset and save a reference to its Equity object.
 security = self.add_equity('SPY')
 # Set the shortable provider to the IB shortable provider.
 security.set_shortable_provider(InteractiveBrokersShortableProvider())
