@@ -43,7 +43,7 @@ public class StockDataSource : BaseData
 
 
 // In the Initialize method, add a universe from a custom data source and save a reference to it.
-AddUniverse&lt;StockDataSource&gt;("myStockDataSource", Resolution.Daily, data => data.Select(x => x.Symbol));
+var universe = AddUniverse&lt;StockDataSource&gt;("myStockDataSource", Resolution.Daily, data => data.Select(x => x.Symbol));
 // Get the historical universe data over the last 5 days.
 var history = History(universe, TimeSpan.FromDays(5));</pre>
     <pre class="python"># Define the custom data class outside of the algorithm class.    
