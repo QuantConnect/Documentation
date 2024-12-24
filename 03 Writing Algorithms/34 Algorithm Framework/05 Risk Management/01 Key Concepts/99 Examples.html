@@ -1,0 +1,287 @@
+<p>The following examples demonstrate some common practices for implementing risk management model.</p>
+
+<h4>Example 1: Take Profit Stop Loss</h4>
+<p>The following algorithm trades 20-60 EMA crosses on the top 500 liquid US stocks in equal weighting. To minimize risk and capture early profit, we can implement both <code>MaximumUnrealizedProfitPercentPerSecurity</code> to take profit and <code>TrailingStopRiskManagementModel</code> to stop loss by trailing high price.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkRiskManagementAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 8, 12);
+        SetEndDate(2024, 10, 12);
+        SetCash(1000000);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights on EMA cross, indicating the trend changes. We use short term versus medium term for more trade opportunities.
+        AddAlpha(new EmaCrossAlphaModel(20, 60, Resolution.Daily));
+        // Equal weighting on each insight to evenly dissipate capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Take profit at 10%.
+        AddRiskManagement(new MaximumUnrealizedProfitPercentPerSecurity(0.1m));
+        // Trailing stop loss at 5%.
+        AddRiskManagement(new TrailingStopRiskManagementModel(0.05m));
+    }
+}</pre>
+    <pre class="python">class FrameworkRiskManagementAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 8, 12)
+        self.set_end_date(2024, 10, 12)
+        self.set_cash(1000000)
+
+        # Add a universe of the most liquid stocks since their trend is more capital supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights on EMA cross, indicating the trend changes. We use short term versus medium term for more trade opportunities.
+        self.add_alpha(EmaCrossAlphaModel(20, 60, Resolution.DAILY))
+        # Equal weighting on each insight to evenly dissipate capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Take profit at 10%.
+        self.add_risk_management(MaximumUnrealizedProfitPercentPerSecurity(0.1))
+        # Trailing stop loss at 5%.
+        self.add_risk_management(TrailingStopRiskManagementModel(0.05))</pre>
+</div>
+
+<h4>Example 2: Tail Value At Risk</h4>
+<p>The following algorithm implements a custom risk management model that liquidate the position if an asset has PnL lower than the tail value-at-risk (TVaR) over the period of the insight to avoid large catastrophic loss. To calculate the TVaR, we create a log return indicator and use the following formula on the calculation:
+$$
+\textrm{TVaR}_{\alpha} = \mu + \sigma \times \phi[\Phi^{-1}(\alpha)] / (1 - \alpha)
+$$
+</p>
+<div class="section-example-container">
+    <pre class="csharp">using Accord.Statistics;
+using MathNet.Numerics.Distributions;
+
+public class FrameworkRiskManagementAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(1000000);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights all for selected stocks, rebalancing every 2 weeks.
+        AddAlpha(new EmaCrossAlphaModel(20, 60, Resolution.Daily));
+        // Equal weighting on each insight to evenly dissipate capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Liquidate on extreme catastrophic event.
+        AddRiskManagement(new TailValueAtRiskRiskManagementModel(0.05d, 14d));
+    }
+
+    private class TailValueAtRiskRiskManagementModel : RiskManagementModel
+    {
+        // The alpha level on TVaR calculation.
+        private readonly double _alpha;
+        // The number of days that the insight signal lasts for.
+        private readonly double _days;
+        private Dictionary&lt;Symbol, SymbolData&gt; _logRetBySymbol = new();
+
+        public TailValueAtRiskRiskManagementModel(double alpha = 0.05d, double numDays = 14d)
+        {
+            _alpha = alpha;
+            _days = numDays;
+        }
+
+        // Adjust the portfolio targets and return them. If no changes emit nothing.
+        public override IEnumerable&lt;PortfolioTarget&gt; ManageRisk(QCAlgorithm algorithm, IPortfolioTarget[] _)
+        {
+            var targets = new List&lt;PortfolioTarget&gt;();
+
+            foreach (var (symbol, security) in algorithm.Securities)
+            {
+                if (!security.Invested)
+                {
+                    continue;
+                }
+
+                var pnl = security.Holdings.UnrealizedProfitPercent;
+                // If the %PnL is worse than preset level TVaR, we liquidate it.
+                if (pnl &lt; GetTVaR(symbol))
+                {
+                    // Cancel insights to avoid reordering afterwards.
+                    algorithm.Insights.Cancel(new[] { symbol });
+                    // Liquidate.
+                    targets.Add(new PortfolioTarget(symbol, 0, tag: "Liquidate due to TVaR"));
+                }
+            }
+
+            return targets;
+        }
+
+        private decimal GetTVaR(Symbol symbol)
+        {
+            if (!_logRetBySymbol.TryGetValue(symbol, out var symbolData))
+            {
+                return 0m;
+            }
+
+            // TVaR = \mu + \sigma * \phi[\Phi^{-1}(p)] / (1 - p)
+            // Scale up to the days of signal. By stocahstic calculus, we multiply by sqrt(days).
+            var dailyTVaR = symbolData.MeanLogRet + symbolData.SdLogRet * Math.Sqrt(_days) * Normal.PDF(0d, 1d, Normal.InvCDF(0d, 1d, _alpha)) / (1d - _alpha);
+            // We want the left side of the symmetric distribution.
+            return -Convert.ToDecimal(dailyTVaR);
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var added in changes.AddedSecurities)
+            {
+                // Add SymbolData class to handle log returns.
+                _logRetBySymbol[added.Symbol] = new SymbolData(algorithm, added.Symbol);
+            }
+
+            foreach (var removed in changes.RemovedSecurities)
+            {
+                // Stop subscription on the data to release computational resources.
+                if (_logRetBySymbol.Remove(removed.Symbol, out var symbolData))
+                {
+                    symbolData.Dispose();
+                }
+            }
+        }
+    }
+
+    private class SymbolData
+    {
+        private readonly QCAlgorithm _algorithm;
+        private readonly Symbol _symbol;
+        // Since the return is assumed log-normal, we use log return indicator to calculate TVaR later.
+        private LogReturn _logRet = new(1);
+        // Set up a rolling window to save the log return for calculating mean and SD of that for TVaR calculation.
+        private RollingWindow&lt;double&gt; _window = new(252);
+
+        public bool IsReady =&gt; _window.IsReady;
+
+        public double MeanLogRet =&gt; _window.Average();
+
+        public double SdLogRet =&gt; Measures.StandardDeviation(_window.ToArray());
+
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+        {
+            // Register the indicator for automatic updating for daily log return.
+            algorithm.RegisterIndicator(symbol, _logRet, Resolution.Daily);
+            // Add a handler to save the log return to the rolling window.
+            _logRet.Updated += (_algorithm, point) =&gt; _window.Add((double)point.Value);
+            // Warm up the rolling window.
+            var history = algorithm.History&lt;TradeBar&gt;(symbol, 253, Resolution.Daily);
+            foreach (var bar in history)
+            {
+                _logRet.Update(bar.EndTime, bar.Close);
+            }
+        }
+
+        public void Dispose()
+        {
+            // Stop subscription on the data to release computational resources.
+            _algorithm.DeregisterIndicator(_logRet);
+        }
+    }
+}</pre>
+    <pre class="python">from scipy.stats import norm
+
+class FrameworkRiskManagementAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(1000000)
+
+        # Add a universe of the most liquid stocks since their trend is more capital supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights all for selected stocks, rebalancing every 2 weeks.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(14)))
+        # Equal weighting on each insight to evenly dissipate capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Liquidate on extreme catastrophic event.
+        self.add_risk_management(TailValueAtRiskRiskManagementModel(0.05, 14))
+
+class TailValueAtRiskRiskManagementModel(RiskManagementModel):
+    _log_ret_by_symbol = {}
+
+    def __init__(self, alpha: float = 0.05, num_days: float = 7) -&gt; None:
+        # The alpha level on TVaR calculation.
+        self.alpha = alpha
+        # The number of days that the insight signal lasts for.
+        self.days = num_days
+
+    # Adjust the portfolio targets and return them. If no changes emit nothing.
+    def manage_risk(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; List[PortfolioTarget]:
+        targets = []
+        for kvp in algorithm.securities:
+            security = kvp.value
+            if not security.invested:
+                continue
+
+            pnl = security.holdings.unrealized_profit_percent
+            symbol = security.symbol
+            # If the %PnL is worse than preset level TVaR, we liquidate it.
+            if pnl &lt; self.get_tvar(symbol):
+                # Cancel insights to avoid reordering afterwards.
+                algorithm.insights.cancel([symbol])
+                # Liquidate.
+                targets.append(PortfolioTarget(symbol, 0, tag="Liquidate due to TVaR"))
+
+        return targets
+
+    def get_tvar(self, symbol: Symbol) -&gt; float:
+        symbol_data = self._log_ret_by_symbol.get(symbol)
+        if not symbol_data:
+            return 0
+        
+        # TVaR = \mu + \sigma * \phi[\Phi^{-1}(p)] / (1 - p)
+        # Scale up to the days of signal. By stocahstic calculus, we multiply by sqrt(days).
+        daily_tvar = symbol_data.mean_log_ret + symbol_data.sd_log_ret * np.sqrt(self.days) * norm.pdf(norm.ppf(self.alpha)) / (1 - self.alpha)
+        # We want the left side of the symmetric distribution.
+        return -daily_tvar
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for added in changes.added_securities:
+            # Add SymbolData class to handle log returns.
+            self._log_ret_by_symbol[added.symbol] = SymbolData(algorithm, added.symbol)
+
+        for removed in changes.removed_securities:
+            # Stop subscription on the data to release computational resources.
+            symbol_data = self._log_ret_by_symbol.pop(removed.symbol, None)
+            if symbol_data:
+                symbol_data.dispose()
+
+class SymbolData:
+    def __init__(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
+        self.algorithm = algorithm
+        self.symbol = symbol
+
+        # Since the return is assumed log-normal, we use log return indicator to calculate TVaR later.
+        self.log_ret = LogReturn(1)
+        # Register the indicator for automatic updating for daily log return.
+        algorithm.register_indicator(symbol, self.log_ret, Resolution.DAILY)
+        # Set up a rolling window to save the log return for calculating mean and SD of that for TVaR calculation.
+        self.window = RollingWindow[float](252)
+        # Add a handler to save the log return to the rolling window.
+        self.log_ret.updated += lambda _, point: self.window.add(point.value)
+        # Warm up the rolling window.
+        history = algorithm.history[TradeBar](symbol, 253, Resolution.DAILY)
+        for bar in history:
+            self.log_ret.update(bar.end_time, bar.close)
+
+    @property
+    def is_ready(self) -&gt; bool:
+        return self.window.is_ready
+
+    @property
+    def mean_log_ret(self) -&gt; float:
+        # Mean log return for TVaR calculation.
+        return np.mean(list(self.window))
+
+    @property
+    def sd_log_ret(self) -&gt; float:
+        # SD of log return for TVaR calculation.
+        return np.std(list(self.window), ddof=1)
+
+    def dispose(self) -&gt; None:
+        # Stop subscription on the data to release computational resources.
+        self.algorithm.deregister_indicator(self.log_ret)</pre>
+</div>
