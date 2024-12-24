@@ -24,7 +24,7 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 5 days of MyCustomDataType data for an asset in MyCustomDataType format. 
-history = self.history[MyCustomDataType](symbol, 5, Resolution.DAILY)</pre>
+history = self.history[MyCustomDataType](dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 
