@@ -351,3 +351,129 @@ class BracketOrder:
             return True
         return False</pre>
 </div>
+
+<h4>Example 3: More Favorable Than Signal Time</h4>
+<p>Some algorithms are signaling based on daily close data. However, their orders often emit on the next market open, making the filling price slipped. To avoid this slippage negatively impact from your expectation, we can construct a custom execution model to place order only when the price is more favorable than the last close price. Although we did not set time limit in this example, you may consider doing so.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 3, 1);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights all for selected stocks.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // Equal weighting on each insight to evenly dissipate capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Only place order if the price is more favorable than the price at insight signal.
+        SetExecution(new FavorableExecutionModel());
+    }
+
+    private class FavorableExecutionModel : ExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+        private Dictionary&lt;Symbol, decimal&gt; _lagPriceBySymbol = new();
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+        {
+            _targetsCollection.AddRange(targets);
+            // for performance we if empty, OrderByMarginImpact and ClearFulfilled are expensive to call
+            if (!_targetsCollection.IsEmpty)
+            {
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                {
+                    var symbol = target.Symbol;
+                    var security = algorithm.Securities[symbol];
+
+                    // calculate remaining quantity to be ordered
+                    var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target, security, true);
+
+                    if (quantity != 0)
+                    {
+                        if (security.BuyingPowerModel.AboveMinimumOrderMarginPortfolioPercentage(security, quantity,
+                            algorithm.Portfolio, algorithm.Settings.MinimumOrderMarginPortfolioPercentage))
+                        {
+                            // Cache the price at signal emission to compare if the current price is more favorable.
+                            if (!_lagPriceBySymbol.TryGetValue(symbol, out var lastPrice))
+                            {
+                                var history = algorithm.History&lt;TradeBar&gt;(symbol, 1, Resolution.Daily);
+                                _lagPriceBySymbol[symbol] = history.Last().Close;
+                            }
+                            
+                            // Only order if the price is more favorable than the price at signal emission.
+                            if ((security.Price &lt;= lastPrice &amp;&amp; quantity &gt; 0) || (security.Price &gt;= lastPrice &amp;&amp; quantity &lt; 0))
+                            {
+                                algorithm.MarketOrder(security, quantity);
+                                _lagPriceBySymbol.Remove(symbol);
+                            }
+                        }
+                        else if (!PortfolioTarget.MinimumOrderMarginPercentageWarningSent.HasValue)
+                        {
+                            // will trigger the warning if it has not already been sent
+                            PortfolioTarget.MinimumOrderMarginPercentageWarningSent = false;
+                        }
+                    }
+                }
+
+                _targetsCollection.ClearFulfilled(algorithm);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkExecutionModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 3, 1)
+
+        # Add a universe of the most liquid stocks since their trend is more capital supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights all for selected stocks.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Equal weighting on each insight to evenly dissipate capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Only place order if the price is more favorable than the price at insight signal.
+        self.set_execution(FavorableExecutionModel())
+
+class FavorableExecutionModel(ExecutionModel):
+    def __init__(self, take_profit: float = 0.1, stop_loss: float = 0.05) -&gt; None:
+        self.targets_collection = PortfolioTargetCollection()
+        self.lag_price_by_symbol = {}
+
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+        self.targets_collection.add_range(targets)
+        if not self.targets_collection.is_empty:
+            for target in self.targets_collection.order_by_margin_impact(algorithm):
+                symbol = target.symbol
+                security = algorithm.securities[symbol]
+                # calculate remaining quantity to be ordered
+                quantity = OrderSizing.get_unordered_quantity(algorithm, target, security, True)
+
+                if quantity != 0:
+                    above_minimum_portfolio = BuyingPowerModelExtensions.above_minimum_order_margin_portfolio_percentage(
+                        security.buying_power_model,
+                        security,
+                        quantity,
+                        algorithm.portfolio,
+                        algorithm.settings.minimum_order_margin_portfolio_percentage)
+                    if above_minimum_portfolio:
+                        # Cache the price at signal emission to compare if the current price is more favorable.
+                        if not symbol in self.lag_price_by_symbol:
+                            history = algorithm.history[TradeBar](symbol, 1, Resolution.DAILY)
+                            self.lag_price_by_symbol[symbol] = list(history)[-1].close
+
+                        # Only order if the price is more favorable than the price at signal emission.
+                        if (security.price &lt;= self.lag_price_by_symbol[symbol] and quantity &gt; 0)\
+                        or (security.price &gt;= self.lag_price_by_symbol[symbol] and quantity &lt; 0):
+                            algorithm.market_order(security, quantity)
+                    elif not PortfolioTarget.minimum_order_margin_percentage_warning_sent:
+                        # will trigger the warning if it has not already been sent
+                        PortfolioTarget.minimum_order_margin_percentage_warning_sent = False
+
+            self.targets_collection.clear_fulfilled(algorithm)</pre>
+</div>
