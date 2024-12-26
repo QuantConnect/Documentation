@@ -69,8 +69,8 @@ history = self.history(dataset_symbol, 1, Resolution.DAILY, flatten=True)</pre>
 alert_types = history.alerttype.unique()</pre>
   </div>
 
-<div class="python section-example-container">
-    <pre class="python">array(['Complaint', 'Press release', 'Event', 'Litigation Release',
+    <div class="python section-example-container">
+    <pre>array(['Complaint', 'Press release', 'Event', 'Litigation Release',
        'Grant Information', 'Media Release', 'News', 'Announcement',
        'Transcript', 'Decree', 'Decision', 'Regulation',
        'Executive Order', 'Media Advisory', 'Disaster Press Release',
@@ -81,6 +81,6 @@ alert_types = history.alerttype.unique()</pre>
        'Statement', 'Rule', 'enforcement action', 'Report',
        'Statement|Release',
        'AWCs (Letters of Acceptance, Waiver, and Consent)'], dtype=object)</pre>
-</div>
+    </div>
 </div>
 
