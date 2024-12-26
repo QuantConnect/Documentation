@@ -86,9 +86,48 @@ for bar in history:
 </table>
 
 <div class="section-example-container">
-      <pre class="csharp">// Get the Symbol of an asset.
+      <pre class="csharp">// Get the Symbol of some assets.
 var spy = AddEquity("SPY").Symbol;
-</pre>
+var aapl = AddEquity("AAPL").Symbol;
+
+// Example: List&lt;QuoteBars&gt;
+foreach (var quoteBars in History&lt;QuoteBar&gt;(new[] { spy, aapl }, 3))
+{
+    var t = quoteBars.Time;
+    foreach (var kvp in quoteBars)
+    {
+        var symbol = kvp.Key;
+        var quoteBar = kvp.Value;
+        var bid = quoteBar.Bid;
+    }
+}
+
+// Example: List&lt;Ticks&gt;
+foreach (var ticks in History<Tick>(new[] { spy, aapl }, TimeSpan.FromDays(3), Resolution.Tick))
+{
+    foreach (var kvp in ticks)
+    {
+        var symbol = kvp.Key;
+        var tick = kvp.Value;
+        var t = tick.Time;
+        var price = tick.Price;
+    }
+}
+
+// Example: List&lt;Dictionary&lt;Symbol, QuiverInsiderTrading&gt;&gt;
+var spyInsider = AddData&lt;QuiverInsiderTrading&gt;(spy).Symbol;
+var aaplInsider = AddData&lt;QuiverInsiderTrading&gt;(aapl).Symbol;
+foreach (var dataBySymbol in History&lt;QuiverInsiderTrading&gt;(new[] { spyInsider, aaplInsider }, 365, Resolution.Daily))
+{
+    foreach (var kvp in dataBySymbol)
+    {
+        var datasetSymbol = kvp.Key;
+        var insiderTrading = kvp.Value;
+        var assetSymbol = datasetSymbol.Underlying;
+        var t = insiderTrading.EndTime;
+        var sharesTraded = insiderTrading.Shares;
+    }
+}</pre>
       <pre class="python"># Get the Symbol of some assets.
 spy = self.add_equity('SPY').symbol
 aapl = self.add_equity('AAPL').symbol
