@@ -1,16 +1,27 @@
 <p>
+  When you request a list, LEAN avoids consuming computational resources populating a DataFrame.
+  If you intend to use the data in the DataFrame to create objects like a <code>TradeBar</code> or <code>QuoteBar</code>, request that the history request returns the data type you need.
   To request a list of objects containing the historical data, call one of the <code class='csharp'>History&lt;<span class='placeholder-text'>Type</span>&gt;</code><code class='python'>history[<span class='placeholder-text'>Type</span>]</code> methods. 
 </p>
 
 <div class="section-example-container">
       <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;	      
+var symbol = AddEquity("SPY").Symbol;
+// Create an indicator that is a function of historical bars.
+var indicator = new AverageTrueRange(3);
 // Get the 3 latest TradeBar objects of the asset.
-var history = History&lt;TradeBar&gt;(symbol, 3);</pre>
+var history = History&lt;TradeBar&gt;(symbol, indicator.WarmUpPeriod);
+// Update the indicator with the historical TradeBar objects.
+history.Select(bar => indicator.Update(bar));</pre>
       <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('SPY').symbol
+# Create an indicator that is a function of historical bars.
+indicator = AverageTrueRange(3)
 # Get the 3 latest TradeBar objects of the asset.
-history = self.history[TradeBar](symbol, 3)</pre>
+history = self.history[TradeBar](symbol, indicator.warm_up_period)
+# Update the indicator with the historical TradeBar objects.
+for bar in history:
+    indicator.update(bar)</pre>
 </div>
 
 <p>
