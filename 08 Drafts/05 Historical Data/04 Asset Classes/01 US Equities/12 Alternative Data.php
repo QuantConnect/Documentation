@@ -29,7 +29,13 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data for an asset.'>
 
-<p class='python'>To get a list of <code><?=$datasetClass?></code> objects instead of a DataFrame, call the <code>history[<?=$datasetClass?>]</code> method.</p>
+<p class='python'>
+  If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
+  If you intend to use the data in the DataFrame to create <code><span class='placeholder-text'>alternativeDataClass</span></code> objects, request that the history request returns the data type you need. 
+  Otherwise, LEAN will consume computational resources populating the DataFrame.  
+  To get a list of dataset objects instead of a DataFrame, call the <code>history[<span class='placeholder-text'>alternativeDataClass</span>]</code> method.
+</p>
+
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in <?=$datasetClass?> format. 
