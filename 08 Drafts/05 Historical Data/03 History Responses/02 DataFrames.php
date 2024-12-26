@@ -26,6 +26,6 @@ history = self.history(symbols, 3, Resolution.DAILY)</pre>
   <p>
     If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
     If you intend to use the data in the DataFrame to create <code>TradeBar</code> or <code>QuoteBar</code> objects, request that the history request returns the data type you need. 
-    Otherwise, LEAN will waste computational resources populating the DataFrame.
+    Otherwise, LEAN will consume computational resources populating the DataFrame.
   </p>
 </div>
