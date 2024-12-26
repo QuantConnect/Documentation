@@ -6,15 +6,18 @@
 
 <div class="section-example-container">
       <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
+var symbol = AddEquity("SPY", Resolution.Daily).Symbol;
 // Create an indicator that is a function of historical bars.
 var indicator = new AverageTrueRange(3);
 // Get the 3 latest TradeBar objects of the asset.
 var history = History&lt;TradeBar&gt;(symbol, indicator.WarmUpPeriod);
 // Update the indicator with the historical TradeBar objects.
-history.Select(bar => indicator.Update(bar));</pre>
+foreach (var bar in history)
+{
+    indicator.Update(bar);
+}</pre>
       <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
+symbol = self.add_equity('SPY', Resolution.DAILY).symbol
 # Create an indicator that is a function of historical bars.
 indicator = AverageTrueRange(3)
 # Get the 3 latest TradeBar objects of the asset.
