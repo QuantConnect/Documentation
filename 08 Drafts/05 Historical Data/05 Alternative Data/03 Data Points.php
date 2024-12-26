@@ -30,6 +30,8 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 roc = history.pct_change().iloc[1:]</pre>
 </div>
 
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/history-request-fred-growth.png' alt='DataFrame of <?=$datasetClass?> rate of change.'>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><span class='placeholder-text'>alternativeDataClass</span></code> objects, request that the history request returns the data type you need. 
@@ -61,5 +63,24 @@ history = self.history(dataset_symbol, 1, Resolution.DAILY, flatten=True)</pre>
   </div>
 
   <img src='https://cdn.quantconnect.com/i/tu/regalytics-dataframe-history.png' class='docs-image' alt='DataFrame of regulatory alerts.'>
+
+  <div class="section-example-container">
+    <pre class="python"># Get all the unique alert types from the Regalytics articles.
+alert_types = history.alerttype.unique()</pre>
+  </div>
+
+<div class="python section-example-container">
+    <pre class="python">array(['Complaint', 'Press release', 'Event', 'Litigation Release',
+       'Grant Information', 'Media Release', 'News', 'Announcement',
+       'Transcript', 'Decree', 'Decision', 'Regulation',
+       'Executive Order', 'Media Advisory', 'Disaster Press Release',
+       'Notice', 'Procurement', 'Meeting', 'News release', 'Contract',
+       'Publication', 'Blog', 'Tabled Document', 'Resolution', 'Bill',
+       'Concurrent Resolution', 'Opinions and Adjudicatory Orders',
+       'Proposed rule', 'Technical Notice', 'Sanction', 'Order',
+       'Statement', 'Rule', 'enforcement action', 'Report',
+       'Statement|Release',
+       'AWCs (Letters of Acceptance, Waiver, and Consent)'], dtype=object)</pre>
+</div>
 </div>
 
