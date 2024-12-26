@@ -26,7 +26,12 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of MyCustomDataType data.'>
 
-<p class='python'>To get a list of dataset objects instead of a DataFrame, call the <code>history[<span class='placeholder-text'>customDatasetClass</span>]</code> method.</p>
+<p class='python'>
+  If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
+  If you intend to use the data in the DataFrame to create <code><span class='placeholder-text'>customDatasetClass</span></code> objects, request that the history request returns the data type you need. 
+  Otherwise, LEAN will consume computational resources populating the DataFrame.  
+  To get a list of dataset objects instead of a DataFrame, call the <code>history[<span class='placeholder-text'>customDatasetClass</span>]</code> method.
+</p>
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 5 days of MyCustomDataType data for an asset in MyCustomDataType format. 
