@@ -24,6 +24,23 @@ history = self.history(universe, timedelta(5), flatten=True)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of the last 5 days of a US Equity alternative data universe.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Select the asset with the greatest value each day.
+daily_winner = history.groupby('time').apply(lambda x: x.nlargest(1, 'value')).reset_index(level=1, drop=True)['value']</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre class="python">time        symbol          
+2024-12-17  FIC R735QTJ8XC9X    0.061570
+2024-12-18  FIC R735QTJ8XC9X    0.054204
+2024-12-19  FIC R735QTJ8XC9X    0.073250
+2024-12-20  FIC R735QTJ8XC9X    0.065142
+2024-12-21  FIC R735QTJ8XC9X    0.065142
+2024-12-22  FIC R735QTJ8XC9X    0.065142
+2024-12-23  FIC R735QTJ8XC9X    0.065142
+Name: value, dtype: float64</pre>
+</div>
+
 <p class='python'>To get the data in the format of the objects that you receive in your universe filter function instead of a DataFrame, use <code>flatten=False</code>.</p>
 
 <div class="python section-example-container">
