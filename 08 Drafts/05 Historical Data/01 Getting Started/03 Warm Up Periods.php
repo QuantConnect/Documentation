@@ -51,4 +51,4 @@ Algorithm finished warming up.
 self.is_warming_up at 2024-12-02 16:00:00: False</pre></div>
 </ol>
 
-<p>For more information about warm-up, see <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>Warm Up Periods</p>.
+<p>For more information about warm-up, see <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>Warm Up Periods</a>.</p>
