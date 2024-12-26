@@ -72,9 +72,9 @@ for bar in history:
 	          <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
         </tr>
 
-	      <tr>
+	<tr>
 	          <td><code class='placeholder-text'>alternativeDataClass</code><br>(ex: <code>CBOE</code>)</td>
-            <td><code>Symbol</code></td>
+                  <td><code>Symbol</code></td>
 	          <td><span class='python'><code>List[<span class='placeholder-text'>alternativeDataClass</span>]</code><br>(ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>alternativeDataClass</span>&gt;</code><br>(ex: <code>List&lt;CBOE&gt;</code>)</span></td>
         </tr>
       	<tr>
@@ -84,6 +84,37 @@ for bar in history:
         </tr>
     </tbody>
 </table>
+
+<div class="section-example-container">
+      <pre class="csharp">// Get the Symbol of an asset.
+var spy = AddEquity("SPY").Symbol;
+</pre>
+      <pre class="python"># Get the Symbol of some assets.
+spy = self.add_equity('SPY').symbol
+aapl = self.add_equity('AAPL').symbol
+
+# Example: List[QuoteBars]
+for quote_bars in self.history[QuoteBar]([spy, aapl], 3):
+    t = quote_bars.time
+    for symbol, quote_bar in quote_bars.items():
+        bid = quote_bar.bid
+
+# Example: List[Ticks]
+for ticks in self.history[Tick]([spy, aapl], timedelta(3), Resolution.TICK):
+    for symbol, tick in ticks.items():
+        t = tick.time
+        price = tick.price
+      
+# Example: List[Dict[Symbol, QuiverInsiderTrading]]
+spy_insider = self.add_data(QuiverInsiderTrading, spy).symbol
+aapl_insider = self.add_data(QuiverInsiderTrading, aapl).symbol
+for data_by_symbol in self.history[QuiverInsiderTrading]([spy_insider, aapl_insider], 365, Resolution.DAILY):
+    for dataset_symbol, insider_trading in data_by_symbol.items():
+        asset_symbol = dataset_symbol.underlying
+        t = insider_trading.end_time
+        shares_traded = insider_trading.shares</pre>
+</div>
+
 
 <p>
   When your history request returns a list of objects, the <code class="csharp">Time</code><code class="python">time</code> properties of these objects are based on the <?=$writingAlgorithms ? "algorithm" : "notebook" ?> time zone, but the <code class="csharp">EndTime</code><code class="python">end_time</code> properties of the individual objects in the list are based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>. 
