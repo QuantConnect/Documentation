@@ -1,4 +1,9 @@
-<p>Follow these steps to add a warm-up period to the start of your algorithm:</p>
+<p>
+    Warm-up simulates winding back the clock from the time you deploy the algorithm. 
+    In a backest, this is the <a href='/docs/v2/writing-algorithms/initialization#02-Set-Dates'>start date</a> of your algorithm. 
+    In live trading, it's the current date.    
+    Follow these steps to add a warm-up period to the start of your algorithm:
+</p>
 
 <ol>
     <li>Create a new project.</li>
