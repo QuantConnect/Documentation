@@ -25,6 +25,11 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Calculate the dataset's rate of change.
+roc = history.pct_change().iloc[1:]</pre>
+</div>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><span class='placeholder-text'>alternativeDataClass</span></code> objects, request that the history request returns the data type you need. 
@@ -34,7 +39,11 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in <?=$datasetClass?> format. 
-history = self.history[<?=$datasetClass?>](dataset_symbol, 5, Resolution.DAILY)</pre>
+history = self.history[<?=$datasetClass?>](dataset_symbol, 5, Resolution.DAILY)
+# Iterate through the historical data points.
+for data_point in history:
+    t = data_point.end_time
+    value = data_point.value</pre>
 </div>
 
 
