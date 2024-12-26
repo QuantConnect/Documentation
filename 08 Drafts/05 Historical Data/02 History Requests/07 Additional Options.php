@@ -53,7 +53,7 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
 </table>
 
 <div class='section-example-container'>
-    <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.add_future(Futures.Currencies.BTC)
+    <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.add_future(Futures.Indices.SP_500_E_MINI)
 history = <?=$pyVar?>.history(
     symbols=[<?=$pyFutureVar?>future.symbol], 
     start=<?=$pyVar?>.time - timedelta(days=15), 
@@ -61,11 +61,11 @@ history = <?=$pyVar?>.history(
     resolution=Resolution.MINUTE, 
     fill_forward=False, 
     extended_market_hours=False, 
-    data_mapping_mode=DataMappingMode.OPEN_INTEREST, 
+    data_mapping_mode=DataMappingMode.LAST_TRADING_DAY, 
     data_normalization_mode=DataNormalizationMode.RAW, 
     contract_depth_offset=0
 )</pre>
-    <pre class='csharp'>var future = <?=$cVar?>AddFuture(Futures.Currencies.BTC);
+    <pre class='csharp'>var future = <?=$cVar?>AddFuture(Futures.Indices.SP500EMini);
 var history = <?=$cVar?>History(
     symbols: new[] {future.Symbol}, 
     start: <?=$cVar?>Time - TimeSpan.FromDays(15),
@@ -73,7 +73,7 @@ var history = <?=$cVar?>History(
     resolution: Resolution.Minute,
     fillForward: false,
     extendedMarketHours: false,
-    dataMappingMode: DataMappingMode.OpenInterest,
+    dataMappingMode: DataMappingMode.LastTradingDay,
     dataNormalizationMode: DataNormalizationMode.Raw,
     contractDepthOffset: 0);</pre>
 </div>
