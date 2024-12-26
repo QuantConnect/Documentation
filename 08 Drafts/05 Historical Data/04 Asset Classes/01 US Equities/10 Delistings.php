@@ -1,6 +1,7 @@
 <?
 $imgLink = "https://cdn.quantconnect.com/i/tu/history-deslisting-dataframe-us-equities.png";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#05-Delistings";
+$dataType = "Delisting";
 ?>
 
 <p class='csharp'>
@@ -25,7 +26,12 @@ history = self.history(Delisting, symbol, timedelta(10*365))</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
 
-<p class='python'>To get a list of <code>Delisting</code> objects instead of a DataFrame, call the <code>history[Delisting]</code> method.</p>
+<p class='python'>
+  If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
+  If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
+  Otherwise, LEAN will consume computational resources populating the DataFrame.  
+  To get a list of <code><?=$dataType?></code> objects instead of a DataFrame, call the <code>history[<?=$dataType?>]</code> method.
+</p>
 
 <div class="python section-example-container">
     <pre class="python"># Get the deslistings of an asset over the last 10 years in Delisting format. 
