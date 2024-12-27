@@ -6,11 +6,13 @@ $dataType = "Delisting";
 
 <p class='csharp'>
   To get historical <a href='<?=$dataTypeLink?>'>delisting data</a>, call the <code>History&lt;Delisting&gt;</code> method with an asset's <code>Symbol</code>.
+  Delistings are a sparse dataset, so use a time period history request since most days have no data.
 </p>
 
 <p class='python'>
   To get historical <a href='<?=$dataTypeLink?>'>delisting data</a>, call the <code>history</code> method with the <code>Delisting</code> type and an asset's <code>Symbol</code>.
   This method returns a DataFrame with columns for the old symbol and new symbol during each change.
+  Delistings are a sparse dataset, so use a time period history request since most days have no data.
 </p>
 
 <div class="section-example-container">
