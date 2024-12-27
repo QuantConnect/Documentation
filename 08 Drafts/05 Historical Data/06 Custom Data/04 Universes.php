@@ -28,4 +28,21 @@ history = self.history(universe, timedelta(5))</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of universe data for a custom dataset.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Count the number of assets in the universe each day.
+universe_size_by_day = history.symbols.apply(lambda symbols: len(symbols))</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time
+2017-07-05    5
+2017-07-06    5
+2017-07-07    5
+2017-07-08    5
+2017-07-09    5
+Name: symbols, dtype: int64</pre>
+</div>
+
+
+
 
