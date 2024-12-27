@@ -1,5 +1,5 @@
 <p>
-  You can't place trades during the warm-up period because they would be operating on fictional fast-forwarded data.
+  You can't place trades during the warm-up period because the datafeed is replaying historical data for setting algorithm state.
   If you try to place a trade during warm-up, LEAN throws the following error:
 </p>
 
