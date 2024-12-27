@@ -28,6 +28,8 @@ history = self.history(Delisting, symbol, timedelta(10*365))</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
 
+<p class='python'>In the preceding DataFrame, the <code>type</code> column represents the <code>DelistingType</code> enumeration, where 0=<code>DelistingType.WARNING</code> and 1=<code>DelistingType.DELISTED</code>.</p>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
