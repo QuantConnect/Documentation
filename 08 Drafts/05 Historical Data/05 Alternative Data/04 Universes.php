@@ -26,7 +26,7 @@ history = self.history(universe, timedelta(5), flatten=True)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Select the asset with the greatest value each day.
-daily_winner = history.groupby('time').apply(lambda x: x.nlargest(1, 'value')).reset_index(level=1, drop=True).value.</pre>
+daily_winner = history.groupby('time').apply(lambda x: x.nlargest(1, 'value')).reset_index(level=1, drop=True).value</pre>
 </div>
 
 <div class="python section-example-container">
