@@ -6,11 +6,13 @@ $dataType = "Dividend";
 
 <p class='csharp'>
   To get historical <a href='<?=$dataTypeLink?>'>dividend data</a>, call the <code>History&lt;Dividend&gt;</code> method with an asset's <code>Symbol</code>.
+  Dividends are a sparse dataset, so use a time period history request since most days have no data.
 </p>
 
 <p class='python'>
   To get historical <a href='<?=$dataTypeLink?>'>dividend data</a>, call the <code>history</code> method with the <code>Dividend</code> type and an asset's <code>Symbol</code>.
   This method returns a DataFrame with columns for the dividend payment and reference price.
+  Dividends are a sparse dataset, so use a time period history request since most days have no data.
 </p>
 
 <div class="section-example-container">
