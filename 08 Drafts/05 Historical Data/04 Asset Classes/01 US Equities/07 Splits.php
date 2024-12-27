@@ -28,6 +28,8 @@ history = self.history(Split, symbol, timedelta(5*365))</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical stock splits for AAPL.'>
 
+<p class='python'>In the preceding DataFrame, the 0 <code>type</code> represents the <code>SplitType</code> enumeration, where 0=<code>SplitType.WARNING</code> and 1=<code>SplitType.SPLIT_OCCURRED</code>.</p>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
