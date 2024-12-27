@@ -6,11 +6,13 @@ $dataType = "Split";
 
 <p class='csharp'>
   To get historical <a href='<?=$dataTypeLink?>'>split data</a>, call the <code>History&lt;Split&gt;</code> method with an asset's <code>Symbol</code>.
+  Splits are a sparse dataset, so use a time period history request since most days have no data.
 </p>
 
 <p class='python'>
   To get historical <a href='<?=$dataTypeLink?>'>split data</a>, call the <code>history</code> method with the <code>Split</code> type and an asset's <code>Symbol</code>.
   This method returns a DataFrame with columns for the reference price, split factor, and split type.
+  Splits are a sparse dataset, so use a time period history request since most days have no data.
 </p>
 
 <div class="section-example-container">
