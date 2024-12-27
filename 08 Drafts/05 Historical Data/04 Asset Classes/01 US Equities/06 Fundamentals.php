@@ -1,9 +1,5 @@
-<?
-$imgLink = "https://cdn.quantconnect.com/i/tu/history-tradebar-dataframe-us-equities.png";
-?>
-
 <p class='csharp'>
-  To get historical <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-fundamentals'>fundamental data</a>, call the <code>History&lt;<?=Fundamental?>&gt;</code> method with an asset's <code>Symbol</code>.
+  To get historical <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-fundamentals'>fundamental data</a>, call the <code>History&lt;Fundamental&gt;</code> method with an asset's <code>Symbol</code>.
 </p>
 
 <p class='python'>
