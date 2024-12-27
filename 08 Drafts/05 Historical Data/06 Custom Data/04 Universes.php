@@ -30,7 +30,7 @@ history = self.history(universe, timedelta(5))</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Count the number of assets in the universe each day.
-universe_size_by_day = history.symbols.apply(lambda symbols: len(symbols))</pre>
+universe_size_by_day = history.apply(lambda row: len(row['symbols']), axis=1)</pre>
 </div>
 
 <div class="python section-example-container">
