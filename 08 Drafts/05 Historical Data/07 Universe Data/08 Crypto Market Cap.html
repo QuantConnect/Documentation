@@ -12,3 +12,27 @@ history = self.history(universe, timedelta(365), flatten=True)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-crypto-market-cap.png' class='python docs-image' alt='DataFrame of the last 365 days of a Crypto market cap universe.'>
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># Add a universe of Cryptocurrencies.
+largest_coin = history.drop('time', axis=1).groupby('time').apply(
+    lambda x: x.nlargest(1, 'marketcap')
+).reset_index(level=1, drop=True).marketcap</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time        symbol          
+2023-12-25  TAO.CoinGecko 2S    1.608797e+09
+2023-12-26  TAO.CoinGecko 2S    1.604877e+09
+2023-12-27  TAO.CoinGecko 2S    1.519449e+09
+2023-12-28  TAO.CoinGecko 2S    1.878762e+09
+2023-12-29  TAO.CoinGecko 2S    1.804409e+09
+                                    ...     
+2024-12-19  TAO.CoinGecko 2S    1.749002e+09
+2024-12-20  TAO.CoinGecko 2S    1.749002e+09
+2024-12-21  TAO.CoinGecko 2S    1.749002e+09
+2024-12-22  TSM.CoinGecko 2S             NaN
+2024-12-23  TSM.CoinGecko 2S             NaN
+Name: marketcap, Length: 365, dtype: float64</pre>
+</div>
