@@ -12,3 +12,12 @@ history = self.history(universe, timedelta(5), flatten=True)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-crypto.png' class='python docs-image' alt='DataFrame of the last 5 days of a Crypto universe.'>
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># Get the Crypto with the largest daily return each day.
+history['roc'] = (history['close'] - history['open']) / history['open']
+top_gainers = history.loc[history.groupby('time')['roc'].idxmax()]</pre>
+</div>
+
+<img src='https://cdn.quantconnect.com/i/tu/crypto-universe-history-top-gainers.png' class='python docs-image' alt='DataFrame of the daily top gainers in the Crypto universe.'>
