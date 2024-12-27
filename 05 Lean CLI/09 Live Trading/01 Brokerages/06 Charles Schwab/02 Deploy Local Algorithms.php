@@ -8,7 +8,7 @@ $brokerageDetails = "
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Please open the following URL in your browser to authorize the LEAN CLI.
-https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charles-schwab
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&projectId=<projectId>
 Will sleep 5 seconds and retry fetching authorization...
 </pre>
 </div>
@@ -19,7 +19,7 @@ $dataFeedDetails = "
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Please open the following URL in your browser to authorize the LEAN CLI.
-https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charles-schwab
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&projectId=<projectId>
 Will sleep 5 seconds and retry fetching authorization...
 </pre>
 </div>
