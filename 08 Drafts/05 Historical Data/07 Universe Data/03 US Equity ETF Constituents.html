@@ -12,3 +12,19 @@ history = self.history(universe, timedelta(5), flatten=True)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-us-etf-constituents.png' class='python docs-image' alt='DataFrame of the last 5 days of a US Equity ETF Constituents universe.'>
+
+<div class="python section-example-container">
+    <pre class="python"># Select the 2 assets with the smallest weights in the ETF each day.
+daily_smallest = history.groupby('time').apply(lambda x: x.nsmallest(2, 'weight')).reset_index(level=1, drop=True).weight</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time        symbol            
+2024-12-19  AMTMW YM37RIGZUD0L    0.000053
+            NWSVV VHJF6S7EZRL1    0.000068
+2024-12-20  AMTMW YM37RIGZUD0L    0.000051
+            NWSVV VHJF6S7EZRL1    0.000069
+2024-12-21  AMTMW YM37RIGZUD0L    0.000048
+            NWSVV VHJF6S7EZRL1    0.000069
+Name: weight, dtype: float64</pre>
+</div>
