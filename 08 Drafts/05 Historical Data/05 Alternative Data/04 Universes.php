@@ -31,7 +31,6 @@ daily_winner = history.groupby('time').apply(lambda x: x.nlargest(1, 'value')).r
 
 <div class="python section-example-container">
     <pre>time        symbol          
-2024-12-17  FIC R735QTJ8XC9X    0.061570
 2024-12-18  FIC R735QTJ8XC9X    0.054204
 2024-12-19  FIC R735QTJ8XC9X    0.073250
 2024-12-20  FIC R735QTJ8XC9X    0.065142
