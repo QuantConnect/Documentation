@@ -16,7 +16,13 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/fred-dataframe-history.png";
     <pre class="csharp">// Get the Symbol of a dataset.
 var datasetSymbol = AddData&lt;<?=$datasetClass?>&gt;("RVXCLS").Symbol;
 // Get the trailing 5 days of <?=$datasetClass?> data.
-var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
+var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);
+// Iterate through the historical data points.
+foreach (var dataPoint in history)
+{
+    var t = dataPoint.EndTime;
+    var value = dataPoint.Value;
+}</pre>
     <pre class="python"># Get the Symbol of a dataset.
 dataset_symbol = self.add_data(Fred, 'RVXCLS').symbol
 # Get the trailing 5 days of <?=$datasetClass?> data in DataFrame format.
