@@ -20,7 +20,13 @@ $dataType = "QuoteBar";
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("SPY").Symbol;
 // Get the 5 trailing minute <?=$dataType?> objects of the asset. 
-var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Minute);</pre>
+var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Minute);
+// Iterate through the QuoteBar objects and calculate the spread.
+foreach (var bar in history)
+{
+    var t = bar.EndTime;
+    var spread = bar.Ask.Close - bar.Bid.Close;
+}</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('SPY').symbol
 # Get the 5 trailing minute <?=$dataType?> objects of the asset in DataFrame format. 
