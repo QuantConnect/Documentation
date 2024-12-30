@@ -76,6 +76,17 @@ history = self.history(aapl.true_beats, datetime(2024, 1, 2), datetime(2024, 1, 
   </div>
 
   <img src='https://cdn.quantconnect.com/i/tu/appl-true-beats-dataframe-history.png' class='docs-image' alt='DataFrame of ExtractAlphaTrueBeats data for AAPL on 01/02/2024.'>
+
+  <div class="section-example-container">
+    <pre class="python"># Calculate the mean TrueBeat estimate for each day.
+mean_true_beats = history[history.expectedreportdate == history.expectedreportdate.min()].truebeat</pre>
+  </div>
+
+  <div class="section-example-container">
+    <pre>time                 symbol                    
+2024-01-02 12:30:00  AAPL.ExtractAlphaTrueBeats    0.029352
+Name: truebeat, dtype: float64</pre>
+  </div>
 </div>
 
 <p>For information on historical data for other alternative datasets, see the documentation in the <a href='/datasets/'>Dataset Market</a>.</p>
