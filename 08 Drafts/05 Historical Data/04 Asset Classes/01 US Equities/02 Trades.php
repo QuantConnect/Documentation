@@ -50,5 +50,8 @@ Name: close, dtype: float64</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the 5 trailing daily <?=$dataType?> objects of an asset in <?=$dataType?> format. 
-history = self.history[<?=$dataType?>](symbol, 5, Resolution.DAILY)</pre>
+history = self.history[<?=$dataType?>](symbol, 5, Resolution.DAILY)
+# Iterate through the TradeBar objects and access their volumes.
+for trade_bar in history:
+    volume = trade_bar.volume</pre>
 </div>
