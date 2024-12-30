@@ -4,7 +4,17 @@
     <pre class="csharp">// Add a universe of Cryptocurrencies.
 var universe = AddUniverse&lt;CoinGecko&gt;();
 // Get 365 days of history for the universe.
-var history = History(universe, TimeSpan.FromDays(365));</pre>
+var history = History(universe, TimeSpan.FromDays(365));
+// Iterate through each day of the universe history.
+foreach (var universeDay in history)
+{
+    var t = universeDay.EndTime;
+    // Select the Crypto with the largest market cap on this day.
+    var largestCoin = universeDay
+        .Select(c => c as CoinGecko)
+        .OrderByDescending(c => c.MarketCap)
+        .First();
+}</pre>
     <pre class="python"># Add a universe of Cryptocurrencies.
 universe = self.add_universe(CoinGeckoUniverse)
 # Get 355 days of history for the universe.
@@ -13,8 +23,7 @@ history = self.history(universe, timedelta(365), flatten=True)</pre>
 
 <img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-crypto-market-cap.png' class='python docs-image' alt='DataFrame of the last 365 days of a Crypto market cap universe.'>
 
-<div class="section-example-container">
-    <pre class="csharp"></pre>
+<div class="python section-example-container">
     <pre class="python"># Select the largest Crypto each day.
 largest_coin = history.drop('time', axis=1).groupby('time').apply(
     lambda x: x.nlargest(1, 'marketcap')
