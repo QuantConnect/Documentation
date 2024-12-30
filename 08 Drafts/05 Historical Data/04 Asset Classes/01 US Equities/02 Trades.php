@@ -17,7 +17,13 @@ $dataType = "TradeBar";
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("SPY").Symbol;
 // Get the 5 trailing daily <?=$dataType?> objects of the asset. 
-var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Daily);</pre>
+var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Daily);
+// Iterate through each TradeBar and calculate its dollar volume.
+foreach (var bar in history)
+{
+    var t = bar.EndTime;
+    var dollarVolume = bar.Close * bar.Volume;
+}</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('SPY').symbol
 # Get the 5 trailing daily <?=$dataType?> objects of the asset in DataFrame format. 
