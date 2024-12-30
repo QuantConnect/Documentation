@@ -6,7 +6,16 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
-var history = History(5, Resolution.Daily);</pre>
+var history = History(5, Resolution.Daily);
+foreach (var slice in history)
+{
+    // Iterate through each TradeBar in this Slice.
+    foreach (var kvp in slice.Bars)
+    {
+        var symbol = kvp.Key;
+        var bar = kvp.Value;
+    }
+}</pre>
     <pre class="python"># Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
 history = self.history(5, Resolution.DAILY)
 # Iterate through each Slice.
