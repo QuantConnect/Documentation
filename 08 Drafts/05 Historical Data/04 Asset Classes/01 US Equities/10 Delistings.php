@@ -21,7 +21,9 @@ var symbol = AddEquity("BBBY").Symbol;
 // Get the deslistings of the asset over the last 10 years. 
 var history = History&lt;Delisting&gt;(symbol, TimeSpan.FromDays(10*365));
 // Get the dates of the delist warnings.
-var delistWarningDates = history.Where(delisting => delisting.Type == DelistingType.WARNING).Select(delisting => delisting.EndTime);</pre>
+var delistWarningDates = history
+    .Where(delisting => delisting.Type == DelistingType.WARNING)
+    .Select(delisting => delisting.EndTime);</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('BBBY').symbol
 # Get the deslistings of the asset over the last 10 years in DataFrame format.
