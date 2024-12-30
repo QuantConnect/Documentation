@@ -52,5 +52,10 @@ Name: value, dtype: float64</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the splits that occured for a stock over the last 5 years in Split format. 
-history = self.history[Split](symbol, timedelta(5*365))</pre>
+history = self.history[Split](symbol, timedelta(5*365))
+# Iterate through each Split object.
+for split in history:
+    # Select the time when each split occurred.
+    if split.type == SplitType.SPLIT_OCCURRED:
+        t = split.end_time</pre>
 </div>
