@@ -42,5 +42,9 @@ dtype: float64</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the 3 trailing daily Fundamental objects of an asset in Fundamental format. 
-history = self.history[Fundamental](symbol, 3, Resolution.DAILY)</pre>
+history = self.history[Fundamental](symbol, 3, Resolution.DAILY)
+# Iterate through each Fundamental object and access its properites.
+for fundamental in history:
+    symbol = fundamental.symbol
+    pe_ratio = fundamental.valuation_ratios.pe_ratio</pre>
 </div>
