@@ -28,6 +28,11 @@ history = self.history(Dividend, symbol, timedelta(2*365))</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical dividend payments for a stocks.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Calculate the mean dividend payment.
+mean_dividend = history.distribution.mean()</pre>
+</div>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
@@ -38,5 +43,8 @@ history = self.history(Dividend, symbol, timedelta(2*365))</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the dividends that a stock paid over the last 2 years in Dividend format. 
-history = self.history[Dividend](symbol, timedelta(2*365))</pre>
+history = self.history[Dividend](symbol, timedelta(2*365))
+# Iterate through each Dividend object.
+for dividend in history:
+    distribution = dividend.distribution</pre>
 </div>
