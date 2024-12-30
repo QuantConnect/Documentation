@@ -17,7 +17,13 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-universe-dataframe-
     <pre class="csharp">// Add a universe from a custom data source and save a reference to it.
 var universe = AddUniverse&lt;StockDataSource&gt;("myStockDataSource", Resolution.Daily, data => data.Select(x => x.Symbol));
 // Get the historical universe data over the last 5 days.
-var history = History(universe, TimeSpan.FromDays(5));</pre>
+var history = History(universe, TimeSpan.FromDays(5)).Cast&lt;StockDataSource&gt;().ToList();
+// Iterate through each day in the universe history and count the number of constituents.
+foreach (var stockData in history)
+{
+    var t = stockData.Time;
+    var size = stockData.Symbols.Count;
+}</pre>
     <pre class="python"># Add a universe from a custom data source and save a reference to it.
 universe = self.add_universe(
     StockDataSource, "my-stock-data-source", Resolution.DAILY, lambda data: [x.symbol for x in data]
