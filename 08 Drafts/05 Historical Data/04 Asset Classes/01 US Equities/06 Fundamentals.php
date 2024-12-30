@@ -11,7 +11,14 @@
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("AAPL").Symbol;
 // Get the 3 trailing daily Fundamental objects of the asset. 
-var history = History&lt;Fundamental&gt;(symbol, 3, Resolution.Daily);</pre>
+var history = History&lt;Fundamental&gt;(symbol, 3, Resolution.Daily);
+// Iterate through each Fundamental object.
+foreach (var fundamental in history)
+{
+    var t = fundamental.EndTime;
+    var currentRatio = fundamental.OperationRatios.CurrentRatio.Value;
+}
+</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('AAPL').symbol
 # Get the 3 trailing daily Fundamental objects of the asset in DataFrame format. 
