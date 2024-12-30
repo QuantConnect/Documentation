@@ -30,6 +30,17 @@ history = self.history(Delisting, symbol, timedelta(10*365))</pre>
 
 <p class='python'>In the preceding DataFrame, the <code>type</code> column represents the <code>DelistingType</code> enumeration, where 0=<code>DelistingType.WARNING</code> and 1=<code>DelistingType.DELISTED</code>.</p>
 
+<div class="python section-example-container">
+    <pre class="python"># Select the rows in the DataFrame that represent deslist warnings.
+warnings = history[history.type == DelistingType.WARNING].type</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>symbol  time      
+BBBY    2023-05-02    0
+Name: type, dtype: int64</pre>
+</div>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
@@ -39,5 +50,9 @@ history = self.history(Delisting, symbol, timedelta(10*365))</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the deslistings of an asset over the last 10 years in Delisting format. 
-history = self.history[Delisting](symbol, timedelta(10*365))</pre>
+history = self.history[Delisting](symbol, timedelta(10*365))
+# Iterate through each Deslisting object and print out the warning dates.
+for deslisting in history:
+    if deslisting.type == DelistingType.WARNING:
+        print(deslisting.end_time)</pre>
 </div>
