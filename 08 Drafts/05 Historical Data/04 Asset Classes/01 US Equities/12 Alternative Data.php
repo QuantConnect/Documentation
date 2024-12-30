@@ -29,6 +29,20 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data for an asset.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Calculate the changes in sentiment.
+sentiment_diff = history.sentiment.diff().iloc[1:]</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>symbol                    time      
+GME.QuiverWallStreetBets  2024-12-16   -1.25845
+                          2024-12-17    0.65587
+                          2024-12-18   -0.05423
+                          2024-12-19    0.53118
+Name: sentiment, dtype: float64</pre>
+</div>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><span class='placeholder-text'>alternativeDataClass</span></code> objects, request that the history request returns the data type you need. 
@@ -39,7 +53,11 @@ history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 5 days of <?=$datasetClass?> data for an asset in <?=$datasetClass?> format. 
-history = self.history[<?=$datasetClass?>](symbol, 5, Resolution.DAILY)</pre>
+history = self.history[<?=$datasetClass?>](dataset_symbol, 5, Resolution.DAILY)
+# Iterate through each <?=$datasetClass?> object.
+for data_point in history:
+    t = data_point.end_time
+    sentiment = data_point.sentiment</pre>
 </div>
 
 <!-- This part is only for US Equities. Not all asset classes -->
