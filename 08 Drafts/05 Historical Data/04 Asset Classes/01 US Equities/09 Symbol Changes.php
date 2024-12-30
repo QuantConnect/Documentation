@@ -18,7 +18,7 @@ $dataType = "SymbolChangedEvent";
 var symbol = AddEquity("META").Symbol;
 // Get the symbol changes of the stock over the last 10 years. 
 var history = History&lt;SymbolChangedEvent&gt;(symbol, TimeSpan.FromDays(10*365));
-// Iterate through each SymbolChangedEvent object.
+// Iterate through each SymbolChangedEvent object to access their data point attributes.
 foreach (var symbolChangedEvent in history)
 {
     var t = symbolChangedEvent.EndTime;
