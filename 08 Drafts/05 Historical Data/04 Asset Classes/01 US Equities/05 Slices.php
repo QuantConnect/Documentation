@@ -7,6 +7,7 @@
 <div class="section-example-container">
     <pre class="csharp">// Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
 var history = History(5, Resolution.Daily);
+// Iterate through each historial Slice.
 foreach (var slice in history)
 {
     // Iterate through each TradeBar in this Slice.
