@@ -20,8 +20,7 @@ history = self.history(Fundamental, symbol, 3, Resolution.DAILY)</pre>
 
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/fundamental-data-history-dataframe.png' alt='DataFrame of the fundamentals of an asset.'>
 
-<div class="section-example-container">
-    <pre class="csharp"></pre>
+<div class="python section-example-container">
     <pre class="python"># Get the Current Ratio of each row.
 current_ratios = history.apply(lambda row: row.operationratios.current_ratio.value, axis=1)</pre>
 </div>
