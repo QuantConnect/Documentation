@@ -30,7 +30,7 @@ current_ratios = history.apply(lambda row: row.operationratios.current_ratio.val
     <pre>symbol  time      
 AAPL    2024-12-24    0.867313
         2024-12-25    0.867313
-        2024-12-27         NaN
+        2024-12-27    0.867313
 dtype: float64</pre>
 </div>
 
