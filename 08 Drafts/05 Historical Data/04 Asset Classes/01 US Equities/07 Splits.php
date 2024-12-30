@@ -30,6 +30,18 @@ history = self.history(Split, symbol, timedelta(5*365))</pre>
 
 <p class='python'>In the preceding DataFrame, the <code>type</code> column represents the <code>SplitType</code> enumeration, where 0=<code>SplitType.WARNING</code> and 1=<code>SplitType.SPLIT_OCCURRED</code>.</p>
 
+<div class="python section-example-container">
+    <pre class="python"># Select the prices where splits occurred.
+split_prices = history[history.type == SplitType.SPLIT_OCCURRED].value</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre># Select the prices where splits occurred.
+symbol  time      
+AAPL    2020-08-31    499.23
+Name: value, dtype: float64</pre>
+</div>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
