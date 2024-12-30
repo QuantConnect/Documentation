@@ -18,7 +18,13 @@ var symbol = AddEquity("GME").Symbol;
 // Add the alternative dataset and save a reference to its Symbol.
 var datasetSymbol = AddData&lt;QuiverWallStreetBets&gt;(symbol).Symbol;
 // Get the trailing 5 days of <?=$datasetClass?> data for the asset.
-var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
+var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);
+// Iterate each data point and access its attributes.
+foreach (var dataPoint in history)
+{
+    var t = dataPoint.EndTime;
+    var sentiment = dataPoint.Sentiment;
+}</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('GME').symbol
 # Add the alternative dataset and save a reference to its Symbol.
