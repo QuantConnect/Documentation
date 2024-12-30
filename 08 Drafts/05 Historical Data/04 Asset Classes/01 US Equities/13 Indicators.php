@@ -65,7 +65,9 @@ reference_symbol = self.add_equity('SPY').symbol
 # Create a 21-period Beta indicator.
 beta = Beta("", target_symbol, reference_symbol, 21)
 # Get the historical values of the indicator over the last 10 trading days.
-history = self.indicator_history(beta, [target_symbol, reference_symbol], 10, Resolution.DAILY)</pre>
+history = self.indicator_history(beta, [target_symbol, reference_symbol], 10, Resolution.DAILY)
+# Get the average Beta value.
+beta_avg = history.data_frame.mean()</pre>
 </div>
 
 <p class='csharp'>If you already have a list of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects, you can pass them to the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method to avoid the internal history request.</p>
