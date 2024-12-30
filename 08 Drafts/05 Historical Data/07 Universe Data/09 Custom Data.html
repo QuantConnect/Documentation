@@ -19,6 +19,7 @@ public class StockDataSource : BaseData
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
     {
         var stocks = new StockDataSource();
+        stocks.Symbol = config.Symbol;
         try
         {
             var csv = line.Split(',');
@@ -33,7 +34,13 @@ public class StockDataSource : BaseData
 // In the Initialize method, add a custom data universe.
 var universe = AddUniverse&lt;StockDataSource&gt;("StockDataSource", Resolution.Daily);
 // Get the universe history.
-var history = History(universe, new DateTime(2018, 1, 1), new DateTime(2018, 1, 10));</pre>
+var history = History(universe, new DateTime(2018, 1, 1), new DateTime(2018, 1, 10));
+// Iterate through each day in the universe history and count the number of constituents.
+foreach (var stockData in history)
+{
+    var t = stockData.Time;
+    var size = stockData.Symbols.Count;
+}</pre>
     <pre class="python"># Define the custom data class outside of the algorithm class.    
 class StockDataSource(PythonData):
 
