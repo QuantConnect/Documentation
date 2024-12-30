@@ -26,6 +26,11 @@ history_df = history.data_frame</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical indicator values for an asset.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Get the maximum of the SMA values.
+sma_max = history_df.current.max()</pre>
+</div>
+
 <p>
   The <code class='csharp'>IndicatorHistory</code><code class='python'>indicator_history</code> method resets your indicator, makes a history request, and updates the indicator with the historical data.
 	Just like with regular history requests, the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method supports time periods based on a trailing number of bars, a trailing period of time, or a defined period of time.
