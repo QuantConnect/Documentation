@@ -28,7 +28,8 @@ history = self.history(symbol, timedelta(2), Resolution.TICK)</pre>
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of tick data for an asset.'>
 
 <div class="python section-example-container">
-    <pre class="python">trade_ticks = history[history.quantity > 0].dropna(axis=1)</pre>
+    <pre class="python"># Select the rows in the DataFrame that represent trades. Drop the bid/ask columns since they are NaN.
+trade_ticks = history[history.quantity > 0].dropna(axis=1)</pre>
 </div>
 
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-trade-tick-dataframe.png' alt='DataFrame of trade tick data for an asset.'>
