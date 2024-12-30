@@ -163,8 +163,8 @@
 
 <p>
    In live trading, Option orders require a third-party data provider that supports Options.
-  <? if ($cloudPlatform) { To view the data providers that support Options, see <a href='/docs/v2/cloud-platform/datasets'>Datasets</a>. } ?>
-  <? if ($writingAlgorithms) { To view the data providers that support Options, see their respective documentation in <a href='/docs/v2/cloud-platform/datasets'>Cloud Platform</a>, <a href='/docs/v2/local-platform/datasets/getting-started'>Local Platform</a>, or the <a href='/docs/v2/lean-cli/live-trading/data-providers'>CLI</a>. } ?>
+  <? if ($cloudPlatform) {?> To view the data providers that support Options, see <a href='/docs/v2/cloud-platform/datasets'>Datasets</a>. <? } ?>
+  <? if ($writingAlgorithms) {?> To view the data providers that support Options, see their respective documentation in <a href='/docs/v2/cloud-platform/datasets'>Cloud Platform</a>, <a href='/docs/v2/local-platform/datasets/getting-started'>Local Platform</a>, or the <a href='/docs/v2/lean-cli/live-trading/data-providers'>CLI</a>. <? } ?>
 </p>
 
 <h4>Time In Force</h4>
