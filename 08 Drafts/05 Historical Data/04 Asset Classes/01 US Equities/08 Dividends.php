@@ -19,7 +19,9 @@ $dataType = "Dividend";
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("AAPL").Symbol;
 // Get the dividends that the stock paid over the last 2 years. 
-var history = History&lt;Dividend&gt;(symbol, TimeSpan.FromDays(2*365);</pre>
+var history = History&lt;Dividend&gt;(symbol, TimeSpan.FromDays(2*365));
+// Calculate the mean dividend payment.
+var meanDividend = history.Average(split => split.Distribution);</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('AAPL').symbol
 # Get the dividends that the stock paid over the last 2 years in DataFrame format. 
