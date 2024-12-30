@@ -17,7 +17,14 @@ $dataType = "SymbolChangedEvent";
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("META").Symbol;
 // Get the symbol changes of the stock over the last 10 years. 
-var history = History&lt;SymbolChangedEvent&gt;(symbol, TimeSpan.FromDays(10*365);</pre>
+var history = History&lt;SymbolChangedEvent&gt;(symbol, TimeSpan.FromDays(10*365));
+// Iterate through each SymbolChangedEvent object.
+foreach (var symbolChangedEvent in history)
+{
+    var t = symbolChangedEvent.EndTime;
+    var oldSymbol = symbolChangedEvent.OldSymbol;
+    var newSymbol = symbolChangedEvent.NewSymbol;
+}</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('META').symbol
 # Get the symbol changes of the stock over the last 10 years in DataFrame format. 
