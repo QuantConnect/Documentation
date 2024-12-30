@@ -25,6 +25,22 @@ history = self.history(universe, timedelta(5), flatten=True)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of universe data for an asset.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Select the 2 assets with the smallest weights in the ETF each day.
+daily_smallest = history.groupby('time').apply(lambda x: x.nsmallest(2, 'weight')).reset_index(level=1, drop=True).weight</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time        symbol            
+2024-12-19  AMTMW YM37RIGZUD0L    0.000053
+            NWSVV VHJF6S7EZRL1    0.000068
+2024-12-20  AMTMW YM37RIGZUD0L    0.000051
+            NWSVV VHJF6S7EZRL1    0.000069
+2024-12-21  AMTMW YM37RIGZUD0L    0.000048
+            NWSVV VHJF6S7EZRL1    0.000069
+Name: weight, dtype: float64</pre>
+</div>
+
 <p class='python'>To get the data in the format of the objects that you receive in your universe filter function instead of a DataFrame, use <code>flatten=False</code>.</p>
 
 <div class="python section-example-container">
