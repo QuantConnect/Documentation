@@ -4,7 +4,13 @@
     <pre class="csharp">// Add a universe of US Equities based on an alternative dataset.
 var universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
 // Get 5 days of history for the universe.
-var history = History(universe, TimeSpan.FromDays(5));</pre>
+var history = History(universe, TimeSpan.FromDays(5));
+// Iterate through the each day of the universe history.
+foreach (var altCoarse in history)
+{
+    // Select the asset with the greatest value each day.
+    var dailyWinner = altCoarse.Select(c => c as BrainStockRankingUniverse).OrderByDescending(c => c.Value).First();
+}</pre>
     <pre class="python"># Add a universe of US Equities based on an alternative dataset.
 universe = self.add_universe(BrainStockRankingUniverse)
 # Get 5 days of history for the universe.
