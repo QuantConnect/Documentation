@@ -4,7 +4,16 @@
     <pre class="csharp">// Add a universe of Index Option contracts.
 var option = AddIndexOption("VIX");
 // Get 5 days of history for the universe.
-var history = History&lt;OptionUniverse&gt;(option.Symbol, TimeSpan.FromDays(5));</pre>
+var history = History&lt;OptionUniverse&gt;(option.Symbol, TimeSpan.FromDays(5));
+// Iterate through the each day of the universe history.
+foreach (var chain in history)
+{
+    var t = chain.EndTime;
+    // Calculate the trading volume on this day.
+    var dailyVolume = chain.Data
+        .Select(contract => contract as OptionUniverse)
+        .Sum(contract => contract.Volume);
+}</pre>
     <pre class="python"># Add a universe of Index Option contracts.
 option = self.add_index_option('VIX')
 # Get 5 days of history for the universe.
