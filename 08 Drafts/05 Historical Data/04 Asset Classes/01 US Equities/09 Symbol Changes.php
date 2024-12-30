@@ -26,6 +26,11 @@ history = self.history(SymbolChangedEvent, symbol, timedelta(10*365))</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Select the dates of each ticker change.
+dates = list(history.index.levels[1])</pre>
+</div>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
