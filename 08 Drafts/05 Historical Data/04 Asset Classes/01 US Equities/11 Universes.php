@@ -14,7 +14,7 @@ $dataTypeLink = "/docs/v2/writing-algorithms/universes/equity";
 
 <div class="section-example-container">
     <pre class="csharp">// Add a universe of US Equities based on the constituents of an ETF.
-var universe = AddUniverse(Universe.ETF("SPY");
+var universe = AddUniverse(Universe.ETF("SPY"));
 // Get 5 days of history for the universe.
 var history = History(universe, TimeSpan.FromDays(5));
 // Iterate through each day of the universe history.
