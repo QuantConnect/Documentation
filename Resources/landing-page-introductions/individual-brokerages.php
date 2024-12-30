@@ -1,1 +1,1 @@
-<p>QuantConnect enables you to run your algorithms in live mode with real-time market data. We have successfully hosted more than <?=$kpi["live-algorithms-count"] ?> live algorithms and have had more than <?=$kpi["volume-traded"] ?> in volume traded on our servers since 2015.</p>
+<p>QuantConnect enables you to run your algorithms in live mode with real-time market data.</p>
