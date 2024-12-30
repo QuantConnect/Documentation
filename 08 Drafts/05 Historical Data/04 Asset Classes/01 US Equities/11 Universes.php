@@ -46,5 +46,9 @@ Name: weight, dtype: float64</pre>
 <div class="python section-example-container">
     <pre class="python"># Get the historical universe data over the last 30 days in a Series where
 # the values in the series are lists of the universe selection objects.
-history = self.history(universe, timedelta(30), flatten=False)</pre>
+history = self.history(universe, timedelta(30), flatten=False)
+# Iterate through each day of universe selection.
+for (universe_symbol, end_time), constituents in history.items():
+    # Select the 10 largest assets in the ETF on this day.
+    largest = sorted(constituents, key=lambda c: c.weight)[-10:]</pre>
 </div>
