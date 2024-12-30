@@ -51,8 +51,8 @@ Name: type, dtype: int64</pre>
 <div class="python section-example-container">
     <pre class="python"># Get the deslistings of an asset over the last 10 years in Delisting format. 
 history = self.history[Delisting](symbol, timedelta(10*365))
-# Iterate through each Deslisting object and print out the warning dates.
+# Iterate through each Deslisting object and access the warning dates.
 for deslisting in history:
     if deslisting.type == DelistingType.WARNING:
-        print(deslisting.end_time)</pre>
+        warning_date = deslisting.end_time</pre>
 </div>
