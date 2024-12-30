@@ -40,5 +40,10 @@ dates = list(history.index.levels[1])</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the symbol changes of a stock over the last 10 years in SymbolChangedEvent format. 
-history = self.history[SymbolChangedEvent](symbol, timedelta(10*365))</pre>
+history = self.history[SymbolChangedEvent](symbol, timedelta(10*365))
+# Iterate through each SymbolChangedEvent object.
+for symbol_changed_event in history:
+    t = symbol_changed_event.end_time
+    old_symbol = symbol_changed_event.old_symbol
+    new_symbol = symbol_changed_event.new_symbol</pre>
 </div>
