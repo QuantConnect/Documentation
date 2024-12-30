@@ -79,13 +79,13 @@ history = self.history(aapl.true_beats, datetime(2024, 1, 2), datetime(2024, 1, 
 
   <div class="section-example-container">
     <pre class="python"># Calculate the mean TrueBeat estimate for each day.
-mean_true_beats = history[history.expectedreportdate == history.expectedreportdate.min()].truebeat</pre>
+mean_true_beats_by_day = history.drop('time', axis=1).groupby('time').apply(lambda g: g.truebeat.mean())</pre>
   </div>
 
   <div class="section-example-container">
-    <pre>time                 symbol                    
-2024-01-02 12:30:00  AAPL.ExtractAlphaTrueBeats    0.029352
-Name: truebeat, dtype: float64</pre>
+    <pre>time
+2024-01-02 12:30:00   -0.007034
+dtype: float64</pre>
   </div>
 </div>
 
