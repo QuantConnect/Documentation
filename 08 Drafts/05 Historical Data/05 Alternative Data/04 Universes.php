@@ -16,7 +16,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equity-alter
 var universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
 // Get 5 days of history for the universe.
 var history = History(universe, TimeSpan.FromDays(5));
-// Iterate through the each day of the universe history.
+// Iterate through each day of the universe history.
 foreach (var altCoarse in history)
 {
     // Iterate through each asset in the universe on this day and access its data point attributes.
