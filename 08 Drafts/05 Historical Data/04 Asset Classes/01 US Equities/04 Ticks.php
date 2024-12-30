@@ -44,7 +44,11 @@ trade_ticks = history[history.quantity > 0].dropna(axis=1)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the trailing 2 days of ticks for an asset in Tick format. 
-history = self.history[Tick](symbol, timedelta(2), Resolution.TICK)</pre>
+history = self.history[Tick](symbol, timedelta(2), Resolution.TICK)
+# Iterate through each quote tick and calculate the quote size.
+for tick in history:
+    if tick.tick_type == TickType.Quote:
+        size = max(tick.bid_size, tick.ask_size)</pre>
 </div>
 
 <p>Tick history requests only accept a trailing period of time or start and end dates. These history requests don't work if you provide a <code>period</code> argument, requesting a specific number of trailing ticks.</p>
