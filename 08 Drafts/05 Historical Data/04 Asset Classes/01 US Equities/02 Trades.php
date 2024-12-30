@@ -26,6 +26,21 @@ history = self.history(<?=$dataType?>, symbol, 5, Resolution.DAILY)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of open, high, low, close, and volume for an asset.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Calculate the daily returns.
+daily_returns = history.close.pct_change().iloc[1:]</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>symbol  time               
+SPY     2024-12-13 16:00:00   -0.000199
+        2024-12-16 16:00:00    0.004270
+        2024-12-17 16:00:00   -0.004120
+        2024-12-18 16:00:00   -0.029804
+Name: close, dtype: float64</pre>
+</div>
+
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
