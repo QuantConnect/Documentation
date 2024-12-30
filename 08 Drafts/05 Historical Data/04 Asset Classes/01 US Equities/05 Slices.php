@@ -8,5 +8,10 @@
     <pre class="csharp">// Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
 var history = History(5, Resolution.Daily);</pre>
     <pre class="python"># Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
-history = self.history(5, Resolution.DAILY)</pre>
+history = self.history(5, Resolution.DAILY)
+# Iterate through each Slice.
+for slice_ in history:
+    # Iterate through each TradeBar in this Slice.
+    for symbol, trade_bar in slice_.bars.items():
+        close = trade_bar.close</pre>
 </div>
