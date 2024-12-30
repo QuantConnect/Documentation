@@ -4,7 +4,18 @@
     <pre class="csharp">// Add a universe of US Equities based on the Fundamentals dataset.
 var universe = AddUniverse(fundamentals => fundamentals.Select(f => f.Symbol));
 // Get 5 days of history for the universe.
-var history = History(universe, TimeSpan.FromDays(5));</pre>
+var history = History(universe, TimeSpan.FromDays(5));
+// Iterate through the each day of the universe history.
+foreach (var fundamentals in history)
+{
+    // Iterate through each asset in the universe on this day and access its data point attributes.
+    foreach (Fundamental f in fundamentals)
+    {
+        var symbol = f.Symbol;
+        var t = f.EndTime;
+        var peRatio = f.ValuationRatios.PERatio;
+    }
+}</pre>
     <pre class="python"># Add a universe of US Equities based on the Fundamentals dataset.
 universe = self.add_universe(lambda fundamentals: [f.symbol for f in fundamentals])
 # Get 5 days of history for the universe.
@@ -13,8 +24,7 @@ history = self.history(universe, timedelta(5), flatten=True)</pre>
 
 <img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equities.png' class='python docs-image' alt='DataFrame of the last 5 days of a US Equity fundamental universe.'>
 
-<div class="section-example-container">
-    <pre class="csharp"></pre>
+<div class="python section-example-container">
     <pre class="python"># Get the PE Ratio of the first row in the DataFrame.
 pe_ratio = history.iloc[0].valuationratios.pe_ratio</pre>
 </div>
