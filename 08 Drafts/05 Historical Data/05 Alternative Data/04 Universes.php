@@ -15,7 +15,17 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equity-alter
     <pre class="csharp">// Add a universe of US Equities based on an alternative dataset.
 var universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
 // Get 5 days of history for the universe.
-var history = History(universe, TimeSpan.FromDays(5));</pre>
+var history = History(universe, TimeSpan.FromDays(5));
+// Iterate through the universe history and access the data point attributes.
+foreach (var altCoarse in history)
+{
+    foreach (BrainStockRankingUniverse stockRanking in altCoarse)
+    {
+        var symbol = stockRanking.Symbol;
+        var t = stockRanking.EndTime;
+        var rank2Days = stockRanking.Rank2Days;
+    }
+}</pre>
     <pre class="python"># Add a universe of US Equities based on an alternative dataset.
 universe = self.add_universe(BrainStockRankingUniverse)
 # Get 5 days of history for the universe.
