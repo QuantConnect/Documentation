@@ -27,6 +27,12 @@ history = self.history(symbol, timedelta(2), Resolution.TICK)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of tick data for an asset.'>
 
+<div class="python section-example-container">
+    <pre class="python">trade_ticks = history[history.quantity > 0].dropna(axis=1)</pre>
+</div>
+
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-trade-tick-dataframe.png' alt='DataFrame of trade tick data for an asset.'>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
