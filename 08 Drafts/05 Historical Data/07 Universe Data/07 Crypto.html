@@ -2,9 +2,18 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Add a universe of Cryptocurrencies.
-var universe = AddUniverse(CryptoUniverse.Coinbase(data => data.Select(x => x.Symbol));
+var universe = AddUniverse(CryptoUniverse.Coinbase(data => data.Select(x => x.Symbol)));
 // Get 5 days of history for the universe.
-var history = History(universe, TimeSpan.FromDays(5));</pre>
+var history = History(universe, TimeSpan.FromDays(5));
+// Iterate through each day of the universe history.
+foreach (var universeDay in history)
+{
+    // Select the Crypto with the largest daily return on this day.
+    var topGainer = universeDay
+        .Select(c => c as CryptoUniverse)
+        .OrderByDescending(c => (c.Close - c.Open) / c.Open)
+        .First();
+}</pre>
     <pre class="python"># Add a universe of Cryptocurrencies.
 universe = self.add_universe(CryptoUniverse.coinbase(lambda data: [x.symbol for x in data]))
 # Get 5 days of history for the universe.
