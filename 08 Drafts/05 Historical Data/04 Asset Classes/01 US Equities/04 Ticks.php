@@ -18,7 +18,9 @@ $dataType = "Tick";
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("SPY").Symbol;
 // Get the trailing 2 days of ticks for the asset.
-var history = History&lt;Tick&gt;(symbol, TimeSpan.FromDays(2), Resolution.Tick);</pre>
+var history = History&lt;Tick&gt;(symbol, TimeSpan.FromDays(2), Resolution.Tick);
+// Select the ticks that represent trades, excluding the quote ticks.
+var trades = history.Where(tick => tick.TickType == TickType.Trade);</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('SPY').symbol
 # Get the trailing 2 days of ticks for the asset in DataFrame format.
