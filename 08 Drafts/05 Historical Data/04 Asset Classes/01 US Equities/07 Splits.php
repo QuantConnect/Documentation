@@ -36,8 +36,7 @@ split_prices = history[history.type == SplitType.SPLIT_OCCURRED].value</pre>
 </div>
 
 <div class="python section-example-container">
-    <pre># Select the prices where splits occurred.
-symbol  time      
+    <pre>symbol  time      
 AAPL    2020-08-31    499.23
 Name: value, dtype: float64</pre>
 </div>
