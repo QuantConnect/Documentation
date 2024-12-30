@@ -21,7 +21,7 @@ var symbol = AddEquity("AAPL").Symbol;
 // Get the splits that occured for the stock over the last 5 years. 
 var history = History&lt;Split&gt;(symbol, TimeSpan.FromDays(5*365));
 // Select the dates when splits occurred.
-var splitTimes = history.Where(split => split.Type == SplitType.SplitOccurred).Select(split => split.EndTime);
+var splitDates = history.Where(split => split.Type == SplitType.SplitOccurred).Select(split => split.EndTime);
 </pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('AAPL').symbol
