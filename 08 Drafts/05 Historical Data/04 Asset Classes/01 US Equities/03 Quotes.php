@@ -29,6 +29,21 @@ history = self.history(<?=$dataType?>, symbol, 5, Resolution.MINUTE)</pre>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical quotes for an asset.'>
 
+<div class="python section-example-container">
+    <pre class="python"># Calculate the spread at each minute.
+spread = history.askclose - history.bidclose</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>symbol  time               
+SPY     2024-12-18 15:56:00    0.039866
+        2024-12-18 15:57:00    0.029899
+        2024-12-18 15:58:00    0.019933
+        2024-12-18 15:59:00    0.009966
+        2024-12-18 16:00:00    0.029899
+dtype: float64</pre>
+</div>
+
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
@@ -38,7 +53,10 @@ history = self.history(<?=$dataType?>, symbol, 5, Resolution.MINUTE)</pre>
 
 <div class="python section-example-container">
     <pre class="python"># Get the 5 trailing minute <?=$dataType?> objects of an asset in <?=$dataType?> format. 
-history = self.history[<?=$dataType?>](symbol, 5, Resolution.MINUTE)</pre>
+history = self.history[<?=$dataType?>](symbol, 5, Resolution.MINUTE)
+# Iterate through each QuoteBar and calculate the dollar volume on the bid.
+for quote_bar in history:
+    bid_dollar_volume = quote_bar.last_bid_size * quote_bar.bid.close</pre>
 </div>
 
 <p>The resolution of data you request must support <code>QuoteBar</code> data. Otherwise, the history request won't return any data. To check which resolutions for <?=$assetClass?> support <code>QuoteBar</code> data, see <a href='<?=$resolutionLink?>'>Resolutions</a>.</p>
