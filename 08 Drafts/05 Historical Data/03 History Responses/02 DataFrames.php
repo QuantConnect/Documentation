@@ -7,10 +7,14 @@
   </p>
   
   <div class="section-example-container">
-      <pre class="python"># Get the Symbol objects of some assets.
-symbols = [self.add_equity(ticker).symbol for ticker in ['SPY', 'QQQ']]
-# Get 3 days of daily data for the assets.
-history = self.history(symbols, 3, Resolution.DAILY)</pre>
+      <pre class="python">class DataFrameHistoryResponseAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2014, 12, 20)
+        # Get the Symbol objects of some assets.
+        symbols = [self.add_equity(ticker).symbol for ticker in ['SPY', 'QQQ']]
+        # Get 3 days of daily data for the assets.
+        history = self.history(symbols, 3, Resolution.DAILY)</pre>
   </div>
 
   <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-response-dataframe.png' alt='DataFrame of daily OHLCV values for two assets.'>
