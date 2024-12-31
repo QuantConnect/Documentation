@@ -16,18 +16,29 @@ $dataType = "Delisting";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("BBBY").Symbol;
-// Get the deslistings of the asset over the last 10 years. 
-var history = History&lt;Delisting&gt;(symbol, TimeSpan.FromDays(10*365));
-// Get the dates of the delist warnings.
-var delistWarningDates = history
-    .Where(delisting => delisting.Type == DelistingType.WARNING)
-    .Select(delisting => delisting.EndTime);</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('BBBY').symbol
-# Get the deslistings of the asset over the last 10 years in DataFrame format.
-history = self.history(Delisting, symbol, timedelta(10*365))</pre>
+    <pre class="csharp">public class USEquityDelistingHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 1);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("BBBY").Symbol;
+        // Get the deslistings of the asset over the last 10 years. 
+        var history = History&lt;Delisting&gt;(symbol, TimeSpan.FromDays(10*365));
+        // Get the dates of the delist warnings.
+        var delistWarningDates = history
+            .Where(delisting => delisting.Type == DelistingType.WARNING)
+            .Select(delisting => delisting.EndTime);
+    }
+}</pre>
+    <pre class="python">class USEquityDelistingHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 1)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('BBBY').symbol
+        # Get the deslistings of the asset over the last 10 years in DataFrame format.
+        history = self.history(Delisting, symbol, timedelta(10*365))</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
