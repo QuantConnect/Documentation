@@ -5,23 +5,38 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
-var history = History(5, Resolution.Daily);
-// Iterate through each historial Slice.
-foreach (var slice in history)
+    <pre class="csharp">public class SliceHistoryAlgorithm : QCAlgorithm
 {
-    // Iterate through each TradeBar in this Slice.
-    foreach (var kvp in slice.Bars)
+    public override void Initialize()
     {
-        var symbol = kvp.Key;
-        var bar = kvp.Value;
+        SetStartDate(2024, 12, 1);
+        // Add some assets and datasets.
+        AddEquity("SPY");
+        // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
+        var history = History(5, Resolution.Daily);
+        // Iterate through each historial Slice.
+        foreach (var slice in history)
+        {
+            // Iterate through each TradeBar in this Slice.
+            foreach (var kvp in slice.Bars)
+            {
+                var symbol = kvp.Key;
+                var bar = kvp.Value;
+            }
+        }
     }
 }</pre>
-    <pre class="python"># Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
-history = self.history(5, Resolution.DAILY)
-# Iterate through each Slice.
-for slice_ in history:
-    # Iterate through each TradeBar in this Slice.
-    for symbol, trade_bar in slice_.bars.items():
-        close = trade_bar.close</pre>
+    <pre class="python">class SliceHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 1)
+        # Add some assets and datasets.
+        self.add_equity('SPY')
+        # Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
+        history = self.history(5, Resolution.DAILY)
+        # Iterate through each Slice.
+        for slice_ in history:
+            # Iterate through each TradeBar in this Slice.
+            for symbol, trade_bar in slice_.bars.items():
+                close = trade_bar.close</pre>
 </div>
