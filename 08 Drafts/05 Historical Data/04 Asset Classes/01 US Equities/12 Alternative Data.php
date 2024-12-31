@@ -67,32 +67,42 @@ for data_point in history:
 </div>
 
 <!-- This part is only for US Equities. Not all asset classes -->
-<div class='python'>
   <p>
     Some alternative datasets provide multiple entries per asset per <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>. 
     For example, the <a href='/datasets/extractalpha-true-beats'>True Beats dataset</a> provides EPS and revenue predictions for several upcoming quarters per asset per day.
-    In this case, to organize the data into a DataFrame, set the <code>flatten</code> argument to <code>True</code>.
+    <span class='csharp'>In this case, use a nested loop to access all the data point attributes.</span>
+    <span class='python'>In this case, to organize the data into a DataFrame, set the <code>flatten</code> argument to <code>True</code>.</span>
   </p>
 
   <div class="section-example-container">
+    <pre class="csharp"># Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024.
+var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+var datasetSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(symbol).Symbol;
+var history = History&lt;ExtractAlphaTrueBeats&gt;(datasetSymbol, new DateTime(2024, 1, 2), new DateTime(2024, 1, 3), Resolution.Daily);
+// Iterate through each day of history.
+foreach (var trueBeats in history)
+{
+    // Calculate the mean TrueBeat estimate for this day.
+    var t = trueBeats.EndTime;
+    var meanTrueBeat = trueBeats.Data.Select(estimate => estimate as ExtractAlphaTrueBeat).Average(estimate => estimate.TrueBeat);
+}</pre>
     <pre class="python"># Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024 organized in a flat DataFrame.
 aapl = self.add_equity("AAPL", Resolution.DAILY)
 aapl.true_beats = self.add_data(ExtractAlphaTrueBeats, aapl.symbol).symbol
 history = self.history(aapl.true_beats, datetime(2024, 1, 2), datetime(2024, 1, 3), Resolution.DAILY, flatten=True)</pre>
   </div>
 
-  <img src='https://cdn.quantconnect.com/i/tu/appl-true-beats-dataframe-history.png' class='docs-image' alt='DataFrame of ExtractAlphaTrueBeats data for AAPL on 01/02/2024.'>
+  <img src='https://cdn.quantconnect.com/i/tu/appl-true-beats-dataframe-history.png' class='python docs-image' alt='DataFrame of ExtractAlphaTrueBeats data for AAPL on 01/02/2024.'>
 
-  <div class="section-example-container">
+  <div class="python section-example-container">
     <pre class="python"># Calculate the mean TrueBeat estimate for each day.
 mean_true_beats_by_day = history.drop('time', axis=1).groupby('time').apply(lambda g: g.truebeat.mean())</pre>
   </div>
 
-  <div class="section-example-container">
+  <div class="python section-example-container">
     <pre>time
 2024-01-02 12:30:00   -0.007034
 dtype: float64</pre>
   </div>
-</div>
 
 <p>For information on historical data for other alternative datasets, see the documentation in the <a href='/datasets/'>Dataset Market</a>.</p>
