@@ -59,14 +59,5 @@ Name: value, dtype: float64</pre>
 history = self.history(universe, timedelta(5), flatten=False)
 # Select the asset with the greatest value each day.
 for (universe_symbol, time), data in history.items():
-    leader = sorted(data, key=lambda x: x.value)[-1]
-    self.log(f"Leader at {time}: {leader.symbol} (prediction={leader.value})")</pre>
-</div>
-<div class="python section-example-container">
-    <pre>Leader at 2024-12-18 00:00:00: FIC R735QTJ8XC9X (prediction=0.054204)
-Leader at 2024-12-19 00:00:00: FIC R735QTJ8XC9X (prediction=0.07325)
-Leader at 2024-12-20 00:00:00: FIC R735QTJ8XC9X (prediction=0.065142)
-Leader at 2024-12-21 00:00:00: FIC R735QTJ8XC9X (prediction=0.065142)
-Leader at 2024-12-22 00:00:00: FIC R735QTJ8XC9X (prediction=0.065142)
-Leader at 2024-12-23 00:00:00: FIC R735QTJ8XC9X (prediction=0.065142)</pre>
+    leader = sorted(data, key=lambda x: x.value)[-1]</pre>
 </div>
