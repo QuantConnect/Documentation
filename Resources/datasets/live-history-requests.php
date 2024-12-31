@@ -2,7 +2,7 @@
 
 <p>
   In cloud deployments, QuantConnect is the default data provider. 
-  If you remove it and use a different data provider, you won't get any price data form QuantConnect. 
+  If you remove it and use a different data provider, you won't get any price data from QuantConnect. 
   However, we provide the following datasets:
 </p>
 
