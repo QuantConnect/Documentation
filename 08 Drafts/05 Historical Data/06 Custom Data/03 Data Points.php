@@ -14,14 +14,28 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-dataframe-history.p
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add a custom dataset and save a reference to it's Symbol.
-var datasetSymbol = AddData&lt;MyCustomDataType&gt;("MyCustomDataType", Resolution.Daily).Symbol;
-// Get the trailing 5 days of MyCustomDataType data.
-var history = History&lt;MyCustomDataType&gt;(datasetSymbol, 5, Resolution.Daily);</pre>
-    <pre class="python"># Add a custom dataset and save a reference to it's Symbol.
-dataset_symbol = self.add_data(MyCustomDataType, "MyCustomDataType", Resolution.DAILY).symbol
-# Get the trailing 5 days of MyCustomDataType data in DataFrame format.
-history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
+    <pre class="csharp">public class CustomSecurityHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2014, 7, 10);
+        // Add a custom dataset and save a reference to it's Symbol.
+        var datasetSymbol = AddData&lt;MyCustomDataType&gt;("MyCustomDataType", Resolution.Daily).Symbol;
+        // Get the trailing 5 days of MyCustomDataType data.
+        var history = History&lt;MyCustomDataType&gt;(datasetSymbol, 5, Resolution.Daily);
+    }
+}
+// Define the custom data class outside of the algorithm.</pre>
+    <pre class="python">class CustomSecurityHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2014, 7, 10)
+        # Add a custom dataset and save a reference to it's Symbol.
+        dataset_symbol = self.add_data(MyCustomDataType, "MyCustomDataType", Resolution.DAILY).symbol
+        # Get the trailing 5 days of MyCustomDataType data in DataFrame format.
+        history = self.history(dataset_symbol, 5, Resolution.DAILY)
+
+# Define the custom data class outside of the algorithm.</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of MyCustomDataType data.'>
