@@ -14,22 +14,35 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-universe-dataframe-
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add a universe from a custom data source and save a reference to it.
-var universe = AddUniverse&lt;StockDataSource&gt;("myStockDataSource", Resolution.Daily, data => data.Select(x => x.Symbol));
-// Get the historical universe data over the last 5 days.
-var history = History(universe, TimeSpan.FromDays(5)).Cast&lt;StockDataSource&gt;().ToList();
-// Iterate through each day in the universe history and count the number of constituents.
-foreach (var stockData in history)
+    <pre class="csharp">public class CustomDataUniverseHistoryAlgorithm : QCAlgorithm
 {
-    var t = stockData.Time;
-    var size = stockData.Symbols.Count;
+    public override void Initialize()
+    {
+        SetStartDate(2017, 7, 9);
+        // Add a universe from a custom data source and save a reference to it.
+        var universe = AddUniverse&lt;StockDataSource&gt;(
+            "myStockDataSource", Resolution.Daily, data => data.Select(x => x.Symbol)
+        );
+        // Get the historical universe data over the last 5 days.
+        var history = History(universe, TimeSpan.FromDays(5)).Cast&lt;StockDataSource&gt;().ToList();
+        // Iterate through each day in the universe history and count the number of constituents.
+        foreach (var stockData in history)
+        {
+            var t = stockData.Time;
+            var size = stockData.Symbols.Count;
+        }
+    }
 }</pre>
-    <pre class="python"># Add a universe from a custom data source and save a reference to it.
-universe = self.add_universe(
-    StockDataSource, "my-stock-data-source", Resolution.DAILY, lambda data: [x.symbol for x in data]
-)
-# Get the historical universe data over the last 5 days in DataFrame format.
-history = self.history(universe, timedelta(5))</pre>
+    <pre class="python">class CustomDataUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2017, 7, 9)
+        # Add a universe from a custom data source and save a reference to it.
+        universe = self.add_universe(
+            StockDataSource, "my-stock-data-source", Resolution.DAILY, lambda data: [x.symbol for x in data]
+        )
+        # Get the historical universe data over the last 5 days in DataFrame format.
+        history = self.history(universe, timedelta(5))</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of universe data for a custom dataset.'>
