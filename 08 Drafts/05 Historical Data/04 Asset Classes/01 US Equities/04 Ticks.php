@@ -15,16 +15,27 @@ $dataType = "Tick";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
-// Get the trailing 2 days of ticks for the asset.
-var history = History&lt;Tick&gt;(symbol, TimeSpan.FromDays(2), Resolution.Tick);
-// Select the ticks that represent trades, excluding the quote ticks.
-var trades = history.Where(tick => tick.TickType == TickType.Trade);</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
-# Get the trailing 2 days of ticks for the asset in DataFrame format.
-history = self.history(symbol, timedelta(2), Resolution.TICK)</pre>
+    <pre class="csharp">public class USEquityTickHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the trailing 2 days of ticks for the asset.
+        var history = History&lt;Tick&gt;(symbol, TimeSpan.FromDays(2), Resolution.Tick);
+        // Select the ticks that represent trades, excluding the quote ticks.
+        var trades = history.Where(tick => tick.TickType == TickType.Trade);
+    }
+}</pre>
+    <pre class="python">class USEquityTickHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the trailing 2 days of ticks for the asset in DataFrame format.
+        history = self.history(symbol, timedelta(2), Resolution.TICK)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of tick data for an asset.'>
