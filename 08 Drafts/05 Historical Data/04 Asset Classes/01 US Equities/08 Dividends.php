@@ -16,16 +16,27 @@ $dataType = "Dividend";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("AAPL").Symbol;
-// Get the dividends that the stock paid over the last 2 years. 
-var history = History&lt;Dividend&gt;(symbol, TimeSpan.FromDays(2*365));
-// Calculate the mean dividend payment.
-var meanDividend = history.Average(split => split.Distribution);</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('AAPL').symbol
-# Get the dividends that the stock paid over the last 2 years in DataFrame format. 
-history = self.history(Dividend, symbol, timedelta(2*365))</pre>
+    <pre class="csharp">public class USEquityDividendHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 1);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("AAPL").Symbol;
+        // Get the dividends that the stock paid over the last 2 years. 
+        var history = History&lt;Dividend&gt;(symbol, TimeSpan.FromDays(2*365));
+        // Calculate the mean dividend payment.
+        var meanDividend = history.Average(split => split.Distribution);
+    }
+}</pre>
+    <pre class="python">class USEquityDividendHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 1)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('AAPL').symbol
+        # Get the dividends that the stock paid over the last 2 years in DataFrame format. 
+        history = self.history(Dividend, symbol, timedelta(2*365))</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical dividend payments for a stocks.'>
