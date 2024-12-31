@@ -16,17 +16,27 @@ $dataType = "Split";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("AAPL").Symbol;
-// Get the splits that occured for the stock over the last 5 years. 
-var history = History&lt;Split&gt;(symbol, TimeSpan.FromDays(5*365));
-// Select the dates when splits occurred.
-var splitDates = history.Where(split => split.Type == SplitType.SplitOccurred).Select(split => split.EndTime);
-</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('AAPL').symbol
-# Get the splits that occured for the stock over the last 5 years in DataFrame format. 
-history = self.history(Split, symbol, timedelta(5*365))</pre>
+    <pre class="csharp">public class USEquitySplitHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 1);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("AAPL").Symbol;
+        // Get the splits that occured for the stock over the last 5 years. 
+        var history = History&lt;Split&gt;(symbol, TimeSpan.FromDays(5*365));
+        // Select the dates when splits occurred.
+        var splitDates = history.Where(split => split.Type == SplitType.SplitOccurred).Select(split => split.EndTime);
+    }
+}</pre>
+    <pre class="python">class USEquitySplitHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 1)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('AAPL').symbol
+        # Get the splits that occured for the stock over the last 5 years in DataFrame format. 
+        history = self.history(Split, symbol, timedelta(5*365))</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical stock splits for AAPL.'>
