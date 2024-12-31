@@ -86,25 +86,36 @@ for data_point in history:
   </p>
 
   <div class="section-example-container">
-    <pre class="csharp">// Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024.
-var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-var datasetSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(symbol).Symbol;
-var history = History&lt;ExtractAlphaTrueBeats&gt;(
-    datasetSymbol, new DateTime(2024, 1, 2), new DateTime(2024, 1, 3), Resolution.Daily
-);
-// Iterate through each day of history.
-foreach (var trueBeats in history)
+    <pre class="csharp">public class USEquityTrueBeatsHistoryAlgorithm : QCAlgorithm
 {
-    // Calculate the mean TrueBeat estimate for this day.
-    var t = trueBeats.EndTime;
-    var meanTrueBeat = trueBeats.Data
-        .Select(estimate => estimate as ExtractAlphaTrueBeat)
-        .Average(estimate => estimate.TrueBeat);
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 3);
+        // Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024.
+        var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        var datasetSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(symbol).Symbol;
+        var history = History&lt;ExtractAlphaTrueBeats&gt;(
+            datasetSymbol, new DateTime(2024, 1, 2), new DateTime(2024, 1, 3), Resolution.Daily
+        );
+        // Iterate through each day of history.
+        foreach (var trueBeats in history)
+        {
+            // Calculate the mean TrueBeat estimate for this day.
+            var t = trueBeats.EndTime;
+            var meanTrueBeat = trueBeats.Data
+                .Select(estimate => estimate as ExtractAlphaTrueBeat)
+                .Average(estimate => estimate.TrueBeat);
+        }
+    }
 }</pre>
-    <pre class="python"># Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024 organized in a flat DataFrame.
-aapl = self.add_equity("AAPL", Resolution.DAILY)
-aapl.true_beats = self.add_data(ExtractAlphaTrueBeats, aapl.symbol).symbol
-history = self.history(aapl.true_beats, datetime(2024, 1, 2), datetime(2024, 1, 3), Resolution.DAILY, flatten=True)</pre>
+    <pre class="python">class USEquityTrueBeatsHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 1, 3)
+        # Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024 organized in a flat DataFrame.
+        aapl = self.add_equity("AAPL", Resolution.DAILY)
+        aapl.true_beats = self.add_data(ExtractAlphaTrueBeats, aapl.symbol).symbol
+        history = self.history(aapl.true_beats, datetime(2024, 1, 2), datetime(2024, 1, 3), Resolution.DAILY, flatten=True)</pre>
   </div>
 
   <img src='https://cdn.quantconnect.com/i/tu/appl-true-beats-dataframe-history.png' class='python docs-image' alt='DataFrame of ExtractAlphaTrueBeats data for AAPL on 01/02/2024.'>
