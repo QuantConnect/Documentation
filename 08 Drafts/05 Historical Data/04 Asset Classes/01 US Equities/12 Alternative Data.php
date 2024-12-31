@@ -115,7 +115,9 @@ for data_point in history:
         # Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024 organized in a flat DataFrame.
         aapl = self.add_equity("AAPL", Resolution.DAILY)
         aapl.true_beats = self.add_data(ExtractAlphaTrueBeats, aapl.symbol).symbol
-        history = self.history(aapl.true_beats, datetime(2024, 1, 2), datetime(2024, 1, 3), Resolution.DAILY, flatten=True)</pre>
+        history = self.history(
+            aapl.true_beats, datetime(2024, 1, 2), datetime(2024, 1, 3), Resolution.DAILY, flatten=True
+        )</pre>
   </div>
 
   <img src='https://cdn.quantconnect.com/i/tu/appl-true-beats-dataframe-history.png' class='python docs-image' alt='DataFrame of ExtractAlphaTrueBeats data for AAPL on 01/02/2024.'>
