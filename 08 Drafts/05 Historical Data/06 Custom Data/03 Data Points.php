@@ -24,8 +24,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-dataframe-history.p
         // Get the trailing 5 days of MyCustomDataType data.
         var history = History&lt;MyCustomDataType&gt;(datasetSymbol, 5, Resolution.Daily);
     }
-}
-// Define the custom data class outside of the algorithm.</pre>
+}</pre>
     <pre class="python">class CustomSecurityHistoryAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
@@ -33,9 +32,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-dataframe-history.p
         # Add a custom dataset and save a reference to it's Symbol.
         dataset_symbol = self.add_data(MyCustomDataType, "MyCustomDataType", Resolution.DAILY).symbol
         # Get the trailing 5 days of MyCustomDataType data in DataFrame format.
-        history = self.history(dataset_symbol, 5, Resolution.DAILY)
-
-# Define the custom data class outside of the algorithm.</pre>
+        history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of MyCustomDataType data.'>
