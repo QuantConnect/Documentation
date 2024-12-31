@@ -78,9 +78,9 @@ foreach (var articles in history)
 }</pre>
   </div>
 
-  <img src='https://cdn.quantconnect.com/i/tu/regalytics-dataframe-history.png' class='docs-image' alt='DataFrame of regulatory alerts.'>
+  <img src='https://cdn.quantconnect.com/i/tu/regalytics-dataframe-history.png' class='python docs-image' alt='DataFrame of regulatory alerts.'>
 
-  <div class="section-example-container">
+  <div class="python section-example-container">
     <pre class="python"># Get all the unique alert types from the Regalytics articles.
 alert_types = history.alerttype.unique()</pre>
   </div>
