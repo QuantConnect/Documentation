@@ -4,14 +4,25 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
-// Get the daily-resolution TradeBar data of the asset during 2020.
-var history = History&lt;TradeBar&gt;(symbol, new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), Resolution.Daily);</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
-# Get the daily-resolution TradeBar data of the asset during 2020.
-history = self.history(TradeBar, symbol, datetime(2020, 1, 1), datetime(2021, 1, 1), Resolution.DAILY)</pre>
+    <pre class="csharp">public class DateRangeHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 1);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the daily-resolution TradeBar data of the asset during 2020.
+        var history = History&lt;TradeBar&gt;(symbol, new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), Resolution.Daily);
+    }
+}</pre>
+    <pre class="python">class DateRangeHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 1)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the daily-resolution TradeBar data of the asset during 2020.
+        history = self.history(TradeBar, symbol, datetime(2020, 1, 1), datetime(2021, 1, 1), Resolution.DAILY)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/history-request-date-ranges.png' class='python docs-image' alt='DataFrame of daily OHLCV data for SPY during 2020.'>
