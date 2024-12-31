@@ -4,14 +4,25 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
-// Get the minute-resolution TradeBar data of the asset over the trailing 3 days.
-var history = History&lt;TradeBar&gt;(symbol, TimeSpan.FromDays(3), Resolution.Minute);</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
-# Get the minute-resolution TradeBar data of the asset over the trailing 3 days.
-history = self.history(TradeBar, symbol, timedelta(3), Resolution.MINUTE)</pre>
+    <pre class="csharp">public class TrailingTimePeriodHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the minute-resolution TradeBar data of the asset over the trailing 3 days.
+        var history = History&lt;TradeBar&gt;(symbol, TimeSpan.FromDays(3), Resolution.Minute);
+    }
+}</pre>
+    <pre class="python">class TrailingTimePeriodHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the minute-resolution TradeBar data of the asset over the trailing 3 days.
+        history = self.history(TradeBar, symbol, timedelta(3), Resolution.MINUTE)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/history-request-time-period-1.png' class='python docs-image' alt='DataFrame of OHLCV data for SPY over the last 3 days.'>
