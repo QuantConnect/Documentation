@@ -13,20 +13,32 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/fred-dataframe-history.png";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of a dataset.
-var datasetSymbol = AddData&lt;<?=$datasetClass?>&gt;("RVXCLS").Symbol;
-// Get the trailing 5 days of <?=$datasetClass?> data.
-var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);
-// Iterate through the historical data points.
-foreach (var dataPoint in history)
+    <pre class="csharp">public class AlternativeDataHistoryAlgorithm : QCAlgorithm
 {
-    var t = dataPoint.EndTime;
-    var value = dataPoint.Value;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 20);
+        // Get the Symbol of a dataset.
+        var datasetSymbol = AddData&lt;<?=$datasetClass?>&gt;("RVXCLS").Symbol;
+        // Get the trailing 5 days of <?=$datasetClass?> data.
+        var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);
+        // Iterate through the historical data points.
+        foreach (var dataPoint in history)
+        {
+            var t = dataPoint.EndTime;
+            var value = dataPoint.Value;
+        }
+    }
 }</pre>
-    <pre class="python"># Get the Symbol of a dataset.
-dataset_symbol = self.add_data(Fred, 'RVXCLS').symbol
-# Get the trailing 5 days of <?=$datasetClass?> data in DataFrame format.
-history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
+    <pre class="python">class AlternativeDataHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 20)
+        # Get the Symbol of a dataset.
+        dataset_symbol = self.add_data(Fred, 'RVXCLS').symbol
+        # Get the trailing 5 days of Fred data in DataFrame format.
+        history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data.'>
