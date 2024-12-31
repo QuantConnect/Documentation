@@ -10,7 +10,9 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-indicator-dataframe-us-equ
     <pre class="csharp">// Get the Symbol of an asset.
 var symbol = AddEquity("SPY").Symbol;
 // Get the 21-day SMA values of an asset for the last 5 trading days. 
-var history = IndicatorHistory(new SimpleMovingAverage(21), symbol, 5, Resolution.Daily);</pre>
+var history = IndicatorHistory(new SimpleMovingAverage(21), symbol, 5, Resolution.Daily);
+// Get the maximum of the SMA values.
+var maxSMA = history.Max(indicatorDataPoint => indicatorDataPoint.Current.Value);</pre>
     <pre class="python"># Get the Symbol of an asset.
 symbol = self.add_equity('SPY').symbol
 # Get the 21-day SMA values of an asset for the last 5 trading days. 
@@ -58,7 +60,9 @@ var referenceSymbol = AddEquity("SPY").Symbol;
 // Create a 21-period Beta indicator.
 var beta = new Beta("", targetSymbol, referenceSymbol, 21);
 // Get the historical values of the indicator over the last 10 trading days.
-var history = IndicatorHistory(beta, new[] {targetSymbol, referenceSymbol}, 10, Resolution.Daily);</pre>
+var history = IndicatorHistory(beta, new[] {targetSymbol, referenceSymbol}, 10, Resolution.Daily);
+// Get the average Beta value.
+var avgBeta = history.Average(indicatorDataPoint => indicatorDataPoint.Current.Value);</pre>
 	<pre class="python"># Add the target and reference assets.
 target_symbol = self.add_equity('AAPL').symbol
 reference_symbol = self.add_equity('SPY').symbol
