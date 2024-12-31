@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/datasets/live-history-requests.html"); ?>
+<? include(DOCS_RESOURCES."/datasets/live-history-requests.php"); ?>
