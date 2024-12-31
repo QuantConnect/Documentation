@@ -7,16 +7,27 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-indicator-dataframe-us-equ
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
-// Get the 21-day SMA values of an asset for the last 5 trading days. 
-var history = IndicatorHistory(new SimpleMovingAverage(21), symbol, 5, Resolution.Daily);
-// Get the maximum of the SMA values.
-var maxSMA = history.Max(indicatorDataPoint => indicatorDataPoint.Current.Value);</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
-# Get the 21-day SMA values of an asset for the last 5 trading days. 
-history = self.indicator_history(SimpleMovingAverage(21), symbol, 5, Resolution.DAILY)</pre>
+    <pre class="csharp">public class USEquityIndicatorHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the 21-day SMA values of an asset for the last 5 trading days. 
+        var history = IndicatorHistory(new SimpleMovingAverage(21), symbol, 5, Resolution.Daily);
+        // Get the maximum of the SMA values.
+        var maxSMA = history.Max(indicatorDataPoint => indicatorDataPoint.Current.Value);
+    }
+}</pre>
+    <pre class="python">class USEquityIndicatorHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the 21-day SMA values of an asset for the last 5 trading days. 
+        history = self.indicator_history(SimpleMovingAverage(21), symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 <p class='python'>To organize the data into a DataFrame, use the <code>data_frame</code> property of the result.</p>
@@ -54,24 +65,35 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
     In this case, pass a list of the <code>Symbol</code> objects to the method.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">// Add the target and reference assets.
-var targetSymbol = AddEquity("AAPL").Symbol;
-var referenceSymbol = AddEquity("SPY").Symbol;
-// Create a 21-period Beta indicator.
-var beta = new Beta("", targetSymbol, referenceSymbol, 21);
-// Get the historical values of the indicator over the last 10 trading days.
-var history = IndicatorHistory(beta, new[] {targetSymbol, referenceSymbol}, 10, Resolution.Daily);
-// Get the average Beta value.
-var avgBeta = history.Average(indicatorDataPoint => indicatorDataPoint.Current.Value);</pre>
-	<pre class="python"># Add the target and reference assets.
-target_symbol = self.add_equity('AAPL').symbol
-reference_symbol = self.add_equity('SPY').symbol
-# Create a 21-period Beta indicator.
-beta = Beta("", target_symbol, reference_symbol, 21)
-# Get the historical values of the indicator over the last 10 trading days.
-history = self.indicator_history(beta, [target_symbol, reference_symbol], 10, Resolution.DAILY)
-# Get the average Beta value.
-beta_avg = history.data_frame.mean()</pre>
+	<pre class="csharp">public class USEquityMultiAssetIndicatorHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Add the target and reference assets.
+        var targetSymbol = AddEquity("AAPL").Symbol;
+        var referenceSymbol = AddEquity("SPY").Symbol;
+        // Create a 21-period Beta indicator.
+        var beta = new Beta("", targetSymbol, referenceSymbol, 21);
+        // Get the historical values of the indicator over the last 10 trading days.
+        var history = IndicatorHistory(beta, new[] {targetSymbol, referenceSymbol}, 10, Resolution.Daily);
+        // Get the average Beta value.
+        var avgBeta = history.Average(indicatorDataPoint => indicatorDataPoint.Current.Value);
+    }
+}</pre>
+	<pre class="python">class USEquityMultiAssetIndicatorHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Add the target and reference assets.
+        target_symbol = self.add_equity('AAPL').symbol
+        reference_symbol = self.add_equity('SPY').symbol
+        # Create a 21-period Beta indicator.
+        beta = Beta("", target_symbol, reference_symbol, 21)
+        # Get the historical values of the indicator over the last 10 trading days.
+        history = self.indicator_history(beta, [target_symbol, reference_symbol], 10, Resolution.DAILY)
+        # Get the average Beta value.
+        beta_avg = history.data_frame.mean()</pre>
 </div>
 
 <p class='csharp'>If you already have a list of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects, you can pass them to the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method to avoid the internal history request.</p>
