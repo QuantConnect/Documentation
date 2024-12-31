@@ -39,7 +39,7 @@ IsWarmingUp at 11/26/2024 4:00:00 PM: True
 IsWarmingUp at 11/27/2024 4:00:00 PM: True
 IsWarmingUp at 11/29/2024 1:00:00 PM: True
 Algorithm finished warming up.
-IsWarmingUp at 12/2/2024 4:00:00 PM: False/pre></div>
+IsWarmingUp at 12/2/2024 4:00:00 PM: False</pre></div>
     <div class="python section-example-container"><pre>
 Algorithm starting warm up...
 self.is_warming_up at 2024-11-22 16:00:00: True
