@@ -13,24 +13,35 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-alt-data-dataframe-us-equi
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("GME").Symbol;
-// Add the alternative dataset and save a reference to its Symbol.
-var datasetSymbol = AddData&lt;QuiverWallStreetBets&gt;(symbol).Symbol;
-// Get the trailing 5 days of <?=$datasetClass?> data for the asset.
-var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);
-// Iterate each data point and access its attributes.
-foreach (var dataPoint in history)
+    <pre class="csharp">public class USEquityAlternativeDataHistoryAlgorithm : QCAlgorithm
 {
-    var t = dataPoint.EndTime;
-    var sentiment = dataPoint.Sentiment;
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("GME").Symbol;
+        // Add the alternative dataset and save a reference to its Symbol.
+        var datasetSymbol = AddData&lt;QuiverWallStreetBets&gt;(symbol).Symbol;
+        // Get the trailing 5 days of <?=$datasetClass?> data for the asset.
+        var history = History&lt;<?=$datasetClass?>&gt;(datasetSymbol, 5, Resolution.Daily);
+        // Iterate each data point and access its attributes.
+        foreach (var dataPoint in history)
+        {
+            var t = dataPoint.EndTime;
+            var sentiment = dataPoint.Sentiment;
+        }
+    }
 }</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('GME').symbol
-# Add the alternative dataset and save a reference to its Symbol.
-dataset_symbol = self.add_data(QuiverWallStreetBets, symbol).symbol
-# Get the trailing 5 days of <?=$datasetClass?> data for the asset in DataFrame format.
-history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
+    <pre class="python">class USEquityAlternativeDataHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('GME').symbol
+        # Add the alternative dataset and save a reference to its Symbol.
+        dataset_symbol = self.add_data(QuiverWallStreetBets, symbol).symbol
+        # Get the trailing 5 days of <?=$datasetClass?> data for the asset in DataFrame format.
+        history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data for an asset.'>
