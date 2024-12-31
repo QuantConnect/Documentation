@@ -5,19 +5,31 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="python"># Add a sparse dataset. In this case, the default resolution is daily.
-symbol = self.add_data(USEnergy, 'PET.WGFSTUS1.W').symbol
-# Get 30 days of history for the dataset.
-history = self.history(symbol, 30)</pre>
-    <pre class="csharp">// Add a sparse dataset. In this case, the default resolution is daily.
-var symbol = AddData&lt;USEnergy&gt;("PET.WGFSTUS1.W").Symbol;
-// Get 30 days of history for the dataset.
-var history = History<USEnergy>(symbol, 30);
-// Iterate through each data point.
-foreach (var dataPoint in history)
+    <pre class="python">
+class SparseDatasetHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 23)      
+        # Add a sparse dataset. In this case, the default resolution is daily.
+        symbol = self.add_data(USEnergy, 'PET.WGFSTUS1.W').symbol
+        # Get 30 days of history for the dataset.
+        history = self.history(symbol, 30)</pre>
+    <pre class="csharp">public class SparseDatasetHistoryAlgorithm : QCAlgorithm
 {
-    var t = dataPoint.EndTime;
-    var weeklyImports = dataPoint.Value;
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 23);
+        // Add a sparse dataset. In this case, the default resolution is daily.
+        var symbol = AddData&lt;USEnergy&gt;("PET.WGFSTUS1.W").Symbol;
+        // Get 30 days of history for the dataset.
+        var history = History<USEnergy>(symbol, 30);
+        // Iterate through each data point.
+        foreach (var dataPoint in history)
+        {
+            var t = dataPoint.EndTime;
+            var weeklyImports = dataPoint.Value;
+        }
+    }
 }</pre>
 </div>
 
