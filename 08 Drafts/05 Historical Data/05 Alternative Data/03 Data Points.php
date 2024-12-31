@@ -15,7 +15,6 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/fred-dataframe-history.png";
 <div class="section-example-container">
     <pre class="csharp">public class AlternativeDataHistoryAlgorithm : QCAlgorithm
 {
-
     public override void Initialize()
     {
         SetStartDate(2024, 12, 20);
@@ -75,18 +74,29 @@ for data_point in history:
   </p>
 
   <div class="section-example-container">
-    <pre class="python"># Get the all the Regalytics articles that were published over the last day, organized in a DataFrame.
-dataset_symbol = self.add_data(RegalyticsRegulatoryArticles, "REG").symbol
-history = self.history(dataset_symbol, 1, Resolution.DAILY, flatten=True)</pre>
-    <pre class="csharp">// Get the all the Regalytics articles that were published over the last day.
-var datasetSymbol = AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
-var history = History&lt;RegalyticsRegulatoryArticles&gt;(datasetSymbol, 1, Resolution.Daily);
-// Iterate through each day of articles.
-foreach (var articles in history)
+    <pre class="python">class RegalyticsHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 20)      
+        # Get the all the Regalytics articles that were published over the last day, organized in a DataFrame.
+        dataset_symbol = self.add_data(RegalyticsRegulatoryArticles, "REG").symbol
+        history = self.history(dataset_symbol, 1, Resolution.DAILY, flatten=True)</pre>
+    <pre class="csharp">public class RegalyticsHistoryAlgorithm : QCAlgorithm
 {
-    var t = articles.EndTime;
-    // Get the unique alert types for this day.
-    var altertTypes = articles.Select(article => (article as RegalyticsRegulatoryArticle).AlertType).Distinct().ToList();
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 20);
+        // Get the all the Regalytics articles that were published over the last day.
+        var datasetSymbol = AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
+        var history = History&lt;RegalyticsRegulatoryArticles&gt;(datasetSymbol, 1, Resolution.Daily);
+        // Iterate through each day of articles.
+        foreach (var articles in history)
+        {
+            var t = articles.EndTime;
+            // Get the unique alert types for this day.
+            var altertTypes = articles.Select(article => (article as RegalyticsRegulatoryArticle).AlertType).Distinct().ToList();
+        }
+    }
 }</pre>
   </div>
 
