@@ -14,7 +14,7 @@ $dataType = "TradeBar";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class ___Algorithm : QCAlgorithm
+    <pre class="csharp">public class USEquityTradeBarHistoryAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
