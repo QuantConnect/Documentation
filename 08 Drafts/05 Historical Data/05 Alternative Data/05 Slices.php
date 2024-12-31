@@ -4,16 +4,23 @@
 </p>
 
 <div class="csharp section-example-container">
-      <pre class="csharp">// Add an alternative dataset.
-var symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
-var datasetSymbol = AddData&lt;BitcoinMetadata&gt;(symbol).Symbol;
-// Get the latest 3 data points of some alternative dataset(s), packaged into Slice objects.
-var history = History(new[] { datasetSymbol }, 3);
-// Iterate through each Slice and get the alternative data points.
-foreach (var slice in history)
+      <pre class="csharp">public class SliceHistoryAlgorithm : QCAlgorithm
 {
-    var t = slice.Time;
-    var hashRate = slice[datasetSymbol].HashRate;
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 23);
+        // Add an alternative dataset.
+        var symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
+        var datasetSymbol = AddData&lt;BitcoinMetadata&gt;(symbol).Symbol;
+        // Get the latest 3 data points of some alternative dataset(s), packaged into Slice objects.
+        var history = History(new[] { datasetSymbol }, 3);
+        // Iterate through each Slice and get the alternative data points.
+        foreach (var slice in history)
+        {
+            var t = slice.Time;
+            var hashRate = slice[datasetSymbol].HashRate;
+        }
+    }
 }</pre>
 </div>
 
@@ -40,18 +47,22 @@ foreach (var slice in history)
         var hashRate = ((BitcoinMetadata)slice[datasetSymbol]).HashRate;
     }
 }</pre>
-      <pre class="python"># Add an asset and an alternative dataset.
-symbol = self.add_crypto('BTCUSD', Resolution.DAILY, Market.BITFINEX).symbol
-dataset_symbol = self.add_data(BitcoinMetadata, symbol).symbol
-# Get the latest 3 data points of all the securities/datasets in the <?=$writingEnvironment ? "algorithm" : "notebook" ?>, packaged into Slice objects.
-history = self.history(3)
-# Iterate through each Slice and get the synchronized data points at each moment in time.
-for slice_ in history:
-    t = slice_.time
-    if symbol in slice_:
-        price = slice_[symbol].price
-    if dataset_symbol in slice_:
-        hash_rate = slice_[dataset_symbol].hash_rate</pre>
+      <pre class="python">class SliceHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 23)  
+        # Add an asset and an alternative dataset.
+        symbol = self.add_crypto('BTCUSD', Resolution.DAILY, Market.BITFINEX).symbol
+        dataset_symbol = self.add_data(BitcoinMetadata, symbol).symbol
+        # Get the latest 3 data points of all the securities/datasets in the <?=$writingEnvironment ? "algorithm" : "notebook" ?>, packaged into Slice objects.
+        history = self.history(3)
+        # Iterate through each Slice and get the synchronized data points at each moment in time.
+        for slice_ in history:
+            t = slice_.time
+            if symbol in slice_:
+                price = slice_[symbol].price
+            if dataset_symbol in slice_:
+                hash_rate = slice_[dataset_symbol].hash_rate</pre>
 </div>
 
 <p>
