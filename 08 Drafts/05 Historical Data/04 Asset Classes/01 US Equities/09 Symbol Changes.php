@@ -14,21 +14,32 @@ $dataType = "SymbolChangedEvent";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("META").Symbol;
-// Get the symbol changes of the stock over the last 10 years. 
-var history = History&lt;SymbolChangedEvent&gt;(symbol, TimeSpan.FromDays(10*365));
-// Iterate through each SymbolChangedEvent object to access their data point attributes.
-foreach (var symbolChangedEvent in history)
+    <pre class="csharp">public class USEquitySymbolChangedEventHistoryAlgorithm : QCAlgorithm
 {
-    var t = symbolChangedEvent.EndTime;
-    var oldSymbol = symbolChangedEvent.OldSymbol;
-    var newSymbol = symbolChangedEvent.NewSymbol;
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 1);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("META").Symbol;
+        // Get the symbol changes of the stock over the last 10 years. 
+        var history = History&lt;SymbolChangedEvent&gt;(symbol, TimeSpan.FromDays(10*365));
+        // Iterate through each SymbolChangedEvent object to access their data point attributes.
+        foreach (var symbolChangedEvent in history)
+        {
+            var t = symbolChangedEvent.EndTime;
+            var oldSymbol = symbolChangedEvent.OldSymbol;
+            var newSymbol = symbolChangedEvent.NewSymbol;
+        }
+    }
 }</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('META').symbol
-# Get the symbol changes of the stock over the last 10 years in DataFrame format. 
-history = self.history(SymbolChangedEvent, symbol, timedelta(10*365))</pre>
+    <pre class="python">class USEquitySymbolChangedEventHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 1)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('META').symbol
+        # Get the symbol changes of the stock over the last 10 years in DataFrame format. 
+        history = self.history(SymbolChangedEvent, symbol, timedelta(10*365))</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
