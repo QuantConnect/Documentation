@@ -75,16 +75,20 @@ for data_point in history:
   </p>
 
   <div class="section-example-container">
-    <pre class="csharp"># Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024.
+    <pre class="csharp">// Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024.
 var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
 var datasetSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(symbol).Symbol;
-var history = History&lt;ExtractAlphaTrueBeats&gt;(datasetSymbol, new DateTime(2024, 1, 2), new DateTime(2024, 1, 3), Resolution.Daily);
+var history = History&lt;ExtractAlphaTrueBeats&gt;(
+    datasetSymbol, new DateTime(2024, 1, 2), new DateTime(2024, 1, 3), Resolution.Daily
+);
 // Iterate through each day of history.
 foreach (var trueBeats in history)
 {
     // Calculate the mean TrueBeat estimate for this day.
     var t = trueBeats.EndTime;
-    var meanTrueBeat = trueBeats.Data.Select(estimate => estimate as ExtractAlphaTrueBeat).Average(estimate => estimate.TrueBeat);
+    var meanTrueBeat = trueBeats.Data
+        .Select(estimate => estimate as ExtractAlphaTrueBeat)
+        .Average(estimate => estimate.TrueBeat);
 }</pre>
     <pre class="python"># Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024 organized in a flat DataFrame.
 aapl = self.add_equity("AAPL", Resolution.DAILY)
