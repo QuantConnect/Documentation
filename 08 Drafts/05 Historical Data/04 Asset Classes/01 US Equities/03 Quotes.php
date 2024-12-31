@@ -17,20 +17,31 @@ $dataType = "QuoteBar";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
-// Get the 5 trailing minute <?=$dataType?> objects of the asset. 
-var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Minute);
-// Iterate through the QuoteBar objects and calculate the spread.
-foreach (var bar in history)
+    <pre class="csharp">public class USEquityQuoteBarAlgorithm : QCAlgorithm
 {
-    var t = bar.EndTime;
-    var spread = bar.Ask.Close - bar.Bid.Close;
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the 5 trailing minute <?=$dataType?> objects of the asset. 
+        var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Minute);
+        // Iterate through the QuoteBar objects and calculate the spread.
+        foreach (var bar in history)
+        {
+            var t = bar.EndTime;
+            var spread = bar.Ask.Close - bar.Bid.Close;
+        }
+    }
 }</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
-# Get the 5 trailing minute <?=$dataType?> objects of the asset in DataFrame format. 
-history = self.history(<?=$dataType?>, symbol, 5, Resolution.MINUTE)</pre>
+    <pre class="python">class USEquityQuoteBarAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the 5 trailing minute <?=$dataType?> objects of the asset in DataFrame format. 
+        history = self.history(<?=$dataType?>, symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical quotes for an asset.'>
