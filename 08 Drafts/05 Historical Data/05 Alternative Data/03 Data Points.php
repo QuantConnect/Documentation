@@ -55,17 +55,27 @@ for data_point in history:
 </div>
 
 
-<div class='python'>
   <p>
-    Some alternative datasets provide multiple entries per <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>. 
+    Some alternative datasets provide multiple entries per asset per <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>. 
     For example, the <a href='/datasets/regalytics-us-regulatory-alerts'>US Regulatory Alerts</a> dataset can provide multiple alerts per day.
-    In this case, to organize the data into a DataFrame, set the <code>flatten</code> argument to <code>True</code>.
+    <span class='csharp'>In this case, use a nested loop to access all the data point attributes.</span>
+    <span class='python'>In this case, to organize the data into a DataFrame, set the <code>flatten</code> argument to <code>True</code>.</span>
   </p>
 
   <div class="section-example-container">
     <pre class="python"># Get the all the Regalytics articles that were published over the last day, organized in a DataFrame.
 dataset_symbol = self.add_data(RegalyticsRegulatoryArticles, "REG").symbol
 history = self.history(dataset_symbol, 1, Resolution.DAILY, flatten=True)</pre>
+    <pre class="csharp">// Get the all the Regalytics articles that were published over the last day.
+var datasetSymbol = AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
+var history = History&lt;RegalyticsRegulatoryArticles&gt;(datasetSymbol, 1, Resolution.Daily);
+// Iterate through each day of articles.
+foreach (var articles in history)
+{
+    var t = articles.EndTime;
+    // Get the unique alert types for this day.
+    var altertTypes = articles.Select(article => (article as RegalyticsRegulatoryArticle).AlertType).Distinct().ToList();
+}</pre>
   </div>
 
   <img src='https://cdn.quantconnect.com/i/tu/regalytics-dataframe-history.png' class='docs-image' alt='DataFrame of regulatory alerts.'>
@@ -88,5 +98,5 @@ alert_types = history.alerttype.unique()</pre>
        'Statement|Release',
        'AWCs (Letters of Acceptance, Waiver, and Consent)'], dtype=object)</pre>
     </div>
-</div>
+
 
