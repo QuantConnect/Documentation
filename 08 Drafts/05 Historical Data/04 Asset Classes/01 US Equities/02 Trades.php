@@ -14,20 +14,31 @@ $dataType = "TradeBar";
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
-// Get the 5 trailing daily <?=$dataType?> objects of the asset. 
-var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Daily);
-// Iterate through each TradeBar and calculate its dollar volume.
-foreach (var bar in history)
+    <pre class="csharp">public class ___Algorithm : QCAlgorithm
 {
-    var t = bar.EndTime;
-    var dollarVolume = bar.Close * bar.Volume;
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the 5 trailing daily <?=$dataType?> objects of the asset. 
+        var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Daily);
+        // Iterate through each TradeBar and calculate its dollar volume.
+        foreach (var bar in history)
+        {
+            var t = bar.EndTime;
+            var dollarVolume = bar.Close * bar.Volume;
+        }
+    }
 }</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
-# Get the 5 trailing daily <?=$dataType?> objects of the asset in DataFrame format. 
-history = self.history(<?=$dataType?>, symbol, 5, Resolution.DAILY)</pre>
+    <pre class="python">class USEquityTradeBarHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the 5 trailing daily <?=$dataType?> objects of the asset in DataFrame format. 
+        history = self.history(<?=$dataType?>, symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of open, high, low, close, and volume for an asset.'>
