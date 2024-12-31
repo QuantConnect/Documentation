@@ -12,25 +12,36 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equity-alter
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add a universe of US Equities based on an alternative dataset.
-var universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
-// Get 5 days of history for the universe.
-var history = History(universe, TimeSpan.FromDays(5));
-// Iterate through each day of the universe history.
-foreach (var altCoarse in history)
+    <pre class="csharp">public class AltDataUniverseHistoryAlgorithm : QCAlgorithm
 {
-    // Iterate through each asset in the universe on this day and access its data point attributes.
-    foreach (BrainStockRankingUniverse stockRanking in altCoarse)
+    public override void Initialize()
     {
-        var symbol = stockRanking.Symbol;
-        var t = stockRanking.EndTime;
-        var rank2Days = stockRanking.Rank2Days;
+        SetStartDate(2024, 12, 23);
+        // Add a universe of US Equities based on an alternative dataset.
+        var universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
+        // Get 5 days of history for the universe.
+        var history = History(universe, TimeSpan.FromDays(5));
+        // Iterate through each day of the universe history.
+        foreach (var altCoarse in history)
+        {
+            // Iterate through each asset in the universe on this day and access its data point attributes.
+            foreach (BrainStockRankingUniverse stockRanking in altCoarse)
+            {
+                var symbol = stockRanking.Symbol;
+                var t = stockRanking.EndTime;
+                var rank2Days = stockRanking.Rank2Days;
+            }
+        }
     }
 }</pre>
-    <pre class="python"># Add a universe of US Equities based on an alternative dataset.
-universe = self.add_universe(BrainStockRankingUniverse)
-# Get 5 days of history for the universe.
-history = self.history(universe, timedelta(5), flatten=True)</pre>
+    <pre class="python">class AltDataUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 23)    
+        # Add a universe of US Equities based on an alternative dataset.
+        universe = self.add_universe(BrainStockRankingUniverse)
+        # Get 5 days of history for the universe.
+        history = self.history(universe, timedelta(5), flatten=True)</pre>
 </div>
 
 <img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of the last 5 days of a US Equity alternative data universe.'>
