@@ -18,4 +18,5 @@ history = self.history(TradeBar, symbol, datetime(2020, 1, 1), datetime(2021, 1,
 
 <p>
   If there is no data for the date range you request, the result is empty.
+  For more information about missing data points, see <a href='/docs/v2/writing-algorithms/historical-data/history-responses#05-Missing-Data-Points'>Missing Data Points</a>.
 </p>
