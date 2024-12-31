@@ -5,14 +5,25 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Get the Symbol of an asset.
-var symbol = AddEquity("SPY").Symbol;
-// Get the minute-resolution TradeBar data of the asset over the trailing 5 minutes.
-var history = History&lt;TradeBar&gt;(symbol, 5, Resolution.Minute);</pre>
-    <pre class="python"># Get the Symbol of an asset.
-symbol = self.add_equity('SPY').symbol
-# Get the minute-resolution TradeBar data of the asset over the trailing 5 minutes.
-history = self.history(TradeBar, symbol, 5, Resolution.MINUTE)</pre>
+    <pre class="csharp">public class ___Algorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the minute-resolution TradeBar data of the asset over the trailing 5 minutes.
+        var history = History&lt;TradeBar&gt;(symbol, 5, Resolution.Minute);
+    }
+}</pre>
+    <pre class="python">class TrailingDataSamplesHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the minute-resolution TradeBar data of the asset over the trailing 5 minutes.
+        history = self.history(TradeBar, symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/history-request-number-of-samples.png' class='python docs-image' alt='DataFrame of OHLCV data for SPY over the last 5 minutes.'>
@@ -23,16 +34,27 @@ history = self.history(TradeBar, symbol, 5, Resolution.MINUTE)</pre>
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Add two assets with different resolutions.
-var spy = AddEquity("SPY", Resolution.Minute).Symbol;
-var qqq = AddEquity("QQQ", Resolution.Daily).Symbol;
-// Get the trailing 3 bars of data for each asset.
-var history = History&lt;TradeBar&gt;(new[] { spy, qqq }, 3);</pre>
-    <pre class="python"># Add two assets with different resolutions.
-spy = self.add_equity('SPY', Resolution.MINUTE).symbol
-qqq = self.add_equity('QQQ', Resolution.DAILY).symbol
-# Get the trailing 3 bars of data for each asset.
-history = self.history(TradeBar, symbols, 3)</pre>
+    <pre class="csharp">public class TrailingDataSamplesForMulitpleAssetsHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 20);
+        // Add two assets with different resolutions.
+        var spy = AddEquity("SPY", Resolution.Minute).Symbol;
+        var qqq = AddEquity("QQQ", Resolution.Daily).Symbol;
+        // Get the trailing 3 bars of data for each asset.
+        var history = History&lt;TradeBar&gt;(new[] { spy, qqq }, 3);
+    }
+}</pre>
+    <pre class="python">class TrailingDataSamplesForMulitpleAssetsHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 20)
+        # Add two assets with different resolutions.
+        spy = self.add_equity('SPY', Resolution.MINUTE).symbol
+        qqq = self.add_equity('QQQ', Resolution.DAILY).symbol
+        # Get the trailing 3 bars of data for each asset.
+        history = self.history(TradeBar, [spy, qqq], 3)</pre>
 </div>
 
 <img src='https://cdn.quantconnect.com/i/tu/history-request-number-of-samples-different-resolutions.png' class='python docs-image' alt='DataFrame of OHLCV data for two assets with different data resolutions.'>
