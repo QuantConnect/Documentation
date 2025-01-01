@@ -5,13 +5,12 @@
 <div class="section-example-container">
 <pre class="csharp">public class WarmUpStatusAlgorithm : QCAlgorithm
 {
-    private ExponentialMovingAverage _emaFast, _emaSlow;
+    private ExponentialMovingAverage _ema;
     public override void Initialize()
     {
         SetStartDate(2020, 1, 1);
         var symbol = AddEquity("IBM", Resolution.Daily).Symbol;
-        _emaFast = EMA(symbol, 50);
-        _emaSlow = EMA(symbol, 100);
+        _ema = EMA(symbol, 100);
         SetWarmup(100);
     }
 
@@ -21,8 +20,7 @@
         {
             return;
         }
-        Plot("EMA", "Fast is ready", _emaFast.IsReady ? 1 : 0);
-        Plot("EMA", "Slow is ready", _emaSlow.IsReady ? 1 : 0);
+        Plot("EMA", "Is ready", _ema.IsReady ? 1 : 0);
     }
 }</pre>
 <pre class="python">class WarmUpStatusAlgorithm(QCAlgorithm):
@@ -30,13 +28,11 @@
     def initialize(self) -> None:
         self.set_start_date(2020, 1, 1)
         symbol = self.add_equity('IBM', Resolution.DAILY).symbol
-        self._ema_fast = self.ema(symbol, 50)
-        self._ema_slow = self.ema(symbol, 100)
+        self._ema = self.ema(symbol, 100)
         self.set_warmup(100)
 
     def on_data(self, data) -> None:
         if self.is_warming_up: 
             return
-        self.plot('EMA', 'Fast is ready', int(self._ema_fast.is_ready))
-        self.plot('EMA', 'Slow is ready', int(self._ema_slow.is_ready))</pre>
+        self.plot('EMA', 'Is ready', int(self._ema.is_ready))
 </div>
