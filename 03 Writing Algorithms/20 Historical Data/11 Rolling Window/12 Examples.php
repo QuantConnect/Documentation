@@ -1,4 +1,4 @@
-<p>The following examples demonstrate some common practices for implementing rolling windows.</p>
+<p>The following examples demonstrate some common practices for rolling windows.</p>
 
 <? 
 $number = 1;
