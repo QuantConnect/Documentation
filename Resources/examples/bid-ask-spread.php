@@ -1,5 +1,9 @@
 <h4>Example <?=$number?>: Bid-Ask Spread</h4>
-<p>The following algorithm trades the microeconomy of SPY's supply-demand relationship. We buy SPY if the current bid-ask spread is less than average of that of the last 20 quote bars, indicating demand is approaching supply, while short SPY vice versa. To save the last 20 quote data, we use a rolling window and save the calculated spread.</p>
+<p>
+    The following algorithm trades the microeconomy of SPY's supply-demand relationship. It buys when the current bid-ask spread is less than average spread over the last 20 QuoteBar objects, indicating demand is approaching supply. 
+    When the spread is greater than the average, it shorts SPY. 
+    To save the last spread values, it uses a <code>RollingWindow</code>.
+</p>
 <div class="section-example-container">
     <pre class="csharp">public class RollingWindowAlgorithm : QCAlgorithm
 {
@@ -12,7 +16,7 @@
         SetStartDate(2020, 2, 20);
         SetEndDate(2020, 2, 27);
 
-        // Request SPY data for signal generation and trading.
+        // Add SPY data for signal generation and trading.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
         // Warm up for the rolling window with quote data.
@@ -49,7 +53,7 @@
         self.set_start_date(2020, 2, 20)
         self.set_end_date(2020, 2, 27)
         
-        # Request SPY data for signal generation and trading.
+        # Add SPY data for signal generation and trading.
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         # Set up a rolling window to hold the last 20 bar's bid-ask spread for trade signal generation.
