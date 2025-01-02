@@ -1,8 +1,11 @@
-<p>The <code class="csharp">Window</code><code class="python">window</code> property of the indicators is a built-in <code>RollingWindow</code> that stores historical values. It holds a collection of <code>IndicatorDataPoint</code> objects, enabling quick access to the most recent historical indicator values for analysis, calculations, or comparisons in trading and financial strategies.</p>
+<p>
+    The <code class="csharp">Window</code><code class="python">window</code> property of the indicators is a built-in <code>RollingWindow</code> that stores historical values. 
+    It holds a collection of <code>IndicatorDataPoint</code> objects, enabling quick access to the most recent historical indicator values for analysis, calculations, or comparisons in trading and financial strategies.
+    Its default size 2. 
+    To set a different size, update the <code class="csharp">Size</code><code class="python">size</code> property.
+</p>
 
-<p>Default size of the in-built <code>RollignWindow</code> is 2, but you can adjust its size by setting the <code class="csharp">Size</code><code class="python">size</code> according to your need.</p>
-
-<p>To warm up the indicator together with its <code>RollingWindow</code>, call the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method with the window size as an argument.</p>
+<p>To warm up the indicator and its <code>RollingWindow</code>, call the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method with the window size as an argument.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class IndicatorRolingWindowAlgorithm : QCAlgorithm
@@ -46,5 +49,5 @@
         # Warm up the indicator and window for immediate usage. 
         self.indicator_history(self._sma, spy, self._sma.window.size, Resolution.DAILY)
         # For indicators using 2+ symbols, use an iterable symbol list.
-        self.indicator_history(self._beta, [spy, qqq], self._beta.warm_up_period + self._beta.window.size, Resolution.DAILY)</pre>
+        self.indicator_history(self._beta, [spy, qqq], self._beta.window.size, Resolution.DAILY)</pre>
 </div>
