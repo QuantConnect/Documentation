@@ -37,29 +37,6 @@
 <p>To download the data from the Overall Statistics and Rolling Statistics tables, see <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>Download Results</a>.</p>
 <? } ?>
 
-
-<h4>Ranking</h4>
-<? if ($cloudPlatform) { ?>
-<p>The backtest results page displays a Ranking section that shows the PSR and rank (percentile) of your algorithm.</p>
-
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/algorithm-ranking.png" alt="Backtest ranking">
-
-<p>The rank of your algorithm is calculated as</p>
-
-$$
-CDF\left(\frac{PSR_{algo} - \overline{PSR}}{\sigma_{PSR}}\right)
-$$
-
-<p>where $CDF$ is the normal cumulative distribution function and $PSR_{algo}$ is your algorithm's PSR. $\overline{PSR}$ and $\sigma_{PSR}$ are the mean PSR and the standard deviation of PSR values, respectively, calculated from all of the backtests that have the following attributes:</p>
-<ul>
-    <li>Occurred in the last 30 days</li>
-    <li>Had more than 90 tradable days</li>
-    <li>Had a PSR value in the interval (0, 100)</li>
-</ul>
-<? } else { ?>
-<p>If you run a cloud backtest, the backtest results page displays a Ranking section that shows the PSR and rank (percentile) of your algorithm relative to other algorithms in QuantConnect Cloud. For more information about this section, see <a href='/docs/v2/cloud-platform/backtesting/results#08-Key-Statistics'>Key Statistics</a>.</p>
-<? } ?>
-
 <h4>Research Guide</h4>
 <p>For information about the Research Guide, see <a href="/docs/v2/cloud-platform/backtesting/research-guide">Research Guide</a>.
 </p>
