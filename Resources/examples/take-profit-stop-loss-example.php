@@ -123,7 +123,7 @@
             self.windows[0].close &gt; self.windows[1].close &gt; self.windows[2].close and
             self.windows[0].volume &gt; self.windows[1].volume &gt; self.windows[2].volume and
             self.windows[2].close - self.windows[2].open &gt; self.windows[1].close - self.windows[1].open &gt; self.windows[0].close - self.windows[0].open
-       )
+        )
 
     def breakout(self, current_close: float) -&gt; None:
         # Trade breakout from contraction: the breakout should be much greater than the contracted range of the last bar.
