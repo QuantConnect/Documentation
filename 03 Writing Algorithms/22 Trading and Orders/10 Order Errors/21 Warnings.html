@@ -2,17 +2,21 @@
 
 <h4>Limit Price Exceeds Precision Requirements</h4>
 
-<p>Limit prices must be be a multiple of the security's <code class='python'>minimum_price_variation</code><code class='csharp'>MinimumPriceVariation</code> <a href='/docs/v2/writing-algorithms/securities/key-concepts#06-Symbol-Properties'>property</a> or you trigger the following warning message:</p>
+<p>Limit prices must be a multiple of the security's <code class='python'>minimum_price_variation</code><code class='csharp'>MinimumPriceVariation</code> <a href='/docs/v2/writing-algorithms/securities/key-concepts#06-Symbol-Properties'>property</a> or you trigger the following warning message:</p>
 <div class='error-messages'>Backtest Handled Error: Warning: To meet brokerage precision requirements, order LimitPrice was rounded to 6136.00 from 6136.125</div>
 
 <p>To avoid the warning, round the limit price to the nearest value that respects the <code class='python'>minimum_price_variation</code><code class='csharp'>MinimumPriceVariation</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">private decimal AdjustedLimitPrice(Security security, decimal price, bool roundUp = true)
 {
-    decimal pip = security.PriceVariationModel.GetMinimumPriceVariation(new GetMinimumPriceVariationParameters(security, price));
+    decimal pip = security.PriceVariationModel.GetMinimumPriceVariation(
+        new GetMinimumPriceVariationParameters(security, price)
+    );
     return ((int)(price / pip) + (roundUp ? 1 : 0)) * pip;
 }</pre>
     <pre class="python">def _adjusted_limit_price(self, security, price, round_up=True):
-   pip = security.price_variation_model.get_minimum_price_variation(GetMinimumPriceVariationParameters(security, price))
-   return (int(price / pip) + int(round_up)) * pip</pre>
+    pip = security.price_variation_model.get_minimum_price_variation(
+        GetMinimumPriceVariationParameters(security, price)
+    )
+    return (int(price / pip) + int(round_up)) * pip</pre>
 </div>
