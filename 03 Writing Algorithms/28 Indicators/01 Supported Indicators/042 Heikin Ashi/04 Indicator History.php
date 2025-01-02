@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'HeikinAshi';
 $helperName = 'HeikinAshi';
+$pyHelperName = 'heikin_ashi';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

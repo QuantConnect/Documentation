@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'PivotPointsHighLow';
 $helperName = 'PPHL';
+$pyHelperName = 'pphl';
 $helperArguments = 'symbol, 10, 10, 100';
 $hasReference = false;
 $isOptionIndicator = false;

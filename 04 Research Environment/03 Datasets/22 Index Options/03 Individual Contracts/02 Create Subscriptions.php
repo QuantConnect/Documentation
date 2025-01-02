@@ -45,12 +45,12 @@ var chain = qb.OptionChain(
     <pre class="python"># Get the Option contracts that were tradable on January 1st, 2024.
 #   Option A: Standard contracts.
 chain = qb.option_chain(
-    Symbol.create_canonical_option(underlying_symbol, Market.USA, "?SPX") 
+    Symbol.create_canonical_option(underlying_symbol, Market.USA, "?SPX"), flatten=True
 ).data_frame
 
 #  Option B: Weekly contracts.
 #chain = qb.option_chain(
-#    Symbol.create_canonical_option(underlying_symbol, "SPXW", Market.USA, "?SPXW") 
+#    Symbol.create_canonical_option(underlying_symbol, "SPXW", Market.USA, "?SPXW"), flatten=True
 #).data_frame</pre>
     </div>
     <p>

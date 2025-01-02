@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'HaramiCross';
 $helperName = 'HaramiCross';
+$pyHelperName = 'harami_cross';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

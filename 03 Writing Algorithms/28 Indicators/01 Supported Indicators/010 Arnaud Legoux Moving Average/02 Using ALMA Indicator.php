@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ArnaudLegouxMovingAverage';
 $helperName = 'ALMA';
+$pyHelperName = 'alma';
 $helperArguments = 'symbol, 10, 6, 0.85';
 $properties = array();
 $pyProperties = array();

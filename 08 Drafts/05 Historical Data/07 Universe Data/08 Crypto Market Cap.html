@@ -1,0 +1,55 @@
+<p>The following example gets the history of a <a href='/docs/v2/writing-algorithms/datasets/coingecko/crypto-market-cap#11-Universe-Selection'>Crypto market cap universe</a>:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CryptoMarketCapUniverseHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 24);
+        // Add a universe of Cryptocurrencies.
+        var universe = AddUniverse&lt;CoinGecko&gt;();
+        // Get 365 days of history for the universe.
+        var history = History(universe, TimeSpan.FromDays(365));
+        // Iterate through each day of the universe history.
+        foreach (var universeDay in history)
+        {
+            var t = universeDay.EndTime;
+            // Select the Crypto with the largest market cap on this day.
+            var largestCoin = universeDay.Select(c => c as CoinGecko).OrderByDescending(c => c.MarketCap).First();
+        }
+    }
+}</pre>
+    <pre class="python">class CryptoMarketCapUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 24)
+        # Add a universe of Cryptocurrencies.
+        universe = self.add_universe(CoinGeckoUniverse)
+        # Get 355 days of history for the universe.
+        history = self.history(universe, timedelta(365), flatten=True)</pre>
+</div>
+
+<img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-crypto-market-cap.png' class='python docs-image' alt='DataFrame of the last 365 days of a Crypto market cap universe.'>
+
+<div class="python section-example-container">
+    <pre class="python"># Select the largest Crypto each day.
+largest_coin = history.drop('time', axis=1).groupby('time').apply(
+    lambda x: x.nlargest(1, 'marketcap')
+).reset_index(level=1, drop=True).marketcap</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time        symbol          
+2023-12-25  TAO.CoinGecko 2S    1.608797e+09
+2023-12-26  TAO.CoinGecko 2S    1.604877e+09
+2023-12-27  TAO.CoinGecko 2S    1.519449e+09
+2023-12-28  TAO.CoinGecko 2S    1.878762e+09
+2023-12-29  TAO.CoinGecko 2S    1.804409e+09
+                                    ...     
+2024-12-19  TAO.CoinGecko 2S    1.749002e+09
+2024-12-20  TAO.CoinGecko 2S    1.749002e+09
+2024-12-21  TAO.CoinGecko 2S    1.749002e+09
+2024-12-22  TSM.CoinGecko 2S             NaN
+2024-12-23  TSM.CoinGecko 2S             NaN
+Name: marketcap, Length: 365, dtype: float64</pre>
+</div>

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'TimeSeriesForecast';
 $helperName = 'TSF';
+$pyHelperName = 'tsf';
 $helperArguments = 'symbol, 3';
 $hasReference = false;
 $isOptionIndicator = false;

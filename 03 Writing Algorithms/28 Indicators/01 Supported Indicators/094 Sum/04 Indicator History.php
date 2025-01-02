@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Sum';
 $helperName = 'SUM';
+$pyHelperName = 'sum';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

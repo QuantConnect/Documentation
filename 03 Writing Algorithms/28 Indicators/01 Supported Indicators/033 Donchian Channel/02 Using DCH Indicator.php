@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'DonchianChannel';
 $helperName = 'DCH';
+$pyHelperName = 'dch';
 $helperArguments = 'symbol, 20, 20';
 $properties = array("UpperBand","LowerBand");
 $pyProperties = array("upper_band","lower_band");

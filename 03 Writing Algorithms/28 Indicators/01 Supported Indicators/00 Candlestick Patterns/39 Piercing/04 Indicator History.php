@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Piercing';
 $helperName = 'Piercing';
+$pyHelperName = 'piercing';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

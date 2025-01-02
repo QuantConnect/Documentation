@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ExponentialMovingAverage';
 $helperName = 'EMA';
+$pyHelperName = 'ema';
 $helperArguments = 'symbol, 20, 0.5';
 $hasReference = false;
 $isOptionIndicator = false;

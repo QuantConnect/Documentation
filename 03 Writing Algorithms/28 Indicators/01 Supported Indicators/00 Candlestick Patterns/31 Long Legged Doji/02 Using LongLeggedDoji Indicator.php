@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'LongLeggedDoji';
 $helperName = 'LongLeggedDoji';
+$pyHelperName = 'long_legged_doji';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

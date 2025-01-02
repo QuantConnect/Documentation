@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MidPoint';
 $helperName = 'MIDPOINT';
+$pyHelperName = 'midpoint';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

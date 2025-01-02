@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MomersionIndicator';
 $helperName = 'MomersionIndicator';
+$pyHelperName = 'momersion_indicator';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

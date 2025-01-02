@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AccumulationDistribution';
 $helperName = 'AD';
+$pyHelperName = 'ad';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

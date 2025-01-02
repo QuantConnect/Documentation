@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'HighWaveCandle';
 $helperName = 'HighWaveCandle';
+$pyHelperName = 'high_wave_candle';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineRatio';
 $helperName = 'ADR';
+$pyHelperName = 'adr';
 $helperArguments = '[symbol, reference]';
 $properties = array();
 $pyProperties = array();

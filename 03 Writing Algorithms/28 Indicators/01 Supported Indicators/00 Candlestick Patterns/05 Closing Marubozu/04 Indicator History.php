@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ClosingMarubozu';
 $helperName = 'ClosingMarubozu';
+$pyHelperName = 'closing_marubozu';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

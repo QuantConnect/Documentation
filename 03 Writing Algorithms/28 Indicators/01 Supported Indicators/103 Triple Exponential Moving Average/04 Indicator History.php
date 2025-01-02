@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'TripleExponentialMovingAverage';
 $helperName = 'TEMA';
+$pyHelperName = 'tema';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'MovingAverageConvergenceDivergence';
 $helperName = 'MACD';
+$pyHelperName = 'macd';
 $helperArguments = 'symbol, 12, 26, 9, MovingAverageType.Exponential';
 $hasReference = false;
 $isOptionIndicator = false;

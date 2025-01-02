@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Rho';
 $helperName = 'R';
+$pyHelperName = 'r';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $hasReference = false;
 $isOptionIndicator = true;

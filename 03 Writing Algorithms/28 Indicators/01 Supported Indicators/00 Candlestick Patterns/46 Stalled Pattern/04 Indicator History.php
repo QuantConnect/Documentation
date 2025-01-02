@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'StalledPattern';
 $helperName = 'StalledPattern';
+$pyHelperName = 'stalled_pattern';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

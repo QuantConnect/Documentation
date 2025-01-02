@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'BalanceOfPower';
 $helperName = 'BOP';
+$pyHelperName = 'bop';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -1,0 +1,39 @@
+<p>The following example gets the history of an <a href='/docs/v2/writing-algorithms/universes/equity-options'>Equity Options universe</a>:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class EquityOptionUniverseHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 23);
+        // Add a universe of Equity Option contracts.
+        var option = AddOption("SPY");
+        // Get 5 days of history for the universe.
+        var history = History&lt;OptionUniverse&gt;(option.Symbol, TimeSpan.FromDays(5));
+        // Iterate through each day of the universe history.
+        foreach (var chain in history)
+        {
+            var t = chain.EndTime;
+            // Select contracts that have open interest > 0 on this day.
+            var openContracts = chain.Data
+                .Select(contract => contract as OptionUniverse)
+                .Where(contract => contract.OpenInterest > 0m);
+        }
+    }
+}</pre>
+    <pre class="python">class EquityOptionUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 23)
+        # Add a universe of Equity Option contracts.
+        option = self.add_option('SPY')
+        # Get 5 days of history for the universe.
+        history = self.history(option.symbol, timedelta(5), flatten=True)</pre>
+</div>
+
+<img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equity-options.png' class='python docs-image' alt='DataFrame of the last 5 days of a US Equity Options universe.'>
+
+<div class="python section-example-container">
+    <pre class="python"># Find the open interest value at the 99th percentile.
+high_open_interest = history.openinterest.quantile(0.99)</pre>
+</div>

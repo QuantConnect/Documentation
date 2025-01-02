@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ExponentialMovingAverage';
 $helperName = 'EMA';
+$pyHelperName = 'ema';
 $helperArguments = 'symbol, 20, 0.5';
 $properties = array();
 $pyProperties = array();

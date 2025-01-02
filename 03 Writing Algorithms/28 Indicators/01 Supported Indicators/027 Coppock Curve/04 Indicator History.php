@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'CoppockCurve';
 $helperName = 'CC';
+$pyHelperName = 'cc';
 $helperArguments = 'symbol, 11, 14, 10';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ParabolicStopAndReverse';
 $helperName = 'PSAR';
+$pyHelperName = 'psar';
 $helperArguments = 'symbol, 0.02, 0.02, 0.2';
 $hasReference = false;
 $isOptionIndicator = false;

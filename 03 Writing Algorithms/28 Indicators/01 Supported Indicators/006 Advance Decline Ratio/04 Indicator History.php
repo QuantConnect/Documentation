@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineRatio';
 $helperName = 'ADR';
+$pyHelperName = 'adr';
 $helperArguments = '[symbol, reference]';
 $hasReference = true;
 $isOptionIndicator = false;

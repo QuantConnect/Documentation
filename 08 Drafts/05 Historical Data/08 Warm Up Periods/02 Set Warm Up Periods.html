@@ -1,0 +1,87 @@
+<p>
+  You can set a warm-up period based on a number of bars or a period of time. 
+</p>
+
+<h4>Trailing Data Samples</h4>
+<p>
+  To set a warm-up based on a trailing number of data samples, in your algorithm's <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">SetWarmUp</code><code class="python">set_warm_up</code> method with an integer argument.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Feed in 100 bars before start date
+SetWarmUp(100);</pre>
+<pre class="python"># Feed in 100 bars before start date
+self.set_warm_up(100)</pre>
+</div>
+
+<p>
+  LEAN calculates the start of the warm-up period for each of your security subscriptions by using the number of bars you specify, the resolution of each security, and the trading calendar of each security. 
+  After it calculates the start time of the warm-up period for each security, it sets the earliest start time as the start of the algorithm warm-up period. 
+  For instance, in the following example, the warm-up period consists of 100 minute resolution bars for SPY and as many second resolution bars for BTCUSD that occur from the start of the SPY warm-up period to the algorithm <code class="csharp">StartDate</code><code class="python">start_date</code>.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">AddEquity("SPY", Resolution.Minute, fillForward: false);
+AddCrypto("BTCUSD", Resolution.Second, fillForward: false);
+SetWarmUp(100);
+</pre>
+<pre class="python">self.add_equity("SPY", Resolution.MINUTE, fill_forward=False)
+self.add_crypto("BTCUSD", Resolution.SECOND, fill_forward=False)
+self.set_warm_up(100)
+</pre>
+</div>
+
+<p>To use a specific resolution of data for the warm-up period, pass a <code>resolution</code>&nbsp;argument to the <code class="csharp">SetWarmUp</code><code class="python">set_warm_up</code> method.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Feed in data for 100 trading days of daily data before the start date
+SetWarmUp(100, Resolution.Daily);</pre>
+<pre class="python"># Feed in data for 100 trading days before the start date
+self.set_warm_up(100, Resolution.DAILY)</pre>
+</div>
+
+<p>If you pass an integer and a resolution, the warm-up period consists of the number of bars and resolution you set, regardless of the resolution of your data subscriptions. In this case,&nbsp;<span style="font-size: 15px;">LEAN calculates the start of the warm-up period for each of your security subscriptions just like it does when you only pass an integer argument. After it calculates the start time of the warm-up period for each security, it sets the earliest start time as the start of the algorithm warm-up period.</span></p><p>If you pass a resolution argument and you registered indicators or consolidators for automatic updates, the warm-up period resolution must be less than or equal to the lowest resolution of your automatic indicators and consolidators. For instance, in the following example, the indicators use minute resolution data, so you can set the warm-up period to use tick, second, or minute resolution data.</p>
+
+<div class="section-example-container">
+<pre class="csharp">_spy = AddEquity("SPY", Resolution.Minute, fillForward: false).Symbol;
+_btc = AddCrypto("BTCUSD", Resolution.Second, fillForward: false).Symbol;
+
+_spySma = SMA(_spy, 10);
+_btcSMA = SMA(_btc, 10, Resolution.Minute);
+
+SetWarmUp(100, Resolution.Minute);
+</pre>
+<pre class="python">self._spy = self.add_equity("SPY", Resolution.MINUTE, fill_forward=False).symbol
+self._btc = self.add_crypto("BTCUSD", Resolution.SECOND, fill_forward=False).symbol
+
+self._spy_sma = self.sma(self._spy, 10)
+self._btc_sma = self.sma(self._btc, 10, Resolution.MINUTE)
+
+self.set_warm_up(100, Resolution.MINUTE)
+</pre>
+</div>
+
+
+<h4>Trailing Time Periods</h4>
+<p>
+  To set a warm-up based on a trailing time period, in your algorithm's <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">SetWarmUp</code><code class="python">set_warm_up</code> method with a <code class="python">timedelta</code><code class="csharp">TimeSpan</code>.
+  The warm-up period consists of that <code class="python">timedelta</code><code class="csharp">TimeSpan</code> before the start date and pipes in data that matches the resolution of your data subscriptions.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Wind time back 7 days from start
+SetWarmUp(TimeSpan.FromDays(7));</pre>
+<pre class="python"># Wind time back 7 days from start
+self.set_warm_up(timedelta(7))</pre>
+</div>
+
+<p>To use a specific resolution of data for the warm-up period, pass a <code>resolution</code>&nbsp;argument to the <code class="csharp">SetWarmUp</code><code class="python">set_warm_up</code> method.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Feed in 100 days of daily data before the start date
+SetWarmUp(TimeSpan.FromDays(100), Resolution.Daily);</pre>
+<pre class="python"># Feed in 100 days of daily data before the start date
+self.set_warm_up(timedelta(days=100), Resolution.DAILY)</pre>
+</div>
+
+<p>If you pass a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> and a resolution, the warm-up period consists of the time period and resolution you set, regardless of the resolution of your data subscriptions.</p>

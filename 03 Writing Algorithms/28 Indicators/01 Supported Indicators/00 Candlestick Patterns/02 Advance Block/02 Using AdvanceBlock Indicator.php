@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'AdvanceBlock';
 $helperName = 'AdvanceBlock';
+$pyHelperName = 'advance_block';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'FisherTransform';
 $helperName = 'FISH';
+$pyHelperName = 'fish';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

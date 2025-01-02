@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'SpinningTop';
 $helperName = 'SpinningTop';
+$pyHelperName = 'spinning_top';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

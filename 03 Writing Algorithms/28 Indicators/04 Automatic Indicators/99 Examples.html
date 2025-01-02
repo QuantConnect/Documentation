@@ -1,0 +1,132 @@
+<p>The following examples demonstrate some common practices for using automatic indicators.</p>
+
+<h4>Example 1: Trade With Automatic Indicators in a Dynamic Universe</h4>
+<p>The following algorithm selects <a href='/docs/v2/writing-algorithms/universes/equity/liquidity-universes'>a universe of the 20 most liquid US Equities</a> each day. At the start of each trading session, it then forms an equal-weighted portfolio of the stocks that have price &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">EMA</a> &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">SMA</a>, which indicates an upward accelerating trend. As assets enter the universe, it creates automatic indicators for them. As assets leave the universe, it deregisters the indicators.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class AutomaticIndicatorAlgorithm : QCAlgorithm
+{
+    private Dictionary&lt;Symbol, SymbolData&gt; _symbolData = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 2, 1);
+        
+        // Add a universe of the 20 most liquid stocks to trade trends more efficiently.
+        AddUniverse(Universe.DollarVolume.Top(20));
+
+        // Set a Scheduled Event to rebalance at the start of each day with the daily indicator signals.
+        Schedule.On(DateRules.EveryDay(), TimeRules.At(9, 31), Rebalance);
+    }
+
+    private void Rebalance()
+    {
+        // Buy the stocks where price is above EMA and EMA is above SMA, meaning its trend is upward and accelerating.
+        var symbolsToBuy = _symbolData.Where(
+                kvp =&gt; kvp.Value.IsReady &amp;&amp; Securities[kvp.Key].Price &gt; kvp.Value.Ema &amp;&amp; kvp.Value.Ema &gt; kvp.Value.Sma
+            )
+            .Select(kvp =&gt; kvp.Key)
+            .ToList();
+
+        // Equally invest in the selected stocks to evenly distribute the capital risk.
+        var count = symbolsToBuy.Count;
+        if (count &gt; 0)
+        {
+            var targets = symbolsToBuy.Select(symbol =&gt; new PortfolioTarget(symbol, 1m / count)).ToList();
+            // Liquidate the positions that are no longer popular or in an uptrend.
+            SetHoldings(targets, liquidateExistingHoldings: true);
+        }
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var added in changes.AddedSecurities)
+        {
+            // Create a SymbolData object for this asset, which is an object that contains the indicators.
+            _symbolData[added.Symbol] = new SymbolData(this, added.Symbol);
+        }
+
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            // Stop updating the indicators of assets that leave the universe to release computation resources.
+            if (_symbolData.Remove(removed.Symbol, out var symbolData))
+            {
+                symbolData.Dispose();
+            }
+        }
+    }
+
+    private class SymbolData
+    {
+        private QCAlgorithm _algorithm;
+        public Symbol Symbol { get; set; }
+        public ExponentialMovingAverage Ema { get; set; }
+        public SimpleMovingAverage Sma { get; set; }
+
+        public bool IsReady =&gt; Ema.IsReady &amp;&amp; Sma.IsReady;
+
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+        {
+            _algorithm = algorithm;
+            Symbol = symbol;
+
+            // Create EMA & SMA indicators to generate trade signals.
+            Ema = algorithm.EMA(symbol, 20, Resolution.Daily);
+            Sma = algorithm.SMA(symbol, 20, Resolution.Daily);
+
+            // Warm up the indicators so they are ready to use immediately.
+            algorithm.WarmUpIndicator(symbol, Ema, Resolution.Daily);
+            algorithm.WarmUpIndicator(symbol, Sma, Resolution.Daily);
+        }
+
+        public void Dispose()
+        {
+            // Stop updating the indicators of assets that leave the universe to release computation resources.
+            _algorithm.DeregisterIndicator(Ema);
+            _algorithm.DeregisterIndicator(Sma);
+        }
+    }
+}</pre>
+    <pre class="python">class AutomaticIndicatorAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 2, 1)
+
+        # Add a universe of the 20 most liquid stocks to trade trends more efficiently.
+        self._universe = self.add_universe(self.universe.dollar_volume.top(20))
+
+        # Set a Scheduled Event to rebalance at the start of each day with the daily indicator signals.
+        self.schedule.on(self.date_rules.every_day(), self.time_rules.at(9, 31), self._rebalance)
+                
+    def _rebalance(self) -&gt; None:
+        # Buy the stocks where price is above EMA and EMA is above SMA, meaning its trend is upward and accelerating.
+        securities = [self.securities[symbol] for symbol in self._universe.selected]
+        symbols_to_buy = [
+            security.symbol for security in securities 
+            if security.price > security.ema.current.value > security.sma.current.value
+        ]
+
+        # Equally invest in the selected stocks to evenly distribute the capital risk.
+        count = len(symbols_to_buy)
+        if count:
+            targets = [PortfolioTarget(symbol, 1 / count) for symbol in symbols_to_buy]
+            # Liquidate the positions that are no longer popular or in an uptrend.
+            self.set_holdings(targets, liquidate_existing_holdings=True)
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            # Create EMA & SMA indicators to generate trade signals. Use duck typing to save the indicator instances.
+            security.ema = self.ema(symbol, 20, Resolution.DAILY)
+            security.sma = self.sma(symbol, 20, Resolution.DAILY)
+
+            # Warm up the indicators so they are ready to use immediately.
+            self.warm_up_indicator(symbol, security.ema, Resolution.DAILY)
+            self.warm_up_indicator(symbol, security.sma, Resolution.DAILY)
+
+        for security in changes.removed_securities:
+            # Stop updating the indicators of assets that leave the universe to release computation resources.
+            self.deregister_indicator(security.ema)
+            self.deregister_indicator(security.sma)</pre>
+</div>

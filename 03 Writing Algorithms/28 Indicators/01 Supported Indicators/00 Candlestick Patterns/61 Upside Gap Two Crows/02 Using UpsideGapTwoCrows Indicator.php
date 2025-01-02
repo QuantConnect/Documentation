@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'UpsideGapTwoCrows';
 $helperName = 'UpsideGapTwoCrows';
+$pyHelperName = 'upside_gap_two_crows';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

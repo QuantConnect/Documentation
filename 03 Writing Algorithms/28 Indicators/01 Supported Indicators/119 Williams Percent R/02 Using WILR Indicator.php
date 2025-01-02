@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'WilliamsPercentR';
 $helperName = 'WILR';
+$pyHelperName = 'wilr';
 $helperArguments = 'symbol, 20';
 $properties = array("Maximum","Minimum");
 $pyProperties = array("maximum","minimum");

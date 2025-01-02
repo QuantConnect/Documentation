@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'TriangularMovingAverage';
 $helperName = 'TRIMA';
+$pyHelperName = 'trima';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

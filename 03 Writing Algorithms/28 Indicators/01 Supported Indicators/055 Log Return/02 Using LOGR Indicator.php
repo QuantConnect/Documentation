@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'LogReturn';
 $helperName = 'LOGR';
+$pyHelperName = 'logr';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

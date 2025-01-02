@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'McClellanSummationIndex';
 $helperName = 'MSI';
+$pyHelperName = 'msi';
 $helperArguments = '[symbol, reference]';
 $hasReference = true;
 $isOptionIndicator = false;

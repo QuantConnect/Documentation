@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Gamma';
 $helperName = 'G';
+$pyHelperName = 'g';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $properties = array("ImpliedVolatility","OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");
 $pyProperties = array("implied_volatility","option_symbol","risk_free_rate","dividend_yield","price","opposite_price","underlying_price");

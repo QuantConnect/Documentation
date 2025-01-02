@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'OnBalanceVolume';
 $helperName = 'OBV';
+$pyHelperName = 'obv';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

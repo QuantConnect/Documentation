@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'RelativeVigorIndex';
 $helperName = 'RVI';
+$pyHelperName = 'rvi';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $properties = array("Signal");
 $pyProperties = array("signal");

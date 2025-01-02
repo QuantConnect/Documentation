@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'NormalizedAverageTrueRange';
 $helperName = 'NATR';
+$pyHelperName = 'natr';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

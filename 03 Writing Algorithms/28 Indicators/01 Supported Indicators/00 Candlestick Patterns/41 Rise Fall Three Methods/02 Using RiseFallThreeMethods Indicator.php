@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'RiseFallThreeMethods';
 $helperName = 'RiseFallThreeMethods';
+$pyHelperName = 'rise_fall_three_methods';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'ShortLineCandle';
 $helperName = 'ShortLineCandle';
+$pyHelperName = 'short_line_candle';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

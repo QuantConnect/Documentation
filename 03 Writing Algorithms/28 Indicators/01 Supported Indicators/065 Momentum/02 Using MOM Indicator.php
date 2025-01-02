@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Momentum';
 $helperName = 'MOM';
+$pyHelperName = 'mom';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

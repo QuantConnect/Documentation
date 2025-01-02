@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MomentumPercent';
 $helperName = 'MOMP';
+$pyHelperName = 'momp';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

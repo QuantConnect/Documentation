@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'VolumeProfile';
 $helperName = 'VP';
+$pyHelperName = 'vp';
 $helperArguments = 'symbol, 3, 0.70, 0.05';
 $properties = array();
 $pyProperties = array();

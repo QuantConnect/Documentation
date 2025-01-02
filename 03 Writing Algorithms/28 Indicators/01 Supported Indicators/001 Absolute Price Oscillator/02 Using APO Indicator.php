@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AbsolutePriceOscillator';
 $helperName = 'APO';
+$pyHelperName = 'apo';
 $helperArguments = 'symbol, 10, 2, MovingAverageType.Simple';
 $properties = array("Fast","Slow","Signal","Histogram");
 $pyProperties = array("fast","slow","signal","histogram");

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'MatHold';
 $helperName = 'MatHold';
+$pyHelperName = 'mat_hold';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

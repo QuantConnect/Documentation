@@ -1,3 +1,258 @@
+<p>The following examples demonstrate common practices for using a shortable provider.</p>
+
+<h4>Example 1: Sizing By Shortable Quantity</h4>
+<p>The following algorithm trades arbitrage of class A and class C price divergence of Google stocks using cointegration analysis. However, the position sizing may be limited by the available quantity to be shorted by the brokerage, breaking the paired trade. Thus, we need to make use of the <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> method of the shortable provider to calculate the quantity.</p>
+<div class="section-example-container">
+    <pre class="csharp">using Accord.Statistics;
+using MathNet.Numerics.LinearRegression;
+using QuantConnect.Data.Shortable;
+
+public class ShortableProviderAlgorithm : QCAlgorithm
+{
+    private Symbol _goog1, _goog2;
+    // The threshold that the spread/residual of the cointegrated series triggers a trade.
+    private decimal _thresold;
+    // Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
+    private decimal[] _coefficients = new[] { 0m, 0m };
+    // Store the price series of each symbol for cointegration calculation.
+    private Dictionary&lt;Symbol, RollingWindow&lt;decimal&gt;&gt; _windows = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2023, 1, 1);
+        
+        // Subscribe to 2 classes of Google stocks to trade their price divergence.
+        var goog1 = AddEquity("GOOGL", Resolution.Daily);
+        var goog2 = AddEquity("GOOG", Resolution.Daily);
+        _goog1 = goog1.Symbol;          // Class A
+        _goog2 = goog2.Symbol;          // Class C
+        // Set the shortable providers to simulate the available shares to trade realistically. 
+        goog1.SetShortableProvider(new InteractiveBrokersShortableProvider());
+        goog2.SetShortableProvider(new InteractiveBrokersShortableProvider());
+
+        // Use rolling windows to save the price data for cointegration analysis.
+        _windows[_goog1] = new(252);
+        _windows[_goog2] = new(252);
+        // Warm up the rolling windows.
+        var history = History&lt;TradeBar&gt;(new[] { _goog1, _goog2 }, 252, Resolution.Daily);
+        foreach (var bar in history)
+        {
+            _windows[_goog1].Add(bar[_goog1].Close);
+            _windows[_goog2].Add(bar[_goog2].Close);
+        }
+
+        // Adjust the cointegration factor between the 2 classes' monthly price series.
+        Schedule.On(
+            DateRules.MonthStart(),
+            TimeRules.At(0, 1),
+            CalculateCointegration
+        );
+
+        CalculateCointegration();
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_goog1, out var bar1) &amp;&amp; slice.Bars.TryGetValue(_goog2, out var bar2))
+        {
+            // Update the rolling windows for cointegration analysis.
+            _windows[_goog1].Add(bar1.Close);
+            _windows[_goog2].Add(bar2.Close);
+
+            // Calculate the current cointegrated series spread.
+            var residual = _coefficients[0] * bar2.Close + _coefficients[1] - bar1.Close;
+
+            var quantity = CalculateOrderQuantity(_goog1, 0.2m);
+            // If the residual is lower than the negative threshold, it means class A price is much higher than what it should be compared to class C.
+            // We sell class A and buy class C to bet on their price convergence.
+            if (residual &lt; -_thresold &amp;&amp; !Portfolio[_goog1].IsShort)
+            {
+                // Since it will be limited by shortable quantity, we max{shortable, 20% of portfolio value}.
+                var shortableQuantity = Securities[_goog1].ShortableProvider.ShortableQuantity(_goog1, bar1.EndTime);
+                quantity = Math.Min(quantity, Convert.ToDecimal(shortableQuantity));
+                MarketOrder(_goog1, -quantity);
+                MarketOrder(_goog2, quantity * _coefficients[0]);
+            }
+            // If the residual is higher than the threshold, it means class A price is much lower than what it should be compared to class C.
+            // We buy class A and sell class C to bet on their price convergence.
+            else if (residual &gt; _thresold &amp;&amp; !Portfolio[_goog1].IsLong)
+            {
+                // Since it will be limited by shortable quantity, we max{shortable, 20% of portfolio value}.
+                var shortableQuantity = Securities[_goog2].ShortableProvider.ShortableQuantity(_goog2, bar2.EndTime);
+                quantity = Math.Min(quantity, Convert.ToDecimal(shortableQuantity));
+                MarketOrder(_goog1, quantity);
+                MarketOrder(_goog2, -quantity * _coefficients[0]);
+            }
+            // Close positions of the price are converged.
+            else if ((Portfolio[_goog1].IsShort &amp;&amp; residual &gt; 0m) || (Portfolio[_goog1].IsLong &amp;&amp; residual &lt; 0m))
+            {
+                Liquidate();
+            }
+        }
+    }
+
+    private void CalculateCointegration()
+    {
+        // Lag direction is unimportant; it is just a sign flip in the linear regression, so we don't need to flip the window order.
+        var y = _windows[_goog1].Select(x =&gt; (double)x).ToArray();
+        var x = _windows[_goog2].Select(x =&gt; (double)x).ToArray();
+
+        // Perform Linear Regression on both price series to investigate their relationship.
+        var regressionResult = SimpleRegression.Fit(x, y);
+        var intercept = regressionResult.Item1;
+        var slope = regressionResult.Item2;
+
+        // Calculate the residuals series to check if it is stationary, meaning if the 2 price series move together.
+        var residuals = new double[x.Length];
+        for (int i = 0; i &lt; x.Length; i++)
+        {
+            residuals[i] = y[i] - (intercept + slope * x[i]);
+        }
+
+        // Check if the residuals are stationary using the augmented Dickey-Fuller test.
+        if (ADFTest(residuals))
+        {
+            // If cointegrated, update the positional sizing ratio and the spread threshold of the trade trigger.
+            _coefficients = new[] { Convert.ToDecimal(slope), Convert.ToDecimal(intercept) };
+            _thresold = 2m * Convert.ToDecimal(Measures.StandardDeviation(residuals));
+        }
+        else
+        {
+            // If not cointegrated, liquidate and set the size to zeros for no positions.
+            Liquidate();
+            _coefficients = new[] { 0m, 0m };
+            _thresold = 100000000m;             // An arbitrarily large number that the class A price will never reach.
+        }
+    }
+
+    private static bool ADFTest(double[] series)
+    {
+        var n = series.Length;
+        var lagged = new double[n - 1];
+        var differences = new double[n - 1];
+        
+        // Fit linear regression for the residual series on unit root: ΔY_t = α + βY_{t-1} + ε_t.
+        for (int i = 1; i &lt; n; i++)
+        {
+            lagged[i - 1] = series[i - 1];
+            differences[i - 1] = series[i] - series[i - 1];
+        }
+
+        var regressionResult = SimpleRegression.Fit(lagged, differences);
+        var alpha = regressionResult.Item1;  // Intercept
+        var beta = regressionResult.Item2;   // Coefficient of lagged term
+
+        // Calculate the ADF statistic and check if the null hypothesis is rejected.
+        var adfStatistic = beta / Measures.StandardError(differences);
+
+        // Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        // This means no unit root exists for the difference series, and the residuals are stationary.
+        return adfStatistic &lt;= -3.45d;
+    }
+}</pre>
+    <pre class="python">from sklearn.linear_model import LinearRegression
+from statsmodels.tsa.stattools import adfuller
+
+class ShortableProviderAlgorithm(QCAlgorithm):
+    # The threshold that the spread/residual of the cointegrated series triggers a trade.
+    threshold = 0
+    # Store the coefficient and intercept of the cointegrated series for calculating the spread of a new data point.
+    coefficients = [0, 0]
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2023, 1, 1)
+
+        # Subscribe to 2 classes of Google stocks to trade their price divergence.
+        goog1 = self.add_equity("GOOGL", Resolution.DAILY)        # Class A
+        goog2 = self.add_equity("GOOG", Resolution.DAILY)         # Class C
+        self.goog1 = goog1.symbol
+        self.goog2 = goog2.symbol
+        # Set the shortable providers to simulate the available shares to trade realistically. 
+        goog1.set_shortable_provider(InteractiveBrokersShortableProvider())
+        goog2.set_shortable_provider(InteractiveBrokersShortableProvider())
+
+        # Use rolling windows to save the price data for cointegration analysis.
+        goog1.window = RollingWindow[float](252)
+        goog2.window = RollingWindow[float](252)
+        # Warm up the rolling windows.
+        history = self.history[TradeBar]([self.goog1, self.goog2], 252, Resolution.DAILY)
+        for bar in history:
+            goog1.window.add(bar[self.goog1].close)
+            goog2.window.add(bar[self.goog2].close)
+
+        # Adjust the cointegration factor between the 2 classes' monthly price series.
+        self.schedule.on(
+            self.date_rules.month_start(),
+            self.time_rules.at(0, 1),
+            self.calculate_cointegration
+        )
+        self.calculate_cointegration()
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar1 = slice.bars.get(self.goog1)
+        bar2 = slice.bars.get(self.goog2)
+        if bar1 and bar2:
+            # Update the rolling windows for cointegration analysis.
+            self.securities[self.goog1].window.add(bar1.close)
+            self.securities[self.goog2].window.add(bar2.close)
+
+            # Calculate the current cointegrated series spread.
+            residual = self.coefficients[0] * bar2.close + self.coefficients[1] - bar1.close
+            
+            quantity = self.calculate_order_quantity(self.goog1, 0.2)
+            # If the residual is lower than the negative threshold, it means class A's price is much higher than it should be compared to class C.
+            # We sell class A and buy class C to bet on their price convergence.
+            if residual &lt; -self.threshold and not self.portfolio[self.goog1].is_short:
+                # Since it will be limited by shortable quantity, we max{shortable, 20% of portfolio value}.
+                shortable_quantity = self.securities[self.goog1].shortable_provider.shortable_quantity(self.goog1, bar1.end_time)
+                quantity = min(quantity, shortable_quantity)
+                self.market_order(self.goog1, -quantity)
+                self.market_order(self.goog2, quantity * self.coefficients[0])
+            # If the residual is higher than the threshold, it means class A price is much lower than what it should be compared to class C.
+            # We buy class A and sell class C to bet on their price convergence.
+            elif residual &gt; self.threshold and not self.portfolio[self.goog1].is_long:
+                # Since it will be limited by shortable quantity, we max{shortable, 20% of portfolio value}.
+                shortable_quantity = self.securities[self.goog2].shortable_provider.shortable_quantity(self.goog2, bar2.end_time)
+                quantity = min(quantity, shortable_quantity)
+                self.market_order(self.goog1, quantity)
+                self.market_order(self.goog2, -quantity * self.coefficients[0])
+            # Close positions of the price are converged.
+            elif (self.portfolio[self.goog1].is_short and residual &gt; 0) or (self.portfolio[self.goog1].is_long and residual &lt; 0):
+                self.liquidate()
+                
+    def calculate_cointegration(self) -&gt; None:
+        # Lag direction is unimportant; it is just a sign flip in the linear regression, so we don't need to flip the window order.
+        y = np.array(list(self.securities[self.goog1].window)).reshape(-1, 1)
+        x = np.array(list(self.securities[self.goog2].window)).reshape(-1, 1)
+
+        # Perform Linear Regression on both price series to investigate their relationship.
+        lr = LinearRegression().fit(x, y)
+        slope = lr.coef_[0]
+        intercept = lr.intercept_
+
+        # Calculate the residuals series to check if it is stationary, meaning if the 2 price series move together.
+        residuals = y - (intercept + slope * x)
+
+        # Check if the residuals are stationary using the augmented Dickey-Fuller test.
+        # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        # This means no unit root exists for the difference series, and the residuals are stationary.
+        adf_reject = adfuller(residuals)[0] &lt;= -3.45
+        if adf_reject:
+            # If cointegrated, update the positional sizing ratio and the spread threshold of the trade trigger.
+            self.coefficients = [slope, intercept]
+            self.threshold = 2 * np.std(residuals)
+        else:
+            # If not cointegrated, liquidate and set the size to zeros for no positions.
+            self.liquidate()
+            self.coefficients = [0, 0]
+            self.threshold = 100000000          # An arbitrarily large number that the class A price will never reach.</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
 <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
     <a class="python example-algorithm-link" href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_655295b224ca64731a7852399262ca51.html" target="_BLANK">

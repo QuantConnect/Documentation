@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'UpDownGapThreeMethods';
 $helperName = 'UpDownGapThreeMethods';
+$pyHelperName = 'up_down_gap_three_methods';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AverageDirectionalIndex';
 $helperName = 'ADX';
+$pyHelperName = 'adx';
 $helperArguments = 'symbol, 20';
 $properties = array("PositiveDirectionalIndex","NegativeDirectionalIndex");
 $pyProperties = array("positive_directional_index","negative_directional_index");

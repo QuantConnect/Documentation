@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'PremierStochasticOscillator';
 $helperName = 'PremierStochasticOscillator';
+$pyHelperName = 'premier_stochastic_oscillator';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

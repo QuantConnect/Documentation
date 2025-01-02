@@ -30,7 +30,7 @@ SetSecurityInitializer(security =&gt; security.SetFeeModel(new ConstantFeeModel(
 self.set_security_initializer(lambda security: security.set_fee_model(ConstantFeeModel(0, "USD")))</pre>
 </div>
 
-<p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price. The <code class="csharp">GetLastKnownPrices</code><code class="python">get_last_known_prices</code> method seeds the security price by gathering the security data over the last 3 days. If there is no data during this period, the security price remains at 0.</p>
+<p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price. The <code class="csharp">GetLastKnownPrices</code><code class="python">get_last_known_prices</code> method seeds the security price by gathering the security data over the last 3 days. If there is no data during this period, the security price remains at 0. When you live trade Options without the QuantConnect data provider, this method may take longer than 10 minutes to gather the historical data, causing a timeout.</p>
 <div class="section-example-container">
 <pre class="csharp">// Gather the last 3 days of security prices by using GetLastKnowPrice as the seed in Initialize.
 var seeder = new FuncSecuritySeeder(GetLastKnownPrices);

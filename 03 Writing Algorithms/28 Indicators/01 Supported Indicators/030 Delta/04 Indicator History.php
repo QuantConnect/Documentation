@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Delta';
 $helperName = 'D';
+$pyHelperName = 'd';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $hasReference = false;
 $isOptionIndicator = true;

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AccelerationBands';
 $helperName = 'ABANDS';
+$pyHelperName = 'abands';
 $helperArguments = 'symbol, 10, 4, MovingAverageType.Simple';
 $properties = array("MiddleBand","UpperBand","LowerBand");
 $pyProperties = array("middle_band","upper_band","lower_band");

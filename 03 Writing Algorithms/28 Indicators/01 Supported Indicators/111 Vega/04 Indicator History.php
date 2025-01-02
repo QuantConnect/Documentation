@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Vega';
 $helperName = 'V';
+$pyHelperName = 'v';
 $helperArguments = 'option_symbol, option_mirror_symbol';
 $hasReference = false;
 $isOptionIndicator = true;

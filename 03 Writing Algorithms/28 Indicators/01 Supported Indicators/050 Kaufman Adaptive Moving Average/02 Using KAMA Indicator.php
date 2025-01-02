@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'KaufmanAdaptiveMovingAverage';
 $helperName = 'KAMA';
+$pyHelperName = 'kama';
 $helperArguments = 'symbol, 20, 10, 20';
 $properties = array();
 $pyProperties = array();

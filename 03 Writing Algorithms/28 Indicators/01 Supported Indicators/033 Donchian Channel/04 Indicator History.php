@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'DonchianChannel';
 $helperName = 'DCH';
+$pyHelperName = 'dch';
 $helperArguments = 'symbol, 20, 20';
 $hasReference = false;
 $isOptionIndicator = false;

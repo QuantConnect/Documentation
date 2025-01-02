@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AroonOscillator';
 $helperName = 'AROON';
+$pyHelperName = 'aroon';
 $helperArguments = 'symbol, 10, 20';
 $properties = array("AroonUp","AroonDown");
 $pyProperties = array("aroon_up","aroon_down");

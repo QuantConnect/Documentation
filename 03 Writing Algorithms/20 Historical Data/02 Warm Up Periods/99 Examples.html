@@ -1,4 +1,212 @@
-  <div class="example-fieldset"> 
+<p>The following examples demonstrate some common practices for warm up.</p>
+
+<h4>Example 1: Warm Up Indicator</h4>
+<p>The following algorithms trades mean-reversal according to signals from a <code>BollingerBands</code>. We warm up the algorithm for the needed period to enable the immediate availability of the indicator and price data.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class WarmUpPeriodsAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private BollingerBands _bbands = new(20, 2);
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+
+        // Request SPY data for signal generation and trading.
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+
+        // The candlestick patterns are based on a daily consolidated trade bar.
+        var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(1));
+        // Subscribe to update the indicators with the 1-day consolidator automatically.
+        RegisterIndicator(_spy, _bbands, consolidator);
+        // Add an event handler on candlestick indicators that are updated to trade the indicator.
+        _bbands.Updated += OnUpdated;
+
+        // Warm up the indicator and the SPY price data.
+        SetWarmUp(20, Resolution.Daily);
+    }
+
+    private void OnUpdated(object sender, IndicatorDataPoint point)
+    {
+        var indicator = sender as BollingerBands;
+        if (!indicator.IsReady) return;
+
+        var holdings = Portfolio[_spy];
+
+        // Trade mean-reversal of the Bollinger Band.
+        if (holdings.Price &gt; indicator.UpperBand &amp;&amp; !holdings.IsShort)
+        {
+            SetHoldings(_spy, -0.5m);
+        }
+        else if (holdings.Price &lt; indicator.LowerBand &amp;&amp; !holdings.IsLong)
+        {
+            SetHoldings(_spy, 0.5m);
+        }
+    }
+}</pre>
+    <pre class="python">class WarmUpPeriodsAlgorithm(QCAlgorithm):
+    bbands = BollingerBands(20, 2)
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        
+        # Request SPY data for signal generation and trading.
+        self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+
+        # The candlestick patterns are based on a daily consolidated trade bar.
+        consolidator = TradeBarConsolidator(timedelta(1))
+        # Subscribe to update the indicators with the 1-day consolidator automatically.
+        self.register_indicator(self.spy, self.bbands, consolidator)
+        # Add an event handler on candlestick indicators that are updated to trade the indicator.
+        self.bbands.updated += self.on_updated
+
+        # Warm up the indicator and the SPY price data.
+        self.set_warm_up(20, Resolution.DAILY)
+
+    def on_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
+        if not sender.is_ready:
+            return
+        
+        # Trade according to the updated indicator values.
+        upper_band = sender.upper_band.current.value
+        lower_band = sender.lower_band.current.value
+        holdings = self.portfolio[self.spy]
+
+        # Trade mean-reversal of the Bollinger Band.
+        if holdings.price &gt; upper_band and not holdings.is_short:
+            self.set_holdings(self.spy, -0.5)
+        if holdings.price &lt; lower_band and not holdings.is_long:
+            self.set_holdings(self.spy, 0.5)</pre>
+</div>
+
+<h4>Example 2: Warm Up Universe Selection</h4>
+<p>The below algorithm selects the stocks above 60-day EMA within the 100 most liquid US Equities and holds equally. We use the warm-up feature to feed the indicator in advance to warm up the EMA indicator for filtering.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class WarmUpPeriodsAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+    private Dictionary&lt;Symbol, ExponentialMovingAverage&gt; _emaBySymbol = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 11, 1);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Universe filtered by only the ones with prices above EMA, suggesting an uptrend.
+        _universe = AddUniverse(SelectionByEma);
+
+        // Rebalance weekly.
+        Schedule.On(
+            DateRules.WeekStart(),
+            TimeRules.At(9, 31),
+            Rebalance
+        );
+
+        SetWarmUp(60, Resolution.Daily);
+    }
+
+    private IEnumerable&lt;Symbol&gt; SelectionByEma(IEnumerable&lt;Fundamental&gt; fundamentals)
+    {
+        foreach (var f in fundamentals)
+        {
+            // Create an EMA indicator for the symbol if it is unavailable.
+            if (!_emaBySymbol.TryGetValue(f.Symbol, out var ema))
+            {
+                _emaBySymbol[f.Symbol] = ema = new ExponentialMovingAverage(60);
+            }
+            // Update the indicator by the updated price data to select on the updated data.
+            ema.Update(f.EndTime, f.AdjustedPrice);
+        }
+
+        // We don't add new securities during the warm-up process
+        if (IsWarmingUp) return Universe.Unchanged;
+
+        return fundamentals
+            // Only trades the top 100 liquid stocks since their trend capitalizes quicker.
+            .OrderByDescending(f =&gt; f.DollarVolume)
+            // Select the ones with the current price above EMA to filter for the uptrend stocks.
+            .Where(f =&gt; _emaBySymbol[f.Symbol].IsReady &amp;&amp; _emaBySymbol[f.Symbol] &gt; f.AdjustedPrice)
+            .Take(100)
+            .Select(f =&gt; f.Symbol);
+    }
+
+    private void Rebalance()
+    {
+        // Equally invest in uptrend stocks to dissipate capital risk evenly.
+        var weight = 1m / _universe.Selected?.Count ?? 0m;
+        if (weight == 0) return;
+        var targets = _universe.Selected.Select(symbol =&gt; new PortfolioTarget(symbol, weight)).ToList();
+        SetHoldings(targets);
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Exit position if the equity is below EMA since it becomes a downgoing trend.
+        changes.RemovedSecurities.DoForEach(r =&gt; Liquidate(r.Symbol));
+    }
+}</pre>
+    <pre class="python">class WarmUpPeriodsAlgorithm(QCAlgorithm):
+    ema_by_symbol = {}
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 11, 1)
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # The universe is filtered by only the ones with prices above EMA, suggesting an uptrend.
+        self._universe = self.add_universe(self.selection_by_ema)
+
+        # Rebalance weekly.
+        self.schedule.on(
+            self.date_rules.week_start(),
+            self.time_rules.at(9, 31),
+            self.rebalance
+        )
+
+        self.set_warm_up(60, Resolution.DAILY)
+
+    def selection_by_ema(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+        for f in fundamentals:
+            # Create an EMA indicator for the symbol if it is not available.
+            self.ema_by_symbol[f.symbol] = self.ema_by_symbol.get(f.symbol, ExponentialMovingAverage(60))
+            # Update the indicator using the updated price data to select the updated data.
+            self.ema_by_symbol[f.symbol].update(f.end_time, f.adjusted_price)
+
+        # We don't add new securities during the warm-up process
+        if self.is_warming_up:
+            return Universe.UNCHANGED
+
+        # Select the ones with the current price above EMA to filter for the uptrend stocks.
+        def is_uptrend(f):
+            ema = self.ema_by_symbol[f.symbol]
+            return ema.is_ready and ema.current.value &gt; f.adjusted_price
+        
+        # Only trades the top 100 liquid stocks since their trend capitalizes quicker.
+        fundamentals = sorted([f for f in fundamentals if is_uptrend(f)],
+            key=lambda x: x.dollar_volume, reverse=True)
+                
+        return [f.symbol for f in fundamentals[:100]]
+
+    def rebalance(self) -&gt; None:
+        #  Equally invest in uptrend stocks to dissipate capital risk evenly.
+        weight = 1 / len(self._universe.selected) if self._universe.selected else 0
+        if weight == 0:
+            return
+        targets = [PortfolioTarget(symbol, weight) for symbol in self._universe.selected]
+        self.set_holdings(targets)
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Exit position if the equity is below EMA since it becomes a downgoing trend.
+        [self.liquidate(r.symbol) for r in changes.removed_securities]</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/WarmupAlgorithm.py" target="_BLANK">

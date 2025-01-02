@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'DerivativeOscillator';
 $helperName = 'DO';
+$pyHelperName = 'do';
 $helperArguments = 'symbol, 14, 5, 3, 9';
 $hasReference = false;
 $isOptionIndicator = false;

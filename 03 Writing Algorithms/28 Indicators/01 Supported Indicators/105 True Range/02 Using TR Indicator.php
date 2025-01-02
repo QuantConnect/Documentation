@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'TrueRange';
 $helperName = 'TR';
+$pyHelperName = 'tr';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

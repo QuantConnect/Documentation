@@ -1,0 +1,61 @@
+<p>To get the current Data Link data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<p>To get the default value of the dataset, use the <b class="csharp">Value</b><b class="python">value</b> property. To get the value of a specific column in the dataset, call the <b class="csharp">GetStorageDictionary</b><b class="python">get_storage_dictionary</b> method and index the result with the column name.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    point = slice.get(self.bitcoin_chain_symbol)
+    if point:
+        value = point.value
+        self.log(f"{self.bitcoin_chain_symbol} at {slice.time}: {value}")
+
+    point = slice.get(self.bitfinex_exchange_rate_symbol)
+    if point:
+        value = point.value
+        storage_dictionary = point.get_storage_dictionary()
+        volume = storage_dictionary["volume"]
+        self.log(f"{self.bitfinex_exchange_rate_symbol} Bitfinex exchange rate at {slice.time}: {value}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.TryGetValue(_bitcoinChainSymbol, out var point))
+    {
+        var value = point.Value;
+        Log($"{_bitcoinChainSymbol} value at {slice.Time}: {value}");
+    }
+
+    if (slice.TryGetValue(_bitfinexExchangeRateSymbol, out var point))
+    {
+        var value = point.Value;
+        var storageDictionary = point.GetStorageDictionary();
+        var volume = storageDictionary["volume"];
+        Log($"{_bitfinexExchangeRateSymbol} Bitfinex exchange rate at {slice.Time}: {value}");
+    }
+}</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b class="csharp">Get</b><b class="python">get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(NasdaqDataLink).items():
+        self.log(f"{dataset_symbol} value at {slice.time}: {data_point.value}")
+
+    for dataset_symbol, data_point in slice.get(NasdaqCustomColumns).items():
+        self.log(f"{dataset_symbol} value at {slice.time}: {data_point.value}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;NasdaqDataLink&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} value at {slice.Time}: {dataPoint.Value}");
+    }
+
+    foreach (var kvp in slice.Get&lt;NasdaqCustomColumns&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} value at {slice.Time}: {dataPoint.Value}");
+    }
+}</pre>
+</div>

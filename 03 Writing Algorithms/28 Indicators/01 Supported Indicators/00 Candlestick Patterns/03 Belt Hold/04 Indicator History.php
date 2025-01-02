@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'BeltHold';
 $helperName = 'BeltHold';
+$pyHelperName = 'belt_hold';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

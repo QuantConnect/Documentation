@@ -4,8 +4,6 @@
     <pre class="csharp">public class Manual<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
     <?=$memberDeclarationsManualC?>
-    // Create a list to store the indicators.
-    private List&lt;<?=$typeName?>&gt; _indicators = new();
     // Define the Option pricing model.
     private readonly OptionPricingModelType _optionPricingModel = OptionPricingModelType.ForwardTree;
     private (Symbol option1, Symbol option2) _options;
@@ -30,9 +28,6 @@
 
     private void UpdateContractsAndGreeks()
     {
-        // Remove indicators on expired contracts.
-        _indicators = _indicators.Where(indicator => indicator.OptionSymbol.ID.Date > Time).ToList();
-        
         // Get all the tradable Option contracts.
         var chain = OptionChain(<?=$underlyingSymbolC?>);
         
@@ -55,18 +50,17 @@
             if (contracts.Count > 1)
             {
                 // Subscribe to both contracts.
-                <?=$addContractMethodC?>(contracts[0]);
-                <?=$addContractMethodC?>(contracts[1]);
+                var contract1 = <?=$addContractMethodC?>(contracts[0]);
+                var contract2 = <?=$addContractMethodC?>(contracts[1]);
 
                 // Create and save the manual <?=$typeName?> indicators.
-                foreach (var (contractA, contractB) in new[] { (contracts[0], contracts[1]), (contracts[1], contracts[0]) })
+                foreach (var (contractA, contractB) in new[] { (contract1, contract2), (contract2, contract1) })
                 {
-                    _indicators.Add(
-                        new <?=$typeName?>(
+                    var option = contractA as dynamic;
+                    option.<?=$typeName?> = new <?=$typeName?>(
                             contractA.Symbol, RiskFreeInterestRateModel, _dividendYieldProvider, 
                             contractB.Symbol, _optionPricingModel
-                        )
-                    );
+                        );
                 }
 
                 _options = (contracts[0], contracts[1]);
@@ -76,36 +70,38 @@
 
     public override void OnData(Slice slice)
     {
-        // Iterate through the indicators.
-        foreach (var indicator in _indicators)
+        foreach (var (canonical, chain) in slice.OptionChain)
         {
-            var option = indicator.OptionSymbol;
-            var mirror = QuantConnect.Symbol.CreateOption(
-                option.Underlying.Value, option.ID.Market, option.ID.OptionStyle, 
-                option.ID.OptionRight == OptionRight.Call ? OptionRight.Put : OptionRight.Call, 
-                option.ID.StrikePrice, option.ID.Date
-            )<?=$mirrorExtensionC?>;
-            
-            // Check if price data is available for both contracts and the underlying asset.
-            var q = slice.QuoteBars;
-            var b = slice.Bars;
-            if (q.ContainsKey(option) && q.ContainsKey(mirror) && b.ContainsKey(option.Underlying))
+            foreach (var option in chain)
             {
-                var dataPoints = new List&lt;IndicatorDataPoint&gt;
+                var indicator = (Securities[option] as dynamic).<?=$typeName?>;
+                var mirror = QuantConnect.Symbol.CreateOption(
+                    option.Underlying.Value, option.ID.Market, option.ID.OptionStyle, 
+                    option.ID.OptionRight == OptionRight.Call ? OptionRight.Put : OptionRight.Call, 
+                    option.ID.StrikePrice, option.ID.Date
+                )<?=$mirrorExtensionC?>;
+                
+                // Check if price data is available for both contracts and the underlying asset.
+                var q = slice.QuoteBars;
+                var b = slice.Bars;
+                if (q.ContainsKey(option) && q.ContainsKey(mirror) && b.ContainsKey(option.Underlying))
                 {
-                    new IndicatorDataPoint(option, q[option].EndTime, q[option].Close),
-                    new IndicatorDataPoint(mirror, q[mirror].EndTime, q[mirror].Close),
-                    new IndicatorDataPoint(
-                        option.Underlying, b[option.Underlying].EndTime, b[option.Underlying].Close
-                    )
-                };
-                foreach (var dataPoint in dataPoints)
-                {
-                    indicator.Update(dataPoint);
-                }
+                    var dataPoints = new List&lt;IndicatorDataPoint&gt;
+                    {
+                        new IndicatorDataPoint(option, q[option].EndTime, q[option].Close),
+                        new IndicatorDataPoint(mirror, q[mirror].EndTime, q[mirror].Close),
+                        new IndicatorDataPoint(
+                            option.Underlying, b[option.Underlying].EndTime, b[option.Underlying].Close
+                        )
+                    };
+                    foreach (var dataPoint in dataPoints)
+                    {
+                        indicator.Update(dataPoint);
+                    }
 
-                // Get the current value of the <?=$typeName?> indicator.
-                var value = indicator.Current.Value;
+                    // Get the current value of the <?=$typeName?> indicator.
+                    var value = indicator.Current.Value;
+                }
             }
         }
 
@@ -123,8 +119,6 @@
     }
 }</pre>
     <pre class="python">class Manual<?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
-
-    _indicators = []
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 1, 1)
@@ -144,9 +138,6 @@
         )
         
     def _update_contracts_and_greeks(self) -&gt; None:
-        # Remove indicators on expired contracts.
-        self._indicators = [indicator for indicator in self._indicators if indicator.option_symbol.id.date > self.time]
-        
         # Get all the tradable Option contracts.
         chain = self.option_chain(self._underlying, flatten=True).data_frame
         if chain.empty:
@@ -174,46 +165,45 @@
 
         for call, put in pairs:
             # Subscribe to both contracts.
-            self.<?=$addContractMethodPy?>(call)
-            self.<?=$addContractMethodPy?>(put)
+            contract1 = self.<?=$addContractMethodPy?>(call)
+            contract2 = self.<?=$addContractMethodPy?>(put)
             
             # Create and save the automatic <?=$typeName?> indicators.
-            for contract_a, contract_b in [(call, put), (put, call)]:
-                self._indicators.append(
-                    <?=$typeName?>(
-                        contract_a, self.risk_free_interest_rate_model, 
-                        self._dividend_yield_provider, contract_b, self._option_pricing_model
-                    ) 
-                )
+            for contract_a, contract_b in [(contract1, contract2), (contract2, contract1)]:
+                contract_a.<?=$typeName?> = <?=$typeName?>(
+                        contract_a.symbol, self.risk_free_interest_rate_model, 
+                        self._dividend_yield_provider, contract_b.symbol, self._option_pricing_model
+                    )
 
             self._options = (call, put)
 
     def on_data(self, slice: Slice) -&gt; None:
         # Iterate through the indicators.
-        for indicator in self._indicators:
-            option = indicator.option_symbol
-            mirror = Symbol.create_option(
-                option.underlying.value, option.id.market, option.id.option_style, 
-                OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT,
-                option.id.strike_price, option.id.date
-            )<?=$mirrorExtensionPy?>
+        for canonical, chain in slice.option_chain.items():
+            for option in chain:
+                indicator = self.securities[option].<?=$typeName?>
+                mirror = Symbol.create_option(
+                    option.underlying.value, option.id.market, option.id.option_style, 
+                    OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT,
+                    option.id.strike_price, option.id.date
+                )<?=$mirrorExtensionPy?>
 
-            # Check if price data is available for both contracts and the underlying asset.
-            q = slice.quote_bars
-            b = slice.bars
-            if option in q and mirror in q and option.underlying in b:
-                data_points = [
-                    IndicatorDataPoint(option, q[option].end_time, q[option].close),
-                    IndicatorDataPoint(mirror, q[mirror].end_time, q[mirror].close),
-                    IndicatorDataPoint(
-                        option.underlying, b[option.underlying].end_time, b[option.underlying].close
-                    )
-                ]
-                for data_point in data_points:
-                    indicator.update(data_point)
+                # Check if price data is available for both contracts and the underlying asset.
+                q = slice.quote_bars
+                b = slice.bars
+                if option in q and mirror in q and option.underlying in b:
+                    data_points = [
+                        IndicatorDataPoint(option, q[option].end_time, q[option].close),
+                        IndicatorDataPoint(mirror, q[mirror].end_time, q[mirror].close),
+                        IndicatorDataPoint(
+                            option.underlying, b[option.underlying].end_time, b[option.underlying].close
+                        )
+                    ]
+                    for data_point in data_points:
+                        indicator.update(data_point)
 
-                # Get the current value of the <?=$typeName?> indicator.
-                value = indicator.current.value
+                    # Get the current value of the <?=$typeName?> indicator.
+                    value = indicator.current.value
         
         # Sell straddle as an example to trade.
         if not self.portfolio.invested:

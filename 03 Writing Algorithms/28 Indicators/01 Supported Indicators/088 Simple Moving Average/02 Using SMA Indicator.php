@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'SimpleMovingAverage';
 $helperName = 'SMA';
+$pyHelperName = 'sma';
 $helperArguments = 'symbol, 20';
 $properties = array("RollingSum");
 $pyProperties = array("rolling_sum");

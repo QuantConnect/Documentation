@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineVolumeRatio';
 $helperName = 'ADVR';
+$pyHelperName = 'advr';
 $helperArguments = '[symbol, reference]';
 $properties = array();
 $pyProperties = array();

@@ -1,0 +1,147 @@
+<p>The following examples demonstrate some common practices for using the transaction manager.</p>
+
+<h4>Example 1: 2-Level Take Profit And Stop Loss</h4>
+<p>The following algorithm trades volatility using the <a href="https://www.quantconnect.com/datasets/cboe-vix-daily">CBOE VIX dataset</a>. It makes use of the transaction manager to handle a 2-layer take profit and stop loss risk management.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class TransactionManagerAlgorithm : QCAlgorithm
+{
+    private Symbol _spy, _vix;
+    private ExponentialMovingAverage _ema;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2023, 11, 1);
+        
+        // Request SPY data for trading and trade on daily signals so we use daily resolution.
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        // Subscribe to VIX data to generate trade signals.
+        _vix = AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
+
+        // Use the EMA indicator to generate trade signals from VIX.
+        _ema = EMA(_vix, 20, Resolution.Daily);
+        // Warm up the EMA indicator to enable immediate use.
+        WarmUpIndicator(_vix, _ema, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_spy, out var spyBar))
+        {
+            var vix = Securities[_vix].Price;
+
+            // Trade based on volatility. Sell SPY if VIX is in an uptrend, indicating low market volatility.
+            // Buy SPY if VIX is in a downtrend, indicating a volatile market.
+            if (vix &gt; _ema &amp;&amp; !Portfolio[_spy].IsLong)
+            {
+                // Cancel all open orders to remove redundant take profit and stop loss orders.
+                Transactions.CancelOpenOrders();
+
+                var quantity = 10 - Portfolio[_spy].Quantity;
+                MarketOrder(_spy, quantity);
+                // Stop Loss at 2%.
+                StopMarketOrder(_spy, -10, spyBar.Close * 0.98m, tag: "stop loss");
+                // Take profit at 4%.
+                LimitOrder(_spy, -5, spyBar.Close * 1.04m, tag: "take profit");
+            }
+            else if (vix &lt; _ema &amp;&amp; !Portfolio[_spy].IsShort)
+            {
+                // Cancel all open orders to remove redundant take profit and stop loss orders.
+                Transactions.CancelOpenOrders();
+
+                var quantity = -10 - Portfolio[_spy].Quantity;
+                MarketOrder(_spy, quantity);
+                // Stop Loss at 2%.
+                StopMarketOrder(_spy, 10, spyBar.Close * 1.02m, tag: "stop loss");
+                // Take profit at 4%.
+                LimitOrder(_spy, 5, spyBar.Close * 0.96m, tag: "take profit");
+            }
+        }
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        // If the take profit order was filled out, we place the 2nd layer of take profit.
+        var takeProfitOrders = Transactions.GetOrderTickets(x =&gt; x.OrderType == OrderType.Limit).ToList();
+        if (takeProfitOrders.Count == 0)
+        {
+            return;
+        }
+        var lastTakeProfitOrderId = takeProfitOrders.MaxBy(x =&gt; x.Time).OrderId;
+
+        if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.Id == lastTakeProfitOrderId)
+        {
+            // Cancel all open orders to remove redundant stop loss orders.
+            Transactions.CancelOpenOrders();
+            // 2nd layer Take profit at extra 4%.
+            var takeProfitPrice = orderEvent.FillQuantity &gt; 0 ? orderEvent.FillPrice * 0.96m : orderEvent.FillPrice * 1.04m;
+            LimitOrder(_spy, 5, takeProfitPrice, tag: "second-layer take profit");
+        }
+        else if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.Ticket.OrderType == OrderType.StopMarket)
+        {
+            // Cancel all open orders to remove redundant take profit orders if stop loss.
+            Transactions.CancelOpenOrders();
+        }
+    }
+}</pre>
+    <pre class="python">class TransactionManagerAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 11, 1)
+        
+        # Request SPY data for trading and trade on daily signals so we use daily resolution.
+        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        #Subscribe to VIX data to generate trade signals.
+        self.vix = self.add_data(CBOE, "VIX", Resolution.DAILY).symbol
+
+        # Use the EMA indicator to generate trade signals from VIX.
+        self._ema = self.ema(self.vix, 20, Resolution.DAILY)
+        # Warm up the EMA indicator to enable immediate use.
+        self.warm_up_indicator(self.vix, self._ema, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        spy_bar = slice.bars.get(self.spy)
+        if spy_bar:
+            vix = self.securities[self.vix].price
+            ema = self._ema.current.value
+
+            # Trade based on volatility. Sell SPY if VIX is in an uptrend, indicating low market volatility.
+            # Buy SPY if VIX is in a downtrend, indicating a volatile market.
+            if vix &gt; ema and not self.portfolio[self.spy].is_long:
+                # Cancel all open orders to remove redundant take profit and stop loss orders.
+                self.transactions.cancel_open_orders()
+
+                quantity = 10 - self.portfolio[self.spy].quantity
+                self.market_order(self.spy, quantity)
+                # Stop Loss at 2%.
+                self.stop_market_order(self.spy, -10, spy_bar.close * 0.98, tag="stop loss")
+                # Take profit at 4%.
+                self.limit_order(self.spy, -5, spy_bar.close * 1.04, tag="take profit")
+            elif vix &lt; ema and not self.portfolio[self.spy].is_short:
+                # Cancel all open orders to remove redundant take profit and stop loss orders.
+                self.transactions.cancel_open_orders()
+
+                quantity = -10 - self.portfolio[self.spy].quantity
+                self.market_order(self.spy, quantity)
+                # Stop Loss at 2%.
+                self.stop_market_order(self.spy, 10, spy_bar.close * 1.02, tag="stop loss")
+                # Take profit at 4%.
+                self.limit_order(self.spy, 5, spy_bar.close * 0.96, tag="take profit")
+
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        # If the take profit order was filled out, we place the 2nd layer of take profit.
+        take_profit_orders = list(self.transactions.get_order_tickets(lambda x: x.order_type == OrderType.LIMIT))
+        if len(take_profit_orders) == 0:
+            return
+        last_take_profit_order_id = sorted(take_profit_orders, key=lambda x: x.time)[-1].order_id
+
+        if order_event.status == OrderStatus.FILLED and order_event.id == last_take_profit_order_id:
+            # Cancel all open orders to remove redundant stop loss orders.
+            self.transactions.cancel_open_orders()
+            # 2nd layer Take profit at extra 4%.
+            take_profit_price = order_event.fill_price * (0.96 if order_event.fill_quantity &gt; 0 else 1.04)
+            self.limit_order(self.spy, 5, take_profit_price, tag="second-layer take profit")
+        elif order_event.status == OrderStatus.FILLED and order_event.ticket.order_type == OrderType.STOP_MARKET:
+            # Cancel all open orders to remove redundant take profit orders if stop loss.
+            self.transactions.cancel_open_orders()</pre>
+</div>

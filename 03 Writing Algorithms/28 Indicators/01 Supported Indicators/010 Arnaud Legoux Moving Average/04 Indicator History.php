@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ArnaudLegouxMovingAverage';
 $helperName = 'ALMA';
+$pyHelperName = 'alma';
 $helperArguments = 'symbol, 10, 6, 0.85';
 $hasReference = false;
 $isOptionIndicator = false;

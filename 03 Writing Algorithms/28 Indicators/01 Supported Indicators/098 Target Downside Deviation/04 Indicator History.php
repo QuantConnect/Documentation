@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'TargetDownsideDeviation';
 $helperName = 'TDD';
+$pyHelperName = 'tdd';
 $helperArguments = 'symbol, 50';
 $hasReference = false;
 $isOptionIndicator = false;

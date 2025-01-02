@@ -1,0 +1,247 @@
+<p>The following examples demonstrate some common practices for multi-asset modeling.</p>
+
+<h4>Example 1: BTC Spot-Crypto Future Arbitration</h4>
+<p>This algorithm demonstrates an arbitration between Spot and Crypto Future BTCUSDT using a BTC cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. To ensure the cash position is sufficient to open the buy position, we order the buy side after the sell side is filled and the cash is replenished.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
+{
+    private Symbol _btcusdt, _btcFuture;
+    private decimal _threshold = 0.005m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2022, 5, 1);
+        SetEndDate(2024, 1, 1);
+        // Seed the last price to set the initial price of the BTCUSDT holdings.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        
+        // Simulate a cash Bybit account.
+        SetBrokerageModel(BrokerageName.Bybit, AccountType.Cash);
+        SetAccountCurrency("USDT");
+
+        // Request BTCUSD spot and future data to trade their price discrepancies.
+        var btcusdt = AddCrypto("BTCUSDT", Resolution.Minute, market: Market.Bybit);
+        _btcusdt = btcusdt.Symbol;
+        _btcFuture = AddCryptoFuture("BTCUSDT", Resolution.Minute, market: Market.Bybit).Symbol;
+
+        // Simulate the portfolio is holding BTC cash initially via BTCUSDT position.
+        // Note that the performance will also be affected by the BTC performance in the default account currency.
+        Portfolio[_btcusdt].SetHoldings(averagePrice: btcusdt.Price, quantity: 2);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.QuoteBars.TryGetValue(_btcusdt, out var spot) &amp;&amp; slice.QuoteBars.TryGetValue(_btcFuture, out var future))
+        {
+            // If the spot price is higher than the future price more than the threshold,
+            // Do arbitration by selling the spot BTC and buying the future.
+            if (spot.Close &gt;= future.Close * (1m + _threshold) &amp;&amp; !Portfolio[_btcusdt].IsShort)
+            {
+                Sell(_btcusdt, 1m);
+            }
+            // If the future price is higher than the spot price more than the threshold,
+            // Do arbitration by buying the spot BTC and selling the future.
+            if (future.Close &gt;= spot.Close * (1m + _threshold) &amp;&amp; !Portfolio[_btcusdt].IsLong)
+            {
+                Sell(_btcFuture, 1m);
+            }
+        }
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        // Order the buy-side of the arb only when the BTC is sold and USDT is obtained.
+        if (orderEvent.Quantity &lt; 0 &amp;&amp; orderEvent.Status == OrderStatus.Filled)
+        {
+            var toBuySymbol = orderEvent.Symbol == _btcusdt ? _btcFuture : _btcusdt;
+            // Calculate the initial margin needed. We must sell the same amount of BTC to obtain sufficient USDT for trade.
+            var margin = CalculateInitialMargin(toBuySymbol);
+            // Check if USDT cash is sufficient to open the position.
+            if (Portfolio.CashBook["USDT"].Amount &gt;= margin)
+            {
+                Buy(toBuySymbol, 1m);
+            }
+        }
+    }
+
+    private decimal CalculateInitialMargin(Symbol toBuy)
+    {
+        // Calculate the initial margin of the symbol on the long side.
+        var security = Securities[toBuy];
+        var parameter = new InitialMarginParameters(security, 1m);
+        var initialMargin = security.BuyingPowerModel.GetInitialMarginRequirement(parameter);
+        return initialMargin.Value;
+    }
+}</pre>
+    <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
+    threshold = 0.005
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 5, 1)
+        self.set_end_date(2024, 1, 1)
+        # Seed the last price to set the initial price of the BTCUSDT holdings.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Simulate a cash Bybit account.
+        self.set_brokerage_model(BrokerageName.BYBIT, AccountType.Cash)
+        self.set_account_currency("USDT")
+
+        # Request BTCUSD spot and future data to trade their price discrepancies.
+        btcusdt = self.add_crypto("BTCUSDT", Resolution.MINUTE, market=Market.BYBIT)
+        self.btcusdt = btcusdt.symbol
+        self.btc_future = self.add_crypto_future("BTCUSDT", Resolution.MINUTE, market=Market.BYBIT).symbol
+
+        # Simulate the portfolio is holding BTC cash initially via BTCUSDT position.
+        # Note that the performance will also be affected by the BTC performance in the default account currency.
+        self.portfolio[self.btcusdt].set_holdings(average_price=btcusdt.price, quantity=2)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        spot = slice.quote_bars.get(self.btcusdt)
+        future = slice.quote_bars.get(self.btc_future)
+        if spot and future:
+            # If the spot price is higher than the future price more than the threshold,
+            # Do arbitration by selling the spot BTC and buying the future.
+            if spot.close &gt;= future.close * (1 + self.threshold) and not self.portfolio[self.btcusdt].is_short:
+                self.sell(self.btcusdt, 1)
+            # If the future price is higher than the spot price more than the threshold,
+            # Do arbitration by buying the spot BTC and selling the future.
+            if future.close &gt;= spot.close * (1 + self.threshold) and not self.portfolio[self.btcusdt].is_long:
+                self.sell(self.btc_future, 1)
+
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        # Order the buy-side of the arb only when the BTC is sold and USDT is obtained.
+        if order_event.quantity &lt; 0 and order_event.status == OrderStatus.FILLED:
+            to_buy_symbol = self.btc_future if order_event.symbol == self.btcusdt else self.btcusdt
+            # Calculate the initial margin needed, we need to sell the same amount of BTC to obtain sufficient USDT for trade.
+            margin = self.calculate_initial_margin(to_buy_symbol)
+            # Check if USDT cash is sufficient to open the position.
+            if self.portfolio.cash_book["USDT"].amount &gt;= margin:
+                self.buy(to_buy_symbol, 1)
+
+    def calculate_initial_margin(self, to_buy: Symbol) -&gt; None:
+        # Calculate the initial margin of the symbol on the long side.
+        security = self.securities[to_buy]
+        parameter = InitialMarginParameters(security, 1)
+        initial_margin = security.buying_power_model.get_initial_margin_requirement(parameter)
+        return initial_margin.value</pre>
+</div>
+
+<h4>Example 2: BTC Spot-Future Arbitration</h4>
+<p>This algorithm implements a similar logic to the above example of an arbitration algorithm between spot BTCUSD and Future BTC using a cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. Note that we need to calculate the future value of the Future fairly compared to the spot BTC. Also, we need to rollover any Futures contracts.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
+{
+    private Symbol _btcusd;
+    private Future _btcFuture;
+    private decimal _threshold = 0.005m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2024, 1, 1);
+        // Set cash to sell Futures.
+        SetCash(10000000);
+        // Seed the last price to set the initial price of the BTCUSD holdings.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Request BTCUSD spot and future data to trade their price discrepancies.
+        _btcusd = AddCrypto("BTCUSD", Resolution.Minute, market: Market.Coinbase).Symbol;
+        _btcFuture = AddFuture(Futures.Currencies.BTC, Resolution.Minute, dataMappingMode: DataMappingMode.OpenInterest);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var mappedFuture = _btcFuture.Mapped;
+        if (slice.QuoteBars.TryGetValue(_btcusd, out var spot) &amp;&amp; slice.QuoteBars.TryGetValue(_btcFuture.Symbol, out var future))
+        {
+            // Use forward price to compare to spot BTC price fairly.
+            var discountFactor = RiskFreeInterestRateModel.GetInterestRate(slice.Time) * (mappedFuture.ID.Date - slice.Time).Days / 365m;
+            var btcFutureFV = future.Close * Convert.ToDecimal(Math.Exp((double)discountFactor));
+            // If the spot price is higher than the future price more than the threshold,
+            // Do arbitration by selling the spot BTC and buying the future.
+            if (spot.Close &gt;= btcFutureFV * (1m + _threshold) &amp;&amp; !Portfolio[_btcusd].IsShort)
+            {
+                Sell(_btcusd, _btcFuture.SymbolProperties.ContractMultiplier);
+                Buy(mappedFuture, 1m);
+            }
+            // If the future price is higher than the spot price more than the threshold,
+            // Do arbitration by buying the spot BTC and selling the future.
+            else if (btcFutureFV &gt;= spot.Close * (1m + _threshold) &amp;&amp; !Portfolio[_btcusd].IsLong)
+            {
+                Sell(mappedFuture, 1m);
+                Buy(_btcusd, _btcFuture.SymbolProperties.ContractMultiplier);
+            }
+            // Capitalize the arbitrage positions when prices converge.
+            else if ((spot.Close &lt;= btcFutureFV &amp;&amp; Portfolio[_btcusd].IsShort) || (btcFutureFV &lt;= spot.Close &amp;&amp; Portfolio[_btcusd].IsLong))
+            {
+                Liquidate();
+            }
+        }
+
+        // Get Symbol Change Event of the Continuous Future (change in mapped contract) to roll over.
+        if (slice.SymbolChangedEvents.TryGetValue(_btcFuture.Symbol, out var changedEvent))
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            // Subscribe to the trading data for the new symbol.
+            var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+            var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -&gt; {newSymbol}";
+            var quantity = Portfolio[oldSymbol].Quantity;
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            Liquidate(oldSymbol, tag: tag);
+            if (quantity != 0)
+            {
+                MarketOrder(newSymbol, quantity, tag: tag);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
+    threshold = 0.005
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2024, 1, 1)
+        # Set cash to sell Futures.
+        self.set_cash(10000000)
+        # Seed the last price to set the initial price of the BTCUSD holdings.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Request BTCUSD spot and future data to trade their price discrepancies.
+        self.btcusd = self.add_crypto("BTCUSD", Resolution.MINUTE, market=Market.COINBASE).symbol
+        self.btc_future = self.add_future(Futures.Currencies.BTC, Resolution.MINUTE, data_mapping_mode=DataMappingMode.OPEN_INTEREST)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        mapped_future = self.btc_future.mapped
+        spot = slice.quote_bars.get(self.btcusd)
+        future = slice.quote_bars.get(mapped_future)
+        if spot and future:
+            # Use forward price fairly to compare to the spot BTC price.
+            discount_factor = self.risk_free_interest_rate_model.get_interest_rate(slice.time) * (mapped_future.id.date - slice.time).total_seconds() / 60 / 60 / 24 / 365
+            btc_future_fv = future.close * np.exp(discount_factor)
+            # If the spot price is higher than the future price more than the threshold,
+            # Do arbitration by selling the spot BTC and buying the future.
+            if spot.close &gt;= btc_future_fv * (1 + self.threshold) and not self.portfolio[self.btcusd].is_short:
+                self.sell(self.btcusd, self.btc_future.symbol_properties.contract_multiplier)
+                self.buy(mapped_future, 1)
+            # If the future price is higher than the spot price more than the threshold,
+            # Do arbitration by buying the spot BTC and selling the future.
+            elif btc_future_fv &gt;= spot.close * (1 + self.threshold) and not self.portfolio[self.btcusd].is_long:
+                self.sell(mapped_future, 1)
+                self.buy(self.btcusd, self.btc_future.symbol_properties.contract_multiplier)
+            # Capitalize the arbitrage positions when prices converge.
+            elif (btc_future_fv &lt;= spot.close and self.portfolio[self.btcusd].is_long) or (spot.close &lt;= btc_future_fv and self.portfolio[self.btcusd].is_short):
+                self.liquidate()
+                
+        # Get Symbol Change Event of the Continuous Future (change in mapped contract) to roll over.
+        changed_event = slice.symbol_changed_events.get(self.btc_future.symbol)
+        if changed_event:
+            old_symbol = changed_event.old_symbol
+            # Subscribe to the trading data for the new symbol.
+            new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
+            tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -&gt; {new_symbol}"
+            quantity = self.portfolio[old_symbol].quantity
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            self.liquidate(old_symbol, tag = tag)
+            if quantity != 0:
+                self.market_order(new_symbol, quantity, tag = tag)</pre>
+</div>

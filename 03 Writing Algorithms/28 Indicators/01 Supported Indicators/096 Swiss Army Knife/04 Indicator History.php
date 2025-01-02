@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'SwissArmyKnife';
 $helperName = 'SWISS';
+$pyHelperName = 'swiss';
 $helperArguments = 'symbol, 20, 0.2, SwissArmyKnifeTool.Gauss';
 $hasReference = false;
 $isOptionIndicator = false;

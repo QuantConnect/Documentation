@@ -27,7 +27,7 @@
                     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
                 </ul>
             </td>
-            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
         <tr>
             <td><code class="csharp">Exchange</code><code class="python">exchange</code></td>

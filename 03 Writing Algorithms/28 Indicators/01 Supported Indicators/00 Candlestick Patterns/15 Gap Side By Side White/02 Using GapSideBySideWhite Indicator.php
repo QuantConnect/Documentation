@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'GapSideBySideWhite';
 $helperName = 'GapSideBySideWhite';
+$pyHelperName = 'gap_side_by_side_white';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

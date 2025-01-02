@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'DoubleExponentialMovingAverage';
 $helperName = 'DEMA';
+$pyHelperName = 'dema';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

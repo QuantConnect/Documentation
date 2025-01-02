@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'InternalBarStrength';
 $helperName = 'IBS';
+$pyHelperName = 'ibs';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

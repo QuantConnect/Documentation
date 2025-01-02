@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'StochasticRelativeStrengthIndex';
 $helperName = 'SRSI';
+$pyHelperName = 'srsi';
 $helperArguments = 'symbol, 14, 14, 3, 3';
 $hasReference = false;
 $isOptionIndicator = false;

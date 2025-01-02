@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'UniqueThreeRiver';
 $helperName = 'UniqueThreeRiver';
+$pyHelperName = 'unique_three_river';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

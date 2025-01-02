@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ParabolicStopAndReverse';
 $helperName = 'PSAR';
+$pyHelperName = 'psar';
 $helperArguments = 'symbol, 0.02, 0.02, 0.2';
 $properties = array();
 $pyProperties = array();

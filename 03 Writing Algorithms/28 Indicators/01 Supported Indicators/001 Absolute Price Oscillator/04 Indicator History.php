@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AbsolutePriceOscillator';
 $helperName = 'APO';
+$pyHelperName = 'apo';
 $helperArguments = 'symbol, 10, 2, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

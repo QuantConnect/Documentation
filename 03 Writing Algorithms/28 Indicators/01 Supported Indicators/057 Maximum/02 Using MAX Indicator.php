@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Maximum';
 $helperName = 'MAX';
+$pyHelperName = 'max';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

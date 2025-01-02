@@ -1,1 +1,1 @@
-<p>Orders through <?=$brokerageName?> do not experience slippage in backtests. In<? if ($paperTradingSupported) { ?> paper trading and<? } ?> live trading, your orders may experience slippage.</p>
+<p>Orders through <?=$brokerageName?> do not experience slippage in backtests<?= $paperTradingSupported ? ". In " .$brokerageName. " paper trading and" : " and <a href='/docs/v2/cloud-platform/live-trading/brokerages/quantconnect-paper-trading'>QuantConnect Paper Trading</a>. In "?> live trading, your orders may experience slippage.</p>

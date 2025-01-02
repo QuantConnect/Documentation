@@ -4,7 +4,6 @@
     <pre class="csharp">public class Automatic<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
     <?=$memberDeclarationsAutomaticC?>
-    private List&lt;<?=$typeName?>&gt; _indicators = new();
     private (Symbol option1, Symbol option2) _options;
 
     public override void Initialize()
@@ -23,9 +22,6 @@
 
     private void UpdateContractsAndGreeks()
     {
-        // Remove indicators on expired contracts.
-        _indicators = _indicators.Where(indicator => indicator.OptionSymbol.ID.Date > Time).ToList();
-        
         // Get all the tradable Option contracts.
         var chain = OptionChain(<?=$underlyingSymbolC?>);
         
@@ -48,12 +44,12 @@
             if (contracts.Count > 1)
             {
                 // Subscribe to both contracts.
-                <?=$addContractMethodC?>(contracts[0]);
-                <?=$addContractMethodC?>(contracts[1]);
+                var contract1 = <?=$addContractMethodC?>(contracts[0]) as dynamic;
+                var contract2 = <?=$addContractMethodC?>(contracts[1]) as dynamic;
 
                 // Create and save the automatic <?=$typeName?> indicators.
-                _indicators.Add(<?=$helperMethod?>(contracts[0], contracts[1]));
-                _indicators.Add(<?=$helperMethod?>(contracts[1], contracts[0]));
+                contract1.<?=$helperMethod?> = <?=$helperMethod?>(contracts[0], contracts[1]);
+                contract2.<?=$helperMethod?> = <?=$helperMethod?>(contracts[1], contracts[0]);
 
                 _options = (contracts[0], contracts[1]);
             }
@@ -63,10 +59,13 @@
     public override void OnData(Slice slice)
     {
         // Get the <?=$typeName?> indicator of each contract.
-        foreach (var indicator in _indicators)
+        foreach (var (canonical, chain) in slice.OptionChain)
         {
-            var symbol = indicator.OptionSymbol;
-            var value = indicator.Current.Value;
+            foreach (var symbol in chain)
+            {
+                var option = Securities[symbol] as dynamic;
+                var indicator = option.<?=$helperMethod?>;
+            }
         }
 
         // Sell straddle as an example to trade.
@@ -84,8 +83,6 @@
 }</pre>
     <pre class="python">class Automatic<?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
     
-    _indicators = []
-    
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 1, 1)
         # Subscribe to the underlying asset.
@@ -99,9 +96,6 @@
         )
 
     def _update_contracts_and_greeks(self) -&gt; None:
-        # Remove indicators on expired contracts.
-        self._indicators = [indicator for indicator in self._indicators if indicator.option_symbol.id.date > self.time]
-        
         # Get all the tradable Option contracts.
         chain = self.option_chain(<?=$underlyingSymbolPy?>, flatten=True).data_frame
         if chain.empty:
@@ -129,19 +123,21 @@
 
         for call, put in pairs:
             # Subscribe to both contracts.
-            self.<?=$addContractMethodPy?>(call)
-            self.<?=$addContractMethodPy?>(put)
+            contract1 = self.<?=$addContractMethodPy?>(call)
+            contract2 = self.<?=$addContractMethodPy?>(put)
             
             # Create and save the automatic <?=$typeName?> indicators.
-            self._indicators.extend([self.<?=strtolower($helperMethod)?>(call, put), self.<?=strtolower($helperMethod)?>(put, call)])
+            contract1.<?=strtolower($helperMethod)?> = self.<?=strtolower($helperMethod)?>(call, put)
+            contract2.<?=strtolower($helperMethod)?> = self.<?=strtolower($helperMethod)?>(put, call)
 
             self._options = (call, put)
         
     def on_data(self, slice: Slice) -&gt; None:
         # Get the <?=$typeName?> indicator of each contract.
-        for indicator in self._indicators:
-            symbol = indicator.option_symbol
-            value = indicator.current.value
+        for canonical, chain in slice.option_chain.items():
+            for symbol in chain:
+                option = self.securities[symbol]
+                indicator = option.<?=strtolower($helperMethod)?>
         
         # Sell straddle as an example to trade.
         if not self.portfolio.invested:

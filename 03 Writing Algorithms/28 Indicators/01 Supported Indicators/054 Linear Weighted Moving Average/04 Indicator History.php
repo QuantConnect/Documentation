@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'LinearWeightedMovingAverage';
 $helperName = 'LWMA';
+$pyHelperName = 'lwma';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

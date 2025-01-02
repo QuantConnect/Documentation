@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'DoubleExponentialMovingAverage';
 $helperName = 'DEMA';
+$pyHelperName = 'dema';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AccumulationDistribution';
 $helperName = 'AD';
+$pyHelperName = 'ad';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'WilderAccumulativeSwingIndex';
 $helperName = 'ASI';
+$pyHelperName = 'asi';
 $helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();

@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'LongLeggedDoji';
 $helperName = 'LongLeggedDoji';
+$pyHelperName = 'long_legged_doji';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

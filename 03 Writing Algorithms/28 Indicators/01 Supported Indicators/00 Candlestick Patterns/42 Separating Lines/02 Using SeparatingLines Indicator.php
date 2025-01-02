@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'SeparatingLines';
 $helperName = 'SeparatingLines';
+$pyHelperName = 'separating_lines';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();

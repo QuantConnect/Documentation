@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ChandeKrollStop';
 $helperName = 'CKS';
+$pyHelperName = 'cks';
 $helperArguments = 'symbol, 10, 1, 9';
 $properties = array("ShortStop","LongStop");
 $pyProperties = array("short_stop","long_stop");

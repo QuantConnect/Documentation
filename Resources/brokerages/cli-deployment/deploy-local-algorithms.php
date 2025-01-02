@@ -21,7 +21,7 @@ if ($isBrokerage) {
       "Terminal Link",
       "Trading Technologies",
       "Kraken",
-      "TD Ameritrade",
+      "Charles Schwab",
       "Bybit",
       "TradeStation",
       "Alpaca"
@@ -41,7 +41,7 @@ $dataProviders = array(
     "Terminal Link",
     "Trading Technologies",
     "Kraken",
-    "TDAmeritrade",
+    "Charles Schwab",
     "IQFeed",
     "Polygon",
     "IEX Cloud",
@@ -70,7 +70,7 @@ Select a brokerage:
 10) Terminal Link
 11) Trading Technologies
 12) Kraken
-13) TD Ameritrade
+13) Charles Schwab
 14) Bybit
 15) TradeStation
 16) Alpaca
@@ -130,7 +130,7 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TDAmeritrade
+12) Charles Schwab
 13) IQFeed
 14) Polygon
 15) IEX
@@ -161,7 +161,7 @@ Select a live data feed:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TDAmeritrade
+12) Charles Schwab
 13) IQFeed
 14) Polygon
 15) IEX
@@ -192,7 +192,7 @@ Select a live data provider:
 9) Terminal Link
 10) Trading Technologies
 11) Kraken
-12) TDAmeritrade
+12) Charles Schwab
 13) IQFeed
 14) Polygon
 15) IEX

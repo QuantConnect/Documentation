@@ -1,0 +1,18 @@
+<p>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, <a href="/docs/v2/writing-algorithms/securities/asset-classes">subscribe to some data</a> so you can train the <code>copula</code> model and make predictions.</p>
+
+<p>Since the algorithm is trading on options as speculation tools, to avoid insufficient buying power limited at the algorithm level, use <code>NullBuyingPowerModel</code> to bypass that.</p>
+
+<div class="section-example-container">
+    <pre class="python">def initialize(self) -&gt; None:
+    # Request spx and ndx data for option pricing and selection.
+    self.spx = self.add_index("SPX", Resolution.DAILY).symbol
+    self.ndx = self.add_index("NDX", Resolution.DAILY).symbol
+
+    self.set_security_initializer(self.custom_security_initializer)
+
+def custom_security_initializer(self, security: Security) -&gt; None:
+    # Seed the last price for the initial filtering on option contracts using the price data.
+    security.set_market_price(self.get_last_known_price(security))
+    # Allow infinite margin to start the option positions.
+    security.set_buying_power_model(NullBuyingPowerModel())</pre>
+</div>

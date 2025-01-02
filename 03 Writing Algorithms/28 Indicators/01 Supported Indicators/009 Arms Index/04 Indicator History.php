@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ArmsIndex';
 $helperName = 'TRIN';
+$pyHelperName = 'trin';
 $helperArguments = '[symbol, reference]';
 $hasReference = true;
 $isOptionIndicator = false;

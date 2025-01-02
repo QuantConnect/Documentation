@@ -1,0 +1,43 @@
+<p>The following example gets the history of a <a href='/docs/v2/writing-algorithms/universes/crypto'>Crypto universe</a>:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CryptoUniverseHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 23);
+        // Add a universe of Cryptocurrencies.
+        var universe = AddUniverse(CryptoUniverse.Coinbase(data => data.Select(x => x.Symbol)));
+        // Get 5 days of history for the universe.
+        var history = History(universe, TimeSpan.FromDays(5));
+        // Iterate through each day of the universe history.
+        foreach (var universeDay in history)
+        {
+            var t = universeDay.EndTime;
+            // Select the Crypto with the largest daily return on this day.
+            var topGainer = universeDay
+                .Select(c => c as CryptoUniverse)
+                .OrderByDescending(c => (c.Close - c.Open) / c.Open)
+                .First();
+        }
+    }
+}</pre>
+    <pre class="python">class CryptoUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 23)
+        # Add a universe of Cryptocurrencies.
+        universe = self.add_universe(CryptoUniverse.coinbase(lambda data: [x.symbol for x in data]))
+        # Get 5 days of history for the universe.
+        history = self.history(universe, timedelta(5), flatten=True)</pre>
+</div>
+
+<img src='https://cdn.quantconnect.com/i/tu/universe-dataframe-crypto.png' class='python docs-image' alt='DataFrame of the last 5 days of a Crypto universe.'>
+
+<div class="python section-example-container">
+    <pre class="python"># Get the Crypto with the largest daily return each day.
+history['roc'] = (history['close'] - history['open']) / history['open']
+top_gainers = history.loc[history.groupby('time')['roc'].idxmax()]</pre>
+</div>
+
+<img src='https://cdn.quantconnect.com/i/tu/crypto-universe-history-top-gainers.png' class='python docs-image' alt='DataFrame of the daily top gainers in the Crypto universe.'>

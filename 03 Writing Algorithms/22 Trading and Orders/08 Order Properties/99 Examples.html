@@ -1,0 +1,174 @@
+<p>The following examples demonstrate some common practices for utilizing order properties.</p>
+
+<h4>Example 1: Extended Market Hour Orders</h4>
+<p>
+    The following algorithm trades buys or sells SPY during pre-market to capture momentum in the overnight gap. 
+    It exits the positions at 15 minutes after the market opens. 
+    To trade in the extended market hours without stale fills, it set the respective order properties.
+</p>
+<div class="section-example-container">
+    <pre class="csharp">public class OrderPropertiesAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private decimal _lastPrice = 0m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 2, 1);
+        
+        // Add extended market hour SPY data for trading.
+        _spy = AddEquity("SPY", extendedMarketHours: true).Symbol;
+
+        // Add a Scheduled Event to trade 2 hours enter a position during pre-market.
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.BeforeMarketOpen(_spy, 120), OpenPosition);
+        // Add a Scheduled Event to exit the position 15 minutes after market open.
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.AfterMarketOpen(_spy, 15), () => Liquidate());
+        // Add a Scheduled Event to cache the daily close price so you can generate signals the next day.
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.BeforeMarketClose(_spy), GetLastPrice);
+        // Add a warm-up period so the algorithm trades on the first day in live mode.
+        SetWarmUp(TimeSpan.FromDays(1));
+    }
+
+    private void OpenPosition()
+    {
+        if (_lastPrice &gt; 0m)
+        {
+            var currentPrice = Securities[_spy].Price;
+
+            // Define the order properties to trade in pre-market. The order will only valid for 3 minutes to avoid 
+            // stale fills.
+            var orderProperties = new InteractiveBrokersOrderProperties
+            {
+                TimeInForce = TimeInForce.GoodTilDate(Time.AddMinutes(3)),
+                OutsideRegularTradingHours = true
+            };
+
+            // Buy if the overnight direction is upward, indicating positive market sentiment.
+            // Sell if the overnight direction is downward, indicating negative market sentiment.
+            // Note that pre-market orders do not accept market order.
+            LimitOrder(_spy, currentPrice &gt; _lastPrice ? 10 : -10, currentPrice, orderProperties: orderProperties);
+        }
+    }
+
+    private void GetLastPrice()
+    {
+        _lastPrice = Securities[_spy].Price;
+    }
+}</pre>
+    <pre class="python">class OrderPropertiesAlgorithm(QCAlgorithm):
+    _last_price = None
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 2, 1)
+
+        # Add extended market hour SPY data for trading.
+        self._spy = self.add_equity("SPY", extended_market_hours=True).symbol
+
+        # Add a Scheduled Event to trade 2 hours enter a position during pre-market.
+        self.schedule.on(
+            self.date_rules.every_day(self._spy),
+            self.time_rules.before_market_open(self._spy, 120),
+            self._open_position
+        )
+        # Add a Scheduled Event to exit the position 15 minutes after market open.
+        self.schedule.on(
+            self.date_rules.every_day(self._spy),
+            self.time_rules.after_market_open(self._spy, 15),
+            self.liquidate
+        )
+        # Add a Scheduled Event to cache the daily close price so you can generate signals the next day.
+        self.schedule.on(
+            self.date_rules.every_day(self._spy),
+            self.time_rules.before_market_close(self._spy),
+            self._get_last_price
+        )
+        # Add a warm-up period so the algorithm trades on the first day in live mode.
+        self.set_warm_up(timedelta(1))
+    
+    def _open_position(self) -&gt; None:
+        if self._last_price:
+            current_price = self.securities[self._spy].price
+
+            # Define the order properties to trade in pre-market. The order will only valid for 3 minutes to avoid 
+            # stale fills.
+            order_properties = OrderProperties()
+            order_properties.time_in_force = TimeInForce.good_til_date(self.time + timedelta(minutes=3))
+            order_properties.outside_regular_trading_hours = True
+
+            # Buy if the overnight direction is upward, indicating positive market sentiment.
+            # Sell if the overnight direction is downward, indicating negative market sentiment.
+            # Note that pre-market orders do not accept market order.
+            quantity = 10 if current_price &gt; self._last_price else -10
+            self.limit_order(self._spy, quantity, current_price, order_properties=order_properties)    
+
+    def _get_last_price(self) -&gt; None:
+        self._last_price = self.securities[self._spy].price</pre>
+</div>
+
+<h4>Example 2: Financial Advisor Managing Client Funds</h4>
+<p>The following algorithm forms an equal-weight portfolio at the start of each week with the 10 most liquid US Equities. It demonstrates how order properties can give <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/financial-advisors'>financial advisors</a> easy control over client funds.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class OrderPropertiesAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2023, 8, 1);
+
+        // Define the order properties to trade with an FA group.
+        DefaultOrderProperties = new InteractiveBrokersOrderProperties
+        {
+            FaGroup = "TestGroupEQ",        // FA group
+            FaMethod = "NetLiq",            // Allocation by net liquidation
+            Account = "FA123456"            // FA account
+        };
+
+        // Add a universe that selects the 10 most liquid US Equities at the start of each week.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        UniverseSettings.Schedule.On(DateRules.WeekStart(spy));
+        var universe = AddUniverse(Universe.DollarVolume.Top(10));
+
+        // Add a Scheduled Event to rebalance at the start of each week.
+        Schedule.On(
+            DateRules.WeekStart(spy),
+            TimeRules.At(10, 0),
+            // Form an equal-weighted portfolio of the universe constituents.
+            () => SetHoldings(
+                universe.Selected.Select(symbol => new PortfolioTarget(symbol, 0.1m)).ToList(), 
+                // Liquidate the assets that aren't in the universe anymore.
+                liquidateExistingHoldings: true
+            )
+        );
+    }
+}</pre>
+    <pre class="python">class OrderPropertiesAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 8, 1)
+
+        # Define the order properties to trade with an FA group.
+        self.default_order_properties = InteractiveBrokersOrderProperties()
+        self.default_order_properties.fa_group = "TestGroupEQ"          # FA group
+        self.default_order_properties.fa_method = "EqualQuantity"       # Allocation by net liquidation
+        self.default_order_properties.account = "DU123456"              # FA account
+        
+        # Add a universe that selects the 10 most liquid US Equities at the start of each week.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.universe_settings.schedule.on(self.date_rules.week_start(spy))
+        universe = self.add_universe(self.universe.dollar_volume.top(10))
+
+        # Add a Scheduled Event to rebalance at the start of each week.
+        self.schedule.on(
+            self.date_rules.week_start(spy), 
+            self.time_rules.at(10, 0), 
+            lambda: self.set_holdings(
+                # Form an equal-weighted portfolio of the universe constituents.
+                [PortfolioTarget(symbol, 0.1) for symbol in universe.selected],
+                # Liquidate the assets that aren't in the universe anymore.
+                liquidate_existing_holdings=True
+            )
+        )</pre>
+</div>

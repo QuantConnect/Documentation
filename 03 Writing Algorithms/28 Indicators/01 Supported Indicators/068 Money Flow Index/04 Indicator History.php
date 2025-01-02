@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'MoneyFlowIndex';
 $helperName = 'MFI';
+$pyHelperName = 'mfi';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'StandardDeviation';
 $helperName = 'STD';
+$pyHelperName = 'std';
 $helperArguments = 'symbol, 22';
 $properties = array();
 $pyProperties = array();

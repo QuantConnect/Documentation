@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'ZeroLagExponentialMovingAverage';
 $helperName = 'ZLEMA';
+$pyHelperName = 'zlema';
 $helperArguments = 'symbol, 10';
 $hasReference = false;
 $isOptionIndicator = false;

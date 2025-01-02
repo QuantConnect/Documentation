@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'HighWaveCandle';
 $helperName = 'HighWaveCandle';
+$pyHelperName = 'high_wave_candle';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

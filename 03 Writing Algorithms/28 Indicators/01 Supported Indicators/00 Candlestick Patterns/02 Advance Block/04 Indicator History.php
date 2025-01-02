@@ -3,6 +3,7 @@
 $helperPrefix = 'CandlestickPatterns.';
 $typeName = 'AdvanceBlock';
 $helperName = 'AdvanceBlock';
+$pyHelperName = 'advance_block';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

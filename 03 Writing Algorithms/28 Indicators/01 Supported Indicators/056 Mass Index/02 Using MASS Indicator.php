@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MassIndex';
 $helperName = 'MASS';
+$pyHelperName = 'mass';
 $helperArguments = 'symbol, 9, 25';
 $properties = array();
 $pyProperties = array();

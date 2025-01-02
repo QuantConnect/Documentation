@@ -1,3 +1,195 @@
+<p>The following examples demonstrate some common practices for handling Option assignment.</p>
+
+<h4>Example 1: Liquidate After Assignment</h4>
+<p>
+    The following algorithm trades a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-straddle'>short straddle strategy</a> on ATM SPY Options that expire within seven days. 
+    To capitalize the cash profit, it liquidates the underlying assigned Equity position in the <code class="csharp">OnAssignmentOrderEvent</code><code class="pytohn">on_assignment_order_event</code> method.
+</p>
+<div class="section-example-container">
+    <pre class="csharp">public class OptionAssignmentAlgorithm : QCAlgorithm
+{
+    private Option _option;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 4, 1);
+        SetEndDate(2024, 5, 1);
+
+        // Add SPY Options data for trading.
+        _option = AddOption("SPY");
+        // Filter for the 2 ATM contracts that expire in 7 days to form a straddle.
+        _option.SetFilter((universe) =&gt; universe.IncludeWeeklys().Straddle(7));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Get the current Option chain and open a new position if we're not already invested.
+        if (!Portfolio.Invested &amp;&amp; slice.OptionChains.TryGetValue(_option.Symbol, out var chain))
+        {
+            // Select the strike and expiry of the contracts.
+            var strike = chain.Min(x =&gt; x.Strike);
+            var expiry = chain.Min(x =&gt; x.Expiry);
+            // Open the straddle position.
+            var optionStrategy = OptionStrategies.ShortStraddle(_option.Symbol, strike, expiry);
+            Buy(optionStrategy, 2);
+        }
+    }
+
+    public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
+    {
+        // Liquidate the assigned SPY position.
+        MarketOrder(
+            assignmentEvent.Symbol.Underlying, 
+            -assignmentEvent.Quantity * _option.SymbolProperties.ContractMultiplier
+        );
+    }
+}</pre>
+    <pre class="python">class OptionAssignmentAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 4, 1)
+        self.set_end_date(2024, 5, 1)
+    
+        # Add SPY Options data for trading.
+        self._option = self.add_option("SPY")
+        # Filter for the 2 ATM contracts that expire in 7 days to form a straddle.
+        self._option.set_filter(lambda universe: universe.include_weeklys().straddle(7))
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        # Get the current Option chain.
+        chain = slice.option_chains.get(self._option.symbol)
+        # Open a new position if we're not already invested.
+        if chain and not self.portfolio.invested:
+            # Select the strike and expiry of the contracts.
+            strike = list(chain)[0].strike
+            expiry = list(chain)[0].expiry
+            # Open the straddle position.
+            option_strategy = OptionStrategies.short_straddle(self._option.symbol, strike, expiry)
+            self.buy(option_strategy, 2)
+
+    def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
+        # Liquidate the assigned SPY position.
+        self.market_order(
+            assignment_event.symbol.underlying, 
+            -assignment_event.quantity * self._option.symbol_properties.contract_multiplier
+        )</pre>
+</div>
+
+<h4>Example 2: Wheel Strategy</h4>
+<p>The following algorithm demonstrates a <a href='/research/17871/automating-the-wheel-strategy/'>wheel Option strategy</a>. The strategy is split into separate parts to generate consistent income: selling puts and selling covered call.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class WheelStrategyAlgorithm : QCAlgorithm
+{
+    // Define the OTM threshold. A greater value means lower risk of assignment but lower premiums to collect.
+    private readonly decimal _otmThreshold = 0.05m;
+    private Equity _equity;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(1000000);
+
+        // Seed the initial price of the each new security so we can add and trade contracts in the same time step.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Add SPY data for trading. Use raw data normalization mode to enable fair strike price comparison.
+        _equity = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
+    }
+
+    private Symbol GetTargetContract(OptionRight right, decimal targetPrice)
+    {
+        // Get the Option chain.
+        var chain = OptionChain(_equity.Symbol);
+        // Select the contracts that are first to expire after 30 days since they have greater premiums and theta 
+        // to collect.
+        var expiry = chain.Where(x =&gt; x.Expiry &gt; Time.AddDays(30))
+            .Min(x =&gt; x.Expiry);
+        // Select the OTM Option contract to start the wheel or covered call.
+        Symbol symbol;
+        if (right == OptionRight.Call)
+        {
+            symbol = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == right &amp;&amp; x.Strike &gt;= targetPrice)
+                .OrderBy(x =&gt; x.Strike)
+                .First();
+        }
+        else
+        {
+            symbol = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == right &amp;&amp; x.Strike &lt;= targetPrice)
+                .OrderByDescending(x =&gt; x.Strike)
+                .First();
+        }
+        // Add the Option contract to the algorithm.
+        return AddOptionContract(symbol).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Start the wheel by selling the OTM put.
+        if (!Portfolio.Invested &amp;&amp; IsMarketOpen(_equity.Symbol))
+        {
+            var symbol = GetTargetContract(OptionRight.Put, _equity.Price * (1m - _otmThreshold));
+            SetHoldings(symbol, -0.2m);
+        }
+    }
+
+    public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
+    {
+        // After the put is assigned, look for an OTM call to form a covered call with the assigned underlying 
+        // position.
+        var symbol = GetTargetContract(OptionRight.Call, _equity.Price * (1m + _otmThreshold));
+        MarketOrder(symbol, -_equity.Holdings.Quantity / 100m);
+    }
+}</pre>
+    <pre class="python">class WheelStrategyAlgorithm(QCAlgorithm):
+    # Define the OTM threshold. A greater value means lower risk of assignment but lower premiums to collect.
+    _otm_threshold = 0.05
+
+    def initialize(self):
+        self.set_start_date(2020, 6, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(1000000)
+
+        # Seed the initial price of the each new security so we can add and trade contracts in the same time step.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
+        )
+        # Add SPY data for trading. Use raw data normalization mode to enable fair strike price comparison.
+        self._equity = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
+        
+    def _get_target_contract(self, right: OptionRight, target_price: float) -> Symbol:
+        # Get the Option chain.
+        chain = self.option_chain(self._equity.symbol, flatten=True).data_frame
+        # Select the contracts that are first to expire after 30 days since they have greater premiums and theta 
+        # to collect.
+        expiry_threshold = self.time + timedelta(30)
+        expiry = chain[chain.expiry > expiry_threshold].expiry.min()
+        # Select the OTM Option contract to start the wheel or covered call.
+        symbol = chain[
+            (chain.expiry == expiry) &
+            (chain.right == right) &
+            (chain.strike <= target_price if right == OptionRight.PUT else chain.strike >= target_price)
+        ].sort_values('strike', ascending=right == OptionRight.CALL).index[0]
+        # Add the Option contract to the algorithm.
+        return self.add_option_contract(symbol).symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Start the wheel by selling the OTM put.
+        if not self.portfolio.invested and self.is_market_open(self._equity.symbol):
+            symbol = self._get_target_contract(OptionRight.PUT, self._equity.price * (1-self._otm_threshold))
+            self.set_holdings(symbol, -0.2)
+    
+    def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
+        # After the put is assigned, look for an OTM call to form a covered call with the assigned underlying 
+        # position.
+        symbol = self._get_target_contract(OptionRight.CALL, self._equity.price * (1+self._otm_threshold))
+        self.market_order(symbol, -self._equity.holdings.quantity / 100)</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
 <div class="example-fieldset">
   <div class="example-legend">Demonstration Algorithms</div>
   

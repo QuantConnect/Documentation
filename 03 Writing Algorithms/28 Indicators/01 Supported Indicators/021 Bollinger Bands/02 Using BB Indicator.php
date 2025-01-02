@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'BollingerBands';
 $helperName = 'BB';
+$pyHelperName = 'bb';
 $helperArguments = 'symbol, 30, 2';
 $properties = array("StandardDeviation","MiddleBand","UpperBand","LowerBand","BandWidth","PercentB","Price");
 $pyProperties = array("standard_deviation","middle_band","upper_band","lower_band","band_width","percent_b","price");

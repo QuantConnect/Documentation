@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'ArmsIndex';
 $helperName = 'TRIN';
+$pyHelperName = 'trin';
 $helperArguments = '[symbol, reference]';
 $properties = array("ADRatio","ADVRatio");
 $pyProperties = array("ad_ratio","adv_ratio");

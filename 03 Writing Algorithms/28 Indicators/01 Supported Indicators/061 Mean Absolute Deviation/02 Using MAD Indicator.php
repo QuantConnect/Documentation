@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MeanAbsoluteDeviation';
 $helperName = 'MAD';
+$pyHelperName = 'mad';
 $helperArguments = 'symbol, 20';
 $properties = array("Mean");
 $pyProperties = array("mean");

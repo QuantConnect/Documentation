@@ -5,17 +5,19 @@
 </p>
 
 <ol>
-  <li>
-    <a href="/docs/v2/lean-cli/key-concepts/getting-started">Install and authenticate the LEAN CLI</a>.
-  </li>
-  <li>
-    Run the <code>lean deploy private-cloud --master</code> LEAN CLI command to start a work queue and listen for jobs from the team.
-    
+  <li><a href="/docs/v2/lean-cli/key-concepts/getting-started">Install and authenticate the LEAN CLI</a>.</li>
+  <li>Run the <code>lean private-cloud start</code> LEAN CLI command to start a work queue and listen for jobs from the team.<br>
+    <div class="cli section-example-container">
+      <pre>$ lean private-cloud start --master --stop --master-domain {example.master.domain} --compute="[{\"count\":3,\"type\":\"both\"}]" --token {token}</pre>
+    </div>
   </li>
   <p>If you are setting up a single server, this is all you need to do.</p>
+  <p>If you don't provide the <code>--token</code>, LEAN CLI generates one. If you don't define the <code>--compute</code>, LEAN CLI prompts for configuration options. The <code>--stop</code> optional argument stops any previous deployment (see <a href="/docs/v2/lean-cli/api-reference/lean-private-cloud-stop">lean private-cloud stop</a>).</p>
   
-  <li>
-    To expand the private cluster further so work is distributed across many servers, install the LEAN CLI into the second server and run <code>lean deploy private-cloud --slave</code>.
+  <li>To expand the private cluster further so work is distributed across many servers, install the LEAN CLI into the second server and run <code>lean deploy private-cloud --slave</code>.<br>
+    <div class="cli section-example-container">
+      <pre>$ lean private-cloud start --slave --master-domain {example.master.domain} --slave-domain {example.slave.domain} --compute="[{\"count\":2,\"type\":\"both\"}]" --token {token}</pre>
+    </div>
   </li>
   <p>This will spin up the second work-server to consume jobs.</p>
 </ol>

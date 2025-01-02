@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Trix';
 $helperName = 'TRIX';
+$pyHelperName = 'trix';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

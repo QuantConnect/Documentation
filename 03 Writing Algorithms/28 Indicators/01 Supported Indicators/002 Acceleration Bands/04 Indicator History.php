@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'AccelerationBands';
 $helperName = 'ABANDS';
+$pyHelperName = 'abands';
 $helperArguments = 'symbol, 10, 4, MovingAverageType.Simple';
 $hasReference = false;
 $isOptionIndicator = false;

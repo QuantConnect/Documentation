@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'TimeSeriesForecast';
 $helperName = 'TSF';
+$pyHelperName = 'tsf';
 $helperArguments = 'symbol, 3';
 $properties = array();
 $pyProperties = array();

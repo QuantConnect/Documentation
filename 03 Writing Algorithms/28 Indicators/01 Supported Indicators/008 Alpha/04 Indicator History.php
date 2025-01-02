@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'Alpha';
 $helperName = 'A';
+$pyHelperName = 'a';
 $helperArguments = 'symbol, reference, 20';
 $hasReference = true;
 $isOptionIndicator = false;

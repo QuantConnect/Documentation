@@ -3,6 +3,7 @@
 $helperPrefix = '';
 $typeName = 'LeastSquaresMovingAverage';
 $helperName = 'LSMA';
+$pyHelperName = 'lsma';
 $helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;

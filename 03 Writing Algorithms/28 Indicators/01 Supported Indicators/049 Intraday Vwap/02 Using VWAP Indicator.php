@@ -5,6 +5,7 @@ $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'IntradayVwap';
 $helperName = 'VWAP';
+$pyHelperName = 'vwap';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();
