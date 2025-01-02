@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for using order events.</p>
 
 <h4>Example 1: Illiquid Stock Partial Fill</h4>
-<p>The following algorithm trades EMA cross on CARZ, an illiquid ETF. To realistically simulate the fill behavior, we set a fill model to partially fill the orders with at most 100 shares per fill. We cancel the remaining open order after the partial fill since we only trade on the updated information.</p>
+<p>The following algorithm trades EMA cross on CARZ, an illiquid ETF. To realistically simulate the fill behavior, we set a fill model to partially fill the orders with at most 50% of the previous bar's volume per fill. We cancel the remaining open order after the partial fill since we only trade on the updated information.</p>
 <div class="section-example-container">
     <pre class="csharp">public class OrderEventsAlgorithm : QCAlgorithm
 {
@@ -21,7 +21,7 @@
 
         // Create EMA indicator to generate trade signals.
         _ema = EMA(_carz, 60, Resolution.Daily);
-        //Warm-up indicator for immediate readiness to use.
+        // Warm up indicator for immediate readiness to use.
         WarmUpIndicator(_carz, _ema, Resolution.Daily);
     }
 
@@ -49,7 +49,7 @@
             Transactions.CancelOpenOrders();
         }
     }
-
+    
     /// Implements a custom fill model that partially fills each order with a ratio of the previous trade bar.
     private class CustomPartialFillModel : FillModel
     {
@@ -154,5 +154,7 @@ class CustomPartialFillModel(FillModel):
         return fill</pre>
 </div>
 
-<h4>Example 2: Take Profit Stop Loss</h4>
-<? include(DOCS_RESOURCES."/securities/active-securities.php"); ?>
+<? 
+$number = 2;
+include(DOCS_RESOURCES."/examples/take-profit-stop-loss-example.php");
+?>
