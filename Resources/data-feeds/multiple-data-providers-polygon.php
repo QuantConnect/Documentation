@@ -4,7 +4,7 @@ $liveDeployment = $cloudPlatform
   : "/docs/v2/lean-cli/live-trading/data-providers/polygon#02-Deploy-Local-Algorithms"
 ?>
 <p>
-    When you <a href='<?=$liveDeployment?>'>deploy a live algorithm</a>, you can add multiple data provider.
+    When you <a href='<?=$liveDeployment?>'>deploy a live algorithm</a>, you can add multiple data providers.
     If you use multiple data providers, the order you select them in defines their order of precedence in Lean.
 <? if ($cloudPlatform) { ?>
     For example, if you set QuantConnect as the first provider and Polygon as the second provider, Lean only uses the Polygon data provider for securities that aren't available from the QuantConnect data provider.
