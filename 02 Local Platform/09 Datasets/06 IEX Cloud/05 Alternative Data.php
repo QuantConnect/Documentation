@@ -1,1 +1,0 @@
-<p>If you have licensed alternative data with QuantConnect, it works as expected with the IEX Cloud data provider for research, backtesting, and live trading.</p>
