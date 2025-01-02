@@ -2,10 +2,13 @@
 
 <h4>Limit Price Exceeds Precision Requirements</h4>
 
-<p>Limit prices must be a multiple of the security's <code class='python'>minimum_price_variation</code><code class='csharp'>MinimumPriceVariation</code> <a href='/docs/v2/writing-algorithms/securities/key-concepts#06-Symbol-Properties'>property</a> or you trigger the following warning message:</p>
+<p>
+    Limit prices must be a multiple of the security's <code class='python'>minimum_price_variation</code><code class='csharp'>MinimumPriceVariation</code> <a href='/docs/v2/writing-algorithms/securities/key-concepts#06-Symbol-Properties'>property</a>.
+    Otherwise, LEAN rounds the limit price for you and throws the following warning message:
+</p>
 <div class='error-messages'>Backtest Handled Error: Warning: To meet brokerage precision requirements, order LimitPrice was rounded to 6136.00 from 6136.125</div>
 
-<p>To avoid the warning, round the limit price to the nearest value that respects the <code class='python'>minimum_price_variation</code><code class='csharp'>MinimumPriceVariation</code>.</p>
+<p>To avoid the warning, round the limit price to the nearest value that respects the <code class='python'>minimum_price_variation</code><code class='csharp'>MinimumPriceVariation</code> before you place the order.</p>
 <div class="section-example-container">
     <pre class="csharp">private decimal AdjustLimitPrice(Security security, decimal price, bool roundUp = true)
 {
