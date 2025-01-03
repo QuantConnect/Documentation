@@ -7,6 +7,7 @@ $brokerageDetails = "";
 
 $dataFeedDetails = "
     <li>(Optional) Enter the host of the ThetaData Client. 
+    <br>
     <p>The default host is <span class='live-url'>ws://host.docker.internal:25520/v1/events</span> or <span class='live-url'>http://host.docker.internal:25510</span>.</p>
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
