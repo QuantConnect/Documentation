@@ -1,3 +1,150 @@
+<p>The following examples demonstrate some common practices for implementing a custom option exercise model.</p>
+
+<h4>Example 1: Cash Settlement</h4>
+<p>The following algorithm trades GOOG 30-day expiring straddle. Yet, instead of settling with the underlying stock, some brokerages will settle with cash for ITM options. To simulate this behavior, we can create a custom option exercise model.</p>
+<div class="section-example-container">
+    <pre class="csharp">using static QuantConnect.Extensions;
+public class OptionExerciseModelAlgorithm : QCAlgorithm
+{
+    private Symbol _goog;
+
+    public override void Initialize()
+    {
+        SetStartDate(2017, 4, 1);
+        SetEndDate(2017, 6, 30);
+
+        // Request GOOG option data for trading.
+        var security = AddOption("GOOG");
+        _goog = security.Symbol;
+        // Filter for the 2 ATM contracts expiring in 30 days to form a straddle strategy.
+        security.SetFilter((universe) =&gt; universe.IncludeWeeklys().Straddle(30));
+        // Set custom option exercise model for disabling exercise through security initializer.
+        SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Open position on updated option chain data.
+        if (!Portfolio.Invested &amp;&amp; slice.OptionChains.TryGetValue(_goog, out var chain))
+        {
+            // Only one strike and expiry for the straddle universe.
+            var strike = chain.Min(x =&gt; x.Strike);
+            var expiry = chain.Min(x =&gt; x.Expiry);
+            // Open the straddle position.
+            var optionStrategy = OptionStrategies.Straddle(_goog, strike, expiry);
+            Buy(optionStrategy, 5);
+        }
+    }
+
+    private class MySecurityInitializer : BrokerageModelSecurityInitializer
+    {
+        public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
+            : base(brokerageModel, securitySeeder) {}
+
+        public override void Initialize(Security security)
+        {
+            base.Initialize(security);
+
+            // Set the custom Option exercise model for Option securities
+            if (security.Type == SecurityType.Option)
+            {
+                (security as Option).SetOptionExerciseModel(new MyOptionExerciseModel());
+            }
+        }
+    }
+
+    // Define the custom Option exercise model outside of the algorithm
+    private class MyOptionExerciseModel : IOptionExerciseModel
+    {
+        public IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
+        {
+            var underlying = option.Underlying;
+            var utcTime = option.LocalTime.ConvertToUtc(option.Exchange.TimeZone);
+            var inTheMoney = option.IsAutoExercised(underlying.Close);
+            // Cash settle: using payoff.
+            var payoff = option.GetIntrinsicValue(underlying.Close);
+
+            // Only liquidate option positions, but do not add equity positions.
+            yield return new OrderEvent(
+                order.Id,
+                option.Symbol,
+                utcTime,
+                OrderStatus.Filled,
+                GetOrderDirection(order.Quantity),
+                payoff,
+                order.Quantity,
+                OrderFee.Zero,
+                "Option Settlement"
+            )
+            {
+                IsInTheMoney = inTheMoney
+            };
+        }
+    }
+}</pre>
+    <pre class="python">class OptionExerciseModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2017, 4, 1)
+        self.set_end_date(2017, 6, 30)
+
+        # Request GOOG option data for trading.
+        security = self.add_option("GOOG")
+        self.goog = security.symbol
+        # Filter for the 2 ATM contracts expiring in 30 days to form a straddle strategy.
+        security.set_filter(lambda universe: universe.include_weeklys().straddle(30))
+        # Set custom option exercise model for disabling exercise through security initializer.
+        self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Open position on updated option chain data.
+        chain = slice.option_chains.get(self.goog)
+        if chain and not self.portfolio.invested:
+            # Only one strike and expiry for the straddle universe.
+            strike = min(x.strike for x in chain)
+            expiry = min(x.expiry for x in chain)
+            # Open the straddle position.
+            option_straddle = OptionStrategies.straddle(self.goog, strike, expiry)
+            self.buy(option_straddle, 5)
+
+class MySecurityInitializer(BrokerageModelSecurityInitializer):
+    def __init__(self, brokerageModel, securitySeeder):
+        super().__init__(brokerageModel, securitySeeder)
+
+    def initialize(self, security: Security) -&gt; None:
+        super().initialize(security)
+
+        # Set the custom Option exercise model for Option securities
+        if security.type == SecurityType.OPTION:
+            security.set_option_exercise_model(MyOptionExerciseModel())
+
+# Define the custom Option exercise model outside of the algorithm
+class MyOptionExerciseModel(DefaultExerciseModel):
+    def option_exercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
+        underlying = option.underlying
+        utc_time = Extensions.convert_to_utc(option.local_time, option.exchange.time_zone)
+        in_the_money = option.is_auto_exercised(underlying.close)
+        # Cash settle: using payoff.
+        payoff = option.get_intrinsic_value(underlying.close)
+
+        # Only liquidate option positions, but do not add equity positions.
+        order_event = OrderEvent(
+            order.id,
+            option.symbol,
+            utc_time,
+            OrderStatus.FILLED,
+            Extensions.get_order_direction(order.quantity),
+            payoff,
+            order.quantity,
+            OrderFee.ZERO,
+            "Option Settlement"
+        )
+        order_event.is_in_the_money = in_the_money
+        return [ order_event ]</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
   <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
    
