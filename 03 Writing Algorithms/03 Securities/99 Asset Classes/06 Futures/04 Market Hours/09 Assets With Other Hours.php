@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/index/hkfe/generic/assets-with-other-hours.html"); ?>
