@@ -1,6 +1,15 @@
 <p>Margin call models must extend the <code>DefaultMarginCallModel</code> class. Extensions of the <code>DefaultMarginCallModel</code> class can override the <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> and <code class="csharp">ExecuteMarginCall</code><code class="python">execute_margin_call</code> methods.</p>
 
-<p>The <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> method scans the portfolio and the updated data for a potential margin call situation that may get the equity below zero. The method must return a list of <code>SubmitOrderRequest</code> objects that represent the margin call orders. To issue a margin call warning during this method, set the <code>issueMarginCallWarning</code> argument of the method to true. </p>
+<p>
+    The <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> method scans the portfolio and the updated data for a potential margin call situation that may get the equity below zero. 
+    <span class='csharp'>
+        The method must return a list of <code>SubmitOrderRequest</code> objects that represent the margin call orders. 
+        To issue a margin call warning during this method, set the <code>issueMarginCallWarning</code> argument of the method to true. 
+    </span>
+    <span class='python'>
+        The method must return a tuple where the first element is a list of <code>SubmitOrderRequest</code> objects that represent the margin call orders and the second element is a boolean that represents whether or not to issue a margin call warning.
+    </span>
+</p>
 
 <p>The <code class="csharp">ExecuteMarginCall</code><code class="python">execute_margin_call</code> method receives the list of <code>SubmitOrderRequest</code> objects from the <code class="csharp">GetMarginCallOrders</code><code class="python">get_margin_call_orders</code> method, executes some of them, and returns a list of <code>OrderTicket</code> objects.</p>
 
@@ -52,8 +61,9 @@ class MyMarginCallModel(DefaultMarginCallModel):
         return super().execute_margin_call(generatedMarginCallOrders)
 
     def get_margin_call_orders(self,
-         issue_margin_call_warning: bool) -> List[SubmitOrderRequest]:
-        return super().get_margin_call_orders(issue_margin_call_warning)
+         issue_margin_call_warning: bool) -> tuple[List[SubmitOrderRequest], bool]:
+        (margin_call_orders, issue_margin_call_warning) = super().get_margin_call_orders(issue_margin_call_warning)
+        return (margin_call_orders, issue_margin_call_warning)
 <br></pre>
 </div>
 
