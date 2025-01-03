@@ -1,6 +1,4 @@
-<p>The following examples demonstrate common practices for handling order errors.</p>
-
-<h4>Example 1: Pre-Open Order Error</h4>
+<h4>Example <?=$number?>: Pre-Open Order Error</h4>
 <p>The following algorithm simulate extended market hour trading on <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/tradier">Tradier Brokerage</a>. We place a market-on-open order at 7:30am and expect the order cannot submit to the broker since it is not supported, resulting into an error.</p>
 <div class="section-example-container">
     <pre class="csharp">public class OrderErrorsAlgorithm : QCAlgorithm
