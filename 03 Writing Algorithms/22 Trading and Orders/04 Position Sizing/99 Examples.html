@@ -11,17 +11,16 @@
     {
         SetStartDate(2023, 1, 1);
         SetEndDate(2023, 8, 1);
-        // Seed the price data to make sure price data is ready for contract filtering.
+        // Seed the price to ensure securities have information for margin calculations.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         
-        // Request SPY data for trading, trade on daily signals so we use daily resolution.
-        // We use raw price data to fairly compare the strike price for ATM contract selection.
-        _spy = AddEquity("SPY", Resolution.Minute, dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+        // Request SPY data for trading. We use raw price data to compare the strike price fairly for ATM contract selection.
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
         
         // Set a scheduled event to rebalance the covered call positions.
         Schedule.On(
             DateRules.WeekStart(_spy),
-            TimeRules.AfterMarketOpen(_spy),
+            TimeRules.AfterMarketOpen(_spy, 1),
             Rebalance
         );
     }
@@ -40,7 +39,7 @@
 
         // Calculate the order size for the covered call.
         var quantity = (int)Math.Floor(CalculateOrderQuantity(_spy, 0.5) / 100m);
-        // Covered call involves 100 shares of SPY and -1 ATM call contract.
+        // Covered call involves 100 SPY shares and a -1 ATM call contract.
         ComboMarketOrder(new List&lt;Leg&gt; {
             Leg.Create(_spy, 100),
             Leg.Create(atmCallSymbol, -1)
@@ -52,21 +51,16 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2023, 8, 1)
-        # Seed the price data to make sure price data is ready for contract filtering.
+        # Seed the price to ensure securities have information for margin calculations.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         
-        # Request SPY data for trading, trade on daily signals so we use daily resolution.
-        # We use raw price data to fairly compare the strike price for ATM contract selection.
-        self.spy = self.add_equity(
-            "SPY",
-            Resolution.MINUTE,
-            data_normalization_mode=DataNormalizationMode.RAW
-        ).symbol
+        # Request SPY data for trading. We use raw price data to compare the strike price fairly for ATM contract selection.
+        self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
         
         # Set a scheduled event to rebalance the covered call positions.
         self.schedule.on(
             self.date_rules.week_start(self.spy),
-            self.time_rules.after_market_open(self.spy),
+            self.time_rules.after_market_open(self.spy, 1),
             self.rebalance
         )
 
