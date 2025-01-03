@@ -1,9 +1,10 @@
-<p>The following examples demonstrate some common practices for implementing custom option exercise model.</p>
+<p>The following examples demonstrate some common practices for implementing a custom option exercise model.</p>
 
 <h4>Example 1: Cash Settlement</h4>
-<p>The following algorithm trades GOOG 30-day expiring straddle. Yet, instead of settling with the underlying stock, some brokerage will settle with cash for ITM options. To simulate this behavior, we can create a custom option exercise model to do so.</p>
+<p>The following algorithm trades GOOG 30-day expiring straddle. Yet, instead of settling with the underlying stock, some brokerages will settle with cash for ITM options. To simulate this behavior, we can create a custom option exercise model.</p>
 <div class="section-example-container">
-    <pre class="csharp">public class OptionExerciseModelAlgorithm : QCAlgorithm
+    <pre class="csharp">using static QuantConnect.Extensions;
+public class OptionExerciseModelAlgorithm : QCAlgorithm
 {
     private Symbol _goog;
 
@@ -26,7 +27,7 @@
         // Open position on updated option chain data.
         if (!Portfolio.Invested &amp;&amp; slice.OptionChains.TryGetValue(_goog, out var chain))
         {
-            // Only 1 strike and expiry for the straddle universe.
+            // Only one strike and expiry for the straddle universe.
             var strike = chain.Min(x =&gt; x.Strike);
             var expiry = chain.Min(x =&gt; x.Expiry);
             // Open the straddle position.
@@ -63,7 +64,7 @@
             // Cash settle: using payoff.
             var payoff = option.GetIntrinsicValue(underlying.Close);
 
-            // Only liquidate option positions, but not adding equity positions.
+            // Only liquidate option positions, but do not add equity positions.
             yield return new OrderEvent(
                 order.Id,
                 option.Symbol,
@@ -98,7 +99,7 @@
         # Open position on updated option chain data.
         chain = slice.option_chains.get(self.goog)
         if chain and not self.portfolio.invested:
-            # Only 1 strike and expiry for the straddle universe.
+            # Only one strike and expiry for the straddle universe.
             strike = min(x.strike for x in chain)
             expiry = min(x.expiry for x in chain)
             # Open the straddle position.
@@ -118,14 +119,14 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
 # Define the custom Option exercise model outside of the algorithm
 class MyOptionExerciseModel(DefaultExerciseModel):
-    def OptionExercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
+    def option_exercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
         underlying = option.underlying
-        utc_time = option.local_time.convert_to_utc(option.exchange.time_zone)
+        utc_time = Extensions.convert_to_utc(option.local_time, option.exchange.time_zone)
         in_the_money = option.is_auto_exercised(underlying.close)
         # Cash settle: using payoff.
         payoff = option.get_intrinsic_value(underlying.close)
 
-        # Only liquidate option positions, but not adding equity positions.
+        # Only liquidate option positions, but do not add equity positions.
         order_event = OrderEvent(
             order.id,
             option.symbol,
@@ -134,7 +135,7 @@ class MyOptionExerciseModel(DefaultExerciseModel):
             Extensions.get_order_direction(order.quantity),
             payoff,
             order.quantity,
-            OrderFee.zero,
+            OrderFee.ZERO,
             "Option Settlement"
         )
         order_event.is_in_the_money = in_the_money
