@@ -1,3 +1,186 @@
+<p>The following examples demonstrate some common practices for implementing customized fill model.</p>
+
+<h4>Example 1: Volume Share Fill</h4>
+<p>The following algorithm longs the top 10 liquid constituents and short the bottom 10 liquid constituents of QQQ. To realistically fill the less liquid stocks, we implement a fill model that only fills with at most 30% of the previous second bar.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class VolumeShareSlippageModelAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _longs = new();
+    private List&lt;Symbol&gt; _shorts = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        // To set the slippage model to limit to fill only 30% volume of the previous second bar to realistically fill illiquid stocks.
+        SetSecurityInitializer((security) =&gt; security.SetFillModel(new VolumeShareFillModel(this, 0.3m)));
+
+        // Request extended market hour SPY data for trading.
+        var qqq = AddEquity("QQQ").Symbol;
+
+        // Weekly updating the portfolio to allow time to capitalize from the popularity gap.
+        UniverseSettings.Schedule.On(DateRules.WeekStart());
+        // Add universe to trade on the most and least liquid stocks among QQQ constituents.
+        AddUniverse(
+            // First we select from all QQQ constituents to the next filter on liquidity.
+            Universe.ETF(qqq, Market.USA, UniverseSettings, (constituents) =&gt; constituents.Select(c =&gt; c.Symbol)),
+            FundamentalSelection
+        );
+
+        // Set a schedule event to rebalance the portfolio every week start.
+        Schedule.On(
+            DateRules.WeekStart(qqq),
+            TimeRules.AfterMarketOpen(qqq),
+            Rebalance
+        );
+    }
+
+    private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamentals)
+    {
+        var sortedByDollarVolume = fundamentals.OrderBy(x =&gt; x.DollarVolume).ToList();
+        // Add the 10 most liquid stocks to the universe to long later.
+        _longs = sortedByDollarVolume.TakeLast(10)
+            .Select(x =&gt; x.Symbol)
+            .ToList();
+        // Add the 10 least liquid stocks to the universe to short later.
+        _shorts = sortedByDollarVolume.Take(10)
+            .Select(x =&gt; x.Symbol)
+            .ToList();
+
+        return _longs.Union(_shorts);
+    }
+
+    private void Rebalance()
+    {
+        // Equally invest into the selected stocks to evenly dissipate capital risk.
+        // Dollar neutral of long and short stocks to eliminate systematic risk, only capitalize the popularity gap.
+        var targets = _longs.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)).ToList();
+        targets.AddRange(_shorts.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)).ToList());
+
+        // Liquidate the ones not being the most and least popularity stocks to release fund for higher expected return trades.
+        SetHoldings(targets, liquidateExistingHoldings: true);
+    }
+
+    private class VolumeShareFillModel : FillModel
+    {
+        private readonly QCAlgorithm _algorithm;
+        private readonly decimal _maximumRatio;
+        private readonly Dictionary&lt;int, decimal&gt; _absoluteRemainingByOrderId;
+
+        public VolumeShareFillModel(QCAlgorithm algorithm, decimal maximumRatio = 0.3m)
+            : base()
+        {
+            _algorithm = algorithm;
+            _maximumRatio = maximumRatio;
+            _absoluteRemainingByOrderId = new Dictionary&lt;int, decimal&gt;();
+        }
+
+        public override OrderEvent MarketFill(Security asset, MarketOrder order)
+        {
+            decimal absoluteRemaining;
+            if (!_absoluteRemainingByOrderId.TryGetValue(order.Id, out absoluteRemaining))
+            {
+                absoluteRemaining = order.AbsoluteQuantity;
+            }
+
+            // Create the object
+            var fill = base.MarketFill(asset, order);
+
+            // Set the fill amount
+            fill.FillQuantity = Math.Sign(order.Quantity) * 10m;
+            if (Math.Min(Math.Abs(fill.FillQuantity), absoluteRemaining) == absoluteRemaining)
+            {
+                fill.FillQuantity = Math.Sign(order.Quantity) * absoluteRemaining;
+                fill.Status = OrderStatus.Filled;
+                _absoluteRemainingByOrderId.Remove(order.Id);
+            }
+            else
+            {
+                fill.Status = OrderStatus.PartiallyFilled;
+                _absoluteRemainingByOrderId[order.Id] = absoluteRemaining - Math.Abs(fill.FillQuantity);
+                var price = fill.FillPrice;
+                //_algorithm.Debug($"{_algorithm.Time} - Partial Fill - Remaining {_absoluteRemainingByOrderId[order.Id]} Price - {price}");
+            }
+            return fill;
+        }
+    }
+}</pre>
+    <pre class="python">class VolumeShareFillModelAlgorithm(QCAlgorithm):
+    longs = []
+    shorts = []
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        # To set the slippage model to limit to fill only 30% volume of the previous second bar to realistically fill illiquid stocks.
+        self.set_security_initializer(lambda security: security.set_fill_model(CustomPartialFillModel(self, 0.3)))
+
+        # Request extended market hour SPY data for trading.
+        qqq = self.add_equity("QQQ").symbol
+        
+        # Weekly updating the portfolio to allow time to capitalize from the popularity gap.
+        self.universe_settings.schedule.on(self.date_rules.week_start())
+        # Set resolution to second since the fill model is based on second bar.
+        self.universe_settings.resolution = Resolution.SECOND
+        # Add universe to trade on the most and least liquid stocks among QQQ constituents.
+        self.add_universe(
+            self.universe.etf(qqq, Market.USA, self.universe_settings, lambda constituents: [c.symbol for c in constituents]),
+            self.fundamental_selection
+        )
+        
+        # Set a schedule event to rebalance the portfolio every week start.
+        self.schedule.on(
+            self.date_rules.week_start(qqq),
+            self.time_rules.after_market_open(qqq),
+            self.rebalance
+        )
+
+    def fundamental_selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(fundamentals, key=lambda f: f.dollar_volume)
+        # Add the 10 most liquid stocks to the universe to long later.
+        self.longs = [f.symbol for f in sorted_by_dollar_volume[-10:]]
+        # Add the 10 least liquid stocks to the universe to short later.
+        self.shorts = [f.symbol for f in sorted_by_dollar_volume[:10]]
+
+        return self.longs + self.shorts
+
+    def rebalance(self) -&gt; None:
+        # Equally invest into the selected stocks to evenly dissipate capital risk.
+        # Dollar neutral of long and short stocks to eliminate systematic risk, only capitalize the popularity gap.
+        targets = [PortfolioTarget(symbol, 0.05) for symbol in self.longs]
+        targets += [PortfolioTarget(symbol, -0.05) for symbol in self.shorts]
+
+        # Liquidate the ones not being the most and least popularity stocks to release fund for higher expected return trades.
+        self.set_holdings(targets, liquidate_existing_holdings=True)
+
+class VolumeShareFillModel(FillModel):
+    def __init__(self, algorithm: QCAlgorithm, maximum_ratio: float = 0.3):
+        self.algorithm = algorithm
+        self.maximum_ratio = maximum_ratio
+        self.absolute_remaining_by_order_id = {}
+
+    def market_fill(self, asset, order):
+        absolute_remaining = self.absolute_remaining_by_order_id.get(order.id, order. AbsoluteQuantity)
+
+        fill = super().market_fill(asset, order)
+        # Set the fill amount to be at most 30% of the previous second trade bar.
+        fill.fill_quantity = np.sign(order.quantity) * asset.volume * self.maximum_ratio
+
+        if (min(abs(fill.fill_quantity), absolute_remaining) == absolute_remaining):
+            fill.fill_quantity = np.sign(order.quantity) * absolute_remaining
+            fill.status = OrderStatus.FILLED
+            self.absolute_remaining_by_order_id.pop(order.id, None)
+        else:
+            fill.status = OrderStatus.PARTIALLY_FILLED
+            self.absolute_remaining_by_order_id[order.id] = absolute_remaining - abs(fill.fill_quantity)
+            price = fill.fill_price
+
+        return fill</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
   <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
 
