@@ -1,3 +1,13 @@
+<p>The following examples demonstrate common practices for sending notification in live algorithm.</p>
+
+<? 
+$number = 1;
+include(DOCS_RESOURCES."/examples/brokerage-message-notification.php");
+?>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
 <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithm</div>
     
