@@ -46,6 +46,7 @@ $dataProviders = array(
     "Polygon",
     "IEX Cloud",
     "CoinApi",
+    "ThetaData",
     "Custom data only",
     "Bybit",
     "TradeStation",
@@ -210,6 +211,7 @@ To enter multiple options, separate them with comma:</pre>
     <ul>
         <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iqfeed'>IQFeed</a></li>
         <li><a href='/docs/v2/lean-cli/live-trading/data-providers/polygon'>Polygon</a></li>
+        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/theta-data'>Theta Data</a></li>
     </ul>
     <? } ?>
 <? } ?>
