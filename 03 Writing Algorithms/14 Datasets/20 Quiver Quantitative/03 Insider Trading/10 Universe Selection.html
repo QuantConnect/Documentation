@@ -1,42 +1,53 @@
 <p>To select a dynamic universe of US Equities based on Insider Trading data, call the <b class="csharp">AddUniverse</b><b class="python">add_universe</b> method with the <b>QuiverInsiderTradingUniverse</b> class and a selection function.</p> 
 
 <div class="section-example-container">
-<pre class="python">def initialize(self):
-    self._universe = self.add_universe(QuiverInsiderTradingUniverse, self.universe_selection)
-
-def universe_selection(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
-    insider_trading_data_by_symbol = {}
-
-    for datum in alt_coarse:
-        symbol = datum.symbol
-        
-        if symbol not in insider_trading_data_by_symbol:
-            insider_trading_data_by_symbol[symbol] = []
-        insider_trading_data_by_symbol[symbol].append(datum)
+<pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
     
-    return [symbol for symbol, d in insider_trading_data_by_symbol.items()
-            if len([x for x in d if x.direction == OrderDirection.BUY]) &gt;= 3]</pre>
-<pre class="csharp">private Universe _universe;
-public override void Initialize()
+    def initialize(self):
+        self.set_start_date(2023, 1, 1)
+        self._universe = self.add_universe(QuiverInsiderTradingUniverse, self._select_assets)
+
+    def _select_assets(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
+        dollar_volume_by_symbol = {}
+        for data in alt_coarse:
+            symbol = data.symbol
+            if not data.price_per_share:
+                continue
+            if symbol not in dollar_volume_by_symbol:
+                dollar_volume_by_symbol[symbol] = 0
+            dollar_volume_by_symbol[symbol] += data.shares * data.price_per_share
+        return [
+            symbol for symbol, _ in sorted(dollar_volume_by_symbol.items(), key=lambda kvp: kvp[1])[-10:]
+        ]</pre>
+<pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
 {
-    _universe = AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altCoarse =&gt;
+    private Universe _universe;
+
+    public override void Initialize()
     {
-        var insiderTradingDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverInsiderTradingUniverse&gt;&gt;();
+        SetStartDate(2023, 1, 1);
+        _universe = AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(SelectAssets);
+    }
 
-        foreach (var datum in altCoarse.OfType&lt;QuiverInsiderTradingUniverse&gt;())
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;BaseData&gt; altCoarse)
+    {
+        var dollarVolumeBySymbol = new Dictionary&lt;Symbol, decimal?&gt;();
+        foreach (QuiverInsiderTradingUniverse data in altCoarse)
         {
-            var symbol = datum.Symbol;
-
-            if (!insiderTradingDataBySymbol.ContainsKey(symbol))
+            if (data.PricePerShare == 0m)
             {
-                insiderTradingDataBySymbol.Add(symbol, new List&lt;QuiverInsiderTradingUniverse&gt;());
+                continue;
             }
-            insiderTradingDataBySymbol[symbol].Add(datum);
+            if (!dollarVolumeBySymbol.ContainsKey(data.Symbol))
+            {
+                dollarVolumeBySymbol[data.Symbol] = 0;
+            }
+            dollarVolumeBySymbol[data.Symbol] += data.Shares * data.PricePerShare;
         }
-
-        return from kvp in insiderTradingDataBySymbol
-            where kvp.Value.Where(x =&gt; x.Direction == OrderDirection.Buy) &gt;= 3
-            select kvp.Key;
-    });
+        return dollarVolumeBySymbol
+            .OrderByDescending(kvp =&gt; kvp.Value)
+            .Take(10)
+            .Select(kvp =&gt; kvp.Key);
+    }
 }</pre>
 </div>
