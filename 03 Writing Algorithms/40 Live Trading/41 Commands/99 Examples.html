@@ -1,11 +1,98 @@
-  <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithm</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CallbackCommandRegressionAlgorithm.py" target="_BLANK">
-        CallbackCommandRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CallbackCommandRegressionAlgorithm.cs" target="_BLANK">
-        CallbackCommandRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>    
-  </div>
+<p>The following examples demonstrate some common practices for implementing live command.</p>
+
+<h4>Example 1: Grey Box</h4>
+<p>The following algorithm trades a simple EMA cross strategy on SPY. However, instead of direct ordering by the algorithm as a "black box", it sends an email to ask for clicking a confirmation link before ordering, making each order decision an informed manual decision. The algorithm is called a "grey box".</p>
+<div class="section-example-container">
+    <pre class="csharp">public class LiveCommandAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private ExponentialMovingAverage _ema;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 8, 12);
+        SetEndDate(2024, 9, 1);
+        SetCash(1000000);
+
+        // Request SPY data to trade.
+        _spy = AddEquity("SPY").Symbol;
+        // Create a EMA indicator to generate trade signals.
+        _ema = EMA(_spy, 20, Resolution.Daily);
+        // Warm up indicator for immediate readiness.
+        WarmUpIndicator(_spy, _ema, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_spy, out var bar) &amp;&amp; LiveMode)
+        {
+            // Trade trend-following by price above or below EMA.
+            // If price above EMA, SPY is in uptrend and we buy it.
+            // We send a link to our email address, await confirmation.
+            string link;
+            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_spy].IsLong)
+            {
+                link = Link(new {Ticker = "SPY", Size = 1});
+                Notify.Email("email@address.com", "Trade Confirmation Needed", $"Click here to run: {link}");
+            }
+            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_spy].IsShort)
+            {
+                link = Link(new {Ticker = "SPY", Size = -1});
+                Notify.Email("email@address.com", "Trade Confirmation Needed", $"Click here to run: {link}");
+            }
+        }
+    }
+
+    public override bool? OnCommand(dynamic data)
+    {
+        // If we click the email link to confirm the trade, the algorithm will place the order.
+        SetHoldings(data.Ticker, data.Size);
+        return true;
+    }
+}</pre>
+    <pre class="python">class LiveCommandAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 8, 12)
+        self.set_end_date(2024, 9, 1)
+        self.set_cash(1000000)
+
+        # Request SPY data to trade.
+        self.spy = self.add_equity("SPY").symbol
+        # Create a EMA indicator to generate trade signals.
+        self._ema = self.ema(self.spy, 20, Resolution.DAILY)
+        # Warm up indicator for immediate readiness.
+        self.warm_up_indicator(self.spy, self._ema, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self.spy)
+        if bar and self.live_mode:
+            # Trade trend-following by price above or below EMA.
+            # If price above EMA, SPY is in uptrend and we buy it.
+            # We send a link to our email address, await confirmation.
+            if bar.close &gt; self._ema.current.value and not self.portfolio[self.spy].is_long:
+                link = self.link({"ticker": "SPY", "size": 1})
+                self.notify.email("email@address.com", "Trade Confirmation Needed", f"Click here to run: {link}")
+            elif bar.close &lt; self._ema.current.value and not self.portfolio[self.spy].is_short:
+                link = self.link({"ticker": "SPY", "size": -1})
+                self.notify.email("email@address.com", "Trade Confirmation Needed", f"Click here to run: {link}")
+
+    def on_command(self, data: DynamicData) -&gt; Optional[bool]:
+        # If we click the email link to confirm the trade, the algorithm will place the order.
+        self.set_holdings(data["ticker"], data["size"])
+        return True</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset">
+  <div class="example-legend">Demonstration Algorithm</div>
+  
+  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CallbackCommandRegressionAlgorithm.py" target="_BLANK">
+      CallbackCommandRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span>
+  </a>
+  
+  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CallbackCommandRegressionAlgorithm.cs" target="_BLANK">
+      CallbackCommandRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
+  </a>    
+</div>
