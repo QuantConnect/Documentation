@@ -1,3 +1,13 @@
+<p>The following examples demonstrate some common practices for training the machine learning model.</p>
+
+<?
+$number = 1;
+include(DOCS_RESOURCES."/examples/sklearn-example.php"); 
+?>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
 <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
 
