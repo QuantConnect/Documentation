@@ -57,7 +57,8 @@ def __convert_command(key, command):
         H3_INTRODUCTION: f'''<p>{command[2]}</p>
 <div class="cli section-example-container">
 <pre>$ {command[5][7:]}</pre>
-</div>''',
+</div>
+</p>To use the CLI, you must be a member in an <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/tier-features">organization</a> on a paid tier.</p>''',
 
         H3_OPTIONS: __generate_options_table(key, command),
 
