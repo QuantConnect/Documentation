@@ -168,7 +168,8 @@ def __write_content(exchange, entries):
 contracts_real = {
     'SPX': 'S&P 500 Index',
     'NDX': 'Nasdaq 100 Index',
-    'VIX': 'CBOE Volatility Index'
+    'VIX': 'CBOE Volatility Index',
+    'HSI': 'Hang Seng Index'
     }
 for line in get_text_content(SPDB).split('\n'):
     csv = line.split(',')
@@ -200,6 +201,7 @@ for key, entry in entries.items():
         'Option-usa-[*]': 'Equity Option',
         'Index-usa-[*]': 'US Indices',
         'Index-eurex-[*]': 'EUREX Indices',
+        'Index-hkfe-[*]': 'HKFE Indices',
         'IndexOption-usa-[*]': 'US Index Option',
     }.get(key, tmp[0])
     asset_class = tmp[0].replace("Cfd", "CFD").replace("IndexOption", "US Index Option")
@@ -230,7 +232,8 @@ for key, entry in entries.items():
         'option-usa': '02 Equity Options/04 Market Hours',
         'forex-oanda': '05 Forex/04 Market Hours',
         'index-usa': '08 Index/04 Market Hours',
-        'index-eurex': '08 Index/04 Market Hours/99 EUREX',
+        'index-eurex': '08 Index/04 Market Hours/98 EUREX',
+        'index-hkfe': '08 Index/04 Market Hours/99 HKFE',
         'indexoption-usa': '09 Index Options/04 Market Hours',
         'cfd-interactivebrokers': '10 CFD/04 Market Hours/01 Interactive Brokers',
         'cfd-oanda': '10 CFD/04 Market Hours/02 Oanda',
