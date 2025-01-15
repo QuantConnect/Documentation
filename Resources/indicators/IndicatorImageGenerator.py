@@ -151,9 +151,9 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'CCI(symbol, 20, MovingAverageType.Simple)',
                 'columns' : ['typicalpriceaverage', 'typicalpricemeandeviation']
             },
-            'conner-relative-strength-index':
+            'connors-relative-strength-index':
             {
-                'code': ConnerRelativeStrengthIndex(3, 2, 100),
+                'code': ConnorsRelativeStrengthIndex(3, 2, 100),
                 'title' : 'CRSI(symbol, 3, 2, 100)',
                 'columns' : []
             },
@@ -495,7 +495,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'squeeze-momentum':
             {
-                'code': SqueezeMomentum(20, 2, 20, 1.5),
+                'code': SqueezeMomentum("SM", 20, 2, 20, 1.5),
                 'title' : 'SM(symbol, 20, 2, 20, 1.5)',
                 'columns' : ["bollinger_bands", "keltner_channels"]
             },
@@ -649,12 +649,6 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'ZLEMA(symbol, 10)',
                 'columns' : []
             },
-            'zig-zag':
-            {
-                'code': ZigZag(0.05, 1),
-                'title' : 'ZZ(symbol, 0.05, 1)',
-                'columns' : ["high_pivot", "low_pivot", "pivot_type"]
-            },
         }
 
         special_indicators = {
@@ -741,6 +735,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': VolumeProfile("", 3, 0.70, 0.05),
                 'title' : 'VP(symbol, 3, 0.70, 0.05)',
                 'columns' : []
+            },
+            'zig-zag':
+            {
+                'code': ZigZag(0.05, 1),
+                'title' : 'ZZ(symbol, 0.05, 1)',
+                'columns' : ["high_pivot", "low_pivot", "pivot_type"]
             },
         }
         option_indicators = {
@@ -955,6 +955,21 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["filteredidentity"])
         self.generate("filtered-identity", indicator, df)
+        
+        index, values = [], []
+        indicator = special_indicators.get("zig-zag")
+        indicator['code'] = qb.ZZ("SPY", 0.05, 1)
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append([
+                    indicator['code'].Current.Value, 
+                    indicator['code'].high_pivot.current.value,
+                    indicator['code'].low_pivot.current.value]
+                )
+        df = pd.DataFrame(values, index=index, columns=["zigzag", "highpivot", "lowpivot"])
+        self.generate("zig-zag", indicator, df)
         
         times = set(bars.get("SPY").EndTime for bars in history).intersection(bars.get(option_symbol).EndTime for bars in option_history)
         history = [bar for bar in history if bar.get("SPY").EndTime in times]
