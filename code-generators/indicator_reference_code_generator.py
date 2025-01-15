@@ -145,12 +145,19 @@ def Generate_Indicators_Reference():
         for k, v in types.items():
             if f'QuantConnect.Indicators.{k}' in base_type:
                 return v
-        key = ' '.join(re.findall('[a-zA-Z][^A-Z]*', base_type.split('.')[-1]))
+            
+        key = ' '.join(re.findall('[a-zA-Z][^A-Z]*', base_type.split('.')[-1].split('`')[0]))
         base = indicators.get(key, get_type(base_type, "csharp"))
+        if base['base-type-full-name'] is None:
+            return types["Indicator"]
+        
+        if base['base-type-full-name'].startswith("QuantConnect"):
+            base['base-type-full-name'] = base['base-type-full-name']
         return find_indicator_type(base['base-type-full-name'])
 
+    indicators = {x: y for x, y in indicators.items() if y['base-type-full-name'] is not None}
     for key, indicator in indicators.items():
-        indicator_type = find_indicator_type(indicator['base-type-full-name'])
+        indicator_type = find_indicator_type(indicator['base-type-full-name'].split('`')[0])
         indicator['update-parameter-type'] = indicator_type['update-parameter-type']
         indicator['update-parameter-value'] = indicator_type['update-parameter-value']
 
