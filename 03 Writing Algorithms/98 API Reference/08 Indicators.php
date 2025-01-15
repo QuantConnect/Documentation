@@ -28,6 +28,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-cmf.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-cmo.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-create-indicator-name.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-crsi.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-d.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-dch.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-dem.html"); ?>
@@ -41,6 +42,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-fish.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-frama.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-g.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-he.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-heikin-ashi.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-hma.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-ht.html"); ?>
@@ -56,6 +58,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-lwma.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-macd.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-mad.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-mama.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-mass.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-max.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-mfi.html"); ?>
@@ -77,7 +80,6 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-r.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rc.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rdv.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-register-indicator.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rma.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-roc.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rocp.html"); ?>
@@ -86,6 +88,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rsv.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-rvi.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-si.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-sm.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-sma.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-sobv.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-sortino.html"); ?>
@@ -115,10 +118,10 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vtx.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vwap.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-vwma.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-warm-up-indicator.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-wilr.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-wwma.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-zlema.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-zz.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-γ.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-δ.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-θ.html"); ?>
