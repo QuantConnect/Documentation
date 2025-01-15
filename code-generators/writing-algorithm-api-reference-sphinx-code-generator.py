@@ -357,25 +357,23 @@ def _merge_args(old_dict, new_dict):
         "argument-default": old_dict["argument-default"]
     }
     
+def _find_substring_index(substring, lst, default=1e7):
+    for index, element in enumerate(lst):
+        if substring in element:
+            return index
+    return default
+    
 def _type_sorting(arg):
-    null = arg is None
-    if not null:
-        arg_type = arg.split('[')[0].split('<')[0].lower().strip()
-        pyobj = "pyobject" in arg_type
-        if pyobj:
-            return (0, 1, 1, 1, 1)
+    if arg is not None and arg.lower() not in ["null", "none"]:
+        arg_type = arg.split('[')[0].split('<')[0].split('`')[0].lower().strip()
+        if "pyobject" in arg_type:
+            return (0, 1e7, 1e7, 1e7, 1e7)
         
-        try:
-            joint_type = JOINT_TYPE_ORDER.index(arg_type)
-        except:
-            joint_type = 0
-        try:
-            type_ = TYPE_ORDER.index(arg_type)
-        except:
-            type_ = 1e7
+        joint_type = _find_substring_index(arg_type, JOINT_TYPE_ORDER, 0)
+        type_ = _find_substring_index(arg_type, TYPE_ORDER, 1e7)
         return (0, 0, joint_type, type_, arg)
     
-    return (1, 1, 1, 1, 1)
+    return (1e7, 1e7, 1e7, 1e7, 1e7)
     
 def _merge_return(old_ret, new_ret):
     if not new_ret or new_ret == "void" or ".Void" in new_ret:
@@ -402,8 +400,9 @@ def _get_params(args, source_url, line_num, language):
             for full_type, short_type in zip(arg["argument-type-full-name"], arg["argument-type-short-name"]):
                 arg_type_name_selected_ = full_type if full_type else short_type
                 arg_type_ = _get_hyperlinked_type(arg_type_name_selected_, language)
-                arg_types.append(arg_type_)
-            arg_type = " | ".join(set(arg_types))
+                if arg_type_ not in arg_types:
+                    arg_types.append(arg_type_)
+            arg_type = " | ".join(arg_types)
         else:
             arg_type_name_selected = arg["argument-type-full-name"] \
                 if arg["argument-type-full-name"] and arg["argument-type-full-name"].split('.')[0] == "QuantConnect" else arg["argument-type-short-name"]
