@@ -3,19 +3,19 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'ZigZag';
-$helperName = 'ZigZag';
-$pyHelperName = 'zig_zag';
-$helperArguments = 'symbol';
-$properties = array("HighPivot","LowPivot","PivotType");
-$pyProperties = array("high_pivot","low_pivot","pivot_type");
+$typeName = 'SqueezeMomentum';
+$helperName = 'SM';
+$pyHelperName = 'sm';
+$helperArguments = 'symbol, 20, 2, 20, 1.5';
+$properties = array("BollingerBands","KeltnerChannels");
+$pyProperties = array("bollinger_bands","keltner_channels");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '20, 2, 20, 1.5';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'zig-zag';
+$constructorBox = 'squeeze-momentum';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MesaAdaptiveMovingAverage';
-$helperName = 'MesaAdaptiveMovingAverage';
-$pyHelperName = 'mesa_adaptive_moving_average';
-$helperArguments = 'symbol';
+$helperName = 'MAMA';
+$pyHelperName = 'mama';
+$helperArguments = 'symbol, 0.5, 0.05';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Fama");

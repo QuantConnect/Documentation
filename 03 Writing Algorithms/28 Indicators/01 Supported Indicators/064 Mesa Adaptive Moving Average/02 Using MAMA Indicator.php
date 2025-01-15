@@ -3,19 +3,19 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'SqueezeMomentum';
-$helperName = 'SqueezeMomentum';
-$pyHelperName = 'squeeze_momentum';
-$helperArguments = 'symbol';
-$properties = array("BollingerBands","KeltnerChannels");
-$pyProperties = array("bollinger_bands","keltner_channels");
+$typeName = 'MesaAdaptiveMovingAverage';
+$helperName = 'MAMA';
+$pyHelperName = 'mama';
+$helperArguments = 'symbol, 0.5, 0.05';
+$properties = array("Fama");
+$pyProperties = array("fama");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '0.5, 0.05';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'squeeze-momentum';
+$constructorBox = 'mesa-adaptive-moving-average';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

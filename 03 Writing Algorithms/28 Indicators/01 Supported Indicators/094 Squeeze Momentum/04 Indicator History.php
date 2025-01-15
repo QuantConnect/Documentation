@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SqueezeMomentum';
-$helperName = 'SqueezeMomentum';
-$pyHelperName = 'squeeze_momentum';
-$helperArguments = 'symbol';
+$helperName = 'SM';
+$pyHelperName = 'sm';
+$helperArguments = 'symbol, 20, 2, 20, 1.5';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("BollingerBands","KeltnerChannels");

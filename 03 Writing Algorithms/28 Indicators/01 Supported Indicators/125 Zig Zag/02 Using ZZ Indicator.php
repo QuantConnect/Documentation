@@ -3,19 +3,19 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'MesaAdaptiveMovingAverage';
-$helperName = 'MesaAdaptiveMovingAverage';
-$pyHelperName = 'mesa_adaptive_moving_average';
-$helperArguments = 'symbol';
-$properties = array("Fama");
-$pyProperties = array("fama");
+$typeName = 'ZigZag';
+$helperName = 'ZZ';
+$pyHelperName = 'zz';
+$helperArguments = 'symbol, 0.05, 1';
+$properties = array("HighPivot","LowPivot","PivotType");
+$pyProperties = array("high_pivot","low_pivot","pivot_type");
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '0.05, 1';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'mesa-adaptive-moving-average';
+$constructorBox = 'zig-zag';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>
