@@ -151,6 +151,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'CCI(symbol, 20, MovingAverageType.Simple)',
                 'columns' : ['typicalpriceaverage', 'typicalpricemeandeviation']
             },
+            'conner-relative-strength-index':
+            {
+                'code': ConnerRelativeStrengthIndex(3, 2, 100),
+                'title' : 'CRSI(symbol, 3, 2, 100)',
+                'columns' : []
+            },
             'coppock-curve':
             {
                 'code': CoppockCurve(11, 14, 10),
@@ -233,6 +239,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             {
                 'code': HullMovingAverage(20),
                 'title' : 'HMA(symbol, 20)',
+                'columns' : []
+            },
+            'hurst-exponent':
+            {
+                'code': HurstExponent(32),
+                'title' : 'HE(symbol, 32)',
                 'columns' : []
             },
             'ichimoku-kinko-hyo':
@@ -324,6 +336,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': MeanAbsoluteDeviation(20),
                 'title' : 'MAD(symbol, 20)',
                 'columns' : ['mean']
+            },
+            'mesa-adaptive-moving-average':
+            {
+                'code': MesaAdaptiveMovingAverage(0.5, 0.05),
+                'title' : 'MAMA(symbol, 0.5, 0.05)',
+                'columns' : ['fama']
             },
             'minimum':
             {
@@ -475,6 +493,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'SORTINO(symbol, 22)',
                 'columns' : []
             },
+            'squeeze-momentum':
+            {
+                'code': SqueezeMomentum(20, 2, 20, 1.5),
+                'title' : 'SM(symbol, 20, 2, 20, 1.5)',
+                'columns' : ["bollinger_bands", "keltner_channels"]
+            },
             'standard-deviation':
             {
                 'code': StandardDeviation(22),
@@ -624,6 +648,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': ZeroLagExponentialMovingAverage(10),
                 'title' : 'ZLEMA(symbol, 10)',
                 'columns' : []
+            },
+            'zig-zag':
+            {
+                'code': ZigZag(0.05, 1),
+                'title' : 'ZZ(symbol, 0.05, 1)',
+                'columns' : ["high_pivot", "low_pivot", "pivot_type"]
             },
         }
 
