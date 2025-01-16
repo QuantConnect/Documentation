@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for implementing dataless scheduled universe selection model.</p>
+<p>The following examples demonstrate some common practices for implementing a dateless scheduled universe selection model.</p>
 
 <h4>Example 1: From External Source</h4>
-<p>The following example selects its universe on every week start before market open from a source url of Dropbox. It reloads on every selection, so that you can hook to the continuously updating source file.</p>
+<p>The following example selects its universe every week starting before the market opens from a source URL of Dropbox. It reloads on every selection so that you can hook up to the continuously updating source file.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkScheduledUniverseSelectionAlgorithm : QCAlgorithm
 {
@@ -11,16 +11,16 @@
         SetEndDate(2023, 8, 1);
         SetCash(10000000);
         
-        // Add a universe of that read from a dropbox source to select the stocks 30 minutes before first trading day of the week.
+        // Add a universe of that read from a Dropbox source to select the stocks 30 minutes before the week's first trading day.
         var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         AddUniverseSelection(new ScheduledUniverseSelectionModel(
             DateRules.WeekStart(spy),
             TimeRules.BeforeMarketOpen(spy, 10),
             SelectSymbols)
         );
-        // Add Alpha model to trade based on the selections, the signals last for a week until the next selection.
+        // Add Alpha model to trade based on the selections; the signals last for a week until the next selection.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
-        // Equally invest into insights to evenly dissipate the capital risk.
+        // Equally invest in insights to dissipate the capital risk evenly.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
     }
 
@@ -41,7 +41,7 @@
             }
             var items = line.Split("\"");
             var date = Parse.DateTimeExact(items[0].Split(",")[0], "yyyy-MM-dd").Date;
-            // Return the universe if date is matched.
+            // Return the universe if the date matches.
             if (date == dt.Date)
             {
                 return items[1];
@@ -73,16 +73,16 @@ class FrameworkScheduledUniverseSelectionAlgorithm(QCAlgorithm):
         self.set_end_date(2023, 8, 1)
         self.set_cash(10000000)
 
-        # Add a universe of that read from a dropbox source to select the stocks 30 minutes before first trading day of the week.
+        # Add a universe of that read from a Dropbox source to select the stocks 30 minutes before the week's first trading day.
         spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
         self.add_universe_selection(ScheduledUniverseSelectionModel(
             self.date_rules.week_start(spy),
             self.time_rules.before_market_open(spy, 10),
             self.select_symbols
         ))
-        # Add Alpha model to trade based on the selections, the signals last for a week until the next selection.
+        # Add Alpha model to trade based on the selections; the signals last for a week until the next selection.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
-        # Equally invest into insights to evenly dissipate the capital risk.
+        # Equally invest in insights to dissipate the capital risk evenly.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
     
     def _download_universe_file(self, dt: datetime) -&gt; str:
@@ -95,7 +95,7 @@ class FrameworkScheduledUniverseSelectionAlgorithm(QCAlgorithm):
         df = pd.read_csv(StringIO(file), index_col=0).iloc[:, 0]
         df.index = pd.to_datetime(df.index).date
         date = dt.date()
-        # Return the universe if date is matched.
+        # Return the universe if the date matches.
         if date in df:
             return df.loc[dt.date()]
         return ''
@@ -111,7 +111,7 @@ class FrameworkScheduledUniverseSelectionAlgorithm(QCAlgorithm):
 </div>
 
 <h4>Example 2: Seasonality</h4>
-<p>The following algorithm selects between SPY and short-term bond ETF according to the current month. It holds SPY on May, June, July, November, and December since they are historically better performing months, while holding SHV to preserve funds and earn interest in the remaining months.</p>
+<p>The following algorithm selects between SPY and short-term bond ETF according to the current month. It holds SPY on May, June, July, November, and December since they are historically better-performing months while holding SHV to preserve funds and earn interest in the remaining months.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkScheduledUniverseSelectionAlgorithm : QCAlgorithm
 {
@@ -126,9 +126,9 @@ class FrameworkScheduledUniverseSelectionAlgorithm(QCAlgorithm):
             TimeRules.At(0, 0),
             SelectSymbols)
         );
-        // Add Alpha model to trade based on the selections, the signals last until the next selection.
+        // Add an Alpha model to trade based on the selections; the signals will last until the next selection.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
-        // Equally invest into insights to evenly dissipate the capital risk.
+        // Equally invest in insights to dissipate the capital risk evenly.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
     }
 
@@ -139,7 +139,7 @@ class FrameworkScheduledUniverseSelectionAlgorithm(QCAlgorithm):
         {
             return new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
         }
-        // In other months, hold short-term bond to preserve fund while earning interest.
+        // In other months, hold short-term bonds to preserve funds while earning interest.
         return new[] { QuantConnect.Symbol.Create("SHV", SecurityType.Equity, Market.USA) };
     }
 }</pre>
@@ -154,16 +154,16 @@ class FrameworkScheduledUniverseSelectionAlgorithm(QCAlgorithm):
             self.time_rules.at(0, 0),
             self.select_symbols
         ))
-        # Add Alpha model to trade based on the selections, the signals last until the next selection.
+        # Add an Alpha model to trade based on the selections; the signals will last until the next selection.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
-        # Equally invest into insights to evenly dissipate the capital risk.
+        # Equally invest in insights to dissipate the capital risk evenly.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
     def select_symbols(self, date_time: datetime) -&gt; List[Symbol]:
         # May/Jun/Jul/Nov/Dec are statistically better-performing months of SPY.
         if date_time.month in [5, 6, 7, 11, 12]:
             return [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
-        # In other months, hold short-term bond to preserve fund while earning interest.
+        # In other months, hold short-term bonds to preserve funds while earning interest.
         return [Symbol.create("SHV", SecurityType.EQUITY, Market.USA)]</pre>
 </div>
 
