@@ -19,6 +19,8 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2023, 1, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
+
+            // Filter the top 100 liquid equities of last trading day as the first line, save the symbols for the next filtering.
             AddUniverse(fundamental =>
             {
                 _fundamental = (from c in fundamental
@@ -26,6 +28,7 @@ namespace QuantConnect.Algorithm.CSharp
                     select c.Symbol).Take(100).ToList();
                 return Universe.Unchanged;
             });
+            // Filter the equities being commented by CNBC analyst Cramer, then select the ones intersect with the first line.
             AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =>
             {
                 var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
@@ -37,6 +40,7 @@ namespace QuantConnect.Algorithm.CSharp
 
         public override void OnSecuritiesChanged(SecurityChanges changes)
         {
+            // Request CNBC data for the selected stocks.
             foreach (var added in changes.AddedSecurities)
             {
                 AddData&lt;QuiverCNBCs&gt;(added.Symbol);
@@ -58,27 +62,30 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
 
     _fundamental = []
 
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 2)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
         self.add_universe(self._fundamental_filter_function)
         self.add_universe(QuiverCNBCsUniverse, self._mad_money_selection)
     
-    def _fundamental_filter_function(self, fundamental: List[Fundamental]) -> List[Symbol]:
+    def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Filter the top 100 liquid equities of last trading day as the first line, save the symbols for the next filtering.
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
         self.fundamental = [c.symbol for c in sorted_by_dollar_volume[:100]]
         return Universe.UNCHANGED
     
-    def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
+    def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
+        # Filter the equities being commented by CNBC analyst Cramer, then select the ones intersect with the first line.
         madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
         return list(set(self._fundamental) & set(madmoney))
     
-    def on_securities_changed(self, changes):
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Request CNBC data for the selected stocks.
         for added in changes.added_securities:
             self.add_data(QuiverCNBCs, added.symbol)
     
-    def on_data(self, data):
+    def on_data(self, data: Slice) -&gt; None:
         # Prices in the slice from the universe selection
         # Alternative data in slice from OnSecuritiesChanged Addition
         # for ticker,bar in data.bars.items():

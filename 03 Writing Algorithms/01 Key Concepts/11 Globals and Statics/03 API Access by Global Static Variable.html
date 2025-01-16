@@ -13,7 +13,9 @@
 {
     public override void Initialize()
     {
+        // Instantiate a custom type as global variable in the QCAlgorithm instance.
         MyCustomDataType.ALGORITHM = this;
+        // Request data for trading or signal.
         var symbol = AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily).Symbol;
     }
 }
@@ -31,6 +33,8 @@ public class MyCustomDataType : BaseData
             return null;
         }
         var data = line.Split(',');
+
+        // Construct the custom data type with input data entry.
         return new MyCustomDataType()
         {
             Time = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture),
@@ -43,27 +47,30 @@ public class MyCustomDataType : BaseData
 }</pre>
     <pre class="python">class MyAlgorithmInstance(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_cash(100000)
         self.set_start_date(1998, 1, 1)
         self.set_end_date(2014, 6, 1)
-            
+        
+        # Instantiate a custom type as global variable in the QCAlgorithm instance.
         # Assign self to Static Cape Variable.
         Cape.algorithm = self
+        # Request data for trading or signal.
         self.add_data(Cape, "CAPE")
     
-    def on_data(self, data):
+    def on_data(self, data: Slice) -&gt; None:
         self.plot("CAPE", "Value", data["CAPE"].value)
     
 class Cape(PythonData):  
-    def get_source(self, config, date, isLiveMode): 
+    def get_source(self, config: SubscriptionDataConfig, date:datetime, isLiveMode: bool) -&gt; SubscriptionDataSource: 
         Cape.algorithm.debug("Test Static: GetSource")
         return SubscriptionDataSource("https://www.dropbox.com/scl/fi/mqbnfb7ll88nne7b8ymy7/CAPE.csv?rlkey=mnu0ax1d8lcj3gzkdw79z0pm8&dl=1", SubscriptionTransportMedium.REMOTE_FILE)
         
-    def reader(self, config, line, date, isLiveMode):
+    def reader(self, config: SubscriptionDataConfig, line: str, date:datetime, isLiveMode: bool) -&gt; BaseData:
         if not (line.strip() and line[0].isdigit()): return None 
         index = Cape()
         try: 
+            # Construct the custom data type with input data entry.
             data = line.split(',') 
             index.symbol = config.symbol
             index.time = datetime.strptime(data[0], "%Y-%m") 

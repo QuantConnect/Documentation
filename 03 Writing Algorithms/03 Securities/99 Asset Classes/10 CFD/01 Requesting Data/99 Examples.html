@@ -1,3 +1,6 @@
+<p>The following examples demonstrate some common practices for requesting CFD data.</p>
+
+<h4>Example 1: SMA Crossing</h4>
 <p>The following strategy purchases ETFs when their fast moving average crosses over the slow moving average. In live mode, the strategy purchases their CFD equivalents.</p>
 
 <div class="section-example-container">
@@ -7,11 +10,15 @@
     {
         SetStartDate(2022, 9, 28);
         SetCash(100000);
-                
+        
+        // Request the data to feed into indicators and trade.
+        // In live mode, request CFD data for trading.
+        // CFD is more useful in non-trading hours to reduce slippage when market price jump at market open.
         var tickers = new[] {"SPY", "BND", "GLD", "QQQ"};
         var securityType = LiveMode ? SecurityType.Cfd : SecurityType.Equity;
         foreach (var ticker in tickers)
         {
+            // Create fast and slow moving average indicator to trade SAM cross trend-following strategy.
             var equity = AddEquity(ticker, Resolution.Daily);
             equity["smaFast"] = SMA(equity.Symbol, 50);
             equity["smaSlow"] = SMA(equity.Symbol, 200);
@@ -24,10 +31,13 @@
         foreach (var security in Securities.Values)
         {
             var targetVehicle = security["targetVehicle"] as Symbol;
+            // Trade the SMA cross on the updated SMA indicator signals.
+            // If fast MA is above slow MA, the price is in uptrend and we buy.
             if ((SimpleMovingAverage)security["smaFast"]  &gt; (SimpleMovingAverage)security["smaSlow"])
             {
                 SetHoldings(targetVehicle, 0.25m);
             }
+            // Else the price is in downtrend and we short.
             else
             {
                 SetHoldings(targetVehicle, 0m);
@@ -37,22 +47,29 @@
 }</pre>
     <pre class="python">class EtfCfdSwapMovingAverageCrossAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_start_date(2022, 9, 28)
         self.set_cash(100000)
 
+        # Request the data to feed into indicators and trade.
+        # In live mode, request CFD data for trading.
+        # CFD is more useful in non-trading hours to reduce slippage when market price jump at market open.
         tickers = ["SPY", "BND", "GLD", "QQQ"]
         security_type = SecurityType.CFD if self.live_mode else SecurityType.EQUITY
         for ticker in tickers:
+            # Create fast and slow moving average indicator to trade SAM cross trend-following strategy.
             equity = self.add_equity(ticker, Resolution.DAILY)
             equity.sma_fast = self.sma(equity.symbol, 50)
             equity.sma_slow = self.sma(equity.symbol, 200)
             equity.target_vehicle = self.add_cfd(ticker, Resolution.DAILY, market=Market.INTERACTIVE_BROKERS).symbol if self.live_mode else equity.symbol
 
-    def on_data(self, data: Slice):
+    def on_data(self, data: Slice) -&gt; None:
         for security in self.securities.values():
+            # Trade the SMA cross on the updated SMA indicator signals.
+            # If fast MA is above slow MA, the price is in uptrend and we buy.
             if security.sma_fast &gt; security.sma_slow:
                 self.set_holdings(security.target_vehicle, 0.25)
+            # Else the price is in downtrend and we short.
             else:
                 self.set_holdings(security.target_vehicle, 0)
     </pre>
