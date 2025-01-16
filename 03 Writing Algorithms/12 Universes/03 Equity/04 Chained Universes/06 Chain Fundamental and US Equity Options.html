@@ -21,13 +21,18 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2023, 2, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
+            // Need to set data normalization mode to raw for options to compare the strike price fairly.
             UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+
+            // Filter for equities with fundamental data first.
             var universe = AddUniverse(FundamentalFunction);
+            // Based on the filtered equities, request an option universe with them as underlying.
             AddUniverseOptions(universe, OptionFilterFunction);
         }
 
         private IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
         {
+            // Filter for equities with the lowest PE Ratio first.
             return fundamental
                 .Where(f => !double.IsNaN(f.ValuationRatios.PERatio))
                 .OrderBy(f => f.ValuationRatios.PERatio)
@@ -37,11 +42,13 @@ namespace QuantConnect.Algorithm.CSharp
     
         private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
         {
+            // Select the front month ATM calls.
             return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly();
         }
     
         public override void OnData(Slice data)
         {
+            // Iterate each option chain to assert the contracts being selected.
             foreach (var (symbol, chain) in data.OptionChains)
             {
                 foreach (var contract in chain)
@@ -55,22 +62,29 @@ namespace QuantConnect.Algorithm.CSharp
     <pre class="python">from AlgorithmImports import *
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_start_date(2023, 2, 2)
         self.universe_settings.asynchronous = True
+        # Need to set data normalization mode to raw for options to compare the strike price fairly.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+
+        # Filter for equities with fundamental data first.
         universe = self.add_universe(self._fundamental_function)
+        # Based on the filtered equities, request an option universe with them as underlying.
         self.add_universe_options(universe, self._option_filter_function)
 
     def _fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Filter for equities with the lowest PE Ratio first.
         filtered = [f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio)]
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
     def _option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        # Select the front month ATM calls.
         return option_filter_universe.strikes(0, 2).front_month().calls_only()
         
     def on_data(self, data: Slice) -&gt; None:
+        # Iterate each option chain to assert the contracts being selected.
         for symbol, chain in data.option_chains.items():
             for contract in chain:
                 self.debug(f"Found {contract.symbol} option contract for {symbol}")</pre>

@@ -23,16 +23,19 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2023, 2, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
+            // Select QQQ constituents first, then by fundamental data.
             AddUniverse(Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter), FundamentalSelection);
         }
 
         private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
         {
+            // Select all QQQ constituents.
             return constituents.Select(c =&gt; c.Symbol);
         }
 
         private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
         {
+            // Filter for the lowest PE Ratio stocks among QQQ constituents for undervalued stocks.
             return fundamental
                 .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
                 .OrderBy(f =&gt; f.ValuationRatios.PERatio)
@@ -52,19 +55,22 @@ namespace QuantConnect.Algorithm.CSharp
 <pre class="python">from AlgorithmImports import * 
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_start_date(2023, 2, 2)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
+        # Select QQQ constituents first, then by fundamental data.
         self.add_universe(
             self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter), 
             self._fundamental_selection
         )
 
     def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Select all QQQ constituents.
         return [c.symbol for c in constituents]
 
     def _fundamental_selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Filter for the lowest PE Ratio stocks among QQQ constituents for undervalued stocks.
         filtered = [f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio)]
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]

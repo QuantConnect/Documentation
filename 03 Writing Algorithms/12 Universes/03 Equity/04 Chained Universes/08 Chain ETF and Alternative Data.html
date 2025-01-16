@@ -19,11 +19,14 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2023, 1, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
+
+            // Save all SPY contituents for the next filtering.
             AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, constituents =>
             {
                 _etf = constituents.Select(c => c.Symbol).ToList();
                 return Universe.Unchanged;
             }));
+            // Filter the equities being commented by CNBC analyst Cramer, then select the ones in SPY constituents.
             AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =>
             {
                 var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
@@ -35,6 +38,7 @@ namespace QuantConnect.Algorithm.CSharp
     
         public override void OnSecuritiesChanged(SecurityChanges changes)
         {
+            // Request CNBC data for the selected stocks.
             foreach (var added in changes.AddedSecurities)
             {
                 AddData&lt;QuiverCNBCs&gt;(added.Symbol);
@@ -60,18 +64,23 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.set_start_date(2023, 1, 2)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
+        # Save all SPY contituents for the next filtering.
         self.add_universe(self.universe.etf("SPY", Market.USA, self.universe_settings, self._etf_constituents_filter))
+        # Next filtering based on CNBC data.
         self.add_universe(QuiverCNBCsUniverse, self._mad_money_selection)
 
     def _etf_constituents_filter(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        # Save all SPY contituents for the next filtering.
         self._etf = [c.symbol for c in constituents]
         return Universe.UNCHANGED
 
     def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
+        # Filter the equities being commented by CNBC analyst Cramer, then select the ones in SPY constituents.
         madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
         return list(set(self._etf) & set(madmoney))
 
     def on_securities_changed(self, changes):
+        # Request CNBC data for the selected stocks.
         for added in changes.added_securities:
             self.add_data(QuiverCNBCs, added.symbol)
 
