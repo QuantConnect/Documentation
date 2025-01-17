@@ -1,0 +1,216 @@
+<p>The following examples demonstrate some common practices for handling Index Options.</p>
+
+<h4>Example 1: Supply-Demand Pressure</h4>
+<p>This example shows how to handle <code>QuoteBar</code> data for the SPXW Index Option contracts to trade based on the supply-demand pressure, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/individual-contracts">filter individual option contracts and request data</a> using <code class="csharp">OptionChain</code><code class="python">self.option_chain</code> method for the contracts that expires that day.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
+{
+    private Option _spxw;
+    private List&lt;Symbol&gt; _contracts = new();
+        
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 1, 3);
+        SetCash(100000000);
+
+        // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        // Subscribe to underlying data for ATM calculation using the update underlying price.
+        // Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        _spxw = AddIndexOption("SPX", "SPXW");
+        _spxw.SetFilter((x) =&gt; x.IncludeWeeklys().Expiration(0, 3).Strikes(-5, 5));
+
+        // Update the tradable contracts daily before market open since the option contract list provider populate them daily.
+        Schedule.On(
+            DateRules.EveryDay(_spxw.Symbol),
+            TimeRules.At(9, 0),
+            UpdateContracts
+        );
+    }
+
+    private void UpdateContracts()
+    {
+        // Get all contracts that expiring today, subscribe to data for trading need.
+        // We do not need to liquidate or handle settlement since all contracts are cash-settled after market close.
+        // For higher liquidity and less slippage, we only get the contracts of strike within $10 of the underlying.
+        _contracts = OptionChain(_spxw.Symbol)
+            .Where(x =&gt; x.Expiry &lt;= Time.AddDays(1) &amp;&amp; Math.Abs(x.UnderlyingLastPrice - x.Strike) &lt; 10)
+            .Select(x =&gt; x.Symbol)
+            .ToList();
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only focus on filtered list of option contracts to trade.
+        foreach (var contract in _contracts)
+        {
+            if (slice.QuoteBars.TryGetValue(contract, out var quote))
+            {
+                if (quote.Bid != null &amp;&amp; quote.Ask != null)
+                {
+                    // if the last trading price is close to the ask price, the sell pressure is higher, so we short.
+                    var diff = quote.Ask.Close - 2 * quote.Close + quote.Bid.Close;
+                    if (diff &lt; 0)
+                    {
+                        SetHoldings(contract, -0.05m);
+                    }
+                    else
+                    {
+                        SetHoldings(contract, 0.05m);
+                    }
+                }
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class IndexOptionHandlingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 1, 3)
+        self.set_cash(100000000)
+
+        self.contracts = []
+
+        # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        # Subscribe to underlying data for ATM calculation using the update underlying price.
+        # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
+        self.spxw = self.add_index_option("SPX", "SPXW")
+        self.spxw.set_filter(lambda x: x.include_weeklys().expiration(0, 3).strikes(-5, 5))
+    
+        # Update the tradable contracts daily before market open since the option contract list provider populate them daily.
+        self.schedule.on(
+            self.date_rules.every_day(self.spxw.symbol),
+            self.time_rules.at(9, 0),
+            self.update_contracts
+        )
+
+    def update_contracts(self) -&gt; None:
+        # Get all contracts that expiring today, subscribe to data for trading need.
+        # We do not need to liquidate or handle settlement since all contracts are cash-settled after market close.
+        # For higher liquidity and less slippage, we only get the contracts of strike within $10 of the underlying.
+        contracts = self.option_chain(self.spxw.symbol)
+        self.contracts = [x.symbol for x in contracts
+            if x.expiry &lt; self.time + timedelta(1) and\
+            abs(x.underlying_last_price - x.strike) &lt; 10]
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only focus on filtered list of option contracts to trade.
+        for contract in self.contracts:
+            quote = slice.quote_bars.get(contract)
+            if quote and quote.bid is not None and quote.ask is not None:
+                # if the last trading price is close to the ask price, the sell pressure is higher, so we short.
+                diff = quote.ask.close - 2 * quote.close + quote.bid.close
+                if diff &lt; 0:
+                    self.set_holdings(contract, -0.05)
+                else:
+                    self.set_holdings(contract, 0.05)</pre>
+</div>
+
+<h4>Example 2: Get Mid Price For Universe</h4>
+<p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Index Option contracts to calculate mid price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data/universes">request data through universe selection function</a> using <code class="csharp">SetFilter</code><code class="python">set_filter</code> method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+        
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 1, 3);
+
+        // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        // Subscribe to SPXW option data.
+        var option = AddIndexOption("SPX", "SPXW");
+        _symbol = option.Symbol;
+        // We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        option.SetFilter((u) =&gt; u.IncludeWeeklys().Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only want to obtain the option chain of the selected symbol.
+        if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            foreach (var contract in chain)
+            {
+                // Mid price = average of bid close price and ask close price.
+                var midPrice = (contract.BidPrice + contract.AskPrice) * 0.5m;
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class IndexOptionHandlingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        # Subscribe to SPXW option data.
+        option = self.add_option(spy)
+        self._symbol = option.symbol
+        # We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        option.set_filter(lambda u: u.include_weeklys().contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only want to obtain the option chain of the selected symbol.
+        chain = slice.option_chains.get(self._symbol)
+        if not chain:
+            return
+    
+        for contract in chain:
+            # Mid price = average of bid close price and ask close price
+            mid_price = (contract.bid_price + contract.ask_price) * 0.5</pre>
+</div>
+
+<h4>Example 3: Get Instant Delta</h4>
+<p>The option greeks change rapidly, so we need to obtain the instant greeks to accurately calculate the hedge size for arbitration or replication portfolio. You can call the <code>Greeks</code> property from the <code>OptionChain</code> data to access various greeks. In this example, we will demonstrate how to obtain the contract with delta closest to 0.4 among all call contracts expiring the same week.</p>
+<div class="section-example-container">
+	<pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+        
+    public override void Initialize()
+    {
+        // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        // Subscribe to SPXW option data.
+        var option = AddOption("SPX", "SPXW");
+        _symbol = option.Symbol;
+        // We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        // 0.4 Delta will only appear in call contracts.
+        option.SetFilter((u) =&gt; u.IncludeWeeklys().Delta(0.2m, 0.6m).Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only want to obtain the option chain of the selected symbol.
+        if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            // Get the contract with Delta closest to 0.4 to trade.
+            // The arbitary delta criterion might be set due to hedging need or risk adjustment.
+            var selected = chain.OrderBy(x =&gt; Math.Abs(x.Greeks.Delta - 0.4m)).First();
+        }
+    }
+}</pre>
+	<pre class="python">class IndexOptionHandlingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        # Subscribe to SPXW option data.
+        option = self.add_index_option("SPX", "SPXW")
+        self._symbol = option.symbol
+        # We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        # 0.4 Delta will only appear in call contracts.
+        option.set_filter(lambda u: u.include_weeklys().delta(0.2, 0.6).contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only want to obtain the option chain of the selected symbol.
+        chain = slice.option_chains.get(self._symbol)
+        if not chain:
+            return
+    
+        # Get the contract with Delta closest to 0.4 to trade.
+        # The arbitary delta criterion might be set due to hedging need or risk adjustment.
+        selected = sorted(chain, key=lambda x: abs(x.greeks.delta - 0.4))[0]</pre>
+</div>
