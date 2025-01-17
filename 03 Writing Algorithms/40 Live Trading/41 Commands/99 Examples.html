@@ -1,4 +1,4 @@
-<p>The following examples demonstrate some common practices for implementing live command.</p>
+<p>The following examples demonstrate some common practices for implementing live commands.</p>
 
 <h4>Example 1: Grey Box</h4>
 <p>The following algorithm trades a simple EMA cross strategy on SPY. However, instead of direct ordering by the algorithm as a "black box", it sends an email to ask for clicking a confirmation link before ordering, making each order decision an informed manual decision. The algorithm is called a "grey box".</p>
@@ -16,9 +16,9 @@
 
         // Request SPY data to trade.
         _spy = AddEquity("SPY").Symbol;
-        // Create a EMA indicator to generate trade signals.
+        // Create an EMA indicator to generate trade signals.
         _ema = EMA(_spy, 20, Resolution.Daily);
-        // Warm up indicator for immediate readiness.
+        // Warm-up indicator for immediate readiness.
         WarmUpIndicator(_spy, _ema, Resolution.Daily);
     }
 
@@ -26,9 +26,9 @@
     {
         if (slice.Bars.TryGetValue(_spy, out var bar) &amp;&amp; LiveMode)
         {
-            // Trade trend-following by price above or below EMA.
-            // If price above EMA, SPY is in uptrend and we buy it.
-            // We send a link to our email address, await confirmation.
+            // Trend-following strategy using price and EMA.
+            // If the price is above EMA, SPY is in an uptrend, and we buy it.
+            // We sent a link to our email address and await confirmation.
             string link;
             if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_spy].IsLong)
             {
@@ -58,17 +58,17 @@
 
         # Request SPY data to trade.
         self.spy = self.add_equity("SPY").symbol
-        # Create a EMA indicator to generate trade signals.
+        # Create an EMA indicator to generate trade signals.
         self._ema = self.ema(self.spy, 20, Resolution.DAILY)
-        # Warm up indicator for immediate readiness.
+        # Warm-up indicator for immediate readiness.
         self.warm_up_indicator(self.spy, self._ema, Resolution.DAILY)
 
     def on_data(self, slice: Slice) -&gt; None:
         bar = slice.bars.get(self.spy)
         if bar and self.live_mode:
-            # Trade trend-following by price above or below EMA.
-            # If price above EMA, SPY is in uptrend and we buy it.
-            # We send a link to our email address, await confirmation.
+            # Trend-following strategy using price and EMA.
+            # If the price is above EMA, SPY is in an uptrend, and we buy it.
+            # We sent a link to our email address and await confirmation.
             if bar.close &gt; self._ema.current.value and not self.portfolio[self.spy].is_long:
                 link = self.link({"ticker": "SPY", "size": 1})
                 self.notify.email("email@address.com", "Trade Confirmation Needed", f"Click here to run: {link}")
@@ -77,7 +77,7 @@
                 self.notify.email("email@address.com", "Trade Confirmation Needed", f"Click here to run: {link}")
 
     def on_command(self, data: DynamicData) -&gt; Optional[bool]:
-        # If we click the email link to confirm the trade, the algorithm will place the order.
+        # The algorithm will place the order if we click the email link to confirm the trade.
         self.set_holdings(data["ticker"], data["size"])
         return True</pre>
 </div>
