@@ -1,5 +1,8 @@
+<p>The following examples demonstrate common practices for requesting individual index option contract data.</p>
+
+<h4>Example 1: 5-Minute Option Chain</h4>
 <p>
-    The following example shows how to update the Option chain every five minutes. The <code>OptionChainManager</code> class implements the selection logic and manages the contract subscriptions.
+    The following example shows how to update the Option chain every five minutes. The custom <code>OptionChainManager</code> class implements the selection logic and manages the contract subscriptions.
 </p>
 
 <div class="section-example-container">
@@ -15,13 +18,22 @@
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
             UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
+
+            // Seed the last price to ensure filtering using the underlying price is available immediately.
             SetSecurityInitializer(
                 new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
             );
+
+            // Request the index underlying data for filtering.
             var spx = AddIndex("SPX").Symbol;
+            // Create the 5-minute option chain manager on the SPXW weekly index option.
             _chainManager[QuantConnect.Symbol.CreateCanonicalOption(spx, "SPXW", Market.USA, "?SPXW")] = new(-10, 10, 0, 1);
+            // Populate the updated option chain immediately to trade with.
             PopulateOptionChain();
+
+            // Set a schedule event to populate the option chain when the market opens since the option contracts are updated daily.
             Schedule.On(DateRules.EveryDay(spx), TimeRules.AfterMarketOpen(spx, 1), PopulateOptionChain);
+            // Set a scheduled event to filter the closed ATM calls every 5 minutes.
             Schedule.On(DateRules.EveryDay(spx), TimeRules.Every(TimeSpan.FromMinutes(5)), Filter);
         }
         
@@ -48,8 +60,11 @@
         {
             foreach (var (symbol, manager) in _chainManager)
             {
+                // Only trade on updated data.
                 if (!slice.OptionChains.TryGetValue(symbol, out var chain))
                     continue;
+
+                // Filter the closest ATM call contract and trade.
                 var expiry = chain.Min(x =&gt; x.Expiry);
                 var atmCall = chain
                     .Where(x =&gt; x.Expiry == expiry && x.Right == OptionRight.Call && Securities[x.Symbol].IsTradable)
@@ -81,6 +96,7 @@
 
         public void SetChain(OptionChain chain, DateTime time)
         {
+            // Filter the expiry daily only since the contract list is updated daily.
             _chain = chain.Where(x =&gt;
             {
                 var totalDays = (x.Expiry - time).TotalDays;
@@ -95,6 +111,7 @@
             if (underlyingSymbol.IsCanonical())
                 underlyingSymbol = underlyingSymbol.Underlying;
 
+            // Filter the contracts with strike range spread between the preset level.
             var strikes = _chain.Select(x =&gt; x.Strike).OrderBy(x =&gt; x).Distinct().ToList();
             var spot = algorithm.Securities[underlyingSymbol].Price;
             var atm = strikes.OrderBy(x =&gt; Math.Abs(spot - x)).FirstOrDefault();
@@ -104,11 +121,14 @@
             var symbols = _chain
                 .Where(x =&gt; minStrike &lt;= x.Strike && x.Strike &lt;= maxStrike)
                 .Select(x => x.Symbol).ToList();
+
+            // Remove subscriptions if the contracts are no longer ATMs.
             foreach (var symbol in _symbols.Except(symbols).ToList())
             {
                 if (algorithm.RemoveOptionContract(symbol))
                     _symbols.Remove(symbol);
             }
+            // Request data of the newly identified ATM contracts.
             foreach (var symbol in symbols.Except(_symbols).ToList())
             {
                 _symbols.Add(symbol);
@@ -119,41 +139,53 @@
 }</pre>
     <pre class="python">class OptionChainFullExample(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 2)
         self.set_end_date(2023, 1, 30)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
         self.universe_settings.minimum_time_in_universe = timedelta(minutes=0)
+
+        # Seed the last price to ensure filtering using the underlying price is available immediately.
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
         )
+
+        # Request the index underlying data for filtering.
         spx = self.add_index("SPX").symbol
+        # Create the 5-minute option chain manager on SPXW weekly index option.
         self._chain_manager = {
             Symbol.create_canonical_option(spx, "SPXW", Market.USA, "?SPXW"): OptionChainManager(-10, 10, 0, 1)
         }
+        # Populate the updated option chain immediately to trade with.
         self._populate_option_chain()
+
+        # Set schedule event to populate the option chain at market open, since the option contracts are updating daily.
         self.schedule.on(
             self.date_rules.every_day(spx), self.time_rules.after_market_open(spx, 1), self._populate_option_chain
         )
+        # Set a scheduled event to filter the closed ATM calls every 5 minutes.
         self.schedule.on(self.date_rules.every_day(spx), self.time_rules.every(timedelta(minutes=5)), self._filter)
 
-    def _populate_option_chain(self):
+    def _populate_option_chain(self) -&gt; None:
         # The contract list is updated daily, so we can get it and apply
         # the expiration filter as soon as the market opens.
         for symbol, manager in self._chain_manager.items():
             manager.set_chain(self.option_chain(symbol), self.time)
         self._filter()
 
-    def _filter(self):
+    def _filter(self) -&gt; None:
         for symbol, manager in self._chain_manager.items():
             manager.select(self, symbol)
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         for symbol, _ in self._chain_manager.items():
+            # Only trade on updated data.
             chain = slice.option_chains.get(symbol)
             if not chain: 
                 continue
+
+            # Filter the closest ATM call contract and trade.
             expiry = min([x.expiry for x in chain])
             contracts = [
                 x for x in chain 
@@ -170,20 +202,23 @@ class OptionChainManager:
     _chain = []
     _symbols = set([])
         
-    def __init__(self, min_strike, max_strike, min_expiry, max_expiry):
+    def __init__(self, min_strike: int, max_strike: int, min_expiry: int, max_expiry: int) -&gt; None:
         self._min_strike = min_strike
         self._max_strike = max_strike
         self._min_expiry = min_expiry
         self._max_expiry = max_expiry
         
-    def set_chain(self, chain:OptionChain, time: datetime) -> None:
+    def set_chain(self, chain:OptionChain, time: datetime) -&gt; None:
+        # Filter the expiry daily only since contract list is updated daily.
         self._chain = [x for x in chain if self._min_expiry <= (x.expiry - time).days <= self._max_expiry]
         
-    def select(self, algorithm: QCAlgorithm, symbol: Symbol) -> None:
+    def select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
         if not self._chain:
             return
         if symbol.is_canonical():
             symbol = symbol.underlying
+
+        # Filter the contracts with strike range spread between the preset level.
         strikes = sorted(set(x.strike for x in self._chain))
         spot = algorithm.securities[symbol].price
         atm = sorted(strikes, key=lambda x: abs(spot-x))[0]
@@ -192,9 +227,11 @@ class OptionChainManager:
         max_strike = strikes[min(len(strikes) - 1, index + self._max_strike)]
         symbols = set(x.symbol for x in self._chain if min_strike <= x.strike <= max_strike)
         
+        # Remove subscriptions if the contracts are not being ATM anymore.
         for symbol in self._symbols - symbols:
             if algorithm.remove_option_contract(symbol):
                 self._symbols.remove(symbol)
+        # Request data of the newly identified ATM contracts.
         for symbol in symbols - self._symbols:
             self._symbols.add(symbol)
             algorithm.add_option_contract(symbol)</pre>

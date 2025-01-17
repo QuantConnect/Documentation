@@ -20,19 +20,25 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2023, 2, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
+            // Need to set the data normalization mode to raw for fair strike price comparison.
             UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+
+            // First-pass filtering from QQQ constituents.
             var etfUniverse = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
             AddUniverse(etfUniverse);
+            // Filter for equity options from the selected QQQ constituents next.
             AddUniverseOptions(etfUniverse, OptionFilterFunction);
         }
     
         private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
         {
+            // Select the top 10 weighted QQQ constituents for most liquid options.
             return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
         }
     
         private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
         {
+            // Select the front month ATM standard calls.
             return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly();
         }
     
@@ -54,16 +60,22 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2023, 2, 2)
         self.universe_settings.asynchronous = True
+        # Set the data normalization mode to raw for fair strike price comparison.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+
+        # First-pass filtering from QQQ constituents.
         etf_universe = self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter)
         self.add_universe(etf_universe)
+        # Filter for equity options from the selected QQQ constituents next.
         self.add_universe_options(etf_universe, self._option_filter_function)
 
     def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Select the top 10 weighted QQQ constituents for most liquid options.
         sorted_by_weight = sorted(constituents, key=lambda x: x.weight, reverse=True) 
         return [c.symbol for c in sorted_by_weight[:10]]
 
     def _option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        # Select the front month ATM standard calls.
         return option_filter_universe.strikes(0, 2).front_month().calls_only()
         
     def on_data(self, data: Slice) -&gt; None:
