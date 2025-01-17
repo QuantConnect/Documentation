@@ -1,4 +1,4 @@
-<p>The following examples demonstrate common practices for sending notification in live algorithm.</p>
+<p>The following examples demonstrate common practices for sending notifications in live algorithms.</p>
 
 <? 
 $number = 1;
