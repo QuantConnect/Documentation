@@ -1,6 +1,6 @@
 <p>
   You can access the QCAlgorithm API by passing the <code class="python">self</code><code class="csharp">this</code> object into a constructor of your target class. 
-  The class constructor receives it as a variable that you can use to initialize your algorithm as you need.
+  The class constructor receives it as a variable you can use to initialize your algorithm.
   The following algorithm demonstrates this process:
 </p>
 <div class="section-example-container">
@@ -19,13 +19,13 @@
         _spy = equity.Symbol;
         _holdings = equity.Holdings;
 
-        // Set the fill model with the instance of the algorithm.
+        // Set the fill model with the algorithm instance.
         equity.SetFillModel(new CustomPartialFillModel(this));
     }
      
     public override void OnData(Slice data)
     {
-        // To get all open orders of SPY, use the transaction manager.
+        // To get all SPY open orders, use the transaction manager.
         var openOrders = Transactions.GetOpenOrders(_spy);
         if (openOrders.Count != 0) return;
 
@@ -63,14 +63,14 @@
             // Allow at most 10 shares to be filled at once.
             fill.FillQuantity = Math.Sign(order.Quantity) * 10m;
 
-            // If the remaining shares is less thna or equal to 10, the order will be fully filled. 
+            // If the remaining shares are less than or equal to 10, the order will be fully filled. 
             if (Math.Min(Math.Abs(fill.FillQuantity), absoluteRemaining) == absoluteRemaining)
             {
                 fill.FillQuantity = Math.Sign(order.Quantity) * absoluteRemaining;
                 fill.Status = OrderStatus.Filled;
                 _absoluteRemainingByOrderId.Remove(order.Id);
             }
-            // Else, the order is only partially filled and we need to update the remaining quantity.
+            // Otherwise, the order is only partially filled out, and we need to update the remaining quantity.
             else
             {
                 fill.Status = OrderStatus.PartiallyFilled;
@@ -94,11 +94,11 @@
         self._spy = equity.symbol
         self._holdings = equity.holdings
 
-        # Set the fill model with the instance of the algorithm.
+        # Set the fill model with the algorithm instance.
         equity.set_fill_model(CustomPartialFillModel(self))
 
     def on_data(self, data: Slice) -&gt; None:
-        # To get all open orders of SPY, use the transaction manager.
+        # To get all SPY open orders, use the transaction manager.
         open_orders = self.transactions.get_open_orders(self.spy)
         if len(open_orders) != 0: return
 
@@ -120,12 +120,12 @@ class CustomPartialFillModel(FillModel):
         # Allow at most 10 shares to be filled at once.
         fill.fill_quantity = np.sign(order.quantity) * 10
 
-        # If the remaining shares is less thna or equal to 10, the order will be fully filled. 
+        # If the remaining shares are less than or equal to 10, the order will be fully filled. 
         if (min(abs(fill.fill_quantity), absolute_remaining) == absolute_remaining):
             fill.fill_quantity = np.sign(order.quantity) * absolute_remaining
             fill.status = OrderStatus.FILLED
             self._absolute_remaining_by_order_id.pop(order.id, None)
-        # Else, the order is only partially filled and we need to update the remaining quantity.
+        # Otherwise, the order is only partially filled out, and we need to update the remaining quantity.
         else:
             fill.status = OrderStatus.PARTIALLY_FILLED
             self._absolute_remaining_by_order_id[order.id] = absolute_remaining - abs(fill.fill_quantity)
