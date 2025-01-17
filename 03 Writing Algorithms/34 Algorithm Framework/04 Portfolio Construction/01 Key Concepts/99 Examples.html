@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for implementing framework portfolio construction model.</p>
+<p>The following examples demonstrate common practices for implementing the framework portfolio construction model.</p>
 
 <h4>Example 1: All-Weather Portfolio</h4>
-<p>The following algorithm uses <code>RiskParityPortfolioConstructionModel</code> to construct an all-weather portfolio that dissipate 1-year daily variance equally among ETFs that represents different asset classes, including stock market (SPY), bond (TLT), gold (GLD), oil (USO), and agricultural(DBA).</p>
+<p>The following algorithm uses <code>RiskParityPortfolioConstructionModel</code> to construct an all-weather portfolio that dissipates 1-year daily variance equally among ETFs that represent different asset classes, including stock market (SPY), bond (TLT), gold (GLD), oil (USO), and agricultural(DBA).</p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkPortfolioConstructionModelAlgorithm : QCAlgorithm
 {
@@ -10,7 +10,7 @@
         SetStartDate(2024, 1, 1);
         SetEndDate(2024, 12, 1);
         
-        // Add a universe of selected list of ETF that represents various asset classes.
+        // Add a universe of selected lists of ETFs that represent various asset classes.
         var etfs = new[] {
             QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA),     // stock market
             QuantConnect.Symbol.Create("TLT", SecurityType.Equity, Market.USA),     // bond
@@ -30,7 +30,7 @@
         self.set_start_date(2024, 1, 1)
         self.set_end_date(2024, 12, 1)
     
-        # Add a universe of selected list of ETF that represents various asset classes.
+        # Add a universe of selected lists of ETFs that represent various asset classes.
         etfs = [
             Symbol.create("SPY", SecurityType.EQUITY, Market.USA),  # stock market
             Symbol.create("TLT", SecurityType.EQUITY, Market.USA),  # bond
@@ -55,7 +55,7 @@
         SetEndDate(2024, 7, 1);
         SetCash(1000000);
         
-        // Set to raw data normalization for strike and underlying price fair comparison.
+        // Set to raw data normalization for the strike and underlying price fair comparison.
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
         // Add a universe of the market representative SPY.
         var spy = new[] {
@@ -64,7 +64,7 @@
         AddUniverseSelection(new ManualUniverseSelectionModel(spy));
         // Emit insights for all selected ETFs. Each insight lasts for 7 days for the option hedge expiry.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
-        // Using a custom PCM to control the order size and hedge option position ordering, with 10% OTM threshold.
+        // Using a custom PCM to control the order size and hedge option position order with a 10% OTM threshold.
         SetPortfolioConstruction(new ProtectivePositionPortfolioConstructionModel(0.1m));
     }
 
@@ -95,7 +95,7 @@
                 var right = insight.Direction == InsightDirection.Up ? OptionRight.Put : OptionRight.Call;
                 var threshold = insight.Direction == InsightDirection.Up ? 1m - _threshold : 1m + _threshold;
 
-                // Select protective optoin position expiring in 7 days.
+                // Select a protective option position that expires in 7 days.
                 var hedge = algorithm.OptionChain(underlying)
                     .Where(x =&gt; x.Expiry &lt; algorithm.Time.AddDays(7) &amp;&amp; x.Right == right)
                     .OrderByDescending(x =&gt; x.Expiry)
@@ -104,7 +104,7 @@
                 // Request the protective position data for trading.
                 var hedgeSymbol = algorithm.AddOptionContract(hedge).Symbol;
 
-                // Each insight will be order by position group of the underlying and the hedging option position.
+                // Each insight will be ordered by the position group of the underlying and the hedging option positions.
                 var contractMultiplier = algorithm.Securities[underlying].SymbolProperties.ContractMultiplier;
                 var quantity = Math.Floor(fundPerInsight / contractMultiplier / (hedge.BidPrice + hedge.UnderlyingLastPrice));
                 targets.Add(new PortfolioTarget(underlying, (int)(quantity * contractMultiplier)));
@@ -121,14 +121,14 @@
         self.set_end_date(2024, 7, 1)
         self.set_cash(1000000)
 
-        # Set to raw data normalization for strike and underlying price fair comparison.
+        # Set to raw data normalization for a strike and the underlying price fair comparison.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
         # Add a universe of the market representative SPY.
         spy = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
         self.add_universe_selection(ManualUniverseSelectionModel(spy))
         # Emit insights for all selected ETFs. Each insight lasts for 7 days for the option hedge expiry.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
-        # Using a custom PCM to control the order size and hedge option position ordering, with 10% OTM threshold.
+        # Using a custom PCM to control the order size and hedge option position ordering with a 10% OTM threshold.
         self.set_portfolio_construction(ProtectivePositionPortfolioConstructionModel(0.1))
 
 class ProtectivePositionPortfolioConstructionModel(PortfolioConstructionModel):
@@ -149,14 +149,14 @@ class ProtectivePositionPortfolioConstructionModel(PortfolioConstructionModel):
             right = OptionRight.PUT if insight.direction == InsightDirection.UP else OptionRight.CALL
             threshold = 1 - self.threshold if insight.direction == InsightDirection.UP else 1 + self.threshold
 
-            # Select protective optoin position expiring in 7 days.
+            # Select a protective option position that expires in 7 days.
             hedge = sorted([x for x in algorithm.option_chain(underlying) if x.expiry &lt; algorithm.time + timedelta(7) and x.right == right],
                            key=lambda x: (x.expiry, -abs(x.strike - x.underlying_last_price * threshold)),
                            reverse=True)[0]
             # Request the protective position data for trading.
             hedge_symbol = algorithm.add_option_contract(hedge).symbol
 
-            # Each insight will be order by position group of the underlying and the hedging option position.
+            # Each insight will be ordered by the position group of the underlying and the hedging option positions.
             contract_multiplier = algorithm.securities[underlying].symbol_properties.contract_multiplier
             quantity = fund_per_insight // (contract_multiplier * (hedge.bid_price + hedge.underlying_last_price))
             targets.append(PortfolioTarget(underlying, int(quantity * contract_multiplier)))
