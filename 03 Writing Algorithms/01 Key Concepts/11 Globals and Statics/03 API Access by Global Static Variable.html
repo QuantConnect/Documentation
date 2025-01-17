@@ -1,6 +1,6 @@
 <p>
   Occasionally, passing the QCAlgorithm object to your class constructor is impossible, so you need to use global static variables to access the API for debugging and initialization purposes. 
-  The most common case is <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom data implementations</a>, where the LEAN Engine is creating the objects and you're unable to specify a custom constructor. 
+  The most common case is <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom data implementations</a>, where the LEAN Engine is creating the objects, and you're unable to specify a custom constructor. 
 </p>
 <p>
   To create a global static variable, assign the reference to the global variable in the algorithm's <code class="csharp">Initialize</code><code class="python">initialize</code> method. 
@@ -13,7 +13,7 @@
 {
     public override void Initialize()
     {
-        // Instantiate a custom type as global variable in the QCAlgorithm instance.
+        // Instantiate a custom type as a global variable in the QCAlgorithm instance.
         MyCustomDataType.ALGORITHM = this;
         // Request data for trading or signal.
         var symbol = AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily).Symbol;
@@ -52,7 +52,7 @@ public class MyCustomDataType : BaseData
         self.set_start_date(1998, 1, 1)
         self.set_end_date(2014, 6, 1)
         
-        # Instantiate a custom type as global variable in the QCAlgorithm instance.
+        # Instantiate a custom type as a global variable in the QCAlgorithm instance.
         # Assign self to Static Cape Variable.
         Cape.algorithm = self
         # Request data for trading or signal.
