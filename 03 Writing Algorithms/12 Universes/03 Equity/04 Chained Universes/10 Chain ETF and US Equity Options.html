@@ -23,7 +23,7 @@ namespace QuantConnect.Algorithm.CSharp
             // Need to set the data normalization mode to raw for fair strike price comparison.
             UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 
-            // First line filtering from QQQ contituents.
+            // First-pass filtering from QQQ constituents.
             var etfUniverse = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
             AddUniverse(etfUniverse);
             // Filter for equity options from the selected QQQ constituents next.
@@ -60,10 +60,10 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2023, 2, 2)
         self.universe_settings.asynchronous = True
-        # Need to set the data normalization mode to raw for fair strike price comparison.
+        # Set the data normalization mode to raw for fair strike price comparison.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
 
-        # First line filtering from QQQ contituents.
+        # First-pass filtering from QQQ constituents.
         etf_universe = self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter)
         self.add_universe(etf_universe)
         # Filter for equity options from the selected QQQ constituents next.
