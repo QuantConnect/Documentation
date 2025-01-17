@@ -1,8 +1,8 @@
-<p>The following examples demonstrate some common practices for implementing framework fundamental universe model.</p>
+<p>The following examples demonstrate some common practices for implementing the framework fundamental universe model.</p>
 
 <h4>Example 1: 50 Stocks &gt;$10/Share and &gt;$10M in Daily Trading Volume</h4>
 <p>
-  The following algorithm selects the 50 most liquid US Equities above $10/share and $10M in daily volume. We pass a function to the <code>FundamentalUniverseSelectionModel</code> to filter the fundamental data for stocks selection.
+  The following algorithm selects the 50 most liquid US Equities above $10/share and $10M daily volume. We pass a function to the <code>FundamentalUniverseSelectionModel</code> to filter the fundamental data for stock selection.
 </p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkFundamentalUniverseSelectionAlgorithm : QCAlgorithm
@@ -13,18 +13,18 @@
         SetEndDate(2024, 12, 1);
         SetCash(100000);
         
-        // Configure the universe to update at the start of each month. Most of the top 500 doesn't change very frequently.
+        // Configure the universe to update at the start of each month. Most of the top 500 don't change very frequently.
         UniverseSettings.Schedule.On(DateRules.MonthStart());
         // Add a fundamental universe with custom selection rules for filtering.
         AddUniverseSelection(new FundamentalUniverseSelectionModel(fundamental =&gt; 
             (from f in fundamental
-            // Large cap non-penny stocks has more stable trend and demand.
+            //Large-cap non-penny stocks have more stable trends and demand.
             where f.Price &gt; 10 && f.DollarVolume &gt; 10000000
             orderby f.DollarVolume descending
             select f.Symbol).Take(500)
         ));
 
-        // Sent insights to buy and hold the selected securities.
+        // Sent insights on buying and holding the selected securities.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(30)));
         // Evenly dissipate the capital risk among selected securities.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
@@ -36,20 +36,20 @@
       self.set_end_date(2024, 12, 1)
       self.set_cash(100000)
       
-      # Configure the universe to update at the start of each month. Most of the top 500 doesn't change very frequently.
+      # Configure the universe to update at the start of each month. Most of the top 500 don't change very frequently.
       self.universe_settings.schedule.on(self.date_rules.month_start())
       # Add a universe with custom selection rules for filtering.
       self.add_universe_selection(FundamentalUniverseSelectionModel(
           lambda fundamental: [
               x.symbol for x in sorted(
-                  # Large cap non-penny stocks has more stable trend and demand.
+                  # Large-cap non-penny stocks have a more stable trend and demand.
                   [f for f in fundamental if f.price &gt; 10 and f.dollar_volume &gt; 10_000_000], 
                   key=lambda f: f.dollar_volume
               )[-500:]
           ]
       ))
 
-      # Sent insights to buy and hold the most liquid cryptos for a week.
+      # Sent insights on buying and holding the most liquid cryptos for a week.
       self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(30)))
       # Evenly dissipate the capital risk among selected cryptos.
       self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
@@ -59,8 +59,8 @@
 <h4>Example 2: 10 Stocks Above Their 200-Day EMA With &gt;$1B of Daily Trading Volume</h4>
 <p>
   Another common request is to filter the universe by a technical indicator, such as only picking stocks above their 200-day <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average'>Exponential Moving Average</a> (EMA). 
-  The <code>Fundamental</code> object has adjusted price and volume information, so you can do any price-related analysis.
-  The following algorithm defines a separate class to contain the indicator of each asset. We pass a function to the <code>FundamentalUniverseSelectionModel</code> to filter the fundamental data for stocks selection.
+  The <code>Fundamental</code> object has adjusted price and volume information so that you can do any price-related analysis.
+  The following algorithm defines a separate class to contain the indicator of each asset. We pass a function to the <code>FundamentalUniverseSelectionModel</code> to filter the fundamental data for stock selection.
 </p>
 <div class="section-example-container">
     <pre class="csharp">using System.Collections.Concurrent;
@@ -79,7 +79,7 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
         // Add a fundamental universe with custom selection rules for filtering.
         AddUniverseSelection(new FundamentalUniverseSelectionModel(Selection));
 
-        // Sent insights to buy and hold the selected securities.
+        // Sent insights on buying and holding the selected securities.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
         // Evenly dissipate the capital risk among selected securities.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
@@ -91,10 +91,10 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
             // Create/Update the EMA indicators of each stock.
             let avg = _selectionDataBySymbol.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(this, f.Symbol, 200))
             where avg.Update(f.EndTime, f.AdjustedPrice)
-            // Select the Equities that are above their EMA and have a daily volume of $1B.
+            // Select the Equities above their EMA and have a daily volume of $1B.
             // These assets are in an uptrend and are very liquid.
             where avg.Ema.IsReady &amp;&amp; f.Price &gt; avg.Ema.Current.Value &amp;&amp; f.DollarVolume &gt; 1000000000
-            // Select the 10 most liquid Equities to avoid extra slippage and their trend can be capitalize more efficiently.   
+            // Select the 10 most liquid Equities to avoid extra slippage, and their trend can be capitalized more efficiently.   
             orderby f.DollarVolume descending
             select f.Symbol).Take(10);
     }
@@ -115,7 +115,7 @@ public class SelectionData
     }
 
     // Update your variables and indicators with the latest data.
-    // You may also want to use the History API here to warm-up the indicator.
+    // You may also want to use the History API here to warm up the indicator.
     public bool Update(DateTime time, decimal value)
     {
         return Ema.Update(time, value);
@@ -133,7 +133,7 @@ public class SelectionData
         # Add a universe with custom selection rules for filtering.
         self.add_universe_selection(FundamentalUniverseSelectionModel(self._select_assets))
 
-        # Sent insights to buy and hold the most liquid cryptos for a week.
+        # Sent insights on buying and holding the most liquid cryptos for a week.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
         # Evenly dissipate the capital risk among selected cryptos.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
@@ -145,7 +145,7 @@ public class SelectionData
                 self._selection_data_by_symbol[f.symbol] = SelectionData(self, f.symbol, 200)
             self._selection_data_by_symbol[f.symbol].update(f.end_time, f.adjusted_price, f.dollar_volume)
         
-        # Select the Equities that are above their EMA and have a daily volume of $1B.
+        # Select the Equities above their EMA and have a daily volume of $1B.
         # These assets are in an uptrend and are very liquid.
         selected = [x for x in self._selection_data_by_symbol.values() if x.is_above_ema and x.volume &gt; 1_000_000_000]
             
@@ -165,16 +165,16 @@ class SelectionData(object):
         algorithm.warm_up_indicator(symbol, self._ema, Resolution.Daily);
 
     # Update your variables and indicators with the latest data.
-    # You may also want to use the History API here to warm-up the indicator.
+    # You may also want to use the History API here to warm up the indicator.
     def update(self, time: datetime, price: float, volume: float) -&gt; None:
         self.volume = volume
         if self._ema.update(time, price):
             self.is_above_ema = price &gt; self._ema.current.value</pre>
 </div>
 <p>
-    In this example, the <code>SelectionData</code> class group variables for the universe selection and updates the indicator of each asset. 
-	We highly recommend you follow this pattern to keep your algorithm tidy and bug free. 
-	The following snippet shows an example implementation of the <code>SelectionData</code> class, but you can make this whatever you need to store your custom universe filters. 
+    In this example, the <code>SelectionData</code> class group variables for the universe selection and update the indicator of each asset. 
+	We highly recommend you follow this pattern to keep your algorithm tidy and bug-free. 
+	The following snippet shows an example implementation of the <code>SelectionData</code> class, but you can make whatever you need to store your custom universe filters. 
 	Note that the preceding <code>SelectionData</code> class uses a <a href="/docs/v2/writing-algorithms/indicators/manual-indicators">manual</a> EMA indicator instead of the <a href="/docs/v2/writing-algorithms/indicators/automatic-indicators">automatic version</a>. 
 	For more information about universes that select assets based on indicators, see <a href="/docs/v2/writing-algorithms/indicators/indicator-universes">Indicator Universes</a>. 
 	You need to use a <code>SelectionData</code> class instead of assigning the EMA to the <code>Fundamental</code> object because you can't create custom <span class="csharp">properties</span><span class="python">attributes</span> on <code>Fundamental</code> objects like you can with <code>Security</code> objects.
@@ -185,7 +185,7 @@ class SelectionData(object):
     The process to get the 10-day <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>Simple Moving Average</a> (SMA) stock volume is the same process as in Example 2. 
 	First, define a <code>SelectionData</code> class that performs the averaging. 
 	This class tracks the ratio of today's volume relative to historical volumes. 
-	You can use this ratio to select assets that are above their 10-day SMA and sort the results by the Equities that have had the biggest jump since yesterday.
+	You can use this ratio to select assets above their 10-day SMA and sort the results by the Equities that have had the most significant jump since yesterday.
 </p>
 <p>We inherit the <code>FundamentalUniverseSelectionModel</code> to create a custom universe selection model. Overriding the <code class="csharp">Select</code><code class="csharp">select</code>, we filter the fundamental data for stocks selection.</p>
 <div class="section-example-container">
@@ -202,7 +202,7 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
         // Add a fundamental universe with custom selection rules for filtering.
         AddUniverseSelection(new VolumeSMAUniverseSelectionModel(10));
 
-        // Sent insights to buy and hold the selected securities.
+        // Sent insights on buying and holding the selected securities.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
         // Evenly dissipate the capital risk among selected securities.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
@@ -229,7 +229,7 @@ public class VolumeSMAUniverseSelectionModel : FundamentalUniverseSelectionModel
             where avg.Update(f.EndTime, f.Volume)
             // Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
             where avg.VolumeRatio &gt; 1
-            // Select the 10 Equities with the highest relative volume, since they have the highest capactity
+            // Select the 10 Equities with the highest relative volume since they have the highest capacity
             // for scalp-trading or intra-day movement.
             orderby avg.VolumeRatio descending
             select f.Symbol).Take(10);
@@ -277,7 +277,7 @@ class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
         # Add a universe with custom selection rules for filtering.
         self.add_universe_selection(VolumeSMAUniverseSelectionModel(10))
 
-        # Sent insights to buy and hold the selected securities.
+        # Sent insights on buying and holding the selected securities.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
         # Evenly dissipate the capital risk among selected securities.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
@@ -299,7 +299,7 @@ class VolumeSMAUniverseSelectionModel(FundamentalUniverseSelectionModel):
         # Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
         selected = [sd for sd in self._selection_data_by_symbol.values() if sd.volume_ratio &gt; 1]
             
-        # Select the 10 Equities with the highest relative volume, since they have the highest capactity
+        # Select the 10 Equities with the highest relative volume since they have the highest capacity
         # for scalp-trading or intra-day movement.
         return [ x.symbol for x in sorted(selected, key=lambda x: x.volume_ratio)[-10:] ]
 
@@ -344,7 +344,7 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
         // Add a fundamental universe with custom selection rules for filtering.
         AddUniverseSelection(new EmaUniverseSelectionModel(10));
 
-        // Sent insights to buy and hold the selected securities.
+        // Sent insights on buying and holding the selected securities.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
         // Evenly dissipate the capital risk among selected securities.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
@@ -368,19 +368,19 @@ public class EmaUniverseSelectionModel : FundamentalUniverseSelectionModel
     public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamental)
     {
         return (from f in fundamental
-            // grab th SelectionData instance for this symbol
+            // Grab the SelectionData instance for this symbol
             let avg = _averages.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(algorithm, f.Symbol))
             // Update returns true when the indicators are ready, so don't accept until they are
             where avg.Update(f.EndTime, f.AdjustedPrice)
-            // only pick symbols who have their 50 day ema over their 100 day ema
+            //Only pick symbols that have their 50-day ema over their 100-day ema
             where avg.Fast &gt; avg.Slow * (1 + Tolerance)
             // prefer symbols with a larger delta by percentage between the two averages
             orderby avg.ScaledDelta descending
-            // we only need to return the symbol and return selectionNumber symbols
+            // We only need to return the symbol and return selectionNumber symbols
             select f.Symbol).Take(_selectionNumber);
     }
 
-    // class used to improve readability of the coarse selection function
+    // class used to improve the readability of the coarse selection function
     private class SelectionData
     {
         public readonly ExponentialMovingAverage Fast;
@@ -396,7 +396,7 @@ public class EmaUniverseSelectionModel : FundamentalUniverseSelectionModel
             algorithm.WarmUpIndicator(symbol, Slow, Resolution.Daily);
         }
 
-        // computes an object score of how much large the fast is than the slow
+        // computes an object score of how large the fast is than the slow
         public decimal ScaledDelta
         {
             get { return (Fast - Slow)/((Fast + Slow)/2m); }
@@ -420,7 +420,7 @@ class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
         # Add a universe with custom selection rules for filtering.
         self.add_universe_selection(EmaUniverseSelectionModel(10))
 
-        # Sent insights to buy and hold the selected securities.
+        # Sent insights on buying and holding the selected securities.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
         # Evenly dissipate the capital risk among selected securities.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
@@ -434,7 +434,7 @@ class EmaUniverseSelectionModel(FundamentalUniverseSelectionModel):
         self.selection_number = selection_number
 
     def select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        # We are going to use a dictionary to refer the object that will keep the moving averages
+        # We are going to use a dictionary to refer to the object that will keep the moving averages
         for f in fundamental:
             if f.symbol not in self.averages:
                 self.averages[f.symbol] = self.SelectionData(algorithm, f.symbol)
@@ -446,13 +446,13 @@ class EmaUniverseSelectionModel(FundamentalUniverseSelectionModel):
         # Filter the values of the dict: we only want up-trending securities
         values = list(filter(lambda x: x.is_uptrend, self.averages.values()))
 
-        # Sorts the values of the dict: we want those with greater difference between the moving averages
+        # Sorts the values of the dict: we want those with greater differences between the moving average
         values.sort(key=lambda x: x.scale, reverse=True)
 
         # we need to return only the symbol objects
         return [ x.symbol for x in values[:self.selection_number] ]
 
-    # class used to improve readability of the fundamental selection function
+    # class used to improve the readability of the fundamental selection function
     class SelectionData(object):
         def __init__(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
             self.symbol = symbol
@@ -473,7 +473,7 @@ class EmaUniverseSelectionModel(FundamentalUniverseSelectionModel):
                 self.is_uptrend = fast &gt; slow * self.tolerance
 
             if self.is_uptrend:
-                # computes an object score of how much large the fast is than the slow
+                # computes an object score of how much larger the fast is than the slow
                 self.scale = (fast - slow) / ((fast + slow) / 2.0)</pre>
 </div>
 
