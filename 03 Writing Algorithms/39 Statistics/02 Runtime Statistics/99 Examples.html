@@ -1,0 +1,92 @@
+<p>The following examples demonstrate common practices for setting runtime statistics.</p>
+
+<h4>Example 1: Display Banner</h4>
+<p>The following algorithm demonstrates how to put calculated runtime statistics in interest to the top display banner in the backtest interface and plot the data for analysis.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class RuntimeStatisticsAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private ExponentialMovingAverage _ema;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 8, 12);
+        SetEndDate(2024, 9, 1);
+        SetCash(1000000);
+
+        // Request SPY data to trade.
+        _spy = AddEquity("SPY").Symbol;
+        // Create an EMA indicator to generate trade signals.
+        _ema = EMA(_spy, 20, Resolution.Daily);
+        // Warms up indicator for immediate readiness.
+        WarmUpIndicator(_spy, _ema, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            // Trend-following strategy using price and EMA.
+            // If the price is above EMA, SPY is in an uptrend, and we buy it.
+            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_spy].IsLong)
+            {
+                SetHoldings(_spy, 1m);
+            }
+            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_spy].IsShort)
+            {
+                SetHoldings(_spy, -1m);
+            }
+        }
+    }
+
+    public override void OnEndOfDay(Symbol symbol)
+    {
+        // Set the 95VaR and fee-to-profit ratio to the display banner.
+        var var = Statistics.TotalPerformance.PortfolioStatistics.ValueAtRisk95;
+        var feeToProfit = Statistics.TotalPerformance.TradeStatistics.TotalProfitLoss != 0 ?
+            Statistics.TotalPerformance.TradeStatistics.TotalFees / Statistics.TotalPerformance.TradeStatistics.TotalProfitLoss :
+            0m;
+        SetRuntimeStatistic("95VaR", var);
+        SetRuntimeStatistic("Fee-to-Profit", feeToProfit);
+
+        // Plot the calculated statistics.
+        Plot("Statistics", "95VaR", var);
+        Plot("Statistics", "fee-to-profit", feeToProfit);
+    }
+}</pre>
+    <pre class="python">class RuntimeStatisticsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 8, 12)
+        self.set_end_date(2024, 9, 1)
+        self.set_cash(1000000)
+
+        # Request SPY data to trade.
+        self.spy = self.add_equity("SPY").symbol
+        # Create an EMA indicator to generate trade signals.
+        self._ema = self.ema(self.spy, 20, Resolution.DAILY)
+        # Warms up indicator for immediate readiness.
+        self.warm_up_indicator(self.spy, self._ema, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self.spy)
+        if bar:
+            # Trend-following strategy using price and EMA.
+            # If the price is above EMA, SPY is in an uptrend, and we buy it.
+            if bar.close &gt; self._ema.current.value and not self.portfolio[self.spy].is_long:
+                self.set_holdings(self.spy, 1)
+            elif bar.close &lt; self._ema.current.value and not self.portfolio[self.spy].is_short:
+                self.set_holdings(self.spy, -1)
+
+    def on_end_of_day(self, symbol: Symbol) -&gt; None:
+        # Set the 95VaR and fee-to-profit ratio to the display banner.
+        var = self.statistics.total_performance.portfolio_statistics.value_at_risk_95
+        self.set_runtime_statistic("95VaR", var)
+        fee_to_profit = self.statistics.total_performance.trade_statistics.total_fees /\
+            self.statistics.total_performance.trade_statistics.total_profit_loss \
+            if self.statistics.total_performance.trade_statistics.total_profit_loss != 0 else 0
+        self.set_runtime_statistic("Fee-to-Profit", fee_to_profit)
+    
+        # Plot the calculated statistics.
+        self.plot("Statistics", "95VaR", var)
+        self.plot("Statistics", "fee-to-profit", fee_to_profit)</pre>
+</div>
