@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for implementing framework Option Universe Selection Model.</p>
+<p>The following examples demonstrate some common practices for implementing the framework Option Universe Selection Model.</p>
 
 <h4>Example 1: Horizontal Jelly Roll</h4>
-<p>The following algorithm selects SPX index options to construct a Jelly Roll strategy. It filters for ATM calls and puts with 30 days and 90 days till expiration. Using SMA indicator to predict the interest rate cycle, it longs Jelly Roll if the cycle is considered uprising, otherwise selling the Jelly Roll.</p>
+<p>The following algorithm selects SPX index options to construct a Jelly Roll strategy. It filters for ATM calls and puts with 30 days and 90 days till expiration. Using the SMA indicator to predict the interest rate cycle, it longs Jelly Roll if the cycle is considered uprising, otherwise selling the Jelly Roll.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkOptionUniverseSelectionAlgorithm : QCAlgorithm
 {
@@ -10,31 +10,31 @@
         SetStartDate(2023, 1, 1);
         SetEndDate(2023, 8, 1);
         
-        // Add a universe of that select the needed option contracts.
+        // Add a universe that selects the needed option contracts.
         AddUniverseSelection(new AtmOptionHorizontalSpreadUniverseSelectionModel());
-        // Add Alpha model to trade Jelly Roll, making use of interest rate data.
+        // Add Alpha model to trade Jelly Roll, using interest rate data.
         AddAlpha(new JellyRollAlphaModel(this));
-        // Invest in same number of contracts per leg in the Jelly Roll.
+        // Invest in the same number of contracts per leg in the Jelly Roll.
         SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
     }
     
     private class AtmOptionHorizontalSpreadUniverseSelectionModel : OptionUniverseSelectionModel
     {
-        // 30d update with the SelectOptionChainSymbols function, since the filter return at least 30d expiry options.
+        // 30d update with the SelectOptionChainSymbols function since the filter returns at least 30d expiry options.
         public AtmOptionHorizontalSpreadUniverseSelectionModel()
                 : base(TimeSpan.FromDays(30), SelectOptionChainSymbols) {}
         
         private static IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
         {
-            // Select only SPX options as our focus, since it has relatively stable dividend yield, which we will assume the same over time.
-            // Also does not require assignment handling since it is cash settled.
+            // We will focus only on SPX options since they have a relatively stable dividend yield, which we assume will remain the same over time.
+            // Also, assignment handling is not required since it is cash-settled.
             return new[] {QuantConnect.Symbol.Create("SPX", SecurityType.IndexOption, Market.USA)};
         }
 
         protected override OptionFilterUniverse Filter(OptionFilterUniverse filter)
         {
-            // To trade interest rate using options, Jelly Roll is one of the best strategy.
-            // It is market neutral but sensitive to interest rate and dividend yield changes.
+            // To trade interest rates using options, Jelly Roll is one of the best strategies.
+            // It is market-neutral but sensitive to interest rate and dividend yield changes.
             // We target to trade the market speculation between 30d and 90d options interest rate.
             return filter.JellyRoll(0, 30, 90);
         }
@@ -62,7 +62,7 @@
                 _wasRising = rate &gt; _sma;
             }
 
-            // Set schedule to update the interest rate trend indicator on every day.
+            // Set a schedule to update the interest rate trend indicator daily.
             algorithm.Schedule.On(
                 algorithm.DateRules.EveryDay(),
                 algorithm.TimeRules.At(0, 1),
@@ -72,7 +72,7 @@
 
         private void UpdateInterestRate()
         {
-            // Update interest rate to the SMA indicator to estimate its trend.
+            // Update the interest rate on the SMA indicator to estimate its trend.
             var rate = _algorithm.RiskFreeInterestRateModel.GetInterestRate(_algorithm.Time);
             _sma.Update(_algorithm.Time, rate);
             _wasRising = rate &gt; _sma;
@@ -82,7 +82,7 @@
         {
             var insights = new List&lt;Insight&gt;();
             
-            // Hold 1 position group at a time.
+            // Hold one position group at a time.
             if (algorithm.Portfolio.Invested || !slice.OptionChains.TryGetValue(_symbol, out var chain))
             {
                 return insights;
@@ -103,7 +103,7 @@
             // Emit insight of the Jelly Roll constituents, with directions depending on the interest rate trend given by SMA.
             var rate = algorithm.RiskFreeInterestRateModel.GetInterestRate(algorithm.Time);
             List&lt;Insight&gt; insightGroup;
-            // During rising interest rate cycle, order long Jelly Roll.
+            // During the rising interest rate cycle, order a long Jelly Roll.
             if (rate &gt; _sma)
             {
                 insightGroup = new() {
@@ -113,7 +113,7 @@
                     Insight.Price(farPut.Symbol, TimeSpan.FromDays(30), InsightDirection.Down)
                 };
             }
-            // During downward interest rate cycle, order short Jelly Roll.
+            // During a downward interest rate cycle, order short Jelly Roll.
             else if (rate &lt; _sma)
             {
                 insightGroup = new() {
@@ -123,7 +123,7 @@
                     Insight.Price(farPut.Symbol, TimeSpan.FromDays(30), InsightDirection.Up)
                 };
             }
-            // If the interest rate cycle is steady for long, we expect a flip in the cycle coming up.
+            // If the interest rate cycle remains steady for a long time, we expect a flip in the cycle soon.
             else if (_wasRising)
             {
                 insightGroup = new() {
@@ -172,26 +172,26 @@ class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2023, 8, 1)
 
-        # Add a universe of that select the needed option contracts.
+        # Add a universe that selects the needed option contracts.
         self.add_universe_selection(AtmOptionHorizontalSpreadUniverseSelectionModel())
-        # Add Alpha model to trade Jelly Roll, making use of interest rate data.
+        # Add Alpha model to trade Jelly Roll, using interest rate data.
         self.add_alpha(JellyRollAlphaModel(self))
-        # Invest in same number of contracts per leg in the Jelly Roll.
+        # Invest in the same number of contracts per leg in the Jelly Roll.
         self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
         
 class AtmOptionHorizontalSpreadUniverseSelectionModel(OptionUniverseSelectionModel):
-    # 30d update with the SelectOptionChainSymbols function, since the filter return at least 30d expiry options.
+    # 30d update with the SelectOptionChainSymbols function since the filter returns at least 30d expiry options.
     def __init__(self) -> None:
         super().__init__(timedelta(30), self.selection_option_chain_symbols)
 
     def selection_option_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
-        # Select only SPX options as our focus, since it has relatively stable dividend yield, which we will assume the same over time.
-        # Also does not require assignment handling since it is cash settled.
+        # We will focus only on SPX options since they have a relatively stable dividend yield, which we assume will remain the same over time.
+        # Also, assignment handling is not required since it is cash-settled.
         return [Symbol.create("SPX", SecurityType.INDEX_OPTION, Market.USA)]
 
     def filter(self, filter: OptionFilterUniverse) -> OptionFilterUniverse:
-        # To trade interest rate using options, Jelly Roll is one of the best strategy.
-        # It is market neutral but sensitive to interest rate and dividend yield changes.
+        # Jelly Roll is one of the best strategies for trading interest rates using options.
+        # It is market-neutral but sensitive to interest rate and dividend yield changes.
         # We target to trade the market speculation between 30d and 90d options interest rate.
         return filter.jelly_roll(0, 30, 90)
 
@@ -213,7 +213,7 @@ class JellyRollAlphaModel(AlphaModel):
             self._was_rising = rate > self._sma.current.value
             dt += timedelta(1)
         
-        # Set schedule to update the interest rate trend indicator on every day.
+        # Set a schedule to update the interest rate trend indicator every day.
         algorithm.schedule.on(
             algorithm.date_rules.every_day(),
             algorithm.time_rules.at(0, 1),
@@ -229,7 +229,7 @@ class JellyRollAlphaModel(AlphaModel):
     def update(self, algorithm: QCAlgorithm, slice: Slice) -> List[Insight]:
         insights = []
 
-        # Hold 1 position group at a time.
+        # Hold one position group at a time.
         chain = slice.option_chains.get(self._symbol)
         if algorithm.portfolio.invested or not chain:
             return insights
@@ -244,7 +244,7 @@ class JellyRollAlphaModel(AlphaModel):
 
         # Emit insight of the Jelly Roll constituents, with directions depending on the interest rate trend given by SMA.
         rate = algorithm.risk_free_interest_rate_model.get_interest_rate(algorithm.time)
-        # During rising interest rate cycle, order long Jelly Roll.
+        # During the rising interest rate cycle, order a long Jelly Roll.
         if rate > self._sma.current.value:
             insights.extend([
                 Insight.price(near_call.symbol, timedelta(30), InsightDirection.DOWN),
@@ -252,7 +252,7 @@ class JellyRollAlphaModel(AlphaModel):
                 Insight.price(near_put.symbol, timedelta(30), InsightDirection.UP),
                 Insight.price(far_put.symbol, timedelta(30), InsightDirection.DOWN)
             ])
-        # During downward interest rate cycle, order short Jelly Roll.
+        # During the downward interest rate cycle, order short Jelly Roll.
         elif rate &lt; self._sma.current.value:
             insights.extend([
                 Insight.price(near_call.symbol, timedelta(30), InsightDirection.UP),
@@ -260,7 +260,7 @@ class JellyRollAlphaModel(AlphaModel):
                 Insight.price(near_put.symbol, timedelta(30), InsightDirection.DOWN),
                 Insight.price(far_put.symbol, timedelta(30), InsightDirection.UP)
             ])
-        # If the interest rate cycle is steady for long, we expect a flip in the cycle coming up.
+        # If the interest rate cycle is steady for a long, we expect a flip in the cycle coming up.
         elif self._was_rising:
             insights.extend([
                 Insight.price(near_call.symbol, timedelta(30), InsightDirection.UP),
