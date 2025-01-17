@@ -1,5 +1,5 @@
 <h4>Example <?=$number?>: On Events And Trading Logic</h4>
-<p>The following example trades a simple EMA cross trend-following strategy on SPY. To get information on any event flow, we log or debug messages in event handlers and trading logic changes.</p>
+<p>The following example trades a simple EMA cross trend-following strategy on SPY. We log or debug messages in event handlers and trading logic changes to get information on any event flow.</p>
 <div class="section-example-container">
     <pre class="csharp">public class LoggingAlgorithm : QCAlgorithm
 {
@@ -14,25 +14,25 @@
 
         // Request SPY data to trade.
         _spy = AddEquity("SPY").Symbol;
-        // Create a EMA indicator to generate trade signals.
+        // Create an EMA indicator to generate trade signals.
         _ema = EMA(_spy, 20, Resolution.Daily);
 
-        // Warm up indicator for immediate readiness.
-        SetWarmUp(20);
+        // Warm up the algorithm for indicator readiness.
+        SetWarmUp(20, Resolution.Daily);
     }
 
     public override void OnWarmupFinished()
     {
-        // Signals on warm up finished.
+        // Signals on warm-up finished.
         Log("Warm up finished");
     }
 
     public override void OnData(Slice slice)
     {
-        if (slice.Bars.TryGetValue(_spy, out var bar))
+        if (!IsWarmingUp &amp;&amp; slice.Bars.TryGetValue(_spy, out var bar))
         {
-            // Trade trend-following by price above or below EMA.
-            // If price above EMA, SPY is in uptrend and we buy it.
+            // Trend-following strategy using price and EMA.
+            // If the price is above EMA, SPY is in an uptrend, and we buy it.
             if (bar.Close &gt; _ema &amp;&amp; Portfolio[_spy].IsLong)
             {
                 Debug("Trend changes to upwards");
@@ -63,21 +63,21 @@
 
         # Request SPY data to trade.
         self.spy = self.add_equity("SPY").symbol
-        # Create a EMA indicator to generate trade signals.
+        # Create an EMA indicator to generate trade signals.
         self._ema = self.ema(self.spy, 20, Resolution.DAILY)
 
-        # Warm up indicator for immediate readiness.
+        # Warm up the algorithm for indicator readiness.
         self.set_warm_up(20, Resolution.DAILY)
 
     def on_warmup_finished(self) -&gt; None:
-        # Signals on warm up finished.
+        # Signals on warm-up finished.
         self.log("Warm up finished")
 
     def on_data(self, slice: Slice) -&gt; None:
-        bar = slice.bars.get(self.spy)
+        bar = None if self.is_warming_up else slice.bars.get(self.spy)
         if bar:
-            # Trade trend-following by price above or below EMA.
-            # If price above EMA, SPY is in uptrend and we buy it.
+            # Trend-following strategy using price and EMA.
+            # If the price is above EMA, SPY is in an uptrend, and we buy it.
             if bar.close &gt; self._ema.current.value and not self.portfolio[self.spy].is_long:
                 self.debug("Trend changes to upwards")
                 self.set_holdings(self.spy, 1)
