@@ -1,4 +1,4 @@
-<p>The following examples demonstrate some common practices for requesting individual index option contract data.</p>
+<p>The following examples demonstrate common practices for requesting individual index option contract data.</p>
 
 <h4>Example 1: 5-Minute Option Chain</h4>
 <p>
@@ -26,14 +26,14 @@
 
             // Request the index underlying data for filtering.
             var spx = AddIndex("SPX").Symbol;
-            // Create the 5-minute option chain manager on SPXW weekly index option.
+            // Create the 5-minute option chain manager on the SPXW weekly index option.
             _chainManager[QuantConnect.Symbol.CreateCanonicalOption(spx, "SPXW", Market.USA, "?SPXW")] = new(-10, 10, 0, 1);
             // Populate the updated option chain immediately to trade with.
             PopulateOptionChain();
 
-            // Set schedule event to populate the option chain at market open, since the option contracts are updating daily.
+            // Set a schedule event to populate the option chain when the market opens since the option contracts are updated daily.
             Schedule.On(DateRules.EveryDay(spx), TimeRules.AfterMarketOpen(spx, 1), PopulateOptionChain);
-            // Set schedule event to filter the close ATM calls every 5 minutes.
+            // Set a scheduled event to filter the closed ATM calls every 5 minutes.
             Schedule.On(DateRules.EveryDay(spx), TimeRules.Every(TimeSpan.FromMinutes(5)), Filter);
         }
         
@@ -96,7 +96,7 @@
 
         public void SetChain(OptionChain chain, DateTime time)
         {
-            // Filter the expiry daily only since contract list is updated daily.
+            // Filter the expiry daily only since the contract list is updated daily.
             _chain = chain.Where(x =&gt;
             {
                 var totalDays = (x.Expiry - time).TotalDays;
@@ -122,7 +122,7 @@
                 .Where(x =&gt; minStrike &lt;= x.Strike && x.Strike &lt;= maxStrike)
                 .Select(x => x.Symbol).ToList();
 
-            // Remove subscriptions are the contracts not being ATM anymore.
+            // Remove subscriptions if the contracts are no longer ATMs.
             foreach (var symbol in _symbols.Except(symbols).ToList())
             {
                 if (algorithm.RemoveOptionContract(symbol))
@@ -164,7 +164,7 @@
         self.schedule.on(
             self.date_rules.every_day(spx), self.time_rules.after_market_open(spx, 1), self._populate_option_chain
         )
-        # Set schedule event to filter the close ATM calls every 5 minutes.
+        # Set a scheduled event to filter the closed ATM calls every 5 minutes.
         self.schedule.on(self.date_rules.every_day(spx), self.time_rules.every(timedelta(minutes=5)), self._filter)
 
     def _populate_option_chain(self) -&gt; None:
@@ -227,7 +227,7 @@ class OptionChainManager:
         max_strike = strikes[min(len(strikes) - 1, index + self._max_strike)]
         symbols = set(x.symbol for x in self._chain if min_strike <= x.strike <= max_strike)
         
-        # Remove subscriptions are the contracts not being ATM anymore.
+        # Remove subscriptions if the contracts are not being ATM anymore.
         for symbol in self._symbols - symbols:
             if algorithm.remove_option_contract(symbol):
                 self._symbols.remove(symbol)
