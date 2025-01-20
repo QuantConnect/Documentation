@@ -1,0 +1,92 @@
+<p>The following examples demonstrate some common practices for handling the portfolio.</p>
+
+<h4>Example 1: Martingale</h4>
+<p>The following algorithm trades a Martingale strategy on AAPL. The trend indicated by an EMA indicator follows the trend with a $1 per share stop-loss and a $2 take-profit level. Yet, if the last trade is lost, it will double the next trading size to recover the last loss.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class PortfolioExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _aapl;
+    private ExponentialMovingAverage _ema;
+    private int _nextQuantity = 1;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 1, 31);
+        
+        // Request AAPL's data to trade.
+        _aapl = AddEquity("AAPL").Symbol;
+
+        // Create an EMA indicator to generate trading data.
+        _ema = EMA(_aapl, 20, Resolution.Daily);
+        // Warm up the indicator to provide an immediate trade signal.
+        WarmUpIndicator(_aapl, _ema, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Ride on the AAPL trend indicated by the EMA indicator.
+        if (!Portfolio.Invested)
+        {
+            if (Securities[_aapl].Price &gt;= _ema)
+            {
+                MarketOrder(_aapl, _nextQuantity);
+            }
+            else
+            {
+                MarketOrder(_aapl, -_nextQuantity);
+            }
+        }
+        else
+        {
+            var holding = Portfolio[_aapl];
+            // Stop loss at $1 per share.
+            if (holding.UnrealizedProfit &lt;= -1 * _nextQuantity)
+            {
+                Liquidate(_aapl);
+                // Double the next quantity to recover this loss.
+                _nextQuantity *= 2;
+            }
+            // Take profit at $2 per share.
+            else if (holding.UnrealizedProfit &gt;= 2)
+            {
+                Liquidate(_aapl);
+                _nextQuantity = 1;
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class PortfolioExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 1, 31)
+        
+        # Request AAPL's data to trade.
+        self.aapl = self.add_equity("AAPL").symbol
+
+        # Create an EMA indicator to generate trading data.
+        self._ema = self.ema(self.aapl, 20, Resolution.DAILY)
+        # Warm up the indicator to provide an immediate trade signal.
+        self.warm_up_indicator(self.aapl, self._ema, Resolution.DAILY)
+
+        self.next_quantity = 1
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Ride on the AAPL trend indicated by the EMA indicator.
+        if not self.portfolio.invested:
+            if self.securities[self.aapl].price &gt;= self._ema.current.value:
+                self.market_order(self.aapl, self.next_quantity)
+            else:
+                self.market_order(self.aapl, -self.next_quantity)
+        else:
+            holding = self.portfolio[self.aapl]
+            # Stop loss at $1 per share.
+            if holding.unrealized_profit &lt;= -1 * self.next_quantity:
+                self.liquidate(self.aapl)
+                # Double the next quantity to recover this loss.
+                self.next_quantity *= 2
+            # Take profit at $2 per share.
+            elif holding.unrealized_profit &gt;= 2:
+                self.liquidate(self.aapl)
+                self.next_quantity = 1</pre>
+</div>
