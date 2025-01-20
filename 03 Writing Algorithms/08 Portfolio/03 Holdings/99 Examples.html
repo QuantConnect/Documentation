@@ -1,0 +1,57 @@
+<p>The following examples demonstrate some common practices for setting the portfolio holdings.</p>
+
+<h4>Example 1: Initial Holdings</h4>
+<p>The following algorithm simulates an account with multiple initial positions and cash. Note that these initial holdings will affect the algorithm's performance.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class PortfolioExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 1, 31);
+        
+        // Simulate initial cash in multiple currencies.
+        // Note that all currencies other than the account currency will affect the performance.
+        SetAccountCurrency("USD", 10000);
+        SetCash("EUR", 1000);
+        SetCash("JPY", 1000000);
+        SetCash("HKD", 10000);
+
+        // Request data for some securities in the account already.
+        var spy = AddEquity("SPY").Symbol;
+        var aapl = AddEquity("AAPL").Symbol;
+        var btcusd = AddCrypto("BTCUSD").Symbol;
+        var xauusd = AddCfd("XAUUSD").Symbol;
+
+        // Simulate that the account holds some assets initially.
+        // Note that all initial holdings will affect the performance.
+        Portfolio[spy].SetHoldings(averagePrice: 420m, quantity: 102m);
+        Portfolio[aapl].SetHoldings(averagePrice: 102m, quantity: 25m);
+        Portfolio[btcusd].SetHoldings(averagePrice: 45000m, quantity: 0.125m);
+        Portfolio[xauusd].SetHoldings(averagePrice: 1000m, quantity: 100m);
+    }
+}</pre>
+    <pre class="python">class PortfolioExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 1, 31)
+        # Simulate initial cash in multiple currencies.
+        # Note that all currencies other than the account currency will affect the performance.
+        self.set_account_currency("USD", 10000)
+        self.set_cash("EUR", 1000)
+        self.set_cash("JPY", 1000000)
+        self.set_cash("HKD", 10000)
+
+        # Request data for some securities in the account already.
+        spy = self.add_equity("SPY").symbol
+        aapl = self.add_equity("AAPL").symbol
+        btcusd = self.add_crypto("BTCUSD").symbol
+        xauusd = self.add_cfd("XAUUSD").symbol
+
+        # Simulate that the account holds some assets initially.
+        # Note that all initial holdings will affect the performance.
+        self.portfolio[spy].set_holdings(average_price=420, quantity=102)
+        self.portfolio[aapl].set_holdings(average_price=120, quantity=25)
+        self.portfolio[btcusd].set_holdings(average_price=45000, quantity=0.125)
+        self.portfolio[xauusd].set_holdings(average_price=1000, quantity=100)</pre>
+</div>
