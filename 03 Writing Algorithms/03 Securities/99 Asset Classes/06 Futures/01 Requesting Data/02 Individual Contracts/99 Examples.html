@@ -1,44 +1,110 @@
 <p>The following examples demonstrate some common practices for requesting individual Future contract data.</p>
 
 <h4>Example 1: Add the Front-Month Contract</h4>
-<p>The following algorithm adds the front-month contract for the E-Mini S&P 500 Future and <a href='/docs/v2/writing-algorithms/indicators/plotting-indicators'>plots</a> the daily closing price of the contract.</p>
+<p>The following algorithm adds the front-month contract, with 2 days buffer, for the E-Mini S&P 500 Future and <a href='/docs/v2/writing-algorithms/indicators/plotting-indicators'>plots</a> the daily closing price of the contract 3 days before month end. Then, trade an EMA cross strategy.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
-    private Future _future;
-    private Symbol _contractSymbol;
+    private Symbol _future, _contractSymbol;
+    private ExponentialMovingAverage _ema;
 
     public override void Initialize()
     {
         SetStartDate(2022, 1, 1);
-        // Add the E-mini Future.
-        _future = AddFuture(Futures.Indices.SP500EMini);
+        SetEndDate(2023, 1, 1);
+        // Request the future underlying data for ATM strike selection.
+        _future = AddFuture(
+            Futures.Indices.SP500EMini,
+            extendedMarketHours: true,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio
+        ).Symbol;
+
+        // Create an EMA indicator for trade signal generation.
+        _ema = EMA(_future, 20, Resolution.Daily);
+        // Warm up the indicator for immediate readiness to trade with.
+        WarmUpIndicator(_future, _ema, Resolution.Daily);
+
+        // Set a scheduled event to periodically select the option contract.
+        Schedule.On(
+            // 3 days offset to select in prior.
+            DateRules.MonthEnd(3),
+            TimeRules.At(0, 1),
+            SelectContract
+        );
+        SelectContract();
+    }
+
+    private void SelectContract()
+    {
         // Get all the contracts that are currently tradable.
-        var contractSymbols = FutureChainProvider.GetFutureContractList(_future.Symbol, Time);
-        // Get the contract with the closest expiry.
-        _contractSymbol = contractSymbols.MinBy(x => x.ID.Date);
-        // Add the front-month Futures contract.
-        AddFutureContract(_contractSymbol);
-        // Plot the contract price.
-        PlotIndicator("Price", Identity(_contractSymbol, Resolution.Daily));
-        // Stop the algorithm when the contract expires.
-        SetEndDate(_contractSymbol.ID.Date);
+        var contractSymbols = FutureChainProvider.GetFutureContractList(_future, Time);
+        // Select the front month contract due to liquidity, with 2 days buffer to avoid volatility.
+        var contract = contractSymbols.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(2))
+            .MinBy(x =&gt; x.ID.Date);
+        // Request the Futures contract for trading.
+        _contractSymbol = AddFutureContract(contract).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade based on updated data.
+        if (slice.Bars.TryGetValue(_future, out var bar))
+        {
+            // Trade trend-following strategy with EMA cross.
+            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_future].IsLong)
+            {
+                SetHoldings(_contractSymbol, 0.5m);
+            }
+            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_future].IsShort)
+            {
+                SetHoldings(_contractSymbol, -0.5m);
+            }
+        }
     }
 }</pre>
     <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
-
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_start_date(2022, 1, 1)
-        # Add a Future.
-        self._future = self.add_future(Futures.Indices.SP_500_E_MINI)
+        self.set_end_date(2023, 1, 1)
+        # Request the future underlying data for ATM strike selection.
+        self._future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+        ).symbol
+
+        # Create an EMA indicator for trade signal generation.
+        self._ema = self.ema(self._future, 20, Resolution.DAILY)
+        # Warm up the indicator for immediate readiness to trade with.
+        self.warm_up_indicator(self._future, self._ema, Resolution.DAILY)
+
+        # Set a scheduled event to periodically select the option contract.
+        self.schedule.on(
+            # 3 days offset to select in prior.
+            self.date_rules.month_end(3),
+            self.time_rules.at(0, 1),
+            self.select_contract
+        )
+        self.select_contract()
+
+    def select_contract(self) -&gt; None:
         # Get all the contracts that are currently tradable.
-        contract_symbols = self.future_chain_provider.get_future_contract_list(self._future.symbol, self.time)
-        # Get the contract with the closest expiry.
-        self._contract_symbol = min(contract_symbols, key=lambda x: x.id.date)
-        # Add the Futures contract.
-        self.add_future_contract(self._contract_symbol)
-        # Plot the contract price.
-        self.plot_indicator("Price", self.identity(self._contract_symbol, Resolution.DAILY))
-        # Stop the algorithm when the contract expires.
-        self.set_end_date(self._contract_symbol.id.date)</pre>
+        contract_symbols = self.future_chain_provider.get_future_contract_list(self._future, self.time)
+        # Select the front month contract due to liquidity, with 2 days buffer to avoid volatility.
+        contract = min(
+            [x for x in contract_symbols if x.id.date &gt;= self.time + timedelta(2)], 
+            key=lambda x: x.id.date
+        )
+        # Request the Futures contract for trading.
+        self._contract_symbol = self.add_future_contract(contract).symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade based on updated data.
+        bar = slice.bars.get(self._future)
+        if bar:
+            # Trade trend-following strategy with EMA cross.
+            if bar.close &gt; self._ema.current.value and not self.portfolio[self._future].is_long:
+                self.set_holdings(self._contract_symbol, 0.5)
+            elif bar.close &lt; self._ema.current.value and not self.portfolio[self._future].is_short:
+                self.set_holdings(self._contract_symbol, -0.5)</pre>
 </div>
