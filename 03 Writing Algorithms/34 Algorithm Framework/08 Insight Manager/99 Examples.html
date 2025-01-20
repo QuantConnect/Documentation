@@ -1,0 +1,104 @@
+<p>The following examples demonstrate some common practices for using insight manager.</p>
+
+<h4>Example 1: Cancel Insight</h4>
+<p>If the risk management model only submits the <code>PortfolioTarget</code> to liquidate the security, it will be re-ordered immediately due to the active insight. Hence, we also need to add logic to cancel the insight in the <code class="csharp">ManageRisk</code><code class="python">manage_risk</code> method of the risk management model. The below example only permits 1-day holding time per each insight through a custom risk management model.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkInsightManagerAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 8, 12);
+        SetEndDate(2024, 9, 1);
+        SetCash(1000000);
+
+        // Add a universe of the most liquid stocks since their trend is more capital-supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights on EMA cross, indicating the trend changes. We use short-term versus medium-term for more trade opportunities.
+        AddAlpha(new EmaCrossAlphaModel(20, 60, Resolution.Daily));
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Add a risk management model that controls maximum holding time.
+        AddRiskManagement(new MaximumHoldingTimeRiskManagementModel(TimeSpan.FromDays(5)));
+    }
+
+    private class MaximumHoldingTimeRiskManagementModel : RiskManagementModel
+    {
+        private TimeSpan _maximumHoldingTime;
+        // A dictionary to hold the holding time of each position.
+        private Dictionary&lt;Symbol, DateTime&gt; _holdingTime = new();
+
+        public MaximumHoldingTimeRiskManagementModel(TimeSpan maximumHoldingTime)
+        {
+            _maximumHoldingTime = maximumHoldingTime;
+        }
+
+        public override IEnumerable&lt;IPortfolioTarget&gt; ManageRisk(QCAlgorithm algorithm, IPortfolioTarget[] _)
+        {
+            var targets = new List&lt;PortfolioTarget&gt;();
+
+            foreach (var (symbol, holding) in algorithm.Portfolio)
+            {
+                if (holding.Invested)
+                {
+                    if (!_holdingTime.TryGetValue(symbol, out var time))
+                    {
+                        // For newly open positions, save the entry time.
+                        _holdingTime[symbol] = time = algorithm.Time;
+                    }
+                    else if (algorithm.Time - time &gt; _maximumHoldingTime)
+                    {
+                        // Liquidate the position if the holding time exceeds the permitted level.
+                        targets.Add(new PortfolioTarget(symbol, 0m));
+                        // Cancel the insight to avoid repeated re-ordering.
+                        algorithm.Insights.Cancel(new[] { symbol });
+                        // Remove from dictionary.
+                        _holdingTime.Remove(symbol);
+                    }
+                }
+            }
+
+            return targets;
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkInsightManagerAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 8, 12)
+        self.set_end_date(2024, 9, 1)
+        self.set_cash(1000000)
+
+        # Add a universe of the most liquid stocks since their trend is more capital-supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights on EMA cross, indicating the trend changes. We use short-term versus medium-term for more trade opportunities.
+        self.add_alpha(EmaCrossAlphaModel(20, 60, Resolution.DAILY))
+        # Equal weighting on each insight to dissipate capital risk evenly.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Add a risk management model that controls maximum holding time.
+        self.add_risk_management(MaximumHoldingTimeRiskManagementModel(timedelta(5)))
+
+class MaximumHoldingTimeRiskManagementModel(RiskManagementModel):
+    def __init__(self, maximum_holding_time: timedelta) -&gt; None:
+        self.maximum_holding_time = maximum_holding_time
+        # A dictionary to hold the holding time of each position.
+        self.holding_time = {}
+
+    def manage_risk(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; List[PortfolioTarget]:
+        targets = []
+
+        for symbol, holding in algorithm.portfolio.items():
+            if holding.invested:
+                if symbol not in self.holding_time:
+                    # For newly open positions, save the entry time.
+                    self.holding_time[symbol] = algorithm.time
+                elif algorithm.time - self.holding_time[symbol] &gt; self.maximum_holding_time:
+                    # Liquidate the position if the holding time exceeds the permitted level.
+                    targets.append(PortfolioTarget(symbol, 0))
+                    # Cancel the insight to avoid repeated re-ordering.
+                    algorithm.insights.cancel([symbol])
+                    # Remove from the dictionary.
+                    self.holding_time.pop(symbol)
+        
+        return targets</pre>
+</div>
