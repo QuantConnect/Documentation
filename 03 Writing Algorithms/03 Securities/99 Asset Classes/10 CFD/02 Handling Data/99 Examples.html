@@ -52,3 +52,102 @@
             if not self.portfolio[self._dax].is_long:
                 self.set_holdings(self._dax, 0.5)</pre>
 </div>
+
+<h4>Example 2: Global Indices</h4>
+<p>The following algorithm buys and holds various Index CFDs that trade in different market hours and currencies during their market opening hours.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class CfdExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _dax, _sgx, _dow;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2025, 1, 1);
+        
+        // Request the CFD data to trade.
+        // We include CFD contracts that trade in different market hours to stay in the market.
+        _dax = AddCfd("DE30EUR").Symbol;
+        _sgx = AddCfd("SG30SGD").Symbol;
+        _dow = AddCfd("US30USD").Symbol;
+
+        // Set scheduled event to hold each CFD contracts in their market opening hours.
+        // Buy and hold after market open.
+        Schedule.On(
+            DateRules.EveryDay(_dax),
+            TimeRules.AfterMarketOpen(_dax, 1),
+            () =&gt; SetHoldings(_dax, 0.3m)
+        );
+        Schedule.On(
+            DateRules.EveryDay(_sgx),
+            TimeRules.AfterMarketOpen(_sgx, 1),
+            () =&gt; SetHoldings(_sgx, 0.3m)
+        );
+        Schedule.On(
+            DateRules.EveryDay(_dow),
+            TimeRules.AfterMarketOpen(_dow, 1),
+            () =&gt; SetHoldings(_dow, 0.3m)
+        );
+        // Liquidate before market close.
+        Schedule.On(
+            DateRules.EveryDay(_dax),
+            TimeRules.BeforeMarketClose(_dax, 1),
+            () =&gt; Liquidate(_dax)
+        );
+        Schedule.On(
+            DateRules.EveryDay(_sgx),
+            TimeRules.BeforeMarketClose(_sgx, 1),
+            () =&gt; Liquidate(_sgx)
+        );
+        Schedule.On(
+            DateRules.EveryDay(_dow),
+            TimeRules.BeforeMarketClose(_dow, 1),
+            () =&gt; Liquidate(_dow)
+        );
+    }
+}</pre>
+    <pre class="python">class CfdExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2025, 1, 1)
+        
+        # Request the CFD data to trade.
+        # We include CFD contracts that trade in different market hours to stay in the market.
+        self._dax = self.add_cfd("DE30EUR").symbol
+        self._sgx = self.add_cfd("SG30SGD").symbol
+        self._dow = self.add_cfd("US30USD").symbol
+
+        # Set scheduled event to hold each CFD contracts in their market opening hours.
+        # Buy and hold after market open.
+        self.schedule.on(
+            self.date_rules.every_day(self._dax),
+            self.time_rules.after_market_open(self._dax, 1),
+            lambda: self.set_holdings(self._dax, 0.3)
+        )
+        self.schedule.on(
+            self.date_rules.every_day(self._sgx),
+            self.time_rules.after_market_open(self._sgx, 1),
+            lambda: self.set_holdings(self._sgx, 0.3)
+        )
+        self.schedule.on(
+            self.date_rules.every_day(self._dow),
+            self.time_rules.after_market_open(self._dow, 1),
+            lambda: self.set_holdings(self._dow, 0.3)
+        )
+        # Liquidate before market close.
+        self.schedule.on(
+            self.date_rules.every_day(self._dax),
+            self.time_rules.before_market_close(self._dax, 1),
+            lambda: self.liquidate(self._dax)
+        )
+        self.schedule.on(
+            self.date_rules.every_day(self._sgx),
+            self.time_rules.before_market_close(self._sgx, 1),
+            lambda: self.liquidate(self._sgx)
+        )
+        self.schedule.on(
+            self.date_rules.every_day(self._dow),
+            self.time_rules.before_market_close(self._dow, 1),
+            lambda: self.liquidate(self._dow)
+        )</pre>
+</div>
