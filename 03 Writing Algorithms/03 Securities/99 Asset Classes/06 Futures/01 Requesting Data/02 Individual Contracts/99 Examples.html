@@ -38,7 +38,7 @@
     {
         // Get all the contracts that are currently tradable.
         var contractSymbols = FutureChainProvider.GetFutureContractList(_future, Time);
-        // Select the front month contract due to liquidity, with 2 days buffer to avoid volatility.
+        // Select the front month contract due to liquidity, with 2 2-day buffer to avoid volatility.
         var contract = contractSymbols.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(2))
             .MinBy(x =&gt; x.ID.Date);
         // Request the Futures contract for trading.
@@ -90,7 +90,7 @@
     def select_contract(self) -&gt; None:
         # Get all the contracts that are currently tradable.
         contract_symbols = self.future_chain_provider.get_future_contract_list(self._future, self.time)
-        # Select the front month contract due to liquidity, with 2 days buffer to avoid volatility.
+        # Select the front month contract due to liquidity, with 2 2-day buffer to avoid volatility.
         contract = min(
             [x for x in contract_symbols if x.id.date &gt;= self.time + timedelta(2)], 
             key=lambda x: x.id.date
