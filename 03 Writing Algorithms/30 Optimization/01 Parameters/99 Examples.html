@@ -1,11 +1,11 @@
-<p>The following examples demonstrate some common practices for using optimization parameters.</p>
+<p>The following examples demonstrate common practices for using optimization parameters.</p>
 
 <h4>Example 1: Bond Candidate Selection</h4>
-<p>The following algorithm holds a 60/40 stock-bond portfolio rebalancing monthly. To select the best bond ETF to act as proxy to trade bonds, we create a list of bond tickers and grid search the best using each one of them to backtest. Using a <code>bond-id</code> parameter, which is an integer ranging from 0 to the size of the list - 1 with step size of 1, we can perform optimization to test each one of them.</p>
+<p>The following algorithm holds a 60/40 stock-bond portfolio rebalancing monthly. To select the best bond ETF to act as a proxy to trade bonds, we create a list of bond tickers and grid search the best using each to backtest. Using a <code>bond-id</code> parameter, which is an integer ranging from 0 to the list size - 1 with a step size of 1, we can perform optimization to test each of them.</p>
 <div class="section-example-container">
     <pre class="csharp">public class OptimizationParameterAlgorithm : QCAlgorithm
 {
-    // A list of bond ETF as candidates to trade as bond proxy. 
+    // A list of bond ETFs candidates to trade as bond proxies. 
     private static readonly List&lt;string&gt; _bondList = new()
     {
         "TLT", "IEF", "SHY", "VCSH", "VCLT"
@@ -34,13 +34,13 @@
 
     private void Rebalance()
     {
-        // Hold an all-weather stock-bond 60/40 portfolio as example.
+        // Hold an all-weather stock-bond 60/40 portfolio.
         SetHoldings(_spy, 0.6m);
         SetHoldings(_bond, 0.4m);
     }
 }</pre>
     <pre class="python">class OptimizationParameterAlgorithm(QCAlgorithm):
-    # A list of bond ETF as candidates to trade as bond proxy. 
+    # A list of bond ETFs as candidates to trade as bond proxies. 
     _bond_list = [
         "TLT", "IEF", "SHY", "VCSH", "VCLT"
     ]
@@ -64,13 +64,13 @@
         )
     
     def rebalance(self) -&gt; None:
-        # Hold an all-weather stock-bond 60/40 portfolio as example.
+        # Hold an all-weather stock-bond 60/40 portfolio.
         self.set_holdings(self.spy, 0.6)
         self.set_holdings(self.bond, 0.4)</pre>
 </div>
 
 <h4>Example 2: Test Different Period</h4>
-<p>This algorithm hold SPY for the whole day following the direction from the previous day. To test which period is the most effective for this momentum-following strategy, we can set an <code>offset</code> parameter and adjust the backtest period accordingly.</p>
+<p>This algorithm holds SPY for the whole day following the direction from the previous day. To test which period is the most effective for this momentum-following strategy, we can set an <code>offset</code> parameter and adjust the backtest period accordingly.</p>
 
 <p class="csharp">You can also load the parameter values with the <code>Parameter</code> attribute.</p>
 <div class="csharp section-example-container">
@@ -90,11 +90,11 @@ private int _offset = 0;</pre>
 
     public override void Initialize()
     {
-        // Create a variable start date with offset to test which periods does the algorithm perform better.
+        // Create a variable start date with offset to test which periods the algorithm performs better.
         var startDate = new DateTime(2019, 1, 1);
         SetStartDate(startDate.AddMonths(_offset));
-        // One month fixed period test per backtest.
-        SetEndDate(startDate.AddMonths(1 + _offset));
+        // One-month fixed period test per backtest.
+        SetEndDate(StartDate.AddMonths(1));
         
         // Request daily SPY data for trading.
         _spy = AddEquity("SPY", Resolution.Daily).Symbol;
@@ -121,17 +121,18 @@ private int _offset = 0;</pre>
         }
     }
 }</pre>
-    <pre class="python">class OptimizationParameterAlgorithm(QCAlgorithm):
+    <pre class="python">from dateutil.relativedelta import relativedelta 
+class OptimizationParameterAlgorithm(QCAlgorithm):
     last_price = 0
 
     def initialize(self) -&gt; None:
         # Get the number of months to offset the start date.
         offset = self.get_parameter("offset", 0)
-        # Create a variable start date with offset to test which periods does the algorithm perform better.
+        # Create a variable start date with offset to test which periods the algorithm performs better.
         start_date = datetime(2019, 1, 1)
-        self.set_start_date(start_date + timedelta(offset * 30))
-        # 30-day fixed period test per backtest.
-        self.set_end_date(start_date + timedelta((1 + offset) * 30))
+        self.set_start_date(start_date + relativedelta(months=offset))
+        # One-month fixed period test per backtest.
+        self.set_end_date(self.start_date + relativedelta(months=1))
     
         # Request daily SPY data for trading.
         self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -168,7 +169,7 @@ private int _offset = 0;</pre>
         // For warming up indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
-        // Request SPY data for feeding the indicator and trading.
+        // Request SPY data to feed the indicator and trade.
         _spy = AddEquity("SPY").Symbol;
 
         // Get and store the EMA settings to local parameters.
@@ -209,7 +210,7 @@ private int _offset = 0;</pre>
         # For warming up indicators.
         self.settings.automatic_indicator_warm_up = True
 
-        # Request SPY data for feeding the indicator and trading.
+        # Request SPY data to feed the indicator and trade.
         self.spy = self.add_equity("SPY").symbol
         
         # Get and store the EMA settings to local parameters.
