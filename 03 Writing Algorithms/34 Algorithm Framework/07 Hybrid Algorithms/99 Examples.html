@@ -1,12 +1,12 @@
-<p>The following examples demonstrate some common practices for implementing hybrid algorithm.</p>
+<p>The following examples demonstrate common practices for implementing hybrid algorithms.</p>
 
 <h4>Example 1: Corresponding Alpha</h4>
-<p>The following algorithm trades 2 separate logics:</p>
+<p>The following algorithm trades two separate logics:</p>
 <ul>
     <li>EMA cross on the 20 most liquid stocks</li>
     <li>Buy and hold the top 20 weighted SPY constituents</li>
 </ul>
-<p>To do so, we can save the universe and allow an access point in the corresponding alpha model to filter the signals that only applicable to the selected equities from each universe.</p>
+<p>To do so, we can save the universe and allow an access point in the corresponding alpha model to filter the signals that are only applicable to the selected equities from each universe.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkHybridAlgorithm : QCAlgorithm
@@ -19,17 +19,17 @@
         SetEndDate(2024, 4, 1);
         SetCash(1000000);
         
-        // Add a universe of the most liquid stocks since their trend is more capital supported to trend EMA cross.
+        // Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
         Universe1 = AddUniverse(LiquidSelection);
-        // Emit insights if the selected liquid stocks trend change.
+        // Emit insights if the trend of selected liquid stocks changes.
         AddAlpha(new CustomEmaCrossAlphaModel(this));        
         
-        // Add another set of universe to pick the most weighted SPY constituents, since they usually have excess return compared to the rest.
+        // Add another universe set to pick the most weighted SPY constituents since they usually have excess return compared to the rest.
         Universe2 = AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, EtfConstituentFilter));
         // Emit insights for all selected SPY constituents.
         AddAlpha(new CustomConstantAlphaModel(this));
 
-        // Equal weighting on each insight to evenly dissipate capital risk.
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
     }
     
@@ -126,17 +126,17 @@ class FrameworkHybridAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 1, 1)
         self.set_end_date(2024, 4, 1)
 
-        # Add a universe of the most liquid stocks since their trend is more capital supported to trend EMA cross.
+        # Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
         self.universe1 = self.add_universe(self.liquid_selection)
-        # Emit insights if the selected liquid stocks trend change.
+        # Emit insights if the trend of selected liquid stocks changes.
         self.add_alpha(CustomEmaCrossAlphaModel(self))
 
-        # Add another set of universe to pick the most weighted SPY constituents, since they usually have excess return compared to the rest.
+        # Add another universe set to pick the most weighted SPY constituents since they usually have excess return compared to the rest.
         self.universe2 = self.add_universe(self.universe.etf("SPY", Market.USA, self.universe_settings, self.etf_constituents_filter))
         # Emit insights for all selected SPY constituents.
         self.add_alpha(CustomConstantAlphaModel(self))
 
-        # Equal weighting on each insight to evenly dissipate capital risk.
+        # Equal weighting on each insight to dissipate capital risk evenly.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
     def liquid_selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
@@ -184,7 +184,7 @@ class CustomConstantAlphaModel(ConstantAlphaModel):
 </div>
 
 <h4>Example 2: Bracket Order On Insight</h4>
-<p>The following algorithm uses framework universe selection and alpha model to filter universe and generate insights. However, portfolio construction model cannot handle bracket orders easily. Hence, we will access the active insights to place bracket orders using the classic implementation, stop lossing at 1% and taking profit at 2%.</p>
+<p>The following algorithm uses framework universe selection and alpha model to filter the universe and generate insights. However, the portfolio construction model cannot handle bracket orders easily. Hence, we will access the active insights to place bracket orders using the classic implementation, with stop losses at 1% and take profits at 2%.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkHybridAlgorithm : QCAlgorithm
 {
@@ -196,9 +196,9 @@ class CustomConstantAlphaModel(ConstantAlphaModel):
         SetEndDate(2024, 4, 1);
         SetCash(1000000);
         
-        // Add a universe of the most liquid stocks since their trend is more capital supported to trend EMA cross.
+        // Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
         AddUniverse(LiquidSelection);
-        // Emit insights if the selected liquid stocks trend change.
+        // Emit insights if the trend of selected liquid stocks changes.
         AddAlpha(new EmaCrossAlphaModel(20, 60, Resolution.Daily));
     }
     
@@ -215,19 +215,19 @@ class CustomConstantAlphaModel(ConstantAlphaModel):
         // Exit positions if insight is expired.
         foreach (var insight in new List&lt;Insight&gt;(_orderedInsights))
         {
-            // If the insight is expired or profit taken or stoped loss
+            // If the insight is expired or profit taken or stop loss
             if (insight.IsExpired(UtcTime) || !Portfolio[insight.Symbol].Invested)
             {
                 // Discontinue the insight.
                 Insights.Cancel(new[] { insight });
                 // Liquidate any positions and any open (bracket) orders.
                 Liquidate(insight.Symbol);
-                // Remove from cache.
+                // Remove from the cache.
                 _orderedInsights.Remove(insight);
             }
         }
 
-        // Place order for active insights if not yet ordered.
+        // Place orders for active insights if not yet ordered.
         var activeInsights = Insights.GetActiveInsights(UtcTime);
         foreach (var insight in activeInsights)
         {
@@ -276,9 +276,9 @@ class CustomConstantAlphaModel(ConstantAlphaModel):
         self.set_start_date(2024, 1, 1)
         self.set_end_date(2024, 4, 1)
 
-        # Add a universe of the most liquid stocks since their trend is more capital supported to trend EMA cross.
+        # Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
         self.universe1 = self.add_universe(self.liquid_selection)
-        # Emit insights if the selected liquid stocks trend change.
+        # Emit insights if the trend of selected liquid stocks changes.
         self.add_alpha(EmaCrossAlphaModel(20, 60, Resolution.DAILY))
 
         self.ordered_insights = []
@@ -290,16 +290,16 @@ class CustomConstantAlphaModel(ConstantAlphaModel):
     def on_data(self, slice: Slice) -&gt; None:
         # Exit positions if insight is expired.
         for insight in self.ordered_insights.copy():
-            # If the insight is expired or profit taken or stoped loss
+            # If the insight is expired or profit or loss are taken.
             if insight.is_expired(self.utc_time) or not self.portfolio[insight.symbol].invested:
                 # Discontinue the insight.
                 self.insights.cancel([insight])
                 # Liquidate any positions and any open (bracket) orders.
                 self.liquidate(insight.symbol)
-                # Remove from cache.
+                # Remove from the cache.
                 self.ordered_insights.remove(insight)
 
-        # Place order for active insights if not yet ordered.
+        # Place orders for active insights if it has not yet been ordered.
         active_insights = self.insights.get_active_insights(self.utc_time)
         for insight in active_insights:
             if insight not in self.ordered_insights:
