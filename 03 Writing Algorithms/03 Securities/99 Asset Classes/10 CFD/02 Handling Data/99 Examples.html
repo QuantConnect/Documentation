@@ -1,0 +1,54 @@
+<p>The following examples demonstrate some common practices for handling CFD data.</p>
+
+<h4>Example 1: Buy And Hold</h4>
+<p>The following algorithm is a buy-and-hold strategy on the DE30EUR CFD contract. To acoid stale fills, we only place order when there is quote data available. Also, we set the algorithm time zone to Berlin and the account currency to Euros for more convenient comparison.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class CfdExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _dax, _sgx;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2025, 1, 1);
+        // Set the timezone as Berlin for conveniently comparing the data.
+        SetTimeZone(TimeZones.Berlin);
+        // Set account accurency as EUR to trade the DAX CFD.
+        SetAccountCurrency("EUR", 10000);
+        // Request the CFD data to trade.
+        _dax = AddCfd("DE30EUR").Symbol;
+        _sgx = AddCfd("SG30SGD").Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade based on updated data, note that CFD only quote bar data.
+        if (slice.QuoteBars.TryGetValue(_dax, out var _))
+        {
+            // Buy and hold DAX CFD.
+            if (!Portfolio[_dax].IsLong)
+            {
+                SetHoldings(_dax, 0.5m);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class CfdExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2025, 1, 1)
+        # Set the timezone as Berlin for conveniently comparing the data.
+        self.set_time_zone(TimeZones.BERLIN)
+        # Set account accurency as EUR to trade the DAX CFD.
+        self.set_account_currency("EUR", 10000)
+        # Request the CFD data to trade.
+        self._dax = self.add_cfd("DE30EUR").symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade based on updated data, note that CFD only quote bar data.
+        bar = slice.quote_bars.get(self._dax)
+        if bar:
+            # Buy and hold DAX CFD.
+            if not self.portfolio[self._dax].is_long:
+                self.set_holdings(self._dax, 0.5)</pre>
+</div>
