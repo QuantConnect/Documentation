@@ -1,0 +1,327 @@
+<p>The following examples demonstrate common practices for implementing hybrid algorithms.</p>
+
+<h4>Example 1: Corresponding Alpha</h4>
+<p>The following algorithm trades two separate logics:</p>
+<ul>
+    <li>EMA cross on the 20 most liquid stocks</li>
+    <li>Buy and hold the top 20 weighted SPY constituents</li>
+</ul>
+<p>To do so, we can save the universe and allow an access point in the corresponding alpha model to filter the signals that are only applicable to the selected equities from each universe.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkHybridAlgorithm : QCAlgorithm
+{
+    public Universe Universe1, Universe2;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 4, 1);
+        SetCash(1000000);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
+        Universe1 = AddUniverse(LiquidSelection);
+        // Emit insights if the trend of selected liquid stocks changes.
+        AddAlpha(new CustomEmaCrossAlphaModel(this));        
+        
+        // Add another universe set to pick the most weighted SPY constituents since they usually have excess return compared to the rest.
+        Universe2 = AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, EtfConstituentFilter));
+        // Emit insights for all selected SPY constituents.
+        AddAlpha(new CustomConstantAlphaModel(this));
+
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+    
+    private IEnumerable&lt;Symbol&gt; LiquidSelection(IEnumerable&lt;Fundamental&gt; fundamentals)
+    {
+        // Select the top 20 liquid equities for EMA cross trading.
+        return (from f in fundamentals
+            orderby f.DollarVolume descending
+            select f.Symbol).Take(20);
+    }
+    
+    private IEnumerable&lt;Symbol&gt; EtfConstituentFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    {
+        // Select the top 20 weighted stocks of SPY constituents to hold.
+        return (from c in constituents
+            where c.Weight.HasValue
+            orderby c.Weight.Value descending
+            select c.Symbol).Take(20);
+    }
+
+    private class CustomEmaCrossAlphaModel : EmaCrossAlphaModel
+    {
+        private FrameworkHybridAlgorithm _algorithm;
+        private readonly int _fastPeriod, _slowPeriod;
+        private readonly Resolution _resolution;
+
+        public CustomEmaCrossAlphaModel(FrameworkHybridAlgorithm algorithm, int fastPeriod = 20, int slowPeriod = 60, Resolution resolution = Resolution.Daily)
+            : base(fastPeriod, slowPeriod, resolution)
+        {
+            _algorithm = algorithm;
+            _fastPeriod = fastPeriod;
+            _slowPeriod = slowPeriod;
+            _resolution = resolution;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var added in changes.AddedSecurities)
+            {
+                // Only trade the liquid universe for this alpha model.
+                if (_algorithm.Universe1.Selected.Contains(added.Symbol))
+                {
+                    SymbolData symbolData;
+                    if (!SymbolDataBySymbol.TryGetValue(added.Symbol, out symbolData))
+                    {
+                        SymbolDataBySymbol[added.Symbol] = new SymbolData(added, _fastPeriod, _slowPeriod, algorithm, _resolution);
+                    }
+                    else
+                    {
+                        // A security that was already initialized was re-added, reset the indicators.
+                        symbolData.Fast.Reset();
+                        symbolData.Slow.Reset();
+                    }
+                }
+            }
+
+            foreach (var removed in changes.RemovedSecurities)
+            {
+                SymbolData symbolData;
+                if (SymbolDataBySymbol.TryGetValue(removed.Symbol, out symbolData))
+                {
+                    // clean up our consolidators.
+                    symbolData.RemoveConsolidators();
+                    SymbolDataBySymbol.Remove(removed.Symbol);
+                }
+            }
+        }
+    }
+
+    private class CustomConstantAlphaModel : ConstantAlphaModel
+    {
+        private FrameworkHybridAlgorithm _algorithm;
+
+        public CustomConstantAlphaModel(FrameworkHybridAlgorithm algorithm)
+            // Daily insight length due to daily signals.
+            : base(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1))
+        {
+            _algorithm = algorithm;
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+        {
+            var insights = base.Update(algorithm, data);
+            // Only trade the selected SPY constituents universe for this alpha model.
+            return insights.Where(x =&gt; _algorithm.Universe2.Selected.Contains(x.Symbol));
+        }
+    }
+}</pre>
+    <pre class="python">from Alphas.EmaCrossAlphaModel import EmaCrossAlphaModel, SymbolData
+from Alphas.ConstantAlphaModel import ConstantAlphaModel
+
+class FrameworkHybridAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 4, 1)
+
+        # Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
+        self.universe1 = self.add_universe(self.liquid_selection)
+        # Emit insights if the trend of selected liquid stocks changes.
+        self.add_alpha(CustomEmaCrossAlphaModel(self))
+
+        # Add another universe set to pick the most weighted SPY constituents since they usually have excess return compared to the rest.
+        self.universe2 = self.add_universe(self.universe.etf("SPY", Market.USA, self.universe_settings, self.etf_constituents_filter))
+        # Emit insights for all selected SPY constituents.
+        self.add_alpha(CustomConstantAlphaModel(self))
+
+        # Equal weighting on each insight to dissipate capital risk evenly.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+    def liquid_selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+        # Select the top 20 liquid equities for EMA cross trading.
+        return [x.symbol for x in sorted(fundamentals, key=lambda f: f.dollar_volume, reverse=True)[:20]]
+
+    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Select the top 20 weighted stocks of SPY constituents to hold.
+        return [x.symbol for x in sorted([c for c in constituents if c.weight], key=lambda c: c.weight, reverse=True)[:20]]
+
+class CustomEmaCrossAlphaModel(EmaCrossAlphaModel):
+    def __init__(self, algorithm: FrameworkHybridAlgorithm, fast_period: int = 20, slow_period: int = 60, resolution: Resolution = Resolution.DAILY) -&gt; None:
+        self.algorithm = algorithm
+        super().__init__(fast_period, slow_period, resolution)
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for added in changes.added_securities:
+            # Only trade the liquid universe for this alpha model.
+            if added.symbol in self.algorithm.universe1.selected:
+                symbol_data = self.symbol_data_by_symbol.get(added.symbol)
+                if symbol_data is None:
+                    symbol_data = SymbolData(added, self.fast_period, self.slow_period, algorithm, self.resolution)
+                    self.symbol_data_by_symbol[added.symbol] = symbol_data
+                else:
+                    # A security that was already initialized was re-added, reset the indicators.
+                    symbol_data.fast.reset()
+                    symbol_data.slow.reset()
+
+        for removed in changes.removed_securities:
+            data = self.symbol_data_by_symbol.pop(removed.symbol, None)
+            if data is not None:
+                # clean up our consolidators.
+                data.remove_consolidators()
+
+class CustomConstantAlphaModel(ConstantAlphaModel):
+    def __init__(self, algorithm: FrameworkHybridAlgorithm) -&gt; None:
+        self.algorithm = algorithm
+        # Daily insight length due to daily signals.
+        super().__init__(InsightType.PRICE, InsightDirection.UP, timedelta(1))
+
+    def update(self, algorithm: QCAlgorithm, data: Slice) -&gt; List[Insight]:
+        insights = super().update(algorithm, data)
+        # Only trade the selected SPY constituents universe for this alpha model.
+        return [i for i in insights if i.symbol in self.algorithm.universe2.selected]</pre>
+</div>
+
+<h4>Example 2: Bracket Order On Insight</h4>
+<p>The following algorithm uses framework universe selection and alpha model to filter the universe and generate insights. However, the portfolio construction model cannot handle bracket orders easily. Hence, we will access the active insights to place bracket orders using the classic implementation, with stop losses at 1% and take profits at 2%.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkHybridAlgorithm : QCAlgorithm
+{
+    private List&lt;Insight&gt; _orderedInsights = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 4, 1);
+        SetCash(1000000);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
+        AddUniverse(LiquidSelection);
+        // Emit insights if the trend of selected liquid stocks changes.
+        AddAlpha(new EmaCrossAlphaModel(20, 60, Resolution.Daily));
+    }
+    
+    private IEnumerable&lt;Symbol&gt; LiquidSelection(IEnumerable&lt;Fundamental&gt; fundamentals)
+    {
+        // Select the top 20 liquid equities for EMA cross trading.
+        return (from f in fundamentals
+            orderby f.DollarVolume descending
+            select f.Symbol).Take(20);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Exit positions if insight is expired.
+        foreach (var insight in new List&lt;Insight&gt;(_orderedInsights))
+        {
+            // If the insight is expired or profit taken or stop loss
+            if (insight.IsExpired(UtcTime) || !Portfolio[insight.Symbol].Invested)
+            {
+                // Discontinue the insight.
+                Insights.Cancel(new[] { insight });
+                // Liquidate any positions and any open (bracket) orders.
+                Liquidate(insight.Symbol);
+                // Remove from the cache.
+                _orderedInsights.Remove(insight);
+            }
+        }
+
+        // Place orders for active insights if not yet ordered.
+        var activeInsights = Insights.GetActiveInsights(UtcTime);
+        foreach (var insight in activeInsights)
+        {
+            if (!_orderedInsights.Contains(insight))
+            {
+                // Position sizing by given weight or equal weighting to dissipate capital risk.
+                var size = 0d;
+                if (insight.Weight.HasValue)
+                {
+                    size = insight.Weight.Value;
+                }
+                else
+                {
+                    size = 1d / activeInsights.Count;
+                }
+                SetHoldings(insight.Symbol, size);
+                // Add to cache to avoid re-order.
+                _orderedInsights.Add(insight);
+            }
+        }
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        if (orderEvent.Status == OrderStatus.Filled)
+        {
+            if (orderEvent.Ticket.OrderType == OrderType.Market)
+            {
+                // Stop loss order at 1%.
+                var stopPrice = orderEvent.FillQuantity &gt; 0m ? orderEvent.FillPrice * 0.99m : orderEvent.FillPrice * 1.01m;
+                StopMarketOrder(orderEvent.Symbol, -Portfolio[orderEvent.Symbol].Quantity, stopPrice);
+                // Take profit order at 2%.
+                var takeProfitPrice = orderEvent.FillQuantity &gt; 0m ? orderEvent.FillPrice * 1.02m : orderEvent.FillPrice * 0.98m;
+                LimitOrder(orderEvent.Symbol, -Portfolio[orderEvent.Symbol].Quantity, takeProfitPrice);
+            }
+            else if (orderEvent.Ticket.OrderType == OrderType.StopMarket || orderEvent.Ticket.OrderType == OrderType.Limit)
+            {
+                // Cancel any open order if stop loss or take profit order filled.
+                Transactions.CancelOpenOrders();
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkHybridAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 4, 1)
+
+        # Add a universe of the most liquid stocks since their trend is more capital-supported to trend EMA cross.
+        self.universe1 = self.add_universe(self.liquid_selection)
+        # Emit insights if the trend of selected liquid stocks changes.
+        self.add_alpha(EmaCrossAlphaModel(20, 60, Resolution.DAILY))
+
+        self.ordered_insights = []
+
+    def liquid_selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+        # Select the top 20 liquid equities for EMA cross trading.
+        return [x.symbol for x in sorted(fundamentals, key=lambda f: f.dollar_volume, reverse=True)[:20]]
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Exit positions if insight is expired.
+        for insight in self.ordered_insights.copy():
+            # If the insight is expired or profit or loss are taken.
+            if insight.is_expired(self.utc_time) or not self.portfolio[insight.symbol].invested:
+                # Discontinue the insight.
+                self.insights.cancel([insight])
+                # Liquidate any positions and any open (bracket) orders.
+                self.liquidate(insight.symbol)
+                # Remove from the cache.
+                self.ordered_insights.remove(insight)
+
+        # Place orders for active insights if it has not yet been ordered.
+        active_insights = self.insights.get_active_insights(self.utc_time)
+        for insight in active_insights:
+            if insight not in self.ordered_insights:
+                # Position sizing by given weight or equal weighting to dissipate capital risk.
+                if insight.weight:
+                    size = insight.weight
+                else:
+                    size = 1 / len(active_insights)
+                self.set_holdings(insight.symbol, size)
+                # Add to cache to avoid re-order.
+                self.ordered_insights.append(insight)
+
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        if order_event.status == OrderStatus.FILLED:
+            if order_event.ticket.order_type == OrderType.MARKET:
+                # Stop loss order at 1%.
+                stop_price = order_event.fill_price * (0.99 if order_event.fill_quantity &gt; 0 else 1.01)
+                self.stop_market_order(order_event.symbol, -self.portfolio[order_event.symbol].quantity, stop_price)
+                # Take profit order at 2%.
+                take_profit_price = order_event.fill_price * (1.02 if order_event.fill_quantity &gt; 0 else 0.98)
+                self.limit_order(order_event.symbol, -self.portfolio[order_event.symbol].quantity, take_profit_price)
+            elif order_event.ticket.order_type == OrderType.STOP_MARKET or order_event.ticket.order_type == OrderType.LIMIT:
+                # Cancel any open order if stop loss or take profit order filled.
+                self.transactions.cancel_open_orders()</pre>
+</div>
