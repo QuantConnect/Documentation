@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for handling CFD data.</p>
+<p>The following examples demonstrate common practices for handling CFD data.</p>
 
 <h4>Example 1: Buy And Hold</h4>
-<p>The following algorithm is a buy-and-hold strategy on the DE30EUR CFD contract. To avoid stale fills, we only place orders when quote data is available. Also, we set the algorithm time zone to Berlin and the account currency to Euros for a more convenient comparison.</p>
+<p>The following algorithm is a buy-and-hold strategy on the DE30EUR CFD contract. We only place orders when quote data is available to avoid stale fills. Also, we set the algorithm time zone to Berlin and the account currency to Euros for a more convenient comparison.</p>
 <div class="section-example-container">
     <pre class="csharp">public class CfdExampleAlgorithm : QCAlgorithm
 {
@@ -22,7 +22,7 @@
 
     public override void OnData(Slice slice)
     {
-        // Trade based on updated data; note that CFD only quotes bar data.
+        // Trade based on updated data; CFDs only have quote data.
         if (slice.QuoteBars.TryGetValue(_dax, out var _))
         {
             // Buy and hold DAX CFD.
@@ -45,7 +45,7 @@
         self._dax = self.add_cfd("DE30EUR").symbol
 
     def on_data(self, slice: Slice) -&gt; None:
-        # Trade based on updated data; note that CFD only quotes bar data.
+        # Trade based on updated data; CFDs only have quote data.
         bar = slice.quote_bars.get(self._dax)
         if bar:
             # Buy and hold DAX CFD.
@@ -54,7 +54,7 @@
 </div>
 
 <h4>Example 2: Global Indices</h4>
-<p>The following algorithm buys and holds various Index CFDs that trade in different market hours and currencies during their market opening hours.</p>
+<p>The following algorithm buys and holds various Index CFDs that trade in different market hours and currencies during their opening hours.</p>
 <div class="section-example-container">
     <pre class="csharp">public class CfdExampleAlgorithm : QCAlgorithm
 {
@@ -118,7 +118,7 @@
         self._dow = self.add_cfd("US30USD").symbol
 
         # Set scheduled events to hold each CFD contract in their market opening hours.
-        # Buy and hold after market open.
+        # Buy and hold after the market opens.
         self.schedule.on(
             self.date_rules.every_day(self._dax),
             self.time_rules.after_market_open(self._dax, 1),
