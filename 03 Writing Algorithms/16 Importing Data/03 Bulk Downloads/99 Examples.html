@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for bulk downloading data.</p>
 
 <h4>Example 1: Download Machine Learning Model</h4>
-<p>The following algorithm makes use of a <a href="/docs/v2/writing-algorithms/machine-learning/popular-libraries/scikit-learn">Scikit-Learn</a> machine learning model to predict SPY price changes and place orders according to the prediction. To obtain the model, we either retrieve it from the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a>, if there exists any, or download it from a Dropbox link using the <code>download</code> method.</p>
+<p>The following algorithm makes use of a <a href="/docs/v2/writing-algorithms/machine-learning/popular-libraries/scikit-learn">Scikit-Learn</a> machine learning model to predict SPY price changes and place orders according to the prediction. To obtain the model, we either retrieve it from the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a> if there exists any or download it from a Dropbox link using the <code>download</code> method.</p>
 <div class="section-example-container">
     <pre class="python">from sklearn.svm import SVR
 from sklearn.model_selection import GridSearchCV
@@ -23,7 +23,7 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
         for trade_bar in history:
             self.training_data.add(trade_bar)
 
-        # Retrieve already trained model from object store to use immediately.
+        # Retrieve the already trained model from the object store for immediate use.
         if self.object_store.contains_key("sklearn_model"):
             file = self.object_store.get_file_path("sklearn_model")
         # Otherwise, bulk-download the model from an external source (Dropbox in this example).
@@ -65,7 +65,7 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
         if self.symbol in slice.bars:
             self.training_data.add(slice.bars[self.symbol])
 
-        # Get prediction by the updated features.
+        # Get predictions by the updated features.
         features, _ = self.get_features_and_labels()
         prediction = self.model.predict(features[-1].reshape(1, -1))
         prediction = float(prediction)
@@ -78,7 +78,7 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
             self.set_holdings(self.symbol, -1)
 
     def on_end_of_algorithm(self) -&gt; None:
-        # Store the model to object store to retrieve it in other instances in case the algorithm stops.
+        # Store the model in the object store to retrieve it in other instances if the algorithm stops.
         model_key = "sklearn_model"
         file_name = self.object_store.get_file_path(model_key)
         joblib.dump(self.model, file_name)</pre>
