@@ -1,9 +1,10 @@
-<p>The following examples demonstrate some common practices for updating indicators using consolidator.</p>
+<p>The following examples demonstrate common practices for updating indicators using consolidators.</p>
 
 <h4>Example 1: Hammer Pattern With 5-Minute Consolidator</h4>
-<p>The following algorithm trades Hammer and Inverted Hammer candlestick patterns. The candles are constructed with 5-minute SPY trade bars consolidated by a 5-minute <code>TradeBarConsolidator</code>, while automatically updating with the <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method. Both patterns are bullish indicating, so we buy SPY if the pattern signaled.</p>
+<p>The following algorithm trades Hammer and Inverted Hammer candlestick patterns. The candles are constructed with five-minute SPY trade bars consolidated by a five-minute <code>TradeBarConsolidator</code>, while automatically updating with the <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method. Both patterns are bullish, so we buy SPY if the pattern is signaled.</p>
 <div class="section-example-container">
-    <pre class="csharp">public class ConsolidatorUpdatingIndicatorsAlgorithm : QCAlgorithm
+    <pre class="csharp">using QuantConnect.Indicators.CandlestickPatterns;
+public class ConsolidatorUpdatingIndicatorsAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private Hammer _hammer = new();
@@ -17,9 +18,9 @@
         // Request SPY data for signal generation and trading.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
-        // The candlestick patterns are based on 5-minute consolidated trade bar.
+        // The candlestick patterns are based on a 5-minute consolidated trade bar.
         var consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
-        // Subscribe for automatically updating the indicators with the 5-minute consolidator.
+        // Subscribe to update the indicators with the 5-minute consolidator automatically.
         RegisterIndicator(_spy, _hammer, consolidator);
         RegisterIndicator(_spy, _invertedHammer, consolidator);
         // Add event handler on candlestick indicators updated to trade the pattern.
@@ -31,7 +32,7 @@
 
     private void OnUpdated(object sender, IndicatorDataPoint point)
     {
-        // Both Hammer and Inverted Hammer pattern indicates bullish movement, we buy SPY.
+        // Both the hammer and inverted Ham patterns indicate bullish movement, so we buy SPY.
         if (point.Value == 1 &amp;&amp; !Portfolio[_spy].IsLong)
         {
             SetHoldings(_spy, 0.5m);
@@ -60,7 +61,6 @@
     }
 }</pre>
     <pre class="python">from QuantConnect.Indicators.CandlestickPatterns import *
-
 class ConsolidatorUpdatingIndicatorsAlgorithm(QCAlgorithm):
     hammer = Hammer()
     inverted_hammer = InvertedHammer()
@@ -72,19 +72,19 @@ class ConsolidatorUpdatingIndicatorsAlgorithm(QCAlgorithm):
         # Request SPY data for signal generation and trading.
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
-        # The candlestick patterns are based on 5-minute consolidated trade bar.
+        # The candlestick patterns are based on a 5-minute consolidated trade bar.
         consolidator = TradeBarConsolidator(timedelta(minutes=5))
         # Subscribe for automatically updating the indicators with the 5-minute consolidator.
         self.register_indicator(self.spy, self.hammer, consolidator)
         self.register_indicator(self.spy, self.inverted_hammer, consolidator)
-        # Add event handler on candlestick indicators updated to trade the pattern.
+        # Add an event handler on candlestick indicators that are updated to trade the pattern.
         self.hammer.updated += self.on_updated
         self.inverted_hammer.updated += self.on_updated
 
         self.set_warm_up(1)
 
     def on_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
-        # Both Hammer and Inverted Hammer pattern indicates bullish movement, we buy SPY.
+        # Both the hammer and inverted hammer patterns indicate bullish movement, so we buy SPY.
         if point.value == 1 and not self.portfolio[self.spy].is_long:
             self.set_holdings(self.spy, 0.5)
 
