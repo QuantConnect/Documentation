@@ -1,0 +1,113 @@
+<p>The following examples demonstrate common practices for implementing mixed-mode consolidators.</p>
+
+<h4>Example 1: Opening Range Breakout</h4>
+<p>The following algorithm demonstrates an opening range breakout strategy for BJK (a Gaming ETF). We create a 15-count/30-minute trade bar as the opening range for signal generation. If the close price at 10 am is higher than the high price of the aggregated opening bar, we long BJK and exit by a 2% trailing stop loss.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class MixedModeConsolidatorAlgorithm : QCAlgorithm
+{
+    private Symbol _equity;
+    private TradeBarConsolidator _consolidator;
+    private decimal _highPrice = 0m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 10, 1);
+        SetEndDate(2021, 11, 1);
+        
+        // Request CARZ data to feed to the consolidators and trade.
+        _equity = AddEquity("CARZ", Resolution.Minute).Symbol;
+
+        // Create a 10-count-or-20-minute trade bar consolidator to create the opening range for trade signal generation.
+        // CARZ is a less liquid ETF, so we use a mixed-mode consolidator.
+        _consolidator = new TradeBarConsolidator(10, TimeSpan.FromMinutes(20));
+
+        // Subscribe the consolidators to CARZ data for automatic updating.
+        SubscriptionManager.AddConsolidator(_equity, _consolidator);
+        
+        // We check if the entry condition is attained 30 minutes after the market opens.
+        Schedule.On(
+            DateRules.EveryDay(_equity),
+            TimeRules.AfterMarketOpen(_equity, 30),
+            Entry
+        );
+
+        SetWarmUp(1);
+    }
+
+    private void Entry()
+    {
+        // Check if the entry condition is met: the current price is higher than the high price of the open range.
+        var current = Securities[_equity].Close;
+        if (current &gt; (_consolidator.Consolidated as TradeBar).High)
+        {
+            MarketOrder(_equity, 20);
+            // Cache the current price for trailing stop loss need.
+            _highPrice = current;
+        }
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_equity, out var bar) &amp;&amp; Portfolio.Invested)
+        {
+            // Update the high price if the current high is higher to update the trailing stop price.
+            if (bar.High &gt; _highPrice)
+            {
+                _highPrice = bar.High;
+            }
+
+            // Exit position if the trailing stop loss is hit.
+            if (bar.Close &lt; _highPrice * 0.98m)
+            {
+                Liquidate();
+                _highPrice = 0m;
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class MixedModeConsolidatorAlgorithm(QCAlgorithm):
+    _high_price = 0
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 10, 1)
+        self.set_end_date(2021, 11, 1)
+        
+        # Request CARZ data to feed to the consolidators and trade.
+        self._equity = self.add_equity("CARZ", Resolution.MINUTE).symbol
+
+        # Create a 10-count-or-20-minute trade bar consolidator to create the opening range for trade signal generation.
+        # CARZ is a less liquid ETF, we use a mixed-mode consolidator.
+        self._consolidator = TradeBarConsolidator(10, timedelta(minutes=20))
+
+        # Subscribe the consolidators to CARZ data for automatic updating.
+        self.subscription_manager.add_consolidator(self._equity, self._consolidator)
+
+        # We check if the entry condition is attained 30 minutes after the market opens.
+        self.schedule.on(
+            self.date_rules.every_day(self._equity),
+            self.time_rules.after_market_open(self._equity, 30),
+            self.entry
+        )
+
+        self.set_warm_up(1)
+
+    def entry(self) -&gt; None:
+        # Check if the entry condition is met: the current price is higher than the high price of the open range.
+        current = self.securities[self._equity].close
+        if current &gt; self._consolidator.consolidated.high:
+            self.market_order(self._equity, 20)
+            # Cache the current price for trailing stop loss need.
+            self._high_price = current
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._equity)
+        if bar and self.portfolio.invested:
+            # Update the high price if the current high is higher to update the trailing stop price.
+            if bar.high &gt; self._high_price:
+                self._high_price = bar.high
+
+            # Exit position if the trailing stop loss is hit.
+            if bar.close &lt; self._high_price * 0.98:
+                self.liquidate()
+                self._high_price = 0</pre>
+</div>
