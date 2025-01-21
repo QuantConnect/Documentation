@@ -2,7 +2,7 @@
 
 <h4>Example 1: Short Bottom-Weighted SPY Constituents</h4>
 <p>
-	A subset of the SPY constituents outperform the SPY while many of the constituents underperform the overall index. 
+	A subset of the SPY constituents outperforms the SPY, while many underperform the overall index. 
 	In an attempt to exclude the ETF constituents that underperform the index, the following algorithm buys the SPY CFD and shorts the CFD of the 100 constituents in the index with the smallest weight in the ETF.
 </p>
 <p></p>
@@ -18,7 +18,7 @@
         SetStartDate(2023, 6, 1);
         SetCash(10000000);
         Settings.MinimumOrderMarginPortfolioPercentage = 0m;
-        // To avoid over-trading and high transaction costs, refilter and rebalance weekly.
+        // Refilter and rebalance weekly to avoid over-trading and high transaction costs.
         UniverseSettings.Schedule.On(DateRules.WeekEnd());
         // Request SPY CFD to trade.
         _spyCfd = AddCfd("SPY", Resolution.Minute).Symbol;
@@ -40,8 +40,8 @@
         _etfWeightBySymbol = constituents
             .Where(c =&gt; c.Weight.HasValue)
             .ToDictionary(c =&gt; c.Symbol.Value, c =&gt; c.Weight.Value);
-        // Select the CFD contracts of the bottom-weighted 100 consituents.
-        // They should have negative excess return.
+        // Select the CFD contracts of the bottom-weighted 100 constituents.
+        // They should have negative excess returns.
         return _etfWeightBySymbol
             .OrderBy(x =&gt; x.Value)
             .Take(100)
@@ -71,7 +71,7 @@
         self.set_end_date(2021, 12, 31)
         self.set_cash(10000000)
         
-        # To avoid over-trading and high transaction costs, refilter and rebalance weekly.
+        # Refilter and rebalance weekly to avoid over-trading and high transaction costs.
         self.universe_settings.schedule.on(self.date_rules.week_end())
         # Request SPY CFD to trade.
         self._spy_cfd = self.add_cfd("SPY", Resolution.MINUTE).symbol
@@ -89,8 +89,8 @@
     def _select_assets(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         # Cache the constituent weights in a dictionary for filtering and position sizing.
         self._etf_weight_by_symbol = {c.symbol.value: c.weight for c in constituents if c.weight}
-        # Select the CFD contracts of the bottom-weighted 100 consituents.
-        # They should have negative excess return.
+        # Select the CFD contracts of the bottom-weighted 100 constituents.
+        # They should have negative excess returns.
         return [
             Symbol.create(symbol, SecurityType.CFD, Market.INTERACTIVE_BROKERS) for symbol, _ in sorted(
                 self._etf_weight_by_symbol.items(), 
