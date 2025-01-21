@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/index/ose/generic/assets-with-other-hours.html"); ?>
