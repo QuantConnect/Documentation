@@ -1,6 +1,6 @@
 <p>The following examples demonstrate some common practices for handling Index Options.</p>
 
-<h4>Example 1: Supply-Demand Pressure</h4>
+<h4>Example 1: Supply-Demand Pressure Of Individual Contract</h4>
 <p>This example shows how to handle <code>QuoteBar</code> data for the SPXW Index Option contracts to trade based on the supply-demand pressure, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/individual-contracts">filter individual option contracts and request data</a> using <code class="csharp">OptionChain</code><code class="python">self.option_chain</code> method for the contracts that expires that day.</p>
 <div class="section-example-container">
     <pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
@@ -108,7 +108,7 @@
                     self.set_holdings(contract, 0.05)</pre>
 </div>
 
-<h4>Example 2: Get Mid Price For Universe</h4>
+<h4>Example 2: Supply-Demand Pressure Of Universe</h4>
 <p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Index Option contracts to calculate mid price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data/universes">request data through universe selection function</a> using <code class="csharp">SetFilter</code><code class="python">set_filter</code> method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.</p>
 <div class="section-example-container">
     <pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
@@ -119,6 +119,7 @@
     {
         SetStartDate(2020, 1, 1);
         SetEndDate(2020, 1, 3);
+        SetCash(100000000);
 
         // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
@@ -136,18 +137,30 @@
         {
             foreach (var contract in chain)
             {
-                // Mid price = average of bid close price and ask close price.
-                var midPrice = (contract.BidPrice + contract.AskPrice) * 0.5m;
+                // if the last trading price is close to the ask price, the sell pressure is higher, so we short.
+                var diff = contract.AskPrice - 2m * contract.LastPrice + contract.BidPrice;
+                if (diff &lt; 0)
+                {
+                    SetHoldings(contract, 0.05m);
+                }
+                else
+                {
+                    SetHoldings(contract, -0.05m);
+                }
             }
         }
     }
 }</pre>
     <pre class="python">class IndexOptionHandlingDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 1, 3)
+        self.set_cash(100000000)
+        
         # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Subscribe to SPXW option data.
-        option = self.add_option(spy)
+        option = self.add_index_option("SPX", "SPXW")
         self._symbol = option.symbol
         # We wish to only trade the contracts expiring within the same week since they have the highest volume.
         option.set_filter(lambda u: u.include_weeklys().contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
@@ -159,8 +172,12 @@
             return
     
         for contract in chain:
-            # Mid price = average of bid close price and ask close price
-            mid_price = (contract.bid_price + contract.ask_price) * 0.5</pre>
+            # if the last trading price is close to the ask price, the sell pressure is higher, so we short.
+            diff = contract.ask_price - 2 * contract.last_price + contract.bid_price
+            if diff &lt; 0:
+                self.set_holdings(contract, -0.05)
+            else:
+                self.set_holdings(contract, 0.05)</pre>
 </div>
 
 <h4>Example 3: Get Instant Delta</h4>
@@ -172,10 +189,13 @@
         
     public override void Initialize()
     {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2025, 1, 1);
+
         // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Subscribe to SPXW option data.
-        var option = AddOption("SPX", "SPXW");
+        var option = AddIndexOption("SPX", "SPXW");
         _symbol = option.Symbol;
         // We wish to only trade the contracts expiring within the same week since they have the highest volume.
         // 0.4 Delta will only appear in call contracts.
@@ -185,16 +205,22 @@
     public override void OnData(Slice slice)
     {
         // Only want to obtain the option chain of the selected symbol.
-        if (slice.OptionChains.TryGetValue(_symbol, out var chain))
+        if (slice.OptionChains.TryGetValue(_symbol, out var chain) &amp;&amp; !Portfolio.Invested)
         {
             // Get the contract with Delta closest to 0.4 to trade.
             // The arbitary delta criterion might be set due to hedging need or risk adjustment.
             var selected = chain.OrderBy(x =&gt; Math.Abs(x.Greeks.Delta - 0.4m)).First();
+
+            // Hold a naked call on the selected contract to speculate an uprise of the SPX index with leverage.
+            MarketOrder(selected, 1);
         }
     }
 }</pre>
 	<pre class="python">class IndexOptionHandlingDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2025, 1, 1)
+
         # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Subscribe to SPXW option data.
@@ -212,5 +238,8 @@
     
         # Get the contract with Delta closest to 0.4 to trade.
         # The arbitary delta criterion might be set due to hedging need or risk adjustment.
-        selected = sorted(chain, key=lambda x: abs(x.greeks.delta - 0.4))[0]</pre>
+        selected = sorted(chain, key=lambda x: abs(x.greeks.delta - 0.4))[0]
+    
+        # Hold a naked call on the selected contract to speculate an uprise of the SPX index with leverage.
+        self.market_order(selected, 1)</pre>
 </div>
