@@ -11,7 +11,8 @@
     public override void Initialize()
     {
         SetStartDate(2022, 1, 1);
-        SetEndDate(2023, 1, 1);
+        SetEndDate(2022, 7, 1);
+
         // Request the future underlying data for ATM strike selection.
         _future = AddFuture(
             Futures.Indices.SP500EMini,
@@ -38,7 +39,7 @@
     {
         // Get all the contracts that are currently tradable.
         var contractSymbols = FutureChainProvider.GetFutureContractList(_future, Time);
-        // Select the front month contract due to liquidity, with 2 2-day buffer to avoid volatility.
+        // Select the front month contract due to liquidity, with a 2-day buffer to avoid volatility.
         var contract = contractSymbols.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(2))
             .MinBy(x =&gt; x.ID.Date);
         // Request the Futures contract for trading.
@@ -48,7 +49,7 @@
     public override void OnData(Slice slice)
     {
         // Trade based on updated data.
-        if (slice.Bars.TryGetValue(_future, out var bar))
+        if (slice.Bars.TryGetValue(_contractSymbol, out var bar) &amp;&amp; IsMarketOpen(_contractSymbol))
         {
             // Trade trend-following strategy with EMA cross.
             if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_future].IsLong)
@@ -66,6 +67,7 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2023, 1, 1)
+
         # Request the future underlying data for ATM strike selection.
         self._future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
@@ -90,7 +92,7 @@
     def select_contract(self) -&gt; None:
         # Get all the contracts that are currently tradable.
         contract_symbols = self.future_chain_provider.get_future_contract_list(self._future, self.time)
-        # Select the front month contract due to liquidity, with 2 2-day buffer to avoid volatility.
+        # Select the front month contract due to liquidity, with a 2-day buffer to avoid volatility.
         contract = min(
             [x for x in contract_symbols if x.id.date &gt;= self.time + timedelta(2)], 
             key=lambda x: x.id.date
@@ -100,8 +102,8 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         # Trade based on updated data.
-        bar = slice.bars.get(self._future)
-        if bar:
+        bar = slice.bars.get(self._contract_symbol)
+        if bar and self.is_market_open(self._contract_symbol):
             # Trade trend-following strategy with EMA cross.
             if bar.close &gt; self._ema.current.value and not self.portfolio[self._future].is_long:
                 self.set_holdings(self._contract_symbol, 0.5)
