@@ -1,13 +1,13 @@
 <p>The following examples demonstrate some common practices for implementing volume renko consolidator.</p>
 
 <h4>Example 1: Bollinger Bands From Volume Renko Bar</h4>
-<p>The following algorithm uses 100000-share volume Renko bars to spot mean reversal opportunities on SPY eith Bollinger Bands. Equal volume bars could provide more equal information in each bar, so the standard deviation and trade opportunities are more credible.</p>
+<p>The following algorithm uses 100,000-share volume Renko bars to spot mean reversal opportunities on SPY with Bollinger Bands. Equal volume bars could provide more equal information in each bar, so the standard deviation and trade opportunities are more credible.</p>
 <div class="section-example-container">
     <pre class="csharp">public class VolumeRenkoBarConsolidatorAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private VolumeRenkoConsolidator _consolidator;
-    // We use a bollinger band to signal mean reversal oppotunities.
+    // We use a Bollinger band to signal mean reversal opportunities.
     private BollingerBands _bbands = new(20, 2, MovingAverageType.Exponential);
 
     public override void Initialize()
@@ -15,13 +15,13 @@
         SetStartDate(2020, 4, 1);
         SetEndDate(2020, 10, 1);
         
-        // Request SPY data to feed to the consolidators and indicators for trade signal generation and trading.
+        // Request SPY data to feed for the consolidators, indicators, and trade signal generation.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
         // Create a 100000-share bar of SPY to obtain more equally-information bar.
         _consolidator = new VolumeRenkoConsolidator(100000m);
 
-        // Subscribe the consolidators to SPY data to automatic updating the indicator.
+        // Subscribe the consolidators to SPY data to automatically update the indicator.
         RegisterIndicator(_spy, _bbands, _consolidator);
         
         // Warm up the indicator for immediate use.
@@ -32,7 +32,7 @@
     {
         if (_bbands.IsReady & slice.Bars.TryGetValue(_spy, out var bar))
         {
-            // Trade the mean reversal by short selling SPY if the current price is above the upper threshold.
+            // Trade the mean reversal by short-selling SPY if the current price exceeds the upper threshold.
             if (bar.Close &gt; _bbands.UpperBand &amp;&amp; !Portfolio[_spy].IsShort)
             {
                 SetHoldings(_spy, -0.5m);
@@ -52,20 +52,20 @@
     }
 }</pre>
     <pre class="python">class VolumeRenkoBarConsolidatorAlgorithm(QCAlgorithm):
-    # We use a bollinger band to signal mean reversal oppotunities.
+    # We use a Bollinger band to signal mean reversal opportunities.
     _bbands = BollingerBands(20, 2, MovingAverageType.EXPONENTIAL)
 
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 4, 1)
         self.set_end_date(2020, 10, 1)
         
-        # Request SPY data to feed to the consolidators and indicators for trade signal generation and trading.
+        # Request SPY data to feed for the consolidators, indicators, and trade signal generation.
         self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         # Create a 100000-share bar of SPY to obtain more equally-information bar.
         self._consolidator = VolumeRenkoConsolidator(100000)
 
-        # Subscribe the consolidators to SPY data to automatic updating the indicator.
+        # Subscribe the consolidators to SPY data to automatically update the indicator.
         self.register_indicator(self._spy, self._bbands, self._consolidator)
 
         # Warm up the indicator for immediate use.
