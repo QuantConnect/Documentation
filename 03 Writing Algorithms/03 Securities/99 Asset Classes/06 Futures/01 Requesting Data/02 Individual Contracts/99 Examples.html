@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for requesting individual Future contract data.</p>
+<p>The following examples demonstrate common practices for requesting individual Future contract data.</p>
 
 <h4>Example 1: Add the Front-Month Contract</h4>
-<p>The following algorithm adds the front-month contract, with 2 days buffer, for the E-Mini S&P 500 Future and <a href='/docs/v2/writing-algorithms/indicators/plotting-indicators'>plots</a> the daily closing price of the contract 3 days before month end. Then, trade an EMA cross strategy.</p>
+<p>The following algorithm adds the front-month contract, with a two-day buffer, for the E-Mini S&P 500 Future and <a href='/docs/v2/writing-algorithms/indicators/plotting-indicators'>plots</a> the daily closing price of the contract three days before month end. Then, trade an EMA cross strategy.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
@@ -11,7 +11,7 @@
     public override void Initialize()
     {
         SetStartDate(2022, 1, 1);
-        SetEndDate(2022, 7, 1);
+        SetEndDate(2023, 1, 1);
 
         // Request the future underlying data for ATM strike selection.
         _future = AddFuture(
@@ -25,7 +25,7 @@
         // Warm up the indicator for immediate readiness to trade with.
         WarmUpIndicator(_future, _ema, Resolution.Daily);
 
-        // Set a scheduled event to periodically select the option contract.
+        // Set a scheduled event to select the option contract periodically.
         Schedule.On(
             // 3 days offset to select in prior.
             DateRules.MonthEnd(3),
@@ -39,7 +39,7 @@
     {
         // Get all the contracts that are currently tradable.
         var contractSymbols = FutureChainProvider.GetFutureContractList(_future, Time);
-        // Select the front month contract due to liquidity, with a 2-day buffer to avoid volatility.
+        // Select the front-month contract due to liquidity, with a 2-day buffer to avoid volatility.
         var contract = contractSymbols.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(2))
             .MinBy(x =&gt; x.ID.Date);
         // Request the Futures contract for trading.
@@ -80,7 +80,7 @@
         # Warm up the indicator for immediate readiness to trade with.
         self.warm_up_indicator(self._future, self._ema, Resolution.DAILY)
 
-        # Set a scheduled event to periodically select the option contract.
+        # Set a scheduled event to select the option contract periodically.
         self.schedule.on(
             # 3 days offset to select in prior.
             self.date_rules.month_end(3),
@@ -92,7 +92,7 @@
     def select_contract(self) -&gt; None:
         # Get all the contracts that are currently tradable.
         contract_symbols = self.future_chain_provider.get_future_contract_list(self._future, self.time)
-        # Select the front month contract due to liquidity, with a 2-day buffer to avoid volatility.
+        # Select the front-month contract due to liquidity, with a 2-day buffer to avoid volatility.
         contract = min(
             [x for x in contract_symbols if x.id.date &gt;= self.time + timedelta(2)], 
             key=lambda x: x.id.date
