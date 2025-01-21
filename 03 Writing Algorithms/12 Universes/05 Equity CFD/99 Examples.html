@@ -1,1 +1,114 @@
-<p>You can adapt the examples of the <a href='/docs/v2/writing-algorithms/universes/equity/'>Universes > Equity</a> section of this documentation.</p>
+<p>The following examples demonstrate some common practices for implementing Equity CFD's universe.</p>
+
+<h4>Example 1: Short Bottom-Weighted SPY Constituents</h4>
+<p>
+	A subset of the SPY constituents outperform the SPY while many of the constituents underperform the overall index. 
+	In an attempt to exclude the ETF constituents that underperform the index, the following algorithm buys the SPY CFD and shorts the CFD of the 100 constituents in the index with the smallest weight in the ETF.
+</p>
+<p></p>
+<div class="section-example-container">
+    <pre class="csharp">public class EquityCfdUniverseAlgorithm : QCAlgorithm
+{
+    private Symbol _spyCfd;
+    private Dictionary&lt;string, decimal&gt; _etfWeightBySymbol;
+    private Universe _universe;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 6, 1);
+        SetCash(10000000);
+        Settings.MinimumOrderMarginPortfolioPercentage = 0m;
+        // To avoid over-trading and high transaction costs, refilter and rebalance weekly.
+        UniverseSettings.Schedule.On(DateRules.WeekEnd());
+        // Request SPY CFD to trade.
+        _spyCfd = AddCfd("SPY", Resolution.Minute).Symbol;
+        // Add a universe to select the CFD contracts of the SPY constituents.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        _universe = AddUniverse(Universe.ETF(spy, universeFilterFunc: SelectAssets));
+
+        // Create a Scheduled Event to rebalance the portfolio.
+        Schedule.On(
+            DateRules.WeekStart(_spyCfd), 
+            TimeRules.AfterMarketOpen(_spyCfd, 1), 
+            Rebalance
+        );
+    }
+
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    {
+        // Cache the constituent weights in a dictionary for filtering and position sizing.
+        _etfWeightBySymbol = constituents
+            .Where(c =&gt; c.Weight.HasValue)
+            .ToDictionary(c =&gt; c.Symbol.Value, c =&gt; c.Weight.Value);
+        // Select the CFD contracts of the bottom-weighted 100 consituents.
+        // They should have negative excess return.
+        return _etfWeightBySymbol
+            .OrderBy(x =&gt; x.Value)
+            .Take(100)
+            .Select(x =&gt; QuantConnect.Symbol.Create(x.Key, SecurityType.Cfd, Market.InteractiveBrokers));
+    }
+
+    private void Rebalance()
+    {
+        // Get the ETF weight of all the assets currently in the universe.  
+        var weightBySymbol = _universe.Selected
+            .ToDictionary(symbol =&gt; symbol, symbol =&gt; _etfWeightBySymbol[symbol.Value]);
+        // Buy the SPY CFD to eliminate systematic risk.
+        var targets = new List&lt;PortfolioTarget&gt;
+        {
+            new PortfolioTarget(_spyCfd, 1.0m-weightBySymbol.Sum(kvp =&gt; kvp.Value))
+        };
+        // Sell the CFD of the 100 ETF constituents with the lowest weight due to expected negative excess return.
+        targets.AddRange(weightBySymbol.Select(x =&gt; new PortfolioTarget(x.Key, -x.Value)));
+        // Place orders to rebalance the portfolio.
+        SetHoldings(targets, true);
+    }
+}</pre>
+    <pre class="python">class EquityCfdUniverseAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 12, 31)
+        self.set_cash(10000000)
+        
+        # To avoid over-trading and high transaction costs, refilter and rebalance weekly.
+        self.universe_settings.schedule.on(self.date_rules.week_end())
+        # Request SPY CFD to trade.
+        self._spy_cfd = self.add_cfd("SPY", Resolution.MINUTE).symbol
+        # Add a universe to select the CFD contracts of the SPY constituents.
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self._universe = self.add_universe(self.universe.etf(spy, universe_filter_func=self._select_assets))
+
+        # Create a scheduled event to rebalance the portfolio.
+        self.schedule.on(
+            self.date_rules.week_start(self._spy_cfd), 
+            self.time_rules.after_market_open(self._spy_cfd, 1), 
+            self._rebalance
+        )
+    
+    def _select_assets(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Cache the constituent weights in a dictionary for filtering and position sizing.
+        self._etf_weight_by_symbol = {c.symbol.value: c.weight for c in constituents if c.weight}
+        # Select the CFD contracts of the bottom-weighted 100 consituents.
+        # They should have negative excess return.
+        return [
+            Symbol.create(symbol, SecurityType.CFD, Market.INTERACTIVE_BROKERS) for symbol, _ in sorted(
+                self._etf_weight_by_symbol.items(), 
+                key=lambda x: x[1]
+            )[:100]
+        ]
+
+    def _rebalance(self) -&gt; None:
+        # Get the ETF weight of all the assets currently in the universe.        
+        weight_by_symbol = {
+            symbol: self._etf_weight_by_symbol[symbol.value] for symbol in self._universe.selected
+        }
+        # Buy the SPY CFD to eliminate systematic risk.
+        targets = [PortfolioTarget(self._spy_cfd, 1-sum(weight_by_symbol.values()))]
+        # Sell the CFD of the 100 ETF constituents with the lowest weight due to expected negative excess return.
+        targets.extend(
+            [PortfolioTarget(symbol, -weight) for symbol, weight in weight_by_symbol.items()]
+        )
+        # Place orders to rebalance the portfolio.
+        self.set_holdings(targets, True)</pre>
+</div>
