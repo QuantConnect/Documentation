@@ -1,21 +1,83 @@
 <p>The following examples demonstrate some common Futures universes.</p>
 
 <h4>Example 1: Contracts Expiring On Quarter End</h4>
-<p>If you run strategies with a quarterly trading cycle, you can filter Future contracts that expire only on quarter ends to reduce the need of rollovers.</p>
+<p>To reduce the need of rolling over, you can filter Future contracts that expire only on quarter ends to save transaction costs. The following example trades a simple EMA cross strategy on SP500 EMini Future contracts that expire on quarter ends.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class QuarterlyFuturesAlgorithm : QCAlgorithm
 {
+    private Future _future;
+    private ExponentialMovingAverage _ema;
+
     public override void Initialize()
     {
-        var future = AddFuture("ES");
-        future.SetFilter(futureFilterUniverse => futureFilterUniverse.ExpirationCycle(new int[] { 3, 6, 9, 12 }));
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(10000000);
+
+        // Request ES Future data for trading.
+        _future = AddFuture(
+            Futures.Indices.SP500EMini,
+            extendedMarketHours: true,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest
+        );
+        // To reduce the transaction cost needed for rolling over contracts, we only filter the ones expiring on quarter ends.
+        _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.ExpirationCycle(new int[] { 3, 6, 9, 12 }));
+
+        // Create an EMA indicator to track trend for trade signal generation.
+        _ema = EMA(_future.Symbol, 20, Resolution.Daily);
+        // Warm up the indicator for immediate readiness.
+        WarmUpIndicator(_future.Symbol, _ema, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade based on updated data.
+        if (slice.Bars.TryGetValue(_future.Symbol, out var bar) &amp;&amp; IsMarketOpen(_future.Mapped))
+        {
+            // Trade an EMA cross strategy as trend following.
+            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_future.Symbol].IsLong)
+            {
+                SetHoldings(_future.Mapped, 0.5m);
+            }
+            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_future.Symbol].IsShort)
+            {
+                SetHoldings(_future.Mapped, -0.5m);
+            }
+        }
     }
 }</pre>
 	<pre class="python">class QuarterlyFuturesAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(10000000)
+        
+        # Request ES Future data for trading.
+        self.future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+        )
+        # To reduce the transaction cost needed for rolling over contracts, we only filter the ones expiring on quarter ends.
+        self.future.set_filter(lambda future_filter_universe: future_filter_universe.expiration_cycle([3, 6, 9, 12]))
 
-    def initialize(self):
-        future = self.add_future("ES")
-        future.set_filter(lambda future_filter_universe: future_filter_universe.expiration_cycle([3, 6, 9, 12]))</pre>
+        # Create an EMA indicator to track trend for trade signal generation.
+        self._ema = self.ema(self.future.symbol, 20, Resolution.DAILY)
+        # Warm up the indicator for immediate readiness.
+        self.warm_up_indicator(self.future.symbol, self._ema, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade based on updated data.
+        bar = slice.bars.get(self.future.symbol)
+        if bar and self.is_market_open(self.future.mapped):
+            # Trade an EMA cross strategy as trend following.
+            if bar.close &gt; self._ema.current.value and not self.portfolio[self.future.symbol].is_long:
+                self.set_holdings(self.future.mapped, 0.5)
+            elif bar.close &lt; self._ema.current.value and not self.portfolio[self.future.symbol].is_short:
+                self.set_holdings(self.future.mapped, -0.5)</pre>
 </div>
 
 <h4>Example 2: Contracts Expiring Within One Week</h4>
@@ -26,17 +88,87 @@
 <div class="section-example-container">
 	<pre class="csharp">public class WeeklyFuturesAlgorithm : QCAlgorithm
 {
+    private Future _future;
+    private BollingerBands _bb;
+
     public override void Initialize()
     {
-        var future = AddFuture("ES");
-        future.SetFilter(futureFilterUniverse => futureFilterUniverse.Expiration(0, 7));
+        SetStartDate(2024, 6, 1);
+        SetEndDate(2024, 7, 31);
+        SetCash(10000000);
+
+        // Request ES Future data for trading.
+        _future = AddFuture(
+            Futures.Indices.SP500EMini,
+            extendedMarketHours: true,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest
+        );
+        // Select the contracts expiring within a week since they have the highest liquidity.
+        _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.Expiration(0, 7));
+
+        // Create a BollingerBand indicator to identify extreme prices for trade signal generation.
+        _bb = BB(_future.Symbol, 60, 2);
+        // Warm up the indicator for immediate readiness.
+        WarmUpIndicator(_future.Symbol, _bb, Resolution.Minute);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade based on updated data.
+        if (slice.Bars.TryGetValue(_future.Symbol, out var bar) &amp;&amp; IsMarketOpen(_future.Mapped))
+        {
+            // Trade mean reversal strategy based on Bollinger Band signal.
+            if (bar.Close &gt; _bb.UpperBand &amp;&amp; !Portfolio[_future.Symbol].IsShort)
+            {
+                SetHoldings(_future.Mapped, -0.5m);
+            }
+            else if (bar.Close &lt; _bb.LowerBand &amp;&amp; !Portfolio[_future.Symbol].IsLong)
+            {
+                SetHoldings(_future.Mapped, 0.5m);
+            }
+            else if ((Portfolio[_future.Symbol].IsLong &amp;&amp; bar.Close &gt; _bb.MiddleBand) ||
+            (Portfolio[_future.Symbol].IsShort &amp;&amp; bar.Close &lt; _bb.MiddleBand))
+            {
+                Liquidate(_future.Mapped);
+            }
+        }
     }
 }</pre>
 	<pre class="python">class WeeklyFuturesAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 6, 1)
+        self.set_end_date(2024, 7, 31)
+        self.set_cash(10000000)
+        
+        # Request ES Future data for trading.
+        self.future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST
+        )
+        # Select the contracts expiring within a week since they have the highest liquidity.
+        self.future.set_filter(lambda future_filter_universe: future_filter_universe.expiration(0, 7))
 
-    def initialize(self):
-        future = self.add_future("ES")
-        future.set_filter(lambda future_filter_universe: future_filter_universe.expiration(0, 7))</pre>
+        # Create a BollingerBand indicator to identify extreme prices for trade signal generation.
+        self._bb = self.bb(self.future.symbol, 60, 2)
+        # Warm up the indicator for immediate readiness.
+        self.warm_up_indicator(self.future.symbol, self._bb, Resolution.MINUTE)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade based on updated data.
+        bar = slice.bars.get(self.future.symbol)
+        if bar and self.is_market_open(self.future.mapped):
+            # Trade mean reversal strategy based on Bollinger Band signal.
+            if bar.close &gt; self._bb.upper_band.current.value and not self.portfolio[self.future.symbol].is_short:
+                self.set_holdings(self.future.mapped, -0.5)
+            elif bar.close &lt; self._bb.lower_band.current.value and not self.portfolio[self.future.symbol].is_long:
+                self.set_holdings(self.future.mapped, 0.5)
+            elif (self.portfolio[self.future.symbol].is_short and bar.close &lt; self._bb.middle_band.current.value)\
+            or (self.portfolio[self.future.symbol].is_long and bar.close &gt; self._bb.middle_band.current.value):
+                self.liquidate(self.future.mapped)</pre>
 </div>
 
 <h4>Other Examples</h4>
