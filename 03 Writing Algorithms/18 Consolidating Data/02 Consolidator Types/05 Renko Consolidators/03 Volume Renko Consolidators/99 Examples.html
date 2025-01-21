@@ -18,7 +18,7 @@
         // Request SPY data to feed for the consolidators, indicators, and trade signal generation.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
-        // Create a 100000-share bar of SPY to obtain more equally-information bar.
+        // Create a 100,000-share bar of SPY to obtain a more equally-informed bar.
         _consolidator = new VolumeRenkoConsolidator(100000m);
 
         // Subscribe the consolidators to SPY data to automatically update the indicator.
@@ -62,7 +62,7 @@
         # Request SPY data to feed for the consolidators, indicators, and trade signal generation.
         self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
-        # Create a 100000-share bar of SPY to obtain more equally-information bar.
+        # Create a 100,000-share bar of SPY to obtain a more equally-informed bar.
         self._consolidator = VolumeRenkoConsolidator(100000)
 
         # Subscribe the consolidators to SPY data to automatically update the indicator.
@@ -78,10 +78,10 @@
             middle_band = self._bbands.middle_band.current.value
             lower_band = self._bbands.lower_band.current.value
 
-            # Trade the mean reversal by short selling SPY if the current price is above the upper threshold.
+            # Trade the mean reversal by short-selling SPY if the current price exceeds the upper threshold.
             if bar.close &gt; upper_band and not self.portfolio[self._spy].is_long:
                 self.set_holdings(self._spy, -0.5)
-            # Trade the mean reversal by buying SPY if the current price is below the lower threshold.
+            # Trade the mean reversal by buying SPY if the price is below the lower threshold.
             elif bar.close &lt; lower_band and not self.portfolio[self._spy].is_short:
                 self.set_holdings(self._spy, 0.5)
             # Exit position if the price is mean-reverted that crosses the EMA reference.
