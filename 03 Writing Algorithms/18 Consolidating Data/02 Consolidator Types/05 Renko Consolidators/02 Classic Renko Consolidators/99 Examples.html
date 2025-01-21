@@ -1,4 +1,128 @@
-  <div class="example-fieldset"> 
+<p>The following examples demonstrate some common practices for implementing classic renko consolidator.</p>
+
+<h4>Example 1: 10 Dollar Bar Range SMA Cross</h4>
+<p>The following algorithm creates a dollar bar for SPY. Then, for each 10-dollar bar, we find their range (high - low) and feed to an SMA indicator, such that we obtain a trend indicator of the range of SPY. We trade VXX as the proxy of the SPY volatility based on the trend of the range SMA.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class ClassicRenkoBarConsolidatorAlgorithm : QCAlgorithm
+{
+    private Symbol _spy, _vxx;
+    private ClassicRenkoConsolidator _consolidator;
+    private SimpleMovingAverage _sma = new(10);
+    private decimal _high = 0m, _low = 10000m;
+    private int _count = 0;
+
+    public override void Initialize()
+    {
+        SetStartDate(2022, 3, 1);
+        SetEndDate(2022, 6, 1);
+        
+        // Request SPY data to feed the consolidators and indicators for trade signal generation.
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+        // Request VXX data for trading.
+        _vxx = AddEquity("VXX", Resolution.Minute).Symbol;
+
+        // Create a dollar bar of SPY to track the volatility.
+        _consolidator = new ClassicRenkoConsolidator(1);
+        _consolidator.DataConsolidated += OnConsolidated;
+
+        // Subscribe the consolidators to SPY data for automatic updating.
+        SubscriptionManager.AddConsolidator(_spy, _consolidator);
+
+        _sma.Window.Size = 2;
+        SetWarmUp(100);
+    }
+
+    private void OnConsolidated(object sender, TradeBar bar)
+    {
+        // Update the SPY range of the current batch.
+        _high = Math.Max(_high, bar.High);
+        _low = Math.Min(_low, bar.Low);
+        _count++;
+
+        // Update SMA of SPY range of the last 10 Renko bars.
+        if (_count &gt;= 10)
+        {
+            _sma.Update(bar.EndTime, _high - _low);
+            // Reset high and low.
+            _high = 0m;
+            _low = 10000m;
+            _count = 0;
+        }
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_sma.IsReady)
+        {
+            // If the range trend is increasing, buy VXX as a proxy for the increase in volatility.
+            if (_sma &gt; _sma.Previous &amp;&amp; !Portfolio[_vxx].IsLong)
+            {
+                SetHoldings(_vxx, 0.5m);
+            }
+            // If the range trend is decreasing, sell VXX as a proxy for decreasing volatility.
+            else if (_sma &lt; _sma.Previous &amp;&amp; !Portfolio[_vxx].IsShort)
+            {
+                SetHoldings(_vxx, -0.5m);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class ClassicRenkoBarConsolidatorAlgorithm(QCAlgorithm):
+    _high = 0
+    _low = 10000
+    _count = 0
+    _sma = SimpleMovingAverage(10)
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 3, 1)
+        self.set_end_date(2022, 6, 1)
+        
+        # Request SPY data to feed the consolidators and indicators for trade signal generation.
+        self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+        # Request VXX data for trading.
+        self._vxx = self.add_equity("VXX", Resolution.MINUTE).symbol
+
+        # Create a dollar bar of SPY to track the volatility.
+        self._consolidator = ClassicRenkoConsolidator(1)
+        self._consolidator.data_consolidated += self.on_consolidated
+
+        # Subscribe the consolidators to SPY data for automatic updating.
+        self.subscription_manager.add_consolidator(self._spy, self._consolidator)
+
+        self._sma.window.size = 2;
+        self.set_warm_up(100)
+
+    def on_consolidated(self, sender: object, bar: TradeBar) -&gt; None:
+        # Update the SPY range of the current batch.
+        self._high = max(self._high, bar.high)
+        self._low = min(self._low, bar.low)
+        self._count += 1
+
+        # Update SMA of SPY range of the last 10 Renko bars.
+        if self._count &gt;= 10:
+            self._sma.update(bar.end_time, self._high - self._low)
+
+            # Reset high and low.
+            self._high = 0
+            self._low = 10000
+            self._count = 0
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self._sma.is_ready:
+            current = self._sma.current.value
+            previous = self._sma.previous.value
+
+            # If the range trend increases, buy VXX as a proxy for the increasing volatility.
+            if current &gt; previous and not self.portfolio[self._vxx].is_long:
+                self.set_holdings(self._vxx, 0.5)
+            # If the range trend decreases, sell VXX as a proxy for decreasing volatility.
+            elif current &lt; previous and not self.portfolio[self._vxx].is_short:
+                self.set_holdings(self._vxx, -0.5)</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+<div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py" target="_BLANK">
