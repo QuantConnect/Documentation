@@ -1,4 +1,99 @@
-  <div class="example-fieldset"> 
+<p>The following examples demonstrate common practices for implementing volume renko consolidator.</p>
+
+<h4>Example 1: Bollinger Bands From Volume Renko Bar</h4>
+<p>The following algorithm uses 100,000-share volume Renko bars to spot mean reversal opportunities on SPY with Bollinger Bands. Equal volume bars could provide more equal information in each bar, so the standard deviation and trade opportunities are more credible.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class VolumeRenkoBarConsolidatorAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private VolumeRenkoConsolidator _consolidator;
+    // We use a Bollinger band to signal mean reversal opportunities.
+    private BollingerBands _bbands = new(20, 2, MovingAverageType.Exponential);
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 4, 1);
+        SetEndDate(2020, 10, 1);
+        
+        // Request SPY data to feed for the consolidators, indicators, and trade signal generation.
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+
+        // Create a 100,000-share bar of SPY to obtain a more equally-informed bar.
+        _consolidator = new VolumeRenkoConsolidator(100000m);
+
+        // Subscribe the consolidators to SPY data to automatically update the indicator.
+        RegisterIndicator(_spy, _bbands, _consolidator);
+        
+        // Warm up the indicator for immediate use.
+        SetWarmUp(20);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_bbands.IsReady & slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            // Trade the mean reversal by short-selling SPY if the current price exceeds the upper threshold.
+            if (bar.Close &gt; _bbands.UpperBand &amp;&amp; !Portfolio[_spy].IsShort)
+            {
+                SetHoldings(_spy, -0.5m);
+            }
+            // Trade the mean reversal by buying SPY if the current price is below the lower threshold.
+            else if (bar.Close &lt; _bbands.LowerBand &amp;&amp; !Portfolio[_spy].IsLong)
+            {
+                SetHoldings(_spy, 0.5m);
+            }
+            // Exit position if the price is mean-reverted that crosses the EMA reference.
+            else if ((Portfolio[_spy].Quantity &gt; 0 &amp;&amp; bar.Close &gt; _bbands.MiddleBand) ||
+                (Portfolio[_spy].Quantity &lt; 0 &amp;&amp; bar.Close &lt; _bbands.MiddleBand))
+            {
+                Liquidate(_spy);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class VolumeRenkoBarConsolidatorAlgorithm(QCAlgorithm):
+    # We use a Bollinger band to signal mean reversal opportunities.
+    _bbands = BollingerBands(20, 2, MovingAverageType.EXPONENTIAL)
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 4, 1)
+        self.set_end_date(2020, 10, 1)
+        
+        # Request SPY data to feed for the consolidators, indicators, and trade signal generation.
+        self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+
+        # Create a 100,000-share bar of SPY to obtain a more equally-informed bar.
+        self._consolidator = VolumeRenkoConsolidator(100000)
+
+        # Subscribe the consolidators to SPY data to automatically update the indicator.
+        self.register_indicator(self._spy, self._bbands, self._consolidator)
+
+        # Warm up the indicator for immediate use.
+        self.set_warm_up(20)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._spy)
+        if self._bbands.is_ready and bar:
+            upper_band = self._bbands.upper_band.current.value
+            middle_band = self._bbands.middle_band.current.value
+            lower_band = self._bbands.lower_band.current.value
+
+            # Trade the mean reversal by short-selling SPY if the current price exceeds the upper threshold.
+            if bar.close &gt; upper_band and not self.portfolio[self._spy].is_long:
+                self.set_holdings(self._spy, -0.5)
+            # Trade the mean reversal by buying SPY if the price is below the lower threshold.
+            elif bar.close &lt; lower_band and not self.portfolio[self._spy].is_short:
+                self.set_holdings(self._spy, 0.5)
+            # Exit position if the price is mean-reverted that crosses the EMA reference.
+            elif (self.portfolio[self._spy].quantity &gt; 0 and bar.close &gt; middle_band)\
+            or (self.portfolio[self._spy].quantity &lt; 0 and bar.close &lt; middle_band):
+                self.liquidate(self._spy)</pre>
+</div>
+
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
+
+<div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/VolumeRenkoConsolidatorAlgorithm.py" target="_BLANK">
