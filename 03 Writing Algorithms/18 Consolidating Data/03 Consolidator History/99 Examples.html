@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for consolidator history.</p>
 
 <h4>Example 1: Price Action</h4>
-<p>The following algorithm trades breakout price action on SPY 5-minute trade bar. To do so, we need to create a 5-minute trade bar consoldiator and a rolling window to hold 3 trade bars to check if the trade conditions are fulfilled.</p>
+<p>The following algorithm trades breakout price action on the SPY five-minute trade bar. To do so, we must create a five-minute trade bar consolidator and a rolling window to hold 3 trade bars to check if the trade conditions are fulfilled.</p>
 <div class="section-example-container">
     <pre class="csharp">public class ConsolidatorHistoryAlgorithm : QCAlgorithm
 {
@@ -17,11 +17,11 @@
         // Request SPY data for signal generation and trading.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
-        // The breakout is based on 5-minute consolidated trade bar.
+        // The breakout is based on a 5-minute consolidated trade bar.
         var consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
         // Subscribe for automatically updating the consolidator with SPY data.
         SubscriptionManager.AddConsolidator(_spy, consolidator);
-        // Add a consolidator handler to check breakout condition is fulfilled and trade.
+        // Add a consolidator handler to check that the breakout condition is fulfilled and traded.
         consolidator.DataConsolidated += OnConsolidated;
 
         SetWarmUp(TimeSpan.FromDays(1));
@@ -33,11 +33,11 @@
 
         if (_windows.IsReady)
         {
-            // Buy if the the breakout price action fulfilled.
+            // Buy if the breakout price action is fulfilled.
             // 1. Increasing price trend.
             // 2. The last 3 bars are green.
             // 3. The 3rd and 2nd last bars range is decreasing.
-            // 4. The last bar exceed the 2nd last bar by double of the 2nd last bar's range.
+            // 4. The last bar exceeds the 2nd last bar by double the 2nd last bar's range.
             var secondLastRange = _windows[1].Close - _windows[1].Open;
             if (bar.Close &gt; _windows[1].Close &amp;&amp; _windows[1].Close &gt; _windows[2].Close &amp;&amp;
             _windows[2].Close &gt; _windows[2].Open &amp;&amp; _windows[1].Close &gt; _windows[1].Open &amp;&amp; _windows[0].Close &gt; _windows[0].Open &amp;&amp;
@@ -80,11 +80,11 @@
         # Request SPY data for signal generation and trading.
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
-        # The breakout is based on 5-minute consolidated trade bar.
+        # The breakout is based on a 5-minute consolidated trade bar.
         consolidator = TradeBarConsolidator(timedelta(minutes=5))
         # Subscribe for automatically updating the consolidator with SPY data.
         self.subscription_manager.add_consolidator(self.spy, consolidator)
-        # Add a consolidator handler to check breakout condition is fulfilled and trade.
+        # Add a consolidator handler to check that the breakout condition is fulfilled and traded.
         consolidator.data_consolidated += self.on_consolidated
 
         self.set_warm_up(timedelta(15))
@@ -93,11 +93,11 @@
         self.windows.add(bar)
 
         if self.windows.is_ready:
-            # Buy if the the breakout price action fulfilled.
+            # Buy if the breakout price action is fulfilled.
             # 1. Increasing price trend.
             # 2. The last 3 bars are green.
             # 3. The 3rd and 2nd last bars range is decreasing.
-            # 4. The last bar exceed the 2nd last bar by double of the 2nd last bar's range.
+            # 4. The last bar exceeds the 2nd last bar by double the 2nd last bar's range.
             second_last_range = self.windows[1].close - self.windows[1].open
             if bar.close &gt; self.windows[1].close and self.windows[1].close &gt; self.windows[2].close and\
             self.windows[2].close &gt; self.windows[2].open and self.windows[1].close &gt; self.windows[1].open and\
