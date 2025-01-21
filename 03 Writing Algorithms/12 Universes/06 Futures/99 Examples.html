@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common Futures universes.</p>
 
 <h4>Example 1: Contracts Expiring On Quarter End</h4>
-<p>To reduce the need of rolling over, you can filter Future contracts that expire only on quarter ends to save transaction costs. The following example trades a simple EMA cross strategy on SP500 EMini Future contracts that expire on quarter ends.</p>
+<p>To reduce the need for rolling over, you can filter Future contracts that expire only on quarter ends to save transaction costs. The following example trades a simple EMA cross strategy on SP500 EMini Future contracts that expire on quarter ends.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class QuarterlyFuturesAlgorithm : QCAlgorithm
 {
@@ -24,7 +24,7 @@
         // To reduce the transaction cost needed for rolling over contracts, we only filter the ones expiring on quarter ends.
         _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.ExpirationCycle(new int[] { 3, 6, 9, 12 }));
 
-        // Create an EMA indicator to track trend for trade signal generation.
+        // Create an EMA indicator to track trends for trade signal generation.
         _ema = EMA(_future.Symbol, 20, Resolution.Daily);
         // Warm up the indicator for immediate readiness.
         WarmUpIndicator(_future.Symbol, _ema, Resolution.Daily);
@@ -35,7 +35,7 @@
         // Trade based on updated data.
         if (slice.Bars.TryGetValue(_future.Symbol, out var bar) &amp;&amp; IsMarketOpen(_future.Mapped))
         {
-            // Trade an EMA cross strategy as trend following.
+            // Trade an EMA cross strategy to follow the trend.
             if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_future.Symbol].IsLong)
             {
                 SetHoldings(_future.Mapped, 0.5m);
@@ -64,7 +64,7 @@
         # To reduce the transaction cost needed for rolling over contracts, we only filter the ones expiring on quarter ends.
         self.future.set_filter(lambda future_filter_universe: future_filter_universe.expiration_cycle([3, 6, 9, 12]))
 
-        # Create an EMA indicator to track trend for trade signal generation.
+        # Create an EMA indicator to track trends for trade signal generation.
         self._ema = self.ema(self.future.symbol, 20, Resolution.DAILY)
         # Warm up the indicator for immediate readiness.
         self.warm_up_indicator(self.future.symbol, self._ema, Resolution.DAILY)
@@ -73,7 +73,7 @@
         # Trade based on updated data.
         bar = slice.bars.get(self.future.symbol)
         if bar and self.is_market_open(self.future.mapped):
-            # Trade an EMA cross strategy as trend following.
+            # Trade an EMA cross strategy to follow the trend.
             if bar.close &gt; self._ema.current.value and not self.portfolio[self.future.symbol].is_long:
                 self.set_holdings(self.future.mapped, 0.5)
             elif bar.close &lt; self._ema.current.value and not self.portfolio[self.future.symbol].is_short:
@@ -118,7 +118,7 @@
         // Trade based on updated data.
         if (slice.Bars.TryGetValue(_future.Symbol, out var bar) &amp;&amp; IsMarketOpen(_future.Mapped))
         {
-            // Trade mean reversal strategy based on Bollinger Band signal.
+            // Trade a mean-reversal strategy based on Bollinger Band signal.
             if (bar.Close &gt; _bb.UpperBand &amp;&amp; !Portfolio[_future.Symbol].IsShort)
             {
                 SetHoldings(_future.Mapped, -0.5m);
@@ -161,7 +161,7 @@
         # Trade based on updated data.
         bar = slice.bars.get(self.future.symbol)
         if bar and self.is_market_open(self.future.mapped):
-            # Trade mean reversal strategy based on Bollinger Band signal.
+            # Trade a mean-reversal strategy based on Bollinger Band signal.
             if bar.close &gt; self._bb.upper_band.current.value and not self.portfolio[self.future.symbol].is_short:
                 self.set_holdings(self.future.mapped, -0.5)
             elif bar.close &lt; self._bb.lower_band.current.value and not self.portfolio[self.future.symbol].is_long:
