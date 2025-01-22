@@ -1,7 +1,5 @@
-<p>The following examples demonstrate some common practices for universe settings.</p>
-
-<h4>Example 1: Weekly-Updating Liquid Universe</h4>
-<p>The following algorithm demonstrates daily EMA cross, trading on the top 10 most liquid stocks. The universe is set to be updated weekly. Various universe settings have been set to simulate the brokerage environment best and for trading needs.</p>
+<h4>Example <?=$number?>: Weekly-Updating Liquid Universe</h4>
+<p>The following algorithm demonstrates daily EMA cross, trading on the most liquid stocks. The universe is set to be updated weekly. Various universe settings have been set to simulate the brokerage environment best and for trading needs.</p>
 <div class="section-example-container">
     <pre class="csharp">public class UniverseSettingsAlgorithm : QCAlgorithm
 {
@@ -22,8 +20,13 @@
         // We want to trade the EMA with raw price but not altered by splits.
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.SplitAdjusted;
 
+        <? if ($framework) { ?>
+        // Select and trade the top liquid universe.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        <? } else { ?>
         // Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
         AddUniverse(Universe.DollarVolume.Top(10));
+        <? } ?>
     }
 
     public override void OnData(Slice slice)
@@ -80,8 +83,13 @@
         # We want to trade the EMA with raw price but not altered by splits.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.SPLIT_ADJUSTED
 
+        <? if ($framework) { ?>
+        # Select and trade the top liquid universe.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        <? } else { ?>
         # Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
         self.add_universe(self.universe.dollar_volume.top(10))
+        <? } ?>
 
     def on_data(self, slice: Slice) -&gt; None:
         for symbol, bar in slice.bars.items():
