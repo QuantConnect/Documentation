@@ -7,14 +7,16 @@
 {
     private Future _future;
     private ExponentialMovingAverage _ema;
+    // A variable to control the algorithm trading in daily frequency only, since the indicator signal is by daily.
+    private int _day = -1;
 
     public override void Initialize()
     {
-        SetStartDate(2024, 1, 1);
-        SetEndDate(2024, 12, 31);
+        SetStartDate(2024, 3, 1);
+        SetEndDate(2024, 5, 1);
         SetCash(10000000);
 
-        // Request ES Future data for trading.
+        // Request ES Future data for trading. We only use the continuous contract for indicator values.
         _future = AddFuture(
             Futures.Indices.SP500EMini,
             extendedMarketHours: true,
@@ -28,30 +30,37 @@
         _ema = EMA(_future.Symbol, 20, Resolution.Daily);
         // Warm up the indicator for immediate readiness.
         WarmUpIndicator(_future.Symbol, _ema, Resolution.Daily);
+
     }
 
     public override void OnData(Slice slice)
     {
-        // Trade based on updated data.
-        if (slice.Bars.TryGetValue(_future.Symbol, out var bar) &amp;&amp; IsMarketOpen(_future.Mapped))
+        // Get the chain to trade from the filtered contracts.
+        if (_day != slice.Time.Day &amp;&amp; slice.FutureChains.TryGetValue(_future.Symbol, out var chain))
         {
+            // Select the contract with the nearest expiry.
+            var contract = chain.MinBy(x =&gt; x.Expiry);
+
             // Trade an EMA cross strategy to follow the trend.
-            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_future.Symbol].IsLong)
+            var quantity = Portfolio[_future.Symbol].Quantity;
+            if (contract.LastPrice &gt; _ema &amp;&amp; quantity &lt;= 0)
             {
-                SetHoldings(_future.Mapped, 0.5m);
+                MarketOrder(contract.Symbol, 1-quantity);
             }
-            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_future.Symbol].IsShort)
+            else if (contract.LastPrice &lt; _ema &amp;&amp; quantity &gt;= 0)
             {
-                SetHoldings(_future.Mapped, -0.5m);
+                MarketOrder(contract.Symbol, -1-quantity);
             }
+
+            _day = slice.Time.Day;
         }
     }
 }</pre>
 	<pre class="python">class QuarterlyFuturesAlgorithm(QCAlgorithm):
     
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 1, 1)
-        self.set_end_date(2024, 12, 31)
+        self.set_start_date(2024, 3, 1)
+        self.set_end_date(2024, 5, 1)
         self.set_cash(10000000)
         
         # Request ES Future data for trading.
@@ -69,15 +78,24 @@
         # Warm up the indicator for immediate readiness.
         self.warm_up_indicator(self.future.symbol, self._ema, Resolution.DAILY)
 
+        # A variable to control the algorithm trading in daily frequency only, since the indicator signal is by daily.
+        self._day = -1
+
     def on_data(self, slice: Slice) -&gt; None:
-        # Trade based on updated data.
-        bar = slice.bars.get(self.future.symbol)
-        if bar and self.is_market_open(self.future.mapped):
+        # Get the chain to trade from the filtered contracts.
+        chain = slice.future_chains.get(self.future.symbol)
+        if self._day != slice.time.day and chain:
+            # Select the contract with the nearest expiry.
+            contract = min(chain, key=lambda x: x.expiry)
+
             # Trade an EMA cross strategy to follow the trend.
-            if bar.close &gt; self._ema.current.value and not self.portfolio[self.future.symbol].is_long:
-                self.set_holdings(self.future.mapped, 0.5)
-            elif bar.close &lt; self._ema.current.value and not self.portfolio[self.future.symbol].is_short:
-                self.set_holdings(self.future.mapped, -0.5)</pre>
+            quantity = self.portfolio[self.future.symbol].quantity
+            if contract.last_price &gt; self._ema.current.value and quantity &lt;= 0:
+                self.market_order(contract.symbol, 1-quantity)
+            elif contract.last_price &lt; self._ema.current.value and quantity &gt;= 0:
+                self.market_order(contract.symbol, -1-quantity)
+            
+            self._day = slice.time.day</pre>
 </div>
 
 <h4>Example 2: Contracts Expiring Within One Week</h4>
@@ -94,10 +112,10 @@
     public override void Initialize()
     {
         SetStartDate(2024, 6, 1);
-        SetEndDate(2024, 7, 31);
-        SetCash(10000000);
+        SetEndDate(2024, 7, 1);
+        SetCash(100000000);
 
-        // Request ES Future data for trading.
+        // Request ES Future data for trading. The continuous contract data is only used for indicator values.
         _future = AddFuture(
             Futures.Indices.SP500EMini,
             extendedMarketHours: true,
@@ -116,21 +134,25 @@
     public override void OnData(Slice slice)
     {
         // Trade based on updated data.
-        if (slice.Bars.TryGetValue(_future.Symbol, out var bar) &amp;&amp; IsMarketOpen(_future.Mapped))
+        if (slice.FutureChains.TryGetValue(_future.Symbol, out var chain))
         {
+            // Select the contract with the nearest expiry.
+            var contract = chain.MinBy(x =&gt; x.Expiry);
+
             // Trade a mean-reversal strategy based on Bollinger Band signal.
-            if (bar.Close &gt; _bb.UpperBand &amp;&amp; !Portfolio[_future.Symbol].IsShort)
+            var quantity = Portfolio[_future.Symbol].Quantity;
+            if (contract.LastPrice &gt; _bb.UpperBand &amp;&amp; quantity &gt;= 0)
             {
-                SetHoldings(_future.Mapped, -0.5m);
+                MarketOrder(contract.Symbol, -1-quantity);
             }
-            else if (bar.Close &lt; _bb.LowerBand &amp;&amp; !Portfolio[_future.Symbol].IsLong)
+            else if (contract.LastPrice &lt; _bb.LowerBand &amp;&amp; quantity &lt;= 0)
             {
-                SetHoldings(_future.Mapped, 0.5m);
+                MarketOrder(contract.Symbol, 1-quantity);
             }
-            else if ((Portfolio[_future.Symbol].IsLong &amp;&amp; bar.Close &gt; _bb.MiddleBand) ||
-            (Portfolio[_future.Symbol].IsShort &amp;&amp; bar.Close &lt; _bb.MiddleBand))
+            else if ((Portfolio[_future.Symbol].IsLong &amp;&amp; contract.LastPrice &gt; _bb.MiddleBand) ||
+            (Portfolio[_future.Symbol].IsShort &amp;&amp; contract.LastPrice &lt; _bb.MiddleBand))
             {
-                Liquidate(_future.Mapped);
+                Liquidate(contract.Symbol);
             }
         }
     }
@@ -139,10 +161,10 @@
     
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 6, 1)
-        self.set_end_date(2024, 7, 31)
-        self.set_cash(10000000)
+        self.set_end_date(2024, 7, 1)
+        self.set_cash(100000000)
         
-        # Request ES Future data for trading.
+        # Request ES Future data for trading. The continuous contract data is only used for indicator values.
         self.future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
             extended_market_hours=True,
@@ -159,16 +181,20 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         # Trade based on updated data.
-        bar = slice.bars.get(self.future.symbol)
-        if bar and self.is_market_open(self.future.mapped):
+        chain = slice.future_chain.get(self.future.symbol)
+        if chain:
+            # Select the contract with the nearest expiry.
+            contract = min(chain, key=lambda x: x.expiry)
+
             # Trade a mean-reversal strategy based on Bollinger Band signal.
-            if bar.close &gt; self._bb.upper_band.current.value and not self.portfolio[self.future.symbol].is_short:
-                self.set_holdings(self.future.mapped, -0.5)
-            elif bar.close &lt; self._bb.lower_band.current.value and not self.portfolio[self.future.symbol].is_long:
-                self.set_holdings(self.future.mapped, 0.5)
-            elif (self.portfolio[self.future.symbol].is_short and bar.close &lt; self._bb.middle_band.current.value)\
-            or (self.portfolio[self.future.symbol].is_long and bar.close &gt; self._bb.middle_band.current.value):
-                self.liquidate(self.future.mapped)</pre>
+            quantity = self.portfolio[self.future.symbol].quantity
+            if contract.last_price &gt; self._bb.upper_band.current.value and quantity >= 0:
+                self.market_order(contract.symbol, -1-quantity)
+            elif contract.last_price &lt; self._bb.lower_band.current.value and quantity <= 0:
+                self.market_order(contract.symbol, 1-quantity)
+            elif (self.portfolio[self.future.symbol].is_short and contract.last_price &lt; self._bb.middle_band.current.value)\
+            or (self.portfolio[self.future.symbol].is_long and contract.last_price &gt; self._bb.middle_band.current.value):
+                self.liquidate(contract.symbol)</pre>
 </div>
 
 <h4>Other Examples</h4>
