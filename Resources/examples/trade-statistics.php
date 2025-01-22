@@ -1,6 +1,4 @@
-<p>The following examples demonstrate common practices for using trade statistics.</p>
-
-<h4>Example 1: Kelly Criterion Sizing Using Previous Trades</h4>
+<h4>Example <?=$number?>: Kelly Criterion Sizing Using Previous Trades</h4>
 <p>The following algorithm uses the previous trades to update the win probability and expected return of each trade of the EMA cross strategy of SPY, by the concept of Bayes Theorem. The updated figures are used for position sizing through Kelly Criterion.</p>
 <div class="section-example-container">
     <pre class="csharp">public class TradeStatisticsAlgorithm : QCAlgorithm
