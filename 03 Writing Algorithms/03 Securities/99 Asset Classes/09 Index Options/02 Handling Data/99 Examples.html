@@ -40,26 +40,27 @@
 
     public override void OnData(Slice slice)
     {
-        // Only focus on a filtered list of option contracts to trade.
-        foreach (var contract in _contracts)
+        // Only focus on a filtered list of option contracts to trade and select the ATM call.
+        var contract = _contracts.Where(x =&gt; x.Right == OptionRight.Call)
+            .MinBy(x =&gt; Math.Abs(x.UnderlyingLastPrice - x.Strike));
+        
+        // Trade based on the updated data.
+        if (slice.QuoteBars.TryGetValue(contract, out var quote) &amp;&amp; !Portfolio.Invested)
         {
-            if (slice.QuoteBars.TryGetValue(contract, out var quote))
+            if (quote.Bid != null &amp;&amp; quote.Ask != null)
             {
-                if (quote.Bid != null &amp;&amp; quote.Ask != null)
+                // If the last trading price is close to the asking price, the selling pressure is higher, so we are short.
+                var diff = quote.Ask.Close - 2 * quote.Close + quote.Bid.Close;
+                if (diff &lt; 0)
                 {
-                    // If the last trading price is close to the asking price, the selling pressure is higher, so we are short.
-                    var diff = quote.Ask.Close - 2 * quote.Close + quote.Bid.Close;
-                    if (diff &lt; 0)
-                    {
-                        SetHoldings(contract, -0.05m);
-                    }
-                    else
-                    {
-                        SetHoldings(contract, 0.05m);
-                    }
+                    SetHoldings(contract, -0.05m);
+                }
+                else
+                {
+                    SetHoldings(contract, 0.05m);
                 }
             }
-        }
+            }
     }
 }</pre>
     <pre class="python">class IndexOptionHandlingDataAlgorithm(QCAlgorithm):
@@ -92,16 +93,21 @@
             abs(x.underlying_last_price - x.strike) &lt; 10]
     
     def on_data(self, slice: Slice) -&gt; None:
-        # Only focus on a filtered list of option contracts to trade.
-        for contract in self.contracts:
-            quote = slice.quote_bars.get(contract)
-            if quote and quote.bid is not None and quote.ask is not None:
-                # if the last trading price is close to the ask price, the sell pressure is higher, so we short.
-                diff = quote.ask.close - 2 * quote.close + quote.bid.close
-                if diff &lt; 0:
-                    self.set_holdings(contract, -0.05)
-                else:
-                    self.set_holdings(contract, 0.05)</pre>
+        # Only focus on a filtered list of option contracts to trade and select the ATM call.
+        contract = sorted(
+            [x for x in self.contracts if x.right == OptionRight.CALL],
+            key=lambda x: abs(x.underlying_last_price - x.strike)
+        )[0]
+        
+        # Trade based on the updated data.
+        quote = slice.quote_bars.get(contract)
+        if quote and quote.bid is not None and quote.ask is not None and not self.portfolio.invested:
+            # if the last trading price is close to the ask price, the sell pressure is higher, so we short.
+            diff = quote.ask.close - 2 * quote.close + quote.bid.close
+            if diff &lt; 0:
+                self.set_holdings(contract, -0.05)
+            else:
+                self.set_holdings(contract, 0.05)</pre>
 </div>
 
 <h4>Example 2: Supply-Demand Pressure Of Universe</h4>
@@ -129,18 +135,19 @@
         // Only want to obtain the option chain of the selected symbol.
         if (slice.OptionChains.TryGetValue(_symbol, out var chain))
         {
-            foreach (var contract in chain)
+            // Select the ATM call to trade.
+            var contract = chain.Where(x =&gt; x.Right == OptionRight.Call)
+                .MinBy(x =&gt; Math.Abs(x.UnderlyingLastPrice - x.Strike));
+
+            // If the last trading price is close to the asking price, the selling pressure is higher, so we are short.
+            var diff = contract.AskPrice - 2m * contract.LastPrice + contract.BidPrice;
+            if (diff &lt; 0)
             {
-                // If the last trading price is close to the asking price, the selling pressure is higher, so we are short.
-                var diff = contract.AskPrice - 2m * contract.LastPrice + contract.BidPrice;
-                if (diff &lt; 0)
-                {
-                    SetHoldings(contract, 0.05m);
-                }
-                else
-                {
-                    SetHoldings(contract, -0.05m);
-                }
+                SetHoldings(contract, 0.05m);
+            }
+            else
+            {
+                SetHoldings(contract, -0.05m);
             }
         }
     }
@@ -163,13 +170,18 @@
         if not chain:
             return
     
-        for contract in chain:
-            # If the last trading price is close to the asking price, the selling pressure is higher, so we are short.
-            diff = contract.ask_price - 2 * contract.last_price + contract.bid_price
-            if diff &lt; 0:
-                self.set_holdings(contract, -0.05)
-            else:
-                self.set_holdings(contract, 0.05)</pre>
+        # Select the ATM call to trade.
+        contract = sorted(
+            [x for x in chain if x.right == OptionRight.CALL],
+            key=lambda x: abs(x.underlying_last_price - x.strike)
+        )[0]
+
+        # If the last trading price is close to the asking price, the selling pressure is higher, so we are short.
+        diff = contract.ask_price - 2 * contract.last_price + contract.bid_price
+        if diff &lt; 0:
+            self.set_holdings(contract, -0.05)
+        else:
+            self.set_holdings(contract, 0.05)</pre>
 </div>
 
 <h4>Example 3: Get Instant Delta</h4>
