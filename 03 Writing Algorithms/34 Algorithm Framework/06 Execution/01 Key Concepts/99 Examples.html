@@ -394,21 +394,20 @@ class BracketOrder:
 
                     if (quantity != 0)
                     {
-                        if (security.BuyingPowerModel.AboveMinimumOrderMarginPortfolioPercentage(security, quantity,
+                        if (BuyingPowerModelExtensions.AboveMinimumOrderMarginPortfolioPercentage(security.BuyingPowerModel, security, quantity,
                             algorithm.Portfolio, algorithm.Settings.MinimumOrderMarginPortfolioPercentage))
                         {
                             // Cache the price at signal emission to compare if the current price is more favorable.
                             if (!_lagPriceBySymbol.TryGetValue(symbol, out var lastPrice))
                             {
                                 var history = algorithm.History&lt;TradeBar&gt;(symbol, 1, Resolution.Daily);
-                                _lagPriceBySymbol[symbol] = history.Last().Close;
+                                _lagPriceBySymbol[symbol] = lastPrice = history.Last().Close;
                             }
                             
                             // Only order if the price is more favorable than the price at signal emission.
                             if ((security.Price &lt;= lastPrice &amp;&amp; quantity &gt; 0) || (security.Price &gt;= lastPrice &amp;&amp; quantity &lt; 0))
                             {
                                 algorithm.MarketOrder(security, quantity);
-                                _lagPriceBySymbol.Remove(symbol);
                             }
                         }
                         else if (!PortfolioTarget.MinimumOrderMarginPercentageWarningSent.HasValue)
@@ -440,7 +439,7 @@ class BracketOrder:
         self.set_execution(FavorableExecutionModel())
 
 class FavorableExecutionModel(ExecutionModel):
-    def __init__(self, take_profit: float = 0.1, stop_loss: float = 0.05) -&gt; None:
+    def __init__(self) -&gt; None:
         self.targets_collection = PortfolioTargetCollection()
         self.lag_price_by_symbol = {}
 
