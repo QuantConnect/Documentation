@@ -286,13 +286,13 @@ class RegressionTests:
                         print(f"No result json returned for {file_path} CSharp Example {i+1}, Skipping...")
                         continue
                     
-                    existing_script = div.find_all('script', class_='csharp-result')
-                    new_json = json.dumps(new_result)
+                    existing_script = div.find_all('script', class_='csharp-result')[0]
+                    new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
 
                     if existing_script:
                         # Compare existing result with new result in validate mode
                         if VALIDATE_MODE:
-                            self.validation(file_path, i, "CSharp", existing_script, new_json)
+                            self.validation(file_path, i, "CSharp", existing_script.text.strip(), new_json)
                         # Overwrite the existing result if not validate mode
                         else:
                             existing_script.string = new_json
@@ -311,13 +311,13 @@ class RegressionTests:
                         print(f"No result json returned for {file_path} Python Example {i+1}, Skipping...")
                         continue
                     
-                    existing_script = div.find_all('script', class_='python-result')
-                    new_json = json.dumps(new_result)
+                    existing_script = div.find_all('script', class_='python-result')[0]
+                    new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
 
                     if existing_script:
                         # Compare existing result with new result in validate mode
                         if VALIDATE_MODE:
-                            self.validation(file_path, i, "Python", existing_script, new_json)
+                            self.validation(file_path, i, "Python", existing_script.text.strip(), new_json)
                         # Overwrite the existing result if not validate mode
                         else:
                             existing_script.string = new_json
@@ -326,7 +326,7 @@ class RegressionTests:
                         if VALIDATE_MODE:
                             print(f"{file_path} Example {i+1}, Python: No existing regression test result exists, writing new results...")
                         new_script = soup.new_tag('script', type='text')
-                        new_script['class'] = 'csharp-result'
+                        new_script['class'] = 'python-result'
                         new_script.string = new_json
                         pre.insert_after(new_script)
 
