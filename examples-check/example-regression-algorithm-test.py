@@ -292,7 +292,7 @@ class RegressionTests:
                     if existing_script:
                         # Compare existing result with new result in validate mode
                         if VALIDATE_MODE:
-                            self.validation(file_path, i, "CSharp", existing_script.text.strip(), new_json)
+                            self.validation(file_path, i+1, "CSharp", existing_script.text.strip(), new_json)
                         # Overwrite the existing result if not validate mode
                         else:
                             existing_script.string = new_json
@@ -317,7 +317,7 @@ class RegressionTests:
                     if existing_script:
                         # Compare existing result with new result in validate mode
                         if VALIDATE_MODE:
-                            self.validation(file_path, i, "Python", existing_script.text.strip(), new_json)
+                            self.validation(file_path, i+1, "Python", existing_script.text.strip(), new_json)
                         # Overwrite the existing result if not validate mode
                         else:
                             existing_script.string = new_json
