@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from multiprocessing import Pool
 
 ROOT_DIR = "."
-VALIDATE_MODE = False
+VALIDATE_MODE = True
 
 BASE_API = "https://www.quantconnect.com/api/v2"
 USER_ID = os.environ["DOCS_REGRESSION_TEST_USER_ID"]
@@ -264,7 +264,7 @@ class RegressionTests:
         )
         
     def validation(self, file_path, example_num, language, existing_script, new_json):
-        for j, (existing, new) in enumerate(zip(existing_script.string.split('\n'), new_json.split('\n'))):
+        for j, (existing, new) in enumerate(zip(existing_script.split('\n'), new_json.split('\n'))):
             if existing.strip() != new.strip():
                 print(f"""
     Regression Test Failed:
