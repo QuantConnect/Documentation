@@ -2,7 +2,7 @@
 
 <h4>Example 1: Store EMA Indicator</h4>
 <p>The following example implements a trend-following strategy using the EMA indicator for the top 20 liquid equities. It uses duck typing to store the EMA indicator in each <a href="/docs/v2/writing-algorithms/securities/key-concepts">Security object</a>, so the indicator is discarded together with the <code>Security</code> when it is removed from the universe.</p>
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
     <pre class="csharp">public class DuckTypingAlgorithm : QCAlgorithm
 {
     private Universe _universe;
@@ -46,7 +46,7 @@
             // Liquidate if it is no longer in the top 50 liquidity stocks.
             Liquidate(removed.Symbol);
             // Release resources that update automatic indicators
-            DeregisterIndicator(removed.Get<ExponentialMovingAverage>("ema"));
+            DeregisterIndicator(removed.Get&lt;ExponentialMovingAverage&gt;("ema"));
         }
         
         foreach (var added in changes.AddedSecurities)

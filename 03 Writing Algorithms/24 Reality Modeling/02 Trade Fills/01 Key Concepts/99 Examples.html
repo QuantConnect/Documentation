@@ -2,11 +2,11 @@
 
 <h4>Example 1: Volume Share Fill</h4>
 <p>The following algorithm longs the top 10 liquid constituents and short the bottom 10 liquid constituents of QQQ. To realistically fill the less liquid stocks, we implement a fill model that only fills with at most 30% of the previous second bar.</p>
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
     <pre class="csharp">public class VolumeShareSlippageModelAlgorithm : QCAlgorithm
 {
-    private List<Symbol> _longs = new();
-    private List<Symbol> _shorts = new();
+    private List&lt;Symbol&gt; _longs = new();
+    private List&lt;Symbol&gt; _shorts = new();
 
     public override void Initialize()
     {
@@ -23,7 +23,7 @@
         // Add universe to trade on the most and least liquid stocks among QQQ constituents.
         AddUniverse(
             // First, we select all QQQ constituents for the next filter on liquidity.
-            Universe.ETF(qqq, Market.USA, UniverseSettings, (constituents) => constituents.Select(c => c.Symbol)),
+            Universe.ETF(qqq, Market.USA, UniverseSettings, (constituents) =&gt; constituents.Select(c =&gt; c.Symbol)),
             FundamentalSelection
         );
 
@@ -35,16 +35,16 @@
         );
     }
 
-    private IEnumerable<Symbol> FundamentalSelection(IEnumerable<Fundamental> fundamentals)
+    private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-        var sortedByDollarVolume = fundamentals.OrderBy(x => x.DollarVolume).ToList();
+        var sortedByDollarVolume = fundamentals.OrderBy(x =&gt; x.DollarVolume).ToList();
         // Add the 10 most liquid stocks to the universe to long later.
         _longs = sortedByDollarVolume.TakeLast(10)
-            .Select(x => x.Symbol)
+            .Select(x =&gt; x.Symbol)
             .ToList();
         // Add the 10 least liquid stocks to the universe to short later.
         _shorts = sortedByDollarVolume.Take(10)
-            .Select(x => x.Symbol)
+            .Select(x =&gt; x.Symbol)
             .ToList();
 
         return _longs.Union(_shorts);
@@ -54,8 +54,8 @@
     {
         // Equally invest in the selected stocks to dissipate capital risk evenly.
         // Dollar neutral of long and short stocks to eliminate systematic risk, only capitalize the popularity gap.
-        var targets = _longs.Select(symbol => new PortfolioTarget(symbol, 0.05m)).ToList();
-        targets.AddRange(_shorts.Select(symbol => new PortfolioTarget(symbol, -0.05m)).ToList());
+        var targets = _longs.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)).ToList();
+        targets.AddRange(_shorts.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)).ToList());
 
         // Liquidate the stocks that are not the most and least popular to release funds for higher expected return trades.
         SetHoldings(targets, liquidateExistingHoldings: true);
@@ -65,7 +65,7 @@
     {
         private readonly QCAlgorithm _algorithm;
         private readonly decimal _maximumRatio;
-        private readonly Dictionary<int, decimal> _absoluteRemainingByOrderId = new();
+        private readonly Dictionary&lt;int, decimal&gt; _absoluteRemainingByOrderId = new();
 
         public VolumeShareFillModel(QCAlgorithm algorithm, decimal maximumRatio = 0.3m)
             : base()

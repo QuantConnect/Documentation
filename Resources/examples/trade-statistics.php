@@ -1,6 +1,6 @@
 <h4>Example <?=$number?>: Kelly Criterion Sizing Using Previous Trades</h4>
 <p>The following algorithm uses the previous trades to update the win probability and expected return of each trade of the EMA cross strategy of SPY, by the concept of Bayes Theorem. The updated figures are used for position sizing through Kelly Criterion.</p>
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
     <pre class="csharp">public class TradeStatisticsAlgorithm : QCAlgorithm
 {
     private Symbol _spy;

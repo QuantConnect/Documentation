@@ -8,7 +8,7 @@
     The algorithm then uses these consolidated daily bars to place take profit and stop loss orders as a function of the daily <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/average-true-range">Average True Range</a>.
 </p>
 
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
 <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
     private Future _future;
@@ -48,7 +48,7 @@
     private CalendarInfo FutureTradingHour(DateTime datetime)
     {
         // Set the open time of the bar to be 6 PM EST.
-        var start = datetime.Date.AddHours(datetime.Hour < 18 ? -6 : 18);
+        var start = datetime.Date.AddHours(datetime.Hour &lt; 18 ? -6 : 18);
         // Set the close time of the bar to be 5 PM EST the next day, which is 23 hours later.
         return new CalendarInfo(start, TimeSpan.FromHours(23));
     }
@@ -81,7 +81,7 @@
         else if (Portfolio.Invested && slice.Bars.TryGetValue(_future.Symbol, out var bar))
         {
             // Check if the current price is above profit taker or below stop loss.
-            if (bar.Close > _takeProfitPrice || bar.Close < _stopLossPrice)
+            if (bar.Close &gt; _takeProfitPrice || bar.Close &lt; _stopLossPrice)
             {
                 // Exit the position.
                 Liquidate();
@@ -165,7 +165,7 @@
 <h4>Example 2: Create Daily <code>QuoteBar</code> Objects That Start at 5 PM</h4>
 <p>The following algorithm consolidates minute resolution Forex data into daily <code>QuoteBar</code> objects that open and close at 5 PM Eastern Time.</p>
 
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
     <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
     private dynamic _pair;
@@ -198,7 +198,7 @@
     {
         // Set the start of the bar to be 5 PM ET.
         var start = dt.Date;
-        if (dt.Hour < 17)
+        if (dt.Hour &lt; 17)
         {
             start = start.AddHours(-7);
         }
@@ -224,7 +224,7 @@
 }</pre>
     <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
     
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
         # Add the USDJPY Forex pair.
         self._pair = self.add_forex("USDJPY")
@@ -244,17 +244,17 @@
             consolidator.update(bar)
     
     # Define the consolidation period.
-    def _daily_forex_consolidation_period(self, dt: datetime) -> CalendarInfo:
+    def _daily_forex_consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
         # Set the start of the bar to be 5 PM ET.
         start = dt.replace(hour=0, minute=0, second=0, microsecond=0)
-        if dt.hour < 17:
+        if dt.hour &lt; 17:
             start -= timedelta(hours=7)
         else:
             start += timedelta(hours=17)
         # Set the end of the bar to be 5 PM ET the next day.
         return CalendarInfo(start, timedelta(1))
 
-    def _consolidation_handler(self, sender: object, consolidated_bar: QuoteBar) -> None:
+    def _consolidation_handler(self, sender: object, consolidated_bar: QuoteBar) -&gt; None:
         # Wait until the indicator is ready and the algorithm is running.
         if not self._pair.ema.is_ready or self.is_warming_up:
             return
@@ -266,7 +266,7 @@
 <h4>Example 3: Monthly Candlesticks</h4>
 <p>The following algorithm consolidates minute-resolution data into monthly <code>TradeBar</code> objects and then <a href='/docs/v2/writing-algorithms/charting#06-Plot-Candlestick'>plots them as candlesticks</a>.</p>
 
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
     <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -279,7 +279,7 @@
         // However, you can acomplish the same thing with a custom period:
         var consolidator = new TradeBarConsolidator(CustomMonthly);
         // Add a consolidation handler that plots the monthly bars as candlesticks.
-        consolidator.DataConsolidated += (_, bar) => Plot(
+        consolidator.DataConsolidated += (_, bar) =&gt; Plot(
             "Monthly Candlestick", symbol.Value, bar.Open, bar.High, bar.Low, bar.Close
         );
         // Register the consolidator for automatic updates.
@@ -300,7 +300,7 @@
 
 class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
     
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         # Add an asset.
         symbol = self.add_equity("SPY").symbol
         # Create a consolidator that produces monthly TradeBar objects.
@@ -315,7 +315,7 @@ class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
         # Register the consolidator for automatic updates.
         self.subscription_manager.add_consolidator(symbol, consolidator)
     
-    def _custom_monthly(self, dt: datetime) -> CalendarInfo:
+    def _custom_monthly(self, dt: datetime) -&gt; CalendarInfo:
         # Set the start time to the beginning of the month.
         start = dt.replace(day=1).date()
         # Set the end time to the beginning of next month.

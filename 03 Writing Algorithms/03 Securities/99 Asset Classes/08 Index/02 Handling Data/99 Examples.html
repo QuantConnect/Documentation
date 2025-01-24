@@ -7,7 +7,7 @@
   When the RSI crosses above 70, it liquidates the portfolio.
 </p>
 
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
   <pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
 {
     private dynamic _spx;
@@ -23,7 +23,7 @@
         _spx.Rsi = RSI(_spx.Symbol, 15);
         // Add the ES front-month Futures contract.
         _es = AddFuture(Futures.Indices.SP500EMini, dataMappingMode: DataMappingMode.OpenInterest);
-        _es.SetFilter(futureFilterUniverse => futureFilterUniverse.StandardsOnly().FrontMonth());
+        _es.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.StandardsOnly().FrontMonth());
     }
 
     public override void OnData(Slice slice)
@@ -34,14 +34,14 @@
             return;
         }
 
-        // If the SPX RSI is <30, buy the ES.
-        if (!Portfolio.Invested && _spx.Rsi.Current.Value < 30)
+        // If the SPX RSI is &lt;30, buy the ES.
+        if (!Portfolio.Invested && _spx.Rsi.Current.Value &lt; 30)
         {
             SetHoldings(_es.Mapped, 0.5);
         }
 
-        // If the SPX RSI is >70, liquidate the portfolio.
-        else if (Portfolio.Invested && _spx.Rsi.Current.Value > 70)
+        // If the SPX RSI is &gt;70, liquidate the portfolio.
+        else if (Portfolio.Invested && _spx.Rsi.Current.Value &gt; 70)
         {
             Liquidate();
         }
@@ -49,7 +49,7 @@
 }</pre>
   <pre class="python">class IndexDemoAlgorithm(QCAlgorithm):
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2024, 1, 1)
         # Add daily SPX Index data.
@@ -60,16 +60,16 @@
         self._es = self.add_future(Futures.Indices.SP_500_E_MINI, data_mapping_mode=DataMappingMode.OPEN_INTEREST)
         self._es.set_filter(lambda future_filter_universe: future_filter_universe.standards_only().front_month())        
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Check if the indicator is ready and we have the front-month contract data.
         if not self._spx.rsi.is_ready or self._es.mapped not in slice.bars:
             return
         
-        # If the SPX RSI is <30, buy the ES.
-        if not self.portfolio.invested and self._spx.rsi.current.value < 30:
+        # If the SPX RSI is &lt;30, buy the ES.
+        if not self.portfolio.invested and self._spx.rsi.current.value &lt; 30:
             self.set_holdings(self._es.mapped, 0.5)
 
-        # If the SPX RSI is >70, liquidate the portfolio.
-        elif self.portfolio.invested and self._spx.rsi.current.value > 70:
+        # If the SPX RSI is &gt;70, liquidate the portfolio.
+        elif self.portfolio.invested and self._spx.rsi.current.value &gt; 70:
             self.liquidate()</pre>
 </div>
