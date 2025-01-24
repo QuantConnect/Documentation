@@ -5,10 +5,12 @@ import os
 import requests
 import json
 from bs4 import BeautifulSoup
-from multiprocessing import Pool
+from datetime import datetime
+from itertools import zip_longest
+import multiprocessing as mp
 
 ROOT_DIR = "."
-VALIDATE_MODE = True
+VALIDATE_MODE = False
 
 BASE_API = "https://www.quantconnect.com/api/v2"
 USER_ID = os.environ["DOCS_REGRESSION_TEST_USER_ID"]
@@ -109,11 +111,18 @@ class RegressionTests:
         
     def read_html_files(self, directory):
         """Recursively read all HTML/PHP files."""
+        target_text = '<div class="section-example-container" id="testable">'
         files = []
+        
         for root, _, filenames in os.walk(directory):
             for filename in filenames:
                 if filename.endswith(('.html', '.php')):
-                    files.append(os.path.join(root, filename))
+                    file_path = os.path.join(root, filename)
+                    # Check if the file contains the target text
+                    with open(file_path, 'r', encoding='utf-8') as file:
+                        if target_text in file.read():
+                            files.append(file_path)
+                            
         return files
 
     def extract_pre_content(self, file_path):
@@ -173,6 +182,7 @@ class RegressionTests:
             while response["state"] != "BuildSuccess":
                 if response["state"] == "BuildError":
                     return None
+                # Rechek every 2 seconds
                 time.sleep(2)
                 
                 data = {
@@ -192,13 +202,13 @@ class RegressionTests:
         
         return None
         
-    def create_backtest(self, project_id, compile_id):
+    def create_backtest(self, file_path, example_num, project_id, compile_id):
         """Create a regression backtest and return the result json"""
         headers = self.get_json_header()
         data = {
             "projectId": project_id,
             "compileId": compile_id,
-            "backtestName": "regression_test"
+            "backtestName": f"{file_path} Example {example_num}"
         }
         response = requests.post(
             f"{BASE_API}/backtests/create",
@@ -206,14 +216,20 @@ class RegressionTests:
             data = data
         ).json()
         
+        return response
+        
+    def read_backtest(self, response, project_id):
+        headers = self.get_json_header()
+        
         if response["success"]:
             backtest = response["backtest"]
             if isinstance(backtest, list):
                 backtest = backtest[-1]
             backtest_id = backtest["backtestId"]
             
-            while backtest["status"] != "Completed.":
-                time.sleep(15)
+            while not backtest["completed"]:
+                # Rechek every 10 seconds
+                time.sleep(10)
                 
                 data = {
                     "projectId": project_id,
@@ -226,16 +242,17 @@ class RegressionTests:
                 ).json()
                 
                 if not response["success"]:
-                    return None
+                    return None, response
                 backtest = response["backtest"]
                 if isinstance(backtest, list):
                     backtest = backtest[-1]
                 
-            return str(backtest["statistics"])
+            return str(backtest["statistics"]), response
         
-        return None
+        return None, response
 
-    def backtest(self, file_path, example_num, language, content):
+    def backtest(self, file_path, example_num, language, content, total_example_num, manager_list):
+        self.backtest_started.value = False
         project_id = CS_PROJECT_ID if language == "csharp" else PY_PROJECT_ID
         file_name = "Main.cs" if language == "csharp" else "main.py"
         content = CS_AUTOCOMPLETE + "\n" + content if language == "csharp" else PY_AUTOCOMPLETE + "\n" + content
@@ -245,27 +262,54 @@ class RegressionTests:
         if not update_success:
             msg = "Update project content failed"
             self.log_error(file_path, example_num, language, "", msg)
-            return None
+            if example_num == total_example_num:
+                self.backtest_started.value = True
+            return
         
         # Compile the project
         compile_id = self.compile_project(project_id)
         if not compile_id:
             msg = "Compile project failed"
             self.log_error(file_path, example_num, language, "", msg)
-            return None
+            if example_num == total_example_num:
+                self.backtest_started.value = True
+            return
         
         # Backtest the project
-        result_json = self.create_backtest(project_id, compile_id)
-        if not result_json:
-            msg = "Backtest failed"
+        response = self.create_backtest(file_path, example_num, project_id, compile_id)
+        if example_num == total_example_num:
+            self.backtest_started.value = True
+        
+        # Read the backtest results
+        result_json, response = self.read_backtest(response, project_id)
+        if not result_json or response.get("error", None):
+            msg = f"Backtest failed - {response['error']}"
             self.log_error(file_path, example_num, language, "", msg)
-        return result_json
+        manager_list.append(result_json)
 
     def perform_backtests(self, file_path, contents):
         """Perform backtests on the provided contents."""
+        manager = mp.Manager()
+        manager_list_cs = manager.list()
+        manager_list_py = manager.list()
+        cs_size = len(contents[0])
+        py_size = len(contents[1])
+        
+        for i, (cs_content, py_content) in enumerate(zip_longest(contents[0], contents[1])):
+            if cs_content:
+                process_cs = mp.Process(target=self.backtest, args=(file_path, i+1, "csharp", self.clean_code(cs_content), cs_size, manager_list_cs))
+                process_cs.start()
+            if py_content:
+                process_py = mp.Process(target=self.backtest, args=(file_path, i+1, "python", self.clean_code(py_content), py_size, manager_list_py))
+                process_py.start()
+            if cs_content:
+                process_cs.join()
+            if py_content:
+                process_py.join()
+            
         return (
-            [self.backtest(file_path, i, "csharp", self.clean_code(content)) for i, content in enumerate(contents[0])],  # C# results
-            [self.backtest(file_path, i, "python", self.clean_code(content)) for i, content in enumerate(contents[1])]   # Python results
+            list(manager_list_cs),  # C# results
+            list(manager_list_py)   # Python results
         )
         
     def validation(self, file_path, example_num, language, existing_script, new_json):
@@ -294,16 +338,16 @@ class RegressionTests:
                         print(f"No result json returned for {file_path} CSharp Example {i+1}, Skipping...")
                         continue
                     
-                    existing_script = div.find_all('script', class_='csharp-result')[0]
+                    existing_script = div.find_all('script', class_='csharp-result')
                     new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
 
                     if existing_script:
                         # Compare existing result with new result in validate mode
                         if VALIDATE_MODE:
-                            self.validation(file_path, i+1, "CSharp", existing_script.text.strip(), new_json)
+                            self.validation(file_path, i+1, "CSharp", existing_script[0].text.strip(), new_json)
                         # Overwrite the existing result if not validate mode
                         else:
-                            existing_script.string = new_json
+                            existing_script[0].string = new_json
                     else:
                         # Insert new script if none exists
                         if VALIDATE_MODE:
@@ -319,16 +363,16 @@ class RegressionTests:
                         print(f"No result json returned for {file_path} Python Example {i+1}, Skipping...")
                         continue
                     
-                    existing_script = div.find_all('script', class_='python-result')[0]
+                    existing_script = div.find_all('script', class_='python-result')
                     new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
 
                     if existing_script:
                         # Compare existing result with new result in validate mode
                         if VALIDATE_MODE:
-                            self.validation(file_path, i+1, "Python", existing_script.text.strip(), new_json)
+                            self.validation(file_path, i+1, "Python", existing_script[0].text.strip(), new_json)
                         # Overwrite the existing result if not validate mode
                         else:
-                            existing_script.string = new_json
+                            existing_script[0].string = new_json
                     else:
                         # Insert new script if none exists
                         if VALIDATE_MODE:
@@ -350,11 +394,38 @@ class RegressionTests:
             self.insert_validate_results(file_path, results)
 
     def run(self):
+        start_time = time.time()
+        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Start regression testing.")
+        
         files = self.read_html_files(ROOT_DIR)
+        total_file_num = len(files)
+        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Get all testable algorithms from {total_file_num} files, now start testing...")
         
         # Speed up with multiprocessing.
-        with Pool() as pool:
-            pool.map(self.process_file, files)
+        process_data_list = []
+        self.backtest_started = mp.Value('b', True)     # 'b' for boolean
+        
+        for times_index, file_path in enumerate(files):
+            # Start a new process if the previous backtest has been started to avoid wrong file content update and compilation
+            while not self.backtest_started.value:
+                # Check every 3 seconds
+                time.sleep(3)
+            self.backtest_started.value = False
+
+            # Start the new process
+            process = mp.Process(target=self.process_file, args=(file_path,))
+            process.start()
+            process_data_list.append(process)
+        
+            task_num = times_index+1
+            if task_num % 5 == 0:
+                print(f"{datetime.now()}::{time.time()-start_time:.4f}::Sent regression test task for {task_num}/{total_file_num} files")
+
+        # Wait for all processes to finish
+        for process in process_data_list:
+            process.join()
+        
+        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Finish all testing. Exiting...")
 
 
 if __name__ == "__main__":
