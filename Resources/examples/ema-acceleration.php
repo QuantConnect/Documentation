@@ -5,7 +5,7 @@
     It short sells when the EMA is decreasing and accelerating downward, indicating a strong downtrend.
     To compare the current EMA value to its previous values, the algorithm utilizes the EMA's internal <code>RollingWindow</code>.
 </p>
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
     <pre class="csharp">public class RollingWindowAlgorithm : QCAlgorithm
 {
     private Symbol _spy;

@@ -5,7 +5,7 @@
 	To fairly compare the liquidity between Crypto pairs, use the <code class="csharp">VolumeInUsd</code><code class="python">volume_in_usd</code> property of the <code>CryptoUniverse</code> objects during universe selection. 
 	The following algorithm selects the 10 Crypto pairs with the greatest USD volume on Bitfinex:
 </p>
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
 	<pre class="csharp">public class HighlyLiquidCryptoUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -37,7 +37,7 @@
 
 <h4>Example 2: Highly Volatile Crypto Universe</h4>
 <p>The following algorithm creates a universe of volatile Crypto pairs on Binance by selecting the pairs with the largest trading range in the previous day:</p>
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
 	<pre class="csharp">public class HighlyVolatileCryptoUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -56,7 +56,7 @@
 
     def initialize(self):
         self.set_start_date(2021, 1, 1)
-        self.add_universe(CryptoUniverse.binance(self._select_assets)
+        self.add_universe(CryptoUniverse.binance(self._select_assets))
 
     def _select_assets(self, data):
         selected = sorted(data, key=lambda x: (x.high - x.low) / x.low)[-10:]
@@ -70,7 +70,7 @@
 	At noon each day, it rebalances the portfolio to give equal weight to each coin in the universe.
 </p>
 
-<div class="section-example-container">
+<div class="section-example-container" id="testable">
 	<pre class="csharp">public class LargeCapCryptoUniverseAlgorithm : QCAlgorithm
 {
     private Universe _universe;
