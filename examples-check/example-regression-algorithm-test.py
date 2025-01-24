@@ -243,17 +243,22 @@ class RegressionTests:
         # Update the test project to the example code snippets
         update_success = self.update_algorithm_content(project_id, file_name, content)
         if not update_success:
-            print(f"Update project content failed: {file_path} - {language} - Example {example_num}")
+            msg = "Update project content failed"
+            self.log_error(file_path, example_num, language, "", msg)
             return None
         
         # Compile the project
         compile_id = self.compile_project(project_id)
         if not compile_id:
-            print(f"Compile project failed: {file_path} - {language} - Example {example_num}")
+            msg = "Compile project failed"
+            self.log_error(file_path, example_num, language, "", msg)
             return None
         
         # Backtest the project
         result_json = self.create_backtest(project_id, compile_id)
+        if not result_json:
+            msg = "Backtest failed"
+            self.log_error(file_path, example_num, language, "", msg)
         return result_json
 
     def perform_backtests(self, file_path, contents):
@@ -266,12 +271,15 @@ class RegressionTests:
     def validation(self, file_path, example_num, language, existing_script, new_json):
         for j, (existing, new) in enumerate(zip(existing_script.split('\n'), new_json.split('\n'))):
             if existing.strip() != new.strip():
-                print(f"""
+                print(self.log_error(file_path, example_num, language, existing, new, j))
+                
+    def log_error(self, file_path, example_num, language, expect, actual, line=None):
+        return f"""
     Regression Test Failed:
-    In ::       {file_path} Example {example_num}, {language}, line {j+1}
-    Expect ::   {existing}
-    But was ::  {new}
-    """)
+    In ::       {file_path} Example {example_num}, {language}{", line " + line+1 if line is not None else ""}
+    Expect ::   {expect}
+    But was ::  {actual}
+    """
 
     def insert_validate_results(self, file_path, results):
         """Insert/Validate backtest results into the original file."""
