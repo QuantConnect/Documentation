@@ -1,6 +1,6 @@
 <h4>Example <?=$number?>: Scikit-Learn</h4>
 <p>The below algorithm makes use of <code>Scikit-Learn</code> library to predict the future price movement using the previous 5 OHLCV data. The model is trained using rolling 2-year data. To ensure the model applicable to the current market environment, we recalibrate the model on every Sunday.</p>
-<div class="section-example-container" id="testable">
+<div class="section-example-container testable">
     <pre class="python">from sklearn.svm import SVR
 from sklearn.model_selection import GridSearchCV
 import joblib

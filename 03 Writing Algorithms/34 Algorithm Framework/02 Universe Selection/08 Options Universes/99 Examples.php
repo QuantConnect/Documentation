@@ -2,7 +2,7 @@
 
 <h4>Example 1: Horizontal Jelly Roll</h4>
 <p>The following algorithm selects SPX index options to construct a Jelly Roll strategy. It filters for ATM calls and puts with 30 days and 90 days till expiration. Using the SMA indicator to predict the interest rate cycle, it longs Jelly Roll if the cycle is considered uprising, otherwise selling the Jelly Roll.</p>
-<div class="section-example-container" id="testable">
+<div class="section-example-container testable">
     <pre class="csharp">public class FrameworkOptionUniverseSelectionAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -298,7 +298,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
 
 <? include(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
-<div class="section-example-container" id="testable">
+<div class="section-example-container testable">
 	<pre class="csharp">// Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
 using QuantConnect.Data;
 using QuantConnect.Data.Fundamental;

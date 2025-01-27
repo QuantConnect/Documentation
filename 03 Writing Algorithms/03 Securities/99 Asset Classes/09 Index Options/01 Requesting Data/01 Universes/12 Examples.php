@@ -4,7 +4,7 @@
 
 <p><span class='new-term'>0DTE Options</span> are option contracts that expire on the same day they are traded. To create a universe with 0DTE options, call the <code class="csharp">SetFilter</code> or <code class="python">set_filter</code> method. In this example, we will select 0DTE contracts within 1 strike price level and a Delta between 0.25 and 0.75. Then, we will go long on the highest strike price call contract of the SPX index and hold until expiry.</p> 
 
-<div class="section-example-container" id="testable">
+<div class="section-example-container testable">
     <pre class="csharp">public class BasicIndexOptionAlgorithm : QCAlgorithm
 {
     private Option _option;

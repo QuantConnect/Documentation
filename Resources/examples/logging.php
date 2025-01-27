@@ -1,6 +1,6 @@
 <h4>Example <?=$number?>: On Events And Trading Logic</h4>
 <p>The following example trades a simple EMA cross trend-following strategy on SPY. We log or debug messages in event handlers and trading logic changes to get information on any event flow.</p>
-<div class="section-example-container" id="testable">
+<div class="section-example-container testable">
     <pre class="csharp">public class LoggingAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
