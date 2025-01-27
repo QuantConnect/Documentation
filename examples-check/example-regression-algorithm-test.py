@@ -4,6 +4,7 @@ import time
 import os
 import requests
 import json
+from AlgorithmImports import *
 from bs4 import BeautifulSoup
 from datetime import datetime
 from itertools import zip_longest
@@ -11,6 +12,7 @@ import multiprocessing as mp
 
 ROOT_DIR = "."
 VALIDATE_MODE = False
+MAX_COWORKER = 6        # Limited by number of backtest nodes
 
 BASE_API = "https://www.quantconnect.com/api/v2"
 USER_ID = os.environ["DOCS_REGRESSION_TEST_USER_ID"]
@@ -98,7 +100,7 @@ class RegressionTests:
             'Timestamp': timestamp
         }
         
-    def init_api(self, id, token):
+    def init_api(self):
         """Connect to QuantConnect API for backtesting."""
         headers = self.get_json_header()
         response = requests.post(f"{BASE_API}/authenticate", headers = headers).json()
@@ -111,7 +113,7 @@ class RegressionTests:
         
     def read_html_files(self, directory):
         """Recursively read all HTML/PHP files."""
-        target_text = '<div class="section-example-container" id="testable">'
+        target_text = ['section-example-container', 'testable', 'div']
         files = []
         
         for root, _, filenames in os.walk(directory):
@@ -120,7 +122,7 @@ class RegressionTests:
                     file_path = os.path.join(root, filename)
                     # Check if the file contains the target text
                     with open(file_path, 'r', encoding='utf-8') as file:
-                        if target_text in file.read():
+                        if all([x in file.read() for x in target_text]):
                             files.append(file_path)
                             
         return files
@@ -132,7 +134,7 @@ class RegressionTests:
             
             snippets = []
             # Get all code snippets from testable container
-            for div in soup.find_all('div', class_='section-example-container', id='testable'):
+            for div in soup.find_all('div', class_=['section-example-container', 'testable']):
                 csharp_contents = []
                 python_contents = []
                 
@@ -227,8 +229,9 @@ class RegressionTests:
                 backtest = backtest[-1]
             backtest_id = backtest["backtestId"]
             
+            errors = 0
             while not backtest["completed"]:
-                # Rechek every 10 seconds
+                # Recheck every 10 seconds
                 time.sleep(10)
                 
                 data = {
@@ -242,10 +245,16 @@ class RegressionTests:
                 ).json()
                 
                 if not response["success"]:
-                    return None, response
+                    errors += 1
+                    if errors >= 5:
+                        return None, response
+                    continue
                 backtest = response["backtest"]
                 if isinstance(backtest, list):
                     backtest = backtest[-1]
+                    
+            # Add order hash
+            backtest["statistics"]["OrderListHash"] = Extensions.get_hash(backtest["orders"])
                 
             return str(backtest["statistics"]), response
         
@@ -282,8 +291,8 @@ class RegressionTests:
         
         # Read the backtest results
         result_json, response = self.read_backtest(response, project_id)
-        if not result_json or response.get("error", None):
-            msg = f"Backtest failed - {response['error']}"
+        if not result_json:
+            msg = f"Backtest failed, no results json returned {'- ' + str(response['error']) if response.get('error', None) else ''}"
             self.log_error(file_path, example_num, language, "", msg)
         manager_list.append(result_json)
 
@@ -329,7 +338,7 @@ class RegressionTests:
         """Insert/Validate backtest results into the original file."""
         with open(file_path, 'r+', encoding='utf-8') as file:
             soup = BeautifulSoup(file, 'html.parser')
-            divs = soup.find_all('div', class_='section-example-container', id='testable')
+            divs = soup.find_all('div', class_=['section-example-container', 'testable'])
 
             for i, (div, (csharp_results, python_results)) in enumerate(zip(divs, results)):
                 # C# results insertion
@@ -388,10 +397,12 @@ class RegressionTests:
 
     def process_file(self, file_path):
         """Complete processing for a single file."""
-        snippets = self.extract_pre_content(file_path)
-        if snippets:
-            results = [self.perform_backtests(file_path, content) for content in snippets]
-            self.insert_validate_results(file_path, results)
+        # Automatically acquire and release the semaphore
+        with self.semaphore:
+            snippets = self.extract_pre_content(file_path)
+            if snippets:
+                results = [self.perform_backtests(file_path, content) for content in snippets]
+                self.insert_validate_results(file_path, results)
 
     def run(self):
         start_time = time.time()
@@ -404,6 +415,7 @@ class RegressionTests:
         # Speed up with multiprocessing.
         process_data_list = []
         self.backtest_started = mp.Value('b', True)     # 'b' for boolean
+        self.semaphore = mp.Semaphore(MAX_COWORKER)
         
         for times_index, file_path in enumerate(files):
             # Start a new process if the previous backtest has been started to avoid wrong file content update and compilation
@@ -430,7 +442,7 @@ class RegressionTests:
 
 if __name__ == "__main__":
     tester = RegressionTests()
-    api_connect_success = tester.init_api(USER_ID, USER_TOKEN)
+    api_connect_success = tester.init_api()
     if api_connect_success:
         tester.run()
     else:
