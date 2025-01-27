@@ -137,7 +137,8 @@ class RegressionTests:
                     file_path = os.path.join(root, filename)
                     # Check if the file contains the target text
                     with open(file_path, 'r', encoding='utf-8') as file:
-                        if all([x in file.read() for x in target_text]):
+                        text = file.read()
+                        if all([x in text for x in target_text]):
                             files.append(file_path)
                             
         return files
@@ -267,18 +268,32 @@ class RegressionTests:
                 if not response["success"]:
                     errors += 1
                     if errors >= 5:
-                        return None, response
+                        return None, response, backtest_id
                     continue
                 backtest = response["backtest"]
                 if isinstance(backtest, list):
                     backtest = backtest[-1]
-                    
-            # Add order hash
-            backtest["statistics"]["OrderListHash"] = Extensions.get_hash(backtest["orders"])
                 
-            return str(backtest["statistics"]), response
+            return str(backtest["statistics"]), response, backtest_id
         
-        return None, response
+        return None, response, None
+    
+    def get_order_list_hash(self, project_id, backtest_id):
+        """Create a regression backtest and return the result json"""
+        headers = self.get_json_header()
+        data = {
+            "start": 0,
+            "end": 99,
+            "projectId": project_id,
+            "backtestId": backtest_id
+        }
+        response = requests.post(
+            f"{BASE_API}/backtests/orders/read",
+            headers = headers,
+            data = data
+        ).json()
+        
+        return hashlib.md5(str(response["orders"]).encode()).hexdigest()
 
     def backtest(self, file_path, example_num, language, content, total_example_num, manager_list):
         self.backtest_started.value = False
@@ -310,10 +325,13 @@ class RegressionTests:
             self.backtest_started.value = True
         
         # Read the backtest results
-        result_json, response = self.read_backtest(response, project_id)
+        result_json, response, backtest_id = self.read_backtest(response, project_id)
         if not result_json:
             msg = f"Backtest failed, no results json returned {'- ' + str(response['error']) if response.get('error', None) else ''}"
             self.log_error(file_path, example_num, language, "", msg)
+        
+        # Add order hash
+        result_json["OrderListHash"] = self.get_order_list_hash(project_id, backtest_id)
         manager_list.append(result_json)
 
     def perform_backtests(self, file_path, contents):
