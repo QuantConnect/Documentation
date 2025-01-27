@@ -1,0 +1,24 @@
+name: Regression Tests for Example Algorithms
+
+on:
+  schedule:
+    - cron:  "0 0 * * 6" # Runs "at 00:00 UTC every Saturday" (see https://crontab.guru)
+  workflow_dispatch:  # Run on manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |-
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4==4.12.3
+          pip install quantconnect-stubs==16891
+          pip install requests==2.31.0
+
+      - name: Run the Example Regression Tester
+        run: python examples-check/example-regression-algorithm-test.py
