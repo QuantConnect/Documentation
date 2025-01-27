@@ -4,7 +4,7 @@
     <pre class="csharp">public override void Initialize()
 {
     var option = <?=$addOptionC?>
-    option.SetFilter(universe => universe.IncludeWeeklys().Delta(0.3m, 0.7m).Expiration(0, 7);
+    option.SetFilter(universe => universe.IncludeWeeklys().Delta(0.3m, 0.7m).Expiration(0, 7));
 }</pre>
     <pre class="python">def initialize(self):
     option = <?=$addOptionPy?>

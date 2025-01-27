@@ -6,6 +6,7 @@
 
 <h4>Automatic Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "implied volatility";
 $typeName = "ImpliedVolatility";
 $helperMethod = "IV";
@@ -13,11 +14,16 @@ $helperMethod = "IV";
 include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <p>For more information about the <code class="csharp">IV</code><code class="python">iv</code> method, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>Parameters</a> and <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
 
 <h4>Manual Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "implied volatility";
 $typeName = "ImpliedVolatility";
 $indicatorPage = "implied-volatility";
@@ -26,6 +32,10 @@ $helperMethod = "IV";
 include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <h4>Volatility Smoothing</h4>
 <p>

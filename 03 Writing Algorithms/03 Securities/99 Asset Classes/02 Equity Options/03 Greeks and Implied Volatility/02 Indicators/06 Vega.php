@@ -5,6 +5,7 @@
 
 <h4>Automatic Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "vega";
 $typeName = "Vega";
 $helperMethod = "V";
@@ -12,6 +13,10 @@ $helperMethod = "V";
 include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <p>The follow table describes the arguments that the <code class='csharp'>V</code><code class='python'>v</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
@@ -43,6 +48,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 
 <h4>Manual Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "vega";
 $typeName = "Vega";
 $indicatorPage = "vega";
@@ -50,6 +56,10 @@ $indicatorPage = "vega";
 include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <h4>Volatility Smoothing</h4>
 <?

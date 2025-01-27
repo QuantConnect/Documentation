@@ -1,9 +1,10 @@
 import base64
 import hashlib
-import time
+import json
 import os
 import requests
-import json
+import subprocess
+import time
 from AlgorithmImports import *
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -110,8 +111,22 @@ class RegressionTests:
             return True
         print("API Authentication Failed.")
         return False
+    
+    def run_php_script(self, php_path):
+        # Read the php script.
+        with open(php_path, 'r', encoding="utf-8") as f:
+            input = f.read()
+        input = input.replace("DOCS_RESOURCES.\"", "\"Resources")
         
-    def read_html_files(self, directory):
+        # Create a temporary PHP file
+        with open('temp_script.php', 'w') as f:
+            f.write(input)
+        
+        # Run the PHP script and capture the output
+        result = subprocess.run(['php', 'temp_script.php'], capture_output=True, text=True)
+        return result.stdout.strip().replace("<div class=\"section-example-container\">", "<div class=\"section-example-container testable\">")
+        
+    def get_testing_files(self, directory):
         """Recursively read all HTML/PHP files."""
         target_text = ['section-example-container', 'testable', 'div']
         files = []
@@ -129,6 +144,11 @@ class RegressionTests:
 
     def extract_pre_content(self, file_path):
         """Extract code snippets from testable section example container."""
+        # Convert php codes
+        if file_path.endswith(".php"):
+            self.run_php_script(file_path)
+            file_path = "temp_script.php"
+            
         with open(file_path, 'r', encoding='utf-8') as file:
             soup = BeautifulSoup(file, 'html.parser')
             
@@ -333,6 +353,92 @@ class RegressionTests:
     Expect ::   {expect}
     But was ::  {actual}
     """
+    
+    def insert_validate_example_container(self, file_path, soup, results):
+        for i, (div, (csharp_results, python_results)) in enumerate(zip(soup.find_all('div', class_=['section-example-container', 'testable']), results)):
+            # C# results insertion
+            for pre, new_result in zip(div.find_all('pre', class_='csharp'), csharp_results):
+                if not new_result:
+                    print(f"No result json returned for {file_path} CSharp Example {i+1}, Skipping...")
+                    continue
+                
+                existing_script = div.find_all('script', class_='csharp-result')
+                new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
+
+                if existing_script:
+                    # Compare existing result with new result in validate mode
+                    if VALIDATE_MODE:
+                        self.validation(file_path, i+1, "CSharp", existing_script[0].text.strip(), new_json)
+                    # Overwrite the existing result if not validate mode
+                    else:
+                        existing_script[0].string = new_json
+                else:
+                    # Insert new script if none exists
+                    if VALIDATE_MODE:
+                        print(f"{file_path} Example {i+1}, CSharp: No existing regression test result exists, writing new results...")
+                    new_script = soup.new_tag('script', type='text')
+                    new_script['class'] = 'csharp-result'
+                    new_script.string = new_json
+                    pre.insert_after(new_script)
+
+            # Python results insertion
+            for pre, new_result in zip(div.find_all('pre', class_='python'), python_results):
+                if not new_result:
+                    print(f"No result json returned for {file_path} Python Example {i+1}, Skipping...")
+                    continue
+                
+                existing_script = div.find_all('script', class_='python-result')
+                new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
+
+                if existing_script:
+                    # Compare existing result with new result in validate mode
+                    if VALIDATE_MODE:
+                        self.validation(file_path, i+1, "Python", existing_script[0].text.strip(), new_json)
+                    # Overwrite the existing result if not validate mode
+                    else:
+                        existing_script[0].string = new_json
+                else:
+                    # Insert new script if none exists
+                    if VALIDATE_MODE:
+                        print(f"{file_path} Example {i+1}, Python: No existing regression test result exists, writing new results...")
+                    new_script = soup.new_tag('script', type='text')
+                    new_script['class'] = 'python-result'
+                    new_script.string = new_json
+                    pre.insert_after(new_script)
+                    
+        return soup
+    
+    def insert_validate_php(self, file_path, soup, results):
+        for i, (div, (csharp_results, python_results)) in enumerate(zip(soup.find_all('div', class_='regression-test-results'), results)):
+            # C# results insertion
+            for existing_script, new_result in zip(div.find_all('script', class_='csharp-result'), csharp_results):
+                if not new_result:
+                    print(f"No result json returned for {file_path} CSharp Example {i+1}, Skipping...")
+                    continue
+                new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
+
+                # Compare existing result with new result in validate mode
+                if VALIDATE_MODE:
+                    self.validation(file_path, i+1, "CSharp", existing_script[0].text.strip(), new_json)
+                # Overwrite the existing result if not validate mode
+                else:
+                    existing_script[0].string = new_json
+
+            # Python results insertion
+            for existing_script, new_result in zip(div.find_all('script', class_='python-result'), python_results):
+                if not new_result:
+                    print(f"No result json returned for {file_path} Python Example {i+1}, Skipping...")
+                    continue
+                new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
+
+                # Compare existing result with new result in validate mode
+                if VALIDATE_MODE:
+                    self.validation(file_path, i+1, "Python", existing_script[0].text.strip(), new_json)
+                # Overwrite the existing result if not validate mode
+                else:
+                    existing_script[0].string = new_json
+                    
+        return soup
 
     def insert_validate_results(self, file_path, results):
         """Insert/Validate backtest results into the original file."""
@@ -340,56 +446,10 @@ class RegressionTests:
             soup = BeautifulSoup(file, 'html.parser')
             divs = soup.find_all('div', class_=['section-example-container', 'testable'])
 
-            for i, (div, (csharp_results, python_results)) in enumerate(zip(divs, results)):
-                # C# results insertion
-                for pre, new_result in zip(div.find_all('pre', class_='csharp'), csharp_results):
-                    if not new_result:
-                        print(f"No result json returned for {file_path} CSharp Example {i+1}, Skipping...")
-                        continue
-                    
-                    existing_script = div.find_all('script', class_='csharp-result')
-                    new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
-
-                    if existing_script:
-                        # Compare existing result with new result in validate mode
-                        if VALIDATE_MODE:
-                            self.validation(file_path, i+1, "CSharp", existing_script[0].text.strip(), new_json)
-                        # Overwrite the existing result if not validate mode
-                        else:
-                            existing_script[0].string = new_json
-                    else:
-                        # Insert new script if none exists
-                        if VALIDATE_MODE:
-                            print(f"{file_path} Example {i+1}, CSharp: No existing regression test result exists, writing new results...")
-                        new_script = soup.new_tag('script', type='text')
-                        new_script['class'] = 'csharp-result'
-                        new_script.string = new_json
-                        pre.insert_after(new_script)
-
-                # Python results insertion
-                for pre, new_result in zip(div.find_all('pre', class_='python'), python_results):
-                    if not new_result:
-                        print(f"No result json returned for {file_path} Python Example {i+1}, Skipping...")
-                        continue
-                    
-                    existing_script = div.find_all('script', class_='python-result')
-                    new_json = json.dumps(json.loads(new_result.replace('\'', '\"')), indent=4)
-
-                    if existing_script:
-                        # Compare existing result with new result in validate mode
-                        if VALIDATE_MODE:
-                            self.validation(file_path, i+1, "Python", existing_script[0].text.strip(), new_json)
-                        # Overwrite the existing result if not validate mode
-                        else:
-                            existing_script[0].string = new_json
-                    else:
-                        # Insert new script if none exists
-                        if VALIDATE_MODE:
-                            print(f"{file_path} Example {i+1}, Python: No existing regression test result exists, writing new results...")
-                        new_script = soup.new_tag('script', type='text')
-                        new_script['class'] = 'python-result'
-                        new_script.string = new_json
-                        pre.insert_after(new_script)
+            if divs:
+                soup = self.insert_validate_example_container(file_path, soup, results)
+            else:
+                soup = self.insert_validate_php(file_path, soup, results)
 
             file.seek(0)
             file.write(str(soup.prettify(formatter="html5")))
@@ -408,7 +468,7 @@ class RegressionTests:
         start_time = time.time()
         print(f"{datetime.now()}::{time.time()-start_time:.4f}::Start regression testing.")
         
-        files = self.read_html_files(ROOT_DIR)
+        files = self.get_testing_files(ROOT_DIR)
         total_file_num = len(files)
         print(f"{datetime.now()}::{time.time()-start_time:.4f}::Get all testable algorithms from {total_file_num} files, now start testing...")
         
@@ -437,7 +497,15 @@ class RegressionTests:
         for process in process_data_list:
             process.join()
         
-        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Finish all testing. Exiting...")
+        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Finish all testing. Removing temp files...")
+        
+        # Remove temp php script if any
+        try:
+            os.remove("temp_script.php")
+        except:
+            pass       # ignore if not found
+        
+        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Done!")
 
 
 if __name__ == "__main__":
