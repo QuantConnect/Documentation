@@ -1,9 +1,18 @@
-<p>The following examples demonstrate common practices for using optimization parameters.</p>
-
-<h4>Example 1: Bond Candidate Selection</h4>
-<p>The following algorithm holds a 60/40 stock-bond portfolio rebalancing monthly. To select the best bond ETF to act as a proxy to trade bonds, we create a list of bond tickers and grid search the best using each to backtest. Using a <code>bond-id</code> parameter, which is an integer ranging from 0 to the list size - 1 with a step size of 1, we can perform optimization to test each of them.</p>
+<p>
+ The following examples demonstrate common practices for using optimization parameters.
+</p>
+<h4>
+ Example 1: Bond Candidate Selection
+</h4>
+<p>
+ The following algorithm holds a 60/40 stock-bond portfolio rebalancing monthly. To select the best bond ETF to act as a proxy to trade bonds, we create a list of bond tickers and grid search the best using each to backtest. Using a
+ <code>
+  bond-id
+ </code>
+ parameter, which is an integer ranging from 0 to the list size - 1 with a step size of 1, we can perform optimization to test each of them.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class OptimizationParameterAlgorithm : QCAlgorithm
+ <pre class="csharp">public class OptimizationParameterAlgorithm : QCAlgorithm
 {
     // A list of bond ETFs candidates to trade as bond proxies. 
     private static readonly List&lt;string&gt; _bondList = new()
@@ -39,7 +48,38 @@
         SetHoldings(_bond, 0.4m);
     }
 }</pre>
-    <pre class="python">class OptimizationParameterAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "19",
+    "Average Win": "0.10%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "14.985%",
+    "Drawdown": "12.700%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "114882.10",
+    "Net Profit": "14.882%",
+    "Sharpe Ratio": "0.574",
+    "Sortino Ratio": "0.775",
+    "Probabilistic Sharpe Ratio": "53.240%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.033",
+    "Beta": "0.67",
+    "Annual Standard Deviation": "0.095",
+    "Annual Variance": "0.009",
+    "Information Ratio": "-1.086",
+    "Tracking Error": "0.07",
+    "Treynor Ratio": "0.081",
+    "Total Fees": "$20.11",
+    "Estimated Strategy Capacity": "$31000000.00",
+    "Lowest Capacity Asset": "TLT SGNKIKYGE9NP",
+    "Portfolio Turnover": "0.32%",
+    "OrderListHash": "6f62f15eca88ce53df38b022b5a908fc"
+}
+ </script>
+ <pre class="python">class OptimizationParameterAlgorithm(QCAlgorithm):
     # A list of bond ETFs as candidates to trade as bond proxies. 
     _bond_list = [
         "TLT", "IEF", "SHY", "VCSH", "VCLT"
@@ -67,19 +107,61 @@
         # Hold an all-weather stock-bond 60/40 portfolio.
         self.set_holdings(self.spy, 0.6)
         self.set_holdings(self.bond, 0.4)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "19",
+    "Average Win": "0.10%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "14.985%",
+    "Drawdown": "12.700%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "114882.10",
+    "Net Profit": "14.882%",
+    "Sharpe Ratio": "0.574",
+    "Sortino Ratio": "0.775",
+    "Probabilistic Sharpe Ratio": "53.240%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.033",
+    "Beta": "0.67",
+    "Annual Standard Deviation": "0.095",
+    "Annual Variance": "0.009",
+    "Information Ratio": "-1.086",
+    "Tracking Error": "0.07",
+    "Treynor Ratio": "0.081",
+    "Total Fees": "$20.11",
+    "Estimated Strategy Capacity": "$31000000.00",
+    "Lowest Capacity Asset": "TLT SGNKIKYGE9NP",
+    "Portfolio Turnover": "0.32%",
+    "OrderListHash": "971f89630cc4aee0f880026189ce77cf"
+}
+ </script>
 </div>
-
-<h4>Example 2: Test Different Period</h4>
-<p>This algorithm holds SPY for the whole day following the direction from the previous day. To test which period is the most effective for this momentum-following strategy, we can set an <code>offset</code> parameter and adjust the backtest period accordingly.</p>
-
-<p class="csharp">You can also load the parameter values with the <code>Parameter</code> attribute.</p>
+<h4>
+ Example 2: Test Different Period
+</h4>
+<p>
+ This algorithm holds SPY for the whole day following the direction from the previous day. To test which period is the most effective for this momentum-following strategy, we can set an
+ <code>
+  offset
+ </code>
+ parameter and adjust the backtest period accordingly.
+</p>
+<p class="csharp">
+ You can also load the parameter values with the
+ <code>
+  Parameter
+ </code>
+ attribute.
+</p>
 <div class="csharp section-example-container">
-    <pre class="csharp">[Parameter("offset")]
+ <pre class="csharp">[Parameter("offset")]
 private int _offset = 0;</pre>
 </div>
-
 <div class="section-example-container testable">
-    <pre class="csharp">public class OptimizationParameterAlgorithm : QCAlgorithm
+ <pre class="csharp">public class OptimizationParameterAlgorithm : QCAlgorithm
 {
     // Get the number of months to offset the start date.
     [Parameter("offset")]
@@ -121,7 +203,38 @@ private int _offset = 0;</pre>
         }
     }
 }</pre>
-    <pre class="python">from dateutil.relativedelta import relativedelta 
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "9",
+    "Average Win": "0.47%",
+    "Average Loss": "-0.61%",
+    "Compounding Annual Return": "-1.233%",
+    "Drawdown": "1.100%",
+    "Expectancy": "-0.118",
+    "Start Equity": "100000",
+    "End Equity": "99892.38",
+    "Net Profit": "-0.108%",
+    "Sharpe Ratio": "-0.665",
+    "Sortino Ratio": "-0.88",
+    "Probabilistic Sharpe Ratio": "34.802%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "0.76",
+    "Alpha": "-0.147",
+    "Beta": "0.126",
+    "Annual Standard Deviation": "0.056",
+    "Annual Variance": "0.003",
+    "Information Ratio": "-6.356",
+    "Tracking Error": "0.142",
+    "Treynor Ratio": "-0.296",
+    "Total Fees": "$17.99",
+    "Estimated Strategy Capacity": "$1400000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "26.60%",
+    "OrderListHash": "dac4a05c22c9adc1d17ba4324a3a42b2"
+}
+ </script>
+ <pre class="python">from dateutil.relativedelta import relativedelta 
 class OptimizationParameterAlgorithm(QCAlgorithm):
     last_price = 0
 
@@ -150,13 +263,46 @@ class OptimizationParameterAlgorithm(QCAlgorithm):
                 self.set_holdings(self.spy, -0.5)
 
             self.last_price = bar.close</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "9",
+    "Average Win": "0.47%",
+    "Average Loss": "-0.61%",
+    "Compounding Annual Return": "-1.233%",
+    "Drawdown": "1.100%",
+    "Expectancy": "-0.118",
+    "Start Equity": "100000",
+    "End Equity": "99892.38",
+    "Net Profit": "-0.108%",
+    "Sharpe Ratio": "-0.665",
+    "Sortino Ratio": "-0.88",
+    "Probabilistic Sharpe Ratio": "34.802%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "0.76",
+    "Alpha": "-0.147",
+    "Beta": "0.126",
+    "Annual Standard Deviation": "0.056",
+    "Annual Variance": "0.003",
+    "Information Ratio": "-6.356",
+    "Tracking Error": "0.142",
+    "Treynor Ratio": "-0.296",
+    "Total Fees": "$17.99",
+    "Estimated Strategy Capacity": "$1400000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "26.60%",
+    "OrderListHash": "11d7ba311ba919f8fd411dfae7db9a36"
+}
+ </script>
 </div>
-
-
-<h4>Example 3: Hyperparameter Tuning</h4>
-<p>The following example algorithm demonstrates an EMA cross strategy. To optimize for the best setup to attain the greatest Sharpe Ratio, the algorithm grid searches the best hyperparameters (the EMA periods) that do so.</p>
+<h4>
+ Example 3: Hyperparameter Tuning
+</h4>
+<p>
+ The following example algorithm demonstrates an EMA cross strategy. To optimize for the best setup to attain the greatest Sharpe Ratio, the algorithm grid searches the best hyperparameters (the EMA periods) that do so.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class ParameterizedAlgorithm : QCAlgorithm
+ <pre class="csharp">public class ParameterizedAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private ExponentialMovingAverage _fast;
@@ -203,7 +349,38 @@ class OptimizationParameterAlgorithm(QCAlgorithm):
         }
     }
 }</pre>
-    <pre class="python">class ParameterizedAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "3504",
+    "Average Win": "0.07%",
+    "Average Loss": "-0.04%",
+    "Compounding Annual Return": "1.272%",
+    "Drawdown": "18.900%",
+    "Expectancy": "0.086",
+    "Start Equity": "100000",
+    "End Equity": "106634.70",
+    "Net Profit": "6.635%",
+    "Sharpe Ratio": "-0.262",
+    "Sortino Ratio": "-0.229",
+    "Probabilistic Sharpe Ratio": "1.281%",
+    "Loss Rate": "58%",
+    "Win Rate": "42%",
+    "Profit-Loss Ratio": "1.59",
+    "Alpha": "-0.017",
+    "Beta": "0.007",
+    "Annual Standard Deviation": "0.063",
+    "Annual Variance": "0.004",
+    "Information Ratio": "-0.575",
+    "Tracking Error": "0.183",
+    "Treynor Ratio": "-2.367",
+    "Total Fees": "$3504.12",
+    "Estimated Strategy Capacity": "$280000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "32.38%",
+    "OrderListHash": "f5473f7258b9d92e7d21e9808cfb3aa6"
+}
+ </script>
+ <pre class="python">class ParameterizedAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
         self.set_cash(100000)
@@ -233,17 +410,58 @@ class OptimizationParameterAlgorithm(QCAlgorithm):
             # Liquidate if the trend is not strong.
             else:
                 self.liquidate()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "3504",
+    "Average Win": "0.07%",
+    "Average Loss": "-0.04%",
+    "Compounding Annual Return": "1.272%",
+    "Drawdown": "18.900%",
+    "Expectancy": "0.086",
+    "Start Equity": "100000",
+    "End Equity": "106634.70",
+    "Net Profit": "6.635%",
+    "Sharpe Ratio": "-0.262",
+    "Sortino Ratio": "-0.229",
+    "Probabilistic Sharpe Ratio": "1.281%",
+    "Loss Rate": "58%",
+    "Win Rate": "42%",
+    "Profit-Loss Ratio": "1.59",
+    "Alpha": "-0.017",
+    "Beta": "0.007",
+    "Annual Standard Deviation": "0.063",
+    "Annual Variance": "0.004",
+    "Information Ratio": "-0.575",
+    "Tracking Error": "0.183",
+    "Treynor Ratio": "-2.367",
+    "Total Fees": "$3504.12",
+    "Estimated Strategy Capacity": "$280000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "32.38%",
+    "OrderListHash": "b517ad76ce555e91a39ab7e1f0e33cbd"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ParameterizedAlgorithm.py" target="_BLANK">
-        ParameterizedAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ParameterizedAlgorithm.cs" target="_BLANK">
-        ParameterizedAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ParameterizedAlgorithm.py" target="_BLANK">
+  ParameterizedAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ParameterizedAlgorithm.cs" target="_BLANK">
+  ParameterizedAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

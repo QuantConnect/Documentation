@@ -1,12 +1,15 @@
-<p>The following examples demonstrate some common practices for requesting Crypto Futures data.</p>
-
-<h4>Example 1: Respect Lot Sizes</h4>
 <p>
-    Like Futures, Crypto Futures contracts have a fixed discrete lot size to trade instead of fractional like spot Crypto pairs. 
-    The following algorithm demonstrates how to place orders that respect the lot size to avoid rounding errors. 
+ The following examples demonstrate some common practices for requesting Crypto Futures data.
+</p>
+<h4>
+ Example 1: Respect Lot Sizes
+</h4>
+<p>
+ Like Futures, Crypto Futures contracts have a fixed discrete lot size to trade instead of fractional like spot Crypto pairs. 
+    The following algorithm demonstrates how to place orders that respect the lot size to avoid rounding errors.
 </p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
 
@@ -25,7 +28,7 @@
     public override void OnData(Slice slice)
     {
         // Only place orders when market is open since market on open orders aren't supported.
-        if (!Portfolio.Invested && IsMarketOpen(_symbol))
+        if (!Portfolio.Invested &amp;&amp; IsMarketOpen(_symbol))
         {
             // Get the lot size from the symbol properties. Placing an order that respects the lot size 
             // ensures the order is valid and allows accurate profit and risk calculations for the whole portfolio.
@@ -37,7 +40,38 @@
         }
     }
 }</pre>
-    <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "1",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "94.683%",
+    "Drawdown": "79.600%",
+    "Expectancy": "0",
+    "Start Equity": "10000.00",
+    "End Equity": "250220.89",
+    "Net Profit": "2402.209%",
+    "Sharpe Ratio": "1.953",
+    "Sortino Ratio": "3",
+    "Probabilistic Sharpe Ratio": "69.981%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.454",
+    "Beta": "0.96",
+    "Annual Standard Deviation": "0.76",
+    "Annual Variance": "0.578",
+    "Information Ratio": "0.826",
+    "Tracking Error": "0.497",
+    "Treynor Ratio": "1.547",
+    "Total Fees": "\u20ae15.91",
+    "Estimated Strategy Capacity": "\u20ae440000.00",
+    "Lowest Capacity Asset": "BTCUSDT 18R",
+    "Portfolio Turnover": "0.09%",
+    "OrderListHash": "c3b6f13b6e9210a44f7048e7f32486ab"
+}
+ </script>
+ <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 4, 1)
@@ -59,4 +93,35 @@
             # to 2 contracts since the lot size is 1.
             quantity = 2.5 // lot_size * lot_size
             self.market_order(self._symbol, quantity)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "1",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "94.668%",
+    "Drawdown": "79.600%",
+    "Expectancy": "0",
+    "Start Equity": "10000.00",
+    "End Equity": "250124.80",
+    "Net Profit": "2401.248%",
+    "Sharpe Ratio": "1.953",
+    "Sortino Ratio": "2.999",
+    "Probabilistic Sharpe Ratio": "69.976%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.453",
+    "Beta": "0.96",
+    "Annual Standard Deviation": "0.76",
+    "Annual Variance": "0.578",
+    "Information Ratio": "0.826",
+    "Tracking Error": "0.497",
+    "Treynor Ratio": "1.547",
+    "Total Fees": "\u20ae15.90",
+    "Estimated Strategy Capacity": "\u20ae440000.00",
+    "Lowest Capacity Asset": "BTCUSDT 18R",
+    "Portfolio Turnover": "0.09%",
+    "OrderListHash": "dc219f96d23be4974956f4d8f2ad5a0c"
+}
+ </script>
 </div>

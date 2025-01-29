@@ -1,9 +1,26 @@
-<p>The following examples demonstrate some common practices for using automatic indicators.</p>
-
-<h4>Example 1: Trade With Automatic Indicators in a Dynamic Universe</h4>
-<p>The following algorithm selects <a href='/docs/v2/writing-algorithms/universes/equity/liquidity-universes'>a universe of the 20 most liquid US Equities</a> each day. At the start of each trading session, it then forms an equal-weighted portfolio of the stocks that have price &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">EMA</a> &gt; <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">SMA</a>, which indicates an upward accelerating trend. As assets enter the universe, it creates automatic indicators for them. As assets leave the universe, it deregisters the indicators.</p>
+<p>
+ The following examples demonstrate some common practices for using automatic indicators.
+</p>
+<h4>
+ Example 1: Trade With Automatic Indicators in a Dynamic Universe
+</h4>
+<p>
+ The following algorithm selects
+ <a href="/docs/v2/writing-algorithms/universes/equity/liquidity-universes">
+  a universe of the 20 most liquid US Equities
+ </a>
+ each day. At the start of each trading session, it then forms an equal-weighted portfolio of the stocks that have price &gt;
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">
+  EMA
+ </a>
+ &gt;
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">
+  SMA
+ </a>
+ , which indicates an upward accelerating trend. As assets enter the universe, it creates automatic indicators for them. As assets leave the universe, it deregisters the indicators.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class AutomaticIndicatorAlgorithm : QCAlgorithm
+ <pre class="csharp">public class AutomaticIndicatorAlgorithm : QCAlgorithm
 {
     private Dictionary&lt;Symbol, SymbolData&gt; _symbolData = new();
 
@@ -70,7 +87,7 @@
             _algorithm = algorithm;
             Symbol = symbol;
 
-            // Create EMA & SMA indicators to generate trade signals.
+            // Create EMA &amp; SMA indicators to generate trade signals.
             Ema = algorithm.EMA(symbol, 20, Resolution.Daily);
             Sma = algorithm.SMA(symbol, 20, Resolution.Daily);
 
@@ -87,7 +104,38 @@
         }
     }
 }</pre>
-    <pre class="python">class AutomaticIndicatorAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "203",
+    "Average Win": "0.55%",
+    "Average Loss": "-0.19%",
+    "Compounding Annual Return": "1036.539%",
+    "Drawdown": "12.500%",
+    "Expectancy": "1.377",
+    "Start Equity": "100000",
+    "End Equity": "123749.76",
+    "Net Profit": "23.750%",
+    "Sharpe Ratio": "9.809",
+    "Sortino Ratio": "9.21",
+    "Probabilistic Sharpe Ratio": "79.028%",
+    "Loss Rate": "38%",
+    "Win Rate": "62%",
+    "Profit-Loss Ratio": "2.86",
+    "Alpha": "5.711",
+    "Beta": "-1.894",
+    "Annual Standard Deviation": "0.571",
+    "Annual Variance": "0.326",
+    "Information Ratio": "8.576",
+    "Tracking Error": "0.646",
+    "Treynor Ratio": "-2.956",
+    "Total Fees": "$244.05",
+    "Estimated Strategy Capacity": "$37000000.00",
+    "Lowest Capacity Asset": "RIMM RHZ1O14FDM5H",
+    "Portfolio Turnover": "40.79%",
+    "OrderListHash": "621ba593487ee7c6fc2a682c3a75da59"
+}
+ </script>
+ <pre class="python">class AutomaticIndicatorAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
@@ -104,7 +152,7 @@
         securities = [self.securities[symbol] for symbol in self._universe.selected]
         symbols_to_buy = [
             security.symbol for security in securities 
-            if security.price > security.ema.current.value > security.sma.current.value
+            if security.price &gt; security.ema.current.value &gt; security.sma.current.value
         ]
 
         # Equally invest in the selected stocks to evenly distribute the capital risk.
@@ -117,7 +165,7 @@
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             symbol = security.symbol
-            # Create EMA & SMA indicators to generate trade signals. Use duck typing to save the indicator instances.
+            # Create EMA &amp; SMA indicators to generate trade signals. Use duck typing to save the indicator instances.
             security.ema = self.ema(symbol, 20, Resolution.DAILY)
             security.sma = self.sma(symbol, 20, Resolution.DAILY)
 
@@ -129,4 +177,35 @@
             # Stop updating the indicators of assets that leave the universe to release computation resources.
             self.deregister_indicator(security.ema)
             self.deregister_indicator(security.sma)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "203",
+    "Average Win": "0.55%",
+    "Average Loss": "-0.19%",
+    "Compounding Annual Return": "1036.539%",
+    "Drawdown": "12.500%",
+    "Expectancy": "1.377",
+    "Start Equity": "100000",
+    "End Equity": "123749.76",
+    "Net Profit": "23.750%",
+    "Sharpe Ratio": "9.809",
+    "Sortino Ratio": "9.21",
+    "Probabilistic Sharpe Ratio": "79.028%",
+    "Loss Rate": "38%",
+    "Win Rate": "62%",
+    "Profit-Loss Ratio": "2.86",
+    "Alpha": "5.711",
+    "Beta": "-1.894",
+    "Annual Standard Deviation": "0.571",
+    "Annual Variance": "0.326",
+    "Information Ratio": "8.576",
+    "Tracking Error": "0.646",
+    "Treynor Ratio": "-2.956",
+    "Total Fees": "$244.05",
+    "Estimated Strategy Capacity": "$37000000.00",
+    "Lowest Capacity Asset": "RIMM RHZ1O14FDM5H",
+    "Portfolio Turnover": "40.79%",
+    "OrderListHash": "401c2fe352af2ed9015c875c53358163"
+}
+ </script>
 </div>

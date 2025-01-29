@@ -1,14 +1,25 @@
-<p>The following examples demonstrate some common practices for shorting US Equities:</p>
-
-<h4>Example 1: Shorting Penny Stock Top Gainers</h4>
 <p>
-	The following algorithm adds a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>universe</a> of penny stocks that have experienced the greatest upward momentum over the last two trading days.
-	For each asset in the universe, it monitors an hourly <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/bollinger-bands'>Bollinger Bands</a> indicator.
+ The following examples demonstrate some common practices for shorting US Equities:
+</p>
+<h4>
+ Example 1: Shorting Penny Stock Top Gainers
+</h4>
+<p>
+ The following algorithm adds a
+ <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/fundamental-universes">
+  universe
+ </a>
+ of penny stocks that have experienced the greatest upward momentum over the last two trading days.
+	For each asset in the universe, it monitors an hourly
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/bollinger-bands">
+  Bollinger Bands
+ </a>
+ indicator.
 	When an asset breaks above the upper band, it shorts the asset.
 	It exits each position when the asset drops 10% from the entry price or when the price reverts back below the middle Bollinger Band.
 </p>
 <div class="section-example-container testable">
-	<pre class="csharp">using QuantConnect.Data.Shortable;
+ <pre class="csharp">using QuantConnect.Data.Shortable;
 		
 public class USEquityShortingExampleAlgorithm : QCAlgorithm
 {
@@ -42,7 +53,7 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
                 continue;
             }
             // Filter out assets above $5M market cap or $1 share price.
-            if (f.MarketCap > 5e6 || f.Price > 1)
+            if (f.MarketCap &gt; 5e6 || f.Price &gt; 1)
             {
                 continue;
             }
@@ -50,7 +61,7 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
         }
 
         // Select the 20 penny stocks with the greatest momentum.
-        return pennyStocks.OrderByDescending(symbol => _rocBySymbol[symbol].Current.Value).Take(20);
+        return pennyStocks.OrderByDescending(symbol =&gt; _rocBySymbol[symbol].Current.Value).Take(20);
     }
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -88,7 +99,7 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
         }
         var security = _securityByBB[bb];
         // Short the asset if the price is above the upper band.
-        if (!security.Holdings.Invested && security.Price > bb.UpperBand.Current.Value)
+        if (!security.Holdings.Invested &amp;&amp; security.Price &gt; bb.UpperBand.Current.Value)
         {
             // Get the number of shares avaiable for shorting.
             var shortableQuantity = security.ShortableProvider.ShortableQuantity(security.Symbol, Time);
@@ -108,18 +119,49 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
         }
         // If the limit order isn't hit before the price drops below the middle band, 
         // exit the position and cancel the limit order.
-        else if (security.Holdings.Invested && security.Price < bb.MiddleBand.Current.Value)
+        else if (security.Holdings.Invested &amp;&amp; security.Price &lt; bb.MiddleBand.Current.Value)
         {
             Liquidate(security.Symbol);
         }
     }
 }</pre>
-	<pre class="python">class USEquityShortingExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "566",
+    "Average Win": "0.58%",
+    "Average Loss": "-0.82%",
+    "Compounding Annual Return": "9.177%",
+    "Drawdown": "28.400%",
+    "Expectancy": "0.068",
+    "Start Equity": "100000",
+    "End Equity": "109177.06",
+    "Net Profit": "9.177%",
+    "Sharpe Ratio": "0.369",
+    "Sortino Ratio": "0.277",
+    "Probabilistic Sharpe Ratio": "21.743%",
+    "Loss Rate": "38%",
+    "Win Rate": "62%",
+    "Profit-Loss Ratio": "0.71",
+    "Alpha": "0.12",
+    "Beta": "-0.115",
+    "Annual Standard Deviation": "0.263",
+    "Annual Variance": "0.069",
+    "Information Ratio": "-0.341",
+    "Tracking Error": "0.289",
+    "Treynor Ratio": "-0.844",
+    "Total Fees": "$8618.04",
+    "Estimated Strategy Capacity": "$26000.00",
+    "Lowest Capacity Asset": "SDPI VQS8ADUGURTX",
+    "Portfolio Turnover": "10.19%",
+    "OrderListHash": "44492e851bbde7a1021f63b658827bd3"
+}
+ </script>
+ <pre class="python">class USEquityShortingExampleAlgorithm(QCAlgorithm):
     
     _roc_by_symbol = {}
     _security_by_bb = {}
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2022, 1, 1)
         # Enable automatic indicator warm-up.
@@ -127,7 +169,7 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
         # Add a universe of low-cap penny stocks that have high upward momentum.
         self.add_universe(self._select_assets)
 
-    def _select_assets(self, fundamentals: List[Fundamental]) -> List[Symbol]:
+    def _select_assets(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
         # Select all the penny stocks that have a momentum score.
         penny_stocks = []
         for f in fundamentals:
@@ -138,14 +180,14 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
             if not self._roc_by_symbol[f.symbol].update(f.end_time, f.price):
                 continue
             # Filter out assets above $5M market cap or $1 share price.
-            if f.market_cap > 5e6 or f.price > 1:
+            if f.market_cap &gt; 5e6 or f.price &gt; 1:
                 continue
             penny_stocks.append(f.symbol)
 
         # Select the 20 penny stocks with the greatest momentum.
         return sorted(penny_stocks, key=lambda symbol: self._roc_by_symbol[symbol].current.value)[-20:]
         
-    def on_securities_changed(self, changes: SecurityChanges) -> None:
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Iterate through the assets that entered the universe.
         for security in changes.added_securities:
             # Set the shortable provider of the asset to ensure realistic short availability.
@@ -162,13 +204,13 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
             self._security_by_bb.pop(security.bbands, None)
             self.liquidate(security.symbol)
 
-    def on_bb_updated(self, bb: object, _: IndicatorDataPoint) -> None:
+    def on_bb_updated(self, bb: object, _: IndicatorDataPoint) -&gt; None:
         # When the indicator updates, ensure it's ready.
         if not bb.is_ready:
             return
         security = self._security_by_bb[bb]
         # Short the asset if the price is above the upper band.
-        if not security.holdings.invested and security.price > bb.upper_band.current.value:
+        if not security.holdings.invested and security.price &gt; bb.upper_band.current.value:
             # Get the number of shares avaiable for shorting.
             shortable_quantity = security.shortable_provider.shortable_quantity(security.symbol, self.time)
             if not shortable_quantity:
@@ -182,6 +224,37 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
                 self.limit_order(security.symbol, -quantity, 0.9 * security.bid_price)
         # If the limit order isn't hit before the price drops below the middle band, 
         # exit the position and cancel the limit order.
-        elif security.holdings.invested and security.price < bb.middle_band.current.value:
+        elif security.holdings.invested and security.price &lt; bb.middle_band.current.value:
             self.liquidate(security.symbol)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "61",
+    "Average Win": "0.08%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "1.392%",
+    "Drawdown": "2.600%",
+    "Expectancy": "6.008",
+    "Start Equity": "100000",
+    "End Equity": "105802.19",
+    "Net Profit": "5.802%",
+    "Sharpe Ratio": "-1.684",
+    "Sortino Ratio": "-1.941",
+    "Probabilistic Sharpe Ratio": "24.486%",
+    "Loss Rate": "9%",
+    "Win Rate": "91%",
+    "Profit-Loss Ratio": "6.66",
+    "Alpha": "-0.029",
+    "Beta": "0.094",
+    "Annual Standard Deviation": "0.014",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.763",
+    "Tracking Error": "0.124",
+    "Treynor Ratio": "-0.241",
+    "Total Fees": "$61.00",
+    "Estimated Strategy Capacity": "$810000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.02%",
+    "OrderListHash": "28630cf895ee210c5d7d7d105467ed38"
+}
+ </script>
 </div>

@@ -1,44 +1,97 @@
-<p>The following backtest verifies the <code class="csharp">ComboMarketOrder</code><code class="python">combo_market_order</code> behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:</p>
-
+<p>
+ The following backtest verifies the
+ <code class="csharp">
+  ComboMarketOrder
+ </code>
+ <code class="python">
+  combo_market_order
+ </code>
+ behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:
+</p>
 <table class="qc-table table" id="research-nodes-table">
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Value</th>
-            <th>Tag</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>2015-12-24T09:31:00Z</td>
-            <td>GOOG 16011SC00745000</td>
-            <td>16.90</td>
-            <td>1</td>
-            <td>Buy</td>
-            <td>Filled</td>
-            <td>16.90</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>2015-12-24T09:31:00Z</td>
-            <td>GOOG 160115C00747500</td>
-            <td>14.20</td>
-            <td>-1</td>
-            <td>Sell</td>
-            <td>Filled</td>
-            <td>-14.20</td>
-            <td></td>
-        </tr>
-    </tbody>
+ <thead>
+  <tr>
+   <th>
+    Time
+   </th>
+   <th>
+    Symbol
+   </th>
+   <th>
+    Price
+   </th>
+   <th>
+    Quantity
+   </th>
+   <th>
+    Type
+   </th>
+   <th>
+    Status
+   </th>
+   <th>
+    Value
+   </th>
+   <th>
+    Tag
+   </th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    2015-12-24T09:31:00Z
+   </td>
+   <td>
+    GOOG 16011SC00745000
+   </td>
+   <td>
+    16.90
+   </td>
+   <td>
+    1
+   </td>
+   <td>
+    Buy
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    16.90
+   </td>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    2015-12-24T09:31:00Z
+   </td>
+   <td>
+    GOOG 160115C00747500
+   </td>
+   <td>
+    14.20
+   </td>
+   <td>
+    -1
+   </td>
+   <td>
+    Sell
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    -14.20
+   </td>
+   <td>
+   </td>
+  </tr>
+ </tbody>
 </table>
-
 <style>
-#research-nodes-table td:nth-child(3), 
+ #research-nodes-table td:nth-child(3), 
 #research-nodes-table th:nth-child(3), 
 #research-nodes-table td:nth-child(4), 
 #research-nodes-table th:nth-child(4), 
@@ -47,13 +100,18 @@
     text-align: right;
 }
 </style>
-
-<p>On December 24, 2015, the algorithm buys GOOG 16011SC00745000 at $16.90 and sells GOOG 160115C00747500 at $14.20. The <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#11-Combo-Market-Orders">fill model</a> fills the buy order at the ask close price and fills the sell order at the bid close price.</p>
-
-<p>To reproduce these results, backtest the following algorithm:</p>
-
+<p>
+ On December 24, 2015, the algorithm buys GOOG 16011SC00745000 at $16.90 and sells GOOG 160115C00747500 at $14.20. The
+ <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#11-Combo-Market-Orders">
+  fill model
+ </a>
+ fills the buy order at the ask close price and fills the sell order at the bid close price.
+</p>
+<p>
+ To reproduce these results, backtest the following algorithm:
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class ComboMarketOrderAlgorithm : QCAlgorithm
+ <pre class="csharp">public class ComboMarketOrderAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -89,7 +147,38 @@
         }
     }
 }</pre>
-    <pre class="python">class ComboMarketOrderAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-2.345%",
+    "Drawdown": "0.200%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99948",
+    "Net Profit": "-0.052%",
+    "Sharpe Ratio": "4.57",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "87.252%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.015",
+    "Beta": "-0.002",
+    "Annual Standard Deviation": "0.003",
+    "Annual Variance": "0",
+    "Information Ratio": "2.777",
+    "Tracking Error": "0.104",
+    "Treynor Ratio": "-8.874",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$300000.00",
+    "Lowest Capacity Asset": "GOOCV W78ZFMEBBB2E|GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "0.36%",
+    "OrderListHash": "7c799ba643103affbf16b764554772bd"
+}
+ </script>
+ <pre class="python">class ComboMarketOrderAlgorithm(QCAlgorithm):
     
     def initialize(self):
         self.set_start_date(2015, 12, 24) 
@@ -113,4 +202,35 @@
                 legs.append(Leg.create(contract.symbol, quantities[i]))
             
             tickets = self.combo_market_order(legs, 1)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99878",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$300000.00",
+    "Lowest Capacity Asset": "GOOCV W78ZFMEBBB2E|GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "2.84%",
+    "OrderListHash": "8797da8a6e015f2a3cb9373e8d7ee344"
+}
+ </script>
 </div>

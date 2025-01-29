@@ -1,9 +1,14 @@
-<p>The following examples demonstrate common practices for implementing a customized fill model.</p>
-
-<h4>Example 1: Volume Share Fill</h4>
-<p>The following algorithm longs the top 10 liquid constituents and short the bottom 10 liquid constituents of QQQ. To realistically fill the less liquid stocks, we implement a fill model that only fills with at most 30% of the previous second bar.</p>
+<p>
+ The following examples demonstrate common practices for implementing a customized fill model.
+</p>
+<h4>
+ Example 1: Volume Share Fill
+</h4>
+<p>
+ The following algorithm longs the top 10 liquid constituents and short the bottom 10 liquid constituents of QQQ. To realistically fill the less liquid stocks, we implement a fill model that only fills with at most 30% of the previous second bar.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class VolumeShareSlippageModelAlgorithm : QCAlgorithm
+ <pre class="csharp">public class VolumeShareSlippageModelAlgorithm : QCAlgorithm
 {
     private List&lt;Symbol&gt; _longs = new();
     private List&lt;Symbol&gt; _shorts = new();
@@ -120,7 +125,38 @@
         }
     }
 }</pre>
-    <pre class="python">class VolumeShareFillModelAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "472",
+    "Average Win": "0.04%",
+    "Average Loss": "-0.03%",
+    "Compounding Annual Return": "15.233%",
+    "Drawdown": "7.700%",
+    "Expectancy": "0.230",
+    "Start Equity": "100000",
+    "End Equity": "115217.99",
+    "Net Profit": "15.218%",
+    "Sharpe Ratio": "1.233",
+    "Sortino Ratio": "1.537",
+    "Probabilistic Sharpe Ratio": "59.498%",
+    "Loss Rate": "48%",
+    "Win Rate": "52%",
+    "Profit-Loss Ratio": "1.35",
+    "Alpha": "0.033",
+    "Beta": "0.367",
+    "Annual Standard Deviation": "0.085",
+    "Annual Variance": "0.007",
+    "Information Ratio": "-0.897",
+    "Tracking Error": "0.101",
+    "Treynor Ratio": "0.285",
+    "Total Fees": "$474.76",
+    "Estimated Strategy Capacity": "$670000.00",
+    "Lowest Capacity Asset": "SGEN S2TCB9V1OIG5",
+    "Portfolio Turnover": "3.90%",
+    "OrderListHash": "3db0ef9cfa7f22b6ac60e04bf9a582bd"
+}
+ </script>
+ <pre class="python">class VolumeShareFillModelAlgorithm(QCAlgorithm):
     longs = []
     shorts = []
 
@@ -200,37 +236,94 @@ class VolumeShareFillSecurityInitializer(BrokerageModelSecurityInitializer):
     def initialize(self, security: Security) -&gt; None:
         super().initialize(security)
         security.set_fill_model(self.fill_model)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "467",
+    "Average Win": "0.22%",
+    "Average Loss": "-0.19%",
+    "Compounding Annual Return": "14.741%",
+    "Drawdown": "7.700%",
+    "Expectancy": "0.201",
+    "Start Equity": "100000",
+    "End Equity": "114727.09",
+    "Net Profit": "14.727%",
+    "Sharpe Ratio": "1.192",
+    "Sortino Ratio": "1.493",
+    "Probabilistic Sharpe Ratio": "57.764%",
+    "Loss Rate": "44%",
+    "Win Rate": "56%",
+    "Profit-Loss Ratio": "1.14",
+    "Alpha": "0.029",
+    "Beta": "0.367",
+    "Annual Standard Deviation": "0.085",
+    "Annual Variance": "0.007",
+    "Information Ratio": "-0.928",
+    "Tracking Error": "0.102",
+    "Treynor Ratio": "0.276",
+    "Total Fees": "$469.76",
+    "Estimated Strategy Capacity": "$7700000.00",
+    "Lowest Capacity Asset": "NSP R735QTJ8XC9X",
+    "Portfolio Turnover": "3.90%",
+    "OrderListHash": "5b3bfed0b064e59c56c248ea110b902f"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
-  <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div>
-
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">
-        CustomModelsAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomPartialFillModelAlgorithm.py" target="_BLANK">
-        CustomPartialFillModelAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ComboOrdersFillModelAlgorithm.py" target="_BLANK">
-        ComboOrdersFillModelAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ForwardDataOnlyFillModelAlgorithm.py" target="_BLANK">
-        ForwardDataOnlyFillModelAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomModelsAlgorithm.cs" target="_BLANK">
-        CustomModelsAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomPartialFillModelAlgorithm.cs" target="_BLANK">
-        CustomPartialFillModelAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ComboOrdersFillModelAlgorithm.cs" target="_BLANK">
-        ComboOrdersFillModelAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ForwardDataOnlyFillModelAlgorithm.cs" target="_BLANK">
-        ForwardDataOnlyFillModelAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-  </div>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+<div class="example-fieldset">
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">
+  CustomModelsAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomPartialFillModelAlgorithm.py" target="_BLANK">
+  CustomPartialFillModelAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ComboOrdersFillModelAlgorithm.py" target="_BLANK">
+  ComboOrdersFillModelAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ForwardDataOnlyFillModelAlgorithm.py" target="_BLANK">
+  ForwardDataOnlyFillModelAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomModelsAlgorithm.cs" target="_BLANK">
+  CustomModelsAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomPartialFillModelAlgorithm.cs" target="_BLANK">
+  CustomPartialFillModelAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ComboOrdersFillModelAlgorithm.cs" target="_BLANK">
+  ComboOrdersFillModelAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ForwardDataOnlyFillModelAlgorithm.cs" target="_BLANK">
+  ForwardDataOnlyFillModelAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+</div>

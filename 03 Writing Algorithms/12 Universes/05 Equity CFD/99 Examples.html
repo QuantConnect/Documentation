@@ -1,13 +1,17 @@
-<p>The following examples demonstrate common practices for implementing Equity CFD's universe.</p>
-
-<h4>Example 1: Short Bottom-Weighted SPY Constituents</h4>
 <p>
-    A subset of the SPY constituents outperforms the SPY, while many underperform the overall index. 
+ The following examples demonstrate common practices for implementing Equity CFD's universe.
+</p>
+<h4>
+ Example 1: Short Bottom-Weighted SPY Constituents
+</h4>
+<p>
+ A subset of the SPY constituents outperforms the SPY, while many underperform the overall index. 
     To exclude the ETF constituents that underperform the index, the following algorithm buys the SPY CFD and shorts the CFD of the 100 constituents in the index with the smallest weight in the ETF.
 </p>
-<p></p>
+<p>
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class EquityCfdUniverseAlgorithm : QCAlgorithm
+ <pre class="csharp">public class EquityCfdUniverseAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private Dictionary&lt;Symbol, decimal&gt; _etfWeightBySymbol;
@@ -60,7 +64,38 @@
         SetHoldings(targets, true);
     }
 }</pre>
-    <pre class="python">class EquityCfdUniverseAlgorithm(QCAlgorithm):    
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "6537",
+    "Average Win": "0.00%",
+    "Average Loss": "0.00%",
+    "Compounding Annual Return": "23.555%",
+    "Drawdown": "9.500%",
+    "Expectancy": "0.011",
+    "Start Equity": "10000000",
+    "End Equity": "14221378.50",
+    "Net Profit": "42.214%",
+    "Sharpe Ratio": "1.12",
+    "Sortino Ratio": "1.287",
+    "Probabilistic Sharpe Ratio": "80.483%",
+    "Loss Rate": "66%",
+    "Win Rate": "34%",
+    "Profit-Loss Ratio": "2.01",
+    "Alpha": "-0.005",
+    "Beta": "0.946",
+    "Annual Standard Deviation": "0.096",
+    "Annual Variance": "0.009",
+    "Information Ratio": "-0.981",
+    "Tracking Error": "0.012",
+    "Treynor Ratio": "0.114",
+    "Total Fees": "$6670.15",
+    "Estimated Strategy Capacity": "$250000000.00",
+    "Lowest Capacity Asset": "POOL R735QTJ8XC9X",
+    "Portfolio Turnover": "0.21%",
+    "OrderListHash": "555d499f43302a28a8969ed1afd4c67a"
+}
+ </script>
+ <pre class="python">class EquityCfdUniverseAlgorithm(QCAlgorithm):    
     def initialize(self) -&gt; None:
         self.set_start_date(2023, 6, 1)
         self.set_cash(10_000_000)
@@ -106,4 +141,35 @@
         targets.append(PortfolioTarget(self._spy, 1 - sum(weight_by_symbol.values())))
         # Place orders to rebalance the portfolio.
         self.set_holdings(targets, True)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "6538",
+    "Average Win": "0.00%",
+    "Average Loss": "0.00%",
+    "Compounding Annual Return": "23.554%",
+    "Drawdown": "9.400%",
+    "Expectancy": "0.011",
+    "Start Equity": "10000000",
+    "End Equity": "14221149.14",
+    "Net Profit": "42.211%",
+    "Sharpe Ratio": "1.12",
+    "Sortino Ratio": "1.287",
+    "Probabilistic Sharpe Ratio": "80.481%",
+    "Loss Rate": "66%",
+    "Win Rate": "34%",
+    "Profit-Loss Ratio": "2.02",
+    "Alpha": "-0.005",
+    "Beta": "0.946",
+    "Annual Standard Deviation": "0.096",
+    "Annual Variance": "0.009",
+    "Information Ratio": "-0.982",
+    "Tracking Error": "0.012",
+    "Treynor Ratio": "0.114",
+    "Total Fees": "$6671.10",
+    "Estimated Strategy Capacity": "$250000000.00",
+    "Lowest Capacity Asset": "POOL R735QTJ8XC9X",
+    "Portfolio Turnover": "0.21%",
+    "OrderListHash": "dd01644b8a34837bdf72f63425124581"
+}
+ </script>
 </div>

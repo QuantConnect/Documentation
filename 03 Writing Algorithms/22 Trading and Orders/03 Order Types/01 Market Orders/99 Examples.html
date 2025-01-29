@@ -1,44 +1,97 @@
-<p>The following backtest verifies the <code class="csharp">MarketOrder</code><code class="python">market_order</code> behavior. The algorithm buys SPY on the first day and liquidates the position on the second day. The following table shows the first two trades in the backtest:</p>
-
+<p>
+ The following backtest verifies the
+ <code class="csharp">
+  MarketOrder
+ </code>
+ <code class="python">
+  market_order
+ </code>
+ behavior. The algorithm buys SPY on the first day and liquidates the position on the second day. The following table shows the first two trades in the backtest:
+</p>
 <table class="qc-table table" id="research-nodes-table">
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Value</th>
-            <th>Tag</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>2021-07-01T09:31:00Z</td>
-            <td>SPY</td>
-            <td>429.11</td>
-            <td>10</td>
-            <td>Market</td>
-            <td>Filled</td>
-            <td>4291.10</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>2021-07-02T09:31:00Z</td>
-            <td>SPY</td>
-            <td>431.54</td>
-            <td>-10</td>
-            <td>Market</td>
-            <td>Filled</td>
-            <td>-4315.40</td>
-            <td></td>
-        </tr>
-    </tbody>
+ <thead>
+  <tr>
+   <th>
+    Time
+   </th>
+   <th>
+    Symbol
+   </th>
+   <th>
+    Price
+   </th>
+   <th>
+    Quantity
+   </th>
+   <th>
+    Type
+   </th>
+   <th>
+    Status
+   </th>
+   <th>
+    Value
+   </th>
+   <th>
+    Tag
+   </th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    2021-07-01T09:31:00Z
+   </td>
+   <td>
+    SPY
+   </td>
+   <td>
+    429.11
+   </td>
+   <td>
+    10
+   </td>
+   <td>
+    Market
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    4291.10
+   </td>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    2021-07-02T09:31:00Z
+   </td>
+   <td>
+    SPY
+   </td>
+   <td>
+    431.54
+   </td>
+   <td>
+    -10
+   </td>
+   <td>
+    Market
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    -4315.40
+   </td>
+   <td>
+   </td>
+  </tr>
+ </tbody>
 </table>
-
 <style>
-#research-nodes-table td:nth-child(3), 
+ #research-nodes-table td:nth-child(3), 
 #research-nodes-table th:nth-child(3), 
 #research-nodes-table td:nth-child(4), 
 #research-nodes-table th:nth-child(4), 
@@ -47,15 +100,22 @@
     text-align: right;
 }
 </style>
-
-<p>On July 1, 2021, the algorithm buys SPY at $429.11. The <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#02-Market-Orders">fill model</a> fills this order at the ask close price. <br></p>
-
-<p>On July 2, 2021, the algorithm sells the SPY holdings at $431.54. The fill model fills this order at the bid close price.</p>
-
-<p>To reproduce these results, backtest the following algorithm:</p>
-
+<p>
+ On July 1, 2021, the algorithm buys SPY at $429.11. The
+ <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#02-Market-Orders">
+  fill model
+ </a>
+ fills this order at the ask close price.
+ <br>
+</p>
+<p>
+ On July 2, 2021, the algorithm sells the SPY holdings at $431.54. The fill model fills this order at the bid close price.
+</p>
+<p>
+ To reproduce these results, backtest the following algorithm:
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class MarketOrderAlgorithm : QCAlgorithm
+ <pre class="csharp">public class MarketOrderAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
 
@@ -70,17 +130,48 @@
 
     public override void OnData(Slice data)
     {
-        if (!Portfolio.Invested && Time.Day == 1)
+        if (!Portfolio.Invested &amp;&amp; Time.Day == 1)
         {
             MarketOrder(_symbol, 10);
         }
-        else if (Portfolio.Invested && Time.Day == 2)
+        else if (Portfolio.Invested &amp;&amp; Time.Day == 2)
         {
             MarketOrder(_symbol, -10);
         }
     }
 }</pre>
-    <pre class="python">class MarketOrderAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100022.3",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$71000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "4.30%",
+    "OrderListHash": "9322f036dd294f0fad37b9f6f2fa2959"
+}
+ </script>
+ <pre class="python">class MarketOrderAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2021, 7, 1)
@@ -95,4 +186,35 @@
 
         elif self.portfolio.invested and self.time.day != 1:
             self.market_order("SPY", -10)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100022.3",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$71000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "4.30%",
+    "OrderListHash": "5431490ec77c027df6b388074d36f296"
+}
+ </script>
 </div>

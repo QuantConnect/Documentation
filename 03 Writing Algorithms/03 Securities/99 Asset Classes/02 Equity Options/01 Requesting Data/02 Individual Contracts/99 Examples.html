@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for requesting individual Equity Option contract data.</p>
-
-<h4>Example 1: Covered Call</h4>
-<p>A cover call consists of a short call and with a lot of the underlying equity. Although it capped the maximum profit if the underlying skyrocketted, it also provide extra credit received while speculating the underlying will rise.</p>
+<p>
+ The following examples demonstrate some common practices for requesting individual Equity Option contract data.
+</p>
+<h4>
+ Example 1: Covered Call
+</h4>
+<p>
+ A cover call consists of a short call and with a lot of the underlying equity. Although it capped the maximum profit if the underlying skyrocketted, it also provide extra credit received while speculating the underlying will rise.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
 {
     private Symbol _aapl;
     private List&lt;Symbol&gt; _options = new();
@@ -31,8 +36,8 @@
         // $5 buffer is given on selecting the ATM call due to price movement.
         _options = contractSymbols
             .Where(symbol =&gt; 
-                symbol.ID.Date &lt; Time.AddDays(30) && 
-                symbol.ID.OptionRight == OptionRight.Call && 
+                symbol.ID.Date &lt; Time.AddDays(30) &amp;&amp; 
+                symbol.ID.OptionRight == OptionRight.Call &amp;&amp; 
                 Math.Abs(symbol.ID.StrikePrice - Securities[_aapl].Price) &lt;= 5
             )
             .Select(symbol =&gt; AddOptionContract(symbol).Symbol)
@@ -41,7 +46,7 @@
     
     public override void OnData(Slice slice)
     {
-        if (!Portfolio.Invested && slice.Bars.ContainsKey(_aapl) && _options.Count &gt; 0)
+        if (!Portfolio.Invested &amp;&amp; slice.Bars.ContainsKey(_aapl) &amp;&amp; _options.Count &gt; 0)
         {
             // To form a covered call, get the contract closest to ATM and expiry.
             var contract = _options.OrderBy(x =&gt; x.ID.Date)
@@ -58,14 +63,45 @@
     {
         // Close AAPL position if the short call is not exercised (OTM).
         // If it is exercised, the underlying will be used to settle the contract automatically.
-        if (orderEvent.Ticket.OrderType == OrderType.OptionExercise &&
+        if (orderEvent.Ticket.OrderType == OrderType.OptionExercise &amp;&amp;
             !orderEvent.IsInTheMoney)
         {
             MarketOrder(_aapl, -Securities[orderEvent.Symbol].SymbolProperties.ContractMultiplier);
         }
     }
 }</pre>
-    <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "16",
+    "Average Win": "0.32%",
+    "Average Loss": "-0.18%",
+    "Compounding Annual Return": "7.717%",
+    "Drawdown": "27.100%",
+    "Expectancy": "0.038",
+    "Start Equity": "100000",
+    "End Equity": "749491.83",
+    "Net Profit": "649.492%",
+    "Sharpe Ratio": "0.327",
+    "Sortino Ratio": "0.254",
+    "Probabilistic Sharpe Ratio": "0.108%",
+    "Loss Rate": "62%",
+    "Win Rate": "38%",
+    "Profit-Loss Ratio": "1.77",
+    "Alpha": "0.022",
+    "Beta": "0.301",
+    "Annual Standard Deviation": "0.113",
+    "Annual Variance": "0.013",
+    "Information Ratio": "-0.094",
+    "Tracking Error": "0.151",
+    "Treynor Ratio": "0.123",
+    "Total Fees": "$10.00",
+    "Estimated Strategy Capacity": "$6800000.00",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "0.04%",
+    "OrderListHash": "176dd9caaf0b1ee6c82442963d51e697"
+}
+ </script>
+ <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2018, 1, 1)
@@ -92,9 +128,9 @@
         # $5 buffer is given on selecting the ATM call due to price movement.
         expiry_threshold = self.time + timedelta(30)
         self._chain = chain[
-            (chain.expiry < expiry_threshold) &
-            (chain.right == OptionRight.CALL) &
-            (abs(chain.strike - chain.underlyinglastprice) <= 5)
+            (chain.expiry &lt; expiry_threshold) &amp;
+            (chain.right == OptionRight.CALL) &amp;
+            (abs(chain.strike - chain.underlyinglastprice) &lt;= 5)
         ]
         for symbol in self._chain.index:
             self.add_option_contract(symbol)
@@ -116,12 +152,50 @@
         if order_event.ticket.order_type == OrderType.OPTION_EXERCISE \
         and not order_event.is_in_the_money:
             self.market_order(self.aapl, -self.securities[order_event.symbol].symbol_properties.contract_multiplier)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "38",
+    "Average Win": "0.16%",
+    "Average Loss": "-0.30%",
+    "Compounding Annual Return": "-1.704%",
+    "Drawdown": "8.000%",
+    "Expectancy": "-0.371",
+    "Start Equity": "100000",
+    "End Equity": "98298",
+    "Net Profit": "-1.702%",
+    "Sharpe Ratio": "-0.825",
+    "Sortino Ratio": "-0.881",
+    "Probabilistic Sharpe Ratio": "6.467%",
+    "Loss Rate": "59%",
+    "Win Rate": "41%",
+    "Profit-Loss Ratio": "0.54",
+    "Alpha": "-0.025",
+    "Beta": "0.21",
+    "Annual Standard Deviation": "0.042",
+    "Annual Variance": "0.002",
+    "Information Ratio": "0.097",
+    "Tracking Error": "0.116",
+    "Treynor Ratio": "-0.166",
+    "Total Fees": "$27.00",
+    "Estimated Strategy Capacity": "$86000000.00",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "1.08%",
+    "OrderListHash": "ee2c7f68a005d856b729454ca0fd14a8"
+}
+ </script>
 </div>
-
-<h4>Example 2: 0-DTE Bull Put Spread</h4>
-<p>0DTE options often trades with high volume and volatility, providing arbitration opportunities and higher profit margin on spread type trading. In this example, we make use of 0-DTE SPY options to trade <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread">bull put spread</a> option strategy.</p>
+<h4>
+ Example 2: 0-DTE Bull Put Spread
+</h4>
+<p>
+ 0DTE options often trades with high volume and volatility, providing arbitration opportunities and higher profit margin on spread type trading. In this example, we make use of 0-DTE SPY options to trade
+ <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread">
+  bull put spread
+ </a>
+ option strategy.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private List&lt;Symbol&gt; _options = new();
@@ -154,7 +228,7 @@
         var contractSymbols = OptionChain(_spy);
         // Select the 0-DTE puts by setting expiry within 1 day.
         var filteredSymbols = contractSymbols
-            .Where(symbol =&gt; symbol.ID.Date &lt; Time.AddDays(1) && symbol.ID.OptionRight == OptionRight.Put)
+            .Where(symbol =&gt; symbol.ID.Date &lt; Time.AddDays(1) &amp;&amp; symbol.ID.OptionRight == OptionRight.Put)
             .ToList();
         // Ensure at least 2 contracts available to form a put spread.
         if (filteredSymbols.Count &lt; 2)
@@ -172,7 +246,7 @@
     {
         // To avoid over-trading, limit the position opening to before 3pm.
         // To ensure the put spread formed correctly, make sure at least 2 contracts selected.
-        if (!Portfolio.Invested && Time.Hour &lt; 15 &&  _options.Count == 2)
+        if (!Portfolio.Invested &amp;&amp; Time.Hour &lt; 15 &amp;&amp;  _options.Count == 2)
         {
             // A bull put spread involves buying a lower-strike put and selling a high-strike put
             MarketOrder(_options.MaxBy(x =&gt; x.ID.StrikePrice), -1);
@@ -186,7 +260,38 @@
         Liquidate();
     }
 }</pre>
-    <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "6468",
+    "Average Win": "0.37%",
+    "Average Loss": "-0.33%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "100.100%",
+    "Expectancy": "-0.547",
+    "Start Equity": "100000",
+    "End Equity": "-102.83",
+    "Net Profit": "-100.103%",
+    "Sharpe Ratio": "-0.766",
+    "Sortino Ratio": "-0.273",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "79%",
+    "Win Rate": "21%",
+    "Profit-Loss Ratio": "1.12",
+    "Alpha": "-0.205",
+    "Beta": "0.07",
+    "Annual Standard Deviation": "0.264",
+    "Annual Variance": "0.07",
+    "Information Ratio": "-0.816",
+    "Tracking Error": "0.3",
+    "Treynor Ratio": "-2.877",
+    "Total Fees": "$5994.80",
+    "Estimated Strategy Capacity": "$1000.00",
+    "Lowest Capacity Asset": "SPY 31A6MGNBFZ2RQ|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "1.37%",
+    "OrderListHash": "a0261e997b489e2c550a71cae9af0aab"
+}
+ </script>
+ <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.options = []
         # Seed the underlying security price to ensure accurate filtering for puts of $5 above/below current market price.
@@ -236,12 +341,54 @@
     def exit_position(self) -&gt; None:
         # Exit all positions before market close to avoid option assignment and overnight risk.
         self.liquidate()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "6468",
+    "Average Win": "0.37%",
+    "Average Loss": "-0.33%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "100.100%",
+    "Expectancy": "-0.547",
+    "Start Equity": "100000",
+    "End Equity": "-102.83",
+    "Net Profit": "-100.103%",
+    "Sharpe Ratio": "-0.766",
+    "Sortino Ratio": "-0.273",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "79%",
+    "Win Rate": "21%",
+    "Profit-Loss Ratio": "1.12",
+    "Alpha": "-0.205",
+    "Beta": "0.07",
+    "Annual Standard Deviation": "0.264",
+    "Annual Variance": "0.07",
+    "Information Ratio": "-0.816",
+    "Tracking Error": "0.3",
+    "Treynor Ratio": "-2.877",
+    "Total Fees": "$5994.80",
+    "Estimated Strategy Capacity": "$1000.00",
+    "Lowest Capacity Asset": "SPY 31A6MGNBFZ2RQ|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "1.37%",
+    "OrderListHash": "60179503f5624f0339065f8025a3cc9e"
+}
+ </script>
 </div>
-
-<h4>Example 3: Select Option Contracts by Greeks</h4>
-<p>The following algorithm creates a weekly <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> that adds a universe of contracts with a <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/delta">Delta</a> >= 0.99. This universe is useful for creating a hedge replicate portfolio for arbitrage.</p>
+<h4>
+ Example 3: Select Option Contracts by Greeks
+</h4>
+<p>
+ The following algorithm creates a weekly
+ <a href="/docs/v2/writing-algorithms/scheduled-events">
+  Scheduled Event
+ </a>
+ that adds a universe of contracts with a
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/delta">
+  Delta
+ </a>
+ &gt;= 0.99. This universe is useful for creating a hedge replicate portfolio for arbitrage.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
 {
     private Symbol _underlying;
     private List&lt;Option&gt; _universe = new();
@@ -265,24 +412,55 @@
         _universe.Clear();
         // Get all the tradable Option contracts for SPY at the current time.
         var chain = OptionChain(_underlying);
-        // Add the contracts that have the nearest expiry after 7 days and a delta >= 0.99.
+        // Add the contracts that have the nearest expiry after 7 days and a delta &gt;= 0.99.
         var expiryThreshold = Time.AddDays(7);
-        var contracts = chain.Where(contract => contract.Expiry >= expiryThreshold);
+        var contracts = chain.Where(contract =&gt; contract.Expiry &gt;= expiryThreshold);
         if (!contracts.IsNullOrEmpty())
         {
-            var expiry = contracts.Select(contract => contract.Expiry).Min();
+            var expiry = contracts.Select(contract =&gt; contract.Expiry).Min();
             _universe = contracts
-                .Where(contract => contract.Expiry == expiry & contract.Greeks.Delta >= 0.99m)
-                .Select(contract => AddOptionContract(contract.Symbol))
+                .Where(contract =&gt; contract.Expiry == expiry &amp; contract.Greeks.Delta &gt;= 0.99m)
+                .Select(contract =&gt; AddOptionContract(contract.Symbol))
                 .ToList();
         }
         // Plot the number of contracts in the universe.
         Plot("Universe", "Size", _universe.Count);
     }
 }</pre>
-    <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.781",
+    "Tracking Error": "0.108",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2019, 6, 1)
         # Add the underlying asset with raw data to enable Option strike-price comparability.
@@ -294,26 +472,60 @@
             self._add_contracts
         )
     
-    def _add_contracts(self) -> None:
+    def _add_contracts(self) -&gt; None:
         self._universe = []
         # Get all the tradable Option contracts for SPY at the current time.
         chain = self.option_chain(self._underlying, flatten=True).data_frame
         if not chain.empty:
-            # Add the contracts that have the nearest expiry after 7 days and a delta >= 0.99.
+            # Add the contracts that have the nearest expiry after 7 days and a delta &gt;= 0.99.
             expiry_threshold = self.time + timedelta(7)
-            expiry = chain[chain.expiry >= expiry_threshold].expiry.min()
+            expiry = chain[chain.expiry &gt;= expiry_threshold].expiry.min()
             self._universe = [
                 self.add_option_contract(symbol) 
-                for symbol in chain[(chain.expiry == expiry) & (chain.delta >= 0.99)].index
+                for symbol in chain[(chain.expiry == expiry) &amp; (chain.delta &gt;= 0.99)].index
             ]
         # Plot the number of contracts in the universe.
         self.plot('Universe', 'Size', len(self._universe))</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.781",
+    "Tracking Error": "0.108",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 4: Wheel Strategy</h4>
-<p>The Wheel strategy is a popular trading strategy for Options that enables traders to build a steady flow of income from Equity assets they want to hold for the long term.</p>
+<h4>
+ Example 4: Wheel Strategy
+</h4>
+<p>
+ The Wheel strategy is a popular trading strategy for Options that enables traders to build a steady flow of income from Equity assets they want to hold for the long term.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     // Set OTM threshold for wheel strategy profit margin.
@@ -333,14 +545,14 @@
     {
         // To use the latest underlying price to filter the option contract, ensure the SPY in the bar data.
         // Open short put contract position only when the last wheel is completed.
-        if (!Portfolio.Invested && slice.Bars.ContainsKey(_spy))
+        if (!Portfolio.Invested &amp;&amp; slice.Bars.ContainsKey(_spy))
         {
             // Initiate the wheel by shorting a least-OTM put contract that the strike is below the threshold.
             var symbol = GetTargetContract(OptionRight.Put, slice.Bars[_spy].Price * (1 - _otmThreshold));
             SetHoldings(symbol, -0.2m);
         }
         // Open short call contract position only when the put is assigned (portfolio with the underlying) to close the wheel and underlying position by the call assignment.
-        else if (Portfolio[_spy].Invested && slice.Bars.ContainsKey(_spy))
+        else if (Portfolio[_spy].Invested &amp;&amp; slice.Bars.ContainsKey(_spy))
         {
             // Short the corresponding number of a least-OTM call contract that the strike is above the threshold.
             var symbol = GetTargetContract(OptionRight.Call, slice.Bars[_spy].Price * (1 + _otmThreshold));
@@ -357,8 +569,8 @@
         var expiry = contractSymbols.Where(x =&gt; x.ID.Date &gt; Time.AddDays(30))
             .Min(x =&gt; x.ID.Date);
         var filtered = contractSymbols.Where(x =&gt;
-                x.ID.Date == expiry &&
-                x.ID.OptionRight == right &&
+                x.ID.Date == expiry &amp;&amp;
+                x.ID.OptionRight == right &amp;&amp;
                 (right == OptionRight.Call ? x.ID.StrikePrice &gt;= targetPrice : x.ID.StrikePrice &lt;= targetPrice)
             )
             .OrderBy(x =&gt; x.ID.StrikePrice)
@@ -368,7 +580,38 @@
         return AddOptionContract(selected).Symbol;
     }
 }</pre>
-    <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "21",
+    "Average Win": "0.90%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "10.793%",
+    "Drawdown": "1.800%",
+    "Expectancy": "0",
+    "Start Equity": "1000000000",
+    "End Equity": "1107827320.5",
+    "Net Profit": "10.783%",
+    "Sharpe Ratio": "1.981",
+    "Sortino Ratio": "1.674",
+    "Probabilistic Sharpe Ratio": "87.571%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.019",
+    "Beta": "0.269",
+    "Annual Standard Deviation": "0.036",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-1.511",
+    "Tracking Error": "0.082",
+    "Treynor Ratio": "0.266",
+    "Total Fees": "$226668.00",
+    "Estimated Strategy Capacity": "$340000.00",
+    "Lowest Capacity Asset": "SPY 31TIRIEATDUJQ|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.03%",
+    "OrderListHash": "b6d829ae7bf8edf9af0daf809cd64be6"
+}
+ </script>
+ <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2022, 1, 1)
@@ -395,6 +638,8 @@
     def get_target_contract(self, right: OptionRight, target_price: float) -&gt; Symbol:
         # Get all tradable option contracts for SPY at the current time for filtering.
         contract_symbols = self.option_chain(self.spy)
+        if not contract_symbols:
+            return
         # Filter for the least-OTM contract that is off by the threshold to form the wheel.
         # Expiry is set to be at least 30 days to earn the time decay, which is highest in the last month.
         expiry = min(x.id.date for x in contract_symbols)
@@ -406,16 +651,57 @@
         selected = sorted_by_strikes[0] if right == OptionRight.CALL else sorted_by_strikes[-1]
         # Request the selected contract data for trading.
         return self.add_option_contract(selected).symbol</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "104",
+    "Average Win": "0.01%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "1.581%",
+    "Drawdown": "0.300%",
+    "Expectancy": "0",
+    "Start Equity": "1000000000",
+    "End Equity": "1005359029.8",
+    "Net Profit": "0.536%",
+    "Sharpe Ratio": "2.735",
+    "Sortino Ratio": "1.615",
+    "Probabilistic Sharpe Ratio": "95.086%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.007",
+    "Beta": "0.007",
+    "Annual Standard Deviation": "0.003",
+    "Annual Variance": "0",
+    "Information Ratio": "-2.098",
+    "Tracking Error": "0.118",
+    "Treynor Ratio": "1.271",
+    "Total Fees": "$579725.20",
+    "Estimated Strategy Capacity": "$1000.00",
+    "Lowest Capacity Asset": "SPY 31N7B8SLDSI92|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.00%",
+    "OrderListHash": "e0e1e2a1677bdbf1d082b79f2f65e131"
+}
+ </script>
 </div>
-<p>For more details, refer to the <a href="https://www.quantconnect.com/research/17871/automating-the-wheel-strategy/p1">Wheel Strategy research post</a>.</p>
-
-<h4>Example 5: Scan and Update Option Chain Every 5 Minutes</h4>
 <p>
-    The following example shows how to update the Option chain every five minutes. The <code>OptionChainManager</code> class implements the selection logic and manages the contract subscriptions.
+ For more details, refer to the
+ <a href="https://www.quantconnect.com/research/17871/automating-the-wheel-strategy/p1">
+  Wheel Strategy research post
+ </a>
+ .
 </p>
-
+<h4>
+ Example 5: Scan and Update Option Chain Every 5 Minutes
+</h4>
+<p>
+ The following example shows how to update the Option chain every five minutes. The
+ <code>
+  OptionChainManager
+ </code>
+ class implements the selection logic and manages the contract subscriptions.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+ <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
 {
     public class OptionChainFullExample : QCAlgorithm
     {
@@ -476,10 +762,10 @@
                 // Buy the ATM call with nearest expiry to speculate-trade the underlying through low cost, leveraging position
                 var expiry = chain.Min(x =&gt; x.Expiry);
                 var atmCall = chain
-                    .Where(x =&gt; x.Expiry == expiry && x.Right == OptionRight.Call && Securities[x.Symbol].IsTradable)
+                    .Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call &amp;&amp; Securities[x.Symbol].IsTradable)
                     .OrderBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike))
                     .FirstOrDefault();
-                if (atmCall != null && !Portfolio[atmCall.Symbol].Invested)
+                if (atmCall != null &amp;&amp; !Portfolio[atmCall.Symbol].Invested)
                 {
                     MarketOrder(atmCall.Symbol, 1);
                 }
@@ -510,7 +796,7 @@
             _chain = chain.Where(x =&gt;
             {
                 var totalDays = (x.Expiry - time).TotalDays;
-                return _minExpiry &lt;= totalDays && totalDays &lt;= _maxExpiry;
+                return _minExpiry &lt;= totalDays &amp;&amp; totalDays &lt;= _maxExpiry;
             }).ToList();
         }
         
@@ -528,8 +814,8 @@
             var minStrike = strikes[Math.Max(0, index + _minStrike)];
             var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
             var symbols = _chain
-                .Where(x =&gt; minStrike &lt;= x.Strike && x.Strike &lt;= maxStrike)
-                .Select(x => x.Symbol).ToList();
+                .Where(x =&gt; minStrike &lt;= x.Strike &amp;&amp; x.Strike &lt;= maxStrike)
+                .Select(x =&gt; x.Symbol).ToList();
 
             // Also remove data subscription on the contracts being filtered out to release computation resources
                 foreach (var symbol in _symbols.Except(symbols).ToList())
@@ -545,7 +831,38 @@
         }
     }
 }</pre>
-    <pre class="python">class OptionChainFullExample(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "246",
+    "Average Win": "0.23%",
+    "Average Loss": "-0.12%",
+    "Compounding Annual Return": "53.502%",
+    "Drawdown": "3.300%",
+    "Expectancy": "0.269",
+    "Start Equity": "100000",
+    "End Equity": "103423",
+    "Net Profit": "3.423%",
+    "Sharpe Ratio": "2.118",
+    "Sortino Ratio": "5.954",
+    "Probabilistic Sharpe Ratio": "64.570%",
+    "Loss Rate": "56%",
+    "Win Rate": "44%",
+    "Profit-Loss Ratio": "1.87",
+    "Alpha": "-0.151",
+    "Beta": "0.975",
+    "Annual Standard Deviation": "0.153",
+    "Annual Variance": "0.023",
+    "Information Ratio": "-2.117",
+    "Tracking Error": "0.077",
+    "Treynor Ratio": "0.332",
+    "Total Fees": "$246.00",
+    "Estimated Strategy Capacity": "$1700000.00",
+    "Lowest Capacity Asset": "SPY Y50ST7YOPOBQ|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "1.98%",
+    "OrderListHash": "4e2f8fa73f13190f432e062d32968862"
+}
+ </script>
+ <pre class="python">class OptionChainFullExample(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2023, 1, 2)
@@ -581,7 +898,7 @@
         for symbol, manager in self._chain_manager.items():
             manager.select(self, symbol)
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Iterate the saved symbol and chain manager to obtain only the contract wanted
         for symbol, _ in self._chain_manager.items():
             chain = slice.option_chains.get(symbol)
@@ -610,11 +927,11 @@ class OptionChainManager:
         self._min_expiry = min_expiry
         self._max_expiry = max_expiry
     
-    def set_chain(self, chain: OptionChain, time: datetime) -> None:
+    def set_chain(self, chain: OptionChain, time: datetime) -&gt; None:
         # Expiry criteria will not affect intra-day universe filtering, so it is done in a daily basis in higher level
-        self._chain = [x for x in chain if self._min_expiry <= (x.expiry - time).days <= self._max_expiry]
+        self._chain = [x for x in chain if self._min_expiry &lt;= (x.expiry - time).days &lt;= self._max_expiry]
     
-    def select(self, algorithm: QCAlgorithm, symbol: Symbol) -> None:
+    def select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
         if not self._chain:
             return
         if symbol.is_canonical():
@@ -627,7 +944,7 @@ class OptionChainManager:
         index = strikes.index(atm)
         min_strike = strikes[max(0, index + self._min_strike)]
         max_strike = strikes[min(len(strikes) - 1, index + self._max_strike)]
-        symbols = set(x.symbol for x in self._chain if min_strike <= x.strike <= max_strike)
+        symbols = set(x.symbol for x in self._chain if min_strike &lt;= x.strike &lt;= max_strike)
         
         # Also remove data subscription on the contracts being filtered out to release computation resources
         for symbol in self._symbols - symbols:
@@ -637,4 +954,35 @@ class OptionChainManager:
         for symbol in symbols - self._symbols:
             self._symbols.add(symbol)
             algorithm.add_option_contract(symbol)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "246",
+    "Average Win": "0.23%",
+    "Average Loss": "-0.12%",
+    "Compounding Annual Return": "53.502%",
+    "Drawdown": "3.300%",
+    "Expectancy": "0.269",
+    "Start Equity": "100000",
+    "End Equity": "103423",
+    "Net Profit": "3.423%",
+    "Sharpe Ratio": "2.118",
+    "Sortino Ratio": "5.954",
+    "Probabilistic Sharpe Ratio": "64.570%",
+    "Loss Rate": "56%",
+    "Win Rate": "44%",
+    "Profit-Loss Ratio": "1.87",
+    "Alpha": "-0.151",
+    "Beta": "0.975",
+    "Annual Standard Deviation": "0.153",
+    "Annual Variance": "0.023",
+    "Information Ratio": "-2.117",
+    "Tracking Error": "0.077",
+    "Treynor Ratio": "0.332",
+    "Total Fees": "$246.00",
+    "Estimated Strategy Capacity": "$1700000.00",
+    "Lowest Capacity Asset": "SPY Y50ST7YOPOBQ|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "1.98%",
+    "OrderListHash": "c0d2826aaa1c57ba4bd78490b01e181e"
+}
+ </script>
 </div>

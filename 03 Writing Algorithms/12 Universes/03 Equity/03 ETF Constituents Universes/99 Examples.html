@@ -1,12 +1,15 @@
-<p>The following examples demonstrate some common practices for ETF constituent universes.</p>
-
-<h4>Example 1: Short the Smallest ETF Constituents</h4>
 <p>
-	A subset of the SPY constituents outperform the SPY while many of the constituents underperform the overall index. 
+ The following examples demonstrate some common practices for ETF constituent universes.
+</p>
+<h4>
+ Example 1: Short the Smallest ETF Constituents
+</h4>
+<p>
+ A subset of the SPY constituents outperform the SPY while many of the constituents underperform the overall index. 
 	In an attempt to exclude the ETF constituents that underperform the index, the following algorithm buys the SPY and shorts the 100 assets in the index with the smallest weight in the ETF.
 </p>
 <div class="section-example-container testable">
-<pre class="csharp">public class ETFConstituentsUniverseAlgorithm : QCAlgorithm
+ <pre class="csharp">public class ETFConstituentsUniverseAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private Dictionary&lt;Symbol, decimal&gt; _etfWeightBySymbol;
@@ -31,14 +34,14 @@
     {
         // Cache the constituent weights in a dictionary for filtering and position sizing.
         _etfWeightBySymbol = constituents
-            .Where(c => c.Weight.HasValue)
-            .ToDictionary(c => c.Symbol, c => c.Weight.Value);
+            .Where(c =&gt; c.Weight.HasValue)
+            .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight.Value);
         // Select the 100 consituents with the smallest weight in the ETF.
         // They should have negative excess return.
         return _etfWeightBySymbol
-            .OrderBy(x => x.Value)
+            .OrderBy(x =&gt; x.Value)
             .Take(100)
-            .Select(x => x.Key);
+            .Select(x =&gt; x.Key);
     }
 
     private void Rebalance()
@@ -46,23 +49,54 @@
         // Get the ETF weight of all the assets currently in the universe.  
         var weightBySymbol = _universe.Selected
             // To avoid trading errors, skip assets that have no price yet.
-            .Where(symbol => Securities[symbol].Price != 0)
-            .Select(symbol => new { Symbol = symbol, Weight = _etfWeightBySymbol[symbol] })
-            .ToDictionary(x => x.Symbol, x => x.Weight);
+            .Where(symbol =&gt; Securities[symbol].Price != 0)
+            .Select(symbol =&gt; new { Symbol = symbol, Weight = _etfWeightBySymbol[symbol] })
+            .ToDictionary(x =&gt; x.Symbol, x =&gt; x.Weight);
         // Buy the SPY to eliminate systematic risk.
         var targets = new List&lt;PortfolioTarget&gt;
         {
-            new PortfolioTarget(_spy, 1.0m-weightBySymbol.Sum(kvp => kvp.Value))
+            new PortfolioTarget(_spy, 1.0m-weightBySymbol.Sum(kvp =&gt; kvp.Value))
         };
         // Sell the 100 ETF constituents with the lowest weight due to expected negative excess return.
-        targets.AddRange(weightBySymbol.Select(x => new PortfolioTarget(x.Key, -x.Value)));
+        targets.AddRange(weightBySymbol.Select(x =&gt; new PortfolioTarget(x.Key, -x.Value)));
         // Place orders to rebalance the portfolio.
         SetHoldings(targets, true);
     }
 }</pre>
-<pre class="python">class ETFConstituentsUniverseAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "6434",
+    "Average Win": "0.00%",
+    "Average Loss": "0.00%",
+    "Compounding Annual Return": "22.977%",
+    "Drawdown": "9.300%",
+    "Expectancy": "0.031",
+    "Start Equity": "10000000",
+    "End Equity": "14110874.86",
+    "Net Profit": "41.109%",
+    "Sharpe Ratio": "1.083",
+    "Sortino Ratio": "1.242",
+    "Probabilistic Sharpe Ratio": "79.142%",
+    "Loss Rate": "65%",
+    "Win Rate": "35%",
+    "Profit-Loss Ratio": "1.98",
+    "Alpha": "-0.009",
+    "Beta": "0.946",
+    "Annual Standard Deviation": "0.096",
+    "Annual Variance": "0.009",
+    "Information Ratio": "-1.46",
+    "Tracking Error": "0.011",
+    "Treynor Ratio": "0.11",
+    "Total Fees": "$6490.54",
+    "Estimated Strategy Capacity": "$340000000.00",
+    "Lowest Capacity Asset": "CDAY WU07CGEIKNZ9",
+    "Portfolio Turnover": "0.21%",
+    "OrderListHash": "603a248e1ee1303adbd989e568364bcf"
+}
+ </script>
+ <pre class="python">class ETFConstituentsUniverseAlgorithm(QCAlgorithm):
     
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2023, 6, 1)
         self.set_cash(10_000_000)
         self.settings.minimum_order_margin_portfolio_percentage = 0
@@ -75,14 +109,14 @@
         # Create a Scheduled Event to rebalance the portfolio.
         self.schedule.on(self.date_rules.week_start(), self.time_rules.at(9, 0), self._rebalance)
     
-    def _select_assets(self, constituents: List[ETFConstituentUniverse]) -> List[Symbol]:
+    def _select_assets(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         # Cache the constituent weights in a dictionary for filtering and position sizing.
         self._etf_weight_by_symbol = {c.symbol: c.weight for c in constituents if c.weight}
         # Select the 100 consituents with the smallest weight in the ETF.
         # They should have negative excess return.
         return [symbol for symbol, _ in sorted(self._etf_weight_by_symbol.items(), key=lambda x: x[1])[:100]]
 
-    def _rebalance(self) -> None:
+    def _rebalance(self) -&gt; None:
         # Get the ETF weight of all the assets currently in the universe.        
         weight_by_symbol = {
             symbol: self._etf_weight_by_symbol[symbol] for symbol in self._universe.selected 
@@ -98,19 +132,62 @@
         # Place orders to rebalance the portfolio.
         self.set_holdings(targets, True)
         </pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "6434",
+    "Average Win": "0.00%",
+    "Average Loss": "0.00%",
+    "Compounding Annual Return": "22.975%",
+    "Drawdown": "9.300%",
+    "Expectancy": "0.026",
+    "Start Equity": "10000000",
+    "End Equity": "14110532.62",
+    "Net Profit": "41.105%",
+    "Sharpe Ratio": "1.083",
+    "Sortino Ratio": "1.241",
+    "Probabilistic Sharpe Ratio": "79.139%",
+    "Loss Rate": "65%",
+    "Win Rate": "35%",
+    "Profit-Loss Ratio": "1.96",
+    "Alpha": "-0.009",
+    "Beta": "0.946",
+    "Annual Standard Deviation": "0.096",
+    "Annual Variance": "0.009",
+    "Information Ratio": "-1.461",
+    "Tracking Error": "0.011",
+    "Treynor Ratio": "0.11",
+    "Total Fees": "$6490.51",
+    "Estimated Strategy Capacity": "$340000000.00",
+    "Lowest Capacity Asset": "CDAY WU07CGEIKNZ9",
+    "Portfolio Turnover": "0.21%",
+    "OrderListHash": "bba91ca6516b172a68477a49d46c4abf"
+}
+ </script>
 </div>
-
-<h4>Example 2: SPY Constituents in an Uptrend</h4>
+<h4>
+ Example 2: SPY Constituents in an Uptrend
+</h4>
 <p>
-    The following example chains an ETF constituents universe and a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a>. 
+ The following example chains an ETF constituents universe and a
+ <a href="/docs/v2/writing-algorithms/universes/equity/fundamental-universes">
+  fundamental universe
+ </a>
+ . 
     It first selects all the constituents of the SPY ETF and then filters them down in the fundamental universe filter to select the assets that are trading above their average price over the last 200 days. 
     The output of the fundamental universe selection method is the output of the chained universe.
-    The <code>Fundamental</code> objects that the fundamental universe filter function recieves contains the prices of the ETF constituents. 
-    By chaining the ETF constituents universe into the fundamental universe, you can update the indicators with the price instead of making a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. 
+    The
+ <code>
+  Fundamental
+ </code>
+ objects that the fundamental universe filter function recieves contains the prices of the ETF constituents. 
+    By chaining the ETF constituents universe into the fundamental universe, you can update the indicators with the price instead of making a
+ <a href="/docs/v2/writing-algorithms/historical-data/history-requests">
+  history request
+ </a>
+ .
 </p>
-
 <div class="section-example-container testable">
-<pre class="csharp">public class ChainedUniverseAlgorithm : QCAlgorithm
+ <pre class="csharp">public class ChainedUniverseAlgorithm : QCAlgorithm
 {
     private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
     private Universe _universe;
@@ -145,15 +222,15 @@
         }
 
         // Remove indicators for assets that are no longer in the ETF to release the computational resources.
-        var symbolsToRemove = _selectionDataBySymbol.Keys.Where(symbol => !universeSymbols.Contains(symbol)).ToList();
+        var symbolsToRemove = _selectionDataBySymbol.Keys.Where(symbol =&gt; !universeSymbols.Contains(symbol)).ToList();
         foreach (var symbol in symbolsToRemove)
         {
             _selectionDataBySymbol.Remove(symbol);
         }
 
         // Select the Equities trading above their SMA as we estimate them to be in uptrend and still rising.
-        var selected = _selectionDataBySymbol.Where(kvp => kvp.Value.IsAboveSma)
-            .Select(kvp => kvp.Key)
+        var selected = _selectionDataBySymbol.Where(kvp =&gt; kvp.Value.IsAboveSma)
+            .Select(kvp =&gt; kvp.Key)
             .ToList();
 
         // Plot the results.
@@ -166,13 +243,13 @@
     private void Rebalance()
     {
         // For an equal-weighted portfolio with the Equities that are above their SMA.
-        var symbols = _universe.Selected.Where(symbol => Securities[symbol].Price > 0);
+        var symbols = _universe.Selected.Where(symbol =&gt; Securities[symbol].Price &gt; 0);
         if (symbols.Count() == 0)
         {
             return;
         }
         var weight = 1m / symbols.Count();
-        SetHoldings(symbols.Select(symbol => new PortfolioTarget(symbol, weight)).ToList(), true);
+        SetHoldings(symbols.Select(symbol =&gt; new PortfolioTarget(symbol, weight)).ToList(), true);
     }
 }
 
@@ -192,10 +269,41 @@ class SelectionData
 
     public void Update(DateTime time, decimal value)
     {
-        IsAboveSma = _sma.Update(time, value) && value > _sma.Current.Value;
+        IsAboveSma = _sma.Update(time, value) &amp;&amp; value &gt; _sma.Current.Value;
     }
 }</pre>
-<pre class="python">class ChainedUniverseAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "6284",
+    "Average Win": "0.02%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "27.476%",
+    "Drawdown": "8.700%",
+    "Expectancy": "0.930",
+    "Start Equity": "100000",
+    "End Equity": "149807.44",
+    "Net Profit": "49.807%",
+    "Sharpe Ratio": "1.469",
+    "Sortino Ratio": "1.95",
+    "Probabilistic Sharpe Ratio": "92.127%",
+    "Loss Rate": "52%",
+    "Win Rate": "48%",
+    "Profit-Loss Ratio": "3.04",
+    "Alpha": "0.043",
+    "Beta": "0.736",
+    "Annual Standard Deviation": "0.089",
+    "Annual Variance": "0.008",
+    "Information Ratio": "0.198",
+    "Tracking Error": "0.056",
+    "Treynor Ratio": "0.178",
+    "Total Fees": "$6280.00",
+    "Estimated Strategy Capacity": "$22000000.00",
+    "Lowest Capacity Asset": "ABBV VCY032R250MD",
+    "Portfolio Turnover": "2.85%",
+    "OrderListHash": "f1472bbb66586aa3f0f5c3f6d06fbeed"
+}
+ </script>
+ <pre class="python">class ChainedUniverseAlgorithm(QCAlgorithm):
 
     _selection_data_by_symbol = {}
     
@@ -212,7 +320,7 @@ class SelectionData
         # Trade daily at market open since the trading signal is generated on a daily resolution.
         self.schedule.on(self.date_rules.every_day(spy), self.time_rules.after_market_open(spy, 1), self._rebalance)
     
-    def _fundamental_selection(self, fundamental: List[Fundamental]) -> List[Symbol]:
+    def _fundamental_selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         # Create/Update an SMA indicator for each asset that enters the ETF.
         universe_symbols = []
         for f in fundamental:
@@ -237,7 +345,7 @@ class SelectionData
     
         return selected
 
-    def _rebalance(self) -> None:
+    def _rebalance(self) -&gt; None:
         # Form an equal-weighted portfolio with the Equities that are above their SMA.
         symbols = [symbol for symbol in self._universe.selected if self.securities[symbol].price]
         if not symbols:
@@ -256,20 +364,71 @@ class SelectionData(object):
         algorithm.warm_up_indicator(symbol, self._sma, Resolution.DAILY)
     
     def update(self, time, value):
-        self.is_above_sma = self._sma.update(time, value) and value > self._sma.current.value</pre>
+        self.is_above_sma = self._sma.update(time, value) and value &gt; self._sma.current.value</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "6284",
+    "Average Win": "0.02%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "27.476%",
+    "Drawdown": "8.700%",
+    "Expectancy": "0.930",
+    "Start Equity": "100000",
+    "End Equity": "149807.44",
+    "Net Profit": "49.807%",
+    "Sharpe Ratio": "1.469",
+    "Sortino Ratio": "1.95",
+    "Probabilistic Sharpe Ratio": "92.127%",
+    "Loss Rate": "52%",
+    "Win Rate": "48%",
+    "Profit-Loss Ratio": "3.04",
+    "Alpha": "0.043",
+    "Beta": "0.736",
+    "Annual Standard Deviation": "0.089",
+    "Annual Variance": "0.008",
+    "Information Ratio": "0.198",
+    "Tracking Error": "0.056",
+    "Treynor Ratio": "0.178",
+    "Total Fees": "$6280.00",
+    "Estimated Strategy Capacity": "$22000000.00",
+    "Lowest Capacity Asset": "ABBV VCY032R250MD",
+    "Portfolio Turnover": "2.85%",
+    "OrderListHash": "53fe0a213c5fe2bb65cb94bad1b1a7bc"
+}
+ </script>
 </div>
-
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-	<div class="example-legend">Demonstration Algorithms</div>
-	<a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ETFConstituentUniverseRSIAlphaModelAlgorithm.py" target="_BLANK"> ETFConstituentUniverseRSIAlphaModelAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
-  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/UniverseOnlyRegressionAlgorithm.py" target="_BLANK"> UniverseOnlyRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
-
-  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/RegressionTests/Universes/ETFConstituentUniverseRSIAlphaModelAlgorithm.cs" target="_BLANK"> ETFConstituentUniverseRSIAlphaModelAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
-  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/UniverseOnlyRegressionAlgorithm.cs" target="_BLANK"> UniverseOnlyRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
-
-  
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ETFConstituentUniverseRSIAlphaModelAlgorithm.py" target="_BLANK">
+  ETFConstituentUniverseRSIAlphaModelAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/UniverseOnlyRegressionAlgorithm.py" target="_BLANK">
+  UniverseOnlyRegressionAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/RegressionTests/Universes/ETFConstituentUniverseRSIAlphaModelAlgorithm.cs" target="_BLANK">
+  ETFConstituentUniverseRSIAlphaModelAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/UniverseOnlyRegressionAlgorithm.cs" target="_BLANK">
+  UniverseOnlyRegressionAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for combining indicators.</p>
-
-<h4>Example 1: Volatility</h4>
-<p>The following algorithm trades a volatility strategy. By comparing SMA and the current value of the standard deviation of the return, we can estimate the current volatility regime is above or below average to trade the price volatility through strangle.</p>
+<p>
+ The following examples demonstrate some common practices for combining indicators.
+</p>
+<h4>
+ Example 1: Volatility
+</h4>
+<p>
+ The following algorithm trades a volatility strategy. By comparing SMA and the current value of the standard deviation of the return, we can estimate the current volatility regime is above or below average to trade the price volatility through strangle.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
 {
     private Symbol _spy, _option;
     private SimpleMovingAverage _sma;
@@ -65,7 +70,38 @@
         }
     }
 }</pre>
-    <pre class="python">class CombiningIndicatorsAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "77",
+    "Average Win": "2.09%",
+    "Average Loss": "-0.89%",
+    "Compounding Annual Return": "20.745%",
+    "Drawdown": "7.200%",
+    "Expectancy": "0.638",
+    "Start Equity": "100000",
+    "End Equity": "108220.1",
+    "Net Profit": "8.220%",
+    "Sharpe Ratio": "0.902",
+    "Sortino Ratio": "1.12",
+    "Probabilistic Sharpe Ratio": "47.085%",
+    "Loss Rate": "51%",
+    "Win Rate": "49%",
+    "Profit-Loss Ratio": "2.35",
+    "Alpha": "0.139",
+    "Beta": "-0.266",
+    "Annual Standard Deviation": "0.158",
+    "Annual Variance": "0.025",
+    "Information Ratio": "0.304",
+    "Tracking Error": "0.507",
+    "Treynor Ratio": "-0.535",
+    "Total Fees": "$54.90",
+    "Estimated Strategy Capacity": "$4000.00",
+    "Lowest Capacity Asset": "SPY 31DXIP31NB90M|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "8.18%",
+    "OrderListHash": "9541fce63279aa6faab6c3b55a3af16e"
+}
+ </script>
+ <pre class="python">class CombiningIndicatorsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2020, 6, 1)
@@ -112,12 +148,53 @@
         elif self.portfolio[self.spy].invested:
             # Liquidate any assigned underlying positions.
             self.liquidate(self.spy)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "77",
+    "Average Win": "2.09%",
+    "Average Loss": "-0.89%",
+    "Compounding Annual Return": "20.745%",
+    "Drawdown": "7.200%",
+    "Expectancy": "0.638",
+    "Start Equity": "100000",
+    "End Equity": "108220.1",
+    "Net Profit": "8.220%",
+    "Sharpe Ratio": "0.902",
+    "Sortino Ratio": "1.12",
+    "Probabilistic Sharpe Ratio": "47.085%",
+    "Loss Rate": "51%",
+    "Win Rate": "49%",
+    "Profit-Loss Ratio": "2.35",
+    "Alpha": "0.139",
+    "Beta": "-0.266",
+    "Annual Standard Deviation": "0.158",
+    "Annual Variance": "0.025",
+    "Information Ratio": "0.304",
+    "Tracking Error": "0.507",
+    "Treynor Ratio": "-0.535",
+    "Total Fees": "$54.90",
+    "Estimated Strategy Capacity": "$4000.00",
+    "Lowest Capacity Asset": "SPY 31DXIP31NB90M|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "8.18%",
+    "OrderListHash": "95c83bae81a42be0c9754da8a7055f75"
+}
+ </script>
 </div>
-
-<h4>Example 2: Displaced SMA Ribbon</h4>
-<p>The following algorithm trades trends indicated by SMA crossings. We use the <code class="csharp">IndicatorExtensions to confirm the trend better.Of</code><code class="python">IndicatorExtensions.of</code> method to create a Delay indicator on SMA indicator.</p>
+<h4>
+ Example 2: Displaced SMA Ribbon
+</h4>
+<p>
+ The following algorithm trades trends indicated by SMA crossings. We use the
+ <code class="csharp">
+  IndicatorExtensions to confirm the trend better.Of
+ </code>
+ <code class="python">
+  IndicatorExtensions.of
+ </code>
+ method to create a Delay indicator on SMA indicator.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class DisplacedMovingAverageRibbon : QCAlgorithm
+ <pre class="csharp">public class DisplacedMovingAverageRibbon : QCAlgorithm
 {
     private Symbol _spy;
     private IndicatorBase&lt;IndicatorDataPoint&gt;[] _ribbon;
@@ -218,7 +295,38 @@
         return true;
     }
 }</pre>
-    <pre class="python">class DisplacedMovingAverageRibbon(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "7",
+    "Average Win": "19.17%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "16.732%",
+    "Drawdown": "12.400%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "253079.18",
+    "Net Profit": "153.079%",
+    "Sharpe Ratio": "1.05",
+    "Sortino Ratio": "1.078",
+    "Probabilistic Sharpe Ratio": "56.405%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.051",
+    "Beta": "0.507",
+    "Annual Standard Deviation": "0.107",
+    "Annual Variance": "0.011",
+    "Information Ratio": "-0.083",
+    "Tracking Error": "0.105",
+    "Treynor Ratio": "0.221",
+    "Total Fees": "$52.13",
+    "Estimated Strategy Capacity": "$1100000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.32%",
+    "OrderListHash": "1054fceaa0ad809776a0853a7e4e5981"
+}
+ </script>
+ <pre class="python">class DisplacedMovingAverageRibbon(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2009, 1, 1)
         self.set_end_date(2015, 1, 1)
@@ -285,15 +393,52 @@
                 return False
             last = val
         return True</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "7",
+    "Average Win": "19.17%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "16.732%",
+    "Drawdown": "12.400%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "253079.18",
+    "Net Profit": "153.079%",
+    "Sharpe Ratio": "1.05",
+    "Sortino Ratio": "1.078",
+    "Probabilistic Sharpe Ratio": "56.405%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.051",
+    "Beta": "0.507",
+    "Annual Standard Deviation": "0.107",
+    "Annual Variance": "0.011",
+    "Information Ratio": "-0.083",
+    "Tracking Error": "0.105",
+    "Treynor Ratio": "0.221",
+    "Total Fees": "$52.13",
+    "Estimated Strategy Capacity": "$1100000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.32%",
+    "OrderListHash": "91cc9a4b06c1f55f3db53bb0e385491d"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithm</div>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DisplacedMovingAverageRibbon.py" target="_BLANK">
-        DisplacedMovingAverageRibbon.py
-        <span class="badge-python pull-right">Python</span>
-    </a>
+ <div class="example-legend">
+  Demonstration Algorithm
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DisplacedMovingAverageRibbon.py" target="_BLANK">
+  DisplacedMovingAverageRibbon.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
 </div>

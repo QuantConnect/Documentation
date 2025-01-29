@@ -1,9 +1,25 @@
-<p>The following examples demonstrate common practices for updating indicators using consolidators.</p>
-
-<h4>Example 1: Hammer Pattern With 5-Minute Consolidator</h4>
-<p>The following algorithm trades Hammer and Inverted Hammer candlestick patterns. The candles are constructed with five-minute SPY trade bars consolidated by a five-minute <code>TradeBarConsolidator</code>, while automatically updating with the <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method. Both patterns are bullish, so we buy SPY if the pattern is signaled.</p>
+<p>
+ The following examples demonstrate common practices for updating indicators using consolidators.
+</p>
+<h4>
+ Example 1: Hammer Pattern With 5-Minute Consolidator
+</h4>
+<p>
+ The following algorithm trades Hammer and Inverted Hammer candlestick patterns. The candles are constructed with five-minute SPY trade bars consolidated by a five-minute
+ <code>
+  TradeBarConsolidator
+ </code>
+ , while automatically updating with the
+ <code class="csharp">
+  RegisterIndicator
+ </code>
+ <code class="python">
+  register_indicator
+ </code>
+ method. Both patterns are bullish, so we buy SPY if the pattern is signaled.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">using QuantConnect.Indicators.CandlestickPatterns;
+ <pre class="csharp">using QuantConnect.Indicators.CandlestickPatterns;
 public class ConsolidatorUpdatingIndicatorsAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
@@ -60,7 +76,38 @@ public class ConsolidatorUpdatingIndicatorsAlgorithm : QCAlgorithm
         }
     }
 }</pre>
-    <pre class="python">from QuantConnect.Indicators.CandlestickPatterns import *
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "49",
+    "Average Win": "2.54%",
+    "Average Loss": "-0.56%",
+    "Compounding Annual Return": "103.386%",
+    "Drawdown": "12.800%",
+    "Expectancy": "3.303",
+    "Start Equity": "100000",
+    "End Equity": "142659.54",
+    "Net Profit": "42.660%",
+    "Sharpe Ratio": "3.64",
+    "Sortino Ratio": "3.563",
+    "Probabilistic Sharpe Ratio": "91.776%",
+    "Loss Rate": "22%",
+    "Win Rate": "78%",
+    "Profit-Loss Ratio": "4.53",
+    "Alpha": "0.332",
+    "Beta": "0.619",
+    "Annual Standard Deviation": "0.189",
+    "Annual Variance": "0.036",
+    "Information Ratio": "0.686",
+    "Tracking Error": "0.162",
+    "Treynor Ratio": "1.114",
+    "Total Fees": "$69.51",
+    "Estimated Strategy Capacity": "$14000000.00",
+    "Lowest Capacity Asset": "BABA VU1EHIDJYJXH",
+    "Portfolio Turnover": "4.33%",
+    "OrderListHash": "33f59eec222bf11e58dc3ea9a6b580d1"
+}
+ </script>
+ <pre class="python">from QuantConnect.Indicators.CandlestickPatterns import *
 class ConsolidatorUpdatingIndicatorsAlgorithm(QCAlgorithm):
     hammer = Hammer()
     inverted_hammer = InvertedHammer()
@@ -100,4 +147,35 @@ class ConsolidatorUpdatingIndicatorsAlgorithm(QCAlgorithm):
             elif order_event.ticket.order_type == OrderType.STOP_MARKET or order_event.ticket.order_type == OrderType.LIMIT:
                 # Cancel any open order if stop loss or take profit order filled.
                 self.transactions.cancel_open_orders()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "100",
+    "Average Win": "1.25%",
+    "Average Loss": "-0.17%",
+    "Compounding Annual Return": "195.827%",
+    "Drawdown": "11.500%",
+    "Expectancy": "6.547",
+    "Start Equity": "100000",
+    "End Equity": "172081.48",
+    "Net Profit": "72.081%",
+    "Sharpe Ratio": "4.646",
+    "Sortino Ratio": "4.962",
+    "Probabilistic Sharpe Ratio": "95.177%",
+    "Loss Rate": "9%",
+    "Win Rate": "91%",
+    "Profit-Loss Ratio": "7.27",
+    "Alpha": "0.622",
+    "Beta": "1.107",
+    "Annual Standard Deviation": "0.272",
+    "Annual Variance": "0.074",
+    "Information Ratio": "4.346",
+    "Tracking Error": "0.157",
+    "Treynor Ratio": "1.14",
+    "Total Fees": "$134.23",
+    "Estimated Strategy Capacity": "$45000000.00",
+    "Lowest Capacity Asset": "BABA VU1EHIDJYJXH",
+    "Portfolio Turnover": "4.00%",
+    "OrderListHash": "ebbfebd9fab257aa93b422dde7abf045"
+}
+ </script>
 </div>

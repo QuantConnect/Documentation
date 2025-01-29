@@ -1,44 +1,97 @@
-<p>The following backtest verifies the <code class="csharp">ComboLimitOrder</code><code class="python">combo_limit_order</code> behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:</p>
-
+<p>
+ The following backtest verifies the
+ <code class="csharp">
+  ComboLimitOrder
+ </code>
+ <code class="python">
+  combo_limit_order
+ </code>
+ behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:
+</p>
 <table class="qc-table table" id="research-nodes-table">
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Value</th>
-            <th>Tag</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>2015-12-24T09:31:00Z</td>
-            <td>GOOG 16011SC00745000</td>
-            <td>16.50</td>
-            <td>1</td>
-            <td>Buy</td>
-            <td>Filled</td>
-            <td>16.50</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>2015-12-24T09:31:00Z</td>
-            <td>GOOG 160115C00747500</td>
-            <td>14.60</td>
-            <td>-1</td>
-            <td>Sell</td>
-            <td>Filled</td>
-            <td>-14.60</td>
-            <td></td>
-        </tr>
-    </tbody>
+ <thead>
+  <tr>
+   <th>
+    Time
+   </th>
+   <th>
+    Symbol
+   </th>
+   <th>
+    Price
+   </th>
+   <th>
+    Quantity
+   </th>
+   <th>
+    Type
+   </th>
+   <th>
+    Status
+   </th>
+   <th>
+    Value
+   </th>
+   <th>
+    Tag
+   </th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    2015-12-24T09:31:00Z
+   </td>
+   <td>
+    GOOG 16011SC00745000
+   </td>
+   <td>
+    16.50
+   </td>
+   <td>
+    1
+   </td>
+   <td>
+    Buy
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    16.50
+   </td>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    2015-12-24T09:31:00Z
+   </td>
+   <td>
+    GOOG 160115C00747500
+   </td>
+   <td>
+    14.60
+   </td>
+   <td>
+    -1
+   </td>
+   <td>
+    Sell
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    -14.60
+   </td>
+   <td>
+   </td>
+  </tr>
+ </tbody>
 </table>
-
 <style>
-#research-nodes-table td:nth-child(3), 
+ #research-nodes-table td:nth-child(3), 
 #research-nodes-table th:nth-child(3), 
 #research-nodes-table td:nth-child(4), 
 #research-nodes-table th:nth-child(4), 
@@ -47,13 +100,18 @@
     text-align: right;
 }
 </style>
-
-<p>On December 24, 2015 at 9:31 AM Eastern Time (ET), the algorithm places a combo limit order to buy one GOOG 16011SC00745000 contract and sell one GOOG 160115C00747500 contracts. The limit price is 75% of the contract spread, which equals $2.02. The combo order doesn't fill immediately because the contract spread $2.40 &gt; $2.02. By 9:36 AM, the spread drops to $1.90, which is below the limit price, so the <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#12-Combo-Limit-Orders">fill model</a> fills the combo limit order.</p>
-
-<p>To reproduce these results, backtest the following algorithm:</p>
-
+<p>
+ On December 24, 2015 at 9:31 AM Eastern Time (ET), the algorithm places a combo limit order to buy one GOOG 16011SC00745000 contract and sell one GOOG 160115C00747500 contracts. The limit price is 75% of the contract spread, which equals $2.02. The combo order doesn't fill immediately because the contract spread $2.40 &gt; $2.02. By 9:36 AM, the spread drops to $1.90, which is below the limit price, so the
+ <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#12-Combo-Limit-Orders">
+  fill model
+ </a>
+ fills the combo limit order.
+</p>
+<p>
+ To reproduce these results, backtest the following algorithm:
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class ComboMarketOrderAlgorithm : QCAlgorithm
+ <pre class="csharp">public class ComboMarketOrderAlgorithm : QCAlgorithm
 {
     private List&lt;OrderTicket&gt; _tickets = new();
     private decimal _limitPrice;
@@ -102,7 +160,7 @@
         }
         else
         {
-            if (Time.Hour == 9 && Time.Minute == 37)
+            if (Time.Hour == 9 &amp;&amp; Time.Minute == 37)
             {
                 Quit();
                 return;
@@ -126,7 +184,38 @@
         }
     }
 }</pre>
-    <pre class="python">import itertools
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": "69dff722b669f42da4b63b7a286b1b13"
+}
+ </script>
+ <pre class="python">import itertools
 
 class ComboMarketOrderAlgorithm(QCAlgorithm):
     
@@ -177,4 +266,35 @@ class ComboMarketOrderAlgorithm(QCAlgorithm):
     def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
         if orderEvent.status == OrderStatus.FILLED:
             self.log(f"{self.time} -- Order {orderEvent.order_id} filled at {orderEvent.fill_price}")</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": "ad2dc812e23ddc438af8ba58db372459"
+}
+ </script>
 </div>

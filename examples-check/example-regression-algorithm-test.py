@@ -124,7 +124,11 @@ class RegressionTests:
         
         # Run the PHP script and capture the output
         result = subprocess.run(['php', 'temp_script.php'], capture_output=True, text=True, encoding='utf-8')
-        return result.stdout.strip().replace("<div class=\"section-example-container to-be-tested\">", "<div class=\"section-example-container testable\">")
+        output = result.stdout.strip().replace("<div class=\"section-example-container to-be-tested\">", "<div class=\"section-example-container testable\">")
+        
+        # Create a temporary PHP file
+        with open('temp_script.php', 'w', encoding='utf-8') as f:
+            f.write(output)
         
     def get_testing_files(self, directory):
         """Recursively read all HTML/PHP files."""
@@ -133,7 +137,7 @@ class RegressionTests:
         
         for root, _, filenames in os.walk(directory):
             for filename in filenames:
-                if filename.endswith(('.html', '.php')):
+                if filename.endswith(('Volatility.php')):
                     file_path = os.path.join(root, filename)
                     # Check if the file contains the target text
                     with open(file_path, 'r', encoding='utf-8') as file:
@@ -155,7 +159,7 @@ class RegressionTests:
             
             snippets = []
             # Get all code snippets from testable container
-            for div in soup.find_all('div', class_=['section-example-container', 'testable']):
+            for div in soup.find_all(lambda tag: tag.name == 'div' and 'class' in tag.attrs and 'section-example-container' in tag['class'] and 'testable' in tag['class']):
                 csharp_contents = []
                 python_contents = []
                 
@@ -256,8 +260,8 @@ class RegressionTests:
             
             errors = 0
             while not backtest["completed"]:
-                # Recheck every 10 seconds
-                time.sleep(10)
+                # Recheck every 5 seconds
+                time.sleep(5)
                 
                 data = {
                     "projectId": project_id,
@@ -388,7 +392,7 @@ class RegressionTests:
     """
     
     def insert_validate_example_container(self, file_path, soup, results):
-        for i, (div, (csharp_results, python_results)) in enumerate(zip(soup.find_all('div', class_=['section-example-container', 'testable']), results)):
+        for i, (div, (csharp_results, python_results)) in enumerate(zip(soup.find_all(lambda tag: tag.name == 'div' and 'class' in tag.attrs and 'section-example-container' in tag['class'] and 'testable' in tag['class']), results)):
             # C# results insertion
             for pre, new_result in zip(div.find_all('pre', class_='csharp'), csharp_results):
                 if not new_result:
@@ -452,10 +456,10 @@ class RegressionTests:
 
                 # Compare existing result with new result in validate mode
                 if VALIDATE_MODE:
-                    self.validation(file_path, i+1, "CSharp", existing_script[0].text.strip(), new_json)
+                    self.validation(file_path, i+1, "CSharp", existing_script.text.strip(), new_json)
                 # Overwrite the existing result if not validate mode
                 else:
-                    existing_script[0].string = new_json
+                    existing_script.string = new_json
 
             # Python results insertion
             for existing_script, new_result in zip(div.find_all('script', class_='python-result'), python_results):
@@ -466,10 +470,10 @@ class RegressionTests:
 
                 # Compare existing result with new result in validate mode
                 if VALIDATE_MODE:
-                    self.validation(file_path, i+1, "Python", existing_script[0].text.strip(), new_json)
+                    self.validation(file_path, i+1, "Python", existing_script.text.strip(), new_json)
                 # Overwrite the existing result if not validate mode
                 else:
-                    existing_script[0].string = new_json
+                    existing_script.string = new_json
                     
         return soup
 
@@ -477,7 +481,7 @@ class RegressionTests:
         """Insert/Validate backtest results into the original file."""
         with open(file_path, 'r+', encoding='utf-8') as file:
             soup = BeautifulSoup(file, 'html.parser')
-            divs = soup.find_all('div', class_=['section-example-container', 'testable'])
+            divs = soup.find_all(lambda tag: tag.name == 'div' and 'class' in tag.attrs and 'section-example-container' in tag['class'] and 'testable' in tag['class'])
 
             if divs:
                 soup = self.insert_validate_example_container(file_path, soup, results)

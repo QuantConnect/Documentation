@@ -1,9 +1,14 @@
-<p>The following examples demonstrate common practices for controlling the portfolio cashbook.</p>
-
-<h4>Example 1: Dollar Cost Averaging</h4>
-<p>The following algorithm deposits USD 1000 on every month's start and buys SPY with the deposited cash. It results in a dollar cost averaging investment strategy on the overall market.</p>
+<p>
+ The following examples demonstrate common practices for controlling the portfolio cashbook.
+</p>
+<h4>
+ Example 1: Dollar Cost Averaging
+</h4>
+<p>
+ The following algorithm deposits USD 1000 on every month's start and buys SPY with the deposited cash. It results in a dollar cost averaging investment strategy on the overall market.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class PortfolioCashbookAlgorithm : QCAlgorithm
+ <pre class="csharp">public class PortfolioCashbookAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private decimal _deposit = 1000m;
@@ -39,7 +44,7 @@
         MarketOrder(_spy, quantity);
     }
 }</pre>
-    <pre class="python">class PortfolioCashbookAlgorithm(QCAlgorithm):
+ <pre class="python">class PortfolioCashbookAlgorithm(QCAlgorithm):
     deposit = 1000
 
     def initialize(self) -&gt; None:
@@ -69,11 +74,14 @@
         quantity = self.deposit // self.securities[self.spy].price
         self.market_order(self.spy, quantity)</pre>
 </div>
-
-<h4>Example 2: Crypto Cashbook</h4>
-<p>This example trades an EMA cross strategy on the ETH-BTC crypto pair in a cash account. To obtain the maximum tradable order size, we need to use the cash book and check the amount of BTC in long ETHBTC trades and in short ETHBTC trades to avoid insufficient initial margin.</p>
+<h4>
+ Example 2: Crypto Cashbook
+</h4>
+<p>
+ This example trades an EMA cross strategy on the ETH-BTC crypto pair in a cash account. To obtain the maximum tradable order size, we need to use the cash book and check the amount of BTC in long ETHBTC trades and in short ETHBTC trades to avoid insufficient initial margin.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class PortfolioCashbookAlgorithm : QCAlgorithm
+ <pre class="csharp">public class PortfolioCashbookAlgorithm : QCAlgorithm
 {
     private Symbol _ethbtc;
     private ExponentialMovingAverage _ema;
@@ -90,7 +98,7 @@
         SetCash("BTC", 100);
         SetCash("ETH", 2000);
 
-        // We would like to trade the EMA cross between 2 popular cryptos, BTC & ETH,
+        // We would like to trade the EMA cross between 2 popular cryptos, BTC &amp; ETH,
         // so request ETHBTC data to find trading opportunities.
         _ethbtc = AddCrypto("ETHBTC", Resolution.Minute, market: Market.Coinbase).Symbol;
 
@@ -118,7 +126,38 @@
         }
     }
 }</pre>
-    <pre class="python">class PortfolioCashbookAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "29",
+    "Average Win": "1.07%",
+    "Average Loss": "-2.30%",
+    "Compounding Annual Return": "325.050%",
+    "Drawdown": "27.000%",
+    "Expectancy": "-0.948",
+    "Start Equity": "9475954.00",
+    "End Equity": "10757690.75",
+    "Net Profit": "13.526%",
+    "Sharpe Ratio": "9.007",
+    "Sortino Ratio": "10.952",
+    "Probabilistic Sharpe Ratio": "62.824%",
+    "Loss Rate": "96%",
+    "Win Rate": "4%",
+    "Profit-Loss Ratio": "0.47",
+    "Alpha": "-3.803",
+    "Beta": "0.905",
+    "Annual Standard Deviation": "1.063",
+    "Annual Variance": "1.13",
+    "Information Ratio": "-5.73",
+    "Tracking Error": "0.909",
+    "Treynor Ratio": "10.579",
+    "Total Fees": "\u20ae2302852.40",
+    "Estimated Strategy Capacity": "\u20ae170000.00",
+    "Lowest Capacity Asset": "ETHBTC 2XR",
+    "Portfolio Turnover": "96.12%",
+    "OrderListHash": "24e6c28a54cd69f2e8d8253278569a81"
+}
+ </script>
+ <pre class="python">class PortfolioCashbookAlgorithm(QCAlgorithm):
 
     buffer = 0.01
 
@@ -131,7 +170,7 @@
         self.set_cash("BTC", 100)
         self.set_cash("ETH", 2000)
 
-        # We would like to trade the EMA cross between 2 popular cryptos BTC & ETH,
+        # We would like to trade the EMA cross between 2 popular cryptos BTC &amp; ETH,
         # so we are requesting ETHBTC data to find trading opportunities.
         self.ethbtc = self.add_crypto("ETHBTC", Resolution.MINUTE, Market.COINBASE).symbol
 
@@ -151,4 +190,35 @@
             # ETHBTC's current price is below the EMA, suggesting a downtrend.
             elif bar.close &lt; ema and not self.portfolio[self.ethbtc].is_short:
                 self.market_order(self.ethbtc, -self.portfolio.cash_book["ETH"].amount)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "29",
+    "Average Win": "1.06%",
+    "Average Loss": "-2.33%",
+    "Compounding Annual Return": "313.711%",
+    "Drawdown": "27.200%",
+    "Expectancy": "-0.948",
+    "Start Equity": "9475954.00",
+    "End Equity": "10732218.65",
+    "Net Profit": "13.257%",
+    "Sharpe Ratio": "8.75",
+    "Sortino Ratio": "10.579",
+    "Probabilistic Sharpe Ratio": "62.516%",
+    "Loss Rate": "96%",
+    "Win Rate": "4%",
+    "Profit-Loss Ratio": "0.45",
+    "Alpha": "-4.022",
+    "Beta": "0.904",
+    "Annual Standard Deviation": "1.067",
+    "Annual Variance": "1.138",
+    "Information Ratio": "-5.957",
+    "Tracking Error": "0.914",
+    "Treynor Ratio": "10.331",
+    "Total Fees": "\u20ae2323349.37",
+    "Estimated Strategy Capacity": "\u20ae170000.00",
+    "Lowest Capacity Asset": "ETHBTC 2XR",
+    "Portfolio Turnover": "97.19%",
+    "OrderListHash": "a1412785aba83b199603df1f65151b5a"
+}
+ </script>
 </div>

@@ -23,7 +23,7 @@
     private void UpdateContractsAndGreeks()
     {
         // Get all the tradable Option contracts.
-        var chain = OptionChain(<?=$underlyingSymbolC?>);
+        var chain = OptionChains(<?=$underlyingSymbolC?>);
         
         // Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
         var filteredChain = chain.Where(contract => contract.Expiry > Time.AddDays(30));
@@ -59,7 +59,7 @@
     public override void OnData(Slice slice)
     {
         // Get the <?=$typeName?> indicator of each contract.
-        foreach (var (canonical, chain) in slice.OptionChain)
+        foreach (var (canonical, chain) in slice.OptionChains)
         {
             foreach (var symbol in chain)
             {
@@ -97,7 +97,7 @@
 
     def _update_contracts_and_greeks(self) -&gt; None:
         # Get all the tradable Option contracts.
-        chain = self.option_chain(<?=$underlyingSymbolPy?>, flatten=True).data_frame
+        chain = self.option_chains(<?=$underlyingSymbolPy?>, flatten=True).data_frame
         if chain.empty:
             return
 
@@ -134,7 +134,7 @@
         
     def on_data(self, slice: Slice) -&gt; None:
         # Get the <?=$typeName?> indicator of each contract.
-        for canonical, chain in slice.option_chain.items():
+        for canonical, chain in slice.option_chains.items():
             for symbol in chain:
                 option = self.securities[symbol]
                 indicator = option.<?=strtolower($helperMethod)?>

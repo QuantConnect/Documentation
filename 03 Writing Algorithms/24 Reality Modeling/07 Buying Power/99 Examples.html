@@ -1,9 +1,25 @@
-<p>The following examples demonstrate some common practices for implementing a custom buying power model.</p>
-
-<h4>Example 1: Always Sufficient Buying Power</h4>
-<p>The following algorithm trades protective call strategy. Sometimes, the brokerage's margin requirement differs from the algorithm's default. To avoid errors on order submission at the algorithm level, we can use the <code class="csharp">SecurityPositionGroupModel.Null</code><code class="python">SecurityPositionGroupModel.NULL</code> and <code>NullBuyingPowerModel</code> to disable buying power limitation so the order is sent directly to the broker.</p>
+<p>
+ The following examples demonstrate some common practices for implementing a custom buying power model.
+</p>
+<h4>
+ Example 1: Always Sufficient Buying Power
+</h4>
+<p>
+ The following algorithm trades protective call strategy. Sometimes, the brokerage's margin requirement differs from the algorithm's default. To avoid errors on order submission at the algorithm level, we can use the
+ <code class="csharp">
+  SecurityPositionGroupModel.Null
+ </code>
+ <code class="python">
+  SecurityPositionGroupModel.NULL
+ </code>
+ and
+ <code>
+  NullBuyingPowerModel
+ </code>
+ to disable buying power limitation so the order is sent directly to the broker.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">using QuantConnect.Securities.Positions;
+ <pre class="csharp">using QuantConnect.Securities.Positions;
 
 public class BuyingPowerModelAlgorithm : QCAlgorithm
 {
@@ -73,7 +89,38 @@ public class CustomSecurityInitializer : BrokerageModelSecurityInitializer
         security.SetBuyingPowerModel(new NullBuyingPowerModel());
     }
 }</pre>
-    <pre class="python">class BuyingPowerModelAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "122",
+    "Average Win": "1.76%",
+    "Average Loss": "-0.30%",
+    "Compounding Annual Return": "5.505%",
+    "Drawdown": "3.500%",
+    "Expectancy": "1.134",
+    "Start Equity": "100000",
+    "End Equity": "105530.5",
+    "Net Profit": "5.530%",
+    "Sharpe Ratio": "-0.615",
+    "Sortino Ratio": "-0.871",
+    "Probabilistic Sharpe Ratio": "67.612%",
+    "Loss Rate": "69%",
+    "Win Rate": "31%",
+    "Profit-Loss Ratio": "5.91",
+    "Alpha": "-0.056",
+    "Beta": "0.216",
+    "Annual Standard Deviation": "0.027",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-2.375",
+    "Tracking Error": "0.083",
+    "Treynor Ratio": "-0.078",
+    "Total Fees": "$70.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "SPY 32KSG7MJY47HI|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "4.46%",
+    "OrderListHash": "419e344bf0c5104f9536a47c9a0d6877"
+}
+ </script>
+ <pre class="python">class BuyingPowerModelAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
         self.set_start_date(2023, 10, 1)
         self.set_end_date(2024, 10, 1)
@@ -125,31 +172,82 @@ class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
         super().initialize(security)
         # Do not allow buying power for options; only a hedging strategy with 0 margin is allowed.
         security.SetBuyingPowerModel(NullBuyingPowerModel())</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "122",
+    "Average Win": "1.76%",
+    "Average Loss": "-0.30%",
+    "Compounding Annual Return": "5.505%",
+    "Drawdown": "3.500%",
+    "Expectancy": "1.134",
+    "Start Equity": "100000",
+    "End Equity": "105530.5",
+    "Net Profit": "5.530%",
+    "Sharpe Ratio": "-0.615",
+    "Sortino Ratio": "-0.871",
+    "Probabilistic Sharpe Ratio": "67.612%",
+    "Loss Rate": "69%",
+    "Win Rate": "31%",
+    "Profit-Loss Ratio": "5.91",
+    "Alpha": "-0.056",
+    "Beta": "0.216",
+    "Annual Standard Deviation": "0.027",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-2.375",
+    "Tracking Error": "0.083",
+    "Treynor Ratio": "-0.078",
+    "Total Fees": "$70.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "SPY 32KSG7MJY47HI|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "4.46%",
+    "OrderListHash": "d885b095a6b812f988855be8629d8fae"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div>
-   
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomBuyingPowerModelAlgorithm.py" target="_BLANK">
-        CustomBuyingPowerModelAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a> 
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">
-        CustomModelsAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/NullBuyingPowerOptionBullCallSpreadAlgorithm.py" target="_BLANK">
-        NullBuyingPowerOptionBullCallSpreadAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a> 
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomPartialFillModelAlgorithm.cs" target="_BLANK">
-        CustomBuyingPowerModelAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>   
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomModelsAlgorithm.cs" target="_BLANK">
-        CustomModelsAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/NullBuyingPowerOptionBullCallSpreadAlgorithm.cs" target="_BLANK">
-        NullBuyingPowerOptionBullCallSpreadAlgorithm.cs <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-  </div>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomBuyingPowerModelAlgorithm.py" target="_BLANK">
+  CustomBuyingPowerModelAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">
+  CustomModelsAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/NullBuyingPowerOptionBullCallSpreadAlgorithm.py" target="_BLANK">
+  NullBuyingPowerOptionBullCallSpreadAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomPartialFillModelAlgorithm.cs" target="_BLANK">
+  CustomBuyingPowerModelAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomModelsAlgorithm.cs" target="_BLANK">
+  CustomModelsAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/NullBuyingPowerOptionBullCallSpreadAlgorithm.cs" target="_BLANK">
+  NullBuyingPowerOptionBullCallSpreadAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+</div>

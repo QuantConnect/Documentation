@@ -1,15 +1,21 @@
-<p>The following examples demonstrate some common practices for calendar consolidators.</p>
-
-<h4>Example 1: Daily Futures Bars</h4>
 <p>
-    Daily bars from the CME and Yahoo Finance represent the price action from 5 PM Central Time (CT) to 4 PM CT on the following day. 
+ The following examples demonstrate some common practices for calendar consolidators.
+</p>
+<h4>
+ Example 1: Daily Futures Bars
+</h4>
+<p>
+ Daily bars from the CME and Yahoo Finance represent the price action from 5 PM Central Time (CT) to 4 PM CT on the following day. 
     In contrast, the regular daily resolution bars on QuantConnect represent the price action from 12 AM Eastern Time (ET) to 12 AM ET the following day. 
     To create daily bars that represent the same period of time as the daily bars from the CME, the following algorithm consolidates minute bars (during regular and extended market hours) into daily bars that span from 5 PM CT to 4 PM CT on the following day.
-    The algorithm then uses these consolidated daily bars to place take profit and stop loss orders as a function of the daily <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/average-true-range">Average True Range</a>.
+    The algorithm then uses these consolidated daily bars to place take profit and stop loss orders as a function of the daily
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/average-true-range">
+  Average True Range
+ </a>
+ .
 </p>
-
 <div class="section-example-container testable">
-<pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
     private Future _future;
     private decimal _takeProfitPrice, _stopLossPrice;
@@ -73,12 +79,12 @@
         }
 
         // If we're not invested, buy the current contract in the continuous contract series.
-        if (!Portfolio.Invested && Securities[_future.Mapped].Price != 0 && _day != slice.Time.Day)
+        if (!Portfolio.Invested &amp;&amp; Securities[_future.Mapped].Price != 0 &amp;&amp; _day != slice.Time.Day)
         {
             MarketOrder(_future.Mapped, 1);
         }
         // If we're already invested, check if we've hit the TP/SL level.
-        else if (Portfolio.Invested && slice.Bars.TryGetValue(_future.Symbol, out var bar))
+        else if (Portfolio.Invested &amp;&amp; slice.Bars.TryGetValue(_future.Symbol, out var bar))
         {
             // Check if the current price is above profit taker or below stop loss.
             if (bar.Close &gt; _takeProfitPrice || bar.Close &lt; _stopLossPrice)
@@ -91,9 +97,40 @@
         _day = slice.Time.Day;
     }
 }</pre>
-<pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "25",
+    "Average Win": "6.55%",
+    "Average Loss": "-3.79%",
+    "Compounding Annual Return": "48.066%",
+    "Drawdown": "11.600%",
+    "Expectancy": "0.818",
+    "Start Equity": "100000",
+    "End Equity": "148019.1",
+    "Net Profit": "48.019%",
+    "Sharpe Ratio": "1.728",
+    "Sortino Ratio": "2.132",
+    "Probabilistic Sharpe Ratio": "72.246%",
+    "Loss Rate": "33%",
+    "Win Rate": "67%",
+    "Profit-Loss Ratio": "1.73",
+    "Alpha": "0.036",
+    "Beta": "1.524",
+    "Annual Standard Deviation": "0.193",
+    "Annual Variance": "0.037",
+    "Information Ratio": "1.197",
+    "Tracking Error": "0.116",
+    "Treynor Ratio": "0.219",
+    "Total Fees": "$53.75",
+    "Estimated Strategy Capacity": "$2100000000.00",
+    "Lowest Capacity Asset": "ES XUERCWA6EWAP",
+    "Portfolio Turnover": "11.93%",
+    "OrderListHash": "850fbc1796d3bcd972250fc526a41061"
+}
+ </script>
+ <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
     
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2022, 1, 1)
         # Create an ATR indicator to set take profit and stop loss levels.
@@ -120,17 +157,17 @@
         # Subscribe the consolidator for automatic updates with ES data.
         self.subscription_manager.add_consolidator(self._future.symbol, consolidator)
     
-    def _future_trading_hour(self, dt: datetime) -> CalendarInfo:
+    def _future_trading_hour(self, dt: datetime) -&gt; CalendarInfo:
         # Set the open time of the bar to be 6 PM EST.
         start = dt.replace(hour=0, minute=0, second=0, microsecond=0)
-        if dt.hour < 18:
+        if dt.hour &lt; 18:
             start -= timedelta(hours=6)
         else:
             start += timedelta(hours=18)
         # Set the close time of the bar to be 5 PM EST the next day, which is 23 hours later.
         return CalendarInfo(start, timedelta(hours=23))
 
-    def _on_consolidated(self, sender: object, bar: TradeBar) -> None:
+    def _on_consolidated(self, sender: object, bar: TradeBar) -&gt; None:
         # Update the ATR indicator since we want the daily ATR to set the stop price.
         self._atr.update(bar)
         # Set the daily take profit and stop price levels as a function of the previous 
@@ -138,7 +175,7 @@
         self._take_profit_price = bar.close + self._atr.current.value * 2
         self._stop_loss_price = bar.close - self._atr.current.value * 2
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Liquidate the current contract in the continuous contract series
         # when it's about to expire.
         changed_event = slice.symbol_changed_events.get(self._future.symbol)
@@ -154,19 +191,60 @@
         elif self.portfolio.invested and self._future.symbol in slice.bars:
             current_price = slice.bars[self._future.symbol].close
             # Check if the current price is above profit taker or below stop loss.
-            if current_price > self._take_profit_price or current_price < self._stop_loss_price:
+            if current_price &gt; self._take_profit_price or current_price &lt; self._stop_loss_price:
                 # Exit the position.
                 self.liquidate()
         
         # Update the daily tracker so we only update our position once per day.
         self._day = slice.time.day</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "25",
+    "Average Win": "6.55%",
+    "Average Loss": "-3.79%",
+    "Compounding Annual Return": "48.066%",
+    "Drawdown": "11.600%",
+    "Expectancy": "0.818",
+    "Start Equity": "100000",
+    "End Equity": "148019.1",
+    "Net Profit": "48.019%",
+    "Sharpe Ratio": "1.728",
+    "Sortino Ratio": "2.132",
+    "Probabilistic Sharpe Ratio": "72.246%",
+    "Loss Rate": "33%",
+    "Win Rate": "67%",
+    "Profit-Loss Ratio": "1.73",
+    "Alpha": "0.036",
+    "Beta": "1.524",
+    "Annual Standard Deviation": "0.193",
+    "Annual Variance": "0.037",
+    "Information Ratio": "1.197",
+    "Tracking Error": "0.116",
+    "Treynor Ratio": "0.219",
+    "Total Fees": "$53.75",
+    "Estimated Strategy Capacity": "$2100000000.00",
+    "Lowest Capacity Asset": "ES XUERCWA6EWAP",
+    "Portfolio Turnover": "11.93%",
+    "OrderListHash": "42de1a2c23fef91dc6be480aaa243a56"
+}
+ </script>
 </div>
-
-<h4>Example 2: Create Daily <code>QuoteBar</code> Objects That Start at 5 PM</h4>
-<p>The following algorithm consolidates minute resolution Forex data into daily <code>QuoteBar</code> objects that open and close at 5 PM Eastern Time.</p>
-
+<h4>
+ Example 2: Create Daily
+ <code>
+  QuoteBar
+ </code>
+ Objects That Start at 5 PM
+</h4>
+<p>
+ The following algorithm consolidates minute resolution Forex data into daily
+ <code>
+  QuoteBar
+ </code>
+ objects that open and close at 5 PM Eastern Time.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
     private dynamic _pair;
 
@@ -222,7 +300,38 @@
         Plot(consolidatedBar.Symbol.ToString(), "EMA", _pair.Ema.Current.Value);
     }
 }</pre>
-    <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.67",
+    "Tracking Error": "0.173",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
     
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
@@ -261,13 +370,54 @@
         # Plot the closing price and the EMA.
         self.plot(str(consolidated_bar.symbol), 'Close', consolidated_bar.close)
         self.plot(str(consolidated_bar.symbol), 'EMA', self._pair.ema.current.value)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.67",
+    "Tracking Error": "0.173",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 3: Monthly Candlesticks</h4>
-<p>The following algorithm consolidates minute-resolution data into monthly <code>TradeBar</code> objects and then <a href='/docs/v2/writing-algorithms/charting#06-Plot-Candlestick'>plots them as candlesticks</a>.</p>
-
+<h4>
+ Example 3: Monthly Candlesticks
+</h4>
+<p>
+ The following algorithm consolidates minute-resolution data into monthly
+ <code>
+  TradeBar
+ </code>
+ objects and then
+ <a href="/docs/v2/writing-algorithms/charting#06-Plot-Candlestick">
+  plots them as candlesticks
+ </a>
+ .
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -295,7 +445,38 @@
         return new CalendarInfo(start, (end - start));
     }
 }</pre>
-    <pre class="python">from dateutil.relativedelta import relativedelta
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">from dateutil.relativedelta import relativedelta
 
 
 class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
@@ -321,18 +502,58 @@ class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
         # Set the end time to the beginning of next month.
         end = start + relativedelta(months=1)
         return CalendarInfo(start, end - start)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-<div class="example-fieldset"> 
-    <div class="example-legend">Demonstration Algorithms</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DataConsolidationAlgorithm.py" target="_BLANK">
-        DataConsolidationAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DataConsolidationAlgorithm.cs" target="_BLANK">
-        DataConsolidationAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+<div class="example-fieldset">
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DataConsolidationAlgorithm.py" target="_BLANK">
+  DataConsolidationAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DataConsolidationAlgorithm.cs" target="_BLANK">
+  DataConsolidationAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

@@ -1,7 +1,11 @@
-<h4>Example 1: Only Within 1 Hour Of Market Open And Close</h4>
-<p>Buying SPY shortly after market holidays or weekend breaks can be a profitable strategy. Historically, the market has tended to experience positive returns in the trading sessions immediately following extended market closures. This is often attributed to the release of pent-up demand and information during the downtime. By positioning into SPY at the open or within the first few trading hours after a holiday or weekend, investors may be able to capture this post-break bounce in the broader market.</p>
+<h4>
+ Example 1: Only Within 1 Hour Of Market Open And Close
+</h4>
+<p>
+ Buying SPY shortly after market holidays or weekend breaks can be a profitable strategy. Historically, the market has tended to experience positive returns in the trading sessions immediately following extended market closures. This is often attributed to the release of pent-up demand and information during the downtime. By positioning into SPY at the open or within the first few trading hours after a holiday or weekend, investors may be able to capture this post-break bounce in the broader market.
+</p>
 <div class="section-example-container testable">
-	<pre class="csharp">public class MarketHourExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class MarketHourExampleAlgorithm : QCAlgorithm
 {
     private Equity _spy;
         
@@ -28,7 +32,38 @@
         }
     }
 }</pre>
-	<pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # Daily data
         self.spy = self.add_equity("SPY", Resolution.HOUR)
@@ -44,12 +79,46 @@
         elif self.portfolio[self.spy.symbol].invested:
             # Liquidate otherwise if any open position
             self.liquidate(self.spy.symbol)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "1.00%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "8.826%",
+    "Drawdown": "55.300%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "989263.72",
+    "Net Profit": "889.264%",
+    "Sharpe Ratio": "0.323",
+    "Sortino Ratio": "0.345",
+    "Probabilistic Sharpe Ratio": "0.029%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0.998",
+    "Annual Standard Deviation": "0.158",
+    "Annual Variance": "0.025",
+    "Information Ratio": "-0.096",
+    "Tracking Error": "0.001",
+    "Treynor Ratio": "0.051",
+    "Total Fees": "$9.26",
+    "Estimated Strategy Capacity": "$91000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.01%",
+    "OrderListHash": "3b9af868320e967df9db5f046080a855"
+}
+ </script>
 </div>
-
-<h4>Example 2: Pre-market Short Limit Order</h4>
-<p>A pre-market short limit order is a type of order placed before the regular trading session begins. It allows a trader to take a short position at a price higher than the current market price, with the intention of selling the position shortly after the market opens and profiting from the expected price decline. This strategy is often used by traders who anticipate a decline in the asset's value and want to capitalize on it.</p>
+<h4>
+ Example 2: Pre-market Short Limit Order
+</h4>
+<p>
+ A pre-market short limit order is a type of order placed before the regular trading session begins. It allows a trader to take a short position at a price higher than the current market price, with the intention of selling the position shortly after the market opens and profiting from the expected price decline. This strategy is often used by traders who anticipate a decline in the asset's value and want to capitalize on it.
+</p>
 <div class="section-example-container testable">
-	<pre class="csharp">public class MarketHourExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class MarketHourExampleAlgorithm : QCAlgorithm
 {
     private Equity _spy;
         
@@ -66,14 +135,14 @@
         var exchangeHours = _spy.Exchange.Hours;
         // Check it is extended market hours before market open and no position/open order
         if (IsBeforeMarketOpenExtendedHours(exchangeHours, slice.Time)
-            && !Portfolio[_spy.Symbol].Invested
-            && Transactions.GetOpenOrderTickets(_spy.Symbol).Count() == 0)
+            &amp;&amp; !Portfolio[_spy.Symbol].Invested
+            &amp;&amp; Transactions.GetOpenOrderTickets(_spy.Symbol).Count() == 0)
         {
             // Short sell at a higher quote
             LimitOrder(_spy.Symbol, -10, slice.QuoteBars[_spy.Symbol].Bid.Close * 1.005m);
         }
         // Check if the normal market is opening and any position
-        else if (exchangeHours.IsOpen(slice.Time, extendedMarketHours: false) && Portfolio[_spy.Symbol].Invested)
+        else if (exchangeHours.IsOpen(slice.Time, extendedMarketHours: false) &amp;&amp; Portfolio[_spy.Symbol].Invested)
         {
             // Close the short position
             Liquidate(_spy.Symbol);
@@ -85,10 +154,41 @@
         // Check if it is extended market hours before market open 
         // Check by if the extended market is open and if the next non-extended market open is on the same day
         return exchangeHours.IsOpen(time, extendedMarketHours: true)
-            && exchangeHours.GetNextMarketOpen(time, extendedMarketHours: false).Day == time.Day;
+            &amp;&amp; exchangeHours.GetNextMarketOpen(time, extendedMarketHours: false).Day == time.Day;
     }
 }</pre>
-	<pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "813",
+    "Average Win": "0.01%",
+    "Average Loss": "0.00%",
+    "Compounding Annual Return": "-0.023%",
+    "Drawdown": "0.700%",
+    "Expectancy": "-0.483",
+    "Start Equity": "100000",
+    "End Equity": "99383.95",
+    "Net Profit": "-0.616%",
+    "Sharpe Ratio": "-81.3",
+    "Sortino Ratio": "-32.744",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "87%",
+    "Win Rate": "13%",
+    "Profit-Loss Ratio": "3.03",
+    "Alpha": "-0.023",
+    "Beta": "-0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.465",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "246.393",
+    "Total Fees": "$812.00",
+    "Estimated Strategy Capacity": "$14000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.22%",
+    "OrderListHash": "b50e07a85a86c8f4b4ce006521383339"
+}
+ </script>
+ <pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # Enable extended market hours feed
         self.spy = self.add_equity("SPY", extended_market_hours=True)
@@ -99,7 +199,7 @@
         
         exchange_hours = self.spy.exchange.hours
         # Check it is extended market hours before market open and no position/open order
-        if is_before_market_open_extended_hours(exchange_hours, slice.time) \
+        if self.is_before_market_open_extended_hours(exchange_hours, slice.time) \
             and not self.portfolio[self.spy.symbol].invested \
             and not self.transactions.get_open_order_tickets(self.spy.symbol):
             # Short sell at a higher quote
@@ -114,13 +214,49 @@
         # Check by if the extended market is open and if the next non-extended market open is on the same day
         return exchange_hours.is_open(time, extended_market_hours=True)\
             and exchange_hours.get_next_market_open(time, extended_market_hours=False).day == time.day</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.341",
+    "Tracking Error": "0.152",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-<p>However, it is important to note that pre-market trading can be more volatile and riskier than regular trading, and the intended price may not be achieved on this strategy.</p>
-
-<h4>Example 3: Last Hour Trades</h4>
-<p>Establishing a scheduled trading event in the hour before market close can be an effective strategy. This allows the trader to analyze market conditions, identify potential trade opportunities, and prepare orders ahead of the close. By emitting their trading insights and planned actions to the market in this critical final hour, the trader can influence other market participants and potentially gain an edge.</p>
+<p>
+ However, it is important to note that pre-market trading can be more volatile and riskier than regular trading, and the intended price may not be achieved on this strategy.
+</p>
+<h4>
+ Example 3: Last Hour Trades
+</h4>
+<p>
+ Establishing a scheduled trading event in the hour before market close can be an effective strategy. This allows the trader to analyze market conditions, identify potential trade opportunities, and prepare orders ahead of the close. By emitting their trading insights and planned actions to the market in this critical final hour, the trader can influence other market participants and potentially gain an edge.
+</p>
 <div class="section-example-container testable">
-	<pre class="csharp">public class MarketHourExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class MarketHourExampleAlgorithm : QCAlgorithm
 {
     private Equity _spy;
 
@@ -147,7 +283,38 @@
         EmitInsights(Insight.Price(_spy.Symbol, marketCloseTime.AddMinutes(-1), InsightDirection.Up));
     }
 }</pre>
-	<pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "13620",
+    "Average Win": "0.52%",
+    "Average Loss": "-0.54%",
+    "Compounding Annual Return": "5.857%",
+    "Drawdown": "42.700%",
+    "Expectancy": "0.048",
+    "Start Equity": "100000",
+    "End Equity": "467517.92",
+    "Net Profit": "367.518%",
+    "Sharpe Ratio": "0.21",
+    "Sortino Ratio": "0.204",
+    "Probabilistic Sharpe Ratio": "0.009%",
+    "Loss Rate": "46%",
+    "Win Rate": "54%",
+    "Profit-Loss Ratio": "0.95",
+    "Alpha": "-0.002",
+    "Beta": "0.537",
+    "Annual Standard Deviation": "0.12",
+    "Annual Variance": "0.014",
+    "Information Ratio": "-0.233",
+    "Tracking Error": "0.111",
+    "Treynor Ratio": "0.047",
+    "Total Fees": "$115051.34",
+    "Estimated Strategy Capacity": "$81000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "137.33%",
+    "OrderListHash": "6e6082e0c9929313785b4adf0661f9d9"
+}
+ </script>
+ <pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.spy = self.add_equity("SPY")
 
@@ -166,4 +333,35 @@
         market_close_time = self.spy.exchange.hours.get_next_market_close(self.time, extended_market_hours=False)
         # Emit an insight that expires 1 minutye before the next market close
         self.emit_insights(Insight.price(self.spy.symbol, market_close_time - timedelta(minutes=1), InsightDirection.UP))</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "13620",
+    "Average Win": "0.52%",
+    "Average Loss": "-0.54%",
+    "Compounding Annual Return": "5.857%",
+    "Drawdown": "42.700%",
+    "Expectancy": "0.048",
+    "Start Equity": "100000",
+    "End Equity": "467517.92",
+    "Net Profit": "367.518%",
+    "Sharpe Ratio": "0.21",
+    "Sortino Ratio": "0.204",
+    "Probabilistic Sharpe Ratio": "0.009%",
+    "Loss Rate": "46%",
+    "Win Rate": "54%",
+    "Profit-Loss Ratio": "0.95",
+    "Alpha": "-0.002",
+    "Beta": "0.537",
+    "Annual Standard Deviation": "0.12",
+    "Annual Variance": "0.014",
+    "Information Ratio": "-0.233",
+    "Tracking Error": "0.111",
+    "Treynor Ratio": "0.047",
+    "Total Fees": "$115051.34",
+    "Estimated Strategy Capacity": "$81000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "137.33%",
+    "OrderListHash": "53a9e4da9bcfbb03b00f673ac8996804"
+}
+ </script>
 </div>

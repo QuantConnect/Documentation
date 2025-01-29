@@ -1,5 +1,5 @@
 <p>
-    Rho, <script type="math/tex">\rho</script>, is the rate of change of the value of a derivative with respect to the <a href='/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/key-concepts'>interest rate</a>. 
+    Rho, <script type="math/tex">\rho</script>, is the rate of change of the value of a derivative with respect to the <a href='/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/key-concepts'>interest rate</a>. 
     It is usually small and not a big issue in practice unless the Option is deep in-the-money and has a long horizon. 
     In this case, the interest rate matters because you need to discount a larger cash flow over a longer horizon. 
     For more information about rho, see <a href='/learning/articles/introduction-to-options/the-greek-letters#rho'>Rho</a>.

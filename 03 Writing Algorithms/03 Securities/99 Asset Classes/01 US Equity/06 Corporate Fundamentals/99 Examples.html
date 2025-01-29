@@ -1,12 +1,15 @@
-<p>The following examples demonstrate some common practices for US Equity corporate fundamentals.</p>
-
-<h4>Example 1: Capturing the Overreaction to Financial Reports</h4>
 <p>
-	The following algorithm is based on the hypothesis that investors overreact to new financial report releases.
+ The following examples demonstrate some common practices for US Equity corporate fundamentals.
+</p>
+<h4>
+ Example 1: Capturing the Overreaction to Financial Reports
+</h4>
+<p>
+ The following algorithm is based on the hypothesis that investors overreact to new financial report releases.
 	It buys AAPL stock on every new 10Q or 8K filing and then liquidates the position after seven days.
 </p>
 <div class="section-example-container testable">
-	<pre class="csharp">public class USEquityCorporateFundamentalsExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class USEquityCorporateFundamentalsExampleAlgorithm : QCAlgorithm
 {
     private Equity _aapl;
     // Add a member to track the last financial statement filing date.
@@ -25,14 +28,14 @@
         var lastFilingDate = _aapl.Fundamentals.FinancialStatements.FileDate.Value;
 
         // When new financial statements are released, buy AAPL.
-        if (_lastFilingDate.HasValue && lastFilingDate != _lastFilingDate.Value)
+        if (_lastFilingDate.HasValue &amp;&amp; lastFilingDate != _lastFilingDate.Value)
         {
             SetHoldings(_aapl.Symbol, 1);
             _exitTime = Time.AddDays(7);
         }
 
         // Liquidate the position after 1 week.
-        if (_aapl.Holdings.Invested && Time >= _exitTime)
+        if (_aapl.Holdings.Invested &amp;&amp; Time &gt;= _exitTime)
         {
             Liquidate();
         }
@@ -41,15 +44,46 @@
         _lastFilingDate = lastFilingDate;
     }
 }</pre>
-	<pre class="python">class USEquityCorporateFundamentalsExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "162",
+    "Average Win": "3.62%",
+    "Average Loss": "-3.84%",
+    "Compounding Annual Return": "0.835%",
+    "Drawdown": "42.200%",
+    "Expectancy": "0.102",
+    "Start Equity": "100000",
+    "End Equity": "125286.19",
+    "Net Profit": "25.286%",
+    "Sharpe Ratio": "-0.203",
+    "Sortino Ratio": "-0.063",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "43%",
+    "Win Rate": "57%",
+    "Profit-Loss Ratio": "0.94",
+    "Alpha": "-0.017",
+    "Beta": "0.056",
+    "Annual Standard Deviation": "0.07",
+    "Annual Variance": "0.005",
+    "Information Ratio": "-0.396",
+    "Tracking Error": "0.165",
+    "Treynor Ratio": "-0.255",
+    "Total Fees": "$35118.97",
+    "Estimated Strategy Capacity": "$88000000.00",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "1.63%",
+    "OrderListHash": "da209c09ad5e548e253985fbf3b11af2"
+}
+ </script>
+ <pre class="python">class USEquityCorporateFundamentalsExampleAlgorithm(QCAlgorithm):
         
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         # Add Equity data.
         self._aapl = self.add_equity("AAPL")
         # Add a member to track the last financial statement filing date.
         self._last_filing_date = None
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Get the most recent filing date.
         last_filing_date = self._aapl.fundamentals.financial_statements.file_date.value
         
@@ -59,20 +93,52 @@
             self._exit_time = self.time + timedelta(7)
 
         # Liquidate the position after 1 week.
-        if self._aapl.holdings.invested and self.time >= self._exit_time:
+        if self._aapl.holdings.invested and self.time &gt;= self._exit_time:
             self.liquidate()
         
         # Update the last filing date to identify future changes.
         self._last_filing_date = last_filing_date</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "162",
+    "Average Win": "3.62%",
+    "Average Loss": "-3.84%",
+    "Compounding Annual Return": "0.835%",
+    "Drawdown": "42.200%",
+    "Expectancy": "0.102",
+    "Start Equity": "100000",
+    "End Equity": "125286.19",
+    "Net Profit": "25.286%",
+    "Sharpe Ratio": "-0.203",
+    "Sortino Ratio": "-0.063",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "43%",
+    "Win Rate": "57%",
+    "Profit-Loss Ratio": "0.94",
+    "Alpha": "-0.017",
+    "Beta": "0.056",
+    "Annual Standard Deviation": "0.07",
+    "Annual Variance": "0.005",
+    "Information Ratio": "-0.396",
+    "Tracking Error": "0.165",
+    "Treynor Ratio": "-0.255",
+    "Total Fees": "$35118.97",
+    "Estimated Strategy Capacity": "$88000000.00",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "1.63%",
+    "OrderListHash": "32c863c86bac44f21ea2f8e75d37cbab"
+}
+ </script>
 </div>
-
-<h4>Example 2: Diversifying Across Sectors</h4>
+<h4>
+ Example 2: Diversifying Across Sectors
+</h4>
 <p>
-	The follow algorithm aims to reduce concentration risk in any one sector.
+ The follow algorithm aims to reduce concentration risk in any one sector.
 	It selects the 500 largest Equities at the start of each month and then forms a portfolio that gives equal weight to each sector and equal weight to the assets within each sector.
 </p>
 <div class="section-example-container testable">
-	<pre class="csharp">public class USEquityCorporateFundamentalsExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class USEquityCorporateFundamentalsExampleAlgorithm : QCAlgorithm
 {
     private Universe _universe;
     
@@ -84,10 +150,10 @@
         UniverseSettings.Resolution = Resolution.Daily;
         UniverseSettings.Schedule.On(DateRules.MonthStart(spy));
         // Add a universe of the 500 largest Equities.
-        _universe = AddUniverse(coarse => coarse
-            .OrderByDescending(x => x.MarketCap)
+        _universe = AddUniverse(coarse =&gt; coarse
+            .OrderByDescending(x =&gt; x.MarketCap)
             .Take(500)
-            .Select(x => x.Symbol)
+            .Select(x =&gt; x.Symbol)
         );
         // Create a Scheduled Event to rebalance the portfolio each month.
         Schedule.On(DateRules.MonthStart(spy, 1), TimeRules.Midnight, Rebalance);
@@ -123,16 +189,47 @@
         foreach (var symbols in symbolsBySector.Values)
         {
             var weight = 1m / sectorCount / symbols.Count;
-            targets.AddRange(symbols.Select(symbol => new PortfolioTarget(symbol, weight)));
+            targets.AddRange(symbols.Select(symbol =&gt; new PortfolioTarget(symbol, weight)));
         }
 
         // Place the trades.
         SetHoldings(targets, true);
     }
 }</pre>
-	<pre class="python">class USEquityCorporateFundamentalsExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "3377",
+    "Average Win": "0.16%",
+    "Average Loss": "-0.08%",
+    "Compounding Annual Return": "6.806%",
+    "Drawdown": "32.500%",
+    "Expectancy": "0.953",
+    "Start Equity": "10000000",
+    "End Equity": "59536480.98",
+    "Net Profit": "495.365%",
+    "Sharpe Ratio": "0.329",
+    "Sortino Ratio": "0.341",
+    "Probabilistic Sharpe Ratio": "0.470%",
+    "Loss Rate": "38%",
+    "Win Rate": "62%",
+    "Profit-Loss Ratio": "2.15",
+    "Alpha": "0.003",
+    "Beta": "0.482",
+    "Annual Standard Deviation": "0.085",
+    "Annual Variance": "0.007",
+    "Information Ratio": "-0.26",
+    "Tracking Error": "0.09",
+    "Treynor Ratio": "0.058",
+    "Total Fees": "$75443.88",
+    "Estimated Strategy Capacity": "$35000000.00",
+    "Lowest Capacity Asset": "TSN R735QTJ8XC9X",
+    "Portfolio Turnover": "0.09%",
+    "OrderListHash": "e3fc3dc67476d8844db2dc680a5c23b5"
+}
+ </script>
+ <pre class="python">class USEquityCorporateFundamentalsExampleAlgorithm(QCAlgorithm):
         
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_cash(10_000_000)
         # Define the universe settings.
         spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
@@ -147,7 +244,7 @@
         # Create a Scheduled Event to rebalance the portfolio each month.
         self.schedule.on(self.date_rules.month_start(spy, 1), self.time_rules.midnight, self._rebalance)
 
-    def _rebalance(self) -> None:
+    def _rebalance(self) -&gt; None:
         # Wait until there are asset in the universe.
         if not self._universe.selected:
             return
@@ -172,4 +269,35 @@
 
         # Place the trades.
         self.set_holdings(targets, True)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "3377",
+    "Average Win": "0.16%",
+    "Average Loss": "-0.08%",
+    "Compounding Annual Return": "6.806%",
+    "Drawdown": "32.500%",
+    "Expectancy": "0.953",
+    "Start Equity": "10000000",
+    "End Equity": "59536480.98",
+    "Net Profit": "495.365%",
+    "Sharpe Ratio": "0.329",
+    "Sortino Ratio": "0.341",
+    "Probabilistic Sharpe Ratio": "0.470%",
+    "Loss Rate": "38%",
+    "Win Rate": "62%",
+    "Profit-Loss Ratio": "2.15",
+    "Alpha": "0.003",
+    "Beta": "0.482",
+    "Annual Standard Deviation": "0.085",
+    "Annual Variance": "0.007",
+    "Information Ratio": "-0.26",
+    "Tracking Error": "0.09",
+    "Treynor Ratio": "0.058",
+    "Total Fees": "$75443.88",
+    "Estimated Strategy Capacity": "$35000000.00",
+    "Lowest Capacity Asset": "TSN R735QTJ8XC9X",
+    "Portfolio Turnover": "0.09%",
+    "OrderListHash": "5e8c03ae21653849aeb814e6d5607007"
+}
+ </script>
 </div>

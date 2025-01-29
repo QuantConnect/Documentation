@@ -1,9 +1,18 @@
-<p>The following examples demonstrate some common practices for implementing the settlement model.</p>
-
-<h4>Example 1: 2-day Settlement</h4>
-<p>The following algorithm simulates Interactive Brokers cash account. According to IB's website, cash positions will be settled in 48 hours. Thus, we can implement <code>DelayedSettlementModel</code> to mimic that. We hold the intra-day position of SPY to implement the settlement logic.</p>
+<p>
+ The following examples demonstrate some common practices for implementing the settlement model.
+</p>
+<h4>
+ Example 1: 2-day Settlement
+</h4>
+<p>
+ The following algorithm simulates Interactive Brokers cash account. According to IB's website, cash positions will be settled in 48 hours. Thus, we can implement
+ <code>
+  DelayedSettlementModel
+ </code>
+ to mimic that. We hold the intra-day position of SPY to implement the settlement logic.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class SettlementModelAlgorithm : QCAlgorithm
+ <pre class="csharp">public class SettlementModelAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
 
@@ -56,7 +65,38 @@ class CustomSecurityInitializer : BrokerageModelSecurityInitializer
         security.SetSettlementModel(new DelayedSettlementModel(2, new TimeSpan(0, 0, 0)));
     }
 }</pre>
-    <pre class="python"># region imports
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "250",
+    "Average Win": "0.40%",
+    "Average Loss": "-0.41%",
+    "Compounding Annual Return": "2.772%",
+    "Drawdown": "5.600%",
+    "Expectancy": "0.057",
+    "Start Equity": "100000",
+    "End Equity": "102785.22",
+    "Net Profit": "2.785%",
+    "Sharpe Ratio": "-0.648",
+    "Sortino Ratio": "-0.492",
+    "Probabilistic Sharpe Ratio": "22.980%",
+    "Loss Rate": "46%",
+    "Win Rate": "54%",
+    "Profit-Loss Ratio": "0.97",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0.053",
+    "Annual Variance": "0.003",
+    "Information Ratio": "0.386",
+    "Tracking Error": "0.053",
+    "Treynor Ratio": "0",
+    "Total Fees": "$266.11",
+    "Estimated Strategy Capacity": "$63000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "67.95%",
+    "OrderListHash": "a6dab9d59e2c711d423979cb0397dc95"
+}
+ </script>
+ <pre class="python"># region imports
 from AlgorithmImports import *
 # endregion
 
@@ -93,4 +133,35 @@ class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
         super().initialize(security)
         # IB settles cash in 48 hours.
         security.set_settlement_model(DelayedSettlementModel(2, timedelta(hours=0)))</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "250",
+    "Average Win": "0.40%",
+    "Average Loss": "-0.41%",
+    "Compounding Annual Return": "2.772%",
+    "Drawdown": "5.600%",
+    "Expectancy": "0.057",
+    "Start Equity": "100000",
+    "End Equity": "102785.22",
+    "Net Profit": "2.785%",
+    "Sharpe Ratio": "-0.648",
+    "Sortino Ratio": "-0.492",
+    "Probabilistic Sharpe Ratio": "22.980%",
+    "Loss Rate": "46%",
+    "Win Rate": "54%",
+    "Profit-Loss Ratio": "0.97",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0.053",
+    "Annual Variance": "0.003",
+    "Information Ratio": "0.386",
+    "Tracking Error": "0.053",
+    "Treynor Ratio": "0",
+    "Total Fees": "$266.11",
+    "Estimated Strategy Capacity": "$63000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "67.95%",
+    "OrderListHash": "a6a53907a1cc86ee02615f254974eb49"
+}
+ </script>
 </div>

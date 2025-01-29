@@ -1,15 +1,22 @@
-<p>The following examples demonstrate some common practices for handling Crypto Futures data.</p>
-
-<h4>Example 1: Adjust Holdings on Margin Payments</h4>
 <p>
-    Perpetual futures have a mechanism called <span class='new-term'>funding</span>, where if you're holding a position at certain times (the funding timestamp), you might have to pay or receive funding based on the difference between the perpetual contract price and the spot price.
+ The following examples demonstrate some common practices for handling Crypto Futures data.
+</p>
+<h4>
+ Example 1: Adjust Holdings on Margin Payments
+</h4>
+<p>
+ Perpetual futures have a mechanism called
+ <span class="new-term">
+  funding
+ </span>
+ , where if you're holding a position at certain times (the funding timestamp), you might have to pay or receive funding based on the difference between the perpetual contract price and the spot price.
     This example demonstrates how to adjust your position in Crypto Future based on the funding rate.
     The funding is settled in the quote currency, which is USDT in this case.
     When you receive USDT, the algorithm increases its position size in BTCUSDT.
     When you pay USDT, the algorithm decreases its position size.
 </p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
     private decimal _lotSize;
@@ -36,7 +43,7 @@
     public override void OnData(Slice slice)
     {
         // Only place orders when the market is open since market on open orders aren't supported.
-        if (!Portfolio.Invested && IsMarketOpen(_symbol))
+        if (!Portfolio.Invested &amp;&amp; IsMarketOpen(_symbol))
         {
             // Open a long position in the perpetual Crypto Future.
             MarketOrder(_symbol, 10);
@@ -69,9 +76,40 @@
         _day = Time.Day;
     }
 }</pre>
-    <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "311",
+    "Average Win": "0.01%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "17.351%",
+    "Drawdown": "44.100%",
+    "Expectancy": "0",
+    "Start Equity": "1063686.80",
+    "End Equity": "2187666.89",
+    "Net Profit": "105.668%",
+    "Sharpe Ratio": "0.733",
+    "Sortino Ratio": "1.002",
+    "Probabilistic Sharpe Ratio": "30.215%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.167",
+    "Beta": "0.37",
+    "Annual Standard Deviation": "0.251",
+    "Annual Variance": "0.063",
+    "Information Ratio": "-1.913",
+    "Tracking Error": "0.399",
+    "Treynor Ratio": "0.497",
+    "Total Fees": "\u20ae111.10",
+    "Estimated Strategy Capacity": "\u20ae19000000.00",
+    "Lowest Capacity Asset": "BTCUSDT 18R",
+    "Portfolio Turnover": "0.01%",
+    "OrderListHash": "dae2bb5144ea77f2eea6635f14e2247c"
+}
+ </script>
+ <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2020, 4, 1)
         self.set_end_date(2024, 10, 1)
         # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
@@ -89,7 +127,7 @@
         # Create a member to track the current day.
         self._day = -1
     
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Only place orders when the market is open since market on open orders aren't supported.
         if not self.portfolio.invested and self.is_market_open(self._symbol):
             # Open a long position in the perpetual Crypto Future.
@@ -115,17 +153,49 @@
             self.plot("CashBook", "BTC", self.portfolio.cash_book['BTC'].amount)
             self.plot("Quantity", "BTCUSDT", self.portfolio[self._symbol].quantity)
         self._day = self.time.day</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "1460",
+    "Average Win": "0.00%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "16.854%",
+    "Drawdown": "43.100%",
+    "Expectancy": "0",
+    "Start Equity": "1063686.80",
+    "End Equity": "2146183.29",
+    "Net Profit": "101.768%",
+    "Sharpe Ratio": "0.725",
+    "Sortino Ratio": "0.984",
+    "Probabilistic Sharpe Ratio": "30.146%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.167",
+    "Beta": "0.363",
+    "Annual Standard Deviation": "0.244",
+    "Annual Variance": "0.059",
+    "Information Ratio": "-1.92",
+    "Tracking Error": "0.401",
+    "Treynor Ratio": "0.487",
+    "Total Fees": "\u20ae159.14",
+    "Estimated Strategy Capacity": "\u20ae12000000.00",
+    "Lowest Capacity Asset": "BTCUSDT 18R",
+    "Portfolio Turnover": "0.01%",
+    "OrderListHash": "31501ed9b05e31db1018e9f631f1d920"
+}
+ </script>
 </div>
-
-<h4>Example 2: Future-Spot Arbitrage</h4>
+<h4>
+ Example 2: Future-Spot Arbitrage
+</h4>
 <p>
-    Long-short arbitrage involves simultaneously trading BTCUSDT in the spot market and BTCUSDT Futures with the same size. 
+ Long-short arbitrage involves simultaneously trading BTCUSDT in the spot market and BTCUSDT Futures with the same size. 
     The following algorithm monitors the spread between these markets.
     If the spot price exceeds the front-month Future price by a threshold, it shorts the spot market and buys the Future contract (and vice vera for the other way around), assuming their discrepancies will be wiped out within a short period due to market efficiency. 
     It closes the positions after the spread inverts.
 </p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
 {
     private Symbol _spot;
     private Symbol _future;
@@ -180,7 +250,38 @@
         }
     }
 }</pre>
-    <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "28",
+    "Average Win": "0.82%",
+    "Average Loss": "-0.58%",
+    "Compounding Annual Return": "2.801%",
+    "Drawdown": "1.500%",
+    "Expectancy": "0.279",
+    "Start Equity": "50000000.00",
+    "End Equity": "51404315.08",
+    "Net Profit": "2.809%",
+    "Sharpe Ratio": "0.428",
+    "Sortino Ratio": "1.031",
+    "Probabilistic Sharpe Ratio": "64.657%",
+    "Loss Rate": "47%",
+    "Win Rate": "53%",
+    "Profit-Loss Ratio": "1.42",
+    "Alpha": "0.01",
+    "Beta": "0.001",
+    "Annual Standard Deviation": "0.022",
+    "Annual Variance": "0.001",
+    "Information Ratio": "0.891",
+    "Tracking Error": "0.598",
+    "Treynor Ratio": "9.822",
+    "Total Fees": "\u20ae604654.02",
+    "Estimated Strategy Capacity": "\u20ae10000000000000.00",
+    "Lowest Capacity Asset": "BTCUSDT 18N",
+    "Portfolio Turnover": "3.25%",
+    "OrderListHash": "9abaeb65cd5ee0eb75d8f77983e8ad5d"
+}
+ </script>
+ <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2023, 1, 1)
@@ -218,4 +319,35 @@
         elif ((round(self.portfolio[self._spot].quantity, 2) &lt; 0 and spot_price &lt; future_price) or
             (round(self.portfolio[self._spot].quantity, 2) &gt; 0 and spot_price &gt; future_price)):
             self.liquidate()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "28",
+    "Average Win": "0.82%",
+    "Average Loss": "-0.58%",
+    "Compounding Annual Return": "2.801%",
+    "Drawdown": "1.500%",
+    "Expectancy": "0.279",
+    "Start Equity": "50000000.00",
+    "End Equity": "51404315.08",
+    "Net Profit": "2.809%",
+    "Sharpe Ratio": "0.428",
+    "Sortino Ratio": "1.031",
+    "Probabilistic Sharpe Ratio": "64.657%",
+    "Loss Rate": "47%",
+    "Win Rate": "53%",
+    "Profit-Loss Ratio": "1.42",
+    "Alpha": "0.01",
+    "Beta": "0.001",
+    "Annual Standard Deviation": "0.022",
+    "Annual Variance": "0.001",
+    "Information Ratio": "0.891",
+    "Tracking Error": "0.598",
+    "Treynor Ratio": "9.822",
+    "Total Fees": "\u20ae604654.02",
+    "Estimated Strategy Capacity": "\u20ae10000000000000.00",
+    "Lowest Capacity Asset": "BTCUSDT 18N",
+    "Portfolio Turnover": "3.25%",
+    "OrderListHash": "11994c38ba8e98be4c1af38ccaac37bb"
+}
+ </script>
 </div>

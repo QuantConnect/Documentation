@@ -1,12 +1,26 @@
-<p>The following examples demonstrate some common practices for handling Option assignment.</p>
-
-<h4>Example 1: Liquidate After Assignment</h4>
 <p>
-    The following algorithm trades a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-straddle'>short straddle strategy</a> on ATM SPY Options that expire within seven days. 
-    To capitalize the cash profit, it liquidates the underlying assigned Equity position in the <code class="csharp">OnAssignmentOrderEvent</code><code class="pytohn">on_assignment_order_event</code> method.
+ The following examples demonstrate some common practices for handling Option assignment.
+</p>
+<h4>
+ Example 1: Liquidate After Assignment
+</h4>
+<p>
+ The following algorithm trades a
+ <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-straddle">
+  short straddle strategy
+ </a>
+ on ATM SPY Options that expire within seven days. 
+    To capitalize the cash profit, it liquidates the underlying assigned Equity position in the
+ <code class="csharp">
+  OnAssignmentOrderEvent
+ </code>
+ <code class="pytohn">
+  on_assignment_order_event
+ </code>
+ method.
 </p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class OptionAssignmentAlgorithm : QCAlgorithm
+ <pre class="csharp">public class OptionAssignmentAlgorithm : QCAlgorithm
 {
     private Option _option;
 
@@ -44,7 +58,38 @@
         );
     }
 }</pre>
-    <pre class="python">class OptionAssignmentAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "17",
+    "Average Win": "0.78%",
+    "Average Loss": "-1.46%",
+    "Compounding Annual Return": "13.715%",
+    "Drawdown": "2.200%",
+    "Expectancy": "-0.318",
+    "Start Equity": "100000",
+    "End Equity": "101097.6",
+    "Net Profit": "1.098%",
+    "Sharpe Ratio": "0.454",
+    "Sortino Ratio": "0.543",
+    "Probabilistic Sharpe Ratio": "51.084%",
+    "Loss Rate": "56%",
+    "Win Rate": "44%",
+    "Profit-Loss Ratio": "0.53",
+    "Alpha": "0.212",
+    "Beta": "0.497",
+    "Annual Standard Deviation": "0.081",
+    "Annual Variance": "0.007",
+    "Information Ratio": "4.751",
+    "Tracking Error": "0.082",
+    "Treynor Ratio": "0.074",
+    "Total Fees": "$13.40",
+    "Estimated Strategy Capacity": "$230000.00",
+    "Lowest Capacity Asset": "SPY YHGT7S1YYHD2|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "19.99%",
+    "OrderListHash": "e22ceef5340652d97ef4300bf2d7ef35"
+}
+ </script>
+ <pre class="python">class OptionAssignmentAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 4, 1)
@@ -73,12 +118,50 @@
             assignment_event.symbol.underlying, 
             -assignment_event.quantity * self._option.symbol_properties.contract_multiplier
         )</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "17",
+    "Average Win": "0.78%",
+    "Average Loss": "-1.46%",
+    "Compounding Annual Return": "13.715%",
+    "Drawdown": "2.200%",
+    "Expectancy": "-0.318",
+    "Start Equity": "100000",
+    "End Equity": "101097.6",
+    "Net Profit": "1.098%",
+    "Sharpe Ratio": "0.454",
+    "Sortino Ratio": "0.543",
+    "Probabilistic Sharpe Ratio": "51.084%",
+    "Loss Rate": "56%",
+    "Win Rate": "44%",
+    "Profit-Loss Ratio": "0.53",
+    "Alpha": "0.212",
+    "Beta": "0.497",
+    "Annual Standard Deviation": "0.081",
+    "Annual Variance": "0.007",
+    "Information Ratio": "4.751",
+    "Tracking Error": "0.082",
+    "Treynor Ratio": "0.074",
+    "Total Fees": "$13.40",
+    "Estimated Strategy Capacity": "$230000.00",
+    "Lowest Capacity Asset": "SPY YHGT7S1YYHD2|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "19.99%",
+    "OrderListHash": "887842a7d8610326b23665e077c397fd"
+}
+ </script>
 </div>
-
-<h4>Example 2: Wheel Strategy</h4>
-<p>The following algorithm demonstrates a <a href='/research/17871/automating-the-wheel-strategy/'>wheel Option strategy</a>. The strategy is split into separate parts to generate consistent income: selling puts and selling covered call.</p>
+<h4>
+ Example 2: Wheel Strategy
+</h4>
+<p>
+ The following algorithm demonstrates a
+ <a href="/research/17871/automating-the-wheel-strategy/">
+  wheel Option strategy
+ </a>
+ . The strategy is split into separate parts to generate consistent income: selling puts and selling covered call.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class WheelStrategyAlgorithm : QCAlgorithm
+ <pre class="csharp">public class WheelStrategyAlgorithm : QCAlgorithm
 {
     // Define the OTM threshold. A greater value means lower risk of assignment but lower premiums to collect.
     private readonly decimal _otmThreshold = 0.05m;
@@ -142,7 +225,38 @@
         MarketOrder(symbol, -_equity.Holdings.Quantity / 100m);
     }
 }</pre>
-    <pre class="python">class WheelStrategyAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "21",
+    "Average Win": "1.41%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "15.849%",
+    "Drawdown": "3.500%",
+    "Expectancy": "0",
+    "Start Equity": "1000000",
+    "End Equity": "1158798.8",
+    "Net Profit": "15.880%",
+    "Sharpe Ratio": "2.558",
+    "Sortino Ratio": "1.661",
+    "Probabilistic Sharpe Ratio": "92.248%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.047",
+    "Beta": "0.209",
+    "Annual Standard Deviation": "0.04",
+    "Annual Variance": "0.002",
+    "Information Ratio": "-1.442",
+    "Tracking Error": "0.115",
+    "Treynor Ratio": "0.493",
+    "Total Fees": "$265.20",
+    "Estimated Strategy Capacity": "$510000.00",
+    "Lowest Capacity Asset": "SPY 31NL3I227KPVQ|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.04%",
+    "OrderListHash": "d2e41a1f71ef3603b7b727b4c98465ba"
+}
+ </script>
+ <pre class="python">class WheelStrategyAlgorithm(QCAlgorithm):
     # Define the OTM threshold. A greater value means lower risk of assignment but lower premiums to collect.
     _otm_threshold = 0.05
 
@@ -158,18 +272,18 @@
         # Add SPY data for trading. Use raw data normalization mode to enable fair strike price comparison.
         self._equity = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
         
-    def _get_target_contract(self, right: OptionRight, target_price: float) -> Symbol:
+    def _get_target_contract(self, right: OptionRight, target_price: float) -&gt; Symbol:
         # Get the Option chain.
         chain = self.option_chain(self._equity.symbol, flatten=True).data_frame
         # Select the contracts that are first to expire after 30 days since they have greater premiums and theta 
         # to collect.
         expiry_threshold = self.time + timedelta(30)
-        expiry = chain[chain.expiry > expiry_threshold].expiry.min()
+        expiry = chain[chain.expiry &gt; expiry_threshold].expiry.min()
         # Select the OTM Option contract to start the wheel or covered call.
         symbol = chain[
-            (chain.expiry == expiry) &
-            (chain.right == right) &
-            (chain.strike <= target_price if right == OptionRight.PUT else chain.strike >= target_price)
+            (chain.expiry == expiry) &amp;
+            (chain.right == right) &amp;
+            (chain.strike &lt;= target_price if right == OptionRight.PUT else chain.strike &gt;= target_price)
         ].sort_values('strike', ascending=right == OptionRight.CALL).index[0]
         # Add the Option contract to the algorithm.
         return self.add_option_contract(symbol).symbol
@@ -185,19 +299,58 @@
         # position.
         symbol = self._get_target_contract(OptionRight.CALL, self._equity.price * (1+self._otm_threshold))
         self.market_order(symbol, -self._equity.holdings.quantity / 100)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "21",
+    "Average Win": "1.41%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "15.849%",
+    "Drawdown": "3.500%",
+    "Expectancy": "0",
+    "Start Equity": "1000000",
+    "End Equity": "1158798.8",
+    "Net Profit": "15.880%",
+    "Sharpe Ratio": "2.558",
+    "Sortino Ratio": "1.661",
+    "Probabilistic Sharpe Ratio": "92.248%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.047",
+    "Beta": "0.209",
+    "Annual Standard Deviation": "0.04",
+    "Annual Variance": "0.002",
+    "Information Ratio": "-1.442",
+    "Tracking Error": "0.115",
+    "Treynor Ratio": "0.493",
+    "Total Fees": "$265.20",
+    "Estimated Strategy Capacity": "$510000.00",
+    "Lowest Capacity Asset": "SPY 31NL3I227KPVQ|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.04%",
+    "OrderListHash": "2f3cc5b28deecb72c4db782faac37f04"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-  <div class="example-legend">Demonstration Algorithms</div>
-  
-  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomOptionAssignmentRegressionAlgorithm.py" target="_BLANK">
-    CustomOptionAssignmentRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span>
-  </a>
-
-  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomOptionAssignmentRegressionAlgorithm.cs" target="_BLANK">
-    CustomOptionAssignmentRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-  </a>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomOptionAssignmentRegressionAlgorithm.py" target="_BLANK">
+  CustomOptionAssignmentRegressionAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomOptionAssignmentRegressionAlgorithm.cs" target="_BLANK">
+  CustomOptionAssignmentRegressionAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>
