@@ -11,6 +11,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 2, 1);
         // Subscribe to the underlying asset.
         <?=$underlyingSubscriptionC?>
 
@@ -29,7 +30,7 @@
     private void UpdateContractsAndGreeks()
     {
         // Get all the tradable Option contracts.
-        var chain = OptionChains(<?=$underlyingSymbolC?>);
+        var chain = OptionChain(<?=$underlyingSymbolC?>);
         
         // Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
         var filteredChain = chain.Where(contract => contract.Expiry > Time.AddDays(30));
@@ -75,8 +76,9 @@
             foreach (var option in chain)
             {
                 var indicator = (Securities[option] as dynamic).<?=$typeName?>;
+                var underlying = option.Symbol.Underlying;
                 var mirror = QuantConnect.Symbol.CreateOption(
-                    option.Underlying.Value, option.ID.Market, option.ID.OptionStyle, 
+                    underlying.Value, option.ID.Market, option.ID.OptionStyle, 
                     option.ID.OptionRight == OptionRight.Call ? OptionRight.Put : OptionRight.Call, 
                     option.ID.StrikePrice, option.ID.Date
                 )<?=$mirrorExtensionC?>;
@@ -84,14 +86,14 @@
                 // Check if price data is available for both contracts and the underlying asset.
                 var q = slice.QuoteBars;
                 var b = slice.Bars;
-                if (q.ContainsKey(option) && q.ContainsKey(mirror) && b.ContainsKey(option.Underlying))
+                if (q.ContainsKey(option) && q.ContainsKey(mirror) && b.ContainsKey(underlying))
                 {
                     var dataPoints = new List&lt;IndicatorDataPoint&gt;
                     {
                         new IndicatorDataPoint(option, q[option].EndTime, q[option].Close),
                         new IndicatorDataPoint(mirror, q[mirror].EndTime, q[mirror].Close),
                         new IndicatorDataPoint(
-                            option.Underlying, b[option.Underlying].EndTime, b[option.Underlying].Close
+                            underlying, b[underlying].EndTime, b[underlying].Close
                         )
                     };
                     foreach (var dataPoint in dataPoints)
@@ -112,9 +114,9 @@
             Sell(_options.option2, 1);
         }
         // Liquidate any assigned positions.
-        if (Portfolio[_underlying].Invested)
+        if (Portfolio[<?=$underlyingSymbolC?>].Invested)
         {
-            Liquidate(_underlying);
+            Liquidate(<?=$underlyingSymbolC?>);
         }
     }
 }</pre>
@@ -122,6 +124,7 @@
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 2, 1)
         # Subscribe to the underlying asset.
         <?=$underlyingSubscriptionPy?>
         # Set up the dividend yield provider for the underlying.
@@ -139,7 +142,7 @@
         
     def _update_contracts_and_greeks(self) -&gt; None:
         # Get all the tradable Option contracts.
-        chain = self.option_chains(self._underlying, flatten=True).data_frame
+        chain = self.option_chain(self._underlying, flatten=True).data_frame
         if chain.empty:
             return
         
@@ -181,9 +184,11 @@
         # Iterate through the indicators.
         for canonical, chain in slice.option_chains.items():
             for option in chain:
+                underlying = option.symbol.underlying
                 indicator = self.securities[option].<?=$typeName?>
+                
                 mirror = Symbol.create_option(
-                    option.underlying.value, option.id.market, option.id.option_style, 
+                    underlying.value, option.id.market, option.id.option_style, 
                     OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT,
                     option.id.strike_price, option.id.date
                 )<?=$mirrorExtensionPy?>
@@ -191,12 +196,12 @@
                 # Check if price data is available for both contracts and the underlying asset.
                 q = slice.quote_bars
                 b = slice.bars
-                if option in q and mirror in q and option.underlying in b:
+                if option in q and mirror in q and underlying in b:
                     data_points = [
                         IndicatorDataPoint(option, q[option].end_time, q[option].close),
                         IndicatorDataPoint(mirror, q[mirror].end_time, q[mirror].close),
                         IndicatorDataPoint(
-                            option.underlying, b[option.underlying].end_time, b[option.underlying].close
+                            underlying, b[underlying].end_time, b[underlying].close
                         )
                     ]
                     for data_point in data_points:
@@ -210,8 +215,8 @@
             self.sell(self._options[0], 1)
             self.sell(self._options[1], 1)
         # Liquidate any assigned positions.
-        if self.portfolio[self._underlying].invested:
-            self.liquidate(self._underlying)</pre>
+        if self.portfolio[<?=$underlyingSymbolPy?>].invested:
+            self.liquidate(<?=$underlyingSymbolPy?>)</pre>
 </div>
 
 <p>For more information about the <code><?=$typeName?></code> constructor, see <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/<?=$indicatorPage?>">Using <?=$helperMethod?> Indicator</a>.</p>

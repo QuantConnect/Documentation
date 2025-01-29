@@ -9,6 +9,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 2, 1);
         // Subscribe to the underlying asset.
         <?=$underlyingSubscriptionC?>
     
@@ -23,7 +24,7 @@
     private void UpdateContractsAndGreeks()
     {
         // Get all the tradable Option contracts.
-        var chain = OptionChains(<?=$underlyingSymbolC?>);
+        var chain = OptionChain(<?=$underlyingSymbolC?>);
         
         // Filter the contracts down. For example, ATM contracts with atleast 1 month until expiry.
         var filteredChain = chain.Where(contract => contract.Expiry > Time.AddDays(30));
@@ -41,7 +42,7 @@
         foreach (var group in filteredChain.GroupBy(contract => contract.Strike))
         {
             var contracts = group.ToList();
-            if (contracts.Count > 1)
+            if (contracts.Count() > 1)
             {
                 // Subscribe to both contracts.
                 var contract1 = <?=$addContractMethodC?>(contracts[0]) as dynamic;
@@ -75,9 +76,9 @@
             Sell(_options.option2, 1);
         }
         // Liquidate any assigned positions.
-        if (Portfolio[_underlying].Invested)
+        if (Portfolio[<?=$underlyingSymbolC?>].Invested)
         {
-            Liquidate(_underlying);
+            Liquidate(<?=$underlyingSymbolC?>);
         }
     }
 }</pre>
@@ -85,6 +86,7 @@
     
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 2, 1)
         # Subscribe to the underlying asset.
         <?=$underlyingSubscriptionPy?>
 
@@ -97,7 +99,7 @@
 
     def _update_contracts_and_greeks(self) -&gt; None:
         # Get all the tradable Option contracts.
-        chain = self.option_chains(<?=$underlyingSymbolPy?>, flatten=True).data_frame
+        chain = self.option_chain(<?=$underlyingSymbolPy?>, flatten=True).data_frame
         if chain.empty:
             return
 
@@ -144,6 +146,6 @@
             self.sell(self._options[0], 1)
             self.sell(self._options[1], 1)
         # Liquidate any assigned positions.
-        if self.portfolio[self._underlying].invested:
-            self.liquidate(self._underlying)</pre>
+        if self.portfolio[<?=$underlyingSymbolPy?>].invested:
+            self.liquidate(<?=$underlyingSymbolPy?>)</pre>
 </div>

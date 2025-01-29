@@ -448,7 +448,7 @@ class RegressionTests:
     def insert_validate_php(self, file_path, soup, results):
         for i, (div, (csharp_results, python_results)) in enumerate(zip(soup.find_all('div', class_='regression-test-results'), results)):
             # C# results insertion
-            for existing_script, new_result in zip(div.find_all('script', class_='csharp-result'), csharp_results):
+            for existing_script, new_result in zip_longest(div.find_all('script', class_='csharp-result'), csharp_results):
                 if not new_result:
                     print(f"No result json returned for {file_path} CSharp Example {i+1}, Skipping...")
                     continue
@@ -462,7 +462,7 @@ class RegressionTests:
                     existing_script.string = new_json
 
             # Python results insertion
-            for existing_script, new_result in zip(div.find_all('script', class_='python-result'), python_results):
+            for existing_script, new_result in zip_longest(div.find_all('script', class_='python-result'), python_results):
                 if not new_result:
                     print(f"No result json returned for {file_path} Python Example {i+1}, Skipping...")
                     continue
