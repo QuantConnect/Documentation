@@ -1,6 +1,6 @@
 <h4>Example <?=$number?>: Weekly-Updating Liquid Universe</h4>
 <p>The following algorithm demonstrates daily EMA cross, trading on the most liquid stocks. The universe is set to be updated weekly. Various universe settings have been set to simulate the brokerage environment best and for trading needs.</p>
-<div class="section-example-container testable">
+<div class="section-example-container to-be-tested">
     <pre class="csharp">public class UniverseSettingsAlgorithm : QCAlgorithm
 {
     public override void Initialize()

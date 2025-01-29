@@ -39,28 +39,28 @@
 }</pre>
     <pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
 
-def initialize(self) -&gt; None:
-    self.set_start_date(2023,1,1)
-    self.set_end_date(2024,1,1)
-    self.set_cash(100_000)
-    # Subscribe to the option chain.
-    self._option = self.add_index_option("SPX", "SPXW")
-    # Filter the option universe to only select 0DTE options.
-    self._option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-1, 1))
-    # Filter the option universe by Delta. The last set_filter call prevails.
-    # self._option.set_filter(lambda option_filter_universe: option_filter_universe.delta(0.25, 0.75))
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023,1,1)
+        self.set_end_date(2024,1,1)
+        self.set_cash(100_000)
+        # Subscribe to the option chain.
+        self._option = self.add_index_option("SPX", "SPXW")
+        # Filter the option universe to only select 0DTE options.
+        self._option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-1, 1))
+        # Filter the option universe by Delta. The last set_filter call prevails.
+        # self._option.set_filter(lambda option_filter_universe: option_filter_universe.delta(0.25, 0.75))
 
-def on_data(self, slice: Slice) -&gt; None:
-    if self.portfolio.invested:
-        return
-    # Get the option chain data.
-    chain = slice.option_chains.get(self._option.symbol)
-    if not chain:
-        return
-    # Sorted the call Option contracts according to their strike prices.
-    calls = sorted([contract for contract in chain if contract.right == OptionRight.CALL], key=lambda x: x.strike)
-    if not calls:
-        return
-    # Buy 1 0DTE call option contract for the SPX index.
-    self.Buy(calls[0].symbol, 1)</pre>
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.portfolio.invested:
+            return
+        # Get the option chain data.
+        chain = slice.option_chains.get(self._option.symbol)
+        if not chain:
+            return
+        # Sorted the call Option contracts according to their strike prices.
+        calls = sorted([contract for contract in chain if contract.right == OptionRight.CALL], key=lambda x: x.strike)
+        if not calls:
+            return
+        # Buy 1 0DTE call option contract for the SPX index.
+        self.Buy(calls[0].symbol, 1)</pre>
 </div>

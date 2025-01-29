@@ -91,15 +91,15 @@
         // Add the Crypto universe and define the selection function.
         _universe = AddUniverse&lt;CoinGeckoUniverse&gt;(
             data => data
-                .Select(c => c as CoinGecko)
+                .Select(c =&gt; c as CoinGecko)
                 // Select the coins that the brokerage supports and have a quote currency that 
                 // matches our account currency.
-                .Where(c => marketPairs.Contains(c.Coin + AccountCurrency))
+                .Where(c =&gt; marketPairs.Contains(c.Coin + AccountCurrency))
                 // Select the 10 largest coins.
-                .OrderByDescending(c => c.MarketCap)
+                .OrderByDescending(c =&gt; c.MarketCap)
                 .Take(10)
                 // Create the Symbol objects of the selected coins.
-                .Select(c => c.CreateSymbol(market, AccountCurrency)
+                .Select(c =&gt; c.CreateSymbol(market, AccountCurrency)
             )
         );
         // Add a Sheduled Event to rebalance the portfolio.
@@ -108,14 +108,18 @@
 
     private void Rebalance()
     {
-        var symbols = _universe.Selected.Where(symbol => Securities[symbol].Price != 0).ToList();
+        if (_universe.Selected == null || _universe.Selected.Count == 0)
+        {
+            return;
+        }
+        var symbols = _universe.Selected.Where(symbol =&gt; Securities[symbol].Price != 0).ToList();
         // Liquidate coins that are no longer in the universe.
         var targets = Portfolio.Values
-            .Where(holding => holding.Invested && !symbols.Contains(holding.Symbol))
-            .Select(holding => new PortfolioTarget(holding.Symbol, 0))
+            .Where(holding =&gt; holding.Invested && !symbols.Contains(holding.Symbol))
+            .Select(holding =&gt; new PortfolioTarget(holding.Symbol, 0))
             .ToList();
         // Form an equal weighted portfolio of the coins in the universe.
-        targets.AddRange(symbols.Select(symbol => new PortfolioTarget(symbol, 0.5m / symbols.Count)));
+        targets.AddRange(symbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.5m / symbols.Count)));
         // Place orders to rebalance the portfolio.
         SetHoldings(targets);
     }
@@ -151,6 +155,8 @@
         ]
 
     def _rebalance(self):
+        if not self._universe.selected:
+            return
         symbols = [symbol for symbol in self._universe.selected if self.securities[symbol].price]
         # Liquidate coins that are no longer in the universe.
         targets = [PortfolioTarget(symbol, 0) for symbol, holding in self.portfolio.items() if holding.invested and symbol not in symbols]

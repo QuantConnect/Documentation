@@ -10,7 +10,7 @@
     public override void Initialize()
     {
         SetStartDate(2019, 1, 1);
-        SetEndDate(2024, 12, 1);
+        SetEndDate(2019, 12, 1);
         SetCash(100000);
         
         // Configure the universe to update at the start of each month. Most of the top 500 don't change very frequently.
@@ -31,28 +31,28 @@
     }
 }</pre>
     <pre class="python">class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
-  def initialize(self) -&gt; None:
-      self.set_start_date(2019, 1, 1)
-      self.set_end_date(2024, 12, 1)
-      self.set_cash(100000)
-      
-      # Configure the universe to update at the start of each month. Most of the top 500 don't change very frequently.
-      self.universe_settings.schedule.on(self.date_rules.month_start())
-      # Add a universe with custom selection rules for filtering.
-      self.add_universe_selection(FundamentalUniverseSelectionModel(
-          lambda fundamental: [
-              x.symbol for x in sorted(
-                  # Large-cap non-penny stocks have a more stable trend and demand.
-                  [f for f in fundamental if f.price &gt; 10 and f.dollar_volume &gt; 10_000_000], 
-                  key=lambda f: f.dollar_volume
-              )[-500:]
-          ]
-      ))
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2019, 12, 1)
+        self.set_cash(100000)
+        
+        # Configure the universe to update at the start of each month. Most of the top 500 don't change very frequently.
+        self.universe_settings.schedule.on(self.date_rules.month_start())
+        # Add a universe with custom selection rules for filtering.
+        self.add_universe_selection(FundamentalUniverseSelectionModel(
+            lambda fundamental: [
+                x.symbol for x in sorted(
+                    # Large-cap non-penny stocks have a more stable trend and demand.
+                    [f for f in fundamental if f.price &gt; 10 and f.dollar_volume &gt; 10_000_000], 
+                    key=lambda f: f.dollar_volume
+                )[-500:]
+            ]
+        ))
 
-      # Sent insights on buying and holding the most liquid cryptos for a week.
-      self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(30)))
-      # Evenly dissipate the capital risk among selected cryptos.
-      self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
+        # Sent insights on buying and holding the most liquid cryptos for a week.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(30)))
+        # Evenly dissipate the capital risk among selected cryptos.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
 </div>
 
 
@@ -73,7 +73,7 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
     public override void Initialize()
     {
         SetStartDate(2019, 1, 1);
-        SetEndDate(2024, 12, 1);
+        SetEndDate(2019, 12, 1);
         SetCash(100000);
         
         // Add a fundamental universe with custom selection rules for filtering.
@@ -122,12 +122,12 @@ public class SelectionData
     }
 }</pre>
     <pre class="python">class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
-	  # Create a dictionary to store the EMA data for universe selection.
+	# Create a dictionary to store the EMA data for universe selection.
     _selection_data_by_symbol = {}
 	
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
-        self.set_end_date(2024, 12, 1)
+        self.set_end_date(2019, 12, 1)
         self.set_cash(100000)
         
         # Add a universe with custom selection rules for filtering.
@@ -196,7 +196,7 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
     public override void Initialize()
     {
         SetStartDate(2019, 1, 1);
-        SetEndDate(2024, 12, 1);
+        SetEndDate(2019, 12, 1);
         SetCash(100000);
         
         // Add a fundamental universe with custom selection rules for filtering.
@@ -271,7 +271,7 @@ public class VolumeSMAUniverseSelectionModel : FundamentalUniverseSelectionModel
 class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
-        self.set_end_date(2024, 12, 1)
+        self.set_end_date(2019, 12, 1)
         self.set_cash(100000)
 
         # Add a universe with custom selection rules for filtering.
@@ -283,7 +283,7 @@ class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
 class VolumeSMAUniverseSelectionModel(FundamentalUniverseSelectionModel):
-	  # Create a dictionary to store the EMA data for universe selection.
+	# Create a dictionary to store the EMA data for universe selection.
     _selection_data_by_symbol = {}
 
     def __init__(self, period: int) -&gt; None:
@@ -338,7 +338,7 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
     public override void Initialize()
     {
         SetStartDate(2019, 1, 1);
-        SetEndDate(2024, 12, 1);
+        SetEndDate(2019, 12, 1);
         SetCash(100000);
         
         // Add a fundamental universe with custom selection rules for filtering.
@@ -414,7 +414,7 @@ public class EmaUniverseSelectionModel : FundamentalUniverseSelectionModel
 class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
-        self.set_end_date(2024, 12, 1)
+        self.set_end_date(2019, 12, 1)
         self.set_cash(100000)
 
         # Add a universe with custom selection rules for filtering.
@@ -426,7 +426,7 @@ class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
 class EmaUniverseSelectionModel(FundamentalUniverseSelectionModel):
-	  # Create a dictionary to store the EMA data for universe selection.
+	# Create a dictionary to store the EMA data for universe selection.
     averages = {}
 
     def __init__(self, selection_number: int) -&gt; None:

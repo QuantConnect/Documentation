@@ -1,6 +1,6 @@
 <p>To create a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/manual-indicators'>manual indicator</a> for <?=$name?>, call the <code><?=$typeName?></code> constructor.</p>
 
-<div class="section-example-container">
+<div class="section-example-container to-be-tested">
     <pre class="csharp">public class Manual<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
     <?=$memberDeclarationsManualC?>

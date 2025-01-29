@@ -13,7 +13,7 @@ import multiprocessing as mp
 
 ROOT_DIR = "."
 VALIDATE_MODE = False
-MAX_COWORKER = 6        # Limited by number of backtest nodes
+MAX_COWORKER = 3        # Limited by number of backtest nodes divided by 2 (C# & Py run simutaneously)
 
 BASE_API = "https://www.quantconnect.com/api/v2"
 USER_ID = os.environ["DOCS_REGRESSION_TEST_USER_ID"]
@@ -116,15 +116,15 @@ class RegressionTests:
         # Read the php script.
         with open(php_path, 'r', encoding="utf-8") as f:
             input = f.read()
-        input = input.replace("DOCS_RESOURCES.\"", "\"Resources")
+        input = input.replace("DOCS_RESOURCES.\"", "\"Resources").replace("DOCS_RESOURCES.'", "'Resources")
         
         # Create a temporary PHP file
-        with open('temp_script.php', 'w') as f:
+        with open('temp_script.php', 'w', encoding='utf-8') as f:
             f.write(input)
         
         # Run the PHP script and capture the output
-        result = subprocess.run(['php', 'temp_script.php'], capture_output=True, text=True)
-        return result.stdout.strip().replace("<div class=\"section-example-container\">", "<div class=\"section-example-container testable\">")
+        result = subprocess.run(['php', 'temp_script.php'], capture_output=True, text=True, encoding='utf-8')
+        return result.stdout.strip().replace("<div class=\"section-example-container to-be-tested\">", "<div class=\"section-example-container testable\">")
         
     def get_testing_files(self, directory):
         """Recursively read all HTML/PHP files."""
@@ -137,7 +137,8 @@ class RegressionTests:
                     file_path = os.path.join(root, filename)
                     # Check if the file contains the target text
                     with open(file_path, 'r', encoding='utf-8') as file:
-                        if all([x in file.read() for x in target_text]):
+                        text = file.read()
+                        if all([x in text for x in target_text]):
                             files.append(file_path)
                             
         return files
@@ -226,6 +227,10 @@ class RegressionTests:
         
     def create_backtest(self, file_path, example_num, project_id, compile_id):
         """Create a regression backtest and return the result json"""
+        ### We cannot select backtest node in api. Right now, we filter manually in the cloud.
+        ### Otherwise, we can filter the nodes without gpu by:
+        ### [x for x in result.json()['nodes']['backtest'] if "gpu" not in x['sku'].lower()]
+        
         headers = self.get_json_header()
         data = {
             "projectId": project_id,
@@ -246,7 +251,7 @@ class RegressionTests:
         if response["success"]:
             backtest = response["backtest"]
             if isinstance(backtest, list):
-                backtest = backtest[-1]
+                backtest = sorted(backtest, key=lambda x: x["backtestEnd"])[-1]
             backtest_id = backtest["backtestId"]
             
             errors = 0
@@ -267,18 +272,41 @@ class RegressionTests:
                 if not response["success"]:
                     errors += 1
                     if errors >= 5:
-                        return None, response
+                        return None, response, backtest_id
                     continue
                 backtest = response["backtest"]
                 if isinstance(backtest, list):
-                    backtest = backtest[-1]
-                    
-            # Add order hash
-            backtest["statistics"]["OrderListHash"] = Extensions.get_hash(backtest["orders"])
-                
-            return str(backtest["statistics"]), response
+                    backtest = sorted(backtest, key=lambda x: x["backtestEnd"])[-1]
+            
+            statistics = backtest["statistics"]
+            if isinstance(statistics, list):
+                if statistics:
+                    statistics = statistics[0]
+                else:
+                    statistics = None
+            
+            return statistics, response, backtest_id
         
-        return None, response
+        return None, response, None
+    
+    def get_order_list_hash(self, project_id, backtest_id):
+        """Create a regression backtest and return the result json"""
+        headers = self.get_json_header()
+        data = {
+            "start": 0,
+            "end": 99,
+            "projectId": project_id,
+            "backtestId": backtest_id
+        }
+        response = requests.post(
+            f"{BASE_API}/backtests/orders/read",
+            headers = headers,
+            data = data
+        ).json()
+        
+        if response.get("orders", None):
+            return hashlib.md5(json.dumps(response["orders"]).encode()).hexdigest()
+        return ""
 
     def backtest(self, file_path, example_num, language, content, total_example_num, manager_list):
         self.backtest_started.value = False
@@ -310,11 +338,16 @@ class RegressionTests:
             self.backtest_started.value = True
         
         # Read the backtest results
-        result_json, response = self.read_backtest(response, project_id)
+        result_json, response, backtest_id = self.read_backtest(response, project_id)
         if not result_json:
             msg = f"Backtest failed, no results json returned {'- ' + str(response['error']) if response.get('error', None) else ''}"
             self.log_error(file_path, example_num, language, "", msg)
-        manager_list.append(result_json)
+            manager_list.append("")
+            return
+        
+        # Add order hash
+        result_json["OrderListHash"] = self.get_order_list_hash(project_id, backtest_id)
+        manager_list.append(json.dumps(result_json))
 
     def perform_backtests(self, file_path, contents):
         """Perform backtests on the provided contents."""
@@ -344,7 +377,7 @@ class RegressionTests:
     def validation(self, file_path, example_num, language, existing_script, new_json):
         for j, (existing, new) in enumerate(zip(existing_script.split('\n'), new_json.split('\n'))):
             if existing.strip() != new.strip():
-                print(self.log_error(file_path, example_num, language, existing, new, j))
+                print(self.log_error(file_path, example_num, language, existing, new, j+1))
                 
     def log_error(self, file_path, example_num, language, expect, actual, line=None):
         return f"""

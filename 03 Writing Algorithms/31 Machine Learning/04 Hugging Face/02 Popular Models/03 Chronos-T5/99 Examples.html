@@ -67,10 +67,6 @@ class HuggingFaceBaseModelDemo(QCAlgorithm):
         # Add warm up so the algorithm trades on deployment.
         self.set_warmup(timedelta(31))
 
-    def on_warmup_finished(self):
-        # Trade right after warm up is done.
-        self._trade()
-
     def _sharpe_ratio(
             self, weights, returns, risk_free_rate, trading_days_per_year=252):
         # Define how to calculate the Sharpe ratio so we can use
@@ -236,11 +232,6 @@ class HuggingFaceFineTunedDemo(QCAlgorithm):
         self._model_path = self.object_store.get_file_path(
             f"llm/fine-tune/{self._model_name.replace('/', '-')}/"
         )
-
-    def on_warmup_finished(self):
-        # Trade right after warm up is done.
-        self.log(f"{self.time} - warm up done")
-        self._trade()
 
     def _sharpe_ratio(
             self, weights, returns, risk_free_rate, trading_days_per_year=252):

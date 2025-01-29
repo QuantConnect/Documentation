@@ -25,20 +25,20 @@
     }
 }</pre>
     <pre class="python">class FrameworkManualUniverseSelectionAlgorithm(QCAlgorithm):
-	def initialize(self) -&gt; None:
-		self.set_start_date(2019, 1, 1)
-		self.set_end_date(2024, 12, 1)
-		self.set_cash(100000)
-	
-		# Add a universe selection model to select the most liquid cryptos manually.
-		symbols = [
-			Symbol.create("BTCUSD", SecurityType.CRYPTO, Market.COINBASE), 
-			Symbol.create("ETHUSD", SecurityType.CRYPTO, Market.COINBASE)
-		]
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2024, 12, 1)
+        self.set_cash(100000)
+    
+        # Add a universe selection model to select the most liquid cryptos manually.
+        symbols = [
+            Symbol.create("BTCUSD", SecurityType.CRYPTO, Market.COINBASE), 
+            Symbol.create("ETHUSD", SecurityType.CRYPTO, Market.COINBASE)
+        ]
         self.add_universe_selection(ManualUniverseSelectionModel(symbols))
-	
-		# Sent insights on buying and holding the most liquid cryptos for one week.
-		self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
-		# Evenly dissipate the capital risk among selected cryptos.
-		self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
+    
+        # Sent insights on buying and holding the most liquid cryptos for one week.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Evenly dissipate the capital risk among selected cryptos. 
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
 </div>
