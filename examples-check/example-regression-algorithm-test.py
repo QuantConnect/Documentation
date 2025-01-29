@@ -137,7 +137,7 @@ class RegressionTests:
         
         for root, _, filenames in os.walk(directory):
             for filename in filenames:
-                if filename.endswith(('Volatility.php')):
+                if filename.lower().endswith(('.html', '.php')):
                     file_path = os.path.join(root, filename)
                     # Check if the file contains the target text
                     with open(file_path, 'r', encoding='utf-8') as file:
