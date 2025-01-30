@@ -172,7 +172,7 @@ class RegressionTests:
                         pattern = r'^( *)(public override void Initialize\(\)\s*{)'
                         replacement = (
                             r'\1\2\n'
-                            r'\1    SetStartDate(2024, 1, 1);\n'
+                            r'\1    SetStartDate(2024, 9, 1);\n'
                             r'\1    SetEndDate(StartDate.AddDays(90));\n'
                             r'\1    UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;\n'
                         )
@@ -184,7 +184,7 @@ class RegressionTests:
                         pattern = r'^( *)(def (initialize|Initialize)\(self\):)'
                         replacement = (
                             r'\1\2\n'
-                            r'\1    self.set_start_date(2024, 1, 1)\n'
+                            r'\1    self.set_start_date(2024, 9, 1)\n'
                             r'\1    self.set_end_date(self.start_date + timedelta(90))\n'
                             r'\1    self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW'
                         )
