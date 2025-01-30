@@ -168,11 +168,7 @@ class RegressionTests:
                 for pre in div.find_all('pre'):
                     # Set all data normalization mode as raw, and add start/end date if there is not any
                     # To ensure time-universality of the test results
-                    pattern = r'DataNormalizationMode\.\w+(\)|,| |\n)'
                     if 'csharp' in pre.get('class', []):
-                        replacement = 'DataNormalizationMode.Raw'
-                        content = re.sub(pattern, replacement, pre.get_text())
-                        
                         pattern = r'^( *)(public override void Initialize\(\)\s*{)'
                         replacement = (
                             r'\1\2\n'
@@ -180,14 +176,11 @@ class RegressionTests:
                             r'\1    SetEndDate(StartDate.AddDays(90));\n'
                             r'\1    UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;\n'
                         )
-                        content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+                        content = re.sub(pattern, replacement, pre.get_text(), flags=re.MULTILINE)
                         
                         csharp_contents.append(content)
                         
                     elif 'python' in pre.get('class', []):
-                        replacement = 'DataNormalizationMode.RAW'
-                        content = re.sub(pattern, replacement, pre.get_text())
-                        
                         pattern = r'^( *)(def (initialize|Initialize)\(self\):)'
                         replacement = (
                             r'\1\2\n'
@@ -195,7 +188,7 @@ class RegressionTests:
                             r'\1    self.set_end_date(self.start_date + timedelta(90))\n'
                             r'\1    self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW'
                         )
-                        content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+                        content = re.sub(pattern, replacement, pre.get_text(), flags=re.MULTILINE)
                         
                         python_contents.append(content)
                         
@@ -288,7 +281,7 @@ class RegressionTests:
             backtest_id = backtest["backtestId"]
             
             errors = 0
-            while not backtest["completed"]:
+            while not backtest.get("completed", None):
                 # Recheck every 5 seconds
                 time.sleep(5)
                 
@@ -374,13 +367,16 @@ class RegressionTests:
         response = self.create_backtest(file_path, example_num, project_id, compile_id)
         if example_num == total_example_num:
             self.backtest_started.value = True
+        if not response["success"]:
+            msg = "Create backtest failed" + f" - {str(response['error']) if response.get('error', None) else ''}"
+            self.log_error(file_path, example_num, language, "", msg)
+            return
         
         # Read the backtest results
         result_json, response, backtest_id = self.read_backtest(response, project_id)
         if not result_json:
             msg = f"Backtest failed, no results json returned {'- ' + str(response['error']) if response.get('error', None) else ''}"
             self.log_error(file_path, example_num, language, "", msg)
-            manager_list.append("")
             return
         
         # Add order hash
@@ -415,15 +411,15 @@ class RegressionTests:
     def validation(self, file_path, example_num, language, existing_script, new_json):
         for j, (existing, new) in enumerate(zip(existing_script.split('\n'), new_json.split('\n'))):
             if existing.strip() != new.strip():
-                print(self.log_error(file_path, example_num, language, existing, new, j+1))
+                self.log_error(file_path, example_num, language, existing, new, j+1)
                 
     def log_error(self, file_path, example_num, language, expect, actual, line=None):
-        return f"""
+        print(f"""
     Regression Test Failed:
     In ::       {file_path} Example {example_num}, {language}{", line " + line+1 if line is not None else ""}
     Expect ::   {expect}
     But was ::  {actual}
-    """
+    """)
     
     def insert_validate_example_container(self, file_path, soup, results):
         for i, (div, (csharp_results, python_results)) in enumerate(zip(soup.find_all(lambda tag: tag.name == 'div' and 'class' in tag.attrs and 'section-example-container' in tag['class'] and 'testable' in tag['class']), results)):
