@@ -25,8 +25,66 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 ?>
 <div class="regression-test-results">
  <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-0.081%",
+    "Drawdown": "0.700%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99993",
+    "Net Profit": "-0.007%",
+    "Sharpe Ratio": "-1.851",
+    "Sortino Ratio": "-2.112",
+    "Probabilistic Sharpe Ratio": "36.445%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.013",
+    "Beta": "-0.195",
+    "Annual Standard Deviation": "0.03",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-2.259",
+    "Tracking Error": "0.119",
+    "Treynor Ratio": "0.283",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$320000.00",
+    "Lowest Capacity Asset": "SPY YFNTPLP22YG6|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.04%",
+    "OrderListHash": "799e082d8952e8f171e7fac24d687be0"
+}
  </script>
  <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-1.147%",
+    "Drawdown": "0.700%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99900",
+    "Net Profit": "-0.100%",
+    "Sharpe Ratio": "-2.038",
+    "Sortino Ratio": "-2.293",
+    "Probabilistic Sharpe Ratio": "33.483%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.016",
+    "Beta": "-0.217",
+    "Annual Standard Deviation": "0.031",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-2.284",
+    "Tracking Error": "0.121",
+    "Treynor Ratio": "0.289",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$300000.00",
+    "Lowest Capacity Asset": "SPY YFNTPLOW4MEE|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.04%",
+    "OrderListHash": "5202fc357a88cd3228dd0fc9161b9052"
+}
  </script>
 </div>
 <p>
@@ -62,8 +120,66 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 <div class="regression-test-results">
  <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-0.081%",
+    "Drawdown": "0.700%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99993",
+    "Net Profit": "-0.007%",
+    "Sharpe Ratio": "-1.851",
+    "Sortino Ratio": "-2.112",
+    "Probabilistic Sharpe Ratio": "36.445%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.013",
+    "Beta": "-0.195",
+    "Annual Standard Deviation": "0.03",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-2.259",
+    "Tracking Error": "0.119",
+    "Treynor Ratio": "0.283",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$320000.00",
+    "Lowest Capacity Asset": "SPY YFNTPLP22YG6|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.04%",
+    "OrderListHash": "799e082d8952e8f171e7fac24d687be0"
+}
  </script>
  <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-1.147%",
+    "Drawdown": "0.700%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99900",
+    "Net Profit": "-0.100%",
+    "Sharpe Ratio": "-2.038",
+    "Sortino Ratio": "-2.293",
+    "Probabilistic Sharpe Ratio": "33.483%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.016",
+    "Beta": "-0.217",
+    "Annual Standard Deviation": "0.031",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-2.284",
+    "Tracking Error": "0.121",
+    "Treynor Ratio": "0.289",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$300000.00",
+    "Lowest Capacity Asset": "SPY YFNTPLOW4MEE|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.04%",
+    "OrderListHash": "5202fc357a88cd3228dd0fc9161b9052"
+}
  </script>
 </div>
 <h4>

@@ -25,8 +25,66 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 ?>
 <div class="regression-test-results">
  <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-13.644%",
+    "Drawdown": "5.600%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "98735",
+    "Net Profit": "-1.265%",
+    "Sharpe Ratio": "-0.59",
+    "Sortino Ratio": "-0.559",
+    "Probabilistic Sharpe Ratio": "32.018%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.201",
+    "Beta": "-1.549",
+    "Annual Standard Deviation": "0.223",
+    "Annual Variance": "0.05",
+    "Information Ratio": "-1.16",
+    "Tracking Error": "0.298",
+    "Treynor Ratio": "0.085",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$690000.00",
+    "Lowest Capacity Asset": "SPX YG1PJ2I43HPQ|SPX 31",
+    "Portfolio Turnover": "0.49%",
+    "OrderListHash": "57563e5c280c327a3dc242837527ba10"
+}
  </script>
  <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-17.106%",
+    "Drawdown": "5.900%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "98385",
+    "Net Profit": "-1.615%",
+    "Sharpe Ratio": "-0.689",
+    "Sortino Ratio": "-0.647",
+    "Probabilistic Sharpe Ratio": "30.646%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.195",
+    "Beta": "-1.637",
+    "Annual Standard Deviation": "0.228",
+    "Annual Variance": "0.052",
+    "Information Ratio": "-1.218",
+    "Tracking Error": "0.305",
+    "Treynor Ratio": "0.096",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$140000.00",
+    "Lowest Capacity Asset": "SPX 32F5PNYQI8W0E|SPX 31",
+    "Portfolio Turnover": "0.49%",
+    "OrderListHash": "6ba72957ae0d86b797d65c4580b29706"
+}
  </script>
 </div>
 <p>
@@ -62,8 +120,66 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 <div class="regression-test-results">
  <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-13.644%",
+    "Drawdown": "5.600%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "98735",
+    "Net Profit": "-1.265%",
+    "Sharpe Ratio": "-0.59",
+    "Sortino Ratio": "-0.559",
+    "Probabilistic Sharpe Ratio": "32.018%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.201",
+    "Beta": "-1.549",
+    "Annual Standard Deviation": "0.223",
+    "Annual Variance": "0.05",
+    "Information Ratio": "-1.16",
+    "Tracking Error": "0.298",
+    "Treynor Ratio": "0.085",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$690000.00",
+    "Lowest Capacity Asset": "SPX YG1PJ2I43HPQ|SPX 31",
+    "Portfolio Turnover": "0.49%",
+    "OrderListHash": "57563e5c280c327a3dc242837527ba10"
+}
  </script>
  <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "-17.106%",
+    "Drawdown": "5.900%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "98385",
+    "Net Profit": "-1.615%",
+    "Sharpe Ratio": "-0.689",
+    "Sortino Ratio": "-0.647",
+    "Probabilistic Sharpe Ratio": "30.646%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.195",
+    "Beta": "-1.637",
+    "Annual Standard Deviation": "0.228",
+    "Annual Variance": "0.052",
+    "Information Ratio": "-1.218",
+    "Tracking Error": "0.305",
+    "Treynor Ratio": "0.096",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$140000.00",
+    "Lowest Capacity Asset": "SPX 32F5PNYQI8W0E|SPX 31",
+    "Portfolio Turnover": "0.49%",
+    "OrderListHash": "6ba72957ae0d86b797d65c4580b29706"
+}
  </script>
 </div>
 <h4>

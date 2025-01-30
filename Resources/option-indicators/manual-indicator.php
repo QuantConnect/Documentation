@@ -29,6 +29,10 @@
 
     private void UpdateContractsAndGreeks()
     {
+        if (<?=$underlyingSymbolC?> == null)
+        {
+            return;
+        }
         // Get all the tradable Option contracts.
         var chain = OptionChain(<?=$underlyingSymbolC?>);
         
@@ -108,7 +112,7 @@
         }
 
         // Sell straddle as an example to trade.
-        if (!Portfolio.Invested)
+        if (!Portfolio.Invested &amp;&amp; _options != default)
         {
             Sell(_options.option1, 1);
             Sell(_options.option2, 1);
@@ -140,9 +144,13 @@
             self._update_contracts_and_greeks
         )
         
+        self._options = None
+        
     def _update_contracts_and_greeks(self) -&gt; None:
+        if <?=$underlyingSymbolPy?> is None:
+            return
         # Get all the tradable Option contracts.
-        chain = self.option_chain(self._underlying, flatten=True).data_frame
+        chain = self.option_chain(<?=$underlyingSymbolPy?>, flatten=True).data_frame
         if chain.empty:
             return
         
@@ -211,7 +219,7 @@
                     value = indicator.current.value
         
         # Sell straddle as an example to trade.
-        if not self.portfolio.invested:
+        if not self.portfolio.invested and self._options:
             self.sell(self._options[0], 1)
             self.sell(self._options[1], 1)
         # Liquidate any assigned positions.

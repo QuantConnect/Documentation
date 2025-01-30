@@ -2,6 +2,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 import requests
 import subprocess
 import time
@@ -165,10 +166,38 @@ class RegressionTests:
                 
                 # Get C# and Python pre separately
                 for pre in div.find_all('pre'):
+                    # Set all data normalization mode as raw, and add start/end date if there is not any
+                    # To ensure time-universality of the test results
+                    pattern = r'DataNormalizationMode\.\w+(\)|,| |\n)'
                     if 'csharp' in pre.get('class', []):
-                        csharp_contents.append(pre.get_text())
+                        replacement = 'DataNormalizationMode.Raw'
+                        content = re.sub(pattern, replacement, pre.get_text())
+                        
+                        pattern = r'^( *)(public override void Initialize\(\)\s*{)'
+                        replacement = (
+                            r'\1\2\n'
+                            r'\1    SetStartDate(2024, 1, 1);\n'
+                            r'\1    SetEndDate(StartDate.AddDays(90));\n'
+                            r'\1    UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;\n'
+                        )
+                        content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+                        
+                        csharp_contents.append(content)
+                        
                     elif 'python' in pre.get('class', []):
-                        python_contents.append(pre.get_text())
+                        replacement = 'DataNormalizationMode.RAW'
+                        content = re.sub(pattern, replacement, pre.get_text())
+                        
+                        pattern = r'^( *)(def (initialize|Initialize)\(self\):)'
+                        replacement = (
+                            r'\1\2\n'
+                            r'\1    self.set_start_date(2024, 1, 1)\n'
+                            r'\1    self.set_end_date(self.start_date + timedelta(90))\n'
+                            r'\1    self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW'
+                        )
+                        content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+                        
+                        python_contents.append(content)
                         
                 snippets.append((csharp_contents, python_contents))
 
@@ -309,7 +338,12 @@ class RegressionTests:
         ).json()
         
         if response.get("orders", None):
-            return hashlib.md5(json.dumps(response["orders"]).encode()).hexdigest()
+            data = response["orders"]
+            # Remove the "events" property, since it is changing by each backtest.
+            for item in data:
+                item.pop('events', None)
+            result = data
+            return hashlib.md5(json.dumps(result, indent=2).encode()).hexdigest()
         return ""
 
     def backtest(self, file_path, example_num, language, content, total_example_num, manager_list):
