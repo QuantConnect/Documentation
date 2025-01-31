@@ -15,7 +15,7 @@ from itertools import zip_longest
 from ratelimit import limits, sleep_and_retry
 
 ROOT_DIR = "."
-VALIDATE_MODE = False
+VALIDATE_MODE = os.environ["DOCS_REGRESSION_TEST_VALIDATION_MODE"]
 MAX_COWORKER = 3        # Limited by number of backtest nodes divided by 2 (C# & Py run simutaneously)
 
 BASE_API = "https://www.quantconnect.com/api/v2"
