@@ -1,16 +1,18 @@
 import base64
 import hashlib
 import json
+import multiprocessing as mp
 import os
 import re
 import requests
 import subprocess
+import threading
 import time
 from AlgorithmImports import *
 from bs4 import BeautifulSoup
 from datetime import datetime
 from itertools import zip_longest
-import multiprocessing as mp
+from ratelimit import limits, sleep_and_retry
 
 ROOT_DIR = "."
 VALIDATE_MODE = False
@@ -21,6 +23,9 @@ USER_ID = os.environ["DOCS_REGRESSION_TEST_USER_ID"]
 USER_TOKEN = os.environ["DOCS_REGRESSION_TEST_USER_TOKEN"]
 CS_PROJECT_ID = os.environ["DOCS_REGRESSION_TEST_CS_PROJECT"]
 PY_PROJECT_ID = os.environ["DOCS_REGRESSION_TEST_PY_PROJECT"]
+
+CALLS = 10
+RATE_LIMIT = 60
 
 CS_AUTOCOMPLETE = """using System;
 using System.Collections;
@@ -87,6 +92,12 @@ PY_AUTOCOMPLETE = "from AlgorithmImports import *"
 
 
 class RegressionTests:
+    @sleep_and_retry
+    @limits(calls=CALLS, period=RATE_LIMIT)
+    def check_limit(self):
+        ''' Empty function just to check for calls to API '''
+        return
+    
     def get_json_header(self):
         # Get timestamp
         timestamp = str(int(time.time()))
@@ -201,19 +212,29 @@ class RegressionTests:
     
     def update_algorithm_content(self, project_id, file_name, snippets):
         """Update the Main on the project for backtesting."""
-        headers = self.get_json_header()
-        data = {
-            "projectId": project_id,
-            "name": file_name,
-            "content": snippets
-        }
-        response = requests.post(
-            f"{BASE_API}/files/update",
-            headers = headers,
-            data = data
-        ).json()
-        
-        return response["success"]
+        errors = 0
+        while errors < 5:
+            headers = self.get_json_header()
+            data = {
+                "projectId": project_id,
+                "name": file_name,
+                "content": snippets
+            }
+            self.check_limit()
+            response = requests.post(
+                f"{BASE_API}/files/update",
+                headers = headers,
+                data = data
+            ).json()
+            
+            if response["success"]:
+                return True
+            
+            errors += 1
+            # Retry after 3 second
+            time.sleep(3)
+            
+        return False
     
     def compile_project(self, project_id):
         """Compile the project for backtesting."""
@@ -221,33 +242,35 @@ class RegressionTests:
         data = {
             "projectId": project_id,
         }
+        self.check_limit()
         response = requests.post(
             f"{BASE_API}/compile/create",
             headers = headers,
             data = data
         ).json()
         
-        if response["success"]:
-            while response["state"] != "BuildSuccess":
-                if response["state"] == "BuildError":
-                    return None
-                # Rechek every 2 seconds
-                time.sleep(2)
+        errors = 0
+        while errors < 5:
+            if response["state"] == "BuildError":
+                return None
                 
-                data = {
-                    "projectId": project_id,
-                    "compileId": response["compileId"]
-                }
-                response = requests.post(
-                    f"{BASE_API}/compile/read",
-                    headers = headers,
-                    data = data
-                ).json()
-                
-                if not response["success"]:
-                    return None
-                
+            data = {
+                "projectId": project_id,
+                "compileId": response["compileId"]
+            }
+            self.check_limit()
+            response = requests.post(
+                f"{BASE_API}/compile/read",
+                headers = headers,
+                data = data
+            ).json()
+            
+            if response["success"]:
                 return response["compileId"]
+            
+            errors += 1
+            # Recheck every 1 seconds
+            time.sleep(1)
         
         return None
         
@@ -257,63 +280,69 @@ class RegressionTests:
         ### Otherwise, we can filter the nodes without gpu by:
         ### [x for x in result.json()['nodes']['backtest'] if "gpu" not in x['sku'].lower()]
         
-        headers = self.get_json_header()
-        data = {
-            "projectId": project_id,
-            "compileId": compile_id,
-            "backtestName": f"{file_path} Example {example_num}"
-        }
-        response = requests.post(
-            f"{BASE_API}/backtests/create",
-            headers = headers,
-            data = data
-        ).json()
+        errors = 0
+        while errors < 5:
+            headers = self.get_json_header()
+            data = {
+                "projectId": project_id,
+                "compileId": compile_id,
+                "backtestName": f"{file_path} Example {example_num}"
+            }
+            self.check_limit()
+            response = requests.post(
+                f"{BASE_API}/backtests/create",
+                headers = headers,
+                data = data
+            ).json()
+            
+            if response["success"]:
+                return response["backtest"]["backtestId"]
+            
+            errors += 1
+            # Recheck every 3 seconds
+            time.sleep(3)
         
-        return response
+        return None
         
-    def read_backtest(self, response, project_id):
-        headers = self.get_json_header()
-        
-        if response["success"]:
+    def read_backtest(self, project_id, backtest_id):
+        errors = 0
+        while True:
+            headers = self.get_json_header()
+            data = {
+                "projectId": project_id,
+                "backtestId": backtest_id
+            }
+            self.check_limit()
+            response = requests.post(
+                f"{BASE_API}/backtests/read",
+                headers = headers,
+                data = data
+            ).json()
+            
+            if not response["success"]:
+                errors += 1
+                if errors >= 5:
+                    return None
+                continue
+            
             backtest = response["backtest"]
             if isinstance(backtest, list):
-                backtest = sorted(backtest, key=lambda x: x["backtestEnd"])[-1]
-            backtest_id = backtest["backtestId"]
-            
-            errors = 0
-            while not backtest.get("completed", None):
-                # Recheck every 5 seconds
-                time.sleep(5)
+                backtest = backtest[0]
                 
-                data = {
-                    "projectId": project_id,
-                    "backtestId": backtest_id
-                }
-                response = requests.post(
-                    f"{BASE_API}/backtests/read",
-                    headers = headers,
-                    data = data
-                ).json()
-                
-                if not response["success"]:
-                    errors += 1
-                    if errors >= 5:
-                        return None, response, backtest_id
-                    continue
-                backtest = response["backtest"]
-                if isinstance(backtest, list):
-                    backtest = sorted(backtest, key=lambda x: x["backtestEnd"])[-1]
+            if backtest.get("completed", None):
+                break
             
-            statistics = backtest["statistics"]
-            if isinstance(statistics, list):
-                if statistics:
-                    statistics = statistics[0]
-                else:
-                    statistics = None
-            
-            return statistics, response, backtest_id
+            # Recheck every 10 seconds
+            time.sleep(10)
         
-        return None, response, None
+        statistics = backtest["statistics"]
+        if isinstance(statistics, list):
+            if statistics:
+                statistics = statistics[0]
+            else:
+                statistics = None
+        
+        return statistics
     
     def get_order_list_hash(self, project_id, backtest_id):
         """Create a regression backtest and return the result json"""
@@ -324,6 +353,7 @@ class RegressionTests:
             "projectId": project_id,
             "backtestId": backtest_id
         }
+        self.check_limit()
         response = requests.post(
             f"{BASE_API}/backtests/orders/read",
             headers = headers,
@@ -339,74 +369,66 @@ class RegressionTests:
             return hashlib.md5(json.dumps(result, indent=2).encode()).hexdigest()
         return ""
 
-    def backtest(self, file_path, example_num, language, content, total_example_num, manager_list):
-        self.backtest_started.value = False
+    def backtest(self, file_path, example_num, language, content, results):
         project_id = CS_PROJECT_ID if language == "csharp" else PY_PROJECT_ID
         file_name = "Main.cs" if language == "csharp" else "main.py"
         content = CS_AUTOCOMPLETE + "\n" + content if language == "csharp" else PY_AUTOCOMPLETE + "\n" + content
         
-        # Update the test project to the example code snippets
-        update_success = self.update_algorithm_content(project_id, file_name, content)
-        if not update_success:
-            msg = "Update project content failed"
-            self.log_error(file_path, example_num, language, "", msg)
-            if example_num == total_example_num:
-                self.backtest_started.value = True
-            return
-        
-        # Compile the project
-        compile_id = self.compile_project(project_id)
-        if not compile_id:
-            msg = "Compile project failed"
-            self.log_error(file_path, example_num, language, "", msg)
-            if example_num == total_example_num:
-                self.backtest_started.value = True
-            return
-        
-        # Backtest the project
-        response = self.create_backtest(file_path, example_num, project_id, compile_id)
-        if example_num == total_example_num:
-            self.backtest_started.value = True
-        if not response["success"]:
-            msg = "Create backtest failed" + f" - {str(response['error']) if response.get('error', None) else ''}"
-            self.log_error(file_path, example_num, language, "", msg)
-            return
+        # Avoid messing up with other updates and compilation in the same project
+        with self.semaphore:
+            # Update the test project to the example code snippets
+            update_success = self.update_algorithm_content(project_id, file_name, content)
+            if not update_success:
+                msg = "Update project content failed"
+                self.log_error(file_path, example_num, language, "", msg)
+                return
+            
+            # Compile the project
+            compile_id = self.compile_project(project_id)
+            if not compile_id:
+                msg = "Compile project failed"
+                self.log_error(file_path, example_num, language, "", msg)
+                return
+            
+            # Backtest the project
+            backtest_id = self.create_backtest(file_path, example_num, project_id, compile_id)
+            if not backtest_id:
+                msg = "Create backtest failed"
+                self.log_error(file_path, example_num, language, "", msg)
+                return
         
         # Read the backtest results
-        result_json, response, backtest_id = self.read_backtest(response, project_id)
+        result_json = self.read_backtest(project_id, backtest_id)
         if not result_json:
-            msg = f"Backtest failed, no results json returned {'- ' + str(response['error']) if response.get('error', None) else ''}"
+            msg = "Backtest failed, no results json returned"
             self.log_error(file_path, example_num, language, "", msg)
             return
         
-        # Add order hash
+        # Add order hash and append the result in a thread-safe way
         result_json["OrderListHash"] = self.get_order_list_hash(project_id, backtest_id)
-        manager_list.append(json.dumps(result_json))
+        
+        results.append(json.dumps(result_json))
 
     def perform_backtests(self, file_path, contents):
         """Perform backtests on the provided contents."""
-        manager = mp.Manager()
-        manager_list_cs = manager.list()
-        manager_list_py = manager.list()
-        cs_size = len(contents[0])
-        py_size = len(contents[1])
-        
+        cs_results = []
+        py_results = []
+
         for i, (cs_content, py_content) in enumerate(zip_longest(contents[0], contents[1])):
+            threads = []
             if cs_content:
-                process_cs = mp.Process(target=self.backtest, args=(file_path, i+1, "csharp", self.clean_code(cs_content), cs_size, manager_list_cs))
-                process_cs.start()
+                thread_cs = threading.Thread(target=self.backtest, args=(file_path, i + 1, "csharp", self.clean_code(cs_content), cs_results))
+                threads.append(thread_cs)
+                thread_cs.start()
             if py_content:
-                process_py = mp.Process(target=self.backtest, args=(file_path, i+1, "python", self.clean_code(py_content), py_size, manager_list_py))
-                process_py.start()
-            if cs_content:
-                process_cs.join()
-            if py_content:
-                process_py.join()
-            
-        return (
-            list(manager_list_cs),  # C# results
-            list(manager_list_py)   # Python results
-        )
+                thread_py = threading.Thread(target=self.backtest, args=(file_path, i + 1, "python", self.clean_code(py_content), py_results))
+                threads.append(thread_py)
+                thread_py.start()
+
+            for thread in threads:
+                thread.join()
+
+        return (cs_results, py_results)
         
     def validation(self, file_path, example_num, language, existing_script, new_json):
         for j, (existing, new) in enumerate(zip(existing_script.split('\n'), new_json.split('\n'))):
@@ -522,14 +544,16 @@ class RegressionTests:
             file.write(str(soup.prettify(formatter="html5")))
             file.truncate()
 
-    def process_file(self, file_path):
+    def process_file(self, file_path, start_time):
         """Complete processing for a single file."""
-        # Automatically acquire and release the semaphore
-        with self.semaphore:
-            snippets = self.extract_pre_content(file_path)
-            if snippets:
-                results = [self.perform_backtests(file_path, content) for content in snippets]
-                self.insert_validate_results(file_path, results)
+        snippets = self.extract_pre_content(file_path)
+        if snippets:
+            results = [self.perform_backtests(file_path, content) for content in snippets]
+            self.insert_validate_results(file_path, results)
+            
+        self.tasks_completed.value += 1
+        if self.tasks_completed.value % 5 == 0:
+            print(f"{datetime.now()}::{time.time()-start_time:.4f}::Sent regression test task for {self.tasks_completed.value} files")
 
     def run(self):
         start_time = time.time()
@@ -540,29 +564,13 @@ class RegressionTests:
         print(f"{datetime.now()}::{time.time()-start_time:.4f}::Get all testable algorithms from {total_file_num} files, now start testing...")
         
         # Speed up with multiprocessing.
-        process_data_list = []
-        self.backtest_started = mp.Value('b', True)     # 'b' for boolean
-        self.semaphore = mp.Semaphore(MAX_COWORKER)
+        max_workers = min(MAX_COWORKER, mp.cpu_count())
+        manager = mp.Manager()
+        self.semaphore = manager.Semaphore(1)       # Critical process only allows 1 worker at a time
         
-        for times_index, file_path in enumerate(files):
-            # Start a new process if the previous backtest has been started to avoid wrong file content update and compilation
-            while not self.backtest_started.value:
-                # Check every 3 seconds
-                time.sleep(3)
-            self.backtest_started.value = False
-
-            # Start the new process
-            process = mp.Process(target=self.process_file, args=(file_path,))
-            process.start()
-            process_data_list.append(process)
-        
-            task_num = times_index+1
-            if task_num % 5 == 0:
-                print(f"{datetime.now()}::{time.time()-start_time:.4f}::Sent regression test task for {task_num}/{total_file_num} files")
-
-        # Wait for all processes to finish
-        for process in process_data_list:
-            process.join()
+        self.tasks_completed = manager.Value('i', 0)
+        with mp.Pool(processes=max_workers) as pool:
+            pool.starmap(self.process_file, [(file_path, start_time) for file_path in files])
         
         print(f"{datetime.now()}::{time.time()-start_time:.4f}::Finish all testing. Removing temp files...")
         
