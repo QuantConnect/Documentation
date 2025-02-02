@@ -41,8 +41,12 @@
     public override void OnData(Slice slice)
     {
         // Only focus on a filtered list of option contracts to trade and select the ATM call.
-        var contract = _contracts.Where(x =&gt; x.Right == OptionRight.Call)
-            .MinBy(x =&gt; Math.Abs(x.UnderlyingLastPrice - x.Strike));
+        var contract = _contracts.Where(x =&gt; x.ID.OptionRight == OptionRight.Call)
+            .MinBy(x =&gt; Math.Abs(Securities[x.Underlying].Price - x.ID.StrikePrice));
+        if (contract == null)
+        {
+            return;
+        }
         
         // Trade based on the updated data.
         if (slice.QuoteBars.TryGetValue(contract, out var quote) &amp;&amp; !Portfolio.Invested)
@@ -94,9 +98,12 @@
     
     def on_data(self, slice: Slice) -&gt; None:
         # Only focus on a filtered list of option contracts to trade and select the ATM call.
+        calls = [x for x in self.contracts if x.id.option_right == OptionRight.CALL]
+        if not calls:
+            return
         contract = sorted(
-            [x for x in self.contracts if x.right == OptionRight.CALL],
-            key=lambda x: abs(x.underlying_last_price - x.strike)
+            calls,
+            key=lambda x: abs(self.securities[x.underlying].price - x.id.strike_price)
         )[0]
         
         # Trade based on the updated data.
