@@ -43,23 +43,91 @@ $$
 
 <p>The following algorithm implements a short call calendar spread Option strategy:</p>
 
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_a6b9b384d1b25c83a9b98b5631771edf.html"></iframe>
-        </div>
-    </div>
+<div class="section-example-container">
+    <pre class="csharp">public class BearPutSpreadStrategy : QCAlgorithm
+{
+    private Symbol _symbol;
+
+    public override void Initialize()
+    {
+        SetStartDate(2017, 2, 1);
+        SetEndDate(2017, 2, 19);
+        SetCash(500000);
+
+        var option = AddOption("GOOG", Resolution.Minute);
+        _symbol = option.Symbol;
+        option.SetFilter(universe =&gt; universe.IncludeWeeklys().CallCalendarSpread(0, 30, 60));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested) return;
+
+        // Get the OptionChain of the symbol
+        var chain = slice.OptionChains.get(_symbol, null);
+        if (chain == null || chain.Count() == 0) return;
+
+        // get at-the-money strike
+        var atmStrike = chain.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+
+        // filter the call options from the contracts which is ATM in the option chain.
+        var calls = chain.Where(x =&gt; x.Strike == atmStrike && x.Right == OptionRight.Call);
+        if (calls.Count() == 0) return;
+
+        // sorted the optionchain by expiration date
+        var expiries = calls.Select(x =&gt; x.Expiry).OrderBy(x =&gt; x);
+
+        // select the farest expiry as far-leg expiry, and the nearest expiry as near-leg expiry
+        var nearExpiry = expiries.First();
+        var farExpiry = expiries.Last();
+
+        var optionStrategy = OptionStrategies.ShortCallCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
+        // We open a position with 1 unit of the option strategy
+        Buy(optionStrategy, 1);
+    }
+}</pre>
+    <pre class="python">class LongCallCalendarSpreadStrategy(QCAlgorithm): 
+    def initialize(self) -&gt; None:
+        self.set_start_date(2017, 2, 1)
+        self.set_end_date(2017, 2, 19)
+        self.set_cash(500000)
+
+        option = self.add_option("GOOG", Resolution.MINUTE)
+        self.symbol = option.symbol
+        option.set_filter(self.universe_func)
+
+    def universe_func(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        return universe.include_weeklys().call_calendar_spread(0, 30, 60)
+
+    def on_data(self, data: Slice) -&gt; None:
+        # avoid extra orders
+        if self.portfolio.invested: return
+
+        # Get the OptionChain of the self.symbol
+        chain = data.option_chains.get(self.symbol, None)
+        if not chain: return
+
+        # get at-the-money strike
+        atm_strike = sorted(chain, key=lambda x: abs(x.strike - chain.underlying.price))[0].strike
+
+        # filter the call options from the contracts which is ATM in the option chain.
+        calls = [i for i in chain if i.strike == atm_strike and i.right == OptionRight.CALL]
+        if len(calls) == 0: return
+
+        # sorted the optionchain by expiration date
+        expiries = sorted([x.expiry for x in calls], key = lambda x: x)
+        
+        # select the farest expiry as far-leg expiry, and the nearest expiry as near-leg expiry
+        near_expiry = expiries[0]
+        far_expiry = expiries[-1]
+
+        option_strategy = OptionStrategies.short_call_calendar_spread(self.symbol, atm_strike, near_expiry, far_expiry)
+        # We open a position with 1 unit of the option strategy
+        self.buy(option_strategy, 1)</pre>
 </div>
 
-<div class="csharp">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e94ec2f42b82d8c809c44eb3e2d4aed0.html"></iframe>
-        </div>
-    </div>
-</div>
+<h4>Other Examples</h4>
+<p>For more examples, see the following algorithms:</p>
 
 <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithm</div>

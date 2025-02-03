@@ -43,20 +43,86 @@ $$
 
 <p>The following algorithm implements a long box spread Option strategy:</p>
 
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_d94837e4d8a81aaa57e8cd5403b23645.html"></iframe>
-        </div>
-    </div>
-</div>
+<div class="section-example-container">
+    <pre class="csharp">public class BoxSpreadStrategy : QCAlgorithm
+{
+    private Symbol _symbol;
 
-<div class="csharp">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_9e2e298e68d4eaddf5dbf711f6ab00dc.html"></iframe>
-        </div>
-    </div>
+    public override void Initialize()
+    {
+        SetStartDate(2017, 4, 1);
+        SetEndDate(2017, 4, 30);
+        SetCash(100000);
+
+        UniverseSettings.Asynchronous = true;
+
+        var option = AddOption("GOOG", Resolution.Minute);
+        _symbol = option.Symbol;
+        option.SetFilter(universe =&gt; universe.IncludeWeeklys().BoxSpread(30, 5));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested) return;
+
+        // Get the OptionChain
+        if (!slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            return;
+        }
+
+        // Select an expiry date
+        var expiry = chain.Max(x =&gt; x.Expiry);
+
+        // Select the strike prices of the contracts
+        var contracts = chain.Where(x =&gt; x.Expiry == expiry).ToList();
+        var higherStrike = contracts.Max(x =&gt; x.Strike);
+        var lowerStrike = contracts.Min(x =&gt; x.Strike);
+        var boxSpread = OptionStrategies.BoxSpread(_symbol, higherStrike, lowerStrike, expiry);
+        Buy(boxSpread, 1);
+    }
+
+    public override void OnEndOfDay(Symbol symbol)
+    {
+        if (symbol == _symbol.Underlying)
+        {
+            Log($"{Time}::{symbol}::{Securities[symbol].Price}");
+        }
+    }
+}</pre>
+    <pre class="python">class BoxSpreadStrategy(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2017, 4, 1)
+        self.set_end_date(2017, 4, 30)
+        self.set_cash(100000)
+
+        self.universe_settings.asynchronous = True
+
+        option = self.add_option("GOOG", Resolution.MINUTE)
+        self._symbol = option.Symbol
+        option.set_filter(lambda universe: universe.include_weeklys().box_spread(30, 5))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.portfolio.invested:
+            return
+
+        # Get the OptionChain
+        chain = slice.option_chains.get(self._symbol, None)
+        if not chain:
+            return
+
+        # Select an expiry date
+        expiry = max([x.expiry for x in chain])
+
+        # Select the strike prices of the contracts
+        contracts = [x for x in chain if x.expiry == expiry]
+        higher_strike = max([x.strike for x in contracts])
+        lower_strike = min([x.strike for x in contracts])
+
+        box_spread = OptionStrategies.box_spread(self._symbol, higher_strike, lower_strike, expiry)
+        self.buy(box_spread, 1)
+
+    def on_end_of_day(self, symbol: Symbol) -&gt; None:
+        if symbol == self._symbol.underlying:
+            self.Log(f"{self.time}::{symbol}::{self.securities[symbol].price}")</pre>
 </div>

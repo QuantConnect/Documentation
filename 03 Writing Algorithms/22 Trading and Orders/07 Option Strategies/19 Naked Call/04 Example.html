@@ -10,8 +10,7 @@
 <tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
 </thead>
 <tbody>
-<tr><td>Call</td><td>3.50</td><td>185.00</td></tr>
-<tr><td>Underlying Equity at start of the trade</td><td>186.94</td><td>-</td></tr>
+<tr><td>Call</td><td>3.35</td><td>185.00</td></tr>
 <tr><td>Underlying Equity at expiration</td><td>190.01</td><td>-</td></tr>
 </tbody>
 </table>
@@ -31,19 +30,19 @@ $$
 C^{K}_T &amp; = &amp; (S_T - K)^{+}\\
 &amp; = &amp; (190.01 - 185)^{+}\\
 &amp; = &amp; 5.01\\
-P_T &amp; = &amp; (S_0 - S_T + C^{K}_T - C^{K}_0)\times m - fee\\
-&amp; = &amp; (186.94 - 190.01 + 5.01 - 3.50)\times m - fee\\
-&amp; = &amp; -1.56 \times 100 - 2\\
-&amp; = &amp; -158
+P_T &amp; = &amp; (C^{K}_0 - C^{K}_T)\times m - fee\\
+&amp; = &amp; (3.35 - 5.01)\times m - fee\\
+&amp; = &amp; -1.66 \times 100 - 2\\
+&amp; = &amp; -167
 \end{array}
 $$
 <br>
-<p>So, the strategy loses $158.</p>
+<p>So, the strategy loses $167.</p>
 
-<p>The following algorithm implements a protective call Option strategy:</p>
+<p>The following algorithm implements a naked call Option strategy:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class ProtectiveCallAlgorithm : QCAlgorithm
+    <pre class="csharp">public class NakedCallAlgorithm : QCAlgorithm
 {
     private Symbol _call, _symbol;
     
@@ -76,13 +75,13 @@ $$
 
         if (atmCall == null) return;
 
-        var protectiveCall = OptionStrategies.ProtectiveCall(_symbol, atmCall.Strike, expiry);
-        Buy(protectiveCall, 1);
+        var nakedCall = OptionStrategies.NakedCall(_symbol, atmCall.Strike, expiry);
+        Buy(nakedCall, 1);
 
         _call = atmCall.Symbol;
     }
 }</pre>
-    <pre class="python">class ProtectiveCallAlgorithm(QCAlgorithm):
+    <pre class="python">class NakedCallAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2014, 1, 1)
         self.set_end_date(2014, 3, 1)
@@ -116,8 +115,8 @@ $$
 
         atm_call = call_contracts[0]
 
-        protective_call = OptionStrategies.protective_call(self.symbol, atm_call.strike, expiry)
-        self.buy(protective_call, 1)
+        naked_call = OptionStrategies.naked_call(self.symbol, atm_call.strike, expiry)
+        self.buy(naked_call, 1)
 
         self.call = atm_call.symbol</pre>
 </div>
