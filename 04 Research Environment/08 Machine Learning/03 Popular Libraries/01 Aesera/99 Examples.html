@@ -1,0 +1,93 @@
+<p>The following examples demonstrate some common practices for using the Aesera library.</p>
+
+<div class="section-example-container">
+    <pre class="python"># Import the Aesera library and others.
+import aesara
+import aesara.tensor as at
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+import joblib
+
+# Instantiate the QuantBook for researching.
+qb = QuantBook()
+# Request the daily SPY history with the date range to be studied.
+symbol = qb.add_equity("SPY", Resolution.DAILY).symbol
+history = qb.history(symbol, datetime(2020, 1, 1), datetime(2022, 1, 1)).loc[symbol]
+
+# We use the close price series to generate the features to be studied.
+close = history['close']
+# Get the 1-day forward return direction as the labels for the machine to learn.
+returns = data['close'].pct_change().shift(-1)[lookback*2-1:-1].reset_index(drop=True)
+labels = pd.Series([1 if y > 0 else 0 for y in returns])   # binary class
+
+# Use 1- to 5-day differences as the input features for the machine to learn.
+lookback = 5
+lookback_series = []
+for i in range(1, lookback + 1):
+    df = data['close'].shift(i)[lookback:-1]
+    df.name = f"close-{i}"
+    lookback_series.append(df)
+X = pd.concat(lookback_series, axis=1)
+# Normalize using the 5 day interval
+X = MinMaxScaler().fit_transform(X.T).T[4:]
+
+# Split the data as training set and test set for validation.
+X = np.array(features)
+y = np.array(labels)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Create a dataset.
+D = (np.array(X_train), np.array(y_train))
+
+# Declare Aesara symbolic variables.
+x = at.dmatrix("x")
+y = at.dvector("y")
+
+# Initialize the weight vector w randomly using share so model coefficients keep their values
+# between training iterations (updates).
+rng = np.random.default_rng(100)
+w = aesara.shared(rng.standard_normal(X.shape[1]), name="w")
+
+# initialize the bias term.
+b = aesara.shared(0., name="b")
+
+# Construct Aesara expression graph.
+p_1 = 1 / (1 + at.exp(-at.dot(x, w) - b))       # Logistic transformation
+prediction = p_1 > 0.5                          # The prediction thresholded
+xent = y * at.log(p_1) - (1 - y) * at.log(1 - p_1)  # Cross-entropy log-loss function
+cost = xent.mean() + 0.01 * (w ** 2).sum()      # The cost to minimize (MSE)
+gw, gb = at.grad(cost, [w, b])                  # Compute the gradient of the cost
+
+# Compile the model. In this example, we set the step size as 0.1 times gradients.
+train = aesara.function(
+          inputs=[x, y],
+          outputs=[prediction, xent],
+          updates=((w, w - 0.1 * gw), (b, b - 0.1 * gb)))
+predict = aesara.function(inputs=[x], outputs=prediction)
+
+# Train the model with training dataset.
+pred, err = train(D[0], D[1])
+
+# We can also inspect the final outcome
+print("Final model:")
+print(w.get_value())
+print(b.get_value())
+print("target values for D:")
+print(D[1])
+print("prediction on D:")
+print(predict(D[0]))    # whether > 0.5 or not
+
+# Predict the label of the testing set data.
+y_hat = predict(np.array(X_test))
+
+# Plot and calculate the accuracy of the predicted testing set labels.
+df = pd.DataFrame({'y': y_test, 'y_hat': y_hat}).astype(int)
+df.plot(title='Model Performance: predicted vs actual return direction in closing price', figsize=(12, 5))
+correct = sum([1 if x==y else 0 for x, y in zip(y_test, y_hat)])
+print(f"Accuracy: {correct}/{y_test.shape[0]} ({correct/y_test.shape[0]}%)")
+
+# Store the model to the object store to allow accessing the model in the next research session, or in the algorithm for trading.
+model_key = "model"
+file_name = qb.object_store.get_file_path(model_key)
+joblib.dump(predict, file_name)</pre>
+</div>
