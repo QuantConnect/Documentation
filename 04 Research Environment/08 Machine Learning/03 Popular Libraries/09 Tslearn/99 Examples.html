@@ -1,0 +1,71 @@
+<p>The following examples demonstrate some common practices for using the <code>tslearn</code> library.</p>
+
+<h4>Example 1: DBA Clustering</h4>
+<p>The following research notebook uses <code>tslearn</code> machine learning model to cluster a collection of stocks applying Dynamic Time Wrapping (DTW) with Barycenter Averaging (DBA).</p>
+<div class="section-example-container">
+    <pre class="python"># Import the tslearn library.
+from tslearn.barycenters import softdtw_barycenter
+from tslearn.clustering import TimeSeriesKMeans
+
+# Instantiate the QuantBook for researching.
+qb = QuantBook()
+# Request the daily history of the collection of stocks in the date range to be studied.
+tickers = ["SPY", "QQQ", "DIA", 
+           "AAPL", "MSFT", "TSLA", 
+           "IEF", "TLT", "SHV", "SHY", 
+           "GLD", "IAU", "SLV", 
+           "USO", "XLE", "XOM"]
+symbols = [qb.add_equity(ticker, Resolution.DAILY).symbol for ticker in tickers]
+history = qb.history(symbols, datetime(2020, 1, 1), datetime(2022, 2, 20))
+
+# Obtain the daily log close price to be analyzed.
+close = history.unstack(0).close
+log_close = np.log(close)       # Taking the logarithm eases the compounding effect.
+# Standardize the data for faster convergence.
+standard_close = (log_close - log_close.mean()) / log_close.std()
+
+# Set up the Time Series KMean model with soft DBA.
+km = TimeSeriesKMeans(n_clusters=6,   # We have 6 main groups
+                      metric="softdtw",  # soft for differentiable
+                      random_state=0)
+# Fit the model.
+km.fit(standard_close.T)
+
+# Call the predict method with the testing dataset to get the prediction from the model.
+labels = km.predict(standard_close.T)
+
+# Create a class to aid plotting.
+def plot_helper(ts):
+    # plot all points of the data set
+    for i in range(ts.shape[0]):
+        plt.plot(ts[i, :], "k-", alpha=.2)
+        
+    # plot the given barycenter of them
+    barycenter = softdtw_barycenter(ts, gamma=1.)
+    plt.plot(barycenter, "r-", linewidth=2)
+# Plot the results.
+j = 1
+plt.figure(figsize=(15, 10))
+for i in set(labels):
+    # Select the series in the i-th cluster.
+    X = standard_close.iloc[:, [n for n, k in enumerate(labels) if k == i]].values
+    
+    # Plot the series and barycenter-averaged series.
+    plt.subplot(len(set(labels)) // 3 + (1 if len(set(labels))%3 != 0 else 0), 3, j)
+    plt.title(f"Cluster {i+1}")
+    plot_helper(X.T)
+    
+    j += 1
+
+plt.show()
+# Display the groupings.
+for i in set(labels):
+    print(f"Cluster {i+1}: {standard_close.columns[[n for n, k in enumerate(labels) if k == i]]}")
+
+# Store the model in the object store to allow accessing the model in the next research session or in the algorithm for trading.
+model_key = "model"
+file_name = qb.object_store.get_file_path(model_key)
+import os
+os.remove(file_name)
+km.to_hdf5(file_name + ".hdf5")</pre>
+</div>
