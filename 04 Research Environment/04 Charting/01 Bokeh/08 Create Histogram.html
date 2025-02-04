@@ -1,75 +1,37 @@
-<p>You must <a href="/docs/v2/research-environment/charting/bokeh#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/bokeh#04-Get-Historical-Data">get some historical data</a> to create histograms.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/bokeh#02-Preparation">import the plotting libraries and get some historical data</a> to create histograms.</p>
 
 <p>In this example, you create a histogram that shows the distribution of the daily percent returns of the bank sector ETF. In addition to the bins in the histogram, you overlay a normal distribution curve for comparison. Follow these steps to create the histogram:</p>
 
-<ol>
+<div class="section-example-container">
+    <pre class="python"># Obtain the daily return series for a single symbol.
+symbol = symbols[0]
+close_prices = history.loc[symbol]['close']
+daily_returns = close_prices.pct_change().dropna()
 
-    <li>Select the <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
+# Call the histogram method with the daily_returns, the density argument enabled, and a number of bins.
+hist, edges = np.histogram(daily_returns, density=True, bins=20)
+# hist: The value of the probability density function at each bin, normalized such that the integral over the range is 1.
+# edges: The x-axis value of the edges of each bin.
 
-    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history.loc[symbol]['close']</pre>
-    </div>
+# Create the figure instance with the axis settings.
+plot = figure(title=f"{symbol} Daily Return Distribution", 
+              x_axis_label='Return', y_axis_label='Frequency')
+            
+# Call the quad method with the coordinates of the bins and some design settings to plot the histogram bins.
+plot.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
+          fill_color="navy", line_color="white", alpha=0.5)
+        
+# Plot a normal distribution PDF curve with the mean and standard deviation of the daily returns.
+mean = daily_returns.mean()
+std = daily_returns.std()
+x = np.linspace(-3*std, 3*std, 1000)
+pdf = 1/(std * np.sqrt(2*np.pi)) * np.exp(-(x-mean)**2 / (2*std**2))
+plot.line(x, pdf, color="red", line_width=4, 
+          alpha=0.7, legend_label="Normal Distribution PDF")
 
-    <li>Call the <code>pct_change</code> method and then call the <code>dropna</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change().dropna()</pre>
-    </div>
+# Display the plot.
+show(plot)</pre>
+</div>
 
-    <li>Call the <code>histogram</code> method with the <code>daily_returns</code>, the density argument enabled, and a number of bins.</li>
-    <div class="section-example-container">
-        <pre class="python">hist, edges = np.histogram(daily_returns, density=True, bins=20)</pre>
-    </div>
-    <p>This method call returns the following objects:</p>
-    <ul>
-        <li><code>hist</code>: The value of the probability density function at each bin, normalized such that the integral over the range is 1.</li>
-        <li><code>edges</code>: The x-axis value of the edges of each bin.</li>
-    </ul>
-
-    <li>Call the <code>figure</code> method with a title and axis labels.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = figure(title=f"{symbol} Daily Return Distribution", 
-              x_axis_label='Return', y_axis_label='Frequency')</pre>
-    </div>
-
-    <li>Call the <code>quad</code> method with the coordinates of the bins and some design settings.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
-          fill_color="navy", line_color="white", alpha=0.5)</pre>
-    </div>
-    <p>This method call plots the histogram bins.</p>
-
-    <li>Call the <code>mean</code> and <code>std</code> methods.</li>
-    <div class="section-example-container">
-        <pre class="python">mean = daily_returns.mean()
-std = daily_returns.std()</pre>
-    </div>
-
-    <li>Call the <code>linspace</code> method with the lower limit, upper limit, and number data points for the x-axis of the normal distribution curve.</li>
-    <div class="section-example-container">
-        <pre class="python">x = np.linspace(-3*std, 3*std, 1000)</pre>
-    </div>
-
-    <li>Calculate the y-axis values of the normal distribution curve.</li>
-    <div class="section-example-container">
-        <pre class="python">pdf = 1/(std * np.sqrt(2*np.pi)) * np.exp(-(x-mean)**2 / (2*std**2))</pre>
-    </div>
-
-    <li>Call the <code>line</code> method with the data and style of the normal distribution PDF curve.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.line(x, pdf, color="red", line_width=4, 
-          alpha=0.7, legend_label="Normal Distribution PDF")</pre>
-    </div>
-    <p>This method call plots the normal distribution PDF curve.</p> 
-
-
-    <li>Call <code>show</code> to show the plot.</li>
-    <div class="section-example-container">
-        <pre class="python">show(plot)</pre>
-    </div>
-    <p>The Jupyter Notebook displays the histogram.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-histogram.png" alt="Bokeh histogram">
-</ol>
+<p>The Jupyter Notebook displays the histogram.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-histogram.png" alt="Bokeh histogram">

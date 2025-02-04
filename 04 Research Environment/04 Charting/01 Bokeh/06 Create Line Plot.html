@@ -1,33 +1,22 @@
-<p>You must <a href="/docs/v2/research-environment/charting/bokeh#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/bokeh#04-Get-Historical-Data">get some historical data</a> to create line charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/bokeh#02-Preparation">import the plotting libraries and get some historical data</a> to create line charts.</p>
 
 <p>In this example, you create a line chart that shows the closing price for one of the banking securities. Follow these steps to create the line chart:</p>
 
-<ol>
-    <li>Select a <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
-    
-    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history.loc[symbol]['close']</pre>
-    </div>
-    
-    <li>Call the <code>figure</code> function with title, axis labels and x-axis type..</li>
-    <div class="section-example-container">
-        <pre class="python">plot = figure(title=f"{symbol} Close Price", x_axis_label='Date', y_axis_label='Price', x_axis_type='datetime')</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the close price series for a single symbol.
+symbol = symbols[0]
+close_prices = history.loc[symbol]['close']
 
-    <li>Call the <code>line</code> method with the timestamps, <code>close_prices</code>, and some design settings.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.line(close_prices.index, close_prices, 
-          legend_label=symbol.value, color="blue", line_width=2)</pre>
-    </div>
+# Create the figure instance with the axis settings.
+plot = figure(title=f"{symbol} Close Price", x_axis_label='Date', y_axis_label='Price', x_axis_type='datetime')
 
-    <li>Call the <code>show</code> function.</li>
-    <div class="section-example-container">
-        <pre class="python">show(plot)</pre>
-    </div>
-    <p>The Jupyter Notebook displays the line plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-line-new.png" alt="Bokeh line plot">
-</ol>
+# Plot the line chart with the timestamps, the close price series, and some design settings.
+plot.line(close_prices.index, close_prices, 
+          legend_label=symbol.value, color="blue", line_width=2)
+        
+# Display the plot.
+show(plot)</pre>
+</div>
+
+<p>The Jupyter Notebook displays the line plot.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-line-new.png" alt="Bokeh line plot">

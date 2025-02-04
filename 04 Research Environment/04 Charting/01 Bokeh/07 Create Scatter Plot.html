@@ -1,66 +1,36 @@
-<p>You must <a href="/docs/v2/research-environment/charting/bokeh#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/bokeh#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/bokeh#02-Preparation">import the plotting libraries and get some historical data</a> to create scatter plots.</p>
 
 <p>In this example, you create a scatter plot that shows the relationship between the daily returns of two banking securities. Follow these steps to create the scatter plot:</p>
 
-<ol>
-    <li>Select 2 <code>Symbol</code>s.</li>
-    <p>For example, to select the <code>Symbol</code>s of the first 2 bank stocks, run:</p>
 <div class="section-example-container">
-    <pre class="python">symbol1 = symbols[1]
-symbol2 = symbols[2]</pre>
+    <pre class="python"># Select 2 stocks to plot the correlation between their return series.
+symbol1 = symbols[1]
+symbol2 = symbols[2]
+close_price1 = history.loc[symbol1]['close']
+close_price2 = history.loc[symbol2]['close']
+daily_return1 = close_price1.pct_change().dropna()
+daily_return2 = close_price2.pct_change().dropna()
+
+# Fit a linear regression model on the correlation.
+m, b = np.polyfit(daily_returns1, daily_returns2, deg=1)
+
+# Generate a prediction line upon the linear regression model.
+x = np.linspace(daily_returns1.min(), daily_returns1.max())
+y = m*x + b
+
+# Create the figure instance with the axis settings.
+plot = figure(title=f"{symbol1} vs {symbol2} Daily Return", 
+              x_axis_label=symbol1.value, y_axis_label=symbol2.value)
+            
+# Call the line method with x- and y-axis values, a color, and a line width to plot the linear regression prediction line.
+plot.line(x, y, color="red", line_width=2)
+
+# Call the dot method with the daily_returns1, daily_returns2, and some design settings to plot the scatter plot dots on the daily returns.
+plot.dot(daily_returns1, daily_returns2, size=20, color="navy", alpha=0.5)
+
+# Display the plot.
+show(plot)</pre>
 </div>
 
-    <li>Slice the <code>history</code> DataFrame with each <code>Symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">close_price1 = history.loc[symbol1]['close']
-close_price2 = history.loc[symbol2]['close']</pre>
-    </div>
-
-    <li>Call the <code>pct_change</code> and <code>dropna</code> methods on each <code>Series</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_return1 = close_price1.pct_change().dropna()
-daily_return2 = close_price2.pct_change().dropna()</pre>
-    </div>
-
-    <li>Call the <code>polyfit</code> method with the <code>daily_returns1</code>, <code>daily_returns2</code>, and a degree.</li>
-    <div class="section-example-container">
-        <pre class="python">m, b = np.polyfit(daily_returns1, daily_returns2, deg=1)</pre>
-    </div>
-    <p>This method call returns the slope and intercept of the ordinary least squares regression line.</p>
-
-    <li>Call the <code>linspace</code> method with the minimum and maximum values on the x-axis.</li>
-    <div class="section-example-container">
-        <pre class="python">x = np.linspace(daily_returns1.min(), daily_returns1.max())</pre>
-    </div>
-
-    <li>Calculate the y-axis coordinates of the regression line.</li>
-    <div class="section-example-container">
-        <pre class="python">y = m*x + b</pre>
-    </div>
-
-    <li>Call the <code>figure</code> function with a title and axis labels.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = figure(title=f"{symbol1} vs {symbol2} Daily Return", 
-              x_axis_label=symbol1.value, y_axis_label=symbol2.value)</pre>
-    </div>
-
-    <li>Call the <code>line</code> method with x- and y-axis values, a color, and a line width.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.line(x, y, color="red", line_width=2)</pre>
-    </div>
-    <p>This method call plots the regression line.</p>
-
-    <li>Call the <code>dot</code> method with the <code>daily_returns1</code>, <code>daily_returns2</code>, and some design settings.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.dot(daily_returns1, daily_returns2, size=20, color="navy", alpha=0.5)</pre>
-    </div>
-    <p>This method call plots the scatter plot dots.</p>
-
-    <li>Call the <code>show</code> function.</li>
-    <div class="section-example-container">
-        <pre class="python">show(plot)</pre>
-    </div>
-
-    <p>The Jupyter Notebook displays the scatter plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-scatter.png" alt="Bokeh scatter plot">
-</ol>
+<p>The Jupyter Notebook displays the scatter plot.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-scatter.png" alt="Bokeh scatter plot">

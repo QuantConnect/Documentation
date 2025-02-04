@@ -1,51 +1,33 @@
-<p>You must <a href="/docs/v2/research-environment/charting/bokeh#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/bokeh#04-Get-Historical-Data">get some historical data</a> to create pie charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/bokeh#02-Preparation">import the plotting libraries and get some historical data</a> to create pie charts.</p>
 
 <p>In this example, you create a pie chart that shows the weights of the banking securities in a portfolio if you allocate to them based on their inverse volatility. Follow these steps to create the pie chart:</p>
 
-<ol>
-    <li>Select the close column and then call the <code>unstack</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
-    </div>
-    
-    <li>Call the <code>pct_change</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change()</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the returns of all stocks to compare their return.
+close_prices = history['close'].unstack(level=0)
+daily_returns = close_prices.pct_change()
 
-    <li>Call the <code>var</code> method, take the inverse, and then normalize the result.</li>
-    <div class="section-example-container">
-        <pre class="python">inverse_variance = 1 / daily_returns.var()
+# Calculate the inverse of variances to plot with.
+inverse_variance = 1 / daily_returns.var()
 inverse_variance /= np.sum(inverse_variance)   # Normalization
-inverse_variance *= np.pi*2    # For a full circle circumference in radian</pre>
-    </div>
+inverse_variance *= np.pi*2    # For a full circle circumference in radian
+# Call the DataFrame constructor with the inverse_variance Series and then call the reset_index method.
+inverse_variance = pd.DataFrame(inverse_variance, columns=["inverse variance"]).reset_index()
 
-    <li>Call the <code>DataFrame</code> constructor with the <code>inverse_variance Series</code> and then call the <code>reset_index</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">inverse_variance = pd.DataFrame(inverse_variance, columns=["inverse variance"]).reset_index()</pre>
-    </div>
+# Add a color column to the inverse_variance DataFrame.
+inverse_variance['color'] = Category20c[len(inverse_variance.index)]
 
-    <li>Add a color column to the <code>inverse_variance DataFrame</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">inverse_variance['color'] = Category20c[len(inverse_variance.index)]</pre>
-    </div>
+# Create the figure instance with the title settings.
+plot = figure(title=f"Banking Stocks and Bank Sector ETF Allocation")
 
-    <li>Call the <code>figure</code> function with a title.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = figure(title=f"Banking Stocks and Bank Sector ETF Allocation")</pre>
-    </div>
-
-    <li>Call the <code>wedge</code> method with design settings and the <code>inverse_variance DataFrame</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.wedge(x=0, y=1, radius=0.6, start_angle=cumsum('inverse variance', include_zero=True), 
+# Call the wedge method with design settings and the inverse_variance DataFrame to plot the pie chart.
+plot.wedge(x=0, y=1, radius=0.6, start_angle=cumsum('inverse variance', include_zero=True), 
            end_angle=cumsum('inverse variance'), line_color="white", fill_color='color', 
-           legend_field='symbol', source=inverse_variance)</pre>
-    </div>
+           legend_field='symbol', source=inverse_variance)
 
-    <li>Call the <code>show</code> function.</li>
-    <div class="section-example-container">
-        <pre class="python">show(plot)</pre>
-    </div>
-    <p>The Jupyter Notebook displays the pie chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-pie.png" alt="Bokeh pie chart">
-</ol>
+# Display the plot.
+show(plot)</pre>
+</div>
+
+<p>The Jupyter Notebook displays the pie chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-pie.png" alt="Bokeh pie chart">
