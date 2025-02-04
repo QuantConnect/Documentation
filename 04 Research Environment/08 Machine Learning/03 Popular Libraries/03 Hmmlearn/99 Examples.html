@@ -1,0 +1,39 @@
+<p>The following examples demonstrate some common practices for using the <code>Hmmlearn</code> library.</p>
+
+<h4>Example 1: Regime Detection</h4>
+<p>The following research notebook uses <code>Hmmlearn</code> machine learning model to obtain the current market regime and predict the conditional probabilities of each market state that the current regime would turn into by a Hidden Markov Model (HMM).</p>
+<div class="section-example-container">
+    <pre class="python"># Import the Hmmlearn library and others.
+from hmmlearn import hmm
+import joblib
+
+# Instantiate the QuantBook for researching.
+qb = QuantBook()
+# Request the daily SPY history with the date range to be studied.
+symbol = qb.add_equity("SPY", Resolution.DAILY).symbol
+history = qb.history(symbol, datetime(2020, 1, 1), datetime(2022, 1, 1)).loc[symbol]
+
+# Obtain the daily returns to be analyzed.
+daily_returns = history['close'].pct_change()[1:]
+X = daily_returns.values.reshape(-1, 1)
+
+# Call the GaussianHMM constructor with the number of components, a covariance type, and the number of iterations to create the hidden markov model.
+model = hmm.GaussianHMM(n_components=2, covariance_type="full", n_iter=100)
+# Call the fit method with the training data to fit the model.
+model.fit(X)
+
+# Call the predict method with the testing dataset to get the prediction from the model.
+y = model.predict(X)
+
+# Plot the regimes in a scatter plot.
+plt.figure(figsize=(15, 10))
+plt.scatter(ret.index, [f'Regime {n+1}' for n in y])
+plt.title(f'{symbol} market regime')
+plt.xlabel("time")
+plt.show()
+
+# Store the model in the object store to allow accessing the model in the next research session or in the algorithm for trading.
+model_key = "model"
+file_name = qb.object_store.get_file_path(model_key)
+joblib.dump(model, file_name)</pre>
+</div>
