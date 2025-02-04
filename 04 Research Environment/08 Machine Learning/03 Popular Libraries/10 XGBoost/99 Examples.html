@@ -1,0 +1,65 @@
+<p>The following examples demonstrate some common practices for using the XGBoost library.</p>
+
+<h4>Example 1: Predict Next Price</h4>
+<p>The following research notebook uses <code>XGBoost</code> machine learning model to predict the next day's close price by the previous 5 days' daily closes.</p>
+<div class="section-example-container">
+    <pre class="python"># Import the XGBoost library and others.
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+import joblib
+
+# Instantiate the QuantBook for researching.
+qb = QuantBook()
+# Request the daily SPY history with the date range to be studied.
+symbol = qb.add_equity("SPY", Resolution.DAILY).symbol
+history = qb.history(symbol, datetime(2020, 1, 1), datetime(2022, 1, 1)).loc[symbol]
+
+# Obtain the daily fractional differencing in close price to be the features and labels.
+df = (history['close'] * 0.5 + history['close'].diff() * 0.5)[1:]
+# We use the previous 5 day returns as the features to be studied.
+# Get the 1-day forward return as the labels for the machine to learn.
+n_steps = 5
+features = []
+labels = []
+for i in range(len(df)-n_steps):
+    features.append(df.iloc[i:i+n_steps].values)
+    labels.append(df.iloc[i+n_steps])
+
+# Clean up and process the data for faster convergence.
+features = np.array(features)
+labels = np.array(labels)
+X = (features - features.mean()) / features.std()
+y = (labels - labels.mean()) / labels.std()
+
+# Split the data as a training set and test set for validation.
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+# Format training set into XGBoost matrix.
+dtrain = xgb.DMatrix(X_train, label=y_train)
+# Train the model with parameters.
+params = {
+  'booster': 'gbtree',
+  'colsample_bynode': 0.8,
+  'learning_rate': 0.1,
+  'lambda': 0.1,
+  'max_depth': 5,
+  'num_parallel_tree': 100,
+  'objective': 'reg:squarederror',
+  'subsample': 0.8,
+}
+model = xgb.train(params, dtrain, num_boost_round=10)
+
+# Format testing set into XGBoost matrix to test it.
+dtest = xgb.DMatrix(X_test, label=y_test)
+# Predict with the testing set data.
+y_predict = model.predict(dtest)
+# Plot the result.
+df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
+df.plot(title='Model Performance: predicted vs actual closing price', figsize=(15, 10))
+plt.show()
+
+# Store the model in the object store to allow accessing the model in the next research session or in the algorithm for trading.
+model_key = "model"
+file_name = qb.object_store.get_file_path(model_key)
+joblib.dump(model, file_name)</pre>
+</div>
