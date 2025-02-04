@@ -1,42 +1,27 @@
-<p>You must <a href="/docs/v2/research-environment/charting/plotly#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a scatter plot that shows the relationship between the daily returns of two banking securities. Follow these steps to create the scatter plot:</p>
 
-<ol>
-    <li>Select 2 <code>Symbol</code>s.</li>
-    <p>For example, to select the <code>Symbol</code>s of the first 2 bank stocks, run:</p>
 <div class="section-example-container">
-    <pre class="python">symbol1 = symbols[1]
-symbol2 = symbols[2]</pre>
+    <pre class="python"># Select 2 stocks to plot the correlation between their return series.
+symbol1 = symbols[1]
+symbol2 = symbols[2]
+# Obtain the daily return series of the 2 stocks for plotting.
+close_price1 = history.loc[symbol1]['close']
+close_price2 = history.loc[symbol2]['close']
+daily_returns1 = close_price1.pct_change().dropna()
+daily_returns2 = close_price2.pct_change().dropna()
+
+# Call the scatter method with the 2 return Series, the trendline option, and axes labels to plot the correlation into a scatter plot.
+fig = px.scatter(x=daily_return1, y=daily_return2, trendline='ols', 
+                 labels={'x': symbol1.value, 'y': symbol2.value}) 
+
+# Call the update_layout method with a title to update the plot title.
+fig.update_layout(title=f'{symbol1.value} vs {symbol2.value} Daily % Returns')
+
+# Display the plot.
+fig.show()</pre>
 </div>
 
-    <li>Slice the <code>history</code> DataFrame with each <code>Symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">close_price1 = history.loc[symbol1]['close']
-close_price2 = history.loc[symbol2]['close']</pre>
-    </div>
-
-    <li>Call the <code>pct_change</code> and <code>dropna</code> methods on each <code>Series</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_return1 = close_price1.pct_change().dropna()
-daily_return2 = close_price2.pct_change().dropna()</pre>
-    </div>
-
-    <li>Call the <code>scatter</code> method with the 2 return <code>Series</code>, the trendline option, and axes labels.</li>
-    <div class="section-example-container">
-        <pre class="python">fig = px.scatter(x=daily_return1, y=daily_return2, trendline='ols', 
-                 labels={'x': symbol1.value, 'y': symbol2.value}) </pre>
-    </div>
-
-    <li>Call the <code>update_layout </code>method with a title.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.update_layout(title=f'{symbol1.value} vs {symbol2.value} Daily % Returns');</pre>
-    </div>
-
-    <li>Call the <code>show</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
-    </div>
-    <p>The Jupyter Notebook displays the scatter plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-scatter-3.png" alt="Plotly scatter plot">
-</ol>
+<p>The Jupyter Notebook displays the scatter plot.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-scatter-3.png" alt="Plotly scatter plot">

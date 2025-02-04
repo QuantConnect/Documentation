@@ -1,42 +1,26 @@
-<p>You must <a href="/docs/v2/research-environment/charting/plotly#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly#04-Get-Historical-Data">get some historical data</a> to create bar charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a bar chart that shows the average daily percent return of the banking securities. Follow these steps to create the bar chart:</p>
 
-<ol>
-    <li>Select the close column and then call the <code>unstack</code> method.<br></li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
-    </div>
-    
-    <li>Call the <code>pct_change</code> method and then multiply by 100.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change() * 100</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the returns of all stocks to compare their return.
+close_prices = history['close'].unstack(level=0)
+daily_returns = close_prices.pct_change() * 100
 
-    <li>Call the <code>mean</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">avg_daily_returns = daily_returns.mean()</pre>
-    </div>
+# Obtain the mean of the daily return.
+avg_daily_returns = daily_returns.mean()
 
-    <li>Call the <code>DataFrame</code> constructor with the <code>avg_daily_returns </code><code>Series</code> and then call the <code>reset_index</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">avg_daily_returns = pd.DataFrame(avg_daily_returns, columns=["avg_daily_ret"]).reset_index()</pre>
-    </div>
+# Call the DataFrame constructor with the avg_daily_returns Series and then call the reset_index method.
+avg_daily_returns = pd.DataFrame(avg_daily_returns, columns=["avg_daily_ret"]).reset_index()
 
-    <li>Call the <code>bar</code> method with the <code>avg_daily_returns</code> and the axes column names.</li>
-    <div class="section-example-container">
-        <pre class="python">fig = px.bar(avg_daily_returns, x='symbol', y='avg_daily_ret')</pre>
-    </div>
+# Call the bar method with the avg_daily_returns and the axes column names to plot the bar chart.
+fig = px.bar(avg_daily_returns, x='symbol', y='avg_daily_ret')
+# Call the update_layout method with a title to decorate the plot.
+fig.update_layout(title='Banking Stocks Average Daily % Returns')
 
-    <li>Call the <code>update_layout</code> method with a title.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.update_layout(title='Banking Stocks Average Daily % Returns');</pre>
-    </div>
+# Display the plot.
+fig.show()</pre>
+</div>
 
-    <li>Call the <code>show</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
-    </div>
-    <p>The Jupyter Notebook displays the bar plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-bar-3.png" alt="Plotly bar chart">
-</ol>
+<p>The Jupyter Notebook displays the bar plot.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-bar-3.png" alt="Plotly bar chart">

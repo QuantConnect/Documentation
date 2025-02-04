@@ -1,16 +1,13 @@
-<p>You must <a href="/docs/v2/research-environment/charting/plotly#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly#04-Get-Historical-Data">get some historical data</a> to create 3D charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a 3D chart that shows the price of an asset on each dimension. Follow these steps to create the 3D chart:</p>
 
-<ol>
-    <li>Select the asset to plot on each dimension.</li>
-    <div class="section-example-container">
-        <pre class="python">x, y, z = symbols[:3]</pre>
-    </div>
-    
-    <li>Call the <code>Scatter3d</code> constructor with the data for the x, y, and z axes.</li>
-    <div class="section-example-container">
-        <pre class="python">scatter = go.Scatter3d(
+<div class="section-example-container">
+    <pre class="python"># Select the asset to plot on each dimension.
+x, y, z = symbols[:3]
+
+# Call the Scatter3d constructor with the data for the x, y, and z axes to create the 3D scatter plot.
+scatter = go.Scatter3d(
     x=history.loc[x].close, 
     y=history.loc[y].close, 
     z=history.loc[z].close,
@@ -19,12 +16,10 @@
         size=2,
         opacity=0.8
     )
-)</pre>
-    </div>
+)
 
-    <li>Call the <code>Layout</code> constructor with the axes titles and chart dimensions.</li>
-    <div class="section-example-container">
-        <pre class="python">layout = go.Layout(
+# Call the Layout constructor with the axes titles and chart dimensions to create the layout of the plot.
+layout = go.Layout(
     scene=dict(
         xaxis_title=f'{x.value} Price',
         yaxis_title=f'{y.value} Price',
@@ -32,18 +27,14 @@
     ),
     width=700,
     height=700
-)</pre>
-    </div>
+)
 
-    <li>Call the <code>Figure</code> constructor with the <code>scatter</code> and <code>layout</code> variables.<br></li>
-    <div class="section-example-container">
-        <pre class="python">fig = go.Figure(scatter, layout)</pre>
-    </div>
+# Call the Figure constructor with the scatter and layout variables to plot them.
+fig = go.Figure(scatter, layout)
 
-    <li>Call the <code>show</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
-    </div>
-    <p>The Jupyter Notebook displays the 3D chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/3d-plot-example.png" alt="Plotly 3D chart">
-</ol>
+# Display the 3D chart.
+fig.show()</pre>
+</div>
+
+<p>The Jupyter Notebook displays the 3D chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/3d-plot-example.png" alt="Plotly 3D chart">
