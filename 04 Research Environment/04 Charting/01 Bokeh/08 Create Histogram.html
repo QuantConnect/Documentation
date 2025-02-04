@@ -20,12 +20,14 @@ plot = figure(title=f"{symbol} Daily Return Distribution",
 # Call the quad method with the coordinates of the bins and some design settings to plot the histogram bins.
 plot.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
           fill_color="navy", line_color="white", alpha=0.5)
-        
-# Plot a normal distribution PDF curve with the mean and standard deviation of the daily returns.
+
+# Get the mean and standard deviation of the returns.
 mean = daily_returns.mean()
 std = daily_returns.std()
+# Calculate the normal distribution PDF given the mean and SD.
 x = np.linspace(-3*std, 3*std, 1000)
 pdf = 1/(std * np.sqrt(2*np.pi)) * np.exp(-(x-mean)**2 / (2*std**2))
+# Plot a normal distribution PDF curve of the daily returns.
 plot.line(x, pdf, color="red", line_width=4, 
           alpha=0.7, legend_label="Normal Distribution PDF")
 

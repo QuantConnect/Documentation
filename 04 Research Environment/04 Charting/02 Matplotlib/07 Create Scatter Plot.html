@@ -1,60 +1,36 @@
-<p>You must <a href="/docs/v2/research-environment/charting/matplotlib#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/matplotlib#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/matplotlib#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a scatter plot that shows the relationship between the daily returns of two banking securities. Follow these steps to create the scatter plot:</p>
 
-<ol>
-    <li>Select the 2 <code>Symbol</code>s.</li>
-    <p>For example, to select the <code>Symbol</code>s of the first 2 bank stocks, run:</p>
 <div class="section-example-container">
-    <pre class="python">symbol1 = symbols[1]
-symbol2 = symbols[2]</pre>
+    <pre class="python"># Select 2 stocks to plot the correlation between their return series.
+symbol1 = symbols[1]
+symbol2 = symbols[2]
+# Obtain the daily return series of the 2 stocks for plotting.
+close_price1 = history.loc[symbol1]['close']
+close_price2 = history.loc[symbol2]['close']
+daily_returns1 = close_price1.pct_change().dropna()
+daily_returns2 = close_price2.pct_change().dropna()
+
+# Fit a linear regression model on the correlation.
+m, b = np.polyfit(daily_returns1, daily_returns2, deg=1)
+# This method call returns the slope and intercept of the ordinary least squares regression line.
+
+# Generate a prediction line upon the linear regression model.
+x = np.linspace(daily_returns1.min(), daily_returns1.max())
+y = m*x + b
+
+# Call the plot method with the coordinates and color of the regression line to plot the linear regression prediction line.
+plt.plot(x, y, color='red')
+
+# In the same cell, call the plot method, call the scatter method with the 2 daily return series to plot the scatter plot dots of the daily returns.
+plt.scatter(daily_returns1, daily_returns2)
+
+# In the same cell, call the title, xlabel, and ylabel methods with a title and axis labels to decorate the plot.
+plt.title(f'{symbol1} vs {symbol2} daily returns Scatter Plot')
+plt.xlabel(symbol1.value)
+plt.ylabel(symbol2.value)</pre>
 </div>
 
-    <li>Slice the <code>history</code> DataFrame with each <code>Symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">close_price1 = history.loc[symbol1]['close']
-close_price2 = history.loc[symbol2]['close']</pre>
-    </div>
-
-    <li>Call the <code>pct_change</code> and <code>dropna</code> methods on each <code>Series</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns1 = close_price1.pct_change().dropna()
-daily_returns2 = close_price2.pct_change().dropna()</pre>
-    </div>
-
-    <li>Call the <code>polyfit</code> method with the <code>daily_returns1</code>, <code>daily_returns2</code>, and a degree.</li>
-    <div class="section-example-container">
-        <pre class="python">m, b = np.polyfit(daily_returns1, daily_returns2, deg=1)</pre>
-    </div>
-    <p>This method call returns the slope and intercept of the ordinary least squares regression line.</p>
-
-    <li>Call the <code>linspace</code> method with the minimum and maximum values on the x-axis.</li>
-    <div class="section-example-container">
-        <pre class="python">x = np.linspace(daily_returns1.min(), daily_returns1.max())</pre>
-    </div>
-
-    <li>Calculate the y-axis coordinates of the regression line.</li>
-    <div class="section-example-container">
-        <pre class="python">y = m*x + b</pre>
-    </div>
-
-    <li>Call the <code>plot</code> method with the coordinates and color of the regression line.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.plot(x, y, color='red')</pre>
-    </div>
-
-    <li>In the same cell that you called the <code>plot</code> method, call the <code>scatter</code> method with the 2 daily return series.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.scatter(daily_returns1, daily_returns2)</pre>
-    </div>
-
-    <li>In the same cell that you called the <code>scatter</code> method, call the <code>title</code>, <code>xlabel</code>, and <code>ylabel</code> methods with a title and axis labels.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.title(f'{symbol1} vs {symbol2} daily returns Scatter Plot')
-plt.xlabel(symbol1.value)
-plt.ylabel(symbol2.value);</pre>
-    </div>
-
-    <p>The Jupyter Notebook displays the scatter plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/matplotlib-scatter-plot.png" alt="Matplotlib scatter plot">
-</ol>
+<p>The Jupyter Notebook displays the scatter plot.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/matplotlib-scatter-plot.png" alt="Matplotlib scatter plot">

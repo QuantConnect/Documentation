@@ -1,7 +1,7 @@
 
 <h4>Import Libraries</h4>
 
-<p>To research with the <?=$library?> library, import the libraries that you need.</p>
+<p>To research with the <code><?=$library?></code> library, import the libraries that you need.</p>
 
 <div class="section-example-container">
     <pre class="python"><?=$imports?></pre>
