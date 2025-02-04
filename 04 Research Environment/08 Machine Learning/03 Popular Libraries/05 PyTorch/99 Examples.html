@@ -1,0 +1,100 @@
+<p>The following examples demonstrate some common practices for using the Pytorch library.</p>
+
+<h4>Example 1: Predict Return Direction</h4>
+<p>The following research notebook uses <code>Pytorch</code> machine learning model to predict the next day's return direction by the previous 5 days' daily fractional differencing.</p>
+<div class="section-example-container">
+    <pre class="python"># Import the Pytorch library and others.
+import torch
+from torch import nn
+from sklearn.model_selection import train_test_split
+import joblib
+
+# Instantiate the QuantBook for researching.
+qb = QuantBook()
+# Request the daily SPY history with the date range to be studied.
+symbol = qb.add_equity("SPY", Resolution.DAILY).symbol
+history = qb.history(symbol, datetime(2020, 1, 1), datetime(2022, 1, 1)).loc[symbol]
+
+# Perform fractional differencing on the historical data.
+df = (history['close'] * 0.5 + history['close'].diff() * 0.5)[1:]
+# We use the previous 5 day fractional differencing as the features to be studied.
+# Get the 1-day forward differencing as the labels for the machine to learn.
+n_steps = 5
+features = []
+labels = []
+for i in range(len(df)-n_steps):
+    features.append(df.iloc[i:i+n_steps].values)
+    labels.append(df.iloc[i+n_steps])
+
+# Clean the data and normalize for fast convergence.
+features = np.array(features)
+labels = np.array(labels)
+X = (features - features.mean()) / features.std()
+y = (labels - labels.mean()) / labels.std()
+
+# Split the data as a training set and test set for validation. In this example, we use 70% of the data points to train the model and test with the rest.
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+# Define a subclass of nn.Module to be the model. In this example, use the ReLU activation function for each layer.
+class NeuralNetwork(nn.Module):
+    # Model Structure
+    def __init__(self):
+        super(NeuralNetwork, self).__init__()
+        self.flatten = nn.Flatten()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(5, 5),   # input size, output size of the layer
+            nn.ReLU(),         # Relu non-linear transformation
+            nn.Linear(5, 5),
+            nn.ReLU(),  
+            nn.Linear(5, 1),   # Output size = 1 for regression
+        )
+    
+    # Feed-forward training/prediction
+    def forward(self, x):
+        x = torch.from_numpy(x).float()   # Convert to tensor in type float
+        result = self.linear_relu_stack(x)
+        return result
+# Create an instance of the model and set its configuration to train on the GPU if it's available.
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model = NeuralNetwork().to(device)
+# Set the loss and optimization functions. In this example, use the mean squared error as the loss function and stochastic gradient descent as the optimizer.
+loss_fn = nn.MSELoss()
+learning_rate = 0.001
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+# Train the model. In this example, train the model through 5 epochs.
+epochs = 5
+for t in range(epochs):
+    print(f"Epoch {t+1}\n-------------------------------")
+    
+    # Since we're using SGD, we'll be using the size of data as batch number.
+    for batch, (X, y) in enumerate(zip(X_train, y_train)):
+        # Compute prediction and loss
+        pred = model(X)
+        real = torch.from_numpy(np.array(y).flatten()).float()
+        loss = loss_fn(pred, real)
+
+        # Backpropagation
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if batch % 100 == 0:
+            loss, current = loss.item(), batch
+            print(f"loss: {loss:.5f}  [{current:5d}/{len(X_train):5d}]")
+
+# Predict with the testing data.
+predict = model(X_test)
+y_predict = predict.detach().numpy()   # Convert tensor to numpy ndarray
+# Plot the actual and predicted labels of the testing period.
+df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
+df.plot(title='Model Performance: predicted vs actual standardized fractional return', figsize=(15, 10))
+plt.show()
+# Calculate the R-square value.
+r2 = 1 - np.sum(np.square(y_test.flatten() - y_predict.flatten())) / np.sum(np.square(y_test.flatten() - y_test.mean()))
+print(f"The explained variance by the model (r-square): {r2*100:.2f}%")
+
+# Store the model in the object store to allow accessing the model in the next research session or in the algorithm for trading.
+model_key = "model"
+file_name = qb.object_store.get_file_path(model_key)
+joblib.dump(model, file_name)</pre>
+</div>
