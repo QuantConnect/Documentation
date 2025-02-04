@@ -1,41 +1,23 @@
-<p>You must <a href="/docs/v2/research-environment/charting/seaborn#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/seaborn#04-Get-Historical-Data">get some historical data</a> to create histograms.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/seaborn#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a histogram that shows the distribution of the daily percent returns of the bank sector ETF. Follow these steps to create the histogram:</p>
 
-<ol>
-    <li>Select the <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the daily return series for a single symbol.
+symbol = symbols[0]
+close_prices = history.loc[symbol]['close']
+daily_returns = close_prices.pct_change().dropna()
 
-    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">data = history.loc[symbol]['close']</pre>
-    </div>
+# Call the DataFrame constructor with the daily_returns Series and then call the reset_index method.
+daily_returns = pd.DataFrame(daily_returns).reset_index()
 
-    <li>Call the <code>pct_change</code> method and then call the <code>dropna</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = data.pct_change().dropna()</pre>
-    </div>
-
-    <li>Call the <code>DataFrame</code> constructor with the <code>daily_returns Series</code> and then call the <code>reset_index</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = pd.DataFrame(daily_returns).reset_index()</pre>
-    </div>
-
-    <li>Call the <code>histplot</code> method with the <code>daily_returns</code>, the close column name, and the number of bins.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = sns.histplot(daily_returns, x='close', bins=20)</pre>
-    </div>
-
-    <li>In the same cell that you called the <code>histplot</code> method, call the <code>set</code> method with the axis labels and a title.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.set(xlabel='Return', 
+# Call the histplot method with the daily_returns, the close column name, and the number of bins to plot the histogram.
+plot = sns.histplot(daily_returns, x='close', bins=20)
+# In the same cell that you called the histplot method, call the set method with the axis labels and a title to update the layout.
+plot.set(xlabel='Return', 
          ylabel='Frequency', 
-         title=f'{symbol} Daily Return of Close Price Distribution');</pre>
-    </div>
+         title=f'{symbol} Daily Return of Close Price Distribution')</pre>
+</div>
 
-    <p>The Jupyter Notebook displays the histogram.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-histogram.png" alt="Seaborn heat map">
-
-</ol>
+<p>The Jupyter Notebook displays the histogram.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-histogram.png" alt="Seaborn heat map">
