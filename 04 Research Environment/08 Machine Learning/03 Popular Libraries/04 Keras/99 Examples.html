@@ -1,0 +1,61 @@
+<p>The following examples demonstrate some common practices for using the Keras library.</p>
+
+<h4>Example 1: Predict Return Direction</h4>
+<p>The following research notebook uses <code>Keras</code> machine learning model to predict the next day's return direction by the previous 5 days' close price differences.</p>
+<div class="section-example-container">
+    <pre class="python"># Import the Keras library.
+from tensorflow.keras import utils, models
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras.saving import load_model
+
+# Instantiate the QuantBook for researching.
+qb = QuantBook()
+# Request the daily SPY history with the date range to be studied.
+symbol = qb.add_equity("SPY", Resolution.DAILY).symbol
+history = qb.history(symbol, datetime(2020, 1, 1), datetime(2022, 1, 1)).loc[symbol]
+
+# Obtain the daily returns to be the features and labels.
+daily_returns = history['close'].pct_change()[1:]
+# We use the previous 5 day returns as the features to be studied.
+# Get the 1-day forward return direction as the labels for the machine to learn.
+n_steps = 5
+features = []
+labels = []
+for i in range(len(daily_returns)-n_steps):
+    features.append(daily_returns.iloc[i:i+n_steps].values)
+    labels.append(daily_returns.iloc[i+n_steps])
+
+# Split the data as a training set and test set for validation. In this example, we use 70% of the data points to train the model and test with the rest.
+features = np.array(features)
+labels = np.array(labels)
+train_length = int(len(features) * 0.7)
+X_train = features[:train_length]
+X_test = features[train_length:]
+y_train = labels[:train_length]
+y_test = labels[train_length:]
+
+# Call the Sequential constructor with a list of layers to create the model.
+model = Sequential([Dense(10, input_shape=(5,5), activation='relu'),
+                    Dense(10, activation='relu'),
+                    Flatten(),
+                    Dense(1)])
+# Call the compile method with a loss function, an optimizer, and a list of metrics to monitor to set how should the model be fitted.
+model.compile(loss='mse',
+              optimizer=RMSprop(0.001),
+              metrics=['mae', 'mse'])
+# Call the fit method with the features and labels of the training dataset and a number of epochs to fit the model.
+model.fit(X_train, y_train, epochs=5)
+
+# Call the predict method with the features of the testing period.
+y_hat = model.predict(X_test)
+# Plot the actual and predicted labels of the testing period.
+results = pd.DataFrame({'y': y_test.flatten(), 'y_hat': y_hat.flatten()})
+results.plot(title='Model Performance: predicted vs actual %change in closing price')
+
+# Store the model in the object store to allow accessing the model in the next research session or in the algorithm for trading.
+model_key = "model.keras"
+file_name = qb.object_store.get_file_path(model_key)
+model.save(file_name)</pre>
+</div>
