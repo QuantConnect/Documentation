@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for implementing execution model.</p>
+<p>The following examples demonstrate some common practices for implementing the execution model.</p>
 
 <h4>Example 1: Iceberg Execution</h4>
-<p>The following algorithm simulates an account with large capital that holds the most liquid stocks equally. To hide footprint and avoid large market impact that might erode the profit margin, we can set up an iceberg execution system, submitting only 10% volume of the bid/ask side order book with respect to the order direction.</p>
+<p>The following algorithm simulates an account with large capital that equally holds the most liquid stocks. To hide the footprint and avoid a large market impact that might erode the profit margin, we can set up an iceberg execution system, submitting only 10% of the volume of the bid/ask side order book to the order direction.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
 {
@@ -11,15 +11,15 @@
         SetEndDate(2021, 1, 1);
         SetCash(100000000);
         
-        // Add a universe of the most liquid stocks since their trend is more capital supported.
+        // Add a universe of the most liquid stocks since their trend is more capital-supported.
         AddUniverseSelection(new QC500UniverseSelectionModel());
         // Emit insights all for selected stocks.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
-        // Equal weighting on each insight to evenly dissipate capital risk.
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
 
         // Iceberg ordering to hide traces and avoid market impact.
-        // Since quote data will be used, make sure the asset class and resolution is compatible.
+        // Since quote data will be used, make sure the asset class and resolution are compatible.
         SetExecution(new IcebergExecutionModel(0.1m));
     }
 
@@ -36,19 +36,18 @@
 
         public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
         {
-            // update the complete set of portfolio targets with the new targets
+            //Update the complete set of portfolio targets with the new targets
             _targetsCollection.AddRange(targets);
 
-            // for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
             if (!_targetsCollection.IsEmpty)
             {
                 foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
                 {
                     var symbol = target.Symbol;
 
-                    // calculate remaining quantity to be ordered
+                    // Calculate the remaining quantity to be ordered
                     var unorderedQuantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
-                    // adjust order size to respect maximum order size based on a percentage of current volume
+                    // Adjust order size to respect maximum order size based on a percentage of the current volume
                     var orderSize = GetOrderSizeForPercentVolume(algorithm.Securities[symbol], _maximumOrderQuantityPercentVolume, unorderedQuantity);
 
                     if (orderSize != 0)
@@ -77,33 +76,32 @@
         self.set_end_date(2021, 1, 1)
         self.set_cash(100000000)
 
-        # Add a universe of the most liquid stocks since their trend is more capital supported.
+        # Add a universe of the most liquid stocks since their trend is more capital-supported.
         self.add_universe_selection(QC500UniverseSelectionModel())
         # Emit insights all for selected stocks.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
-        # Equal weighting on each insight to evenly dissipate capital risk.
+        # Equal weighting on each insight to dissipate capital risk evenly.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
         # Iceberg ordering to hide traces and avoid market impact.
-        # Since quote data will be used, make sure the asset class and resolution is compatible.
+        # Since quote data will be used, ensure the asset class and resolution are compatible.
         self.set_execution(IcebergExecutionModel(0.1))
 
 class IcebergExecutionModel(ExecutionModel):
     def __init__(self, order_percent_volume: float = 0.1) -&gt; None:
         self.targets_collection = PortfolioTargetCollection()
-        # The maximum order size taken from the order book in percentage.
+        # The maximum order size is taken from the order book in percentage.
         self.maximum_order_quantity_percent_volume = order_percent_volume
 
     def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
         # update the complete set of portfolio targets with the new targets
         self.targets_collection.add_range(targets)
 
-        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
         if not self.targets_collection.is_empty:
             for target in self.targets_collection.order_by_margin_impact(algorithm):
                 symbol = target.symbol
 
-                # calculate remaining quantity to be ordered
+                # Calculate the remaining quantity to be ordered
                 unordered_quantity = OrderSizing.get_unordered_quantity(algorithm, target)
                 # adjust order size to respect maximum order size based on a percentage of current volume
                 order_size = self.get_order_size_for_percent_volume(algorithm.securities[symbol], self.maximum_order_quantity_percent_volume, unordered_quantity)
@@ -129,7 +127,7 @@ class IcebergExecutionModel(ExecutionModel):
     {
         SetStartDate(2020, 4, 30);
         SetEndDate(2020, 5, 5);
-        SetCash(1000000000);
+        SetCash(1000000);
         UniverseSettings.Resolution = Resolution.Daily;
 
         // Add a universe of the most liquid stocks since their trend is more capital-supported.
@@ -169,14 +167,13 @@ class IcebergExecutionModel(ExecutionModel):
             }
 
             _targetsCollection.AddRange(targets);
-            // for performance we if empty, OrderByMarginImpact and ClearFulfilled are expensive to call.
             if (!_targetsCollection.IsEmpty)
             {
                 foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
                 {
                     var security = algorithm.Securities[target.Symbol];
 
-                    // calculate remaining quantity to be ordered
+                    // Calculate the remaining quantity to be ordered
                     var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target, security, true);
 
                     if (quantity != 0)
@@ -188,7 +185,7 @@ class IcebergExecutionModel(ExecutionModel):
                             // Stop loss order.
                             var stopLossPrice = security.Price * (quantity &gt; 0 ? 1m - _stopLoss : 1m + _stopLoss);
                             var stopLoss = algorithm.StopMarketOrder(security.Symbol, -quantity, stopLossPrice);
-                            // Save the orders to track their filling status.
+                            // Save the orders to track their filing status.
                             _stopOrders.Add(stopLoss);
                         }
                         else if (!PortfolioTarget.MinimumOrderMarginPercentageWarningSent.HasValue)
@@ -208,7 +205,7 @@ class IcebergExecutionModel(ExecutionModel):
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 4, 30)
         self.set_end_date(2020, 5, 5)
-        self.set_cash(100000000)
+        self.set_cash(1000000)
         self.universe_settings.resolution = Resolution.DAILY
 
         # Add a universe of the most liquid stocks since their trend is more capital-supported.
@@ -235,12 +232,11 @@ class StopLossExecutionModel(ExecutionModel):
                 algorithm.insights.cancel([stop_loss.symbol])
                 self.stop_orders.remove(stop_loss)
 
-        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
         self.targets_collection.add_range(targets)
         if not self.targets_collection.is_empty:
             for target in self.targets_collection.order_by_margin_impact(algorithm):
                 security = algorithm.securities[target.symbol]
-                # calculate remaining quantity to be ordered
+                # Calculate the remaining quantity to be ordered
                 quantity = OrderSizing.get_unordered_quantity(algorithm, target, security, True)
 
                 if quantity != 0:
@@ -265,7 +261,7 @@ class StopLossExecutionModel(ExecutionModel):
 </div>
 
 <h4>Example 3: More Favorable Than Signal Time</h4>
-<p>Some algorithms are signaling based on daily close data. However, their orders often emit on the next market open, making the filling price slipped. To avoid this slippage negatively impact from your expectation, we can construct a custom execution model to place order only when the price is more favorable than the last close price. Although we did not set time limit in this example, you may consider doing so.</p>
+<p>Some algorithms are signaling based on daily close data. However, their orders often emit when the next market opens, making the filling price slip. To avoid this slippage negatively impacting your expectations, we can construct a custom execution model to place orders only when the price is more favorable than the last close price. Although we did not set a time limit in this example, you may consider doing so.</p>
 <div class="section-example-container">
     <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
 {
@@ -274,14 +270,14 @@ class StopLossExecutionModel(ExecutionModel):
         SetStartDate(2022, 1, 1);
         SetEndDate(2022, 3, 1);
         
-        // Add a universe of the most liquid stocks since their trend is more capital supported.
+        // Add a universe of the most liquid stocks since their trend is more capital-supported.
         AddUniverseSelection(new QC500UniverseSelectionModel());
         // Emit insights all for selected stocks.
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
-        // Equal weighting on each insight to evenly dissipate capital risk.
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
 
-        // Only place order if the price is more favorable than the price at insight signal.
+        // Only place an order if the price is more favorable than the price at the insight signal.
         SetExecution(new FavorableExecutionModel());
     }
 
@@ -293,7 +289,6 @@ class StopLossExecutionModel(ExecutionModel):
         public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
         {
             _targetsCollection.AddRange(targets);
-            // for performance we if empty, OrderByMarginImpact and ClearFulfilled are expensive to call
             if (!_targetsCollection.IsEmpty)
             {
                 foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
@@ -301,7 +296,7 @@ class StopLossExecutionModel(ExecutionModel):
                     var symbol = target.Symbol;
                     var security = algorithm.Securities[symbol];
 
-                    // calculate remaining quantity to be ordered
+                    // Calculate the remaining quantity to be ordered
                     var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target, security, true);
 
                     if (quantity != 0)
@@ -340,14 +335,14 @@ class StopLossExecutionModel(ExecutionModel):
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2022, 3, 1)
 
-        # Add a universe of the most liquid stocks since their trend is more capital supported.
+        # Add a universe of the most liquid stocks since their trend is more capital-supported.
         self.add_universe_selection(QC500UniverseSelectionModel())
         # Emit insights all for selected stocks.
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
-        # Equal weighting on each insight to evenly dissipate capital risk.
+        # Equal weighting on each insight to dissipate capital risk evenly.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
-        # Only place order if the price is more favorable than the price at insight signal.
+        # Only place an order if the price is more favorable than the price at the insight signal.
         self.set_execution(FavorableExecutionModel())
 
 class FavorableExecutionModel(ExecutionModel):
@@ -356,13 +351,12 @@ class FavorableExecutionModel(ExecutionModel):
         self.lag_price_by_symbol = {}
 
     def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
-        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
         self.targets_collection.add_range(targets)
         if not self.targets_collection.is_empty:
             for target in self.targets_collection.order_by_margin_impact(algorithm):
                 symbol = target.symbol
                 security = algorithm.securities[symbol]
-                # calculate remaining quantity to be ordered
+                # Calculate the remaining quantity to be ordered
                 quantity = OrderSizing.get_unordered_quantity(algorithm, target, security, True)
 
                 if quantity != 0:
