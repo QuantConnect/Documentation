@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/charting/get-historical-data.html"); ?>

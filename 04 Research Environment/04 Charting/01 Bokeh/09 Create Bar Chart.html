@@ -1,44 +1,31 @@
-<p>You must <a href="/docs/v2/research-environment/charting/bokeh#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/bokeh#04-Get-Historical-Data">get some historical data</a> to create bar charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/bokeh#02-Preparation">import the plotting libraries and get some historical data</a> to create bar charts.</p>
 
 <p>In this example, you create a bar chart that shows the average daily percent return of the banking securities. Follow these steps to create the bar chart:</p>
 
-<ol>
-    <li>Select the close column and then call the <code>unstack</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the returns of all stocks to compare their return.
+close_prices = history['close'].unstack(level=0)
+daily_returns = close_prices.pct_change() * 100
 
-    <li>Call the <code>pct_change</code> method and then multiply by 100.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change() * 100</pre>
-    </div>
+# Obtain the mean of the daily return.
+avg_daily_returns = daily_returns.mean()
 
-    <li>Call the <code>mean</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">avg_daily_returns = daily_returns.mean()</pre>
-    </div>
+# Call the DataFrame constructor with the data Series and then call the reset_index method.
+avg_daily_returns = pd.DataFrame(avg_daily_returns, columns=['avg_return']).reset_index()
 
-    <li>Call the <code>DataFrame</code> constructor with the <code>data Series</code> and then call the <code>reset_index</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">avg_daily_returns = pd.DataFrame(avg_daily_returns, columns=['avg_return']).reset_index()</pre>
-    </div>
+# Create the figure instance with the axis settings.
+plot = figure(title='Banking Stocks Average Daily % Returns', x_range=avg_daily_returns['symbol'], 
+              x_axis_label='%', y_axis_label='Stocks')
+              
+Call the <code>vbar</code> method with the <code>avg_daily_returns</code>, x- and y-axis column names, and a bar width to plot the mean daily return bars.
+plot.vbar(source=avg_daily_returns, x='symbol', top='avg_return', width=0.8)
 
-    <li>Call the <code>figure</code> function with a title, x-axis values, and axis labels.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = figure(title='Banking Stocks Average Daily % Returns', x_range=avg_daily_returns['symbol'], 
-              x_axis_label='%', y_axis_label='Stocks')</pre>
-    </div>
+# Rotate the x-axis label to display the plot axis properly.
+plot.xaxis.major_label_orientation = 0.6
 
-    <li>Call the <code>vbar</code> method with the <code>avg_daily_returns</code>, x- and y-axis column names, and a bar width.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.vbar(source=avg_daily_returns, x='symbol', top='avg_return', width=0.8)</pre>
-    </div>
-
-    <li>Rotate the x-axis label and then call the <code>show</code> function.<br></li>
-    <div class="section-example-container">
-        <pre class="python">plot.xaxis.major_label_orientation = 0.6
+# Display the plot.
 show(plot)</pre>
-    </div>
-    <p>The Jupyter Notebook displays the bar chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-bar.png" alt="Bokeh bar chart">
-</ol> 
+</div>
+
+<p>The Jupyter Notebook displays the bar chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-bar.png" alt="Bokeh bar chart">

@@ -1,83 +1,57 @@
-<p>You must <a href="/docs/v2/research-environment/charting/bokeh#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/bokeh#04-Get-Historical-Data">get some historical data</a> to create heat maps.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/bokeh#02-Preparation">import the plotting libraries and get some historical data</a> to create heat maps.</p>
 
 <p>In this example, you create a heat map that shows the correlation between the daily returns of the banking securities. Follow these steps to create the heat map:</p>
 
-<ol>
-    <li>Select the close column and then call the <code>unstack</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
-    </div>
-    
-    <li>Call the <code>pct_change</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change()</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the returns of all stocks to compare their return.
+close_prices = history['close'].unstack(level=0)
+daily_returns = close_prices.pct_change()
 
-    <li>Call the <code>corr</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">corr_matrix = daily_returns.corr()</pre>
-    </div>
-
-    <li>Set the index and columns of the <code>corr_matrix</code> to the ticker of each security and then set the name of the column and row indices.</li>
-    <div class="section-example-container">
-        <pre class="python">corr_matrix.index = corr_matrix.columns = [symbol.value for symbol in symbols]
+# Call the corr method to create the correlation matrix to plot.
+corr_matrix = daily_returns.corr()
+# Set the index and columns of the corr_matrix to the ticker of each security and then set the name of the column and row indices.
+corr_matrix.index = corr_matrix.columns = [symbol.value for symbol in symbols]
 corr_matrix.index.name = 'symbol'
-corr_matrix.columns.name = "stocks"</pre>
-    </div>
+corr_matrix.columns.name = "stocks"
 
-    <li>Call the <code>stack</code>, <code>rename</code>, and <code>reset_index</code> methods.</li>
-    <div class="section-example-container">
-        <pre class="python">corr_matrix = corr_matrix.stack().rename("value").reset_index()</pre>
-    </div>
+# Call the stack, rename, and reset_index methods for ease of plotting.
+corr_matrix = corr_matrix.stack().rename("value").reset_index()
 
-
-    <li>Call the <code>figure</code> function with a title, axis ticks, and some design settings.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = figure(title=f"Banking Stocks and Bank Sector ETF Correlation Heat Map",
+# Create the figure instance with the axis settings.
+plot = figure(title=f"Banking Stocks and Bank Sector ETF Correlation Heat Map",
               x_range=list(corr_matrix.symbol.drop_duplicates()),
               y_range=list(corr_matrix.stocks.drop_duplicates()),
               toolbar_location=None,
               tools="",
-              x_axis_location="above")</pre>
-    </div>
-
-    <li>Select a color palette and then call the <code>LinearColorMapper</code> constructor with the color pallet, the minimum correlation, and the maximum correlation.</li>
-    <div class="section-example-container">
-        <pre class="python">colors = Category20c[len(corr_matrix.columns)]
+              x_axis_location="above")
+              
+# Select a color palette and then call the LinearColorMapper constructor with the color pallet, the minimum correlation, and the maximum correlation to set the heatmap color.
+colors = Category20c[len(corr_matrix.columns)]
 mapper = LinearColorMapper(palette=colors, low=corr_matrix.value.min(), 
-                           high=corr_matrix.value.max())</pre>
-    </div>
-
-    <li>Call the <code>rect</code> method with the correlation plot data and design setting.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.rect(source=ColumnDataSource(corr_matrix), 
+                           high=corr_matrix.value.max())
+                           
+# Call the rect method with the correlation plot data and design setting to plot the heatmap.
+plot.rect(source=ColumnDataSource(corr_matrix), 
           x="stocks", 
           y="symbol",
           width=1,
           height=1,
           line_color=None,
-          fill_color=transform('value', mapper))</pre>
-    </div>
+          fill_color=transform('value', mapper))
 
-    <li>Call the <code>ColorBar</code> constructor with the <code>mapper</code>, a location, and a <code>BaseTicker</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">color_bar = ColorBar(color_mapper=mapper,
+# Creates a color bar to represent the correlation coefficients of the heat map cells.
+# Call the ColorBar constructor with the mapper, a location, and a BaseTicker.
+color_bar = ColorBar(color_mapper=mapper,
                     location=(0, 0),
-                    ticker=BasicTicker(desired_num_ticks=len(colors)))</pre>
-    </div>
-    <p>This snippet creates a color bar to represent the correlation coefficients of the heat map cells.</p>
+                    ticker=BasicTicker(desired_num_ticks=len(colors)))
 
-    <li>Call the <code>add_layout</code> method with the <code>color_bar</code> and a location.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.add_layout(color_bar, 'right')</pre>
-    </div>
-    <p>This method call plots the color bar to the right of the heat map.</p>
+# Plot the color bar to the right of the heat map.
+# Call the add_layout method with the color_bar and a location.
+plot.add_layout(color_bar, 'right')
 
-    <li>Call the <code>show</code> function.</li>
-    <div class="section-example-container">
-        <pre class="python">show(plot)</pre>
-    </div>
+# Display the plot.
+show(plot)</pre>
+</div>
 
-    <p>The Jupyter Notebook displays the heat map.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-heatmap-2.jpeg" alt="Bokeh heat map">
-</ol>
+<p>The Jupyter Notebook displays the heat map.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-heatmap-2.jpeg" alt="Bokeh heat map">

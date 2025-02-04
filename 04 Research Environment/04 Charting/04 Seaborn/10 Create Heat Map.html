@@ -1,33 +1,20 @@
-<p>You must <a href="/docs/v2/research-environment/charting/seaborn#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/seaborn#04-Get-Historical-Data">get some historical data</a> to create heat maps.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/seaborn#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a heat map that shows the correlation between the daily returns of the banking securities. Follow these steps to create the heat map:</p>
 
-<ol>
-    <li>Select the close column and then call the <code>unstack</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
-    </div>
-    
-    <li>Call the <code>pct_change</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change()</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the returns of all stocks to compare their return.
+close_prices = history['close'].unstack(level=0)
+daily_returns = close_prices.pct_change()
 
-    <li>Call the <code>corr</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">corr_matrix = daily_returns.corr()</pre>
-    </div>
+# Call the corr method to create the correlation matrix to plot.
+corr_matrix = daily_returns.corr()
+                           
+# Call the heatmap method with the corr_matrix and the annotation argument enabled to plot the heapmap.interpolation method to plot the heatmap.
+plot = sns.heatmap(corr_matrix, annot=True)
+# In the same cell that you called the heatmap method, call the set method with a title to update the layout.
+plot.set(title='Bank Stocks and Bank Sector ETF Correlation Coefficients')</pre>
+</div>
 
-    <li>Call the <code>heatmap</code> method with the <code>corr_matrix</code> and the annotation argument enabled.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = sns.heatmap(corr_matrix, annot=True)</pre>
-    </div>
-
-    <li>In the same cell that you called the <code>heatmap</code> method, call the <code>set</code> method with a title.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.set(title='Bank Stocks and Bank Sector ETF Correlation Coefficients');</pre>
-    </div>
-
-    <p>The Jupyter Notebook displays the heat map.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-heatmap-3.png" alt="Seaborn heat map">
-</ol>
+<p>The Jupyter Notebook displays the heat map.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-heatmap-3.png" alt="Seaborn heat map">

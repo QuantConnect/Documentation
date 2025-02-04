@@ -1,28 +1,23 @@
-<p>You must <a href="/docs/v2/research-environment/charting/plotly-net#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly-net#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly-net#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a 3D chart that shows the price of an asset on each dimension, i.e. the price correlation of 3 different symbols. Follow these steps to create the 3D chart:</p>
 
-<ol>
-    <li>Select three <code>Symbol</code> objects.</li>
-    <div class="section-example-container">
-        <pre class='csharp'>var symbolList = symbols.ToList();
+<div class="section-example-container">
+    <pre class='csharp'>// Select three Symbol objects to plot with.
+var symbolList = symbols.ToList();
 var symbol1 = symbolList[0];
 var symbol2 = symbolList[1];
-var symbol3 = symbolList[2];</pre>
-    </div>
+var symbol3 = symbolList[2];
 
-    <li>Call the <code>Chart3D.Chart.Point3D</code> constructor with the closing price series of each securities.</li>
-    <div class="section-example-container">
-        <pre class='csharp'>var chart = Chart3D.Chart.Point3D&lt;decimal, decimal, decimal, string&gt;(
+// Call the Chart3D.Chart.Point3D constructor with the closing price series of each securities to create the 3D scatter plot.
+var chart = Chart3D.Chart.Point3D&lt;decimal, decimal, decimal, string&gt;(
     history.Select(slice =&gt; slice.Bars[symbol1].Close),
     history.Select(slice =&gt; slice.Bars[symbol2].Close),
     history.Select(slice =&gt; slice.Bars[symbol3].Close)
-);</pre>
-    </div>
+);
 
-    <li>Create a <code>Layout</code> to add title and axis labels.</li>
-    <div class="section-example-container">
-        <pre class='csharp'>LinearAxis xAxis = new LinearAxis();
+// Create a Layout to add title and axis labels as the plot settings.
+LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", $"{symbol1} Price ($)");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", $"{symbol2} Price ($)");
@@ -34,19 +29,14 @@ Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
 layout.SetValue("zaxis", zAxis);
-layout.SetValue("title", title);</pre>
-    </div>
+layout.SetValue("title", title);
 
-    <li>Assign the <code>Layout</code> to the chart.</li>
-    <div class="section-example-container">
-        <pre class='csharp'>chart.WithLayout(layout);</pre>
-    </div>
-    
-    <li>Show the plot.</li>
-    <div class="csharp section-example-container">
-        <pre>HTML(GenericChart.toChartHTML(chart));</pre>
-    </div>
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
 
-    <p>The Jupyter Notebook displays the scatter plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-net-3d-plot.png" alt="Plotly.NET 3D plot">
-</ol>
+// Show the plot.
+HTML(GenericChart.toChartHTML(heatmap))</pre>
+</div>
+
+<p>The Jupyter Notebook displays the scatter plot.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-net-3d-plot.png" alt="Plotly.NET 3D plot">

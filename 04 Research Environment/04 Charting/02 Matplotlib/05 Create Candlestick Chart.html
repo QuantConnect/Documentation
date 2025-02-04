@@ -1,33 +1,23 @@
-<p>You must <a href="/docs/v2/research-environment/charting/matplotlib#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/matplotlib#04-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/matplotlib#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, we'll create a candlestick chart that shows the open, high, low, and close prices of one of the banking securities. Follow these steps to create the candlestick chart:</p>
 
-<ol>
-    <li>Select a <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Select a symbol to plot the candlestick plot.
+symbol = symbols[0]
 
-    <li>Slice the <code>history</code> <code>DataFrame</code> with the <code>symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">data = history.loc[symbol]</pre>
-    </div>
+# Get the OHLCV data to plot.
+data = history.loc[symbol]
+data.columns = ['Close', 'High', 'Low', 'Open', 'Volume']
 
-    <li>Rename the columns.</li>
-    <div class="section-example-container">
-        <pre class="python">data.columns = ['Close', 'High', 'Low', 'Open', 'Volume']</pre>
-    </div>
-
-    <li>Call the <code>plot</code> method with the <code>data</code>, chart type, style, title, y-axis label, and figure size.</li>
-    <div class="section-example-container">
-        <pre class="python">mplfinance.plot(data,
+# Call the plot method with the data, chart type, style, title, y-axis label, and figure size to plot the candlesticks.
+mplfinance.plot(data,
                 type='candle',
                 style='charles',
                 title=f'{symbol.value} OHLC',
                 ylabel='Price ($)',
                 figratio=(15, 10))</pre>
-    </div>
+</div>
 
-    <p>The Jupyter Notebook displays the candlestick chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/matplotlib-candlestick.png" alt="Matplotlib candlestick plot">
-</ol>
+<p>The Jupyter Notebook displays the candlestick chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/matplotlib-candlestick.png" alt="Matplotlib candlestick plot">

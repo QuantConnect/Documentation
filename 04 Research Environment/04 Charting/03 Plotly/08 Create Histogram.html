@@ -1,40 +1,24 @@
-<p>You must <a href="/docs/v2/research-environment/charting/plotly#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly#04-Get-Historical-Data">get some historical data</a> to create histograms.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a histogram that shows the distribution of the daily percent returns of the bank sector ETF. Follow these steps to create the histogram:</p>
 
-<ol>
-    <li>Select the <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the daily return series for a single symbol.
+symbol = symbols[0]
+data = history.loc[symbol]['close']
+daily_returns = data.pct_change().dropna()
 
-    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">data = history.loc[symbol]['close']</pre>
-    </div>
+# Call the DataFrame constructor with the data Series and then call the reset_index method.
+daily_returns = pd.DataFrame(daily_returns).reset_index()
 
-    <li>Call the <code>pct_change</code> method and then call the <code>dropna</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = data.pct_change().dropna()</pre>
-    </div>
-
-    <li>Call the <code>DataFrame</code> constructor with the <code>data Series</code> and then call the <code>reset_index</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = pd.DataFrame(daily_returns).reset_index()</pre>
-    </div>
-
-    <li>Call the <code>histogram</code> method with the <code>daily_returns</code> DataFrame, the x-axis label, a title, and the number of bins.</li>
-    <div class="section-example-container">
-        <pre class="python">fig = px.histogram(daily_returns, x='close', 
+# Call the histogram method with the daily_returns DataFrame, the x-axis label, a title, and the number of bins to plot the histogram.
+fig = px.histogram(daily_returns, x='close', 
                    title=f'{symbol} Daily Return of Close Price Distribution', 
-                   nbins=20)</pre>
-    </div>
+                   nbins=20)
 
-    <li>Call the <code>show</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
-    </div>
-    <p>The Jupyter Notebook displays the histogram.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-histogram.png" alt="Plotly histogram">
+# Display the plot.
+fig.show()</pre>
+</div>
 
-</ol>
+<p>The Jupyter Notebook displays the histogram.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-histogram.png" alt="Plotly histogram">

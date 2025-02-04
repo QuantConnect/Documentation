@@ -1,38 +1,23 @@
-<p>You must <a href="/docs/v2/research-environment/charting/seaborn#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/seaborn#04-Get-Historical-Data">get some historical data</a> to create pie charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/seaborn#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a pie chart that shows the weights of the banking securities in a portfolio if you allocate to them based on their inverse volatility. Follow these steps to create the pie chart:</p>
 
-<ol>
-    <li>Select the close column and then call the <code>unstack</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
-    </div>
-    
-    <li>Call the <code>pct_change</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change()</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the returns of all stocks to compare their return.
+close_prices = history['close'].unstack(level=0)
+daily_returns = close_prices.pct_change()
 
-    <li>Call <code>var</code> method and then take the inverse.</li>
-    <div class="section-example-container">
-        <pre class="python">inverse_variance = 1 / daily_returns.var()</pre>
-    </div>
+# Calculate the inverse of variances to plot with.
+inverse_variance = 1 / daily_returns.var()
 
-    <li>Call the <code>color_palette</code> method with a palette name and then truncate the returned colors to so that you have one color for each security.</li>
-    <div class="section-example-container">
-        <pre class="python">colors = sns.color_palette('pastel')[:len(inverse_variance.index)]</pre>
-    </div>
+# Call the color_palette method with a palette name and then truncate the returned colors to so that you have one color for each security.
+colors = sns.color_palette('pastel')[:len(inverse_variance.index)]
 
-    <li>Call the <code>pie</code> method with the security weights, labels, and colors.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.pie(inverse_variance, labels=inverse_variance.index, colors=colors, autopct='%1.1f%%')</pre>
-    </div>
+# Call the pie method with the security weights, labels, and colors to plot the pie chart.
+plt.pie(inverse_variance, labels=inverse_variance.index, colors=colors, autopct='%1.1f%%')
+# In the same cell that you called the pie method, call the title method with a title to update the layout.
+plt.title(title='Banking Stocks and Bank Sector ETF Allocation')</pre>
+</div>
 
-    <li>In the same cell that you called the <code>pie</code> method, call the <code>title</code> method with a title.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.title(title='Banking Stocks and Bank Sector ETF Allocation');</pre>
-    </div>
-
-    <p>The Jupyter Notebook displays the pie chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-pie-3.png" alt="Seaborn pie chart">
-</ol>
+<p>The Jupyter Notebook displays the pie chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-pie-3.png" alt="Seaborn pie chart">

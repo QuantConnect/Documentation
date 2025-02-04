@@ -1,47 +1,32 @@
-<p>You must <a href="/docs/v2/research-environment/charting/bokeh#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/bokeh#04-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/bokeh#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a candlestick chart that shows the open, high, low, and close prices of one of the banking securities. Follow these steps to create the candlestick chart:</p>
 
-<ol>
-    <li>Select a <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the historical price data for a single symbol.
+symbol = symbols[0]
+data = history.loc[symbol]
 
-    <li>Slice the <code>history</code> <code>DataFrame</code> with the <code>symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">data = history.loc[symbol]</pre>
-    </div>
+# Divide the data into days with positive returns and days with negative returns, since they will be plotted in different colors.
+up_days = data[data['close'] > data['open']]
+down_days = data[data['open'] > data['close']]
 
-    <li>Divide the <code>data</code> into days with positive returns and days with negative returns.</li>
-    <div class="section-example-container">
-        <pre class="python">up_days = data[data['close'] &gt; data['open']]
-down_days = data[data['open'] &gt; data['close']]</pre>
-    </div>
+# Create the figure instance with the axes.
+plot = figure(title=f"{symbol} OHLC", x_axis_label='Date', y_axis_label='Price', x_axis_type='datetime')
 
-    <li>Call the <code>figure</code> function with a title, axis labels and x-axis type.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = figure(title=f"{symbol} OHLC", x_axis_label='Date', y_axis_label='Price', x_axis_type='datetime')</pre>
-    </div>
+# Plot the high to low price each day with a vertical black line.
+plot.segment(data.index, data['high'], data.index, data['low'], color="black")
 
-    <li>Call the <code>segment</code> method with the <code>data</code> timestamps, high prices, low prices, and a color.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.segment(data.index, data['high'], data.index, data['low'], color="black")</pre>
-    </div>
-    <p>This method call plots the candlestick wicks.</p>
+# Overlay the green or red box on top of the vertical line to create the candlesticks.
+width = 12*60*60*1000
+plot.vbar(up_days.index, width, up_days['open'], up_days['close'], 
+          fill_color="green", line_color="green")
+plot.vbar(down_days.index, width, down_days['open'], down_days['close'],
+          fill_color="red", line_color="red")
+        
+# Display the plot.
+show(plot)</pre>
+</div>
 
-    <li>Call the <code>vbar</code> method for the up and down days with the <code>data</code> timestamps, open prices, close prices, and a color.</li>
-    <div class="section-example-container">
-        <pre class="python">width = 12*60*60*1000
-plot.vbar(up_days.index, width, up_days['open'], up_days['close'], <br>          fill_color="green", line_color="green")
-plot.vbar(down_days.index, width, down_days['open'], down_days['close'],<br>          fill_color="red", line_color="red")</pre>
-    </div>
-    <p>This method call plots the candlestick bodies.</p>
-
-    <li>Call the <code>show</code> function.</li>
-    <div class="section-example-container">
-        <pre class="python">show(plot)</pre>
-    </div>
-    <p>The Jupyter Notebook displays the candlestick chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-plot.png" alt="Bokeh candlestick plot">
-</ol>
+<p>The Jupyter Notebook displays the candlestick chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bokeh-plot.png" alt="Bokeh candlestick plot">

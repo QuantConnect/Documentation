@@ -1,33 +1,21 @@
-<p>You must <a href="/docs/v2/research-environment/charting/plotly#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly#04-Get-Historical-Data">get some historical data</a> to create line charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a line chart that shows the closing price for one of the banking securities. Follow these steps to create the line chart:</p>
 
-<ol>
-    <li>Select a <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the close price series for a single symbol.
+symbol = symbols[0]
+data = history.loc[symbol]['close']
 
-    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">data = history.loc[symbol]['close']</pre>
-    </div>
+# Call the DataFrame constructor with the data Series and then call the reset_index method to make the time column accessible to plotly.
+data = pd.DataFrame(data).reset_index()
 
-    <li>Call the <code>DataFrame</code> constructor with the <code>data Series</code> and then call the <code>reset_index</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">data = pd.DataFrame(data).reset_index()</pre>
-    </div>
+# Call the line method with data, the column names of the x- and y-axis in data, and the plot title to plot the close price series line chart.
+fig = px.line(data, x='time', y='close', title=f'{symbol} Close price')
+        
+# Display the plot.
+fig.show()</pre>
+</div>
 
-    <li>Call the <code>line</code> method with <code>data</code>, the column names of the x- and y-axis in <code>data</code>, and the plot title.</li>
-    <div class="section-example-container">
-        <pre class="python">fig = px.line(data, x='time', y='close', title=f'{symbol} Close price')</pre>
-    </div>
-
-    <li>Call the <code>show</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
-    </div>
-    <p>The Jupyter Notebook displays the line chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-line-3.png" alt="Plotly line plot">
-
-</ol>
+<p>The Jupyter Notebook displays the line chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-line-3.png" alt="Plotly line plot">

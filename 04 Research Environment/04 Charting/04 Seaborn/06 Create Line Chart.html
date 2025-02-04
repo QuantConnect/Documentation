@@ -1,35 +1,21 @@
-<p>You must <a href="/docs/v2/research-environment/charting/seaborn#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/seaborn#04-Get-Historical-Data">get some historical data</a> to create line charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/seaborn#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
-<p>In this example, you create a line chart that shows the closing price for one of the banking securities. Follow these steps to create the chart:</p>
+<p>In this example, you create a line chart that shows the closing price for one of the banking securities. Follow these steps to create the line chart:</p>
 
-<ol>
-    <li>Select a <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">symbol = symbols[0]</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Select a symbol to plot the candlestick plot.
+symbol = symbols[0]
 
-    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
-    <div class="section-example-container">
-        <pre class="python">data = history.loc[symbol]['close']</pre>
-    </div>
+# Obtain the close price series of the symbol to plot.
+data = history.loc[symbol]['close']
 
-    <li>Call the <code>DataFrame</code> constructor with the <code>data Series</code> and then call the <code>reset_index</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">data = pd.DataFrame(data).reset_index()</pre>
-    </div>
-
-    <li>Call the <code>lineplot</code> method with the  <code>data Series</code> and the column name of each axis.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = sns.lineplot(data=data,
+# Call the plot method with a title and figure size to plot the line chart.
+plot = sns.lineplot(data=data,
                     x='time', 
-                    y='close')</pre>
-    </div>
+                    y='close')
+# In the same cell that you called the lineplot method, call the set method with the y-axis label and a title to update the plot settings.
+plot.set(ylabel="price", title=f"{symbol} Price Over Time")</pre>
+</div>
 
-    <li>In the same cell that you called the <code>lineplot</code> method, call the <code>set</code> method with the y-axis label and a title.</li>
-    <div class="section-example-container">
-        <pre class="python">plot.set(ylabel="price", title=f"{symbol} Price Over Time");</pre>
-    </div>
-
-    <p>The Jupyter Notebook displays the line chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-line-3.png" alt="Seaborn line plot">
-</ol>
+<p>The Jupyter Notebook displays the line chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/seaborn-line-3.png" alt="Seaborn line plot">

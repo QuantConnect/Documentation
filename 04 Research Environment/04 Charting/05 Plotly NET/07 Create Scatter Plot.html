@@ -1,25 +1,20 @@
-<p>You must <a href="/docs/v2/research-environment/charting/plotly-net#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly-net#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly-net#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a scatter plot that shows the relationship between the daily price of two securities. Follow these steps to create the scatter plot:</p>
 
-<ol>
-    <li>Select two <code>Symbol</code> objects.</li>
-    <div class="section-example-container">
-        <pre class='csharp'>var symbol1 = symbols.First();
-var symbol2 = symbols.Last();</pre>
-    </div>
+<div class="section-example-container">
+    <pre class='csharp'>// Select 2 symbols to plot their price correlation.
+var symbol1 = symbols.First();
+var symbol2 = symbols.Last();
 
-    <li>Call the <code>Chart2D.Chart.Point</code> constructor with the closing prices of both securities.</li>
-    <div class="section-example-container">
-        <pre class='csharp'>var chart = Chart2D.Chart.Point&lt;decimal, decimal, string&gt;(
-    history.Select(slice => slice.Bars[symbol1].Close),
-    history.Select(slice => slice.Bars[symbol2].Close)
-);</pre>
-    </div>
+// Call the Chart2D.Chart.Point constructor with the closing prices of both securities to create the scatter plot.
+var chart = Chart2D.Chart.Point&lt;decimal, decimal, string&gt;(
+    history.Select(slice =&gt; slice.Bars[symbol1].Close),
+    history.Select(slice =&gt; slice.Bars[symbol2].Close)
+);
 
-    <li>Create a <code>Layout</code>.<br></li>
-    <div class="section-example-container">
-        <pre class='csharp'>LinearAxis xAxis = new LinearAxis();
+// Create a Layout as the plot setting.
+LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", $"{symbol1} Price ($)");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", $"{symbol2} Price ($)");
@@ -28,19 +23,14 @@ Title title = Title.init($"{symbol1} vs {symbol2}");
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
-layout.SetValue("title", title);</pre>
-    </div>
+layout.SetValue("title", title);
 
-    <li>Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="section-example-container">
-        <pre class='csharp'>chart.WithLayout(layout);</pre>
-    </div>
-    
-    <li>Show the plot.</li>
-    <div class="csharp section-example-container">
-        <pre>HTML(GenericChart.toChartHTML(chart));</pre>
-    </div>
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
 
-    <p>The Jupyter Notebook displays the scatter plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-net-scatter-plot.png" alt="Plotly.NET scatter plot">
-</ol>
+// Show the plot.
+HTML(GenericChart.toChartHTML(chart));</pre>
+</div>
+
+<p>The Jupyter Notebook displays the scatter plot.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-net-scatter-plot.png" alt="Plotly.NET scatter plot">

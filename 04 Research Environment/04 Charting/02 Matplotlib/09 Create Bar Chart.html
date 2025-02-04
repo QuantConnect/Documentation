@@ -1,40 +1,25 @@
-<p>You must <a href="/docs/v2/research-environment/charting/matplotlib#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/matplotlib#04-Get-Historical-Data">get some historical data</a> to create bar charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/matplotlib#02-Preparation">import the plotting libraries and get some historical data</a> to create candlestick charts.</p>
 
 <p>In this example, you create a bar chart that shows the average daily percent return of the banking securities. Follow these steps to create the bar chart:</p>
 
-<ol>
-    <li>Select the close column and then call the <code>unstack</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
-    </div>
-    
-    <li>Call the <code>pct_change</code> method and then multiply by 100.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_returns = close_prices.pct_change() * 100</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python"># Obtain the returns of all stocks to compare their return.
+close_prices = history['close'].unstack(level=0)
+daily_returns = close_prices.pct_change() * 100
 
-    <li>Call the <code>mean</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">avg_daily_returns = daily_returns.mean()</pre>
-    </div>
+# Obtain the mean of the daily return.
+avg_daily_returns = daily_returns.mean()
 
-    <li>Call the <code>figure</code> method with a figure size.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.figure(figsize=(15, 10))</pre>
-    </div>
+# Create the figure to plot on with the size set.
+plt.figure(figsize=(15, 10))
 
-    <li>Call the <code>bar</code> method with the x-axis and y-axis values.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.bar(avg_daily_returns.index, avg_daily_returns)</pre>
-    </div>
-
-    <li>In the same cell that you called the <code>bar</code> method, call the <code>title</code>, <code>xlabel</code>, and <code>ylabel</code> methods with a title and the axis labels.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.title('Banking Stocks Average Daily % Returns')
+# Call the bar method with the x-axis and y-axis values to plot the mean returns as bar chart.
+plt.bar(avg_daily_returns.index, avg_daily_returns)
+# In the same cell that you called the bar method, call the title, xlabel, and ylabel methods with a title and the axis labels to decorate the plot.
+plt.title('Banking Stocks Average Daily % Returns')
 plt.xlabel('Tickers')
-plt.ylabel('%');</pre>
-    </div>
+plt.ylabel('%')</pre>
+</div>
 
-    <p>The Jupyter Notebook displays the bar chart.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/matplotlib-bar.png" alt="Matplotlib bar chart">
-</ol>
+<p>The Jupyter Notebook displays the bar chart.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/matplotlib-bar.png" alt="Matplotlib bar chart">
