@@ -1,0 +1,384 @@
+<p>The following examples demonstrate some common practices for implementing the execution model.</p>
+
+<h4>Example 1: Iceberg Execution</h4>
+<p>The following algorithm simulates an account with large capital that equally holds the most liquid stocks. To hide the footprint and avoid a large market impact that might erode the profit margin, we can set up an iceberg execution system, submitting only 10% of the volume of the bid/ask side order book to the order direction.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 4, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000000);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital-supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights all for selected stocks.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Iceberg ordering to hide traces and avoid market impact.
+        // Since quote data will be used, make sure the asset class and resolution are compatible.
+        SetExecution(new IcebergExecutionModel(0.1m));
+    }
+
+    private class IcebergExecutionModel : ExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+        // The maximum order size taken from the order book in percentage.
+        private readonly decimal _maximumOrderQuantityPercentVolume;
+
+        public IcebergExecutionModel(decimal orderPercentVolume = 0.1m)
+        {
+            _maximumOrderQuantityPercentVolume = orderPercentVolume;
+        }
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+        {
+            //Update the complete set of portfolio targets with the new targets
+            _targetsCollection.AddRange(targets);
+
+            if (!_targetsCollection.IsEmpty)
+            {
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                {
+                    var symbol = target.Symbol;
+
+                    // Calculate the remaining quantity to be ordered
+                    var unorderedQuantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
+                    // Adjust order size to respect maximum order size based on a percentage of the current volume
+                    var orderSize = GetOrderSizeForPercentVolume(algorithm.Securities[symbol], _maximumOrderQuantityPercentVolume, unorderedQuantity);
+
+                    if (orderSize != 0)
+                    {
+                        algorithm.MarketOrder(symbol, orderSize);
+                    }
+                }
+
+                _targetsCollection.ClearFulfilled(algorithm);
+            }
+        }
+
+        private static decimal GetOrderSizeForPercentVolume(Security security, decimal maximumPercentCurrentVolume, decimal desiredOrderSize)
+        {
+            // Take N% from the order book according to the order direction.
+            var maxOrderSize = maximumPercentCurrentVolume * (desiredOrderSize &gt; 0 ? security.BidSize : security.AskSize);
+            var orderSize = Math.Min(maxOrderSize, Math.Abs(desiredOrderSize));
+
+            return Math.Sign(desiredOrderSize) * OrderSizing.AdjustByLotSize(security, orderSize);
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkExecutionModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 4, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000000)
+
+        # Add a universe of the most liquid stocks since their trend is more capital-supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights all for selected stocks.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Equal weighting on each insight to dissipate capital risk evenly.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Iceberg ordering to hide traces and avoid market impact.
+        # Since quote data will be used, ensure the asset class and resolution are compatible.
+        self.set_execution(IcebergExecutionModel(0.1))
+
+class IcebergExecutionModel(ExecutionModel):
+    def __init__(self, order_percent_volume: float = 0.1) -&gt; None:
+        self.targets_collection = PortfolioTargetCollection()
+        # The maximum order size is taken from the order book in percentage.
+        self.maximum_order_quantity_percent_volume = order_percent_volume
+
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+        # update the complete set of portfolio targets with the new targets
+        self.targets_collection.add_range(targets)
+
+        if not self.targets_collection.is_empty:
+            for target in self.targets_collection.order_by_margin_impact(algorithm):
+                symbol = target.symbol
+
+                # Calculate the remaining quantity to be ordered
+                unordered_quantity = OrderSizing.get_unordered_quantity(algorithm, target)
+                # adjust order size to respect maximum order size based on a percentage of current volume
+                order_size = self.get_order_size_for_percent_volume(algorithm.securities[symbol], self.maximum_order_quantity_percent_volume, unordered_quantity)
+
+                if order_size != 0:
+                    algorithm.market_order(symbol, order_size)
+
+            self.targets_collection.clear_fulfilled(algorithm)
+
+    def get_order_size_for_percent_volume(self, security: Security, maximum_percent_current_volume: float, desired_order_size: float) -&gt; float:
+        # Take N% from the order book according to the order direction.
+        max_order_size = maximum_percent_current_volume * (security.bid_size if desired_order_size &gt; 0 else security.ask_size)
+        order_size = min(max_order_size, abs(desired_order_size))
+        return np.sign(desired_order_size) * OrderSizing.adjust_by_lot_size(security, order_size)</pre>
+</div>
+
+<h4>Example 2: Stop Loss Order</h4>
+<p>The following algorithm uses a custom execution model to add stop loss orders for the base order to control downside risk. To do so, we ordered a stop-loss order of the same size but in the opposite direction of the base order. We also handled the cancellation of the respective insight to avoid repeated ordering if the stop-loss order was being filled.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 4, 30);
+        SetEndDate(2020, 5, 5);
+        SetCash(1000000);
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        // Add a universe of the most liquid stocks since their trend is more capital-supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights all for selected stocks.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // To place bracket orders besides basic orders as well.
+        SetExecution(new BracketExecutionModel(0.05m));
+    }
+
+    private class BracketExecutionModel : ExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+        // The stop loss percent of the bracket order.
+        private readonly decimal _stopLoss;
+        private List&lt;OrderTicket&gt; _stopOrders = new();
+
+        public BracketExecutionModel(decimal stopLoss = 0.05m)
+            : base()
+        {
+            _stopLoss = stopLoss;
+        }
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+        {
+            foreach (var stopLoss in new List&lt;OrderTicket&gt;(_stopOrders))
+            {
+                // Check if any bracket orders have been filled out. If so, cancel the insight to avoid repeated ordering.
+                if (stopLoss.Status == OrderStatus.Filled)
+                {
+                    algorithm.Insights.Cancel(new[] {stopLoss.Symbol});
+                    _stopOrders.Remove(stopLoss);
+                }
+            }
+
+            _targetsCollection.AddRange(targets);
+            if (!_targetsCollection.IsEmpty)
+            {
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                {
+                    var security = algorithm.Securities[target.Symbol];
+
+                    // Calculate the remaining quantity to be ordered
+                    var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target, security, true);
+
+                    if (quantity != 0)
+                    {
+                        if (security.BuyingPowerModel.AboveMinimumOrderMarginPortfolioPercentage(security, quantity,
+                            algorithm.Portfolio, algorithm.Settings.MinimumOrderMarginPortfolioPercentage))
+                        {
+                            algorithm.MarketOrder(security, quantity);
+                            // Stop loss order.
+                            var stopLossPrice = security.Price * (quantity &gt; 0 ? 1m - _stopLoss : 1m + _stopLoss);
+                            var stopLoss = algorithm.StopMarketOrder(security.Symbol, -quantity, stopLossPrice);
+                            // Save the orders to track their filing status.
+                            _stopOrders.Add(stopLoss);
+                        }
+                        else if (!PortfolioTarget.MinimumOrderMarginPercentageWarningSent.HasValue)
+                        {
+                            // will trigger the warning if it has not already been sent
+                            PortfolioTarget.MinimumOrderMarginPercentageWarningSent = false;
+                        }
+                    }
+                }
+
+                _targetsCollection.ClearFulfilled(algorithm);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkExecutionModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 4, 30)
+        self.set_end_date(2020, 5, 5)
+        self.set_cash(1000000)
+        self.universe_settings.resolution = Resolution.DAILY
+
+        # Add a universe of the most liquid stocks since their trend is more capital-supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights all for selected stocks.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Equal weighting on each insight is needed to dissipate capital risk evenly.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # To place bracket orders besides basic orders as well.
+        self.set_execution(StopLossExecutionModel(0.05))
+
+class StopLossExecutionModel(ExecutionModel):
+    def __init__(self, stop_loss: float = 0.05) -&gt; None:
+        self.targets_collection = PortfolioTargetCollection()
+        # The stop loss percent of the bracket order.
+        self.stop_loss = stop_loss
+        self.stop_orders = []
+
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+        for stop_loss in self.stop_orders.copy():
+            # Check if any bracket orders have been filled out. If so, cancel the insight to avoid repeated ordering.
+            if stop_loss.status == OrderStatus.FILLED:
+                algorithm.insights.cancel([stop_loss.symbol])
+                self.stop_orders.remove(stop_loss)
+
+        self.targets_collection.add_range(targets)
+        if not self.targets_collection.is_empty:
+            for target in self.targets_collection.order_by_margin_impact(algorithm):
+                security = algorithm.securities[target.symbol]
+                # Calculate the remaining quantity to be ordered
+                quantity = OrderSizing.get_unordered_quantity(algorithm, target, security, True)
+
+                if quantity != 0:
+                    above_minimum_portfolio = BuyingPowerModelExtensions.above_minimum_order_margin_portfolio_percentage(
+                        security.buying_power_model,
+                        security,
+                        quantity,
+                        algorithm.portfolio,
+                        algorithm.settings.minimum_order_margin_portfolio_percentage)
+                    # Place orders and the bracket orders.
+                    if above_minimum_portfolio:
+                        algorithm.market_order(security, quantity)
+                        # Stop Loss order.
+                        stop_loss_price = security.price * (1 - self.stop_loss if quantity &gt; 0 else 1 + self.stop_loss)
+                        stop_loss = algorithm.stop_market_order(security.symbol, -quantity, stop_loss_price)
+                        self.stop_orders.append(stop_loss)
+                    elif not PortfolioTarget.minimum_order_margin_percentage_warning_sent:
+                        # will trigger the warning if it has not already been sent
+                        PortfolioTarget.minimum_order_margin_percentage_warning_sent = False
+
+            self.targets_collection.clear_fulfilled(algorithm)</pre>
+</div>
+
+<h4>Example 3: More Favorable Than Signal Time</h4>
+<p>Some algorithms are signaling based on daily close data. However, their orders often emit when the next market opens, making the filling price slip. To avoid this slippage negatively impacting your expectations, we can construct a custom execution model to place orders only when the price is more favorable than the last close price. Although we did not set a time limit in this example, you may consider doing so.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 3, 1);
+        
+        // Add a universe of the most liquid stocks since their trend is more capital-supported.
+        AddUniverseSelection(new QC500UniverseSelectionModel());
+        // Emit insights all for selected stocks.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7)));
+        // Equal weighting on each insight is needed to dissipate capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        // Only place an order if the price is more favorable than the price at the insight signal.
+        SetExecution(new FavorableExecutionModel());
+    }
+
+    private class FavorableExecutionModel : ExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+        private Dictionary&lt;Symbol, decimal&gt; _lagPriceBySymbol = new();
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+        {
+            _targetsCollection.AddRange(targets);
+            if (!_targetsCollection.IsEmpty)
+            {
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                {
+                    var symbol = target.Symbol;
+                    var security = algorithm.Securities[symbol];
+
+                    // Calculate the remaining quantity to be ordered
+                    var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target, security, true);
+
+                    if (quantity != 0)
+                    {
+                        if (BuyingPowerModelExtensions.AboveMinimumOrderMarginPortfolioPercentage(security.BuyingPowerModel, security, quantity,
+                            algorithm.Portfolio, algorithm.Settings.MinimumOrderMarginPortfolioPercentage))
+                        {
+                            // Cache the price at signal emission to compare if the current price is more favorable.
+                            if (!_lagPriceBySymbol.TryGetValue(symbol, out var lastPrice))
+                            {
+                                var history = algorithm.History&lt;TradeBar&gt;(symbol, 1, Resolution.Daily);
+                                _lagPriceBySymbol[symbol] = lastPrice = history.Last().Close;
+                            }
+                            
+                            // Only order if the price is more favorable than the price at signal emission.
+                            if ((security.Price &lt;= lastPrice &amp;&amp; quantity &gt; 0) || (security.Price &gt;= lastPrice &amp;&amp; quantity &lt; 0))
+                            {
+                                algorithm.MarketOrder(security, quantity);
+                            }
+                        }
+                        else if (!PortfolioTarget.MinimumOrderMarginPercentageWarningSent.HasValue)
+                        {
+                            // will trigger the warning if it has not already been sent
+                            PortfolioTarget.MinimumOrderMarginPercentageWarningSent = false;
+                        }
+                    }
+                }
+
+                _targetsCollection.ClearFulfilled(algorithm);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class FrameworkExecutionModelAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 3, 1)
+
+        # Add a universe of the most liquid stocks since their trend is more capital-supported.
+        self.add_universe_selection(QC500UniverseSelectionModel())
+        # Emit insights all for selected stocks.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(7)))
+        # Equal weighting on each insight to dissipate capital risk evenly.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+        # Only place an order if the price is more favorable than the price at the insight signal.
+        self.set_execution(FavorableExecutionModel())
+
+class FavorableExecutionModel(ExecutionModel):
+    def __init__(self) -&gt; None:
+        self.targets_collection = PortfolioTargetCollection()
+        self.lag_price_by_symbol = {}
+
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+        self.targets_collection.add_range(targets)
+        if not self.targets_collection.is_empty:
+            for target in self.targets_collection.order_by_margin_impact(algorithm):
+                symbol = target.symbol
+                security = algorithm.securities[symbol]
+                # Calculate the remaining quantity to be ordered
+                quantity = OrderSizing.get_unordered_quantity(algorithm, target, security, True)
+
+                if quantity != 0:
+                    above_minimum_portfolio = BuyingPowerModelExtensions.above_minimum_order_margin_portfolio_percentage(
+                        security.buying_power_model,
+                        security,
+                        quantity,
+                        algorithm.portfolio,
+                        algorithm.settings.minimum_order_margin_portfolio_percentage)
+                    if above_minimum_portfolio:
+                        # Cache the price at signal emission to compare if the current price is more favorable.
+                        if not symbol in self.lag_price_by_symbol:
+                            history = algorithm.history[TradeBar](symbol, 1, Resolution.DAILY)
+                            self.lag_price_by_symbol[symbol] = list(history)[-1].close
+
+                        # Only order if the price is more favorable than the price at signal emission.
+                        if (security.price &lt;= self.lag_price_by_symbol[symbol] and quantity &gt; 0)\
+                        or (security.price &gt;= self.lag_price_by_symbol[symbol] and quantity &lt; 0):
+                            algorithm.market_order(security, quantity)
+                    elif not PortfolioTarget.minimum_order_margin_percentage_warning_sent:
+                        # will trigger the warning if it has not already been sent
+                        PortfolioTarget.minimum_order_margin_percentage_warning_sent = False
+
+            self.targets_collection.clear_fulfilled(algorithm)</pre>
+</div>
