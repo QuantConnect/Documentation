@@ -1,0 +1,385 @@
+<p>The below code snippets concludes the above jupyter research notebook content.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types.
+#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Market;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+using System;
+using System.Linq;
+using Accord.Statistics;
+
+// Instantiate a QuantBook
+var qb = new QuantBook();
+
+// Select the desired tickers for research.
+var assets = new List&lt;string&gt;() {"SHY", "TLT", "SHV", "TLH", "EDV", "BIL",
+                              "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                              "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
+
+// Call the AddEquity method with the tickers, and their corresponding resolution.
+foreach(var ticker in assets){
+    qb.AddEquity(ticker, Resolution.Minute);
+}
+
+// Call the History method with qb.Securities.Keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
+var history = qb.History(qb.Securities.Keys, new DateTime(2021, 1, 1), new DateTime(2021, 12, 31), Resolution.Daily);
+
+// Extract daily return for each Symbol from Slice data
+var returns = new Dictionary&lt;string, List&lt;Double&gt;&gt;();
+var last = new Dictionary&lt;string, Double&gt;();
+foreach(var slice in history){
+    foreach(var symbol in slice.Bars.Keys){
+        if(!returns.ContainsKey(symbol)){
+            returns.Add(symbol, new List&lt;Double&gt;());
+            last.Add(symbol, (Double)slice.Bars[symbol].Close);
+        }
+        var change = (Double) ((Double)slice.Bars[symbol].Close - last[symbol])/last[symbol];
+        last[symbol] = (Double)slice.Bars[symbol].Close;
+        returns[symbol].Add(change);
+    }    
+}
+
+// Convert returns into 2-d array
+double[,] ret = new double[returns.Values.ElementAt(0).Count - 1, assets.Count];
+int k = 0;
+foreach(var kvp in returns)
+{
+    var symbol = kvp.Key;
+    for(int i=0; i &lt; returns[symbol].Count - 1; i++)
+    {
+        ret[i, k] = returns[symbol][i + 1];
+    }
+    k++;
+}
+
+// Write a function to obtain the least and most correlated 5 assets.
+public Dictionary&lt;string, Double&gt; GetCorrelations(double[,] returns){
+    // Get correlation matrix
+    var corrMatrix = Measures.Correlation(ret);
+    
+    // Find the absolute sum correlation of the assets
+    var correlations = new Dictionary&lt;string, Double&gt;();
+    for(int i=0; i &lt; corrMatrix.GetLength(0); i++)
+    {
+        var symbol = assets[i];
+        if(!correlations.ContainsKey(symbol)){
+            correlations.Add(symbol, 0);
+        }
+        for (int j=0; j &lt; corrMatrix.GetLength(1); j++)
+        {
+            var value_ = corrMatrix[i, j];
+            correlations[symbol] += value_ &gt;= 0 ? value_ : -value_;
+        }
+    }
+    
+    return correlations;
+}
+
+var corr = GetCorrelations(ret);
+var selected = corr.OrderBy(x =&gt; x.Value).Take(5);
+var benchmark = corr.OrderBy(x =&gt; x.Value).TakeLast(5);
+
+// Construct an equal weighting portfolio for the 5-uncorrelated-asset-portfolio and the 5-correlated-asset-portfolio (benchmark).
+double[,] portRet = new double[returns.Values.ElementAt(0).Count, 5];
+int j = 0;
+foreach(var kvp in selected){
+    var symbol = kvp.Key;
+    for(int i=0; i &lt; returns[symbol].Count; i++)
+    {
+        portRet[i, j] = returns[symbol][i] / 5;
+    }
+    j++;
+}
+
+double[,] benchRet = new double[returns.Values.ElementAt(0).Count, 5];
+j = 0;
+foreach(var kvp in benchmark){
+    var symbol = kvp.Key;
+    for(int i=0; i &lt; returns[symbol].Count; i++)
+    {
+        benchRet[i, j] = returns[symbol][i] / 5;
+    }
+    j++;
+}
+
+// Get the Equity Return of both portfolios.
+var totalValue = new List&lt;double&gt;{1.0};
+var dailySum = 0.0;
+for(int i=0; i &lt; portRet.GetLength(0); i++)
+{
+    totalValue.Add(totalValue.Last() * (1 + dailySum));
+    dailySum = 0.0;
+    for (int j=0; j &lt; portRet.GetLength(1); j++)
+    {
+        if (double.IsFinite(portRet[i, j]))
+        {
+            dailySum += portRet[i, j];
+        }
+    }
+}
+
+var totalValueBench = new List&lt;double&gt;{1.0};
+var dailySumBench = 0.0;
+for(int i=0; i &lt; benchRet.GetLength(0); i++)
+{
+    totalValueBench.Add(totalValueBench.Last() * (1 + dailySumBench));
+    dailySumBench = 0.0;
+    for (int j=0; j &lt; benchRet.GetLength(1); j++)
+    {
+        if (double.IsFinite(benchRet[i, j]))
+        {
+            dailySumBench += benchRet[i, j];
+        }
+    }
+}
+
+// Calculate the variance of the 2 portfolios
+var returnPort = new List&lt;double&gt;();
+var previous = 0.0;
+for(int i=0; i &lt; totalValue.Count; i++)
+{
+    var current = totalValue[i];
+    returnPort.Add((current - previous) / previous);
+    previous = current;
+}
+var varPort = Math.Sqrt(returnPort.Skip(1).Average(v=&gt;Math.Pow(v-returnPort.Skip(1).Average(),2)));
+
+var returnBench = new List&lt;double&gt;();
+previous = 0.0;
+for(int i=0; i &lt; totalValueBench.Count; i++)
+{
+    var current = totalValueBench[i];
+    returnBench.Add((current - previous) / previous);
+    previous = current;
+}
+var varBench = Math.Sqrt(returnBench.Skip(1).Average(v =&gt; Math.Pow(v-returnBench.Skip(1).Average(),2)));
+
+// Print the result.
+Console.WriteLine("Portfolio Return: {0}, Variance: {1}", (totalValue.Last() - totalValue.First())/totalValue.First(), varPort);
+Console.WriteLine("Benchmark Return: {0}, Variance: {1}", (totalValueBench.Last() - totalValueBench.First())/totalValueBench.First(), varBench);</pre>
+    <pre class="python"># Instantiate a QuantBook.
+qb = QuantBook()
+
+# Select the desired tickers for research.
+assets = ["SHY", "TLT", "SHV", "TLH", "EDV", "BIL",
+          "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+          "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+
+# Call the add_equity method with the tickers, and its corresponding resolution. Then store their Symbols. Resolution.MINUTE is used by default. 
+for i in range(len(assets)):
+    qb.add_equity(assets[i],Resolution.MINUTE)
+
+# Call the history method with qb.securities.keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
+history = qb.history(qb.securities.keys(), datetime(2021, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+
+# Select the close column and then call the unstack method, then call pct_change to compute the daily return.
+returns = history['close'].unstack(level=0).pct_change().iloc[1:]
+
+# Write a function to obtain the least and most correlated 5 assets.
+def get_uncorrelated_assets(returns, num_assets):
+    # Get correlation
+    correlation = returns.corr()
+    
+    # Find assets with lowest and highest absolute sum correlation
+    selected = []
+    for index, row in correlation.iteritems():
+        corr_rank = row.abs().sum()
+        selected.append((index, corr_rank))
+
+    # Sort and take the top num_assets
+    sort_ = sorted(selected, key = lambda x: x[1])
+    uncorrelated = sort_[:num_assets]
+    correlated = sort_[-num_assets:]
+    
+    return uncorrelated, correlated
+
+selected, benchmark = get_uncorrelated_assets(returns, 5)
+
+# Construct a equal weighting portfolio for the 5-uncorrelated-asset-portfolio and the 5-correlated-asset-portfolio (benchmark).
+port_ret = returns[[x[0] for x in selected]] / 5
+bench_ret = returns[[x[0] for x in benchmark]] / 5
+
+# Call cumprod to get the cumulative return.
+total_ret = (np.sum(port_ret, axis=1) + 1).cumprod()
+total_ret_bench = (np.sum(bench_ret, axis=1) + 1).cumprod()
+
+# Plot the result.
+plt.figure(figsize=(15, 10))
+total_ret.plot(label='Proposed')
+total_ret_bench.plot(label='Benchmark')
+plt.title('Equity Curve')
+plt.legend()
+plt.show()</pre>
+</div>
+
+<p>The below code snippets concludes the algorithm set up.</p>
+<div class="section-example-container">
+    <pre class="csharp">using Accord.Statistics;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class UncorrelatedAssetsDemo : QCAlgorithm
+    {
+        private List&lt;string&gt; _asset = new List&lt;string&gt;{"SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+            "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+            "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
+            
+        public override void Initialize()
+        {
+            // 1. Required: Five years of backtest history
+            SetStartDate(2014, 1, 1);
+            SetEndDate(2019, 1, 1);
+        
+            // 2. Required: Alpha Streams Models:
+            SetBrokerageModel(BrokerageName.AlphaStreams);
+        
+            // 3. Required: Significant AUM Capacity
+            SetCash(1000000);
+        
+            // 4. Required: Benchmark to SPY
+            SetBenchmark("SPY");
+        
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            SetExecution(new ImmediateExecutionModel());
+        
+            // Add Equity ------------------------------------------------ 
+            foreach(var ticker in _asset)
+            {
+            AddEquity(ticker, Resolution.Minute);
+            }
+        
+            // Set Scheduled Event Method For Our Model. In this example, we'll rebalance every month.
+            Schedule.On(DateRules.MonthStart(), 
+                TimeRules.BeforeMarketClose("SHY", 5),
+                EveryDayBeforeMarketClose);
+        }
+        
+        private void EveryDayBeforeMarketClose()
+        {
+            // Fetch history on our universe
+            var history = History(Securities.Keys, 252*2, Resolution.Daily);
+            if (history.Count() &lt; 0) return;
+            
+            // Extract daily return of close prices for each Symbol from Slice data
+            var returns = new Dictionary&lt;string, List&lt;double&gt;&gt;();
+            var last = new Dictionary&lt;string, double&gt;();
+            foreach(var slice in history){
+                foreach(var symbol in slice.Bars.Keys){
+                    if(!returns.ContainsKey(symbol)){
+                        returns.Add(symbol, new List&lt;double&gt;());
+                        last.Add(symbol, (double)slice.Bars[symbol].Close);
+                    }
+                    var change = (double) ((double)slice.Bars[symbol].Close - last[symbol])/last[symbol];
+                    last[symbol] = (double)slice.Bars[symbol].Close;
+                    returns[symbol].Add(change);
+                }    
+            }
+            
+            // Convert returns into 2-d array
+            double[,] ret = new double[returns.Values.ElementAt(0).Count - 1, _asset.Count];
+            int k = 0;
+            foreach(var kvp in returns)
+            {
+                var symbol = kvp.Key;
+                for(int i=0; i &lt; returns[symbol].Count - 1; i++)
+                {
+                    ret[i, k] = returns[symbol][i + 1];
+                }
+                k++;
+            }
+            
+            // Get correlation matrix
+            var corrMatrix = Measures.Correlation(ret);
+            
+            // Find 5 assets with the least absolute sum correlation
+            var correlations = new Dictionary&lt;string, double&gt;();
+            for(int i=0; i &lt; corrMatrix.GetLength(0); i++)
+            {
+                var symbol = _asset[i];
+                if(!correlations.ContainsKey(symbol)){
+                    correlations.Add(symbol, 0);
+                }
+                for (int j=0; j &lt; corrMatrix.GetLength(1); j++)
+                {
+                    var value_ = corrMatrix[i, j];
+                    correlations[symbol] += value_ &gt;= 0 ? value_ : -value_;
+                }
+            }
+            var selected = correlations.OrderBy(x =&gt; x.Value).Take(5).Select(x =&gt; x.Key).ToList();
+            
+            // Emit insights
+            foreach(var symbol in selected)
+            {
+                var insight = new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Up);
+                EmitInsights(insight);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class UncorrelatedAssetsDemo(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        #1. Required: Five years of backtest history
+        self.set_start_date(2014, 1, 1)
+        self.set_end_date(2019, 1, 1)
+    
+        #2. Required: Alpha Streams Models:
+        self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
+    
+        #3. Required: Significant AUM Capacity
+        self.set_cash(1000000)
+    
+        #4. Required: Benchmark to SPY
+        self.set_benchmark("SPY")
+        
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+    
+        self.assets = ["SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+                        "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                        "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+        
+        # Add Equity ------------------------------------------------ 
+        for i in range(len(self.assets)):
+            self.add_equity(self.assets[i], Resolution.MINUTE).symbol
+        
+        # Set Scheduled Event Method For Our Model. In this example, we'll rebalance every month.
+        self.schedule.on(self.date_rules.month_start(), 
+            self.time_rules.before_market_close("SHY", 5), 
+            self.every_day_before_market_close)
+            
+    def every_day_before_market_close(self) -&gt; None:
+        qb = self
+        # Fetch history on our universe
+        history = qb.history(qb.securities.Keys, 252*2, Resolution.DAILY)
+        if history.empty: return
+    
+        # Select the close column and then call the unstack method, then call pct_change to compute the daily return.
+        returns = history['close'].unstack(level=0).pct_change().iloc[1:]
+    
+        # Get correlation
+        correlation = returns.corr()
+        
+        # Find 5 assets with lowest absolute sum correlation
+        selected = []
+        for index, row in correlation.iterrows():
+            corr_rank = row.abs().sum()
+            selected.append((index, corr_rank))
+    
+        sort_ = sorted(selected, key = lambda x: x[1])
+        selected = [x[0] for x in sort_[:5]]
+    
+        # ==============================
+        
+        insights = []
+        
+        for symbol in selected:
+            insights.append( Insight.price(symbol, Expiry.END_OF_MONTH, InsightDirection.UP) )
+    
+        self.emit_insights(insights)</pre>
+</div>

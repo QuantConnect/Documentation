@@ -95,7 +95,7 @@ public override void Initialize()
     foreach(var kvp in returns)
     {
         var symbol = kvp.Key;
-        for(int i=0; i < returns[symbol].Count - 1; i++)
+        for(int i=0; i &lt; returns[symbol].Count - 1; i++)
         {
             ret[i, k] = returns[symbol][i + 1];
         }
@@ -132,7 +132,8 @@ public override void Initialize()
     qb = self
     # Fetch history on our universe
     history = qb.history(qb.securities.keys(), 252*2, Resolution.DAILY)
-    if history.empty: return
+    if history.empty:
+        return
 
     # Select the close column and then call the unstack method, then call pct_change to compute the daily return.
     returns = history['close'].unstack(level=0).pct_change().iloc[1:]

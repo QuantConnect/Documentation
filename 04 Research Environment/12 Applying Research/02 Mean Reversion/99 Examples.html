@@ -214,103 +214,103 @@ namespace QuantConnect.Algorithm.Csharp
 {
     public class MeanReversionDemo : QCAlgorithm
     {
-    	List&lt;string&gt; _asset = new List&lt;string&gt;{"SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
-					                        "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
-					                        "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
-					                        
-    	public override void Initialize()
-    	{
-    		// 1. Required: Five years of backtest history
-    		SetStartDate(2014, 1, 1);
-    		
-    		// 2. Required: Alpha Streams Models:
-    		SetBrokerageModel(BrokerageName.AlphaStreams);
-    		
-    		// 3. Required: Significant AUM Capacity
-    		SetCash(1000000);
-    		
-    		// 4. Required: Benchmark to SPY
-    		SetBenchmark("SPY");
-    		
-    		SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
-    		SetExecution(new ImmediateExecutionModel());
-    		
-    		// Add Equity ------------------------------------------------ 
-    		foreach(var ticker in _asset)
-    		{
-    			AddEquity(ticker, Resolution.Minute);
-    		}
-    		
-    		// Set Scheduled Event Method For Our Model
-    		Schedule.On(DateRules.EveryDay(), 
-	    		TimeRules.BeforeMarketClose("SHY", 5),
-	    		EveryDayBeforeMarketClose);
-    	}
-    	
-    	private void EveryDayBeforeMarketClose()
-    	{
-    		// Fetch history on our universe
-    		var history = History(Securities.Keys, 30, Resolution.Daily);
-    		if (history.Count() &lt; 0) return;
-    		
-    		// Extract close prices for each Symbol from Slice data
-    		var closes = new Dictionary&lt;Symbol, List&lt;Decimal&gt;&gt;();
-			foreach(var slice in history){
-			    foreach(var symbol in slice.Keys){
-			        if(!closes.ContainsKey(symbol)){
-			            closes.Add(symbol, new List&lt;Decimal&gt;());
-			        }
-			        closes[symbol].Add(slice.Bars[symbol].Close);
-			    }
-			}
-    		
-    		// Get the 30-day rolling mean, standard deviation series, z-score and filtration for each Symbol
-    		var rollingMean = new Dictionary&lt;string, double&gt;();
-			var rollingStd = new Dictionary&lt;string, double&gt;();
-			var filter = new Dictionary&lt;string, bool&gt;();
-			var zScore = new Dictionary&lt;string, double&gt;();
-			foreach(var kvp in closes)
-			{
-				var symbol = kvp.Key;
-			    if(!rollingMean.ContainsKey(symbol)){
-			        rollingMean.Add(symbol, decimal.ToDouble(kvp.Value.Average()));
-			        rollingStd.Add(symbol, Math.Sqrt(kvp.Value.Average(v =&gt; Math.Pow(decimal.ToDouble(v-kvp.Value.Average()), 2))));
-			        zScore.Add(symbol, (decimal.ToDouble(kvp.Value.Last()) - rollingMean[symbol]) / rollingStd[symbol]);
-			        filter.Add(symbol, zScore[symbol] &lt; -1);
-			    }
-			}
-			
-			// Calculate the expected return and its probability, then calculate the weight
-			var magnitude = new Dictionary&lt;Symbol, double&gt;();
-			var confidence = new Dictionary&lt;Symbol, double&gt;();
-			var weights = new Dictionary&lt;Symbol, double&gt;();
-			foreach(var kvp in rollingMean)
-		    {
-		        var symbol = kvp.Key;
-		        if(!magnitude.ContainsKey(symbol)){
-		            magnitude.Add(symbol, -zScore[symbol] * rollingStd[symbol] / decimal.ToDouble(closes[symbol].Last()));
-		            confidence.Add(symbol, Normal.CDF(0, 1, -zScore[symbol]));
-		            // Filter if trade or not
-		            var trade = filter[symbol] ? 1d : 0d;
-		            weights.Add(symbol, trade * Math.Max(confidence[symbol] - 1 / (magnitude[symbol] + 1), 0));
-		        }
-		    }
-			
-			// Normalize the weights, then emit insights
-			List&lt;Insight&gt; insights = new List&lt;Insight&gt;{};
-			
-			var sum = weights.Sum(x =&gt; x.Value);
-			if (sum == 0) return;
-			
-			foreach(var kvp in weights)
-			{
-				var symbol = kvp.Key;
-				weights[symbol] = kvp.Value / sum;
-				
-				var insight = new Insight(symbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Up, magnitude[symbol], confidence[symbol], null, weights[symbol]);
-				EmitInsights(insight);
-			}
-    	}
+        List&lt;string&gt; _asset = new List&lt;string&gt;{"SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+                                            "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                                            "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
+                                            
+        public override void Initialize()
+        {
+            // 1. Required: Five years of backtest history
+            SetStartDate(2014, 1, 1);
+            
+            // 2. Required: Alpha Streams Models:
+            SetBrokerageModel(BrokerageName.AlphaStreams);
+            
+            // 3. Required: Significant AUM Capacity
+            SetCash(1000000);
+            
+            // 4. Required: Benchmark to SPY
+            SetBenchmark("SPY");
+            
+            SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+            SetExecution(new ImmediateExecutionModel());
+            
+            // Add Equity ------------------------------------------------ 
+            foreach(var ticker in _asset)
+            {
+                AddEquity(ticker, Resolution.Minute);
+            }
+            
+            // Set Scheduled Event Method For Our Model
+            Schedule.On(DateRules.EveryDay(), 
+                TimeRules.BeforeMarketClose("SHY", 5),
+                EveryDayBeforeMarketClose);
+        }
+        
+        private void EveryDayBeforeMarketClose()
+        {
+            // Fetch history on our universe
+            var history = History(Securities.Keys, 30, Resolution.Daily);
+            if (history.Count() &lt; 0) return;
+            
+            // Extract close prices for each Symbol from Slice data
+            var closes = new Dictionary&lt;Symbol, List&lt;Decimal&gt;&gt;();
+            foreach(var slice in history){
+                foreach(var symbol in slice.Keys){
+                    if(!closes.ContainsKey(symbol)){
+                        closes.Add(symbol, new List&lt;Decimal&gt;());
+                    }
+                    closes[symbol].Add(slice.Bars[symbol].Close);
+                }
+            }
+            
+            // Get the 30-day rolling mean, standard deviation series, z-score and filtration for each Symbol
+            var rollingMean = new Dictionary&lt;string, double&gt;();
+            var rollingStd = new Dictionary&lt;string, double&gt;();
+            var filter = new Dictionary&lt;string, bool&gt;();
+            var zScore = new Dictionary&lt;string, double&gt;();
+            foreach(var kvp in closes)
+            {
+                var symbol = kvp.Key;
+                if(!rollingMean.ContainsKey(symbol)){
+                    rollingMean.Add(symbol, decimal.ToDouble(kvp.Value.Average()));
+                    rollingStd.Add(symbol, Math.Sqrt(kvp.Value.Average(v =&gt; Math.Pow(decimal.ToDouble(v-kvp.Value.Average()), 2))));
+                    zScore.Add(symbol, (decimal.ToDouble(kvp.Value.Last()) - rollingMean[symbol]) / rollingStd[symbol]);
+                    filter.Add(symbol, zScore[symbol] &lt; -1);
+                }
+            }
+            
+            // Calculate the expected return and its probability, then calculate the weight
+            var magnitude = new Dictionary&lt;Symbol, double&gt;();
+            var confidence = new Dictionary&lt;Symbol, double&gt;();
+            var weights = new Dictionary&lt;Symbol, double&gt;();
+            foreach(var kvp in rollingMean)
+            {
+                var symbol = kvp.Key;
+                if(!magnitude.ContainsKey(symbol)){
+                    magnitude.Add(symbol, -zScore[symbol] * rollingStd[symbol] / decimal.ToDouble(closes[symbol].Last()));
+                    confidence.Add(symbol, Normal.CDF(0, 1, -zScore[symbol]));
+                    // Filter if trade or not
+                    var trade = filter[symbol] ? 1d : 0d;
+                    weights.Add(symbol, trade * Math.Max(confidence[symbol] - 1 / (magnitude[symbol] + 1), 0));
+                }
+            }
+            
+            // Normalize the weights, then emit insights
+            List&lt;Insight&gt; insights = new List&lt;Insight&gt;{};
+            
+            var sum = weights.Sum(x =&gt; x.Value);
+            if (sum == 0) return;
+            
+            foreach(var kvp in weights)
+            {
+                var symbol = kvp.Key;
+                weights[symbol] = kvp.Value / sum;
+                
+                var insight = new Insight(symbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Up, magnitude[symbol], confidence[symbol], null, weights[symbol]);
+                EmitInsights(insight);
+            }
+        }
     }
 }</pre>
     <pre class="python">from scipy.stats import norm, zscore
