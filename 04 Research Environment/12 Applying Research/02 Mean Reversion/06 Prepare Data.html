@@ -32,7 +32,7 @@ foreach(var kvp in closes)
         zScore.Add(symbol, new List&lt;double&gt;());
         filter.Add(symbol, new List&lt;bool&gt;());
     }
-    for (int i=30; i < closes.Values.ElementAt(0).Count; i++)
+    for (int i=30; i &lt; closes.Values.ElementAt(0).Count; i++)
     {
         var slice = kvp.Value.Skip(i).Take(30);
         rollingMean[symbol].Add(decimal.ToDouble(slice.Average()));
@@ -78,7 +78,7 @@ confidence = (-z_score).apply(norm.cdf)</pre>
         <pre class="csharp">double[,] weight = new double[weights.Values.ElementAt(0).Count, weights.Count];
 int j = 0;
 foreach(var symbol in weights.Keys){
-    for(int i=0; i < weights[symbol].Count; i++){
+    for(int i=0; i &lt; weights[symbol].Count; i++){
         weight[i, j] = weights[symbol][i];
     }
     j++;
@@ -91,15 +91,15 @@ confidence.fillna(0, inplace=True)</pre>
     <div class="section-example-container">
         <pre class="csharp">public double[,] Normalize(double[,] array)
 {
-    for(int i=0; i < array.GetLength(0); i++)
+    for(int i=0; i &lt; array.GetLength(0); i++)
     {
         var sum = 0.0;
-        for (int j=0; j < array.GetLength(1); j++)
+        for (int j=0; j &lt; array.GetLength(1); j++)
         {
             sum += array[i, j];
         }
         if (sum == 0.0) continue;
-        for (int j=0; j < array.GetLength(1); j++)
+        for (int j=0; j &lt; array.GetLength(1); j++)
         {
             array[i, j] = array[i, j] / sum;
         }
@@ -109,10 +109,10 @@ confidence.fillna(0, inplace=True)</pre>
 }
 weight = Normalize(weight);</pre>
         <pre class="python">weight = confidence - 1 / (magnitude + 1)
-weight = weight[weight > 0].fillna(0)
+weight = weight[weight &gt; 0].fillna(0)
 sum_ = np.sum(weight, axis=1)
 for i in range(weight.shape[0]):
-    if sum_[i] > 0:
+    if sum_[i] &gt; 0:
         weight.iloc[i] = weight.iloc[i] / sum_[i]
     else:
         weight.iloc[i] = 0

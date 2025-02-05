@@ -1,0 +1,154 @@
+<p>The below code snippets concludes the above jupyter research notebook content.</p>
+<div class="section-example-container">
+    <pre class="python">from statsmodels.tsa.regime_switching.markov_regression import MarkovRegression
+from scipy.stats import multivariate_normal
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
+
+# Instantiate a QuantBook.
+qb = QuantBook()
+
+# Select the desired tickers for research.
+asset = "SPX"
+
+# Call the AddIndex method with the tickers, and its corresponding resolution. Then store their Symbols. Resolution.Minute is used by default. 
+qb.add_index(asset, Resolution.MINUTE)
+
+# Call the history method with qb.securities.keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
+history = qb.history(qb.securities.keys(), datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+
+# Get the close price daily return.
+close = history['close'].unstack(level=0)
+
+# Call pct_change to obtain the daily return
+returns = close.pct_change().iloc[1:]
+
+# Initialize the HMM, then fit by the daily return data. Note that we're using varinace as switching regime, so switching_variance is set as True.
+model = MarkovRegression(returns, k_regimes=2, switching_variance=True).fit()
+display(model.summary())
+
+# Get the regime as a column, 1 as Low Variance Regime, 2 as High Variance Regime.
+regime = pd.Series(model.smoothed_marginal_probabilities.values.argmax(axis=1)+1, 
+                      index=returns.index, name='regime')
+df_1 = close.loc[returns.index][regime == 1]
+df_2 = close.loc[returns.index][regime == 2]
+
+# Get the mean and covariance matrix of the 2 regimes, assume 0 covariance between the two.
+mean = np.array([returns.loc[df_1.index].mean(), returns.loc[df_2.index].mean()])
+cov = np.array([[returns.loc[df_1.index].var()[0], 0], [0, returns.loc[df_2.index].var()[0]]])
+
+# Fit a 2-dimensional multivariate normal distribution by the 2 means and covriance matrix.
+dist = multivariate_normal(mean=mean.flatten(), cov=cov)
+mean_1, mean_2 = mean[0], mean[1]
+sigma_1, sigma_2 = cov[0,0], cov[1,1]
+
+# Get the normal distribution of each of the distribution.
+x = np.linspace(-0.05, 0.05, num=100)
+y = np.linspace(-0.05, 0.05, num=100)
+X, Y = np.meshgrid(x,y)
+pdf = np.zeros(X.shape)
+for i in range(X.shape[0]):
+    for j in range(X.shape[1]):
+        pdf[i,j] = dist.pdf([X[i,j], Y[i,j]])
+
+# Plot the probability of data in different regimes.
+fig, axes = plt.subplots(2, figsize=(15, 10))
+ax = axes[0]
+ax.plot(model.smoothed_marginal_probabilities[0])
+ax.set(title='Smoothed probability of Low Variance Regime')
+ax = axes[1]
+ax.plot(model.smoothed_marginal_probabilities[1])
+ax.set(title='Smoothed probability of High Variance Regime')
+fig.tight_layout()
+plt.show()
+
+# Plot the series into regime-wise.
+df_1.index = pd.to_datetime(df_1.index)
+df_1 = df_1.sort_index()
+df_2.index = pd.to_datetime(df_2.index)
+df_2 = df_2.sort_index()
+plt.figure(figsize=(15, 10))
+plt.scatter(df_1.index, df_1, color='blue', label="Low Variance Regime")
+plt.scatter(df_2.index, df_2, color='red', label="High Variance Regime")
+plt.title("Price series")
+plt.ylabel("Price ($)")
+plt.xlabel("Date")
+plt.legend()
+plt.show()
+
+# Plot the distribution surface.
+fig = plt.figure(figsize=(20, 10))
+ax = fig.add_subplot(122, projection = '3d')
+ax.plot_surface(X, Y, pdf, cmap = 'viridis')
+ax.axes.zaxis.set_ticks([])
+plt.xlabel("Low Volatility Regime")
+plt.ylabel("High Volatility Regime")
+plt.title('Bivariate normal distribution of the Regimes')
+plt.tight_layout()
+plt.show()
+
+# plot the contour
+plt.figure(figsize=(12, 8))
+plt.contourf(X, Y, pdf, cmap = 'viridis')
+plt.xlabel("Low Volatility Regime")
+plt.ylabel("High Volatility Regime")
+plt.title('Bivariate normal distribution of the Regimes')
+plt.tight_layout()
+plt.show()</pre>
+</div>
+
+<p>The below code snippets concludes the algorithm set up.</p>
+<div class="section-example-container">
+    <pre class="python">from statsmodels.tsa.regime_switching.markov_regression import MarkovRegression
+
+class HMMDemo(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2008, 1, 1)
+        self.set_end_date(2021, 1, 1)
+    
+        #2. Required: Alpha Streams Models:
+        self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
+    
+        #3. Required: Significant AUM Capacity
+        self.set_cash(1000000)
+    
+        #4. Required: Benchmark to SPY
+        self.set_benchmark("SPY")
+    
+        self.assets = ["SPY", "TLT"]    # "TLT" as fix income in out-of-market period (high volatility)
+        
+        # Add Equity ------------------------------------------------ 
+        for ticker in self.assets:
+            self.add_equity(ticker, Resolution.MINUTE).symbol
+        
+        # Set Scheduled Event Method For Kalman Filter updating.
+        self.schedule.on(self.date_rules.every_day(), 
+            self.time_rules.before_market_close("SPY", 5), 
+            self.every_day_before_market_close)
+            
+            
+    def every_day_before_market_close(self):
+        qb = self
+        
+        # Get history
+        history = qb.history(["SPY"], 252*3, Resolution.DAILY)
+            
+        # Get the close price daily return.
+        close = history['close'].unstack(level=0)
+        
+        # Call pct_change to obtain the daily return
+        returns = close.pct_change().iloc[1:]
+                
+        # Initialize the HMM, then fit by the standard deviation data.
+        model = MarkovRegression(returns, k_regimes=2, switching_variance=True).fit()
+            
+        # Obtain the market regime
+        regime = model.smoothed_marginal_probabilities.values.argmax(axis=1)[-1]
+    
+        # ==============================
+        
+        if regime == 0:
+            self.set_holdings([PortfolioTarget("TLT", 0.), PortfolioTarget("SPY", 1.)])            
+        else:
+            self.set_holdings([PortfolioTarget("TLT", 1.), PortfolioTarget("SPY", 0.)])</pre>
+</div>

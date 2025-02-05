@@ -53,16 +53,16 @@
 <p>We'll also need to create a function to train and update the logistic regression model from time to time.</p>
 
 <div class="section-example-container">
-    <pre class="python">def BuildModel(self) -&gt; None:
+    <pre class="python">def build_model(self) -&gt; None:
     qb = self
     # Call the History method with list of tickers, time argument(s), and resolution to request historical data for the symbol.
-    history = qb.History(list(self.symbols.keys()), datetime(2015, 1, 1), datetime.now(), Resolution.Daily)
+    history = qb.history(list(self.symbols.keys()), datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
     
     # Call SPY history as reference
-    spy = qb.History(["SPY"], datetime(2015, 1, 1), datetime.now(), Resolution.Daily)
+    spy = qb.history(["SPY"], datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
     
     # Call the History method with list of buyback tickers, time argument(s), and resolution to request buyback data for the symbol.
-    history_buybacks = qb.History(list(self.symbols.values()), datetime(2015, 1, 1), datetime.now(), Resolution.Daily)
+    history_buybacks = qb.history(list(self.symbols.values()), datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
     
     # Select the close column and then call the unstack method to get the close price dataframe.
     df = history['close'].unstack(level=0)
@@ -101,8 +101,8 @@
     
     # Get binary return (+/-)
     binary_ret = data["Return"].copy()
-    binary_ret[binary_ret < 0] = 0
-    binary_ret[binary_ret > 0] = 1
+    binary_ret[binary_ret &lt; 0] = 0
+    binary_ret[binary_ret &gt; 0] = 1
     
     # Construct a logistic regression model
     self.model = Logit(binary_ret.values, data["Buybacks"].values).fit()</pre>
@@ -111,10 +111,10 @@
 <p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python">def EveryDayBeforeMarketClose(self) -&gt; None:
+    <pre class="python">def every_day_before_market_close(self) -&gt; None:
     qb = self
     # Get any buyback event today
-    history_buybacks = qb.History(list(self.symbols.values()), timedelta(days=1), Resolution.Daily)
+    history_buybacks = qb.history(list(self.symbols.values()), timedelta(days=1), Resolution.DAILY)
     if history_buybacks.empty or "executionprice" not in history_buybacks.columns: return
 
     # Select the ExecutionPrice column and then call the unstack method to get the dataframe.
@@ -133,12 +133,12 @@
         prediction = self.model.predict(row[i])
         
         # Long if the prediction predict price goes up, short otherwise. Do opposite for SPY (active return)
-        if prediction > 0.5:
-            insights.append( Insight.Price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.Up) )
-            insights.append( Insight.Price("SPY", timedelta(days=1), InsightDirection.Down) )
+        if prediction &gt; 0.5:
+            insights.append( Insight.price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.UP) )
+            insights.append( Insight.price("SPY", timedelta(days=1), InsightDirection.DOWN) )
         else:
-            insights.append( Insight.Price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.Down) )
-            insights.append( Insight.Price("SPY", timedelta(days=1), InsightDirection.Up) )
+            insights.append( Insight.price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.DOWN) )
+            insights.append( Insight.price("SPY", timedelta(days=1), InsightDirection.UP) )
 
-    self.EmitInsights(insights)</pre>
+    self.emit_insights(insights)</pre>
 </div>

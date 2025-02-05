@@ -1,0 +1,349 @@
+<p>The below code snippets concludes the above jupyter research notebook content.</p>
+<div class="section-example-container">
+    <pre class="python">from arch.unitroot.cointegration import engle_granger
+from pykalman import KalmanFilter
+from scipy.optimize import minimize
+from statsmodels.tsa.vector_ar.vecm import VECM
+
+import numpy as np
+from matplotlib import pyplot as plt
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
+
+# Instantiate a QuantBook.
+qb = QuantBook()
+
+# Select the desired tickers for research.
+assets = ["EURUSD", "GBPUSD", "USDCAD", "USDHKD", "USDJPY"]
+
+# Call the AddForex method with the tickers, and its corresponding resolution. Then store their Symbols. Resolution.Minute is used by default. 
+for i in range(len(assets)):
+    qb.add_forex(assets[i],Resolution.MINUTE).symbol
+
+# Call the History method with qb.Securities.Keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
+history = qb.history(qb.securities.keys(), datetime(2021, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+
+# Select the close column and then call the unstack method.
+data = history['close'].unstack(level=0)
+
+# Convert into log-price series to eliminate compounding effect.
+log_price = np.log(data)
+
+# Apply Engle Granger Test to check if the series are cointegrated.
+coint_result = engle_granger(log_price.iloc[:, 0], log_price.iloc[:, 1:], trend='n', method='bic')
+
+# Initialize a VECM model following the unit test parameters, then fit to our data.
+vecm_result = VECM(log_price, k_ar_diff=0, coint_rank=len(assets)-1, deterministic='n').fit()
+
+# Obtain the Beta attribute. This is the cointegration subspaces' unit vectors.
+beta = vecm_result.beta
+
+# Check the spread of different cointegration subspaces.
+spread = log_price @ beta
+
+# Plot the results.
+fig, axs = plt.subplots(beta.shape[1], figsize=(15, 15))
+fig.suptitle('Spread for various cointegrating vectors')
+for i in range(beta.shape[1]):
+    axs[i].plot(spread.iloc[:, i])
+    axs[i].set_title(f"The {i+1}th normalized cointegrating subspace")
+plt.show()
+
+# We set the weight on each vector is between -1 and 1. While overall sum is 0.
+x0 = np.array([-1**i/beta.shape[1] for i in range(beta.shape[1])])
+bounds = tuple((-1, 1) for i in range(beta.shape[1]))
+constraints = [{'type':'eq', 'fun':lambda x: np.sum(x)}]
+
+# Optimize the Portmanteau statistics.
+opt = minimize(lambda w: ((w.T @ np.cov(spread.T, spread.shift(1).fillna(0).T)[spread.shape[1]:, :spread.shape[1]] @ w)/(w.T @ np.cov(spread.T) @ w))**2,
+               x0=x0,
+               bounds=bounds,
+               constraints=constraints,
+               method="SLSQP")
+
+# Normalize the result.
+opt.x = opt.x/np.sum(abs(opt.x))
+for i in range(len(opt.x)):
+    print(f"The weight put on {i+1}th normalized cointegrating subspace: {opt.x[i]}")
+    
+# Plot the weighted spread.
+new_spread = spread @ opt.x
+new_spread.plot(title="Weighted spread", figsize=(15, 10))
+plt.ylabel("Spread")
+plt.show()
+
+# Initialize a Kalman Filter. Using the first 20 data points to optimize its initial state. We assume the market has no regime change so that the transitional matrix and observation matrix is [1].
+kalman_filter = KalmanFilter(transition_matrices = [1],
+                  observation_matrices = [1],
+                  initial_state_mean = new_spread.iloc[:20].mean(),
+                  observation_covariance = new_spread.iloc[:20].var(),
+                  em_vars=['transition_covariance', 'initial_state_covariance'])
+kalman_filter = kalman_filter.em(new_spread.iloc[:20], n_iter=5)
+(filtered_state_means, filtered_state_covariances) = kalman_filter.filter(new_spread.iloc[:20])
+
+# Obtain the current Mean and Covariance Matrix expectations.
+current_mean = filtered_state_means[-1, :]
+current_cov = filtered_state_covariances[-1, :]
+
+# Initialize a mean series for spread normalization using the Kalman Filter's results.
+mean_series = np.array([None]*(new_spread.shape[0]-100))
+
+# Roll over the Kalman Filter to obtain the mean series.
+for i in range(100, new_spread.shape[0]):
+    (current_mean, current_cov) = kalman_filter.filter_update(filtered_state_mean = current_mean,
+                                                           filtered_state_covariance = current_cov,
+                                                           observation = new_spread.iloc[i])
+    mean_series[i-100] = float(current_mean)
+
+# Obtain the normalized spread series.
+normalized_spread = (new_spread.iloc[100:] - mean_series)
+
+# Plot the normalized spread series.
+plt.figure(figsize=(15, 10))
+plt.plot(normalized_spread, label="Processed spread")
+plt.title("Normalized spread series")
+plt.ylabel("Spread - Expectation")
+plt.legend()
+plt.show()
+
+# Initialize 50 set levels for testing.
+s0 = np.linspace(0, max(normalized_spread), 50)
+
+# Calculate the profit levels using the 50 set levels.
+f_bar = np.array([None]*50)
+for i in range(50):
+    f_bar[i] = len(normalized_spread.values[normalized_spread.values &gt; s0[i]]) \
+      / normalized_spread.shape[0]
+    
+# Set trading frequency matrix.
+D = np.zeros((49, 50))
+for i in range(D.shape[0]):
+    D[i, i] = 1
+    D[i, i+1] = -1
+    
+# Set level of lambda.
+l = 1.0
+
+# Obtain the normalized profit level.
+f_star = np.linalg.inv(np.eye(50) + l * D.T@D) @ f_bar.reshape(-1, 1)
+s_star = [f_star[i]*s0[i] for i in range(50)]
+
+# Plot the result.
+plt.figure(figsize=(15, 10))
+plt.plot(s0, s_star)
+plt.title("Profit of mean-revertion trading")
+plt.xlabel("Threshold")
+plt.ylabel("Profit")
+plt.show()
+
+threshold = s0[s_star.index(max(s_star))]
+print(f"The optimal threshold is {threshold}")
+
+# Set the trading weight. We would like the portfolio absolute total weight is 1 when trading.
+trading_weight = beta @ opt.x
+trading_weight /= np.sum(abs(trading_weight))
+
+# Set up the trading data.
+testing_ret = data.pct_change().iloc[1:].shift(-1)   # Shift 1 step backward as forward return result
+equity = pd.DataFrame(np.ones((testing_ret.shape[0], 1)), index=testing_ret.index, columns=["Daily value"])
+
+# Set the buy and sell preiod when the spread exceeds the threshold.
+buy_period = normalized_spread[normalized_spread &lt; -threshold].index
+sell_period = normalized_spread[normalized_spread &gt; threshold].index
+
+# Trade the portfolio.
+equity.loc[buy_period, "Daily value"] = testing_ret.loc[buy_period] @ trading_weight + 1
+equity.loc[sell_period, "Daily value"] = testing_ret.loc[sell_period] @ -trading_weight + 1
+
+# Get the total portfolio value.
+value = equity.cumprod()
+
+# Plot the result.
+value.plot(title="Equity Curve", figsize=(15, 10))
+plt.ylabel("Portfolio Value")
+plt.show()</pre>
+</div>
+
+<p>The below code snippets concludes the algorithm set up.</p>
+<div class="section-example-container">
+    <pre class="python">from pykalman import KalmanFilter
+from scipy.optimize import minimize
+from statsmodels.tsa.vector_ar.vecm import VECM
+
+class KalmanFilterStatisticalArbitrageDemo(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        #1. Required: Five years of backtest history
+        self.set_start_date(2014, 1, 1)
+        self.set_end_date(2019, 1, 1)
+    
+        #2. Required: Alpha Streams Models:
+        self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
+    
+        #3. Required: Significant AUM Capacity
+        self.set_cash(1000000)
+    
+        #4. Required: Benchmark to SPY
+        self.set_benchmark("SPY")
+    
+        self.assets = ["EURUSD", "GBPUSD", "USDCAD", "USDHKD", "USDJPY"]
+        
+        # Add Equity ------------------------------------------------ 
+        for i in range(len(self.assets)):
+            self.add_forex(self.assets[i], Resolution.MINUTE).symbol
+            
+        # Instantiate our model
+        self.recalibrate()
+        
+        # Set a variable to indicate the trading bias of the portfolio
+        self.state = 0
+        
+        # Set Scheduled Event Method For Kalman Filter updating.
+        self.schedule.on(self.date_rules.week_start(), 
+            self.time_rules.at(0, 0), 
+            self.recalibrate)
+        
+        # Set Scheduled Event Method For Kalman Filter updating.
+        self.schedule.on(self.date_rules.every_day(), 
+            self.time_rules.before_market_close("EURUSD"), 
+            self.every_day_before_market_close)
+            
+            
+    def recalibrate(self) -&gt; None:
+        qb = self
+        history = qb.history(self.assets, 252*2, Resolution.DAILY)
+        if history.empty:
+            return
+        
+        # Select the close column and then call the unstack method
+        data = history['close'].unstack(level=0)
+        
+        # Convert into log-price series to eliminate compounding effect
+        log_price = np.log(data)
+        
+        ### Get Cointegration Vectors
+        # Initialize a VECM model following the unit test parameters, then fit to our data.
+        vecm_result = VECM(log_price, k_ar_diff=0, coint_rank=len(self.assets)-1, deterministic='n').fit()
+        
+        # Obtain the Beta attribute. This is the cointegration subspaces' unit vectors.
+        beta = vecm_result.beta
+        
+        # Check the spread of different cointegration subspaces.
+        spread = log_price @ beta
+        
+        ### Optimization of Cointegration Subspaces
+        # We set the weight on each vector is between -1 and 1. While overall sum is 0.
+        x0 = np.array([-1**i/beta.shape[1] for i in range(beta.shape[1])])
+        bounds = tuple((-1, 1) for i in range(beta.shape[1]))
+        constraints = [{'type':'eq', 'fun':lambda x: np.sum(x)}]
+        
+        # Optimize the Portmanteau statistics
+        opt = minimize(lambda w: ((w.T @ np.cov(spread.T, spread.shift(1).fillna(0).T)[spread.shape[1]:, :spread.shape[1]] @ w)/(w.T @ np.cov(spread.T) @ w))**2,
+                       x0=x0,
+                       bounds=bounds,
+                       constraints=constraints,
+                       method="SLSQP")
+        
+        # Normalize the result
+        opt.x = opt.x/np.sum(abs(opt.x))
+        new_spread = spread @ opt.x
+        
+        ### Kalman Filter
+        # Initialize a Kalman Filter. Using the first 20 data points to optimize its initial state. We assume the market has no regime change so that the transitional matrix and observation matrix is [1].
+        self.kalman_filter = KalmanFilter(transition_matrices = [1],
+                          observation_matrices = [1],
+                          initial_state_mean = new_spread.iloc[:20].mean(),
+                          observation_covariance = new_spread.iloc[:20].var(),
+                          em_vars=['transition_covariance', 'initial_state_covariance'])
+        self.kalman_filter = self.kalman_filter.em(new_spread.iloc[:20], n_iter=5)
+        (filtered_state_means, filtered_state_covariances) = self.kalman_filter.filter(new_spread.iloc[:20])
+        
+        # Obtain the current Mean and Covariance Matrix expectations.
+        self.current_mean = filtered_state_means[-1, :]
+        self.current_cov = filtered_state_covariances[-1, :]
+        
+        # Initialize a mean series for spread normalization using the Kalman Filter's results.
+        mean_series = np.array([None]*(new_spread.shape[0]-20))
+        
+        # Roll over the Kalman Filter to obtain the mean series.
+        for i in range(20, new_spread.shape[0]):
+            (self.current_mean, self.current_cov) = self.kalman_filter.filter_update(filtered_state_mean = self.current_mean,
+                                                                   filtered_state_covariance = self.current_cov,
+                                                                   observation = new_spread.iloc[i])
+            mean_series[i-20] = float(self.current_mean)
+        
+        # Obtain the normalized spread series.
+        normalized_spread = (new_spread.iloc[20:] - mean_series)
+        
+        ### Determine Trading Threshold
+        # Initialize 50 set levels for testing.
+        s0 = np.linspace(0, max(normalized_spread), 50)
+        
+        # Calculate the profit levels using the 50 set levels.
+        f_bar = np.array([None]*50)
+        for i in range(50):
+            f_bar[i] = len(normalized_spread.values[normalized_spread.values &gt; s0[i]])               / normalized_spread.shape[0]
+            
+        # Set trading frequency matrix.
+        D = np.zeros((49, 50))
+        for i in range(D.shape[0]):
+            D[i, i] = 1
+            D[i, i+1] = -1
+            
+        # Set level of lambda.
+        l = 1.0
+        
+        # Obtain the normalized profit level.
+        f_star = np.linalg.inv(np.eye(50) + l * D.T@D) @ f_bar.reshape(-1, 1)
+        s_star = [f_star[i]*s0[i] for i in range(50)]
+        self.threshold = s0[s_star.index(max(s_star))]
+        
+        # Set the trading weight. We would like the portfolio absolute total weight is 1 when trading.
+        trading_weight = beta @ opt.x
+        self.trading_weight = trading_weight / np.sum(abs(trading_weight))
+        
+            
+    def every_day_before_market_close(self) -&gt; None:
+        qb = self
+        
+        # Get the real-time log close price for all assets and store in a Series
+        series = pd.Series()
+        for symbol in qb.securities.Keys:
+            series[symbol] = np.log(qb.securities[symbol].close)
+            
+        # Get the spread
+        spread = series @ self.trading_weight
+        
+        # Update the Kalman Filter with the Series
+        (self.current_mean, self.current_cov) = self.kalman_filter.filter_update(filtered_state_mean = self.current_mean,
+                                                                           filtered_state_covariance = self.current_cov,
+                                                                           observation = spread)
+            
+        # Obtain the normalized spread.
+        normalized_spread = spread - self.current_mean
+    
+        # ==============================
+        
+        # Mean-reversion
+        if normalized_spread &lt; -self.threshold:
+            orders = []
+            for i in range(len(self.assets)):
+                orders.append(PortfolioTarget(self.assets[i], self.trading_weight[i]))
+                self.set_holdings(orders)
+                
+            self.state = 1
+                
+        elif normalized_spread &gt; self.threshold:
+            orders = []
+            for i in range(len(self.assets)):
+                orders.append(PortfolioTarget(self.assets[i], -1 * self.trading_weight[i]))
+                self.set_holdings(orders)
+                
+            self.state = -1
+                
+        # Out of position if spread recovered
+        elif self.state == 1 and normalized_spread &gt; -self.threshold or self.state == -1 and normalized_spread &lt; self.threshold:
+            self.liquidate()
+            
+            self.state = 0</pre>
+</div>
