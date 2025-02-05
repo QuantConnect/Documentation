@@ -65,7 +65,7 @@ for col in y_test.columns:
 
 class RandomForestRegressionDemo(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -&gt; None:
         #1. Required: Five years of backtest history
         self.set_start_date(2014, 1, 1)
     
@@ -97,7 +97,7 @@ class RandomForestRegressionDemo(QCAlgorithm):
         self.schedule.on(self.date_rules.every_day(), self.time_rules.before_market_close("SHY", 5), self.every_day_before_market_close)
         
         
-    def build_model(self):
+    def build_model(self) -&gt; None:
         # Initialize the Random Forest Regressor
         self.regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)
         
@@ -118,7 +118,7 @@ class RandomForestRegressionDemo(QCAlgorithm):
         self.regressor.fit(input_, output)
         
         
-    def every_day_before_market_close(self):
+    def every_day_before_market_close(self) -&gt; None:
         # Retrain the regressor every week
         if self.last_time &lt; self.time:
             self.build_model()

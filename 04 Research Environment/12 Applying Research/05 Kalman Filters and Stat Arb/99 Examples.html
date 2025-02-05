@@ -172,7 +172,7 @@ from statsmodels.tsa.vector_ar.vecm import VECM
 
 class KalmanFilterStatisticalArbitrageDemo(QCAlgorithm):
     
-    def initialize(self):
+    def initialize(self) -&gt; None:
         #1. Required: Five years of backtest history
         self.set_start_date(2014, 1, 1)
         self.set_end_date(2019, 1, 1)
@@ -209,10 +209,11 @@ class KalmanFilterStatisticalArbitrageDemo(QCAlgorithm):
             self.every_day_before_market_close)
             
             
-    def recalibrate(self):
+    def recalibrate(self) -&gt; None:
         qb = self
         history = qb.history(self.assets, 252*2, Resolution.DAILY)
-        if history.empty: return
+        if history.empty:
+            return
         
         # Select the close column and then call the unstack method
         data = history['close'].unstack(level=0)
@@ -302,7 +303,7 @@ class KalmanFilterStatisticalArbitrageDemo(QCAlgorithm):
         self.trading_weight = trading_weight / np.sum(abs(trading_weight))
         
             
-    def every_day_before_market_close(self):
+    def every_day_before_market_close(self) -&gt; None:
         qb = self
         
         # Get the real-time log close price for all assets and store in a Series
