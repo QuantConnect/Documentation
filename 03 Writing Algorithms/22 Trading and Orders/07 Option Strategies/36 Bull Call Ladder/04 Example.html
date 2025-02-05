@@ -49,20 +49,87 @@ $$
 
 <p>The following algorithm implements a bull call ladder Option strategy:</p>
 
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_b2c4551f2a3bb30006e46d6a7dfbf274.html"></iframe>
-        </div>
-    </div>
-</div>
+<div class="section-example-container">
+    <pre class="csharp">public class BullCallLadderStrategy : QCAlgorithm
+{
+    private Symbol _symbol;
 
-<div class="csharp">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_199eab8d56400f36cc28e75ec9701e1b.html"></iframe>
-        </div>
-    </div>
+    public override void Initialize()
+    {
+        SetStartDate(2017, 4, 1);
+        SetEndDate(2017, 4, 23);
+        SetCash(100000);
+
+        var option = AddOption("GOOG", Resolution.Minute);
+        _symbol = option.Symbol;
+        option.SetFilter(universe =&gt; universe.IncludeWeeklys().CallLadder(30, 5, 0, -5));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested ||
+            !slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            return;
+        }
+
+        // Select the call Option contracts with the furthest expiry
+        var expiry = chain.Max(x =&gt; x.Expiry);    
+        var calls = chain.Where(x =&gt; x.Expiry == expiry && x.Right == OptionRight.Call);
+        if (calls.Count() == 0) return;
+
+        // Select the strike prices from the remaining contracts
+        var strikes = calls.Select(x =&gt; x.Strike).Distinct().OrderBy(x =&gt; x).ToList();
+        if (strikes.Count &lt; 3)
+        {
+            return;
+        }
+        
+        var lowStrike = strikes[0];
+        var middleStrike = strikes[1];
+        var highStrike = strikes[2];
+
+        // Order Strategy
+        var optionStrategy = OptionStrategies.BullCallLadder(_symbol, lowStrike, middleStrike, highStrike, expiry);
+        Buy(optionStrategy, 1);
+    }
+}</pre>
+    <pre class="python">class BullCallLadderOptionStrategy(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2017, 4, 1)
+        self.set_end_date(2017, 4, 23)
+        self.set_cash(100000)
+        
+        option = self.add_option("GOOG", Resolution.MINUTE)
+        self._symbol = option.symbol
+
+        # set our strike/expiry filter for this option chain
+        option.set_filter(lambda x: x.include_weeklys().call_ladder(30, 5, 0, -5))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.portfolio.invested:
+            return
+
+        # Get the OptionChain
+        chain = slice.option_chains.get(self._symbol, None)
+        if not chain:
+            return
+        
+        # Select the call Option contracts with the furthest expiry
+        expiry = max([x.expiry for x in chain])
+        calls = [i for i in chain if i.expiry == expiry and i.right == OptionRight.CALL]
+        if not calls:
+            return
+
+        # Select the strike prices from the remaining contracts
+        strikes = sorted(set(x.strike for x in calls))
+        if len(strikes) &lt; 3:
+            return
+        
+        low_strike = strikes[0]
+        middle_strike = strikes[1]
+        high_strike = strikes[2]
+    
+        option_strategy = OptionStrategies.bull_call_ladder(self._symbol, low_strike, middle_strike, high_strike, expiry)
+        self.buy(option_strategy, 1)</pre>
 </div>

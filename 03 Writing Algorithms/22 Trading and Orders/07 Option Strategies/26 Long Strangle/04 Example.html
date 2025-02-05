@@ -1,0 +1,141 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The following table shows the price details of the assets in the algorithm at Option expiration (04/22/2017):</p>
+
+<table class="table qc-table" id="payoff-table">
+<thead>
+<tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
+</thead>
+<tbody>
+<tr><td>Call</td><td>8.80</td><td>835.00</td></tr>
+<tr><td>Put</td><td>9.50</td><td>832.50</td></tr>
+<tr><td>Underlying Equity at expiration</td><td>843.19</td><td>-</td></tr>
+</tbody>
+</table>
+
+<style>
+#payoff-table td:nth-child(2), 
+#payoff-table th:nth-child(2), 
+#payoff-table td:nth-child(3), 
+#payoff-table th:nth-child(3) {
+    text-align: right;
+}
+</style>
+
+<p>Therefore, the payoff is</p>
+
+$$
+\begin{array}{rcll}
+C^{OTM}_T &amp; = &amp; (S_T - K^{C})^{+}\\
+&amp; = &amp; (843.19-835.00)^{+}\\
+&amp; = &amp; 8.19\\
+P^{OTM}_T &amp; = &amp; (K^{P} - S_T)^{+}\\
+&amp; = &amp; (832.50-843.19)^{+}\\
+&amp; = &amp; 0\\
+P_T &amp; = &amp; (C^{OTM}_T + P^{OTM}_T - C^{OTM}_0 - P^{OTM}_0)\times m - fee\\
+&amp; = &amp; (8.19+0-8.80-9.50)\times100-2.00\times2\\
+&amp; = &amp; -1013
+\end{array}
+$$<br>
+
+<p>So, the strategy loses $1,013.</p>
+
+<p>The following algorithm implements a long strangle Option strategy:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class LongStrangleAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    public override void Initialize()
+    {
+        SetStartDate(2017, 4, 1);
+        SetEndDate(2017, 4, 30);
+        SetCash(100000);
+
+        var option = AddOption("GOOG");
+        _symbol = option.Symbol;
+        option.SetFilter(universe =&gt; universe.IncludeWeeklys().Strangle(30, 5, -10));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested ||
+            !slice.OptionChains.TryGetValue(_symbol, out var chain))
+        { 
+            return;
+        }
+
+        // Find options with the farthest expiry
+        var expiry = chain.Max(contract =&gt; contract.Expiry);
+        var contracts = chain.Where(contract =&gt; contract.Expiry == expiry).ToList();
+
+        // Order the OTM calls by strike to find the nearest to ATM
+        var callContracts = contracts
+            .Where(contract =&gt; contract.Right == OptionRight.Call &&
+                contract.Strike &gt; chain.Underlying.Price)
+            .OrderBy(contract =&gt; contract.Strike).ToArray();
+        if (callContracts.Length == 0) return;
+
+        // Order the OTM puts by strike to find the nearest to ATM
+        var putContracts = contracts
+            .Where(contract =&gt; contract.Right == OptionRight.Put &&
+                contract.Strike &lt; chain.Underlying.Price)
+            .OrderByDescending(contract =&gt; contract.Strike).ToArray();
+        if (putContracts.Length == 0) return;
+
+        var callStrike = callContracts[0].Strike;
+        var putStrike = putContracts[0].Strike;
+
+        var longStrangle = OptionStrategies.Strangle(_symbol, callStrike, putStrike, expiry);
+        Buy(longStrangle, 1);
+    }
+}</pre>
+    <pre class="python">class LongStrangleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2017, 4, 1)
+        self.set_end_date(2017, 4, 30)
+        self.set_cash(100000)
+        
+        option = self.add_option("GOOG")
+        self.symbol = option.symbol
+        option.set_filter(lambda universe: universe.include_weeklys().strangle(30, 5, -10))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.portfolio.invested:
+            return
+
+        # Get the OptionChain
+        chain = slice.option_chains.get(self.symbol)
+        if not chain:
+            return
+
+        # Find options with the nearest expiry
+        expiry = max([x.expiry for x in chain])
+        contracts = [contract for contract in chain if contract.expiry == expiry]
+     
+        # Order the OTM calls by strike to find the nearest to ATM
+        call_contracts = sorted([contract for contract in contracts
+            if contract.right == OptionRight.CALL and
+               contract.strike &gt; chain.underlying.price],
+            key=lambda x: x.strike)
+        if not call_contracts:
+            return
+        
+        # Order the OTM puts by strike to find the nearest to ATM
+        put_contracts = sorted([contract for contract in contracts
+            if contract.right == OptionRight.PUT and
+               contract.strike &lt; chain.underlying.price],
+            key=lambda x: x.strike, reverse=True)
+        if not put_contracts:
+            return
+
+        call_strike = call_contracts[0].strike
+        put_strike = put_contracts[0].strike
+
+        long_strangle = OptionStrategies.strangle(self.symbol, call_strike, put_strike, expiry)
+        self.buy(long_strangle, 1)</pre>
+</div>

@@ -10,8 +10,7 @@
 <tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
 </thead>
 <tbody>
-<tr><td>Put</td><td>1.53</td><td>185.00</td></tr>
-<tr><td>Underlying Equity at start of the trade</td><td>187.07</td><td>-</td></tr>
+<tr><td>Put</td><td>1.37</td><td>185.00</td></tr>
 <tr><td>Underlying Equity at expiration</td><td>190.01</td><td>-</td></tr>
 </tbody>
 </table>
@@ -29,21 +28,21 @@
 $$
 \begin{array}{rcll}
 P^{K}_T &amp; = &amp; (K - S_T)^{+}\\
-&amp; = &amp; (185 - 190.1)^{+}\\
-&amp; = &amp; 0\\
-P_T &amp; = &amp; (S_T - S_0 + P^{K}_T - P^{K}_0)\times m - fee\\
-&amp; = &amp; (190.01 - 187.07 + 0 - 1.53)\times m - fee\\
-&amp; = &amp; 1.41 \times 100 - 2\\
-&amp; = &amp; 139
+&amp; = &amp; (185 - 190.01)^{+}\\
+&amp; = &amp; 0.0\\
+P_T &amp; = &amp; (P^{K}_0 - P^{K}_T)\times m - fee\\
+&amp; = &amp; (1.37 - 0.0)\times m - fee\\
+&amp; = &amp; 1.37 \times 100 - 1\\
+&amp; = &amp; 136
 \end{array}
 $$
 <br>
-<p>So, the strategy gains $139.</p>
+<p>So, the strategy gains $136.</p>
 
-<p>The following algorithm implements a protective put Option strategy:</p>
+<p>The following algorithm implements a naked put Option strategy:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class ProtectivePutAlgorithm : QCAlgorithm
+    <pre class="csharp">public class NakedPutAlgorithm : QCAlgorithm
 {
     private Symbol _put, _symbol;
     
@@ -70,54 +69,54 @@ $$
         // Find ATM put with the farthest expiry
         var expiry = chain.Max(x =&gt; x.Expiry);
         var atmPut = chain
-            .Where(x=&gt; x.Right == OptionRight.Put &amp;&amp; x.Expiry == expiry)
+            .Where(x=&gt; x.Right == OptionRight.Put && x.Expiry == expiry)
             .OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price))
             .FirstOrDefault();
 
         if (atmPut == null) return;
 
-        var protectivePut = OptionStrategies.ProtectivePut(_symbol, atmPut.Strike, expiry);
-        Buy(protectivePut, 1);
+        var nakedPut = OptionStrategies.NakedPut(_symbol, atmPut.Strike, expiry);
+        Buy(nakedPut, 1);
 
         _put = atmPut.Symbol;
     }
 }</pre>
-    <pre class="python">class ProtectivePutAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2014, 1, 1)
-        self.SetEndDate(2014, 3, 1)
-        self.SetCash(100000)
+    <pre class="python">class NakedPutAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2014, 1, 1)
+        self.set_end_date(2014, 3, 1)
+        self.set_cash(100000)
 
-        option = self.AddOption("IBM")
-        self.symbol = option.Symbol
+        option = self.add_option("IBM")
+        self.symbol = option.symbol
         option.set_filter(lambda universe: universe.include_weeklys().naked_put(30, 0))
 
         self.put = None
 
         # use the underlying equity as the benchmark
-        self.SetBenchmark(self.symbol.Underlying)
+        self.set_benchmark(self.symbol.underlying)
 
-    def OnData(self, slice: Slice) -&gt; None:
-        if self.put and self.Portfolio[self.put].Invested:
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.put and self.portfolio[self.put].invested:
             return
 
-        chain = slice.OptionChains.get(self.symbol)
+        chain = slice.option_chains.get(self.symbol)
         if not chain:
             return
 
         # Find ATM put with the farthest expiry
-        expiry = max([x.Expiry for x in chain])
+        expiry = max([x.expiry for x in chain])
         put_contracts = sorted([x for x in chain
-            if x.Right == OptionRight.Put and x.Expiry == expiry],
-            key=lambda x: abs(chain.Underlying.Price - x.Strike))
+            if x.right == OptionRight.PUT and x.expiry == expiry],
+            key=lambda x: abs(chain.underlying.price - x.strike))
 
         if not put_contracts:
             return
 
         atm_put = put_contracts[0]
 
-        protective_put = OptionStrategies.ProtectivePut(self.symbol, atm_put.Strike, expiry)
-        self.Buy(protective_put, 1)
+        naked_put = OptionStrategies.naked_put(self.symbol, atm_put.strike, expiry)
+        self.buy(naked_put, 1)
 
-        self.put = atm_put.Symbol</pre>
+        self.put = atm_put.symbol</pre>
 </div>

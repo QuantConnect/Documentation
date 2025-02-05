@@ -53,20 +53,83 @@ $$
 
 <p>The following algorithm implements a long iron butterfly Option strategy:</p>
 
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_1e3515a8dcb803efcbc686e2e49bec52.html"></iframe>
-        </div>
-    </div>
-</div>
+<div class="section-example-container">
+    <pre class="csharp">public class LongButterflyStrategy : QCAlgorithm
+{
+    private Symbol _symbol;
 
-<div class="csharp">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_c1ac50cca8b20e8b4bab1a78d0584cdd.html"></iframe>
-        </div>
-    </div>
+    public override void Initialize()
+    {
+        SetStartDate(2017, 4, 1);
+        SetEndDate(2017, 4, 23);
+        SetCash(100000);
+
+        var option = AddOption("GOOG", Resolution.Minute);
+        _symbol = option.Symbol;
+        option.SetFilter(universe =&gt; universe.IncludeWeeklys().IronButterfly(30, 5));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested ||
+        !slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            return;
+        }
+
+        // Select expiry
+        var expiry = chain.Max(x =&gt; x.Expiry);
+
+        // Separate the call and put contracts
+        var calls = chain.Where(x =&gt; x.Right == OptionRight.Call  && x.Expiry == expiry);
+        var puts = chain.Where(x =&gt; x.Right == OptionRight.Put && x.Expiry == expiry);
+        if (calls.Count() == 0 || puts.Count() == 0) return;
+
+        // Get the ATM and OTM strike prices
+        var atmStrike = calls.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+        var otmPutStrike = puts.Min(x =&gt; x.Strike);
+        var otmCallStrike = 2 * atmStrike - otmPutStrike;
+
+        // Order Strategy
+        var ironButterfly = OptionStrategies.IronButterfly(_symbol, otmPutStrike, atmStrike, otmCallStrike, expiry);
+        Buy(ironButterfly, 1);
+    }
+}</pre>
+    <pre class="python">class LongButteflyOptionStrategy(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2017, 4, 1)
+        self.set_end_date(2017, 4, 23)
+        self.set_cash(100000)
+        
+        option = self.add_option("GOOG", Resolution.MINUTE)
+        self._symbol = option.symbol
+
+        # set our strike/expiry filter for this option chain
+        option.set_filter(lambda x: x.include_weeklys().iron_butterfly(30, 5))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.portfolio.invested:
+            return
+
+        # Get the OptionChain
+        chain = slice.option_chains.get(self._symbol, None)
+        if not chain:
+            return
+
+        # Select expiry
+        expiry = max([x.expiry for x in chain])
+
+        # Separate the call and put contracts
+        calls = [i for i in chain if i.right == OptionRight.CALL and i.expiry == expiry]
+        puts = [i for i in chain if i.right == OptionRight.PUT and i.expiry == expiry]
+        if not calls or not puts:
+            return
+
+        # Get the ATM and OTM strike prices
+        atm_strike = sorted(calls, key = lambda x: abs(x.strike - chain.underlying.price))[0].strike
+        otm_put_strike = min([x.strike for x in puts])
+        otm_call_strike = 2 * atm_strike - otm_put_strike
+
+        iron_butterfly = OptionStrategies.iron_butterfly(self._symbol, otm_put_strike, atm_strike, otm_call_strike, expiry)
+        self.buy(iron_butterfly, 1)</pre>
 </div>

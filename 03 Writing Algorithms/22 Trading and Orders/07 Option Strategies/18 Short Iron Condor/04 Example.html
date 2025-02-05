@@ -55,20 +55,101 @@ $$
 
 <p>The following algorithm implements a short iron condor Option strategy:</p>
 
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_9bddc010cb37f1523878941c68c06679.html"></iframe>
-        </div>
-    </div>
-</div>
+<div class="section-example-container">
+    <pre class="csharp">public class ShortIronCondorStrategy : QCAlgorithm
+{
+    private Symbol _symbol;
 
-<div class="csharp">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_2952c151b42833f262387a34fe86433b.html"></iframe>
-        </div>
-    </div>
+    public override void Initialize()
+    {
+        SetStartDate(2017, 4, 1);
+        SetEndDate(2017, 4, 23);
+        SetCash(100000);
+
+        var option = AddOption("GOOG", Resolution.Minute);
+        _symbol = option.Symbol;
+        option.SetFilter(universe =&gt; universe.IncludeWeeklys().IronCondor(30, 5, 10));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested || !IsMarketOpen(_symbol) ||
+            !slice.OptionChains.TryGetValue(_symbol, out var chain))
+        {
+            return;
+        }
+
+        // Find put and call contracts with the farthest expiry
+        var expiry = chain.Max(x =&gt; x.Expiry);
+        var contracts = chain.Where(x =&gt; x.Expiry == expiry).OrderBy(x =&gt; x.Strike);
+
+        var putContracts = contracts.Where(x =&gt; x.Right == OptionRight.Put).ToArray();
+        var callContracts = contracts.Where(x =&gt; x.Right == OptionRight.Call).ToArray();
+
+        if (putContracts.Length &lt; 2 || callContracts.Length &lt; 2) return;
+
+        // Select the strategy legs
+        var nearCall = callContracts[0];
+        var farCall = callContracts[1];
+        var nearPut = putContracts[1];
+        var farPut = putContracts.Single(x =&gt; x.Strike == nearPut.Strike - farCall.Strike + nearCall.Strike);
+
+        // Order Strategy
+        var shortIronCondor = OptionStrategies.ShortIronCondor(
+            _symbol, 
+            farPut.Strike,
+            nearPut.Strike,
+            nearCall.Strike,
+            farCall.Strike,
+            expiry);
+
+        Buy(shortIronCondor, 2);
+    }
+}</pre>
+    <pre class="python">class ShortIronCondorOptionStrategy(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2017, 4, 1)
+        self.set_end_date(2017, 4, 23)
+        self.set_cash(100000)
+        
+        option = self.add_option("GOOG", Resolution.MINUTE)
+        self._symbol = option.symbol
+
+        # set our strike/expiry filter for this option chain
+        option.set_filter(lambda x: x.include_weeklys().iron_condor(30, 5, 10))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.portfolio.invested or not self.is_market_open(self._symbol):
+            return
+
+        chain = slice.option_chains.get(self._symbol)
+        if not chain:
+            return
+
+        # Find put and call contracts with the farthest expiry       
+        expiry = max([x.expiry for x in chain])
+        chain = sorted([x for x in chain if x.expiry == expiry], key = lambda x: x.strike)
+
+        put_contracts = [x for x in chain if x.right == OptionRight.PUT]
+        call_contracts = [x for x in chain if x.right == OptionRight.CALL]
+
+        if len(call_contracts) &lt; 2 or len(put_contracts) &lt; 2:
+            return
+
+        # Select the strategy legs
+        near_call = call_contracts[0]
+        far_call = call_contracts[1]
+        near_put = put_contracts[1]
+        far_put = [x for x in put_contracts if x.Strike == near_put.strike - far_call.strike + near_call.strike][0]
+
+        short_iron_condor = OptionStrategies.short_iron_condor(
+            self._symbol, 
+            far_put.strike,
+            near_put.strike,
+            near_call.strike,
+            far_call.strike,
+            expiry)
+
+        self.buy(short_iron_condor, 2)</pre>
 </div>
