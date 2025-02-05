@@ -16,8 +16,8 @@ var qb = new QuantBook();
 var backtests = api.ListBacktests(qb.ProjectId)
 // Get the last completed backtest to study.
 var backtestId = backtests.Backtests
-    .Where(x =&gt; x.Completed)
-    .OrderByDescending(x =&gt; x.BacktestEnd)
+    .Where(x =&gt; x.Progress == 1m)
+    .OrderByDescending(x =&gt; x.Created)
     .First()
     .BacktestId;
 var backtest = api.ReadBacktest(qb.ProjectId, backtestId);
@@ -31,12 +31,12 @@ qb = QuantBook()
 backtests = api.list_backtests(qb.project_id)
 # Get the last completed backtest to study.
 backtest_id = sorted(
-    [x for x in json.loads(str(backtests))["Backtests"] if x["Completed"]],
-    key=lambda x: x["BacktestEnd"],
+    [x for x in backtests.backtests if x.progress == 1],
+    key=lambda x: x.created,
     reverse=True
-)[0]["BacktestId"]
+)[0].backtest_id
 backtest = api.read_backtest(project_id, backtest_id)
 
 # Obtain the backtest statistics.
-backtest["Statistics"]</pre>
+print(backtest.statistics)</pre>
 </div>

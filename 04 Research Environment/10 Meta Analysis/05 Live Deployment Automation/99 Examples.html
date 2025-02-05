@@ -40,13 +40,13 @@ qb = QuantBook()
 project_nodes = api.read_project_nodes(qb.project_id)
 # Obtain the most powerful live GPU node which is idling.
 live_node_id = max(
-    [x for x in json.loads(str(project_nodes))["nodes"]["live"] if x["hasGpu"] and not x["busy"]],
-    key=lambda x: x["cpuCount"]
-)["id"]
+    [x for x in project_nodes.nodes.live_nodes if x.has_gpu and not x.busy],
+    key=lambda x: x.cpu_count
+).id
 
 # Compile the project before deploying.
 compilation = api.create_compile(qb.project_id)
-compile_id = json.loads(str(compilation))["CompileId"]
+compile_id = compilation.compile_id
 
 # Deploy the live algorithm with the brokerage settings.
 brokerage_settings = {
