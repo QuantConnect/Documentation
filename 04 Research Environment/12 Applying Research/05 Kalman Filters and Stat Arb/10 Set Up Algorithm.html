@@ -41,10 +41,11 @@
 <p>We'll also need to create a function to train and update our model from time to time. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Recalibrate(self) -&gt; None:
+    <pre class="python">def recalibrate(self) -&gt; None:
     qb = self
-    history = qb.History(self.assets, 252*2, Resolution.Daily)
-    if history.empty: return
+    history = qb.history(self.assets, 252*2, Resolution.DAILY)
+    if history.empty:
+        return
     
     # Select the close column and then call the unstack method
     data = history['close'].unstack(level=0)
@@ -81,27 +82,27 @@
     
     ### Kalman Filter
     # Initialize a Kalman Filter. Using the first 20 data points to optimize its initial state. We assume the market has no regime change so that the transitional matrix and observation matrix is [1].
-    self.kalmanFilter = KalmanFilter(transition_matrices = [1],
+    self.kalman_filter = kalman_filter(transition_matrices = [1],
                         observation_matrices = [1],
                         initial_state_mean = new_spread.iloc[:20].mean(),
                         observation_covariance = new_spread.iloc[:20].var(),
                         em_vars=['transition_covariance', 'initial_state_covariance'])
-    self.kalmanFilter = self.kalmanFilter.em(new_spread.iloc[:20], n_iter=5)
-    (filtered_state_means, filtered_state_covariances) = self.kalmanFilter.filter(new_spread.iloc[:20])
+    self.kalman_filter = self.kalman_filter.em(new_spread.iloc[:20], n_iter=5)
+    (filtered_state_means, filtered_state_covariances) = self.kalman_filter.filter(new_spread.iloc[:20])
     
     # Obtain the current Mean and Covariance Matrix expectations.
-    self.currentMean = filtered_state_means[-1, :]
-    self.currentCov = filtered_state_covariances[-1, :]
+    self.current_mean = filtered_state_means[-1, :]
+    self.current_cov = filtered_state_covariances[-1, :]
     
     # Initialize a mean series for spread normalization using the Kalman Filter's results.
     mean_series = np.array([None]*(new_spread.shape[0]-20))
     
     # Roll over the Kalman Filter to obtain the mean series.
     for i in range(20, new_spread.shape[0]):
-        (self.currentMean, self.currentCov) = self.kalmanFilter.filter_update(filtered_state_mean = self.currentMean,
-                                                                filtered_state_covariance = self.currentCov,
+        (self.current_mean, self.current_cov) = self.kalman_filter.filter_update(filtered_state_mean = self.current_mean,
+                                                                filtered_state_covariance = self.current_cov,
                                                                 observation = new_spread.iloc[i])
-        mean_series[i-20] = float(self.currentMean)
+        mean_series[i-20] = float(self.current_mean)
     
     # Obtain the normalized spread series.
     normalized_spread = (new_spread.iloc[20:] - mean_series)
@@ -138,29 +139,29 @@
 <p>Now we export our model into the scheduled event method for trading. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python">def EveryDayBeforeMarketClose(self) -&gt; None:
+    <pre class="python">def every_day_before_market_close(self) -&gt; None:
     qb = self
     
     # Get the real-time log close price for all assets and store in a Series
     series = pd.Series()
-    for symbol in qb.Securities.Keys:
-        series[symbol] = np.log(qb.Securities[symbol].Close)
+    for symbol in qb.securities.keys():
+        series[symbol] = np.log(qb.securities[symbol].close)
         
     # Get the spread
     spread = series @ self.trading_weight
     
     # Update the Kalman Filter with the Series
-    (self.currentMean, self.currentCov) = self.kalmanFilter.filter_update(filtered_state_mean = self.currentMean,
-                                                                        filtered_state_covariance = self.currentCov,
+    (self.current_mean, self.current_cov) = self.kalman_filter.filter_update(filtered_state_mean = self.current_mean,
+                                                                        filtered_state_covariance = self.current_cov,
                                                                         observation = spread)
         
     # Obtain the normalized spread.
-    normalized_spread = spread - self.currentMean
+    normalized_spread = spread - self.current_mean
 
     # ==============================
     
     # Mean-reversion
-    if normalized_spread < -self.threshold:
+    if normalized_spread &lt; -self.threshold:
         orders = []
         for i in range(len(self.assets)):
             orders.append(PortfolioTarget(self.assets[i], self.trading_weight[i]))
@@ -168,7 +169,7 @@
             
         self.state = 1
             
-    elif normalized_spread > self.threshold:
+    elif normalized_spread &gt; self.threshold:
         orders = []
         for i in range(len(self.assets)):
             orders.append(PortfolioTarget(self.assets[i], -1 * self.trading_weight[i]))
@@ -177,7 +178,7 @@
         self.state = -1
             
     # Out of position if spread recovered
-    elif self.state == 1 and normalized_spread > -self.threshold or self.state == -1 and normalized_spread < self.threshold:
+    elif self.state == 1 and normalized_spread &gt; -self.threshold or self.state == -1 and normalized_spread &lt; self.threshold:
         self.Liquidate()
         
         self.state = 0</pre>
