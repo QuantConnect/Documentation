@@ -1,0 +1,155 @@
+<p>The below code snippets concludes the above jupyter research notebook content.</p>
+<div class="section-example-container">
+    <pre class="python">from sklearn.ensemble import RandomForestRegressor
+
+# Instantiate a QuantBook.
+qb = QuantBook()
+
+# Select the desired tickers for research.
+assets = ["SHY", "TLT", "SHV", "TLH", "EDV", "BIL",
+          "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+          "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+
+# Call the AddEquity method with the tickers, and its corresponding resolution. Resolution.MINUTE is used by default. 
+for i in range(len(assets)):
+    qb.add_equity(assets[i],Resolution.MINUTE).symbol
+
+# Call the History method with qb.securities.keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
+history = qb.history(qb.securities.Keys, datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+history
+
+# Select the close column and then call the unstack method.
+df = history['close'].unstack(level=0)
+
+# Feature engineer the data for input.
+input_ = df.diff() * 0.5 + df * 0.5
+input_ = input_.iloc[1:]
+
+# Shift the data for 1-step backward as training output result.
+output = df.shift(-1).iloc[:-1]
+
+# Split the data into training and testing sets.
+splitter = int(input_.shape[0] * 0.8)
+X_train = input_.iloc[:splitter]
+X_test = input_.iloc[splitter:]
+y_train = output.iloc[:splitter]
+y_test = output.iloc[splitter:]
+
+# Initialize a Random Forest Regressor
+regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)
+
+# Fit the regressor
+regressor.fit(X_train, y_train)
+
+# Predict the testing set
+predictions = regressor.predict(X_test)
+
+# Convert result into DataFrame
+predictions = pd.DataFrame(predictions, index=y_test.index, columns=y_test.columns)
+    
+# Plot the result for comparison
+for col in y_test.columns:
+    plt.figure(figsize=(15, 10))
+
+    y_test[col].plot(label="Actual")
+    predictions[col].plot(label="Prediction")
+
+    plt.title(f"{col} Regression Result")
+    plt.legend()
+    plt.show()
+    plt.clf()</pre>
+</div>
+
+<p>The below code snippets concludes the algorithm set up.</p>
+<div class="section-example-container">
+    <pre class="python">from sklearn.ensemble import RandomForestRegressor
+
+class RandomForestRegressionDemo(QCAlgorithm):
+
+    def initialize(self):
+        #1. Required: Five years of backtest history
+        self.set_start_date(2014, 1, 1)
+    
+        #2. Required: Alpha Streams Models:
+        self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
+    
+        #3. Required: Significant AUM Capacity
+        self.set_cash(1000000)
+    
+        #4. Required: Benchmark to SPY
+        self.set_benchmark("SPY")
+        
+        self.set_portfolio_construction(MeanVarianceOptimizationPortfolioConstructionModel(Resolution.DAILY, PortfolioBias.LONG,
+                                                                                        period=5))
+        self.set_execution(ImmediateExecutionModel())
+    
+        self.assets = ["SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+                        "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                        "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+        
+        # Add Equity ------------------------------------------------ 
+        for i in range(len(self.assets)):
+            self.add_equity(self.assets[i], Resolution.MINUTE).symbol
+            
+        # Initialize the timer to train the Machine Learning model
+        self.last_time = datetime.min
+        
+        # Set Scheduled Event Method For Our Model
+        self.schedule.on(self.date_rules.every_day(), self.time_rules.before_market_close("SHY", 5), self.every_day_before_market_close)
+        
+        
+    def build_model(self):
+        # Initialize the Random Forest Regressor
+        self.regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)
+        
+        # Get historical data
+        history = self.history(self.securities.Keys, 360, Resolution.DAILY)
+        
+        # Select the close column and then call the unstack method.
+        df = history['close'].unstack(level=0)
+        
+        # Feature engineer the data for input.
+        input_ = df.diff() * 0.5 + df * 0.5
+        input_ = input_.iloc[1:].ffill().fillna(0)
+        
+        # Shift the data for 1-step backward as training output result.
+        output = df.shift(-1).iloc[:-1].ffill().fillna(0)
+        
+        # Fit the regressor
+        self.regressor.fit(input_, output)
+        
+        
+    def every_day_before_market_close(self):
+        # Retrain the regressor every week
+        if self.last_time &lt; self.time:
+            self.build_model()
+            self.last_time = Expiry.end_of_week(self.last_time)
+        
+        qb = self
+        # Fetch history on our universe
+        df = qb.history(qb.securities.Keys, 2, Resolution.DAILY)
+        if df.empty: return
+    
+        # Make all of them into a single time index.
+        df = df.close.unstack(level=0)
+    
+        # Feature engineer the data for input
+        input_ = df.diff() * 0.5 + df * 0.5
+        input_ = input_.iloc[-1].fillna(0).values.reshape(1, -1)
+        
+        # Predict the expected price
+        predictions = self.regressor.predict(input_)
+        
+        # Get the expected return
+        predictions = (predictions - df.iloc[-1].values) / df.iloc[-1].values
+        predictions = predictions.flatten()
+    
+        # ==============================
+        
+        insights = []
+        
+        for i in range(len(predictions)):
+            insights.append( Insight.price(self.assets[i], timedelta(days=1), InsightDirection.UP, predictions[i]) )
+    
+        self.emit_insights(insights)</pre>
+</div>

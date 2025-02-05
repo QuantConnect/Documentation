@@ -28,7 +28,7 @@
         self.add_equity(self.assets[i], Resolution.MINUTE)
         
     # Initialize the timer to train the Machine Learning model
-    self.time = datetime.min
+    self._time = datetime.min
     
     # Set Scheduled Event Method For Our Model
     self.schedule.on(self.date_rules.every_day(), self.time_rules.before_market_close("SHY", 5), self.every_day_before_market_close)</pre>
@@ -42,7 +42,7 @@
     self.regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)
     
     # Get historical data
-    history = self.history(self.securities.keys, 360, Resolution.DAILY)
+    history = self.history(self.securities.keys(), 360, Resolution.DAILY)
     
     # Select the close column and then call the unstack method.
     df = history['close'].unstack(level=0)
@@ -61,15 +61,15 @@
 <p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python">def EveryDayBeforeMarketClose(self) -&gt; None:
+    <pre class="python">def every_day_before_market_close(self) -&gt; None:
     # Retrain the regressor every month
-    if self.time < self.Time:
+    if self._time &lt; self.time:
         self.BuildModel()
-        self.time = Expiry.EndOfMonth(self.Time)
+        self._time = Expiry.end_of_month(self.time)
     
     qb = self
     # Fetch history on our universe
-    df = qb.History(qb.Securities.Keys, 2, Resolution.Daily)
+    df = qb.history(qb.securities.keys(), 2, Resolution.DAILY)
     if df.empty: return
 
     # Make all of them into a single time index.
@@ -91,7 +91,7 @@
     insights = []
     
     for i in range(len(predictions)):
-        insights.append( Insight.Price(self.assets[i], timedelta(days=1), InsightDirection.Up, predictions[i]) )
+        insights.append( Insight.price(self.assets[i], timedelta(days=1), InsightDirection.UP, predictions[i]) )
 
-    self.EmitInsights(insights)</pre>
+    self.emit_insights(insights)</pre>
 </div>
