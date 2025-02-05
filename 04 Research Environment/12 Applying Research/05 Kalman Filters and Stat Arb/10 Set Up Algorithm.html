@@ -165,7 +165,7 @@
         orders = []
         for i in range(len(self.assets)):
             orders.append(PortfolioTarget(self.assets[i], self.trading_weight[i]))
-            self.SetHoldings(orders)
+            self.set_holdings(orders)
             
         self.state = 1
             
@@ -173,13 +173,13 @@
         orders = []
         for i in range(len(self.assets)):
             orders.append(PortfolioTarget(self.assets[i], -1 * self.trading_weight[i]))
-            self.SetHoldings(orders)
+            self.set_holdings(orders)
             
         self.state = -1
             
     # Out of position if spread recovered
     elif self.state == 1 and normalized_spread &gt; -self.threshold or self.state == -1 and normalized_spread &lt; self.threshold:
-        self.Liquidate()
+        self.liquidate()
         
         self.state = 0</pre>
 </div>

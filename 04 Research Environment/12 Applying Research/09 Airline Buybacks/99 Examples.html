@@ -1,0 +1,261 @@
+<p>The below code snippets concludes the above jupyter research notebook content.</p>
+<div class="section-example-container">
+    <pre class="python">from QuantConnect.DataSource import SmartInsiderTransaction
+from statsmodels.discrete.discrete_model import Logit
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+
+# Instantiate a QuantBook.
+qb = QuantBook()
+
+# Select the airline tickers for research.
+assets = ["LUV",   # Southwest Airlines
+          "DAL",   # Delta Airlines
+          "UAL",   # United Airlines Holdings
+          "AAL",   # American Airlines Group
+          "SKYW",  # SkyWest Inc. 
+          "ALGT",  # Allegiant Travel Co.
+          "ALK"    # Alaska Air Group Inc.
+         ]
+
+# Call the AddEquity method with the tickers, and its corresponding resolution. Then call AddData with SmartInsiderTransaction to subscribe to their buyback transaction data. Save the Symbols into a dictionary.
+symbols = {}
+for ticker in assets:
+    Symbol = qb.add_equity(ticker, Resolution.MINUTE).symbol
+    symbols[Symbol] = qb.add_data(SmartInsiderTransaction, Symbol).symbol
+
+# Call the History method with list of tickers, time argument(s), and resolution to request historical data for the symbol.
+history = qb.history(list(symbols.keys()), datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+
+# Call SPY history as reference.
+spy = qb.history(qb.add_equity("SPY").Symbol, datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+
+# Call the History method with list of buyback tickers, time argument(s), and resolution to request buyback data for the symbol.
+history_buybacks = qb.history(list(symbols.values()), datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+
+# Select the close column and then call the unstack method to get the close price dataframe.
+df = history['close'].unstack(level=0)
+spy_close = spy['close'].unstack(level=0)
+
+# Call pct_change to get the daily return of close price, then shift 1-step backward as prediction.
+ret = df.pct_change().shift(-1).iloc[:-1]
+ret_spy = spy_close.pct_change().shift(-1).iloc[:-1]
+
+# Get the active forward return.
+active_ret = ret.sub(ret_spy.values, axis=0)
+
+# Select the close column and then call the unstack method to get the close price dataframe.
+df = history['close'].unstack(level=0)
+spy_close = spy['close'].unstack(level=0)
+
+# Call pct_change to get the daily return of close price, then shift 1-step backward as prediction.
+ret = df.pct_change().shift(-1).iloc[:-1]
+ret_spy = spy_close.pct_change().shift(-1).iloc[:-1]
+
+# Get the active forward return.
+active_ret = ret.sub(ret_spy.values, axis=0)
+
+# Select the ExecutionPrice column and then call the unstack method to get the dataframe.
+# Remove duplicate values from the index
+history_buybacks = history_buybacks[~history_buybacks.index.duplicated(keep='first')]
+df_buybacks = history_buybacks['executionprice'].unstack(level=0)
+
+# Convert buyback history into daily mean data.
+df_buybacks = df_buybacks.groupby(df_buybacks.index.date).mean()
+df_buybacks.columns = df.columns
+
+# Get the buyback premium/discount %.
+df_close = df.reindex(df_buybacks.index)[~df_buybacks.isna()]
+df_buybacks = (df_buybacks - df_close)/df_close
+
+# Create a dataframe to hold the buyback and 1-day forward return data.
+data = pd.DataFrame(columns=["Buybacks", "Return"])
+
+# Append the data into the dataframe.
+for row, row_buyback in zip(active_ret.reindex(df_buybacks.index).itertuples(), df_buybacks.itertuples()):
+    index = row[0]
+    for i in range(1, df_buybacks.shape[1]+1):
+        if row_buyback[i] != 0:
+            data = pd.concat([data, pd.DataFrame({"Buybacks": row_buyback[i], "Return":row[i]}, index=[index])])
+
+# Call dropna to drop NaNs.
+data.dropna(inplace=True)
+
+# Get binary return (+/-).
+binary_ret = data["Return"].copy()
+binary_ret[binary_ret &lt; 0] = 0
+binary_ret[binary_ret &gt; 0] = 1
+
+# Construct a logistic regression model.
+model = Logit(binary_ret.values, data["Buybacks"].values).fit()
+
+# Display logistic regression results.
+display(model.summary())
+
+# Plot the result.
+plt.figure(figsize=(10, 6))
+sns.regplot(x=data["Buybacks"]*100, y=binary_ret, logistic=True, ci=None, line_kws={'label': " Logistic Regression Line"})
+plt.plot([-50, 50], [0.5, 0.5], "r--", label="Selection Cutoff Line")
+plt.title("Buyback premium vs Profit/Loss")
+plt.xlabel("Buyback premium %")
+plt.xlim([-50, 50])
+plt.ylabel("Profit/Loss")
+plt.legend()
+plt.show()
+
+# Get in-sample prediction result.
+predictions = model.predict(data["Buybacks"].values)
+for i in range(len(predictions)):
+    predictions[i] = 1 if predictions[i] &gt; 0.5 else 0
+
+# Call confusion_matrix to contrast the results.
+cm = confusion_matrix(binary_ret, predictions)
+
+# Display the result.
+df_result = pd.DataFrame(cm, 
+                        index=pd.MultiIndex.from_tuples([("Prediction", "Positive"), ("Prediction", "Negative")]),
+                        columns=pd.MultiIndex.from_tuples([("Actual", "Positive"), ("Actual", "Negative")]))</pre>
+</div>
+
+<p>The below code snippets concludes the algorithm set up.</p>
+<div class="section-example-container">
+    <pre class="python">from statsmodels.discrete.discrete_model import Logit
+
+class AirlineBuybacksDemo(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        #1. Required: Five years of backtest history
+        self.set_start_date(2017, 1, 1)
+        self.set_end_date(2022, 1, 1)
+    
+        #2. Required: Alpha Streams Models:
+        self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
+    
+        #3. Required: Significant AUM Capacity
+        self.set_cash(1000000)
+    
+        #4. Required: Benchmark to SPY
+        self.set_benchmark("SPY")
+        
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+        
+        # Set our strategy to be take 5% profit and 5% stop loss.
+        self.add_risk_management(MaximumUnrealizedProfitPercentPerSecurity(0.05))
+        self.add_risk_management(MaximumDrawdownPercentPerSecurity(0.05))
+    
+        # Select the airline tickers for research.
+        self.symbols = {}
+        assets = ["LUV",   # Southwest Airlines
+                  "DAL",   # Delta Airlines
+                  "UAL",   # United Airlines Holdings
+                  "AAL",   # American Airlines Group
+                  "SKYW",  # SkyWest Inc. 
+                  "ALGT",  # Allegiant Travel Co.
+                  "ALK"    # Alaska Air Group Inc.
+                 ]
+                 
+        # Call the AddEquity method with the tickers, and its corresponding resolution. Then call AddData with SmartInsiderTransaction to subscribe to their buyback transaction data.
+        for ticker in assets:
+            symbol = self.add_equity(ticker, Resolution.MINUTE).symbol
+            self.symbols[symbol] = self.add_data(SmartInsiderTransaction, symbol).symbol
+            
+        self.add_equity("SPY")
+        
+        # Initialize the model
+        self.build_model()
+        
+        # Set Scheduled Event Method For Our Model Recalibration every month
+        self.schedule.on(self.date_rules.month_start(), self.time_rules.at(0, 0), self.build_model)
+        
+        # Set Scheduled Event Method For Trading
+        self.schedule.on(self.date_rules.every_day(), self.time_rules.before_market_close("SPY", 5), self.every_day_before_market_close)
+        
+        
+    def build_model(self) -&gt; None:
+        qb = self
+        # Call the History method with list of tickers, time argument(s), and resolution to request historical data for the symbol.
+        history = qb.history(list(self.symbols.keys()), datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
+        
+        # Call SPY history as reference
+        spy = qb.history(["SPY"], datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
+        
+        # Call the History method with list of buyback tickers, time argument(s), and resolution to request buyback data for the symbol.
+        history_buybacks = qb.history(list(self.symbols.values()), datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
+        
+        # Select the close column and then call the unstack method to get the close price dataframe.
+        df = history['close'].unstack(level=0)
+        spy_close = spy['close'].unstack(level=0)
+        
+        # Call pct_change to get the daily return of close price, then shift 1-step backward as prediction.
+        ret = df.pct_change().shift(-1).iloc[:-1]
+        ret_spy = spy_close.pct_change().shift(-1).iloc[:-1]
+        
+        # Get the active return
+        active_ret = ret.sub(ret_spy.values, axis=0)
+        
+        # Select the ExecutionPrice column and then call the unstack method to get the dataframe.
+        history_buybacks = history_buybacks[~history_buybacks.index.duplicated(keep='first')]
+        df_buybacks = history_buybacks['executionprice'].unstack(level=0)
+        
+        # Convert buyback history into daily mean data
+        df_buybacks = df_buybacks.groupby(df_buybacks.index.date).mean()
+        df_buybacks.columns = df.columns
+        
+        # Get the buyback premium/discount
+        df_close = df.reindex(df_buybacks.index)[~df_buybacks.isna()]
+        df_buybacks = (df_buybacks - df_close)/df_close
+        
+        # Create a dataframe to hold the buyback and 1-day forward return data
+        data = pd.DataFrame(columns=["Buybacks", "Return"])
+        
+        # Append the data into the dataframe
+        for row, row_buyback in zip(active_ret.reindex(df_buybacks.index).itertuples(), df_buybacks.itertuples()):
+            index = row[0]
+            for i in range(1, df_buybacks.shape[1]+1):
+                if row_buyback[i] != 0:
+                    data = pd.concat([data, pd.DataFrame({"Buybacks": row_buyback[i], "Return":row[i]}, index=[index])])
+        
+        # Call dropna to drop NaNs
+        data.dropna(inplace=True)
+        
+        # Get binary return (+/-)
+        binary_ret = data["Return"].copy()
+        binary_ret[binary_ret &lt; 0] = 0
+        binary_ret[binary_ret &gt; 0] = 1
+        
+        # Construct a logistic regression model
+        self.model = Logit(binary_ret.values, data["Buybacks"].values).fit()
+        
+        
+    def every_day_before_market_close(self) -&gt; None:
+        qb = self
+        # Get any buyback event today
+        history_buybacks = qb.history(list(self.symbols.values()), timedelta(days=1), Resolution.DAILY)
+        if history_buybacks.empty or "executionprice" not in history_buybacks.columns: return
+    
+        # Select the ExecutionPrice column and then call the unstack method to get the dataframe.
+        history_buybacks = history_buybacks[~history_buybacks.index.duplicated(keep='first')]
+        df_buybacks = history_buybacks['executionprice'].unstack(level=0)
+        
+        # Convert buyback history into daily mean data
+        df_buybacks = df_buybacks.groupby(df_buybacks.index.date).mean()
+        
+        # ==============================
+        
+        insights = []
+        
+        # Iterate the buyback data, thne pass to the model for prediction
+        row = df_buybacks.iloc[-1]
+        for i in range(len(row)):
+            prediction = self.model.predict(row[i])
+            
+            # Long if the prediction predict price goes up, short otherwise. Do opposite for SPY (active return)
+            if prediction &gt; 0.5:
+                insights.append( Insight.price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.UP) )
+                insights.append( Insight.price("SPY", timedelta(days=1), InsightDirection.DOWN) )
+            else:
+                insights.append( Insight.price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.DOWN) )
+                insights.append( Insight.price("SPY", timedelta(days=1), InsightDirection.UP) )
+    
+        self.emit_insights(insights)</pre>
+</div>
