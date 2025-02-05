@@ -1,0 +1,389 @@
+<p>The below code snippets concludes the above jupyter research notebook content.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types.
+#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Market;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+using System;
+using MathNet.Numerics.Distributions;
+
+// Instantiate a QuantBook
+var qb = new QuantBook();
+// Select the desired tickers for research.
+var assets = new List&lt;string&gt;() {"SHY", "TLT", "SHV", "TLH", "EDV", "BIL",
+                  "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                  "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
+// Call the AddEquity method with the tickers, and their corresponding resolution.
+foreach(var ticker in assets){
+    qb.AddEquity(ticker, Resolution.Minute);
+}
+
+// Call the History method with qb.Securities.Keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
+var history = qb.History(qb.Securities.Keys, new DateTime(2020, 1, 1), new DateTime(2022, 1, 1), Resolution.Daily);
+
+// Extract close prices for each Symbol from Slice data
+var closes = new Dictionary&lt;Symbol, List&lt;Decimal&gt;&gt;();
+foreach(var slice in history){
+    foreach(var symbol in slice.Keys){
+        if(!closes.ContainsKey(symbol)){
+            closes.Add(symbol, new List&lt;Decimal&gt;());
+        }
+        closes[symbol].Add(slice.Bars[symbol].Close);
+    }
+}
+
+// Get the 30-day rolling mean, standard deviation series, z-score and filtration for each Symbol
+var rollingMean = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var rollingStd = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var filter = new Dictionary&lt;Symbol, List&lt;bool&gt;&gt;();
+var zScore = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+foreach(var kvp in closes)
+{
+    var symbol = kvp.Key;
+    if(!rollingMean.ContainsKey(symbol)){
+        rollingMean.Add(symbol, new List&lt;double&gt;());
+        rollingStd.Add(symbol, new List&lt;double&gt;());
+        zScore.Add(symbol, new List&lt;double&gt;());
+        filter.Add(symbol, new List&lt;bool&gt;());
+    }
+    for (int i=30; i &lt; closes.Values.ElementAt(0).Count; i++)
+    {
+        var slice = kvp.Value.Skip(i).Take(30);
+        rollingMean[symbol].Add(decimal.ToDouble(slice.Average()));
+        rollingStd[symbol].Add(Math.Sqrt(slice.Average(v =&gt; Math.Pow(decimal.ToDouble(v-slice.Average()), 2))));
+        zScore[symbol].Add((decimal.ToDouble(closes[symbol][i]) - rollingMean[symbol].Last()) / rollingStd[symbol].Last());
+        filter[symbol].Add(zScore[symbol].Last() &lt; -1);
+    }
+}
+
+// Calculate the expected return and its probability, then calculate the weight
+var magnitude = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var confidence = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var weights = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+foreach(var kvp in rollingMean)
+{
+    var symbol = kvp.Key;
+    if(!magnitude.ContainsKey(symbol)){
+        magnitude.Add(symbol, new List&lt;double&gt;());
+        confidence.Add(symbol, new List&lt;double&gt;());
+        weights.Add(symbol, new List&lt;double&gt;());
+    }
+    for (int i=1; i &lt; rollingMean.Values.ElementAt(0).Count; i++)
+    {
+        magnitude[symbol].Add(-zScore[symbol][i] * rollingStd[symbol][i] / decimal.ToDouble(closes[symbol][i]));
+        confidence[symbol].Add(Normal.CDF(0, 1, -zScore[symbol][i]));
+        //Filter if trade or not
+        var trade = filter[symbol][i] ? 1d : 0d;
+        weights[symbol].Add(trade * Math.Max(confidence[symbol].Last() - 1 / (magnitude[symbol].Last() + 1), 0));
+    }
+}
+
+// Convert the weights into 2-d array
+double[,] weight = new double[weights.Values.ElementAt(0).Count, weights.Count];
+int j = 0;
+foreach(var symbol in weights.Keys){
+    for(int i=0; i &lt; weights[symbol].Count; i++){
+        weight[i, j] = weights[symbol][i];
+    }
+    j++;
+}
+
+// Normalize the weights
+public double[,] Normalize(double[,] array)
+{
+    for(int i=0; i &lt; array.GetLength(0); i++)
+    {
+        var sum = 0.0;
+        for (int j=0; j &lt; array.GetLength(1); j++)
+        {
+            sum += array[i, j];
+        }
+        
+        if (sum == 0.0) continue;
+        for (int j=0; j &lt; array.GetLength(1); j++)
+        {
+            array[i, j] = array[i, j] / sum;
+        }
+    }
+    
+    return array;
+}
+weight = Normalize(weight);
+
+// Convert close price to 2-d array
+double[,] close = new double[closes.Values.ElementAt(0).Count, closes.Count];
+int j = 0;
+foreach(var symbol in closes.Keys){
+    for(int i=0; i &lt; closes[symbol].Count; i++){
+        close[i, j] = decimal.ToDouble(closes[symbol][i]);
+    }
+    j++;
+}
+
+// Get daily total forward return series
+var totalValue = new List&lt;double&gt;{1.0};
+var dailySum = 0.0;
+for(int i=0; i &lt; weight.GetLength(0) - 1; i++)
+{
+    totalValue.Add(totalValue.Last() * (1 + dailySum));
+    dailySum = 0.0;
+    for (int j=0; j &lt; weight.GetLength(1); j++)
+    {
+        if (close[i, j] != 0 &amp;&amp; double.IsFinite(close[i+1, j]) &amp;&amp; double.IsFinite(close[i, j]) &amp;&amp; double.IsFinite(weight[i, j]))
+        {
+            dailySum += weight[i, j] * (close[i+1, j] - close[i, j]) / close[i, j];
+        }
+    }
+}
+
+// Print the result
+for(int i=0; i &lt; totalValue.Count; i=i+20)
+{
+    Console.WriteLine("Portfolio Value in Day{0}: {1}", i, totalValue[i]);
+}</pre>
+    <pre class="python">from scipy.stats import norm, zscore
+
+# Instantiate a QuantBook.
+qb = QuantBook()
+
+# Select the desired tickers for research.
+symbols = {}
+assets = ["SHY", "TLT", "SHV", "TLH", "EDV", "BIL",
+          "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+          "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+
+# Call the AddEquity method with the tickers, and its corresponding resolution. Then store their Symbols. Resolution.Minute is used by default. 
+for i in range(len(assets)):
+    symbols[assets[i]] = qb.add_equity(assets[i], Resolution.MINUTE).symbol
+
+# Call the History method with qb.Securities.Keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
+history = qb.history(qb.securities.Keys, datetime(2021, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+
+# Select the close column and then call the unstack method.
+df = history['close'].unstack(level=0)
+
+# Calculate the truth value of the most recent price being less than 1 standard deviation away from the mean price.
+classifier = df.le(df.rolling(30).mean() - df.rolling(30).std())
+
+# Get the z-score for the True values, then compute the expected return and probability (used for Insight magnitude and confidence).
+z_score = df.apply(zscore)[classifier]
+magnitude = -z_score * df.rolling(30).std() / df
+confidence = (-z_score).apply(norm.cdf)
+
+# Call fillna to fill NaNs with 0
+magnitude.fillna(0, inplace=True)
+confidence.fillna(0, inplace=True)
+
+# Get our trading weight, we'd take a long only portfolio and normalized to total weight = 1
+weight = confidence - 1 / (magnitude + 1)
+weight = weight[weight &gt; 0].fillna(0)
+sum_ = np.sum(weight, axis=1)
+for i in range(weight.shape[0]):
+    if sum_[i] &gt; 0:
+        weight.iloc[i] = weight.iloc[i] / sum_[i]
+    else:
+        weight.iloc[i] = 0
+weight = weight.iloc[:-1]
+
+# Get the total daily return series
+ret = pd.Series(index=range(df.shape[0] - 1))
+for i in range(df.shape[0] - 1):
+    ret[i] = weight.iloc[i] @ df.pct_change().iloc[i + 1].T
+    
+# Call cumprod to get the cumulative return
+total_ret = (ret + 1).cumprod()
+
+# Set index for visualization
+total_ret.index = weight.index
+
+# Plot the result
+total_ret.plot(title='Strategy Equity Curve', figsize=(15, 10))
+plt.show()</pre>
+</div>
+
+<p>The below code snippets concludes the algorithm set up.</p>
+<div class="section-example-container">
+    <pre class="csharp">using MathNet.Numerics.Distributions;
+
+namespace QuantConnect.Algorithm.Csharp
+{
+    public class MeanReversionDemo : QCAlgorithm
+    {
+    	List&lt;string&gt; _asset = new List&lt;string&gt;{"SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+					                        "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+					                        "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
+					                        
+    	public override void Initialize()
+    	{
+    		// 1. Required: Five years of backtest history
+    		SetStartDate(2014, 1, 1);
+    		
+    		// 2. Required: Alpha Streams Models:
+    		SetBrokerageModel(BrokerageName.AlphaStreams);
+    		
+    		// 3. Required: Significant AUM Capacity
+    		SetCash(1000000);
+    		
+    		// 4. Required: Benchmark to SPY
+    		SetBenchmark("SPY");
+    		
+    		SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+    		SetExecution(new ImmediateExecutionModel());
+    		
+    		// Add Equity ------------------------------------------------ 
+    		foreach(var ticker in _asset)
+    		{
+    			AddEquity(ticker, Resolution.Minute);
+    		}
+    		
+    		// Set Scheduled Event Method For Our Model
+    		Schedule.On(DateRules.EveryDay(), 
+	    		TimeRules.BeforeMarketClose("SHY", 5),
+	    		EveryDayBeforeMarketClose);
+    	}
+    	
+    	private void EveryDayBeforeMarketClose()
+    	{
+    		// Fetch history on our universe
+    		var history = History(Securities.Keys, 30, Resolution.Daily);
+    		if (history.Count() &lt; 0) return;
+    		
+    		// Extract close prices for each Symbol from Slice data
+    		var closes = new Dictionary&lt;Symbol, List&lt;Decimal&gt;&gt;();
+			foreach(var slice in history){
+			    foreach(var symbol in slice.Keys){
+			        if(!closes.ContainsKey(symbol)){
+			            closes.Add(symbol, new List&lt;Decimal&gt;());
+			        }
+			        closes[symbol].Add(slice.Bars[symbol].Close);
+			    }
+			}
+    		
+    		// Get the 30-day rolling mean, standard deviation series, z-score and filtration for each Symbol
+    		var rollingMean = new Dictionary&lt;string, double&gt;();
+			var rollingStd = new Dictionary&lt;string, double&gt;();
+			var filter = new Dictionary&lt;string, bool&gt;();
+			var zScore = new Dictionary&lt;string, double&gt;();
+			foreach(var kvp in closes)
+			{
+				var symbol = kvp.Key;
+			    if(!rollingMean.ContainsKey(symbol)){
+			        rollingMean.Add(symbol, decimal.ToDouble(kvp.Value.Average()));
+			        rollingStd.Add(symbol, Math.Sqrt(kvp.Value.Average(v =&gt; Math.Pow(decimal.ToDouble(v-kvp.Value.Average()), 2))));
+			        zScore.Add(symbol, (decimal.ToDouble(kvp.Value.Last()) - rollingMean[symbol]) / rollingStd[symbol]);
+			        filter.Add(symbol, zScore[symbol] &lt; -1);
+			    }
+			}
+			
+			// Calculate the expected return and its probability, then calculate the weight
+			var magnitude = new Dictionary&lt;Symbol, double&gt;();
+			var confidence = new Dictionary&lt;Symbol, double&gt;();
+			var weights = new Dictionary&lt;Symbol, double&gt;();
+			foreach(var kvp in rollingMean)
+		    {
+		        var symbol = kvp.Key;
+		        if(!magnitude.ContainsKey(symbol)){
+		            magnitude.Add(symbol, -zScore[symbol] * rollingStd[symbol] / decimal.ToDouble(closes[symbol].Last()));
+		            confidence.Add(symbol, Normal.CDF(0, 1, -zScore[symbol]));
+		            // Filter if trade or not
+		            var trade = filter[symbol] ? 1d : 0d;
+		            weights.Add(symbol, trade * Math.Max(confidence[symbol] - 1 / (magnitude[symbol] + 1), 0));
+		        }
+		    }
+			
+			// Normalize the weights, then emit insights
+			List&lt;Insight&gt; insights = new List&lt;Insight&gt;{};
+			
+			var sum = weights.Sum(x =&gt; x.Value);
+			if (sum == 0) return;
+			
+			foreach(var kvp in weights)
+			{
+				var symbol = kvp.Key;
+				weights[symbol] = kvp.Value / sum;
+				
+				var insight = new Insight(symbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Up, magnitude[symbol], confidence[symbol], null, weights[symbol]);
+				EmitInsights(insight);
+			}
+    	}
+    }
+}</pre>
+    <pre class="python">from scipy.stats import norm, zscore
+
+class MeanReversionDemo(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        #1. Required: Five years of backtest history
+        self.set_start_date(2014, 1, 1)
+    
+        #2. Required: Alpha Streams Models:
+        self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
+    
+        #3. Required: Significant AUM Capacity
+        self.set_cash(1000000)
+    
+        #4. Required: Benchmark to SPY
+        self.set_benchmark("SPY")
+        
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+    
+        self.assets = ["SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+                        "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                        "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+        
+        # Add Equity ------------------------------------------------ 
+        for i in range(len(self.assets)):
+            self.add_equity(self.assets[i], Resolution.MINUTE).symbol
+        
+        # Set Scheduled Event Method For Our Model
+        self.schedule.on(self.date_rules.every_day(), self.time_rules.before_market_close("SHY", 5), self.every_day_before_market_close)
+        
+        
+    def every_day_before_market_close(self) -&gt; None:
+        qb = self
+        # Fetch history on our universe
+        df = qb.history(list(qb.securities.keys()), 30, Resolution.DAILY)
+        if df.empty: return
+    
+        # Make all of them into a single time index.
+        df = df.close.unstack(level=0)
+    
+        # Calculate the truth value of the most recent price being less than 1 std away from the mean
+        classifier = df.le(df.mean().subtract(df.std())).iloc[-1]
+        if not classifier.any(): return
+    
+        # Get the z-score for the True values, then compute the expected return and probability
+        z_score = df.apply(zscore)[[classifier.index[i] for i in range(classifier.size) if classifier.iloc[i]]]
+    
+        magnitude = -z_score * df.std() / df
+        confidence = (-z_score).apply(norm.cdf)
+    
+        # Get the latest values
+        magnitude = magnitude.iloc[-1].fillna(0)
+        confidence = confidence.iloc[-1].fillna(0)
+    
+        # Get the weights, then zip together to iterate over later
+        weight = confidence - 1 / (magnitude + 1)
+        weight = weight[weight &gt; 0].fillna(0)
+        sum_ = np.sum(weight)
+        if sum_ &gt; 0:
+            weight = (weight) / sum_
+            selected = zip(weight.index, magnitude, confidence, weight)
+        else:
+            return
+    
+        # ==============================
+        
+        insights = []
+        
+        for symbol, magnitude, confidence, weight in selected:
+            insights.append( Insight.price(symbol, timedelta(days=1), InsightDirection.UP, magnitude, confidence, None, weight) )
+    
+        self.emit_insights(insights)</pre>
+</div>
