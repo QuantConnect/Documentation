@@ -1,0 +1,83 @@
+<p>The following examples demonstrate some common practices for applying datasets.</p>
+
+<h4>Example 1: Futures 5-Minute Bid-Ask</h4>
+<p>The following example studies the trend on the SP500 EMini Future contract. To study the short term supply-demand relationship, we consolidate the data into 5 minute bars and calculate the bid and ask dollar volume.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types in a separate cell.
+#load "../Initialize.csx"
+
+#load "../QuantConnect.csx"
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+
+// Create a QuantBook.
+var qb = new QuantBook();
+
+// Request the front-month-mapped future historical data.
+// Use raw normalization mode to fairly compare the actual bid and ask dollar volume.
+var future = qb.AddFuture(Futures.Indices.SP500EMini);
+var history = qb.History&lt;QuoteBar&gt;(future.Symbol, 
+    start: qb.Time - TimeSpan.FromDays(182),
+    end: qb.Time,
+    resolution: Resolution.Minute,
+    fillForward: true,
+    extendedMarketHours: true,
+    dataMappingMode: DataMappingMode.LastTradingDay,
+    dataNormalizationMode: DataNormalizationMode.Raw,
+    contractDepthOffset: 0);
+
+// Set up a consolidator and a RollingWindow to save the data
+var consolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(5));
+var window = new RollingWindow&lt;QuoteBar&gt;(10000);
+
+// Attach a consolidation handler method that saves the consolidated bars in the RollingWindow
+consolidator.DataConsolidated += (sender, consolidated) =&gt;
+{
+    window.Add(consolidated);
+};
+
+// Iterate the historical market data and feed each bar into the consolidator
+foreach(var bar in history)
+{
+    consolidator.Update(bar);
+}
+
+// Take the average of the highest and lowest price in the last 5 mintues as the estimated average price.
+var askDollarVolume = window.Select(x =&gt; (x.Ask.High + x.Ask.Low) * 0.5m * x.LastAskSize).ToList();
+var bidDollarVolume = window.Select(x =&gt; (x.Bid.High + x.Bid.Low) * 0.5m * x.LastBidSize).ToList();</pre>
+    <pre class="python"># Create a QuantBook
+qb = QuantBook()
+
+# Request the continuous future historical data.
+# Use raw normalization mode to fairly compare the actual bid and ask dollar volume.
+future = qb.add_future(Futures.Indices.SP_500_E_MINI)
+history = qb.history(
+    tickers=[future.symbol], 
+    start=qb.time - timedelta(days=182), 
+    end=qb.time, 
+    resolution=Resolution.MINUTE, 
+    fill_forward=True, 
+    extended_market_hours=True, 
+    dataMappingMode=DataMappingMode.LAST_TRADING_DAY, 
+    dataNormalizationMode=DataNormalizationMode.RAW, 
+    contractDepthOffset=0)
+
+# Drop level 0, 1 index (Expiry, Symbol index) from the DataFrame
+history = history.droplevel([0, 1])
+
+# Select the required columns to calculate the estimated bid and ask size.
+history = history[["askhigh", "asklow", "asksize", "bidhigh", "bidlow", "bidsize"]].resample("5T").agg({
+    "askhigh": "max",       # Get the highest ask price in the last 5 mintues
+    "asklow": "min",        # Get the lowest ask price in the last 5 mintues
+    "asksize": "sum",       # Get the total ask volume in the last 5 mintues
+    "bidhigh": "max",       # Get the highest bid price in the last 5 mintues
+    "bidlow": "min",        # Get the lowest bid price in the last 5 mintues
+    "bidsize": "sum"        # Get the total bid volume in the last 5 mintues
+})
+# Take the average of the highest and lowest price in the last 5 mintues as the estimated average price.
+history["ask_dollar_volume"] = (history["askhigh"] + history["asklow"]) * 0.5 * history["asksize"]
+history["bid_dollar_volume"] = (history["bidhigh"] + history["bidlow"]) * 0.5 * history["bidsize"]
+history</pre>
+</div>
