@@ -1,0 +1,105 @@
+<p>The following examples demonstrate some common practices for applying the Equity Options dataset.</p>
+
+<h4>Example 1: Implied Volatility Line Chart</h4>
+<p>The following example plots a line chart on the implied volatility curve of the cloest expiring calls.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types in a separate cell.
+#load "../Initialize.csx"
+
+#load "../QuantConnect.csx"
+using System;
+using System.Collections.Generic;
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Market;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+
+// Import Plotly for plotting.
+#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;
+
+// Create a QuantBook.
+var qb = new QuantBook();
+// Set the date being studied.
+var date = new DateTime(2024, 1, 4);
+
+// Subscribe to the underlying Future.
+var future = qb.AddFuture(Futures.Indices.SP500EMini);
+// Select the front-month contract.
+var futuresContract = qb.FutureChainProvider.GetFutureContractList(future.Symbol, date)
+    .OrderBy(symbol =&gt; symbol.ID.Date)
+    .First();
+
+// Get the Options data for the selected Futures contract at the selected date.
+var optionHistory = qb.OptionHistory(
+    futuresContract, date.AddDays(-1), date, Resolution.Daily, 
+    fillForward: false, extendedMarketHours: false
+).Last();
+
+var chain = optionHistory.OptionChains.Values.First();
+// Study the closest expiring contracts.
+var expiry = chain.Min(x =&gt; x.Expiry);
+// Filter for the closest expiring calls to study only.
+var filterContracts = chain.Where(x =&gt; x.Expiry == expiry && x.Right == OptionRight.Call).ToList();
+
+// Obtain the strike and IV for plotting the IV curve.
+var ivByStrike = new Dictionary&lt;decimal, decimal&gt;();
+foreach (var contract in filterContracts)
+{
+    var strike = contract.Strike;
+    var iv = contract.ImpliedVolatility;
+    ivByStrike[strike] = iv;
+}
+
+// Crete the Line Chart with the PE Ratios.
+var chart = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
+    ivByStrike.Keys,
+    ivByStrike.Values
+);
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Strike");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Implied Volatility");
+Title title = Title.init($"IV Curve of {futuresContract}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate a QuantBook instance.
+qb = QuantBook()
+# Set the date being studied.
+date = datetime(2024, 1, 4)
+
+# Subscribe to the underlying Future.
+future = qb.add_future(Futures.Indices.SP_500_E_MINI)
+# Select an underlying Futures contract. For example, get the front-month contract.
+futures_contract = sorted(
+    qb.future_chain_provider.get_future_contract_list(future.symbol, date),
+    key=lambda symbol: symbol.id.date
+)[0]
+# Get the Options data for the selected Futures contract.
+option_history = qb.option_history(
+    futures_contract, date - timedelta(1), date, Resolution.DAILY, 
+    fill_forward=False, extended_market_hours=False
+)
+
+chain = list(option_history)[-1].OptionChains.values()[0]
+# Study the closest expiring contracts.
+expiry = min(x.expiry for x in chain)
+# Filter for the closest expiring calls to study only.
+filter_contracts = [x for x in chain if x.expiry == expiry and x.right == OptionRight.CALL]
+
+# Obtain the strike and IV for plotting the IV curve.
+iv_by_strike = pd.Series({x.strike: x.implied_volatility for x in filter_contracts})
+iv_by_strike.plot(title=f"IV Curve of {futures_contract}", ylabel="Implied Volatility", xlabel="Strike")</pre>
+</div>
