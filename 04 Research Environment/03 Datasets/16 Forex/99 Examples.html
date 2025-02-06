@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for applying the Crypto dataset.</p>
+<p>The following examples demonstrate some common practices for applying the Forex dataset.</p>
 
 <h4>Example 1: 5-Minute Candlestick Plot</h4>
-<p>The following example studies the candlestick pattern of the BTCUSD. To study the short term pattern, we consolidate the data into 5 minute bars and plot the 5-minute candlestick plot.</p>
+<p>The following example studies the candlestick pattern of the USDJPY. To study the short term pattern, we consolidate the data into 5 minute bars and plot the 5-minute candlestick plot, using the mid prices.</p>
 <div class="section-example-container">
     <pre class="csharp">// Load the required assembly files and data types in a separate cell.
 #load "../Initialize.csx"
@@ -25,16 +25,16 @@ using Plotly.NET.LayoutObjects;
 // Create a QuantBook.
 var qb = new QuantBook();
 
-// Request the BTCUSD historical data.
-var symbol = qb.AddCrypto("BTCUSD", market: Market.Coinbase).Symbol;
-var history = qb.History&lt;TradeBar&gt;(symbol, 
+// Request the USDJPY historical data.
+var symbol = qb.AddForex("USDJPY").Symbol;
+var history = qb.History&lt;QuoteBar&gt;(symbol, 
     start: qb.Time - TimeSpan.FromDays(182),
     end: qb.Time,
     resolution: Resolution.Minute);
 
 // Set up a consolidator and a RollingWindow to save the data
-var consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
-var window = new RollingWindow&lt;TradeBar&gt;(10000);
+var consolidator = new QuoteBarConsolidator(TimeSpan.FromMinutes(5));
+var window = new RollingWindow&lt;QuoteBar&gt;(10000);
 
 // Attach a consolidation handler method that saves the consolidated bars in the RollingWindow
 consolidator.DataConsolidated += (sender, consolidated) =&gt;
@@ -48,12 +48,12 @@ foreach(var bar in history)
     consolidator.Update(bar);
 }
 
-// Crete the Candlestick chart using the 5-minute windows.
+// Crete the Candlestick chart using the 5-minute windows with mid prices.
 var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
-    window.Select(x =&gt; x.Open),
-    window.Select(x =&gt; x.High),
-    window.Select(x =&gt; x.Low),
-    window.Select(x =&gt; x.Close),
+    window.Select(x =&gt; (x.Ask.Open + x.Bid.Open) * 0.5m),
+    window.Select(x =&gt; (x.Ask.High + x.Bid.High) * 0.5m),
+    window.Select(x =&gt; (x.Ask.Low + x.Bid.Low) * 0.5m),
+    window.Select(x =&gt; (x.Ask.Close + x.Bid.Close) * 0.5m),
     window.Select(x =&gt; x.EndTime)
 );
 // Create a Layout as the plot settings.
@@ -77,8 +77,8 @@ import plotly.graph_objects as go
 # Create a QuantBook
 qb = QuantBook()
 
-# Request SPY's historical data.
-symbol = qb.add_crypto("BTCUSD", market=Market.COINBASE).symbol
+# Request USDJPY's historical data.
+symbol = qb.add_forex("USDJPY").symbol
 history = qb.history(symbol, 
     start=qb.time - timedelta(days=182), 
     end=qb.time, 
