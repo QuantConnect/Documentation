@@ -1,0 +1,94 @@
+<p>The following examples demonstrate some common practices for applying the Equity Options dataset.</p>
+
+<h4>Example 1: Implied Volatility Line Chart</h4>
+<p>The following example plots a line chart on the implied volatility curve of the cloest expiring calls.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types in a separate cell.
+#load "../Initialize.csx"
+
+#load "../QuantConnect.csx"
+using System;
+using System.Collections.Generic;
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Market;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+
+// Import Plotly for plotting.
+#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;
+
+// Create a QuantBook.
+var qb = new QuantBook();
+// Set the date being studied.
+var date = new DateTime(2024, 1, 4);
+
+// Subscribe to the underlying Equity with raw data normalization and save a reference to the Equity Symbol.
+var equity = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+// Request the option data by calling the add_option method with the underlying Equity Symbol.
+var option = qb.AddOption(equity);
+
+// Request the historical option data to obtain the data to be calculated and compared.
+var history = qb.History&lt;OptionUniverse&gt;(option.Symbol, date.AddDays(-1), date, Resolution.Daily);
+var ivByStrike = new Dictionary&lt;decimal, decimal&gt;();
+foreach (var chain in history)
+{
+    // Get the closest expiring calls to study.
+    var filteredChain = chain.Select(contract =&gt; contract as OptionUniverse)
+        .Where(x =&gt; x.Symbol.ID.Date == date && x.Symbol.ID.OptionRight == OptionRight.Call);
+
+    // Obtain the strike and IV for plotting the IV curve.
+    foreach (var contract in filteredChain)
+    {
+        var strike = contract.Symbol.ID.StrikePrice;
+        var iv = contract.ImpliedVolatility;
+        ivByStrike[strike] = iv;
+    }
+}
+
+// Crete the Line Chart with the PE Ratios.
+var chart = Chart2D.Chart.Line&lt;decimal, decimal, string&gt;(
+    ivByStrike.Keys,
+    ivByStrike.Values
+);
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Strike");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Implied Volatility");
+Title title = Title.init($"IV Curve of {option.Symbol}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate a QuantBook instance.
+qb = QuantBook()
+# Set the date being studied.
+date = datetime(2024, 1, 4)
+
+# Subscribe to the underlying Equity with raw data normalization and save a reference to the Equity Symbol.
+equity_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+# Request the option data by calling the add_option method with the underlying Equity Symbol.
+option = qb.add_option(equity_symbol)
+
+# Request the historical option data to obtain the data to be calculated and compared.
+history_df = qb.history(option.symbol, date-timedelta(1), date, flatten=True).droplevel([0])
+
+# Include only the closest expiring calls.
+expiry = min(x.id.date for x in history_df.index)
+history_df = history_df.loc[(x for x in history_df.index if x.id.date == expiry and x.id.option_right == OptionRight.CALL)]
+strikes = [x.id.strike_price for x in history_df.index]
+
+# Plot the IV curve versus strikes.
+history_df.index = strikes
+history_df[["impliedvolatility"]].plot(title="IV Curve", xlabel="strike", ylabel="implied volatility")</pre>
+</div>
