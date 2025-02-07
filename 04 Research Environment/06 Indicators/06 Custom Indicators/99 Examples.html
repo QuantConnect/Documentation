@@ -1,0 +1,190 @@
+<p>The following examples demonstrate some common practices for researching with combining indicators.</p>
+
+<h4>Example 1: Expected Shortfall</h4>
+<p>The following example demonstrates researching using a custom-constructed Expected Shortfall indicator. Expected Shortfall refers to the average of the N% worst-case return.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the assembly files and data types in their own cell.
+#load "../Initialize.csx"
+
+// Load the necessary assembly files.
+#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
+#r "../Plotly.NET.Interactive.dll"
+
+// Import the QuantConnect, Plotly.NET, and Accord packages for calculation and plotting.
+using QuantConnect;
+using QuantConnect.Indicators;
+using QuantConnect.Research;
+            
+using Plotly.NET;
+using Plotly.NET.Interactive;
+using Plotly.NET.LayoutObjects;
+
+// Instantiate the QuantBook instance for researching.
+var qb = new QuantBook();
+// Request SPY data to work with the indicator.
+var symbol = qb.AddEquity("SPY").Symbol;
+
+// Request historical trading data with the daily resolution.
+var history = qb.History(symbol, 70, Resolution.Daily);
+
+public class ExpectedShortfallPercent : WindowIndicator&lt;IndicatorDataPoint&gt;, IIndicatorWarmUpPeriodProvider
+{
+    private decimal _alpha;
+    
+    // Set up IndicatorDataPoint attributes for the indicator.
+    public IndicatorBase&lt;IndicatorDataPoint&gt; ValueAtRisk { get; }
+
+    // Set up the WarmUpPeriod attribute to provide implementation of the IIndicatorWarmUpPeriodProvider interface.
+    public override int WarmUpPeriod =&gt; Period;
+
+    // Set up the constructor.
+    // period: The lookback period for return distribution.
+    // alpha: Alpha level of VaR cutoff.
+    public ExpectedShortfallPercent(int period, decimal alpha)
+        : base("ES", period)
+    {
+        _alpha = alpha;
+        ValueAtRisk = new Identity("ES_VaR");
+    }
+
+    // Override the IsReady method to set up the flag of the Indicator and its IndicatorDataPoint attributes are ready.
+    public override bool IsReady =&gt; ValueAtRisk.IsReady;
+
+    // Mandatory: Override the ComputeNextValue method to calculate the indictor value.
+    protected override decimal ComputeNextValue(IReadOnlyWindow&lt;IndicatorDataPoint&gt; window, IndicatorDataPoint input)
+    {
+        if (Samples &lt; 2)
+            return 0m;
+                
+        var n = Math.Min(Period, Samples);
+        var cutoff = (int) Math.Ceiling(n * _alpha);
+        
+        var samples = new List&lt;decimal&gt;();
+        for (int i = 0; i &lt; window.Count - 1; i++)
+        {
+            samples.Add( (window[i] - window[i+1]) / window[i+1] );
+        }
+        var lowest = samples.OrderBy(x =&gt; x).Take(cutoff);
+        
+        ValueAtRisk.Update(input.Time, lowest.Last());
+        return lowest.Average();
+    }
+}
+
+// Create the expected shortfall indicator to study.
+var es = new ExpectedShortfallPercent(50, 0.05m);
+
+// Create a window dictionary to store RollingWindow objects.
+var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
+// Store the RollingWindow objects, index by key is the property of the indicator.
+var time = new RollingWindow&lt;DateTime&gt;(20);
+window["expectedshortfall"] = new RollingWindow&lt;decimal&gt;(20);
+window["valueatrisk"] = new RollingWindow&lt;decimal&gt;(20);
+
+// Define an update function to add the indicator values to the RollingWindow object.
+es.Updated += (sender, updated) =&gt;
+{
+    var indicator = (ExpectedShortfallPercent) sender;
+    time.Add(updated.EndTime);
+    window["expectedshortfall"].Add(updated);
+    window["valueatrisk"].Add(indicator.ValueAtRisk.Current);
+};
+
+// Iterate through the historical market data and update the indicator.
+foreach(var bar in history){
+    es.Update(bar.EndTime, bar.Close);
+}
+
+// Create line chart of the Expected Shortfall Percent.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    time,
+    window["expectedshortfall"]
+);
+
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "%");
+Title title = Title.init($"Expected Shortfall Percent of {symbol}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate the QuantBook instance for researching.
+qb = QuantBook()
+# Request SPY data to work with the indicator.
+symbol = qb.add_equity("SPY").symbol
+
+# Request historical trading data with the daily resolution.
+history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)
+
+class ExpectedShortfallPercent(PythonIndicator):
+    import math, numpy as np
+    
+    def __init__(self, period, alpha):
+        self.value = None   # Attribute represents the indicator value
+        self.value_at_risk = None
+        
+        self.alpha = alpha
+        
+        self._window = RollingWindow[float](period)
+    
+    # Override the IsReady attribute to flag all attributes values are ready.
+    @property
+    def IsReais_readydy(self) -&gt; bool:
+        return self.value and self.value_at_risk
+    
+    # Method to update the indicator values. Note that it only receives 1 IBaseData object (Tick, TradeBar, QuoteBar) argument.
+    def update(self, input: BaseData) -&gt; bool:
+        count = self._window.Count
+        
+        self._window.Add(input.Close)
+        
+        # Update the Value and other attributes as the indicator current value.
+        if count &gt;= 2:
+            cutoff = math.ceil(self.alpha * count)
+            
+            ret = [ (self._window[i] - self._window[i+1]) / self._window[i+1] for i in range(count-1) ]
+            lowest = sorted(ret)[:cutoff]
+            
+            self.value = np.mean(lowest)
+            self.value_at_risk = lowest[-1]
+            
+        # return a boolean to indicate IsReady.
+        return count &gt;= 2
+    
+# Initialize a new instance of the custom indicator.
+custom = ExpectedShortfallPercent(50, 0.05)
+
+# Create a window dictionary to store RollingWindow objects.
+window = {}
+# Store the RollingWindow objects, index by key is the property of the indicator.
+window['time'] = RollingWindow[DateTime](20)
+window['expectedshortfall'] = RollingWindow[float](20)
+window['valueatrisk'] = RollingWindow[float](20)
+
+# Iterate through the historical market data and update the indicator.
+for bar in history:
+    custom.update(bar)
+    
+    # The Updated event handler is not available for custom indicator in Python, RollingWindows are needed to be updated in here.
+    if custom.is_ready:
+        window['time'].add(bar.end_time)
+        window['expectedshortfall'].add(custom.value)
+        window['valueatrisk'].add(custom.value_at_risk)
+    
+# Populate a DataFrame with the data in the RollingWindow objects.
+custom_dataframe = pd.DataFrame(window).set_index('time')
+
+# Create line chart of the Expected Shortfall Percent.
+custom_dataframe.plot(title=f"Expected Shortfall Percent of {symbol}", xlabel="Time", ylabel="%")
+plt.show()</pre>
+</div>
