@@ -1,0 +1,91 @@
+<p>The following examples demonstrate some common practices for researching with combining indicators.</p>
+
+<h4>Example 1: Plot Standard Deviation Of Return</h4>
+<p>The following example demonstrates a quick backtest to testify the effectiveness of a Standard Deviation On Return mean-reversal under the research enviornment.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the assembly files and data types in their own cell.
+#load "../Initialize.csx"
+
+// Load the necessary assembly files.
+#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
+#r "../Plotly.NET.Interactive.dll"
+
+// Import the QuantConnect, Plotly.NET, and Accord packages for calculation and plotting.
+using QuantConnect;
+using QuantConnect.Indicators;
+using QuantConnect.Research;
+            
+using Plotly.NET;
+using Plotly.NET.Interactive;
+using Plotly.NET.LayoutObjects;
+
+// Instantiate the QuantBook instance for researching.
+var qb = new QuantBook();
+// Request SPY data to work with the indicator.
+var symbol = qb.AddEquity("SPY").Symbol;
+
+// Create the SD on Return indicator with parameters to be studied.
+var roc = new RateOfChange(1);
+var sd = new StandardDeviation(252);
+var indicator = IndicatorExtensions.Of(sd, roc);
+
+// Get the history of SPY to update the indicator and trade.
+var history = qb.History&lt;TradeBar&gt;(symbol, 500, Resolution.Daily).ToList();
+
+var indicatorValues = new List&lt;decimal&gt;();
+var time = new List&lt;DateTime&gt;();
+for (int i = 0; i &lt; history.Count - 1; i++)
+{
+    // Update the indicator value.
+    var bar = history[i];
+    roc.Update(bar);
+    
+    indicatorValues.Add(indicator.Current.Value);
+    time.Add(bar.EndTime);
+}
+
+// Create line chart of the SD of Return.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    time,
+    indicatorValues
+);
+
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "%");
+Title title = Title.init($"Return SD of {symbol}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate the QuantBook instance for researching.
+qb = QuantBook()
+# Request SPY data to work with the indicator.
+symbol = qb.add_equity("SPY").symbol
+
+# Get the historical data for trading.
+history = qb.history(symbol, 500, Resolution.DAILY).close.unstack(0)
+history = history.groupby(history.index.date).sum()
+
+# Create the SD on Return with parameters to be studied.
+roc = RateOfChange(1)
+sd = StandardDeviation(252)
+indicator = IndicatorExtensions.of(sd, roc)
+
+# Update and obtain the indicator value
+def update(row):
+    roc.update(row.name, row.iloc[0])
+    return indicator.current.value
+indicator_dataframe = history.apply(update, axis=1).iloc[252:]
+
+indicator_dataframe.plot(title=f"Return SD of {symbol}", ylabel="%", xlabel="Time")</pre>
+</div>
