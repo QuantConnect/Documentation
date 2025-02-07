@@ -8,7 +8,7 @@ from bokeh.transform import cumsum, transform
 from bokeh.io import output_notebook
 
 # Call the `output_notebook` method for displaying the plots in the jupyter notebook.
-output_notebook()"
+output_notebook()";
 
 include(DOCS_RESOURCES."/research-guide/charting/python-preparation.php");
 ?>
