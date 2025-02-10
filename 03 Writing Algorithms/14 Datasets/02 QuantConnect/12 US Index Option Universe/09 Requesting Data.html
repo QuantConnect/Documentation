@@ -1,0 +1,83 @@
+<p>To add US Index Options Universe data to your algorithm, call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method. Save a reference to the Index Option <code>Symbol</code> so you can access the data later in your algorithm. To define which contracts should be in your universe, call the <code class="csharp">SetFilter</code><code class="python">set_filter</code> method of the <code>IndexOption</code> object.</p>
+
+<p>The <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method provides a daily stream of Option chain data. To get the most recent daily chain, call the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method with the canonical Index Option Symbol. The <code class="csharp">OptionChain</code><code class="python">option_chain</code> method returns data on all the tradable contracts, not just the contracts that pass your universe filter.</p>
+
+<div class="section-example-container">
+<pre class="python">class IndexOptionsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(1_000_000)
+        self.universe_settings.asynchronous = True
+        self.index_symbol = self.add_index('VIX').symbol
+        
+        standard_option = self.add_index_option(self.index_symbol)
+        standard_option.set_filter(self._option_filter)
+        self.standard_option_symbol = standard_option.symbol
+        standard_chain = self.option_chain(standard_option.symbol, flatten=True).data_frame
+
+        weekly_option = self.add_index_option(self.index_symbol, "VIXW")
+        weekly_option.set_filter(self._option_filter)
+        self.weekly_option_symbol = weekly_option.symbol
+        weekly_chain = self.option_chain(weekly_option.symbol, flatten=True).data_frame
+        weekly_chain = weekly_chain[
+            weekly_chain.index.map(lambda symbol: not IndexOptionSymbol.is_standard(symbol))
+        ]
+        
+
+    def _option_filter(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        # Contracts can be filtered by greeks, implied volatility, open interest:
+        return universe \
+            .delta(0.5, 1.5) \
+            .gamma(0.0001, 0.0006) \
+            .vega(0.01, 1.5) \
+            .theta(-2.0, -0.5) \
+            .rho(0.5, 3.0) \
+            .implied_volatility(1, 3) \
+            .open_interest(100,500)</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class IndexOptionsDataAlgorithm : QCAlgorithm
+    {
+    	private Symbol _indexSymbol, _standardOptionSymbol, _weeklyOptionSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            UniverseSettings.Asynchronous = True;
+            _indexSymbol = AddIndex("VIX").Symbol;
+
+            var standardOption = AddIndexOption(_indexSymbol);
+            standardOption.SetFilter(OptionFilter);
+            _standardOptionSymbol = standardOption.Symbol;
+            var standardChain = OptionChain(_standardOptionSymbol);
+
+            var weeklyOption = AddIndexOption(_indexSymbol, "VIXW");
+            weeklyOption.SetFilter(OptionFilter);
+            _weeklyOptionSymbol = weeklyOption.Symbol;
+            var weeklyChain = OptionChain(_weeklyOptionSymbol)
+                .Where(contract =&gt; !IndexOptionSymbol.IsStandard(contract.Symbol));
+        }
+
+        private virtual OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
+        {
+            // Contracts can be filtered by greeks, implied volatility, open interest:
+            return universe
+                .Delta(0.5m, 1.5m)
+                .Gamma(0.0001m, 0.0006m)
+                .Vega(0.01m, 1.5m)
+                .Theta(-2.0m, -0.5m)
+                .Rho(0.5m, 3.0m)
+                .ImpliedVolatility(1.0m, 3.0m)
+                .OpenInterest(100, 500);
+        }
+    }
+}</pre>
+</div>
+
+<p>The Index resolution must be less than or equal to the Index Option resolution. For example, if you set the Index resolution to minute, then you must set the Index Option resolution to minute, hour, or daily.</p>
+
+<p>For more information about creating US Index Option subscriptions, see <a href="/docs/v2/writing-algorithms/universes/index-options">Index Options</a>.</p>

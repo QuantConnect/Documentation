@@ -1,0 +1,28 @@
+<p>To check how many shares are available for a security to short, call the <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> method of the <code class="csharp">ShortableProvider</code><code class="python">shortable_provider</code></p>
+
+<div class="section-example-container">
+    <pre class="csharp">var shortableProvider = Securities[_symbol].ShortableProvider;
+// Get the shortable quantity of the selected symbol at the selected time
+var shortableQuantity = shortableProvider.ShortableQuantity(_symbol, Time);
+
+// Check if there are a certain quantity of shares available
+var quantity = 100;
+var isShortableQuantity = Shortable(_symbol, quantity);</pre>
+    <pre class="python">shortable_provider = self.securities[self._symbol].shortable_provider
+# Get the shortable quantity of the selected symbol at the selected time
+shortable_quantity = shortable_provider.shortable_quantity(self._symbol, self.time)
+
+# Check if there are a certain quantity of shares available
+quantity = 100;
+is_shortable_quantity = self.shortable(self._symbol, quantity)</pre>
+</div>
+
+<p>To check borrowing cost, call the <code class="csharp">FeeRate</code><code class="python">fee_rate</code> or <code class="csharp">RebateRate</code><code class="python">rebate_rate</code> method of the <code class="csharp">ShortableProvider</code><code class="python">shortable_provider</code></p>
+<div class="section-example-container">
+    <pre class="csharp">var feeRate = shortableProvider.FeeRate(_symbol, Time);
+var rebateRate = shortableProvider.RebateRate(_symbol, Time);</pre>
+    <pre class="python">fee_rate = shortable_provider.fee_rate(self._symbol, self.time);
+rebate_rate = shortable_provider.rebate_rate(self._symbol, self.time);</pre>
+</div>
+
+To get valid borrowing rates, use the <a href="/docs/v2/writing-algorithms/reality-modeling/short-availability/supported-providers#05-Interactive-Brokers-Provider">InteractiveBrokersShortableProvider</a><a>.</a>
