@@ -1,0 +1,32 @@
+#
+#   Regression Tests for Example Algorithms
+#
+
+# Start with the Ubuntu 20.04 base image
+FROM ubuntu:20.04
+
+# Set environment variables to avoid interactive prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary packages and PHP
+RUN apt-get update
+RUN apt-get install -y php python3 python3-venv python3-dev git
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip and install Python dependencies
+RUN apt-get update && \
+    apt-get install -y python3-pip
+RUN pip install --upgrade pip
+RUN pip install beautifulsoup4==4.12.3
+RUN pip install ratelimit==2.2.1
+RUN pip install requests==2.31.0
+
+# Set the working directory to the Documentation directory
+WORKDIR /app/Documentation
+
+# Copy the necessary files into the container
+COPY ../.. .
+
+# Command to run the regression tester
+CMD ["python3", "examples-check/example-regression-algorithm-test.py"]
