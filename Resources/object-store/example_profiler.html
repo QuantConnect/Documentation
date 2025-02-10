@@ -1,16 +1,19 @@
-<p class='csharp'>Profiling speed is only relevant for Python users.</p>
-
-<div class='python'>
-
-<p>
+<div class="python">
+<p class="python">
   <a rel="nofollow" target="_blank" href='https://docs.python.org/3/library/profile.html'>Python Profilers</a> from the Python Standard Library enable you to find the functions and methods in your algorithm that consume most of the runtime.
   To analyze your algorithm's efficiency with the Python Profilers, follow these steps:
+</p>
+<p class="csharp">
+  You can create your own profiler in C# to measure which functions and methods in your algorithm that consume most of the runtime. To analyze your algorithm's efficiency with the custom C# Profiler, follow these steps:
 </p>
 
 <ol>
   <li>Open the project in the <a href='/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects'>Cloud Platform</a>, <a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>Local Platform</a>, or a local IDE if you use the CLI.</p>
 
-  <li>At the top of the <span class='public-file-name'>main.py</span> file, import the classes you need and enable the <code>Profile</code>.</li>
+  <li>
+    <span class="python">At the top of the <span class='public-file-name'>main.py</span> file, import the classes you need and enable the <code>Profile</code>.</span>
+    <span class="csharp">Create your own custom profiler class to measure and cache the runtime per each function and method.</span>
+  </li>
   <div class="section-example-container">
     <pre class="python">from cProfile import Profile
 from pstats import Stats
@@ -19,15 +22,68 @@ from io import StringIO
 # Create the profile and start collecting profiling data.
 profile = Profile()
 profile.enable()</pre>
-</div>
+    <pre class="csharp">using System.Diagnostics;
+using System.Text.Json;
+using Castle.DynamicProxy;
 
-  <li>Define or extend the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>on_end_of_algorithm</a> method to <code>disable</code> the <code>Profile</code> and save information on the most time-consuming functions to the <a href='/docs/v2/research-environment/object-store'>Object Store</a>.</li>
+public class Profiler
+{
+    private QCAlgorithm _algorithm;
+    // A dictionary to cache the runtime per each function/method.
+    private Dictionary&lt;string, long&gt; _methodStats = new();
+
+    public Profiler(QCAlgorithm algorithm)
+    {
+        _algorithm = algorithm;
+    }
+
+    public void Profile(IInvocation invocation)
+    {
+        // Measure each call on the action with a new stopwatch.
+        var stopwatch = Stopwatch.StartNew();
+        // Normal run of the method.
+        invocation.Proceed();
+        stopwatch.Stop();
+
+        // Obtain the runtime of this call instance.
+        long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+        // Add the runtime of this instance to the total runtime.
+        if (_methodStats.ContainsKey(method.Name))
+        {
+            _methodStats[method.Name] = 0;
+        }
+        _methodStats[method.Name] += elapsedMilliseconds;
+    }
+
+    // Save the runtime results as json for later retrival.
+    public void SaveResults(string key)
+    {
+        var json = JsonSerializer.Serialize(_methodStats);
+        _algorithm.ObjectStore.SaveJson(key, json);
+    }
+}</pre>
+  </div>
+
+  <li class="csharp">Assign the <code>Profiler</code> to each method of the algorithm to measure the runtime of them automatically.</li>
+  <div class="section-example-container">
+    <pre class="csharp">class FunctionTimeConsumptionAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // Instantiate the profiler to measure the runtime.
+        _profiler = new(this);
+        // Get all methods of the algorithm, add the profiler to them to measure the runtime automatically.
+        var proxyGenerator = new ProxyGenerator();
+        // Create a proxy of the FunctionTimeConsumptionAlgorithm.
+        MyClass myClassProxy = proxyGenerator.CreateClassProxy&lt;FunctionTimeConsumptionAlgorithm&gt;(interceptor);
+    }
+}</pre>
+  </div>
+
+  <li>Define or extend the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'><span class="python">on_end_of_algorithm</span><span class="csharp">OnEndOfAlgorithm</span></a> method to <span class="python"><code>disable</code> the <code>Profile</code> and </span>save information on the most time-consuming functions to the <a href='/docs/v2/research-environment/object-store'>Object Store</a>.</li>
 
   <div class="section-example-container">
     <pre class="python">class FunctionTimeConsumptionAlgorithm(QCAlgorithm):
-    def initialize(self):
-        pass
-
     def on_end_of_algorithm(self):
         # Stop collecting profiling data
         profile.disable()
@@ -36,20 +92,30 @@ profile.enable()</pre>
         Stats(profile, stream=stream).sort_stats('cumulative').print_stats(20)
         # Save the profiling data to the Object Store using the algorithm ID.
         self.object_store.save(f"{self.algorithm_id}_profile", stream.getvalue())</pre>
+    <pre class="csharp">class FunctionTimeConsumptionAlgorithm : QCAlgorithm
+{
+    public override void OnEndOfAlgorithm()
+    {
+      _profiler.SaveResults($"{AlgorithmId}_profile.json");
+    }
+}</pre>
   </div>
 
   <li><a href='/docs/v2/research-environment/key-concepts/getting-started#03-Open-Notebooks'>Open the Research Environment</a> and create a <code>QuantBook</code>.</li>
   <div class="section-example-container">
+    <pre class="csharp">var qb = new QuantBook();</pre>
     <pre class="python">qb = QuantBook()</pre>
   </div>
 
   <li>Get the backtest Id and read the profiling data from the Object Store.</li>
   <p>The process to get the backtest Id depends on if you use the <a href='/docs/v2/cloud-platform/backtesting/getting-started#06-Get-Backtest-Id'>Cloud Platform</a>, <a href='/docs/v2/local-platform/backtesting/getting-started#07-Get-Backtest-Id'>Local Platform</a>, or <a href='/docs/v2/lean-cli/backtesting/deployment#05-Get-Backtest-Id'>CLI</a>.</p>
   <div class="section-example-container">
+    <pre class="csharp">var backtestId = "&lt;PROJECT_ID&gt;";
+var profileOutput = qb.ObjectStore.ReadJson&lt;Dictionary&lt;string, int&gt;&gt;($"{backtestId}_profile.json")
+Console.WriteLine(profileOutput);</pre>
     <pre class="python">backtest_id = "8b16cec0c44f75188d82f9eadb310e17"
 profile_output = qb.object_store.read(f"{backtest_id}_profile")
 print(profile_output)</pre>
   </div>
 </ol>
-
 </div>
