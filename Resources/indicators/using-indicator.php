@@ -52,7 +52,7 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=$pyHelperName?> = self.<?=$helperPrefix?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
         if self._<?=$pyHelperName?>.is_ready:
@@ -119,7 +119,7 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.HOUR)
 <?}?>
-        self._<?=$pyHelperName?> = self.<?=$helperPrefix?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
+        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
 </pre>
 </div>
 <? } ?>
