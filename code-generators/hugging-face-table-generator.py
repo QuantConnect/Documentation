@@ -31,7 +31,7 @@ Repo: yiyanghkust/finbert-tone. Revisions ['4921590d3c0c3832c0efea24c8381ce0bda7
 
 EXAMPLES = {
     'chronos-t5' : '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/chronos-t5',
-    'distilbert' : '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/distilbert',
+    'distilbert-base-cased-distilled-squad' : '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/distilbert',
     'finbert': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/finbert'
 }
 
