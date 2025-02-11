@@ -1,0 +1,44 @@
+<p>Follow these steps to answer questions with DistilBERT:</p>
+
+<ol>
+    <li><a href='/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/distilbert#03-Load-Pre-Trained-Model'>Load the model</a>.</li>
+
+    <li>Define the context.</li>
+    <div class="section-example-container">
+      <pre class="python">context = """
+Introduced on 2024-11-01. 
+The legislation introduces a flat corporate income tax rate, reducing the current graduated system 
+to 5.5% for taxable years starting from January 1, 2025, and further lowering it to 3.5% for years 
+beginning January 1, 2026. It establishes a bonus depreciation deduction for qualified property and 
+research expenditures, allowing immediate cost recovery. The bill also terminates various corporate 
+tax credits, exemptions, and deductions, including those related to motion picture production, 
+research and development, and historic structure rehabilitation, with most credits expiring after 
+June 30, 2025. Additionally, it repeals provisions for certain tax programs and credits, such as the
+corporate tax apportionment program and various incentives for businesses. The changes aim to simplify 
+corporate taxation and reduce the number of available tax credits, with the new provisions effective 
+for income tax periods starting January 1, 2025, and franchise tax periods beginning January 1, 2026. 
+The legislation will take effect upon the governor's signature or after the designated period for 
+gubernatorial action.
+"""</pre> 
+    </div>
+
+    <li>Create the question.</li>
+    <div class="section-example-container">
+      <pre class="python">question = "What do these changes accomplish?"</pre> 
+    </div>
+
+    <li>Pass the question and context to the pipeline.</li>
+    <div class="section-example-container">
+      <pre class="python">result = question_answerer(question=question, context=context)</pre> 
+    </div>
+
+    <p>The following dictionary is an example result:</p>
+    <div class="section-example-container">
+      <pre class="python">{
+    'score': 0.19066356122493744,
+    'start': 820, 
+    'end': 895, 
+    'answer': 'simplify corporate taxation and reduce the number of available tax credits'
+}</pre> 
+    </div>
+</ol>
