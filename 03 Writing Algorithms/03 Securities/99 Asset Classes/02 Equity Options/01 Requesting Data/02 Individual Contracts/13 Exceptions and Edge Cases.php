@@ -1,5 +1,20 @@
 <p>The following sections explain exceptions and edge cases with subscribing to individual Option contracts.</p>
 
+<h4>Manually Creating Option Symbol Objects</h4>
+
+<p>
+    To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
+    You can get the contract <code>Symbol</code> from the <code class="csharp">CreateOption</code><code class="python">create_option</code> or <code class="csharp">OptionChain</code><code class="python">option_chain</code> methods. 
+    If you use the <code class="csharp">CreateOption</code><code class="python">create_option</code> method, you need to provide the details of an existing contract.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_underlying, Market.USA,
+    OptionStyle.American, OptionRight.Call, 365, new DateTime(2022, 6, 17));</pre>
+    <pre class="python">self._contract_symbol = Symbol.create_option(self._underlying, Market.USA,
+    OptionStyle.AMERICAN, OptionRight.CALL, 365, datetime(2022, 6, 17))</pre>
+</div>
+
 <h4>Default Underlying Subscription Settings</h4>
 
 <p>If you subscribe to an Equity Option contract but don't have a subscription to the underlying Equity, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
@@ -35,21 +50,6 @@
 <div class="section-example-container">
     <pre class="csharp">_underlying = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
     <pre class="python">self._underlying = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)</pre>
-</div>
-
-<h4>Manually Creating Option Symbol Objects</h4>
-
-<p>
-    To subscribe to an Option contract, you need the contract <code>Symbol</code>. 
-    You can get the contract <code>Symbol</code> from the <code class="csharp">CreateOption</code><code class="python">create_option</code> or <code class="csharp">OptionChain</code><code class="python">option_chain</code> methods. 
-    If you use the <code class="csharp">CreateOption</code><code class="python">create_option</code> method, you need to provide the details of an existing contract.
-</p>
-
-<div class="section-example-container">
-    <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_underlying, Market.USA,
-    OptionStyle.American, OptionRight.Call, 365, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self._contract_symbol = Symbol.create_option(self._underlying, Market.USA,
-    OptionStyle.AMERICAN, OptionRight.CALL, 365, datetime(2022, 6, 17))</pre>
 </div>
 
 <h4>Overriding the Initial Implied Volatility Guess</h4>
