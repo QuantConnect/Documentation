@@ -15,6 +15,7 @@ from ratelimit import limits, sleep_and_retry
 
 ROOT_DIR = "."
 VALIDATE_MODE = bool(os.environ["DOCS_REGRESSION_TEST_VALIDATION_MODE"])
+MIN_COWORKER = 2
 MAX_COWORKER = 3        # Limited by number of backtest nodes divided by 2 (C# & Py run simutaneously)
 
 BASE_API = "https://www.quantconnect.com/api/v2"
@@ -560,15 +561,15 @@ class RegressionTests:
         
         files = self.get_testing_files(ROOT_DIR)
         total_file_num = len(files)
-        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Get all testable algorithms from {total_file_num} files, now start testing...")
         
         # Speed up with multiprocessing.
-        max_workers = min(MAX_COWORKER, mp.cpu_count())
+        workers = max(MIN_COWORKER, min(MAX_COWORKER, mp.cpu_count()))
+        print(f"{datetime.now()}::{time.time()-start_time:.4f}::Get all testable algorithms from {total_file_num} files, now start testing with {workers} workers")
         manager = mp.Manager()
         self.semaphore = manager.Semaphore(1)       # Critical process only allows 1 worker at a time
         
         self.tasks_completed = manager.Value('i', 0)
-        with mp.Pool(processes=max_workers) as pool:
+        with mp.Pool(processes=workers) as pool:
             pool.starmap(self.process_file, [(file_path, start_time) for file_path in files])
         
         print(f"{datetime.now()}::{time.time()-start_time:.4f}::Finish all testing. Removing temp files...")
