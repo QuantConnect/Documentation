@@ -23,6 +23,21 @@
         </tr>
         <tr>
             <td>
+                <div class="error-messages">No such file</div>
+            </td>
+            <td>
+                Follow these steps:
+                <ol>
+                    <li>Open the advance settings in Docker Desktop.</li>
+                    <li>Disable the <span class='box-name'>Allow the default Docker socket to be used</span> setting.</li>
+                    <li>Save and restart the Docker container.</li>
+                    <li>Enable the <span class='box-name'>Allow the default Docker socket to be used</span> setting.</li>
+                    <li>Save and restart the Docker container.</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <div class="error-messages">Invalid credentials, please log in using `lean login`</div>
             </td>
             <td>
@@ -36,7 +51,8 @@
             </td>
             <td>
                 You are trying to use a command which needs to run the LEAN engine locally, which always happens in a Docker container.
-                Make sure Docker is running if you installed it already, or visit <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">Install Docker</a> if you haven't.
+                Make sure Docker is running if you <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">installed it</a> already.
+                If Docker is already running, run your command with <code>--verbose</code> for more information.
             </td>
         </tr>
         <tr><td>Your venv probably has a non standard docker path or no docker access. Uninstall and <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">reinstall</a> docker.</td></tr>
