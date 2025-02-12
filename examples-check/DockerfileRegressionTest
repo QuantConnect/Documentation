@@ -28,5 +28,38 @@ WORKDIR /app/Documentation
 # Copy the necessary files into the container
 COPY ../.. .
 
-# Command to run the regression tester
+# Define and set the environmental variables of the regression tester
+ARG VALIDATION_MODE
+ARG QC_USER_ID
+ARG QC_USER_TOKEN
+ARG CS_PROJECT_ID
+ARG PY_PROJECT_ID
+ENV DOCS_REGRESSION_TEST_VALIDATION_MODE = $VALIDATION_MODE
+ENV DOCS_REGRESSION_TEST_USER_ID = $QC_USER_ID
+ENV DOCS_REGRESSION_TEST_USER_TOKEN = $QC_USER_TOKEN
+ENV DOCS_REGRESSION_TEST_CS_PROJECT = $CS_PROJECT_ID
+ENV DOCS_REGRESSION_TEST_PY_PROJECT = $PY_PROJECT_ID
+
+# Run the regression tester
 CMD ["python3", "examples-check/example-regression-algorithm-test.py"]
+
+# Commit and push to GH branch
+RUN if [[ $(git diff | wc -m) -eq 0 ]]; then \
+        exit 0; \
+    fi
+RUN git config user.name GitHub Actions && \
+    git config user.email github-actions@github.com && \
+    git checkout -b dockerfile-run-example-regression-test && \
+    git add . && \
+    git commit -m "Run Example Regression Test" && \
+    git push --set-upstream origin dockerfile-run-example-regression-test -f
+
+### Run By:
+### docker build \
+###     --build-arg VALIDATION_MODE=1 \
+###     --build-arg DOCS_REGRESSION_TEST_USER_ID=123456 \
+###     --build-arg DOCS_REGRESSION_TEST_USER_TOKEN="user-token" \
+###     --build-arg DOCS_REGRESSION_TEST_CS_PROJECT=12345678 \
+###     --build-arg DOCS_REGRESSION_TEST_PY_PROJECT=87654321 \
+###     -t example-regression-test-image .
+### docker run example-regression-test-image
