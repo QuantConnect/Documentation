@@ -64,7 +64,7 @@
                     SetHoldings(contract, 0.05m);
                 }
             }
-            }
+        }
     }
 }</pre>
     <pre class="python">class IndexOptionHandlingDataAlgorithm(QCAlgorithm):
@@ -76,7 +76,7 @@
         self.contracts = []
 
         # Subscribe to underlying data for ATM calculation using the updated underlying price.
-        # Set data normalization mode to raw is required to ensure that the strike price and underlying price are comparable.
+        # Set data normalization mode to raw is required to ensure the strike and underlying prices are comparable.
         self.spxw = self.add_index_option("SPX", "SPXW")
         self.spxw.set_filter(lambda x: x.include_weeklys().expiration(0, 3).strikes(-5, 5))
     
@@ -118,7 +118,7 @@
 </div>
 
 <h4>Example 2: Supply-Demand Pressure Of Universe</h4>
-<p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Index Option contracts to calculate mid-price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data/universes">request data through universe selection function</a> using <code class="csharp">SetFilter</code><code class="python">set_filter</code> method for the contracts that expires within the current week. Using mid-price, we can examine the market fair value of the Option and compare it with the model theoretical price.</p>
+<p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Index Option contracts to calculate mid-price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data/universes">request data through universe selection function</a> using <code class="csharp">SetFilter</code><code class="python">set_filter</code> method for the contracts that expire within the current week. Using mid-price, we can examine the market fair value of the Option and compare it with the model theoretical price.</p>
 <div class="section-example-container">
     <pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
 {
@@ -134,7 +134,7 @@
         var option = AddIndexOption("SPX", "SPXW");
         _symbol = option.Symbol;
         // We wish only to trade the contracts expiring within the same week since they have the highest volume.
-        option.SetFilter(u =&gt; u.IncludeWeeklys().Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
+        option.SetFilter(u =&gt; u.IncludeWeeklys().Contracts(x =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
     }
 
     public override void OnData(Slice slice)
@@ -192,7 +192,7 @@
 </div>
 
 <h4>Example 3: Get Instant Delta</h4>
-<p>The option Greeks change rapidly, so we need to obtain the instant Greeks to accurately calculate the hedge size for arbitration or replication portfolio. You can call the <code>Greeks</code> property from the <code>OptionChain</code> data to access various Greeks. In this example, we will demonstrate how to obtain a contract with a Delta that is closest to 0.4 among all call contracts expiring the same week.</p>
+<p>The option Greeks change rapidly, so we need to obtain the instant Greeks to calculate the hedge size for arbitration or replication portfolio accurately. You can call the <code>Greeks</code> property from the <code>OptionChain</code> data to access various Greeks. In this example, we will demonstrate how to obtain a contract with a Delta closest to 0.4 among all call contracts expiring the same week.</p>
 <div class="section-example-container">
 	<pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
 {
@@ -206,7 +206,7 @@
         // Subscribe to SPXW option data.
         var option = AddIndexOption("SPX", "SPXW");
         _symbol = option.Symbol;
-        // We wish to only trade the contracts expiring within the same week since they have the highest volume.
+        // We wish only to trade the contracts expiring within the same week since they have the highest volume.
         // 0.4 Delta will only appear in call contracts.
         option.SetFilter(u =&gt; u.IncludeWeeklys().Delta(0.2m, 0.6m).Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
     }
@@ -217,7 +217,7 @@
         if (slice.OptionChains.TryGetValue(_symbol, out var chain) &amp;&amp; !Portfolio.Invested)
         {
             // Get the contract with Delta closest to 0.4 to trade.
-            // The arbitary delta criterion might be set due to hedging need or risk adjustment.
+            // The arbitrary delta criterion might be set due to hedging need or risk adjustment.
             var selected = chain.OrderBy(x =&gt; Math.Abs(x.Greeks.Delta - 0.4m)).First();
 
             // Hold a naked call on the selected contract to speculate an uprise of the SPX index with leverage.
