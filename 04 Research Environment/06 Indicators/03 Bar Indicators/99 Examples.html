@@ -1,0 +1,101 @@
+<p>The following examples demonstrate some common practices for researching with bar indicators.</p>
+
+<h4>Example 1: Quick Backtest On William Percent Ratio</h4>
+<p>The following example demonstrates a quick backtest to testify the effectiveness of a William Percent Ratio mean-reversal under the research enviornment.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the assembly files and data types in their own cell.
+#load "../Initialize.csx"
+
+// Load the necessary assembly files.
+#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
+#r "../Plotly.NET.Interactive.dll"
+
+// Import the QuantConnect, Plotly.NET, and Accord packages for calculation and plotting.
+using QuantConnect;
+using QuantConnect.Indicators;
+using QuantConnect.Research;
+            
+using Plotly.NET;
+using Plotly.NET.Interactive;
+using Plotly.NET.LayoutObjects;
+
+// Instantiate the QuantBook instance for researching.
+var qb = new QuantBook();
+// Request SPY data to work with the indicator.
+var symbol = qb.AddEquity("SPY").Symbol;
+
+// Create the William %R indicator with parameters to be studied.
+var indicator = new WilliamsPercentR(20);
+
+// Get the history of SPY to update the indicator and trade.
+var history = qb.History&lt;TradeBar&gt;(symbol, 252, Resolution.Daily).ToList();
+
+// Obtain the cumulative return curve as a mini-backtest.
+var equity = new List&lt;decimal&gt;() { 1m };
+var time = new List&lt;DateTime&gt;() { history[0].EndTime };
+for (int i = 0; i &lt; history.Count - 1; i++)
+{
+    var bar = history[i];
+    var nextBar = history[i+1];
+    // Update the indicator value.
+    indicator.Update(bar);
+
+    // Get 1-day forward return.
+    var pctChg = (nextBar.Close - bar.Close) / bar.Close;
+
+    // Buy if the asset is underprice (below -80), sell if overpriced (above -20)
+    var order = indicator &lt; -80 ? 1 : (indicator &gt; -20 ? -1 : 0);
+    var equityChg = order * pctChg;
+    
+    equity.Add((1m + equityChg) * equity[^1]);
+    time.Add(nextBar.EndTime);
+}
+
+// Create line chart of the equity curve.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    time,
+    equity
+);
+
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Equity");
+Title title = Title.init($"Equity by Time of {symbol}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate the QuantBook instance for researching.
+qb = QuantBook()
+# Request SPY data to work with the indicator.
+symbol = qb.add_equity("SPY").symbol
+
+# Get the historical data for trading.
+history = qb.history(symbol, 252, Resolution.DAILY).close.unstack(0).iloc[:, 0]
+
+# Create the William %R indicator with parameters to be studied.
+indicator = WilliamsPercentR(20)
+
+# Get the indicator history of the indicator.
+indicator_dataframe = qb.indicator(indicator, symbol, 252, Resolution.DAILY)
+
+# Create a order record and return column.
+# Buy if the asset is underprice (below -80), sell if overpriced (above -20)
+indicator_dataframe["position"] = indicator_dataframe.apply(lambda x: 1 if x.current &lt; -80 else -1 if x.current &gt; -20 else 0, axis=1)
+# Get the 1-day forward return.
+indicator_dataframe["return"] = history.pct_change().shift(-1).fillna(0)
+indicator_dataframe["return"] = indicator_dataframe["position"] * indicator_dataframe["return"]
+
+# Obtain the cumulative return curve as a mini-backtest.
+equity_curve = (indicator_dataframe["return"] + 1).cumprod()
+equity_curve.plot(title="Equity Curve", ylabel="Equity", xlabel="time")</pre>
+</div>

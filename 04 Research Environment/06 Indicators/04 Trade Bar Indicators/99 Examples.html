@@ -1,0 +1,108 @@
+<p>The following examples demonstrate some common practices for researching with trade bar indicators.</p>
+
+<h4>Example 1: Quick Backtest On MoneyFlowIndex</h4>
+<p>The following example demonstrates a quick backtest to testify the effectiveness of a Money Flow Index mean-reversal under the research enviornment.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the assembly files and data types in their own cell.
+#load "../Initialize.csx"
+
+// Load the necessary assembly files.
+#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
+#r "../Plotly.NET.Interactive.dll"
+
+// Import the QuantConnect, Plotly.NET, and Accord packages for calculation and plotting.
+using QuantConnect;
+using QuantConnect.Indicators;
+using QuantConnect.Research;
+            
+using Plotly.NET;
+using Plotly.NET.Interactive;
+using Plotly.NET.LayoutObjects;
+
+// Instantiate the QuantBook instance for researching.
+var qb = new QuantBook();
+// Request SPY data to work with the indicator.
+var symbol = qb.AddEquity("SPY").Symbol;
+
+// Create the Money Flow Index indicator with parameters to be studied.
+var indicator = new MoneyFlowIndex(20);
+
+// Get the history of SPY to update the indicator and trade.
+var history = qb.History&lt;TradeBar&gt;(symbol, 252, Resolution.Daily).ToList();
+
+// Obtain the cumulative return curve as a mini-backtest.
+var equity = new List&lt;decimal&gt;() { 1m };
+var time = new List&lt;DateTime&gt;() { history[0].EndTime };
+for (int i = 0; i &lt; history.Count - 1; i++)
+{
+    var bar = history[i];
+    var nextBar = history[i+1];
+    // Update the indicator value.
+    indicator.Update(bar);
+
+    // Get 1-day forward return.
+    var pctChg = (nextBar.Close - bar.Close) / bar.Close;
+
+    // Buy if the asset is underprice (below 20), sell if overpriced (above 80)
+    var order = indicator &lt; 20 ? 1 : (indicator &gt; 80 ? -1 : 0);
+    var equityChg = order * pctChg;
+    
+    equity.Add((1m + equityChg) * equity[^1]);
+    time.Add(nextBar.EndTime);
+}
+
+// Create line chart of the equity curve.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    time,
+    equity
+);
+
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Equity");
+Title title = Title.init($"Equity by Time of {symbol}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate the QuantBook instance for researching.
+qb = QuantBook()
+# Request SPY data to work with the indicator.
+symbol = qb.add_equity("SPY").symbol
+
+# Get the historical data for trading.
+history = qb.history(symbol, 252, Resolution.DAILY).close.unstack(0).iloc[:, 0]
+history = history.groupby(history.index.date).sum()
+
+# Create the Money Flow Index with parameters to be studied.
+indicator = MoneyFlowIndex(10)
+
+# Get the indicator history of the indicator.
+indicator_dataframe = qb.indicator(indicator, symbol, 252, Resolution.DAILY)
+indicator_dataframe = indicator_dataframe.groupby(indicator_dataframe.index.date).sum()
+
+# Match index.
+common_ix = sorted(set(indicator_dataframe.index).intersection(set(history.index)))
+history = history.loc[common_ix]
+indicator_dataframe = indicator_dataframe.loc[common_ix]
+
+# Create a order record and return column.
+# Buy if the asset is underprice (below 20), sell if overpriced (above 80)
+indicator_dataframe["position"] = indicator_dataframe.apply(lambda x: 1 if x.current &lt; 20 else -1 if x.current &gt; 80 else 0, axis=1)
+# Get the 1-day forward return.
+indicator_dataframe["return"] = history.pct_change().shift(-1).fillna(0)
+indicator_dataframe["return"] = indicator_dataframe["position"] * indicator_dataframe["return"]
+
+# Obtain the cumulative return curve as a mini-backtest.
+equity_curve = (indicator_dataframe["return"] + 1).cumprod()
+equity_curve.plot(title="Equity Curve", ylabel="Equity", xlabel="time")</pre>
+</div>

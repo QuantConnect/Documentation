@@ -62,36 +62,36 @@ history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
     import math, numpy as np
     
     def __init__(self, period, alpha):
-        self.Value = None   # Attribute represents the indicator value
-        self.ValueAtRisk = None
+        self.value = None   # Attribute represents the indicator value
+        self.value_at_risk = None
         
         self.alpha = alpha
         
-        self.window = RollingWindow[float](period)
+        self._window = RollingWindow[float](period)
     
     # Override the IsReady attribute to flag all attributes values are ready.
     @property
-    def IsReady(self) -&gt; bool:
-        return self.Value and self.ValueAtRisk
+    def is_ready(self) -&gt; bool:
+        return self.value and self.value_at_risk
     
     # Method to update the indicator values. Note that it only receives 1 IBaseData object (Tick, TradeBar, QuoteBar) argument.
-    def Update(self, input: BaseData) -&gt; bool:
-        count = self.window.Count
+    def update(self, input: BaseData) -&gt; bool:
+        count = self._window.Count
         
-        self.window.Add(input.Close)
+        self._window.Add(input.Close)
         
         # Update the Value and other attributes as the indicator current value.
-        if count >= 2:
+        if count &gt;= 2:
             cutoff = math.ceil(self.alpha * count)
             
-            ret = [ (self.window[i] - self.window[i+1]) / self.window[i+1] for i in range(count-1) ]
+            ret = [ (self._window[i] - self._window[i+1]) / self._window[i+1] for i in range(count-1) ]
             lowest = sorted(ret)[:cutoff]
             
-            self.Value = np.mean(lowest)
-            self.ValueAtRisk = lowest[-1]
+            self.value = np.mean(lowest)
+            self.value_at_risk = lowest[-1]
             
         # return a boolean to indicate IsReady.
-        return count >= 2</pre>
+        return count &gt;= 2</pre>
     </div>
 
     <li>Initialize a new instance of the custom indicator.</li>
@@ -161,7 +161,7 @@ foreach (var i in Enumerable.Range(0, 5).Reverse())
 
     <li class="python">Populate a <code>DataFrame</code> with the data in the <code>RollingWindow</code> objects.</li>
     <div class="python section-example-container">
-        <pre class="python">custom_dataframe = pd.DataFrame(window).set_index('time'))</pre>
+        <pre class="python">custom_dataframe = pd.DataFrame(window).set_index('time')</pre>
     </div>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-custom-indicator-py-classic.png" alt="Historical expected shortfall and value at risk">	
 </ol>

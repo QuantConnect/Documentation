@@ -1,0 +1,168 @@
+<p>The following examples demonstrate some common practices for researching with data point indicators.</p>
+
+<h4>Example 1: Quick Backtest On Bollinger Band</h4>
+<p>The following example demonstrates a quick backtest to testify the effectiveness of a Bollinger Band mean-reversal, using 5-miunte bar under the research enviornment.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the assembly files and data types in their own cell.
+#load "../Initialize.csx"
+
+// Load the necessary assembly files.
+#load "../QuantConnect.csx"
+#r "../Plotly.NET.dll"
+#r "../Plotly.NET.Interactive.dll"
+
+// Import the QuantConnect, Plotly.NET, and Accord packages for calculation and plotting.
+using QuantConnect;
+using QuantConnect.Indicators;
+using QuantConnect.Research;
+            
+using Plotly.NET;
+using Plotly.NET.Interactive;
+using Plotly.NET.LayoutObjects;
+
+// Instantiate the QuantBook instance for researching.
+var qb = new QuantBook();
+// Request SPY data to work with the indicator.
+var symbol = qb.AddEquity("SPY").Symbol;
+
+// Request historical trading data with the daily resolution.
+var history = qb.History(symbol, 1000, Resolution.Minute).ToList();
+
+// Create a window dictionary to store RollingWindow objects.
+var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
+// Store the RollingWindow objects, index by key is the property of the indicator.
+var time = new RollingWindow&lt;DateTime&gt;(50);
+window["bollingerbands"] = new RollingWindow&lt;decimal&gt;(50);
+window["lowerband"] = new RollingWindow&lt;decimal&gt;(50);
+window["middleband"] = new RollingWindow&lt;decimal&gt;(50);
+window["upperband"] = new RollingWindow&lt;decimal&gt;(50);
+window["price"] = new RollingWindow&lt;decimal&gt;(50);
+
+// Create the Bollinger Band indicator with parameters to be studied.
+var bb = new BollingerBands(20, 2);
+// Define an update function to add the indicator values to the RollingWindow object.
+bb.Updated += (sender, updated) =&gt; 
+{
+    var indicator = (BollingerBands)sender;
+    time.Add(updated.EndTime);
+    window["bollingerbands"].Add(updated);
+    window["lowerband"].Add(indicator.LowerBand);
+    window["middleband"].Add(indicator.MiddleBand);
+    window["upperband"].Add(indicator.UpperBand);
+    window["price"].Add(indicator.Price);
+};
+
+// Create a TradeBarConsolidator to consolidate data into the custom resolution.
+var consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
+// Attach a handler method to feed data into the consolidator and updates the indicator with the consolidated bars.
+consolidator.DataConsolidated += (sender, consolidated) =&gt;
+{
+    bb.Update(consolidated.EndTime, consolidated.Close);
+};
+
+// Iterate through the historical market data and update the indicator.
+foreach(var bar in history)
+{
+    consolidator.Update(bar);
+}
+
+// Obtain the cumulative return curve as a mini-backtest.
+var equity = new List&lt;decimal&gt;() { 1m };
+var time_ = new List&lt;DateTime&gt;() { history[0].EndTime };
+var lowerBand = window["lowerband"].ToList();
+var upperBand = window["upperband"].ToList();
+for (int i = history.Count - 50; i &lt; history.Count - 1; i++)
+{
+    var bar = history[i];
+    var nextBar = history[i+1];
+
+    // Get 1-day forward return.
+    var pctChg = (nextBar.Close - bar.Close) / bar.Close;
+
+    // Buy if the asset is underprice (below the lower band), sell if overpriced (above the upper band)
+    var order = bar.Close &lt; lowerBand[i - (history.Count - 50)] ? 1 : (bar.Close &gt; upperBand[i - (history.Count - 50)] ? -1 : 0);
+    var equityChg = order * pctChg;
+    
+    equity.Add((1m + equityChg) * equity[^1]);
+    time_.Add(nextBar.EndTime);
+}
+
+// Create line chart of the equity curve.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    time_,
+    equity
+);
+
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Equity");
+Title title = Title.init($"Equity by Time of {symbol}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate the QuantBook instance for researching.
+qb = QuantBook()
+# Request SPY data to work with the indicator.
+symbol = qb.add_equity("SPY").symbol
+
+# Request historical trading data with the minute resolution.
+history = qb.history[TradeBar](symbol, 1000, Resolution.MINUTE)
+
+# Create a window dictionary to store RollingWindow objects.
+window = {}
+# Store the RollingWindow objects, index by key is the property of the indicator.
+window['time'] = RollingWindow[DateTime](50)
+window["bollingerbands"] = RollingWindow[float](50)
+window["lowerband"] = RollingWindow[float](50)
+window["middleband"] = RollingWindow[float](50)
+window["upperband"] = RollingWindow[float](50)
+window["price"] = RollingWindow[float](50)
+
+# Define an update function to add the indicator values to the RollingWindow object.
+def update_bollinger_band_window(sender: object, updated: IndicatorDataPoint) -> None:
+    indicator = sender
+    window['time'].add(updated.end_time)
+    window["bollingerbands"].add(updated.value)
+    window["lowerband"].add(indicator.lower_band.current.value)
+    window["middleband"].add(indicator.middle_band.current.value)
+    window["upperband"].add(indicator.upper_band.current.value)
+    window["price"].add(indicator.price.current.value)
+
+# Create the Bollinger Band indicator with parameters to be studied.
+bb = BollingerBands(20, 2)
+bb.updated += update_bollinger_band_window
+
+# Create a TradeBarConsolidator to consolidate data into the custom resolution.
+consolidator = TradeBarConsolidator(timedelta(minutes=5))
+# Attach a handler method to feed data into the consolidator and updates the indicator with the consolidated bars.
+def on_data_consolidated(sender, consolidated):
+    bb.update(consolidated.end_time, consolidated.close)
+consolidator.data_consolidated += on_data_consolidated
+
+# Iterate through the historical market data and update the indicator.
+for bar in history:
+    consolidator.update(bar)
+
+# Populate a DataFrame with the data in the RollingWindow objects.
+bb_dataframe = pd.DataFrame(window).set_index('time')
+
+# Create a order record and return column.
+# Buy if the asset is underprice (below the lower band), sell if overpriced (above the upper band)
+bb_dataframe["position"] = bb_dataframe.apply(lambda x: 1 if x.price &lt; x.lowerband else -1 if x.price &gt; x.upperband else 0, axis=1)
+# Get the 1-day forward return.
+bb_dataframe["return"] = bb_dataframe["price"].pct_change().shift(-1).fillna(0)
+bb_dataframe["return"] = bb_dataframe["position"] * bb_dataframe["return"]
+
+# Obtain the cumulative return curve as a mini-backtest.
+equity_curve = (bb_dataframe["return"] + 1).cumprod()
+equity_curve.plot(title="Equity Curve on BBand Mean Reversal", ylabel="Equity", xlabel="time")</pre>
+</div>
