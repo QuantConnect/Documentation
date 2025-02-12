@@ -1,0 +1,48 @@
+<p>You can get historical US Index Options data in an algorithm and the Research Environment.</p>
+
+<h4>Historical Data In Algorithms</h4>
+
+<p>To get historical US Index Options Universe data in an algorithm, call the <code class="csharp">History&lt;OptionUniverse&gt;</code><code class="python">history</code> method with the canonical Index Option <code>Symbol</code>. This method returns data on all of the tradable contracts, not just the contracts that pass your universe filter. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+<pre class="python"># DataFrame
+history_df = self.history(self.standard_option_symbol, timedelta(3))
+
+# OptionUniverse objects
+history = self.history[OptionUniverse](self.standard_option_symbol, timedelta(3))</pre>
+
+<pre class="csharp">// OptionUniverse objects 
+var history = History&lt;OptionUniverse&gt;(_standardOptionSymbol, TimeSpan.FromDays(3)).ToList();</pre>
+</div>
+
+<p>For more information about Index Options Universe data in algorithms, see <a href="/docs/v2/writing-algorithms/universes/index-options#10-Historical-Data">Historical Data</a>.</p>
+
+<h4>Historical Data In Research</h4>
+
+<p>To get historical US Index Options Universe data in the Research Environment, call the <code class="csharp">History&lt;OptionUniverse&gt;</code><code class="python">history</code> method with the canonical Option <code>Symbol</code>. This method returns data on all of the tradable contracts, not just the contracts that pass your universe filter.</p>
+
+<div class="section-example-container">
+<pre class="python">qb = QuantBook()
+index_symbol = qb.add_index('VIX').symbol
+option = qb.add_index_option(index_symbol) # or qb.add_index_option(index_symbol, "VIXW")
+history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))</pre>
+
+<pre><code class="csharp">var qb = new QuantBook();
+var indexSymbol = qb.AddIndex("VIX").Symbol;
+var option = qb.AddIndexOption(indexSymbol); // or qb.AddIndexOption(indexSymbol, "VIXW");
+var history = qb.History&lt;OptionUniverse&gt;(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));
+foreach (var chain in history)
+{
+    var endTime = chain.EndTime;
+    var filteredContracts = chain.Data
+        .Select(contract =&gt; contract as OptionUniverse)
+        .Where(contract =&gt; contract.Greeks.Delta > 0.3m);
+    foreach (var contract in filteredContracts)
+    {
+        var price = contract.Price;
+        var iv = contract.ImpliedVolatility;
+    }
+}</code></pre>
+</div>
+
+<p>For more information about historical Index Options Universe data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/index-options/universes">Universes</a>.</p>

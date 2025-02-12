@@ -1,0 +1,37 @@
+<p>To get the current Cash Indices data, index the <code class="csharp">Bars</code><code class="python">bars</code> property of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the Index <code>Symbol</code>. Slice objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your security at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.vix in slice.bars:
+        trade_bar = slice.bars[self.vix]
+        self.log(f"{self.vix} close at {slice.time}: {trade_bar.close}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.Bars.ContainsKey(_symbol))
+    {
+        var tradeBar = slice.Bars[_symbol];
+        Log($"{_symbol} price at {slice.Time}: {tradeBar.Close}");
+    }
+}
+</pre>
+</div>
+
+<p>You can also iterate through all of the data objects in the current <code>Slice</code>.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for symbol, trade_bar in slice.bars.items():
+        self.log(f"{symbol} close at {slice.time}: {trade_bar.close}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Bars)
+    {
+        var symbol = kvp.Key;
+        var tradeBar = kvp.Value;
+        Log($"{symbol} price at {slice.Time}: {tradeBar.Close}");
+    }
+}
+</pre>
+</div>
+
+<p>For more information about accessing Index data, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/index/handling-data">Handling Data</a>.</p>

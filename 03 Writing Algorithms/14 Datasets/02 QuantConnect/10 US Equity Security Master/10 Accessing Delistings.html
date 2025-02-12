@@ -1,0 +1,23 @@
+<p>To get the current Delistings data, index the <code class="csharp">Delistings</code><code class="python">delistings</code> property of the current <code>Slice</code> with the Equity <code>Symbol</code>. Slice objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your security at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    # Check if any delisting for the symbol
+    if slice.delistings.contains_key(self._symbol):
+        # If so, get the mapped delisting object
+        delisting = slice.delistings[self._symbol]
+        delisting_type = {0: "Warning", 1: "Delisted"}.get(delisting.type)
+        self.log(f'Delistings: {delisting_type}')</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    // Check if any delisting for the symbol
+    if (slice.Delistings.ContainsKey(_symbol))
+    {
+        // If so, get the mapped delisting object
+        var delisting = slice.Delistings[_symbol];
+        Log($"Delistings: {delisting.Type}");
+    }
+}</pre>
+</div>
+
+<p>For more information about accessing delistings, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#05-Delistings">Delistings</a>.</p>

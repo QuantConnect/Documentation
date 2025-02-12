@@ -90,13 +90,16 @@ if __name__ == '__main__':
                             .replace("https://www.quantconnect.com/docs/v2/", "/docs/v2/") \
                             .replace("https://www.quantconnect.com/datasets/", "/datasets/") \
                             .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
-                                     '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"')
+                                     '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
+                            .replace("<b>", "<code>") \
+                            .replace("<b class", "<code class") \
+                            .replace("</b>", "</code>")
                 soup = BeautifulSoup(content, 'html.parser')
                 for code_section in soup.find_all("div", class_="section-example-container"):
                     for pre_code_section in soup.find_all("pre"):
                         for old, new in languages.items():
                             for code_snippet in pre_code_section.find_all('code', {'class' : old}):
-                                converted = f'{code_snippet}'.replace('code', 'pre').replace(old, new)
+                                converted = f'{code_snippet}'.replace('<code', '<pre').replace('</code>', '</pre>').replace(old, new)
                                 content = content.replace(f'{pre_code_section}', converted)
 
                 if title.lower() == "example applications":
