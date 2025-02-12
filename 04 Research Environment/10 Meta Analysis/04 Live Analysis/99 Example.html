@@ -1,0 +1,36 @@
+<h4>Example 1: Read Live Algorithm Statistics</h4>
+<p>The following example reads the current running live algorithm's statistics in a jupyter notebook.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the necessary assemblies.
+#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Api;
+using QuantConnect.Research;
+
+// Instantiate QuantBook instance for researching.
+var qb = new QuantBook();
+
+// Get current running live algorithm list in the current project.
+var liveAlgorithms = api.ListLiveAlgorithms(AlgorithmStatus.Running)
+var deployId = liveAlgorithms.Algorithms
+    .Single(x =&gt; x.ProjectId == qb.ProjectId)
+    .DeployId;
+var liveAlgorithm = api.ReadLiveAlgorithm(qb.ProjectId, deployId);
+
+// Obtain the live algorithm statistics.
+Console.WriteLine(backtest.RuntimeStatistics.ToString());</pre>
+    <pre class="python"># Instantiate QuantBook instance for researching.
+qb = QuantBook()
+
+# Get current running live algorithm list in the current project.
+live_algorithms = api.list_live_algorithms(AlgorithmStatus.RUNNING)
+deploy_id = next(
+    [x for x in live_algorithms.algorithms if x.project_id == qb.project_id]
+).deploy_id
+live_algorithm = api.read_live_algorithm(project_id, deploy_id)
+
+# Obtain the live algorithm statistics.
+print(live_algorithm.runtime_statistics)</pre>
+</div>

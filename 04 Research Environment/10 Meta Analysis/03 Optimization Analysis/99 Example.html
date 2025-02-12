@@ -1,0 +1,47 @@
+<h4>Example 1: Read Optimization Results</h4>
+<p>The following example reads the last completed optimization job and obtains the optimum paramteters in a jupyter notebook.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the necessary assemblies.
+#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Api;
+using QuantConnect.Research;
+
+// Instantiate QuantBook instance for researching.
+var qb = new QuantBook();
+
+// Get optimization job list in the current project.
+var optimizations = api.ListOptimizations(qb.ProjectId)
+// Get the last completed optimizations to study.
+var optimizationId = optimizations.Where(x =&gt; x.Status == OptimizationStatus.Completed)
+    .OrderByDescending(x =&gt; x.Created)
+    .First()
+    .OptimizationId;
+var optimization = api.ReadOptimization(optimizationId);
+
+// Obtain the backtest with the best Sharpe Ratio.
+var bestBacktest = optimization.Backtests.Values.MaxBy(x =&gt; x.Statistics["SharpeRatio"])
+// Obtain the parameter set of the backtest with the best result.
+var parameterSet = bestBacktest.ParameterSet;
+Console.WriteLine(parameterSet.ToString());</pre>
+    <pre class="python"># Instantiate QuantBook instance for researching.
+qb = QuantBook()
+
+# Get optimization job list in the current project.
+optimizations = api.list_optimizations(qb.project_id)
+# Get the last completed optimizations to study.
+optimization_id = sorted(
+    [x for x in optimizations if x.status == OptimizationStatus.COMPLETED],
+    key=lambda x: x.created,
+    reverse=True
+)[0].optimization_id
+optimization = api.read_optimization(optimization_id)
+
+# Obtain the backtest with the best Sharpe Ratio.
+best_backtest = max(optimization.backtests.values(), key=lambda x: x.statistics["SharpeRatio"])
+# Obtain the parameter set of the backtest with the best result.
+parameter_set = best_backtest.parameter_set
+print(parameter_set)</pre>
+</div>

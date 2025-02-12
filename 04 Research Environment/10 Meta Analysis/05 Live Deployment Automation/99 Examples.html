@@ -1,0 +1,60 @@
+<h4>Example 1: Create New GPU Deployment</h4>
+<p>The following example will create a new live algorithm deployment using a GPU live node with the Interactive Brokers in a jupyter notebook. It can help with a streamline deployment.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the necessary assemblies.
+#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Api;
+using QuantConnect.Research;
+
+// Instantiate QuantBook instance for researching.
+var qb = new QuantBook();
+
+// Get all the nodes available in the current project.
+var projectNodes = api.ReadProjectNodes(qb.ProjectId);
+// Obtain the most powerful live GPU node which is idling.
+var liveNodeId = projectNodes.Nodes.LiveNodes
+    .Where(x =&gt; x.HasGPU &amp;&amp; !x.Busy)
+    .MaxBy(x =&gt; x.CpuCount)
+    .Id;
+
+// Compile the project before deploying.
+var compilation = api.CreateCompile(qb.project_id);
+var compileId = compilation.CompileId;
+
+// Deploy the live algorithm with the brokerage settings.
+var brokerageSettings = new Dictionary&lt;string, object&gt;() {
+    {"id", "InteractiveBrokersBrokerage"},
+    {"ib-user-name": "userName"},
+    {"ib-account": "accountNumber"},
+    {"ib-password": "password"},
+    {"ib-weekly-restart-utc-time": "00:00:00"}
+}
+var result = api.CreateLiveAlgorithm(qb.ProjectId, compileId, liveNodeId, brokerageSettings);</pre>
+    <pre class="python"># Instantiate QuantBook instance for researching.
+qb = QuantBook()
+
+# Get all the nodes available in the current project.
+project_nodes = api.read_project_nodes(qb.project_id)
+# Obtain the most powerful live GPU node which is idling.
+live_node_id = max(
+    [x for x in project_nodes.nodes.live_nodes if x.has_gpu and not x.busy],
+    key=lambda x: x.cpu_count
+).id
+
+# Compile the project before deploying.
+compilation = api.create_compile(qb.project_id)
+compile_id = compilation.compile_id
+
+# Deploy the live algorithm with the brokerage settings.
+brokerage_settings = {
+    "id": "InteractiveBrokersBrokerage",
+    "ib-user-name": "user-name",
+    "ib-account": "account-number",
+    "ib-password": "password",
+    "ib-weekly-restart-utc-time": "00:00:00"
+}
+result = api.CreateLiveAlgorithm(qb.project_id, compile_id, live_node_id, brokerage_settings)</pre>
+</div>
