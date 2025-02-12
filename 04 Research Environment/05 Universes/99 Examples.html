@@ -1,0 +1,171 @@
+<p>The following examples demonstrate some common practices for universe research.</p>
+
+<h4>Example 1: Top-Minus-Bottom PE Ratio</h4>
+<p>The below example studies the top-minus-bottom PE Ratio universe, in which the top 10 PE Ratio stocks are brought, and the bottom 10 are sold in equal weighting daily. We carry out a mini-backtest to analyze its performance.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types.
+#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Market;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+using System;
+using MathNet.Numerics.Distributions;
+
+// Instantiate the QuantBook instance for researching.
+var qb = new QuantBook();
+
+// Set start and end dates of the research to avoid look-ahead bias.
+var start = new DateTime(2021, 1, 1);
+var end = new DateTime(2021, 4, 1);
+
+// Request data for research purposes.
+// We are interested in the most liquid primary stocks.
+var universe = qb.AddUniverse(
+    (datum) =&gt; datum.OrderByDescending(x =&gt; x.DollarVolume)
+        .Take(100)
+        .Select(x =&gt; x.Symbol)
+);
+
+// Historical data call for the data to be compared and tested.
+var universeHistory = qb.UniverseHistory(universe, start, end);
+
+// Process the historical data to generate a signal and return it for research.
+var bottomPeRatioDict = new Dictionary&lt;DateTime, List&lt;Symbol&gt;&gt;();
+var topPeRatioDict = new Dictionary&lt;DateTime, List&lt;Symbol&gt;&gt;();
+foreach (FundamentalUniverse fundamentals in universeHistory)
+{
+    var sortedByPeRatio = fundamentals.OrderBy(x =&gt; (x as Fundamental).ValuationRatios.PERatio).ToList();
+    var bottomPeRatio = sortedByPeRatio.Take(10)
+        .Select(x =&gt; x.Symbol)
+        .ToList();
+    var topPeRatio = sortedByPeRatio.TakeLast(10)
+        .Select(x =&gt; x.Symbol)
+        .ToList();
+
+    // Study 10 stocks with the top and bottom PE Ratios.
+    var _time = fundamentals.First().Time;
+    bottomPeRatioDict[_time.Date] = bottomPeRatio;
+    topPeRatioDict[_time.Date] = topPeRatio;
+}
+
+// Extract symbols from both dictionaries and remove duplicates
+var allSymbols = bottomPeRatioDict.Values
+    .SelectMany(symbols =&gt; symbols)
+    .Concat(topPeRatioDict.Values.SelectMany(symbols =&gt; symbols))
+    .Distinct()
+    .ToList();
+// All symbols' daily prices are for return comparison.
+var history = qb.History&lt;TradeBar&gt;(allSymbols, start, end, Resolution.Daily).ToList();
+
+// Iterate the history to backtest the top minus bottom performance.
+var time = new List&lt;DateTime&gt;() { start };
+var equity = new List&lt;decimal&gt;() { 1m };
+for (int i = 0; i &lt; history.Count - 2; i++)
+{
+    var bar = history[i];
+    var nextBar = history[i+1];
+    var timeStamp = bar.Values.First().EndTime;
+    var bottomReturn = bottomPeRatioDict[timeStamp.Date].Sum(x =&gt; (nextBar[x].Close - bar[x].Close) / bar[x].Close * -0.1m);
+    var topReturn = topPeRatioDict[timeStamp.Date].Sum(x =&gt; (nextBar[x].Close - bar[x].Close) / bar[x].Close * 0.1m);
+    
+    // Calculate the cumulative return.
+    time.Add(nextBar.Values.First().EndTime);
+    equity.Add((bottomReturn + topReturn + 1m) * equity[^1]);
+}
+
+// Create line chart of the equity curve.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    time,
+    equity
+);
+
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Equity");
+Title title = Title.init($"Equity by Time of Top-Minus-Bottom Universe");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Instantiate the QuantBook instance for researching.
+qb = QuantBook()
+
+# Set start and end dates of the research to avoid look-ahead bias.
+start = datetime(2021, 1, 1)
+end = datetime(2021, 4, 1)
+qb.set_start_date(end)
+
+# Request data for research purposes.
+# We are interested in the most liquid primary stocks.
+universe = qb.add_universe(
+    lambda datum: [x.symbol for x in sorted(
+        [f for f in datum], 
+        key=lambda f: f.dollar_volume
+    )[-100:]]
+)
+
+# Historical data call for the data to be compared and tested.
+universe_history = qb.universe_history(universe, start, end).droplevel([0])
+# All symbols' daily prices are for return comparison.
+history = qb.history(
+    [x.symbol for x in set(
+        e for datum in universe_history.values.flatten() for e in datum
+    )], 
+    start,
+    end,
+    Resolution.DAILY
+).close.unstack(0)
+
+# Change the index format for matching.
+universe_history.index = universe_history.index.date
+history.index = history.index.date
+# Process the historical data to generate a signal and return it for research.
+bottom_liquid_universe_history = universe_history.apply(
+    lambda datum: [x.symbol for x in sorted(
+        datum,
+        key=lambda d: d.dollar_volume
+    )[:10]]
+)
+top_liquid_universe_history = universe_history.apply(
+    lambda datum: [x.symbol for x in sorted(
+        datum,
+        key=lambda d: d.dollar_volume,
+        reverse=True
+    )[:10]]
+)
+ret = history.pct_change().dropna()
+
+# Keep the entries that have common indices for a fair comparison.
+common_index = list(set(ret.index).intersection(universe_history.index))
+ret = ret.loc[common_index].apply(
+    lambda x: x[top_liquid_universe_history.loc[x.name]].sum()*0.1\
+        - x[bottom_liquid_universe_history.loc[x.name]].sum()*0.1,
+    axis=1
+)
+
+# Plot the data for visualization. It is easier to study the pattern.
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot()
+
+# Use line plot to present time series.
+ax.plot(ret.sort_index())
+
+# Set axis and titles to explain the plot.
+ax.set_xlabel("Time")
+ax.set_ylabel("Return")
+ax.set_title("Top Minus Bottom Liquidity Return")
+
+plt.show()</pre>
+</div>
