@@ -1,12 +1,18 @@
-<p>The following examples demonstrate common practices for requesting individual index option contract data.</p>
-
-<h4>Example 1: 5-Minute Option Chain</h4>
 <p>
-    The following example shows how to update the Option chain every five minutes. The custom <code>OptionChainManager</code> class implements the selection logic and manages the contract subscriptions.
+ The following examples demonstrate common practices for requesting individual index option contract data.
 </p>
-
-<div class="section-example-container">
-    <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<h4>
+ Example 1: 5-Minute Option Chain
+</h4>
+<p>
+ The following example shows how to update the Option chain every five minutes. The custom
+ <code>
+  OptionChainManager
+ </code>
+ class implements the selection logic and manages the contract subscriptions.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
 {
     public class OptionChainFullExample : QCAlgorithm
     {
@@ -67,11 +73,11 @@
                 // Filter the closest ATM call contract and trade.
                 var expiry = chain.Min(x =&gt; x.Expiry);
                 var atmCall = chain
-                    .Where(x =&gt; x.Expiry == expiry && x.Right == OptionRight.Call && Securities[x.Symbol].IsTradable)
+                    .Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call &amp;&amp; Securities[x.Symbol].IsTradable)
                     .OrderBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike))
                     .FirstOrDefault();
 
-                if (atmCall != null && !Portfolio[atmCall.Symbol].Invested)
+                if (atmCall != null &amp;&amp; !Portfolio[atmCall.Symbol].Invested)
                     MarketOrder(atmCall.Symbol, 1);
             }
         }
@@ -100,7 +106,7 @@
             _chain = chain.Where(x =&gt;
             {
                 var totalDays = (x.Expiry - time).TotalDays;
-                return _minExpiry &lt;= totalDays && totalDays &lt;= _maxExpiry;
+                return _minExpiry &lt;= totalDays &amp;&amp; totalDays &lt;= _maxExpiry;
             }).ToList();
         }
         
@@ -119,8 +125,8 @@
             var minStrike = strikes[Math.Max(0, index + _minStrike)];
             var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
             var symbols = _chain
-                .Where(x =&gt; minStrike &lt;= x.Strike && x.Strike &lt;= maxStrike)
-                .Select(x => x.Symbol).ToList();
+                .Where(x =&gt; minStrike &lt;= x.Strike &amp;&amp; x.Strike &lt;= maxStrike)
+                .Select(x =&gt; x.Symbol).ToList();
 
             // Remove subscriptions if the contracts are no longer ATMs.
             foreach (var symbol in _symbols.Except(symbols).ToList())
@@ -137,7 +143,38 @@
         }
     }
 }</pre>
-    <pre class="python">class OptionChainFullExample(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "365",
+    "Average Win": "2.12%",
+    "Average Loss": "-1.05%",
+    "Compounding Annual Return": "588041.736%",
+    "Drawdown": "36.900%",
+    "Expectancy": "0.496",
+    "Start Equity": "100000",
+    "End Equity": "197769",
+    "Net Profit": "97.769%",
+    "Sharpe Ratio": "3953.998",
+    "Sortino Ratio": "10744.639",
+    "Probabilistic Sharpe Ratio": "83.044%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "2.01",
+    "Alpha": "11595.135",
+    "Beta": "18.826",
+    "Annual Standard Deviation": "2.935",
+    "Annual Variance": "8.613",
+    "Information Ratio": "4118.435",
+    "Tracking Error": "2.818",
+    "Treynor Ratio": "616.385",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$1300000.00",
+    "Lowest Capacity Asset": "SPXW Y5FO28GWW8I6|SPX 31",
+    "Portfolio Turnover": "15.09%",
+    "OrderListHash": "a0390cbdac43734d5dbdb40c8a824f93"
+}
+ </script>
+ <pre class="python">class OptionChainFullExample(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 2)
@@ -210,7 +247,7 @@ class OptionChainManager:
         
     def set_chain(self, chain:OptionChain, time: datetime) -&gt; None:
         # Filter the expiry daily only since contract list is updated daily.
-        self._chain = [x for x in chain if self._min_expiry <= (x.expiry - time).days <= self._max_expiry]
+        self._chain = [x for x in chain if self._min_expiry &lt;= (x.expiry - time).days &lt;= self._max_expiry]
         
     def select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
         if not self._chain:
@@ -225,7 +262,7 @@ class OptionChainManager:
         index = strikes.index(atm)
         min_strike = strikes[max(0, index + self._min_strike)]
         max_strike = strikes[min(len(strikes) - 1, index + self._max_strike)]
-        symbols = set(x.symbol for x in self._chain if min_strike <= x.strike <= max_strike)
+        symbols = set(x.symbol for x in self._chain if min_strike &lt;= x.strike &lt;= max_strike)
         
         # Remove subscriptions if the contracts are not being ATM anymore.
         for symbol in self._symbols - symbols:
@@ -235,4 +272,35 @@ class OptionChainManager:
         for symbol in symbols - self._symbols:
             self._symbols.add(symbol)
             algorithm.add_option_contract(symbol)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "365",
+    "Average Win": "2.11%",
+    "Average Loss": "-1.05%",
+    "Compounding Annual Return": "588041.736%",
+    "Drawdown": "36.900%",
+    "Expectancy": "0.496",
+    "Start Equity": "100000",
+    "End Equity": "197769",
+    "Net Profit": "97.769%",
+    "Sharpe Ratio": "3953.998",
+    "Sortino Ratio": "10744.639",
+    "Probabilistic Sharpe Ratio": "83.044%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "2.01",
+    "Alpha": "11595.135",
+    "Beta": "18.826",
+    "Annual Standard Deviation": "2.935",
+    "Annual Variance": "8.613",
+    "Information Ratio": "4118.435",
+    "Tracking Error": "2.818",
+    "Treynor Ratio": "616.385",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$1300000.00",
+    "Lowest Capacity Asset": "SPXW Y5FO28GWW8I6|SPX 31",
+    "Portfolio Turnover": "15.09%",
+    "OrderListHash": "8e22656bb7ee9ac3c0b313df90afbd98"
+}
+ </script>
 </div>

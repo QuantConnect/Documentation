@@ -1,6 +1,6 @@
 <p>The following example shows how to plot the daily closing price of SPY with a scatter plot:</p>
 
-<div class="section-example-container">
+<div class="section-example-container testable">
 	<pre class="csharp">public class ChartingDemoAlgorithm : QCAlgorithm
 {
     private ExponentialMovingAverage _emaFast;
@@ -26,7 +26,11 @@
 
     public override void OnEndOfDay(Symbol symbol)
     {
-        Plot("Candlestick", "MSFT", (TradeBar)Securities[symbol].GetLastData());
+        var data = (TradeBar)Securities[symbol].GetLastData();
+        if (data != null)
+        {
+            Plot("Candlestick", "MSFT", data);
+        }
         Plot("Price", "EMA FAST", _emaFast);
         Plot("Price", "EMA SLOW", _emaSlow);
         if (_emaFast &gt; _emaSlow && _emaFast[1] &lt; _emaSlow[1])
@@ -36,7 +40,7 @@
     }
 }</pre>
 	<pre class="python">class ChartingDemoAlgorithm(QCAlgorithm):
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2022, 1, 1)
         self.settings.automatic_indicator_warm_up = True
@@ -45,16 +49,18 @@
         self.ema_slow = self.ema(symbol, 50)
         chart = Chart("Price")
         self.add_chart(chart)
-        chart.add_series(Series("CROSS UP", SeriesType.SCATTER, "$", Color.green, ScatterMarkerSymbol.TRIANGLE))
-        chart.add_series(Series("CROSS DOWN", SeriesType.SCATTER, "$", Color.red, ScatterMarkerSymbol.TRIANGLE_DOWN))
-        chart.add_series(Series("EMA FAST", SeriesType.LINE, "$", Color.orange))
-        chart.add_series(Series("EMA SLOW", SeriesType.LINE, "$", Color.blue))
+        chart.add_series(Series("CROSS UP", SeriesType.SCATTER, "$", Color.GREEN, ScatterMarkerSymbol.TRIANGLE))
+        chart.add_series(Series("CROSS DOWN", SeriesType.SCATTER, "$", Color.RED, ScatterMarkerSymbol.TRIANGLE_DOWN))
+        chart.add_series(Series("EMA FAST", SeriesType.LINE, "$", Color.ORANGE))
+        chart.add_series(Series("EMA SLOW", SeriesType.LINE, "$", Color.BLUE))
         chart = Chart("Candlestick")
         self.add_chart(chart)
         chart.add_series(CandlestickSeries("MSFT", "$"))
             
-    def on_end_of_day(self, symbol: Symbol) -> None:
-        self.plot("Candlestick", "MSFT", self.securities[symbol].get_last_data())
+    def on_end_of_day(self, symbol: Symbol) -&gt; None:
+        data = self.securities[symbol].get_last_data()
+        if data:
+            self.plot("Candlestick", "MSFT", self.securities[symbol].get_last_data())
         self.plot("Price", "EMA FAST", self.ema_fast.current.value)
         self.plot("Price", "EMA SLOW", self.ema_slow.current.value)
         if (self.ema_fast &gt; self.ema_slow and self.ema_fast[1] &lt; self.ema_slow[1]):

@@ -1,9 +1,22 @@
-<p>The following examples demonstrate some common practices for using <code>Tslearn</code> library.</p>
-
-<h4>Example 1: Dynamic Time Wrapping (DTW) Clustering</h4>
-<p>The below algorithm makes use of <code>Tslearn</code> library to cluster stocks based on their recent year's price movement through DTW Barycenter Averaging. Then, we invest each cluster equally, while investing stocks within cluster equally as well. To ensure the model applicable to the current market environment, we recalibrate the model on every Sunday.</p>
-<div class="section-example-container">
-    <pre class="python">from tslearn.barycenters import softdtw_barycenter
+<p>
+ The following examples demonstrate some common practices for using
+ <code>
+  Tslearn
+ </code>
+ library.
+</p>
+<h4>
+ Example 1: Dynamic Time Wrapping (DTW) Clustering
+</h4>
+<p>
+ The below algorithm makes use of
+ <code>
+  Tslearn
+ </code>
+ library to cluster stocks based on their recent year's price movement through DTW Barycenter Averaging. Then, we invest each cluster equally, while investing stocks within cluster equally as well. To ensure the model applicable to the current market environment, we recalibrate the model on every Sunday.
+</p>
+<div class="section-example-container testable">
+ <pre class="python">from tslearn.barycenters import softdtw_barycenter
 from tslearn.clustering import TimeSeriesKMeans
 import joblib
 
@@ -71,7 +84,36 @@ class TslearnExampleAlgorithm(QCAlgorithm):
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.
         model_key = "model_test.hdf5"
         file_name = self.object_store.get_file_path(model_key)
-        import os
-        os.remove(file_name)
         self.model.to_hdf5(file_name)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2155",
+    "Average Win": "0.11%",
+    "Average Loss": "-0.08%",
+    "Compounding Annual Return": "20.767%",
+    "Drawdown": "9.900%",
+    "Expectancy": "0.630",
+    "Start Equity": "100000",
+    "End Equity": "162547.80",
+    "Net Profit": "62.548%",
+    "Sharpe Ratio": "0.901",
+    "Sortino Ratio": "1.198",
+    "Probabilistic Sharpe Ratio": "69.973%",
+    "Loss Rate": "29%",
+    "Win Rate": "71%",
+    "Profit-Loss Ratio": "1.31",
+    "Alpha": "0.035",
+    "Beta": "0.614",
+    "Annual Standard Deviation": "0.107",
+    "Annual Variance": "0.012",
+    "Information Ratio": "-0.043",
+    "Tracking Error": "0.088",
+    "Treynor Ratio": "0.157",
+    "Total Fees": "$2202.20",
+    "Estimated Strategy Capacity": "$150000000.00",
+    "Lowest Capacity Asset": "IAU T5QHGBE8K3TX",
+    "Portfolio Turnover": "4.61%",
+    "OrderListHash": "f4894bc720d54704bf0b26a199f0021c"
+}
+ </script>
 </div>

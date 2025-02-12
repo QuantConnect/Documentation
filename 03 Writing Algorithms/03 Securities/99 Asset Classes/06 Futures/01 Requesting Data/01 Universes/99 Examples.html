@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for requesting Futures universe data.</p>
-
-<h4>Example 1: Rollover</h4>
-<p>Future contracts expire monthly or quarterly in most cases. Hence, if we hold Future position in month or quarter end, we must consider rolling over to the mapped contract. The following algorithm shows how to buy and roll over to the next front month Future contract. We make use of the universe selection filter to select the front month contract and order the next mapped contract during the previous one expires.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for requesting Futures universe data.
+</p>
+<h4>
+ Example 1: Rollover
+</h4>
+<p>
+ Future contracts expire monthly or quarterly in most cases. Hence, if we hold Future position in month or quarter end, we must consider rolling over to the mapped contract. The following algorithm shows how to buy and roll over to the next front month Future contract. We make use of the universe selection filter to select the front month contract and order the next mapped contract during the previous one expires.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
     private Symbol _future;
 
@@ -35,7 +40,38 @@
         }
     }
 }</pre>
-    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "781",
+    "Average Win": "1.83%",
+    "Average Loss": "-1.61%",
+    "Compounding Annual Return": "4.832%",
+    "Drawdown": "31.900%",
+    "Expectancy": "0.228",
+    "Start Equity": "100000",
+    "End Equity": "359210.6",
+    "Net Profit": "259.211%",
+    "Sharpe Ratio": "0.164",
+    "Sortino Ratio": "0.177",
+    "Probabilistic Sharpe Ratio": "0.010%",
+    "Loss Rate": "43%",
+    "Win Rate": "57%",
+    "Profit-Loss Ratio": "1.14",
+    "Alpha": "-0.009",
+    "Beta": "0.471",
+    "Annual Standard Deviation": "0.091",
+    "Annual Variance": "0.008",
+    "Information Ratio": "-0.365",
+    "Tracking Error": "0.099",
+    "Treynor Ratio": "0.032",
+    "Total Fees": "$1462.00",
+    "Estimated Strategy Capacity": "$1000000000.00",
+    "Lowest Capacity Asset": "ES YQYHC5L1GPA9",
+    "Portfolio Turnover": "4.51%",
+    "OrderListHash": "c1751b1ca59f1c54ca6ac516c638309d"
+}
+ </script>
+ <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         future = self.add_future(Futures.Indices.SP_500_E_MINI, extended_market_hours=True)
         self._future = future.symbol
@@ -53,12 +89,54 @@
                 # Roll over by ordering the same quantity.
                 # Use limit order since market on open order is not supported on Future and avoid extreme quote filling.
                 self.limit_order(added.symbol, 1, self.securities[self._future].price)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "781",
+    "Average Win": "1.83%",
+    "Average Loss": "-1.61%",
+    "Compounding Annual Return": "4.832%",
+    "Drawdown": "31.900%",
+    "Expectancy": "0.228",
+    "Start Equity": "100000",
+    "End Equity": "359210.6",
+    "Net Profit": "259.211%",
+    "Sharpe Ratio": "0.164",
+    "Sortino Ratio": "0.177",
+    "Probabilistic Sharpe Ratio": "0.010%",
+    "Loss Rate": "43%",
+    "Win Rate": "57%",
+    "Profit-Loss Ratio": "1.14",
+    "Alpha": "-0.009",
+    "Beta": "0.471",
+    "Annual Standard Deviation": "0.091",
+    "Annual Variance": "0.008",
+    "Information Ratio": "-0.365",
+    "Tracking Error": "0.099",
+    "Treynor Ratio": "0.032",
+    "Total Fees": "$1462.00",
+    "Estimated Strategy Capacity": "$1000000000.00",
+    "Lowest Capacity Asset": "ES YQYHC5L1GPA9",
+    "Portfolio Turnover": "4.51%",
+    "OrderListHash": "7923f2fd3252a0a3e4e1372ece9083c1"
+}
+ </script>
 </div>
-
-<h4>Example 2: Continuous Future Indicator</h4>
-<p>One of the major applications of <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>Continuous Future</a> is to obtain smooth price series to feed into indicators. This can ensure the indicator gets the correct price data that is comparable to the current mapped Future contract. In this example, we demonstrate a 252-day <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average indicator</a> update using continuous ES contract data.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
+<h4>
+ Example 2: Continuous Future Indicator
+</h4>
+<p>
+ One of the major applications of
+ <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">
+  Continuous Future
+ </a>
+ is to obtain smooth price series to feed into indicators. This can ensure the indicator gets the correct price data that is comparable to the current mapped Future contract. In this example, we demonstrate a 252-day
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">
+  Exponential Moving Average indicator
+ </a>
+ update using continuous ES contract data.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
     private Future _future;
 
@@ -82,7 +160,7 @@
         if (slice.Bars.TryGetValue(_future.Symbol, out var bar))
         {
             // Buy the mapped contract if the trend is estimated to go up (price above EMA).
-            if (_future.Get&lt;ExponentialMovingAverage&gt;("ema") >= bar.Close)
+            if (_future.Get&lt;ExponentialMovingAverage&gt;("ema") &gt;= bar.Close)
             {
                 SetHoldings(_future.Mapped, 0.1m);
             }
@@ -103,7 +181,38 @@
         }
     }
 }</pre>
-    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2117",
+    "Average Win": "0.30%",
+    "Average Loss": "-1.75%",
+    "Compounding Annual Return": "-3.508%",
+    "Drawdown": "64.200%",
+    "Expectancy": "-0.030",
+    "Start Equity": "100000",
+    "End Equity": "38002",
+    "Net Profit": "-61.998%",
+    "Sharpe Ratio": "-0.426",
+    "Sortino Ratio": "-0.34",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "17%",
+    "Win Rate": "83%",
+    "Profit-Loss Ratio": "0.17",
+    "Alpha": "-0.045",
+    "Beta": "0.068",
+    "Annual Standard Deviation": "0.099",
+    "Annual Variance": "0.01",
+    "Information Ratio": "-0.525",
+    "Tracking Error": "0.177",
+    "Treynor Ratio": "-0.619",
+    "Total Fees": "$9202.00",
+    "Estimated Strategy Capacity": "$53000000.00",
+    "Lowest Capacity Asset": "ES VEWW9T37NDVL",
+    "Portfolio Turnover": "36.05%",
+    "OrderListHash": "b05e31a66bee71fce81dcd3257ae4d4a"
+}
+ </script>
+ <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # Use backward ratio normalization for continuous contract to feed smooth, comparable price series to the indicator.
         self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
@@ -121,7 +230,7 @@
         bar = slice.bars.get(self._future.symbol)
         if bar:
             # Buy the mapped contract if the trend is estimated to go up (price above EMA).
-            if self._future.ema.current.value >= bar.close:
+            if self._future.ema.current.value &gt;= bar.close:
                 self.set_holdings(self._future.mapped, 0.1)
             # Short the mapped contract if the trend is estimated to go down (price below EMA).
             else:
@@ -131,12 +240,46 @@
         # Liquidate if expired (or not being the front month contract anymore) and exit universe.
         for removed in changes.removed_securities:
             self.liquidate(removed.symbol)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2117",
+    "Average Win": "0.30%",
+    "Average Loss": "-1.75%",
+    "Compounding Annual Return": "-3.508%",
+    "Drawdown": "64.200%",
+    "Expectancy": "-0.030",
+    "Start Equity": "100000",
+    "End Equity": "38002",
+    "Net Profit": "-61.998%",
+    "Sharpe Ratio": "-0.426",
+    "Sortino Ratio": "-0.34",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "17%",
+    "Win Rate": "83%",
+    "Profit-Loss Ratio": "0.17",
+    "Alpha": "-0.045",
+    "Beta": "0.068",
+    "Annual Standard Deviation": "0.099",
+    "Annual Variance": "0.01",
+    "Information Ratio": "-0.525",
+    "Tracking Error": "0.177",
+    "Treynor Ratio": "-0.619",
+    "Total Fees": "$9202.00",
+    "Estimated Strategy Capacity": "$53000000.00",
+    "Lowest Capacity Asset": "ES VEWW9T37NDVL",
+    "Portfolio Turnover": "36.05%",
+    "OrderListHash": "86e5893974c92442673ece551b93a75a"
+}
+ </script>
 </div>
-
-<h4>Example 3: Contango</h4>
-<p>In Future trading, contango refers to the far-to-expiry Future contract price is higher than the spot price due to various reasons, such as storage fee and insurance of the commodities. The following example shows a contango trading by shorting the far contract that the price is above a threshold compared to the front month contract price and buying the front month contract to earn the premium in between.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
+<h4>
+ Example 3: Contango
+</h4>
+<p>
+ In Future trading, contango refers to the far-to-expiry Future contract price is higher than the spot price due to various reasons, such as storage fee and insurance of the commodities. The following example shows a contango trading by shorting the far contract that the price is above a threshold compared to the front month contract price and buying the front month contract to earn the premium in between.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
     private Symbol _future;
 
@@ -152,7 +295,7 @@
     public override void OnData(Slice slice)
     {
         // Get Future chain only for the selected Future contract.
-        if (!Portfolio.Invested && slice.FutureChains.TryGetValue(_future, out var chain))
+        if (!Portfolio.Invested &amp;&amp; slice.FutureChains.TryGetValue(_future, out var chain))
         {
             // It takes 2 contracts with different expiries to form a horizontal spread arbitration to earn price difference in contango.
             if (chain.Count() &lt; 2) return;
@@ -178,7 +321,38 @@
         }
     }
 }</pre>
-    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "104",
+    "Average Win": "0.49%",
+    "Average Loss": "-0.67%",
+    "Compounding Annual Return": "-0.463%",
+    "Drawdown": "13.800%",
+    "Expectancy": "-0.358",
+    "Start Equity": "100000",
+    "End Equity": "88192.55",
+    "Net Profit": "-11.807%",
+    "Sharpe Ratio": "-2.713",
+    "Sortino Ratio": "-1.122",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "63%",
+    "Win Rate": "37%",
+    "Profit-Loss Ratio": "0.72",
+    "Alpha": "-0.025",
+    "Beta": "-0.005",
+    "Annual Standard Deviation": "0.009",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.481",
+    "Tracking Error": "0.16",
+    "Treynor Ratio": "4.982",
+    "Total Fees": "$47.31",
+    "Estimated Strategy Capacity": "$2700000.00",
+    "Lowest Capacity Asset": "MGC YTLZP82EVVRX",
+    "Portfolio Turnover": "0.20%",
+    "OrderListHash": "7cfa7df20c1bfcaef77842d3aa4a5501"
+}
+ </script>
+ <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # Allow extended market hours trade, which is common for Future since extended market hour is still popular.
         future = self.add_future(Futures.Metals.MICRO_GOLD, extended_market_hours=True)
@@ -207,4 +381,35 @@
         # Liquidate if expired (or not being the front month contract anymore) and exit universe.
         for removed in changes.removed_securities:
             self.liquidate()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "104",
+    "Average Win": "0.51%",
+    "Average Loss": "-0.67%",
+    "Compounding Annual Return": "-0.439%",
+    "Drawdown": "13.500%",
+    "Expectancy": "-0.341",
+    "Start Equity": "100000",
+    "End Equity": "88755.55",
+    "Net Profit": "-11.244%",
+    "Sharpe Ratio": "-2.568",
+    "Sortino Ratio": "-1.106",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "63%",
+    "Win Rate": "37%",
+    "Profit-Loss Ratio": "0.77",
+    "Alpha": "-0.025",
+    "Beta": "-0.005",
+    "Annual Standard Deviation": "0.01",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.479",
+    "Tracking Error": "0.16",
+    "Treynor Ratio": "4.988",
+    "Total Fees": "$47.31",
+    "Estimated Strategy Capacity": "$2700000.00",
+    "Lowest Capacity Asset": "MGC YTLZP82EVVRX",
+    "Portfolio Turnover": "0.19%",
+    "OrderListHash": "35fb9e38c17aef44938d429ea0bef3bc"
+}
+ </script>
 </div>

@@ -1,12 +1,23 @@
-<p>The following examples demonstrate some common practices for US Equity corporate actions.</p>
-
-<h4>Example 1: Resetting Indicators on Split Events</h4>
 <p>
-	The following algorithm adds raw TSLA data and uses it to update an <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average'>Exponential Moving Average</a> (EMA) indicator.
-	When a split occurs, it <a href='/docs/v2/writing-algorithms/indicators/key-concepts#11-Reset-Indicators'>resets and warms up the indicator with scaled raw data</a> to ensure the indicator doesn't reflect price discontinuities.
+ The following examples demonstrate some common practices for US Equity corporate actions.
 </p>
-<div class="section-example-container">
-	<pre class="csharp">public class USEquityCorporateActionExampleAlgorithm : QCAlgorithm
+<h4>
+ Example 1: Resetting Indicators on Split Events
+</h4>
+<p>
+ The following algorithm adds raw TSLA data and uses it to update an
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">
+  Exponential Moving Average
+ </a>
+ (EMA) indicator.
+	When a split occurs, it
+ <a href="/docs/v2/writing-algorithms/indicators/key-concepts#11-Reset-Indicators">
+  resets and warms up the indicator with scaled raw data
+ </a>
+ to ensure the indicator doesn't reflect price discontinuities.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class USEquityCorporateActionExampleAlgorithm : QCAlgorithm
 {
     private dynamic _equity;
 
@@ -38,15 +49,46 @@
         }
     }
 }</pre>
-	<pre class="python">class USEquityCorporateActionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class USEquityCorporateActionExampleAlgorithm(QCAlgorithm):
         
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         # Add raw US Equity data.
         self._equity = self.add_equity("TSLA", Resolution.DAILY, data_normalization_mode=DataNormalizationMode.RAW)
         # Create an EMA indicator.
         self._equity.ema = self.ema(self._equity.symbol, 50)
 
-    def on_splits(self, splits: Splits) -> None:
+    def on_splits(self, splits: Splits) -&gt; None:
         # Wait until the split has occurred.
         split = splits[self._equity.symbol]
         if split.type != SplitType.SPLIT_OCCURRED:
@@ -60,15 +102,47 @@
         )
         for bar in history:
             self._equity.ema.update(bar.end_time, bar.close)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 2: Reinvesting Dividend Payments</h4>
+<h4>
+ Example 2: Reinvesting Dividend Payments
+</h4>
 <p>
-	The following algorithm adds raw SPY data. 
-	It then holds the SPY and re-invests the dividend payments into additional shares. 
+ The following algorithm adds raw SPY data. 
+	It then holds the SPY and re-invests the dividend payments into additional shares.
 </p>
-<div class="section-example-container">
-	<pre class="csharp">public class USEquityCorporateActionExampleAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class USEquityCorporateActionExampleAlgorithm : QCAlgorithm
 {
     private Equity _spy;
 
@@ -94,25 +168,56 @@
 
         // Calculate the number of shares you can buy with the dividend payment.
         var quantity = Math.Floor(totalDividendAmount / _spy.Price);
-        if (quantity > 0)
+        if (quantity &gt; 0)
         {
             // Place an order to re-invest the dividends.
             MarketOrder(_spy.Symbol, quantity);
         }
     }
 }</pre>
-	<pre class="python">class USEquityCorporateActionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "110",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "6.257%",
+    "Drawdown": "34.800%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "517848.72",
+    "Net Profit": "417.849%",
+    "Sharpe Ratio": "0.255",
+    "Sortino Ratio": "0.269",
+    "Probabilistic Sharpe Ratio": "0.046%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.006",
+    "Beta": "0.621",
+    "Annual Standard Deviation": "0.101",
+    "Annual Variance": "0.01",
+    "Information Ratio": "-0.402",
+    "Tracking Error": "0.063",
+    "Treynor Ratio": "0.041",
+    "Total Fees": "$111.56",
+    "Estimated Strategy Capacity": "$170000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.01%",
+    "OrderListHash": "b60d034730205e5854c48c06feba1653"
+}
+ </script>
+ <pre class="python">class USEquityCorporateActionExampleAlgorithm(QCAlgorithm):
         
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         # Add raw Equity data.
         self._spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Buy and hold.
         if not self._spy.holdings.invested:
             self.set_holdings(self._spy.symbol, 0.5)
 
-    def on_dividends(self, dividends: Dividends) -> None:        
+    def on_dividends(self, dividends: Dividends) -&gt; None:        
         # Get the total dividend payment amount.
         total_dividend_amount = dividends[self._spy.symbol].distribution * self._spy.holdings.quantity
         # Calculate the number of shares you can buy with the dividend payment.
@@ -120,4 +225,35 @@
         if quantity:
             # Place an order to re-invest the dividends.
             self.market_order(self._spy.symbol, quantity)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "110",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "6.257%",
+    "Drawdown": "34.800%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "517848.72",
+    "Net Profit": "417.849%",
+    "Sharpe Ratio": "0.255",
+    "Sortino Ratio": "0.269",
+    "Probabilistic Sharpe Ratio": "0.046%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.006",
+    "Beta": "0.621",
+    "Annual Standard Deviation": "0.101",
+    "Annual Variance": "0.01",
+    "Information Ratio": "-0.402",
+    "Tracking Error": "0.063",
+    "Treynor Ratio": "0.041",
+    "Total Fees": "$111.56",
+    "Estimated Strategy Capacity": "$170000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.01%",
+    "OrderListHash": "74162a92a019403432c761a5346c6f9f"
+}
+ </script>
 </div>

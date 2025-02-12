@@ -8,17 +8,16 @@
   If the aggregated sentiment score is positive, it enters a long position for the month.
   If it's negative, it enters a short position for the month.
 </p>
-<div class="section-example-container">
+<div class="section-example-container testable">
   <pre class="python">import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer, set_seed
 from pathlib import Path
-# endregion
 
 class FinbertBaseModelAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2022, 1, 1)
-        self.set_end_date(2023, 1, 1)
+        self.set_end_date(2022, 2, 1)
         self.set_cash(100_000)
 
         spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
@@ -122,20 +121,19 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
   The label is the market return that occurs from the current news release to the next news release.
   The algorithm then fine-tunes the model, calculates the sentiment, and rebalances the portfolio.
 </p>
-<div class="section-example-container">
+<div class="section-example-container testable">
   <pre class="python">import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer, set_seed
 from pathlib import Path
 from datasets import Dataset
 import pytz
 import torch
-# endregion
 
 class FinbertBaseModelAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2022, 1, 1)
-        self.set_end_date(2023, 1, 1)
+        self.set_end_date(2022, 2, 1)
         self.set_cash(100_000)
 
         spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)

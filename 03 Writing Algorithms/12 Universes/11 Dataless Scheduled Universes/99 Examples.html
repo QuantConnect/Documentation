@@ -1,14 +1,21 @@
-<p>The following examples demonstrate some common practices for dataless scheduled universes.</p>
-
-<h4>Example 1: Download External Universe Files</h4>
 <p>
-	The following algorithm <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>downloads</a> a CSV file from Dropbox.
+ The following examples demonstrate some common practices for dataless scheduled universes.
+</p>
+<h4>
+ Example 1: Download External Universe Files
+</h4>
+<p>
+ The following algorithm
+ <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">
+  downloads
+ </a>
+ a CSV file from Dropbox.
 	The first column in the file contains the universe date.
 	The second column in the file contains a list of Equity tickers that represents the universe for the day.
 	The dataless scheduled universe parses the file contents each trading day and adds the universe constituents.
 </p>
-<div class="section-example-container">
-    <pre class="csharp">public class DatalessScheduledUniverseExampleAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class DatalessScheduledUniverseExampleAlgorithm : QCAlgorithm
 {
     // Create a dictionary for the universe data where the key is the date and
     // the value is a comma-separated string of stock tickers.
@@ -18,6 +25,8 @@
     public override void Initialize()
     {
         SetStartDate(2015, 1, 1);
+        SetEndDate(2016, 1, 1);
+
         // Download the initial universe file.
         DownloadUniverseFile();
         // Add the custom universe.
@@ -33,7 +42,7 @@
     {
         // Download the universe CSV file. Dropbox links require the "dl=1" URL parameter.
         var file = Download(
-            "https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1"
+            "https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&amp;st=5r4sdfwd&amp;dl=1"
         );
         // Convert the CSV file data into a dictionary where the key is the date and
         // the value is a comma-separated string of stock tickers.
@@ -66,23 +75,56 @@
         // Convert the stock tickers in the CSV file to Symbol objects.
         return tickers
             .Split(',')
-            .Select(x => QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA));
+            .Select(x =&gt; QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA));
     }
 
     private void Rebalance()
     {
         // Form an equal-weighted portfolio of all the universe constituents.
         var weight = 1m / _universe.Selected.Count;
-        SetHoldings(_universe.Selected.Select(symbol => new PortfolioTarget(symbol, weight)).ToList(), true);
+        SetHoldings(_universe.Selected.Select(symbol =&gt; new PortfolioTarget(symbol, weight)).ToList(), true);
     }
 }</pre>
-    <pre class="python">from io import StringIO
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "840",
+    "Average Win": "0.31%",
+    "Average Loss": "-0.43%",
+    "Compounding Annual Return": "-18.735%",
+    "Drawdown": "22.600%",
+    "Expectancy": "-0.105",
+    "Start Equity": "100000",
+    "End Equity": "81272.70",
+    "Net Profit": "-18.727%",
+    "Sharpe Ratio": "-1.139",
+    "Sortino Ratio": "-1.602",
+    "Probabilistic Sharpe Ratio": "0.548%",
+    "Loss Rate": "48%",
+    "Win Rate": "52%",
+    "Profit-Loss Ratio": "0.72",
+    "Alpha": "-0.14",
+    "Beta": "0.488",
+    "Annual Standard Deviation": "0.119",
+    "Annual Variance": "0.014",
+    "Information Ratio": "-1.202",
+    "Tracking Error": "0.12",
+    "Treynor Ratio": "-0.277",
+    "Total Fees": "$1052.37",
+    "Estimated Strategy Capacity": "$2800000.00",
+    "Lowest Capacity Asset": "TLT SGNKIKYGE9NP",
+    "Portfolio Turnover": "56.77%",
+    "OrderListHash": "c127a5e925e055cc2ceaa9a9492ea8c6"
+}
+ </script>
+ <pre class="python">from io import StringIO
 
 
 class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
     
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2015, 1, 1)
+        self.set_end_date(2016, 1, 1)
+
         # Download the initial universe file.
         self._download_universe_file()
         # Add the custom universe.
@@ -98,7 +140,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
     def _download_universe_file(self):
         # Download the universe CSV file. Dropbox links require the "dl=1" URL parameter.
         file = self.download(
-            "https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&st=5r4sdfwd&dl=1"
+            "https://www.dropbox.com/scl/fi/fbrxitk4ec3w91nse1raa/df.csv?rlkey=7r042rukzkthp7y1srloyhkov&amp;st=5r4sdfwd&amp;dl=1"
         )
         # Convert the CSV file data into a dictionary where the key is the date and
         # the value is a comma-separated string of stock tickers.
@@ -106,7 +148,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
         df.index = pd.to_datetime(df.index).date
         self._tickers_by_date = df.to_dict()
 
-    def _select_assets(self, dt: datetime) -> List[Symbol]:
+    def _select_assets(self, dt: datetime) -&gt; List[Symbol]:
         # When live trading, re-download the CSV file each day to get the new rows.
         if self.live_mode:
             self._download_universe_file()
@@ -118,24 +160,58 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
         # Convert the stock tickers in the CSV file to Symbol objects.
         return [Symbol.create(x, SecurityType.EQUITY, Market.USA) for x in data.split(",")]
 
-    def _rebalance(self) -> None:
+    def _rebalance(self) -&gt; None:
         # Form an equal-weighted portfolio of all the universe constituents.
         symbols = list(self._universe.selected)
         weight = 1 / len(symbols)
         self.set_holdings([PortfolioTarget(symbol, weight) for symbol in symbols], True)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "840",
+    "Average Win": "0.31%",
+    "Average Loss": "-0.43%",
+    "Compounding Annual Return": "-18.735%",
+    "Drawdown": "22.600%",
+    "Expectancy": "-0.105",
+    "Start Equity": "100000",
+    "End Equity": "81272.70",
+    "Net Profit": "-18.727%",
+    "Sharpe Ratio": "-1.139",
+    "Sortino Ratio": "-1.602",
+    "Probabilistic Sharpe Ratio": "0.548%",
+    "Loss Rate": "48%",
+    "Win Rate": "52%",
+    "Profit-Loss Ratio": "0.72",
+    "Alpha": "-0.14",
+    "Beta": "0.488",
+    "Annual Standard Deviation": "0.119",
+    "Annual Variance": "0.014",
+    "Information Ratio": "-1.202",
+    "Tracking Error": "0.12",
+    "Treynor Ratio": "-0.277",
+    "Total Fees": "$1052.37",
+    "Estimated Strategy Capacity": "$2800000.00",
+    "Lowest Capacity Asset": "TLT SGNKIKYGE9NP",
+    "Portfolio Turnover": "56.77%",
+    "OrderListHash": "182ca60970cc766c78ed2486253282e4"
+}
+ </script>
 </div>
-
-<h4>Example 2: Quarter End Selection</h4>
-<p>The following algorithm selects SPY on the last month of each quarter. For the remaining months, it selects no assets.</p>
-<div class="section-example-container">
-	<pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
+<h4>
+ Example 2: Quarter End Selection
+</h4>
+<p>
+ The following algorithm selects SPY on the last month of each quarter. For the remaining months, it selects no assets.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
         AddUniverse(new ScheduledUniverse(
             DateRules.MonthStart(), 
             TimeRules.At(8, 0), 
-            (dt) => 
+            (dt) =&gt; 
             {
                 if (dt.Month % 3 == 0)
                 {
@@ -146,7 +222,38 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
         ));
     }
 }</pre>
-	<pre class="python">class DatalessScheduledUniverseDemoAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class DatalessScheduledUniverseDemoAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.add_universe(
@@ -157,16 +264,54 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
             )
         )
         
-    def _select_assets(self, dt: datetime) -> List[Symbol]:
+    def _select_assets(self, dt: datetime) -&gt; List[Symbol]:
         if dt.month % 3 == 0:
             return [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
         return []</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 3: Third Week VIX</h4>
-<p>Standard <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options'>Options</a> expire at end of the third week of each month. The following algorithm selects VIX-related products on the third week to trade the foreseeable increase in volatility.</p>
-<div class="section-example-container">
-	<pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
+<h4>
+ Example 3: Third Week VIX
+</h4>
+<p>
+ Standard
+ <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options">
+  Options
+ </a>
+ expire at end of the third week of each month. The following algorithm selects VIX-related products on the third week to trade the foreseeable increase in volatility.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class DatalessScheduledUniverseDemoAlgorithm : QCAlgorithm
 {
     private int _month = -1;
     private int _week = -1;
@@ -176,7 +321,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
         AddUniverse(new ScheduledUniverse(
             DateRules.WeekStart(), 
             TimeRules.At(8, 0), 
-            (dt) => 
+            (dt) =&gt; 
             {
                 if (dt.Month == _month)
                 {
@@ -193,7 +338,38 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
         ));
     }
 }</pre>
-	<pre class="python">class DatalessScheduledUniverseDemoAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class DatalessScheduledUniverseDemoAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self._month = -1
@@ -207,7 +383,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
             )
         )
         
-    def _select_assets(self, dt: datetime) -> List[Symbol]:
+    def _select_assets(self, dt: datetime) -&gt; List[Symbol]:
         if dt.month == self._month:
             self._week += 1
             if self._week == 3:
@@ -217,12 +393,58 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
         self._month = dt.month
         self._week = 0
         return []</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-	<div class="example-legend">Demonstration Algorithms</div>
-  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomDataUniverseScheduledRegressionAlgorithm.py" target="_BLANK">CustomDataUniverseScheduledRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
-  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomDataUniverseScheduledRegressionAlgorithm.cs" target="_BLANK">CustomDataUniverseScheduledRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomDataUniverseScheduledRegressionAlgorithm.py" target="_BLANK">
+  CustomDataUniverseScheduledRegressionAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomDataUniverseScheduledRegressionAlgorithm.cs" target="_BLANK">
+  CustomDataUniverseScheduledRegressionAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

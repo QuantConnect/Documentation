@@ -1,13 +1,35 @@
-<h4>Example 1: Get Mid Price For Individual Contracts</h4>
-<p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Equity Option contracts to calculate mid price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/individual-contracts">filter individual option contracts and request data</a> using <code class="csharp">OptionChain</code><code class="python">self.option_chain</code> method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.</p>
-<div class="section-example-container">
-	<pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
+<h4>
+ Example 1: Get Mid Price For Individual Contracts
+</h4>
+<p>
+ This example shows how to handle
+ <code>
+  QuoteBar
+ </code>
+ data for shortlisted Equity Option contracts to calculate mid price using bid close and ask close data, while
+ <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/individual-contracts">
+  filter individual option contracts and request data
+ </a>
+ using
+ <code class="csharp">
+  OptionChain
+ </code>
+ <code class="python">
+  self.option_chain
+ </code>
+ method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private List&lt;Symbol&gt; _contracts = new();
         
     public override void Initialize()
     {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 4, 1);
+        
         // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Subscribe to underlying data for ATM calculation using the update underlying price.
@@ -39,7 +61,7 @@
             // Mid price can only be calculated when quote bar data is available.
             if (slice.QuoteBars.TryGetValue(contract, out var quote))
             {
-                if (quote.Bid != null && quote.Ask != null)
+                if (quote.Bid != null &amp;&amp; quote.Ask != null)
                 {
                     // Mid price = average of bid close price and ask close price.
                     var midPrice = (quote.Bid.Close + quote.Ask.Close) * 0.5m;
@@ -48,8 +70,42 @@
         }
     }
 }</pre>
-	<pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.804",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 4, 1)
+
         self.contracts = []
 
         # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
@@ -79,17 +135,69 @@
             if quote and quote.bid is not None and quote.ask is not None:
                 # Mid price = average of bid close price and ask close price.
                 mid_price = (quote.bid.close + quote.ask.close) * 0.5</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.804",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 2: Get Mid Price For Universe</h4>
-<p>This example shows how to handle <code>QuoteBar</code> data for shortlisted Equity Option contracts to calculate mid price using bid close and ask close data, while <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/universes">request data through universe selection function</a> using <code class="csharp">SetFilter</code><code class="python">set_filter</code> method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.</p>
-<div class="section-example-container">
-	<pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
+<h4>
+ Example 2: Get Mid Price For Universe
+</h4>
+<p>
+ This example shows how to handle
+ <code>
+  QuoteBar
+ </code>
+ data for shortlisted Equity Option contracts to calculate mid price using bid close and ask close data, while
+ <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data/universes">
+  request data through universe selection function
+ </a>
+ using
+ <code class="csharp">
+  SetFilter
+ </code>
+ <code class="python">
+  set_filter
+ </code>
+ method for the contracts that expires within the current week. Using mid price, we can examine the market fair value of the Option and compare with model theoretical price.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
         
     public override void Initialize()
     {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 4, 1);
+
         // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Subscribe to underlying data for ATM calculation using the update underlying price.
@@ -115,8 +223,42 @@
         }
     }
 }</pre>
-	<pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.804",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 4, 1)
+
         # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Subscribe to underlying data for ATM calculation using the update underlying price.
@@ -137,17 +279,62 @@
         for contract in chain:
             # Mid price = average of bid close price and ask close price
             mid_price = (contract.bid_price + contract.ask_price) * 0.5</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.804",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 3: Get Instant Delta</h4>
-<p>The option greeks change rapidly, so we need to obtain the instant greeks to accurately calculate the hedge size for arbitration or replication portfolio. You can call the <code>Greeks</code> property from the <code>OptionChain</code> data to access various greeks. In this example, we will demonstrate how to obtain the contract with delta closest to 0.4 among all call contracts expiring the same week.</p>
-<div class="section-example-container">
-	<pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
+<h4>
+ Example 3: Get Instant Delta
+</h4>
+<p>
+ The option greeks change rapidly, so we need to obtain the instant greeks to accurately calculate the hedge size for arbitration or replication portfolio. You can call the
+ <code>
+  Greeks
+ </code>
+ property from the
+ <code>
+  OptionChain
+ </code>
+ data to access various greeks. In this example, we will demonstrate how to obtain the contract with delta closest to 0.4 among all call contracts expiring the same week.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class EquityOptionHandlingDataAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
         
     public override void Initialize()
     {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 4, 1);
+
         // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Subscribe to underlying data for ATM calculation using the update underlying price.
@@ -168,12 +355,46 @@
         {
             // Get the contract with Delta closest to 0.4 to trade.
             // The arbitary delta criterion might be set due to hedging need or risk adjustment.
-            var selected = chain.OrderBy(x => Math.Abs(x.Greeks.Delta - 0.4m)).First();
+            var selected = chain.OrderBy(x =&gt; Math.Abs(x.Greeks.Delta - 0.4m)).First();
         }
     }
 }</pre>
-	<pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.804",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class EquityOptionHandlingDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 4, 1)
+        
         # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Subscribe to underlying data for ATM calculation using the update underlying price.
@@ -195,4 +416,35 @@
         # Get the contract with Delta closest to 0.4 to trade.
         # The arbitary delta criterion might be set due to hedging need or risk adjustment.
         selected = sorted(chain, key=lambda x: abs(x.greeks.delta - 0.4))[0]</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.804",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>

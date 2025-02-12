@@ -1,54 +1,124 @@
-<p>The following backtest verifies the <code class="csharp">ExerciseOption</code><code class="python">exercise_option</code> behavior. The following table shows the first three trades in the backtest:</p>
-
+<p>
+ The following backtest verifies the
+ <code class="csharp">
+  ExerciseOption
+ </code>
+ <code class="python">
+  exercise_option
+ </code>
+ behavior. The following table shows the first three trades in the backtest:
+</p>
 <table class="qc-table table" id="research-nodes-table">
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Value</th>
-            <th>Tag</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>2021-07-01T09:31:00Z</td>
-            <td>SPY 221216C00085000</td>
-            <td>345.30</td>
-            <td>1</td>
-            <td>Buy Market</td>
-            <td>Filled</td>
-            <td>34530.00</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>2021-07-01T09:31:00Z</td>
-            <td>SPY 221216C00085000</td>
-            <td>0.00</td>
-            <td>-1</td>
-            <td>Sell Option Exercise</td>
-            <td>Filled</td>
-            <td>0.00</td>
-            <td>Automatic Exercise</td>
-        </tr>
-        <tr>
-            <td>2021-07-01T09:31:00Z</td>
-            <td>SPY</td>
-            <td>85.00</td>
-            <td>100</td>
-            <td>Sell Option Exercise</td>
-            <td>Filled</td>
-            <td>8500.00</td>
-            <td>Option Exercise</td>
-        </tr>
-    </tbody>
+ <thead>
+  <tr>
+   <th>
+    Time
+   </th>
+   <th>
+    Symbol
+   </th>
+   <th>
+    Price
+   </th>
+   <th>
+    Quantity
+   </th>
+   <th>
+    Type
+   </th>
+   <th>
+    Status
+   </th>
+   <th>
+    Value
+   </th>
+   <th>
+    Tag
+   </th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    2021-07-01T09:31:00Z
+   </td>
+   <td>
+    SPY 221216C00085000
+   </td>
+   <td>
+    345.30
+   </td>
+   <td>
+    1
+   </td>
+   <td>
+    Buy Market
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    34530.00
+   </td>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    2021-07-01T09:31:00Z
+   </td>
+   <td>
+    SPY 221216C00085000
+   </td>
+   <td>
+    0.00
+   </td>
+   <td>
+    -1
+   </td>
+   <td>
+    Sell Option Exercise
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    0.00
+   </td>
+   <td>
+    Automatic Exercise
+   </td>
+  </tr>
+  <tr>
+   <td>
+    2021-07-01T09:31:00Z
+   </td>
+   <td>
+    SPY
+   </td>
+   <td>
+    85.00
+   </td>
+   <td>
+    100
+   </td>
+   <td>
+    Sell Option Exercise
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    8500.00
+   </td>
+   <td>
+    Option Exercise
+   </td>
+  </tr>
+ </tbody>
 </table>
-
 <style>
-#research-nodes-table td:nth-child(3), 
+ #research-nodes-table td:nth-child(3), 
 #research-nodes-table th:nth-child(3), 
 #research-nodes-table td:nth-child(4), 
 #research-nodes-table th:nth-child(4), 
@@ -57,13 +127,14 @@
     text-align: right;
 }
 </style>
-
-<p>The algorithm first brought a deep ITM option based on the set option selection conditions by $345.30, then exercise it actively, so 100 shares of SPY (in which 1 contract represents) was brought at its strike price at $85.00, with the option discarded from the portfolio.</p>
-
-<p>To reproduce these results, backtest the following algorithm:</p>
-
-<div class="section-example-container">
-    <pre class="csharp">public class OptionExerciseOrderAlgorithm : QCAlgorithm
+<p>
+ The algorithm first brought a deep ITM option based on the set option selection conditions by $345.30, then exercise it actively, so 100 shares of SPY (in which 1 contract represents) was brought at its strike price at $85.00, with the option discarded from the portfolio.
+</p>
+<p>
+ To reproduce these results, backtest the following algorithm:
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class OptionExerciseOrderAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private decimal _strike;
@@ -114,14 +185,45 @@
             Buy(_contract, 1);
         }
 
-        if (Portfolio[_contract].Invested && _strike &lt; Securities[_spy].Price)
+        if (Portfolio[_contract].Invested &amp;&amp; _strike &lt; Securities[_spy].Price)
         {
             ExerciseOption(_contract, 1);
             Quit();
         }
     }
 }</pre>
-    <pre class="python">class OptionExerciseOrderAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99952",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$1.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "SPY XUERCWEBHSH2|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "42.98%",
+    "OrderListHash": "9e3bfde55b4ac4ca5413b48672db9b1e"
+}
+ </script>
+ <pre class="python">class OptionExerciseOrderAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2021, 7, 1)
@@ -156,4 +258,35 @@
         if self.portfolio[self.contract].invested and self.strike &lt; self.securities[self.spy].price:
             self.exercise_option(self.contract, 1)
             self.quit()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "99952",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$1.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "SPY XUERCWEBHSH2|SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "42.98%",
+    "OrderListHash": "ff742665bcd1247a580b00741b1696e1"
+}
+ </script>
 </div>

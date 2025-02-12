@@ -1,13 +1,20 @@
-<p>The following examples demonstrate some common practices for requesting Index data.</p>
-
-<h4>Example 1: VIX EMA Cross</h4>
 <p>
-  The following algorithm adds daily VIX Index data and uses the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average (EMA)</a> indicator to create trading signals. 
+ The following examples demonstrate some common practices for requesting Index data.
+</p>
+<h4>
+ Example 1: VIX EMA Cross
+</h4>
+<p>
+ The following algorithm adds daily VIX Index data and uses the
+ <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">
+  Exponential Moving Average (EMA)
+ </a>
+ indicator to create trading signals. 
   The algorithm uses a 30-day slow EMA and a 15-day fast EMA.
   It enters a long SPY position when the fast EMA crosses above the slow EMA and liquidates the position when the fast EMA crosses below the slow EMA.
 </p>
-<div class="section-example-container">
-  <pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
 {
     private ExponentialMovingAverage _emaFast, _emaSlow;
     private Symbol _vix, _spy;
@@ -33,20 +40,51 @@
             return;
         }
         // When the fast VIX EMA crosses above the slow EMA, buy SPY.
-        if (!Portfolio.Invested && (_emaFast.Current.Value > _emaSlow.Current.Value  * (1 + _tolerance)))
+        if (!Portfolio.Invested &amp;&amp; (_emaFast.Current.Value &gt; _emaSlow.Current.Value  * (1 + _tolerance)))
         {
             SetHoldings(_spy, 0.8m);
         }
         // When the fast VIX EMA crosses below the slow EMA, liquidate the position.
-        else if (Portfolio.Invested && (_emaFast.Current.Value < _emaSlow.Current.Value  * (1 - _tolerance)))
+        else if (Portfolio.Invested &amp;&amp; (_emaFast.Current.Value &lt; _emaSlow.Current.Value  * (1 - _tolerance)))
         {
             Liquidate(_spy);
         }
     }
 }</pre>
-  <pre class="python">class IndexDemoAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "240",
+    "Average Win": "2.04%",
+    "Average Loss": "-2.92%",
+    "Compounding Annual Return": "4.123%",
+    "Drawdown": "34.300%",
+    "Expectancy": "0.339",
+    "Start Equity": "100000",
+    "End Equity": "298877.30",
+    "Net Profit": "198.877%",
+    "Sharpe Ratio": "0.113",
+    "Sortino Ratio": "0.065",
+    "Probabilistic Sharpe Ratio": "0.004%",
+    "Loss Rate": "21%",
+    "Win Rate": "79%",
+    "Profit-Loss Ratio": "0.70",
+    "Alpha": "-0.009",
+    "Beta": "0.373",
+    "Annual Standard Deviation": "0.086",
+    "Annual Variance": "0.007",
+    "Information Ratio": "-0.355",
+    "Tracking Error": "0.117",
+    "Treynor Ratio": "0.026",
+    "Total Fees": "$982.66",
+    "Estimated Strategy Capacity": "$1800000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "1.91%",
+    "OrderListHash": "ac95f0712a553471ac7c6350d60784c6"
+}
+ </script>
+ <pre class="python">class IndexDemoAlgorithm(QCAlgorithm):
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         # Add the daily VIX and SPY data.
         self._vix = self.add_index("VIX", Resolution.DAILY).symbol
         self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -56,17 +94,47 @@
         # Define a small tolerance to reduce trading churn.
         self._tolerance = 0.00015
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Check if the indicators are ready.
         if not self._ema_slow.is_ready:
             return
         # When the fast VIX EMA crosses above the slow EMA, buy SPY.
         if (not self.portfolio.invested and 
-            self._ema_fast.current.value > self._ema_slow.current.value * (1 + self._tolerance)):
+            self._ema_fast.current.value &gt; self._ema_slow.current.value * (1 + self._tolerance)):
             self.set_holdings(self._spy, 0.8)
         # When the fast VIX EMA crosses below the slow EMA, liquidate the position.
         elif (self.portfolio.invested and
-            self._ema_fast.current.value < self._ema_slow.current.value * (1 - self._tolerance)):
+            self._ema_fast.current.value &lt; self._ema_slow.current.value * (1 - self._tolerance)):
             self.liquidate(self._spy)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "240",
+    "Average Win": "2.04%",
+    "Average Loss": "-2.92%",
+    "Compounding Annual Return": "4.123%",
+    "Drawdown": "34.300%",
+    "Expectancy": "0.339",
+    "Start Equity": "100000",
+    "End Equity": "298877.30",
+    "Net Profit": "198.877%",
+    "Sharpe Ratio": "0.113",
+    "Sortino Ratio": "0.065",
+    "Probabilistic Sharpe Ratio": "0.004%",
+    "Loss Rate": "21%",
+    "Win Rate": "79%",
+    "Profit-Loss Ratio": "0.70",
+    "Alpha": "-0.009",
+    "Beta": "0.373",
+    "Annual Standard Deviation": "0.086",
+    "Annual Variance": "0.007",
+    "Information Ratio": "-0.355",
+    "Tracking Error": "0.117",
+    "Treynor Ratio": "0.026",
+    "Total Fees": "$982.66",
+    "Estimated Strategy Capacity": "$1800000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "1.91%",
+    "OrderListHash": "f88fc5957963a9b7b12fbebecbb6e6f0"
+}
+ </script>
 </div>
-

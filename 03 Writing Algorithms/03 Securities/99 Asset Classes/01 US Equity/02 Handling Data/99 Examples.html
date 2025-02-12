@@ -1,30 +1,57 @@
-<p>The following examples demonstrate some common practices for handling US Equity data.</p>
-
-<h4>Example 1: Various Data Resolutions and Formats</h4>
 <p>
-	The following algorithm handles three data resolutions (Daily, Minute, and Tick) and three data formats (TradeBar, QuoteBar, and Tick). 
+ The following examples demonstrate some common practices for handling US Equity data.
+</p>
+<h4>
+ Example 1: Various Data Resolutions and Formats
+</h4>
+<p>
+ The following algorithm handles three data resolutions (Daily, Minute, and Tick) and three data formats (TradeBar, QuoteBar, and Tick). 
 	The Equity subscriptions provide the ticks and daily TradeBar objects.
-	To create the 5-minute QuoteBar objects, it <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#05-Consolidate-Quote-Ticks">consolidates</a> the AAPL ticks.
+	To create the 5-minute QuoteBar objects, it
+ <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators#05-Consolidate-Quote-Ticks">
+  consolidates
+ </a>
+ the AAPL ticks.
 </p>
-
 <p>
-	The algorithm enters a long position in AAPL when the following conditions are met:
+ The algorithm enters a long position in AAPL when the following conditions are met:
 </p>
 <ul>
-    <li>The 16-day <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/fractal-adaptive-moving-average'>Fractal Adaptive Moving Average</a> (FRAMA) of QQQ is increasing, which indicates the trend is up.</li>
-    <li>The <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index'>Relative Strength Index</a> (RSI) of AAPL is above 70, which indicates AAPL has been rising from large buying pressure.</li>
+ <li>
+  The 16-day
+  <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/fractal-adaptive-moving-average">
+   Fractal Adaptive Moving Average
+  </a>
+  (FRAMA) of QQQ is increasing, which indicates the trend is up.
+ </li>
+ <li>
+  The
+  <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index">
+   Relative Strength Index
+  </a>
+  (RSI) of AAPL is above 70, which indicates AAPL has been rising from large buying pressure.
+ </li>
 </ul>
 <p>
-	The algorithm enters a short position in AAPL when the following conditions are met:
+ The algorithm enters a short position in AAPL when the following conditions are met:
 </p>
 <ul>
-    <li>The 16-day FRAMA of QQQ is rising, which indicates the trend is down.</li>
-    <li>The RSI of AAPL is above, which indicates AAPL has been declining from large selling pressure.</li>
+ <li>
+  The 16-day FRAMA of QQQ is rising, which indicates the trend is down.
+ </li>
+ <li>
+  The RSI of AAPL is above, which indicates AAPL has been declining from large selling pressure.
+ </li>
 </ul>
-<p>The algorithm <a href='/docs/v2/writing-algorithms/trading-and-orders/liquidating-positions'>liquidates the portfolio</a> when the FRAMA changes direction.</p>
-
-<div class="section-example-container">
-	<pre class="csharp">public class USEquityExampleAlgorithm : QCAlgorithm
+<p>
+ The algorithm
+ <a href="/docs/v2/writing-algorithms/trading-and-orders/liquidating-positions">
+  liquidates the portfolio
+ </a>
+ when the FRAMA changes direction.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class USEquityExampleAlgorithm : QCAlgorithm
 {
     private dynamic _qqq, _aapl;
 
@@ -46,7 +73,7 @@
         // Subscribe the consolidator for automatic updates.
         SubscriptionManager.AddConsolidator(_aapl.Symbol, consolidator);
         // Attach an event handler to update the RSI indicator with the consolidated bars.
-        consolidator.DataConsolidated += (sender, bar) => _aapl.Rsi.Update(bar.EndTime, bar.Close);
+        consolidator.DataConsolidated += (sender, bar) =&gt; _aapl.Rsi.Update(bar.EndTime, bar.Close);
         
         // Warm up the indicators.
         WarmUpIndicator(_qqq.Symbol, _qqq.Frama);
@@ -74,26 +101,57 @@
         if (_aapl.Holdings.Invested)
         {
             // If there is divergence between our position and the Frama direction, exit the position.
-            if ((_aapl.Holdings.IsLong && frama < prevFrama) || (_aapl.Holdings.IsShort && frama > prevFrama))
+            if ((_aapl.Holdings.IsLong &amp;&amp; frama &lt; prevFrama) || (_aapl.Holdings.IsShort &amp;&amp; frama &gt; prevFrama))
             {
                 Liquidate(_aapl.Symbol);
             }
         }
         // Look for a long entry.
-        else if (frama > prevFrama && rsi >= 70)
+        else if (frama &gt; prevFrama &amp;&amp; rsi &gt;= 70)
         {
             SetHoldings(_aapl.Symbol, 0.5);
         }
         // Look for a short entry.
-        else if (frama < prevFrama && rsi <= 30)
+        else if (frama &lt; prevFrama &amp;&amp; rsi &lt;= 30)
         {
             SetHoldings(_aapl.Symbol, -0.5);
         }
     }
 }</pre>
-	<pre class="python">class USEquityExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "9",
+    "Average Win": "2.46%",
+    "Average Loss": "-0.58%",
+    "Compounding Annual Return": "105.911%",
+    "Drawdown": "2.100%",
+    "Expectancy": "1.626",
+    "Start Equity": "100000",
+    "End Equity": "106256.33",
+    "Net Profit": "6.256%",
+    "Sharpe Ratio": "6.238",
+    "Sortino Ratio": "6.388",
+    "Probabilistic Sharpe Ratio": "92.012%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "4.25",
+    "Alpha": "0.643",
+    "Beta": "-0.376",
+    "Annual Standard Deviation": "0.104",
+    "Annual Variance": "0.011",
+    "Information Ratio": "3.961",
+    "Tracking Error": "0.17",
+    "Treynor Ratio": "-1.732",
+    "Total Fees": "$30.56",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "14.47%",
+    "OrderListHash": "6bf4835c678675af9a249fdaebc4c55d"
+}
+ </script>
+ <pre class="python">class USEquityExampleAlgorithm(QCAlgorithm):
         
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2020, 2, 1)
         # Add QQQ and AAPL data.
@@ -113,7 +171,7 @@
         for quote_bar in self.history[QuoteBar](self._aapl.symbol, 10, Resolution.MINUTE):
             self._aapl.rsi.update(quote_bar.end_time, quote_bar.close)
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Ensure AAPL ticks are in the current slice.
         if self._aapl.symbol not in slice.ticks:
             return
@@ -125,13 +183,44 @@
         # Check if we have an AAPL position.
         if self._aapl.holdings.invested:
             # If there is divergence between our position and the Frama direction, exit the position.
-            if (self._aapl.holdings.is_long and frama < prev_frama or
-                self._aapl.holdings.is_short and frama > prev_frama):
+            if (self._aapl.holdings.is_long and frama &lt; prev_frama or
+                self._aapl.holdings.is_short and frama &gt; prev_frama):
                 self.liquidate(self._aapl.symbol)
         # Look for a long entry.
-        elif frama > prev_frama and rsi >= 70:
+        elif frama &gt; prev_frama and rsi &gt;= 70:
             self.set_holdings(self._aapl.symbol, 0.5)
         # Look for a short entry.
-        elif frama < prev_frama and rsi <= 30:
+        elif frama &lt; prev_frama and rsi &lt;= 30:
             self.set_holdings(self._aapl.symbol, -0.5)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "9",
+    "Average Win": "2.46%",
+    "Average Loss": "-0.58%",
+    "Compounding Annual Return": "105.911%",
+    "Drawdown": "2.100%",
+    "Expectancy": "1.626",
+    "Start Equity": "100000",
+    "End Equity": "106256.33",
+    "Net Profit": "6.256%",
+    "Sharpe Ratio": "6.238",
+    "Sortino Ratio": "6.388",
+    "Probabilistic Sharpe Ratio": "92.012%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "4.25",
+    "Alpha": "0.643",
+    "Beta": "-0.376",
+    "Annual Standard Deviation": "0.104",
+    "Annual Variance": "0.011",
+    "Information Ratio": "3.961",
+    "Tracking Error": "0.17",
+    "Treynor Ratio": "-1.732",
+    "Total Fees": "$30.56",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "14.47%",
+    "OrderListHash": "d7b16c20da4cee2642430368d9c35111"
+}
+ </script>
 </div>

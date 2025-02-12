@@ -21,16 +21,16 @@ using MathNet.Numerics.Distributions;
 // Create a QuantBook.
 var qb = new QuantBook();
 // Make a history request to get a list of trading days.
-var history = qb.History<TradeBar>(
+var history = qb.History&lt;TradeBar&gt;(
     Symbol.Create("SPY", SecurityType.Equity, Market.USA), 
     new DateTime(2015, 1, 1), new DateTime(2024, 12, 31), Resolution.Daily
 ).ToList();
 // Create a variable to store the file contents.
 var contents = new List&lt;string&gt;();
 // Define the list of possible assets.
-var tickers = new List<string> { "SPY", "TLT", "GLD", "USO", "IWM" };
+var tickers = new List&lt;string&gt; { "SPY", "TLT", "GLD", "USO", "IWM" };
 // Loop through the list of trading days.
-for (int i = 0; i < history.Count; i++)
+for (int i = 0; i &lt; history.Count; i++)
 {
     // Create a random number generator.
     var random = new Random(i);
@@ -76,7 +76,7 @@ df.to_csv(QuantBook().object_store.get_file_path("portfolio-targets.csv"), index
     {
         SetStartDate(2015, 1, 1);
         // Add a universe that reads from the Object Store.
-        _universe = AddUniverse&lt;CustomUniverseData&gt;("CustomUniverse", Resolution.Daily, (altCoarse) => {
+        _universe = AddUniverse&lt;CustomUniverseData&gt;("CustomUniverse", Resolution.Daily, (altCoarse) =&gt; {
             // Select the symbols that have a significant weight in the custom universe data to avoid 
             // small-size trades that erode returns. Save the weight to use during the rebalance.
             _weightBySymbol = altCoarse

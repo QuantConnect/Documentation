@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for multi-asset modeling.</p>
-
-<h4>Example 1: BTC Spot-Crypto Future Arbitration</h4>
-<p>This algorithm demonstrates an arbitration between Spot and Crypto Future BTCUSDT using a BTC cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. To ensure the cash position is sufficient to open the buy position, we order the buy side after the sell side is filled and the cash is replenished.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for multi-asset modeling.
+</p>
+<h4>
+ Example 1: BTC Spot-Crypto Future Arbitration
+</h4>
+<p>
+ This algorithm demonstrates an arbitration between Spot and Crypto Future BTCUSDT using a BTC cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. To ensure the cash position is sufficient to open the buy position, we order the buy side after the sell side is filled and the cash is replenished.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
 {
     private Symbol _btcusdt, _btcFuture;
     private decimal _threshold = 0.005m;
@@ -73,7 +78,38 @@
         return initialMargin.Value;
     }
 }</pre>
-    <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "234",
+    "Average Win": "1.42%",
+    "Average Loss": "-1.63%",
+    "Compounding Annual Return": "12.131%",
+    "Drawdown": "7.400%",
+    "Expectancy": "0.067",
+    "Start Equity": "100000.00",
+    "End Equity": "121128.92",
+    "Net Profit": "21.129%",
+    "Sharpe Ratio": "1.177",
+    "Sortino Ratio": "1.728",
+    "Probabilistic Sharpe Ratio": "87.396%",
+    "Loss Rate": "43%",
+    "Win Rate": "57%",
+    "Profit-Loss Ratio": "0.87",
+    "Alpha": "0.081",
+    "Beta": "0.009",
+    "Annual Standard Deviation": "0.07",
+    "Annual Variance": "0.005",
+    "Information Ratio": "-0.259",
+    "Tracking Error": "0.529",
+    "Treynor Ratio": "9.381",
+    "Total Fees": "\u20ae0.00",
+    "Estimated Strategy Capacity": "\u20ae250000.00",
+    "Lowest Capacity Asset": "BTCUSDT 2V3",
+    "Portfolio Turnover": "9.62%",
+    "OrderListHash": "692a4c0cb49be2067406522c8cfec4f8"
+}
+ </script>
+ <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
     threshold = 0.005
 
     def initialize(self) -&gt; None:
@@ -124,12 +160,46 @@
         parameter = InitialMarginParameters(security, 1)
         initial_margin = security.buying_power_model.get_initial_margin_requirement(parameter)
         return initial_margin.value</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "234",
+    "Average Win": "1.42%",
+    "Average Loss": "-1.63%",
+    "Compounding Annual Return": "12.131%",
+    "Drawdown": "7.400%",
+    "Expectancy": "0.067",
+    "Start Equity": "100000.00",
+    "End Equity": "121128.92",
+    "Net Profit": "21.129%",
+    "Sharpe Ratio": "1.177",
+    "Sortino Ratio": "1.728",
+    "Probabilistic Sharpe Ratio": "87.396%",
+    "Loss Rate": "43%",
+    "Win Rate": "57%",
+    "Profit-Loss Ratio": "0.87",
+    "Alpha": "0.081",
+    "Beta": "0.009",
+    "Annual Standard Deviation": "0.07",
+    "Annual Variance": "0.005",
+    "Information Ratio": "-0.259",
+    "Tracking Error": "0.529",
+    "Treynor Ratio": "9.381",
+    "Total Fees": "\u20ae0.00",
+    "Estimated Strategy Capacity": "\u20ae250000.00",
+    "Lowest Capacity Asset": "BTCUSDT 2V3",
+    "Portfolio Turnover": "9.62%",
+    "OrderListHash": "fc9c684314dfe918da8ad57c9c426dcf"
+}
+ </script>
 </div>
-
-<h4>Example 2: BTC Spot-Future Arbitration</h4>
-<p>This algorithm implements a similar logic to the above example of an arbitration algorithm between spot BTCUSD and Future BTC using a cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. Note that we need to calculate the future value of the Future fairly compared to the spot BTC. Also, we need to rollover any Futures contracts.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
+<h4>
+ Example 2: BTC Spot-Future Arbitration
+</h4>
+<p>
+ This algorithm implements a similar logic to the above example of an arbitration algorithm between spot BTCUSD and Future BTC using a cash account. If one's price is above 0.5% of another's, we sell the relatively overpriced one and buy the counter side. Note that we need to calculate the future value of the Future fairly compared to the spot BTC. Also, we need to rollover any Futures contracts.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class MultiAssetModelingAlgorithm  : QCAlgorithm
 {
     private Symbol _btcusd;
     private Future _btcFuture;
@@ -195,7 +265,38 @@
         }
     }
 }</pre>
-    <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "43",
+    "Average Win": "0.46%",
+    "Average Loss": "-0.30%",
+    "Compounding Annual Return": "1.100%",
+    "Drawdown": "0.900%",
+    "Expectancy": "0.338",
+    "Start Equity": "10000000",
+    "End Equity": "10333823.96",
+    "Net Profit": "3.338%",
+    "Sharpe Ratio": "-1.263",
+    "Sortino Ratio": "-2.288",
+    "Probabilistic Sharpe Ratio": "13.717%",
+    "Loss Rate": "48%",
+    "Win Rate": "52%",
+    "Profit-Loss Ratio": "1.55",
+    "Alpha": "-0.017",
+    "Beta": "0.003",
+    "Annual Standard Deviation": "0.013",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.489",
+    "Tracking Error": "0.146",
+    "Treynor Ratio": "-5.13",
+    "Total Fees": "$418.76",
+    "Estimated Strategy Capacity": "$4000000.00",
+    "Lowest Capacity Asset": "BTCUSD 2XR",
+    "Portfolio Turnover": "0.08%",
+    "OrderListHash": "1f78726ff72e53a43d623215e03e39d7"
+}
+ </script>
+ <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
     threshold = 0.005
 
     def initialize(self) -&gt; None:
@@ -244,4 +345,35 @@
             self.liquidate(old_symbol, tag = tag)
             if quantity != 0:
                 self.market_order(new_symbol, quantity, tag = tag)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "603",
+    "Average Win": "0.07%",
+    "Average Loss": "-0.07%",
+    "Compounding Annual Return": "1.286%",
+    "Drawdown": "0.600%",
+    "Expectancy": "0.183",
+    "Start Equity": "10000000",
+    "End Equity": "10391163.50",
+    "Net Profit": "3.912%",
+    "Sharpe Ratio": "-1.385",
+    "Sortino Ratio": "-2.353",
+    "Probabilistic Sharpe Ratio": "23.580%",
+    "Loss Rate": "40%",
+    "Win Rate": "60%",
+    "Profit-Loss Ratio": "0.97",
+    "Alpha": "-0.015",
+    "Beta": "-0",
+    "Annual Standard Deviation": "0.011",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.479",
+    "Tracking Error": "0.146",
+    "Treynor Ratio": "47.296",
+    "Total Fees": "$3361.10",
+    "Estimated Strategy Capacity": "$370000.00",
+    "Lowest Capacity Asset": "BTC YEPD29PF6PDT",
+    "Portfolio Turnover": "0.88%",
+    "OrderListHash": "9547c8805d72387458a739e1da1a8478"
+}
+ </script>
 </div>

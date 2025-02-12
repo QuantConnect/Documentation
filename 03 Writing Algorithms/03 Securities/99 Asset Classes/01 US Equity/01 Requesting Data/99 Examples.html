@@ -1,12 +1,15 @@
-<p>The following examples demonstrate some common practices for requesting US Equity data.</p>
-
-<h4>Example 1: Add Multiple Assets</h4>
 <p>
-	The following algorithm adds multiple US Equities with extended market hours data.
+ The following examples demonstrate some common practices for requesting US Equity data.
+</p>
+<h4>
+ Example 1: Add Multiple Assets
+</h4>
+<p>
+ The following algorithm adds multiple US Equities with extended market hours data.
 	Extended market hours data enables you to monitor price movements during pre-market and after-hours trading sessions.
 </p>
-<div class="section-example-container">
-	<pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
 {
     private List&lt;Equity&gt; _equities = new();
 
@@ -15,39 +18,109 @@
         // Create a list of tickers you want to add.
         var tickers = new string[] { "AAPL", "TSLA", "GOOG" };
         // Add extended market hours data for each US Equity.
-        _equities = tickers.Select(ticker => AddEquity(ticker, extendedMarketHours: true)).ToList();
+        _equities = tickers.Select(ticker =&gt; AddEquity(ticker, extendedMarketHours: true)).ToList();
     }
 }</pre>
-	<pre class="python">class USEquityDemoAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class USEquityDemoAlgorithm(QCAlgorithm):
 
     def initialize(self):
         # Create a list of tickers you want to add.
         tickers = ["AAPL", "TSLA", "GOOG"]
         # Add extended market hours data for each US Equity.
         self._equities = [self.add_equity(ticker, extended_market_hours=True) for ticker in tickers]</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 2: Import External Trade Signals</h4>
+<h4>
+ Example 2: Import External Trade Signals
+</h4>
 <p>
-	Say you source trading signals from outside your algorithm and organize them into a CSV file on Dropbox with the following structure:
+ Say you source trading signals from outside your algorithm and organize them into a CSV file on Dropbox with the following structure:
 </p>
 <div class="section-example-container">
-	<pre>#ticker,source1,source2,source3,source4,source5
+ <pre>#ticker,source1,source2,source3,source4,source5
 AAPL,1.25,1.10,1.32,1.13,1.21
 AMZN,1.15,1.05,1.07,1.11,1.03
 GOOG,0.97,0.99,0.98,1.04,0.95
 META,1.04,1.03,1.10,1.04,0.98
 MSFT,0.92,0.96,0.98,1.01,0.98</pre>
 </div>
-
 <p>
-	The following algorithm uses a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> to periodically <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">pull the CSV file from Dropbox</a>, parse its signals, and place trades.
+ The following algorithm uses a
+ <a href="/docs/v2/writing-algorithms/scheduled-events">
+  Scheduled Event
+ </a>
+ to periodically
+ <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">
+  pull the CSV file from Dropbox
+ </a>
+ , parse its signals, and place trades.
 	To determine the target weight for each asset, it takes the mean score from all the sources.
 	If the mean score is greater than 1, it allocates 20% of the portfolio to the asset. 
 	Otherwise, it allocates -20% to the asset.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">public class USEquityDemoAlgorithm : QCAlgorithm
+ <pre class="csharp">public class USEquityDemoAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -64,7 +137,7 @@ MSFT,0.92,0.96,0.98,1.01,0.98</pre>
     private void DownloadDataAndPlaceOrders()
     {
         // Download the file from DropBox.
-        var file = Download("&lt;DropBoxUrl&gt;&dl=1");
+        var file = Download("&lt;DropBoxUrl&gt;&amp;dl=1");
 
         // Convert the text file into trading signals.
         var signalByTicker = new Dictionary&lt;string, decimal&gt;();
@@ -75,11 +148,11 @@ MSFT,0.92,0.96,0.98,1.01,0.98</pre>
         }
 
         // Place orders according to the signals.
-        var targets = signalByTicker.Select(kvp => new PortfolioTarget(kvp.Key, kvp.Value >= 1m ? 0.2m : -0.2m));
+        var targets = signalByTicker.Select(kvp =&gt; new PortfolioTarget(kvp.Key, kvp.Value &gt;= 1m ? 0.2m : -0.2m));
         SetHoldings(targets.ToList(), true);
     }
 }</pre>
-	<pre class="python">from io import StringIO
+ <pre class="python">from io import StringIO
 
 
 class USEquityDemoAlgorithm(QCAlgorithm):
@@ -100,14 +173,14 @@ class USEquityDemoAlgorithm(QCAlgorithm):
 
     def _download_data_and_place_orders(self):
         # Download the file from DropBox.
-        file = self.download("&lt;DropBoxUrl&gt;&dl=1")
+        file = self.download("&lt;DropBoxUrl&gt;&amp;dl=1")
 
         # Convert the text file into trading signals.
         signals = pd.read_csv(StringIO(file), index_col=0).mean(axis=1)
 
         # Place orders according to the signals.
         targets = [
-            PortfolioTarget(ticker, 0.2 if signal >= 1 else -0.2)
+            PortfolioTarget(ticker, 0.2 if signal &gt;= 1 else -0.2)
             for ticker, signal in signals.items()
         ]
         self.set_holdings(targets, True)</pre>

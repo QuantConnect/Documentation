@@ -1,6 +1,6 @@
 <p>To create an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators'>automatic indicator</a> for <?=$name?>, call the <code class="csharp">QCAlgorithm.<?=$helperMethod?></code><code class="python">QCAlgorithm.<?=strtolower($helperMethod)?></code> method with the Option contract <code class="csharp">Symbol</code><code class="python">symbol</code> object(s).</p>
 
-<div class="section-example-container">
+<div class="section-example-container to-be-tested">
     <pre class="csharp">public class Automatic<?=$typeName?>IndicatorAlgorithm : QCAlgorithm
 {
     <?=$memberDeclarationsAutomaticC?>
@@ -9,6 +9,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 2, 1);
         // Subscribe to the underlying asset.
         <?=$underlyingSubscriptionC?>
     
@@ -22,6 +23,10 @@
 
     private void UpdateContractsAndGreeks()
     {
+        if (<?=$underlyingSymbolC?> == null)
+        {
+            return;
+        }
         // Get all the tradable Option contracts.
         var chain = OptionChain(<?=$underlyingSymbolC?>);
         
@@ -41,7 +46,7 @@
         foreach (var group in filteredChain.GroupBy(contract => contract.Strike))
         {
             var contracts = group.ToList();
-            if (contracts.Count > 1)
+            if (contracts.Count() > 1)
             {
                 // Subscribe to both contracts.
                 var contract1 = <?=$addContractMethodC?>(contracts[0]) as dynamic;
@@ -59,7 +64,7 @@
     public override void OnData(Slice slice)
     {
         // Get the <?=$typeName?> indicator of each contract.
-        foreach (var (canonical, chain) in slice.OptionChain)
+        foreach (var (canonical, chain) in slice.OptionChains)
         {
             foreach (var symbol in chain)
             {
@@ -69,15 +74,15 @@
         }
 
         // Sell straddle as an example to trade.
-        if (!Portfolio.Invested)
+        if (!Portfolio.Invested &amp;&amp; _options != default)
         {
             Sell(_options.option1, 1);
             Sell(_options.option2, 1);
         }
         // Liquidate any assigned positions.
-        if (Portfolio[_underlying].Invested)
+        if (Portfolio[<?=$underlyingSymbolC?>].Invested)
         {
-            Liquidate(_underlying);
+            Liquidate(<?=$underlyingSymbolC?>);
         }
     }
 }</pre>
@@ -85,6 +90,7 @@
     
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 2, 1)
         # Subscribe to the underlying asset.
         <?=$underlyingSubscriptionPy?>
 
@@ -94,8 +100,12 @@
             self.time_rules.at(9, 0),
             self._update_contracts_and_greeks
         )
+        
+        self._options = None
 
     def _update_contracts_and_greeks(self) -&gt; None:
+        if <?=$underlyingSymbolPy?> is None:
+            return
         # Get all the tradable Option contracts.
         chain = self.option_chain(<?=$underlyingSymbolPy?>, flatten=True).data_frame
         if chain.empty:
@@ -134,16 +144,16 @@
         
     def on_data(self, slice: Slice) -&gt; None:
         # Get the <?=$typeName?> indicator of each contract.
-        for canonical, chain in slice.option_chain.items():
+        for canonical, chain in slice.option_chains.items():
             for symbol in chain:
                 option = self.securities[symbol]
                 indicator = option.<?=strtolower($helperMethod)?>
         
         # Sell straddle as an example to trade.
-        if not self.portfolio.invested:
+        if not self.portfolio.invested and self._options:
             self.sell(self._options[0], 1)
             self.sell(self._options[1], 1)
         # Liquidate any assigned positions.
-        if self.portfolio[self._underlying].invested:
-            self.liquidate(self._underlying)</pre>
+        if self.portfolio[<?=$underlyingSymbolPy?>].invested:
+            self.liquidate(<?=$underlyingSymbolPy?>)</pre>
 </div>

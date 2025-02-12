@@ -4,7 +4,7 @@
     When it identifies a volume contraction breakout price action pattern on the SPY, it buys to ride on the capital inflow. 
     To exit positions, it places a 2% take profit and 1% stop loss order in the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> method.
 </p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class RollingWindowAlgorithm : QCAlgorithm
 {
     private Symbol _spy;

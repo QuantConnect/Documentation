@@ -1,9 +1,26 @@
-<p>The following examples demonstrate common practices for bulk downloading data.</p>
-
-<h4>Example 1: Download Machine Learning Model</h4>
-<p>The following algorithm makes use of a <a href="/docs/v2/writing-algorithms/machine-learning/popular-libraries/scikit-learn">Scikit-Learn</a> machine learning model to predict SPY price changes and place orders according to the prediction. To obtain the model, we either retrieve it from the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a> if there exists any or download it from a Dropbox link using the <code>download</code> method.</p>
-<div class="section-example-container">
-    <pre class="python">from sklearn.svm import SVR
+<p>
+ The following examples demonstrate common practices for bulk downloading data.
+</p>
+<h4>
+ Example 1: Download Machine Learning Model
+</h4>
+<p>
+ The following algorithm makes use of a
+ <a href="/docs/v2/writing-algorithms/machine-learning/popular-libraries/scikit-learn">
+  Scikit-Learn
+ </a>
+ machine learning model to predict SPY price changes and place orders according to the prediction. To obtain the model, we either retrieve it from the
+ <a href="/docs/v2/writing-algorithms/object-store">
+  Object Store
+ </a>
+ if there exists any or download it from a Dropbox link using the
+ <code>
+  download
+ </code>
+ method.
+</p>
+<div class="section-example-container testable">
+ <pre class="python">from sklearn.svm import SVR
 from sklearn.model_selection import GridSearchCV
 import joblib
 
@@ -28,7 +45,7 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
             file = self.object_store.get_file_path("sklearn_model")
         # Otherwise, bulk-download the model from an external source (Dropbox in this example).
         else:
-            file = self.download("https://www.dropbox.com/scl/fi/nhz2zxq3pr2bweia4av0o/sklearn_model?rlkey=loy09wbh69k9j6umlru9icsaj&st=6vdazyp4&dl=1")
+            file = self.download("https://www.dropbox.com/scl/fi/nhz2zxq3pr2bweia4av0o/sklearn_model?rlkey=loy09wbh69k9j6umlru9icsaj&amp;st=6vdazyp4&amp;dl=1")
         self.model = joblib.load(file)
 
         # Train the model to use the prediction right away.
@@ -82,22 +99,64 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
         model_key = "sklearn_model"
         file_name = self.object_store.get_file_path(model_key)
         joblib.dump(self.model, file_name)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "543",
+    "Average Win": "1.13%",
+    "Average Loss": "-0.80%",
+    "Compounding Annual Return": "12.213%",
+    "Drawdown": "24.800%",
+    "Expectancy": "0.137",
+    "Start Equity": "100000",
+    "End Equity": "158433.76",
+    "Net Profit": "58.434%",
+    "Sharpe Ratio": "0.426",
+    "Sortino Ratio": "0.506",
+    "Probabilistic Sharpe Ratio": "18.496%",
+    "Loss Rate": "53%",
+    "Win Rate": "47%",
+    "Profit-Loss Ratio": "1.41",
+    "Alpha": "0.027",
+    "Beta": "0.477",
+    "Annual Standard Deviation": "0.143",
+    "Annual Variance": "0.02",
+    "Information Ratio": "-0.075",
+    "Tracking Error": "0.146",
+    "Treynor Ratio": "0.128",
+    "Total Fees": "$1330.75",
+    "Estimated Strategy Capacity": "$1200000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "53.22%",
+    "OrderListHash": "018fe0870a650d80d306142757b43868"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-  <div class="example-legend">Demonstration Algorithms</div>
-
-  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DropboxUniverseSelectionAlgorithm.cs" target="_BLANK">
-      DropboxUniverseSelectionAlgorithm.cs <span class="badge-python pull-right">Python</span>
-  </a>
-
-  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DropboxCoarseFineAlgorithm.py" target="_BLANK">
-      DropboxCoarseFineAlgorithm.py <span class="badge-python pull-right">Python</span>
-  </a>
-  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/NLTKSentimentTradingAlgorithm.py" target="_BLANK">
-      NLTKSentimentTradingAlgorithm.py <span class="badge-python pull-right">Python</span>
-  </a>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DropboxUniverseSelectionAlgorithm.cs" target="_BLANK">
+  DropboxUniverseSelectionAlgorithm.cs
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DropboxCoarseFineAlgorithm.py" target="_BLANK">
+  DropboxCoarseFineAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/NLTKSentimentTradingAlgorithm.py" target="_BLANK">
+  NLTKSentimentTradingAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
 </div>

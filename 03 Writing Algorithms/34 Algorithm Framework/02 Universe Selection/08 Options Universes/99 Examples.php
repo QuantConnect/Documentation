@@ -2,7 +2,7 @@
 
 <h4>Example 1: Horizontal Jelly Roll</h4>
 <p>The following algorithm selects SPX index options to construct a Jelly Roll strategy. It filters for ATM calls and puts with 30 days and 90 days till expiration. Using the SMA indicator to predict the interest rate cycle, it longs Jelly Roll if the cycle is considered uprising, otherwise selling the Jelly Roll.</p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class FrameworkOptionUniverseSelectionAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -298,7 +298,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
 
 <? include(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
-<div class="section-example-container">
+<div class="section-example-container testable">
 	<pre class="csharp">// Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
 using QuantConnect.Data;
 using QuantConnect.Data.Fundamental;
@@ -326,13 +326,13 @@ namespace QuantConnect.Algorithm.CSharp
             AddUniverseOptions(universe, OptionFilterFunction);
         }
 
-        private IEnumerable&ltSymbol&gt FundamentalFunction(IEnumerable&ltFundamental&gt fundamental)
+        private IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
         {
             return fundamental
-                .Where(f =&gt !double.IsNaN(f.ValuationRatios.PERatio))
-                .OrderBy(f =&gt f.ValuationRatios.PERatio)
+                .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
+                .OrderBy(f =&gt; f.ValuationRatios.PERatio)
                 .Take(10)
-                .Select(x =&gt x.Symbol);
+                .Select(x =&gt; x.Symbol);
         }
 
         private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
@@ -350,7 +350,7 @@ namespace QuantConnect.Algorithm.CSharp
                     Liquidate(chain.Underlying.Symbol);
 
                 var spot = chain.Underlying.Price;
-                var contract = chain.OrderBy(x =&gt Math.Abs(spot-x.Strike)).FirstOrDefault();
+                var contract = chain.OrderBy(x =&gt; Math.Abs(spot-x.Strike)).FirstOrDefault();
                 var tag = $"IV: {contract.ImpliedVolatility:F3} Δ: {contract.Greeks.Delta:F3}";
                 MarketOrder(contract.Symbol, 1, true, tag);
                 _day = Time.Day;
@@ -405,15 +405,15 @@ from AlgorithmImports import *
         self.add_universe_options(universe, self.option_filter_function)
         self.day = 0
 
-    def fundamental_function(self, fundamental: List[Fundamental]) -&gt List[Symbol]:
+    def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         filtered = (f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio))
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt OptionFilterUniverse:
+    def option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
         return option_filter_universe.strikes(-2, +2).front_month().calls_only()
 
-    def on_data(self, data: Slice) -&gt None:
+    def on_data(self, data: Slice) -&gt; None:
         if self.is_warming_up or self.day == self.time.day:
             return
         
@@ -428,11 +428,11 @@ from AlgorithmImports import *
             self.day = self.time.day
 
 class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
-    def __init__(self, algorithm: QCAlgorithm) -&gt None:
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
         super().__init__(algorithm.brokerage_model, FuncSecuritySeeder(algorithm.get_last_known_prices))
         self.algorithm = algorithm
 
-    def initialize(self, security: Security) -&gt None:
+    def initialize(self, security: Security) -&gt; None:
         # First, call the superclass definition
         # This method sets the reality models of each security using the default reality models of the brokerage model
         super().initialize(security)

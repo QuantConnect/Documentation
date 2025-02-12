@@ -1,17 +1,31 @@
-<p>The following examples demonstrate some common practices for handling Future Option data.</p>
-
-<h4>Example 1: Monthly Protective Put</h4>
-<p>The following algorithm shows how to perform monthly selection on individual ES Future Option contract to implement a <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/protective-put">protective put</a> option strategy to hedge speculation on S&P500 Future. It is a useful tool to hedge the excessive risk on leverage using Futures to trade.</p>
-
-<div class="section-example-container">
-    <pre class="csharp">public class FutureOptionExampleAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for handling Future Option data.
+</p>
+<h4>
+ Example 1: Monthly Protective Put
+</h4>
+<p>
+ The following algorithm shows how to perform monthly selection on individual ES Future Option contract to implement a
+ <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/protective-put">
+  protective put
+ </a>
+ option strategy to hedge speculation on S&amp;P500 Future. It is a useful tool to hedge the excessive risk on leverage using Futures to trade.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class FutureOptionExampleAlgorithm : QCAlgorithm
 {
     private Future _underlying;
 
     public override void Initialize()
     {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        SetCash(1000000000);
+
         // Seed the security price to ensure the underlying price is available at the initial filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        // Set data normalization mode to raw for fair strike price comparison.
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
         // Subscribe the underlying since the updated price is needed for filtering.
         _underlying = AddFuture(Futures.Indices.SP500EMini,
             dataMappingMode: DataMappingMode.OpenInterest,
@@ -47,10 +61,47 @@
         MarketOrder(contract.Symbol, 1);
     }
 }</pre>
-    <pre class="python">class FutureOptionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "1000000000",
+    "End Equity": "1000000000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class FutureOptionExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        self.set_cash(1000000000)
+
         # Seed the security price to ensure the underlying price is available at the initial filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        # Set data normalization mode to raw for fair strike price comparison.
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
         # Subscribe the underlying since the updated price is needed for filtering.
         self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
@@ -80,22 +131,73 @@
         # A Protective Put consists of long a lot of the underlying, and long a put contract.
         self.market_order(self.underlying.mapped, contract.symbol_properties.contract_multiplier)
         self.market_order(contract.symbol, 1)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "1000000000",
+    "End Equity": "1000000000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 2: Weekly Covered Call</h4>
-<p>The below example demonstrates a weekly-renewing <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/covered-call">covered call</a> strategy to collect credit of selling the option. It filters the ATM call contract that expires within the current week at week start using <code class="csharp">SetFilter</code><code class="python">set_filter</code> filtering function.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class FutureOptionExampleAlgorithm : QCAlgorithm
+<h4>
+ Example 2: Weekly Covered Call
+</h4>
+<p>
+ The below example demonstrates a weekly-renewing
+ <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/covered-call">
+  covered call
+ </a>
+ strategy to collect credit of selling the option. It filters the ATM call contract that expires within the current week at week start using
+ <code class="csharp">
+  SetFilter
+ </code>
+ <code class="python">
+  set_filter
+ </code>
+ filtering function.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class FutureOptionExampleAlgorithm : QCAlgorithm
 {
     private Future _underlying;
 
     public override void Initialize()
     {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        SetCash(1000000000);
+        // Set data normalization mode to raw for fair strike price comparison.
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+
         // Subscribe the underlying since the updated price is needed for filtering.
         _underlying = AddFuture(Futures.Indices.SP500EMini,
             extendedMarketHours: true,
             dataMappingMode: DataMappingMode.OpenInterest,
-            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataNormalizationMode: DataNormalizationMode.Raw,
             contractDepthOffset: 0);
         // Filter the underlying continuous Futures to narrow the FOP spectrum.
         _underlying.SetFilter(0, 182);
@@ -109,7 +211,7 @@
         var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
     
         // Get option chain data for the mapped future, as both the underlying and FOP have the highest liquidity among all other contracts.
-        if (!Portfolio.Invested && 
+        if (!Portfolio.Invested &amp;&amp; 
             slice.OptionChains.TryGetValue(symbol, out var chain))
         {
             // Obtain the ATM call that expires at the end of week, such that both underlying and the FOP expires the same time.
@@ -124,13 +226,50 @@
         }
     }
 }</pre>
-    <pre class="python">class FutureOptionExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "16",
+    "Average Win": "0.00%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "-0.046%",
+    "Drawdown": "0.100%",
+    "Expectancy": "-0.494",
+    "Start Equity": "1000000000",
+    "End Equity": "999541651.82",
+    "Net Profit": "-0.046%",
+    "Sharpe Ratio": "-9.199",
+    "Sortino Ratio": "-4.02",
+    "Probabilistic Sharpe Ratio": "0.768%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "0.01",
+    "Alpha": "-0.003",
+    "Beta": "0.001",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.833",
+    "Tracking Error": "0.108",
+    "Treynor Ratio": "-3.846",
+    "Total Fees": "$435.68",
+    "Estimated Strategy Capacity": "$55000000.00",
+    "Lowest Capacity Asset": "ES XUERDHWB09AC|ES XUERCWA6EWAP",
+    "Portfolio Turnover": "0.02%",
+    "OrderListHash": "35ac5ac0e0045703525dde7c33ca50d2"
+}
+ </script>
+ <pre class="python">class FutureOptionExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        self.set_cash(1000000000)
+        # Set data normalization mode to raw for fair strike price comparison.
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+
         # Subscribe the underlying since the updated price is needed for filtering.
         self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
             extended_market_hours=True,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
-            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            data_normalization_mode=DataNormalizationMode.RAW,
             contract_depth_offset=0)
         # Filter the underlying continuous Futures to narrow the FOP spectrum.
         self.underlying.set_filter(0, 182)
@@ -152,6 +291,38 @@
             # Use abstraction method to order a covered call to avoid manual error.
             option_strategy = OptionStrategies.covered_call(symbol, atm_call.strike,expiry)
             self.buy(option_strategy, 1)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "16",
+    "Average Win": "0.00%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "-0.046%",
+    "Drawdown": "0.100%",
+    "Expectancy": "-0.494",
+    "Start Equity": "1000000000",
+    "End Equity": "999541651.82",
+    "Net Profit": "-0.046%",
+    "Sharpe Ratio": "-9.199",
+    "Sortino Ratio": "-4.02",
+    "Probabilistic Sharpe Ratio": "0.768%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "0.01",
+    "Alpha": "-0.003",
+    "Beta": "0.001",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-1.833",
+    "Tracking Error": "0.108",
+    "Treynor Ratio": "-3.846",
+    "Total Fees": "$435.68",
+    "Estimated Strategy Capacity": "$55000000.00",
+    "Lowest Capacity Asset": "ES XUERDHWB09AC|ES XUERCWA6EWAP",
+    "Portfolio Turnover": "0.02%",
+    "OrderListHash": "42bfbf94e45cc8c1cc2807ba413fc977"
+}
+ </script>
 </div>
-
-<p>Note that since both the underlying Future and the Future Option are expiring on the same day and are cash-settling in most cases, Lean can exercise the Future Option into account cash automatically at expiry and we do not need to handle the option exercise/assignment event.</p>
+<p>
+ Note that since both the underlying Future and the Future Option are expiring on the same day and are cash-settling in most cases, Lean can exercise the Future Option into account cash automatically at expiry and we do not need to handle the option exercise/assignment event.
+</p>

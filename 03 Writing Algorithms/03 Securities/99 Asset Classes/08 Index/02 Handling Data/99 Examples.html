@@ -1,14 +1,20 @@
-<p>The following examples demonstrate some common practices for handling Index data.</p>
-
-<h4>Example 1: Trading ES Futures Based on the SPX Index RSI</h4>
 <p>
-  The following algorithm adds daily data for the SPX Index and uses the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index">Relative Strength Index (RSI)</a> indicator to generate trading signals for the E-Mini S&P 500 Future. 
+ The following examples demonstrate some common practices for handling Index data.
+</p>
+<h4>
+ Example 1: Trading ES Futures Based on the SPX Index RSI
+</h4>
+<p>
+ The following algorithm adds daily data for the SPX Index and uses the
+ <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index">
+  Relative Strength Index (RSI)
+ </a>
+ indicator to generate trading signals for the E-Mini S&amp;P 500 Future. 
   When the RSI crosses below 30, it buys the front-month ES contract.
   When the RSI crosses above 70, it liquidates the portfolio.
 </p>
-
-<div class="section-example-container">
-  <pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class IndexDemoAlgorithm : QCAlgorithm
 {
     private dynamic _spx;
     private Future _es;
@@ -23,7 +29,7 @@
         _spx.Rsi = RSI(_spx.Symbol, 15);
         // Add the ES front-month Futures contract.
         _es = AddFuture(Futures.Indices.SP500EMini, dataMappingMode: DataMappingMode.OpenInterest);
-        _es.SetFilter(futureFilterUniverse => futureFilterUniverse.StandardsOnly().FrontMonth());
+        _es.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.StandardsOnly().FrontMonth());
     }
 
     public override void OnData(Slice slice)
@@ -34,22 +40,53 @@
             return;
         }
 
-        // If the SPX RSI is <30, buy the ES.
-        if (!Portfolio.Invested && _spx.Rsi.Current.Value < 30)
+        // If the SPX RSI is &lt;30, buy the ES.
+        if (!Portfolio.Invested &amp;&amp; _spx.Rsi.Current.Value &lt; 30)
         {
             SetHoldings(_es.Mapped, 0.5);
         }
 
-        // If the SPX RSI is >70, liquidate the portfolio.
-        else if (Portfolio.Invested && _spx.Rsi.Current.Value > 70)
+        // If the SPX RSI is &gt;70, liquidate the portfolio.
+        else if (Portfolio.Invested &amp;&amp; _spx.Rsi.Current.Value &gt; 70)
         {
             Liquidate();
         }
     }
 }</pre>
-  <pre class="python">class IndexDemoAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "58.18%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "58.270%",
+    "Drawdown": "44.000%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "158182.8",
+    "Net Profit": "58.183%",
+    "Sharpe Ratio": "1.14",
+    "Sortino Ratio": "0.612",
+    "Probabilistic Sharpe Ratio": "52.784%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.243",
+    "Beta": "1.306",
+    "Annual Standard Deviation": "0.361",
+    "Annual Variance": "0.131",
+    "Information Ratio": "0.845",
+    "Tracking Error": "0.334",
+    "Treynor Ratio": "0.315",
+    "Total Fees": "$17.20",
+    "Estimated Strategy Capacity": "$120000000.00",
+    "Lowest Capacity Asset": "ES YEBKSYL2454X",
+    "Portfolio Turnover": "3.94%",
+    "OrderListHash": "d49e8bc2f6eb6a9037ef707ee0d49855"
+}
+ </script>
+ <pre class="python">class IndexDemoAlgorithm(QCAlgorithm):
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2024, 1, 1)
         # Add daily SPX Index data.
@@ -60,16 +97,47 @@
         self._es = self.add_future(Futures.Indices.SP_500_E_MINI, data_mapping_mode=DataMappingMode.OPEN_INTEREST)
         self._es.set_filter(lambda future_filter_universe: future_filter_universe.standards_only().front_month())        
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Check if the indicator is ready and we have the front-month contract data.
         if not self._spx.rsi.is_ready or self._es.mapped not in slice.bars:
             return
         
-        # If the SPX RSI is <30, buy the ES.
-        if not self.portfolio.invested and self._spx.rsi.current.value < 30:
+        # If the SPX RSI is &lt;30, buy the ES.
+        if not self.portfolio.invested and self._spx.rsi.current.value &lt; 30:
             self.set_holdings(self._es.mapped, 0.5)
 
-        # If the SPX RSI is >70, liquidate the portfolio.
-        elif self.portfolio.invested and self._spx.rsi.current.value > 70:
+        # If the SPX RSI is &gt;70, liquidate the portfolio.
+        elif self.portfolio.invested and self._spx.rsi.current.value &gt; 70:
             self.liquidate()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "58.18%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "58.270%",
+    "Drawdown": "44.000%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "158182.8",
+    "Net Profit": "58.183%",
+    "Sharpe Ratio": "1.14",
+    "Sortino Ratio": "0.612",
+    "Probabilistic Sharpe Ratio": "52.784%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.243",
+    "Beta": "1.306",
+    "Annual Standard Deviation": "0.361",
+    "Annual Variance": "0.131",
+    "Information Ratio": "0.845",
+    "Tracking Error": "0.334",
+    "Treynor Ratio": "0.315",
+    "Total Fees": "$17.20",
+    "Estimated Strategy Capacity": "$120000000.00",
+    "Lowest Capacity Asset": "ES YEBKSYL2454X",
+    "Portfolio Turnover": "3.94%",
+    "OrderListHash": "cb778dfe327f2c5326e8ffee899b2619"
+}
+ </script>
 </div>

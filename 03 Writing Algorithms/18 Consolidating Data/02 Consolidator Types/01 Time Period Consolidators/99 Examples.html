@@ -1,9 +1,14 @@
-<p>The following examples demonstrate common practices for implementing time-period consolidators.</p>
-
-<h4>Example 1: RSI-MACD Trading</h4>
-<p>The following algorithm utilizes a 5-minute trade bar consolidator to feed the smoothed trade bar to an RSI indicator and a 15-minute quote bar consolidator to feed the smoothed quote bar to a MACD indicator, generating trade entry signals during an uptrend and oversold conditions while exiting when the trend turns down.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class TimePeriodConsolidatorAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate common practices for implementing time-period consolidators.
+</p>
+<h4>
+ Example 1: RSI-MACD Trading
+</h4>
+<p>
+ The following algorithm utilizes a 5-minute trade bar consolidator to feed the smoothed trade bar to an RSI indicator and a 15-minute quote bar consolidator to feed the smoothed quote bar to a MACD indicator, generating trade entry signals during an uptrend and oversold conditions while exiting when the trend turns down.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class TimePeriodConsolidatorAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     // Create RSI and MACD indicators for trade signal generation.
@@ -54,7 +59,38 @@
         }
     }
 }</pre>
-    <pre class="python">class UniverseSettingsAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "4",
+    "Average Win": "0.16%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "3.861%",
+    "Drawdown": "0.000%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100329.20",
+    "Net Profit": "0.329%",
+    "Sharpe Ratio": "3.509",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "98.381%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.025",
+    "Beta": "-0.005",
+    "Annual Standard Deviation": "0.007",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.251",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "-4.643",
+    "Total Fees": "$4.00",
+    "Estimated Strategy Capacity": "$29000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "6.21%",
+    "OrderListHash": "08f056ad33a248ecc36419351c507641"
+}
+ </script>
+ <pre class="python">class UniverseSettingsAlgorithm(QCAlgorithm):
     # Create RSI and MACD indicators for trade signal generation.
     _rsi = RelativeStrengthIndex(14)
     _macd = MovingAverageConvergenceDivergence(12, 26, 9)
@@ -90,36 +126,88 @@
         # Exit rule: MACD histogram is below 0 (negative trend)
         elif self._macd.histogram.current.value &lt; 0 and self.portfolio[self.spy].is_long:
             self.liquidate(self.spy)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "4",
+    "Average Win": "0.16%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "3.861%",
+    "Drawdown": "0.000%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100329.20",
+    "Net Profit": "0.329%",
+    "Sharpe Ratio": "3.509",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "98.381%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.025",
+    "Beta": "-0.005",
+    "Annual Standard Deviation": "0.007",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.251",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "-4.643",
+    "Total Fees": "$4.00",
+    "Estimated Strategy Capacity": "$29000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "6.21%",
+    "OrderListHash": "8ec3a7f570ade083ee96f236d72ec766"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
-  <div class="example-fieldset"> 
-    <div class="example-legend">Demonstration Algorithms</div>
-    
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateOptionsConsolidationAlgorithm.py" target="_BLANK">
-        BasicTemplateOptionsConsolidationAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DataConsolidationAlgorithm.py" target="_BLANK">
-        DataConsolidationAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MultipleSymbolConsolidationAlgorithm.py" target="_BLANK">
-        MultipleSymbolConsolidationAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateOptionsConsolidationAlgorithm.cs" target="_BLANK">
-        BasicTemplateOptionsConsolidationAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateFuturesConsolidationAlgorithm.cs" target="_BLANK">
-        BasicTemplateFuturesConsolidationAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DataConsolidationAlgorithm.cs" target="_BLANK">
-        DataConsolidationAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/MultipleSymbolConsolidationAlgorithm.cs" target="_BLANK">
-        MultipleSymbolConsolidationAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
-
-  </div>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+<div class="example-fieldset">
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateOptionsConsolidationAlgorithm.py" target="_BLANK">
+  BasicTemplateOptionsConsolidationAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DataConsolidationAlgorithm.py" target="_BLANK">
+  DataConsolidationAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MultipleSymbolConsolidationAlgorithm.py" target="_BLANK">
+  MultipleSymbolConsolidationAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateOptionsConsolidationAlgorithm.cs" target="_BLANK">
+  BasicTemplateOptionsConsolidationAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateFuturesConsolidationAlgorithm.cs" target="_BLANK">
+  BasicTemplateFuturesConsolidationAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DataConsolidationAlgorithm.cs" target="_BLANK">
+  DataConsolidationAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/MultipleSymbolConsolidationAlgorithm.cs" target="_BLANK">
+  MultipleSymbolConsolidationAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+</div>

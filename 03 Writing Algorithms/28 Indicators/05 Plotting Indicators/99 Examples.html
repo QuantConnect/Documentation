@@ -1,9 +1,18 @@
-<p>The following examples demonstrate some common practices for plotting indicators.</p>
-
-<h4>Example 1: SMA Ribbon</h4>
-<p>The following algorithm trades <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>simple moving average</a> (SMA) crossings, which involves five SMA indicators to form an SMA ribbon. To visualize the ribbon, it plots each indicator with a different color.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class PlottingIndicatorAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for plotting indicators.
+</p>
+<h4>
+ Example 1: SMA Ribbon
+</h4>
+<p>
+ The following algorithm trades
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">
+  simple moving average
+ </a>
+ (SMA) crossings, which involves five SMA indicators to form an SMA ribbon. To visualize the ribbon, it plots each indicator with a different color.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class PlottingIndicatorAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private Dictionary&lt;int, SimpleMovingAverage&gt; _smas;
@@ -82,7 +91,38 @@
             &amp;&amp; price &lt; smasList[0];
     }
 }</pre>
-    <pre class="python">class PlottingIndicatorAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "86",
+    "Average Win": "1.81%",
+    "Average Loss": "-1.16%",
+    "Compounding Annual Return": "6.413%",
+    "Drawdown": "17.700%",
+    "Expectancy": "0.315",
+    "Start Equity": "100000",
+    "End Equity": "116813.64",
+    "Net Profit": "16.814%",
+    "Sharpe Ratio": "0.29",
+    "Sortino Ratio": "0.188",
+    "Probabilistic Sharpe Ratio": "11.451%",
+    "Loss Rate": "49%",
+    "Win Rate": "51%",
+    "Profit-Loss Ratio": "1.57",
+    "Alpha": "0.084",
+    "Beta": "-0.243",
+    "Annual Standard Deviation": "0.135",
+    "Annual Variance": "0.018",
+    "Information Ratio": "-0.533",
+    "Tracking Error": "0.273",
+    "Treynor Ratio": "-0.161",
+    "Total Fees": "$133.79",
+    "Estimated Strategy Capacity": "$1000000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "7.26%",
+    "OrderListHash": "4358704da2fa72db8d6dff25daf1e78e"
+}
+ </script>
+ <pre class="python">class PlottingIndicatorAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
@@ -136,4 +176,35 @@
         # Downtrend occurs when price is below all SMAs and shorter SMAs are below longer SMAs.
         smas_list = [x[1].current.value for x in sorted(smas.items(), key=lambda x: x[0])]
         return all([smas_list[i] &gt; smas_list[i-1] for i in range(1, len(smas_list))]) and price &lt; smas_list[0]</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "86",
+    "Average Win": "1.81%",
+    "Average Loss": "-1.16%",
+    "Compounding Annual Return": "6.413%",
+    "Drawdown": "17.700%",
+    "Expectancy": "0.315",
+    "Start Equity": "100000",
+    "End Equity": "116813.64",
+    "Net Profit": "16.814%",
+    "Sharpe Ratio": "0.29",
+    "Sortino Ratio": "0.188",
+    "Probabilistic Sharpe Ratio": "11.451%",
+    "Loss Rate": "49%",
+    "Win Rate": "51%",
+    "Profit-Loss Ratio": "1.57",
+    "Alpha": "0.084",
+    "Beta": "-0.243",
+    "Annual Standard Deviation": "0.135",
+    "Annual Variance": "0.018",
+    "Information Ratio": "-0.533",
+    "Tracking Error": "0.273",
+    "Treynor Ratio": "-0.161",
+    "Total Fees": "$133.79",
+    "Estimated Strategy Capacity": "$1000000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "7.26%",
+    "OrderListHash": "1a8e62d5441590eabecbac647ad38c96"
+}
+ </script>
 </div>

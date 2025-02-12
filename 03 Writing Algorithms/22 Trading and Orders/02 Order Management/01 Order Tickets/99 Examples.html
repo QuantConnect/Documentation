@@ -2,251 +2,263 @@
 
 <h4>Example 1: Timed Exit</h4>
 <p>The following algorithm is an EMA-crossover strategy. Using the filled time of the order ticket, we can control to exit the position after 45 minutes.</p>
-<div class="section-example-container">
-    <pre class="csharp">private Symbol _symbol;
-private ExponentialMovingAverage _ema;
-private OrderTicket _ticket;
-
-public override void Initialize()
+<div class="section-example-container testable">
+    <pre class="csharp">public class OrderTicketExampleAlgorithm : QCAlgorithm
 {
-    SetStartDate(2019, 1, 1);
-    SetEndDate(2019, 4, 1);
-    _symbol = AddEquity("SPY").Symbol;
-    // Set up EMA indicator for trade signal generation.
-    _ema = EMA(_symbol, 20, Resolution.Daily);
-    // Warm up the indicator for its readiness to use immediately.
-    WarmUpIndicator(_symbol, _ema);
-}
+    private Symbol _symbol;
+    private ExponentialMovingAverage _ema;
+    private OrderTicket _ticket;
 
-public override void OnData(Slice slice)
-{
-    // Place order if not order yet and save the order ticket for later retrival.
-    if (_ticket == null && slice.Bars.TryGetValue(_symbol, out var bar))
+    public override void Initialize()
     {
-        // EMA crossover: buy if price is above EMA, which indicate uptrend.
-        if (_ema &lt; bar.Close)
-        {
-            _ticket = LimitOrder(_symbol, 100, bar.Close * 0.995m);
-        }
-        // EMA crossover: sell if price is below EMA, which indicate down trend.
-        else
-        {
-            _ticket = LimitOrder(_symbol, -100, bar.Close * 1.005m);
-        }
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2019, 4, 1);
+        _symbol = AddEquity("SPY").Symbol;
+        // Set up EMA indicator for trade signal generation.
+        _ema = EMA(_symbol, 20, Resolution.Daily);
+        // Warm up the indicator for its readiness to use immediately.
+        WarmUpIndicator(_symbol, _ema);
     }
-    // Exit position if it is in the portfolio for more than 45 minutes.
-    else if (_ticket != null && _ticket.Time &lt;= UtcTime.AddMinutes(-45))
+
+    public override void OnData(Slice slice)
     {
-        Liquidate();
-        _ticket = null;
+        // Place order if not order yet and save the order ticket for later retrival.
+        if (_ticket == null && slice.Bars.TryGetValue(_symbol, out var bar))
+        {
+            // EMA crossover: buy if price is above EMA, which indicate uptrend.
+            if (_ema &lt; bar.Close)
+            {
+                _ticket = LimitOrder(_symbol, 100, bar.Close * 0.995m);
+            }
+            // EMA crossover: sell if price is below EMA, which indicate down trend.
+            else
+            {
+                _ticket = LimitOrder(_symbol, -100, bar.Close * 1.005m);
+            }
+        }
+        // Exit position if it is in the portfolio for more than 45 minutes.
+        else if (_ticket != null && _ticket.Time &lt;= UtcTime.AddMinutes(-45))
+        {
+            Liquidate();
+            _ticket = null;
+        }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    self.set_start_date(2019, 1, 1)
-    self.set_end_date(2019, 4, 1)
-    self._symbol = self.add_equity("SPY").symbol
-    self._ticket = None
-    # Set up EMA indicator for trade signal generation.
-    self._ema = self.ema("SPY", 20, Resolution.DAILY)
-    # Warm up the indicator for its readiness to use immediately.
-    self.warm_up_indicator(self._symbol, self._ema)
-    
-def on_data(self, slice: Slice) -&gt; None:
-    bar = slice.bars.get(self._symbol)
-    # Place order if not order yet and save the order ticket for later retrival.
-    if not self._ticket and bar:
-        # EMA crossover: buy if price is above EMA, which indicate uptrend.
-        if self._ema.current.value &lt; bar.close:
-            self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close * 0.995)
-        # EMA crossover: sell if price is below EMA, which indicate down trend.
-        else:
-            self._ticket = self.limit_order("SPY", -100, slice.bars[self._symbol].close * 1.005)
-    # Exit position if it is in the portfolio for more than 45 minutes.
-    elif self._ticket and self._ticket.time + timedelta(minutes=45) &lt; self.utc_time:
-        self.liquidate()
-        self._ticket = None</pre>
+    <pre class="python">class OrderTicketExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2019, 4, 1)
+        self._symbol = self.add_equity("SPY").symbol
+        self._ticket = None
+        # Set up EMA indicator for trade signal generation.
+        self._ema = self.ema("SPY", 20, Resolution.DAILY)
+        # Warm up the indicator for its readiness to use immediately.
+        self.warm_up_indicator(self._symbol, self._ema)
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._symbol)
+        # Place order if not order yet and save the order ticket for later retrival.
+        if not self._ticket and bar:
+            # EMA crossover: buy if price is above EMA, which indicate uptrend.
+            if self._ema.current.value &lt; bar.close:
+                self._ticket = self.limit_order("SPY", 100, slice.bars[self._symbol].close * 0.995)
+            # EMA crossover: sell if price is below EMA, which indicate down trend.
+            else:
+                self._ticket = self.limit_order("SPY", -100, slice.bars[self._symbol].close * 1.005)
+        # Exit position if it is in the portfolio for more than 45 minutes.
+        elif self._ticket and self._ticket.time + timedelta(minutes=45) &lt; self.utc_time:
+            self.liquidate()
+            self._ticket = None</pre>
 </div>
 
 <h4>Example 2: Intraday Stop Loss</h4>
 <p>The following algorithm demonstrates an intraday long position with a 10% stop loss order. Before the market closes, cancel the stop loss order if it is not filled and exit the position at market close with a market on close order.</p>
-<div class="section-example-container">
-    <pre class="csharp">private Symbol _symbol;
-// A variable to save the stop loss order and track if it is filled.
-private OrderTicket _ticket;
-private int _day = -1;
-
-public override void Initialize()
+<div class="section-example-container testable">
+    <pre class="csharp">public class OrderTicketExampleAlgorithm : QCAlgorithm
 {
-    SetStartDate(2023, 1, 1);
-    SetEndDate(2023, 7, 1);
-    _symbol = AddEquity("QQQ").Symbol;
+    private Symbol _symbol;
+    // A variable to save the stop loss order and track if it is filled.
+    private OrderTicket _ticket;
+    private int _day = -1;
 
-    // Schedule an event to handle exiting position before market close if stop loss is not hit.
-    // Market on close order requires ordering 15 minutes before market close. 
-    Schedule.On(
-        DateRules.EveryDay(_symbol),
-        TimeRules.BeforeMarketClose(_symbol, 16),
-        ExitPosition
-    );
-}
-
-public override void OnData(Slice slice)
-{
-    // Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
-    if (!Portfolio.Invested &amp;&amp; _day != slice.Time.Day &amp;&amp; slice.Bars.TryGetValue(_symbol, out var bar))
+    public override void Initialize()
     {
-        MarketOrder(_symbol, 10);
-        // Update the day variable to avoid repeat ordering.
-        _day = slice.Time.Day;
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2023, 7, 1);
+        _symbol = AddEquity("QQQ").Symbol;
+
+        // Schedule an event to handle exiting position before market close if stop loss is not hit.
+        // Market on close order requires ordering 15 minutes before market close. 
+        Schedule.On(
+            DateRules.EveryDay(_symbol),
+            TimeRules.BeforeMarketClose(_symbol, 16),
+            ExitPosition
+        );
     }
-}
 
-public override void OnOrderEvent(OrderEvent orderEvent)
-{
-    // Make sure to order the stop loss order on the filled market order only.
-    if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.FillQuantity &gt; 0)
+    public override void OnData(Slice slice)
     {
-        // Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
-        _ticket = StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.9m);
+        // Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
+        if (!Portfolio.Invested &amp;&amp; _day != slice.Time.Day &amp;&amp; slice.Bars.TryGetValue(_symbol, out var bar))
+        {
+            MarketOrder(_symbol, 10);
+            // Update the day variable to avoid repeat ordering.
+            _day = slice.Time.Day;
+        }
     }
-}
 
-private void ExitPosition()
-{
-    // Only need to cancel the order and handle exit position if the stop loss order is not fully filled.
-    if (_ticket != null &amp;&amp; _ticket.Status != OrderStatus.Filled)
+    public override void OnOrderEvent(OrderEvent orderEvent)
     {
-        _ticket.Cancel();
-        // Market on close order to exit position at market close with the remaining quantity.
-        MarketOnCloseOrder(_symbol, -10 - _ticket.QuantityFilled);
+        // Make sure to order the stop loss order on the filled market order only.
+        if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.FillQuantity &gt; 0)
+        {
+            // Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
+            _ticket = StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.9m);
+        }
+    }
+
+    private void ExitPosition()
+    {
+        // Only need to cancel the order and handle exit position if the stop loss order is not fully filled.
+        if (_ticket != null &amp;&amp; _ticket.Status != OrderStatus.Filled)
+        {
+            _ticket.Cancel();
+            // Market on close order to exit position at market close with the remaining quantity.
+            MarketOnCloseOrder(_symbol, -10 - _ticket.QuantityFilled);
+        }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    self.set_start_date(2023, 1, 1)
-    self.set_end_date(2023, 7, 1)
-    self._symbol = self.add_equity("QQQ").symbol
-    self._ticket = None
-    self._day = -1
+    <pre class="python">class OrderTicketExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 7, 1)
+        self._symbol = self.add_equity("QQQ").symbol
+        self._ticket = None
+        self._day = -1
 
-    # Schedule an event to handle exiting position before market close if stop loss is not hit.
-    # Market on close order requires ordering 15 minutes before market close. 
-    self.schedule.on(
-        self.date_rules.every_day(self._symbol),
-        self.time_rules.before_market_close(self._symbol, 16),
-        self.exit_position
-    )
-    
-def on_data(self, slice: Slice) -&gt; None:
-    bar = slice.bars.get(self._symbol)
-    # Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
-    if not self.portfolio.Invested and self._day != slice.time.day and bar:
-        self.market_order(self._symbol, 10)
-        # Update the day variable to avoid repeat ordering.
-        self._day = slice.time.day
+        # Schedule an event to handle exiting position before market close if stop loss is not hit.
+        # Market on close order requires ordering 15 minutes before market close. 
+        self.schedule.on(
+            self.date_rules.every_day(self._symbol),
+            self.time_rules.before_market_close(self._symbol, 16),
+            self.exit_position
+        )
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._symbol)
+        # Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
+        if not self.portfolio.Invested and self._day != slice.time.day and bar:
+            self.market_order(self._symbol, 10)
+            # Update the day variable to avoid repeat ordering.
+            self._day = slice.time.day
 
-def on_order_event(self, order_event: OrderEvent) -&gt; None:
-    # Make sure to order the stop loss order on the filled market order only.
-    if order_event.status == OrderStatus.FILLED and order_event.fill_quantity &gt; 0:
-        # Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
-        self._ticket = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.9)
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        # Make sure to order the stop loss order on the filled market order only.
+        if order_event.status == OrderStatus.FILLED and order_event.fill_quantity &gt; 0:
+            # Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
+            self._ticket = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.9)
 
-def exit_position(self) -&gt; None:
-    # Only need to cancel the order and handle exit position if the stop loss order is not fully filled.
-    if self._ticket and self._ticket.status != OrderStatus.FILLED:
-        self._ticket.cancel()
-        # Market on close order to exit position at market close with the remaining quantity.
-        self.market_on_close_order(self._symbol, -10 - self._ticket.quantity_filled)</pre>
+    def exit_position(self) -&gt; None:
+        # Only need to cancel the order and handle exit position if the stop loss order is not fully filled.
+        if self._ticket and self._ticket.status != OrderStatus.FILLED:
+            self._ticket.cancel()
+            # Market on close order to exit position at market close with the remaining quantity.
+            self.market_on_close_order(self._symbol, -10 - self._ticket.quantity_filled)</pre>
 </div>
 
 <h4>Example 3: Crypto Trailing Stop Order</h4>
 <p>This example trades BTCUSD with a similar logic of Example 2, but apply a trailing stop loss of 10% instead. Crypto exchanges does not support trailing stop loss order. Yet, we can cancel and reorder a stop loss order with the updated stop loss price. If the market price of the crypto pair is above the previous level, update the stop loss order by the above.</p>
-<div class="section-example-container">
-    <pre class="csharp">private Symbol _symbol;
-// A variable to hold the stop loss order to track if it should be updated.
-private OrderTicket _ticket;
-// A day variable to avoid over-ordering (trade once per day)
-private int _day = -1;
-// A variable to hold the price of the high price in the lifetime of the open position for updating the stop loss price.
-private decimal _highPrice = 0m;
-
-public override void Initialize()
+<div class="section-example-container testable">
+    <pre class="csharp">public class OrderTicketExampleAlgorithm : QCAlgorithm
 {
-    SetStartDate(2023, 1, 1);
-    SetEndDate(2023, 7, 1);
-    // Set the market argument to trade in specific exchange.
-    _symbol = AddCrypto("BTCUSD", market: Market.Coinbase).Symbol;
-}
+    private Symbol _symbol;
+    // A variable to hold the stop loss order to track if it should be updated.
+    private OrderTicket _ticket;
+    // A day variable to avoid over-ordering (trade once per day)
+    private int _day = -1;
+    // A variable to hold the price of the high price in the lifetime of the open position for updating the stop loss price.
+    private decimal _highPrice = 0m;
 
-public override void OnData(Slice slice)
-{
-    if (slice.Bars.TryGetValue(_symbol, out var bar))
+    public override void Initialize()
     {
-        // Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
-        if (!Portfolio.Invested &amp;&amp; _day != slice.Time.Day)
-        {
-            MarketOrder(_symbol, 1);
-            // Update the day variable to avoid repeat ordering.
-            _day = slice.Time.Day;
-        }
-
-        // Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
-        // Trailing stop price will only need to be updated when the market price is higher than the current price.
-        if (_ticket != null &amp;&amp; bar.High &gt; _highPrice &amp;&amp;
-        new OrderStatus[] { OrderStatus.Submitted, OrderStatus.PartiallyFilled }.Contains(_ticket.Status))
-            _ticket.Cancel();
-            _ticket = StopMarketOrder(_symbol, -Portfolio[_symbol].Quantity, bar.High*0.9m);
-            _highPrice = bar.High;
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2023, 7, 1);
+        // Set the market argument to trade in specific exchange.
+        _symbol = AddCrypto("BTCUSD", market: Market.Coinbase).Symbol;
     }
-    
-}
 
-public override void OnOrderEvent(OrderEvent orderEvent)
-{
-    // Make sure to order the stop loss order on the filled market order only.
-    if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.FillQuantity &gt; 0)
+    public override void OnData(Slice slice)
     {
-        // Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
-        _ticket = StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.9m);
-        // Save the price to check if the stop loss price should be increased.
-        _highPrice = orderEvent.FillPrice;
+        if (slice.Bars.TryGetValue(_symbol, out var bar))
+        {
+            // Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
+            if (!Portfolio.Invested &amp;&amp; _day != slice.Time.Day)
+            {
+                MarketOrder(_symbol, 1);
+                // Update the day variable to avoid repeat ordering.
+                _day = slice.Time.Day;
+            }
+
+            // Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
+            // Trailing stop price will only need to be updated when the market price is higher than the current price.
+            if (_ticket != null &amp;&amp; bar.High &gt; _highPrice &amp;&amp;
+            new OrderStatus[] { OrderStatus.Submitted, OrderStatus.PartiallyFilled }.Contains(_ticket.Status))
+                _ticket.Cancel();
+                _ticket = StopMarketOrder(_symbol, -Portfolio[_symbol].Quantity, bar.High*0.9m);
+                _highPrice = bar.High;
+        }
+        
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        // Make sure to order the stop loss order on the filled market order only.
+        if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.FillQuantity &gt; 0)
+        {
+            // Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
+            _ticket = StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.9m);
+            // Save the price to check if the stop loss price should be increased.
+            _highPrice = orderEvent.FillPrice;
+        }
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    self.set_start_date(2023, 1, 1)
-    self.set_end_date(2023, 7, 1)
-    # Set the market argument to trade in specific exchange.
-    self._symbol = self.add_crypto("BTCUSD", market=Market.COINBASE).symbol
-    # A variable to hold the stop loss order to track if it should be updated.
-    self._ticket = None
-    # A day variable to avoid over-ordering (trade once per day)
-    self._day = -1
-    # A variable to hold the price of the high price in the lifetime of the open position for updating the stop loss price.
-    self.high_price = 0
-    
-def on_data(self, slice: Slice) -&gt; None:
-    bar = slice.bars.get(self._symbol)
-    if bar:
-        # Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
-        if not self.portfolio.Invested and self._day != slice.time.day:
-            self.market_order(self._symbol, 1)
-            # Update the day variable to avoid repeat ordering.
-            self._day = slice.time.day
+    <pre class="python">class OrderTicketExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 7, 1)
+        # Set the market argument to trade in specific exchange.
+        self._symbol = self.add_crypto("BTCUSD", market=Market.COINBASE).symbol
+        # A variable to hold the stop loss order to track if it should be updated.
+        self._ticket = None
+        # A day variable to avoid over-ordering (trade once per day)
+        self._day = -1
+        # A variable to hold the price of the high price in the lifetime of the open position for updating the stop loss price.
+        self.high_price = 0
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            # Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
+            if not self.portfolio.Invested and self._day != slice.time.day:
+                self.market_order(self._symbol, 1)
+                # Update the day variable to avoid repeat ordering.
+                self._day = slice.time.day
 
-        # Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
-        # Trailing stop price will only need to be updated when the market price is higher than the current price.
-        if self._ticket and self._ticket.status in [OrderStatus.SUBMITTED, OrderStatus.PARTIALLY_FILLED]\
-        and bar.high &gt; self.high_price:
-            self._ticket.cancel()
-            self._ticket = self.stop_market_order(self._symbol, -self.portfolio[self._symbol].quantity, bar.high*0.9)
-            self.high_price = bar.high
+            # Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
+            # Trailing stop price will only need to be updated when the market price is higher than the current price.
+            if self._ticket and self._ticket.status in [OrderStatus.SUBMITTED, OrderStatus.PARTIALLY_FILLED]\
+            and bar.high &gt; self.high_price:
+                self._ticket.cancel()
+                self._ticket = self.stop_market_order(self._symbol, -self.portfolio[self._symbol].quantity, bar.high*0.9)
+                self.high_price = bar.high
 
-def on_order_event(self, order_event: OrderEvent) -&gt; None:
-    # Make sure to order the stop loss order on the filled market order only.
-    if order_event.status == OrderStatus.FILLED and order_event.fill_quantity &gt; 0:
-        # Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
-        self._ticket = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.9)
-        # Save the price to check if the stop loss price should be increased.
-        self.high_price = order_event.fill_price</pre>
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        # Make sure to order the stop loss order on the filled market order only.
+        if order_event.status == OrderStatus.FILLED and order_event.fill_quantity &gt; 0:
+            # Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
+            self._ticket = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.9)
+            # Save the price to check if the stop loss price should be increased.
+            self.high_price = order_event.fill_price</pre>
 </div>
 
 <h4>Other Examples</h4>

@@ -1,14 +1,20 @@
-<p>The following examples demonstrate some common practices for handling Futures data.</p>
-
-<h4>Example 1: Rollovers</h4>
 <p>
-    Spot Future is referred to as the continuous Future contract, which is usually mapped by the front month contract or the contract with the most open interest. 
-    When a contract expires or is very close to expiring, traders usually rollover from the current contract to the next contract to avoid price settlement and remain invested. 
-    The following algorithm demonstrates rolling over with <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>limit orders</a>.
+ The following examples demonstrate some common practices for handling Futures data.
 </p>
-
-<div class="section-example-container">
-    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
+<h4>
+ Example 1: Rollovers
+</h4>
+<p>
+ Spot Future is referred to as the continuous Future contract, which is usually mapped by the front month contract or the contract with the most open interest. 
+    When a contract expires or is very close to expiring, traders usually rollover from the current contract to the next contract to avoid price settlement and remain invested. 
+    The following algorithm demonstrates rolling over with
+ <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">
+  limit orders
+ </a>
+ .
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
     private Future _future;
 
@@ -28,7 +34,7 @@
     public override void OnData(Slice slice)
     {
         // Place the initial order so you can start rolling over contracts later.
-        if (!Portfolio.Invested && Transactions.GetOpenOrders().Count == 0)
+        if (!Portfolio.Invested &amp;&amp; Transactions.GetOpenOrders().Count == 0)
         {
             // Buy the contract that's currently selected in the continous contract series.
             MarketOrder(_future.Mapped, 1m);
@@ -45,7 +51,7 @@
             // The quantity to roll over should be consistent.
             var quantity = Portfolio[oldSymbol].Quantity;
             // Rolling over: Liquidate the old mapped contract and switch to the newly mapped contract.
-            var tag = $"Rollover: {oldSymbol} -> {newSymbol}";
+            var tag = $"Rollover: {oldSymbol} -&gt; {newSymbol}";
             Liquidate(oldSymbol, tag: tag);
             if (quantity != 0)
             {
@@ -69,7 +75,38 @@
         return ((int)(targetLimitPrice / pip) + (roundUp ? 1 : 0)) * pip;
     }
 }</pre>
-    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "217",
+    "Average Win": "4.03%",
+    "Average Loss": "-5.24%",
+    "Compounding Annual Return": "4.462%",
+    "Drawdown": "45.000%",
+    "Expectancy": "0.244",
+    "Start Equity": "100000",
+    "End Equity": "326377.95",
+    "Net Profit": "226.378%",
+    "Sharpe Ratio": "0.132",
+    "Sortino Ratio": "0.15",
+    "Probabilistic Sharpe Ratio": "0.002%",
+    "Loss Rate": "30%",
+    "Win Rate": "70%",
+    "Profit-Loss Ratio": "0.77",
+    "Alpha": "-0.015",
+    "Beta": "0.564",
+    "Annual Standard Deviation": "0.104",
+    "Annual Variance": "0.011",
+    "Information Ratio": "-0.429",
+    "Tracking Error": "0.087",
+    "Treynor Ratio": "0.024",
+    "Total Fees": "$464.40",
+    "Estimated Strategy Capacity": "$700000000.00",
+    "Lowest Capacity Asset": "ES YQYHC5L1GPA9",
+    "Portfolio Turnover": "1.48%",
+    "OrderListHash": "a16252add66bf42786307bb30947e5a1"
+}
+ </script>
+ <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
 
     def initialize(self):
         # Add the E-mini Futures and set the continuous contract mapping criteria for the rollovers.
@@ -96,7 +133,7 @@
             # The quantity to roll over should be consistent.
             quantity = self.portfolio[old_symbol].quantity
             # Rolling over: Liquidate the old mapped contract and switch to the newly mapped contract.
-            tag = f"Rollover: {old_symbol} -> {new_symbol}"
+            tag = f"Rollover: {old_symbol} -&gt; {new_symbol}"
             self.liquidate(old_symbol, tag=tag)
             if quantity:
                 # Place a limit order to avoid extreme quote filling.
@@ -113,8 +150,38 @@
         parameters = GetMinimumPriceVariationParameters(security, target_limit_price)
         pip = security.price_variation_model.get_minimum_price_variation(parameters)
         return (int(target_limit_price / pip) + int(round_up)) * pip</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "217",
+    "Average Win": "4.03%",
+    "Average Loss": "-5.24%",
+    "Compounding Annual Return": "4.462%",
+    "Drawdown": "45.000%",
+    "Expectancy": "0.244",
+    "Start Equity": "100000",
+    "End Equity": "326377.95",
+    "Net Profit": "226.378%",
+    "Sharpe Ratio": "0.132",
+    "Sortino Ratio": "0.15",
+    "Probabilistic Sharpe Ratio": "0.002%",
+    "Loss Rate": "30%",
+    "Win Rate": "70%",
+    "Profit-Loss Ratio": "0.77",
+    "Alpha": "-0.015",
+    "Beta": "0.564",
+    "Annual Standard Deviation": "0.104",
+    "Annual Variance": "0.011",
+    "Information Ratio": "-0.429",
+    "Tracking Error": "0.087",
+    "Treynor Ratio": "0.024",
+    "Total Fees": "$464.40",
+    "Estimated Strategy Capacity": "$700000000.00",
+    "Lowest Capacity Asset": "ES YQYHC5L1GPA9",
+    "Portfolio Turnover": "1.48%",
+    "OrderListHash": "94eed4b414009a540121dc1cece9cdfc"
+}
+ </script>
 </div>
-
 <!-- Waiting on https://github.com/QuantConnect/Lean/issues/8386
 Replace with these algorithms: https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_1e88381805fbc901c39edd6e54229dd7.html
 

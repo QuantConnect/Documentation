@@ -1,14 +1,28 @@
-<p>The following examples demonstrate some common practices on the subject of requesting data.</p>
-
-<h4>Example 1: Add Linked Alternative Data for Universe Constituents</h4>
 <p>
-	Many traders select universe constituents and then allocate positions with two independent sets of logic. 
-	Position sizing usually requires additional information, like alternative data factors. 
-	To manage alternative data subscriptions for all the universe constituents, subscribe and unsubscribe from the data in the <code class='csharp'>OnSecuritiesChanged</code><code class='python'>on_securities_changed</code> method.
-	The following example demonstrates adds the <a href="https://www.quantconnect.com/datasets/kavout-composite-factor-bundle">KavoutCompositeFactorBundle</a> when assets enter the universe.
+ The following examples demonstrate some common practices on the subject of requesting data.
 </p>
-<div class="section-example-container">
-	<pre class="csharp">public class RequestSecuritiesDataAlgorithm : QCAlgorithm
+<h4>
+ Example 1: Add Linked Alternative Data for Universe Constituents
+</h4>
+<p>
+ Many traders select universe constituents and then allocate positions with two independent sets of logic. 
+	Position sizing usually requires additional information, like alternative data factors. 
+	To manage alternative data subscriptions for all the universe constituents, subscribe and unsubscribe from the data in the
+ <code class="csharp">
+  OnSecuritiesChanged
+ </code>
+ <code class="python">
+  on_securities_changed
+ </code>
+ method.
+	The following example demonstrates adds the
+ <a href="https://www.quantconnect.com/datasets/kavout-composite-factor-bundle">
+  KavoutCompositeFactorBundle
+ </a>
+ when assets enter the universe.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class RequestSecuritiesDataAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -20,7 +34,7 @@
     {
         // Invest by the updated Kavout Factor data.
         var factorData = slice.Get&lt;KavoutCompositeFactorBundle&gt;();
-        if (factorData.Count > 0)
+        if (factorData.Count &gt; 0)
         {
             // Obtain the top 10 factor sum score symbols.
             // Invest by equal weighting to dissipate capital risks.
@@ -52,7 +66,38 @@
         }
     }
 }</pre>
-	<pre class="python">class RequestSecuritiesDataAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2797",
+    "Average Win": "-422.47%",
+    "Average Loss": "4.07%",
+    "Compounding Annual Return": "17.870%",
+    "Drawdown": "90.200%",
+    "Expectancy": "-58.365",
+    "Start Equity": "100000",
+    "End Equity": "8605276.95",
+    "Net Profit": "8505.277%",
+    "Sharpe Ratio": "0.479",
+    "Sortino Ratio": "0.474",
+    "Probabilistic Sharpe Ratio": "0.073%",
+    "Loss Rate": "44%",
+    "Win Rate": "56%",
+    "Profit-Loss Ratio": "-103.72",
+    "Alpha": "0.091",
+    "Beta": "1.709",
+    "Annual Standard Deviation": "0.372",
+    "Annual Variance": "0.138",
+    "Information Ratio": "0.456",
+    "Tracking Error": "0.278",
+    "Treynor Ratio": "0.104",
+    "Total Fees": "$10266.07",
+    "Estimated Strategy Capacity": "$20000000.00",
+    "Lowest Capacity Asset": "TSLA UNU3P8Y3WFAD",
+    "Portfolio Turnover": "0.36%",
+    "OrderListHash": "428e8c5a12b919117b39dca936136c2b"
+}
+ </script>
+ <pre class="python">class RequestSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # Add a universe of the 10 most liquid US Equities.
         self.add_universe(self.universe.dollar_volume.top(10))
@@ -78,16 +123,52 @@
         for security in changes.removed_securities:
             # Unsubscribe from the altnerative data updates.
             self.remove_security(security.alt_data_symbol)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2797",
+    "Average Win": "-422.47%",
+    "Average Loss": "4.07%",
+    "Compounding Annual Return": "17.870%",
+    "Drawdown": "90.200%",
+    "Expectancy": "-58.365",
+    "Start Equity": "100000",
+    "End Equity": "8605276.95",
+    "Net Profit": "8505.277%",
+    "Sharpe Ratio": "0.479",
+    "Sortino Ratio": "0.474",
+    "Probabilistic Sharpe Ratio": "0.073%",
+    "Loss Rate": "44%",
+    "Win Rate": "56%",
+    "Profit-Loss Ratio": "-103.72",
+    "Alpha": "0.091",
+    "Beta": "1.709",
+    "Annual Standard Deviation": "0.372",
+    "Annual Variance": "0.138",
+    "Information Ratio": "0.456",
+    "Tracking Error": "0.278",
+    "Treynor Ratio": "0.104",
+    "Total Fees": "$10266.07",
+    "Estimated Strategy Capacity": "$20000000.00",
+    "Lowest Capacity Asset": "TSLA UNU3P8Y3WFAD",
+    "Portfolio Turnover": "0.36%",
+    "OrderListHash": "d03b923cb69e9dfcfe2df7dc768809f7"
+}
+ </script>
 </div>
-
-<h4>Example 2: Add Linked Custom Data</h4>
+<h4>
+ Example 2: Add Linked Custom Data
+</h4>
 <p>
-	QuantConnect Cloud has a lot of data, but not everything. 
-	To import some external data into your algorithm, define a <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts'>custom data source</a>. 
+ QuantConnect Cloud has a lot of data, but not everything. 
+	To import some external data into your algorithm, define a
+ <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts">
+  custom data source
+ </a>
+ . 
 	The following algorithm loads Bitstamp's BTCUSD trading activity from a CSV file and plots it:
 </p>
-<div class="section-example-container">
-	<pre class="csharp">// Define the algorithm.
+<div class="section-example-container testable">
+ <pre class="csharp">// Define the algorithm.
 public class LinkedCustomDataExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -165,7 +246,38 @@ public class Bitstamp : BaseData
         return coin;
     }
 }</pre>
-	<pre class="python"># Define the algorithm.
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.857",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python"># Define the algorithm.
 class LinkedCustomDataExampleAlgorithm(QCAlgorithm):
 
     def initialize(self):
@@ -218,5 +330,35 @@ class Bitstamp(PythonData):
         coin["VolumeUSD"] = float(data[6])
         coin["WeightedPrice"] = float(data[7])
         return coin</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.857",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-

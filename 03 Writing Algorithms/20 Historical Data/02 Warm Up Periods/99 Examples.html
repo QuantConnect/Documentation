@@ -1,9 +1,18 @@
-<p>The following examples demonstrate some common practices for warm up.</p>
-
-<h4>Example 1: Warm Up Indicator</h4>
-<p>The following algorithms trades mean-reversal according to signals from a <code>BollingerBands</code>. We warm up the algorithm for the needed period to enable the immediate availability of the indicator and price data.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class WarmUpPeriodsAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for warm up.
+</p>
+<h4>
+ Example 1: Warm Up Indicator
+</h4>
+<p>
+ The following algorithms trades mean-reversal according to signals from a
+ <code>
+  BollingerBands
+ </code>
+ . We warm up the algorithm for the needed period to enable the immediate availability of the indicator and price data.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class WarmUpPeriodsAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private BollingerBands _bbands = new(20, 2);
@@ -45,7 +54,38 @@
         }
     }
 }</pre>
-    <pre class="python">class WarmUpPeriodsAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "9",
+    "Average Win": "2.38%",
+    "Average Loss": "-0.88%",
+    "Compounding Annual Return": "6.332%",
+    "Drawdown": "3.600%",
+    "Expectancy": "0.846",
+    "Start Equity": "100000",
+    "End Equity": "106325.79",
+    "Net Profit": "6.326%",
+    "Sharpe Ratio": "0.771",
+    "Sortino Ratio": "1.122",
+    "Probabilistic Sharpe Ratio": "40.351%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "2.69",
+    "Alpha": "0.056",
+    "Beta": "-0.069",
+    "Annual Standard Deviation": "0.055",
+    "Annual Variance": "0.003",
+    "Information Ratio": "-1.196",
+    "Tracking Error": "0.128",
+    "Treynor Ratio": "-0.617",
+    "Total Fees": "$11.28",
+    "Estimated Strategy Capacity": "$140000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "2.35%",
+    "OrderListHash": "2125321e1eb926946ac80be600e31b36"
+}
+ </script>
+ <pre class="python">class WarmUpPeriodsAlgorithm(QCAlgorithm):
     bbands = BollingerBands(20, 2)
 
     def initialize(self) -&gt; None:
@@ -79,12 +119,46 @@
             self.set_holdings(self.spy, -0.5)
         if holdings.price &lt; lower_band and not holdings.is_long:
             self.set_holdings(self.spy, 0.5)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "9",
+    "Average Win": "2.38%",
+    "Average Loss": "-0.88%",
+    "Compounding Annual Return": "6.332%",
+    "Drawdown": "3.600%",
+    "Expectancy": "0.846",
+    "Start Equity": "100000",
+    "End Equity": "106325.79",
+    "Net Profit": "6.326%",
+    "Sharpe Ratio": "0.771",
+    "Sortino Ratio": "1.122",
+    "Probabilistic Sharpe Ratio": "40.351%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "2.69",
+    "Alpha": "0.056",
+    "Beta": "-0.069",
+    "Annual Standard Deviation": "0.055",
+    "Annual Variance": "0.003",
+    "Information Ratio": "-1.196",
+    "Tracking Error": "0.128",
+    "Treynor Ratio": "-0.617",
+    "Total Fees": "$11.28",
+    "Estimated Strategy Capacity": "$140000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "2.35%",
+    "OrderListHash": "8e32da2fd704307da017c0e63e95b0d9"
+}
+ </script>
 </div>
-
-<h4>Example 2: Warm Up Universe Selection</h4>
-<p>The below algorithm selects the stocks above 60-day EMA within the 100 most liquid US Equities and holds equally. We use the warm-up feature to feed the indicator in advance to warm up the EMA indicator for filtering.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class WarmUpPeriodsAlgorithm : QCAlgorithm
+<h4>
+ Example 2: Warm Up Universe Selection
+</h4>
+<p>
+ The below algorithm selects the stocks above 60-day EMA within the 100 most liquid US Equities and holds equally. We use the warm-up feature to feed the indicator in advance to warm up the EMA indicator for filtering.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class WarmUpPeriodsAlgorithm : QCAlgorithm
 {
     private Universe _universe;
     private Dictionary&lt;Symbol, ExponentialMovingAverage&gt; _emaBySymbol = new();
@@ -148,7 +222,38 @@
         changes.RemovedSecurities.DoForEach(r =&gt; Liquidate(r.Symbol));
     }
 }</pre>
-    <pre class="python">class WarmUpPeriodsAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "372",
+    "Average Win": "0.03%",
+    "Average Loss": "-0.02%",
+    "Compounding Annual Return": "1.281%",
+    "Drawdown": "0.200%",
+    "Expectancy": "0.229",
+    "Start Equity": "100000",
+    "End Equity": "100631.78",
+    "Net Profit": "0.632%",
+    "Sharpe Ratio": "-9.743",
+    "Sortino Ratio": "-13.966",
+    "Probabilistic Sharpe Ratio": "83.182%",
+    "Loss Rate": "45%",
+    "Win Rate": "55%",
+    "Profit-Loss Ratio": "1.24",
+    "Alpha": "-0.046",
+    "Beta": "0.026",
+    "Annual Standard Deviation": "0.004",
+    "Annual Variance": "0",
+    "Information Ratio": "-2.069",
+    "Tracking Error": "0.117",
+    "Treynor Ratio": "-1.545",
+    "Total Fees": "$248.00",
+    "Estimated Strategy Capacity": "$96000000.00",
+    "Lowest Capacity Asset": "QQQ RIWIV7K5Z9LX",
+    "Portfolio Turnover": "4.26%",
+    "OrderListHash": "3b0cba3e050f864e1b70569ab76d91ec"
+}
+ </script>
+ <pre class="python">class WarmUpPeriodsAlgorithm(QCAlgorithm):
     ema_by_symbol = {}
 
     def initialize(self) -&gt; None:
@@ -201,19 +306,58 @@
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Exit position if the equity is below EMA since it becomes a downgoing trend.
         [self.liquidate(r.symbol) for r in changes.removed_securities]</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "372",
+    "Average Win": "0.03%",
+    "Average Loss": "-0.02%",
+    "Compounding Annual Return": "1.281%",
+    "Drawdown": "0.200%",
+    "Expectancy": "0.229",
+    "Start Equity": "100000",
+    "End Equity": "100631.78",
+    "Net Profit": "0.632%",
+    "Sharpe Ratio": "-9.743",
+    "Sortino Ratio": "-13.966",
+    "Probabilistic Sharpe Ratio": "83.182%",
+    "Loss Rate": "45%",
+    "Win Rate": "55%",
+    "Profit-Loss Ratio": "1.24",
+    "Alpha": "-0.046",
+    "Beta": "0.026",
+    "Annual Standard Deviation": "0.004",
+    "Annual Variance": "0",
+    "Information Ratio": "-2.069",
+    "Tracking Error": "0.117",
+    "Treynor Ratio": "-1.545",
+    "Total Fees": "$248.00",
+    "Estimated Strategy Capacity": "$96000000.00",
+    "Lowest Capacity Asset": "QQQ RIWIV7K5Z9LX",
+    "Portfolio Turnover": "4.26%",
+    "OrderListHash": "41a635e994c34894495f127183e7e592"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
-<div class="example-fieldset"> 
-    <div class="example-legend">Demonstration Algorithms</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/WarmupAlgorithm.py" target="_BLANK">
-        WarmupAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/WarmupAlgorithm.cs" target="_BLANK">
-        WarmupAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
-  </div>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+<div class="example-fieldset">
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/WarmupAlgorithm.py" target="_BLANK">
+  WarmupAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/WarmupAlgorithm.cs" target="_BLANK">
+  WarmupAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+</div>

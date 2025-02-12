@@ -1,36 +1,78 @@
-<p>The following backtest verifies the <code class="csharp">MarketOnOpenOrder</code><code class="python">market_on_open_order</code> behavior. The following table shows the first trade in the backtest:</p>
-
+<p>
+ The following backtest verifies the
+ <code class="csharp">
+  MarketOnOpenOrder
+ </code>
+ <code class="python">
+  market_on_open_order
+ </code>
+ behavior. The following table shows the first trade in the backtest:
+</p>
 <table class="qc-table table" id="research-nodes-table">
-    <thead>
-        <tr>
-            <th>Submitted Time</th>
-            <th>Filled Time</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Value</th>
-            <th>Tag</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>2021-07-01T10:31:00Z</td>
-            <td>2021-07-02T09:31:00Z</td>
-            <td>SPY</td>
-            <td>431.67</td>
-            <td>10</td>
-            <td>Market On Open</td>
-            <td>Filled</td>
-            <td>4316.70</td>
-            <td></td>
-        </tr>
-    </tbody>
+ <thead>
+  <tr>
+   <th>
+    Submitted Time
+   </th>
+   <th>
+    Filled Time
+   </th>
+   <th>
+    Symbol
+   </th>
+   <th>
+    Price
+   </th>
+   <th>
+    Quantity
+   </th>
+   <th>
+    Type
+   </th>
+   <th>
+    Status
+   </th>
+   <th>
+    Value
+   </th>
+   <th>
+    Tag
+   </th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    2021-07-01T10:31:00Z
+   </td>
+   <td>
+    2021-07-02T09:31:00Z
+   </td>
+   <td>
+    SPY
+   </td>
+   <td>
+    431.67
+   </td>
+   <td>
+    10
+   </td>
+   <td>
+    Market On Open
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    4316.70
+   </td>
+   <td>
+   </td>
+  </tr>
+ </tbody>
 </table>
-
 <style>
-#research-nodes-table td:nth-child(3), 
+ #research-nodes-table td:nth-child(3), 
 #research-nodes-table th:nth-child(3), 
 #research-nodes-table td:nth-child(4), 
 #research-nodes-table th:nth-child(4), 
@@ -39,13 +81,19 @@
     text-align: right;
 }
 </style>
-
-<p>On July 1, 2021 at 10:31 AM Eastern Time (ET), the algorithm places a market on open order to buy SPY. The fill model fills the order on July 2, 2021 at 9:31 AM at a price of $431.67, which is the <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#05-Market-Auction-Prices">official opening auction price</a> for July 2, 2021. <br></p>
-
-<p>To reproduce these results, backtest the following algorithm:</p>
-
-<div class="section-example-container">
-    <pre class="csharp">public class MarketOnOpenOrderAlgorithm : QCAlgorithm
+<p>
+ On July 1, 2021 at 10:31 AM Eastern Time (ET), the algorithm places a market on open order to buy SPY. The fill model fills the order on July 2, 2021 at 9:31 AM at a price of $431.67, which is the
+ <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#05-Market-Auction-Prices">
+  official opening auction price
+ </a>
+ for July 2, 2021.
+ <br>
+</p>
+<p>
+ To reproduce these results, backtest the following algorithm:
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class MarketOnOpenOrderAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
 
@@ -60,13 +108,44 @@
 
     public override void OnData(Slice data)
     {
-        if (Time.Day == 1 && Time.Hour == 10 && Time.Minute == 31)
+        if (Time.Day == 1 &amp;&amp; Time.Hour == 10 &amp;&amp; Time.Minute == 31)
         {
             MarketOnOpenOrder(_symbol, 10);
         }
     }
 }</pre>
-    <pre class="python">class MarketOnOpenOrderAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "1",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100019.5",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$1.00",
+    "Estimated Strategy Capacity": "$570000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "2.16%",
+    "OrderListHash": "d8aa512bd75dda6a73ea255c1d21e7ce"
+}
+ </script>
+ <pre class="python">class MarketOnOpenOrderAlgorithm(QCAlgorithm):
     
     def initialize(self):
         self.set_start_date(2021, 7, 1)
@@ -78,4 +157,35 @@
     def on_data(self, data):
         if self.time.day == 1 and self.time.hour == 10 and self.time.minute == 31:
             self.market_on_open_order("SPY", 10)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "1",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100019.5",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$1.00",
+    "Estimated Strategy Capacity": "$570000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "2.16%",
+    "OrderListHash": "31b49af8d4730e1fb4e2d38f4fbbe9bc"
+}
+ </script>
 </div>

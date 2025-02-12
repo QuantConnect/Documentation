@@ -1,9 +1,18 @@
-<p>The following examples demonstrate common practices for requesting individual Future contract data.</p>
-
-<h4>Example 1: Add the Front-Month Contract</h4>
-<p>The following algorithm adds the front-month contract, with a two-day buffer, for the E-Mini S&P 500 Future and <a href='/docs/v2/writing-algorithms/indicators/plotting-indicators'>plots</a> the daily closing price of the contract three days before month end. Then, trade an EMA cross strategy.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate common practices for requesting individual Future contract data.
+</p>
+<h4>
+ Example 1: Add the Front-Month Contract
+</h4>
+<p>
+ The following algorithm adds the front-month contract, with a two-day buffer, for the E-Mini S&amp;P 500 Future and
+ <a href="/docs/v2/writing-algorithms/indicators/plotting-indicators">
+  plots
+ </a>
+ the daily closing price of the contract three days before month end. Then, trade an EMA cross strategy.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
 {
     private Symbol _future, _contractSymbol;
     private ExponentialMovingAverage _ema;
@@ -63,7 +72,38 @@
         }
     }
 }</pre>
-    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "1811",
+    "Average Win": "1.18%",
+    "Average Loss": "-1.32%",
+    "Compounding Annual Return": "-20.991%",
+    "Drawdown": "84.600%",
+    "Expectancy": "0.000",
+    "Start Equity": "100000",
+    "End Equity": "78958.25",
+    "Net Profit": "-21.042%",
+    "Sharpe Ratio": "1.17",
+    "Sortino Ratio": "1.688",
+    "Probabilistic Sharpe Ratio": "34.366%",
+    "Loss Rate": "47%",
+    "Win Rate": "53%",
+    "Profit-Loss Ratio": "0.89",
+    "Alpha": "0.953",
+    "Beta": "-6.814",
+    "Annual Standard Deviation": "1.573",
+    "Annual Variance": "2.476",
+    "Information Ratio": "1.125",
+    "Tracking Error": "1.751",
+    "Treynor Ratio": "-0.27",
+    "Total Fees": "$3960.30",
+    "Estimated Strategy Capacity": "$170000000.00",
+    "Lowest Capacity Asset": "ES Y4D62XFM9IPT",
+    "Portfolio Turnover": "693.74%",
+    "OrderListHash": "b67de81e5488f3e580ae4c742fdbe8b1"
+}
+ </script>
+ <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2023, 1, 1)
@@ -109,4 +149,35 @@
                 self.set_holdings(self._contract_symbol, 0.5)
             elif bar.close &lt; self._ema.current.value and not self.portfolio[self._future].is_short:
                 self.set_holdings(self._contract_symbol, -0.5)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "1811",
+    "Average Win": "1.18%",
+    "Average Loss": "-1.32%",
+    "Compounding Annual Return": "-20.991%",
+    "Drawdown": "84.600%",
+    "Expectancy": "0.000",
+    "Start Equity": "100000",
+    "End Equity": "78958.25",
+    "Net Profit": "-21.042%",
+    "Sharpe Ratio": "1.17",
+    "Sortino Ratio": "1.688",
+    "Probabilistic Sharpe Ratio": "34.366%",
+    "Loss Rate": "47%",
+    "Win Rate": "53%",
+    "Profit-Loss Ratio": "0.89",
+    "Alpha": "0.953",
+    "Beta": "-6.814",
+    "Annual Standard Deviation": "1.573",
+    "Annual Variance": "2.476",
+    "Information Ratio": "1.125",
+    "Tracking Error": "1.751",
+    "Treynor Ratio": "-0.27",
+    "Total Fees": "$3960.30",
+    "Estimated Strategy Capacity": "$170000000.00",
+    "Lowest Capacity Asset": "ES Y4D62XFM9IPT",
+    "Portfolio Turnover": "693.74%",
+    "OrderListHash": "b4c6cc7388362bccada1c0c510bef203"
+}
+ </script>
 </div>

@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for applying research.</p>
-
-<h4>Example 1: Hypothesis-Driven Research</h4>
-<p>The following example hypothesized that 2 different classes of Google stocks are cointegrated with each other, and we can capitalize spread reversal from occasional, irrational price divergence. To prove it, we make use of the augmented Dickey-Fuller test to verify the cointegration relationship.</p>
-<div class="section-example-container">
-    <pre class="csharp">using Accord.Statistics;
+<p>
+ The following examples demonstrate some common practices for applying research.
+</p>
+<h4>
+ Example 1: Hypothesis-Driven Research
+</h4>
+<p>
+ The following example hypothesized that 2 different classes of Google stocks are cointegrated with each other, and we can capitalize spread reversal from occasional, irrational price divergence. To prove it, we make use of the augmented Dickey-Fuller test to verify the cointegration relationship.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">using Accord.Statistics;
 using MathNet.Numerics.LinearRegression;
 
 public class HypothesisDrivenResearchAlgorithm : QCAlgorithm
@@ -124,7 +129,7 @@ public class HypothesisDrivenResearchAlgorithm : QCAlgorithm
         var lagged = new double[n - 1];
         var differences = new double[n - 1];
         
-        // Fit linear regression for the residual series on unit root: ΔY_t = α + βY_{t-1} + ε_t.
+        // Fit linear regression for the residual series on unit root: &Delta;Y_t = &alpha; + &beta;Y_{t-1} + &epsilon;_t.
         for (int i = 1; i &lt; n; i++)
         {
             lagged[i - 1] = series[i - 1];
@@ -138,12 +143,43 @@ public class HypothesisDrivenResearchAlgorithm : QCAlgorithm
         // Calculate the ADF statistic and check if the null hypothesis is rejected.
         var adfStatistic = beta / Measures.StandardError(differences);
 
-        // Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        // Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate &alpha;=0.05 for n=250)
         // Which means no unit root for difference series and the residuals are stationary.
         return adfStatistic &lt;= -3.45d;
     }
 }</pre>
-    <pre class="python">from sklearn.linear_model import LinearRegression
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "76",
+    "Average Win": "3.94%",
+    "Average Loss": "-4.01%",
+    "Compounding Annual Return": "0.240%",
+    "Drawdown": "1.800%",
+    "Expectancy": "0.043",
+    "Start Equity": "100000",
+    "End Equity": "100964.02",
+    "Net Profit": "0.964%",
+    "Sharpe Ratio": "-1.308",
+    "Sortino Ratio": "-0.949",
+    "Probabilistic Sharpe Ratio": "2.461%",
+    "Loss Rate": "47%",
+    "Win Rate": "53%",
+    "Profit-Loss Ratio": "0.98",
+    "Alpha": "-0.013",
+    "Beta": "0.005",
+    "Annual Standard Deviation": "0.009",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.57",
+    "Tracking Error": "0.187",
+    "Treynor Ratio": "-2.577",
+    "Total Fees": "$250.54",
+    "Estimated Strategy Capacity": "$23000000.00",
+    "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "2.64%",
+    "OrderListHash": "bd4deb32b8e6a5de895f74fc5c5b8532"
+}
+ </script>
+ <pre class="python">from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.stattools import adfuller
 
 class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
@@ -220,7 +256,7 @@ class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
         residuals = y - (intercept + slope * x)
 
         # Check if the residuals are stationary using the augmented Dickey-Fuller test.
-        # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate &alpha;=0.05 for n=250)
         # Which means no unit root for difference series and the residuals are stationary.
         adf_reject = adfuller(residuals)[0] &lt;= -3.45
         if adf_reject:
@@ -232,14 +268,48 @@ class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
             self.liquidate()
             self.coefficients = [0, 0]
             self.threshold = 100000000          # An arbitrarily large number that the class A price will never reach.</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "32",
+    "Average Win": "3.08%",
+    "Average Loss": "-3.73%",
+    "Compounding Annual Return": "0.047%",
+    "Drawdown": "1.500%",
+    "Expectancy": "0.028",
+    "Start Equity": "100000",
+    "End Equity": "100189.87",
+    "Net Profit": "0.190%",
+    "Sharpe Ratio": "-1.77",
+    "Sortino Ratio": "-0.922",
+    "Probabilistic Sharpe Ratio": "1.084%",
+    "Loss Rate": "44%",
+    "Win Rate": "56%",
+    "Profit-Loss Ratio": "0.83",
+    "Alpha": "-0.014",
+    "Beta": "0.001",
+    "Annual Standard Deviation": "0.008",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.575",
+    "Tracking Error": "0.187",
+    "Treynor Ratio": "-21.633",
+    "Total Fees": "$83.90",
+    "Estimated Strategy Capacity": "$23000000.00",
+    "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "1.09%",
+    "OrderListHash": "6f2c4b896322308f09b033d04b18a7de"
+}
+ </script>
 </div>
-
-<h4>Example 2: Data-Driven Research</h4>
-<p>By exploring the return pattern of SPY in 2020, we use that information to invest in 2021. Since the macroeconomic environment is similar (low interest rate), we assume the market seasonality would follow through. We can observe from the figures below that an around 50-day cycle, like a sine function, exists, and the next cycle starts around Jan 2021. Hence, we switch long and short every 25 days in 2021.</p>
+<h4>
+ Example 2: Data-Driven Research
+</h4>
+<p>
+ By exploring the return pattern of SPY in 2020, we use that information to invest in 2021. Since the macroeconomic environment is similar (low interest rate), we assume the market seasonality would follow through. We can observe from the figures below that an around 50-day cycle, like a sine function, exists, and the next cycle starts around Jan 2021. Hence, we switch long and short every 25 days in 2021.
+</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/forward-trailing-return-line-plot.png">
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/return-heatmap-data-driven-research.png">
-<div class="section-example-container">
-    <pre class="csharp">public class DataDrivenResearchAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class DataDrivenResearchAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private ScheduledEvent _lastScheduledEvent;
@@ -285,7 +355,38 @@ class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
         );
     }
 }</pre>
-    <pre class="python">class DataDrivenResearchAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "14",
+    "Average Win": "2.75%",
+    "Average Loss": "-1.84%",
+    "Compounding Annual Return": "0.962%",
+    "Drawdown": "8.900%",
+    "Expectancy": "0.152",
+    "Start Equity": "100000",
+    "End Equity": "100960.90",
+    "Net Profit": "0.961%",
+    "Sharpe Ratio": "0.092",
+    "Sortino Ratio": "0.112",
+    "Probabilistic Sharpe Ratio": "14.433%",
+    "Loss Rate": "54%",
+    "Win Rate": "46%",
+    "Profit-Loss Ratio": "1.49",
+    "Alpha": "-0.013",
+    "Beta": "0.114",
+    "Annual Standard Deviation": "0.105",
+    "Annual Variance": "0.011",
+    "Information Ratio": "-1.308",
+    "Tracking Error": "0.142",
+    "Treynor Ratio": "0.086",
+    "Total Fees": "$33.82",
+    "Estimated Strategy Capacity": "$70000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "7.41%",
+    "OrderListHash": "3777fe1900ef7d6f673692a5317dbd6e"
+}
+ </script>
+ <pre class="python">class DataDrivenResearchAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2022, 1, 1)
@@ -316,4 +417,35 @@ class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
             self.time_rules.at(9, 30),
             self.switch
         )</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "14",
+    "Average Win": "2.75%",
+    "Average Loss": "-1.84%",
+    "Compounding Annual Return": "0.962%",
+    "Drawdown": "8.900%",
+    "Expectancy": "0.152",
+    "Start Equity": "100000",
+    "End Equity": "100960.90",
+    "Net Profit": "0.961%",
+    "Sharpe Ratio": "0.092",
+    "Sortino Ratio": "0.112",
+    "Probabilistic Sharpe Ratio": "14.433%",
+    "Loss Rate": "54%",
+    "Win Rate": "46%",
+    "Profit-Loss Ratio": "1.49",
+    "Alpha": "-0.013",
+    "Beta": "0.114",
+    "Annual Standard Deviation": "0.105",
+    "Annual Variance": "0.011",
+    "Information Ratio": "-1.308",
+    "Tracking Error": "0.142",
+    "Treynor Ratio": "0.086",
+    "Total Fees": "$33.82",
+    "Estimated Strategy Capacity": "$70000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "7.41%",
+    "OrderListHash": "9fb49c769dfbbcc23364318fac6a4806"
+}
+ </script>
 </div>

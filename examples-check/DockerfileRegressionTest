@@ -1,0 +1,57 @@
+#
+#   Regression Tests for Example Algorithms
+#
+
+# Start with the Ubuntu 20.04 base image
+FROM ubuntu:20.04
+
+# Set environment variables to avoid interactive prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary packages and PHP
+RUN apt-get update
+RUN apt-get install -y php python3 python3-venv python3-dev git
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip and install Python dependencies
+RUN apt-get update && \
+    apt-get install -y python3-pip
+RUN pip install --upgrade pip
+RUN pip install beautifulsoup4==4.12.3
+RUN pip install ratelimit==2.2.1
+RUN pip install requests==2.31.0
+
+# Set the working directory to the Documentation directory
+WORKDIR /app/Documentation
+
+# Copy the necessary files into the container
+COPY ../.. .
+
+# Run the regression tester
+CMD python3 examples-check/example-regression-algorithm-test.py && \
+    # Push to GitHub
+    if [ "$(git diff | wc -m)" -eq 0 ]; then \
+        exit 0; \
+    fi && \
+    git config --global user.name "${GITHUB_USER}" && \
+    git config --global user.email "${GITHUB_EMAIL}" && \
+    git config --global credential.helper store && \
+    git checkout -b dockerfile-run-example-regression-test && \
+    git add . && \
+    git commit -m "Run Example Regression Test" && \
+    git push --set-upstream origin dockerfile-run-example-regression-test -f
+
+### Run By:
+### docker build \
+###     -t example-regression-test-image \
+###     -f examples-check/DockerfileRegressionTest .
+### docker run -it --entrypoint bash \
+###     -e GITHUB_USER="username" \
+###     -e GITHUB_EMAIL="example@example.com" \
+###     -e DOCS_REGRESSION_TEST_VALIDATION_MODE=1 \
+###     -e DOCS_REGRESSION_TEST_USER_ID=123456 \
+###     -e DOCS_REGRESSION_TEST_USER_TOKEN="user-token" \
+###     -e DOCS_REGRESSION_TEST_CS_PROJECT=12345678 \
+###     -e DOCS_REGRESSION_TEST_PY_PROJECT=87654321 \
+###     example-regression-test-image

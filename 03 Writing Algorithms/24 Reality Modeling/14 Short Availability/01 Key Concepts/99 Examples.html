@@ -1,9 +1,21 @@
-<p>The following examples demonstrate common practices for using a shortable provider.</p>
-
-<h4>Example 1: Sizing By Shortable Quantity</h4>
-<p>The following algorithm trades arbitrage of class A and class C price divergence of Google stocks using cointegration analysis. However, the position sizing may be limited by the available quantity to be shorted by the brokerage, breaking the paired trade. Thus, we need to make use of the <code class="csharp">ShortableQuantity</code><code class="python">shortable_quantity</code> method of the shortable provider to calculate the quantity.</p>
-<div class="section-example-container">
-    <pre class="csharp">using Accord.Statistics;
+<p>
+ The following examples demonstrate common practices for using a shortable provider.
+</p>
+<h4>
+ Example 1: Sizing By Shortable Quantity
+</h4>
+<p>
+ The following algorithm trades arbitrage of class A and class C price divergence of Google stocks using cointegration analysis. However, the position sizing may be limited by the available quantity to be shorted by the brokerage, breaking the paired trade. Thus, we need to make use of the
+ <code class="csharp">
+  ShortableQuantity
+ </code>
+ <code class="python">
+  shortable_quantity
+ </code>
+ method of the shortable provider to calculate the quantity.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">using Accord.Statistics;
 using MathNet.Numerics.LinearRegression;
 using QuantConnect.Data.Shortable;
 
@@ -132,7 +144,7 @@ public class ShortableProviderAlgorithm : QCAlgorithm
         var lagged = new double[n - 1];
         var differences = new double[n - 1];
         
-        // Fit linear regression for the residual series on unit root: ΔY_t = α + βY_{t-1} + ε_t.
+        // Fit linear regression for the residual series on unit root: &Delta;Y_t = &alpha; + &beta;Y_{t-1} + &epsilon;_t.
         for (int i = 1; i &lt; n; i++)
         {
             lagged[i - 1] = series[i - 1];
@@ -146,12 +158,43 @@ public class ShortableProviderAlgorithm : QCAlgorithm
         // Calculate the ADF statistic and check if the null hypothesis is rejected.
         var adfStatistic = beta / Measures.StandardError(differences);
 
-        // Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        // Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate &alpha;=0.05 for n=250)
         // This means no unit root exists for the difference series, and the residuals are stationary.
         return adfStatistic &lt;= -3.45d;
     }
 }</pre>
-    <pre class="python">from sklearn.linear_model import LinearRegression
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "102",
+    "Average Win": "1.76%",
+    "Average Loss": "-1.63%",
+    "Compounding Annual Return": "1.014%",
+    "Drawdown": "1.200%",
+    "Expectancy": "0.121",
+    "Start Equity": "100000",
+    "End Equity": "104115.90",
+    "Net Profit": "4.116%",
+    "Sharpe Ratio": "-0.688",
+    "Sortino Ratio": "-0.601",
+    "Probabilistic Sharpe Ratio": "21.733%",
+    "Loss Rate": "46%",
+    "Win Rate": "54%",
+    "Profit-Loss Ratio": "1.08",
+    "Alpha": "-0.007",
+    "Beta": "0.003",
+    "Annual Standard Deviation": "0.01",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.54",
+    "Tracking Error": "0.187",
+    "Treynor Ratio": "-2.024",
+    "Total Fees": "$82.85",
+    "Estimated Strategy Capacity": "$770000000.00",
+    "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "0.89%",
+    "OrderListHash": "9dd81ad29464f3a2b85b84f784738d1e"
+}
+ </script>
+ <pre class="python">from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.stattools import adfuller
 
 class ShortableProviderAlgorithm(QCAlgorithm):
@@ -236,7 +279,7 @@ class ShortableProviderAlgorithm(QCAlgorithm):
         residuals = y - (intercept + slope * x)
 
         # Check if the residuals are stationary using the augmented Dickey-Fuller test.
-        # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate α=0.05 for n=250)
+        # Reject the null hypothesis of a unit root is present if test statistic &lt;= -3.45 (approximate &alpha;=0.05 for n=250)
         # This means no unit root exists for the difference series, and the residuals are stationary.
         adf_reject = adfuller(residuals)[0] &lt;= -3.45
         if adf_reject:
@@ -248,29 +291,82 @@ class ShortableProviderAlgorithm(QCAlgorithm):
             self.liquidate()
             self.coefficients = [0, 0]
             self.threshold = 100000000          # An arbitrarily large number that the class A price will never reach.</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "78",
+    "Average Win": "2.99%",
+    "Average Loss": "-1.55%",
+    "Compounding Annual Return": "1.106%",
+    "Drawdown": "1.300%",
+    "Expectancy": "0.255",
+    "Start Equity": "100000",
+    "End Equity": "104498.33",
+    "Net Profit": "4.498%",
+    "Sharpe Ratio": "-0.571",
+    "Sortino Ratio": "-0.321",
+    "Probabilistic Sharpe Ratio": "21.539%",
+    "Loss Rate": "57%",
+    "Win Rate": "43%",
+    "Profit-Loss Ratio": "1.93",
+    "Alpha": "-0.006",
+    "Beta": "0.003",
+    "Annual Standard Deviation": "0.011",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.536",
+    "Tracking Error": "0.187",
+    "Treynor Ratio": "-2.408",
+    "Total Fees": "$49.04",
+    "Estimated Strategy Capacity": "$770000000.00",
+    "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "0.58%",
+    "OrderListHash": "cdef7566ad56a79618dc28eeb73082a1"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div>
-    <a class="python example-algorithm-link" href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_655295b224ca64731a7852399262ca51.html" target="_BLANK">
-        InteractiveBrokersShortableProviderAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomShortableProviderRegressionAlgorithm.py" target="_BLANK">
-        CustomShortableProviderRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/AllShortableSymbolsCoarseSelectionRegressionAlgorithm.py" target="_BLANK">
-        AllShortableSymbolsCoarseSelectionRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_aaf56abb9ad0336d851ef173d4a22e70.html" target="_BLANK">
-        InteractiveBrokersShortableProviderAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomShortableProviderRegressionAlgorithm.cs" target="_BLANK">
-        CustomShortableProviderRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/AllShortableSymbolsCoarseSelectionRegressionAlgorithm.cs" target="_BLANK">
-        AllShortableSymbolsCoarseSelectionRegressionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_655295b224ca64731a7852399262ca51.html" target="_BLANK">
+  InteractiveBrokersShortableProviderAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomShortableProviderRegressionAlgorithm.py" target="_BLANK">
+  CustomShortableProviderRegressionAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/AllShortableSymbolsCoarseSelectionRegressionAlgorithm.py" target="_BLANK">
+  AllShortableSymbolsCoarseSelectionRegressionAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_aaf56abb9ad0336d851ef173d4a22e70.html" target="_BLANK">
+  InteractiveBrokersShortableProviderAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomShortableProviderRegressionAlgorithm.cs" target="_BLANK">
+  CustomShortableProviderRegressionAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/AllShortableSymbolsCoarseSelectionRegressionAlgorithm.cs" target="_BLANK">
+  AllShortableSymbolsCoarseSelectionRegressionAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

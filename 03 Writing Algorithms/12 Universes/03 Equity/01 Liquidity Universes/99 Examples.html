@@ -1,12 +1,23 @@
-<p>The following examples demonstrate some common liquidity universes for US Equities.</p>
-
-<h4>Example 1: Minute-Resolution Universe</h4>
 <p>
-	The following algorithm <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 10 most liquid US Equities as the universe.
-	It uses <a href='/docs/v2/writing-algorithms/universes/settings#02-Resolution'>minute resolution</a> data to provide the most realistic results.
+ The following examples demonstrate some common liquidity universes for US Equities.
 </p>
-<div class="section-example-container">
-	<pre class="csharp">public class MinuteLiquidUniverseAlgorithm : QCAlgorithm
+<h4>
+ Example 1: Minute-Resolution Universe
+</h4>
+<p>
+ The following algorithm
+ <a href="/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection">
+  asynchronously selects
+ </a>
+ the 10 most liquid US Equities as the universe.
+	It uses
+ <a href="/docs/v2/writing-algorithms/universes/settings#02-Resolution">
+  minute resolution
+ </a>
+ data to provide the most realistic results.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class MinuteLiquidUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -18,7 +29,38 @@
         AddUniverse(Universe.DollarVolume.Top(10));
     }
 }</pre>
-	<pre class="python">class MinuteLiquidUniverseAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class MinuteLiquidUniverseAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         # Use asynchronous universe selection to speed up your algorithm.
@@ -27,15 +69,55 @@
         self.universe_settings.resolution = Resolution.MINUTE
         # Add a universe of the 10 most liquid US Equities.
         self.add_universe(self.universe.dollar_volume.top(10))</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 2: Trade Liquid Assets off Bollinger Bands</h4>
+<h4>
+ Example 2: Trade Liquid Assets off Bollinger Bands
+</h4>
 <p>
-	The following algorithm <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously selects</a> the 500 most liquid US Equities as the universe. 
-	Each day, it forms a portfolio of the assets in the universe that are below their lower <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/bollinger-bands'>Bollinger Band</a>.
+ The following algorithm
+ <a href="/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection">
+  asynchronously selects
+ </a>
+ the 500 most liquid US Equities as the universe. 
+	Each day, it forms a portfolio of the assets in the universe that are below their lower
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/bollinger-bands">
+  Bollinger Band
+ </a>
+ .
 </p>
-<div class="section-example-container">
-	<pre class="csharp">public class AsynchronousLiquidUniverseAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class AsynchronousLiquidUniverseAlgorithm : QCAlgorithm
 {
     private Universe _universe;
 
@@ -79,16 +161,47 @@
         }
         // Select the Equities that are below their lower Bollinger Band.
         var selected = _universe.Selected
-            .Select(symbol => (Securities[symbol] as dynamic))
-            .Where(security => security.BB.IsReady && security.Price != 0 && security.Price < security.BB.LowerBand.Current.Value);
+            .Select(symbol =&gt; (Securities[symbol] as dynamic))
+            .Where(security =&gt; security.BB.IsReady &amp;&amp; security.Price != 0 &amp;&amp; security.Price &lt; security.BB.LowerBand.Current.Value);
         // Form an equal-weighted portfolio with the selected assets.
         var weight = 1m / selected.Count();
-        SetHoldings(selected.Select(security => new PortfolioTarget(security.Symbol, weight)).ToList(), true);
+        SetHoldings(selected.Select(security =&gt; new PortfolioTarget(security.Symbol, weight)).ToList(), true);
     }
 }</pre>
-	<pre class="python">class AsynchronousLiquidUniverseAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "3002",
+    "Average Win": "0.10%",
+    "Average Loss": "-0.07%",
+    "Compounding Annual Return": "27.832%",
+    "Drawdown": "10.900%",
+    "Expectancy": "0.134",
+    "Start Equity": "100000",
+    "End Equity": "113097.79",
+    "Net Profit": "13.098%",
+    "Sharpe Ratio": "1.023",
+    "Sortino Ratio": "1.277",
+    "Probabilistic Sharpe Ratio": "59.821%",
+    "Loss Rate": "54%",
+    "Win Rate": "46%",
+    "Profit-Loss Ratio": "1.44",
+    "Alpha": "0.03",
+    "Beta": "0.662",
+    "Annual Standard Deviation": "0.139",
+    "Annual Variance": "0.019",
+    "Information Ratio": "-0.214",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0.215",
+    "Total Fees": "$3848.25",
+    "Estimated Strategy Capacity": "$180000000.00",
+    "Lowest Capacity Asset": "TRNR Y804JD32FTD1",
+    "Portfolio Turnover": "65.72%",
+    "OrderListHash": "64c3ae6bb9d49a888a710bd222362f1b"
+}
+ </script>
+ <pre class="python">class AsynchronousLiquidUniverseAlgorithm(QCAlgorithm):
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2024, 1, 1)
         self.set_end_date(2024, 7, 1)
         self.settings.automatic_indicator_warm_up = True
@@ -103,7 +216,7 @@
         # Add a universe of the 500 most liquid Equities.
         self._universe = self.add_universe(self.universe.dollar_volume.top(500))
 
-    def on_securities_changed(self, changes: SecurityChanges) -> None:
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Create Bollinger Band indicators for the universe constituents.
         for security in changes.added_securities:
             security.bb = self.bb(security.symbol, 60, 2)
@@ -111,7 +224,7 @@
         for security in changes.removed_securities:
             self.deregister_indicator(security.bb)
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Ensure there are TradeBar objects in the current slice.
         if not slice.bars:
             return
@@ -119,17 +232,63 @@
         securities = [self.securities[symbol] for symbol in self._universe.selected]
         selected = [
             security for security in securities 
-            if security.bb.is_ready and security.price and security.price < security.bb.lower_band.current.value
+            if security.bb.is_ready and security.price and security.price &lt; security.bb.lower_band.current.value
         ]
         # Form an equal-weighted portfolio with the selected assets.
         weight = 1 / len(selected)
         self.set_holdings([PortfolioTarget(security.symbol, weight) for security in selected], True)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "3002",
+    "Average Win": "0.10%",
+    "Average Loss": "-0.07%",
+    "Compounding Annual Return": "27.832%",
+    "Drawdown": "10.900%",
+    "Expectancy": "0.134",
+    "Start Equity": "100000",
+    "End Equity": "113097.79",
+    "Net Profit": "13.098%",
+    "Sharpe Ratio": "1.023",
+    "Sortino Ratio": "1.277",
+    "Probabilistic Sharpe Ratio": "59.821%",
+    "Loss Rate": "54%",
+    "Win Rate": "46%",
+    "Profit-Loss Ratio": "1.44",
+    "Alpha": "0.03",
+    "Beta": "0.662",
+    "Annual Standard Deviation": "0.139",
+    "Annual Variance": "0.019",
+    "Information Ratio": "-0.214",
+    "Tracking Error": "0.13",
+    "Treynor Ratio": "0.215",
+    "Total Fees": "$3848.25",
+    "Estimated Strategy Capacity": "$180000000.00",
+    "Lowest Capacity Asset": "TRNR Y804JD32FTD1",
+    "Portfolio Turnover": "65.72%",
+    "OrderListHash": "a52ae3c0b9d6f48686823f008453f12f"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-	<div class="example-legend">Demonstration Algorithms</div>
-  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/UniverseSelectionDefinitionsAlgorithm.py" target="_BLANK">UniverseSelectionDefinitionsAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
-  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/UniverseSelectionDefinitionsAlgorithm.cs" target="_BLANK">UniverseSelectionDefinitionsAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/UniverseSelectionDefinitionsAlgorithm.py" target="_BLANK">
+  UniverseSelectionDefinitionsAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/UniverseSelectionDefinitionsAlgorithm.cs" target="_BLANK">
+  UniverseSelectionDefinitionsAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

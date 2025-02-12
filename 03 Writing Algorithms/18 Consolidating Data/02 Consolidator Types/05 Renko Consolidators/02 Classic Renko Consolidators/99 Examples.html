@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for implementing classic renko consolidator.</p>
-
-<h4>Example 1: 10 Dollar Bar Range SMA Cross</h4>
-<p>The following algorithm creates a dollar bar for SPY. Then, for each 10-dollar bar, we find their range (high - low) and feed to an SMA indicator, such that we obtain a trend indicator of the range of SPY. We trade VXX as the proxy of the SPY volatility based on the trend of the range SMA.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class ClassicRenkoBarConsolidatorAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for implementing classic renko consolidator.
+</p>
+<h4>
+ Example 1: 10 Dollar Bar Range SMA Cross
+</h4>
+<p>
+ The following algorithm creates a dollar bar for SPY. Then, for each 10-dollar bar, we find their range (high - low) and feed to an SMA indicator, such that we obtain a trend indicator of the range of SPY. We trade VXX as the proxy of the SPY volatility based on the trend of the range SMA.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class ClassicRenkoBarConsolidatorAlgorithm : QCAlgorithm
 {
     private Symbol _spy, _vxx;
     private ClassicRenkoConsolidator _consolidator;
@@ -67,7 +72,38 @@
         }
     }
 }</pre>
-    <pre class="python">class ClassicRenkoBarConsolidatorAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "59",
+    "Average Win": "1.61%",
+    "Average Loss": "-1.55%",
+    "Compounding Annual Return": "9.338%",
+    "Drawdown": "22.300%",
+    "Expectancy": "0.053",
+    "Start Equity": "100000",
+    "End Equity": "102291.32",
+    "Net Profit": "2.291%",
+    "Sharpe Ratio": "0.352",
+    "Sortino Ratio": "0.612",
+    "Probabilistic Sharpe Ratio": "34.680%",
+    "Loss Rate": "48%",
+    "Win Rate": "52%",
+    "Profit-Loss Ratio": "1.04",
+    "Alpha": "0.136",
+    "Beta": "0.281",
+    "Annual Standard Deviation": "0.305",
+    "Annual Variance": "0.093",
+    "Information Ratio": "0.618",
+    "Tracking Error": "0.338",
+    "Treynor Ratio": "0.382",
+    "Total Fees": "$78.29",
+    "Estimated Strategy Capacity": "$830000.00",
+    "Lowest Capacity Asset": "VXXB WRBPJAJZ2Q91",
+    "Portfolio Turnover": "62.52%",
+    "OrderListHash": "306875d21e914635e7aa08f195fc1851"
+}
+ </script>
+ <pre class="python">class ClassicRenkoBarConsolidatorAlgorithm(QCAlgorithm):
     _high = 0
     _low = 10000
     _count = 0
@@ -118,19 +154,58 @@
             # If the range trend decreases, sell VXX as a proxy for decreasing volatility.
             elif current &lt; previous and not self.portfolio[self._vxx].is_short:
                 self.set_holdings(self._vxx, -0.5)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "59",
+    "Average Win": "1.61%",
+    "Average Loss": "-1.55%",
+    "Compounding Annual Return": "9.338%",
+    "Drawdown": "22.300%",
+    "Expectancy": "0.053",
+    "Start Equity": "100000",
+    "End Equity": "102291.32",
+    "Net Profit": "2.291%",
+    "Sharpe Ratio": "0.352",
+    "Sortino Ratio": "0.612",
+    "Probabilistic Sharpe Ratio": "34.680%",
+    "Loss Rate": "48%",
+    "Win Rate": "52%",
+    "Profit-Loss Ratio": "1.04",
+    "Alpha": "0.136",
+    "Beta": "0.281",
+    "Annual Standard Deviation": "0.305",
+    "Annual Variance": "0.093",
+    "Information Ratio": "0.618",
+    "Tracking Error": "0.338",
+    "Treynor Ratio": "0.382",
+    "Total Fees": "$78.29",
+    "Estimated Strategy Capacity": "$830000.00",
+    "Lowest Capacity Asset": "VXXB WRBPJAJZ2Q91",
+    "Portfolio Turnover": "62.52%",
+    "OrderListHash": "001935cef04ad8996227a316cebeface"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-<div class="example-fieldset"> 
-    <div class="example-legend">Demonstration Algorithms</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py" target="_BLANK">
-        ClassicRenkoConsolidatorAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ClassicRenkoConsolidatorAlgorithm.cs" target="_BLANK">
-        ClassicRenkoConsolidatorAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
-
-  </div>
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+<div class="example-fieldset">
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py" target="_BLANK">
+  ClassicRenkoConsolidatorAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ClassicRenkoConsolidatorAlgorithm.cs" target="_BLANK">
+  ClassicRenkoConsolidatorAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+</div>

@@ -1,27 +1,72 @@
-<p>The following examples demonstrate some common Crypto universes.</p>
-
-<h4>Example 1: Highly Liquid Crypto Universe</h4>
 <p>
-	To fairly compare the liquidity between Crypto pairs, use the <code class="csharp">VolumeInUsd</code><code class="python">volume_in_usd</code> property of the <code>CryptoUniverse</code> objects during universe selection. 
+ The following examples demonstrate some common Crypto universes.
+</p>
+<h4>
+ Example 1: Highly Liquid Crypto Universe
+</h4>
+<p>
+ To fairly compare the liquidity between Crypto pairs, use the
+ <code class="csharp">
+  VolumeInUsd
+ </code>
+ <code class="python">
+  volume_in_usd
+ </code>
+ property of the
+ <code>
+  CryptoUniverse
+ </code>
+ objects during universe selection. 
 	The following algorithm selects the 10 Crypto pairs with the greatest USD volume on Bitfinex:
 </p>
-<div class="section-example-container">
-	<pre class="csharp">public class HighlyLiquidCryptoUniverseAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class HighlyLiquidCryptoUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
         SetStartDate(2021, 1, 1);
         AddUniverse(
-            CryptoUniverse.Bitfinex(data => data
-                .Where(x => x.VolumeInUsd != null)
-                .OrderByDescending(x => x.VolumeInUsd)
+            CryptoUniverse.Bitfinex(data =&gt; data
+                .Where(x =&gt; x.VolumeInUsd != null)
+                .OrderByDescending(x =&gt; x.VolumeInUsd)
                 .Take(10)
-                .Select(x => x.Symbol)
+                .Select(x =&gt; x.Symbol)
             )
         );
     }
 }</pre>
-	<pre class="python">class HighlyLiquidCryptoUniverseAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.762",
+    "Tracking Error": "0.136",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class HighlyLiquidCryptoUniverseAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2021, 1, 1)
@@ -33,45 +78,149 @@
             key=lambda x: x.volume_in_usd
         )[-10:]
         return [x.symbol for x in selected]</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.762",
+    "Tracking Error": "0.136",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 2: Highly Volatile Crypto Universe</h4>
-<p>The following algorithm creates a universe of volatile Crypto pairs on Binance by selecting the pairs with the largest trading range in the previous day:</p>
-<div class="section-example-container">
-	<pre class="csharp">public class HighlyVolatileCryptoUniverseAlgorithm : QCAlgorithm
+<h4>
+ Example 2: Highly Volatile Crypto Universe
+</h4>
+<p>
+ The following algorithm creates a universe of volatile Crypto pairs on Binance by selecting the pairs with the largest trading range in the previous day:
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class HighlyVolatileCryptoUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
         SetStartDate(2021, 1, 1);
         AddUniverse(
-            CryptoUniverse.Binance(data => data
-                .OrderByDescending(x => (x.High - x.Low) / x.Low)
+            CryptoUniverse.Binance(data =&gt; data
+                .OrderByDescending(x =&gt; (x.High - x.Low) / x.Low)
                 .Take(10)
-                .Select(x => x.Symbol)
+                .Select(x =&gt; x.Symbol)
             )
         );
     }
 }</pre>
-	<pre class="python">class HighlyVolatileCryptoUniverseAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.762",
+    "Tracking Error": "0.136",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class HighlyVolatileCryptoUniverseAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2021, 1, 1)
-        self.add_universe(CryptoUniverse.binance(self._select_assets)
+        self.add_universe(CryptoUniverse.binance(self._select_assets))
 
     def _select_assets(self, data):
         selected = sorted(data, key=lambda x: (x.high - x.low) / x.low)[-10:]
         return [x.symbol for x in selected]</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.762",
+    "Tracking Error": "0.136",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>
-
-<h4>Example 3: Large Cap Crypto Universe</h4>
+<h4>
+ Example 3: Large Cap Crypto Universe
+</h4>
 <p>
-	The following algorithm uses the <a href='/docs/v2/writing-algorithms/datasets/coingecko/crypto-market-cap'>CoinGecko Crypto Market Cap</a> dataset to create a universe of the largest Crypto pairs on Coinbase. 
-	To avoid trading errors, it only selects pairs that have a quote currency that matches your <a href='/docs/v2/writing-algorithms/initialization#03-Set-Account-Currency'>account currency</a>.
+ The following algorithm uses the
+ <a href="/docs/v2/writing-algorithms/datasets/coingecko/crypto-market-cap">
+  CoinGecko Crypto Market Cap
+ </a>
+ dataset to create a universe of the largest Crypto pairs on Coinbase. 
+	To avoid trading errors, it only selects pairs that have a quote currency that matches your
+ <a href="/docs/v2/writing-algorithms/initialization#03-Set-Account-Currency">
+  account currency
+ </a>
+ .
 	At noon each day, it rebalances the portfolio to give equal weight to each coin in the universe.
 </p>
-
-<div class="section-example-container">
-	<pre class="csharp">public class LargeCapCryptoUniverseAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class LargeCapCryptoUniverseAlgorithm : QCAlgorithm
 {
     private Universe _universe;
 
@@ -85,21 +234,21 @@
         // matches your account currency. We need this list in the universe selection function.
         var market = Market.Coinbase;
         var marketPairs = SymbolPropertiesDatabase.GetSymbolPropertiesList(market)
-            .Where(x => x.Value.QuoteCurrency == AccountCurrency)
-            .Select(x => x.Key.Symbol)
+            .Where(x =&gt; x.Value.QuoteCurrency == AccountCurrency)
+            .Select(x =&gt; x.Key.Symbol)
             .ToList();
         // Add the Crypto universe and define the selection function.
         _universe = AddUniverse&lt;CoinGeckoUniverse&gt;(
-            data => data
-                .Select(c => c as CoinGecko)
+            data =&gt; data
+                .Select(c =&gt; c as CoinGecko)
                 // Select the coins that the brokerage supports and have a quote currency that 
                 // matches our account currency.
-                .Where(c => marketPairs.Contains(c.Coin + AccountCurrency))
+                .Where(c =&gt; marketPairs.Contains(c.Coin + AccountCurrency))
                 // Select the 10 largest coins.
-                .OrderByDescending(c => c.MarketCap)
+                .OrderByDescending(c =&gt; c.MarketCap)
                 .Take(10)
                 // Create the Symbol objects of the selected coins.
-                .Select(c => c.CreateSymbol(market, AccountCurrency)
+                .Select(c =&gt; c.CreateSymbol(market, AccountCurrency)
             )
         );
         // Add a Sheduled Event to rebalance the portfolio.
@@ -108,19 +257,54 @@
 
     private void Rebalance()
     {
-        var symbols = _universe.Selected.Where(symbol => Securities[symbol].Price != 0).ToList();
+        if (_universe.Selected == null || _universe.Selected.Count == 0)
+        {
+            return;
+        }
+        var symbols = _universe.Selected.Where(symbol =&gt; Securities[symbol].Price != 0).ToList();
         // Liquidate coins that are no longer in the universe.
         var targets = Portfolio.Values
-            .Where(holding => holding.Invested && !symbols.Contains(holding.Symbol))
-            .Select(holding => new PortfolioTarget(holding.Symbol, 0))
+            .Where(holding =&gt; holding.Invested &amp;&amp; !symbols.Contains(holding.Symbol))
+            .Select(holding =&gt; new PortfolioTarget(holding.Symbol, 0))
             .ToList();
         // Form an equal weighted portfolio of the coins in the universe.
-        targets.AddRange(symbols.Select(symbol => new PortfolioTarget(symbol, 0.5m / symbols.Count)));
+        targets.AddRange(symbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.5m / symbols.Count)));
         // Place orders to rebalance the portfolio.
         SetHoldings(targets);
     }
 }</pre>
-	<pre class="python">class LargeCapCryptoUniverseAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "8",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "67.273%",
+    "Drawdown": "27.900%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "167745.16",
+    "Net Profit": "67.745%",
+    "Sharpe Ratio": "1.52",
+    "Sortino Ratio": "1.666",
+    "Probabilistic Sharpe Ratio": "61.281%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.482",
+    "Beta": "0.135",
+    "Annual Standard Deviation": "0.332",
+    "Annual Variance": "0.11",
+    "Information Ratio": "0.837",
+    "Tracking Error": "0.408",
+    "Treynor Ratio": "3.731",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$620000.00",
+    "Lowest Capacity Asset": "EOSUSD 2XR",
+    "Portfolio Turnover": "0.14%",
+    "OrderListHash": "cee20f2f45d7bc477160fdff04f468de"
+}
+ </script>
+ <pre class="python">class LargeCapCryptoUniverseAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2020, 1, 1)
@@ -140,7 +324,7 @@
         # Add a Sheduled Event to rebalance the portfolio.
         self.schedule.on(self.date_rules.every_day(), self.time_rules.at(12, 0), self._rebalance)
     
-    def _select_assets(self, data: List[CoinGeckoUniverse]) -> List[Symbol]:
+    def _select_assets(self, data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
         # Select the coins that our brokerage supports and have a quote currency that matches
         # our account currency.
         tradable_coins = [d for d in data if d.coin + self.account_currency in self._market_pairs]
@@ -151,6 +335,8 @@
         ]
 
     def _rebalance(self):
+        if not self._universe.selected:
+            return
         symbols = [symbol for symbol in self._universe.selected if self.securities[symbol].price]
         # Liquidate coins that are no longer in the universe.
         targets = [PortfolioTarget(symbol, 0) for symbol, holding in self.portfolio.items() if holding.invested and symbol not in symbols]
@@ -158,4 +344,35 @@
         targets += [PortfolioTarget(symbol, 0.5/len(symbols)) for symbol in symbols]
         # Place orders to rebalance the portfolio.
         self.set_holdings(targets)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "8",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "67.273%",
+    "Drawdown": "27.900%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "167745.16",
+    "Net Profit": "67.745%",
+    "Sharpe Ratio": "1.52",
+    "Sortino Ratio": "1.666",
+    "Probabilistic Sharpe Ratio": "61.281%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.482",
+    "Beta": "0.135",
+    "Annual Standard Deviation": "0.332",
+    "Annual Variance": "0.11",
+    "Information Ratio": "0.837",
+    "Tracking Error": "0.408",
+    "Treynor Ratio": "3.731",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$620000.00",
+    "Lowest Capacity Asset": "EOSUSD 2XR",
+    "Portfolio Turnover": "0.14%",
+    "OrderListHash": "ea15209c5702b76d54136aecd5f8419a"
+}
+ </script>
 </div>

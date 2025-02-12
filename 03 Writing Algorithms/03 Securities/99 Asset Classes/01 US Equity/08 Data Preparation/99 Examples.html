@@ -1,9 +1,22 @@
-<p>The following examples demonstrate some common practices related to our US Equity data preparation process.</p>
-
-<h4>Example 1: Trading at the Opening Auction</h4>
-<p>The following algorithm creates a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> that places a <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>Market On Open order</a>, which fill at the official opening auction price.</p>
-<div class="section-example-container">
-	<pre class="csharp">public class USEquityDataPreparationExampleAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices related to our US Equity data preparation process.
+</p>
+<h4>
+ Example 1: Trading at the Opening Auction
+</h4>
+<p>
+ The following algorithm creates a
+ <a href="/docs/v2/writing-algorithms/scheduled-events">
+  Scheduled Event
+ </a>
+ that places a
+ <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders">
+  Market On Open order
+ </a>
+ , which fill at the official opening auction price.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class USEquityDataPreparationExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -14,11 +27,42 @@
         Schedule.On(
             DateRules.EveryDay(spy), 
             TimeRules.BeforeMarketOpen(spy, 30), 
-            () => MarketOnOpenOrder(spy, CalculateOrderQuantity(spy, 0.1m))
+            () =&gt; MarketOnOpenOrder(spy, CalculateOrderQuantity(spy, 0.1m))
         );
     }
 }</pre>
-	<pre class="python">class USEquityDataPreparationExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "61",
+    "Average Win": "0.08%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "1.392%",
+    "Drawdown": "2.600%",
+    "Expectancy": "6.008",
+    "Start Equity": "100000",
+    "End Equity": "105802.19",
+    "Net Profit": "5.802%",
+    "Sharpe Ratio": "-1.684",
+    "Sortino Ratio": "-1.941",
+    "Probabilistic Sharpe Ratio": "24.486%",
+    "Loss Rate": "9%",
+    "Win Rate": "91%",
+    "Profit-Loss Ratio": "6.66",
+    "Alpha": "-0.029",
+    "Beta": "0.094",
+    "Annual Standard Deviation": "0.014",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.763",
+    "Tracking Error": "0.124",
+    "Treynor Ratio": "-0.241",
+    "Total Fees": "$61.00",
+    "Estimated Strategy Capacity": "$810000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.02%",
+    "OrderListHash": "f383fafc4194238b7bfc5933376090da"
+}
+ </script>
+ <pre class="python">class USEquityDataPreparationExampleAlgorithm(QCAlgorithm):
     
     def initialize(self): 
         self.set_start_date(2021, 1, 1)
@@ -30,69 +74,169 @@
             self.time_rules.before_market_open(spy, 30), 
             lambda: self.market_on_open_order(spy, self.calculate_order_quantity(spy, 0.1))
         )</pre>
-</div>
-
-<h4>Example 2: Demonstrate Using Tick Flags to Identify Opening Auction Tick</h4>
-<p>This example demonstrates using the tick flags to identify the official opening price on the security primary exchange. All exchanges have an opening auction to determine the market on open price, but only the primary listed exchange is used as the official open price for the asset. The algorithm subscribes to the raw tick data of QQQ ETF and logs the auction price tick data of the asset.</p>
-<div class="section-example-container">
-	<pre class="csharp">private Equity _asset;
-uint officialOpen;
-uint openingPrints;
-
-public override void Initialize()
-{
-    SetStartDate(2021, 7, 1);
-    SetEndDate(2021, 7, 1);
-    // Subscribe to tick data of a security and find the exchange code.
-    _asset = AddEquity("QQQ", Resolution.Tick, extendedMarketHours: true, dataNormalizationMode: DataNormalizationMode.Raw); 
-    // Define flags to help filter opening auctions in the OnData method.
-    officialOpen = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OfficialOpen);
-    openingPrints = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OpeningPrints);
-    // Display exchange code and trade condition flags on the console.
-    Debug($"Search Codes: Ex:{_asset.PrimaryExchange.Code} OO: {officialOpen} OP: {openingPrints}"); 
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "61",
+    "Average Win": "0.08%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "1.392%",
+    "Drawdown": "2.600%",
+    "Expectancy": "6.008",
+    "Start Equity": "100000",
+    "End Equity": "105802.19",
+    "Net Profit": "5.802%",
+    "Sharpe Ratio": "-1.684",
+    "Sortino Ratio": "-1.941",
+    "Probabilistic Sharpe Ratio": "24.486%",
+    "Loss Rate": "9%",
+    "Win Rate": "91%",
+    "Profit-Loss Ratio": "6.66",
+    "Alpha": "-0.029",
+    "Beta": "0.094",
+    "Annual Standard Deviation": "0.014",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.763",
+    "Tracking Error": "0.124",
+    "Treynor Ratio": "-0.241",
+    "Total Fees": "$61.00",
+    "Estimated Strategy Capacity": "$810000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.02%",
+    "OrderListHash": "e6e8d26151a9185ffa469f5af9263f34"
 }
-
-public override void OnData(Slice slice)
+ </script>
+</div>
+<h4>
+ Example 2: Demonstrate Using Tick Flags to Identify Opening Auction Tick
+</h4>
+<p>
+ This example demonstrates using the tick flags to identify the official opening price on the security primary exchange. All exchanges have an opening auction to determine the market on open price, but only the primary listed exchange is used as the official open price for the asset. The algorithm subscribes to the raw tick data of QQQ ETF and logs the auction price tick data of the asset.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class USEquityDataPreparationExampleAlgorithm : QCAlgorithm
 {
-    // Create a list of opening auction tick data.
-    var trades = _asset.Cache.GetAll<Tick>()
-        .Where(x => 
-            x.TickType == TickType.Trade && 
-            x.Price > 0 && 
-            !string.IsNullOrWhiteSpace(x.SaleCondition) && (
-                (x.ParsedSaleCondition == officialOpen || x.ParsedSaleCondition == openingPrints)
-            )
-            );
-    // Log the opening auction tick price
-    foreach(var tick in trades)
+    private Equity _asset;
+    uint officialOpen;
+    uint openingPrints;
+
+    public override void Initialize()
     {
-        Log($"{Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}"); 
+        SetStartDate(2021, 7, 1);
+        SetEndDate(2021, 7, 1);
+        // Subscribe to tick data of a security and find the exchange code.
+        _asset = AddEquity("QQQ", Resolution.Tick, extendedMarketHours: true, dataNormalizationMode: DataNormalizationMode.Raw); 
+        // Define flags to help filter opening auctions in the OnData method.
+        officialOpen = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OfficialOpen);
+        openingPrints = (uint) (TradeConditionFlags.Regular | TradeConditionFlags.OpeningPrints);
+        // Display exchange code and trade condition flags on the console.
+        Debug($"Search Codes: Ex:{_asset.PrimaryExchange.Code} OO: {officialOpen} OP: {openingPrints}"); 
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Create a list of opening auction tick data.
+        var trades = _asset.Cache.GetAll&lt;Tick&gt;()
+            .Where(x =&gt; 
+                x.TickType == TickType.Trade &amp;&amp; 
+                x.Price &gt; 0 &amp;&amp; 
+                !string.IsNullOrWhiteSpace(x.SaleCondition) &amp;&amp; (
+                    (x.ParsedSaleCondition == officialOpen || x.ParsedSaleCondition == openingPrints)
+                )
+                );
+        // Log the opening auction tick price
+        foreach(var tick in trades)
+        {
+            Log($"{Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}"); 
+        }
     }
 }</pre>
-	<pre class="python">def initialize(self):
-    self.set_start_date(2021, 7, 1)
-    self.set_end_date(2021, 7, 1)
-    # Subscribe to tick data of a security and find the exchange code.
-    self._asset = self.add_equity(ticker = "QQQ", resolution = Resolution.TICK, extended_market_hours = True, data_normalization_mode = DataNormalizationMode.RAW)
-    # Define flags to help filter opening auctions in the OnData method.
-    self.officialOpen = TradeConditionFlags.REGULAR | TradeConditionFlags.OFFICIAL_OPEN
-    self.openingPrints = TradeConditionFlags.REGULAR | TradeConditionFlags.OPENING_PRINTS
-    # Display exchange code and trade condition flags on the console.
-    self.debug(f"Search Codes: Ex:{self._asset.primary_exchange.code} OO: {self.officialOpen} OP: {self.openingPrints}")
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class USEquityDataPreparationExampleAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2021, 7, 1)
+        self.set_end_date(2021, 7, 1)
+        # Subscribe to tick data of a security and find the exchange code.
+        self._asset = self.add_equity(ticker = "QQQ", resolution = Resolution.TICK, extended_market_hours = True, data_normalization_mode = DataNormalizationMode.RAW)
+        # Define flags to help filter opening auctions in the OnData method.
+        self.officialOpen = TradeConditionFlags.REGULAR | TradeConditionFlags.OFFICIAL_OPEN
+        self.openingPrints = TradeConditionFlags.REGULAR | TradeConditionFlags.OPENING_PRINTS
+        # Display exchange code and trade condition flags on the console.
+        self.debug(f"Search Codes: Ex:{self._asset.primary_exchange.code} OO: {self.officialOpen} OP: {self.openingPrints}")
 
-def on_data(self, data):
-    # Create a list of opening auction tick data. 
-    trades = [
-        tick for tick in self._asset.cache.get_all[Tick]()
-        if  tick.TickType == TickType.TRADE and
-            tick.Price > 0 and
-            tick.SaleCondition and
-            (
-                tick.ParsedSaleCondition == self.officialOpen or
-                tick.ParsedSaleCondition == self.openingPrints
-            )
-    ]
-    # Log the opening auction tick price
-    for tick in trades:
-        self.log(f"{self.Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}")</pre>
+    def on_data(self, data):
+        # Create a list of opening auction tick data. 
+        trades = [
+            tick for tick in self._asset.cache.get_all[Tick]()
+            if  tick.TickType == TickType.TRADE and
+                tick.Price &gt; 0 and
+                tick.SaleCondition and
+                (
+                    tick.ParsedSaleCondition == self.officialOpen or
+                    tick.ParsedSaleCondition == self.openingPrints
+                )
+        ]
+        # Log the opening auction tick price
+        for tick in trades:
+            self.log(f"{self.Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}")</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>

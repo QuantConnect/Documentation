@@ -1,5 +1,5 @@
 <p>
-    Rho, <script type="math/tex">\rho</script>, is the rate of change of the value of a derivative with respect to the <a href='/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/key-concepts'>interest rate</a>. 
+    Rho, <script type="math/tex">\rho</script>, is the rate of change of the value of a derivative with respect to the <a href='/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/key-concepts'>interest rate</a>. 
     It is usually small and not a big issue in practice unless the Option is deep in-the-money and has a long horizon. 
     In this case, the interest rate matters because you need to discount a larger cash flow over a longer horizon. 
     For more information about rho, see <a href='/learning/articles/introduction-to-options/the-greek-letters#rho'>Rho</a>.
@@ -7,12 +7,17 @@
 
 <h4>Automatic Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "rho";
 $typeName = "Rho";
 $helperMethod = "R";
 include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <p>The follow table describes the arguments that the <code class='csharp'>R</code><code class='python'>r</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/future-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
@@ -42,12 +47,17 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 
 <h4>Manual Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "rho";
 $typeName = "Rho";
 $indicatorPage = "rho";
 include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <h4>Volatility Smoothing</h4>
 <?

@@ -1,9 +1,18 @@
-<p>The following examples demonstrate some common practices for period time modeling.</p>
-
-<h4>Example 1: Tick Signal Daily Security Bar</h4>
-<p>This example shows using a tick/pointwise signal from <a href="/datasets/smart-insider-corporate-buybacks">Smart Insider Intention</a> dataset to buy AAPL in daily resolution. You can count down the holding trade days per each AAPL trade bar received to liquidate the position after 2 trading days.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class PeriodTimeModelingAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for period time modeling.
+</p>
+<h4>
+ Example 1: Tick Signal Daily Security Bar
+</h4>
+<p>
+ This example shows using a tick/pointwise signal from
+ <a href="/datasets/smart-insider-corporate-buybacks">
+  Smart Insider Intention
+ </a>
+ dataset to buy AAPL in daily resolution. You can count down the holding trade days per each AAPL trade bar received to liquidate the position after 2 trading days.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class PeriodTimeModelingAlgorithm : QCAlgorithm
 {
     private Symbol _aapl;
     private Symbol _smartInsiderIntention;
@@ -41,7 +50,38 @@
         }
     }
 }</pre>
-    <pre class="python">class PeriodTimeModelingAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "10",
+    "Average Win": "0.05%",
+    "Average Loss": "-0.02%",
+    "Compounding Annual Return": "0.020%",
+    "Drawdown": "0.000%",
+    "Expectancy": "1.212",
+    "Start Equity": "100000",
+    "End Equity": "100104.20",
+    "Net Profit": "0.104%",
+    "Sharpe Ratio": "-49.224",
+    "Sortino Ratio": "-13.484",
+    "Probabilistic Sharpe Ratio": "1.018%",
+    "Loss Rate": "40%",
+    "Win Rate": "60%",
+    "Profit-Loss Ratio": "2.69",
+    "Alpha": "-0.016",
+    "Beta": "-0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.821",
+    "Tracking Error": "0.155",
+    "Treynor Ratio": "141.405",
+    "Total Fees": "$10.00",
+    "Estimated Strategy Capacity": "$230000000.00",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "0.02%",
+    "OrderListHash": "ac25363db095ae73565215dcc11e3d0c"
+}
+ </script>
+ <pre class="python">class PeriodTimeModelingAlgorithm(QCAlgorithm):
     def initialize(self) :
         self.set_start_date(2016, 2, 1)
         self.set_end_date(2021, 3, 1)
@@ -70,4 +110,35 @@
             # Liquidate the position if 2 days were fully counted down.
             if self.hold_days &lt;= 0:
                 self.liquidate(self.aapl)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "10",
+    "Average Win": "0.05%",
+    "Average Loss": "-0.02%",
+    "Compounding Annual Return": "0.020%",
+    "Drawdown": "0.000%",
+    "Expectancy": "1.212",
+    "Start Equity": "100000",
+    "End Equity": "100104.20",
+    "Net Profit": "0.104%",
+    "Sharpe Ratio": "-49.224",
+    "Sortino Ratio": "-13.484",
+    "Probabilistic Sharpe Ratio": "1.018%",
+    "Loss Rate": "40%",
+    "Win Rate": "60%",
+    "Profit-Loss Ratio": "2.69",
+    "Alpha": "-0.016",
+    "Beta": "-0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.821",
+    "Tracking Error": "0.155",
+    "Treynor Ratio": "141.405",
+    "Total Fees": "$10.00",
+    "Estimated Strategy Capacity": "$230000000.00",
+    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
+    "Portfolio Turnover": "0.02%",
+    "OrderListHash": "16ab10f736042f2cdb5e6f4f4ac9d194"
+}
+ </script>
 </div>

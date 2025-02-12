@@ -1,44 +1,99 @@
-<p>The following backtest verifies the <code class="csharp">ComboLegLimitOrder</code><code class="python">combo_leg_limit_order</code> behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:</p>
-
+<p>
+ The following backtest verifies the
+ <code class="csharp">
+  ComboLegLimitOrder
+ </code>
+ <code class="python">
+  combo_leg_limit_order
+ </code>
+ behavior. The algorithm buys one contract and sells one contract at the same time. The following table shows the two trades in the backtest:
+</p>
 <table class="qc-table table" id="research-nodes-table">
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Value</th>
-            <th>Tag</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>2015-12-24T09:31:00Z</td>
-            <td>GOOG 16011SC00745000</td>
-            <td>16.10</td>
-            <td>2</td>
-            <td>Buy</td>
-            <td>Filled</td>
-            <td>32.20</td>
-            <td>Update #72</td>
-        </tr>
-        <tr>
-            <td>2015-12-24T09:31:00Z</td>
-            <td>GOOG 160115C00747500</td>
-            <td>14.11515</td>
-            <td>-2</td>
-            <td>Sell</td>
-            <td>Filled</td>
-            <td>-28.2303</td>
-            <td>Update #72</td>
-        </tr>
-    </tbody>
+ <thead>
+  <tr>
+   <th>
+    Time
+   </th>
+   <th>
+    Symbol
+   </th>
+   <th>
+    Price
+   </th>
+   <th>
+    Quantity
+   </th>
+   <th>
+    Type
+   </th>
+   <th>
+    Status
+   </th>
+   <th>
+    Value
+   </th>
+   <th>
+    Tag
+   </th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td>
+    2015-12-24T09:31:00Z
+   </td>
+   <td>
+    GOOG 16011SC00745000
+   </td>
+   <td>
+    16.10
+   </td>
+   <td>
+    2
+   </td>
+   <td>
+    Buy
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    32.20
+   </td>
+   <td>
+    Update #72
+   </td>
+  </tr>
+  <tr>
+   <td>
+    2015-12-24T09:31:00Z
+   </td>
+   <td>
+    GOOG 160115C00747500
+   </td>
+   <td>
+    14.11515
+   </td>
+   <td>
+    -2
+   </td>
+   <td>
+    Sell
+   </td>
+   <td>
+    Filled
+   </td>
+   <td>
+    -28.2303
+   </td>
+   <td>
+    Update #72
+   </td>
+  </tr>
+ </tbody>
 </table>
-
 <style>
-#research-nodes-table td:nth-child(3), 
+ #research-nodes-table td:nth-child(3), 
 #research-nodes-table th:nth-child(3), 
 #research-nodes-table td:nth-child(4), 
 #research-nodes-table th:nth-child(4), 
@@ -47,13 +102,18 @@
     text-align: right;
 }
 </style>
-
-<p>On December 24, 2015 at 9:31 AM Eastern Time (ET), the algorithm places a combo leg limit order to buy one GOOG 16011SC00745000 contract and sell two GOOG 160115C00747500 contracts. The limit price of both orders is 99.9% of the respective contract price, which is $16.2837 for GOOG 16011SC00745000 and $14.83515 for GOOG 160115C00747500. The combo order doesn't fill immediately, so the algorithm updates the leg orders at each time step. During the first update, the algorithm sets the quantity of the GOOG 160115C00747500 leg to -2. During each update, the limit price moves $0.01 closer to the market. That is, the limit price of GOOG 16011SC00745000 increases by $0.01 and the limit price of GOOG 160115C00747500 decreases by $0.01. After the 72nd update, the ask low price is below the limit price of the leg to buy GOOG 16011SC00745000 and the bid high price is above the limit price of the leg to sell GOOG 160115C00747500, so the <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#13-Combo-Leg-Limit-Orders'>fill model</a> fills the combo leg limit order at 10:44 AM ET.</p>
-
-<p>To reproduce these results, backtest the following algorithm:</p>
-
-<div class="section-example-container">
-    <pre class="csharp">public class ComboLegLimitOrderAlgorithm : QCAlgorithm
+<p>
+ On December 24, 2015 at 9:31 AM Eastern Time (ET), the algorithm places a combo leg limit order to buy one GOOG 16011SC00745000 contract and sell two GOOG 160115C00747500 contracts. The limit price of both orders is 99.9% of the respective contract price, which is $16.2837 for GOOG 16011SC00745000 and $14.83515 for GOOG 160115C00747500. The combo order doesn't fill immediately, so the algorithm updates the leg orders at each time step. During the first update, the algorithm sets the quantity of the GOOG 160115C00747500 leg to -2. During each update, the limit price moves $0.01 closer to the market. That is, the limit price of GOOG 16011SC00745000 increases by $0.01 and the limit price of GOOG 160115C00747500 decreases by $0.01. After the 72nd update, the ask low price is below the limit price of the leg to buy GOOG 16011SC00745000 and the bid high price is above the limit price of the leg to sell GOOG 160115C00747500, so the
+ <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#13-Combo-Leg-Limit-Orders">
+  fill model
+ </a>
+ fills the combo leg limit order at 10:44 AM ET.
+</p>
+<p>
+ To reproduce these results, backtest the following algorithm:
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class ComboLegLimitOrderAlgorithm : QCAlgorithm
 {
     private List&lt;OrderTicket&gt; _tickets = new();
 
@@ -99,7 +159,7 @@
         }
         else
         {
-            if (Time.Hour == 10 && Time.Minute == 45)
+            if (Time.Hour == 10 &amp;&amp; Time.Minute == 45)
             {
                 Quit();
                 return;
@@ -135,7 +195,40 @@
         }
     }
 }</pre>
-    <pre class="python">class ComboLegLimitOrderAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": "b9595de8cb0299be2045af58aa3e8190"
+}
+ </script>
+ <pre class="python">import itertools
+        
+class ComboLegLimitOrderAlgorithm(QCAlgorithm):
     
     def initialize(self):
         self.set_start_date(2015, 12, 24) 
@@ -192,4 +285,35 @@
     def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
         if orderEvent.status == OrderStatus.FILLED:
             self.log(f"{self.time} -- Order {orderEvent.order_id} filled at {orderEvent.fill_price}")</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "2",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "0",
+    "Tracking Error": "0",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": "ec7cabd97a8f212c4ff14d6034b146d5"
+}
+ </script>
 </div>

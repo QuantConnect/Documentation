@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for trading using historical requests.</p>
-
-<h4>Example 1: Mean-Variance Portfolio</h4>
-<p>The following algorithm constructs a monthly rebalance mean-variance portfolio using the top 20 liquid equities. The position sizing can be optimized by 1-year historical daily return of the universe members.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class HistoricalRequestAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for trading using historical requests.
+</p>
+<h4>
+ Example 1: Mean-Variance Portfolio
+</h4>
+<p>
+ The following algorithm constructs a monthly rebalance mean-variance portfolio using the top 20 liquid equities. The position sizing can be optimized by 1-year historical daily return of the universe members.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class HistoricalRequestAlgorithm : QCAlgorithm
 {
     private Universe _universe;
     private IPortfolioOptimizer _optimizer;
@@ -69,7 +74,38 @@
         return returns;
     }
 }</pre>
-    <pre class="python">from Portfolio.MaximumSharpeRatioPortfolioOptimizer import MaximumSharpeRatioPortfolioOptimizer
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "49",
+    "Average Win": "2.54%",
+    "Average Loss": "-0.56%",
+    "Compounding Annual Return": "103.386%",
+    "Drawdown": "12.800%",
+    "Expectancy": "3.303",
+    "Start Equity": "100000",
+    "End Equity": "142659.54",
+    "Net Profit": "42.660%",
+    "Sharpe Ratio": "3.64",
+    "Sortino Ratio": "3.563",
+    "Probabilistic Sharpe Ratio": "91.776%",
+    "Loss Rate": "22%",
+    "Win Rate": "78%",
+    "Profit-Loss Ratio": "4.53",
+    "Alpha": "0.332",
+    "Beta": "0.619",
+    "Annual Standard Deviation": "0.189",
+    "Annual Variance": "0.036",
+    "Information Ratio": "0.686",
+    "Tracking Error": "0.162",
+    "Treynor Ratio": "1.114",
+    "Total Fees": "$69.51",
+    "Estimated Strategy Capacity": "$14000000.00",
+    "Lowest Capacity Asset": "BABA VU1EHIDJYJXH",
+    "Portfolio Turnover": "4.33%",
+    "OrderListHash": "abe0dcb206450a597c8554e48413e90a"
+}
+ </script>
+ <pre class="python">from Portfolio.MaximumSharpeRatioPortfolioOptimizer import MaximumSharpeRatioPortfolioOptimizer
 
 class HistoricalRequestAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
@@ -104,24 +140,70 @@ class HistoricalRequestAlgorithm(QCAlgorithm):
         # Rebalance the portfolio according to the optimized weights.
         targets = [PortfolioTarget(symbol, size) for symbol, size in zip(symbols, weights)]
         self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "100",
+    "Average Win": "1.25%",
+    "Average Loss": "-0.17%",
+    "Compounding Annual Return": "195.827%",
+    "Drawdown": "11.500%",
+    "Expectancy": "6.547",
+    "Start Equity": "100000",
+    "End Equity": "172081.48",
+    "Net Profit": "72.081%",
+    "Sharpe Ratio": "4.646",
+    "Sortino Ratio": "4.962",
+    "Probabilistic Sharpe Ratio": "95.177%",
+    "Loss Rate": "9%",
+    "Win Rate": "91%",
+    "Profit-Loss Ratio": "7.27",
+    "Alpha": "0.622",
+    "Beta": "1.107",
+    "Annual Standard Deviation": "0.272",
+    "Annual Variance": "0.074",
+    "Information Ratio": "4.346",
+    "Tracking Error": "0.157",
+    "Treynor Ratio": "1.14",
+    "Total Fees": "$134.23",
+    "Estimated Strategy Capacity": "$45000000.00",
+    "Lowest Capacity Asset": "BABA VU1EHIDJYJXH",
+    "Portfolio Turnover": "4.00%",
+    "OrderListHash": "91915abcccc78c26c98feb3a86745f55"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithm</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/HistoryAlgorithm.py" target="_BLANK">
-        HistoryAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/WarmupHistoryAlgorithm.py" target="_BLANK">
-        WarmupHistoryAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/HistoryAlgorithm.cs" target="_BLANK">
-        HistoryAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/WarmupHistoryAlgorithm.cs" target="_BLANK">
-        WarmupHistoryAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
+ <div class="example-legend">
+  Demonstration Algorithm
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/HistoryAlgorithm.py" target="_BLANK">
+  HistoryAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/WarmupHistoryAlgorithm.py" target="_BLANK">
+  WarmupHistoryAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/HistoryAlgorithm.cs" target="_BLANK">
+  HistoryAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/WarmupHistoryAlgorithm.cs" target="_BLANK">
+  WarmupHistoryAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

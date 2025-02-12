@@ -1,13 +1,20 @@
-<p>The following examples demonstrate some common practices for handling Forex data.</p>
-
-<h4>Example 1: Trade the USDJPY Spread</h4>
 <p>
-    USDJPY is a Forex pair where the reserve banks of the base currency and quote currency act at different time, which results in a 12-hour period of seasonal peak volume. 
-    To reduce slippage costs, place orders when bid-ask spread is relatively low.
-    The following algorithm demonstrates how to utilize the <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/minimum'>Minimum indicator</a> to check for a narrow spread.
+ The following examples demonstrate some common practices for handling Forex data.
 </p>
-<div class="section-example-container">
-    <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
+<h4>
+ Example 1: Trade the USDJPY Spread
+</h4>
+<p>
+ USDJPY is a Forex pair where the reserve banks of the base currency and quote currency act at different time, which results in a 12-hour period of seasonal peak volume. 
+    To reduce slippage costs, place orders when bid-ask spread is relatively low.
+    The following algorithm demonstrates how to utilize the
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/minimum">
+  Minimum indicator
+ </a>
+ to check for a narrow spread.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
     private dynamic _forex;
 
@@ -37,7 +44,7 @@
     
         // Trade if the current spread is the lowest bid-ask spread, since it is the most efficient, 
         // liquid price with lowest slippage.
-        if (!Portfolio.Invested && bidAskSpread == _forex.SpreadLow.Current.Value)
+        if (!Portfolio.Invested &amp;&amp; bidAskSpread == _forex.SpreadLow.Current.Value)
         {
             MarketOrder(_forex.Symbol, 1000);
         }
@@ -46,7 +53,38 @@
         Plot("Bid-Ask Spread", "spread", bidAskSpread);
     }
 }</pre>
-    <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "1",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0.015%",
+    "Drawdown": "0.600%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100306.46",
+    "Net Profit": "0.306%",
+    "Sharpe Ratio": "-27.185",
+    "Sortino Ratio": "-33.39",
+    "Probabilistic Sharpe Ratio": "0.000%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.022",
+    "Beta": "0.001",
+    "Annual Standard Deviation": "0.001",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.542",
+    "Tracking Error": "0.153",
+    "Treynor Ratio": "-19.075",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$970000000.00",
+    "Lowest Capacity Asset": "USDJPY 8G",
+    "Portfolio Turnover": "0.00%",
+    "OrderListHash": "4487fb5a3e90a5bb59e1d578e99406f9"
+}
+ </script>
+ <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
         
     def initialize(self) -&gt; None:
         self.set_start_date(2004, 1, 1)
@@ -75,17 +113,26 @@
         # Plot the bid-ask spread to validate the minimum bid-ask spread calculation.
         self.plot("Bid-Ask Spread", "spread", bid_ask_spread)</pre>
 </div>
-
-<h4>Example 2: 5-Minute EURUSD Trend Reversal</h4>
+<h4>
+ Example 2: 5-Minute EURUSD Trend Reversal
+</h4>
 <p>
-    The following algorithm applies a mean reveral strategy to EURUSD.
-    To smooth out the noise of minute resolution data, it <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/count-consolidators#03-Consolidate-Quote-Bars">consolidates the data into 5-minute bars</a> and then calculates their 200-bar <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> (EMA). 
+ The following algorithm applies a mean reveral strategy to EURUSD.
+    To smooth out the noise of minute resolution data, it
+ <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/count-consolidators#03-Consolidate-Quote-Bars">
+  consolidates the data into 5-minute bars
+ </a>
+ and then calculates their 200-bar
+ <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">
+  Exponential Moving Average
+ </a>
+ (EMA). 
     After every time the indicator updates, the algorithm checks for a trading opportuniity.
     When the current EURUSD price is below the EMA, it takes a long position. 
     Otherwise, it takes a short position.
 </p>
-<div class="section-example-container">
-    <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
     private dynamic _forex;
 
@@ -121,10 +168,41 @@
             return;
         }
         // Rebalance the portfolio. If the current price is below the EMA, long. Otherwise, short.
-        SetHoldings(_forex.Symbol, _forex.Price <= point.Value ? 0.5m : -0.5m);
+        SetHoldings(_forex.Symbol, _forex.Price &lt;= point.Value ? 0.5m : -0.5m);
     }
 }</pre>
-    <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "175",
+    "Average Win": "0.45%",
+    "Average Loss": "-0.30%",
+    "Compounding Annual Return": "11.302%",
+    "Drawdown": "5.100%",
+    "Expectancy": "0.463",
+    "Start Equity": "100000.00",
+    "End Equity": "123906.65",
+    "Net Profit": "23.907%",
+    "Sharpe Ratio": "0.815",
+    "Sortino Ratio": "1.046",
+    "Probabilistic Sharpe Ratio": "58.139%",
+    "Loss Rate": "42%",
+    "Win Rate": "58%",
+    "Profit-Loss Ratio": "1.53",
+    "Alpha": "0.057",
+    "Beta": "0.002",
+    "Annual Standard Deviation": "0.07",
+    "Annual Variance": "0.005",
+    "Information Ratio": "-0.417",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "29.078",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$17000000.00",
+    "Lowest Capacity Asset": "EURUSD 8G",
+    "Portfolio Turnover": "22.19%",
+    "OrderListHash": "bbf3adbee13e7132ad5ce90e7fdc317f"
+}
+ </script>
+ <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
         
     def initialize(self) -&gt; None:
         self.set_start_date(2003, 1, 1)
@@ -146,21 +224,53 @@
         # Subscribe the consolidator for automatic updates.
         self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
     
-    def on_updated(self, sender: object, point: IndicatorDataPoint) -> None:
+    def on_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
         # Wait until the indicator is ready.
         if not self._forex.ema.is_ready:
             return
         # Rebalance the portfolio. If the current price is below the EMA, long. Otherwise, short.
-        self.set_holdings(self._forex.symbol, 0.5 if self._forex.price <= point.value else -0.5)</pre>
+        self.set_holdings(self._forex.symbol, 0.5 if self._forex.price &lt;= point.value else -0.5)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "175",
+    "Average Win": "0.45%",
+    "Average Loss": "-0.30%",
+    "Compounding Annual Return": "11.302%",
+    "Drawdown": "5.100%",
+    "Expectancy": "0.463",
+    "Start Equity": "100000.00",
+    "End Equity": "123906.65",
+    "Net Profit": "23.907%",
+    "Sharpe Ratio": "0.815",
+    "Sortino Ratio": "1.046",
+    "Probabilistic Sharpe Ratio": "58.139%",
+    "Loss Rate": "42%",
+    "Win Rate": "58%",
+    "Profit-Loss Ratio": "1.53",
+    "Alpha": "0.057",
+    "Beta": "0.002",
+    "Annual Standard Deviation": "0.07",
+    "Annual Variance": "0.005",
+    "Information Ratio": "-0.417",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "29.078",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$17000000.00",
+    "Lowest Capacity Asset": "EURUSD 8G",
+    "Portfolio Turnover": "22.19%",
+    "OrderListHash": "4046cf8046464e814f854895406184ae"
+}
+ </script>
 </div>
-
-<h4>Example 3: New York Time Alignment</h4>
+<h4>
+ Example 3: New York Time Alignment
+</h4>
 <p>
-    The following algorithm creates daily Forex bars that close at 4:30 PM Eastern Time (ET). 
+ The following algorithm creates daily Forex bars that close at 4:30 PM Eastern Time (ET). 
     This technique is helpful when you want to align the daily bars with the close of the New York.
 </p>
-<div class="section-example-container">
-    <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
+<div class="section-example-container testable">
+ <pre class="csharp">public class ForexExampleAlgorithm : QCAlgorithm
 {
     private Symbol _forex;
 
@@ -171,17 +281,17 @@
         // Create a daily bar consolidator with a custom period (4:30 PM-4:30 PM Eastern Time).
         var consolidator = new QuoteBarConsolidator(ConsolidationPeriod);
         // Attach a consolidation handler to plot the consolidated bars.
-        consolidator.DataConsolidated += (_, bar) => Plot("Consolidated Bar", "Close", bar.Close);
+        consolidator.DataConsolidated += (_, bar) =&gt; Plot("Consolidated Bar", "Close", bar.Close);
         // Subscribe the consolidator for automatic updates.
         SubscriptionManager.AddConsolidator(_forex, consolidator);
     }
     
-    private CalendarInfo _ConsolidationPeriod(DateTime dt)
+    private CalendarInfo ConsolidationPeriod(DateTime dt)
     {
         // Set the start time to be 4:30 PM of the previous day.
         var start = dt.Date.AddHours(16).AddMinutes(30);
         var period = TimeSpan.FromDays(1);
-        if (dt.Hour < 17)
+        if (dt.Hour &lt; 17)
         {
             start = start - period;
         }
@@ -189,7 +299,38 @@
         return new CalendarInfo(start, period);
     }
 }</pre>
-    <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class ForexExampleAlgorithm(QCAlgorithm):
         
     def initialize(self) -&gt; None:
         # Add EURUSD minute data.
@@ -201,12 +342,43 @@
         # Subscribe the consolidator for automatic updates.
         self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
     
-    def _consolidation_period(self, dt: datetime) -> CalendarInfo:
+    def _consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
         # Set the start time to be 4:30 PM of the previous day.
         start = dt.replace(hour=16, minute=30, second=0, microsecond=0)
         period = timedelta(1)
-        if dt.hour < 17:
+        if dt.hour &lt; 17:
             start -= period
         # Set the period to 1 day to make daily bars.
         return CalendarInfo(start, period)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
 </div>

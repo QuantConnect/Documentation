@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for implementing custom indicators.</p>
-
-<h4>Example 1: Custom Money Flow Index</h4>
-<p>The following algorithm implements a custom Money Flow Index indicator. We estimate the supply-demand balance of SPY and trade using the average money flow direction.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for implementing custom indicators.
+</p>
+<h4>
+ Example 1: Custom Money Flow Index
+</h4>
+<p>
+ The following algorithm implements a custom Money Flow Index indicator. We estimate the supply-demand balance of SPY and trade using the average money flow direction.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private CustomMoneyFlowIndex _customMfi;
@@ -86,7 +91,38 @@
         }
     }
 }</pre>
-    <pre class="python">from collections import deque 
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "4288",
+    "Average Win": "0.01%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "22.928%",
+    "Drawdown": "12.300%",
+    "Expectancy": "0.639",
+    "Start Equity": "100000",
+    "End Equity": "108953.58",
+    "Net Profit": "8.954%",
+    "Sharpe Ratio": "0.859",
+    "Sortino Ratio": "1.305",
+    "Probabilistic Sharpe Ratio": "44.203%",
+    "Loss Rate": "31%",
+    "Win Rate": "69%",
+    "Profit-Loss Ratio": "1.37",
+    "Alpha": "-0.031",
+    "Beta": "-0.998",
+    "Annual Standard Deviation": "0.201",
+    "Annual Variance": "0.04",
+    "Information Ratio": "0.936",
+    "Tracking Error": "0.401",
+    "Treynor Ratio": "-0.173",
+    "Total Fees": "$4287.05",
+    "Estimated Strategy Capacity": "$8900000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "13.12%",
+    "OrderListHash": "3f16c31dffff17c3710a6de33068366c"
+}
+ </script>
+ <pre class="python">from collections import deque 
 
 class CustomIndicatorsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
@@ -150,12 +186,46 @@ class CustomMoneyFlowIndex(PythonIndicator):
     
         # Set the is_ready property to receive the required bars to fill all windows.
         return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "4382",
+    "Average Win": "0.01%",
+    "Average Loss": "-0.01%",
+    "Compounding Annual Return": "22.605%",
+    "Drawdown": "12.300%",
+    "Expectancy": "0.611",
+    "Start Equity": "100000",
+    "End Equity": "108834.65",
+    "Net Profit": "8.835%",
+    "Sharpe Ratio": "0.848",
+    "Sortino Ratio": "1.29",
+    "Probabilistic Sharpe Ratio": "43.922%",
+    "Loss Rate": "32%",
+    "Win Rate": "68%",
+    "Profit-Loss Ratio": "1.35",
+    "Alpha": "-0.033",
+    "Beta": "-0.998",
+    "Annual Standard Deviation": "0.201",
+    "Annual Variance": "0.04",
+    "Information Ratio": "0.931",
+    "Tracking Error": "0.402",
+    "Treynor Ratio": "-0.171",
+    "Total Fees": "$4381.09",
+    "Estimated Strategy Capacity": "$9000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "13.05%",
+    "OrderListHash": "d3aa41cbd656a4802f13f5f2b9aed723"
+}
+ </script>
 </div>
-
-<h4>Example 2: Multiple Symbol Custom Indicator</h4>
-<p>The following algorithm implements a custom Cointegration price divergence indicator involving 2 symbols: GOOGL & GOOG. It trades the arbitrage between 2 cointegrated stocks on their price convergence after deviating more than 2 standard deviations.</p>
-<div class="section-example-container">
-    <pre class="csharp">using Accord.Statistics;
+<h4>
+ Example 2: Multiple Symbol Custom Indicator
+</h4>
+<p>
+ The following algorithm implements a custom Cointegration price divergence indicator involving 2 symbols: GOOGL &amp; GOOG. It trades the arbitrage between 2 cointegrated stocks on their price convergence after deviating more than 2 standard deviations.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">using Accord.Statistics;
 using MathNet.Numerics.LinearRegression;
 
 public class CombiningIndicatorsAlgorithm : QCAlgorithm
@@ -335,7 +405,7 @@ public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicator
         var lagged = new double[n - 1];
         var differences = new double[n - 1];
 
-        // Fit linear regression for the residual series on unit root: ΔY_t = α + βY_{t-1} + ε_t.
+        // Fit linear regression for the residual series on unit root: &Delta;Y_t = &alpha; + &beta;Y_{t-1} + &epsilon;_t.
         for (int i = 1; i &lt; n; i++)
         {
             lagged[i - 1] = series[i - 1];
@@ -355,7 +425,38 @@ public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicator
         return adfStatistic &lt;= critical;
     }
 }</pre>
-    <pre class="python">from sklearn.linear_model import LinearRegression
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "54",
+    "Average Win": "3.27%",
+    "Average Loss": "-3.33%",
+    "Compounding Annual Return": "0.792%",
+    "Drawdown": "1.700%",
+    "Expectancy": "0.061",
+    "Start Equity": "100000",
+    "End Equity": "103207.14",
+    "Net Profit": "3.207%",
+    "Sharpe Ratio": "-0.587",
+    "Sortino Ratio": "-0.645",
+    "Probabilistic Sharpe Ratio": "5.782%",
+    "Loss Rate": "46%",
+    "Win Rate": "54%",
+    "Profit-Loss Ratio": "0.98",
+    "Alpha": "-0.008",
+    "Beta": "-0.003",
+    "Annual Standard Deviation": "0.014",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.544",
+    "Tracking Error": "0.188",
+    "Treynor Ratio": "3.011",
+    "Total Fees": "$179.02",
+    "Estimated Strategy Capacity": "$45000000.00",
+    "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "1.92%",
+    "OrderListHash": "91200ec21a976889b2ee6283ae59b314"
+}
+ </script>
+ <pre class="python">from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.stattools import adfuller
 
 class CustomIndicatorsAlgorithm(QCAlgorithm):
@@ -469,15 +570,52 @@ class Cointegration(PythonIndicator):
         else:
             self._coefficients = [0, 0]
             self._residual_sd = 100000000          # An arbitrarily large number that the class A price will never reach.</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "14",
+    "Average Win": "7.49%",
+    "Average Loss": "-6.32%",
+    "Compounding Annual Return": "0.613%",
+    "Drawdown": "1.500%",
+    "Expectancy": "0.093",
+    "Start Equity": "100000",
+    "End Equity": "102475.09",
+    "Net Profit": "2.475%",
+    "Sharpe Ratio": "-0.74",
+    "Sortino Ratio": "-0.811",
+    "Probabilistic Sharpe Ratio": "3.889%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "1.19",
+    "Alpha": "-0.009",
+    "Beta": "-0.005",
+    "Annual Standard Deviation": "0.013",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.55",
+    "Tracking Error": "0.189",
+    "Treynor Ratio": "1.752",
+    "Total Fees": "$37.99",
+    "Estimated Strategy Capacity": "$45000000.00",
+    "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
+    "Portfolio Turnover": "0.55%",
+    "OrderListHash": "8699fce9543a66b76b8a83d51f99aecf"
+}
+ </script>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomIndicatorAlgorithm.py" target="_BLANK">
-        CustomIndicatorAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>  
-  </div>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomIndicatorAlgorithm.py" target="_BLANK">
+  CustomIndicatorAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+</div>

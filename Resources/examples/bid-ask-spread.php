@@ -4,7 +4,7 @@
     When the spread is greater than the average, it shorts SPY. 
     To save the last spread values, it uses a <code>RollingWindow</code>.
 </p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class RollingWindowAlgorithm : QCAlgorithm
 {
     private Symbol _spy;

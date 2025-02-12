@@ -1,12 +1,13 @@
 <p>
     Delta, <script type="math/tex">\Delta</script>, is the rate of change of the Option price with respect to the price of the underlying asset. 
     It measures the first-order sensitivity of the price to a movement in underlying price. 
-    For example, an Option delta of 0.4 means that if the underlying asset moves by 1%, then the value of the Option moves by 0.4 × 1% = 0.4%.
+    For example, an Option delta of 0.4 means that if the underlying asset moves by 1%, then the value of the Option moves by 0.4 <script type="math/tex">\times</script> 1% = 0.4%.
     For more information about delta, see <a href='/learning/articles/introduction-to-options/the-greek-letters#delta'>Delta</a>.
 </p>
 
 <h4>Automatic Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "delta";
 $typeName = "Delta";
 $helperMethod = "D";
@@ -14,6 +15,10 @@ $helperMethod = "D";
 include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <p>The follow table describes the arguments that the <code class='csharp'>D</code><code class='python'>d</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
@@ -43,6 +48,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 
 <h4>Manual Indicators</h4>
 <?
+// Tag: div section-example-container testable
 $name = "delta";
 $typeName = "Delta";
 $indicatorPage = "delta";
@@ -50,6 +56,10 @@ $indicatorPage = "delta";
 include(DOCS_RESOURCES."/option-indicators/equity.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+<div class="regression-test-results">
+    <script class="csharp-result" type="text"></script>
+    <script class="python-result" type="text"></script>
+</div>
 
 <h4>Volatility Smoothing</h4>
 <?

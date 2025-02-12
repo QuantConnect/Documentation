@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for implementing a custom slippage model.</p>
-
-<h4>Example 1: Volume Ratio Capped Slippage Model</h4>
-<p>The following algorithm trades the microeconomic demand popularity gap between the top 10 and bottom 10 liquid constituents of QQQ. A custom slippage model simulates the slippage on less liquid stock fills. The slippage percent is set to be 2% multiplied by the ratio of the order quantity to the previous minute bar's volume, maximized at 2%.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class RealityModelingSlippageAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for implementing a custom slippage model.
+</p>
+<h4>
+ Example 1: Volume Ratio Capped Slippage Model
+</h4>
+<p>
+ The following algorithm trades the microeconomic demand popularity gap between the top 10 and bottom 10 liquid constituents of QQQ. A custom slippage model simulates the slippage on less liquid stock fills. The slippage percent is set to be 2% multiplied by the ratio of the order quantity to the previous minute bar's volume, maximized at 2%.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class RealityModelingSlippageAlgorithm : QCAlgorithm
 {
     private List&lt;Symbol&gt; _longs = new();
     private List&lt;Symbol&gt; _shorts = new();
@@ -84,7 +89,38 @@
         }
     }
 }</pre>
-    <pre class="python">class RealityModelingSlippageAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "467",
+    "Average Win": "0.22%",
+    "Average Loss": "-0.19%",
+    "Compounding Annual Return": "14.744%",
+    "Drawdown": "7.700%",
+    "Expectancy": "0.201",
+    "Start Equity": "100000",
+    "End Equity": "114729.73",
+    "Net Profit": "14.730%",
+    "Sharpe Ratio": "1.192",
+    "Sortino Ratio": "1.493",
+    "Probabilistic Sharpe Ratio": "57.769%",
+    "Loss Rate": "44%",
+    "Win Rate": "56%",
+    "Profit-Loss Ratio": "1.14",
+    "Alpha": "0.029",
+    "Beta": "0.367",
+    "Annual Standard Deviation": "0.085",
+    "Annual Variance": "0.007",
+    "Information Ratio": "-0.928",
+    "Tracking Error": "0.102",
+    "Treynor Ratio": "0.276",
+    "Total Fees": "$469.76",
+    "Estimated Strategy Capacity": "$4800000.00",
+    "Lowest Capacity Asset": "FOXAV X2S9UGTP4UHX",
+    "Portfolio Turnover": "3.90%",
+    "OrderListHash": ""
+}
+ </script>
+ <pre class="python">class RealityModelingSlippageAlgorithm(QCAlgorithm):
     longs = []
     shorts = []
 
@@ -142,19 +178,26 @@ class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
         # To set the slippage model to the custom one for all stocks entering the universe.
         security.set_slippage_model(CustomSlippageModel())</pre>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div>
-   
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">
-        CustomModelsAlgorithm.py  <span class="badge-python pull-right">Python</span>
-    </a>
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomModelsAlgorithm.cs" target="_BLANK">
-        CustomModelsAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
-    </a>
-    
-  </div>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">
+  CustomModelsAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomModelsAlgorithm.cs" target="_BLANK">
+  CustomModelsAlgorithm.cs
+  <span class="badge badge-sm badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+</div>

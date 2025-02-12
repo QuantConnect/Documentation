@@ -1,9 +1,22 @@
-<p>The following examples demonstrate some common practices for duck typing.</p>
-
-<h4>Example 1: Store EMA Indicator</h4>
-<p>The following example implements a trend-following strategy using the EMA indicator for the top 20 liquid equities. It uses duck typing to store the EMA indicator in each <a href="/docs/v2/writing-algorithms/securities/key-concepts">Security object</a>, so the indicator is discarded together with the <code>Security</code> when it is removed from the universe.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class DuckTypingAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for duck typing.
+</p>
+<h4>
+ Example 1: Store EMA Indicator
+</h4>
+<p>
+ The following example implements a trend-following strategy using the EMA indicator for the top 20 liquid equities. It uses duck typing to store the EMA indicator in each
+ <a href="/docs/v2/writing-algorithms/securities/key-concepts">
+  Security object
+ </a>
+ , so the indicator is discarded together with the
+ <code>
+  Security
+ </code>
+ when it is removed from the universe.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class DuckTypingAlgorithm : QCAlgorithm
 {
     private Universe _universe;
 
@@ -46,7 +59,7 @@
             // Liquidate if it is no longer in the top 50 liquidity stocks.
             Liquidate(removed.Symbol);
             // Release resources that update automatic indicators
-            DeregisterIndicator(removed.Get<ExponentialMovingAverage>("ema"));
+            DeregisterIndicator(removed.Get&lt;ExponentialMovingAverage&gt;("ema"));
         }
         
         foreach (var added in changes.AddedSecurities)
@@ -60,7 +73,38 @@
         }
     }
 }</pre>
-    <pre class="python">class DuckTypingAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "3974",
+    "Average Win": "0.12%",
+    "Average Loss": "-0.02%",
+    "Compounding Annual Return": "14.356%",
+    "Drawdown": "15.300%",
+    "Expectancy": "-0.079",
+    "Start Equity": "100000",
+    "End Equity": "105730.95",
+    "Net Profit": "5.731%",
+    "Sharpe Ratio": "0.479",
+    "Sortino Ratio": "0.6",
+    "Probabilistic Sharpe Ratio": "33.914%",
+    "Loss Rate": "88%",
+    "Win Rate": "12%",
+    "Profit-Loss Ratio": "6.76",
+    "Alpha": "-0.11",
+    "Beta": "-1.234",
+    "Annual Standard Deviation": "0.294",
+    "Annual Variance": "0.087",
+    "Information Ratio": "0.724",
+    "Tracking Error": "0.476",
+    "Treynor Ratio": "-0.114",
+    "Total Fees": "$4153.95",
+    "Estimated Strategy Capacity": "$2300000.00",
+    "Lowest Capacity Asset": "SNAP WIINL6RMFSKL",
+    "Portfolio Turnover": "107.43%",
+    "OrderListHash": "d3040ab00891e09b178aece69284ed1f"
+}
+ </script>
+ <pre class="python">class DuckTypingAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2022, 6, 1)
@@ -96,4 +140,35 @@
             added.ema = self.ema(added.symbol, 60, Resolution.DAILY)
             # Warm up the EMA indicator to ensure its readiness for immediate usage.
             self.warm_up_indicator(added.symbol, added.ema, Resolution.DAILY)</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "3974",
+    "Average Win": "0.12%",
+    "Average Loss": "-0.02%",
+    "Compounding Annual Return": "14.308%",
+    "Drawdown": "15.300%",
+    "Expectancy": "-0.079",
+    "Start Equity": "100000",
+    "End Equity": "105712.27",
+    "Net Profit": "5.712%",
+    "Sharpe Ratio": "0.478",
+    "Sortino Ratio": "0.598",
+    "Probabilistic Sharpe Ratio": "33.887%",
+    "Loss Rate": "88%",
+    "Win Rate": "12%",
+    "Profit-Loss Ratio": "6.76",
+    "Alpha": "-0.111",
+    "Beta": "-1.233",
+    "Annual Standard Deviation": "0.294",
+    "Annual Variance": "0.086",
+    "Information Ratio": "0.723",
+    "Tracking Error": "0.476",
+    "Treynor Ratio": "-0.114",
+    "Total Fees": "$4153.93",
+    "Estimated Strategy Capacity": "$2300000.00",
+    "Lowest Capacity Asset": "SNAP WIINL6RMFSKL",
+    "Portfolio Turnover": "107.41%",
+    "OrderListHash": "68c9b4ba9288df13c86095f954992e35"
+}
+ </script>
 </div>

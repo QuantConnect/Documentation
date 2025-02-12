@@ -1,9 +1,14 @@
-<p>The following examples demonstrate some common practices for consolidator history.</p>
-
-<h4>Example 1: Price Action</h4>
-<p>The following algorithm trades breakout price action on the SPY five-minute trade bar. To do so, we must create a five-minute trade bar consolidator and a rolling window to hold 3 trade bars to check if the trade conditions are fulfilled.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class ConsolidatorHistoryAlgorithm : QCAlgorithm
+<p>
+ The following examples demonstrate some common practices for consolidator history.
+</p>
+<h4>
+ Example 1: Price Action
+</h4>
+<p>
+ The following algorithm trades breakout price action on the SPY five-minute trade bar. To do so, we must create a five-minute trade bar consolidator and a rolling window to hold 3 trade bars to check if the trade conditions are fulfilled.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class ConsolidatorHistoryAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     // To hold 3 consolidated trade bars to identify a breakout pattern.
@@ -69,7 +74,38 @@
         }
     }
 }</pre>
-    <pre class="python">class ConsolidatorHistoryAlgorithm(QCAlgorithm):
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "87",
+    "Average Win": "0.57%",
+    "Average Loss": "-0.40%",
+    "Compounding Annual Return": "9.304%",
+    "Drawdown": "3.000%",
+    "Expectancy": "0.181",
+    "Start Equity": "100000",
+    "End Equity": "102260.44",
+    "Net Profit": "2.260%",
+    "Sharpe Ratio": "0.986",
+    "Sortino Ratio": "1.077",
+    "Probabilistic Sharpe Ratio": "50.155%",
+    "Loss Rate": "52%",
+    "Win Rate": "48%",
+    "Profit-Loss Ratio": "1.44",
+    "Alpha": "-0.074",
+    "Beta": "0.42",
+    "Annual Standard Deviation": "0.052",
+    "Annual Variance": "0.003",
+    "Information Ratio": "-3.565",
+    "Tracking Error": "0.07",
+    "Treynor Ratio": "0.123",
+    "Total Fees": "$56.96",
+    "Estimated Strategy Capacity": "$35000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "29.74%",
+    "OrderListHash": "81e50b5ccf1ee38b8d0d622322a6ef5a"
+}
+ </script>
+ <pre class="python">class ConsolidatorHistoryAlgorithm(QCAlgorithm):
     # To hold 3 consolidated trade bars to identify a breakout pattern.
     windows = RollingWindow[TradeBar](3)
 
@@ -117,4 +153,35 @@
             elif order_event.ticket.order_type == OrderType.STOP_MARKET or order_event.ticket.order_type == OrderType.LIMIT:
                 # Cancel any open order if stop loss or take profit order filled.
                 self.transactions.cancel_open_orders()</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "90",
+    "Average Win": "0.53%",
+    "Average Loss": "-0.39%",
+    "Compounding Annual Return": "7.550%",
+    "Drawdown": "3.000%",
+    "Expectancy": "0.144",
+    "Start Equity": "100000",
+    "End Equity": "101845.60",
+    "Net Profit": "1.846%",
+    "Sharpe Ratio": "0.773",
+    "Sortino Ratio": "0.83",
+    "Probabilistic Sharpe Ratio": "45.422%",
+    "Loss Rate": "51%",
+    "Win Rate": "49%",
+    "Profit-Loss Ratio": "1.36",
+    "Alpha": "-0.083",
+    "Beta": "0.408",
+    "Annual Standard Deviation": "0.051",
+    "Annual Variance": "0.003",
+    "Information Ratio": "-3.658",
+    "Tracking Error": "0.071",
+    "Treynor Ratio": "0.097",
+    "Total Fees": "$59.07",
+    "Estimated Strategy Capacity": "$29000000.00",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "30.82%",
+    "OrderListHash": "404b8a4aa5bf3e6656c3e1fc1a5c64d0"
+}
+ </script>
 </div>
