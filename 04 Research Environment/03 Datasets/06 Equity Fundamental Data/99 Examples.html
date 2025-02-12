@@ -1,0 +1,76 @@
+<p>The following examples demonstrate some common practices for applying the Equity Fundamental Data dataset.</p>
+
+<h4>Example 1: PE Ratio Line Chart</h4>
+<p>The following example studies the trend of PE Ratio of AAPL using a line chart.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types in a separate cell.
+#load "../Initialize.csx"
+
+#load "../QuantConnect.csx"
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Fundamental;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+
+// Import Plotly for plotting.
+#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;
+
+// Create a QuantBook.
+var qb = new QuantBook();
+
+// Request AAPL's fundamental historical data.
+var equity = qb.AddEquity("AAPL");
+var history = qb.History&lt;Fundamental&gt;(
+    equity.Symbol, 
+    start: qb.Time - TimeSpan.FromDays(365),
+    end: qb.Time,
+    resolution: Resolution.Daily
+);
+
+// Select the PE Ratio to study.
+var peRatios = history.Select(x =&gt; x.ValuationRatios.PERatio).ToList();
+var time = history.Select(x =&gt; x.EndTime).ToList();
+
+// Crete the Line Chart with the PE Ratios.
+var chart = Chart2D.Chart.Line&lt;DateTime, double, string&gt;(
+    time,
+    peRatios
+);
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "PE Ratio");
+Title title = Title.init($"PE Ratio by Time of {equity.Symbol}");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Create a QuantBook
+qb = QuantBook()
+
+# Request AAPL's fundamental historical data.
+equity = qb.add_equity("AAPL")
+history = qb.history(
+    Fundamental,
+    equity.symbol, 
+    start=qb.time - timedelta(days=365), 
+    end=qb.time, 
+    resolution=Resolution.DAILY,
+    flatten=True
+)
+    
+# Select the PE Ratio to study.
+pe_ratio = history.loc[equity.symbol].apply(lambda x: x.valuationratios.pe_ratio, axis=1)
+# Plot the PE Ratio line chart.
+pe_ratio.plot(title=f"PE Ratio by Time of {equity.symbol}", ylabel="PE Ratio")</pre>
+</div>

@@ -1,0 +1,113 @@
+<p>The following examples demonstrate some common practices for applying the US Equity dataset.</p>
+
+<h4>Example 1: 5-Minute Candlestick Plot</h4>
+<p>The following example studies the candlestick pattern of the SPY. To study the short term pattern, we consolidate the data into 5 minute bars and plot the 5-minute candlestick plot.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the required assembly files and data types in a separate cell.
+#load "../Initialize.csx"
+
+#load "../QuantConnect.csx"
+using System;
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Market;
+using QuantConnect.Data.Consolidators;
+using QuantConnect.Indicators;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;
+using QuantConnect.Securities;
+
+// Import Plotly for plotting.
+#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;
+
+// Create a QuantBook.
+var qb = new QuantBook();
+
+// Request the SPY historical data.
+var spy = qb.AddEquity("SPY");
+var history = qb.History&lt;TradeBar&gt;(spy.Symbol, 
+    start: qb.Time - TimeSpan.FromDays(182),
+    end: qb.Time,
+    resolution: Resolution.Minute);
+
+// Set up a consolidator and a RollingWindow to save the data
+var consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(5));
+var window = new RollingWindow&lt;TradeBar&gt;(10000);
+
+// Attach a consolidation handler method that saves the consolidated bars in the RollingWindow
+consolidator.DataConsolidated += (sender, consolidated) =&gt;
+{
+    window.Add(consolidated);
+};
+
+// Iterate the historical market data and feed each bar into the consolidator
+foreach(var bar in history)
+{
+    consolidator.Update(bar);
+}
+
+// Crete the Candlestick chart using the 5-minute windows.
+var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+    window.Select(x =&gt; x.Open),
+    window.Select(x =&gt; x.High),
+    window.Select(x =&gt; x.Low),
+    window.Select(x =&gt; x.Close),
+    window.Select(x =&gt; x.EndTime)
+);
+// Create a Layout as the plot settings.
+LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{spy.Symbol} Price");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);
+// Assign the Layout to the chart.
+chart.WithLayout(layout);
+// Display the plot.
+HTML(GenericChart.toChartHTML(chart))</pre>
+    <pre class="python"># Import plotly library for plotting.
+import plotly.graph_objects as go
+
+# Create a QuantBook
+qb = QuantBook()
+
+# Request SPY's historical data.
+spy = qb.add_equity("SPY")
+history = qb.history(spy.symbol, 
+    start=qb.time - timedelta(days=182), 
+    end=qb.time, 
+    resolution=Resolution.MINUTE)
+
+# Drop level 0 index (Symbol index) from the DataFrame
+history = history.droplevel([0])
+
+# Select the required columns to obtain the 5-minute OHLC data.
+history = history[["open", "high", "low", "close"]].resample("5T").agg({
+    "open": "first",
+    "high": "max",
+    "low": "min",
+    "close": "last"
+})
+
+# Crete the Candlestick chart using the 5-minute windows.
+candlestick = go.Candlestick(x=history.index,
+                             open=history['open'],
+                             high=history['high'],
+                             low=history['low'],
+                             close=history['close'])
+# Create a Layout as the plot settings.
+layout = go.Layout(title=go.layout.Title(text=f'{spy.symbol} OHLC'),
+                   xaxis_title='Date',
+                   yaxis_title='Price',
+                   xaxis_rangeslider_visible=False)
+# Create the Figure.
+fig = go.Figure(data=[candlestick], layout=layout)
+# Display the plot.
+fig.show()</pre>
+</div>
