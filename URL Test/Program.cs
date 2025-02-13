@@ -138,6 +138,7 @@ namespace UrlCheck
                                     .Replace("C and Rider", "C# and Rider") // special case
                                     .Replace("mixed mode consolidators", "mixed-mode consolidators") // special case
                                     .Replace("Multi Alpha", "Multi-Alpha") // special case
+                                    .Replace("Self Managed", "Self-Managed") // special case
                                     .Replace("Margin3F", "Margin%3F") // special case
                                     .Replace("Greeks3F", "Greeks%3F") // special case
                                     .Replace("Smile3F", "Smile%3F") // special case
@@ -159,6 +160,7 @@ namespace UrlCheck
                                     .Replace("C and VS Code", "C# and VS Code") // special case
                                     .Replace("C and Rider", "C# and Rider") // special case
                                     .Replace("Multi Alpha", "Multi-Alpha") // special case
+                                    .Replace("Self Managed", "Self-Managed") // special case
                                     .Replace("Margin3F", "Margin%3F") // special case
                                     .Replace("Greeks3F", "Greeks%3F") // special case
                                     .Replace("Smile3F", "Smile%3F") // special case
