@@ -19,7 +19,7 @@ Use the developer sandbox? (live, paper): live</pre>
 </div>
 </li>
 ";
-$dataFeedDetails = "";
+$dataFeedDetails = "<p>In the demo environment, Tradier doesn't offer streaming market data due to exchange restrictions related to delayed data.</p>";
 $supportsIQFeed = true;
 $requiresSubscription = false;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
