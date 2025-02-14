@@ -1,5 +1,6 @@
 <p>
     Instead of using the data from QuantConnect or your brokerage, you can use Theta Data if you're deploying a local project.
+    This page explains our integration with their API and its functionality.
     To use Theta Data, you need to <a href='https://http-docs.thetadata.us/Articles/Getting-Started/Getting-Started.html' rel='nofollow' target='_blank'>install and launch the Theta Terminal</a>.
 </p>
 
