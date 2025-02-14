@@ -12,4 +12,4 @@
 	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-index-option-universe'>US Index Option Universe</a></li>
 </ul>
 
-<p>In cloud deployments, QuantConnect Cloud provides the universe selection dataset.</p>
+<p>In cloud deployments, QuantConnect Cloud provides the universe selection datasets.</p>
