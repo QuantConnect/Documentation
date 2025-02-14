@@ -1,2 +1,6 @@
 <? include(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/tradier.html"); ?>
-<p>The Tradier data feeds are streams of Equity and Option prices directly from Tradier. If you use this data feed and request historical data, the historical data comes from Tradier. If you deploy to the demo environment, Tradier doesn't offer streaming market data due to exchange restrictions related to delayed data, so you must use our data feed.</p>
+<p>
+  The Tradier data provider serves Equity and Option prices directly from <a rel='nofollow' target='_blank' href='https://documentation.tradier.com/brokerage-api/overview/market-data'>Tradier's Market Data API</a>. 
+  This page explains our integration with their API and its functionality. 
+  If you deploy to the demo environment, Tradier doesn't offer streaming market data due to exchange restrictions related to delayed data, so use the <a href='/docs/v2/cloud-platform/datasets/quantconnect'>QuantConnect data provider</a>.
+</p>
