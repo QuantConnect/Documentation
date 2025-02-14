@@ -16,6 +16,7 @@ Use the developer sandbox? (live, paper): </pre>
 ";
 $brokerageName="Tradier";
 $dataProviderName=$brokerageName;
+$dataProviderDetails="<p>In the demo environment, Tradier doesn't offer streaming market data due to exchange restrictions related to delayed data.</p>";
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
