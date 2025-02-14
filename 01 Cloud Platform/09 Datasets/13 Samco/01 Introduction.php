@@ -1,2 +1,5 @@
 <? include(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/samco.html"); ?>
-<p>The Samco data provider streams live asset prices from Samco. If you use this data provider and request historical data, the historical data comes from Samco.</p>
+<p>
+  The Samco data provider serves live asset prices from <a rel='nofollow' target='_blank' href='https://developers.stocknote.com/api/#stocknote-api-documentation'>Samco's Trade API</a>. 
+  This page explains our integration with Polygon and its functionality.
+</p>
