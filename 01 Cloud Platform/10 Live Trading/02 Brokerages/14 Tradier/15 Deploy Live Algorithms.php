@@ -27,7 +27,7 @@ $authentication .= "    <li>Click the <span class='field-name'>Environment</span
         </tr>
     </tbody>
 </table>";
-$dataProviderDetails = "<p>In most cases, we suggest using the <a href='/docs/v2/cloud-platform/datasets'>QuantConnect data provider</a>, the <a href='/docs/v2/cloud-platform/datasets/tradier'>Tradier data provider</a>, or both. The order you set them in the deployment wizard defines their order of precedence in Lean.</p>";
+$dataProviderDetails = "<p>In most cases, we suggest using the <a href='/docs/v2/cloud-platform/datasets'>QuantConnect data provider</a>, the <a href='/docs/v2/cloud-platform/datasets/tradier'>Tradier data provider</a>, or both. The order you set them in the deployment wizard defines their order of precedence in Lean. In the demo environment, Tradier doesn't offer streaming market data due to exchange restrictions related to delayed data.</p>";
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
 ?>
