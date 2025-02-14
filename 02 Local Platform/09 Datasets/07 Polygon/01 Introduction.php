@@ -1,7 +1,7 @@
 <? include(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/polygon.html"); ?>
 
 <p>
-  The Polygon data provider serves live asset prices from Polygon. 
+  The Polygon data provider serves asset prices from Polygon. 
   This page explains our integration with their API and its functionality.
 </p>
 
