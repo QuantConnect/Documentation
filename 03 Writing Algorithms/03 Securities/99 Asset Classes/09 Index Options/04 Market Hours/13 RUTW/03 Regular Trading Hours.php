@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/indexoption/usa/RUTW/regular-trading-hours.html"); ?>

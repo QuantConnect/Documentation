@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/COR30D/regular-trading-hours.html"); ?>

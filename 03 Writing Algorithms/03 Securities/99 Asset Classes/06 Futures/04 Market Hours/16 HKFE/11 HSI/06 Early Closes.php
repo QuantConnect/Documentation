@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/hkfe/HSI/early-closes.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/no-early-closes.html"); ?>
