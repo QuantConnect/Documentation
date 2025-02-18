@@ -14,7 +14,7 @@
     <tbody>
         <tr>
             <td><code>Alpaca</code></td>
-            <td>N/A</td>
+            <td><code>--alpaca-environment</code></td>
         </tr>
         
         <tr>
