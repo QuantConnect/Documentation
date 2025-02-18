@@ -291,9 +291,7 @@ for key, entry in entries.items():
             backup = sorted_assets['Equity']['usa']['[*]']            
         if key == 'Option-india-[*]':
             backup = sorted_assets['Equity']['india']['[*]']
-        if key.startswith('IndexOption-usa'):
-            backup = sorted_assets['Index']['usa'][tmp[2]]
-        if backup:
+        if backup and MARKET_HOUR.HOLIDAY in backup:
             entry[MARKET_HOUR.HOLIDAY] = backup.get(MARKET_HOUR.HOLIDAY).replace(backup.get('fullname'), fullname)
 
     if early_closes:
@@ -315,8 +313,6 @@ for key, entry in entries.items():
             backup = sorted_assets['Equity']['usa']['[*]']            
         if key == 'Option-india-[*]':
             backup = sorted_assets['Equity']['india']['[*]']
-        if key.startswith('IndexOption-usa'):
-            backup = sorted_assets['Index']['usa'][tmp[2]]
         if backup and MARKET_HOUR.EARLY_CLOSE in backup:
             entry[MARKET_HOUR.EARLY_CLOSE] = backup.get(MARKET_HOUR.EARLY_CLOSE).replace(backup.get('fullname'), fullname)
 
@@ -339,8 +335,6 @@ for key, entry in entries.items():
             backup = sorted_assets['Equity']['usa']['[*]']            
         if key == 'Option-india-[*]':
             backup = sorted_assets['Equity']['india']['[*]']
-        if key.startswith('IndexOption-usa'):
-            backup = sorted_assets['Index']['usa'][tmp[2]]
         if backup and MARKET_HOUR.LATE_OPEN in backup:
             entry[MARKET_HOUR.LATE_OPEN] = backup.get(MARKET_HOUR.LATE_OPEN).replace(backup.get('fullname'), fullname)
 
