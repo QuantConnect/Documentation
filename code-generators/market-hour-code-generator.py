@@ -167,6 +167,7 @@ def __write_content(exchange, entries):
 # Get contract name from symbol
 contracts_real = {
     'SPX': 'S&P 500 Index',
+    'RUT': 'Russell 2000 Index',
     'NDX': 'Nasdaq 100 Index',
     'VIX': 'CBOE Volatility Index',
     'HSI': 'Hang Seng Index'
@@ -182,8 +183,10 @@ raw_dict = get_json_content(MHDB)
 entries = raw_dict["entries"]
 sorted_assets = {}
 
+SKIP = ["IndexOption-usa-RUTW", "IndexOption-usa-SPXW"]
 for key, entry in entries.items():
-
+    if key in SKIP:
+        continue
     exceptions = ['base','crypto','index-india','option-india-','fxcm','spxw']
     if any([x in key.lower() for x in exceptions]):
         continue
@@ -231,10 +234,10 @@ for key, entry in entries.items():
         'equity-india': '99 India Equity/05 Market Hours',
         'option-usa': '02 Equity Options/04 Market Hours',
         'forex-oanda': '05 Forex/04 Market Hours',
-        'index-usa': '08 Index/04 Market Hours',
+        'index-usa': '08 Index/04 Market Hours/01 USA',
         'index-eurex': '08 Index/04 Market Hours/98 EUREX',
         'index-hkfe': '08 Index/04 Market Hours/99 HKFE',
-        'indexoption-usa': '09 Index Options/04 Market Hours',
+        'indexoption-usa': '09 Index Options/04 Market Hours/01 USA',
         'cfd-interactivebrokers': '10 CFD/04 Market Hours/01 Interactive Brokers',
         'cfd-oanda': '10 CFD/04 Market Hours/02 Oanda',
     }.get('-'.join(tmp[0:2]).lower(), '06 Futures/04 Market Hours')

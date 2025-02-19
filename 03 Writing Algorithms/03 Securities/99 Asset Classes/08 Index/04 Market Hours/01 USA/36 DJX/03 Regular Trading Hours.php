@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/DJX/regular-trading-hours.html"); ?>
