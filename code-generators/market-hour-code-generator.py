@@ -18,12 +18,12 @@ def to_url(parts):
     return '/'.join(['-'.join(x.split(' ')[1:]).lower() for x in parts])
 
 def __generate_metadata(entry):
-    description = entry[MARKET_HOUR.INTRODUCTION][3:-4]
+    description = entry[MARKET_HOUR.INTRODUCTION][3:-4].strip()
     end = description.find('\n') - 4
     if end > 0:
         description = description[:end]
     target = entry['target'].parts
-    site_name = target[-1][3:]
+    site_name = target[-1][3:].strip()
     metadata = {
     "type": "metadata",
     "values": {
@@ -165,19 +165,21 @@ def __write_content(exchange, entries):
             fp.write(f'<?php include(DOCS_RESOURCES."/{path}/assets-with-other-hours.html"); ?>')
 
 # Get contract name from symbol
-contracts_real = {
+contracts_real = {}
+for line in get_text_content(SPDB).split('\n'):
+    csv = line.split(',')
+    if len(csv) < 4 or csv[0].startswith('market') or csv[2] == "[*]": continue
+    i = 0 if csv[1].lower() == 'forex' else 3
+    if csv[i].strip():
+        contracts_real[csv[1]] = csv[i].strip()
+contracts_real.update({
+    '[*]' : 'generic',
     'SPX': 'S&P 500 Index',
     'RUT': 'Russell 2000 Index',
     'NDX': 'Nasdaq 100 Index',
     'VIX': 'CBOE Volatility Index',
     'HSI': 'Hang Seng Index'
-    }
-for line in get_text_content(SPDB).split('\n'):
-    csv = line.split(',')
-    if len(csv) < 4 or csv[0].startswith('market') or csv[2] == "[*]": continue
-    i = 0 if csv[1].lower() == 'forex' else 3
-    contracts_real[csv[1]] = csv[i].strip()
-contracts_real["[*]"] = "generic"
+    })
 
 raw_dict = get_json_content(MHDB)
 entries = raw_dict["entries"]
@@ -195,7 +197,7 @@ for key, entry in entries.items():
     
     entry = sorted_assets.setdefault(tmp[0], {}).setdefault(tmp[1], {}).setdefault(tmp[-1], entry)
 
-    name = contracts_real.get(tmp[-1], tmp[-1])
+    name = contracts_real.get(tmp[-1], tmp[-1]).strip()
     fullname = {
         'Cfd-interactivebrokers-[*]': 'CFD',
         'Cfd-oanda-[*]': 'CFD',
@@ -221,6 +223,7 @@ for key, entry in entries.items():
     if tmp[0::2] == ["Future","[*]"]:
         fullname = f'{tmp[1].upper()} {asset_class}'
 
+    fullname = fullname.strip()
     entry['name'] = name
     entry['fullname'] = fullname
 
