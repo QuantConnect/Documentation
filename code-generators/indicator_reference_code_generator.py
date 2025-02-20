@@ -147,7 +147,7 @@ def Generate_Indicators_Reference():
                 return v
             
         key = ' '.join(re.findall('[a-zA-Z][^A-Z]*', base_type.split('.')[-1].split('`')[0]))
-        base = indicators.get(key, get_type(base_type, "csharp"))
+        base = indicators.get(key, get_type(base_type.split('`')[0], "csharp"))
         if base['base-type-full-name'] is None:
             return types["Indicator"]
         
