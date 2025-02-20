@@ -1,0 +1,17 @@
+<p>To get the current Upcoming IPOs data, call the <code class="csharp">Get&lt;EODHDUpcomingIPOs&gt;</code><code class="python">get(EODHDUpcomingIPOs)</code> method from the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a>. Then, iterate through all of the dataset objects in the current <code>Slice</code></p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for equity_symbol, upcomings_ipos_data_point in slice.get(EODHDUpcomingIPOs).items():
+        self.log(f"{equity_symbol} will start IPO at {upcomings_ipos_data_point.ipo_date} with price {upcomings_ipos_data_point.offer_price} and {upcomings_ipos_data_point.shares} shares")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;EODHDUpcomingIPOs&gt;())
+    {
+        var equitySymbol = kvp.Key;
+        var upcomingIPOsDataPoint = kvp.Value;
+        Log($"{equitySymbol} will start IPO at {upcomingIPOsDataPoint.IPODate} with price {upcomingIPOsDataPoint.OfferPrice} and {upcomingIPOsDataPoint.Shares} shares");
+    }
+}</pre>
+</div>

@@ -1,0 +1,29 @@
+<p>To select a dynamic universe of US Equities based on the Upcoming IPOs dataset, call the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method with a <code>EODHDUpcomingIPOs</code> cast.</p>
+
+<div class="section-example-container">
+<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True
+    self._universe = self.add_universe(EODHDUpcomingIPOs, self.universe_selection_filter)
+
+def universe_selection_filter(self, ipos: List[EODHDUpcomingIPOs]) -&gt; List[Symbol]:
+    # confirmed non-penny stock IPO that launches within 7 days.
+    return [d.symbol for d in ipos if d.deal_type in [DealType.EXPECTED, DealType.PRICED] and d.ipo_date and min(x for x in [d.lowest_price, d.highest_price, d.offer_price] if x) &gt; 1]</pre>
+<pre class="csharp">private static readonly List&lt;DealType&gt; _dealTypesWanted = new { DealType.Expected, DealType.Priced };
+
+public override void Initialize()
+{
+    UniverseSettings.Asynchronous = True;
+    _universe = AddUniverse&lt;EODHDUpcomingIPOs&gt;(UniverseSelectionFilter);
+}
+
+private IEnumerable&lt;Symol&gt; UniverseSelectionFilter(IEnumerable&lt;EODHDUpcomingIPOs&gt; ipos)
+{
+    // confirmed non-penny stock IPO that launches within 7 days.
+    return from d in ipos
+           where _dealTypesWanted.Contains(d.DealType) &amp;&amp;
+               d.IpoDate.HasValue &amp;&amp;
+               new[] { d.LowestPrice, d.HighestPrice, d.OfferPrice }.Where(x =&gt; x.HasValue).Min().Value &gt; 1
+           select d.Symbol;
+}</pre>
+</div>
+<p>For more information about universe settings, see <a href="/docs/v2/writing-algorithms/universes/settings">Settings</a>.</p>
