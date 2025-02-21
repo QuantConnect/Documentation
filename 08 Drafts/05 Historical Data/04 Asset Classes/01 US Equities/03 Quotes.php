@@ -44,7 +44,100 @@ $dataType = "QuoteBar";
         history = self.history(<?=$dataType?>, symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical quotes for an asset.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>askclose</th>
+      <th>askhigh</th>
+      <th>asklow</th>
+      <th>askopen</th>
+      <th>...</th>
+      <th>close</th>
+      <th>high</th>
+      <th>low</th>
+      <th>open</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">SPY</th>
+      <th>2024-12-18 15:56:00</th>
+      <td>588.65</td>
+      <td>590.44</td>
+      <td>588.60</td>
+      <td>590.42</td>
+      <td>...</td>
+      <td>588.630</td>
+      <td>590.420</td>
+      <td>588.580</td>
+      <td>590.400</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 15:57:00</th>
+      <td>588.37</td>
+      <td>588.92</td>
+      <td>588.25</td>
+      <td>588.65</td>
+      <td>...</td>
+      <td>588.355</td>
+      <td>588.905</td>
+      <td>588.245</td>
+      <td>588.630</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 15:58:00</th>
+      <td>588.13</td>
+      <td>588.50</td>
+      <td>588.08</td>
+      <td>588.37</td>
+      <td>...</td>
+      <td>588.120</td>
+      <td>588.485</td>
+      <td>588.070</td>
+      <td>588.355</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 15:59:00</th>
+      <td>587.93</td>
+      <td>588.34</td>
+      <td>587.70</td>
+      <td>588.13</td>
+      <td>...</td>
+      <td>587.925</td>
+      <td>588.325</td>
+      <td>587.690</td>
+      <td>588.120</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 16:00:00</th>
+      <td>586.33</td>
+      <td>587.95</td>
+      <td>585.89</td>
+      <td>587.93</td>
+      <td>...</td>
+      <td>586.315</td>
+      <td>587.940</td>
+      <td>585.885</td>
+      <td>587.925</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Calculate the spread at each minute.
