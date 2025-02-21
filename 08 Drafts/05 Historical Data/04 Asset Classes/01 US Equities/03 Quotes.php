@@ -1,6 +1,5 @@
 <?
 $assetClass = "US Equities";
-$imgLink = "https://cdn.quantconnect.com/i/tu/history-quotebar-dataframe-us-equities.png";
 $resolutionLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#03-Resolutions";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#04-Quotes";
 $dataType = "QuoteBar";
@@ -169,9 +168,8 @@ dtype: float64</pre>
 </div>
 
 <p class='python'>
-  If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
-  Otherwise, LEAN will consume computational resources populating the DataFrame.  
+  Otherwise, LEAN consumes unnecessary computational resources populating the DataFrame.  
   To get a list of <code><?=$dataType?></code> objects instead of a DataFrame, call the <code>history[<?=$dataType?>]</code> method.
 </p>
 
