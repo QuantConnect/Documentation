@@ -25,7 +25,119 @@
         history = self.history(TradeBar, symbol, datetime(2020, 1, 1), datetime(2021, 1, 1), Resolution.DAILY)</pre>
 </div>
 
-<img src='https://cdn.quantconnect.com/i/tu/history-request-date-ranges.png' class='python docs-image' alt='DataFrame of daily OHLCV data for SPY during 2020.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>close</th>
+      <th>high</th>
+      <th>low</th>
+      <th>open</th>
+      <th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="11" valign="top">SPY</th>
+      <th>2020-01-02 16:00:00</th>
+      <td>324.87</td>
+      <td>324.870</td>
+      <td>322.535</td>
+      <td>323.58</td>
+      <td>48912531.0</td>
+    </tr>
+    <tr>
+      <th>2020-01-03 16:00:00</th>
+      <td>322.41</td>
+      <td>323.640</td>
+      <td>321.110</td>
+      <td>321.19</td>
+      <td>60780998.0</td>
+    </tr>
+    <tr>
+      <th>2020-01-06 16:00:00</th>
+      <td>323.64</td>
+      <td>323.730</td>
+      <td>320.360</td>
+      <td>320.44</td>
+      <td>43759922.0</td>
+    </tr>
+    <tr>
+      <th>2020-01-07 16:00:00</th>
+      <td>322.73</td>
+      <td>323.535</td>
+      <td>322.240</td>
+      <td>323.02</td>
+      <td>35212108.0</td>
+    </tr>
+    <tr>
+      <th>2020-01-08 16:00:00</th>
+      <td>324.45</td>
+      <td>325.780</td>
+      <td>322.680</td>
+      <td>322.99</td>
+      <td>57728195.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2020-12-24 13:00:00</th>
+      <td>369.00</td>
+      <td>369.000</td>
+      <td>367.450</td>
+      <td>368.06</td>
+      <td>21624848.0</td>
+    </tr>
+    <tr>
+      <th>2020-12-28 16:00:00</th>
+      <td>372.17</td>
+      <td>372.590</td>
+      <td>371.070</td>
+      <td>371.81</td>
+      <td>32833964.0</td>
+    </tr>
+    <tr>
+      <th>2020-12-29 16:00:00</th>
+      <td>371.46</td>
+      <td>374.000</td>
+      <td>370.830</td>
+      <td>373.85</td>
+      <td>45884792.0</td>
+    </tr>
+    <tr>
+      <th>2020-12-30 16:00:00</th>
+      <td>371.99</td>
+      <td>373.080</td>
+      <td>371.580</td>
+      <td>372.38</td>
+      <td>43472434.0</td>
+    </tr>
+    <tr>
+      <th>2020-12-31 16:00:00</th>
+      <td>373.88</td>
+      <td>374.642</td>
+      <td>371.240</td>
+      <td>371.85</td>
+      <td>55021528.0</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>
   If there is no data for the date range you request, the result is empty.
