@@ -42,7 +42,31 @@ $dataType = "SymbolChangedEvent";
         history = self.history(SymbolChangedEvent, symbol, timedelta(10*365))</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>newsymbol</th>
+      <th>oldsymbol</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>META</th>
+      <th>2022-06-09</th>
+      <td>META</td>
+      <td>FB</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Select the dates of each ticker change.
