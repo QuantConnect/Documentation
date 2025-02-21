@@ -1,48 +1,12 @@
 <?
+$symbolC = "AddCrypto(\"BTCUSD\").Symbol";
+$symbolPy = "self.add_crypto('BTCUSD').symbol";
+$assetClass = "Crypto";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/crypto/handling-data#03-Trades";
 $dataType = "TradeBar";
-?>
-
-<p class='csharp'>
-  To get historical <a href='<?=$dataTypeLink?>'>trade data</a>, call the <code>History&lt;<?=$dataType?>&gt;</code> method with an asset's <code>Symbol</code>.
-</p>
-
-<p class='python'>
-  To get historical <a href='<?=$dataTypeLink?>'>trade data</a>, call the <code>history</code> method with the <code><?=$dataType?></code> type and an asset's <code>Symbol</code>.
-  This method returns a DataFrame with columns for the open, high, low, close, and volume.
-</p>
-
-<div class="section-example-container">
-    <pre class="csharp">public class CryptoTradeBarHistoryAlgorithm : QCAlgorithm
-{
-    public override void Initialize()
-    {
-        SetStartDate(2024, 12, 19);
-        // Get the Symbol of an asset.
-        var symbol = AddCrypto("BTCUSD").Symbol;
-        // Get the 5 trailing daily <?=$dataType?> objects of the asset. 
-        var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Daily);
-        // Iterate through each TradeBar and calculate its dollar volume.
-        foreach (var bar in history)
-        {
-            var t = bar.EndTime;
-            var dollarVolume = bar.Close * bar.Volume;
-        }
-    }
-}</pre>
-    <pre class="python">class CryptoTradeBarHistoryAlgorithm(QCAlgorithm):
-
-    def initialize(self) -> None:
-        self.set_start_date(2024, 12, 19)
-        # Get the Symbol of an asset.
-        symbol = self.add_crypto('BTCUSD').symbol
-        # Get the 5 trailing daily <?=$dataType?> objects of the asset in DataFrame format. 
-        history = self.history(<?=$dataType?>, symbol, 5, Resolution.DAILY)</pre>
-</div>
-
-<table border="1" class="dataframe python">
+$dataFrame = "<table border='1' class='dataframe python'>
   <thead>
-    <tr style="text-align: right;">
+    <tr style='text-align: right;'>
       <th></th>
       <th></th>
       <th>close</th>
@@ -63,7 +27,7 @@ $dataType = "TradeBar";
   </thead>
   <tbody>
     <tr>
-      <th rowspan="5" valign="top">BTCUSD</th>
+      <th rowspan='5' valign='top'>BTCUSD</th>
       <th>2024-12-15</th>
       <td>101399.99</td>
       <td>102650.00</td>
@@ -104,33 +68,14 @@ $dataType = "TradeBar";
       <td>21659.470502</td>
     </tr>
   </tbody>
-</table>
+</table>";
 
-<div class="python section-example-container">
-    <pre class="python"># Calculate the daily returns.
-daily_returns = history.close.pct_change().iloc[1:]</pre>
-</div>
-
-<div class="python section-example-container">
-    <pre>symbol  time      
+$series = "symbol  time      
 BTCUSD  2024-12-16    0.029979
         2024-12-17    0.015894
         2024-12-18    0.000473
         2024-12-19   -0.056517
-Name: close, dtype: float64</pre>
-</div>
+Name: close, dtype: float64";
 
-
-<p class='python'>
-  If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
-  Otherwise, LEAN consumes unnecessary computational resources populating the DataFrame.  
-  To get a list of <code><?=$dataType?></code> objects instead of a DataFrame, call the <code>history[<?=$dataType?>]</code> method.
-</p>
-
-<div class="python section-example-container">
-    <pre class="python"># Get the 5 trailing daily <?=$dataType?> objects of an asset in <?=$dataType?> format. 
-history = self.history[<?=$dataType?>](symbol, 5, Resolution.DAILY)
-# Iterate through the TradeBar objects and access their volumes.
-for trade_bar in history:
-    volume = trade_bar.volume</pre>
-</div>
+include(DOCS_RESOURCES."/history/tradebars.php");
+?>
