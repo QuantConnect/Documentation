@@ -111,9 +111,8 @@ roc = history.pct_change().iloc[1:]</pre>
 
 
 <p class='python'>
-  If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
   If you intend to use the data in the DataFrame to create <code><span class='placeholder-text'>alternativeDataClass</span></code> objects, request that the history request returns the data type you need. 
-  Otherwise, LEAN will consume computational resources populating the DataFrame.  
+  Otherwise, LEAN consumes unnecessary computational resources populating the DataFrame.  
   To get a list of dataset objects instead of a DataFrame, call the <code>history[<span class='placeholder-text'>alternativeDataClass</span>]</code> method.
 </p>
 
