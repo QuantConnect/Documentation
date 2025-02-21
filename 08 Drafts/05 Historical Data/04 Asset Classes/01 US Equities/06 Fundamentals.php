@@ -35,7 +35,66 @@
         history = self.history(Fundamental, symbol, 3, Resolution.DAILY)</pre>
 </div>
 
-<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/fundamental-data-history-dataframe.png' alt='DataFrame of the fundamentals of an asset.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>adjustedprice</th>
+      <th>assetclassification</th>
+      <th>companyprofile</th>
+      <th>...</th>
+      <th>valuationratios</th>
+      <th>value</th>
+      <th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">AAPL</th>
+      <th>2024-12-24</th>
+      <td>254.989637</td>
+      <td>QuantConnect.Data.Fundamental.AssetClassification</td>
+      <td>QuantConnect.Data.Fundamental.CompanyProfile</td>
+      <td>...</td>
+      <td>QuantConnect.Data.Fundamental.ValuationRatios</td>
+      <td>255.27</td>
+      <td>33875830</td>
+    </tr>
+    <tr>
+      <th>2024-12-25</th>
+      <td>257.916419</td>
+      <td>QuantConnect.Data.Fundamental.AssetClassification</td>
+      <td>QuantConnect.Data.Fundamental.CompanyProfile</td>
+      <td>...</td>
+      <td>QuantConnect.Data.Fundamental.ValuationRatios</td>
+      <td>258.20</td>
+      <td>19864328</td>
+    </tr>
+    <tr>
+      <th>2024-12-27</th>
+      <td>258.735518</td>
+      <td>QuantConnect.Data.Fundamental.AssetClassification</td>
+      <td>QuantConnect.Data.Fundamental.CompanyProfile</td>
+      <td>...</td>
+      <td>QuantConnect.Data.Fundamental.ValuationRatios</td>
+      <td>259.02</td>
+      <td>24955273</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Get the Current Ratio of each row.
