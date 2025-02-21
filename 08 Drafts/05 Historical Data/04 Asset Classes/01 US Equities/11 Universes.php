@@ -158,7 +158,10 @@ daily_smallest = history.groupby('time').apply(lambda x: x.nsmallest(2, 'weight'
 Name: weight, dtype: float64</pre>
 </div>
 
-<p class='python'>To get the data in the format of the objects that you receive in your universe filter function instead of a DataFrame, use <code>flatten=False</code>.</p>
+<p class='python'>
+  To get the data in the format of the objects that you receive in your universe filter function instead of a DataFrame, use <code>flatten=False</code>.
+  This call returns a Series where the values are lists of the universe data objects.
+</p>
 
 <div class="python section-example-container">
     <pre class="python"># Get the historical universe data over the last 30 days in a Series where
