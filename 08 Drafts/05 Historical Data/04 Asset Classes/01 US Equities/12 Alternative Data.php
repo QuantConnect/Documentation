@@ -177,7 +177,172 @@ for data_point in history:
         )</pre>
   </div>
 
-  <img src='https://cdn.quantconnect.com/i/tu/appl-true-beats-dataframe-history.png' class='python docs-image' alt='DataFrame of ExtractAlphaTrueBeats data for AAPL on 01/02/2024.'>
+  <table border="1" class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>analystestimatescount</th>
+        <th>annual</th>
+        <th>earningsmetric</th>
+        <th>end</th>
+        <th>...</th>
+        <th>quarterly</th>
+        <th>time</th>
+        <th>trendbeat</th>
+        <th>truebeat</th>
+      </tr>
+      <tr>
+        <th>time</th>
+        <th>symbol</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="11" valign="top">2024-01-02 12:30:00</th>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>28</td>
+        <td>False</td>
+        <td>0</td>
+        <td>2023-12-31</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>0.016899</td>
+        <td>0.029352</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>29</td>
+        <td>True</td>
+        <td>0</td>
+        <td>2024-09-30</td>
+        <td>...</td>
+        <td>False</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>-0.020608</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>24</td>
+        <td>False</td>
+        <td>0</td>
+        <td>2024-03-31</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>-0.016578</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>24</td>
+        <td>False</td>
+        <td>0</td>
+        <td>NaT</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>0.011859</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>26</td>
+        <td>False</td>
+        <td>0</td>
+        <td>NaT</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>0.017517</td>
+      </tr>
+      <tr>
+        <th>...</th>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>11</td>
+        <td>False</td>
+        <td>0</td>
+        <td>NaT</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>-0.009165</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>11</td>
+        <td>False</td>
+        <td>0</td>
+        <td>NaT</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>-0.020219</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>11</td>
+        <td>False</td>
+        <td>0</td>
+        <td>NaT</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>-0.042210</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>1</td>
+        <td>False</td>
+        <td>0</td>
+        <td>NaT</td>
+        <td>...</td>
+        <td>True</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>0.000000</td>
+      </tr>
+      <tr>
+        <th>AAPL.ExtractAlphaTrueBeats</th>
+        <td>10</td>
+        <td>True</td>
+        <td>0</td>
+        <td>NaT</td>
+        <td>...</td>
+        <td>False</td>
+        <td>2024-01-02 12:30:00</td>
+        <td>NaN</td>
+        <td>-0.001965</td>
+      </tr>
+    </tbody>
+  </table>
+  
 
   <div class="python section-example-container">
     <pre class="python"># Calculate the mean TrueBeat estimate for each day.
