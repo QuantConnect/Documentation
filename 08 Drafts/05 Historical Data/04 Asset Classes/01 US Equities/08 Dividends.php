@@ -39,7 +39,58 @@ $dataType = "Dividend";
         history = self.history(Dividend, symbol, timedelta(2*365))</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical dividend payments for a stocks.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>distribution</th>
+      <th>referenceprice</th>
+      <th>value</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">AAPL</th>
+      <th>2022-12-23</th>
+      <td>0.17</td>
+      <td>132.23</td>
+      <td>0.17</td>
+    </tr>
+    <tr>
+      <th>2023-02-10</th>
+      <td>0.23</td>
+      <td>150.87</td>
+      <td>0.23</td>
+    </tr>
+    <tr>
+      <th>2023-05-12</th>
+      <td>0.24</td>
+      <td>173.75</td>
+      <td>0.24</td>
+    </tr>
+    <tr>
+      <th>2023-08-11</th>
+      <td>0.24</td>
+      <td>177.97</td>
+      <td>0.24</td>
+    </tr>
+    <tr>
+      <th>2023-11-10</th>
+      <td>0.24</td>
+      <td>182.41</td>
+      <td>0.24</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Calculate the mean dividend payment.
