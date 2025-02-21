@@ -1,52 +1,94 @@
-<p>To get the current US Futures data, index the <code class="csharp">FuturesChains</code><code class="python">futures_chains</code> property of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the canonical Futures <code>Symbol</code>. Slice objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your Future at every time step.</p>
+<p>To get the current US Futures data, index the <code class="csharp">Bars</code><code class="python">bars</code>, <code class="csharp">QuoteBars</code><code class="python">quote_bars</code>, or <code class="csharp">Ticks</code><code class="python">ticks</code> properties of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the Future <code>Symbol</code>. Slice objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your security at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
 
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    # Get future chain of the canonical symbol
-    chain = slice.futures_chains.get(self.future_symbol)
-    if chain:
-        # Iterate each contract in the future chain
-        for contract in chain:
-            self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")
+    # Access data: TradeBar data
+    if self.future_symbol in slice.bars:
+        trade_bar = slice.bars[self.future_symbol]
+        self.log(f"{self.future_symbol} close at {slice.time}: {trade_bar.close}")
+
+    # Access data: QuoteBar data
+    if self.future_symbol in slice.quote_bars:
+        quote_bar = slice.quote_bars[self.future_symbol]
+        self.log(f"{self.future_symbol} bid at {slice.time}: {quote_bar.bid.close}")
+
+    # Access data: Ticks data
+    if self.future_symbol in slice.ticks:
+        ticks = slice.ticks[self.future_symbol]
+        for tick in ticks:
+            self.log(f"{self.future_symbol} price at {slice.time}: {tick.price}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    // Access data: TradeBar data
+    if (slice.Bars.TryGetValue(_futureSymbol, out var tradeBar))
+    {
+        Log($"{_futureSymbol} price at {slice.Time}: {tradeBar.Close}");
+    }
+
+    // Access data: QuoteBar data
+    if (slice.QuoteBars.TryGetValue(_futureSymbol, out var quoteBar))
+    {
+        Log($"{_futureSymbol} bid at {slice.Time}: {quoteBar.Bid.Close}");
+    }
+
+    // Access data: Ticks data
+    if (slice.Ticks.TryGetValue(_futureSymbol, out var ticks))
+    {
+        foreach (var tick in ticks)
+        {
+            Log($"{_futureSymbol} price at {slice.Time}: {tick.Price}");
+        }
+    }
+}
 </pre>
-
-
-<pre class="csharp">public override void OnData(Slice slice)
-{
-    // Get future chain of the canonical symbol
-    if (slice.FuturesChains.TryGetValue(_futureSymbol, out var chain))
-    {
-        // Iterate each contract in the future chain
-        foreach (var contract in chain)
-        {
-            Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
-        }
-    }
-}</pre>
 </div>
 
-<p>You can also iterate through all of the <code>FuturesChain</code> objects in the current <code>Slice</code>.</p>
+<p>You can also iterate through all of the data objects in the current <code>Slice</code>.</p>
+
 <div class="section-example-container">
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    # Iterate all future chains
-    for canonical_symbol, chain in slice.futures_chains.items():
-        # Iterate each contract in the future chain
-        for contract in chain:
-            self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")</pre>
+    # Iterate all TradeBar received
+    for symbol, trade_bar in slice.bars.items():
+        self.log(f"{symbol} close at {slice.time}: {trade_bar.close}")
+
+    # Iterate all QuoteBar received
+    for symbol, quote_bar in slice.quote_bars.items():
+        self.log(f"{symbol} bid at {slice.time}: {quote_bar.bid.close}")
+
+    # Iterate all Ticks received
+    for symbol, ticks in slice.ticks.items():
+        for tick in ticks:
+            self.log(f"{symbol} price at {slice.time}: {tick.price}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
-    // Iterate all future chains
-    foreach (var kvp in slice.FuturesChains)
+    // Iterate all TradeBar received
+    foreach (var kvp in slice.Bars)
     {
-        var canonicalSymbol = kvp.Key;
-        var chain = kvp.Value;
-        // Iterate each contract in the future chain
-        foreach (var contract in chain)
+        var symbol = kvp.Key;
+        var tradeBar = kvp.Value;
+        Log($"{symbol} price at {slice.Time}: {tradeBar.Close}");
+    }
+
+    // Iterate all QuoteBar received
+    foreach (var kvp in slice.QuoteBars)
+    {
+        var symbol = kvp.Key;
+        var quoteBar = kvp.Value;
+        Log($"{symbol} bid at {slice.Time}: {quoteBar.Bid.Close}");
+    }
+
+    // Iterate all Ticks received
+    foreach (var kvp in slice.Ticks)
+    {
+        var symbol = kvp.Key;
+        var ticks = kvp.Value;
+        foreach (var tick in ticks)
         {
-            Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
+            Log($"{symbol} price at {slice.Time}: {tick.Price}");
         }
     }
-}</pre>
+}
+</pre>
 </div>
 
-<p>For more information about accessing Futures data, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data">Handling Data</a>.</p>
+<p>For more information about accessing US Futures data, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data">Handling Data</a>.</p>
