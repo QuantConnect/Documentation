@@ -45,7 +45,41 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-universe-dataframe-
         history = self.history(universe, timedelta(5))</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of universe data for a custom dataset.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>symbols</th>
+    </tr>
+    <tr>
+      <th>time</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2017-07-05</th>
+      <td>[SPY, QQQ, FB, AAPL, IWM]</td>
+    </tr>
+    <tr>
+      <th>2017-07-06</th>
+      <td>[SPY, QQQ, FB, AAPL, IWM]</td>
+    </tr>
+    <tr>
+      <th>2017-07-07</th>
+      <td>[QQQ, AAPL, IWM, FB, GOOGL]</td>
+    </tr>
+    <tr>
+      <th>2017-07-08</th>
+      <td>[IWM, AAPL, FB, BAC, GOOGL]</td>
+    </tr>
+    <tr>
+      <th>2017-07-09</th>
+      <td>[AAPL, FB, GOOGL, GOOG, BAC]</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Count the number of assets in the universe each day.
