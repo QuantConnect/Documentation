@@ -1,6 +1,5 @@
 <?
 $datasetClass = "Fred";
-$imgLink = "https://cdn.quantconnect.com/i/tu/fred-dataframe-history.png";
 ?>
 
 <p class='csharp'>
@@ -40,14 +39,76 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/fred-dataframe-history.png";
         history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>value</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="4" valign="top">RVXCLS.Fred</th>
+      <th>2024-12-17</th>
+      <td>23.02</td>
+    </tr>
+    <tr>
+      <th>2024-12-18</th>
+      <td>24.01</td>
+    </tr>
+    <tr>
+      <th>2024-12-19</th>
+      <td>32.76</td>
+    </tr>
+    <tr>
+      <th>2024-12-20</th>
+      <td>29.90</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Calculate the dataset's rate of change.
 roc = history.pct_change().iloc[1:]</pre>
 </div>
 
-<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/history-request-fred-growth.png' alt='DataFrame of <?=$datasetClass?> rate of change.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>value</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="3" valign="top">RVXCLS.Fred</th>
+      <th>2024-12-18</th>
+      <td>0.043006</td>
+    </tr>
+    <tr>
+      <th>2024-12-19</th>
+      <td>0.364431</td>
+    </tr>
+    <tr>
+      <th>2024-12-20</th>
+      <td>-0.087302</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <p class='python'>
   If you request a DataFrame, LEAN unpacks the data from <code>Slice</code> objects to populate the DataFrame. 
