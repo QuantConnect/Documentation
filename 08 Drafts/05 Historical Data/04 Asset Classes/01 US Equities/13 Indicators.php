@@ -1,7 +1,3 @@
-<?
-$imgLink = "https://cdn.quantconnect.com/i/tu/history-indicator-dataframe-us-equities.png";
-?>
-
 <p>
   To get historical <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> values, call the <code class='csharp'>IndicatorHistory</code><code class='python'>indicator_history</code> method with an indicator and the asset's <code>Symbol</code>.
 </p>
@@ -37,7 +33,43 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-indicator-dataframe-us-equ
 history_df = history.data_frame</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical indicator values for an asset.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>current</th>
+      <th>rollingsum</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2024-12-12 16:00:00</th>
+      <td>599.186667</td>
+      <td>12582.92</td>
+    </tr>
+    <tr>
+      <th>2024-12-13 16:00:00</th>
+      <td>599.520952</td>
+      <td>12589.94</td>
+    </tr>
+    <tr>
+      <th>2024-12-16 16:00:00</th>
+      <td>600.160952</td>
+      <td>12603.38</td>
+    </tr>
+    <tr>
+      <th>2024-12-17 16:00:00</th>
+      <td>601.043810</td>
+      <td>12621.92</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 16:00:00</th>
+      <td>600.954762</td>
+      <td>12620.05</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Get the maximum of the SMA values.
