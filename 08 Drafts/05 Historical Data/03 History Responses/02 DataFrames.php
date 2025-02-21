@@ -17,7 +17,81 @@
         history = self.history(symbols, 3, Resolution.DAILY)</pre>
   </div>
 
-  <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-response-dataframe.png' alt='DataFrame of daily OHLCV values for two assets.'>
+  <table border="1" class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>close</th>
+        <th>high</th>
+        <th>low</th>
+        <th>open</th>
+        <th>volume</th>
+      </tr>
+      <tr>
+        <th>symbol</th>
+        <th>time</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="3" valign="top">SPY</th>
+        <th>2024-12-17 16:00:00</th>
+        <td>604.29</td>
+        <td>605.16</td>
+        <td>602.89</td>
+        <td>604.22</td>
+        <td>38527534.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-18 16:00:00</th>
+        <td>586.28</td>
+        <td>606.40</td>
+        <td>585.89</td>
+        <td>604.00</td>
+        <td>80642184.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-19 16:00:00</th>
+        <td>586.10</td>
+        <td>593.00</td>
+        <td>585.85</td>
+        <td>591.43</td>
+        <td>70752398.0</td>
+      </tr>
+      <tr>
+        <th rowspan="3" valign="top">QQQ</th>
+        <th>2024-12-17 16:00:00</th>
+        <td>535.80</td>
+        <td>537.49</td>
+        <td>534.13</td>
+        <td>536.41</td>
+        <td>25048673.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-18 16:00:00</th>
+        <td>516.47</td>
+        <td>536.87</td>
+        <td>515.01</td>
+        <td>535.11</td>
+        <td>47016560.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-19 16:00:00</th>
+        <td>514.17</td>
+        <td>521.75</td>
+        <td>513.83</td>
+        <td>521.11</td>
+        <td>42192908.0</td>
+      </tr>
+    </tbody>
+  </table>
+
 
   <p>
     The structure of the DataFrame depends on the <a href='/datasets'>dataset</a>.
