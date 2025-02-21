@@ -161,7 +161,120 @@ for data_point in history:
 }</pre>
   </div>
 
-  <img src='https://cdn.quantconnect.com/i/tu/regalytics-dataframe-history.png' class='python docs-image' alt='DataFrame of regulatory alerts.'>
+  <table border="1" class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>agencies</th>
+        <th>alerttype</th>
+        <th>...</th>
+        <th>time</th>
+        <th>title</th>
+      </tr>
+      <tr>
+        <th>time</th>
+        <th>symbol</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="11" valign="top">2024-12-20</th>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Equifax, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Experian Information Solutions, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Equifax, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Transunion Intermediate Holdings, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Transunion Intermediate Holdings, Inc.</td>
+      </tr>
+      <tr>
+        <th>...</th>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Equifax, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Equifax, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Equifax, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Equifax, Inc.</td>
+      </tr>
+      <tr>
+        <th>REG.RegalyticsRegulatoryArticles</th>
+        <td>[Consumer Financial Protection Bureau]</td>
+        <td>Complaint</td>
+        <td>...</td>
+        <td>2024-12-21</td>
+        <td>Complaint Filed: Equifax, Inc.</td>
+      </tr>
+    </tbody>
+  </table>
+
 
   <div class="python section-example-container">
     <pre class="python"># Get all the unique alert types from the Regalytics articles.
