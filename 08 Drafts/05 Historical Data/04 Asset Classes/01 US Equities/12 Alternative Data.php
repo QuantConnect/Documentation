@@ -185,9 +185,7 @@ for data_point in history:
         <th>analystestimatescount</th>
         <th>annual</th>
         <th>earningsmetric</th>
-        <th>end</th>
         <th>...</th>
-        <th>quarterly</th>
         <th>time</th>
         <th>trendbeat</th>
         <th>truebeat</th>
@@ -195,8 +193,6 @@ for data_point in history:
       <tr>
         <th>time</th>
         <th>symbol</th>
-        <th></th>
-        <th></th>
         <th></th>
         <th></th>
         <th></th>
@@ -213,9 +209,7 @@ for data_point in history:
         <td>28</td>
         <td>False</td>
         <td>0</td>
-        <td>2023-12-31</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>0.016899</td>
         <td>0.029352</td>
@@ -225,9 +219,7 @@ for data_point in history:
         <td>29</td>
         <td>True</td>
         <td>0</td>
-        <td>2024-09-30</td>
         <td>...</td>
-        <td>False</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>-0.020608</td>
@@ -237,9 +229,7 @@ for data_point in history:
         <td>24</td>
         <td>False</td>
         <td>0</td>
-        <td>2024-03-31</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>-0.016578</td>
@@ -249,9 +239,7 @@ for data_point in history:
         <td>24</td>
         <td>False</td>
         <td>0</td>
-        <td>NaT</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>0.011859</td>
@@ -261,9 +249,7 @@ for data_point in history:
         <td>26</td>
         <td>False</td>
         <td>0</td>
-        <td>NaT</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>0.017517</td>
@@ -277,17 +263,13 @@ for data_point in history:
         <td>...</td>
         <td>...</td>
         <td>...</td>
-        <td>...</td>
-        <td>...</td>
       </tr>
       <tr>
         <th>AAPL.ExtractAlphaTrueBeats</th>
         <td>11</td>
         <td>False</td>
         <td>0</td>
-        <td>NaT</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>-0.009165</td>
@@ -297,9 +279,7 @@ for data_point in history:
         <td>11</td>
         <td>False</td>
         <td>0</td>
-        <td>NaT</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>-0.020219</td>
@@ -309,9 +289,7 @@ for data_point in history:
         <td>11</td>
         <td>False</td>
         <td>0</td>
-        <td>NaT</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>-0.042210</td>
@@ -321,9 +299,7 @@ for data_point in history:
         <td>1</td>
         <td>False</td>
         <td>0</td>
-        <td>NaT</td>
         <td>...</td>
-        <td>True</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>0.000000</td>
@@ -333,16 +309,13 @@ for data_point in history:
         <td>10</td>
         <td>True</td>
         <td>0</td>
-        <td>NaT</td>
         <td>...</td>
-        <td>False</td>
         <td>2024-01-02 12:30:00</td>
         <td>NaN</td>
         <td>-0.001965</td>
       </tr>
     </tbody>
-  </table>
-  
+  </table>  
 
   <div class="python section-example-container">
     <pre class="python"># Calculate the mean TrueBeat estimate for each day.
