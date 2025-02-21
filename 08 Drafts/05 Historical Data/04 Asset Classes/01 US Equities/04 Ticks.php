@@ -5,7 +5,6 @@ $dataType = "Tick";
 
 <p class='csharp'>
   To get historical <a href='<?=$dataTypeLink?>'>tick data</a>, call the <code>History&lt;Tick&gt;</code> method with an asset's <code>Symbol</code> and <code>Resolution.Tick</code>.
-  This history request works when you request ticks over a trailing period of time or between start and end times.
 </p>
 
 <p class='python'>
@@ -192,4 +191,4 @@ for tick in history:
         size = max(tick.bid_size, tick.ask_size)</pre>
 </div>
 
-<p>Tick history requests only accept a trailing period of time or start and end dates. These history requests don't work if you provide a <code>period</code> argument, requesting a specific number of trailing ticks.</p>
+<p>Ticks are a sparse dataset, so request ticks over a trailing period of time or between start and end times.</p>
