@@ -1,6 +1,5 @@
 <?
 $assetClass = "US Equities";
-$resolutionLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#03-Resolutions";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#04-Quotes";
 $dataType = "QuoteBar";
 ?>
@@ -181,4 +180,4 @@ for quote_bar in history:
     bid_dollar_volume = quote_bar.last_bid_size * quote_bar.bid.close</pre>
 </div>
 
-<p>The resolution of data you request must support <code>QuoteBar</code> data. Otherwise, the history request won't return any data. To check which resolutions for <?=$assetClass?> support <code>QuoteBar</code> data, see <a href='<?=$resolutionLink?>'>Resolutions</a>.</p>
+<p>Request minute or hour resolution data. Otherwise, the history request won't return any data.</p>
