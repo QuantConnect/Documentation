@@ -99,8 +99,7 @@ dtype: float64</pre>
 </div>
 
 <p class='python'>
-  If you request a DataFrame, LEAN unpacks the data from <code>Fundamental</code> objects to populate the DataFrame. 
-  To avoid consuming computational resources populating the DataFrame, you can instead request <code>Fundamental</code> objects. 
+  To avoid consuming unnecessary computational resources populating the DataFrame, you can instead request <code>Fundamental</code> objects. 
   To get a list of <code>Fundamental</code> objects, call the <code>history[Fundamental]</code> method.
 </p>
 
