@@ -1,6 +1,5 @@
 <?
 $datasetClass = "QuiverWallStreetBets";
-$imgLink = "https://cdn.quantconnect.com/i/tu/history-alt-data-dataframe-us-equities.png";
 ?>
 
 <p class='csharp'>
@@ -44,7 +43,65 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/history-alt-data-dataframe-us-equi
         history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of <?=$datasetClass?> data for an asset.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>date</th>
+      <th>mentions</th>
+      <th>rank</th>
+      <th>sentiment</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">GME.QuiverWallStreetBets</th>
+      <th>2024-12-15</th>
+      <td>2024-12-14</td>
+      <td>2</td>
+      <td>48</td>
+      <td>0.74245</td>
+    </tr>
+    <tr>
+      <th>2024-12-16</th>
+      <td>2024-12-15</td>
+      <td>1</td>
+      <td>136</td>
+      <td>-0.51600</td>
+    </tr>
+    <tr>
+      <th>2024-12-17</th>
+      <td>2024-12-16</td>
+      <td>8</td>
+      <td>53</td>
+      <td>0.13987</td>
+    </tr>
+    <tr>
+      <th>2024-12-18</th>
+      <td>2024-12-17</td>
+      <td>17</td>
+      <td>32</td>
+      <td>0.08564</td>
+    </tr>
+    <tr>
+      <th>2024-12-19</th>
+      <td>2024-12-18</td>
+      <td>4</td>
+      <td>117</td>
+      <td>0.61682</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <div class="python section-example-container">
     <pre class="python"># Calculate the changes in sentiment.
