@@ -1,5 +1,4 @@
 <?
-$imgLink = "https://cdn.quantconnect.com/i/tu/history-deslisting-dataframe-us-equities.png";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#05-Delistings";
 $dataType = "Delisting";
 ?>
@@ -41,7 +40,32 @@ $dataType = "Delisting";
         history = self.history(Delisting, symbol, timedelta(10*365))</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of historical symbol changes for a stock.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>type</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">BBBY</th>
+      <th>2023-05-02</th>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2023-05-03</th>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <p class='python'>In the preceding DataFrame, the <code>type</code> column represents the <code>DelistingType</code> enumeration, where 0=<code>DelistingType.WARNING</code> and 1=<code>DelistingType.DELISTED</code>.</p>
 
