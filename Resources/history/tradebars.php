@@ -31,6 +31,7 @@
         self.set_start_date(2024, 12, 19)
         # Get the Symbol of an asset.
         symbol = <?=$symbolPy?>
+
         # Get the 5 trailing daily <?=$dataType?> objects of the asset in DataFrame format. 
         history = self.history(<?=$dataType?>, symbol, 5, Resolution.DAILY)</pre>
 </div>
