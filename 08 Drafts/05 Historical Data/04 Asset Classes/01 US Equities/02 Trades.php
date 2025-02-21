@@ -41,7 +41,71 @@ $dataType = "TradeBar";
         history = self.history(<?=$dataType?>, symbol, 5, Resolution.DAILY)</pre>
 </div>
 
-<img class='python docs-image' src='<?=$imgLink?>' alt='DataFrame of open, high, low, close, and volume for an asset.'>
+<table border="1" class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>close</th>
+      <th>high</th>
+      <th>low</th>
+      <th>open</th>
+      <th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">SPY</th>
+      <th>2024-12-12 16:00:00</th>
+      <td>604.33</td>
+      <td>607.160</td>
+      <td>604.33</td>
+      <td>606.64</td>
+      <td>24962360.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-13 16:00:00</th>
+      <td>604.21</td>
+      <td>607.100</td>
+      <td>602.82</td>
+      <td>606.38</td>
+      <td>29250856.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-16 16:00:00</th>
+      <td>606.79</td>
+      <td>607.775</td>
+      <td>605.22</td>
+      <td>606.00</td>
+      <td>33686372.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-17 16:00:00</th>
+      <td>604.29</td>
+      <td>605.160</td>
+      <td>602.89</td>
+      <td>604.22</td>
+      <td>38527534.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 16:00:00</th>
+      <td>586.28</td>
+      <td>606.400</td>
+      <td>585.89</td>
+      <td>604.00</td>
+      <td>80642184.0</td>
+    </tr>
+  </tbody>
+</table>
 
 <div class="python section-example-container">
     <pre class="python"># Calculate the daily returns.
