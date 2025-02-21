@@ -53,7 +53,9 @@ $dataType = "QuoteBar";
       <th>askhigh</th>
       <th>asklow</th>
       <th>askopen</th>
+      <th>asksize</th>
       <th>...</th>
+      <th>bidsize</th>
       <th>close</th>
       <th>high</th>
       <th>low</th>
@@ -62,6 +64,8 @@ $dataType = "QuoteBar";
     <tr>
       <th>symbol</th>
       <th>time</th>
+      <th></th>
+      <th></th>
       <th></th>
       <th></th>
       <th></th>
@@ -81,7 +85,9 @@ $dataType = "QuoteBar";
       <td>590.44</td>
       <td>588.60</td>
       <td>590.42</td>
+      <td>10700.0</td>
       <td>...</td>
+      <td>700.0</td>
       <td>588.630</td>
       <td>590.420</td>
       <td>588.580</td>
@@ -93,7 +99,9 @@ $dataType = "QuoteBar";
       <td>588.92</td>
       <td>588.25</td>
       <td>588.65</td>
+      <td>100.0</td>
       <td>...</td>
+      <td>100.0</td>
       <td>588.355</td>
       <td>588.905</td>
       <td>588.245</td>
@@ -105,7 +113,9 @@ $dataType = "QuoteBar";
       <td>588.50</td>
       <td>588.08</td>
       <td>588.37</td>
+      <td>100.0</td>
       <td>...</td>
+      <td>500.0</td>
       <td>588.120</td>
       <td>588.485</td>
       <td>588.070</td>
@@ -117,7 +127,9 @@ $dataType = "QuoteBar";
       <td>588.34</td>
       <td>587.70</td>
       <td>588.13</td>
+      <td>8000.0</td>
       <td>...</td>
+      <td>100.0</td>
       <td>587.925</td>
       <td>588.325</td>
       <td>587.690</td>
@@ -129,7 +141,9 @@ $dataType = "QuoteBar";
       <td>587.95</td>
       <td>585.89</td>
       <td>587.93</td>
+      <td>200.0</td>
       <td>...</td>
+      <td>74700.0</td>
       <td>586.315</td>
       <td>587.940</td>
       <td>585.885</td>
