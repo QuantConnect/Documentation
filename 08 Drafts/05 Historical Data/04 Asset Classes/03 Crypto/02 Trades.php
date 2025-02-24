@@ -4,7 +4,7 @@ $symbolPy = "self.add_crypto('BTCUSD').symbol";
 $assetClass = "Crypto";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/crypto/handling-data#03-Trades";
 $dataType = "TradeBar";
-$dataFrame = "<table border='1' class='dataframe python'>
+$dataFrame = "<div class='dataframe-wrapper'><table class='dataframe python'>
   <thead>
     <tr style='text-align: right;'>
       <th></th>
@@ -68,7 +68,7 @@ $dataFrame = "<table border='1' class='dataframe python'>
       <td>21659.470502</td>
     </tr>
   </tbody>
-</table>";
+</table></div>";
 
 $series = "symbol  time      
 BTCUSD  2024-12-16    0.029979
