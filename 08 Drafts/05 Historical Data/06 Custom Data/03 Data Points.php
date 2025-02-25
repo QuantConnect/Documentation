@@ -35,55 +35,57 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-dataframe-history.p
         history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
-<table border="1" class="dataframe python">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>close</th>
-      <th>high</th>
-      <th>low</th>
-      <th>open</th>
-      <th>value</th>
-    </tr>
-    <tr>
-      <th>symbol</th>
-      <th>time</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">MYCUSTOMDATATYPE.MyCustomDataType</th>
-      <th>2014-07-08</th>
-      <td>7787.15</td>
-      <td>7792.00</td>
-      <td>7755.10</td>
-      <td>7780.40</td>
-      <td>7787.15</td>
-    </tr>
-    <tr>
-      <th>2014-07-09</th>
-      <td>7623.20</td>
-      <td>7808.85</td>
-      <td>7595.90</td>
-      <td>7804.05</td>
-      <td>7623.20</td>
-    </tr>
-    <tr>
-      <th>2014-07-10</th>
-      <td>7585.00</td>
-      <td>7650.10</td>
-      <td>7551.65</td>
-      <td>7637.95</td>
-      <td>7585.00</td>
-    </tr>
-  </tbody>
-</table>
+<div class="dataframe-wrapper">
+  <table class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>close</th>
+        <th>high</th>
+        <th>low</th>
+        <th>open</th>
+        <th>value</th>
+      </tr>
+      <tr>
+        <th>symbol</th>
+        <th>time</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="3" valign="top">MYCUSTOMDATATYPE.MyCustomDataType</th>
+        <th>2014-07-08</th>
+        <td>7787.15</td>
+        <td>7792.00</td>
+        <td>7755.10</td>
+        <td>7780.40</td>
+        <td>7787.15</td>
+      </tr>
+      <tr>
+        <th>2014-07-09</th>
+        <td>7623.20</td>
+        <td>7808.85</td>
+        <td>7595.90</td>
+        <td>7804.05</td>
+        <td>7623.20</td>
+      </tr>
+      <tr>
+        <th>2014-07-10</th>
+        <td>7585.00</td>
+        <td>7650.10</td>
+        <td>7551.65</td>
+        <td>7637.95</td>
+        <td>7585.00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <p class='python'>
   If you intend to use the data in the DataFrame to create <code><span class='placeholder-text'>customDatasetClass</span></code> objects, request that the history request returns the data type you need. 

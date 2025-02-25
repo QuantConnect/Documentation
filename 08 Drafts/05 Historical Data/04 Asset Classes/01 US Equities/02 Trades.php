@@ -4,7 +4,7 @@ $symbolPy = "self.add_equity('SPY').symbol";
 $assetClass = "USEquity";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#03-Trades";
 $dataType = "TradeBar";
-$dataFrame = "<table border='1' class='dataframe python'>
+$dataFrame = "<div class='dataframe-wrapper'><table class='dataframe python'>
   <thead>
     <tr style='text-align: right;'>
       <th></th>
@@ -68,7 +68,7 @@ $dataFrame = "<table border='1' class='dataframe python'>
       <td>80642184.0</td>
     </tr>
   </tbody>
-</table>";
+</table></div>";
 
 $series = "symbol  time               
 SPY     2024-12-13 16:00:00   -0.000199

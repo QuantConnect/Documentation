@@ -39,39 +39,41 @@ $datasetClass = "Fred";
         history = self.history(dataset_symbol, 5, Resolution.DAILY)</pre>
 </div>
 
-<table border="1" class="dataframe python">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>value</th>
-    </tr>
-    <tr>
-      <th>symbol</th>
-      <th>time</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="4" valign="top">RVXCLS.Fred</th>
-      <th>2024-12-17</th>
-      <td>23.02</td>
-    </tr>
-    <tr>
-      <th>2024-12-18</th>
-      <td>24.01</td>
-    </tr>
-    <tr>
-      <th>2024-12-19</th>
-      <td>32.76</td>
-    </tr>
-    <tr>
-      <th>2024-12-20</th>
-      <td>29.90</td>
-    </tr>
-  </tbody>
-</table>
+<div class="dataframe-wrapper">
+  <table class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>value</th>
+      </tr>
+      <tr>
+        <th>symbol</th>
+        <th>time</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="4" valign="top">RVXCLS.Fred</th>
+        <th>2024-12-17</th>
+        <td>23.02</td>
+      </tr>
+      <tr>
+        <th>2024-12-18</th>
+        <td>24.01</td>
+      </tr>
+      <tr>
+        <th>2024-12-19</th>
+        <td>32.76</td>
+      </tr>
+      <tr>
+        <th>2024-12-20</th>
+        <td>29.90</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 
 <div class="python section-example-container">
@@ -79,35 +81,37 @@ $datasetClass = "Fred";
 roc = history.pct_change().iloc[1:]</pre>
 </div>
 
-<table border="1" class="dataframe python">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>value</th>
-    </tr>
-    <tr>
-      <th>symbol</th>
-      <th>time</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">RVXCLS.Fred</th>
-      <th>2024-12-18</th>
-      <td>0.043006</td>
-    </tr>
-    <tr>
-      <th>2024-12-19</th>
-      <td>0.364431</td>
-    </tr>
-    <tr>
-      <th>2024-12-20</th>
-      <td>-0.087302</td>
-    </tr>
-  </tbody>
-</table>
+<div class="dataframe-wrapper">
+  <table class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>value</th>
+      </tr>
+      <tr>
+        <th>symbol</th>
+        <th>time</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="3" valign="top">RVXCLS.Fred</th>
+        <th>2024-12-18</th>
+        <td>0.043006</td>
+      </tr>
+      <tr>
+        <th>2024-12-19</th>
+        <td>0.364431</td>
+      </tr>
+      <tr>
+        <th>2024-12-20</th>
+        <td>-0.087302</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 
 <p class='python'>
@@ -160,119 +164,121 @@ for data_point in history:
 }</pre>
   </div>
 
-  <table border="1" class="dataframe python">
-    <thead>
-      <tr style="text-align: right;">
-        <th></th>
-        <th></th>
-        <th>agencies</th>
-        <th>alerttype</th>
-        <th>...</th>
-        <th>time</th>
-        <th>title</th>
-      </tr>
-      <tr>
-        <th>time</th>
-        <th>symbol</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th rowspan="11" valign="top">2024-12-20</th>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Equifax, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Experian Information Solutions, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Equifax, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Transunion Intermediate Holdings, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Transunion Intermediate Holdings, Inc.</td>
-      </tr>
-      <tr>
-        <th>...</th>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Equifax, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Equifax, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Equifax, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Equifax, Inc.</td>
-      </tr>
-      <tr>
-        <th>REG.RegalyticsRegulatoryArticles</th>
-        <td>[Consumer Financial Protection Bureau]</td>
-        <td>Complaint</td>
-        <td>...</td>
-        <td>2024-12-21</td>
-        <td>Complaint Filed: Equifax, Inc.</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="dataframe-wrapper">
+    <table class="dataframe python">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th></th>
+          <th>agencies</th>
+          <th>alerttype</th>
+          <th>...</th>
+          <th>time</th>
+          <th>title</th>
+        </tr>
+        <tr>
+          <th>time</th>
+          <th>symbol</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th rowspan="11" valign="top">2024-12-20</th>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Equifax, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Experian Information Solutions, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Equifax, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Transunion Intermediate Holdings, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Transunion Intermediate Holdings, Inc.</td>
+        </tr>
+        <tr>
+          <th>...</th>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Equifax, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Equifax, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Equifax, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Equifax, Inc.</td>
+        </tr>
+        <tr>
+          <th>REG.RegalyticsRegulatoryArticles</th>
+          <td>[Consumer Financial Protection Bureau]</td>
+          <td>Complaint</td>
+          <td>...</td>
+          <td>2024-12-21</td>
+          <td>Complaint Filed: Equifax, Inc.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
 
   <div class="python section-example-container">
