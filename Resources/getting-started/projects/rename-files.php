@@ -10,3 +10,4 @@
 <? if ($videoLink != "") { ?>
 <img class='docs-image' src='<?=$videoLink?>' alt="Renaming a file">
 <? } ?>
+<? include(DOCS_RESOURCES."/projects/structure/reserved-directory-names.html"); ?>

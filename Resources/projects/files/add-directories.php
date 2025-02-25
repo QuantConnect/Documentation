@@ -7,4 +7,4 @@
     <li>Enter a directory name and then press <span class='key-combinations'>Enter</span>.</li>
 </ol>  
 <img class='docs-image' src='<?=$videoLink?>' alt="Adding a new directory">
-
+<? include(DOCS_RESOURCES."/projects/structure/reserved-directory-names.html"); ?>
