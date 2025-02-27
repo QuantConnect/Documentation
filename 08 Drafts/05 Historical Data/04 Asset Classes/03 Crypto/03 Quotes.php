@@ -5,9 +5,9 @@ $assetClass = "Crypto";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/crypto/handling-data#04-Quotes";
 $dataType = "QuoteBar";
 $dataFrame = "<div class='dataframe-wrapper'>
-<table class="dataframe python">
+<table class='dataframe python'>
   <thead>
-    <tr style="text-align: right;">
+    <tr style='text-align: right;'>
       <th></th>
       <th></th>
       <th>askclose</th>
@@ -46,7 +46,7 @@ $dataFrame = "<div class='dataframe-wrapper'>
   </thead>
   <tbody>
     <tr>
-      <th rowspan="5" valign="top">BTCUSD</th>
+      <th rowspan='5' valign='top'>BTCUSD</th>
       <th>2024-12-19 04:56:00</th>
       <td>100830.0</td>
       <td>100830.0</td>
