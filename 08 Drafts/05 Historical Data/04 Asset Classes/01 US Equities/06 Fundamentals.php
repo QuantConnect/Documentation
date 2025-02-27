@@ -43,7 +43,21 @@
         <th></th>
         <th>adjustedprice</th>
         <th>assetclassification</th>
-        <th>...</th>
+        <th>companyprofile</th>
+        <th>companyreference</th>
+        <th>dollarvolume</th>
+        <th>earningratios</th>
+        <th>earningreports</th>
+        <th>financialstatements</th>
+        <th>hasfundamentaldata</th>
+        <th>market</th>
+        <th>marketcap</th>
+        <th>operationratios</th>
+        <th>pricefactor</th>
+        <th>pricescalefactor</th>
+        <th>securityreference</th>
+        <th>splitfactor</th>
+        <th>valuationratios</th>
         <th>value</th>
         <th>volume</th>
       </tr>
@@ -55,33 +69,89 @@
         <th></th>
         <th></th>
         <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <th rowspan="3" valign="top">AAPL</th>
-        <th>2024-12-24</th>
-        <td>254.989637</td>
+        <th>2024-12-17</th>
+        <td>250.764283</td>
         <td>QuantConnect.Data.Fundamental.AssetClassification</td>
-        <td>...</td>
-        <td>255.27</td>
-        <td>33875830</td>
+        <td>QuantConnect.Data.Fundamental.CompanyProfile</td>
+        <td>QuantConnect.Data.Fundamental.CompanyReference</td>
+        <td>1.140352e+10</td>
+        <td>QuantConnect.Data.Fundamental.EarningRatios</td>
+        <td>QuantConnect.Data.Fundamental.EarningReports</td>
+        <td>QuantConnect.Data.Fundamental.FinancialStatements</td>
+        <td>True</td>
+        <td>usa</td>
+        <td>3587438272590</td>
+        <td>QuantConnect.Data.Fundamental.OperationRatios</td>
+        <td>0.998902</td>
+        <td>0.998902</td>
+        <td>QuantConnect.Data.Fundamental.SecurityReference</td>
+        <td>1.0</td>
+        <td>QuantConnect.Data.Fundamental.ValuationRatios</td>
+        <td>251.04</td>
+        <td>45425121</td>
       </tr>
       <tr>
-        <th>2024-12-25</th>
-        <td>257.916419</td>
+        <th>2024-12-18</th>
+        <td>253.201603</td>
         <td>QuantConnect.Data.Fundamental.AssetClassification</td>
-        <td>...</td>
-        <td>258.20</td>
-        <td>19864328</td>
+        <td>QuantConnect.Data.Fundamental.CompanyProfile</td>
+        <td>QuantConnect.Data.Fundamental.CompanyReference</td>
+        <td>1.196673e+10</td>
+        <td>QuantConnect.Data.Fundamental.EarningRatios</td>
+        <td>QuantConnect.Data.Fundamental.EarningReports</td>
+        <td>QuantConnect.Data.Fundamental.FinancialStatements</td>
+        <td>True</td>
+        <td>usa</td>
+        <td>3587438272590</td>
+        <td>QuantConnect.Data.Fundamental.OperationRatios</td>
+        <td>0.998902</td>
+        <td>0.998902</td>
+        <td>QuantConnect.Data.Fundamental.SecurityReference</td>
+        <td>1.0</td>
+        <td>QuantConnect.Data.Fundamental.ValuationRatios</td>
+        <td>253.48</td>
+        <td>47209742</td>
       </tr>
       <tr>
-        <th>2024-12-27</th>
-        <td>258.735518</td>
+        <th>2024-12-19</th>
+        <td>247.777567</td>
         <td>QuantConnect.Data.Fundamental.AssetClassification</td>
-        <td>...</td>
-        <td>259.02</td>
-        <td>24955273</td>
+        <td>QuantConnect.Data.Fundamental.CompanyProfile</td>
+        <td>QuantConnect.Data.Fundamental.CompanyReference</td>
+        <td>1.284373e+10</td>
+        <td>QuantConnect.Data.Fundamental.EarningRatios</td>
+        <td>QuantConnect.Data.Fundamental.EarningReports</td>
+        <td>QuantConnect.Data.Fundamental.FinancialStatements</td>
+        <td>True</td>
+        <td>usa</td>
+        <td>3587438272590</td>
+        <td>QuantConnect.Data.Fundamental.OperationRatios</td>
+        <td>0.998902</td>
+        <td>0.998902</td>
+        <td>QuantConnect.Data.Fundamental.SecurityReference</td>
+        <td>1.0</td>
+        <td>QuantConnect.Data.Fundamental.ValuationRatios</td>
+        <td>248.05</td>
+        <td>51778802</td>
       </tr>
     </tbody>
   </table>
