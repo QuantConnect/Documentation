@@ -2,7 +2,7 @@
 $symbolC = "AddEquity(\"SPY\", market: Market.Bitfinex).Symbol";
 $symbolPy = "self.add_equity('SPY', market=Market.BITFINEX).symbol";
 $assetClass = "Crypto";
-$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#05-Ticks";
+$dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/crypto/handling-data#05-Ticks";
 $dataType = "Tick";
 $dataFrame = "<div class='dataframe-wrapper'>
 <table class='dataframe python'>
