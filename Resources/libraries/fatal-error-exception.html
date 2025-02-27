@@ -1,0 +1,28 @@
+<p>LEAN handles runtime errors raised by your code or the engine gracefully. It generally informs the location and cause of the error before the algorithm is terminated. <b>FATAL ERROR EXCEPTION</b> refers to a critical failure from third-party libraries, such as machine learning models, that LEAN does not handle.</p>
+
+<p>Most QuantConnect members experience invalid memory access error (<code>SIGBUS</code>) or division by zero error (<code>SIGFPE</code>) marked as "7 Killed" and "8 Killed" in the error message respectively. Here are some common causes and explanations:</p>
+
+<ul>
+    <li>
+        <strong>Memory Issues</strong>
+        <ul>
+            <li><b>Out of Memory (OOM)</b>: The process requires more memory (RAM or GPU memory) than is available, leading to a crash.</li>
+            <li><b>Memory Leaks</b>: If the program fails to release memory properly, it can eventually exhaust available resources.</li>
+            <li><b>Invalid Memory Access</b>: Bugs in custom C/C++ extensions, kernels, or libraries (e.g., CUDA kernels for GPU acceleration) can cause misaligned memory access or invalid memory operations.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Numerical Instability</strong>
+        <ul>
+            <li><b>Division by Zero</b>: This can occur due to input data with zeroes or during calculations, especially in custom loss functions or optimization algorithms.</li>
+            <li><b>NaN or Infinity Values</b>: These can arise due to data with NaN values, improper initialization, exploding gradients, or unstable mathematical operations.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Software Bugs</strong>
+        <ul>
+            <li><b>Code Errors</b>: Bugs in the implementation of the model, data preprocessing, or training loop can cause crashes.</li>
+            <li><b>Library Incompatibility</b>: Using incompatible versions of libraries (e.g., TensorFlow, PyTorch) or dependencies can lead to fatal errors.</li>
+        </ul>
+    </li>
+</ul>
