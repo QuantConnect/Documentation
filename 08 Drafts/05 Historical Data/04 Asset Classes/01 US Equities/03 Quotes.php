@@ -53,7 +53,10 @@ $dataType = "QuoteBar";
         <th>asklow</th>
         <th>askopen</th>
         <th>asksize</th>
-        <th>...</th>
+        <th>bidclose</th>
+        <th>bidhigh</th>
+        <th>bidlow</th>
+        <th>bidopen</th>
         <th>bidsize</th>
         <th>close</th>
         <th>high</th>
@@ -63,6 +66,9 @@ $dataType = "QuoteBar";
       <tr>
         <th>symbol</th>
         <th>time</th>
+        <th></th>
+        <th></th>
+        <th></th>
         <th></th>
         <th></th>
         <th></th>
@@ -85,7 +91,10 @@ $dataType = "QuoteBar";
         <td>588.60</td>
         <td>590.42</td>
         <td>10700.0</td>
-        <td>...</td>
+        <td>588.61</td>
+        <td>590.40</td>
+        <td>588.56</td>
+        <td>590.38</td>
         <td>700.0</td>
         <td>588.630</td>
         <td>590.420</td>
@@ -99,7 +108,10 @@ $dataType = "QuoteBar";
         <td>588.25</td>
         <td>588.65</td>
         <td>100.0</td>
-        <td>...</td>
+        <td>588.34</td>
+        <td>588.89</td>
+        <td>588.24</td>
+        <td>588.61</td>
         <td>100.0</td>
         <td>588.355</td>
         <td>588.905</td>
@@ -113,7 +125,10 @@ $dataType = "QuoteBar";
         <td>588.08</td>
         <td>588.37</td>
         <td>100.0</td>
-        <td>...</td>
+        <td>588.11</td>
+        <td>588.47</td>
+        <td>588.06</td>
+        <td>588.34</td>
         <td>500.0</td>
         <td>588.120</td>
         <td>588.485</td>
@@ -127,7 +142,10 @@ $dataType = "QuoteBar";
         <td>587.70</td>
         <td>588.13</td>
         <td>8000.0</td>
-        <td>...</td>
+        <td>587.92</td>
+        <td>588.31</td>
+        <td>587.68</td>
+        <td>588.11</td>
         <td>100.0</td>
         <td>587.925</td>
         <td>588.325</td>
@@ -141,7 +159,10 @@ $dataType = "QuoteBar";
         <td>585.89</td>
         <td>587.93</td>
         <td>200.0</td>
-        <td>...</td>
+        <td>586.30</td>
+        <td>587.93</td>
+        <td>585.88</td>
+        <td>587.92</td>
         <td>74700.0</td>
         <td>586.315</td>
         <td>587.940</td>
@@ -160,11 +181,11 @@ spread = history.askclose - history.bidclose</pre>
 
 <div class="python section-example-container">
     <pre>symbol  time               
-SPY     2024-12-18 15:56:00    0.039866
-        2024-12-18 15:57:00    0.029899
-        2024-12-18 15:58:00    0.019933
-        2024-12-18 15:59:00    0.009966
-        2024-12-18 16:00:00    0.029899
+SPY     2024-12-18 15:56:00    0.04
+        2024-12-18 15:57:00    0.03
+        2024-12-18 15:58:00    0.02
+        2024-12-18 15:59:00    0.01
+        2024-12-18 16:00:00    0.03
 dtype: float64</pre>
 </div>
 
