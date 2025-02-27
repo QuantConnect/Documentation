@@ -39,9 +39,7 @@
 trade_ticks = history[history.quantity > 0].dropna(axis=1)</pre>
 </div>
 
-<div class="python section-example-container">
-    <pre><?=$series?></pre>
-</div>
+<?=$filteredDataFrame?>
 
 
 <p class='python'>
