@@ -1,28 +1,33 @@
-<p>LEAN handles runtime errors raised by your code or the engine gracefully. It generally informs the location and cause of the error before the algorithm is terminated. <b>FATAL ERROR EXCEPTION</b> refers to a critical failure from third-party libraries, such as machine learning models, that LEAN does not handle.</p>
+<p>
+    LEAN gracefully handles runtime errors that your code raises. 
+    It generally informs the location and cause of the error before the algorithm is terminated. 
+    <span class='error-messages'>FATAL ERROR EXCEPTION</span> refers to a critical failure from third-party libraries, such as machine learning models, that LEAN doesn't handle.
+</p>
 
-<p>Most QuantConnect members experience invalid memory access error (<code>SIGBUS</code>) or division by zero error (<code>SIGFPE</code>) marked as "7 Killed" and "8 Killed" in the error message respectively. Here are some common causes and explanations:</p>
+<p>
+    Most QuantConnect members experience the invalid memory access error (<span class='error-messages'>SIGBUS</span>) or division by zero error (<span class='error-messages'>SIGFPE</span>) marked as "7 Killed" and "8 Killed" in the error message, respectively. 
+    The following sections explain some common errors and what causes them.
+</p>
 
+<h4>Memory Issues</h4>
+<p>You may experience the following memory issues:</p>
 <ul>
-    <li>
-        <strong>Memory Issues</strong>
-        <ul>
-            <li><b>Out of Memory (OOM)</b>: The process requires more memory (RAM or GPU memory) than is available, leading to a crash.</li>
-            <li><b>Memory Leaks</b>: If the program fails to release memory properly, it can eventually exhaust available resources.</li>
-            <li><b>Invalid Memory Access</b>: Bugs in custom C/C++ extensions, kernels, or libraries (e.g., CUDA kernels for GPU acceleration) can cause misaligned memory access or invalid memory operations.</li>
-        </ul>
-    </li>
-    <li>
-        <strong>Numerical Instability</strong>
-        <ul>
-            <li><b>Division by Zero</b>: This can occur due to input data with zeroes or during calculations, especially in custom loss functions or optimization algorithms.</li>
-            <li><b>NaN or Infinity Values</b>: These can arise due to data with NaN values, improper initialization, exploding gradients, or unstable mathematical operations.</li>
-        </ul>
-    </li>
-    <li>
-        <strong>Software Bugs</strong>
-        <ul>
-            <li><b>Code Errors</b>: Bugs in the implementation of the model, data preprocessing, or training loop can cause crashes.</li>
-            <li><b>Library Incompatibility</b>: Using incompatible versions of libraries (e.g., TensorFlow, PyTorch) or dependencies can lead to fatal errors.</li>
-        </ul>
-    </li>
+    <li><span class='ul-option'>Out of Memory (OOM)</span>: The process requires more memory (RAM or GPU memory) than is available, leading to a crash.</li>
+    <li><span class='ul-option'>Memory Leaks</span>: If the program fails to properly release memoryy, it can eventually exhaust available resources.</li>
+    <li><span class='ul-option'>Invalid Memory Access</span>: Bugs in custom C/C++ extensions, kernels, or libraries (for example, CUDA kernels for GPU acceleration) can cause misaligned memory access or invalid memory operations.</li>
 </ul>
+
+<h4>Numerical Instability</h4>
+<p>You may experience the following numerical instability errors:</p>
+<ul>
+    <li><span class='ul-option'>Division by Zero</span>: This can occur due to input data with zeroes or during calculations, especially in custom loss functions or optimization algorithms.</li>
+    <li><span class='ul-option'>NaN or Infinity Values</span>: These can arise due to data with NaN values, improper initialization, exploding gradients, or unstable mathematical operations.</li>
+</ul>
+
+<h4>Software Bugs</h4>
+<p>You may experience the following software bugs:</p>
+<ul>
+    <li><span class='ul-option'>Code Errors</span>: Bugs in the implementation of the model, data preprocessing, or training loop can cause crashes.</li>
+    <li><span class='ul-option'>Library Incompatibility</span>: Using incompatible versions of libraries (for example, TensorFlow or PyTorch) or dependencies can lead to fatal errors.</li>
+</ul>
+
