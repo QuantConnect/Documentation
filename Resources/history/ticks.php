@@ -75,7 +75,7 @@ for tick in history:
 <? } else { ?>
 # Iterate through each quote tick and calculate the spread.
 for tick in history:
-    spread = tick.bid_price - tick.ask_price<
+    spread = tick.bid_price - tick.ask_price
 <? } ?></pre>
 </div>
 
