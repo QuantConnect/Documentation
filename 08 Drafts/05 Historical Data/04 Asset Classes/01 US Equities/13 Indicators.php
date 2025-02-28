@@ -4,7 +4,7 @@ $targetSymbolC = "AddEquity(\"AAPL\").Symbol";
 $symbolPy = "self.add_equity('SPY').symbol";
 $targetSymbolPy = "self.add_equity('SPY').symbol";
 $assetClass = "USEquity";
-$securityPhrase = "asset";
+$supportsTradeData = true;
 $dataFrame = "<div class='dataframe-wrapper'>
   <table class='dataframe python'>
     <thead>
