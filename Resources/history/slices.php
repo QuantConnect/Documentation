@@ -10,7 +10,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 1);
-        // Add some assets and datasets.
+        // Add some securities and datasets.
         <?=$symbolC?>;
 <? if ($dataType == "TradeBar") { ?>
         // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
@@ -45,7 +45,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 1)
-        # Add some assets and datasets.
+        # Add some securities and datasets.
         <?=$symbolPy?>
 
 <? if ($dataType == "TradeBar") { ?>
