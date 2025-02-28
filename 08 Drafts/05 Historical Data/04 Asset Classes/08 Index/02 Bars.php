@@ -98,7 +98,7 @@
 
 <div class="python section-example-container">
     <pre class="python"># Calculate the daily growth.
-daily_returns = history.close.pct_change().iloc[1:]</pre>
+daily_growth = history.close.pct_change().iloc[1:]</pre>
 </div>
 
 <div class="python section-example-container">
