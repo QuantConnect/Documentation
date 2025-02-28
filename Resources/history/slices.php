@@ -12,8 +12,8 @@
         SetStartDate(2024, 12, 1);
         // Add some assets and datasets.
         <?=$symbolC?>;
-        // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
         <? if ($dataType == "TradeBar") { ?>
+        // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
         var history = History(5, Resolution.Daily);
         // Iterate through each historical Slice.
         foreach (var slice in history)
@@ -26,6 +26,7 @@
             }
         }
         <? } else { ?>
+        // Get the historical Slice objects over the last 5 minutes for all the subcriptions in your algorithm.
         var history = History(5, Resolution.Minute);
         // Iterate through each historical Slice.
         foreach (var slice in history)
@@ -47,8 +48,8 @@
         # Add some assets and datasets.
         <?=$symbolPy?>
 
-        # Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
         <? if ($dataType == "TradeBar") { ?>
+        # Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
         history = self.history(5, Resolution.DAILY)
         # Iterate through each historical Slice.
         for slice_ in history:
@@ -56,6 +57,7 @@
             for symbol, trade_bar in slice_.bars.items():
                 close = trade_bar.close
         <? } else { ?>
+        # Get the historical Slice objects over the last 5 minutes for all the subcriptions in your algorithm.
         history = self.history(5, Resolution.MINUTE)
         # Iterate through each historical Slice.
         for slice_ in history:
