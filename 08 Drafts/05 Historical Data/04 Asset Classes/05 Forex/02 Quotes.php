@@ -4,6 +4,7 @@ $symbolPy = "self.add_forex('EURUSD').symbol";
 $assetClass = "Forex";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/forex/handling-data#02-Quotes";
 $dataType = "QuoteBar";
+$supportsQuoteSize = false;
 $dataFrame = "<div class='dataframe-wrapper'>
 <table class='dataframe python'>
   <thead>
