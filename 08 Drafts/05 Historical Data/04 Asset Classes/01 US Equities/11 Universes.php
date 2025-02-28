@@ -1,13 +1,9 @@
-<?
-$dataTypeLink = "/docs/v2/writing-algorithms/universes/equity";
-?>
-
 <p class='csharp'>
-  To get historical <a href='<?=$dataTypeLink?>'>universe data</a>, call the <code>History</code> method with the <code>Universe</code> object.
+  To get historical <a href="/docs/v2/writing-algorithms/universes/equity">universe data</a>, call the <code>History</code> method with the <code>Universe</code> object.
 </p>
 
 <p class='python'>
-  To get historical <a href='<?=$dataTypeLink?>'>universe data</a>, call the <code>history</code> method with the <code>Universe</code> object.
+  To get historical <a href="/docs/v2/writing-algorithms/universes/equity">universe data</a>, call the <code>history</code> method with the <code>Universe</code> object.
   This method returns a DataFrame with columns for the data point attributes.
 </p>
 
