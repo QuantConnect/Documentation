@@ -1,5 +1,5 @@
 <p>
-  To get historical <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> values, call the <code class='csharp'>IndicatorHistory</code><code class='python'>indicator_history</code> method with an indicator and the asset's <code>Symbol</code>.
+  To get historical <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> values, call the <code class='csharp'>IndicatorHistory</code><code class='python'>indicator_history</code> method with an indicator and the security's <code>Symbol</code>.
 </p>
 
 <div class="section-example-container">
@@ -8,9 +8,9 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
-        // Get the Symbol of an asset.
+        // Get the Symbol of a security.
         var symbol = <?=$symbolC?>;
-        // Get the 21-day SMA values of an asset for the last 5 trading days. 
+        // Get the 21-day SMA values of the security for the last 5 trading days. 
         var history = IndicatorHistory(new SimpleMovingAverage(21), symbol, 5, Resolution.Daily);
         // Get the maximum of the SMA values.
         var maxSMA = history.Max(indicatorDataPoint => indicatorDataPoint.Current.Value);
@@ -20,10 +20,10 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
-        # Get the Symbol of an asset.
+        # Get the Symbol of a security.
         symbol = <?=$symbolPy?>
 
-        # Get the 21-day SMA values of an asset for the last 5 trading days. 
+        # Get the 21-day SMA values of the security for the last 5 trading days. 
         history = self.indicator_history(SimpleMovingAverage(21), symbol, 5, Resolution.DAILY)</pre>
 </div>
 
@@ -51,14 +51,14 @@ sma_max = history_df.current.max()</pre>
   To make the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method update the indicator with an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields'>alternative price field</a> instead of the close (or mid-price) of each bar, pass a <code>selector</code> argument.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">// Get the historical values of an indicator over the last 30 days, applying the indicator to the asset's volume.
+	<pre class="csharp">// Get the historical values of an indicator over the last 30 days, applying the indicator to the security's volume.
 var history = IndicatorHistory(indicator, symbol, TimeSpan.FromDays(30), selector: Field.Volume);</pre>
-	<pre class="python"># Get the historical values of an indicator over the last 30 days, applying the indicator to the asset's volume.
+	<pre class="python"># Get the historical values of an indicator over the last 30 days, applying the indicator to the security's volume.
 history = self.indicator_history(indicator, symbol, timedelta(30), selector=Field.VOLUME)</pre>
 </div>
 
 <p>
-    Some indicators require the prices of two assets to compute their value (for example, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/beta'>Beta</a>).
+    Some indicators require the prices of two securities to compute their value (for example, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/beta'>Beta</a>).
     In this case, pass a list of the <code>Symbol</code> objects to the method.
 </p>
 <div class="section-example-container">
@@ -67,7 +67,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
-        // Add the target and reference assets.
+        // Add the target and reference securities.
         var targetSymbol = <?=$targetSymbolC?>;
         var referenceSymbol = <?=$symbolC?>;
         // Create a 21-period Beta indicator.
@@ -82,7 +82,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
-        # Add the target and reference assets.
+        # Add the target and reference securities.
         target_symbol = <?=$targetSymbolPy?>
 
         reference_symbol = <?=$symbolPy?>
