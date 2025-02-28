@@ -1,8 +1,8 @@
 <?
-$symbolC = "AddEquity(\"SPY\").Symbol";
-$targetSymbolC = "AddEquity(\"AAPL\").Symbol";
-$symbolPy = "self.add_equity('SPY').symbol";
-$targetSymbolPy = "self.add_equity('SPY').symbol";
+$symbolC = "AddEquity(\"AAPL\").Symbol";
+$referenceSymbolC = "AddEquity(\"SPY\").Symbol";
+$symbolPy = "self.add_equity('AAPL').symbol";
+$referenceSymbolPy = "self.add_equity('SPY').symbol";
 $assetClass = "USEquity";
 $supportsTradeData = true;
 $dataFrame = "<div class='dataframe-wrapper'>
