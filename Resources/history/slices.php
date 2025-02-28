@@ -13,6 +13,7 @@
         // Add some assets and datasets.
         <?=$symbolC?>;
         // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
+        <? if ($dataType == "TradeBar") { ?>
         var history = History(5, Resolution.Daily);
         // Iterate through each historical Slice.
         foreach (var slice in history)
@@ -24,6 +25,19 @@
                 var bar = kvp.Value;
             }
         }
+        <? } else { ?>
+        var history = History(5, Resolution.Minute);
+        // Iterate through each historical Slice.
+        foreach (var slice in history)
+        {
+            // Iterate through each QuoteBar in this Slice.
+            foreach (var kvp in slice.QuoteBars)
+            {
+                var symbol = kvp.Key;
+                var bar = kvp.Value;
+            }
+        }
+        <? } ?>
     }
 }</pre>
     <pre class="python">class SliceHistoryAlgorithm(QCAlgorithm):
@@ -34,10 +48,19 @@
         <?=$symbolPy?>
 
         # Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
+        <? if ($dataType == "TradeBar") { ?>
         history = self.history(5, Resolution.DAILY)
         # Iterate through each historical Slice.
         for slice_ in history:
             # Iterate through each TradeBar in this Slice.
             for symbol, trade_bar in slice_.bars.items():
-                close = trade_bar.close</pre>
+                close = trade_bar.close
+        <? } else { ?>
+        history = self.history(5, Resolution.MINUTE)
+        # Iterate through each historical Slice.
+        for slice_ in history:
+            # Iterate through each QuoteBar in this Slice.
+            for symbol, quote_bar in slice_.bars.items():
+                midprice = quote_bar.close
+        <? } ?></pre>
 </div>
