@@ -4,6 +4,7 @@ $symbolPy = "self.add_crypto('BTCUSD', market=Market.BITFINEX).symbol";
 $assetClass = "Crypto";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/crypto/handling-data#04-Quotes";
 $dataType = "QuoteBar";
+$supportsQuoteSize = true;
 $dataFrame = "<div class='dataframe-wrapper'>
 <table class='dataframe python'>
   <thead>
