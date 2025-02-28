@@ -51,7 +51,15 @@ sma_max = history_df.current.max()</pre>
   To make the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method update the indicator with an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields'>alternative price field</a> instead of the close (or mid-price) of each bar, pass a <code>selector</code> argument.
 </p>
 
-<? if ($supportsTradeData) { ?>
+
+<? if ($assetClass == "Index") { ?>
+<div class="section-example-container">
+	<pre class="csharp">// Get the historical values of an indicator over the last 30 days, applying the indicator to the security's high price.
+var history = IndicatorHistory(indicator, symbol, TimeSpan.FromDays(30), selector: Field.High);</pre>
+	<pre class="python"># Get the historical values of an indicator over the last 30 days, applying the indicator to the security's high price.
+history = self.indicator_history(indicator, symbol, timedelta(30), selector=Field.HIGH)</pre>
+</div>
+<? } else if ($supportsTradeData) { ?>
 <div class="section-example-container">
 	<pre class="csharp">// Get the historical values of an indicator over the last 30 days, applying the indicator to the security's volume.
 var history = IndicatorHistory(indicator, symbol, TimeSpan.FromDays(30), selector: Field.Volume);</pre>
