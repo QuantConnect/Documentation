@@ -1,0 +1,150 @@
+<p>The following example gets the history of a <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-universes/key-concepts'>custom data universe</a>:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Define the custom data class outside of the algorithm class.
+public class StockDataSource : BaseData
+{
+    public List&lt;string&gt; Symbols { get; set; } = new();
+    public override DateTime EndTime => Time.AddDays(1);
+
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+    {
+        return new SubscriptionDataSource(
+            "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-universe-example.csv", 
+            SubscriptionTransportMedium.RemoteFile, 
+            FileFormat.Csv
+        );
+    }
+
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
+    {
+        var stocks = new StockDataSource();
+        stocks.Symbol = config.Symbol;
+        try
+        {
+            var csv = line.Split(',');
+            stocks.Time = DateTime.ParseExact(csv[0], "yyyyMMdd", null);
+            stocks.Symbols.AddRange(csv.Skip(1));
+        }
+        catch { return null; }
+        return stocks;
+    }
+}
+
+public class CustomDataUniverseHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 10);
+        // Add a custom data universe.
+        var universe = AddUniverse&lt;StockDataSource&gt;("StockDataSource", Resolution.Daily);
+        // Get the universe history.
+        var history = History(universe, new DateTime(2018, 1, 1), new DateTime(2018, 1, 10)).Cast&lt;StockDataSource&gt;();
+        // Iterate through each day in the universe history and count the number of constituents.
+        foreach (var stockData in history)
+        {
+            var t = stockData.Time;
+            var size = stockData.Symbols.Count;
+        }
+    }
+}</pre>
+    <pre class="python"># Define the custom data class outside of the algorithm class.    
+class StockDataSource(PythonData):
+
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live: bool) -> SubscriptionDataSource:
+        return SubscriptionDataSource(
+            "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-universe-example.csv", 
+            SubscriptionTransportMedium.REMOTE_FILE, 
+            FileFormat.CSV
+        )
+
+    def reader(self,config: SubscriptionDataConfig, line: str, date: datetime, is_live: bool) -> BaseData:
+        if not (line.strip() and line[0].isdigit()): 
+            return None
+        stocks = StockDataSource()
+        stocks.symbol = config.symbol
+        try:
+            csv = line.split(',')
+            stocks.time = datetime.strptime(csv[0], "%Y%m%d")
+            stocks.end_time = stocks.time + timedelta(days=1)
+            stocks["Symbols"] = csv[1:]
+        except ValueError:
+            return None
+        return stocks
+
+
+class CustomDataUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2018, 1, 10)
+        # Add a custom data universe.
+        universe = self.add_universe(StockDataSource)
+        # Get the universe history.
+        history = self.history(universe, datetime(2018, 1, 1), datetime(2018, 1, 10), flatten=True)
+</pre>
+</div>
+
+<div class="dataframe-wrapper">
+  <table class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>symbols</th>
+      </tr>
+      <tr>
+        <th>symbol</th>
+        <th>time</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="7" valign="top">STOCKDATASOURCE-USA-AE903F8D-F507-4638-BBFC-EE65760179AE.StockDataSource 2S</th>
+        <th>2018-01-04</th>
+        <td>[SPY, QQQ, AAPL, IWM, FB]</td>
+      </tr>
+      <tr>
+        <th>2018-01-05</th>
+        <td>[AAPL, QQQ, IWM, FB, GOOGL]</td>
+      </tr>
+      <tr>
+        <th>2018-01-06</th>
+        <td>[QQQ, IWM, FB, BAC, GOOGL]</td>
+      </tr>
+      <tr>
+        <th>2018-01-07</th>
+        <td>[IWM, FB, GOOGL, BAC, GOOG]</td>
+      </tr>
+      <tr>
+        <th>2018-01-08</th>
+        <td>[IWM, FB, GOOGL, BAC, GOOG]</td>
+      </tr>
+      <tr>
+        <th>2018-01-09</th>
+        <td>[IWM, FB, GOOGL, BAC, GOOG]</td>
+      </tr>
+      <tr>
+        <th>2018-01-10</th>
+        <td>[IWM, BAC, GOOGL, GOOG, IBM]</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="python section-example-container">
+    <pre class="python"># Count the number of assets in the universe each day.
+universe_size = history.apply(lambda row: len(row.symbols), axis=1).reset_index(level=0, drop=True)</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time
+2018-01-04    5
+2018-01-05    5
+2018-01-06    5
+2018-01-07    5
+2018-01-08    5
+2018-01-09    5
+2018-01-10    5
+dtype: int64</pre>
+</div>

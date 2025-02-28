@@ -1,0 +1,136 @@
+<p class='csharp'>To get a DataFrame of historical data, use Python.</p>
+
+<div class='python'>
+  <p>
+    Most history requests return a flat DataFrame by default, where there is one column for each data point attribute.
+    Universe history requests return a Series, where the values in the Series are lists of the universe data objects.
+    For example, the following code snippet returns a Series where each value is a <code>List[ETFConstituentUniverse]</code>:
+  </p>
+
+  <div class="section-example-container">
+      <pre class="python">class SeriesUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Add an ETF constituents universe for SPY so you can get its historical data.
+        universe = self.add_universe(self.universe.etf('SPY'))
+        # Get the trailing 5 days of universe data.
+        history = self.history(universe, 5, Resolution.DAILY)</pre>
+  </div>
+
+  <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/history-request-series-of-lists.png' alt='Pandas series where each value is a list of ETFConstituentsUniverse objects.'>
+
+  <p>To get the data into a DataFrame instead, set the <code>flatten</code> argument to <code>True</code>. In this case, the DataFrame has one column for each data point attribute.</p>
+  <div class="section-example-container">
+      <pre class="python"># Get the trailing 5 days of universe data in DataFrame format
+# so you can perform DataFrame wrangling operations.
+history = self.history(universe, 5, Resolution.DAILY, flatten=True)</pre>
+  </div>
+
+  <div class="dataframe-wrapper">
+    <table class="dataframe python">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th></th>
+          <th>lastupdate</th>
+          <th>period</th>
+          <th>sharesheld</th>
+          <th>weight</th>
+        </tr>
+        <tr>
+          <th>time</th>
+          <th>symbol</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th rowspan="5" valign="top">2024-12-13</th>
+          <th>A RPTMYV3VC57P</th>
+          <td>2024-12-11</td>
+          <td>1 days</td>
+          <td>3667879.0</td>
+          <td>0.000799</td>
+        </tr>
+        <tr>
+          <th>AAPL R735QTJ8XC9X</th>
+          <td>2024-12-11</td>
+          <td>1 days</td>
+          <td>190881735.0</td>
+          <td>0.072612</td>
+        </tr>
+        <tr>
+          <th>ABBV VCY032R250MD</th>
+          <td>2024-12-11</td>
+          <td>1 days</td>
+          <td>22169383.0</td>
+          <td>0.005966</td>
+        </tr>
+        <tr>
+          <th>ABNB XK8H247DY6W5</th>
+          <td>2024-12-11</td>
+          <td>1 days</td>
+          <td>5515085.0</td>
+          <td>0.001182</td>
+        </tr>
+        <tr>
+          <th>ABT R735QTJ8XC9X</th>
+          <td>2024-12-11</td>
+          <td>1 days</td>
+          <td>21833687.0</td>
+          <td>0.003846</td>
+        </tr>
+        <tr>
+          <th>...</th>
+          <th>...</th>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+        </tr>
+        <tr>
+          <th rowspan="5" valign="top">2024-12-19</th>
+          <th>XYL V18KR26TE3XH</th>
+          <td>2024-12-17</td>
+          <td>1 days</td>
+          <td>3065334.0</td>
+          <td>0.000572</td>
+        </tr>
+        <tr>
+          <th>YUM R735QTJ8XC9X</th>
+          <td>2024-12-17</td>
+          <td>1 days</td>
+          <td>3548979.0</td>
+          <td>0.000739</td>
+        </tr>
+        <tr>
+          <th>ZMH S6ZZPKTVDY05</th>
+          <td>2024-12-17</td>
+          <td>1 days</td>
+          <td>2570208.0</td>
+          <td>0.000429</td>
+        </tr>
+        <tr>
+          <th>ZBRA R735QTJ8XC9X</th>
+          <td>2024-12-17</td>
+          <td>1 days</td>
+          <td>650402.0</td>
+          <td>0.000397</td>
+        </tr>
+        <tr>
+          <th>ZTS VDRJHVQ4FNFP</th>
+          <td>2024-12-17</td>
+          <td>1 days</td>
+          <td>5703558.0</td>
+          <td>0.001505</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
