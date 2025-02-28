@@ -124,3 +124,4 @@ for trade_bar in history:
     price = trade_bar.price</pre>
 </div>
 
+<p>Request minute, hour, or daily resolution data. Otherwise, the history request won't return any data.</p>
