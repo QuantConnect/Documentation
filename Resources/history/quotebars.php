@@ -57,7 +57,14 @@ spread = history.askclose - history.bidclose</pre>
 <div class="python section-example-container">
     <pre class="python"># Get the 5 trailing minute <?=$dataType?> objects of the security in <?=$dataType?> format. 
 history = self.history[<?=$dataType?>](symbol, 5, Resolution.MINUTE)
+<? if ($supportsQuoteSize) { ?>
 # Iterate through each QuoteBar and calculate the dollar volume on the bid.
 for quote_bar in history:
-    bid_dollar_volume = quote_bar.last_bid_size * quote_bar.bid.close</pre>
+    bid_dollar_volume = quote_bar.last_bid_size * quote_bar.bid.close
+<? } else { ?>
+# Iterate through each QuoteBar and calculate the spread.
+for quote_bar in history:
+    spread = quote_bar.ask.close - quote_bar.bid.close
+<? } ?>
+</pre>
 </div>
