@@ -1,8 +1,8 @@
 <?
-$symbolC = "AddCrypto(\"BTCUSD\").Symbol";
-$targetSymbolC = "AddCrypto(\"DOGEUSD\").Symbol";
-$symbolPy = "self.add_crypto('BTCUSD').symbol";
-$targetSymbolPy = "self.add_crypto('DOGEUSD').symbol";
+$symbolC = "AddCrypto(\"DOGEUSD\").Symbol";
+$referenceSymbolC = "AddCrypto(\"BTCUSD\").Symbol";
+$symbolPy = "self.add_crypto('DOGEUSD').symbol";
+$referenceSymbolPy = "self.add_crypto('BTCUSD').symbol";
 $assetClass = "Crypto";
 $supportsTradeData = true;
 $dataFrame = "<div class='dataframe-wrapper'>
