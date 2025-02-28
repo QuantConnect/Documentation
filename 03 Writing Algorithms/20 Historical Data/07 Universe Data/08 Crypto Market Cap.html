@@ -1,0 +1,160 @@
+<p>The following example gets the history of a <a href='/docs/v2/writing-algorithms/datasets/coingecko/crypto-market-cap#11-Universe-Selection'>Crypto market cap universe</a>:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CryptoMarketCapUniverseHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 24);
+        // Add a universe of Cryptocurrencies.
+        var universe = AddUniverse&lt;CoinGecko&gt;();
+        // Get 365 days of history for the universe.
+        var history = History(universe, TimeSpan.FromDays(365));
+        // Iterate through each day of the universe history.
+        foreach (var universeDay in history)
+        {
+            var t = universeDay.EndTime;
+            // Select the Crypto with the largest market cap on this day.
+            var largestCoin = universeDay.Select(c => c as CoinGecko).OrderByDescending(c => c.MarketCap).First();
+        }
+    }
+}</pre>
+    <pre class="python">class CryptoMarketCapUniverseHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 24)
+        # Add a universe of Cryptocurrencies.
+        universe = self.add_universe(CoinGeckoUniverse)
+        # Get 355 days of history for the universe.
+        history = self.history(universe, timedelta(365), flatten=True)</pre>
+</div>
+
+<div class="dataframe-wrapper">
+  <table class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>coin</th>
+        <th>marketcap</th>
+        <th>value</th>
+        <th>volume</th>
+      </tr>
+      <tr>
+        <th>time</th>
+        <th>symbol</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="4" valign="top">2023-12-26</th>
+        <th>DAPP.CoinGecko 2S</th>
+        <td>DAPP</td>
+        <td>0.000000e+00</td>
+        <td>0.000111</td>
+        <td>1.203664e+03</td>
+      </tr>
+      <tr>
+        <th>FLUID.CoinGecko 2S</th>
+        <td>FLUID</td>
+        <td>3.385875e+07</td>
+        <td>1.886653</td>
+        <td>8.124432e+04</td>
+      </tr>
+      <tr>
+        <th>PAAL.CoinGecko 2S</th>
+        <td>PAAL</td>
+        <td>7.678778e+07</td>
+        <td>0.118019</td>
+        <td>3.264158e+06</td>
+      </tr>
+      <tr>
+        <th>TOSHI.CoinGecko 2S</th>
+        <td>TOSHI</td>
+        <td>5.358157e+07</td>
+        <td>0.000127</td>
+        <td>9.605914e+05</td>
+      </tr>
+      <tr>
+        <th>2023-12-27</th>
+        <th>DAPP.CoinGecko 2S</th>
+        <td>DAPP</td>
+        <td>0.000000e+00</td>
+        <td>0.000109</td>
+        <td>1.189876e+03</td>
+      </tr>
+      <tr>
+        <th>...</th>
+        <th>...</th>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+      </tr>
+      <tr>
+        <th rowspan="5" valign="top">2024-12-24</th>
+        <th>VIRTUAL.CoinGecko 2S</th>
+        <td>VIRTUAL</td>
+        <td>3.016890e+09</td>
+        <td>3.014802</td>
+        <td>4.121598e+08</td>
+      </tr>
+      <tr>
+        <th>XION.CoinGecko 2S</th>
+        <td>XION</td>
+        <td>7.990578e+07</td>
+        <td>3.126583</td>
+        <td>1.454954e+07</td>
+      </tr>
+      <tr>
+        <th>ZAP.CoinGecko 2S</th>
+        <td>ZAP</td>
+        <td>3.094296e+06</td>
+        <td>0.032612</td>
+        <td>1.781765e+05</td>
+      </tr>
+      <tr>
+        <th>ZEREBRO.CoinGecko 2S</th>
+        <td>ZEREBRO</td>
+        <td>3.018897e+08</td>
+        <td>0.300990</td>
+        <td>7.376285e+07</td>
+      </tr>
+      <tr>
+        <th>ZRC.CoinGecko 2S</th>
+        <td>ZRC</td>
+        <td>1.660151e+08</td>
+        <td>0.075640</td>
+        <td>1.373892e+08</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="python section-example-container">
+    <pre class="python"># Select the largest Crypto each day.
+largest_coin = history.groupby('time').apply(
+    lambda x: x.nlargest(1, 'marketcap')
+).reset_index(level=1, drop=True).marketcap</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time        symbol              
+2023-12-26  PAAL.CoinGecko 2S       7.678778e+07
+2023-12-27  PAAL.CoinGecko 2S       6.908865e+07
+2023-12-28  PAAL.CoinGecko 2S       1.019541e+08
+2023-12-29  PAAL.CoinGecko 2S       1.007006e+08
+2023-12-30  PAAL.CoinGecko 2S       8.907086e+07
+                                        ...     
+2024-12-20  VIRTUAL.CoinGecko 2S    2.297529e+09
+2024-12-21  VIRTUAL.CoinGecko 2S    2.811267e+09
+2024-12-22  VIRTUAL.CoinGecko 2S    2.476485e+09
+2024-12-23  VIRTUAL.CoinGecko 2S    2.328428e+09
+2024-12-24  VIRTUAL.CoinGecko 2S    3.016890e+09
+Name: marketcap, Length: 365, dtype: float64</pre>
+</div>

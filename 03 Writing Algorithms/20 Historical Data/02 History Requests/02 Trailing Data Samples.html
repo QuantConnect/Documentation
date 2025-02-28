@@ -1,0 +1,210 @@
+<p>
+  To get historical data for a trailing time period, call <code class='python'>history</code><code class='csharp'>History</code> method with an an integer and a <code>Resolution</code>. 
+  For example, if you pass an asset <code>Symbol</code>, 5, and <code class='python'>Resolution.MINUTE</code><code class='csharp'>Resolution.Minute</code> as the arguments, it returns the data of the asset during the most recent 5 minutes in the asset's <a href='/docs/v2/writing-algorithms/securities/market-hours'>market hours</a>.
+  These trailing minute bars can cross multiple trading days.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class TrailingDataSamplesHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Get the Symbol of an asset.
+        var symbol = AddEquity("SPY").Symbol;
+        // Get the minute-resolution TradeBar data of the asset over the trailing 5 minutes.
+        var history = History&lt;TradeBar&gt;(symbol, 5, Resolution.Minute);
+    }
+}</pre>
+    <pre class="python">class TrailingDataSamplesHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Get the Symbol of an asset.
+        symbol = self.add_equity('SPY').symbol
+        # Get the minute-resolution TradeBar data of the asset over the trailing 5 minutes.
+        history = self.history(TradeBar, symbol, 5, Resolution.MINUTE)</pre>
+</div>
+<div class="dataframe-wrapper">
+  <table class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>close</th>
+        <th>high</th>
+        <th>low</th>
+        <th>open</th>
+        <th>volume</th>
+      </tr>
+      <tr>
+        <th>symbol</th>
+        <th>time</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="5" valign="top">SPY</th>
+        <th>2024-12-18 15:56:00</th>
+        <td>588.63</td>
+        <td>590.390</td>
+        <td>588.57</td>
+        <td>590.39</td>
+        <td>1053414.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-18 15:57:00</th>
+        <td>588.34</td>
+        <td>588.910</td>
+        <td>588.24</td>
+        <td>588.61</td>
+        <td>930643.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-18 15:58:00</th>
+        <td>588.11</td>
+        <td>588.460</td>
+        <td>588.07</td>
+        <td>588.34</td>
+        <td>1138812.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-18 15:59:00</th>
+        <td>587.92</td>
+        <td>588.325</td>
+        <td>587.70</td>
+        <td>588.10</td>
+        <td>1576391.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-18 16:00:00</th>
+        <td>586.28</td>
+        <td>587.940</td>
+        <td>585.89</td>
+        <td>587.92</td>
+        <td>5865463.0</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+<p>
+  If you don't pass a <code>Resolution</code>, it defaults to the resolution of the security subscription.
+  The following example returns 3 days of data for QQQ and 3 minutes of data for SPY:
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class TrailingDataSamplesForMulitpleAssetsHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 20);
+        // Add two assets with different resolutions.
+        var spy = AddEquity("SPY", Resolution.Minute).Symbol;
+        var qqq = AddEquity("QQQ", Resolution.Daily).Symbol;
+        // Get the trailing 3 bars of data for each asset.
+        var history = History&lt;TradeBar&gt;(new[] { spy, qqq }, 3);
+    }
+}</pre>
+    <pre class="python">class TrailingDataSamplesForMulitpleAssetsHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 20)
+        # Add two assets with different resolutions.
+        spy = self.add_equity('SPY', Resolution.MINUTE).symbol
+        qqq = self.add_equity('QQQ', Resolution.DAILY).symbol
+        # Get the trailing 3 bars of data for each asset.
+        history = self.history(TradeBar, [spy, qqq], 3)</pre>
+</div>
+
+<div class="dataframe-wrapper">
+  <table class="dataframe python">
+    <thead>
+      <tr style="text-align: right;">
+        <th></th>
+        <th></th>
+        <th>close</th>
+        <th>high</th>
+        <th>low</th>
+        <th>open</th>
+        <th>volume</th>
+      </tr>
+      <tr>
+        <th>symbol</th>
+        <th>time</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="3" valign="top">QQQ</th>
+        <th>2024-12-17 16:00:00</th>
+        <td>535.80</td>
+        <td>537.49</td>
+        <td>534.130</td>
+        <td>536.410</td>
+        <td>25048673.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-18 16:00:00</th>
+        <td>516.47</td>
+        <td>536.87</td>
+        <td>515.010</td>
+        <td>535.110</td>
+        <td>47016560.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-19 16:00:00</th>
+        <td>514.17</td>
+        <td>521.75</td>
+        <td>513.830</td>
+        <td>521.110</td>
+        <td>42192908.0</td>
+      </tr>
+      <tr>
+        <th rowspan="3" valign="top">SPY</th>
+        <th>2024-12-19 15:58:00</th>
+        <td>586.40</td>
+        <td>586.77</td>
+        <td>586.365</td>
+        <td>586.730</td>
+        <td>872817.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-19 15:59:00</th>
+        <td>586.50</td>
+        <td>586.83</td>
+        <td>586.380</td>
+        <td>586.420</td>
+        <td>1524079.0</td>
+      </tr>
+      <tr>
+        <th>2024-12-19 16:00:00</th>
+        <td>586.10</td>
+        <td>586.53</td>
+        <td>585.850</td>
+        <td>586.495</td>
+        <td>4342748.0</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<p>
+  If there is no data for the time period you request, the result has fewer samples.
+  For instance, say an illiquid asset has no trading activity during the last 15 minutes of the trading day and you request the 10 most recent minute bars at market close, 4 PM Eastern Standard Time (ET). 
+  In this case, you won't get any data because LEAN will try to fetch data from 3:50 PM ET to 4 PM ET since <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/market-hours#03-Regular-Trading-Hours'>the market was open during that time</a>, but there were no trades for the asset.
+  For more information about missing data points, see <a href='/docs/v2/writing-algorithms/historical-data/history-responses#05-Missing-Data-Points'>Missing Data Points</a>.
+</p>
