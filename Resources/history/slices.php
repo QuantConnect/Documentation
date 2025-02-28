@@ -14,7 +14,7 @@
         <?=$symbolC?>;
         // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
         var history = History(5, Resolution.Daily);
-        // Iterate through each historial Slice.
+        // Iterate through each historical Slice.
         foreach (var slice in history)
         {
             // Iterate through each TradeBar in this Slice.
@@ -35,7 +35,7 @@
 
         # Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
         history = self.history(5, Resolution.DAILY)
-        # Iterate through each Slice.
+        # Iterate through each historical Slice.
         for slice_ in history:
             # Iterate through each TradeBar in this Slice.
             for symbol, trade_bar in slice_.bars.items():
