@@ -4,6 +4,7 @@ $symbolPy = "self.add_equity('SPY').symbol";
 $assetClass = "USEquity";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#04-Quotes";
 $dataType = "QuoteBar";
+$supportsQuoteSize = true;
 $dataFrame = "<div class='dataframe-wrapper'>
   <table class='dataframe python'>
     <thead>
