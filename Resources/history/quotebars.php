@@ -9,7 +9,7 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class <?=$assetClass?><?=$dataType?>Algorithm : QCAlgorithm
+    <pre class="csharp">public class <?=$assetClass?><?=$dataType?>HistoryAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -26,7 +26,7 @@
         }
     }
 }</pre>
-    <pre class="python">class <?=$assetClass?><?=$dataType?>Algorithm(QCAlgorithm):
+    <pre class="python">class <?=$assetClass?><?=$dataType?>HistoryAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
