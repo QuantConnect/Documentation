@@ -1,9 +1,9 @@
 <p class='csharp'>
-  To get historical <a href='<?=$dataTypeLink?>'>quote data</a>, call the <code>History&lt;<?=$dataType?>&gt;</code> method with an asset's <code>Symbol</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>quote data</a>, call the <code>History&lt;<?=$dataType?>&gt;</code> method with a security's <code>Symbol</code>.
 </p>
 
 <p class='python'>
-  To get historical <a href='<?=$dataTypeLink?>'>quote data</a>, call the <code>history</code> method with the <code><?=$dataType?></code> type and an asset's <code>Symbol</code>.
+  To get historical <a href='<?=$dataTypeLink?>'>quote data</a>, call the <code>history</code> method with the <code><?=$dataType?></code> type and a security's <code>Symbol</code>.
   This method returns a DataFrame with columns for the open, high, low, close, and size of the bid and ask quotes.
   The columns that don't start with "bid" or "ask" are the mean of the quote prices on both sides of the market.
 </p>
@@ -14,9 +14,9 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
-        // Get the Symbol of an asset.
+        // Get the Symbol of a security.
         var symbol = <?=$symbolC?>;
-        // Get the 5 trailing minute <?=$dataType?> objects of the asset. 
+        // Get the 5 trailing minute <?=$dataType?> objects of the security. 
         var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Minute);
         // Iterate through the QuoteBar objects and calculate the spread.
         foreach (var bar in history)
@@ -30,10 +30,10 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
-        # Get the Symbol of an asset.
+        # Get the Symbol of a security.
         symbol = <?=$symbolPy?>
 
-        # Get the 5 trailing minute <?=$dataType?> objects of the asset in DataFrame format. 
+        # Get the 5 trailing minute <?=$dataType?> objects of the security in DataFrame format. 
         history = self.history(<?=$dataType?>, symbol, 5, Resolution.MINUTE)</pre>
 </div>
 
@@ -55,7 +55,7 @@ spread = history.askclose - history.bidclose</pre>
 </p>
 
 <div class="python section-example-container">
-    <pre class="python"># Get the 5 trailing minute <?=$dataType?> objects of an asset in <?=$dataType?> format. 
+    <pre class="python"># Get the 5 trailing minute <?=$dataType?> objects of the security in <?=$dataType?> format. 
 history = self.history[<?=$dataType?>](symbol, 5, Resolution.MINUTE)
 # Iterate through each QuoteBar and calculate the dollar volume on the bid.
 for quote_bar in history:
