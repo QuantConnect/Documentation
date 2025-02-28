@@ -73,7 +73,7 @@ for tick in history:
     if tick.tick_type == TickType.Quote:
         size = max(tick.bid_size, tick.ask_size)
 <? } else { ?>
-    # Iterate through each quote tick and calculate the spread.
+# Iterate through each quote tick and calculate the spread.
 for tick in history:
     spread = tick.bid_price - tick.ask_price<
 <? } ?></pre>
