@@ -39,7 +39,9 @@
 spread = history.askprice - history.bidprice</pre>
 </div>
 
-<?=$series?>
+<div class="python section-example-container">
+    <pre><?=$series?></pre>
+</div>
 
 <p class='python'>
   If you intend to use the data in the DataFrame to create <code><?=$dataType?></code> objects, request that the history request returns the data type you need. 
