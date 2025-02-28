@@ -1,8 +1,8 @@
 <?
 $symbolC = "AddCrypto(\"BTCUSD\").Symbol";
 $targetSymbolC = "AddCrypto(\"DOGEUSD\").Symbol";
-$symbolPy = "self.add_equity('BTCUSD').symbol";
-$targetSymbolPy = "self.add_equity('DOGEUSD').symbol";
+$symbolPy = "self.add_crypto('BTCUSD').symbol";
+$targetSymbolPy = "self.add_crypto('DOGEUSD').symbol";
 $assetClass = "Crypto";
 $dataFrame = "<div class='dataframe-wrapper'>
 <table class='dataframe python'>
