@@ -4,6 +4,7 @@ $targetSymbolC = "AddCrypto(\"DOGEUSD\").Symbol";
 $symbolPy = "self.add_crypto('BTCUSD').symbol";
 $targetSymbolPy = "self.add_crypto('DOGEUSD').symbol";
 $assetClass = "Crypto";
+$supportsTradeData = true;
 $dataFrame = "<div class='dataframe-wrapper'>
 <table class='dataframe python'>
   <thead>
