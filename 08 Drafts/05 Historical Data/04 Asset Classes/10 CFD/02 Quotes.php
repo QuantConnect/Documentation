@@ -4,6 +4,7 @@ $symbolPy = "self.add_cfd('XAUUSD').symbol";
 $assetClass = "CFD";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/cfd/handling-data#02-Quotes";
 $dataType = "QuoteBar";
+$supportsQuoteSize = false;
 $dataFrame = "<div class='dataframe-wrapper'>
 <table class=dataframe python'>
   <thead>
