@@ -50,12 +50,22 @@ sma_max = history_df.current.max()</pre>
 <p>
   To make the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method update the indicator with an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields'>alternative price field</a> instead of the close (or mid-price) of each bar, pass a <code>selector</code> argument.
 </p>
+
+<? if ($supportsTradeData) { ?>
 <div class="section-example-container">
 	<pre class="csharp">// Get the historical values of an indicator over the last 30 days, applying the indicator to the security's volume.
 var history = IndicatorHistory(indicator, symbol, TimeSpan.FromDays(30), selector: Field.Volume);</pre>
 	<pre class="python"># Get the historical values of an indicator over the last 30 days, applying the indicator to the security's volume.
 history = self.indicator_history(indicator, symbol, timedelta(30), selector=Field.VOLUME)</pre>
 </div>
+<? } else { ?>
+<div class="section-example-container">
+	<pre class="csharp">// Get the historical values of an indicator over the last 30 days, applying the indicator to the security's ask price.
+var history = IndicatorHistory(indicator, symbol, TimeSpan.FromDays(30), selector: Field.AskClose);</pre>
+	<pre class="python"># Get the historical values of an indicator over the last 30 days, applying the indicator to the security's ask price.
+history = self.indicator_history(indicator, symbol, timedelta(30), selector=Field.ASK_CLOSE)</pre>
+</div>
+<? }?>
 
 <p>
     Some indicators require the prices of two securities to compute their value (for example, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/beta'>Beta</a>).
