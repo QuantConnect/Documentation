@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/rolling-window/introduction.html"); ?>

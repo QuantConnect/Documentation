@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/rolling-window/cast-to-other-types.html"); ?>
