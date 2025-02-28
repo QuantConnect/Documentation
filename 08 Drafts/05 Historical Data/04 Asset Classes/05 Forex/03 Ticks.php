@@ -67,5 +67,5 @@ EURUSD  2024-12-17 00:00:01.113566    0.00016
         2024-12-17 00:00:09.222588    0.00016
 dtype: float64";
 
-include(DOCS_RESOURCES."/history/ticks-for-pairs.php");
+include(DOCS_RESOURCES."/history/ticks.php");
 ?>
