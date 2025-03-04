@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/getting-started/organizations/get-organizations-id.html"); ?>
