@@ -1,0 +1,49 @@
+<p>
+	To broadcast a command to your live algorithms, send a payload through the <a href='/docs/v2/cloud-platform/api-reference/live-management/live-commands'>QuantConnect REST API</a> or <a href='/docs/v2/lean-cli/live-trading/algorithm-control'>LEAN CLI</a>.
+	<span class='csharp'>LEAN converts the first character in each key of the payload to uppercase before injecting the data into your algorithm.</span>
+	The following script demonstrates how to broadcast a command with the REST API.
+    The source project ID is any project in your organization. It will not receive the command.
+</p>
+
+<div class="section-example-container">
+<pre class="python">from base64 import b64encode
+from hashlib import sha256
+from time import time
+from requests import get, post
+
+# Edit these values:
+USER_ID = 0
+API_TOKEN = '_____'
+
+BASE_URL = 'https://www.quantconnect.com/api/v2/'
+
+def get_headers():
+    # Get timestamp
+    timestamp = f'{int(time())}'
+    time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
+
+    # Get hased API token
+    hashed_token = sha256(time_stamped_token).hexdigest()
+    authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
+    authentication = b64encode(authentication).decode('ascii')
+
+    # Create headers dictionary.
+    return {
+        'Authorization': f'Basic {authentication}',
+        'Timestamp': timestamp
+    }
+
+def broadcast_command(source_project_id, command):
+    return post(
+        f'{BASE_URL}/live/commands/broadcast', 
+        headers=get_headers(), 
+        json={"sourceProjectId": source_project_id, "command": command}
+    ).json()
+
+# Provide your project Id and command to call the on_command event handler:
+print(broadcast_command(&lt;source_project_id&gt;, {'ticker': 'AAPL', 'quantity': 1}))
+# Provide your project Id and command with the $type to call encapsulated event handlers:
+print(broadcast_command(&lt;source_project_id&gt;, {'$type': 'MyCommand', 'ticker': 'AAPL', 'quantity': 1}))</pre>
+</div>
+
+<p>To get your user Id and API token, see <a href='/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
