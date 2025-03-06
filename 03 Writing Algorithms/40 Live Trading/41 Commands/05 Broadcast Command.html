@@ -1,8 +1,34 @@
 <p>
-  You can create the command in your algorithm and then broadcast it to all live algorithms in your organization, except the source algorithm.
-  Your algorithms will ignore commands of unregisted type name. Use <a href="/docs/v2/writing-algorithms/live-trading/commands#03 Encapsulate-Event-Handlers">encapsulate event handlers</a> to control the command data.
-  The following algorithm demonstrates how to broadcast a command for an event handler you encapsulate in a class:
+  You can create the command in your algorithm and then broadcast it to all live algorithms in your organization, except the source algorithm and commands of unregisted type name. The following algorithm demonstrates how broadcast a command to the <code class="csharp">OnCommand</code><code class="python">on_command</code> event handler in all your live algorithms:
 </p>
+
+<div class="section-example-container">
+<pre class="csharp">public class BasicBroadcastCommandAlgorithm : QCAlgorithm
+{
+    public override void Initialize() 
+    {
+        SetBenchmark(x => 1); // So the algorithm needs no asset data.
+        var broadcastResult = BroadcastCommand(new {Ticker = "AAPL", Quantity = 1});
+    }
+
+    public override bool? OnCommand(dynamic data)
+    {
+        Log($"Got command at {Time} with data: {data}");
+        return true;
+    }
+}</pre>
+<pre class="python">class BasicBroadcastCommandAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_benchmark(lambda x: 1) # So the algorithm needs no asset data.
+        link = self.broadcast_command({"ticker": "AAPL", "quantity": 1})
+
+    def on_command(self, data):
+        self.log(f'Got command at {self.time} with data: {data}')
+        return True</pre>
+</div>
+
+<p>You can control the command data by <a href="/docs/v2/writing-algorithms/live-trading/commands#03 Encapsulate-Event-Handlers">encapsulating the event handler</a> in a class. The following algorithm demonstrates how to broadcast a command for an event handler you encapsulate in a class:</p>
 
 <div class="section-example-container">
 <pre class="csharp">public class EncapsulatedAndBroadcastCommandAlgorithm : QCAlgorithm
@@ -50,33 +76,5 @@ class MyCommand(Command):
 
     def run(self, algorithm):
         algorithm.log(f"ticker: {self.ticker}; quantity: {self.quantity}; parameters: {self.parameters}")
-        return True</pre>
-</div>
-
-<p>The following algorithm demonstrates how broadcast a command to the <code>on_command</code> event handler in all your live algorithms:</p>
-
-<div class="section-example-container">
-<pre class="csharp">public class BasicBroadcastCommandAlgorithm : QCAlgorithm
-{
-    public override void Initialize() 
-    {
-        SetBenchmark(x => 1); // So the algorithm needs no asset data.
-        var broadcastResult = BroadcastCommand(new {Ticker = "AAPL", Quantity = 1});
-    }
-
-    public override bool? OnCommand(dynamic data)
-    {
-        Log($"Got command at {Time} with data: {data}");
-        return true;
-    }
-}</pre>
-<pre class="python">class BasicBroadcastCommandAlgorithm(QCAlgorithm):
-
-    def initialize(self):
-        self.set_benchmark(lambda x: 1) # So the algorithm needs no asset data.
-        link = self.broadcast_command({"ticker": "AAPL", "quantity": 1})
-
-    def on_command(self, data):
-        self.log(f'Got command at {self.time} with data: {data}')
         return True</pre>
 </div>

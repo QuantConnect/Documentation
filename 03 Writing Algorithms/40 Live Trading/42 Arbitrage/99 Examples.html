@@ -1,12 +1,12 @@
 <p>The following examples demonstrate common practices for implementing arbitrage algorithms.</p>
 
 <h4>Example 1: Long-short Bitcoin in two exchanges</h4>
-<p>The following algorithms trade an arbitrage strategy with BTCUSDT. The primary algorithm trades a simple EMA cross strategy on BTCUSDT in Kraken. The secondary algorithm trades the opposite direction in Bybit. The primary algorithm sends a command to the secondary algorithm to place an order when it fills an order. The secondary algorithm places the order and sends a confirmation back to the primary algorithm.</p>
+<p>The following algorithms trade an arbitrage strategy with BTCUSDT.</p>
 <b>Primary algorithm</b>
+<p>The primary algorithm trades a simple EMA cross strategy on BTCUSDT in Kraken. It broadcasts a command with the order filled quantity to all live deployments, and logs the command data it receives from the secondary algorithm.</p>
 <div class="section-example-container testable">
     <pre class="csharp">public class CryptoArbitrageA : QCAlgorithm
 {
-    private int _targetProjectId = 21793070;
     private Symbol _btc;
     private ExponentialMovingAverage _ema;
 
@@ -58,13 +58,10 @@
 
     public override void OnOrderEvent(OrderEvent orderEvent)
     {
-        // If an order is filled, we create a link and call the DownloadData method to send a command to the secondary algorithm.
+        // If an order is filled, we call the BroadcastCommand method to send a command to all live deployments.
+        // You can add the project ID to the command data to identigy the sender.
         if (!LiveMode || orderEvent.Status != OrderStatus.Filled) return;
-        // The link method creates a command link to the this project.
-        // We replace the project ID with the target project ID.
-        var link = Link(new { Sender = ProjectId, Ticker = "BTCUSDT", Quantity= orderEvent.FillQuantity });
-        link = link.Replace($"projectId={ProjectId}", $"projectId={_targetProjectId}");
-        var result = link.DownloadData();
+        var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = "BTCUSDT", Quantity= orderEvent.FillQuantity });
     }
 
 }</pre>
@@ -83,8 +80,6 @@
         self.warm_up_indicator(self._btc, self._ema, Resolution.MINUTE)
         # Trade when the EMA is updated.
         self._ema.updated += self.trade
-        # Set the target project ID to send commands.
-        self.target_project_id = 21790466
 
     def trade(self, _, current: IndicatorDataPoint) -&gt; None:
         ema = current.value
@@ -106,21 +101,18 @@
         return True
 
     def on_order_event(self, order_event: OrderEvent) -&gt; None:
-        # If an order is filled, we create a link and call the get method to send a command to the secondary algorithm.
+        # If an order is filled, we call the broadcast_command method to send a command to all live deployments.
+        # You can add the project ID to the command data to identigy the sender.
         if not self.live_mode or order_event.status != OrderStatus.FILLED:
             return
-        # The link method creates a command link to the this project. 
-        # We replace the project ID with the target project ID.
-        link = self.link({"sender": self.project_id, "ticker": f"BTCUSDT", "quantity": order_event.fill_quantity})
-        link = link.replace(f'projectId={self.project_id}', f'projectId={self.target_project_id}')
-        result = Extensions.download_data(link)</pre>
+        broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": f"BTCUSDT", "quantity": order_event.fill_quantity})</pre>
 </div>
 
 <b>Secondary algorithm</b>
+<p>The secondary algorithm trades the opposite direction of the primary in Bybit using the command it receives from the primary algorithm. It broadcasts a command with the order filled quantity to all live deployments.</p>
 <div class="section-example-container testable">
     <pre class="csharp">public class CryptoArbitrageB : QCAlgorithm
 {
-    private int _targetProjectId = 21792896;
     private Symbol _btc;
 
     public override void Initialize()
@@ -146,13 +138,10 @@
 
     public override void OnOrderEvent(OrderEvent orderEvent)
     {
-        // If an order is filled, we create a link and call the DownloadData method to send a command to the primary algorithm.
+        // If an order is filled, we call the BroadcastCommand method to send a command to all live deployments.
+        // You can add the project ID to the command data to identigy the sender.
         if (!LiveMode || orderEvent.Status != OrderStatus.Filled) return;
-        // The link method creates a command link to the this project.
-        // We replace the project ID with the target project ID.
-        var link = Link(new { Sender = ProjectId, Ticker = "BTCUSDT", Quantity= orderEvent.FillQuantity });
-        link = link.Replace($"projectId={ProjectId}", $"projectId={_targetProjectId}");
-        var result = link.DownloadData();
+        var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = "BTCUSDT", Quantity= orderEvent.FillQuantity });
     }
 
 }</pre>
@@ -166,9 +155,6 @@
         # Request BTCUSDT data to trade.
         self._btc = self.add_crypto("BTCUSDT").symbol
 
-        # Set the target project ID to send commands.
-        self.target_project_id = 21790463
-
     def on_command(self, data: DynamicData) -&gt; Optional[bool]:
         # The algorithm will trade the opposite direction of the primary algorithm.
         self.log(f'Got command at {self.time} with data: {data}')
@@ -178,12 +164,9 @@
         return True
 
     def on_order_event(self, order_event: OrderEvent) -&gt; None:
-        # If an order is filled, we create a link and call the get method to send a command to the primary algorithm.
+        # If an order is filled, we call the broadcast_command method to send a command to all live deployments.
+        # You can add the project ID to the command data to identigy the sender.
         if not self.live_mode or order_event.status != OrderStatus.FILLED:
             return
-        # The link method creates a command link to the this project. 
-        # We replace the project ID with the target project ID.
-        link = self.link({"sender": self.project_id, "ticker": f"BTCUSDT", "quantity": order_event.fill_quantity})
-        link = link.replace(f'projectId={self.project_id}', f'projectId={self.target_project_id}')
-        result = Extensions.download_data(link)</pre>
+        broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": f"BTCUSDT", "quantity": order_event.fill_quantity})</pre>
 </div>

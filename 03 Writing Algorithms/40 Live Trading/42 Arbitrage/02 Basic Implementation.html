@@ -1,17 +1,14 @@
 <p>
-    You can create a <a href='/docs/v2/writing-algorithms/live-trading/commands#04-Send-Command-Link'>link</a> to the command in your algorithm and then use <code class='python'>Extensions.download_data</code><code class='csharp'>DownloadData</code> method to "click" the link and execute the event handler in another project:
+    You can <a href='/docs/v2/writing-algorithms/live-trading/commands#05-Broadcast-Command'>broadcast</a> a command from and execute the event handler in another project. Add the project ID to the command data to identify the source of the command:
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">public class BasicLinkedCommandAlgorithm : QCAlgorithm
+<pre class="csharp">public class BasicBroadcastCommandAlgorithm : QCAlgorithm
 {
     public override void Initialize() 
     {
         SetBenchmark(x => 0);           // So the algorithm needs no asset data.
-        var targetProjectId = 21790466; // The project ID of the algorithm you want to send the command to
-        var link = Link(new { Sender = ProjectId, Ticker = "AAPL", Quantity = 1 });
-        link = link.Replace($"projectId={ProjectId}", $"projectId={targetProjectId}");
-        var result = link.DownloadData();
+        var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = "AAPL", Quantity = 1 });
     }
 
     public override bool? OnCommand(dynamic data)
@@ -21,13 +18,10 @@
         return true;
     }
 }</pre>
-<pre class="python">class BasicLinkedCommandAlgorithm(QCAlgorithm):
+<pre class="python">class BasicBroadcastCommandAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_benchmark(lambda x: 0) # So the algorithm needs no asset data.
-        target_project_id = 21790466    # The project ID of the algorithm you want to send the command to
-        link = self.link({"sender": self.project_id, "ticker": "AAPL", "quantity": 1})
-        link = link.replace(f'projectId={self.project_id}', f'projectId={target_project_id}')
-        result = Extensions.download_data(link)
+        broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": "AAPL", "quantity": 1})
     
     def on_command(self, data):
         # Receive the command from the other algorithm
