@@ -58,5 +58,6 @@ daily_returns = history.close.pct_change().iloc[1:]</pre>
 history = self.history[<?=$dataType?>](symbol, 5, Resolution.DAILY)
 # Iterate through the TradeBar objects and access their volumes.
 for trade_bar in history:
+    t = trade_bar.end_time
     volume = trade_bar.volume</pre>
 </div>
