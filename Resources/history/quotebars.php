@@ -60,10 +60,12 @@ history = self.history[<?=$dataType?>](symbol, 5, Resolution.MINUTE)
 <? if ($supportsQuoteSize) { ?>
 # Iterate through each QuoteBar and calculate the dollar volume on the bid.
 for quote_bar in history:
+    t = quote_bar.end_time
     bid_dollar_volume = quote_bar.last_bid_size * quote_bar.bid.close
 <? } else { ?>
 # Iterate through each QuoteBar and calculate the spread.
 for quote_bar in history:
+    t = quote_bar.end_time
     spread = quote_bar.ask.close - quote_bar.bid.close
 <? } ?>
 </pre>
