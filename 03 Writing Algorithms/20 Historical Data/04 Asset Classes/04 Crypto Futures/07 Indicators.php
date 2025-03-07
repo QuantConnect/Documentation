@@ -2,7 +2,7 @@
 $symbolC = "AddCryptoFuture(\"BTCUSD\").Symbol";
 $targetSymbolC = "AddCryptoFuture(\"DOGEUSD\").Symbol";
 $symbolPy = "self.add_crypto_future('BTCUSD').symbol";
-$targetSymbolPy = "self.add_crypto('DOGEUSD').symbol";
+$targetSymbolPy = "self.add_crypto_future('DOGEUSD').symbol";
 $assetClass = "CryptoFuture";
 $supportsTradeData = true;
 $dataFrame = "<div class='dataframe-wrapper'>
