@@ -71,10 +71,12 @@ history = self.history[Tick](symbol, timedelta(2), Resolution.TICK)
 # Iterate through each quote tick and calculate the quote size.
 for tick in history:
     if tick.tick_type == TickType.Quote:
+        t = tick.end_time
         size = max(tick.bid_size, tick.ask_size)
 <? } else { ?>
 # Iterate through each quote tick and calculate the spread.
 for tick in history:
+    t = tick.end_time
     spread = tick.bid_price - tick.ask_price
 <? } ?></pre>
 </div>
