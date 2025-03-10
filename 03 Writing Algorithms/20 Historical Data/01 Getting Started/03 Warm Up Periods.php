@@ -25,7 +25,7 @@ self.add_equity("SPY", Resolution.DAILY)</pre>
         <pre class="python">self.set_warm_up(10, Resolution.DAILY)</pre>
     </div>
 
-    <li>In the <code class='python'>on_data</code><code class='csharp'>OnData</code> method, <a href='/docs/v2/writing-algorithms/logging'>log</a> the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time</a> and <a href='/docs/v2/drafts/historical-data/warm-up-periods#03-Warm-Up-Vs-Reality'>warm-up state</a>.</li>
+    <li>In the <code class='python'>on_data</code><code class='csharp'>OnData</code> method, <a href='/docs/v2/writing-algorithms/logging'>log</a> the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time</a> and <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods#07-Warm-Up-vs-History-Requests'>warm-up state</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">Log($"IsWarmingUp at {Time}: {IsWarmingUp}");</pre>
         <pre class="python">self.log(f"self.is_warming_up at {self.time}: {self.is_warming_up}")</pre>
