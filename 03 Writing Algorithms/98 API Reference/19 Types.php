@@ -70,6 +70,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/order-ticket.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/piercing.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/resolution.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/rest-response.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/rickshaw-man.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/rise-fall-three-methods.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/scheduled-event.html"); ?>
