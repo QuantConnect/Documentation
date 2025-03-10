@@ -1092,6 +1092,7 @@ paths:
       - 99 API Reference
       - 07 Live Management
       - 05 Live Commands
+      - 01 Create Live Command
       summary: Create a live command.
       requestBody:
         description: Sends a command to a live deployment to trigger an action such as placing orders.
@@ -1099,6 +1100,37 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateLiveCommandRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/commands/broadcast:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 07 Live Management
+      - 05 Live Commands
+      - 02 Broadcast Live Command
+      summary: Broadcast a live command to all live algorithms in the organization.
+      requestBody:
+        description: Broadcasts a command to all live deployments in the organization.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastLiveCommandRequest'
         required: true
       responses:
         "200":
@@ -2397,6 +2429,18 @@ components:
         projectId:
           type: integer
           description: Project for the live instance we want to run the command against.
+          example: 19626262
+        command:
+          type: object
+          description: The command to run.
+          example: { "$type": "OrderCommand", "symbol": { "id": "BTCUSD 2XR", "value": "BTCUSD" }, "order_type": "market", "quantity": "0.1", "limit_price": 0, "stop_price": 0, "tag": "" }
+      description: Request to create a live command.
+    BroadcastLiveCommandRequest:
+      type: object
+      properties:
+        sourceProjectId:
+          type: integer
+          description: Project for the live instance we want to source the command from.
           example: 19626262
         command:
           type: object
