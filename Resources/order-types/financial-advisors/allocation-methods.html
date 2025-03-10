@@ -7,7 +7,7 @@
     DefaultOrderProperties = new InteractiveBrokersOrderProperties()
     {
         FaGroup = "TestGroupEQ",
-        FaMethod = "EqualQuantity",
+        FaMethod = "Equal",
         Account = "DU123456"
     };
 }
@@ -21,7 +21,7 @@ public override void OnData(Slice slice)
     # Set the default order properties
     self.default_order_properties = InteractiveBrokersOrderProperties()
     self.default_order_properties.fa_group = "TestGroupEQ"
-    self.default_order_properties.fa_method = "EqualQuantity"
+    self.default_order_properties.fa_method = "Equal"
     self.default_order_properties.account = "DU123456"
 
 def on_data(self, slice: Slice) -&gt; None:
@@ -31,7 +31,7 @@ def on_data(self, slice: Slice) -&gt; None:
 
 <p>To adjust the order properties of an order, change the <code class="csharp">DefaultOrderProperties</code><code class="python">default_order_properties</code> or pass an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>order properties object</a> to the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order method</a>. The following sections explain the FA group allocation methods.</p>
 
-<h4>Equal Quantity</h4>
+<h4>Equal</h4>
 <p>This group allocation method distributes shares equally between all accounts in the group. When you use this method, you need to specify an order quantity.</p>
 
 <p>For example, say your Account Group includes four accounts and you place an order to buy 400 shares of a stock. In this case, each account receives 100 shares. If your Account Group includes six accounts, each account receives 66 shares, and then 1 share is allocated to each account until all are distributed. After you submit the order, your algorithm receives <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> to track the order progress. When all the shares are bought, the order status is <code class="csharp">OrderStatus.Filled</code><code class="python">OrderStatus.FILLED</code>. If one of the accounts in the group can't afford 10 of the shares it needs to buy, 10 shares are cancelled and you'll only end up buying 390 shares in total.</p>
@@ -41,11 +41,11 @@ def on_data(self, slice: Slice) -&gt; None:
     _symbol, quantity, limitPrice, 
     orderProperties: new InteractiveBrokersOrderProperties
     { 
-        FaMethod = "EqualQuantity" 
+        FaMethod = "Equal" 
     }
 );</pre>
     <pre class="python">order_properties = InteractiveBrokersOrderProperties()
-order_properties.fa_method = "EqualQuantity"
+order_properties.fa_method = "Equal"
 self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 
