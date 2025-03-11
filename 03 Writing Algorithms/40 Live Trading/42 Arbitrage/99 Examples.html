@@ -61,7 +61,7 @@
         // If an order is filled, we call the BroadcastCommand method to send a command to all live deployments.
         // You can add the project ID to the command data to identigy the sender.
         if (!LiveMode || orderEvent.Status != OrderStatus.Filled) return;
-        var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = "BTCUSDT", Quantity= orderEvent.FillQuantity });
+        var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = $"{orderEvent.Symbol.Value}", Portfolio[orderEvent.Symbol].Quantity });
     }
 
 }</pre>
@@ -105,7 +105,7 @@
         # You can add the project ID to the command data to identigy the sender.
         if not self.live_mode or order_event.status != OrderStatus.FILLED:
             return
-        broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": f"BTCUSDT", "quantity": order_event.fill_quantity})</pre>
+        broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": f"{order_event.symbol.value}", "quantity": self.portfolio[order_event.symbol].quantity})</pre>
 </div>
 
 <b>Secondary algorithm</b>
@@ -130,7 +130,7 @@
     {
         // The algorithm will trade the opposite direction of the primary algorithm.
         Log($"Got command at {Time} with data: {data}");
-        var quantity = -decimal.Parse(data.Quantity);
+        var quantity = -(Portfolio[_btc].Quantity + (decimal)data.Quantity);
         if (quantity != 0)
             MarketOrder(_btc, quantity, tag:data.ToString());
         return true;
@@ -141,7 +141,7 @@
         // If an order is filled, we call the BroadcastCommand method to send a command to all live deployments.
         // You can add the project ID to the command data to identigy the sender.
         if (!LiveMode || orderEvent.Status != OrderStatus.Filled) return;
-        var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = "BTCUSDT", Quantity= orderEvent.FillQuantity });
+        var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = $"{orderEvent.Symbol.Value}", Portfolio[orderEvent.Symbol].Quantity });
     }
 
 }</pre>
@@ -158,7 +158,7 @@
     def on_command(self, data: DynamicData) -&gt; Optional[bool]:
         # The algorithm will trade the opposite direction of the primary algorithm.
         self.log(f'Got command at {self.time} with data: {data}')
-        quantity = -float(data.quantity)
+        quantity = -(self.portfolio[self._btc].quantity + float(data.quantity))
         if quantity != 0:
             self.market_order(self._btc, quantity, tag=str(data))
         return True
@@ -168,5 +168,5 @@
         # You can add the project ID to the command data to identigy the sender.
         if not self.live_mode or order_event.status != OrderStatus.FILLED:
             return
-        broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": f"BTCUSDT", "quantity": order_event.fill_quantity})</pre>
+        broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": f"{order_event.symbol.value}", "quantity": self.portfolio[order_event.symbol].quantity})</pre>
 </div>
