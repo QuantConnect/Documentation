@@ -1,8 +1,7 @@
 <p>
 	To broadcast a command to your live algorithms, send a payload through the <a href='/docs/v2/cloud-platform/api-reference/live-management/live-commands'>QuantConnect REST API</a> or <a href='/docs/v2/lean-cli/live-trading/algorithm-control'>LEAN CLI</a>.
 	<span class='csharp'>LEAN converts the first character in each key of the payload to uppercase before injecting the data into your algorithm.</span>
-	The following script demonstrates how to broadcast a command with the REST API.
-    The source project ID is any project in your organization. It will not receive the command.
+	The following script demonstrates how to broadcast a command to all projects in your organization with the REST API.
 </p>
 
 <div class="section-example-container">
@@ -14,6 +13,7 @@ from requests import get, post
 # Edit these values:
 USER_ID = 0
 API_TOKEN = '_____'
+ORGANIZATION_ID = '_____'
 
 BASE_URL = 'https://www.quantconnect.com/api/v2/'
 
@@ -33,17 +33,17 @@ def get_headers():
         'Timestamp': timestamp
     }
 
-def broadcast_command(source_project_id, command):
+def broadcast_command(command):
     return post(
         f'{BASE_URL}/live/commands/broadcast', 
         headers=get_headers(), 
-        json={"sourceProjectId": source_project_id, "command": command}
+        json={"organizationId": ORGANIZATION_ID, "command": command}
     ).json()
 
-# Provide your project Id and command to call the on_command event handler:
-print(broadcast_command(&lt;source_project_id&gt;, {'ticker': 'AAPL', 'quantity': 1}))
-# Provide your project Id and command with the $type to call encapsulated event handlers:
-print(broadcast_command(&lt;source_project_id&gt;, {'$type': 'MyCommand', 'ticker': 'AAPL', 'quantity': 1}))</pre>
+# Provide the command to call the on_command event handler:
+print(broadcast_command({'ticker': 'AAPL', 'quantity': 1}))
+# Provide the command with the $type to call encapsulated event handlers:
+print(broadcast_command({'$type': 'MyCommand', 'ticker': 'AAPL', 'quantity': 1}))</pre>
 </div>
 
-<p>To get your user Id and API token, see <a href='/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
+<p>To get your user Id, API token, and organization Id, see <a href='/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a> and <a href='/docs/v2/cloud-platform/organizations/getting-started#05-Get-Organization-Id'>Get Organization Id</a>.</p>
