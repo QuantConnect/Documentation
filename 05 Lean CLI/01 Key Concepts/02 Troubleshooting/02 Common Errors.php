@@ -126,6 +126,14 @@
             <td>
                 Your Docker installation has pulled the incorrect platform version of the LEAN Docker image. Open your terminal. Run <code>docker rmi quantconnect/lean</code> to remove the <span class="public-file-name">quantconnect/lean</span> image and then run <code>docker pull quantconnect/lean --platform=linux/amd64</code>.
             </td>
+        </tr> 
+        <tr>
+            <td>
+                <div class="error-messages">Could not find file '/root/ibgateway/ibgateway'.</div>
+            </td>
+            <td>
+                Your Docker installation has pulled the ARM platform version of the LEAN Docker image. This version doesn't include IB Gateway, because QuantConnect doesn't support Interactive Brokers integration with ARM chips (e.g.: Apple M1, M2, and M3 chips).
+            </td>
         </tr>
     </tbody>
 </table>

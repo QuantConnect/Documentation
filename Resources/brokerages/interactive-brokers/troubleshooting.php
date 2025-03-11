@@ -94,6 +94,16 @@
                 IB didn't repond to an order request. Stop and re-deploy the algorithm. On the next deployment, LEAN retrieves this order or the positions it opened or closed.
             </td>
         </tr>
+        <? if ($localPlatformOrCli){ ?>
+        <tr>
+            <td>
+                <div class="error-messages">Could not find file '/root/ibgateway/ibgateway'.</div>
+            </td>
+            <td>
+                Your Docker installation has pulled the ARM platform version of the LEAN Docker image. This version doesn't include IB Gateway, because QuantConnect doesn't support Interactive Brokers integration with ARM chips (e.g.: Apple M1, M2, and M3 chips).
+            </td>
+        </tr>
+        <?}?>
     </tbody>
 </table>
 
