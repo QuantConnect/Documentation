@@ -91,7 +91,7 @@
                 <div class="error-messages">Timeout waiting for brokerage response for brokerage order id 37 lean id 31</div>
             </td>
             <td>
-                IB didn't repond to an order request. Stop and re-deploy the algorithm. On the next deployment, LEAN retrieves this order or the positions it opened or closed.
+                IB didn't respond to an order request. Stop and re-deploy the algorithm. On the next deployment, LEAN retrieves this order or the positions it opened or closed.
             </td>
         </tr>
         <? if ($localPlatformOrCli){ ?>
