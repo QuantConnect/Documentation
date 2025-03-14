@@ -1,6 +1,6 @@
 <?
 $symbolC = "var future = AddFuture(Futures.Indices.SP500EMini);
-        var contractSymbols = FutureChainProvider.GetFutureContractList(_continuous, Time);
+        var contractSymbols = FutureChainProvider.GetFutureContractList(future.Symbol, Time);
         var symbol = contractSymbols.OrderBy(symbol => symbol.ID.Date).First();";
 $symbolPy = "future = self.add_future(Futures.Indices.SP_500_E_MINI)
         contract_symbols = self.future_chain_provider.get_future_contract_list(future.symbol, self.time)
