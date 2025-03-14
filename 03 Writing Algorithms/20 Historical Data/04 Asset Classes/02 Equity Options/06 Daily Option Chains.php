@@ -15,15 +15,15 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 23);
-        // Add a universe of US Equities based on the constituents of an ETF.
-        var universe = AddUniverse(Universe.ETF("SPY"));
-        // Get 5 days of history for the universe.
-        var history = History(universe, TimeSpan.FromDays(5));
-        // Iterate through each day of the universe history.
-        foreach (var constituents in history)
+        // Add an Equity Option universe.
+        var option = AddOption("SPY");
+        // Get the trailing 5 daily Option chains.
+        var history = History&lt;OptionUniverse&gt;(option.Symbol, 5);
+        // Iterate through each day of the history.
+        foreach (var optionUniverse in history)
         {
-            // Select the 2 assets with the smallest weights in the ETF on this day.
-            var dailyLargest = constituents.Select(c => c as ETFConstituentData).OrderByDescending(c => c.Weight).Take(2);
+            // Select the 2 contracts with the most volume.
+            var mostTraded = optionUniverse.Select(c => c as OptionUniverse).OrderByDescending(c => c.Volume).Take(2);
         }
     }
 }</pre>
