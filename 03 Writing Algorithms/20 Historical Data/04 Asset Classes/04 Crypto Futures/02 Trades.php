@@ -1,6 +1,6 @@
 <?
-$symbolC = "AddCryptoFuture(\"BTCUSD\").Symbol";
-$symbolPy = "self.add_crypto_future('BTCUSD').symbol";
+$symbolC = "var symbol = AddCryptoFuture(\"BTCUSD\").Symbol;";
+$symbolPy = "symbol = self.add_crypto_future('BTCUSD').symbol";
 $assetClass = "CryptoFuture";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/crypto-futures/handling-data#03-Trades";
 $dataType = "TradeBar";
