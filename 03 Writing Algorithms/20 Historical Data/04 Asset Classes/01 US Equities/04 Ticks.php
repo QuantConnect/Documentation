@@ -1,6 +1,6 @@
 <?
-$symbolC = "AddEquity(\"SPY\").Symbol";
-$symbolPy = "self.add_equity('SPY').symbol";
+$symbolC = "var symbol = AddEquity(\"SPY\").Symbol;";
+$symbolPy = "symbol = self.add_equity('SPY').symbol";
 $assetClass = "USEquity";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/us-equity/handling-data#05-Ticks";
 $dataType = "Tick";
