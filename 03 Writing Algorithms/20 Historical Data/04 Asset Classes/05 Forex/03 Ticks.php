@@ -1,6 +1,6 @@
 <?
-$symbolC = "AddForex(\"EURUSD\").Symbol";
-$symbolPy = "self.add_forex('EURUSD').symbol";
+$symbolC = "var symbol = AddForex(\"EURUSD\").Symbol;";
+$symbolPy = "symbol = self.add_forex('EURUSD').symbol";
 $assetClass = "Forex";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/forex/handling-data#03-Ticks";
 $dataType = "Tick";
