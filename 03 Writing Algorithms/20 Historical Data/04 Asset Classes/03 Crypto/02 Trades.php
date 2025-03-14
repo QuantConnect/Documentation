@@ -1,6 +1,6 @@
 <?
-$symbolC = "AddCrypto(\"BTCUSD\").Symbol";
-$symbolPy = "self.add_crypto('BTCUSD').symbol";
+$symbolC = "var symbol = AddCrypto(\"BTCUSD\").Symbol;";
+$symbolPy = "symbol = self.add_crypto('BTCUSD').symbol";
 $assetClass = "Crypto";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/crypto/handling-data#03-Trades";
 $dataType = "TradeBar";
