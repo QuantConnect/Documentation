@@ -1,7 +1,7 @@
 
 <?
-$symbolC = "AddCfd(\"XAUUSD\").Symbol";
-$symbolPy = "self.add_cfd('XAUUSD').symbol";
+$symbolC = "AddCfd(\"XAUUSD\");";
+$symbolPy = "self.add_cfd('XAUUSD')";
 $dataType = "QuoteBar";
 
 include(DOCS_RESOURCES."/history/slices.php");
