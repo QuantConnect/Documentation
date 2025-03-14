@@ -1,7 +1,7 @@
 <?
 $symbolC = "var equity = AddEquity(\"SPY\").Symbol;
         var symbol = OptionChain(equity.Symbol).OrderBy(c => c.OpenInterest).Last().Symbol;";
-$symbolPy = "equity = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
+$symbolPy = "equity = self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW)
         symbol = sorted(self.option_chain(equity.symbol), key=lambda c: c.open_interest)[-1].symbol";
 $assetClass = "EquityOption";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#02-Trades";
