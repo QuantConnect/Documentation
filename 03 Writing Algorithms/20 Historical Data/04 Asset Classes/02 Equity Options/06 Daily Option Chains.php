@@ -37,6 +37,7 @@
         history = self.history(universe, 5, flatten=True)</pre>
 </div>
 
+<div class="dataframe-wrapper">
 <table class="dataframe python">
   <thead>
     <tr style="text-align: right;">
@@ -269,6 +270,7 @@
     </tr>
   </tbody>
 </table>
+</div>
 
 
 <div class="python section-example-container">
