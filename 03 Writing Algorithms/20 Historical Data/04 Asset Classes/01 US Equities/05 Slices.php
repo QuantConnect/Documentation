@@ -1,5 +1,5 @@
 <?
-$symbolC = "AddEquity(\"SPY\")";
+$symbolC = "AddEquity(\"SPY\");";
 $symbolPy = "self.add_equity('SPY')";
 $dataType = "TradeBar";
 
