@@ -896,6 +896,16 @@ Started backtest named 'Swimming Orange Lemur' for project 'Project Name'
       .
      </td>
     </tr>
+    <tr>
+     <td>
+      <div class="error-messages">
+       Could not find file '/root/ibgateway/ibgateway'.
+      </div>
+     </td>
+     <td>
+      Your Docker installation has pulled the ARM platform version of the LEAN Docker image. This version doesn't include IB Gateway, because QuantConnect doesn't support Interactive Brokers integration with ARM chips (e.g.: Apple M1, M2, and M3 chips).
+     </td>
+    </tr>
    </tbody>
   </table>
  </body>
@@ -9463,6 +9473,13 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
     lean live deploy
    </a>
    reference.
+  </p>
+  <p>
+   If you have an ARM M1, M2, or M3 chip, Interactive Brokers is not supported, see the
+   <a href="#1.2">
+    Troubleshooting
+   </a>
+   .
   </p>
  </body>
 </html>
@@ -21605,7 +21622,11 @@ Launched: 2021-06-09 15:10:12 UTC</pre>
 <html>
  <body>
   <p>
-   If you have an ARM M1 chip, you can't deploy a local live algorithm with the IB brokerage.
+   If you have an ARM M1, M2, or M3 chip, you can't deploy a local live algorithm with the IB brokerage, see the
+   <a href="#8.1/interactive-brokers#09-Troubleshooting">
+    Troubleshooting
+   </a>
+   .
   </p>
   <p>
    Follow these steps to start local live trading with the Interactive Brokers brokerage:
@@ -21885,6 +21906,22 @@ Enable delayed market data? [yes/no]: </pre>
      </td>
     </tr>
     <tr>
+     <td nowrap="">
+      <div class="error-messages">
+       Login to the IB Gateway failed because
+       <br/>
+       a user account-tasks is required.
+      </div>
+     </td>
+     <td>
+      Download
+      <a href="https://www.interactivebrokers.com/en/trading/ibgateway-stable.php" rel="nofollow" target="_blank">
+       IB Gateway
+      </a>
+      , run it, and follow the instructions provided.
+     </td>
+    </tr>
+    <tr>
      <td rowspan="2">
       <div class="error-messages">
        An existing session was detected and will not be automatically disconnected.
@@ -21993,7 +22030,17 @@ Enable delayed market data? [yes/no]: </pre>
       </div>
      </td>
      <td>
-      IB didn't repond to an order request. Stop and re-deploy the algorithm. On the next deployment, LEAN retrieves this order or the positions it opened or closed.
+      IB didn't respond to an order request. Stop and re-deploy the algorithm. On the next deployment, LEAN retrieves this order or the positions it opened or closed.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <div class="error-messages">
+       Could not find file '/root/ibgateway/ibgateway'.
+      </div>
+     </td>
+     <td>
+      Your Docker installation has pulled the ARM platform version of the LEAN Docker image. This version doesn't include IB Gateway, because QuantConnect doesn't support Interactive Brokers integration with ARM chips (e.g.: Apple M1, M2, and M3 chips).
      </td>
     </tr>
    </tbody>
@@ -37563,6 +37610,8 @@ if __name__ == '__main__':
        Quote
        <br/>
        Bulk
+       <br/>
+       Universe
        <br/>
        OpenInterest&gt;
       </code>
