@@ -1,5 +1,5 @@
 <?
-$symbolC = "var equity = AddEquity(\"SPY\").Symbol;
+$symbolC = "var equity = AddEquity(\"SPY\", dataNormalizationMode: DataNormalizationMode.Raw);
         var symbol = OptionChain(equity.Symbol).OrderBy(c => c.OpenInterest).Last().Symbol;";
 $symbolPy = "equity = self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW)
         symbol = sorted(self.option_chain(equity.symbol), key=lambda c: c.open_interest)[-1].symbol";
