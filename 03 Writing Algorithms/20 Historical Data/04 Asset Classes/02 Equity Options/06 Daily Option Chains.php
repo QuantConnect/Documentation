@@ -22,6 +22,7 @@
         // Iterate through each day of the history.
         foreach (var optionUniverse in history)
         {
+            var t = optionUniverse.EndTime;
             // Select the 2 contracts with the most volume.
             var mostTraded = optionUniverse.Select(c => c as OptionUniverse).OrderByDescending(c => c.Volume).Take(2);
         }
