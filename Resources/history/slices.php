@@ -11,7 +11,8 @@
     {
         SetStartDate(2024, 12, 1);
         // Add some securities and datasets.
-        <?=$symbolC?>;
+        <?=$symbolC?>
+
 <? if ($dataType == "TradeBar") { ?>
         // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
         var history = History(5, Resolution.Daily);
