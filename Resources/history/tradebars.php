@@ -14,7 +14,8 @@
     {
         SetStartDate(2024, 12, 19);
         // Get the Symbol of a security.
-        var symbol = <?=$symbolC?>;
+        <?=$symbolC?>
+
         // Get the 5 trailing daily <?=$dataType?> objects of the security. 
         var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Daily);
         // Iterate through each TradeBar and calculate its dollar volume.
@@ -30,7 +31,7 @@
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
         # Get the Symbol of a security.
-        symbol = <?=$symbolPy?>
+        <?=$symbolPy?>
 
         # Get the 5 trailing daily <?=$dataType?> objects of the security in DataFrame format. 
         history = self.history(<?=$dataType?>, symbol, 5, Resolution.DAILY)</pre>
