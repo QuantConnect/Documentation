@@ -1,1 +1,175 @@
+<p class='csharp'>
+  To get historical <a href='/datasets/quantconnect-vixcentral-contango'>contango data for VX Futures</a>, call the <code>History&lt;<span class='placeholder-text'>VIXCentralContango</span>&gt;</code> method with the dataset <code>Symbol</code>.
+</p>
 
+<p class='python'>
+  To get historical <a href='/datasets/quantconnect-vixcentral-contango'>contango data for VX Futures</a>, call the <code>history</code> method with the dataset <code>Symbol</code>.
+  This method returns a DataFrame that contains the data point attributes.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class VIXContangoHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Add the dataset and save a reference to its Symbol.
+        var symbol = AddData&lt;VIXCentralContango&gt;("VIX", Resolution.Daily).Symbol;
+        //  Get the trailing 7 days of contango data
+        var history = History&lt;VIXCentralContango&gt;(symbol, 7, Resolution.Daily);
+        // Iterate each data point and access its attributes.
+        foreach (var dataPoint in history)
+        {
+            var t = dataPoint.EndTime;
+            var value = dataPoint.Contango_F2_Minus_F1;
+        }
+    }
+}</pre>
+    <pre class="python">class VIXContangoHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Add the dataset and save a reference to its Symbol.
+        symbol = self.add_data(VIXCentralContango, "VIX", Resolution.DAILY).symbol
+        # Get the trailing 7 days of contango data in DataFrame format.
+        history = self.history(dataset_symbol, 7, Resolution.DAILY)</pre>
+</div>
+
+<div class="dataframe-wrapper">
+<table class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>contango_f2_minus_f1</th>
+      <th>contango_f7_minus_f4</th>
+      <th>contango_f7_minus_f4_div_3</th>
+      <th>f1</th>
+      <th>f2</th>
+      <th>f3</th>
+      <th>f4</th>
+      <th>f5</th>
+      <th>f6</th>
+      <th>f7</th>
+      <th>f8</th>
+      <th>frontmonth</th>
+      <th>period</th>
+    </tr>
+    <tr>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="4" valign="top">VIX.VIXCentralContango</th>
+      <th>2024-12-13</th>
+      <td>0.1314</td>
+      <td>0.0498</td>
+      <td>0.0166</td>
+      <td>14.4062</td>
+      <td>16.2991</td>
+      <td>17.1553</td>
+      <td>17.9005</td>
+      <td>18.2460</td>
+      <td>18.5583</td>
+      <td>18.7923</td>
+      <td>18.9500</td>
+      <td>12</td>
+      <td>1 days</td>
+    </tr>
+    <tr>
+      <th>2024-12-14</th>
+      <td>0.1212</td>
+      <td>0.0497</td>
+      <td>0.0166</td>
+      <td>14.5190</td>
+      <td>16.2782</td>
+      <td>17.1250</td>
+      <td>17.9474</td>
+      <td>18.2993</td>
+      <td>18.5750</td>
+      <td>18.8390</td>
+      <td>19.0500</td>
+      <td>12</td>
+      <td>1 days</td>
+    </tr>
+    <tr>
+      <th>2024-12-17</th>
+      <td>0.1299</td>
+      <td>0.0457</td>
+      <td>0.0152</td>
+      <td>14.6997</td>
+      <td>16.6091</td>
+      <td>17.4592</td>
+      <td>18.1963</td>
+      <td>18.4965</td>
+      <td>18.7411</td>
+      <td>19.0282</td>
+      <td>19.1884</td>
+      <td>12</td>
+      <td>1 days</td>
+    </tr>
+    <tr>
+      <th>2024-12-18</th>
+      <td>0.0765</td>
+      <td>0.0389</td>
+      <td>0.0130</td>
+      <td>15.7483</td>
+      <td>16.9531</td>
+      <td>17.6666</td>
+      <td>18.2998</td>
+      <td>18.4996</td>
+      <td>18.7185</td>
+      <td>19.0108</td>
+      <td>19.1500</td>
+      <td>12</td>
+      <td>1 days</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<div class="python section-example-container">
+    <pre class="python"># Calculate the changes in contango.
+contango_diff = history.f1.diff().iloc[1:]</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>symbol                  time      
+VIX.VIXCentralContango  2024-12-14    0.1128
+                        2024-12-17    0.1807
+                        2024-12-18    1.0486
+Name: f1, dtype: float64</pre>
+</div>
+
+<p class='python'>
+  If you intend to use the data in the DataFrame to create <code>VIXCentralContango</code> objects, request that the history request returns the data type you need. 
+  Otherwise, LEAN consumes unnecessary computational resources populating the DataFrame.  
+  To get a list of dataset objects instead of a DataFrame, call the <code>history[VIXCentralContango]</code> method.
+</p>
+
+
+<div class="python section-example-container">
+    <pre class="python"># Get the trailing 7 days of contango data in VIXCentralContango format. 
+history = self.history[VIXCentralContango](symbol, 7, Resolution.DAILY)
+# Iterate through each VIXCentralContango object.
+for data_point in history:
+    t = data_point.end_time
+    value = data_point.contango_f_2_minus_f_1</pre>
+</div>
