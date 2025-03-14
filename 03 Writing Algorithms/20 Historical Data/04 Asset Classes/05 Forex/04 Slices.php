@@ -1,5 +1,5 @@
 <?
-$symbolC = "AddForex(\"EURUSD\")";
+$symbolC = "AddForex(\"EURUSD\");";
 $symbolPy = "self.add_forex('EURUSD')";
 $dataType = "QuoteBar";
 
