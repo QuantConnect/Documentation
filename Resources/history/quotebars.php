@@ -15,7 +15,8 @@
     {
         SetStartDate(2024, 12, 19);
         // Get the Symbol of a security.
-        var symbol = <?=$symbolC?>;
+        <?=$symbolC?>
+
         // Get the 5 trailing minute <?=$dataType?> objects of the security. 
         var history = History&lt;<?=$dataType?>&gt;(symbol, 5, Resolution.Minute);
         // Iterate through the QuoteBar objects and calculate the spread.
@@ -31,7 +32,7 @@
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
         # Get the Symbol of a security.
-        symbol = <?=$symbolPy?>
+        <?=$symbolPy?>
 
         # Get the 5 trailing minute <?=$dataType?> objects of the security in DataFrame format. 
         history = self.history(<?=$dataType?>, symbol, 5, Resolution.MINUTE)</pre>
