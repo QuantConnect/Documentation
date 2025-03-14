@@ -14,7 +14,8 @@
     {
         SetStartDate(2024, 12, 19);
         // Get the Symbol of a security.
-        var symbol = <?=$symbolC?>;
+        <?=$symbolC?>
+
         // Get the trailing 2 days of ticks for the security.
         var history = History&lt;Tick&gt;(symbol, TimeSpan.FromDays(2), Resolution.Tick);
 <? if ($supportsTradeData) { ?>
@@ -31,7 +32,7 @@
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
         # Get the Symbol of a security.
-        symbol = <?=$symbolPy?>
+        <?=$symbolPy?>
 
         # Get the trailing 2 days of ticks for the security in DataFrame format.
         history = self.history(symbol, timedelta(2), Resolution.TICK)</pre>
