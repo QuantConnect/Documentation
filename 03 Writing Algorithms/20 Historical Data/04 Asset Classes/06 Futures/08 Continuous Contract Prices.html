@@ -1,0 +1,127 @@
+<p>
+  To get historical trade, quote, or tick data for the <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data/universes#03-Continous-Contracts'>continuous contract</a>, use the <code class='python'>symbol</code><code class='csharp'>Symbol</code> property of the <code>Future</code> object when you make the history request.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class FutureContinuousContractHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Add the Future and specify the contract rollover settings.
+        var future = AddFuture(
+            Futures.Indices.SP500EMini,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0
+        );
+        // Get the 5 trailing daily TradeBar objects of the continuous contract. 
+        var history = History&lt;TradeBar&gt;(future.Symbol, 5, Resolution.Daily);
+        // Iterate through each TradeBar and calculate its dollar volume.
+        foreach (var bar in history)
+        {
+            var t = bar.EndTime;
+            var dollarVolume = bar.Close * bar.Volume;
+        }
+    }
+}</pre>
+    <pre class="python">class FutureContinuousContractHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Add the Future and specify the contract rollover settings.
+        future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0
+        )
+        # Get the 5 trailing daily TradeBar objects of the continuous contract. 
+        history = self.history(TradeBar, future.symbol, 5, Resolution.DAILY)</pre>
+</div>
+
+<div class='dataframe-wrapper'>
+<table class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>close</th>
+      <th>high</th>
+      <th>low</th>
+      <th>open</th>
+      <th>volume</th>
+    </tr>
+    <tr>
+      <th>expiry</th>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">1899-12-30</th>
+      <th rowspan="5" valign="top">/ES</th>
+      <th>2024-12-12 17:00:00</th>
+      <td>6132.582256</td>
+      <td>6161.935651</td>
+      <td>6129.292651</td>
+      <td>6156.368628</td>
+      <td>1152801.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-13 17:00:00</th>
+      <td>6124.990860</td>
+      <td>6158.899093</td>
+      <td>6114.869000</td>
+      <td>6151.307698</td>
+      <td>1027682.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-16 17:00:00</th>
+      <td>6150.548558</td>
+      <td>6164.719163</td>
+      <td>6138.655372</td>
+      <td>6146.499814</td>
+      <td>378263.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-17 17:00:00</th>
+      <td>6125.750000</td>
+      <td>6137.390140</td>
+      <td>6114.362907</td>
+      <td>6126.509140</td>
+      <td>278531.0</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 17:00:00</th>
+      <td>5939.500000</td>
+      <td>6148.000000</td>
+      <td>5906.500000</td>
+      <td>6124.000000</td>
+      <td>2009987.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="python section-example-container">
+    <pre class="python"># Calculate the daily returns.
+daily_returns = history.close.pct_change().iloc[1:]</pre>
+</div>
+
+
+<div class="python section-example-container">
+    <pre>expiry      symbol  time               
+1899-12-30  /ES     2024-12-13 17:00:00   -0.001238
+                    2024-12-16 17:00:00    0.004173
+                    2024-12-17 17:00:00   -0.004032
+                    2024-12-18 17:00:00   -0.030404
+Name: close, dtype: float64</pre>
+</div>
