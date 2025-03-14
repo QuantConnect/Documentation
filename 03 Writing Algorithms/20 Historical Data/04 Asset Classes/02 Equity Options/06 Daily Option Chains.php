@@ -294,7 +294,7 @@ Name: volume, dtype: float64</pre>
 </div>
 
 <p class='python'>
-  To get the data in the format of <code>OptionUniverse</code> object instead of a DataFrame, call the <code>history[OptionUniverse]</code> method.
+  To get the data in the format of <code>OptionUniverse</code> objects instead of a DataFrame, call the <code>history[OptionUniverse]</code> method.
 </p>
 
 <div class="python section-example-container">
