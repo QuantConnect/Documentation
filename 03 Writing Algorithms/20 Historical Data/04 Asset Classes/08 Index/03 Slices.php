@@ -1,5 +1,5 @@
 <?
-$symbolC = "AddIndex(\"SPX\")";
+$symbolC = "AddIndex(\"SPX\");";
 $symbolPy = "self.add_index('SPX')";
 $dataType = "TradeBar";
 
