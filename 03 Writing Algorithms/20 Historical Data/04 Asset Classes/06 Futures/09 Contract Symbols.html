@@ -1,0 +1,26 @@
+<p>
+  To get the <code>Symbol</code> objects of historical contracts, call the <code class='python'>future_chain_provider.get_future_contract_list</code><code class='csharp'>FutureChainProvider.GetFutureContractList</code> method with the continuous contract <code>Symbol</code> and a historical date.
+  This method returns a list of <code>Symbol</code> objects that represent the contracts that were tradable between the historical date and the current day.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class FutureContractListHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Add a Future.
+        var future = AddFuture(Futures.Indices.SP500EMini);
+        // Get the list of contracts that were tradable between one year ago and today.
+        var contractSymbols = FutureChainProvider.GetFutureContractList(future.Symbol, Time.AddDays(-365));
+    }
+}</pre>
+    <pre class="python">class FutureContractListHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Add a Future.
+        future = self.add_future(Futures.Indices.SP_500_E_MINI)
+        # Get the list of contracts that were tradable between one year ago and today.
+        contract_symbols = self.future_chain_provider.get_future_contract_list(future.symbol, self.time-timedelta(365*5))</pre>
+</div>
