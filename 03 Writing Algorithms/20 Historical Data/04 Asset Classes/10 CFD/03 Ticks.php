@@ -1,6 +1,6 @@
 <?
-$symbolC = "AddCfd(\"XAUUSD\").Symbol";
-$symbolPy = "self.add_cfd('XAUUSD').symbol";
+$symbolC = "var symbol = AddCfd(\"XAUUSD\").Symbol;";
+$symbolPy = "symbol = self.add_cfd('XAUUSD').symbol";
 $assetClass = "CFD";
 $dataTypeLink = "/docs/v2/writing-algorithms/securities/asset-classes/cfd/handling-data#03-Ticks";
 $dataType = "Tick";
