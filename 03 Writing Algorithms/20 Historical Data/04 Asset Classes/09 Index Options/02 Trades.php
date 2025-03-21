@@ -91,3 +91,5 @@ $series = "expiry      strike  type  symbol                    time
 
 include(DOCS_RESOURCES."/history/tradebars.php");
 ?>
+
+<p>Request minute, hour, or daily resolution data. Otherwise, the history request won't return any data.</p>
