@@ -23,7 +23,7 @@
                 continue;
             }
             // Get the 21-day SMA values of the contract for the last 5 trading days. 
-            var history = IndicatorHistory(new SimpleMovingAverage(21), symbol, 5, Resolution.Daily);
+            var history = IndicatorHistory(new SimpleMovingAverage(21), security.Symbol, 5, Resolution.Daily);
             // Get the maximum of the SMA values.
             var maxSMA = history.Max(indicatorDataPoint => indicatorDataPoint.Current.Value);
         }
