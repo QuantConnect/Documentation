@@ -20,7 +20,7 @@
 
     public void Trade()
     {
-        // Get the historical Slice objects over the last 5 days for all the subcriptions in your algorithm.
+        // Get the historical Slice objects over the last 30 minutes for all the subcriptions in your algorithm.
         var history = History(30, Resolution.Minute);
         // Iterate through each historical Slice.
         foreach (var slice in history)
