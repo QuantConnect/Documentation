@@ -158,4 +158,4 @@ dtype: float64";
 include(DOCS_RESOURCES."/history/quotebars.php");
 ?>
 
-<p>Request minute or hour resolution data. Otherwise, the history request won't return any data.</p>
+<p>Request minute, hour, or daily resolution data. Otherwise, the history request won't return any data.</p>
