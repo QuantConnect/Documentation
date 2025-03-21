@@ -8,11 +8,10 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
-        // Get the Symbol of the underlying asset.
-        var underlying = <?=$underlyingSymbolC?>;
         // Get the Symbol of the Option contract.
+        var underlying = <?=$underlyingSymbolC?>;
         var symbol = OptionChain(underlying).OrderBy(c => c.OpenInterest).Last().Symbol;
-        // Get the 21-day SMA values of the security for the last 5 trading days. 
+        // Get the 21-day SMA values of the contract for the last 5 trading days. 
         var history = IndicatorHistory(new SimpleMovingAverage(21), symbol, 5, Resolution.Daily);
         // Get the maximum of the SMA values.
         var maxSMA = history.Max(indicatorDataPoint => indicatorDataPoint.Current.Value);
@@ -22,12 +21,11 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
-        # Get the Symbol of the underlying asset.
+        # Get the Symbol of the Option contract.
         underlying = <?=$underlyingSymbolPy?>
 
-        # Get the Symbol of the Option contract.
         symbol = sorted(self.option_chain(underlying), key=lambda c: c.open_interest)[-1].symbol
-        # Get the 21-day SMA values of the security for the last 5 trading days. 
+        # Get the 21-day SMA values of the contract for the last 5 trading days. 
         history = self.indicator_history(SimpleMovingAverage(21), symbol, 5, Resolution.DAILY)</pre>
 </div>
 
@@ -64,7 +62,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
 </div>
 
 <p>
-    Some indicators require the prices of multiple securities to compute their value (for example, the <a href='<?=$indicatorLink?>'>Greeks and implied volatility indicators</a>).
+    Some indicators require the prices of multiple securities to compute their value (for example, the <a href='<?=$indicatorLink?>'>indicators for the Greeks and implied volatility</a>).
     In this case, pass a list of the <code>Symbol</code> objects to the method.
 </p>
 <div class="section-example-container">
@@ -73,7 +71,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
-        // Get the Symbol of the underling asset.
+        // Get the Symbol of the underlying asset.
         var underlying = <?=$underlyingSymbolC?>;
         // Get the Option contract Symbol.
         var option = OptionChain(underlying).OrderBy(c => c.OpenInterest).Last().Symbol;
@@ -95,7 +93,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
-        # Get the Symbol of the underling asset.
+        # Get the Symbol of the underlying asset.
         underlying = <?=$underlyingSymbolPy?>
 
         # Get the Option contract Symbol.
