@@ -143,3 +143,5 @@ for trade_bar in history:
     t = trade_bar.end_time
     volume = trade_bar.volume</pre>
 </div>
+
+<p>Request minute, hour, or daily resolution data. Otherwise, the history request won't return any data.</p>
