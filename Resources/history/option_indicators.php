@@ -83,8 +83,8 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
         );
         // Create the indicator.
         var indicator = new ImpliedVolatility(option, RiskFreeInterestRateModel, new DividendYieldProvider(underlying), mirror, OptionPricingModelType.ForwardTree);
-        // Get the historical values of the indicator over the last 10 trading minutes
-        var history = IndicatorHistory(indicator, new[] {underlying, option, mirror}, 10, Resolution.Minute);
+        // Get the historical values of the indicator over the last 60 trading minutes.
+        var history = IndicatorHistory(indicator, new[] {underlying, option, mirror}, 60, Resolution.Minute);
         // Get the average IV value.
         var avgIV = history.Average(indicatorDataPoint => indicatorDataPoint.Current.Value);
     }
@@ -109,8 +109,8 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
             option, self.risk_free_interest_rate_model, DividendYieldProvider(underlying),
             mirror, OptionPricingModelType.FORWARD_TREE
         )
-        # Get the historical values of the indicator over the last 10 minutes.
-        history = self.indicator_history(indicator, [underlying, option, mirror], 10, Resolution.MINUTE)
+        # Get the historical values of the indicator over the last 60 trading minutes.
+        history = self.indicator_history(indicator, [underlying, option, mirror], 60, Resolution.MINUTE)
         # Get the average IV value.
         iv_avg = history.data_frame.current.mean()</pre>
 </div>
