@@ -43,8 +43,7 @@
             if security.type != SecurityType.FUTURE_OPTION:
                 continue
             # Get the 21-day SMA values of the contract for the last 5 trading days. 
-            history = self.indicator_history(SimpleMovingAverage(21), security.symbol, 5, Resolution.DAILY)
-    </pre>
+            history = self.indicator_history(SimpleMovingAverage(21), security.symbol, 5, Resolution.DAILY)</pre>
 </div>
 
 <p class='python'>To organize the data into a DataFrame, use the <code>data_frame</code> property of the result.</p>
