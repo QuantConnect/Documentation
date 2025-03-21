@@ -105,7 +105,7 @@ Series(name, type, unit, color, symbol)
 <h4>Types</h4>
 
 <p>The <code>SeriesType</code> enumeration has the following members:</p>
-<div data-tree="QuantConnect.SeriesType"></div>
+<div data-tree="QuantConnect.SeriesType" data-fields="Line,Scatter,Candle,Bar,LINE,SCATTER,CANDLE,BAR"></div>
 
 <h4>Index</h4>
 

@@ -19,6 +19,9 @@
         chart.AddSeries(new Series("CROSS DOWN", SeriesType.Scatter, "$", Color.Red, ScatterMarkerSymbol.TriangleDown));
         chart.AddSeries(new Series("EMA FAST", SeriesType.Line, "$", Color.Orange));
         chart.AddSeries(new Series("EMA SLOW", SeriesType.Line, "$", Color.Blue));
+        chart = new Chart("Volume");
+        AddChart(chart);
+        chart.AddSeries(new Series("Volume", SeriesType.Bar, "", Color.Gray));
         chart = new Chart("Candlestick");
         AddChart(chart);
         chart.AddSeries(new CandlestickSeries("MSFT", "$"));
@@ -30,6 +33,7 @@
         if (data != null)
         {
             Plot("Candlestick", "MSFT", data);
+            Plot("Volume", "Volume", data.Volume);
         }
         Plot("Price", "EMA FAST", _emaFast);
         Plot("Price", "EMA SLOW", _emaSlow);
@@ -53,6 +57,9 @@
         chart.add_series(Series("CROSS DOWN", SeriesType.SCATTER, "$", Color.RED, ScatterMarkerSymbol.TRIANGLE_DOWN))
         chart.add_series(Series("EMA FAST", SeriesType.LINE, "$", Color.ORANGE))
         chart.add_series(Series("EMA SLOW", SeriesType.LINE, "$", Color.BLUE))
+        chart = Chart("Volume")
+        self.add_chart(chart)
+        chart.add_series(Series("Volume", SeriesType.BAR, "", Color.GRAY))
         chart = Chart("Candlestick")
         self.add_chart(chart)
         chart.add_series(CandlestickSeries("MSFT", "$"))
@@ -60,7 +67,8 @@
     def on_end_of_day(self, symbol: Symbol) -&gt; None:
         data = self.securities[symbol].get_last_data()
         if data:
-            self.plot("Candlestick", "MSFT", self.securities[symbol].get_last_data())
+            self.plot("Candlestick", "MSFT", data)
+            self.plot("Volume", "Volume", data.volume)
         self.plot("Price", "EMA FAST", self.ema_fast.current.value)
         self.plot("Price", "EMA SLOW", self.ema_slow.current.value)
         if (self.ema_fast &gt; self.ema_slow and self.ema_fast[1] &lt; self.ema_slow[1]):
