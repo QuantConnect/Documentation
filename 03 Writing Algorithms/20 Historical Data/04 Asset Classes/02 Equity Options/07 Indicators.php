@@ -4,9 +4,9 @@ $underlyingSymbolPy = "self.add_equity('SPY').symbol";
 $assetClass = "EquityOption";
 $indicatorLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators";
 $dataFrame = "<div class='dataframe-wrapper'>
-<table class="dataframe python">
+<table class='dataframe python'>
   <thead>
-    <tr style="text-align: right;">
+    <tr style='text-align: right;'>
       <th></th>
       <th>current</th>
       <th>rollingsum</th>
