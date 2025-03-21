@@ -77,7 +77,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
         var option = OptionChain(underlying).OrderBy(c => c.OpenInterest).Last().Symbol;
         // Get the Symbol of the mirror contract.
         var mirror = QuantConnect.Symbol.CreateOption(
-            underlying.Value, option.ID.Market, option.ID.OptionStyle,
+            underlying, option.ID.Market, option.ID.OptionStyle,
             option.ID.OptionRight == OptionRight.Put ? OptionRight.Call : OptionRight.Put,
             option.ID.StrikePrice, option.ID.Date
         );
@@ -100,7 +100,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
         option = sorted(self.option_chain(underlying), key=lambda c: c.open_interest)[-1].symbol
         # Get the Symbol of the mirror contract.
         mirror = Symbol.create_option(
-            underlying.value, option.id.market, option.id.option_style, 
+            underlying, option.id.market, option.id.option_style, 
             OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT,
             option.id.strike_price, option.id.date
         )
