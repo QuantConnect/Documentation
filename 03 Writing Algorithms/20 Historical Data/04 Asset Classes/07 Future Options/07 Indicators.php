@@ -53,7 +53,44 @@
 history_df = history.data_frame</pre>
 </div>
 
-<?=$dataFrame?>
+<div class='dataframe-wrapper'>
+<table class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>current</th>
+      <th>rollingsum</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2024-12-12 17:00:00</th>
+      <td>131.404762</td>
+      <td>2759.500</td>
+    </tr>
+    <tr>
+      <th>2024-12-13 17:00:00</th>
+      <td>132.101190</td>
+      <td>2774.125</td>
+    </tr>
+    <tr>
+      <th>2024-12-16 17:00:00</th>
+      <td>135.779762</td>
+      <td>2851.375</td>
+    </tr>
+    <tr>
+      <th>2024-12-17 17:00:00</th>
+      <td>138.047619</td>
+      <td>2899.000</td>
+    </tr>
+    <tr>
+      <th>2024-12-18 17:00:00</th>
+      <td>134.095238</td>
+      <td>2816.000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 <div class="python section-example-container">
     <pre class="python"># Get the maximum of the SMA values.
