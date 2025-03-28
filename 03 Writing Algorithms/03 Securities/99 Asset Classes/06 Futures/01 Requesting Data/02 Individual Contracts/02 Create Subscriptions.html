@@ -35,17 +35,15 @@
 <h4>Get Contract Symbols</h4>
 <p>
     To subscribe to a Future contract, you need the contract <code>Symbol</code>. 
-    The preferred method to getting Future contract <code>Symbol</code> objects is to use the <code class="csharp">FutureChainProvider</code><code class="python">future_chain_provider</code>. 
-    The <code class="csharp">GetFutureContractList</code><code class="python">get_future_contract_list</code> method of <code class="csharp">FutureChainProvider</code><code class="python">future_chain_provider</code> returns a list of <code>Symbol</code> objects for a given date and underlying Future, which you can then sort and filter to find the specific contract(s) you want to trade. 
+    The preferred method to getting Future contract <code>Symbol</code> objects is to use the <code class="csharp">FuturesChain</code><code class="python">futures_chain</code> method. 
+    This method returns a <code>FuturesChain</code> object, which represent an entire chain of Option contracts for a single underlying security.
+    <span class='python'>You can even format the chain data into a DataFrame where each row in the DataFrame represents a single contract.</span>
+    With the chain, sort and filter the data to find the specific contract(s) you want to trade.
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">var contractSymbols = FutureChainProvider.GetFutureContractList(_continuous, Time);
-var expiry = contractSymbols.Min(symbol => symbol.ID.Date);
-_contractSymbol = contractSymbols.FirstOrDefault(symbol => symbol.ID.Date == expiry);</pre>
-    <pre class="python">contract_symbols = self.future_chain_provider.get_future_contract_list(self._continuous, self.time)
-expiry = min([symbol.id.date for symbol in contract_symbols])
-self._contract_symbol = next(symbol for symbol in contract_symbols if symbol.id.date == expiry)</pre>
+    <pre class="csharp">_contractSymbol = FuturesChain(_continuous).First().Symbol;</pre>
+    <pre class="python">self._contract_symbol = list(self.futures_chain(self._continuous))[0].symbol</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
