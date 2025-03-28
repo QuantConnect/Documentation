@@ -5,7 +5,7 @@
  Example 1: Future Contract Expiry
 </h4>
 <p>
- The below example demonstrates the use of the security identifier of a Future contract to access its expiry date for contract selection and schedule a singular non-repeating event to rollover using
+ The following example demonstrates the use of the security identifier of a Future contract to access its expiry date for contract selection and schedule a singular non-repeating event to rollover using
  <code class="csharp">
   future.Symbol.ID.Date
  </code>
@@ -116,9 +116,7 @@
     def open_future_position(self, symbol: Symbol, min_expiry: DateTime, quantity: float) -&gt; None:
         # Select the next mapped future contract with the nearest expiry,
         # which should be further than the current contract.
-        future_list = self.future_chain_provider.get_future_contract_list(symbol, self.time)
-        selected = sorted([x for x in future_list if x.id.date &gt; min_expiry],
-                          key=lambda x: x.id.date)[0]
+        selected = selected = [c.symbol for c in self.futures_chain(symbol) if c.expiry > min_expiry][0]
         # Subscribe to its data to trade it.
         self._future = self.add_future_contract(selected, extended_market_hours=True)
 
