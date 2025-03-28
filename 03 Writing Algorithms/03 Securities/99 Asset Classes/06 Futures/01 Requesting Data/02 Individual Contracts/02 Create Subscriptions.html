@@ -15,9 +15,7 @@
     {
         if (_contractSymbol == null)
         {
-            var contractSymbols = FutureChainProvider.GetFutureContractList(_continuous, Time);
-            var expiry = contractSymbols.Min(symbol => symbol.ID.Date);
-            _contractSymbol = contractSymbols.FirstOrDefault(symbol => symbol.ID.Date == expiry);
+            _contractSymbol = FuturesChain(_continuous).First().Symbol;
             AddFutureContract(_contractSymbol);
         }
     }
@@ -30,9 +28,7 @@
     
     def on_data(self, data):
         if not self._contract_symbol:
-            contract_symbols = self.future_chain_provider.get_future_contract_list(self._continuous, self.time)
-            expiry = min([symbol.id.date for symbol in contract_symbols])
-            self._contract_symbol = next(symbol for symbol in contract_symbols if symbol.id.date == expiry)
+            self._contract_symbol = list(self.futures_chain(self._continuous))[0].symbol
             self.add_future_contract(self._contract_symbol)</pre>
 </div>
 
