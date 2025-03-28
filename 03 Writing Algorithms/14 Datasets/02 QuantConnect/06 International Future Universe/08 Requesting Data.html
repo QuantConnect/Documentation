@@ -1,0 +1,41 @@
+<p>To use International Future Universe data to your algorithm, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. To define which contracts should be in your universe, specify the filter when requesting the Future data.</p>
+
+<p>The <code class="csharp">AddFuture</code><code class="python">add_future</code> method provides a daily stream of Future chain data. To get the most recent daily chain, call the <code class="csharp">FutureChains</code><code class="python">future_chains</code> method with the underlying Future Symbol in the <code>Slice</code> object received in the <code class="csharp">OnData</code><code class="python">on_data</code> event handler.
+
+<div class="section-example-container">
+<pre class="python">class InternationalFuturesDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2013, 12, 20) 
+        self.set_end_date(2014, 2, 20) 
+        self.set_cash(1000000) 
+        self.universe_settings.asynchronous = True
+        # Request Hang Seng Index Futures data
+        future = self.add_future(Futures.Indices.HANG_SENG) 
+        # Set filter to obtain the contracts expire within 90 days
+        future.set_filter(0, 90)
+        self.future_symbol = future.symbol</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class InternationalFuturesDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _futureSymbol;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2013, 12, 20);
+            SetEndDate(2014, 2, 20);
+            SetCash(1000000);
+            UniverseSettings.Asynchronous = True;
+            // Request Hang Seng Index Futures data
+            var future = AddFuture(Futures.Indices.HangSeng);
+            // Set filter to obtain the contracts expire within 90 days
+            future.SetFilter(0, 90);
+            _futureSymbol = future.Symbol;
+        }
+    }
+}
+</pre>
+</div>
+
+<p>For more information about creating Future Universes, see <a href="/docs/v2/writing-algorithms/universes/futures">Futures</a>.</p>

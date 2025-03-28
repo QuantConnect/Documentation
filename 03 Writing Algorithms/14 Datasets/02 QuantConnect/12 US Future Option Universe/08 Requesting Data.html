@@ -1,0 +1,65 @@
+<p>To add US Future Options Universe data to your algorithm, call the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method. To define which contracts should be in your universe, specify the filter when requesting the FutureOption data.</p>
+
+<p>The <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method provides a daily stream of Option chain data. To get the most recent daily chain, call the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method with the underlying Future Symbol. The <code class="csharp">OptionChain</code><code class="python">option_chain</code> method returns data on all the tradable contracts, not just the contracts that pass your universe filter.</p>
+
+<div class="section-example-container">
+<pre class="python">class USFutureOptionsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 6, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        
+        self.future = self.add_future(Futures.Metals.GOLD, Resolution.MINUTE)
+        self.future.set_filter(0, 90)
+        # Set our strike/expiry filter for this option chain
+        self.add_future_option(self.future.symbol, self._option_filter)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Get the entire Option chain for the current day.
+        symbol = Symbol.create_canonical_option(self.future.mapped)
+        chain = self.option_chain(symbol, flatten=True).data_frame
+
+    def _option_filter(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        # Contracts can be filtered by strike, and expiration
+        return universe.strikes(-1, 1)</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class USFutureOptionsDataAlgorithm : QCAlgorithm
+    {
+        private Future _future;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            UniverseSettings.Asynchronous = True;
+            
+            _future = AddFuture(Futures.Metals.Gold, Resolution.Minute);
+            _future.SetFilter(0, 90);
+            // Set our strike/expiry filter for this option chain
+            AddFutureOption(_future.Symbol, OptionFilter);
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol.
+            var symbol = QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped);
+            // Get the entire Option chain for the current day.
+            var chain = OptionChain(symbol);
+        }
+
+        private virtual OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
+        {
+            // Contracts can be filtered by strike, and expiration
+            return universe.Strikes(-1, 1);
+        }
+    }
+}</pre>
+</div>
+
+<p>The Future resolution must be less than or equal to the Future Option resolution. For example, if you set the Future resolution to minute, then you must set the Future Option resolution to minute, hour, or daily.</p>
+
+<p>For more information about creating US Future Option Universes, see <a href="/docs/v2/writing-algorithms/universes/future-options">Future Options</a>.</p>

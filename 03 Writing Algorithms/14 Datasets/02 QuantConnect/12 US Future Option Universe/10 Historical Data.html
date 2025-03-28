@@ -1,0 +1,56 @@
+<p>You can get historical US Future Options Universe data in an algorithm and the Research Environment.</p>
+
+<h4>Historical Data In Algorithms</h4>
+
+<p>To get historical US Future Options Universe data in an algorithm, call the <code class="csharp">History&lt;OptionUniverse&gt;</code><code class="python">history</code> method with the canonical mapped Future Option <code>Symbol</code>. This method returns data on all of the tradable contracts, not just the contracts that pass your universe filter. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+<pre class="python">self.future = self.add_future(Futures.Metals.GOLD, Resolution.MINUTE)
+self.future.set_filter(0, 90)
+self.add_future_option(self.future.symbol)
+
+future_option_symbol = Symbol.create_canonical_option(self.future.mapped)
+# DataFrame
+history_df = self.history(future_option_symbol, timedelta(3), flatten=True)
+# OptionUniverse objects
+history = self.history[OptionUniverse](future_option_symbol, timedelta(3))</pre>
+
+<pre class="csharp">_future = AddFuture(Futures.Metals.Gold, Resolution.Minute);
+_future.SetFilter(0, 90);
+AddFutureOption(_future.Symbol);
+var futureOptionSymbol = QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped);
+var history = History&lt;OptionUniverse&gt;(futureOptionSymbol, TimeSpan.FromDays(3)).ToList();</pre>
+</div>
+
+<p>For more information about historical Equity Options Universe data in algorithms, see <a href="/docs/v2/writing-algorithms/universes/equity-options#10-Historical-Data">Historical Data</a>.</p>
+
+<h4>Historical Data In Research</h4>
+
+<p>To get historical US Future Options Universe data in the Research Environment, call the <code class="csharp">History&lt;OptionUniverse&gt;</code><code class="python">history</code> method with the canonical Option <code>Symbol</code>. This method returns data on all of the tradable contracts, not just the contracts that pass your universe filter.</p>
+
+<div class="section-example-container">
+<pre class="python">qb = QuantBook()
+future = qb.add_future(Futures.Metals.GOLD, Resolution.MINUTE)
+future.set_filter(0, 90)
+symbol = Symbol.create_canonical_option(future.mapped)
+history = qb.history(symbol, datetime(2020, 6, 1), datetime(2020, 6, 5), flatten=True)</pre>
+
+<pre class="csharp">var qb = new QuantBook();
+var future = qb.AddFuture(Futures.Metals.Gold, Resolution.Minute);
+var symbol = QuantConnect.Symbol.CreateCanonicalOption(future.Mapped);
+var history = qb.History&lt;OptionUniverse&gt;(symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));
+foreach (var chain in history)
+{
+    var endTime = chain.EndTime;
+    var filteredContracts = chain.Data
+        .Select(contract =&gt; contract as OptionUniverse)
+        .Where(contract =&gt; contract.Greeks.Delta &gt; 0.3m);
+    foreach (var contract in filteredContracts)
+    {
+        var price = contract.Price;
+        var iv = contract.ImpliedVolatility;
+    }
+}</pre>
+</div>
+
+<p>For more information about historical Future Options Universe data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/future-options/universes">Universes</a>.</p>

@@ -1,0 +1,77 @@
+<p>You can get historical US Future Universe data in an algorithm and the Research Environment.</p>
+
+<h4>Historical Data In Algorithms</h4>
+
+<p>To get historical US Future Universe data in an algorithm, call the <code class="csharp">History</code><code class="python">history</code> method with the list Future contract <code>Symbol</code> objects. You may obtain all available Future contracts on a date by calling the <code class="csharp">FuturesChain</code><code class="python">futures_chain</code> method. Note that this method will return all available contracts despite your previous filter. If there is no data for the period you requested, the history result is empty.</p>
+
+<div class="section-example-container">
+<pre class="python"># Subscribe to the underlying Future and save a reference to the Symbol.
+symbol = self.add_future(Futures.Indices.HANG_SENG).symbol
+# Get the contracts available on this day.
+contracts = [x.symbol for x in self.futures_chain(symbol)]
+
+# Request the historical data to obtain the data.
+# DataFrame objects
+history_df = self.history(contracts, 10, Resolution.DAILY, flatten=True)
+open_interest = self.history(OpenInterest, contracts, 10, Resolution.DAILY, flatten=True)
+
+# Open Interest objects
+open_interest = self.history[OpenInterest](contracts, 10, Resolution.DAILY)</pre>
+<pre class="csharp">// Subscribe to the underlying Future and save a reference to the Symbol.
+var symbol = AddFuture(Futures.Indices.HangSeng).Symbol
+// Get the contracts available on this day.
+var contracts = contracts = FuturesChain(symbol).Select(x =&gt; x.Symbol).ToList();
+
+// Request the historical data to obtain the data.
+// Slice objects
+var history = History(contracts, 10, Resolution.Daily);
+
+// Open Interest objects
+var openInterest = History&lt;OpenInterest&gt;(contracts, 10, Resolution.Daily);</pre>
+</div>
+
+<p>For more information about historical data in algorithms, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.
+
+<h4>Historical Data In Research</h4>
+
+<p>To get historical US Future Universe data in the Research Environment for an entire Futures chain, call the <code class="csharp">FutureHistory</code><code class="python">future_history</code> method with the canonical Future <code>Symbol</code>.</p>
+
+<div class="section-example-container">
+<pre class="python">qb = QuantBook()
+future = qb.add_future(Futures.Indices.HANG_SENG) 
+future.set_filter(0, 90)
+history = qb.future_history(future.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5), Resolution.DAILY)
+history_df = history.data_frame
+all_history = history.get_all_data()
+expiries = history.get_expiry_dates()</pre>
+<pre class="csharp">var qb = new QuantBook();
+var future = qb.AddFuture(Futures.Indices.HangSeng);
+future.SetFilter(0, 90);
+var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));</pre>
+</div>
+
+<p>You can also do similar in the research environment like in the algorithm to obtain the price and open interest data.</p>
+<div class="section-example-container">
+<pre class="python">qb = QuantBook()
+end = datetime(2020, 6, 5)
+qb.set_start_date(end)
+symbol = qb.add_future(Futures.Indices.HANG_SENG).symbol
+# Get the contracts available on this day.
+contracts = [x.symbol for x in qb.futures_chain(symbol)]
+
+# Request the historical data to obtain the data.
+history_df = qb.history(contracts, datetime(2020, 6, 1), end, Resolution.DAILY, flatten=True)
+open_interest = qb.history(OpenInterest, contracts, datetime(2020, 6, 1), end, Resolution.DAILY, flatten=True)</pre>
+<pre class="csharp">var qb = new QuantBook();
+var end = new DateTime(2020, 6, 5);
+qb.SetStartDate(end)
+var future = qb.AddFuture(Futures.Indices.HangSeng);
+// Get the contracts available on the day.
+var contracts = qb.FuturesChain(future.Symbol).Select(x =&gt; x.Symbol);
+
+// Request the historical data to obtain the data.
+var history = qb.History(contracts, new DateTime(2020, 6, 1), end, Resolution.Daily);
+var openInterest = qb.History&lt;OpenInterest&gt;(contracts, new DateTime(2020, 6, 1), end, Resolution.Daily);</pre>
+</div>
+
+For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/futures">Futures</a>.</p>
