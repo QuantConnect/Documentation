@@ -83,10 +83,9 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
 
     // Future Options example:
     var futureSymbol = QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
-    var futureContractSymbols = FutureChainProvider.GetFutureContractList(futureSymbol, Time);
-    foreach (var symbol in futureContractSymbols)
+    foreach (var contract in FuturesChain(futureSymbol))
     {
-        yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
+        yield return QuantConnect.Symbol.CreateCanonicalOption(contract.Symbol);
     }
 }</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
@@ -109,8 +108,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 
     # Future Options example:
     future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
-    future_contract_symbols = self.future_chain_provider.get_future_contract_list(future_symbol, self.time)
-    return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]</pre>
+    return [Symbol.create_canonical_option(contract.symbol) for contract in self.futures_chain(future_symbol)]</pre>
 </div>
 
 <p>This model uses the default Option filter, which selects all of the available Option contracts at the current time step. To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code class="csharp">Filter</code><code class="csharp">filter</code> method. The <code class="csharp">Filter</code><code class="csharp">filter</code> method accepts and returns an <code>OptionFilterUniverse</code> object to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
@@ -144,10 +142,9 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
 
         // Future Options example:
         var futureSymbol = QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
-        var futureContractSymbols = algorithm.FutureChainProvider.GetFutureContractList(futureSymbol, algorithm.Time);
-        foreach (var symbol in futureContractSymbols)
+        foreach (var contract in algorithm.FuturesChain(futureSymbol))
         {
-            yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
+            yield return QuantConnect.Symbol.CreateCanonicalOption(contract.Symbol);
         }
     }
     
@@ -179,8 +176,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
 
         # Future Options example:
         future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
-        future_contract_symbols = self.algo.future_chain_provider.get_future_contract_list(future_symbol, self.algo.time)
-        return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]
+        return [Symbol.create_canonical_option(contract.symbol) for contract in self.algo.futures_chain(future_symbol)]
         
     # Create a filter to select contracts that have the strike price within 1 strike level and expire within 7 days.
     def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
