@@ -25,8 +25,7 @@
             AddFutureOptionContract(_contractSymbol);
             
             // Method 2: Get all future contracts from the Future chain provider
-            var futureContractSymbol = FutureChainProvider.GetFutureContractList(_future.Symbol, Time)
-                .OrderBy(symbol =&gt; symbol.ID.Date).FirstOrDefault();
+            var futureContractSymbol = FuturesChain(_future.Symbol).First().Symbol;
             var symbol = SelectOptionContract(futureContractSymbol);
             AddFutureOptionContract(symbol);
             
@@ -72,8 +71,7 @@
             self.add_future_option_contract(self._contract_symbol)
 
             # Method 2: Get all future contracts from the Future chain provider
-            future_contract_symbols = self.future_chain_provider.get_future_contract_list(self._future.symbol, self.time)
-            future_contract_symbol = sorted(future_contract_symbols, key=lambda symbol: symbol.id.date)[0]
+            future_contract_symbol = list(self.futures_chain(self._future.symbol))[0].symbol
             symbol = self._select_option_contract(future_contract_symbol)
             self.add_future_option_contract(symbol)
 
