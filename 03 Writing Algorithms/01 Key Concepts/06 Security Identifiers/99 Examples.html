@@ -40,9 +40,7 @@
     {
         // Select the next mapped future contract with the nearest expiry,
         // which should be further than the current contract.
-        var selected = FutureChainProvider.GetFutureContractList(symbol, Time)
-            .Where(x =&gt; x.ID.Date &gt; minExpiry)
-            .MinBy(x =&gt; x.ID.Date);
+        var selected = FuturesChain(symbol).Where(x => x.ID.Date > minExpiry).First();
         // Subscribe to its data to trade it.
         _future = AddFutureContract(selected, extendedMarketHours: true);
 
