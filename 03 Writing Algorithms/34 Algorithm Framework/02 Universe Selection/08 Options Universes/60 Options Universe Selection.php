@@ -107,7 +107,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
     # Future Options example:
-    future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
+    future_symbol = Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)
     return [Symbol.create_canonical_option(contract.symbol) for contract in self.futures_chain(future_symbol)]</pre>
 </div>
 
@@ -175,7 +175,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
         # Future Options example:
-        future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
+        future_symbol = Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)
         return [Symbol.create_canonical_option(contract.symbol) for contract in self.algo.futures_chain(future_symbol)]
         
     # Create a filter to select contracts that have the strike price within 1 strike level and expire within 7 days.
