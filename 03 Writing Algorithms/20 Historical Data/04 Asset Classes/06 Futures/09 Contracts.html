@@ -1,6 +1,12 @@
-<p>
-  To get the <code>Symbol</code> objects of historical contracts, call the <code class='python'>future_chain_provider.get_future_contract_list</code><code class='csharp'>FutureChainProvider.GetFutureContractList</code> method with the continuous contract <code>Symbol</code> and a historical date.
-  This method returns a list of <code>Symbol</code> objects, representing the contracts that were tradable between the historical date and the current day.
+<p class='csharp'>
+  To get historical Futures contracts, call the <code>History&lt;FutureUniverse&gt;</code> method with the continuous contract <code>Symbol</code>.
+  The data this method returns contains information on all the currently tradable contracts, not just the contracts that pass your filter.
+</p>
+
+<p class='python'>
+  To get historical Futures contracts, call the <code>history</code> method with the <code>FutureUniverse</code> type and the continuous contract <code>Symbol</code>.
+  The data this method returns contains information on all the currently tradable contracts, not just the contracts that pass your filter.
+  If you pass <code>flatten=True</code>, this method returns a DataFrame with columns for the data point attributes.
 </p>
 
 <div class="section-example-container">
@@ -11,8 +17,15 @@
         SetStartDate(2024, 12, 19);
         // Add a Future.
         var future = AddFuture(Futures.Indices.SP500EMini);
-        // Get the list of contracts that were tradable between one year ago and today.
-        var contractSymbols = FutureChainProvider.GetFutureContractList(future.Symbol, Time.AddDays(-365));
+        // Get the daily contract data over the last two trading days.
+        var history = History&lt;FutureUniverse&gt;(future.Symbol, 2);
+        // Iterate through each day of the history.
+        foreach (var futureUniverse in history)
+        {
+            var t = futureUniverse.EndTime;
+            // Select the contract with the greatest open interest.
+            var mostOi = futureUniverse.Select(c => c as FutureUniverse).OrderByDescending(c => c.OpenInterest).Take(1);
+        }
     }
 }</pre>
     <pre class="python">class FutureContractListHistoryAlgorithm(QCAlgorithm):
@@ -21,6 +34,176 @@
         self.set_start_date(2024, 12, 19)
         # Add a Future.
         future = self.add_future(Futures.Indices.SP_500_E_MINI)
-        # Get the list of contracts that were tradable between one year ago and today.
-        contract_symbols = self.future_chain_provider.get_future_contract_list(future.symbol, self.time-timedelta(365*5))</pre>
+        # Get the daily contract data over the last two trading days.
+        history = self.history(FutureUniverse, future.symbol, 2, flatten=True)</pre>
+</div>
+
+<div class='dataframe-wrapper'>
+<table class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>close</th>
+      <th>high</th>
+      <th>low</th>
+      <th>open</th>
+      <th>openinterest</th>
+      <th>value</th>
+      <th>volume</th>
+    </tr>
+    <tr>
+      <th>time</th>
+      <th>symbol</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">2024-12-18</th>
+      <th>ES YOGVNNAOI1OH</th>
+      <td>6052.000</td>
+      <td>6063.500</td>
+      <td>6040.750</td>
+      <td>6052.750</td>
+      <td>687472.0</td>
+      <td>6052.000</td>
+      <td>278531.0</td>
+    </tr>
+    <tr>
+      <th>ES YQYHC5L1GPA9</th>
+      <td>6125.750</td>
+      <td>6138.250</td>
+      <td>6114.250</td>
+      <td>6127.500</td>
+      <td>1902280.0</td>
+      <td>6125.750</td>
+      <td>997849.0</td>
+    </tr>
+    <tr>
+      <th>ES YTG30NVEFCW1</th>
+      <td>6185.250</td>
+      <td>6198.750</td>
+      <td>6173.500</td>
+      <td>6184.250</td>
+      <td>5044.0</td>
+      <td>6185.250</td>
+      <td>197.0</td>
+    </tr>
+    <tr>
+      <th>ES YVXOP65RE0HT</th>
+      <td>6238.250</td>
+      <td>6258.000</td>
+      <td>6229.375</td>
+      <td>6238.250</td>
+      <td>20.0</td>
+      <td>6238.250</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>ES YYFADOG4CO3L</th>
+      <td>6299.125</td>
+      <td>6313.000</td>
+      <td>6057.000</td>
+      <td>6071.500</td>
+      <td>1106.0</td>
+      <td>6299.125</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th rowspan="6" valign="top">2024-12-19</th>
+      <th>ES YOGVNNAOI1OH</th>
+      <td>5872.250</td>
+      <td>6074.500</td>
+      <td>5840.000</td>
+      <td>6050.250</td>
+      <td>556365.0</td>
+      <td>5872.250</td>
+      <td>335048.0</td>
+    </tr>
+    <tr>
+      <th>ES YQYHC5L1GPA9</th>
+      <td>5939.500</td>
+      <td>6148.000</td>
+      <td>5906.500</td>
+      <td>6124.000</td>
+      <td>2064361.0</td>
+      <td>5939.500</td>
+      <td>2009987.0</td>
+    </tr>
+    <tr>
+      <th>ES YTG30NVEFCW1</th>
+      <td>6001.250</td>
+      <td>6205.000</td>
+      <td>5966.000</td>
+      <td>6181.250</td>
+      <td>5096.0</td>
+      <td>6001.250</td>
+      <td>536.0</td>
+    </tr>
+    <tr>
+      <th>ES YVXOP65RE0HT</th>
+      <td>6054.250</td>
+      <td>6450.750</td>
+      <td>5934.375</td>
+      <td>6243.375</td>
+      <td>20.0</td>
+      <td>6054.250</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>ES YYFADOG4CO3L</th>
+      <td>6315.000</td>
+      <td>6315.000</td>
+      <td>6315.000</td>
+      <td>6315.000</td>
+      <td>1116.0</td>
+      <td>6315.000</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>ES Z0WW26QHBBPD</th>
+      <td>6171.375</td>
+      <td>6379.625</td>
+      <td>6142.000</td>
+      <td>6368.375</td>
+      <td>0.0</td>
+      <td>6171.375</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="python section-example-container">
+    <pre class="python"># Select the contract with the largest open interest each day.
+most_oi = history.groupby('time').apply(lambda x: x.nlargest(1, 'openinterest')).reset_index(level=1, drop=True).openinterest</pre>
+</div>
+
+<div class="python section-example-container">
+    <pre>time        symbol         
+2024-12-18  ES YQYHC5L1GPA9    1902280.0
+2024-12-19  ES YQYHC5L1GPA9    2064361.0
+Name: openinterest, dtype: float64</pre>
+</div>
+
+<p class='python'>
+  If you intend to use the data in the DataFrame to create <code>FutureUniverse</code> objects, request that the history request returns the data type you need. 
+  Otherwise, LEAN consumes unnecessary computational resources populating the DataFrame.  
+  To get a list of <code>FutureUniverse</code> objects instead of a DataFrame, call the <code>history[FutureUniverse]</code> method.
+</p>
+
+<div class="python section-example-container">
+    <pre class="python"># Get the 5 trailing daily FutureUniverse objects in FutureUniverse format. 
+history = self.history[FutureUniverse](future.symbol, 5)
+# Iterate through the FutureUniverse objects and access their volumes.
+for future_universe in history:
+    t = oi.end_time
+    most_oi = sorted(future_universe, key=lambda contract: contract.open_interest)[-1]</pre>
 </div>
