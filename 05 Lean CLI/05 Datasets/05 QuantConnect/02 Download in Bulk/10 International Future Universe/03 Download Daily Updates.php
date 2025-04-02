@@ -20,4 +20,4 @@ $dirName = "future/hkfe/universes";
 include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
 ?>
 
-<p>The preceding script checks the date of the most recent US Future Universe data you have. If there is new data available, it downloads the new data files.</p>
+<p>The preceding script checks the date of the most recent International Future Universe data you have. If there is new data available, it downloads the new data files.</p>
