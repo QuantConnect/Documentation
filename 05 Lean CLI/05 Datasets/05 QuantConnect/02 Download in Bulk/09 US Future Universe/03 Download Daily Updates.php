@@ -16,7 +16,7 @@
 
 <?
 $dataset = "US Future Universe";
-$dirName = "future/cme";
+$dirName = "future/cme/universes";
 include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
 ?>
 
