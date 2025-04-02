@@ -15,7 +15,7 @@
 <p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place the following Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. </p>
 
 <?
-$dataset = "US Future Option Universe";
+$dataset = "US Future Universe";
 $dirName = "future/cme";
 include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
 ?>
