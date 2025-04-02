@@ -1,0 +1,85 @@
+<p>The following examples demonstrate some common practices for historical data.</p>
+
+<h4>Example 1: Simple Moving Average</h4>
+<p>The following example demonstrates a weekly-resampled historical data to calculate the 50-week Simple Moving Average to implement a SMA-cross strategy.</p>
+<div class="section-example-container">
+    <pre class="csharp">using Calendar = QuantConnect.Data.Consolidators.Calendar;
+        
+public class HistoricalDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private TradeBarConsolidator _consolidator;
+    private RollingWindow&lt;decimal&gt; _window = new(50);
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        // Request SPY data for historical data call and trading.
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        // Set up a consolidator to resample historical data to weekly.
+        _consolidator = new TradeBarConsolidator(Calendar.Weekly);
+        _consolidator.DataConsolidated += (_, updated) =&gt; {
+            _window.Add(updated.Close);
+        };
+
+        // Set a scheduled event to trade SPY with weekly SMA signal.
+        Schedule.On(
+            DateRules.WeekStart(_spy),
+            TimeRules.AfterMarketOpen(_spy, 1),
+            Trade
+        );
+    }
+
+    private void Trade()
+    {
+        // Historical data call to calculate signal.
+        var history = History&lt;TradeBar&gt;(_spy, 252, Resolution.Daily);
+        // Obtain the weekly close price to calculate the weekly EMA.
+        foreach (var bar in history)
+        {
+            _consolidator.Update(bar);
+        }
+        // Calculate the current 50-week SMA as trading signal.
+        var sma50 = _window.Average();
+
+        // Trade the SMA cross strategy.
+        var price = history.Last().Close;
+        if (price &gt; sma50 &amp;&amp; !Portfolio[_spy].IsLong)
+        {
+            SetHoldings(_spy, 1m);
+        }
+        else if (price &lt; sma50 &amp;&amp; !Portfolio[_spy].IsShort)
+        {
+            SetHoldings(_spy, -1m);
+        }
+    }
+}</pre>
+    <pre class="python">class HistoricalDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+    
+        # Request SPY data for historical data call and trading.
+        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        # Set a scheduled event to trade SPY with weekly SMA signal.
+        self.schedule.on(self.date_rules.week_start(self.spy), self.time_rules.after_market_open(self.spy, 1), self.trade)
+
+    def trade(self) -&gt; None:
+        # Historical data call to calculate signal.
+        history = self.history(self.spy, 252, Resolution.DAILY)
+        # Obtain the weekly close price to calculate the weekly SMA.
+        weekly_close = history.unstack(0).close.resample("W").last()
+        # Calculate the current 50-week SMA as trading signal.
+        sma50 = weekly_close.rolling(50).mean().iloc[-1, 0]
+
+        # Trade the SMA cross strategy.
+        price = self.securities[self.spy].price
+        if price &gt; sma50 and not self.portfolio[self.spy].is_long:
+            self.set_holdings(self.spy, 1)
+        elif price &lt; sma50 and not self.portfolio[self.spy].is_short:
+            self.set_holdings(self.spy, -1)</pre>
+</div>
