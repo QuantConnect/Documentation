@@ -1,0 +1,58 @@
+<p>
+    To get historical Future Option universe data, call the <code class='python'>history</code><code class='csharp'>History&lt;FutureUniverse&gt;</code> method with the canoncial Option <code>Symbol</code>. 
+    This method returns the all the available contracts for each trading day, not the subset of contracts that pass your universe filter.
+    <span class='python'>The return type depends on how you call the method.</span>
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class FutureOptionHistoryAlgorithm : QCAlgorithm
+{       
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Select a Futures contract.
+        var future = AddFuture(Futures.Indices.SP500EMini);
+        var futuresContract = FuturesChain(future.Symbol).First();
+        // Create the canoncial Option Symbol for this Futures contract.
+        var canonical = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        // Get the historical Option universe data for this Futures contract.
+        var history = History&lt;OptionUniverse&gt;(canonical, 5);
+        foreach (var universe in history)
+        {
+            var endTime = universe.EndTime;
+            foreach (OptionUniverse contract in universe)
+            {
+                var symbol = contract.Symbol;
+                var expiry = contract.ID.Date;
+                var price = contract.Close;
+            }
+        }
+    }
+}</pre>
+     <pre class="python">class FutureOptionsHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Select a Futures contract.
+        future = self.add_future(Futures.Indices.SP_500_E_MINI)
+        futures_contract = list(self.futures_chain(future.symbol))[0]
+        # Create the canoncial Option Symbol for this Futures contract.
+        canonical = Symbol.create_canonical_option(futures_contract.symbol)
+        # Get the historical Option universe data for this Futures contract.
+        # DataFrame example:
+        history_df = self.history(OptionUniverse, canonical, 3, flatten=True)
+        # Series example:
+        history_series = self.history(OptionUniverse, canonical, 3, flatten=False)
+        # OptionUniverse example:
+        history = self.history[OptionUniverse](canonical, 3)
+        for universe in history:
+            end_time = universe.end_time
+            for contract in universe:
+                symbol = contract.symbol
+                expiry = contract.id.date
+                price = contract.close</pre>
+</div>
+
+<p>The method represents each contract with a <code>OptionUniverse</code> object, which have the following properties:</p>
+
+<div data-tree='QuantConnect.Data.UniverseSelection.OptionUniverse'></div>
