@@ -1,7 +1,6 @@
-<p>The following table shows the price of an annual subscription to the US Future Security Master for each organization tier:</p>
-
-<? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
-
-<p>All of the historical US Future Option Universe data costs $1,200. An annual subscription to daily updates costs $960/year.</p>
-
-<p>To view the price of the US Future Universe data, see <a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-future-universe#10-Price'>Price</a>.</p>
+<p>To view the prices of the datasets, see the <span class='tab-name'>Pricing</span> tab of the following dataset listings:</p>
+<ul>
+  <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-future-option-universe/pricing'>US Future Option Universe</a></li>
+  <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/pricing'>US Futures Security Master</a></li>
+  <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-future-universe/pricing'>US Future Universe</a></li>
+</ul>
