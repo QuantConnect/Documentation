@@ -30,5 +30,3 @@ include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
 <div class="cli section-example-container">
      <pre>$ lean data download --dataset "US Equity Security Master"</pre> 
 </div>
-
-<p>To update your local copy of the US Equities data, see <a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-equities#03-Download-Daily-Updates'>Download Daily Updates</a>.</p>
