@@ -5,11 +5,6 @@
      <pre>$ lean data download --dataset "US Equity Coarse Universe" --data-type "Bulk"</pre> 
 </div>
 
-<p>To update your local copy of the US Equity Security Master, run:</p>
-<div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US Equity Security Master"</pre> 
-</div>
-
 <p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script downloads the latest data when it's available:</p><p></p>
 
 <?
@@ -19,3 +14,8 @@ include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
 ?>
 
 <p>The preceding script checks the date of the most recent US Equity Coarse Universe data you have. If there is new data available, it downloads the new data files.</p>
+
+<p>To update your local copy of the US Equity Security Master, run:</p>
+<div class="cli section-example-container">
+     <pre>$ lean data download --dataset "US Equity Security Master"</pre> 
+</div>
