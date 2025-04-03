@@ -1,0 +1,77 @@
+<p>Signal export providers must implement the <code>ISignalExportTarget</code> interface. Extensions of the <code>ISignalExportTarget</code> interface must define the <code class="csharp">Send</code><code class="python">send</code> and the <code class="csharp">Dispose</code><code class="python">dispose</code> methods.</p>
+
+<p>The <code class="csharp">Send</code><code class="python">send</code> receives a <code>SignalExportTargetParameters</code> object with a list of <code>PortfolioTarget</code> objects you can use to create the API request payload.</p>
+
+<p>The <code class="csharp">Dispose</code><code class="python">dispose</code> method is called when the algorithm is disposed. You can use this method to release unmanaged resources such as HTTP Clients.</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class CustomSignalExportExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // In the Initialize method, set the custom signal export provider
+        AddEquity("SPY");
+        SignalExport.AddSignalExportProviders(new CustomSignalExport());
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Set the target portfolio using the custom signal export provider
+        // and send the request to your custom endpoint
+        if (!Portfolio.Invested)
+        {
+            var targets = new List&lt;PortfolioTarget&gt; { new ("SPY", 0.1m) };
+            SetHoldings(targets);
+            SignalExport.SetTargetPortfolio(_targets);
+        }
+    }
+}
+
+// Define the custom signal export provider
+public class CustomSignalExport : ISignalExportTarget 
+{
+    public bool Send(SignalExportTargetParameters parameters)
+    {
+        // Create the request payload using the PortfolioTarget objects in the parameters
+        // and send the request to your custom endpoint
+        var message = JsonConvert.SerializeObject(parameters.Targets);
+        using var httpMessage = new StringContent(message, Encoding.UTF8, "application/json");
+        using HttpResponseMessage response = HttpClient.PostAsync(_requestUri, httpMessage).Result;
+        var result = response.Content.ReadFromJsonAsync&lt;RestResponse&gt;().Result;
+        return result.Success;
+    }
+
+    public void Dispose()
+    {
+        //
+    }
+}
+</pre>
+<pre class="python">class CustomSignalExportExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # In the Initialize method, set the custom signal export provider
+        self.add_equity("SPY")
+        self.signal_export.add_signal_export_providers(CustomSignalExport())
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Set the target portfolio using the custom signal export provider
+        # and send the request to your custom endpoint
+        if not self.portfolio.invested:
+            targets = [PortfolioTarget("SPY", 0.1)]
+            self.set_holdings(targets)
+            self.signal_export.set_target_portfolio(targets)
+
+# Define the custom signal export provider
+from requests import post
+class CustomSignalExport:
+    def send(self, parameters: SignalExportTargetParameters) -&gt; bool:
+        # Create the request payload using the PortfolioTarget objects in the parameters
+        # and send the request to your custom endpoint
+        data = { x.symbol.value: x.quantity for x in parameters.targets }
+        response = post(self._requestUri, json = data)
+        result = response.json()
+        return result.get('success', False)        
+
+    def dispose(self) -&gt; None:
+        pass</pre>
+</div>
