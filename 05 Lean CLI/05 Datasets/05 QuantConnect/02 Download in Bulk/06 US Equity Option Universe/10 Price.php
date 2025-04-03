@@ -1,5 +1,1 @@
-<p>The following table shows the price of an annual subscription to the US Equity Security Master for each organization tier:</p>
-
-<? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
-
-<p>All of the historical US Equity Option Universe data costs $3,960. An annual subscription to daily updates costs $1,200/year.</p>
+<p>To view the prices of the datasets, see <span class='tab-name'>Pricing</span> tab of the <a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe/pricing'>US Equity Option Universe</a> and <a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing'>US Equity Security Master</a> dataset listings.</p>
