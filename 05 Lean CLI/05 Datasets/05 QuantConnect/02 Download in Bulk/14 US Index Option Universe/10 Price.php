@@ -1,1 +1,1 @@
-<p>All of the historical US Index Option Universe data costs $3,960. An annual subscription to daily updates costs $1,200/year.</p>
+<p>To view the price of the US Index Option Universe dataset, see <a href='https://www.quantconnect.com/datasets/quantconnect-us-index-option-universe/pricing'>Pricing</a>.</p>
