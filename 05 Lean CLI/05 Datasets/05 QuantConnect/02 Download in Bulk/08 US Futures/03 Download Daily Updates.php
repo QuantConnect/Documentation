@@ -1,7 +1,7 @@
 <p>After you bulk download the US Futures dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. To unlock local access to the data updates, open the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization and subscribe to at least one of the following data packages:
 </p><ul>
     <li><span class="button-name">US Futures Daily Updates by AlgoSeek</span></li>
-    <li<span class="button-name">>US Futures Hour Updates by AlgoSeek</span></li>
+    <li><span class="button-name">US Futures Hour Updates by AlgoSeek</span></li>
     <li><span class="button-name">US Futures Minute Updates by AlgoSeek</span></li>
     <li><span class="button-name">US Futures Second Updates by AlgoSeek</span></li>
     <li><span class="button-name">US Futures Tick Updates by AlgoSeek</span></li>
