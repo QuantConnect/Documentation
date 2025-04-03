@@ -5,14 +5,9 @@
 </p>
 
 <p>
-	After you subscribe to dataset updates, to update your local copy of the International Future Universe dataset, use the <a href="https://www.quantconnect.com/datasets/quantconnect-us-future-universe/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a>. 
-	To update your local copy of the US Futures Security Master, run:
+    After you subscribe to dataset updates, to update your local copy of the International Future Universe dataset, use the <a href="https://www.quantconnect.com/datasets/quantconnect-us-future-universe/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a>. 
+    Alternatively, instead of directly calling the <code>lean data download</code> command, you can place the following Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. 
 </p>
-<div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US Futures Security Master"</pre> 
-</div>
-
-<p>Alternatively, instead of directly calling the <code>lean data download</code> command, you can place the following Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. </p>
 
 <?
 $dataset = "International Future Universe";
@@ -21,3 +16,8 @@ include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
 ?>
 
 <p>The preceding script checks the date of the most recent International Future Universe data you have. If there is new data available, it downloads the new data files.</p>
+
+<p>To update your local copy of the US Futures Security Master, run:</p>
+<div class="cli section-example-container">
+     <pre>$ lean data download --dataset "US Futures Security Master"</pre> 
+</div>
