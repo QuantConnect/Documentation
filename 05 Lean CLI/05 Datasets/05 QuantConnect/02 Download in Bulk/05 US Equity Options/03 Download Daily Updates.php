@@ -29,5 +29,4 @@ include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
      <pre>$ lean data download --dataset "US Equity Security Master"</pre> 
 </div>
 
-
-<p>To update your local copy of the US Equity Option Universe data, see <a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-equity-option-universe#03-Download-Daily-Updates'>Download Daily Updates</a>.</p>
+<p>To update your local copy of the other dependency datasets, see the <span class='page-section-name'>Download Daily Updates</span> documentation for the <a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-equity-option-universe#03-Download-Daily-Updates'>US Equity Option Universe</a> and <a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-equities#03-Download-Daily-Updates'>US Equities</a> datasets.</p>
