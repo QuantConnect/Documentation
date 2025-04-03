@@ -20,4 +20,4 @@ include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
 <p>To update your local copy of the US Equity Security Master, run:</p>
 <div class="cli section-example-container">
      <pre>$ lean data download --dataset "US Equity Security Master"</pre> 
-</div></p>
+</div>
