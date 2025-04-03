@@ -4,7 +4,7 @@
 	You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#09-Permissions">billing permissions</a> to change the organization's subscriptions.
 </p>
 
-<p>After you subscribe to dataset updates, to update your local copy of the US Equity Option Universe dataset, open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and then run.</p>
+<p>After you subscribe to dataset updates, to update your local copy of the US Equity Option Universe dataset, open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and then run:</p>
 <div class="cli section-example-container">
      <pre>$ lean data download --dataset "US Equity Option Universe" --data-type "bulk" --start "20250403" --end "20250403"</pre> 
 </div>
