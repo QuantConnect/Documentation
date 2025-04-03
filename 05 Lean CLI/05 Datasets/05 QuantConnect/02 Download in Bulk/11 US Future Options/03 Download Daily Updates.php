@@ -13,3 +13,7 @@ include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
 ?>
 
 <p>The preceding script checks the date of the most recent ES data you have from the CME market for minute resolution. If there is new data available, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions and markets, adjust this script to your needs.</p>
+
+
+<p>To update your local copy of the US Future Option Universe data, see <a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-future-option-universe#03-Download-Daily-Updates'>Download Daily Updates</a>.</p>
+<p>To update your local copy of the US Future Universe data, see <a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-future-universe#03-Download-Daily-Updates'>Download Daily Updates</a>.</p>
