@@ -1,0 +1,177 @@
+<p>The following examples demonstrate some common practices for trading Forex with historical data.</p>
+
+<h4>Example 1: Arbitration with Cointegration</h4>
+<p>The below example uses linear regression with historical data of 3 related Forex pairs to obtain the cointegrating vector between them. We measure the spread between the 3 Forex pairs and trade mean reversal upon their spread divergence.</p>
+<div class="section-example-container">
+    <pre class="csharp">using MathNet.Numerics.LinearRegression;
+
+public class CointegrationVectorRegressionAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _currencyPairs;
+    private decimal[] _cointegrationVector = new[] { 0m, 0m, 0m };
+    private decimal _entryThreshold = 0.001m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 1, 1);
+        SetCash(1000000);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        
+        // Request Forex data to form the cointegrating vectors and trade.
+        _currencyPairs = new[] { "USDJPY", "EURUSD", "EURJPY" }.Select(pair =&gt; AddForex(pair).Symbol).ToList();
+
+        // Daily recalibration on the cointegrating vectors.
+        Schedule.On(
+            DateRules.EveryDay(_currencyPairs[0]),
+            TimeRules.At(0, 1),
+            Recalibrate
+        );
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.QuoteBars.TryGetValue(_currencyPairs[0], out var y) &amp;&amp; slice.QuoteBars.TryGetValue(_currencyPairs[1], out var x1) &amp;&amp; slice.QuoteBars.TryGetValue(_currencyPairs[2], out var x2))
+        {
+            // Calculate the spread based on the cointegration vector.
+            decimal spread = CalculateSpread(y.Close, x1.Close, x2.Close, _cointegrationVector);
+
+            // If spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
+            // Else, vice versa.
+            var totalWeights = Math.Abs(_cointegrationVector[1]) + Math.Abs(_cointegrationVector[2]) + 1m;
+            if (spread &gt; _entryThreshold)
+            {
+                SetHoldings(_currencyPairs[0], -1m / totalWeights);
+                SetHoldings(_currencyPairs[1], _cointegrationVector[1] / totalWeights);
+                SetHoldings(_currencyPairs[2], _cointegrationVector[2] / totalWeights);
+            }
+            else if (spread &lt; -_entryThreshold)
+            {
+                SetHoldings(_currencyPairs[0], 1m / totalWeights);
+                SetHoldings(_currencyPairs[1], -_cointegrationVector[1] / totalWeights);
+                SetHoldings(_currencyPairs[2], -_cointegrationVector[2] / totalWeights);
+            }
+            
+            // Exit if spread is converged.
+            if ((Portfolio[_currencyPairs[0]].IsShort &amp;&amp; spread &lt; 0m) || (Portfolio[_currencyPairs[0]].IsLong &amp;&amp; spread &gt; 0m))
+            {
+                Liquidate();
+            }
+        }
+    }
+
+    private void Recalibrate()
+    {
+        // Calculate the cointegration vector from historical data.
+        var history = History&lt;QuoteBar&gt;(_currencyPairs, 252, Resolution.Daily);
+        _cointegrationVector = CalculateCointegrationVector(history);
+    }
+    
+    private decimal[] CalculateCointegrationVector(IEnumerable&lt;DataDictionary&lt;QuoteBar&gt;&gt; history)
+    {
+        // Use log price to eliminate the compounding effect.
+        var y = history.Select(x =&gt; Math.Log((double)x[_currencyPairs[0]].Close)).ToArray();    // dependent variable: USDJPY
+        var x1 = history.Select(x =&gt; Math.Log((double)x[_currencyPairs[1]].Close)).ToArray();   // independent variable 1: EURUSD
+        var x2 = history.Select(x =&gt; Math.Log((double)x[_currencyPairs[2]].Close)).ToArray();   // independent variable 2: EURJPY
+
+        // Create a matrix for the regression analysis.
+        var n = new[] { y.Length, x1.Length, x2.Length }.Min();
+        var designMatrix = new double[n][];
+        for (int i = 0; i &lt; n; i++)
+        {
+            designMatrix[i] = new[] { x1[i], x2[i] };
+        }
+
+        try
+        {
+            // Perform regression using MathNet.Numerics
+            var coefficients = MultipleRegression.QR(designMatrix, y.TakeLast(n).ToArray(), intercept: true);
+
+            // The coefficients array will contain the intercept and the coefficients for each independent variable.
+            // Format: [intercept, coeff_EURUSD, coeff_EURJPY]
+            return new[] { (decimal)coefficients[0], (decimal)coefficients[1], (decimal)coefficients[2] };
+        }
+        catch
+        {
+            return _cointegrationVector;
+        }
+    }
+
+    private decimal CalculateSpread(decimal y, decimal x1, decimal x2, decimal[] cointegrationVector)
+    {
+        // Using the cointegration vector to calculate the spread.
+        return LogPrice(y) - (cointegrationVector[0] + LogPrice(x1) * cointegrationVector[1] + LogPrice(x2) * cointegrationVector[2]);
+    }
+
+    private decimal LogPrice(decimal price)
+    {
+        return Convert.ToDecimal(Math.Log((double)price));
+    }
+}</pre>
+    <pre class="python">from sklearn.linear_model import LinearRegression
+
+class CointegrationVectorRegressionAlgorithm(QCAlgorithm):
+    # Threshold of spread divergence to enter position.
+    entry_threshold = 0.001
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 1, 1)
+        self.set_cash(1000000)
+        
+        # Request Forex data to form the cointegrating vectors and trade.
+        self.currency_pairs = [self.add_forex(pair).symbol for pair in ["USDJPY", "EURUSD", "EURJPY"]]
+        
+        # Initialize cointegration vector
+        self.cointegration_vector = np.array([0.0, 0.0, 0.0])
+
+        # Daily recalibration on the cointegrating vectors.
+        self.schedule.on(
+            self.date_rules.every_day(self.currency_pairs[0]),
+            self.time_rules.at(0, 1),
+            self.recalibrate
+        )
+
+    def on_data(self, slice: Slice) -&gt; None:
+        y = slice.quote_bars.get(self.currency_pairs[0])
+        x1 = slice.quote_bars.get(self.currency_pairs[1])
+        x2 = slice.quote_bars.get(self.currency_pairs[2])
+        if y and x1 and x2:
+            # Calculate the spread based on the cointegration vector.
+            spread = self.calculate_spread(y.close, x1.close, x2.close, self.cointegration_vector)
+
+            # If spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
+            # Else, vice versa.
+            total_weights = abs(self.cointegration_vector[1]) + abs(self.cointegration_vector[2]) + 1
+            if spread &gt; self.entry_threshold:
+                self.set_holdings(self.currency_pairs[0], -1 / total_weights)
+                self.set_holdings(self.currency_pairs[1], self.cointegration_vector[1] / total_weights)
+                self.set_holdings(self.currency_pairs[2], self.cointegration_vector[2] / total_weights)
+            elif spread &lt; -self.entry_threshold:
+                self.set_holdings(self.currency_pairs[0], 1 / total_weights)
+                self.set_holdings(self.currency_pairs[1], -self.cointegration_vector[1] / total_weights)
+                self.set_holdings(self.currency_pairs[2], -self.cointegration_vector[2] / total_weights)
+            
+            # Exit if spread is converged.
+            if (self.portfolio[self.currency_pairs[0]].is_short and spread &lt; 0) or (self.portfolio[self.currency_pairs[0]].is_long and spread &gt; 0):
+                self.liquidate()
+
+    def recalibrate(self) -&gt; None:
+        # Calculate the cointegration vector from historical data.
+        log_price = np.log(self.history(self.currency_pairs, 252, Resolution.DAILY).unstack(0).close.dropna())
+        self.cointegration_vector = self.calculate_cointegrating_vector(log_price)
+
+    def calculate_cointegrating_vector(self, history: pd.DataFrame) -&gt; np.array:
+        try:
+            # Perform regression.
+            lr = LinearRegression().fit(log_price[self.currency_pairs[1:]], log_price[self.currency_pairs[0]])
+
+            # The coefficients array will contain the coefficients for each independent variable.
+            return np.array([lr.intercept_, lr.coef_[0], lr.coef_[1]])
+        except:
+            return self.cointegration_vector
+
+    def calculate_spread(self, y: float, x1: float, x2: float, cointegration_vector: np.array) -&gt; float:
+        # Using the cointegration vector to calculate the spread.
+        return np.log(y) - (cointegration_vector[0] + np.log(x1) * cointegration_vector[1] + np.log(x2) * cointegration_vector[2])</pre>
+</div>

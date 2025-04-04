@@ -1,0 +1,99 @@
+<p>The following examples demonstrate some common practices for trading Future Options with historical data.</p>
+
+<h4>Example 1: Trend Following on 0DTE Option Contract</h4>
+<p>This algorithm strategically trades 0DTE S&P 500 EMini Future Options by analyzing bid and ask volumes shortly after market open. By using scheduled events, it effectively executes trades based on historical quote data, optimizing decision-making. The algorithm aims for timely entries and exits, ensuring efficient capital management and quick adaptability in volatile markets.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class ZeroDTEOptionsTradingAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31); 
+        SetCash(100000);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Request ES option data for trading and signal generation.
+        var future = AddFuture(Futures.Indices.SP500EMini);
+        future.SetFilter(universe =&gt; universe.FrontMonth());
+        // We are interested in ATM 0DTE options since they are the most popular.
+        AddFutureOption(future.Symbol, universe =&gt; universe.IncludeWeeklys().Expiration(0, 0).Strikes(-3, 3));
+
+        // Schedule event to enter and exit option contract postion.
+        Schedule.On(DateRules.EveryDay(future.Symbol), TimeRules.AfterMarketOpen(future.Symbol, 16), TradeOption);
+        Schedule.On(DateRules.EveryDay(future.Symbol), TimeRules.BeforeMarketClose(future.Symbol, 15), () =&gt; Liquidate());
+    }
+
+    public void TradeOption()
+    {
+        // Get the option chain to trade.
+        foreach (var chain in CurrentSlice.OptionChains.Values)
+        {
+            foreach (var option in chain)
+            {
+                // Request historical quote data for signal generation.
+                var history = History&lt;QuoteBar&gt;(option.Symbol, 15, Resolution.Minute);
+                // Calculate total bid and ask dollar volume to determine the capital directional force.
+                var totalBidVolume = 0m;
+                var totalAskVolume = 0m;
+                foreach (var bar in history)
+                {
+                    if (bar.Bid != null)
+                    {
+                        totalBidVolume += bar.Bid.Close * bar.LastBidSize;
+                    }
+                    if (bar.Ask != null)
+                    {
+                        totalAskVolume += bar.Ask.Close * bar.LastAskSize;
+                    }
+                }
+
+                // Follow the capital flow to trade.
+                if (totalBidVolume &gt; totalAskVolume)
+                {
+                    MarketOrder(option.Symbol, 1);
+                }
+                else
+                {
+                    MarketOrder(option.Symbol, -1);
+                }
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class ZeroDTEOptionsTradingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)  # Limit to a single day for 0DTE
+        self.set_cash(100000)  # Starting cash
+
+        # Request ES option data for trading and signal generation.
+        future = self.add_future(Futures.Indices.SP_500_E_MINI)
+        future.set_filter(lambda universe: universe.front_month())
+        # We are interested in ATM 0DTE options since they are the most popular.
+        self.add_future_option(future.symbol, lambda u: u.include_weeklys().expiration(0, 0).strikes(-3, 3))
+        
+        # Schedule event to enter and exit option contract postion.
+        self.schedule.on(self.date_rules.every_day(future.symbol), self.time_rules.after_market_open(future.symbol, 16), self.trade_option)
+        self.schedule.on(self.date_rules.every_day(future.symbol), self.time_rules.before_market_close(future.symbol, 15), self.liquidate)
+
+    def trade_option(self) -&gt; None:
+        # Get the option chain to trade.
+        for option_chain in self.current_slice.option_chains.values():
+            for option in option_chain:
+                # Request historical quote data for signal generation.
+                history = self.history(QuoteBar, option.symbol, 15, Resolution.Minute)
+                if not history.empty:
+                    # Calculate total bid and ask dollar volume to determine the capital directional force.
+                    total_bid_volume = 0
+                    total_ask_volume = 0
+                    if 'bidclose' in history:
+                        total_bid_volume += (history['bidclose'] * history['bidsize']).sum()
+                    if 'askclose' in history:
+                        total_ask_volume += (history['askclose'] * history['asksize']).sum()
+
+                    # Follow the capital flow to trade.
+                    if total_bid_volume &gt; total_ask_volume:
+                        self.market_order(option.symbol, 1)
+                    else:
+                        self.market_order(option.symbol, -1)</pre>
+</div>
