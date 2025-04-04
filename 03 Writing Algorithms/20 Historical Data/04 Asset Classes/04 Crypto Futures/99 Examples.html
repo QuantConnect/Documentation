@@ -1,1 +1,187 @@
+<p>The following examples demonstrate some common practices for trading crypto futures with historical data.</p>
 
+<h4>Example 1: Spot-Future Arbitrage</h4>
+<p>The below example uses linear regression with historical data of Spot and Future BTCUSDT to obtain the cointegrating vector between them. We measure the spread between the two securities and trade mean reversal upon their spread divergence.</p>
+<div class="section-example-container">
+    <pre class="csharp">using MathNet.Numerics.LinearRegression;
+using Accord.Math;
+
+public class CointegrationVectorRegressionAlgorithm : QCAlgorithm
+{
+    private Symbol _spot, _future;
+    private decimal[] _cointegrationVector = new[] { 0m, 0m };
+    private decimal _residualMean = 0m;
+    private decimal _residualStd = 1m;
+    private decimal _entryThreshold = 2m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2025, 1, 1);
+        SetAccountCurrency("USDT", 100000);
+        SetCash("BTC", 2);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        
+        // Request BTCUSDT Crypto and Crypto Future data to form the cointegrating vectors and trade.
+        _spot = AddCrypto("BTCUSDT", market: Market.Bybit).Symbol;
+        _future = AddCryptoFuture("BTCUSDT", market: Market.Bybit).Symbol;
+
+        // Daily recalibration on the cointegrating vectors.
+        Schedule.On(
+            DateRules.EveryDay(_future),
+            TimeRules.At(0, 1),
+            Recalibrate
+        );
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (slice.Bars.TryGetValue(_future, out var y) &amp;&amp; slice.Bars.TryGetValue(_spot, out var x1))
+        {
+            // Calculate the spread based on the cointegration vector.
+            var spread = CalculateSpread(y.Close, x1.Close, _cointegrationVector);
+            var normalizedSpread = (spread - _residualMean) / _residualStd;
+
+            // If spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
+            // Else, vice versa.
+            var totalWeights = Math.Abs(_cointegrationVector[1]) + 1m;
+            if (normalizedSpread &gt; _entryThreshold &amp;&amp; !Portfolio[_future].IsShort)
+            {
+                SetHoldings(_future, -1m / totalWeights);
+                SetHoldings(_spot, _cointegrationVector[1] / totalWeights);
+            }
+            else if (normalizedSpread &lt; -_entryThreshold &amp;&amp; !Portfolio[_future].IsLong)
+            {
+                SetHoldings(_future, 1m / totalWeights);
+                SetHoldings(_spot, -_cointegrationVector[1] / totalWeights);
+            }
+            
+            // Exit if spread is converged.
+            if ((Portfolio[_future].IsShort &amp;&amp; normalizedSpread &lt; 0m) || (Portfolio[_future].IsLong &amp;&amp; normalizedSpread &gt; 0m))
+            {
+                Liquidate();
+            }
+        }
+    }
+
+    private void Recalibrate()
+    {
+        // Calculate the cointegration vector from historical data.
+        var history = History&lt;TradeBar&gt;(new[] { _future, _spot }, 252, Resolution.Daily)
+            .Where(x =&gt; x.ContainsKey(_future) &amp;&amp; x.ContainsKey(_spot))
+            .ToList();
+        _cointegrationVector = CalculateCointegrationVector(history);
+        var residual = history.Select(x =&gt; CalculateSpread(x[_future].Close, x[_spot].Close, _cointegrationVector)).ToArray();
+        _residualMean = residual.Average();
+        _residualStd = Convert.ToDecimal(Math.Sqrt(residual.Sum(x =&gt; Math.Pow((double)(x - _residualMean), 2)) / residual.Length));
+    }
+    
+    private decimal[] CalculateCointegrationVector(IEnumerable&lt;DataDictionary&lt;TradeBar&gt;&gt; history)
+    {
+        // Use log price to eliminate the compounding effect.
+        var y = history.Select(x =&gt; Math.Log((double)x[_future].Close)).ToArray();
+        var x1 = history.Select(x =&gt; Math.Log((double)x[_spot].Close)).ToArray();
+
+        // Create a matrix for the regression analysis.
+        var n = new[] { y.Length, x1.Length }.Min();
+        var designMatrix = new double[n][];
+        for (int i = 0; i &lt; n; i++)
+        {
+            designMatrix[i] = new[] { x1[i] };
+        }
+
+        try
+        {
+            // Perform regression using MathNet.Numerics
+            var coefficients = MultipleRegression.QR(designMatrix, y.TakeLast(n).ToArray(), intercept: true);
+            // The coefficients array will contain the intercept and the coefficients for each independent variable.
+            return new[] { (decimal)coefficients[0], (decimal)coefficients[1] };
+        }
+        catch
+        {
+            return _cointegrationVector;
+        }
+    }
+
+    private decimal CalculateSpread(decimal y, decimal x1, decimal[] cointegrationVector)
+    {
+        // Using the cointegration vector to calculate the spread.
+        return LogPrice(y) - (cointegrationVector[0] + LogPrice(x1) * cointegrationVector[1]);
+    }
+
+    private decimal LogPrice(decimal price)
+    {
+        return Convert.ToDecimal(Math.Log((double)price));
+    }
+}</pre>
+    <pre class="python">from sklearn.linear_model import LinearRegression
+
+class CointegrationVectorRegressionAlgorithm(QCAlgorithm):
+    # Threshold of spread divergence to enter position.
+    entry_threshold = 2
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2025, 1, 1)
+        self.set_account_currency("USDT", 100000)
+        self.set_cash("BTC", 2)
+        
+        # Request BTCUSDT Crypto and Crypto Future data to form the cointegrating vectors and trade.
+        self._future = self.add_crypto_future("BTCUSDT", market=Market.BYBIT).symbol
+        self._spot = self.add_crypto("BTCUSDT", market=Market.BYBIT).symbol
+        
+        # Initialize cointegration vector.
+        self.cointegration_vector = np.array([0.0, 0.0])
+        self.residual_mean = 0
+        self.residual_std = 1
+
+        # Daily recalibration on the cointegrating vectors.
+        self.schedule.on(
+            self.date_rules.every_day(self._future),
+            self.time_rules.at(0, 1),
+            self.recalibrate
+        )
+
+    def on_data(self, slice: Slice) -&gt; None:
+        y = slice.bars.get(self._future)
+        x1 = slice.bars.get(self._spot)
+        if y and x1:
+            # Calculate the spread based on the cointegration vector.
+            spread = self.calculate_spread(y.close, x1.close, self.cointegration_vector)
+            normalized_spread = (spread - self.residual_mean) / self.residual_std
+
+            # If spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
+            # Else, vice versa.
+            total_weights = abs(self.cointegration_vector[1]) + 1
+            if normalized_spread &gt; self.entry_threshold and not self.portfolio[self._future].is_short:
+                self.set_holdings(self._future, -0.5 / total_weights)
+                self.set_holdings(self._spot, 0.5 * self.cointegration_vector[1] / total_weights)
+            elif normalized_spread &lt; -self.entry_threshold and not self.portfolio[self._future].is_long:
+                self.set_holdings(self._future, 0.5 / total_weights)
+                self.set_holdings(self._spot, -0.5 * self.cointegration_vector[1] / total_weights)
+            
+            # Exit if spread is converged.
+            if (self.portfolio[self._future].is_short and normalized_spread &lt; 0) or (self.portfolio[self._future].is_long and normalized_spread &gt; 0):
+                self.liquidate()
+
+    def recalibrate(self) -&gt; None:
+        # Calculate the cointegration vector from historical data.
+        log_price = np.log(self.history([self._future, self._spot], 252, Resolution.DAILY).unstack(0).close.dropna())
+        self.cointegration_vector = self.calculate_cointegrating_vector(log_price)
+        residual = log_price.apply(lambda x: self.calculate_spread(x[self._future], x[self._spot], self.cointegration_vector), axis=1)
+        self.residual_mean, self.residual_std = np.mean(residual), np.std(residual, ddof=1)
+
+    def calculate_cointegrating_vector(self, log_price: pd.DataFrame) -&gt; np.array:
+        try:
+            # Perform regression.
+            lr = LinearRegression().fit(log_price[[self._spot]], log_price[self._future])
+
+            # The coefficients array will contain the coefficients for each independent variable.
+            return np.array([lr.intercept_, lr.coef_[0]])
+        except:
+            return self.cointegration_vector
+
+    def calculate_spread(self, y: float, x1: float, cointegration_vector: np.array) -&gt; float:
+        # Using the cointegration vector to calculate the spread.
+        return np.log(y) - (cointegration_vector[0] + np.log(x1) * cointegration_vector[1])</pre>
+</div>
