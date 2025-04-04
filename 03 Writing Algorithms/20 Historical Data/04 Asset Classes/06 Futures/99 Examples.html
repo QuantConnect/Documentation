@@ -1,1 +1,123 @@
+<p>The following examples demonstrate some common practices for trading Futures with historical data.</p>
 
+<h4>Example 1: Stock-Gold All-Weather Portfolio</h4>
+<p>The following algorithm constructs a monthly rebalance risk-parity portfolio using S&P 500 EMini and Micro Gold Future contracts. Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown. The position sizing can be optimized by 1-year historical daily return of the universe members.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class FutureHistoricalDataAlgorithm : QCAlgorithm
+{
+    private List&lt;Future&gt; _futures;
+    private IPortfolioOptimizer _optimizer;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2025, 1, 1);
+        SetCash(100000000);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        
+        // Select the future contracts representing various asset classes to diversify the portfolio.
+        _futures = new[] { Futures.Indices.SP500EMini, Futures.Metals.MicroGold }
+            .Select(x =&gt; AddFuture(x,
+                fillForward: true,
+                extendedMarketHours: true,
+                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+                dataMappingMode: DataMappingMode.OpenInterest,
+                contractDepthOffset: 0))
+            .ToList();
+
+        // Instantiate the optimizer to perform risk-parity optimization.
+        // Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown.
+        _optimizer = new RiskParityPortfolioOptimizer(0, 1);
+
+        // Set a scheduled event to rebalance the portfolio at the start of every month.
+        Schedule.On(
+            DateRules.MonthStart(),
+            TimeRules.At(9, 31),
+            Rebalance
+        );
+
+        SetWarmUp(1);
+    }
+
+    private void Rebalance()
+    {
+        // Historical data request to get 1-year data for optimization.
+        var symbols = _futures.Select(x =&gt; x.Symbol).ToList();
+        var history = History&lt;TradeBar&gt;(symbols, 253, Resolution.Daily)
+            .Where(x =&gt; _futures.All(y =&gt; x.ContainsKey(y.Symbol)))
+            .ToList();
+        // Daily return on the universe members to calculate the optimized weights.
+        var returns = GetReturns(history, symbols);
+
+        // Calculate the optimized weights.
+        var weights = _optimizer.Optimize(returns);
+
+        // Rebalance the portfolio according to the optimized weights.
+        var targets = Enumerable.Range(0, weights.Length)
+            .Select(i =&gt; new PortfolioTarget(_futures[i].Mapped, Convert.ToDecimal(weights[i])))
+            .ToList();
+        SetHoldings(targets, liquidateExistingHoldings: true);
+    }
+
+    private double[,] GetReturns(List&lt;DataDictionary&lt;TradeBar&gt;&gt; history, List&lt;Symbol&gt; symbols)
+    {
+        // Create a 2d array of historical daily returns from historical price data.
+        var returns = new double[history.Count, symbols.Count];
+        for (int j = 0; j &lt; symbols.Count; j++)
+        {
+            var lastPrice = 0m;
+            for (int i = 0; i &lt; history.Count; i++)
+            {
+                var current = history[i][symbols[j]].Close;
+                if (i &gt; 0)
+                {
+                    returns[i, j] = (double)((current - lastPrice) / lastPrice);
+                }
+                lastPrice = current;
+            }
+        }
+        return returns;
+    }
+}</pre>
+    <pre class="python">from Portfolio.RiskParityPortfolioOptimizer import RiskParityPortfolioOptimizer
+
+class CryptoHistoricalDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2025, 1, 1)
+        
+        # Select the future contracts representing various asset classes to diversify the portfolio.
+        self._futures = [self.add_future(
+                x, 
+                fill_forward=True, 
+                extended_market_hours=True, 
+                data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO, 
+                data_mapping_mode=DataMappingMode.OPEN_INTEREST, 
+                contract_depth_offset=0
+            ) for x in [Futures.Indices.SP_500_E_MINI, Futures.Metals.MICRO_GOLD]]
+
+        # Instantiate the optimizer to perform risk-parity optimization.
+        # Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown.
+        self._optimizer = RiskParityPortfolioOptimizer(0.0, 1.0)
+
+        # Set a scheduled event to rebalance the portfolio at the start of every month.
+        self.schedule.on(
+            self.date_rules.month_start(), 
+            self.time_rules.at(9, 31),
+            self.rebalance
+        )
+
+    def rebalance(self) -&gt; None:
+        # Historical data request to get 1-year data for optimization.
+        history = self.history([x.symbol for x in self._futures], 253, Resolution.DAILY, extended_market_hours=True, fill_forward=True)\
+            .droplevel([0]).unstack(0).close.dropna()
+        # Daily return on the universe members to calculate the optimized weights.
+        returns = history.pct_change().dropna()
+
+        # Calculate the optimized weights.
+        weights = self._optimizer.optimize(returns)
+
+        # Rebalance the portfolio according to the optimized weights.
+        targets = [PortfolioTarget(future.mapped, size) for future, size in zip(self._futures, weights)]
+        self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
+</div>
