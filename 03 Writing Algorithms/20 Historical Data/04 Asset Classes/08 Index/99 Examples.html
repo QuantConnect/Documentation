@@ -104,7 +104,7 @@ class SGXMatchingTradingAlgorithm(QCAlgorithm):
             self._weights = self.calculate_weights(history[list(self._universe.selected)], history[self._sgx])
 
             if self._weights is not None:
-                self.set_holdings([PortfolioTarget(symbol, weight) for symbol, weight in zip(history.index, self._weights)])
+                self.set_holdings([PortfolioTarget(symbol, weight) for symbol, weight in zip(self._universe.selected, self._weights)])
 
     def calculate_weights(self, history: pd.DataFrame, benchmark: pd.Series) -&gt; pd.Series:
         # Use log price to eliminate the compounding effect.
