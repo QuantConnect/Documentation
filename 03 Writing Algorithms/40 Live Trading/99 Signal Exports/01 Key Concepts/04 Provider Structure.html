@@ -16,13 +16,10 @@
 
     public override void OnData(Slice slice)
     {
-        // Set the target portfolio using the custom signal export provider
-        // and send the request to your custom endpoint
+        // Buy the SPY ETF when the algorithm is not invested
         if (!Portfolio.Invested)
         {
-            var targets = new List&lt;PortfolioTarget&gt; { new ("SPY", 0.1m) };
-            SetHoldings(targets);
-            SignalExport.SetTargetPortfolio(_targets);
+            SetHoldings("SPY", 0.1m);
         }
     }
 }
@@ -30,21 +27,33 @@
 // Define the custom signal export provider
 public class CustomSignalExport : ISignalExportTarget 
 {
+    private readonly HttpClient _httpClient = new ();
+    
     public bool Send(SignalExportTargetParameters parameters)
     {
         // Create the request payload using the PortfolioTarget objects in the parameters
-        // and send the request to your custom endpoint
-        var message = JsonConvert.SerializeObject(parameters.Targets);
+        // You can use the PortfolioTarget.Percent to calculate the target quantity 
+        // from the target percentage
+        object SimplePayload(PortfolioTarget target)
+        {
+            var newTarget = PortfolioTarget.Percent(parameters.Algorithm, target.Symbol, target.Quantity);
+            return new { symbol = newTarget.Symbol.Value, quantity = newTarget.Quantity };
+        };
+
+        var message = JsonConvert.SerializeObject(parameters.Targets.Select(SimplePayload));
         using var httpMessage = new StringContent(message, Encoding.UTF8, "application/json");
-        using HttpResponseMessage response = HttpClient.PostAsync(_requestUri, httpMessage).Result;
+        
+        // Send the request to your custom endpoint
+        var requestUri = "https://your-custom-endpoint.com/api/signal-export";
+        using HttpResponseMessage response = _httpClient.PostAsync(_requestUri, httpMessage).Result;
         var result = response.Content.ReadFromJsonAsync&lt;RestResponse&gt;().Result;
+        
+        // Log the result of the request for debugging purposes
+        parameters.Algorithm.Log($"Send #{parameters.Targets.Count} targets. Success: {result.Success}");    
         return result.Success;
     }
 
-    public void Dispose()
-    {
-        //
-    }
+    public void Dispose() =&gt; _httpClient.Dispose();
 }
 </pre>
 <pre class="python">class CustomSignalExportExampleAlgorithm(QCAlgorithm):
@@ -54,23 +63,30 @@ public class CustomSignalExport : ISignalExportTarget
         self.signal_export.add_signal_export_providers(CustomSignalExport())
 
     def on_data(self, slice: Slice) -&gt; None:
-        # Set the target portfolio using the custom signal export provider
-        # and send the request to your custom endpoint
+        # Buy the SPY ETF when the algorithm is not invested
         if not self.portfolio.invested:
-            targets = [PortfolioTarget("SPY", 0.1)]
-            self.set_holdings(targets)
-            self.signal_export.set_target_portfolio(targets)
+            self.set_holdings("SPY", 0.1)
 
 # Define the custom signal export provider
 from requests import post
 class CustomSignalExport:
     def send(self, parameters: SignalExportTargetParameters) -&gt; bool:
         # Create the request payload using the PortfolioTarget objects in the parameters
-        # and send the request to your custom endpoint
-        data = { x.symbol.value: x.quantity for x in parameters.targets }
-        response = post(self._requestUri, json = data)
+        # You can use the PortfolioTarget.Percent to calculate the target quantity 
+        # from the target percentage
+        targets = [PortfolioTarget.percent(parameters.algorithm, x.symbol, x.quantity) 
+           for x in parameters.targets] ;
+        data = [ {'symbol' : x.symbol.value, 'quantity': x.quantity} for x in targets ]
+
+        # Send the request to your custom endpoint
+        request_uri = "https://your-custom-endpoint.com/api/signal-export"
+        response = post(request_uri, json = data)
         result = response.json()
-        return result.get('success', False)        
+
+        # Log the result of the request for debugging purposes
+        success = result.get('success', False)
+        parameters.algorithm.log(f"Send #{len(parameters.targets)} targets. Success: {success}");
+        return success       
 
     def dispose(self) -&gt; None:
         pass</pre>
