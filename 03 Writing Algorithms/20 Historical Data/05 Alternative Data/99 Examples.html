@@ -1,0 +1,84 @@
+<p>The following examples demonstrate some common practices for trade with historical Alternative Data.</p>
+
+<h4>Example 1: Inverted Yield Curve</h4>
+<p>The following algorithm trades the smoothened yield curve difference, calculated from the difference between 10-year yield and 2-year yield historical data and smoothened by exponential moving average of that. If the yield curve is inverted, short SPY from this market downturn indicator.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class AlternativeHistoricalDataAlgorithm : QCAlgorithm
+{
+    private const decimal SmoothingFactor = 2m / (1m + 250m);
+    private Symbol _spy, _yieldCurveSymbol;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2025, 1, 1);
+        SetCash(1000000);
+
+        // Requesting yield curve data for trade signal generation (inversion)
+        _yieldCurveSymbol = AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
+        // Request XAUUSD CFD contract to trade.
+        _spy = AddEquity("SPY").Symbol;
+
+        // Trade every day after market open with updated smoothened yield curve difference.
+        Schedule.On(
+            DateRules.EveryDay(_spy),
+            TimeRules.At(0, 0),
+            Trade
+        );
+    }
+
+    private void Trade()
+    {
+        // Obtain historical quote data to obtain the mean and SD of bid-ask spread.
+        var history = History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 250, Resolution.Daily)
+            .Where(x =&gt; x.TenYear.HasValue &amp;&amp; x.TwoYear.HasValue)
+            .ToList();
+        if (history.Count &gt; 0)
+        {
+            var diffs = history.Select(x =&gt; x.TenYear.Value - x.TwoYear.Value).ToList();
+            var smoothedDiff = diffs.Aggregate((ema, nextQuote) =&gt; SmoothingFactor * nextQuote + (1m - SmoothingFactor) * ema);
+            
+            // If the smoothened yield curve difference is inverted, short SPY with the downside signal.
+            if (smoothedDiff &lt; 0)
+            {
+                SetHoldings(_spy, -1m);
+            }
+            else
+            {
+                SetHoldings(_spy, 1m);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class AlternativeHistoricalDataAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2025, 1, 1)
+        self.set_cash(1000000)
+
+        # Requesting yield curve data for trade signal generation (inversion)
+        self._yield_curve_symbol = self.add_data(USTreasuryYieldCurveRate, "USTYCR").symbol
+        # Request XAUUSD CFD contract to trade.
+        self._spy = self.add_equity("SPY").symbol
+    
+        # Trade every day after market open with updated smoothened yield curve difference.
+        self.schedule.on(
+            self.date_rules.every_day(self._spy),
+            self.time_rules.at(0, 0),
+            self.trade
+        )
+
+    def trade(self) -&gt; None:
+        # Obtain historical yield curve data to calculate the smoothened yield curve difference.
+        history = self.history(self._yield_curve_symbol, 250, Resolution.DAILY).unstack(0)
+        if "tenyear" in history and "twoyear" in history:
+            diffs = history.tenyear - history.twoyear
+            smoothened_diff = diffs.ewm(250).mean().values[-1]
+
+            # If the smoothened yield curve difference is inverted, short SPY with the downside signal.
+            if smoothened_diff &lt; 0:
+                self.set_holdings(self._spy, -1)
+            else:
+                self.set_holdings(self._spy, 1)</pre>
+</div>
