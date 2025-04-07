@@ -1,4 +1,6 @@
-<p>The signal export manager is responsible for sending signals based on your portfolio holdings to <?=$providerName?>. By default, it waits five seconds after an order is filled. Set the <code class="csharp">AutomaticExportTimeSpan</code><code class="python">automatic_export_time_span</code> property to change the waiting time.</p>
+<p>The signal export manager automatically sends signals when your portfolio holdings change to <?=$providerName?>. 
+  By default, it waits five seconds after an order is filled to aggregate all the state changes into a single post.
+  Set the <code class="csharp">AutomaticExportTimeSpan</code><code class="python">automatic_export_time_span</code> property to change the waiting time.</p>
 
 <div class="section-example-container">
 <pre class="csharp">SignalExport.AutomaticExportTimeSpan = TimeSpan.FromSeconds(1);</pre>
