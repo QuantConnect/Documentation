@@ -167,12 +167,12 @@
             else:
                 self.liquidate()
 
-    def _is_uptrend(self, price: float, smas: List[SimpleMovingAverage]) -&gt; bool:
+    def _is_uptrend(self, price: float, smas: list[SimpleMovingAverage]) -&gt; bool:
         # Uptrend occurs when price is above all SMAs and shorter SMAs are above longer SMAs.
         smas_list = [x[1].current.value for x in sorted(smas.items(), key=lambda x: x[0])]
         return all([smas_list[i] &lt; smas_list[i-1] for i in range(1, len(smas_list))]) and price &gt; smas_list[0]
 
-    def _is_downtrend(self, price: float, smas: List[SimpleMovingAverage]) -&gt; bool:
+    def _is_downtrend(self, price: float, smas: list[SimpleMovingAverage]) -&gt; bool:
         # Downtrend occurs when price is below all SMAs and shorter SMAs are below longer SMAs.
         smas_list = [x[1].current.value for x in sorted(smas.items(), key=lambda x: x[0])]
         return all([smas_list[i] &gt; smas_list[i-1] for i in range(1, len(smas_list))]) and price &lt; smas_list[0]</pre>

@@ -86,7 +86,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
         return (filter.front_month()
                       .only_apply_filter_at_market_open())
 
-    def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+    def select_future_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
         return [
             Symbol.create(Futures.Indices.VIX, SecurityType.FUTURE, Market.CFE),
             Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
@@ -205,7 +205,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
         # Defines the futures chain universe filter to select only the front-month contracts at market open.
         return (filter.front_month().only_apply_filter_at_market_open())
 
-    def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+    def select_future_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
         # We hold Natural Gas from summer to winter since it is in an upward cycle.
         if 4 &lt;= utc_time.month &lt;= 11:
             return [
@@ -215,7 +215,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
         return []
 
 class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
-    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+    def create_targets(self, algorithm: QCAlgorithm, insights: list[Insight]) -&gt; list[PortfolioTarget]:
         targets = []
         for insight in insights:
             if algorithm.securities[insight.symbol].is_tradable:

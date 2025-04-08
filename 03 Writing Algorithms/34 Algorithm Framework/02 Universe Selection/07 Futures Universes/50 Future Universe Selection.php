@@ -46,7 +46,7 @@ self.add_universe_selection(
         </tr>
         <tr>
             <td><code class="csharp">futureChainSymbolSelector</code><code class="python">future_chain_symbol_selector</code></td>
-	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
+	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], list[Symbol]]</code></td>
             <td>A function that selects the Future symbols for a given Coordinated Universal Time (UTC). To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#08-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
@@ -86,7 +86,7 @@ def initialize(self) -&gt; None:
         FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)
     )
 
-def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+def select_future_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
     # Add E-mini S&P 500 and Gold Futures to the universe.
     return [ 
         Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
@@ -139,7 +139,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
         # Refresh the universe daily.
         super().__init__(timedelta(1), self.select_future_chain_symbols)
 
-    def select_future_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
+    def select_future_chain_symbols(self, utc_time: datetime) -> list[Symbol]:
         # Add E-mini S&P 500 and Gold Futures to the universe.
         return [ 
             Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),

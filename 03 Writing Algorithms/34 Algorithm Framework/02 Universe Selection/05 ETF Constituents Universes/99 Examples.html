@@ -90,7 +90,7 @@ public class EtfAlphaModel : AlphaModel
         # Position sizing was handled by insight weight (from ETF weight).
         self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
 
-    def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def _etf_constituents_filter(self, constituents: list[ETFConstituentUniverse]) -&gt; list[Symbol]:
         # Cache the constituent weights in a dictionary for filtering and position sizing.
         self.etf_weight_by_symbol = {x.symbol: x.weight for x in constituents if x.weight}
         # Select the 50 constituents with the largest weight in the ETF.
@@ -102,7 +102,7 @@ class EtfAlphaModel(AlphaModel):
         self._algorithm = algorithm
         self._day = -1
 
-    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; list[Insight]:
         insights = []
 
         # Daily rebalance only.
@@ -206,7 +206,7 @@ class UptrendETFUniverseSelectionModel(ETFConstituentsUniverseSelectionModel):
     def __init__(self, etf_ticker: str) -&gt; None:
         super().__init__(etf_ticker, universe_filter_func=self.etf_constituent_filter)
 
-    def etf_constituent_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def etf_constituent_filter(self, constituents: list[ETFConstituentUniverse]) -&gt; list[Symbol]:
         # Remove the ones that are not in the ETF anymore.
         to_remove = set(self.ema_by_symbol.keys()).difference(set([x.symbol for x in constituents]))
         for symbol in to_remove:

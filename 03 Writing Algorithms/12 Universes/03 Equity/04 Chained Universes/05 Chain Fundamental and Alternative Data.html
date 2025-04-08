@@ -108,13 +108,13 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.add_universe(self._fundamental_filter_function)
         self.add_universe(QuiverCNBCsUniverse, self._mad_money_selection)
     
-    def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _fundamental_filter_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
         # Filter the top 100 liquid equities of the last trading day, and save the symbols for the next filtering.
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
         self.fundamental = [c.symbol for c in sorted_by_dollar_volume[:100]]
         return Universe.UNCHANGED
     
-    def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
+    def _mad_money_selection(self, alt_coarse: list[QuiverCNBCsUniverse]) -&gt; list[Symbol]:
         # Filter the equities being commented on by CNBC analyst Cramer, then select the ones that intersect with the fundamental universe.
         madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
         return list(set(self._fundamental) &amp; set(madmoney))

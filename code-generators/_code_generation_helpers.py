@@ -20,7 +20,7 @@ class MARKET_HOUR:
     LATE_OPEN = "late-opens"
     TIME_ZONE = "time-zone"
     
-def get_all_indicators() -> List[str]:
+def get_all_indicators() -> list[str]:
     methods = get_type("QuantConnect.Algorithm.QCAlgorithm")["methods"]
     selected = set(x["method-return-type-short-name"] for x in methods
                 if x["documentation-attributes"] and len(x["documentation-attributes"]) == 1 and x["documentation-attributes"][0]["tag"] == "Indicators" and x["method-return-type-full-name"].split('.')[0] != "System")

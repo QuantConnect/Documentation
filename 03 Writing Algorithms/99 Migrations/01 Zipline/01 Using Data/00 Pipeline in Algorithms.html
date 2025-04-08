@@ -19,11 +19,11 @@
 
         self.add_universe(self.coarse_selection_function, self.fine_selection_function)
 
-    def coarse_selection_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def coarse_selection_function(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
         # Allows all Symbols through, no filtering applied
         return [coarse_data.symbol for coarse_data in coarse]
 
-    def fine_selection_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    def fine_selection_function(self, fine: list[FineFundamental]) -&gt; list[Symbol]:
         # Allows all Symbols through, no filtering applied
         return [fine_data.symbol for fine_data in fine]</pre>
 </div>
@@ -60,7 +60,7 @@ class MyPipelineAlgorithm(QCAlgorithm):
 
         self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
 
-    def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def CoarseSelectionFunction(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
         # Allows all Symbols through, no filtering applied
         dollar_volume_filter_symbols = [coarse_data.Symbol for coarse_data in coarse if coarse_data.DollarVolume > 50000000]
 
@@ -76,7 +76,7 @@ class MyPipelineAlgorithm(QCAlgorithm):
         # Filters out any Symbol that is not in the DataFrame
         return [s for s in dollar_volume_filter_symbols if str(s) in dataframe_screen]
 
-    def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    def FineSelectionFunction(self, fine: list[FineFundamental]) -&gt; list[Symbol]:
         # We receive the filtered symbols from before, and we filter by EPS > 0 in this step
        return [s.Symbol for s in fine if s.EarningReports.BasicEPS.ThreeMonths > 0]</pre>
 </div>

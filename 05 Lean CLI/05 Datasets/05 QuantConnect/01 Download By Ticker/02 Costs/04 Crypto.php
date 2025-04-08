@@ -63,7 +63,7 @@
         self.universe_settings.asynchronous = True
         self.add_universe(CryptoUniverse.coinbase(self.universe_filter))
 
-    def universe_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
+    def universe_filter(self, universe_day: list[CryptoUniverse]) -&gt; list[Symbol]:
         sorted_by_dollar_volume = sorted(universe_day, key=lambda cf: cf.volume_in_usd, reverse=True)
         return [cf.symbol for cf in sorted_by_dollar_volume[:100]]</pre>
 </div>

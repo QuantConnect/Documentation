@@ -156,7 +156,7 @@
             self.rebalance
         )
 
-    def selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+    def selection(self, fundamentals: list[Fundamental]) -&gt; list[Symbol]:
         selected = []
 
         # Initially filtered for the top 100 liquid stocks first.

@@ -32,7 +32,7 @@ class MyUniverseAlgorithm(QCAlgorithm):
         # Pass the filter function as an argument to the AddUniverse method.
         self._universe = self.add_universe(self._fundamental_function)
     
-    def _fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _fundamental_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
         symbols = [c.symbol for c in fundamental if c.has_fundamental_data]
         if self.live_mode:
             return [Symbol.create(x.value, SecurityType.CFD, Market.INTERACTIVE_BROKERS) for x in symbols]
@@ -67,7 +67,7 @@ _universe = AddUniverse(
 self.universe_settings.asynchronous = True
 self._universe = self.add_universe(self._fundamental_selection_function)
     
-def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+def _fundamental_selection_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
     filtered = [f for f in fundamental if f.price &gt; 10 and f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
     sorted_by_dollar_volume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)[:100]
     sorted_by_pe_ratio = sorted(sorted_by_dollar_volume, key=lambda f: f.valuation_ratios.pe_ratio, reverse=False)[:10]

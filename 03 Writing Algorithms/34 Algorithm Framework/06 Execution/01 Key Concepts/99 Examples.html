@@ -93,7 +93,7 @@ class IcebergExecutionModel(ExecutionModel):
         # The maximum order size is taken from the order book in percentage.
         self.maximum_order_quantity_percent_volume = order_percent_volume
 
-    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+    def execute(self, algorithm: QCAlgorithm, targets: list[PortfolioTarget]) -&gt; None:
         # update the complete set of portfolio targets with the new targets
         self.targets_collection.add_range(targets)
 
@@ -225,7 +225,7 @@ class StopLossExecutionModel(ExecutionModel):
         self.stop_loss = stop_loss
         self.stop_orders = []
 
-    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+    def execute(self, algorithm: QCAlgorithm, targets: list[PortfolioTarget]) -&gt; None:
         for stop_loss in self.stop_orders.copy():
             # Check if any bracket orders have been filled out. If so, cancel the insight to avoid repeated ordering.
             if stop_loss.status == OrderStatus.FILLED:
@@ -350,7 +350,7 @@ class FavorableExecutionModel(ExecutionModel):
         self.targets_collection = PortfolioTargetCollection()
         self.lag_price_by_symbol = {}
 
-    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+    def execute(self, algorithm: QCAlgorithm, targets: list[PortfolioTarget]) -&gt; None:
         self.targets_collection.add_range(targets)
         if not self.targets_collection.is_empty:
             for target in self.targets_collection.order_by_margin_impact(algorithm):

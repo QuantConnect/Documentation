@@ -21,7 +21,7 @@
         self.universe_settings.asynchronous = True
         self.add_universe(self._coarse_filter_function)
 
-    def _coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def _coarse_filter_function(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
         sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.dollar_volume, reverse=True) 
         return [c.symbol for c in sorted_by_dollar_volume[:100]]</pre>
 </div>

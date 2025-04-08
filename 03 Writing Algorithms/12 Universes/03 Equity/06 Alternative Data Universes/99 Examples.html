@@ -98,7 +98,7 @@
         # Create a Scheduled Event to rebalance the portfolio at the start of each month.
         self.schedule.on(self.date_rules.month_start(spy), self.time_rules.at(9, 45), self._rebalance)
     
-    def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
+    def _select_assets(self, alt_data: list[BrainSentimentIndicatorUniverse]) -&gt; list[Symbol]:
         # Select the assets with recent mentions and a sentiment score.
         alt_data = [x for x in alt_data if x.total_article_mentions_30_days &gt; 0 and x.sentiment_30_days]
         # Select the 10 assets with the greatest sentiment score.
@@ -249,7 +249,7 @@
         # Using QuiverInsiderTrading dataset for insider trade detection and filtering.
         self.add_universe(QuiverInsiderTradingUniverse, self.selection)
 
-    def selection(self, alt_data: List[QuiverInsiderTradingUniverse]) -&gt; None:
+    def selection(self, alt_data: list[QuiverInsiderTradingUniverse]) -&gt; None:
         # Select assets that insiders have the most purchase, which may provide extra confidence in their expected return.
         filtered = sorted([x for x in alt_data if x.shares and x.shares &gt; 0],
                         key=lambda x: x.shares,
@@ -383,7 +383,7 @@
         # Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
         self.add_universe(SmartInsiderIntentionUniverse, self.intention_selection)
     
-    def intention_selection(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
+    def intention_selection(self, alt_coarse: list[SmartInsiderIntentionUniverse]) -&gt; list[Symbol]:
         selected = []
         
         for d in alt_coarse:

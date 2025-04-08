@@ -110,12 +110,12 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         # Next filtering based on CNBC data.
         self.add_universe(QuiverCNBCsUniverse, self._mad_money_selection)
 
-    def _etf_constituents_filter(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _etf_constituents_filter(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
         # Save all SPY constituents for the next filtering.
         self._etf = [c.symbol for c in constituents]
         return Universe.UNCHANGED
 
-    def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
+    def _mad_money_selection(self, alt_coarse: list[QuiverCNBCsUniverse]) -&gt; list[Symbol]:
         # Filter the equities being commented on by CNBC analyst Cramer, then select the ones in SPY constituents.
         madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
         return list(set(self._etf) &amp; set(madmoney))

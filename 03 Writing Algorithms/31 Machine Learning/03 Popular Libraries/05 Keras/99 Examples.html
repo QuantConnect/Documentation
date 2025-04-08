@@ -56,7 +56,7 @@ class KerasExampleAlgorithm(QCAlgorithm):
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), self.my_training_method)
             
-    def get_features_and_labels(self, n_steps=5) -&gt; Tuple[float, float]:
+    def get_features_and_labels(self, n_steps=5) -&gt; tuple[float, float]:
         # Train and predict the return data, which is more normalized and stationary.
         training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.training_data)[::-1])
         daily_pct_change = training_df.pct_change().dropna()

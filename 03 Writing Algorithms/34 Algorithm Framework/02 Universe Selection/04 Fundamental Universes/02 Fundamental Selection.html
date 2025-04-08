@@ -28,7 +28,7 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
     self.universe_settings.asynchronous = True
     self.add_universe_selection(FundamentalUniverseSelectionModel(self._fundamental_filter_function))
 
-def _fundamental_filter_function(self, fundamental: List[Fundamental]):
+def _fundamental_filter_function(self, fundamental: list[Fundamental]):
     # Select symbols with fundamental data and a price above $10.
     filtered = [f for f in fundamental if f.price &gt; 10 and not np.isnan(f.valuation_ratios.pe_ratio)]
     # Sort the assets in ascending order by their P/E ratio.
@@ -53,7 +53,7 @@ def _fundamental_filter_function(self, fundamental: List[Fundamental]):
             <td><code>selector</code></td>
 	        <td>
 			<code class='csharp'> Func&lt;IEnumerable&lt;Fundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;</code>
-			<code class='python'> Callable[[List[Fundamental]], List[Symbol]]</code>
+			<code class='python'> Callable[[list[Fundamental]], list[Symbol]]</code>
 		</td>
             <td>Filter function to select assets based on fundamental data.</td>
             <td></td>
@@ -102,7 +102,7 @@ self.add_universe_selection(LiquidAndLowPEUniverseSelectionModel())
 
 # Outside of the algorithm class, define the universe selection model.
 class LiquidAndLowPEUniverseSelectionModel(FundamentalUniverseSelectionModel):
-    def select(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def select(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
         # Select symbols with fundamental data and a price above $1.
         filtered = [x for x in fundamental if x.price &gt; 1 and not np.isnan(x.valuation_ratios.pe_ratio)]
         # Select the 100 assets with the greatest daily dollar volume.
