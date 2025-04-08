@@ -87,7 +87,7 @@ namespace UrlCheck
                             var content = response.Result;
 
                             if (content.Contains("400 Bad Request") || content.Contains("403 Unauthorized") ||
-                                content.Contains("404 Not found"))
+                                content.Contains("404 Not found") || content.Contains("Redirection:"))
                             {
                                 Log.Error(content);
                                 errorFlag = true;
@@ -461,6 +461,12 @@ namespace UrlCheck
                         return $"403 Unauthorized:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
                     case HttpStatusCode.NotFound:
                         return $"404 Not found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
+                    case HttpStatusCode.Moved:
+                    case HttpStatusCode.Redirect:
+                    case HttpStatusCode.RedirectMethod:
+                    case HttpStatusCode.TemporaryRedirect:
+                    case HttpStatusCode.PermanentRedirect:
+                        return $"Redirection:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
                 };
 
                 response.EnsureSuccessStatusCode();
