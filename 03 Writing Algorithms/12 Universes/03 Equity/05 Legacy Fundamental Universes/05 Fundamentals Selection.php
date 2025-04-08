@@ -83,11 +83,11 @@ class MyUniverseAlgorithm(QCAlgorithm):
         self.universe_settings.asynchronous = True
         self.add_universe(self._coarse_filter_function, self._fine_fundamental_function)
 
-    def _coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def _coarse_filter_function(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
         # In addition to further coarse universe selection, ensure the security has fundamental data
         return [c.symbol for c in coarse if c.has_fundamental_data]
 
-    def _fine_fundamental_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    def _fine_fundamental_function(self, fine: list[FineFundamental]) -&gt; list[Symbol]:
         # Return a list of Symbols
 </pre>
 </div>
@@ -123,12 +123,12 @@ AddUniverse(
 self.universe_settings.asynchronous = True
 self.add_universe(self._coarse_selection_function, self._fine_selection_function)
 
-def _coarse_selection_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+def _coarse_selection_function(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
     sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.dollar_volume, reverse=True)
     filtered = [x.symbol for x in sorted_by_dollar_volume if x.has_fundamental_data]
     return filtered[:50]
 
-def _fine_selection_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+def _fine_selection_function(self, fine: list[FineFundamental]) -&gt; list[Symbol]:
     sorted_by_pe_ratio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
     return [x.symbol for x in sorted_by_pe_ratio[:10]]
 </pre>

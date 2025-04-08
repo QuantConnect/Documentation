@@ -139,11 +139,11 @@ class FrameworkHybridAlgorithm(QCAlgorithm):
         # Equal weighting on each insight to dissipate capital risk evenly.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
-    def liquid_selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+    def liquid_selection(self, fundamentals: list[Fundamental]) -&gt; list[Symbol]:
         # Select the top 20 liquid equities for EMA cross trading.
         return [x.symbol for x in sorted(fundamentals, key=lambda f: f.dollar_volume, reverse=True)[:20]]
 
-    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def etf_constituents_filter(self, constituents: list[ETFConstituentUniverse]) -&gt; list[Symbol]:
         # Select the top 20 weighted stocks of SPY constituents to hold.
         return [x.symbol for x in sorted([c for c in constituents if c.weight], key=lambda c: c.weight, reverse=True)[:20]]
 
@@ -177,7 +177,7 @@ class CustomConstantAlphaModel(ConstantAlphaModel):
         # Daily insight length due to daily signals.
         super().__init__(InsightType.PRICE, InsightDirection.UP, timedelta(1))
 
-    def update(self, algorithm: QCAlgorithm, data: Slice) -&gt; List[Insight]:
+    def update(self, algorithm: QCAlgorithm, data: Slice) -&gt; list[Insight]:
         insights = super().update(algorithm, data)
         # Only trade the selected SPY constituents universe for this alpha model.
         return [i for i in insights if i.symbol in self.algorithm.universe2.selected]</pre>
@@ -283,7 +283,7 @@ class CustomConstantAlphaModel(ConstantAlphaModel):
 
         self.ordered_insights = []
 
-    def liquid_selection(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+    def liquid_selection(self, fundamentals: list[Fundamental]) -&gt; list[Symbol]:
         # Select the top 20 liquid equities for EMA cross trading.
         return [x.symbol for x in sorted(fundamentals, key=lambda f: f.dollar_volume, reverse=True)[:20]]
 

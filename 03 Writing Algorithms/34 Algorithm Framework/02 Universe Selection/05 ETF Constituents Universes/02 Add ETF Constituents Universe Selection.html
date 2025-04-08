@@ -34,7 +34,7 @@ self.add_universe_selection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
         </tr>
         <tr>
             <td><code class="csharp">universeFilterFunc</code><code class="python">universe_filter_func</code></td>
-	        <td><code class="csharp">Func&lt;IEnumerable&lt;ETFConstituentUniverse&gt;, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[List[ETFConstituentUniverse]], List[Symbol]]</code></td>
+	        <td><code class="csharp">Func&lt;IEnumerable&lt;ETFConstituentUniverse&gt;, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[list[ETFConstituentUniverse]], list[Symbol]]</code></td>
             <td>Function to filter ETF constituents. If you don't provide an argument, the model selects all of the ETF constituents by default.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
@@ -71,7 +71,7 @@ def initialize(self) -&gt; None:
         ETFConstituentsUniverseSelectionModel("SPY", universe_filter_func=self._etf_constituents_filter)
     )
 
-def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+def _etf_constituents_filter(self, constituents: list[ETFConstituentUniverse]) -&gt; list[Symbol]:
     # Select the 10 largest Equities in the ETF.
     selected = sorted(
         [c for c in constituents if c.weight],
@@ -114,7 +114,7 @@ class LargestWeightSPYETFUniverseSelectionModel(ETFConstituentsUniverseSelection
     def __init__(self) -&gt; None:
         super().__init__('SPY', universe_filter_func=self._etf_constituents_filter)
 
-    def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def _etf_constituents_filter(self, constituents: list[ETFConstituentUniverse]) -&gt; list[Symbol]:
         # Select the 10 largest Equities in the ETF.
         selected = sorted(
             [c for c in constituents if c.weight],

@@ -31,12 +31,12 @@ def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True
     self.add_universe_selection(FineFundamentalUniverseSelectionModel(self.select_coarse, self.select_fine))
 
-def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+def select_coarse(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
     selected = [c for c in coarse if c.has_fundamental_data]
     sorted_by_dollar_volume = sorted(selected, key=lambda c: c.dollar_volume, reverse=True)
     return [c.symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals
 
-def select_fine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+def select_fine(self, fine: list[FineFundamental]) -&gt; list[Symbol]:
     sorted_by_pe_ratio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
     return [c.symbol for c in sorted_by_pe_ratio[:10]] # Return assets with lowest P/E ratios</pre>
 </div>
@@ -83,12 +83,12 @@ class LowPERatioUniverseSelectionModel(FineFundamentalUniverseSelectionModel):
     def __init__(self, universe_settings: universe_settings = None) -&gt; None:
         super().__init__(self.select_coarse, self.select_fine, universe_settings)
 
-    def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def select_coarse(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
         selected = [c for c in coarse if c.has_fundamental_data]
         sorted_by_dollar_volume = sorted(selected, key=lambda c: c.dollar_volume, reverse=True)
         return [c.symbol for c in sorted_by_dollar_volume[:100]]
 
-    def select_fine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    def select_fine(self, fine: list[FineFundamental]) -&gt; list[Symbol]:
         sorted_by_pe_ratio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
         return [c.symbol for c in sorted_by_pe_ratio[:10]]</pre>
 </div>

@@ -25,7 +25,7 @@
         # Add a fundamental universe with a custom filter function.
         self._universe = self.add_universe(self._fundamental_function)
     
-    def _fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _fundamental_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
         # Select US Equities that have fundamental data. 
         return [c.symbol for c in fundamental if c.has_fundamental_data]</pre></div>
     
@@ -53,7 +53,7 @@ self.universe_settings.asynchronous = True
 # Add a fundamental universe with a custom filter function.
 self._universe = self.add_universe(self._fundamental_selection_function)
     
-def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+def _fundamental_selection_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
     # Select assets that have a price &gt; $10, fundamental data, and a price_to_earnings ratio. 
     filtered = [f for f in fundamental if f.price &gt; 10 and f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
     # Select the 100 most liquid assets.
@@ -115,7 +115,7 @@ Fundamental universes allow you to select an unlimited universe of assets to ana
         .Take(10)
         .Select(x => x.Symbol);
 }</pre>
-    <pre class="python">def _fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    <pre class="python">def _fundamental_selection_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
     # Select objects that have a value for the fundamental property.
     filtered = [f for f in fundamental if f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
     # Sort the objects by the fundamental property.

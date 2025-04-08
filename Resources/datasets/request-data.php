@@ -208,7 +208,7 @@ var tradeBars2 = <?=$cVar?>History(btcSymbol, startTime, endTime, Resolution.Min
         </tr>
 	<tr>
 	    <td><code class='placeholder-text'>alternativeDataClass</code><br>(ex: <code>CBOE</code>)</td>
-	    <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>alternativeDataClass</span>]]</code><br>(ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>alternativeDataClass</span>&gt;&gt;</code><br>(ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
+	    <td><span class='python'><code>List[dict[Symbol, <span class='placeholder-text'>alternativeDataClass</span>]]</code><br>(ex: <code>List[dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>alternativeDataClass</span>&gt;&gt;</code><br>(ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
         </tr>
     </tbody>
 </table>

@@ -50,7 +50,7 @@ from System.Collections.Generic import List</pre>
     Insights.AddRange(insights);
 }</pre>
     <pre class='python'>if self.object_store.contains_key(self.insight_key):
-    insights = self.object_store.read_json[List[Insight]](self.insight_key)
+    insights = self.object_store.read_json[list[Insight]](self.insight_key)
     self.insights.add_range(insights)</pre>
     </div>
 </ol>
@@ -112,7 +112,7 @@ from System.Collections.Generic import List</pre>
         # Read the file with the insights
         if self.object_store.contains_key(self.insights_key):
             # Load cached JSON key value pair from object store, then add to algorithm insights.
-            insights = self.object_store.read_json[List[Insight]](self.insights_key)
+            insights = self.object_store.read_json[list[Insight]](self.insights_key)
             self.log(f"Read {len(insights)} insight(s) from the Object Store")
             self.insights.add_range(insights)
 

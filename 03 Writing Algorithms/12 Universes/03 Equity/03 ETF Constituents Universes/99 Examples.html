@@ -109,7 +109,7 @@
         # Create a Scheduled Event to rebalance the portfolio.
         self.schedule.on(self.date_rules.week_start(), self.time_rules.at(9, 0), self._rebalance)
     
-    def _select_assets(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def _select_assets(self, constituents: list[ETFConstituentUniverse]) -&gt; list[Symbol]:
         # Cache the constituent weights in a dictionary for filtering and position sizing.
         self._etf_weight_by_symbol = {c.symbol: c.weight for c in constituents if c.weight}
         # Select the 100 consituents with the smallest weight in the ETF.
@@ -320,7 +320,7 @@ class SelectionData
         # Trade daily at market open since the trading signal is generated on a daily resolution.
         self.schedule.on(self.date_rules.every_day(spy), self.time_rules.after_market_open(spy, 1), self._rebalance)
     
-    def _fundamental_selection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def _fundamental_selection(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
         # Create/Update an SMA indicator for each asset that enters the ETF.
         universe_symbols = []
         for f in fundamental:

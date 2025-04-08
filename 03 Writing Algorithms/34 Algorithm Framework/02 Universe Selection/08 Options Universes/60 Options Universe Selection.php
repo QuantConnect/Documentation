@@ -46,7 +46,7 @@ self.set_universe_selection(
         </tr>
         <tr>
             <td><code class="csharp">optionChainSymbolSelector</code><code class="python">option_chain_symbol_selector</code></td>
-	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
+	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], list[Symbol]]</code></td>
             <td>A function that selects the Option symbols<br></td>
             <td></td>
         </tr>
@@ -97,7 +97,7 @@ def initialize(self) -&gt; None:
     )
 
 # Define the selection function.
-def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+def select_option_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
     # Equity Options example:
     #tickers = ["SPY", "QQQ", "TLT"]
     #return [Symbol.create(ticker, SecurityType.OPTION, Market.USA) for ticker in tickers]
@@ -165,7 +165,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         self.algo = algorithm
         super().__init__(timedelta(1), self.select_option_chain_symbols)
     
-    def select_option_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
+    def select_option_chain_symbols(self, utc_time: datetime) -> list[Symbol]:
         # Equity Options example:
         #tickers = ["SPY", "QQQ", "TLT"]
         #return [Symbol.create(ticker, SecurityType.OPTION, Market.USA) for ticker in tickers]

@@ -22,7 +22,7 @@ def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True
     self.add_universe_selection(CoarseFundamentalUniverseSelectionModel(self.select_coarse))
 
-def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+def select_coarse(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
     selected = [c for c in coarse if c.has_fundamental_data]
     sorted_by_dollar_volume = sorted(selected, key=lambda c: c.dollar_volume, reverse=True)
     return [c.symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals</pre>
@@ -60,7 +60,7 @@ class MostLiquidFundamentalUniverseSelectionModel(CoarseFundamentalUniverseSelec
     def __init__(self, universe_settings: UniverseSettings) -&gt; None:
         super().__init__(self.select_coarse, universe_settings)
 
-    def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def select_coarse(self, coarse: list[CoarseFundamental]) -&gt; list[Symbol]:
         selected = [c for c in coarse if c.has_fundamental_data]
         sorted_by_dollar_volume = sorted(selected, key=lambda c: c.dollar_volume, reverse=True)
         return [c.symbol for c in sorted_by_dollar_volume[:100]]</pre>

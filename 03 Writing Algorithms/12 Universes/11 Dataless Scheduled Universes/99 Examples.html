@@ -148,7 +148,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
         df.index = pd.to_datetime(df.index).date
         self._tickers_by_date = df.to_dict()
 
-    def _select_assets(self, dt: datetime) -&gt; List[Symbol]:
+    def _select_assets(self, dt: datetime) -&gt; list[Symbol]:
         # When live trading, re-download the CSV file each day to get the new rows.
         if self.live_mode:
             self._download_universe_file()
@@ -264,7 +264,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
             )
         )
         
-    def _select_assets(self, dt: datetime) -&gt; List[Symbol]:
+    def _select_assets(self, dt: datetime) -&gt; list[Symbol]:
         if dt.month % 3 == 0:
             return [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
         return []</pre>
@@ -383,7 +383,7 @@ class DatalessScheduledUniverseExampleAlgorithm(QCAlgorithm):
             )
         )
         
-    def _select_assets(self, dt: datetime) -&gt; List[Symbol]:
+    def _select_assets(self, dt: datetime) -&gt; list[Symbol]:
         if dt.month == self._month:
             self._week += 1
             if self._week == 3:

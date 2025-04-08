@@ -75,7 +75,7 @@ def BreadCrumb(all: dict, section: str, name: str) -> str:
         
     return ' > '.join(breadcrumb[::-1])
 
-def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
+def Generate(branch: Union[dict, list], this_section: str) -> tuple[str, str]:
     global sections
     html = ""
     
@@ -239,7 +239,7 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
     except Exception as e:
         raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
 
-def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, List[str]] = None) -> None:
+def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, list[str]] = None) -> None:
     try:
         pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
         pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css', options={"image-quality": 50})
