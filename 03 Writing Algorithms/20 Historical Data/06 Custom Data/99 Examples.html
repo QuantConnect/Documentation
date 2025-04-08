@@ -1,10 +1,131 @@
 <p>The following examples demonstrate some common practices for trading with historical custom data.</p>
 
-<h4>Example</h4>
-<p></p>
+<h4>Example 1: Custom Universe Data</h4>
+<p>The following algorithm trades based on a custom universe dataset. It obtains the historical data of the universe weights and uses the exponential moving average as the investment weight.</p>
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">public class CustomUniverseExampleAlgorithm : QCAlgorithm
+{
+    private const decimal SmoothingFactor = 2m / (1m + 5m);
+    private Universe _universe;
+
+    public override void Initialize()
+    {
+        SetStartDate(2016, 1, 1);
+        SetEndDate(2025, 1, 1);
+        // Add an universe that reads from the Object Store.
+        _universe = AddUniverse&lt;CustomUniverseData&gt;("CustomUniverse", Resolution.Daily, (altCoarse) =&gt; {
+            return altCoarse.Select(d =&gt; d.Symbol);
+        });
+        // Add a Scheduled Event to rebalance the portfolio.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        Schedule.On(
+            DateRules.EveryDay(spy), 
+            TimeRules.AfterMarketOpen(spy, 1), 
+            Rebalance
+        );
+    }
+
+    private void Rebalance()
+    {
+        // We invest by the EMA of the given weight.
+        var history = History(_universe, 5, Resolution.Daily);
+        var symbols = history.Select(x =&gt; x.Symbol).ToHashSet();
+        var weights = symbols.Select(symbol =&gt; {
+                var ema = history.Where(x =&gt; x.Symbol == symbol)
+                    .Select(x =&gt; (x as CustomUniverseData).Weight)
+                    .Aggregate((ema, nextQuote) =&gt; SmoothingFactor * nextQuote + (1m - SmoothingFactor) * ema);
+                return (symbol, ema);
+            }).ToList();
+        // Normalized weights.
+        var weightSum = weights.Sum(x =&gt; x.Item2);
+        var targets = weights.Select(x =&gt; new PortfolioTarget(x.Item1, x.Item2 / weightSum)).ToList();
+        SetHoldings(targets, liquidateExistingHoldings: true);
+    }
+}
+
+public class CustomUniverseData : BaseDataCollection
+{
+    public decimal Weight;
+    public override DateTime EndTime 
+    {
+        // Set the data period to 1 day.
+        get { return Time + QuantConnect.Time.OneDay; }
+        set { Time = value - QuantConnect.Time.OneDay; }
+    }
+
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+    {
+        // Define the location and format of the data file.
+        return new SubscriptionDataSource(
+            "portfolioTargets.csv", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv
+        );
+    }
+
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) 
+    {
+        // Skip the header row.
+        if (!Char.IsDigit(line[0]))
+        {
+            return null;
+        }
+        // Split the line by each comma.
+        var items = line.Split(",");
+
+        // Parse the data from the CSV file.
+        return new CustomUniverseData 
+        {
+            EndTime = Parse.DateTimeExact(items[0], "yyyy-MM-dd"),
+            Symbol = Symbol.Create(items[1], SecurityType.Equity, Market.USA),
+            Weight = decimal.Parse(items[2], NumberStyles.Any, CultureInfo.InvariantCulture)
+        };
+    }
+}</pre>
+    <pre class="python">class CustomUniverseExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2016, 1, 1)
+        self.set_end_date(2025, 1, 1)
+        # Add an universe that reads from the Object Store.
+        self._universe = self.add_universe(
+            CustomUniverseData, "CustomUniverse", Resolution.DAILY, lambda x: [y.symbol for y in x]
+        )
+        # Add a Scheduled Event to rebalance the portfolio.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.schedule.on(
+            self.date_rules.every_day(spy),
+            self.time_rules.after_market_open(spy, 1),
+            self.rebalance
+        )
+
+    def rebalance(self) -&gt; None:
+        # We invest by the EMA of the given weight.
+        history = self.history(self._universe, 5, Resolution.DAILY).set_index('symbol', append=True).unstack('symbol').fillna(0)
+        weights = history.ewm(5).mean().iloc[-1].droplevel(0)
+        # Normalized weights.
+        weights = weights / weights.sum()
+        self.set_holdings([PortfolioTarget(symbol, weight) for symbol, weight in weights.items()], liquidate_existing_holdings=True)
+
+
+class CustomUniverseData(PythonData):
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -&gt; SubscriptionDataSource:
+        # Define the location and format of the data file.
+        return SubscriptionDataSource(
+            "portfolio-targets.csv", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV
+        )
+
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -&gt; BaseData:
+        # Skip the header row.
+        if not line[0].isnumeric():
+            return None
+        # Split the line by each comma.
+        items = line.split(",")
+        # Parse the data from the CSV file.
+        data = CustomUniverseData()
+        data.end_time = datetime.strptime(items[0], "%Y-%m-%d")
+        data.time = data.end_time - timedelta(1)
+        data['symbol'] = Symbol.create(items[1], SecurityType.EQUITY, Market.USA)
+        data["weight"] = float(items[2])
+        return data</pre>
 </div>
 
 <h4>Other Examples</h4>
