@@ -1,8 +1,7 @@
-
 <p>The following examples demonstrate some common practices for trading Cryptos using historical requests.</p>
 
 <h4>Example 1: Risk-Parity Crypto Pairs Portfolio</h4>
-<p>The following algorithm constructs a monthly rebalance risk-parity portfolio using the top 10 liquid Crypto pairs in the BitFinex market. Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown. The position sizing can be optimized by 1-year historical daily return of the universe members.</p>
+<p>The following algorithm constructs a monthly rebalance risk-parity portfolio using the top 10 liquid Crypto pairs in the BitFinex market. A risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown. The position sizing can be optimized by 1-year historical daily return of the universe members.</p>
 <div class="section-example-container">
     <pre class="csharp">public class CryptoHistoricalDataAlgorithm : QCAlgorithm
 {
@@ -32,7 +31,7 @@
 
     private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;CryptoUniverse&gt; data)
     {
-        // Filter out the crypto pair with price below $10 to avoid excessive volatility.
+        // Filter out the crypto pair with a price below $10 to avoid excessive volatility.
         // Select the top 10 dollar volume crypto pairs.
         return (from datum in data
                where datum.Price &lt;= 10 &amp;&amp; datum.VolumeInUsd.HasValue
@@ -83,7 +82,7 @@
     <pre class="python">from Portfolio.RiskParityPortfolioOptimizer import RiskParityPortfolioOptimizer
 
 class CryptoHistoricalDataAlgorithm(QCAlgorithm):
-    def initialize(self) -&lt; None:
+    def initialize(self) -&gt;None:
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2022, 1, 1)
         
@@ -102,14 +101,14 @@ class CryptoHistoricalDataAlgorithm(QCAlgorithm):
             self.rebalance
         )
 
-    def selection(self, data: List[CryptoUniverse]) -&lt; List[Symbol]:
-        # Filter out the crypto pair with price below $10 to avoid excessive volatility.
+    def selection(self, data: List[CryptoUniverse]) -&gt;List[Symbol]:
+        # Filter out the crypto pair with a price below $10 to avoid excessive volatility.
         filtered = [datum for datum in data if datum.price &lt;= 10 and datum.volume_in_usd]
         # Select the top 10 dollar volume crypto pairs.
         sorted_by_volume_in_usd = sorted(filtered, key=lambda datum: datum.volume_in_usd, reverse=True)[:10]
         return [datum.symbol for datum in sorted_by_volume_in_usd]
 
-    def rebalance(self) -&lt; None:
+    def rebalance(self) -&gt;None:
         # Historical data request to get 1-year data for optimization.
         symbols = self._universe.selected
         history = self.history(symbols, 253, Resolution.DAILY).close.unstack(0).dropna()
