@@ -1,11 +1,9 @@
 <p>The following examples demonstrate some common practices for historical data.</p>
 
 <h4>Example 1: Simple Moving Average</h4>
-<p>The following example demonstrates a weekly-resampled historical data to calculate the 50-week Simple Moving Average to implement a SMA-cross strategy.</p>
+<p>The following example demonstrates weekly-resampled historical data to calculate the 50-week Simple Moving Average to implement an SMA-cross strategy.</p>
 <div class="section-example-container">
-    <pre class="csharp">using Calendar = QuantConnect.Data.Consolidators.Calendar;
-        
-public class HistoricalDataAlgorithm : QCAlgorithm
+    <pre class="csharp">public class HistoricalDataAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
     private TradeBarConsolidator _consolidator;
@@ -21,16 +19,10 @@ public class HistoricalDataAlgorithm : QCAlgorithm
         _spy = AddEquity("SPY", Resolution.Daily).Symbol;
         // Set up a consolidator to resample historical data to weekly.
         _consolidator = new TradeBarConsolidator(Calendar.Weekly);
-        _consolidator.DataConsolidated += (_, updated) =&gt; {
-            _window.Add(updated.Close);
-        };
+        _consolidator.DataConsolidated += (_, updated) =&gt; _window.Add(updated.Close);
 
-        // Set a scheduled event to trade SPY with weekly SMA signal.
-        Schedule.On(
-            DateRules.WeekStart(_spy),
-            TimeRules.AfterMarketOpen(_spy, 1),
-            Trade
-        );
+        // Set a scheduled event to trade SPY with a weekly SMA signal.
+        Schedule.On(DateRules.WeekStart(_spy), TimeRules.AfterMarketOpen(_spy, 1), Trade);
     }
 
     private void Trade()
@@ -42,7 +34,7 @@ public class HistoricalDataAlgorithm : QCAlgorithm
         {
             _consolidator.Update(bar);
         }
-        // Calculate the current 50-week SMA as trading signal.
+        // Calculate the current 50-week SMA as a trading signal.
         var sma50 = _window.Average();
 
         // Trade the SMA cross strategy.
@@ -65,7 +57,7 @@ public class HistoricalDataAlgorithm : QCAlgorithm
     
         # Request SPY data for historical data call and trading.
         self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
-        # Set a scheduled event to trade SPY with weekly SMA signal.
+        # Set a scheduled event to trade SPY with a weekly SMA signal.
         self.schedule.on(self.date_rules.week_start(self.spy), self.time_rules.after_market_open(self.spy, 1), self.trade)
 
     def trade(self) -&gt; None:
@@ -73,7 +65,7 @@ public class HistoricalDataAlgorithm : QCAlgorithm
         history = self.history(self.spy, 252, Resolution.DAILY)
         # Obtain the weekly close price to calculate the weekly SMA.
         weekly_close = history.unstack(0).close.resample("W").last()
-        # Calculate the current 50-week SMA as trading signal.
+        # Calculate the current 50-week SMA as a trading signal.
         sma50 = weekly_close.rolling(50).mean().iloc[-1, 0]
 
         # Trade the SMA cross strategy.
