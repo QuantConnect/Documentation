@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for trade with historical Alternative Data.</p>
 
 <h4>Example 1: Inverted Yield Curve</h4>
-<p>The following algorithm trades the smoothened yield curve difference, calculated from the difference between 10-year yield and 2-year yield historical data and smoothened by exponential moving average of that. If the yield curve is inverted, short SPY from this market downturn indicator.</p>
+<p>The following algorithm trades the smoothened yield curve difference, calculated from the difference between 10-year yield and 2-year yield historical data and smoothened by the exponential moving average. If the yield curve is inverted, short SPY from this market downturn indicator.</p>
 <div class="section-example-container">
     <pre class="csharp">public class AlternativeHistoricalDataAlgorithm : QCAlgorithm
 {
@@ -16,10 +16,10 @@
 
         // Requesting yield curve data for trade signal generation (inversion)
         _yieldCurveSymbol = AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
-        // Request XAUUSD CFD contract to trade.
+        // Request the XAUUSD CFD contract for trade.
         _spy = AddEquity("SPY").Symbol;
 
-        // Trade every day after market open with updated smoothened yield curve difference.
+        // Trade every day after the market opens with an updated smoothened yield curve difference.
         Schedule.On(
             DateRules.EveryDay(_spy),
             TimeRules.At(0, 0),
@@ -29,7 +29,7 @@
 
     private void Trade()
     {
-        // Obtain historical quote data to obtain the mean and SD of bid-ask spread.
+        // Obtain historical quote data to obtain the mean and SD of the bid-ask spread.
         var history = History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 250, Resolution.Daily)
             .Where(x =&gt; x.TenYear.HasValue &amp;&amp; x.TwoYear.HasValue)
             .ToList();
@@ -62,7 +62,7 @@
         # Request XAUUSD CFD contract to trade.
         self._spy = self.add_equity("SPY").symbol
     
-        # Trade every day after market open with updated smoothened yield curve difference.
+        # Trade every day after the market opens with an updated smoothened yield curve difference.
         self.schedule.on(
             self.date_rules.every_day(self._spy),
             self.time_rules.at(0, 0),
