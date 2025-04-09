@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for trading using historical requests.</p>
 
 <h4>Example 1: Trend Following on 0DTE Option Contract</h4>
-<p>This algorithm strategically trades 0DTE SPY options by analyzing bid and ask volumes shortly after market open. By using scheduled events, it effectively executes trades based on historical quote data, optimizing decision-making. The algorithm aims for timely entries and exits, ensuring efficient capital management and quick adaptability in volatile markets.</p>
+<p>This algorithm strategically trades 0DTE SPY options by analyzing bid and ask volumes shortly after the market opens. Using scheduled events, it effectively executes trades based on historical quote data, optimizing decision-making. The algorithm aims for timely entries and exits, ensuring efficient capital management and quick adaptability in volatile markets.</p>
 <div class="section-example-container">
     <pre class="csharp">public class ZeroDTEOptionsTradingAlgorithm : QCAlgorithm
 {
@@ -19,7 +19,7 @@
         option.SetFilter(u =&gt; u.IncludeWeeklys().Expiration(0, 0).Strikes(-3, 3));
         _option = option.Symbol;
 
-        // Schedule event to enter and exit option contract postion.
+        // Schedule event to enter and exit option contract position.
         Schedule.On(DateRules.EveryDay(_option), TimeRules.AfterMarketOpen(_option, 16), TradeOption);
         Schedule.On(DateRules.EveryDay(_option), TimeRules.BeforeMarketClose(_option, 15), () =&gt; Liquidate());
     }
@@ -33,7 +33,7 @@
             {
                 // Request historical quote data for signal generation.
                 var history = History&lt;QuoteBar&gt;(_option, 15, Resolution.Minute);
-                // Calculate total bid and ask dollar volume to determine the capital directional force.
+                // Calculate the total bid and ask for dollar volume to determine the capital directional force.
                 var totalBidVolume = 0m;
                 var totalAskVolume = 0m;
                 foreach (var bar in history)
@@ -67,7 +67,7 @@
         option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-3, 3))
         self._option = option.symbol
         
-        # Schedule event to enter and exit option contract postion.
+        # Schedule event to enter and exit option contract position.
         self.schedule.on(self.date_rules.every_day(self._option), self.time_rules.after_market_open(self._option, 16), self.trade_option)
         self.schedule.on(self.date_rules.every_day(self._option), self.time_rules.before_market_close(self._option, 15), self.liquidate)
 
