@@ -1,9 +1,10 @@
 <p>The following examples demonstrate some common practices for trading with Index historical data.</p>
 
 <h4>Example 1: Replicating Portfolio</h4>
-<p>The below example constructed a replicating portfolio of SGX using the top 100 weighted SPY constituents. It provides an alternative way for retail investors to invest in SGX without access to certain financial instruments, as well as hedging idea on SGX close hours.</p>
+<p>The example below constructed a replicating SGX portfolio using the top 100 weighted SPY constituents. It provides an alternative way for retail investors to invest in SGX without access to certain financial instruments and a hedging idea on SGX close hours.</p>
 <div class="section-example-container">
-    <pre class="csharp">public class SGXMatchingTradingAlgorithm : QCAlgorithm
+    <pre class="csharp">using MathNet.Numerics.LinearRegression;
+public class SGXMatchingTradingAlgorithm : QCAlgorithm
 {
     private Symbol _sgx;
     private Universe _universe;
@@ -18,10 +19,10 @@
 
         // Request SGX Index data for matching.
         _sgx = AddIndex("SGX").Symbol;
-        // We will try to use SPY contituents to reproduce the SGX index.
+        // We will try to use SPY constituents to reproduce the SGX index.
         _universe = AddUniverse(Universe.ETF("SPY", Market.USA, null, (u) =&gt; u.Where(x =&gt; x.Weight.HasValue).OrderByDescending(x =&gt; x.Weight.Value).Take(100).Select(x =&gt; x.Symbol)));
 
-        // Schedule event to rebalance the portfolio.
+        // Schedule an event to rebalance the portfolio.
         Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 31), Rebalance);
     }
 
@@ -81,14 +82,14 @@ class SGXMatchingTradingAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2020, 1, 1)
-        self.set_cash(1000000)
+        self.set_cash(100000)
         
         # Request SGX Index data for matching.
         self._sgx = self.add_index("SGX").symbol
-        # We will try to use SPY contituents to reproduce the SGX index.
+        # We will try to use SPY constituents to reproduce the SGX index.
         self._universe = self.add_universe(self.universe.etf("SPY", Market.USA, None, lambda x: [y.symbol for y in sorted([y for y in x if y.weight], key=lambda x: x.weight, reverse=True)[:100]]))
 
-        # Schedule event to rebalance the portfolio.
+        # Schedule an event to rebalance the portfolio.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 31),
@@ -108,7 +109,7 @@ class SGXMatchingTradingAlgorithm(QCAlgorithm):
 
     def calculate_weights(self, history: pd.DataFrame, benchmark: pd.Series) -&gt; pd.Series:
         # Use log price to eliminate the compounding effect.
-        # Perform regression to obtain the best replicating portfolio of SGX.
+        # Perform regression to obtain the best-replicating portfolio of SGX.
         lr = LinearRegression(fit_intercept=False).fit(np.log(history), np.log(benchmark))
         return lr.coef_</pre>
 </div>
