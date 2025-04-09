@@ -1,7 +1,7 @@
-<p>The following examples demonstrate some common practices for trading crypto futures with historical data.</p>
+<p>The following examples demonstrate common practices for trading cryptocurrency futures with historical data.</p>
 
 <h4>Example 1: Spot-Future Arbitrage</h4>
-<p>The below example uses linear regression with historical data of Spot and Future BTCUSDT to obtain the cointegrating vector between them. We measure the spread between the two securities and trade mean reversal upon their spread divergence.</p>
+<p>The example below uses linear regression with historical Spot and Future BTCUSDT data to obtain the cointegrating vector between them. We measure the spread between the two securities and trade mean reversal upon their spread divergence.</p>
 <div class="section-example-container">
     <pre class="csharp">using MathNet.Numerics.LinearRegression;
 using Accord.Math;
@@ -42,8 +42,8 @@ public class CointegrationVectorRegressionAlgorithm : QCAlgorithm
             var spread = CalculateSpread(y.Close, x1.Close, _cointegrationVector);
             var normalizedSpread = (spread - _residualMean) / _residualStd;
 
-            // If spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
-            // Else, vice versa.
+            // If the spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
+            // Else, and vice versa.
             var totalWeights = Math.Abs(_cointegrationVector[1]) + 1m;
             if (normalizedSpread &gt; _entryThreshold &amp;&amp; !Portfolio[_future].IsShort)
             {
@@ -150,7 +150,7 @@ class CointegrationVectorRegressionAlgorithm(QCAlgorithm):
             spread = self.calculate_spread(y.close, x1.close, self.cointegration_vector)
             normalized_spread = (spread - self.residual_mean) / self.residual_std
 
-            # If spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
+            # If the spread is too high, short the dependent and long the independent variables based on the weightings of the cointegrating vectors.
             # Else, vice versa.
             total_weights = abs(self.cointegration_vector[1]) + 1
             if normalized_spread &gt; self.entry_threshold and not self.portfolio[self._future].is_short:
