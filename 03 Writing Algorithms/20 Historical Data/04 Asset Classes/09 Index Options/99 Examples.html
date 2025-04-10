@@ -7,7 +7,7 @@
 
 public class IndexOptionHistoricalDataAlgorithm : QCAlgorithm
 {
-    private Symbol _spx, _spxw, _spxContract, _spxwContract;
+    private Symbol _spxContract, _spxwContract;
     private decimal[] _cointegrationVector = new[] { 0m, 0m };
     private decimal _threshold = 2m;
     private decimal _spreadMean = 0m;
@@ -18,10 +18,6 @@ public class IndexOptionHistoricalDataAlgorithm : QCAlgorithm
         SetStartDate(2025, 1, 1);
         SetEndDate(2025, 2, 1);
         SetCash(10000000);
-        
-        // Request SPX and SPXW options to analyze their relationship and trade.
-        _spx = AddIndexOption("SPX").Symbol;
-        _spxw = AddIndexOption("SPX", "SPXW").Symbol;
 
         // Select the Index Options to analyze and trade by week.
         Schedule.On(
@@ -61,8 +57,10 @@ public class IndexOptionHistoricalDataAlgorithm : QCAlgorithm
 
     private void SelectContract()
     {
+        var index = QuantConnect.Symbol.Create("SPX", SecurityType.Index, Market.USA);
         // Obtain the SPX ATM call contract, since it is the most liquid to trade with.
-        var spxContracts = OptionChain(_spx).Where(x =&gt; x.Expiry &lt;= Time.AddDays(30)).ToList();
+        var spx = QuantConnect.Symbol.CreateCanonicalOption(index);
+        var spxContracts = OptionChain(spx).Where(x =&gt; x.Expiry &lt;= Time.AddDays(30)).ToList();
         if (spxContracts.Count == 0)
         {
             _spxContract = null;
@@ -74,7 +72,8 @@ public class IndexOptionHistoricalDataAlgorithm : QCAlgorithm
             .OrderBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
             .First().Symbol;
         // Obtain the SPXW contract with the same strike, right, and expiry.
-        _spxwContract = OptionChain(_spxw).Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call &amp;&amp; x.Strike == _spxContract.ID.StrikePrice).FirstOrDefault();
+        var spxw = QuantConnect.Symbol.CreateCanonicalOption(index, "SPXW", Market.USA, "?SPXW");
+        _spxwContract = OptionChain(spxw).Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call &amp;&amp; x.Strike == _spxContract.ID.StrikePrice).FirstOrDefault();
 
         if (_spxwContract != null)
         {
@@ -143,17 +142,15 @@ class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
         self.set_start_date(2025, 1, 1)
         self.set_end_date(2025, 2, 1)
         self.set_cash(10000000)
-        
-        # Request SPX and SPXW options to analyze their relationship and trade.
-        self._spx = self.add_index_option("SPX").symbol
-        self._spxw = self.add_index_option("SPX", "SPXW").symbol
 
         # Select the Index Options to analyze and trade by week.
         self.schedule.on(self.date_rules.week_start(), self.time_rules.at(9, 15), self.select_contracts)
 
     def select_contracts(self) -&gt; None:
+        index = Symbol.create("SPX", SecurityType.INDEX, Market.USA)
         # Obtain the SPX ATM call contract, since it is the most liquid to trade with.
-        spx_contracts = [x for x in self.option_chain(self._spx) if x.expiry &lt; self.time + timedelta(30)]
+        spx = Symbol.create_canonical_option(index)
+        spx_contracts = [x for x in self.option_chain(spx) if x.expiry &lt; self.time + timedelta(30)]
         if not spx_contracts:
             self._spx_contract = None
             self._spxw_contract = None
@@ -161,7 +158,8 @@ class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
         expiry = max(x.expiry for x in spx_contracts)
         self._spx_contract = sorted([x for x in spx_contracts if x.expiry == expiry and x.right == OptionRight.CALL], key=lambda x: abs(x.strike - x.underlying_last_price))[0]
         # Obtain the SPXW contract with the same strike, right, and expiry.
-        spxw_contracts = self.option_chain(self._spxw)
+        spxw = Symbol.create_canonical_option(index, "SPXW", Market.USA, "?SPXW")
+        spxw_contracts = self.option_chain(spxw)
         strike = self._spx_contract.strike
         self._spxw_contract = next(filter(lambda x: x.expiry == expiry and x.right == OptionRight.CALL and x.strike == strike, spxw_contracts), None)
 
