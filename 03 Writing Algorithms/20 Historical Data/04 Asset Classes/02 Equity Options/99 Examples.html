@@ -1,1 +1,91 @@
+<p>The following examples demonstrate some common practices for trading using historical requests.</p>
 
+<h4>Example 1: Trend Following on 0DTE Option Contract</h4>
+<p>This algorithm strategically trades 0DTE SPY options by analyzing bid and ask volumes shortly after the market opens. Using scheduled events, it effectively executes trades based on historical quote data, optimizing decision-making. The algorithm aims for timely entries and exits, ensuring efficient capital management and quick adaptability in volatile markets.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class ZeroDTEOptionsTradingAlgorithm : QCAlgorithm
+{
+    private Symbol _option;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 1);
+        SetEndDate(2024, 12, 10); 
+        SetCash(100000);
+
+        // Request SPY option data for trading and signal generation.
+        var option = AddOption("SPY");
+        // We are interested in ATM 0DTE options since they are the most popular.
+        option.SetFilter(u =&gt; u.IncludeWeeklys().Expiration(0, 0).Strikes(-3, 3));
+        _option = option.Symbol;
+
+        // Schedule event to enter and exit option contract position.
+        Schedule.On(DateRules.EveryDay(_option), TimeRules.AfterMarketOpen(_option, 16), TradeOption);
+        Schedule.On(DateRules.EveryDay(_option), TimeRules.BeforeMarketClose(_option, 15), () =&gt; Liquidate());
+    }
+
+    public void TradeOption()
+    {
+        // Get the option chain for SPY to trade.
+        if (CurrentSlice.OptionChains.TryGetValue(_option, out var optionChain))
+        {
+            foreach (var option in optionChain)
+            {
+                // Request historical quote data for signal generation.
+                var history = History&lt;QuoteBar&gt;(_option, 15, Resolution.Minute);
+                // Calculate the total bid and ask for dollar volume to determine the capital directional force.
+                var totalBidVolume = 0m;
+                var totalAskVolume = 0m;
+                foreach (var bar in history)
+                {
+                    totalBidVolume += bar.Bid.Close * bar.LastBidSize;
+                    totalAskVolume += bar.Ask.Close * bar.LastAskSize;
+                }
+
+                // Follow the capital flow to trade.
+                if (totalBidVolume &gt; totalAskVolume)
+                {
+                    MarketOrder(option.Symbol, 1);
+                }
+                else
+                {
+                    MarketOrder(option.Symbol, -1);
+                }
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class ZeroDTEOptionsTradingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 12, 1)
+        self.set_end_date(2024, 12, 10)  # Limit to a single day for 0DTE
+        self.set_cash(100000)  # Starting cash
+
+        # Request SPY option data for trading and signal generation.
+        option = self.add_option("SPY")
+        # We are interested in ATM 0DTE options since they are the most popular.
+        option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-3, 3))
+        self._option = option.symbol
+        
+        # Schedule event to enter and exit option contract position.
+        self.schedule.on(self.date_rules.every_day(self._option), self.time_rules.after_market_open(self._option, 16), self.trade_option)
+        self.schedule.on(self.date_rules.every_day(self._option), self.time_rules.before_market_close(self._option, 15), self.liquidate)
+
+    def trade_option(self) -&gt; None:
+        # Get the option chain for SPY to trade.
+        option_chain = self.current_slice.option_chains.get(self._option, None)
+        if option_chain:
+            for option in option_chain:
+                # Request historical quote data for signal generation.
+                history = self.history(QuoteBar, option.symbol, 15, Resolution.Minute)
+                if not history.empty:
+                    # Calculate total bid and ask dollar volume to determine the capital directional force.
+                    total_bid_volume = (history['bidclose'] * history['bidsize']).sum()
+                    total_ask_volume = (history['askclose'] * history['asksize']).sum()
+
+                    # Follow the capital flow to trade.
+                    if total_bid_volume &gt; total_ask_volume:
+                        self.market_order(option.symbol, 1)
+                    else:
+                        self.market_order(option.symbol, -1)</pre>
+</div>

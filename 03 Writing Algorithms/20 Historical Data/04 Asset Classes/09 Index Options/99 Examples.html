@@ -1,1 +1,204 @@
+<p>The following examples demonstrate some common practices for trading Index Options with historical data.</p>
 
+<h4>Example 1: Standard-Weekly Contracts Cointegration</h4>
+<p>The following example analyzes the cointegration relationship between the front-month ATM SPX and SPXW calls. By measuring their spread divergence, we trade mean reversal on their spread convergence.</p>
+<div class="section-example-container">
+    <pre class="csharp">using MathNet.Numerics.LinearRegression;
+
+public class IndexOptionHistoricalDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spxContract, _spxwContract;
+    private decimal[] _cointegrationVector = new[] { 0m, 0m };
+    private decimal _threshold = 2m;
+    private decimal _spreadMean = 0m;
+    private decimal _spreadSd = 1m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2025, 1, 1);
+        SetEndDate(2025, 2, 1);
+        SetCash(10000000);
+
+        // Select the Index Options to analyze and trade by week.
+        Schedule.On(
+            DateRules.WeekStart(),
+            TimeRules.At(9, 15),
+            SelectContract
+        );
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_spxwContract != null &amp;&amp; slice.QuoteBars.TryGetValue(_spxwContract, out var y) &amp;&amp; slice.QuoteBars.TryGetValue(_spxContract, out var x1))
+        {
+            // Obtain the current spread to see if there is any price divergence to trade.
+            var spread = CalculateSpread(y.Close, x1.Close, _cointegrationVector);
+            var z = (spread - _spreadMean) / _spreadSd;
+
+            // If the spread diverges above or below the threshold, trade to bet on mean reversal.
+            if (z &gt; _threshold &amp;&amp; !Portfolio[_spxContract].IsLong)
+            {
+                MarketOrder(_spxContract, 10 * _cointegrationVector[1]);
+                MarketOrder(_spxwContract, -10);
+            }
+            else if (z &lt; -_threshold &amp;&amp; !Portfolio[_spxwContract].IsLong)
+            {
+                MarketOrder(_spxContract, -10 * _cointegrationVector[1]);
+                MarketOrder(_spxwContract, 10);
+            }
+            
+            // If prices converge, exit positions.
+            if ((Portfolio[_spxContract].IsLong &amp;&amp; z &lt; 0m) || (Portfolio[_spxwContract].IsLong &amp;&amp; z &gt; 0m))
+            {
+                Liquidate();
+            }
+        }
+    }
+
+    private void SelectContract()
+    {
+        var index = QuantConnect.Symbol.Create("SPX", SecurityType.Index, Market.USA);
+        // Obtain the SPX ATM call contract since it is the most liquid with which to trade.
+        var spx = QuantConnect.Symbol.CreateCanonicalOption(index);
+        var spxContracts = OptionChain(spx).Where(x =&gt; x.Expiry &lt;= Time.AddDays(30)).ToList();
+        if (spxContracts.Count == 0)
+        {
+            _spxContract = null;
+            _spxwContract = null;
+            return;
+        }
+        var expiry = spxContracts.Max(x =&gt; x.Expiry);
+        _spxContract = spxContracts.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call)
+            .OrderBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
+            .First().Symbol;
+        // Obtain the SPXW contract with the same strike, right, and expiry.
+        var spxw = QuantConnect.Symbol.CreateCanonicalOption(index, "SPXW", Market.USA, "?SPXW");
+        _spxwContract = OptionChain(spxw).Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call &amp;&amp; x.Strike == _spxContract.ID.StrikePrice).FirstOrDefault()?.Symbol;
+
+        if (_spxwContract != null)
+        {
+            // Subscribe to the contracts we will trade
+            AddIndexOptionContract(_spxContract);
+            AddIndexOptionContract(_spxwContract);
+            // Obtain the historical data and find their cointegration relationship.
+            var history = History&lt;QuoteBar&gt;(new[] { _spxContract, _spxwContract }, 1000, Resolution.Minute).Where(x =&gt; x.ContainsKey(_spxContract) &amp;&amp; x.ContainsKey(_spxwContract)).ToList();
+            _cointegrationVector = CalculateCointegrationVector(history);
+            // Obtain the mean and SD of the spread between the options.
+            var residual = history.Select(x =&gt; CalculateSpread(x[_spxwContract].Close, x[_spxContract].Close, _cointegrationVector)).ToList();
+            _spreadMean = residual.Average();
+            _spreadSd = Convert.ToDecimal(Math.Sqrt(residual.Sum(x =&gt; Math.Pow((double)(x - _spreadMean), 2) / residual.Count)));
+        }
+    }
+    
+    private decimal[] CalculateCointegrationVector(IEnumerable&lt;DataDictionary&lt;QuoteBar&gt;&gt; history)
+    {
+        // Use log price to eliminate the compounding effect.
+        var y = history.Select(x =&gt; Math.Log((double)x[_spxwContract].Close)).ToArray();
+        var x1 = history.Select(x =&gt; Math.Log((double)x[_spxContract].Close)).ToArray();
+
+        // Create a matrix for the regression analysis.
+        var n = new[] { y.Length, x1.Length }.Min();
+        var designMatrix = new double[n][];
+        for (int i = 0; i &lt; n; i++)
+        {
+            designMatrix[i] = new[] { x1[i] };
+        }
+
+        try
+        {
+            // Perform regression using MathNet.Numerics
+            var coefficients = MultipleRegression.QR(designMatrix, y.TakeLast(n).ToArray(), intercept: true);
+
+            // The coefficients array will contain the intercept and the coefficients for each independent variable.
+            // Format: [intercept, x1]
+            return new[] { (decimal)coefficients[0], (decimal)coefficients[1] };
+        }
+        catch
+        {
+            return _cointegrationVector;
+        }
+    }
+
+    private decimal CalculateSpread(decimal y, decimal x1, decimal[] cointegrationVector)
+    {
+        // Using the cointegration vector to calculate the spread.
+        return LogPrice(y) - (cointegrationVector[0] + LogPrice(x1) * cointegrationVector[1]);
+    }
+
+    private decimal LogPrice(decimal price)
+    {
+        return Convert.ToDecimal(Math.Log((double)price));
+    }
+}</pre>
+    <pre class="python">from sklearn.linear_model import LinearRegression
+
+class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
+    _threshold = 2
+    _coef = 0
+    _intercept = 0
+    _mean_spread = 0
+    _sd_spread = 1
+    _spx_contract = None
+    _spxw_contract = None
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2025, 1, 1)
+        self.set_end_date(2025, 2, 1)
+        self.set_cash(10000000)
+
+        # Select the Index Options to analyze and trade by week.
+        self.schedule.on(self.date_rules.week_start(), self.time_rules.at(9, 15), self.select_contracts)
+
+    def select_contracts(self) -&gt; None:
+        index = Symbol.create("SPX", SecurityType.INDEX, Market.USA)
+        # Obtain the SPX ATM call contract since it is the most liquid to trade with.
+        spx = Symbol.create_canonical_option(index)
+        spx_contracts = [x for x in self.option_chain(spx) if x.expiry &lt; self.time + timedelta(30)]
+        if not spx_contracts:
+            self._spx_contract = None
+            self._spxw_contract = None
+            return
+        expiry = max(x.expiry for x in spx_contracts)
+        self._spx_contract = sorted([x for x in spx_contracts if x.expiry == expiry and x.right == OptionRight.CALL], key=lambda x: abs(x.strike - x.underlying_last_price))[0]
+        # Obtain the SPXW contract with the same strike, right, and expiry.
+        spxw = Symbol.create_canonical_option(index, "SPXW", Market.USA, "?SPXW")
+        spxw_contracts = self.option_chain(spxw)
+        strike = self._spx_contract.strike
+        self._spxw_contract = next(filter(lambda x: x.expiry == expiry and x.right == OptionRight.CALL and x.strike == strike, spxw_contracts), None)
+
+        if self._spxw_contract:
+            # Subscribe to the contracts we will trade 
+            self.add_index_option_contract(self._spx_contract.symbol)
+            self.add_index_option_contract(self._spxw_contract.symbol)
+            # Obtain the historical data and find their cointegration relationship.
+            history = self.history([self._spx_contract.symbol, self._spxw_contract.symbol], 1000, Resolution.MINUTE).droplevel([0, 1, 2]).unstack(0).close
+            lr = LinearRegression().fit(np.log(history.iloc[:, [0]]), np.log(history.iloc[:, 1]))
+            self._coef, self._intercept = lr.coef_, lr.intercept_
+            # Obtain the mean and SD of the spread between the options.
+            residual = history.apply(lambda x: self.get_spread(x[self._spx_contract.symbol], x[self._spxw_contract.symbol]), axis=1)
+            self._mean_spread, self._sd_spread = np.mean(residual.values), np.std(residual.values, ddof=1)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self._spxw_contract:
+            spx = slice.quote_bars.get(self._spx_contract.symbol)
+            spxw = slice.quote_bars.get(self._spxw_contract.symbol)
+            if spx and spxw:
+                # Obtain the current spread to see if there is any price divergence to trade.
+                spread = self.get_spread(spx.close, spxw.close)
+                z = (spread - self._mean_spread) / self._sd_spread
+
+                # If the spread diverges above or below the threshold, trade to bet on mean reversal.
+                if z &gt;= self._threshold and not self.portfolio[spx.symbol].is_long:
+                    self.market_order(spx.symbol, int(10 * self._coef))
+                    self.market_order(spxw.symbol, -10)
+                elif z &lt;= self._threshold and not self.portfolio[spxw.symbol].is_long:
+                    self.market_order(spx.symbol, int(-10 * self._coef))
+                    self.market_order(spxw.symbol, 10)
+
+                # If prices converge, exit positions.
+                if (z &lt;= 0 and self.portfolio[spx.symbol].is_long) or (z &gt;= 0 and self.portfolio[spxw.symbol].is_long):
+                    self.liquidate()
+
+    def get_spread(self, x: float, y: float) -&gt; float:
+        return np.log(y) - self._intercept - self._coef[0] * np.log(x)</pre>
+</div>

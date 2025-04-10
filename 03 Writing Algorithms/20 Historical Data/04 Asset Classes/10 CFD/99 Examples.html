@@ -1,0 +1,119 @@
+<p>The following examples demonstrate some common practices for trading CFD with historical data.</p>
+
+<h4>Example 1: Demand Force Following</h4>
+<p>The following algorithm measures the historical bid-ask spread of XAUUSD CFD contract. If the current spread is higher than the historical spread, meaning the demand force is lower than usual, we sell the contract; else, we buy. To realize the directional speculation, we apply a 2% take profit risk management model and a 1% trailing stop loss risk management model.</p>
+<div class="section-example-container">
+    <pre class="csharp">public class CFDHistoricalDataAlgorithm : QCAlgorithm
+{
+    private const decimal Threshold = 2m;
+    private decimal _spreadMean = 0m;
+    private decimal _spreadSd = 1m;
+    private Symbol _xauusd;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 2, 15);
+        SetEndDate(2019, 5, 15);
+        SetCash(1000000);
+
+        // Request the XAUUSD CFD contract for trade.
+        _xauusd = AddCfd("XAUUSD").Symbol;
+
+        // Update the spread mean and SD to calculate the Z-score accurately every day.
+        Schedule.On(
+            DateRules.EveryDay(_xauusd),
+            TimeRules.At(0, 0),
+            UpdateSpread
+        );
+
+        // Take profit at 2%.
+        AddRiskManagement(new MaximumUnrealizedProfitPercentPerSecurity(0.02m));
+        // Trailing stop loss at 1%.
+        AddRiskManagement(new TrailingStopRiskManagementModel(0.01m));
+    }
+
+    private void UpdateSpread()
+    {
+        // Obtain historical quote data to obtain the mean and SD of the bid-ask spread.
+        var history = History&lt;QuoteBar&gt;(_xauusd, 390, Resolution.Minute)      // minute bar of 1 day
+            .Where(x => x.Ask != null &amp;&amp; x.Bid != null)
+            .ToList();
+        if (history.Count &gt; 0)
+        {
+            var spread = history.Select(x =&gt; x.Ask.Close - x.Bid.Close).ToList();
+            _spreadMean = spread.Average();
+            _spreadSd = Convert.ToDecimal(Math.Sqrt(spread.Sum(x =&gt; Math.Pow((double)(x - _spreadMean), 2)) / spread.Count));
+        }
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Obtain the current bid-ask spread as a trade signal.
+        if (slice.QuoteBars.TryGetValue(_xauusd, out var quote))
+        {
+            if (quote.Ask != null &amp;&amp; quote.Bid != null)
+            {
+                var spread = quote.Ask.Close - quote.Bid.Close;
+                var z = (spread - _spreadMean) / _spreadSd;
+
+                // If the spread is lower than expected, expect demand to be higher than usual, and buy XAUUSD.
+                if (z &lt;= -Threshold)
+                {
+                    SetHoldings(_xauusd, 1m);
+                }
+                // If the spread is higher than expected, expect demand to be lower than usual and sell XAUUSD.
+                else if (z &gt;= Threshold)
+                {
+                    SetHoldings(_xauusd, -1m);
+                }
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class CFDHistoricalDataAlgorithm(QCAlgorithm):
+    _threshold = 2
+    _spread_mean = 0
+    _spread_sd = 1
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 2, 15)
+        self.set_end_date(2019, 5, 15)
+        self.set_cash(1000000)
+        
+        # Request XAUUSD CFD contract to trade.
+        self._xauusd = self.add_cfd("XAUUSD").symbol
+    
+        # Update the spread mean and SD to calculate the Z-score accurately daily.
+        self.schedule.on(
+            self.date_rules.every_day(self._xauusd),
+            self.time_rules.at(0, 0),
+            self.update_spread
+        )
+        
+        # Take profit at 2%.
+        self.add_risk_management(MaximumUnrealizedProfitPercentPerSecurity(0.02))
+        # Trailing stop loss at 1%.
+        self.add_risk_management(TrailingStopRiskManagementModel(0.01))
+
+    def update_spread(self) -&gt; None:
+        # Obtain historical quote data to obtain the mean and SD of the bid-ask spread.
+        history = self.history(QuoteBar, self._xauusd, 390, Resolution.MINUTE).unstack(0)        # minute bar of 1 day
+        if "askclose" in history and "bidclose" in history:
+            spread = history.askclose - history.bidclose
+            self._spread_mean = np.mean(spread.values)
+            self._spread_sd = np.std(spread.values, ddof=1)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        quote = slice.quote_bars.get(self._xauusd)
+        # Obtain the current bid-ask spread as a trade signal.
+        if quote and quote.ask and quote.bid:
+            spread = quote.ask.close - quote.bid.close
+            z = (spread - self._spread_mean) / self._spread_sd
+
+            # If the spread is lower than expected, expect demand to be higher than usual, and buy XAUUSD.
+            if z &lt;= -self._threshold:
+                self.set_holdings(self._xauusd, 1)
+            # If the spread is higher than expected, expect demand to be lower than usual and sell XAUUSD.
+            elif z &gt;= self._threshold:
+                self.set_holdings(self._xauusd, -1)</pre>
+</div>

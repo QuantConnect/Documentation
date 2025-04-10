@@ -1,0 +1,84 @@
+<p>The following examples demonstrate some common practices for trading with historical universe data.</p>
+
+<h4>Example 1: Historical Ranking Prediction</h4>
+<p>The following example demonstrated using the</p>
+<div class="section-example-container">
+    <pre class="csharp">public class UniverseHistoricalDataAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2025, 1, 1);
+        SetCash(1000000);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Add a monthly update to the universe of BrainStockRanking data.
+        UniverseSettings.Schedule.On(DateRules.MonthStart("SPY"));
+        _universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
+
+        // Trade every day after the market opens with an updated smoothened yield curve difference.
+        Schedule.On(
+            DateRules.MonthStart("SPY"),
+            TimeRules.At(9, 31),
+            Trade
+        );
+
+        SetWarmUp(1);
+    }
+
+    private void Trade()
+    {
+        // Get the last 5 bars of history for the universe.
+        var symbolRanks = new Dictionary&lt;Symbol, decimal&gt;();
+        var history = History(_universe, 20, Resolution.Daily);
+        foreach (var bar in history)
+        {
+            bar.Select(c =&gt; c as BrainStockRankingUniverse)
+            .Where(x =&gt; x.Rank21Days.HasValue)
+            .Select(x =&gt; {
+                if (!symbolRanks.TryGetValue(x.Symbol, out var rank))
+                {
+                    symbolRanks[x.Symbol] = rank = 0m;
+                }
+                rank += x.Rank21Days.Value;
+                return true;
+            });
+        }
+        // Obtain the 5 highest rank stocks to invest on equally.
+        var targets = symbolRanks.OrderByDescending(x =&gt; x.Value)
+            .Take(5)
+            .Select(x =&gt; new PortfolioTarget(x.Key, 0.2m))
+            .ToList();
+        SetHoldings(targets, liquidateExistingHoldings: true);
+    }
+}</pre>
+    <pre class="python">class UniverseHistoricalDataAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2025, 1, 1)
+        self.set_cash(1000000)
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Add a monthly update to the universe of BrainStockRanking data.
+        self.universe_settings.schedule.on(self.date_rules.month_start("SPY"))
+        self._universe = self.add_universe(BrainStockRankingUniverse)
+    
+        # Trade on every month's start, based on the predicted rank in the next month.
+        self.schedule.on(
+            self.date_rules.month_start("SPY"),
+            self.time_rules.at(9, 31),
+            self.trade
+        )
+
+        self.set_warm_up(1)
+
+    def trade(self) -&gt; None:
+        # Get the last 5 bars of history for the universe.
+        history = self.history(self._universe, 5, flatten=True).rank21days.unstack(0)
+        # Obtain the 5 highest average rank stocks to invest in equally.
+        top_ranked = history.mean(axis=1).nlargest(n=5)
+        self.set_holdings([PortfolioTarget(symbol, 0.2) for symbol in top_ranked.index], liquidate_existing_holdings=True)</pre>
+</div>

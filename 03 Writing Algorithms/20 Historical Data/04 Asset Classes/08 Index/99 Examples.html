@@ -1,0 +1,115 @@
+<p>The following examples demonstrate some common practices for trading with Index historical data.</p>
+
+<h4>Example 1: Replicating Portfolio</h4>
+<p>The example below constructed a replicating SGX portfolio using the top 100 weighted SPY constituents. It provides an alternative way for retail investors to invest in SGX without access to certain financial instruments and a hedging idea on SGX close hours.</p>
+<div class="section-example-container">
+    <pre class="csharp">using MathNet.Numerics.LinearRegression;
+public class SGXMatchingTradingAlgorithm : QCAlgorithm
+{
+    private Symbol _sgx;
+    private Universe _universe;
+    private decimal[] _weights = null;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31); 
+        SetCash(100000);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Request SGX Index data for matching.
+        _sgx = AddIndex("SGX").Symbol;
+        // We will try to use SPY constituents to reproduce the SGX index.
+        _universe = AddUniverse(Universe.ETF("SPY", Market.USA, null, (u) =&gt; u.Where(x =&gt; x.Weight.HasValue).OrderByDescending(x =&gt; x.Weight.Value).Take(100).Select(x =&gt; x.Symbol)));
+
+        // Schedule an event to rebalance the portfolio.
+        Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 31), Rebalance);
+    }
+
+    private void Rebalance()
+    {
+        if (_universe.Selected.Count &gt; 0)
+        {
+            // Obtain the historical data.
+            var benchmark = History&lt;TradeBar&gt;(_sgx, 252, Resolution.Daily).ToList();
+            var history = History&lt;TradeBar&gt;(_universe.Selected, 252, Resolution.Daily).ToList();
+            var times = benchmark.Select(x =&gt; x.EndTime.Date).Intersect(history.Select(x =&gt; x.Time.Date)).ToList();
+            benchmark = benchmark.Where(x =&gt; times.Contains(x.EndTime.Date)).ToList();
+            history = history.Where(x =&gt; times.Contains(x.Time.Date)).ToList();
+            // Obtain the weights of SPY constituents that best reproduce SGX.
+            _weights = CalculateWeights(history, benchmark, out var symbols);
+
+            if (_weights != null)
+            {
+                var targets = _weights.Zip(symbols, (weight, symbol) =&gt; new PortfolioTarget(symbol, weight)).ToList();
+                SetHoldings(targets, liquidateExistingHoldings: true);
+            }
+        }
+    }
+
+    private decimal[] CalculateWeights(List&lt;DataDictionary&lt;TradeBar&gt;&gt; history, List&lt;TradeBar&gt; benchmark, out List&lt;Symbol&gt; symbols)
+    {
+        // Use log price to eliminate the compounding effect.
+        var y = benchmark.Select(x =&gt; Math.Log((double)x.Close)).ToArray();
+
+        // Create a matrix for the regression analysis.
+        symbols = history[0].Select(x =&gt; x.Key).ToList();
+        var designMatrix = new double[y.Length][];
+        for (int i = 0; i &lt; y.Length; i++)
+        {
+            var bar = history[i];
+            designMatrix[i] = symbols.Select(symbol =&gt; bar.ContainsKey(symbol) ? Math.Log((double)bar[symbol].Close) : 0d).ToArray();
+        }
+
+        try
+        {
+            // Perform regression using MathNet.Numerics.
+            var coefficients = MultipleRegression.QR(designMatrix, y, intercept: false);
+            // The coefficients array will contain the coefficients for each constituents.
+            return coefficients.Select(x =&gt; Convert.ToDecimal(x)).ToArray();
+        }
+        catch
+        {
+            return _weights;
+        }
+    }
+}</pre>
+    <pre class="python">from sklearn.linear_model import LinearRegression
+
+class SGXMatchingTradingAlgorithm(QCAlgorithm):
+    _weights = None
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 1, 1)
+        self.set_cash(100000)
+        
+        # Request SGX Index data for matching.
+        self._sgx = self.add_index("SGX").symbol
+        # We will try to use SPY constituents to reproduce the SGX index.
+        self._universe = self.add_universe(self.universe.etf("SPY", Market.USA, None, lambda x: [y.symbol for y in sorted([y for y in x if y.weight], key=lambda x: x.weight, reverse=True)[:100]]))
+
+        # Schedule an event to rebalance the portfolio.
+        self.schedule.on(
+            self.date_rules.every_day("SPY"),
+            self.time_rules.at(9, 31),
+            self.rebalance
+        )
+
+    def rebalance(self) -&gt; None:
+        if self._universe.selected:
+            # Obtain the historical data.
+            history = self.history([self._sgx] + list(self._universe.selected), 252, Resolution.DAILY).unstack(0).close
+            history = history.groupby(history.index.date).last().dropna()
+            # Obtain the weights of SPY constituents that best reproduce SGX.
+            self._weights = self.calculate_weights(history[list(self._universe.selected)], history[self._sgx])
+
+            if self._weights is not None:
+                self.set_holdings([PortfolioTarget(symbol, weight) for symbol, weight in zip(self._universe.selected, self._weights)])
+
+    def calculate_weights(self, history: pd.DataFrame, benchmark: pd.Series) -&gt; pd.Series:
+        # Use log price to eliminate the compounding effect.
+        # Perform regression to obtain the best-replicating portfolio of SGX.
+        lr = LinearRegression(fit_intercept=False).fit(np.log(history), np.log(benchmark))
+        return lr.coef_</pre>
+</div>
