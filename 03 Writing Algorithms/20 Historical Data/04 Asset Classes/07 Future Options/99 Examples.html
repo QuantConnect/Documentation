@@ -1,9 +1,9 @@
 <p>The following examples demonstrate some common practices for trading Future Options with historical data.</p>
 
-<h4>Example 1: Trend Following on 0DTE Option Contract</h4>
-<p>This algorithm strategically trades 0DTE S&P 500 EMini Future Options by analyzing bid and ask volumes shortly after market open. By using scheduled events, it effectively executes trades based on historical quote data, optimizing decision-making. The algorithm aims for timely entries and exits, ensuring efficient capital management and quick adaptability in volatile markets.</p>
+<h4>Example 1: Trend Following on Front Month ATM Option Contract</h4>
+<p>This algorithm strategically trades the front month S&P 500 EMini Future Options by analyzing bid and ask volumes shortly after market open. By using scheduled events, it effectively executes trades based on historical quote data, optimizing decision-making. The algorithm aims for timely entries and exits, ensuring efficient capital management and quick adaptability in volatile markets.</p>
 <div class="section-example-container">
-    <pre class="csharp">public class ZeroDTEOptionsTradingAlgorithm : QCAlgorithm
+    <pre class="csharp">public class FutureOptionsTradingAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -15,8 +15,8 @@
         // Request ES option data for trading and signal generation.
         var future = AddFuture(Futures.Indices.SP500EMini);
         future.SetFilter(universe =&gt; universe.FrontMonth());
-        // We are interested in ATM 0DTE options since they are the most popular.
-        AddFutureOption(future.Symbol, universe =&gt; universe.IncludeWeeklys().Expiration(0, 0).Strikes(-3, 3));
+        // We are interested in ATM front month options since they are the most popular.
+        AddFutureOption(future.Symbol, universe =&gt; universe.Expiration(0, 90).Strikes(-3, 3));
 
         // Schedule event to enter and exit option contract postion.
         Schedule.On(DateRules.EveryDay(future.Symbol), TimeRules.AfterMarketOpen(future.Symbol, 16), TradeOption);
@@ -60,7 +60,7 @@
         }
     }
 }</pre>
-    <pre class="python">class ZeroDTEOptionsTradingAlgorithm(QCAlgorithm):
+    <pre class="python">class FutureOptionsTradingAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 1, 1)
         self.set_end_date(2024, 12, 31)  # Limit to a single day for 0DTE
@@ -69,8 +69,8 @@
         # Request ES option data for trading and signal generation.
         future = self.add_future(Futures.Indices.SP_500_E_MINI)
         future.set_filter(lambda universe: universe.front_month())
-        # We are interested in ATM 0DTE options since they are the most popular.
-        self.add_future_option(future.symbol, lambda u: u.include_weeklys().expiration(0, 0).strikes(-3, 3))
+        # We are interested in ATM front month options since they are the most popular.
+        self.add_future_option(future.symbol, lambda u: u.expiration(0, 90).strikes(-3, 3))
         
         # Schedule event to enter and exit option contract postion.
         self.schedule.on(self.date_rules.every_day(future.symbol), self.time_rules.after_market_open(future.symbol, 16), self.trade_option)
