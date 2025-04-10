@@ -14,11 +14,11 @@
         SetCash(1000000);
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 
-        // Add a monthly-updating universe of BrainStockRanking data.
+        // Add a monthly update to the universe of BrainStockRanking data.
         UniverseSettings.Schedule.On(DateRules.MonthStart("SPY"));
         _universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
 
-        // Trade every day after market open with updated smoothened yield curve difference.
+        // Trade every day after the market opens with an updated smoothened yield curve difference.
         Schedule.On(
             DateRules.MonthStart("SPY"),
             TimeRules.At(9, 31),
@@ -46,7 +46,7 @@
                 return true;
             });
         }
-        // Obtain the 5 highest rank stocks to equally invest on.
+        // Obtain the 5 highest rank stocks to invest on equally.
         var targets = symbolRanks.OrderByDescending(x =&gt; x.Value)
             .Take(5)
             .Select(x =&gt; new PortfolioTarget(x.Key, 0.2m))
@@ -62,11 +62,11 @@
         self.set_cash(1000000)
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
 
-        # Add a monthly-updating universe of BrainStockRanking data.
+        # Add a monthly update to the universe of BrainStockRanking data.
         self.universe_settings.schedule.on(self.date_rules.month_start("SPY"))
         self._universe = self.add_universe(BrainStockRankingUniverse)
     
-        # Trade on every month start, based on the predicted rank in the next month.
+        # Trade on every month's start, based on the predicted rank in the next month.
         self.schedule.on(
             self.date_rules.month_start("SPY"),
             self.time_rules.at(9, 31),
@@ -78,7 +78,7 @@
     def trade(self) -&gt; None:
         # Get the last 5 bars of history for the universe.
         history = self.history(self._universe, 5, flatten=True).rank21days.unstack(0)
-        # Obtain the 5 highest average rank stocks to equally invest on.
+        # Obtain the 5 highest average rank stocks to invest in equally.
         top_ranked = history.mean(axis=1).nlargest(n=5)
         self.set_holdings([PortfolioTarget(symbol, 0.2) for symbol in top_ranked.index], liquidate_existing_holdings=True)</pre>
 </div>
