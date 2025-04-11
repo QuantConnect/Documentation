@@ -1,52 +1,69 @@
-<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/futures#04-Get-Historical-Data">historical Futures data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><a href="/docs/v2/research-environment/charting/plotly-net">Plot.NET</a> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p>The following examples demonstrate some common practices for analyzing Futures data.</p>
 
-<h4>Candlestick Chart<br></h4>
+<h4>Example 1: Candlestick Chart</h4>
 
-<p>Follow these steps to plot candlestick charts:</p>
+<p>The following notebook </p>
 
-<ol>
-    <li>Get some <a href="/docs/v2/research-environment/datasets/futures#04-Get-Historical-Data">historical data</a>.</li>
-    <div class="section-example-container">
-        <pre class="python">history = qb.history(contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.DAILY)</pre>
-        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(contractSymbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31), Resolution.Daily);</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python">import plotly.graph_objects as go
 
-    <li class="python">Drop the first two index levels.</li>
-    <div class="python section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0, 1])</pre>
-    </div>
-
-    <li>Import the <code class="python">plotly</code><code class="csharp">Plot.NET</code> library.</li>
-    <div class="section-example-container">
-        <pre class="python">import plotly.graph_objects as go</pre>
-        <pre class="csharp">#r "../Plotly.NET.dll"
+qb = QuantBook()
+# Get the front-month ES contract as of December 31, 2021.
+future = qb.add_future(Futures.Indices.SP_500_E_MINI)
+qb.set_start_date(2021, 12, 31)
+chain = qb.future_chain(future.symbol)
+contract_symbol = list(chain)[0].symbol
+# Get the trialing 30 days of trade data for this contract.
+history = qb.history(contract_symbol, TimeSpan.FromDays(30), Resolution.DAILY).loc[contract_symbol.id.date, contract_symbol]
+# Create a candlestick plot with the data.
+go.Figure(
+    data=go.Candlestick(
+        x=history.index,
+        open=history['open'],
+        high=history['high'],
+        low=history['low'],
+        close=history['close']
+    ), 
+    layout=go.Layout(
+        title=go.layout.Title(text=f'{contract_symbol.value} OHLC'),
+        xaxis_title='Date',
+        yaxis_title='Price',
+        xaxis_rangeslider_visible=False
+    )
+).show()</pre>
+    <pre class="csharp">#load "../Initialize.csx"</pre>
+</div>
+<div class="csharp section-example-container">
+    <pre class="csharp">#r "../Plotly.NET.dll"
 using Plotly.NET;
 using Plotly.NET.LayoutObjects;</pre>
-    </div>
+</div>
+<div class="csharp section-example-container">
+    <pre class="csharp">#load "../QuantConnect.csx"
 
-    <li>Create a <code>Candlestick</code>.<br></li>
-    <div class="section-example-container">
-        <pre class="python">candlestick = go.Candlestick(x=history.index,
-                             open=history['open'],
-                             high=history['high'],
-                             low=history['low'],
-                             close=history['close'])</pre>
-        <pre class="csharp">var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Research;
+using QuantConnect.Securities;
+using QuantConnect.Data.Market;
+    
+var qb = new QuantBook();
+// Get the front-month ES contract as of December 31, 2021.
+var future = qb.AddFuture(Futures.Indices.SP500EMini);
+qb.SetStartDate(2021, 12, 31);
+var contractSymbol = qb.FutureChain(future.Symbol).First().Symbol;
+// Get the trialing 30 days of trade data for this contract.
+var history = qb.History&lt;TradeBar&gt;(contractSymbol, TimeSpan.FromDays(30), Resolution.Daily);
+// Create a candlestick plot with the data.
+var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
     history.Select(x => x.Open),
     history.Select(x => x.High),
     history.Select(x => x.Low),
     history.Select(x => x.Close),
     history.Select(x => x.EndTime)
-);</pre>
-    </div>
+);
 
-    <li>Create a <code>Layout</code>.<br></li>
-    <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{contract_symbol.value} OHLC'),
-                   xaxis_title='Date',
-                   yaxis_title='Price',
-                   xaxis_rangeslider_visible=False)</pre>
-        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
+LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Price ($)");
@@ -55,26 +72,11 @@ Title title = Title.init($"{contractSymbol} OHLC");
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
-layout.SetValue("title", title);</pre>
-    </div>
+layout.SetValue("title", title);
 
-    <li class="python">Create the <code>Figure</code>.<br></li>
-    <div class="python section-example-container">
-        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
-    </div>
-
-    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">chart.WithLayout(layout);</pre>
-    </div>
-
-    <li>Show the <code>Figure</code>.<br></li>
-    <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
-        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
-    </div>
-    <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
-</ol>
+chart.WithLayout(layout);
+HTML(GenericChart.toChartHTML(chart))</pre>
+</div>
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/futures-candlestick-plot.jpg" alt="Candlestick plot of ES18H22 OHLC">
 <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/futures-candlestick-plot-csharp.png" alt="Candlestick plot of ES18H22 OHLC">
