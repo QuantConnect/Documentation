@@ -18,7 +18,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini);
 var startDate = new DateTime(2023, 12, 20);
 var chain = qb.History&lt;FutureUniverse&gt;(future.Symbol, startDate, startDate.AddDays(2)).First();
-var futuresContract = chain.First().Symbol;
+var futuresContractSymbol = chain.First().Symbol;
 qb.AddFutureContract(futuresContractSymbol, fillForward: false);</pre>
         <pre class="python">future = qb.add_future(Futures.Indices.SP_500_E_MINI)
 start_date = datetime(2023, 12, 20)
