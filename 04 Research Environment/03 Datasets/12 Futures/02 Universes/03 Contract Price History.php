@@ -6,7 +6,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Set the contract filter to select contracts that expire within 180 days.
-future.set_filter(0, 180);</pre>
+future.SetFilter(0, 180);</pre>
     <pre class="python"># Set the contract filter to select contracts that expire within 180 days.
 future.set_filter(0, 180)</pre>
 </div>
@@ -17,7 +17,7 @@ future.set_filter(0, 180)</pre>
     <pre class="csharp">// Set the contract filter to select contracts that expire within 180 days.
 var history = qb.FutureHistory(
     future.Symbol, new DateTime(2025, 4, 1), new DateTime(2025, 4, 3), Resolution.Minute, 
-    fillForward: False, extendedMarketHours: False
+    fillForward: false, extendedMarketHours: false
 );</pre>
     <pre class="python"># Set the contract filter to select contracts that expire within 180 days.
 history = qb.future_history(
