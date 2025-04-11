@@ -81,47 +81,57 @@ HTML(GenericChart.toChartHTML(chart))</pre>
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/futures-candlestick-plot.jpg" alt="Candlestick plot of ES18H22 OHLC">
 <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/futures-candlestick-plot-csharp.png" alt="Candlestick plot of ES18H22 OHLC">
 
-<h4>Line Chart</h4>
-<p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
+<h4>Example 2: Line Chart</h4>
+<p class='csharp'>The following cells create a <a href='/docs/v2/research-environment/charting/plotly-net#06-Create-Line-Chart'>line chart</a> for the open interest of the front-month ES contract:</p>
+<p class='python'>The following cell creates a <a href='/docs/v2/research-environment/charting/matplotlib#06-Create-Line-Plot'>line plot</a> for all the tradable ES contracts:</p>
 
-<ol>
-    <li>Get some historical data.</li>
-	<div class="section-example-container">
-        <pre class="python">history = qb.history(symbols, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.DAILY)</pre>
-        <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(contractSymbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));</pre>
-    </div>
+<div class="section-example-container">
+    <pre class="python">import plotly.graph_objects as go
 
-    <li class="python">Drop the first index level.</li>
-	<div class="python section-example-container">
-        <pre class="python">history.index = history.index.droplevel(0)</pre>
-    </div>
-
-    <li class="python">Select data to plot.</li>
-    <div class="python section-example-container">
-        <pre class="python">closing_prices = history['close'].unstack(level=0)</pre>
-    </div>
-
-	<li class="python">Rename the columns to be the <code>Symbol</code> of each contract.</li>
-    <div class="python section-example-container">
-        <pre class="python">closing_prices.columns = [Symbol.get_alias(SecurityIdentifier.parse(x)) for x in closing_prices.columns]</pre>
-    </div>
-
-    <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>
-    <div class="python section-example-container">
-        <pre class="python">closing_prices.plot(title="Close", figsize=(15, 8))</pre>
-    </div>
+qb = QuantBook()
+# Get all the ES contract that were tradable on December 18, 2021.
+future = qb.add_future(Futures.Indices.SP_500_E_MINI)
+qb.set_start_date(2021, 12, 18)
+chain = qb.future_chain(future.symbol)
+contract_symbols = [c.symbol for c in chain]
+# Get the trailing trade data for these contracts.
+history = qb.history(contract_symbols, timedelta(17), Resolution.DAILY)
+history.index = history.index.droplevel(0)
+closing_prices = history['close'].unstack(level=0)
+# Rename the DataFrame columns so the plot legend is readable.
+closing_prices.columns = [Symbol.get_alias(x.id) for x in closing_prices.columns]
+# Create the line plot.
+closing_prices.plot(title="Close", figsize=(15, 8));
+</pre>
+    <pre class="csharp">#load "../Initialize.csx"</pre>
+</div>
+<div class="csharp section-example-container">
+    <pre class="csharp">#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;</pre>
+</div>
+<div class="csharp section-example-container">
+    <pre class="csharp">#load "../QuantConnect.csx"
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Research;
+using QuantConnect.Securities;
+using QuantConnect.Data.Market;
     
-    <li class="csharp">Create <code>Line</code> charts.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+var qb = new QuantBook();
+// Get the front-month ES contract as of December 31, 2021.
+var future = qb.AddFuture(Futures.Indices.SP500EMini);
+qb.SetStartDate(2021, 12, 31);
+var contractSymbol = qb.FutureChain(future.Symbol).First().Symbol;
+// Get the trailing 30 days of open interest data for this contract.
+var history = qb.History&lt;OpenInterest&gt;(contractSymbol, TimeSpan.FromDays(30), Resolution.Daily);
+// Create a line plot with the data.
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
     history.Select(x => x.EndTime),
     history.Select(x => x.Value)
-);</pre>
-    </div>
+);
 
-    <li class="csharp">Create a <code>Layout</code>.<br></li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
+LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Open Interest");
@@ -130,21 +140,11 @@ Title title = Title.init($"{contractSymbol} Open Interest");
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
-layout.SetValue("title", title);</pre>
-    </div>
+layout.SetValue("title", title);
 
-    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">chart.WithLayout(layout);</pre>
-    </div>
-    
-    <li>Show the plot.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.show()</pre>
-        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
-    </div>
-    <p>Line charts display the value of the property you selected in a time series.</p>
-</ol>
+chart.WithLayout(layout);
+HTML(GenericChart.toChartHTML(chart))</pre>
+</div>
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/futures-line-plot.jpg" alt="Line chart of close price of Future contracts">
 <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/futures-line-plot-csharp.png" alt="Line chart of open interest of ES18H22">
