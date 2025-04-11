@@ -10,10 +10,8 @@
     <pre class='python'>start_date = datetime(2024, 1, 1)
 
 # Select an underlying Futures contract. For example, get the front-month contract.
-futures_contract = sorted(
-    qb.future_chain_provider.get_future_contract_list(future.symbol, start_date),
-    key=lambda symbol: symbol.id.date
-)[0]
+chain = list(qb.history[FutureUniverse](future.symbol, start_date, start_date+timedelta(2))[0]
+futures_contract = list(chain)[0].symbol
 
 # Get the Options data for the selected Futures contract.
 option_history = qb.option_history(
@@ -23,9 +21,8 @@ option_history = qb.option_history(
     <pre class='csharp'>var startDate = new DateTime(2024, 1, 1);
 
 // Select an underlying Futures contract. For example, get the front-month contract.
-var futuresContract = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate)
-    .OrderBy(symbol => symbol.ID.Date)
-    .Last();
+var chain = qb.History&lt;FutureUniverse&gt;(future.Symbol, startDate, startDate.AddDays(2)).First();
+var futuresContract = chain.First().Symbol;
 
 // Get the Options data for the selected Futures contract.
 var optionHistory = qb.OptionHistory(
