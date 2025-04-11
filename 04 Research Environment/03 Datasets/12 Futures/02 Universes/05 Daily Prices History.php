@@ -1,5 +1,5 @@
 <p>
-    <span class='csharp'>To get daily data on all the tradable contracts for a given date, call the <code class='csharp'>History&lt;FutureUniverse&gt;</code><code> method with the continuous Futures contract <code>Symbol</code>.</code>
+    <span class='csharp'>To get daily data on all the tradable contracts for a given date, call the <code class='csharp'>History&lt;FutureUniverse&gt;</code><code> method with the continuous Futures contract <code>Symbol</code>.</span>
     <span class='python'>
         To get daily data on all the tradable contracts for a given date, call the <code>history</code> method with the <code>FutureUniverse</code> type and the continuous contract <code>Symbol</code>. 
         If you pass <code>flatten=True</code>, this method returns a DataFrame with columns for the data point attributes.
