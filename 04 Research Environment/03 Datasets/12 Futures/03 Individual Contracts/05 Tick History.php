@@ -15,7 +15,7 @@ display(history_df)
 # Tick objects
 history = qb.history[Tick](contract_symbol, timedelta(3), Resolution.TICK)
 for tick in history:
-    print(trade_bar)</pre>
+    print(tick)</pre>
 </div>
 
 <p><code>Tick</code> objects have the following properties:</p>
