@@ -99,8 +99,8 @@ history = qb.future_history(
           </thead>
           <tbody>
             <tr>
-              <th rowspan="5" valign="top">2025-06-20</th>
-              <th rowspan="5" valign="top">ES YTG30NVEFCW1</th>
+              <th rowspan="2" valign="top">2025-06-20</th>
+              <th rowspan="2" valign="top">ES YTG30NVEFCW1</th>
               <th>2025-04-01 09:31:00</th>
               <td>5631.50</td>
               <td>5639.75</td>
@@ -137,60 +137,6 @@ history = qb.future_history(
               <td>7613.0</td>
             </tr>
             <tr>
-              <th>2025-04-01 09:33:00</th>
-              <td>5636.25</td>
-              <td>5638.25</td>
-              <td>5628.25</td>
-              <td>5629.00</td>
-              <td>41.0</td>
-              <td>5636.00</td>
-              <td>5638.00</td>
-              <td>5628.00</td>
-              <td>5628.75</td>
-              <td>10.0</td>
-              <td>5636.00</td>
-              <td>5638.00</td>
-              <td>5628.25</td>
-              <td>5629.00</td>
-              <td>6543.0</td>
-            </tr>
-            <tr>
-              <th>2025-04-01 09:34:00</th>
-              <td>5634.25</td>
-              <td>5641.75</td>
-              <td>5633.75</td>
-              <td>5636.25</td>
-              <td>5.0</td>
-              <td>5634.00</td>
-              <td>5641.50</td>
-              <td>5633.50</td>
-              <td>5636.00</td>
-              <td>32.0</td>
-              <td>5634.25</td>
-              <td>5641.50</td>
-              <td>5633.50</td>
-              <td>5636.00</td>
-              <td>7231.0</td>
-            </tr>
-            <tr>
-              <th>2025-04-01 09:35:00</th>
-              <td>5633.00</td>
-              <td>5636.25</td>
-              <td>5632.25</td>
-              <td>5634.25</td>
-              <td>25.0</td>
-              <td>5632.75</td>
-              <td>5636.00</td>
-              <td>5632.00</td>
-              <td>5634.00</td>
-              <td>4.0</td>
-              <td>5632.75</td>
-              <td>5636.00</td>
-              <td>5632.25</td>
-              <td>5634.00</td>
-              <td>4898.0</td>
-            </tr>
-            <tr>
               <th>...</th>
               <th>...</th>
               <th>...</th>
@@ -211,62 +157,8 @@ history = qb.future_history(
               <td>...</td>
             </tr>
             <tr>
-              <th rowspan="5" valign="top">2025-09-19</th>
-              <th rowspan="5" valign="top">ES YVXOP65RE0HT</th>
-              <th>2025-04-02 16:56:00</th>
-              <td>5634.50</td>
-              <td>5650.00</td>
-              <td>5624.00</td>
-              <td>5627.50</td>
-              <td>1.0</td>
-              <td>5632.25</td>
-              <td>5634.00</td>
-              <td>5621.25</td>
-              <td>5625.50</td>
-              <td>2.0</td>
-              <td>5634.50</td>
-              <td>5634.50</td>
-              <td>5624.00</td>
-              <td>5625.00</td>
-              <td>4.0</td>
-            </tr>
-            <tr>
-              <th>2025-04-02 16:57:00</th>
-              <td>5637.25</td>
-              <td>5637.75</td>
-              <td>5633.75</td>
-              <td>5634.50</td>
-              <td>1.0</td>
-              <td>5635.00</td>
-              <td>5635.50</td>
-              <td>5630.50</td>
-              <td>5632.25</td>
-              <td>1.0</td>
-              <td>5635.00</td>
-              <td>5635.00</td>
-              <td>5635.00</td>
-              <td>5635.00</td>
-              <td>1.0</td>
-            </tr>
-            <tr>
-              <th>2025-04-02 16:58:00</th>
-              <td>5631.25</td>
-              <td>5638.50</td>
-              <td>5630.00</td>
-              <td>5637.25</td>
-              <td>1.0</td>
-              <td>5629.00</td>
-              <td>5636.00</td>
-              <td>5627.25</td>
-              <td>5635.00</td>
-              <td>2.0</td>
-              <td>5634.00</td>
-              <td>5635.00</td>
-              <td>5634.00</td>
-              <td>5635.00</td>
-              <td>3.0</td>
-            </tr>
-            <tr>
+              <th rowspan="2" valign="top">2025-09-19</th>
+              <th rowspan="2" valign="top">ES YVXOP65RE0HT</th>
               <th>2025-04-02 16:59:00</th>
               <td>5625.75</td>
               <td>5636.00</td>
