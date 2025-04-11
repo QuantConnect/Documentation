@@ -29,7 +29,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     <li>Call the <code class='csharp'>FutureChain</code><code class='python'>future_chain</code> method with the <code>Symbol</code> of the continuous Futures contract.</li>
     <div class="section-example-container">
         <pre class="csharp">// Get the Futures contracts that were tradable on January 1st, 2024.
-var chain = qb.OptionChain(future.Symbol);</pre>
+var chain = qb.FutureChain(future.Symbol);</pre>
         <pre class="python"># Get the Futures contracts that were tradable on January 1st, 2024.
 chain = qb.future_chain(future.symbol, flatten=True)</pre>
     </div>
