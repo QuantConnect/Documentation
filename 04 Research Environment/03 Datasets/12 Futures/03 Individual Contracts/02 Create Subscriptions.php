@@ -43,10 +43,8 @@ chain = qb.future_chain(future.symbol, flatten=True)</pre>
     <div class="section-example-container">
         <pre class="csharp">// Select a contract.
 var contractSymbol = chain
-    .Where(contract => 
-        // Select contracts that have at least 1 week before expiry.
-        contract.Expiry > qb.Time.AddDays(7)
-    )
+    // Select contracts that have at least 1 week before expiry.
+    .Where(contract => contract.Expiry > qb.Time.AddDays(7))
     // Select the contract with the largest open interest.
     .OrderByDescending(contract => contract.OpenInterest)
     .First()
