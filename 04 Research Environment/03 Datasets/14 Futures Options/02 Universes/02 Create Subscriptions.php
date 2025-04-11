@@ -13,7 +13,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="python">qb = QuantBook()</pre>
     </div>
 
-    <li><a href="/docs/v2/research-environment/datasets/futures#03-Create-Subscriptions">Add the underlying Future</a>.</li>
+    <li><a href="/docs/v2/research-environment/datasets/futures/universes#02-Create-Subscriptions">Add the underlying Future</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini);</pre>
         <pre class="python">future = qb.add_future(Futures.Indices.SP_500_E_MINI)</pre>
