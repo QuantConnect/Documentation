@@ -29,9 +29,8 @@ var date = new DateTime(2024, 1, 4);
 // Subscribe to the underlying Future.
 var future = qb.AddFuture(Futures.Indices.SP500EMini);
 // Select the front-month contract.
-var futuresContract = qb.FutureChainProvider.GetFutureContractList(future.Symbol, date)
-    .OrderBy(symbol =&gt; symbol.ID.Date)
-    .First();
+var chain = qb.History&lt;FutureUniverse&gt;(future.Symbol, date, date.AddDays(2)).First();
+var futuresContract = chain.First().Symbol;
 
 // Get the Options data for the selected Futures contract at the selected date.
 var optionHistory = qb.OptionHistory(
@@ -83,10 +82,8 @@ date = datetime(2024, 1, 4)
 # Subscribe to the underlying Future.
 future = qb.add_future(Futures.Indices.SP_500_E_MINI)
 # Select an underlying Futures contract. For example, get the front-month contract.
-futures_contract = sorted(
-    qb.future_chain_provider.get_future_contract_list(future.symbol, date),
-    key=lambda symbol: symbol.id.date
-)[0]
+chain = list(qb.history[FutureUniverse](future.symbol, date, date+timedelta(2)))[0]
+futures_contract = list(chain)[0].symbol
 # Get the Options data for the selected Futures contract.
 option_history = qb.option_history(
     futures_contract, date - timedelta(1), date, Resolution.DAILY, 
