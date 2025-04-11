@@ -28,8 +28,8 @@ var qb = new QuantBook();
 // Request the continuous future historical data.
 var future = qb.AddFuture(Futures.Indices.SP500EMini);
 var history = qb.History&lt;TradeBar&gt;(future.Symbol, 
-    start: qb.Time - TimeSpan.FromDays(182),
-    end: qb.Time,
+    start: new DateTime(2024, 7, 1),
+    end: new DateTime(2025, 1, 1),
     resolution: Resolution.Minute,
     fillForward: true,
     extendedMarketHours: true,
@@ -85,15 +85,17 @@ qb = QuantBook()
 # Request the continuous future historical data.
 # Use raw normalization mode to fairly compare the actual bid and ask dollar volume.
 future = qb.add_future(Futures.Indices.SP_500_E_MINI)
-history = qb.history(future.symbol, 
-    start=qb.time - timedelta(days=182), 
-    end=qb.time, 
+history = qb.history(
+    future.symbol, 
+    start=datetime(2024, 7, 1), 
+    end=datetime(2025, 1, 1), 
     resolution=Resolution.MINUTE, 
     fill_forward=True, 
     extended_market_hours=True, 
     data_mapping_mode=DataMappingMode.OPEN_INTEREST, 
     data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO, 
-    contract_depth_offset=0)
+    contract_depth_offset=0
+)
 
 # Drop level 0, 1 index (Symbol index) from the DataFrame
 history = history.droplevel([0, 1])
@@ -107,16 +109,20 @@ history = history[["open", "high", "low", "close"]].resample("5T").agg({
 })
 
 # Crete the Candlestick chart using the 5-minute windows.
-candlestick = go.Candlestick(x=history.index,
-                             open=history['open'],
-                             high=history['high'],
-                             low=history['low'],
-                             close=history['close'])
+candlestick = go.Candlestick(
+    x=history.index,
+    open=history['open'],
+    high=history['high'],
+    low=history['low'],
+    close=history['close']
+)
 # Create a Layout as the plot settings.
-layout = go.Layout(title=go.layout.Title(text=f'{future.symbol} OHLC'),
-                   xaxis_title='Date',
-                   yaxis_title='Price',
-                   xaxis_rangeslider_visible=False)
+layout = go.Layout(
+    title=go.layout.Title(text=f'{future.symbol} OHLC'),
+    xaxis_title='Date',
+    yaxis_title='Price',
+    xaxis_rangeslider_visible=False
+)
 # Create the Figure.
 fig = go.Figure(data=[candlestick], layout=layout)
 # Display the plot.
