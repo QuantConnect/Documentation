@@ -1,5 +1,5 @@
 <p>
-  To get historical trade, quote, or tick data for the <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data/universes#03-Continous-Contracts'>continuous contract</a>, use the <code class='python'>symbol</code><code class='csharp'>Symbol</code> property of the <code>Future</code> object when you make the history request.
+  To get historical <a href='/docs/v2/research-environment/datasets/futures/individual-contracts#03-Trade-History'>trade</a>, <a href='/docs/v2/research-environment/datasets/futures/individual-contracts#04-Quote-History'>quote</a>, or <a href='/docs/v2/research-environment/datasets/futures/individual-contracts#05-Tick-History'>tick</a> data for the <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data/universes#03-Continous-Contracts'>continuous contract</a>, use the <code class='python'>symbol</code><code class='csharp'>Symbol</code> property of the <code>Future</code> object when you make the history request.
 </p>
 
 <div class="section-example-container">
