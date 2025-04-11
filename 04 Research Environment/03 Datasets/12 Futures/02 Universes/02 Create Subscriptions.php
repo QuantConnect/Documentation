@@ -4,6 +4,7 @@
 <?
 $additionalImports = "using QuantConnect.Securities.Future;
 using QuantConnect.Securities;
+using QuantConnect.Data.Market;
 ";
 include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
 ?>
