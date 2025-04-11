@@ -11,7 +11,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Get the daily contract objects during Q1 2025.
-var history = History&lt;FutureUniverse&gt;(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1)); 
+var history = qb.History&lt;FutureUniverse&gt;(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1)); 
 // Iterate through each day of the history.
 foreach (var futureUniverse in history)
 {
@@ -20,7 +20,7 @@ foreach (var futureUniverse in history)
     var mostOi = futureUniverse.Select(c => c as FutureUniverse).OrderByDescending(c => c.OpenInterest).First();
 }</pre>
     <pre class="python"># Get the daily contract objects during Q1 2025. 
-history = self.history(FutureUniverse, future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1), flatten=True)</pre>
+history = qb.history(FutureUniverse, future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1), flatten=True)</pre>
 </div>
 
 <div class='dataframe-wrapper'>
