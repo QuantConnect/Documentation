@@ -10,7 +10,7 @@
     <pre class='python'>start_date = datetime(2024, 1, 1)
 
 # Select an underlying Futures contract. For example, get the front-month contract.
-chain = list(qb.history[FutureUniverse](future.symbol, start_date, start_date+timedelta(2))[0]
+chain = list(qb.history[FutureUniverse](future.symbol, start_date, start_date+timedelta(2)))[0]
 futures_contract = list(chain)[0].symbol
 
 # Get the Options data for the selected Futures contract.
