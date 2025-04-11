@@ -2,8 +2,12 @@
 <div class='python section-example-container'>
     <pre class='python'>option_history.data_frame</pre>
 </div>
+<? if ($dataFrameImg != "") { ?>
 <img class='python' style='max-width: 100%' src='<?=$dataFrameImg?>' alt='DataFrame of Options data'>
-
+<? } else {
+   echo $dataFrame;
+} ?>
+                             
 <p class='python'>To get the expiration dates of all the contracts in an <code>OptionHistory</code> object, call the <code class='csharp'>GetExpiryDates</code><code class='csharp'>get_expiry_dates</code> method.</p>
 <div class='python section-example-container'>
     <pre class='python'>option_history.get_expiry_dates()</pre>
