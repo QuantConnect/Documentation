@@ -13,20 +13,17 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="python">qb = QuantBook()</pre>
     </div>
 
-    <li><a href="/docs/v2/research-environment/datasets/futures#03-Create-Subscriptions">Add the underlying Futures contract</a>.</li>
+    <li><a href="/docs/v2/research-environment/datasets/futures/individual-contracts#02-Create-Subscriptions">Add the underlying Futures contract</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini);
 var startDate = new DateTime(2023, 12, 20);
-var futuresContractSymbol = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate)
-    .OrderBy(s =&gt; s.ID.Date)
-    .FirstOrDefault();
+var chain = qb.History&lt;FutureUniverse&gt;(future.Symbol, startDate, startDate.AddDays(2)).First();
+var futuresContract = chain.First().Symbol;
 qb.AddFutureContract(futuresContractSymbol, fillForward: false);</pre>
         <pre class="python">future = qb.add_future(Futures.Indices.SP_500_E_MINI)
 start_date = datetime(2023, 12, 20)
-futures_contract_symbol = sorted(
-  qb.future_chain_provider.get_future_contract_list(future.symbol, start_date), 
-  key=lambda s: s.id.date
-)[0]
+chain = list(qb.history[FutureUniverse](future.symbol, start_date, start_date+timedelta(2)))[0]
+futures_contract_symbol = list(chain)[0].symbol
 qb.add_future_contract(futures_contract_symbol, fill_forward=False)</pre>
     </div>
     <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#07-Supported-Assets">Supported Assets</a>.</p>
