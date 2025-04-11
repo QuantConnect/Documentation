@@ -45,7 +45,7 @@ chain = qb.future_chain(future.symbol, flatten=True)</pre>
 var contractSymbol = chain
     .Where(contract => 
         // Select contracts that have at least 1 week before expiry.
-        contract.Expiry > Time.AddDays(7)
+        contract.Expiry > qb.Time.AddDays(7)
     )
     // Select the contract with the largest open interest.
     .OrderByDescending(contract => contract.OpenInterest)
@@ -58,7 +58,7 @@ chain = chain.data_frame
 # Select a contract.
 contract_symbol = chain[
     # Select contracts that have at least 1 week before expiry.
-    chain.expiry > self.time + timedelta(7)
+    chain.expiry > qb.time + timedelta(7)
     # Select the contract with the largest open interest.
 ].sort_values('openinterest').index[-1]</pre>
     </div>
