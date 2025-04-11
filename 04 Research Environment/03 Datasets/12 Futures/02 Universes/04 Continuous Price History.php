@@ -4,9 +4,9 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Get the daily TradeBar objects of the continuous contract. 
-var history = History&lt;TradeBar&gt;(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1), Resolution.Daily);</pre>
+var history = qb.History&lt;TradeBar&gt;(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1), Resolution.Daily);</pre>
     <pre class="python"># Get the daily TradeBar objects of the continuous contract. 
-history = self.history(TradeBar, future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1), Resolution.DAILY)</pre>
+history = qb.history(TradeBar, future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1), Resolution.DAILY)</pre>
 </div>
 
 <div class='dataframe-wrapper'>
