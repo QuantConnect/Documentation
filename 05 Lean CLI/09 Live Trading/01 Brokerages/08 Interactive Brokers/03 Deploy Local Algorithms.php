@@ -37,7 +37,7 @@ $dataFeedDetails = "
 <pre>$ lean live \"My Project\"
 Enable delayed market data? [yes/no]: </pre>
 </div>
-This property configures the behavior when your algorithm attempts to subscribe to market data for which you don't have a market data subscription on Interactive Brokers. When enabled, your algorithm continues running using delayed market data. When disabled, live trading will stop and LEAN will shut down.
+This property configures the behavior when your algorithm attempts to subscribe to market data for which you don't have a market data subscription on Interactive Brokers. When enabled, your algorithm continues running using delayed market data. Delayed market data is on a time lag that is usually 10-20 minutes behind real-time quotes, see <a href='https://ibkrguides.com/kb/delayed-market-data-timing.htm' target='_blank' rel='nofollow'>Delayed Market Data Timing</a> for more information. When disabled, live trading will stop and LEAN will shut down.
 </li>
 ";
 
