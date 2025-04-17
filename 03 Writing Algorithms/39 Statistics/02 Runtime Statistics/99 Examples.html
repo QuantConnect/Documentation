@@ -1,7 +1,7 @@
 <p>The following examples demonstrate common practices for setting runtime statistics.</p>
 
 <h4>Example 1: Display Banner</h4>
-<p>The following algorithm demonstrates how to put calculated runtime statistics in interest to the top display banner in the backtest interface and plot the data for analysis.</p>
+<p>The following algorithm demonstrates how to put calculated runtime statistics of interest in the top display banner in the backtest interface and plot the data for analysis.</p>
 <div class="section-example-container testable">
     <pre class="csharp">public class RuntimeStatisticsAlgorithm : QCAlgorithm
 {
@@ -27,7 +27,7 @@
         if (slice.Bars.TryGetValue(_spy, out var bar))
         {
             // Trend-following strategy using price and EMA.
-            // If the price is above EMA, SPY is in an uptrend, and we buy it.
+            // If the price is above the EMA, SPY is in an uptrend, and we buy it.
             if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_spy].IsLong)
             {
                 SetHoldings(_spy, 1m);
@@ -53,6 +53,13 @@
         Plot("Statistics", "95VaR", var);
         Plot("Statistics", "fee-to-profit", feeToProfit);
     }
+
+    public override void OnEndOfAlgorithm()
+    {
+        // Log the 95VaR when the algorithm stops
+        var valueAtRisk95 = RuntimeStatistics["95VaR"];
+        Log($"Final valueAtRisk95={valueAtRisk95}");
+    }
 }</pre>
     <pre class="python">class RuntimeStatisticsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
@@ -71,7 +78,7 @@
         bar = slice.bars.get(self.spy)
         if bar:
             # Trend-following strategy using price and EMA.
-            # If the price is above EMA, SPY is in an uptrend, and we buy it.
+            # If the price is above the EMA, SPY is in an uptrend, and we buy it.
             if bar.close &gt; self._ema.current.value and not self.portfolio[self.spy].is_long:
                 self.set_holdings(self.spy, 1)
             elif bar.close &lt; self._ema.current.value and not self.portfolio[self.spy].is_short:
@@ -88,5 +95,10 @@
     
         # Plot the calculated statistics.
         self.plot("Statistics", "95VaR", var)
-        self.plot("Statistics", "fee-to-profit", fee_to_profit)</pre>
+        self.plot("Statistics", "fee-to-profit", fee_to_profit)
+    
+    def on_end_of_algorithm(self) -&gt; None:
+        # Log the 95VaR when the algorithm stops
+        value_at_risk_95 = self.runtime_statistics["95VaR"]
+        self.log(f'Final {value_at_risk_95=}')</pre>
 </div>
