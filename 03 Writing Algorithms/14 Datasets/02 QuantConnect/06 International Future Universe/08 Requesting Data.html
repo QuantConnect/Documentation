@@ -1,6 +1,6 @@
-<p>To use International Future Universe data to your algorithm, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. To define which contracts should be in your universe, specify the filter when requesting the Future data.</p>
+<p>To add International Future Universe data to your algorithm, call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method. Save a reference to the Future object so you can access the data later in your algorithm. To define which contracts should be in your universe, specify the filter when requesting the Future data.</p>
 
-<p>The <code class="csharp">AddFuture</code><code class="python">add_future</code> method provides a daily stream of Future chain data. To get the most recent daily chain, call the <code class="csharp">FutureChains</code><code class="python">future_chains</code> method with the underlying Future Symbol in the <code>Slice</code> object received in the <code class="csharp">OnData</code><code class="python">on_data</code> event handler.
+<p>The <code class="csharp">AddFuture</code><code class="python">add_future</code> method provides a daily stream of Future chain data. To get the most recent daily chain, call the <code class="csharp">FuturesChain</code><code class="python">futures_chain</code> method with the underlying Future Symbol. The <code class="csharp">FuturesChain</code><code class="python">futures_chain</code> method returns data on all the tradable contracts, not just the contracts that pass your universe filter.</p>
 
 <div class="section-example-container">
 <pre class="python">class InternationalFuturesDataAlgorithm(QCAlgorithm):
@@ -10,32 +10,28 @@
         self.set_end_date(2014, 2, 20) 
         self.set_cash(1000000) 
         self.universe_settings.asynchronous = True
-        # Request Hang Seng Index Futures data
-        future = self.add_future(Futures.Indices.HANG_SENG) 
-        # Set filter to obtain the contracts expire within 90 days
-        future.set_filter(0, 90)
-        self.future_symbol = future.symbol</pre>
-<pre class="csharp">namespace QuantConnect
+        self._future = self.add_future(Futures.Indices.HANG_SENG)
+        # Set our contract filter for this Future chain.
+        self._future.set_filter(lambda universe: universe.standards_only().front_month())
+        # Get the entire Futures chain for the current day.
+        chain = self.futures_chain(self._future.symbol, flatten=True).data_frame</pre>
+<pre class="csharp">public class InternationalFuturesDataAlgorithm : QCAlgorithm
 {
-    public class InternationalFuturesDataAlgorithm : QCAlgorithm
-    {
-        private Symbol _futureSymbol;
+    private Future _future;
         
-        public override void Initialize()
-        {
-            SetStartDate(2013, 12, 20);
-            SetEndDate(2014, 2, 20);
-            SetCash(1000000);
-            UniverseSettings.Asynchronous = True;
-            // Request Hang Seng Index Futures data
-            var future = AddFuture(Futures.Indices.HangSeng);
-            // Set filter to obtain the contracts expire within 90 days
-            future.SetFilter(0, 90);
-            _futureSymbol = future.Symbol;
-        }
+    public override void Initialize()
+    {
+        SetStartDate(2013, 12, 20);
+        SetEndDate(2014, 2, 20);
+        SetCash(1000000);
+        UniverseSettings.Asynchronous = True;
+        var future = AddFuture(Futures.Indices.HangSeng);
+        // Set our contract filter for this Future chain.
+        _future.SetFilter((universe) =&gt; universe.StandardsOnly().FrontMonth());
+        // Get the entire Futures chain for the current day.
+        var chain = FuturesChain(_future.Symbol);
     }
-}
-</pre>
+}</pre>
 </div>
 
 <p>For more information about creating Future Universes, see <a href="/docs/v2/writing-algorithms/universes/futures">Futures</a>.</p>
