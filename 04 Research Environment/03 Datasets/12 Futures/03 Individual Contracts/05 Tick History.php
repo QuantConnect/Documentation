@@ -1,4 +1,4 @@
-<? include(DOCS_RESOURCES."/securities/data-definitions/ticks.html"); ?>
+<? $securityName = "security"; include(DOCS_RESOURCES."/securities/data-definitions/ticks.php"); ?>
 
 <p>To get tick data, call the <span class='python'><code>history</code> or <code>history[Tick]</code></span><span class='csharp'><code>History&lt;Tick&gt;</code></span> method with the contract Symbol object(s) and <code class='python'>Resolution.TICK</code><code class='csharp'>Resolution.Tick</code>.</p>
 
