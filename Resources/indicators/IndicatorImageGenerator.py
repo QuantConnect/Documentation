@@ -64,7 +64,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             'accumulation-distribution-oscillator':
             {
                 'code': AccumulationDistributionOscillator(10, 20),
-                'title' : 'ADOSC(symbol, 10, 2)',
+                'title' : 'ADOSC(symbol, 10, 20)',
                 'columns' : []
             },
             'arnaud-legoux-moving-average':
