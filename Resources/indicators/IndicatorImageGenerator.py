@@ -46,7 +46,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             'absolute-price-oscillator':
             {
                 'code': AbsolutePriceOscillator(10, 20, MovingAverageType.Simple),
-                'title' : 'APO(symbol, 10, 2, MovingAverageType.Simple)',
+                'title' : 'APO(symbol, 10, 20, MovingAverageType.Simple)',
                 'columns' : ['fast','slow']
             },
             'acceleration-bands':
