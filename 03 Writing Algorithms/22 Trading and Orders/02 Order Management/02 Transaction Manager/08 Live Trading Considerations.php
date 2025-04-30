@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/trading-and-orders/transaction-manager-live-state.html"); ?>
