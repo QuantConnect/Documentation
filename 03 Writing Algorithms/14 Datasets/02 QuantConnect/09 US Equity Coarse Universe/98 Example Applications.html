@@ -1,0 +1,228 @@
+<p>
+The US Equity Coarse Universe dataset enables you to accurately design a universe of US Equities. Examples include the following strategies:
+</p>
+<ul><li>Selecting securities with the largest dollar volume</li>
+<li>Selecting securities within a specific price range</li>
+<li>Selecting securities that have fundamental data available (together with <a href="/datasets/morning-star-us-fundamentals">MorningStar Fundamental data</a> in <code>Fundamental</code> objects)</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of the three most liquid US Equities. Each time the universe changes, the algorithm forms an equal-weighted portfolio of the three companies.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
+
+    _number_of_symbols = 3
+    _changes = None
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 1)
+        self.set_cash(100000)
+        # Set Asynchronous to True to improve speed performance
+        self.universe_settings.asynchronous = True
+        # Requesting data
+        self.add_universe(self.fundamental_selection_function)
+
+    def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Select the top traded stocks, since they are the most popular with high capital flow
+        sortedByDollarVolume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)
+        return [ x.symbol for x in sortedByDollarVolume[:self._number_of_symbols] ]
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # if we have no changes, do nothing
+        if self._changes is None: return
+
+        # liquidate removed securities, since they are not the most popular stocks
+        for security in self._changes.removed_securities:
+            if security.invested:
+                self.liquidate(security.symbol)
+
+        # we want 1/N allocation in each security in our universe to evenly dissipate risk
+        for security in self._changes.added_securities:
+            self.set_holdings(security.symbol, 1 / self._number_of_symbols)
+
+        self._changes = None
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        self._changes = changes
+        
+        for security in changes.added_securities:
+            # Historical data
+            history = self.history(security.symbol, 7, Resolution.DAILY)
+            self.debug(f"We got {len(history)} from our history request for {security.symbol}") </pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class USEquityCoarseUniverseConstituentsDataAlgorithm : QCAlgorithm
+    {
+        private int _numberOfSymbols = 3;
+        private SecurityChanges _changes = SecurityChanges.None;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 7, 1);
+            SetCash(100000);
+        
+            // Set Asynchronous to True to improve speed performance 
+            UniverseSettings.Asynchronous = True;
+            // Requesting data
+            AddUniverse(FundamentalSelectionFunction);
+        }
+
+        public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+        {
+            // Select the top traded stocks, since they are the most popular with high capital flow
+            return fundamental.OrderByDescending(x =&gt; x.DollarVolume)
+                .Take(_numberOfSymbols).Select(x =&gt; x.Symbol);
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // if we have no changes, do nothing
+            if (_changes == SecurityChanges.None) return;
+
+            // liquidate removed securities, since they are not the most popular stocks
+            foreach (var security in _changes.RemovedSecurities)
+            {
+                if (security.Invested)
+                {
+                    Liquidate(security.Symbol);
+                }
+            }
+
+            // we want 1/N allocation in each security in our universe to evenly dissipate risk
+            foreach (var security in _changes.AddedSecurities)
+            {
+                SetHoldings(security.Symbol, 1m / _numberOfSymbols);
+            }
+
+            _changes = SecurityChanges.None;
+        }
+        
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            _changes = changes;
+
+
+            foreach (var security in changes.AddedSecurities)
+            {
+                // Historical data
+                var history = History(security.Symbol, 7, Resolution.Daily);
+                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of the three most liquid US Equities and forms an equal-weighted portfolio with them.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
+
+    _number_of_symbols = 3
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 1)
+        self.set_cash(100000)
+
+        # Set Asynchronous to True to improve speed performance
+        self.universe_settings.asynchronous = True
+            
+        # Requesting data
+        self.set_universe_selection(
+            FundamentalUniverseSelectionModel(self.fundamental_selection_function))
+        
+        # we want 1/N allocation in each security in our universe to evenly dissipate risk
+        self.set_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+         
+        self.add_risk_management(NullRiskManagementModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+
+    def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Select the top traded stocks, since they are the most popular with high capital flow
+        sortedByDollarVolume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)
+        return [ x.symbol for x in sortedByDollarVolume[:self._number_of_symbols] ]</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class USEquityCoarseUniverseConstituentsDataAlgorithm : QCAlgorithm
+    {
+        private int _numberOfSymbols = 3;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 7, 1);
+            SetCash(100000);
+
+            // Set Asynchronous to True to improve speed performance
+            UniverseSettings.Asynchronous = True;
+
+            // Requesting data
+            SetUniverseSelection(
+                new FundamentalUniverseSelectionModel(FundamentalSelectionFunction));
+
+            // we want 1/N allocation in each security in our universe to evenly dissipate risk
+            SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+
+        public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+        {
+            // Select the top traded stocks, since they are the most popular with high capital flow
+            return fundamental.OrderByDescending(x =&gt; x.DollarVolume)
+                .Take(_numberOfSymbols).Select(x =&gt; x.Symbol);
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists the three most liquid US Equities:</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();
+
+// Add Fundamental Universe Selection
+IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamentals)
+{
+    return fundamentals.OrderByDescending(x =&gt; c.DollarVolume).Take(10).Select(x =&gt; c.Symbol);
+}
+
+var universe = qb.AddUniverse(FundamentalSelectionFunction); 
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);
+foreach (var fundamentals in universeHistory)
+{
+    foreach (Fundamental fundamental in fundamentals)
+    {
+        Console.WriteLine($"{fundamental.Symbol} dollar volume at {fundamental.EndTime}: {fundamental.DollarVolume}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Add Fundamental Universe Selection
+def fundamental_selection_function(fundamentals):
+    selected = sorted(fundamentals, key=lambda x: x.dollar_volume, reverse=True)[:10]
+    return [x.symbol for x in selected]
+
+universe = qb.add_universe(fundamental_selection_function)
+
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
+for (universe_symbol, time), fundamentals in universe_history.items():
+    for fundamental in fundamentals:
+        print(f"{fundamental.symbol} dollar volume at {fundamental.end_time}: {fundamental.dollar_volume}")</pre>
+</div>

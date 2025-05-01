@@ -1,0 +1,281 @@
+<p>
+The Bybit Crypto Price dataset enables you to accurately design strategies for Cryptocurrencies. Examples include the following strategies:
+</p>
+<ul><li>Buy and hold</li>
+<li>Trading Cryptocurrency volatility and price action</li>
+<li>Allocating a small portion of your portfolio to Cryptocurrencies to hedge against inflation</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys and holds Bitcoin through the Bybit exchange:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class CoinAPIDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 6, 1)
+        self.set_end_date(2023, 1, 1)
+        # Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+        self.set_account_currency("USDT", 100000)
+
+        # Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        self.set_brokerage_model(BrokerageName.BYBIT, AccountType.MARGIN)
+
+        # Warm up the security with the last known price to avoid conversion error
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_price)))
+        
+        # Requesting data, we only trade on BTCUSDT in Bybit exchange
+        crypto = self.add_crypto("BTCUSDT", Resolution.MINUTE, Market.BYBIT)
+        self.btcusdt = crypto.symbol
+        self.minimum_order_size = crypto.symbol_properties.minimum_order_size
+        
+        # Historical data
+        history = self.history(self.btcusdt, 30, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request")
+
+        # Add Crypto Universe Selection that select crypto pairs in Bybit exchange
+        self._universe = self.add_universe(CryptoUniverse.bybit(self.universe_selection_filter))
+
+        # Historical Universe data
+        universe_history = self.history(self._universe, 30, Resolution.DAILY)
+        self.debug(f"We got {len(universe_history)} items from our universe history request")
+        for (univere_symbool, time), universe_day in universe_history.items():
+            for universe_item in universe_day:
+                self.debug(f"{universe_item.symbol} price at {universe_item.end_time}: {universe_item.close}")
+
+    def universe_selection_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
+        # Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+        return [universe_item.symbol for universe_item in universe_day
+                if universe_item.volume &gt;= 100 
+                and universe_item.volume_in_usd &gt; 10000]
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Speculate-invest all available free cash on BTCUSDT, obeying the order quantity restriction to avoid invalid order
+        if self.portfolio.cash_book['BTC'].amount == 0:
+            free_cash = self.portfolio.cash_book['USDT'].amount * (1-self.settings.free_portfolio_value_percentage)
+            quantity = free_cash / slice[self.btcusdt].price
+            quantity -= quantity % self.minimum_order_size
+            if quantity &gt; 0:
+                self.market_order(self.btcusdt, quantity)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+
+namespace QuantConnect
+{
+    public class CoinAPIDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _btcusdt;
+        private  _universe;
+        private decimal? _minimumOrderSize;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2022, 6, 1);
+            SetEndDate(2023, 1, 1);
+            // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+            SetAccountCurrency("USDT", 100000);
+
+            // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+            SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+
+            // Warm up the security with the last known price to avoid conversion error
+            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
+            
+            // Requesting data, we only trade on BTCUSDT in Bybit exchange
+            var crypto = AddCrypto("BTCUSDT", Resolution.Minute, Market.Bybit);
+            _btcusdt = crypto.Symbol;
+            _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
+        
+             // Historical data
+            var history = History(_btcusdt, 30, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+
+            // Add Crypto Universe Selection that select crypto pairs in Bybit exchange
+            _universe = AddUniverse(CryptoUniverse.Bybit(UniverseSelectionFilter));
+
+            // Historical Universe data
+            var universeHistory = History(_universe, 30, Resolution.Daily);
+            Debug($"We got {universeHistory.Count()} items from our history request");
+            foreach (var universeDay in universeHistory)
+            {
+                foreach (CryptoUniverse universeItem in universeDay)
+                {
+                    Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
+                }
+            }
+        }
+
+        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+        {
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            return from universeItem in universeDay
+                   where universeItem.Volume &gt;= 100m 
+                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                   select universeItem.Symbol;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Speculate-invest all available free cash on BTCUSDT, obeying the order quantity restriction to avoid invalid order
+            if (Portfolio.CashBook["BTC"].Amount == 0)
+            {
+                var freeCash = Portfolio.CashBook["USDT"].Amount * (1-Settings.FreePortfolioValuePercentage);
+                var quantity = freeCash / slice[_btcusdt].Price;
+                quantity -= quantity % _minimumOrderSize;
+                if (quantity &gt; 0m)
+                {
+                    MarketOrder(_btcusdt, quantity);
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of Crypto pairs on the Bybit exchange and then forms a equal-weighted portfolio of all the pairs in the universe:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class CoinAPIDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 6, 1)
+        self.set_end_date(2023, 1, 1)
+        # Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+        self.set_account_currency("USDT", 100000)
+
+        # Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        self.set_brokerage_model(BrokerageName.BYBIT, AccountType.MARGIN)
+
+        # Warm up the security with the last known price to avoid conversion error
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_price)))
+        self.universe_settings.asynchronous = True
+        self.universe_settings.resolution = Resolution.MINUTE
+        # Add Crypto Universe Selection that select crypto pairs in Bybit exchange
+        self.add_universe(CryptoUniverse.bybit(self.universe_selection_filter))
+        
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(minutes = 20), 0.025, None))
+        # Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+    def universe_selection_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
+        # Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+        return [universe_item.symbol for universe_item in universe_day
+                if universe_item.volume &gt;= 100 
+                and universe_item.volume_in_usd &gt; 10000]
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            # Historical data
+            history = self.history(security.symbol, 30, Resolution.DAILY)
+            self.debug(f"We got {len(history)} items from our history request")</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+
+namespace QuantConnect
+{
+    public class CoinAPIDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2022, 6, 1);
+            SetEndDate(2023, 1, 1);
+
+            // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+            SetAccountCurrency("USDT", 100000);
+            // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+            SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+ 
+            // Warm up the security with the last known price to avoid conversion error
+            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
+            UniverseSettings.Asynchronous = True;
+            UniverseSettings.Resolution = Resolution.Minute;
+            // Add Crypto Universe Selection that select crypto pairs in Bybit exchange
+            AddUniverse(CryptoUniverse.Bybit(UniverseSelectionFilter));
+
+            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None));
+            // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+
+        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+        {
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            return from universeItem in universeDay
+                   where universeItem.Volume &gt;= 100m 
+                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                   select universeItem.Symbol;
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach(var security in changes.AddedSecurities)
+            {
+                // Historical data
+                var history = History(security.Symbol, 30, Resolution.Daily);
+                Debug($"We got {history.Count()} items from our history request");
+            }
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists crypto-currency pairs with the greatest dollar volume in the Bybit exchange:</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();
+
+// Add Cryptocurrency pair
+var symbol = qb.AddCrypto("BTCUSDT", market:Market.Bybit).Symbol;
+
+// Historical data
+var history = qb.History(symbol, 30, Resolution.Daily);
+foreach (var bar in history)
+{
+    Console.WriteLine($"{bar.EndTime} {bar}");
+}
+
+// Add Crypto Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+{
+    return universeDay
+        .Where(x =&gt; x.VolumeInUsd != None &amp;&amp; x.VolumeInUsd &gt; 10000m)
+        .OrderByDescending(x =&gt; x.VolumeInUsd)
+        .Take(5)
+        .Select(x =&gt; x.Symbol);
+}
+var universe = qb.AddUniverse(CryptoUniverse.Bybit(UniverseSelectionFilter));
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);
+foreach (var universeDay in universeHistory)
+{
+    Console.WriteLine($"=== {universeDay.First().EndTime} ===");
+    foreach (CryptoUniverse universeItem in universeDay.OrderByDescending(x =&gt; x.VolumeInUsd))
+    {
+        Console.WriteLine($"{universeItem.Symbol}: {universeItem.VolumeInUsd}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Add Cryptocurrency pair
+symbol = qb.add_crypto("BTCUSDT", market=Market.BYBIT).symbol
+
+# Historical data
+history = qb.history(symbol, 30, Resolution.DAILY)
+for (symbol, time), row in history.iterrows():
+    print(f'{time} {symbol} {row.close}')
+
+# Add Crypto Universe Selection
+def universe_selection_filter(universe_day):
+    selected = sorted([x for x in universe_day
+        if x.volume_in_usd and x.volume_in_usd &gt; 10000],
+        key=lambda x: x.volume_in_usd, reverse=True)[:5]
+    return [x.symbol for x in selected]
+
+universe = qb.add_universe(CryptoUniverse.bybit(universe_selection_filter))
+
+# Historical Universe data
+history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
+for (univere_symbol, time), universe_day in history.items():
+    print(f'=== {time} ===')
+    for universe_item in sorted(universe_day, key=lambda x: x.volume_in_usd, reverse=True):
+        print(f"{universe_item.symbol}: {universe_item.volume_in_usd}")</pre>
+</div>

@@ -1,0 +1,222 @@
+<p>The Cash Indices enables you to incorporate popular indices into your trading algorithms. Examples include the following use cases:</p>
+
+<ul><li>Exploring the difference between the Index and the ETF that tracks it</li>
+<li>Using these indices as the underlying asset fo Index Options strategies</li>
+<li>Understanding the stock market's level of expected forward-looking volatility, also known as the "fear index". When the VIX starts moving higher, it is telling you that traders are getting nervous. When the VIX starts moving lower, it is telling you that traders are gaining confidence.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm tracks the 80-day EMA and 200-day EMA of SPX. When the short EMA crosses above the long EMA, the algorithm buys SPY. Otherwise, it holds cash.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class IndexDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 7, 8)
+        self.set_cash(100000)
+
+        # Request SPY data as a trading vehicle for SPX
+        self.spy = self.add_equity("SPY").symbol
+
+        # Request SPX data for trade signal generation
+        spx = self.add_index("SPX").symbol
+
+        # Create short and long-term EMA indicators for trend estimation to trade
+        self.ema_fast = self.EMA(spx, 80, Resolution.DAILY)
+        self.ema_slow = self.EMA(spx, 200, Resolution.DAILY)
+        self.set_warm_up(200, Resolution.DAILY)
+
+        # Historical data
+        history = self.history(spx, 60, Resolution.DAILY)
+        self.debug(f'We got {len(history.index)} items from our history request')
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade signals required indicators to be ready
+        if self.is_warming_up or not self.ema_slow.is_ready:
+            return
+
+        # If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
+        if not self.portfolio.invested and self.ema_fast &gt; self.ema_slow:
+            self.set_holdings(self.spy, 1)
+        # If it is the reverse, it indicates a downtrend, and we liquidate any position
+        elif self.ema_fast &lt; self.ema_slow:
+            self.liquidate()
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class IndexDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _spy;
+        private ExponentialMovingAverage _emaSlow;
+        private ExponentialMovingAverage _emaFast;
+
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 7, 8);
+            SetCash(1000000);
+
+            // Request SPY data as trading vehicle for SPX
+            _spy = AddEquity("SPY").Symbol;
+
+            // Request SPX data for trade signal generation
+            var spx = AddIndex("SPX").Symbol;
+
+            // Create short and long-term EMA indicators for trend estimation to trade
+            _emaFast = EMA(spx, 80, Resolution.Daily);
+            _emaSlow = EMA(spx, 200, Resolution.Daily);
+            SetWarmUp(200, Resolution.Daily);
+
+            // Historical data
+            var history = History(spx, 60, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Trade signals required indicators to be ready
+            if (IsWarmingUp || !_emaSlow.IsReady)
+            {
+                return;
+            }
+
+            // If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
+            if (!Portfolio.Invested &amp;&amp; _emaFast &gt; _emaSlow)
+            {
+                SetHoldings(_spy, 1);
+            }
+            // If it is the reverse, it indicates a downtrend, and we liquidate any position
+            else if (_emaFast &lt; _emaSlow)
+            {
+                Liquidate();
+            }
+        }
+    }
+}</pre></div><h4>Framework Algorithm Example</h4><p>The following example algorithm tracks the 80-day EMA and 200-day EMA of SPX. When the short EMA crosses above the long EMA, the algorithm buys SPY. Otherwise, it holds cash.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class IndexDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 7, 8)
+        self.set_cash(100000)
+
+        # Universe contains only SPY as a trading vehicle for SPX
+        self.set_universe_selection(ManualUniverseSelectionModel
+        (
+            Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        ))
+        # Custom alpha model that emits insights based on SPX index data
+        self.set_alpha(SpxEmaCrossAlphaModel(self))
+        # Equally investing can dissipate non-systematic risky event's capital concentration risk evenly
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_MONTH))
+    
+class SpxEmaCrossAlphaModel(AlphaModel):
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        # Request SPX data for trade signal generation
+        spx = algorithm.add_index("SPX").symbol
+
+        # Create short and long-term EMA indicators for trend estimation to trade
+        self.ema_fast = algorithm.EMA(spx, 80, Resolution.DAILY)
+        self.ema_slow = algorithm.EMA(spx, 200, Resolution.DAILY)
+        algorithm.set_warm_up(200, Resolution.DAILY)
+
+        # Historical data
+        history = algorithm.history(spx, 60, Resolution.DAILY)
+        algorithm.debug(f'We got {len(history.index)} items from our history request')
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # Trade signals required indicators to be ready
+        if algorithm.is_warming_up or not self.ema_slow.is_ready:
+            return []
+
+        # If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
+        if not algorithm.portfolio.invested and self.ema_fast &gt; self.ema_slow:
+            return [Insight.price(kvp.key, Expiry.END_OF_MONTH, InsightDirection.UP)
+                for kvp in algorithm.active_securities if kvp.value.is_tradable]
+        # If it is the reverse, it indicates downtrend, and we liquidate any position
+        elif self.ema_fast &lt; self.ema_slow:
+            return [Insight.price(kvp.key, Expiry.END_OF_MONTH, InsightDirection.FLAT)
+                for kvp in algorithm.active_securities if kvp.value.is_tradable]
+            
+        return []
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class IndexDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 7, 8);
+            SetCash(1000000);
+
+            // Universe contains only SPY as a trading vehicle for SPX
+            SetUniverseSelection(new ManualUniverseSelectionModel
+            (
+                QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+            ));
+            // Custom alpha model that emits insights based on SPX index data
+            SetAlpha(new SpxEmaCrossAlphaModel(this));
+            // Equally invests can dissipate non-systematic risky event's capital concentration risk evenly
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+        }
+    }
+
+    public class SpxEmaCrossAlphaModel : AlphaModel
+    {
+        private ExponentialMovingAverage _emaSlow;
+        private ExponentialMovingAverage _emaFast;
+
+        public SpxEmaCrossAlphaModel(QCAlgorithm algorithm)
+        {
+            // Request SPX data for trade signal generation
+            var spx = algorithm.AddIndex("SPX").Symbol;
+
+            // Create short and long-term EMA indicators for trend estimation to trade
+            _emaFast = algorithm.EMA(spx, 80, Resolution.Daily);
+            _emaSlow = algorithm.EMA(spx, 200, Resolution.Daily);
+            algorithm.SetWarmUp(200, Resolution.Daily);
+
+            // Historical data
+            var history = algorithm.History(spx, 60, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request");
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            // Trade signals required indicators to be ready
+            if (algorithm.IsWarmingUp || !_emaSlow.IsReady)
+            {
+                return Enumerable.Empty&lt;Insight&gt;();
+            }
+
+            // If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
+            if (!algorithm.Portfolio.Invested &amp;&amp; _emaFast &gt; _emaSlow)
+            {
+                return algorithm.ActiveSecurities
+                    .Where(kvp =&gt; kvp.Value.IsTradable)
+                    .Select(kvp =&gt; Insight.Price(kvp.Key, Expiry.EndOfMonth, InsightDirection.Up));
+            }
+            // If it is the reverse, it indicates downtrend, and we liquidate any position
+            else if (_emaFast &lt; _emaSlow)
+            {
+                return algorithm.ActiveSecurities
+                    .Where(kvp =&gt; kvp.Value.IsTradable)
+                    .Select(kvp =&gt; Insight.Price(kvp.Key, Expiry.EndOfMonth, InsightDirection.Flat));
+            }
+    
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+    }
+}</pre></div>

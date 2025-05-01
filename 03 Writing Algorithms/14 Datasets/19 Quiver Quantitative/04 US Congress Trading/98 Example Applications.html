@@ -1,0 +1,351 @@
+<p>The US Congress Trading dataset enables you to take immediate action on trades made by informed Members of Congress. Examples include the following strategies:</p>
+<ul><li>Following the trades of specific representatives on the premise that the representatives are more informed</li>
+ <li>Assigning a long/short-bias to securities on a daily frequency based on how Members of Congress are trading them</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm follows the net bias of the trades made by Members of Congress each day. When Members of Congress are net buyers, the algorithm buys. When they are net sellers, the algorithm short sells.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverCongressDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        # Requesting data per underlying data to subscribe to updated congress members' trade information
+        aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        quiver_congress_symbol = self.add_data(QuiverCongress, aapl).symbol
+
+        # Historical data
+        history = self.history(QuiverCongress, quiver_congress_symbol, 60, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request");
+
+    def on_data(self, slice: Slice) -&gt; None:
+        congress_by_symbol = slice.Get(QuiverCongress)
+
+        # Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+        net_quantity_by_symbol = {}
+        for symbol, points in congress_by_symbol.items():
+            symbol = symbol.underlying
+            if symbol not in net_quantity_by_symbol:
+                net_quantity_by_symbol[symbol] = 0
+            # Voting weight is by order size
+            for point in points:
+                net_quantity_by_symbol[symbol] += (1 if point.transaction == OrderDirection.BUY else -1) * point.amount
+            
+        for symbol, net_quantity in net_quantity_by_symbol.items():
+            if net_quantity == 0:
+                self.liquidate(symbol)
+                continue
+            # Buy when Congress members have bought, short otherwise
+            self.set_holdings(symbol, 1 if net_quantity &gt; 0 else -1)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class QuiverCongressDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+            
+            // Requesting data per underlying data to subscribe to updated congress members' trade information
+            var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+            var quiverCongressSymbol = AddData&lt;QuiverCongress&gt;(aapl).Symbol;
+
+            // Historical data
+            var history = History&lt;QuiverCongress&gt;(quiverCongressSymbol, 60, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+        }
+
+        
+        public override void OnData(Slice slice)
+        {
+            var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
+            
+            // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+            var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+            foreach (var (s, points) in congressBySymbol)
+            {
+                var symbol = s.Underlying;
+                if (!netQuantityBySymbol.ContainsKey(symbol))
+                {
+                    netQuantityBySymbol[symbol] = 0m;
+                }
+                // Voting weight is by order size
+                foreach(QuiverCongressDataPoint point in points)
+                {
+                    netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
+                }
+            }
+            
+            foreach (var (symbol, netQuantity) in netQuantityBySymbol)
+            {
+                if (netQuantity == 0)
+                {
+                    Liquidate(symbol);
+                    continue;
+                }
+                // Buy when Congress members have bought, short otherwise
+                SetHoldings(symbol, netQuantity &gt; 0 ? 1 : -1);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm follows the net bias of the trades made by Members of Congress each day. When Members of Congress are net buyers, the algorithm buys. When they are net sellers, the algorithm short sells.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverCongressDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        # Filter according to QuiverCongress data
+        self.add_universe(QuiverQuantCongressUniverse, "QuiverQuantCongresssUniverse", Resolution.DAILY, self.universe_selection)
+        
+        self.add_alpha(CongressAlphaModel())
+        
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel(lambda time: None))
+        
+        self.add_risk_management(NullRiskManagementModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+
+    def universe_selection(self, alt_coarse: List[QuiverQuantCongressUniverse]) -&gt; List[Symbol]:
+        # Only include the ones with large size buy, since they are estimated to be materially confident to go up
+        return [d.symbol for d in alt_coarse
+                    if d.amount &gt; 200000 and d.transaction == OrderDirection.BUY]
+        
+
+class CongressAlphaModel(AlphaModel):
+    
+    symbol_data_by_symbol = {}
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+        congress_by_symbol = slice.Get(QuiverCongress)
+
+        # Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+        net_quantity_by_symbol = {}
+        for symbol, points in congress_by_symbol.items():
+            symbol = symbol.underlying
+            if symbol not in net_quantity_by_symbol:
+                net_quantity_by_symbol[symbol] = 0
+            # Voting weight is by order size
+            for point in points:
+                net_quantity_by_symbol[symbol] += (1 if point.transaction == OrderDirection.BUY else -1) * point.amount
+        
+        for symbol, net_quantity in net_quantity_by_symbol.items():
+            # Buy when Congress members have bought, as they may have advance information to be confident to the return direction
+            if net_quantity &gt; 0 and not algorithm.portfolio[symbol].is_long:
+                insights += [Insight.price(symbol, timedelta(7),  InsightDirection.UP, weight=0.5)]
+            # Short sell when Congress members have sold
+            elif net_quantity &lt; 0 and not algorithm.portfolio[symbol].is_short:
+                insights += [Insight.price(symbol, timedelta(7),  InsightDirection.DOWN, weight=0.5)]
+    
+        return insights
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            self.symbol_data_by_symbol[symbol] = SymbolData(algorithm, symbol)
+        
+        for security in changes.removed_securities:
+            symbol_data = self.symbol_data_by_symbol.pop(security.symbol, None)
+            if symbol_data:
+                symbol_data.dispose()
+            
+class SymbolData:
+    def __init__(self, algorithm: QCAlgorithm, symbol: Symbol):
+        self.algorithm = algorithm
+        
+        # Requesting data per underlying data to subscribe to updated congress members' trade information
+        self.quiver_congress_symbol = algorithm.add_data(QuiverCongress, symbol).symbol
+        
+        # Historical data
+        history = algorithm.history(self.quiver_congress_symbol, 14, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} items from our history request for {symbol} Quiver Congress data")
+        
+    def dispose(self) -&gt; None:
+        # Unsubscribe from Quiver Congress feed for this security to release computational resources
+        self.algorithm.remove_security(self.quiver_congress_symbol)</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class QuiverCongressDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+            
+            // Filter according to QuiverCongress data
+            AddUniverse&lt;QuiverQuantCongressUniverse&gt;("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
+            {
+                // Only include the ones with large size buy, since they are estimated to be materially confident to go up
+                return from d in altCoarse 
+                    where d.Amount &gt; 200000 &amp;&amp; d.Transaction == OrderDirection.Buy 
+                    select d.Symbol;
+            });
+            
+            AddAlpha(new CongressAlphaModel());
+            
+            SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(time =&gt; None));
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+
+    public class CongressAlphaModel : AlphaModel
+    {
+        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new ();
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
+            
+            // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+            var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+            foreach (var (s, points) in congressBySymbol)
+            {
+                var symbol = s.Underlying;
+                if (!netQuantityBySymbol.ContainsKey(symbol))
+                {
+                    netQuantityBySymbol[symbol] = 0m;
+                }
+                // Voting weight is by order size
+                foreach(QuiverCongressDataPoint point in points)
+                {
+                    netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
+                }
+            }
+            
+            foreach (var (symbol, netQuantity) in netQuantityBySymbol)
+            {
+                // Buy when Congress members have bought, as they may have advance information to be confident to the return direction
+                if (netQuantity &gt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsLong)
+                {
+                    yield return Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Up, weight: 0.5);
+                }
+                
+                // Short sell when Congress members have sold
+                else if (netQuantity &lt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsShort)
+                {
+                    yield return Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Down, weight: 0.5);
+                }
+            }
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                var symbol = security.Symbol;
+                _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
+            }
+
+            foreach (var security in changes.RemovedSecurities)
+            {
+                var symbol = security.Symbol;
+                if (_symbolDataBySymbol.ContainsKey(symbol))
+                {
+                    _symbolDataBySymbol[symbol].dispose();
+                    _symbolDataBySymbol.Remove(symbol);
+                }
+            }
+        }
+    }
+    
+    public class SymbolData
+    {
+        private Symbol _quiverCongressSymbol;
+        private QCAlgorithm _algorithm;
+        
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+        {
+            _algorithm = algorithm;
+            
+            // Requesting data per underlying data to subscribe to updated congress members' trade information
+            _quiverCongressSymbol = algorithm.AddData&lt;QuiverCongress&gt;(symbol).Symbol;
+            
+            // Historical data
+            var history = algorithm.History&lt;QuiverCongress&gt;(_quiverCongressSymbol, 60, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Quiver Congress data");
+        }
+        
+        public void dispose()
+        {
+            // Unsubscribe from Quiver Congress feed for this security to release computational resources
+            _algorithm.RemoveSecurity(_quiverCongressSymbol);
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists trades made by Members of Congress daily as buyers.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.QuiverQuantCongressTrading.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Add QuiverCongress
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol;
+var quiverCongressSymbol = qb.AddData&lt;QuiverCongress&gt;(aapl).Symbol;
+
+// Historical data
+var history = qb.History&lt;QuiverCongress&gt;(quiverCongressSymbol, 60, Resolution.Daily);
+foreach (var trade in history.SelectMany(x =&gt; x).OfType&lt;QuiverCongressDataPoint&gt;())
+{
+    Console.WriteLine($"{trade.EndTime} {trade.Symbol.Value} {trade.Representative} {trade.Amount}");
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&gt;BaseData&gt; altCoarse)
+{
+    return from d in altCoarse.OfType&lt;QuiverCongressDataPoint&gt;()
+        where d.Transaction == OrderDirection.Buy select d.Symbol;
+}
+var universe = qb.AddUniverse&gt;QuiverQuantCongressUniverse&gt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-60), qb.Time);
+foreach (var trade in universeHistory.SelectMany(x =&gt; x).OfType&lt;QuiverCongressDataPoint&gt;())
+{
+    Console.WriteLine($"{trade.EndTime} {trade.Symbol.Value} {trade.Representative} {trade.Amount}");
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Add QuiverCongress
+aapl = qb.add_equity("AAPL", Resolution.DAILY).symbol
+quiver_congress_symbol = qb.add_data(QuiverCongress, aapl).symbol
+
+# Historical data
+history = qb.history(QuiverCongress, quiver_congress_symbol, 60, Resolution.DAILY)
+for (symbol, time), trades in history.items():
+    for trade in trades:
+        print(f'{time} {trade.symbol.value} {trade.representative} {trade.amount}')
+
+# Add Universe Selection
+def universe_selection(alt_coarse: List[QuiverQuantCongressUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in alt_coarse if d.transaction == OrderDirection.BUY]
+
+universe = qb.add_universe(QuiverQuantCongressUniverse, universe_selection)
+        
+# Historical Universe data
+history = qb.universe_history(universe, qb.time-timedelta(60), qb.time)
+for (univere_symbol, time), trades in history.items():
+    for trade in trades:
+        print(f'{time} {trade.symbol.value} {trade.representative} {trade.amount}')</pre>
+</div>

@@ -1,0 +1,253 @@
+<p>The Quiver Quantitative CNBC Trading dataset enables you to create strategies using the latest recommendations made by media personalities on CNBC. Examples include the following strategies:</p>
+<ul><li>Taking short positions in securities that were mentioned by Jim Cramer (CNBC commentator) in the last week</li>
+<li>Trading securities that were most/least discussed across CNBC programs over the last year</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys Apple stock if the net recommendation of media personalities on CNBC for Apple is positive. Otherwise, it holds cash.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverCNBCsAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 10, 1)   #Set Start Date
+        self.set_end_date(2021, 10, 31)    #Set End Date
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        # Subscribe to CNBC data for AAPL to generate trade signal
+        self.dataset_symbol = self.add_data(QuiverCNBCs, self.aapl).symbol
+
+        # history request
+        history = self.history(self.dataset_symbol, 10, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from historical data request of {self.dataset_symbol}.")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        for cnbcs in slice.Get(QuiverCNBCs).values():
+            # Using mean prediction from CNBC analysts to be the trade signal
+            # If the average CNBC insight is upward movement, invest AAPL
+            if np.mean([cnbc.direction for cnbc in cnbcs]) &gt; 0:
+                self.set_holdings(self.aapl, 1)
+            else:
+                self.set_holdings(self.aapl, 0)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class QuiverCNBCsAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol, _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2021, 10, 1);  //Set Start Date
+            SetEndDate(2021, 10, 31);    //Set End Date
+            _symbol = AddEquity("AAPL").Symbol;
+            // Subscribe to CNBC data for AAPL to generate trade signal
+            _datasetSymbol = AddData&lt;QuiverCNBCs&gt;(_symbol).Symbol;
+
+            // history request
+            var history = History&lt;QuiverCNBCs&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+            Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            foreach (var kvp in slice.Get&lt;QuiverCNBCs&gt;())
+            {
+                // Using mean prediction from CNBC analysts to be the trade signal
+                // If the average CNBC insight is upward movement, invest AAPL
+                if (kvp.Value.Average(x =&gt; (int) (x as QuiverCNBC).Direction) &gt; 0)
+                {
+                    SetHoldings(_symbol, 1);
+                }
+                else
+                {
+                    SetHoldings(_symbol, 0);
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of US Equities that have at least 3 positive opinions from CNBC sources. Each day, it then forms a equal-weighted portfolio with all the securities in the universe.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverCNBCsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+
+        self.dataset_symbol_by_symbol = {}
+        # Filter universe based on CNBC data
+        self.add_universe(QuiverCNBCsUniverse, self.universe_selection)
+
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
+
+        # Invest equally to evenly dissipate the capital concentration risk
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+    def universe_selection(self, data: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
+        cnbc_data_by_symbol = {}
+
+        for datum in data:
+            symbol = datum.symbol
+            
+            if symbol not in cnbc_data_by_symbol:
+                cnbc_data_by_symbol[symbol] = []
+            cnbc_data_by_symbol[symbol].append(datum)
+    
+        # Select the stocks with at least 3 CNBC analysts to suggest buy, reassuring the signal
+        return [symbol for symbol, d in cnbc_data_by_symbol.items()
+                if len([x for x in d if x.direction == OrderDirection.BUY]) &gt;= 3]
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            # Requesting CNBC Data
+            symbol = security.symbol
+            dataset_symbol = self.add_data(QuiverCNBCs, symbol).symbol
+            self.dataset_symbol_by_symbol[symbol] = dataset_symbol
+            
+            # Historical Data
+            history = self.history(dataset_symbol, 10, Resolution.DAILY)
+            self.debug(f"We got {len(history)} items from our history request on {dataset_symbol}.")
+
+        for security in changes.removed_securities:
+            dataset_symbol = self.dataset_symbol_by_symbol.pop(security.symbol, None)
+            if dataset_symbol:
+                # Remove subscription of CNBC data to release computation resources
+                self.remove_security(dataset_symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class QuiverCNBCsDataAlgorithm : QCAlgorithm
+    {
+        private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new();
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+
+            // Filter universe based on CNBC data
+            AddUniverse&lt;QuiverCNBCsUniverse&gt;(data =&gt;
+            {
+                var cnbcDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverCNBCsUniverse&gt;&gt;();
+
+                foreach (var datum in data.OfType&lt;QuiverCNBCsUniverse&gt;())
+                {
+                    var symbol = datum.Symbol;
+
+                    if (!cnbcDataBySymbol.ContainsKey(symbol))
+                    {
+                        cnbcDataBySymbol.Add(symbol, new List&lt;QuiverCNBCsUniverse&gt;());
+                    }
+                    cnbcDataBySymbol[symbol].Add(datum);
+                }
+
+                // Select the stocks with at least 3 CNBC analysts to suggest buy, reassuring the signal
+                return from kvp in cnbcDataBySymbol
+                    where kvp.Value.Where(x =&gt; x.Direction == OrderDirection.Buy).Count() &gt;= 3
+                    select kvp.Key;
+            });
+
+            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+
+            // Invest equally to evenly dissipate the capital concentration risk
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                // Requesting CNBC Data
+                var symbol = security.Symbol;
+                var datasetSymbol = AddData&lt;QuiverCNBCs&gt;(symbol).Symbol;
+                _datasetSymbolBySymbol.Add(symbol, datasetSymbol);
+
+                // History request
+                var history = History&lt;QuiverCNBCs&gt;(datasetSymbol, 10, Resolution.Daily);
+                Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
+            }
+            
+            foreach (var security in changes.RemovedSecurities)
+            {
+                var symbol = security.Symbol;
+                if (_datasetSymbolBySymbol.ContainsKey(symbol))
+                {
+                    // Remove subscription of CNBC data to release computation resources
+                    _datasetSymbolBySymbol.Remove(symbol, out var datasetSymbol);
+                    RemoveSecurity(datasetSymbol);
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists US Equities mentioned by Jim Cramer.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.QuiverCNBC.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Requesting data
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol;
+var symbol = qb.AddData&lt;QuiverCNBCs&gt;(aapl).Symbol;
+
+// Historical data
+var history = qb.History&lt;QuiverCNBCs&gt;(symbol, 60, Resolution.Daily);
+foreach (var cnbcs in history)
+{
+    foreach (QuiverCNBC cnbc in cnbcs)
+    {
+        Console.WriteLine($"{cnbc.Symbol} traders at {cnbc.EndTime}: {cnbc.Traders}");
+    }
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
+        where d.Traders.Contains("Cramer") select d.Symbol;
+}
+var universe = qb.AddUniverse&lt;QuiverCNBCsUniverse&lt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-60), qb.Time);
+foreach (var cnbcs in universeHistory)
+{
+    foreach (QuiverCNBCsUniverse cnbc in cnbcs)
+    {
+        Console.WriteLine($"{cnbc.Symbol} traders at {cnbc.EndTime}: {cnbc.Traders}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Requesting Data
+aapl = qb.add_equity("AAPL", Resolution.DAILY).symbol
+symbol = qb.add_data(QuiverCNBCs, aapl).symbol
+
+# Historical data
+history = qb.history(QuiverCNBCs, symbol, 60, Resolution.DAILY)
+for (symbol, time), cbncs in history.items():
+    for cbnc in cbncs:
+        print(f"{cbnc.symbol} traders at {cbnc.end_time}: {cbnc.traders}")
+
+# Add Universe Selection
+def universe_selection(alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
+
+universe = qb.add_universe(QuiverCNBCsUniverse, universe_selection)
+        
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(60), qb.time)
+for (_, time), cbncs in universe_history.items():
+    for cbnc in cbncs:
+        print(f"{cbnc.symbol} traders at {cbnc.end_time}: {cbnc.traders}")</pre>
+</div>

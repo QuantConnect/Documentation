@@ -1,0 +1,290 @@
+<p>
+The US Future Universe dataset enables you to accurately design Futures strategies. Examples include the following strategies:
+</p>
+<ul><li>Buying the Futures contract with the most open interest to reduce slippage and market impact</li>
+<li>Trading bull calendar spreads to reduce volatility and margin requirements</li>
+<li>Trading bull calendar spreads to speculate contango</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm selects and buys the front-month Mini Gold Futures contract and sells the front-month Micro Gold Futures contract. When the front-month contract changes, the algorithm rebalances the portfolio.</p>
+
+<div class="section-example-container">
+<pre class="python">class USFuturesDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2013, 12, 20) 
+        self.set_end_date(2014, 2, 20)
+        self.set_cash(1000000) 
+        self.universe_settings.asynchronous = True
+        # Requesting data on gold and micro-gold contracts.
+        # Filter the universe to trade only the contracts expiring within 90 days to ensure liquidity.
+        self.mini_gold = self.add_future(Futures.Metals.GOLD) 
+        self.mini_gold.set_filter(0, 90)
+        
+        self.micro_gold = self.add_future(Futures.Metals.MICRO_GOLD) 
+        self.micro_gold.set_filter(0, 90)
+        
+        # Save a cache of the mapped symbol to trade.
+        self.contract = {self.mini_gold.symbol: None, self.micro_gold.symbol: None}
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        for symbol, chain in slice.future_chains.items():
+            if symbol in self.contract:
+                # Select the contract with the greatest open interest to trade with the most efficiency.
+                most_liquid_contract = sorted(chain, key=lambda contract: contract.open_interest, reverse=True)[0]
+                
+                if self.contract[symbol] is None or most_liquid_contract.symbol != self.contract[symbol].symbol:
+                    # Liquidate any unmapped contracts.
+                    if self.contract[symbol] is not None:
+                        self.liquidate(self.contract[symbol].symbol)
+                    self.contract[symbol] = most_liquid_contract
+                    
+                    # Buy mini-gold and short micro-gold contracts as planned.
+                    if symbol == self.mini_gold.symbol:
+                        self.market_order(self.contract[symbol].symbol, 1)
+                    elif symbol == self.micro_gold.symbol:
+                        self.market_order(self.contract[symbol].symbol, -1)</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class USFuturesDataAlgorithm : QCAlgorithm
+    {
+        private Future _miniGold;
+        private Future _microGold;
+        // Save a cache of the mapped symbol to trade.
+        private Dictionary&lt;Symbol, FuturesContract?&gt; _contract = new ();
+        
+        public override void Initialize()
+        {
+            SetStartDate(2013, 12, 20);
+            SetEndDate(2014, 2, 20);
+            SetCash(1000000);
+            UniverseSettings.Asynchronous = True;
+
+            // Requesting data on gold and micro-gold contracts.
+            // Filter the universe to trade only the contracts expiring within 90 days to ensure liquidity.
+            _miniGold = AddFuture(Futures.Metals.Gold);
+            _miniGold.SetFilter(0, 90);
+            _contract.Add(_miniGold.Symbol, None);
+            
+            _microGold = AddFuture(Futures.Metals.MicroGold);
+            _microGold.SetFilter(0, 90);
+            _contract.Add(_microGold.Symbol, None);
+        }
+
+        public override void OnData(Slice slice)
+        {
+            foreach (var (symbol, chain) in slice.FutureChains)
+            {
+                if (_contract.ContainsKey(symbol))
+                {
+                    // Select the contract with the greatest open interest to trade with the most efficiency.
+                    var mostLiquidContract = chain.OrderBy(x =&gt; x.OpenInterest).Last();
+                    
+                    if (_contract[symbol] == None || mostLiquidContract.Symbol != _contract[symbol].Symbol)
+                    {
+                        // Liquidate any unmapped contracts.
+                        if (_contract[symbol] != None)
+                        {
+                            Liquidate(_contract[symbol].Symbol);
+                        }
+                        _contract[symbol] = mostLiquidContract;
+
+                        // Buy mini-gold and short micro-gold contracts as planned.
+                        if (symbol == _miniGold.Symbol)
+                        {
+                            MarketOrder(_contract[symbol].Symbol, 1);
+                        }
+                        else if (symbol == _microGold.Symbol)
+                        {
+                            MarketOrder(_contract[symbol].Symbol, -1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm selects and buys the front-month Mini Gold Futures contract and sells the front-month Micro Gold Futures contract. When the front-month contract changes, the algorithm rebalances the portfolio.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+class USFuturesDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+
+        self.set_start_date(2013, 12, 20) 
+        self.set_end_date(2014, 2, 20)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        # Set up an universe selection model that selects the front month contract
+        self.set_universe_selection(FrontMonthFutureUniverseSelectionModel())
+        self.add_alpha(ConstantFuturesAlphaModel())
+        # A portfolio construction model that only order a single share per insight signal
+        self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
+        
+class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
+    def __init__(self,) -&gt; None:
+        # Daily updating with select_future_chain_symbols function
+        super().__init__(timedelta(1), self.select_future_chain_symbols)
+
+    def select_future_chain_symbols(self, utcTime: datetime) -&gt; List[Symbol]:
+        # Select gold and micro gold contracts for the strategy need
+        future_pairs = [
+            (Futures.Metals.GOLD, Market.COMEX),
+            (Futures.Metals.MICRO_GOLD, Market.COMEX)
+        ]
+        return [Symbol.create(pair[0], SecurityType.FUTURE, pair[1]) for pair in future_pairs]
+
+    def filter(self, filter: FutureFilterUniverse) -&gt; FutureFilterUniverse:
+        # Filter only front month contract for liquidity and most informed information
+        return filter.front_month().only_apply_filter_at_market_open()
+
+class ConstantFuturesAlphaModel(AlphaModel):
+    # Long gold and short micro gold in this strategy
+    long_symbol = Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
+    short_symbol = Symbol.create(Futures.Metals.MICRO_GOLD, SecurityType.FUTURE, Market.COMEX)
+        
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        if algorithm.portfolio.invested:
+            return []
+        
+        insights = []
+        # For both gold and micro gold, select the front month contract (only contract) in the chain
+        for kvp in slice.future_chains:
+            chain = [contract for contract in kvp.Value]
+            contract = chain[0]
+            
+            # Long gold and short micro gold as planned
+            if kvp.Key == self.long_symbol:
+                insights.append(Insight.price(contract.symbol, contract.expiry + timedelta(days=1), InsightDirection.UP))
+            elif kvp.Key == self.short_symbol:
+                insights.append(Insight.price(contract.symbol, contract.expiry + timedelta(days=1), InsightDirection.DOWN))
+        
+        return insights
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            # Historical data
+            history = algorithm.history(security.symbol, 10, Resolution.MINUTE)
+            algorithm.debug(f"We got {len(history)} from our history request for {security.symbol}")
+
+class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        targets = []
+        for insight in insights:
+            if algorithm.securities[insight.symbol].is_tradable:
+                # Single share only using integer portfolio target
+                targets.append(PortfolioTarget(insight.symbol, insight.direction))
+        return targets</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class USFuturesDataAlgorithm : QCAlgorithm
+    {        
+        public override void Initialize()
+        {
+            SetStartDate(2013, 12, 20);
+            SetEndDate(2014, 2, 20);
+            SetCash(1000000);
+            UniverseSettings.Asynchronous = True;
+            // Set up an universe selection model that selects the front month contract
+            SetUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
+            SetAlpha(new ConstantFuturesAlphaModel());
+            // A portfolio construction model that only order a single share per insight signal
+            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+        }
+    }
+        
+    class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
+    {
+        // Daily updating with select_future_chain_symbols function
+        public FrontMonthFutureUniverseSelectionModel()
+            : base(TimeSpan.FromDays(1), SelectFutureChainSymbols) {}
+
+        private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
+        {
+            //Select gold and micro gold contracts for the strategy need
+            return new List&lt;Symbol&gt; {
+                QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX),
+                QuantConnect.Symbol.Create(Futures.Metals.MicroGold, SecurityType.Future, Market.COMEX)
+            };
+        }
+
+        protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
+        {
+            // Filter only front month contract for liquidity and most informed information
+            return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+        }
+    }
+
+
+    class ConstantFuturesAlphaModel : AlphaModel
+    {
+        // Long gold and short micro gold in this strategy
+        private Symbol 
+            _longSymbol = QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX), 
+            _shortSymbol = QuantConnect.Symbol.Create(Futures.Metals.MicroGold, SecurityType.Future, Market.COMEX);
+        
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            if (algorithm.Portfolio.Invested)
+            {
+                return insights;
+            }
+            
+            // For both gold and micro gold, select the front month contract (only contract) in the chain
+            foreach (var kvp in slice.FutureChains)
+            {
+                var symbol = kvp.Key;
+                var chain = kvp.Value;
+                var contract = chain.First();
+                
+                // Long gold and short micro gold as planned
+                if (symbol == _longSymbol)
+                {
+                    insights.Add(Insight.Price(contract.Symbol, contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Up));
+                }
+                else if (symbol == _shortSymbol)
+                {
+                    insights.Add(Insight.Price(contract.Symbol, contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Down));
+                }
+            }
+
+            return insights;
+        }
+        
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                // Historical data
+                var history = algorithm.History(security.Symbol, 100, Resolution.Minute);
+                algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");
+            }
+        }
+    }
+        
+        
+    class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+    {
+        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        {
+            var targets = new List&lt;PortfolioTarget&gt;();
+            foreach (var insight in insights)
+            {
+                if (algorithm.Securities[insight.Symbol].IsTradable)
+                {
+                    // Single share only using integer portfolio target
+                    targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
+                }
+            }
+            return targets;
+        }
+    }
+}</pre>
+</div>

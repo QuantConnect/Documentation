@@ -2,7 +2,7 @@ import os
 import re
 from pathlib import Path
 from itertools import groupby
-from shutil import copy, copy2, move, rmtree
+from shutil import move, rmtree
 from bs4 import BeautifulSoup
 from _code_generation_helpers import get_json_content
 
@@ -43,6 +43,27 @@ def _write_metadata_file(folder, vendor, dataset):
         "og:image": "https://cdn.quantconnect.com/docs/i/writing-algorithms/datasets/{vendor_}/{dataset_}.png"
     }}
 }}''')
+
+def _parse_content(content):
+    content = content.replace("\/", "/") \
+                            .replace("->", "-&gt;") \
+                            .replace("=>", "=&gt;") \
+                            .replace("=<", "=&lt;") \
+                            .replace("https://www.quantconnect.com/docs/v2/", "/docs/v2/") \
+                            .replace("https://www.quantconnect.com/datasets/", "/datasets/") \
+                            .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
+                                     '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
+                            .replace("<b>", "<code>") \
+                            .replace("<b class", "<code class") \
+                            .replace("</b>", "</code>")
+    soup = BeautifulSoup(content, 'html.parser')
+    for code_section in soup.find_all("div", class_="section-example-container"):
+        for pre_code_section in soup.find_all("pre"):
+            for old, new in languages.items():
+                for code_snippet in pre_code_section.find_all('code', {'class' : old}):
+                    converted = f'{code_snippet}'.replace('<code', '<pre').replace('</code>', '</pre>').replace(old, new)
+                    content = content.replace(f'{pre_code_section}', converted)
+    return content
 
 if __name__ == '__main__':
     url = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json"
@@ -100,48 +121,39 @@ if __name__ == '__main__':
             all_sections = {**{item["title"]: item["content"] for item in dataset["about"] if item["title"]},
                             **{item["title"]: item["content"] for item in dataset["documentation"] if item["title"]}}
 
+            key = next(filter(lambda x: 'supported' in x.lower(), all_sections.keys()), None)
+            final_sections = {key: all_sections.pop(key, '')} if key else {}
+            final_sections["Example Applications"] = all_sections.pop("Example Applications", '')
+            data_point_attributes = all_sections.pop("Data Point Attributes", '')
+            if data_point_attributes:
+                final_sections["Data Point Attributes"] = data_point_attributes
+            all_sections.update(final_sections)
+
             for k, (title, content) in enumerate(all_sections.items()):        
-                content = content.replace("\/", "/") \
-                            .replace("->", "-&gt;") \
-                            .replace("=>", "=&gt;") \
-                            .replace("=<", "=&lt;") \
-                            .replace("https://www.quantconnect.com/docs/v2/", "/docs/v2/") \
-                            .replace("https://www.quantconnect.com/datasets/", "/datasets/") \
-                            .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
-                                     '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
-                            .replace("<b>", "<code>") \
-                            .replace("<b class", "<code class") \
-                            .replace("</b>", "</code>")
-                soup = BeautifulSoup(content, 'html.parser')
-                for code_section in soup.find_all("div", class_="section-example-container"):
-                    for pre_code_section in soup.find_all("pre"):
-                        for old, new in languages.items():
-                            for code_snippet in pre_code_section.find_all('code', {'class' : old}):
-                                converted = f'{code_snippet}'.replace('<code', '<pre').replace('</code>', '</pre>').replace(old, new)
-                                content = content.replace(f'{pre_code_section}', converted)
-
+                content = _parse_content(content)
+                for old, new in languages.items():
+                    content = content.replace(old, new)
+                
                 if title.lower() == "example applications":
-                    start = content.find('<div class="dataset-embeds">')
+                    start = content.find('</ul>')
                     if start > 0:
-                        text = ''
-                        for old, new in languages.items():
-                            for code_section in soup.find_all("div", class_=f"qc-embed-frame {old}"):
-                                text += f"\n<div class='{new}'><div class='qc-embed-frame' style='display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;'><div class='qc-embed-dummy' style='padding-top: 56.25%;'></div><div class='qc-embed-element' style='position: absolute; top: 0; bottom: 0; left: 0; right: 0;'><iframe class='qc-embed-backtest' src='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest{str(code_section)[-61:-28]}.html' style='max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;' scrolling='no' width='100%' height='100%'></iframe></div></div></div>"
-                        end = start + len(str(soup.find_all("div", class_="dataset-embeds")))
-                        content = content.replace(content[start:end], text)
+                        content = content.replace(content[start+5:],'\n')
+                    for item in [x for x in dataset["examples"] if x["title"]]:
+                        h4_content = _parse_content(item["content"])
+                        content += f"<h4>{item['title'].strip()}</h4>{h4_content}"
 
-                    with open(folder / f'99 {title.strip()}.html', "w", encoding="utf-8") as html_file:
+                    with open(folder / f'98 Example Applications.html', "w", encoding="utf-8") as html_file:
                         html_file.write(content)
-                else:
-                    for old, new in languages.items():
-                        content = content.replace(old, new)
-                    if title.lower() == "introduction":
-                        backslash = '\\'
-                        content += f"""
+                        continue
+
+                if title.lower() == "introduction":
+                    backslash = '\\'
+                    content += f"""
 
 <p>For more information about the {name} dataset, including CLI commands and pricing, see the <a href=\"{dataset['url'].lower().replace(backslash, '')}\">dataset listing</a>.<p>"""
 
                 if title.strip() == "Data Point Attributes":
+                    k=98
                     matches = re.findall(data_tree_attr_pattern, content)
                     universe_attrs = [x.split('.')[-1] for x in matches if "universe" in x.lower()]
                     if universe_attrs:

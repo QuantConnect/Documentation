@@ -1,0 +1,114 @@
+<p>
+The US Equities dataset enables you to accurately design Equity trading strategies. Examples include the following strategies: 
+</p>
+<ul><li>Momentum strategies using historical returns on the premise that the momentum will continue</li>
+<li>Value strategies using fundamental factors on the premise that the price of undervalued securities will rise</li>
+<li>Factor investing with periodic rebalancing</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys and holds Apple stock:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USEquityDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+        
+        # Requesting single equity data, since we only trade AAPL
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        
+        # Historical data
+        history = self.history(self.aapl, 60, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Check if the current slice containing AAPL and if we hold any position
+        # As we make use of the most updated price data to decide the order size
+        if slice.contains_key(self.aapl) and slice[self.aapl] is not None and not self.portfolio.invested:
+            self.set_holdings(self.aapl, 1)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class USEquityDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2018, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+
+            // Requesting single equity data, since we only trade AAPL
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            
+            // Historical data
+            var history = History(_symbol, 60, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Check if the current slice containing AAPL and if we hold any position
+            // As we make use of the most updated price data to decide the order size
+            if (slice.ContainsKey(_symbol) &amp;&amp; slice[_symbol] != None &amp;&amp; !Portfolio.Invested)
+            {
+                SetHoldings(_symbol, 1);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm buys and holds Apple stock:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USEquityDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+        
+        self.universe_settings.resolution = Resolution.DAILY
+        # To select only AAPL, use a manual selection universe
+        symbols = [Symbol.create("AAPL", SecurityType.EQUITY, Market.USA)]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))    
+        
+        # Constant investment signal
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(days=7), 0.025, None))
+        
+        # Invest in all members equally
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class USEquityDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2018, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            
+            UniverseSettings.Resolution = Resolution.Daily;
+            // To select only AAPL, use a manual selection universe
+            var symbols = new[] {QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)};
+            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+            
+            // Constant investment signal
+            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7), 0.025, None));
+
+            // Invest in all members equally
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+    }
+}</pre>
+</div>

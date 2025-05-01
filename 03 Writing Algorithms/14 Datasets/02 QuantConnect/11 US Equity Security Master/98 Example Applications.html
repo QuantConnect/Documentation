@@ -1,0 +1,407 @@
+<p>
+The US Security Master enables you to accurately design strategies harnessing any core corporate actions. Examples include the following strategies: 
+</p>
+<ul><li>Post-dividend announcement trading strategies.</li>
+<li>Trading on new Equities by monitoring for IPOs.</li>
+<li>Harnessing split announcements for reverse-split announcement momentum.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm logs the <code>Split</code>, <code>Dividend</code>, <code>Delisting</code>, and <code>SymbolChangedEvent</code> objects of Apple:</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class USEquitySecurityMasterAlgorithm (QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(1998, 1, 1)
+        self.set_cash(1000000)
+        
+        self.equity = self.add_equity("AAPL", Resolution.DAILY).symbol
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        # Accessing Data - Splits
+        split = slice.splits.get(self.equity)
+        if split:
+            self.debug(f"{self.time} &gt;&gt; SPLIT &gt;&gt; {split.symbol} - {split.split_factor} - {self.portfolio.cash} - {self.portfolio[self.equity].price}")
+        
+        # Accessing Data - Dividends
+        dividend = slice.dividends.get(self.equity)
+        if dividend:
+            self.debug(f"{self.time} &gt;&gt; DIVIDEND &gt;&gt; {dividend.symbol} - {dividend.distribution} - {self.portfolio.cash} - {self.portfolio[self.equity].price}")
+
+        # Accessing Data - Delisting
+        delisting = slice.delistings.get(self.equity)
+        if delisting:
+            delistingType = {0: "Warning", 1: "Delisted"}.get(delisting.type)
+            self.debug(f"{self.time} &gt;&gt; DELISTING &gt;&gt; {delisting.symbol} - {delistingType}")
+            
+        # Accessing Data - Symbol Changed Event
+        symbolChangedEvent = slice.symbol_changed_events.get(self.equity)
+        if symbolChangedEvent:
+            self.debug(f"{self.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbolChangedEvent.old_symbol} -&gt; {symbolChangedEvent.new_symbol}")
+</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class USEquitySecurityMasterAlgorithm : QCAlgorithm
+    {
+        private Symbol _equity;
+        
+        public override void Initialize()
+        {
+            SetStartDate(1998, 1, 1);
+            SetCash(1000000);
+            
+            _equity = AddEquity("AAPL", Resolution.Daily).Symbol;
+        }
+        
+        public override void OnData(Slice slice)
+        {
+            // Accessing Data - Splits
+            if (slice.Splits.ContainsKey(_equity))
+            {
+                var split = slice.Splits[_equity];
+                Debug($"Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{split.Type}");
+            }
+            
+            // Accessing Data - Dividends
+            if (slice.Dividends.ContainsKey(_equity))
+            {
+                var dividend = slice.Dividends[_equity];
+                Log($"Dividend: {dividend.Symbol}\t{dividend.Distribution}\t{dividend.ReferencePrice}");
+            }
+            
+            // Accessing Data - Delisting
+            if (slice.Delistings.ContainsKey(_equity))
+            {
+                var delisting = slice.Delistings[_equity];
+                Log($"Delistings: {delisting.Type}");
+            }
+            
+            // Accessing Data - Symbol Changed Event
+            if (slice.SymbolChangedEvents.ContainsKey(_equity))
+            {
+                var symbolChangedEvent = slice.SymbolChangedEvents[_equity];
+                Log($"Symbol changed: {symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.NewSymbol}");
+            }
+        }
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+</div><h4>Framework Algorithm Example</h4><p>The following algorithm demonstrates the payments for cash dividends in backtesting. When the data normalization mode is <code>Raw</code>, your portfolio receives cash dividends.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class PaymentAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(1998,1,1)
+
+        # this will use the Tradier Brokerage open order split behavior
+        # forward split will modify open order to maintain order value
+        # reverse split open orders will be canceled
+        self.set_brokerage_model(BrokerageName.TRADIER_BROKERAGE)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        
+        # MSFT: Splits and Dividends
+        # GOOG: Symbol Changed Event
+        # AAA.1: Delisting
+        
+        self.set_universe_selection(ManualUniverseSelectionModel(
+            Symbol.create("MSFT", SecurityType.EQUITY, Market.USA)))
+
+        self.set_alpha(PaymentAlphaModel())
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(BracketExecutionModel())
+            
+class PaymentAlphaModel(AlphaModel):
+
+    symbol = Symbol.EMPTY
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # Accessing Data - Splits
+        split = slice.splits.get(self.symbol)
+        if split:
+            algorithm.debug(f"{algorithm.time} &gt;&gt; SPLIT &gt;&gt; {split.symbol} - {split.split_factor} - {algorithm.portfolio.cash} - {algorithm.portfolio[self.symbol].price}")
+
+        # Accessing Data - Dividends
+        dividend = slice.dividends.get(self.symbol)
+        if dividend:
+            algorithm.debug(f"{algorithm.time} &gt;&gt; DIVIDEND &gt;&gt; {dividend.symbol} - {dividend.distribution} - {algorithm.portfolio.cash} - {algorithm.portfolio[self.symbol].price}")
+
+        # Accessing Data - Delistings
+        delisting = slice.delistings.get(self.symbol)
+        if delisting:
+            delistingType = {0: "Warning", 1: "Delisted"}.get(delisting.type)
+            algorithm.debug(f"{algorithm.time} &gt;&gt; DELISTING &gt;&gt; {delisting.symbol} - {delistingType}")
+
+        # Accessing Data - Symbol Changed Events
+        symbolChangedEvent = slice.symbol_changed_events.get(self.symbol)
+        if symbolChangedEvent:
+            algorithm.debug(f"{algorithm.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbolChangedEvent.old_symbol} -&gt; {symbolChangedEvent.new_symbol}")
+
+        bar = slice.bars.get(self.symbol)
+        return [Insight.price(self.symbol, timedelta(1), InsightDirection.UP)] if bar else []
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        self.symbol = list(changes.added_securities)[0].symbol
+
+class BracketExecutionModel(ExecutionModel):
+    
+    def __init__(self) -&gt; None:
+        '''Initializes a new instance of the ImmediateExecutionModel class'''
+        self.targets_collection = PortfolioTargetCollection()
+
+    def execute(self, algorithm: QCAlgorithm, targets: List[PortfolioTarget]) -&gt; None:
+
+        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+        self.targets_collection.add_range(targets)
+        if self.targets_collection.count &gt; 0:
+            for target in self.targets_collection.order_by_margin_impact(algorithm):
+                # calculate remaining quantity to be ordered
+                quantity = OrderSizing.get_unordered_quantity(algorithm, target)
+                if quantity != 0 and algorithm.transactions.orders_count == 0:
+                    bar = algorithm.securities[target.symbol].get_last_data()
+                    algorithm.market_order(target.symbol, quantity)
+                    # place some orders that won't fill, when the split comes in they'll get modified to reflect the split
+                    algorithm.stop_market_order(target.symbol, -quantity, bar.low/2)
+                    algorithm.limit_order(target.symbol, -quantity, bar.high*2)
+
+            self.targets_collection.clear_fulfilled(algorithm)
+</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class PaymentsAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(1998, 01, 01);
+                
+            // this will use the Tradier Brokerage open order split behavior
+            // forward split will modify open order to maintain order value
+            // reverse split open orders will be canceled
+            SetBrokerageModel(BrokerageName.TradierBrokerage);
+            
+            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+            
+            // MSFT: Splits and Dividends
+            // GOOG: Symbol Changed Event
+            // AAA.1: Delisting
+            SetUniverseSelection(new ManualUniverseSelectionModel(
+                QuantConnect.Symbol.Create("MSFT", SecurityType.Equity, Market.USA)));
+
+            SetAlpha(new PaymentAlphaModel());
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            SetExecution(new BracketExecutionModel());
+        }
+    }
+    
+    public class PaymentAlphaModel : AlphaModel
+    {
+        private Symbol _symbol = Symbol.Empty;
+        
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            // Accessing Data - Splits
+            if (slice.Splits.ContainsKey(_symbol))
+            {
+                var split = slice.Splits[_symbol];
+                algorithm.Debug($"{split.Time.ToIso8601Invariant()} &gt;&gt; SPLIT &gt;&gt; {split.Symbol} - " +
+                    $"{split.SplitFactor.ToStringInvariant()} - " +
+                    $"{algorithm.Portfolio.Cash.ToStringInvariant()} - " +
+                    $"{algorithm.Portfolio[_symbol].Quantity.ToStringInvariant()}");
+            }
+            
+            // Accessing Data - Dividends
+            if (slice.Dividends.ContainsKey(_symbol))
+            {
+                var dividend = slice.Dividends[_symbol];
+                algorithm.Debug($"{dividend.Time.ToStringInvariant("o")} &gt;&gt; DIVIDEND &gt;&gt; {dividend.Symbol} - " +
+                    $"{dividend.Distribution.ToStringInvariant("C")} - {algorithm.Portfolio.Cash} - " +
+                    $"{algorithm.Portfolio[_symbol].Price.ToStringInvariant("C")}");
+            }
+
+            // Accessing Data - Delisting
+            if (slice.Delistings.ContainsKey(_symbol))
+            {
+                var delisting = slice.Delistings[_symbol];
+                algorithm.Debug($"{delisting.Time.ToStringInvariant("o")} &gt;&gt; DELISTING &gt;&gt; {delisting.Type}");
+            }
+
+            // Accessing Data - Symbol Changed Event
+            if (slice.SymbolChangedEvents.ContainsKey(_symbol))
+            {
+                var symbolChangedEvent = slice.SymbolChangedEvents[_symbol];
+                algorithm.Debug($"{symbolChangedEvent.Time.ToStringInvariant("o")} &gt;&gt; Symbol Changed Event &gt;&gt; " +
+                    $"{symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.OldSymbol}");
+            }
+            
+            return slice.Bars.ContainsKey(_symbol)
+                ? new [] { Insight.Price(_symbol, TimeSpan.FromDays(1), InsightDirection.Up) }
+                : Enumerable.Empty&lt;Insight&gt;();
+        }
+        
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            _symbol = changes.AddedSecurities.First().Symbol;
+        }
+    }
+    
+    public class BracketExecutionModel : ExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+        {
+            _targetsCollection.AddRange(targets);
+            // for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+            if (_targetsCollection.Count &gt; 0)
+            {
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                {
+                    // calculate remaining quantity to be ordered
+                    var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
+                    if (quantity != 0 &amp;&amp; algorithm.Transactions.OrdersCount == 0)
+                    {
+                        var bar = algorithm.Securities[target.Symbol].GetLastData() as TradeBar;
+                        algorithm.MarketOrder(target.Symbol, quantity);
+                        // place some orders that won't fill, when the split comes in they'll get modified to reflect the split
+                        algorithm.StopMarketOrder(target.Symbol, -quantity, bar.Low/2);
+                        algorithm.LimitOrder(target.Symbol, -quantity, bar.High*2);
+                    }
+                }
+
+                _targetsCollection.ClearFulfilled(algorithm);
+            }
+        }
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.464",
+    "Tracking Error": "0.159",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "OrderListHash": ""
+}
+ </script>
+</div>

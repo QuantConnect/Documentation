@@ -1,0 +1,132 @@
+<p>
+The Macroeconomic Indicators dataset provides data on global macro indicators, allowing traders to react on market sentiment. Examples include the following strategies: 
+</p>
+
+<ul><li>Long straddle to trade the market shock brought by the macro indicators.</li>
+<li>Hold long or short position of the market representative ETF based on the expected market direction.</li>
+<li>Statistical arbitrage on 2 or more correlated global markets based on market strength indicated by macro indicators.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm holds long position of SPY if the US GDP is in positive growth, while holds short position if it is the opposite case.</p>
+
+<div class="section-example-container">
+<pre class="python">class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.set_start_date(2020, 10, 7)
+        self.equity_symbol = self.add_equity("SPY", Resolution.Daily).symbol
+
+        ticker = EODHD.MacroIndicators.UnitedStates.GDP_GROWTH_ANNUAL
+        self.dataset_symbol = self.add_data(EODHDMacroIndicators, ticker).Symbol
+
+    def OnData(self, slice):
+        indicators = slice.get(EODHDMacroIndicators).get(self.dataset_symbol)
+        if indicators:
+            gdp = indicators.data[0].value
+            self.SetHoldings(self.equity_symbol, 1 if gdp &gt; 0 else -1)</pre>
+<pre class="csharp">namespace QuantConnect.DataLibrary.Tests
+{
+    public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
+    {
+        private Symbol _equitySymbol, _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2020, 10, 07);
+            _equitySymbol = AddEquity("SPY", Resolution.Daily).Symbol;
+            var ticker = EODHD.MacroIndicators.UnitedStates.GdpGrowthAnnual;
+            _datasetSymbol = AddData&lt;EODHDMacroIndicators&gt;(ticker).Symbol;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            if (slice.Get&lt;EODHDMacroIndicators&gt;().TryGetValue(_datasetSymbol, out var indicators))
+            {
+                var gdp = indicators.FirstOrDefault() as EODHDMacroIndicator;
+                SetHoldings(_equitySymbol, gdp.Value &gt; 0m ? 1 : -1);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm holds the long position of SPY if the US GDP is in positive growth while holding a short position if it is the opposite case. It is implemented in the framework algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # Use market ETF as a vehicle to trade.
+        symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.add_universe_selection(ManualUniverseSelectionModel(symbol))
+        # Custom alpha model to emit insights according to macroeconomic indicators.
+        self.add_alpha(MacroIndicatorAlphaModel(self))
+        # Equal weighting position sizing to dissipate capital risk evenly.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_MONTH))
+
+class MacroIndicatorAlphaModel(AlphaModel):
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        # Request US GDP growth indicator data to generate trade signal.
+        ticker = EODHD.MacroIndicators.UnitedStates.GDP_GROWTH_ANNUAL
+        self.dataset_symbol = algorithm.add_data(EODHDMacroIndicators, ticker).symbol
+        self._symbol = None
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # Trade based on the updated macroeconomic indicator.
+        indicators = slice.get(EODHDMacroIndicators).get(self.dataset_symbol)
+        if not indicators:
+            return []
+        gdp = indicators.data[0].value
+        # If the GDP gap is positive, the market ETF is expected to rise.
+        # Otherwise, it is expected the market ETF will drop.
+        direction = InsightDirection.UP if gdp &gt; 0 else InsightDirection.DOWN
+        return [Insight.price(self._symbol, timedelta(5), direction)]
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for added in changes.added_securities:
+            self._symbol = added.symbol</pre>
+<pre class="csharp">namespace QuantConnect.DataLibrary.Tests
+{
+    public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            // Use market ETF as a vehicle to trade.
+            var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+            AddUniverseSelection(new ManualUniverseSelectionModel(symbol));
+            // Custom alpha model to emit insights according to macroeconomic indicators.
+            AddAlpha(new MacroIndicatorAlphaModel(this));
+            // Equal weighting position sizing to dissipate capital risk evenly.
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+        }
+    }
+
+    public class MacroIndicatorAlphaModel : AlphaModel
+    {
+        private Symbol _symbol, _datasetSymbol;
+
+        public MacroIndicatorAlphaModel(QCAlgorithm algorithm)
+        {
+            // Request US GDP growth indicator data to generate trade signals.
+            var ticker = EODHD.MacroIndicators.UnitedStates.GdpGrowthAnnual;
+            _datasetSymbol = algorithm.AddData&lt;EODHDMacroIndicators&gt;(ticker).Symbol;
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            // Trade based on the updated macroeconomic indicator.
+            if (slice.Get&lt;EODHDMacroIndicators&gt;().TryGetValue(_datasetSymbol, out var indicators))
+            {
+                var gdp = indicators.FirstOrDefault() as EODHDMacroIndicator;
+                // If the GDP growth is positive, the market ETF is expected to rise.
+                // Otherwise, it is expected the market ETF will drop.
+                var direction = gdp.Value &gt; 0m ? InsightDirection.Up : InsightDirection.Down;
+                yield return Insight.Price(_symbol, TimeSpan.FromDays(5), direction);
+            }
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var added in changes.AddedSecurities)
+            {
+                _symbol = added.Symbol;
+            }
+        }
+    }
+}</pre>
+</div>

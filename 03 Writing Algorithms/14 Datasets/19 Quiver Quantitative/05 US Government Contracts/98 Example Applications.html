@@ -1,0 +1,347 @@
+<p>The Quiver Quantitative US Government Contracts dataset enables you to create strategies using the latest information on government contracts activity. Examples include the following strategies:</p>
+<ul><li>Buying securities that have received the most new government contracts awards over the last month</li>
+<li>Trading securities that have had the biggest change in government contracts awards over the last year</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys Apple stock when they receive a new government contract worth over $50K. If they receive a new contract worth under $10K, the algorithm short sells Apple.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverGovernmentContractAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 10, 7)   #Set Start Date
+        self.set_end_date(2021, 10, 11)    #Set End Date
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        # Subscribe to government contract data for AAPL to generate trade signal
+        self.dataset_symbol = self.add_data(QuiverGovernmentContract, self.aapl).symbol
+
+        # history request
+        history = self.history(self.dataset_symbol, 10, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from historical data request of {self.dataset_symbol}.")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade only base on government contract data
+        for gov_contracts in slice.Get(QuiverGovernmentContract).values():
+            # Buy if over 50000 government contract amount, suggesting a large income
+            if any([gov_contract.amount &gt; 50000 for gov_contract in gov_contracts]):
+                self.set_holdings(self.aapl, 1)
+            # Sell if below 10000 government contract amount, suggesting a smaller than usual income
+            elif any([gov_contract.amount &lt; 10000 for gov_contract in gov_contracts]):
+                self.set_holdings(self.aapl, -1)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class QuiverGovernmentContractAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol, _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2020, 10, 7);  //Set Start Date
+            SetEndDate(2021, 10, 11);    //Set End Date
+            _symbol = AddEquity("AAPL").Symbol;
+            // Subscribe to government contract data for AAPL to generate trade signal
+            _datasetSymbol = AddData&lt;QuiverGovernmentContract&gt;(_symbol).Symbol;
+
+            // history request
+            var history = History&lt;QuiverGovernmentContract&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+            Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Trade only base on government contract data
+            foreach (var kvp in slice.Get&lt;QuiverGovernmentContract&gt;())
+            {
+                // Buy if over 50000 government contract amount, suggesting a large income
+                if (kvp.Value.Any(x =&gt; (int) (x as QuiverGovernmentContract).Amount &gt; 50000m))
+                {
+                    SetHoldings(_symbol, 1);
+                }
+                // Sell if below 10000 government contract amount, suggesting a smaller than usual income
+                else if (kvp.Value.Any(x =&gt; (int) (x as QuiverGovernmentContract).Amount &lt; 10000m))
+                {
+                    SetHoldings(_symbol, -1);
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of US Equities that have just received a government contract worth at least $5K. Each day, it then forms an equal-weighted dollar-neutral portfolio with the 10 companies that received the largest contracts and the 10 companies that received the smallest contracts.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverGovernmentContractDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 1, 1)
+        self.set_cash(100000)
+        
+        self.universe_settings.resolution = Resolution.MINUTE
+        # Filter universe using government contract data
+        self.add_universe(QuiverGovernmentContractUniverse, self.universe_selection)
+
+        # Custom alpha model that emit insights based on updated government contract data
+        self.add_alpha(QuiverGovernmentContractAlphaModel())
+        
+        # Invest equally to evenly dissipate the capital concentration risk
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+        
+    def universe_selection(self, data: List[QuiverGovernmentContractUniverse]) -&gt; List[Symbol]:
+        gov_contract_data_by_symbol = {}
+
+        for datum in data:
+            symbol = datum.symbol
+            
+            if symbol not in gov_contract_data_by_symbol:
+                gov_contract_data_by_symbol[symbol] = []
+            gov_contract_data_by_symbol[symbol].append(datum)
+        
+        # Only select the stocks with over 5000 government contracts, which is considered material information
+        return [symbol for symbol, d in gov_contract_data_by_symbol.items()
+                if sum([x.amount for x in d]) &gt; 5000]
+        
+class QuiverGovernmentContractAlphaModel(AlphaModel):
+    
+    def __init__(self) -&gt; None:
+        # A variable to control the rebalancing time
+        self.last_time = datetime.min
+        # To hold the government contract dataset symbol for managing subscription
+        self.dataset_symbol_by_symbol = {}
+        
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        try:
+            if self.last_time &gt; algorithm.time: return []
+        except:
+            self.Log("")
+        
+        # Trade signal only based on government contract data
+        data_points = slice.Get(QuiverGovernmentContract)
+        
+        if not data_points: return []
+        
+        gov_contracts = {}
+        # To aggregate all data per symbol for analysis
+        for data_point in data_points:
+            if data_point.Key not in gov_contracts:
+                gov_contracts[data_point.Key] = 0
+
+            for gov_contract in data_point.Value:
+                gov_contracts[data_point.Key] += gov_contract.amount
+        
+        # Long the top 10 highest government contract amount, predicting a higher expected income and return
+        # Short the lowest 10 government contract amount, predicting a lower expected income and return
+        sorted_by_gov_contracts = sorted(gov_contracts.items(), key=lambda x: x[1])
+        long_symbols = [x[0].underlying for x in sorted_by_gov_contracts[-10:]]
+        short_symbols = [x[0].underlying for x in sorted_by_gov_contracts[:10]]
+        
+        insights = []
+        for symbol in long_symbols:
+            insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.UP))        
+        for symbol in short_symbols:
+            insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.DOWN))
+        
+        self.last_time = Expiry.END_OF_DAY(algorithm.Time)
+        
+        return insights
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            # Requesting government contract data for trade signal generation
+            symbol = security.symbol
+            dataset_symbol = algorithm.add_data(QuiverGovernmentContract, symbol).symbol
+            self.dataset_symbol_by_symbol[symbol] = dataset_symbol
+            
+            # Historical Data
+            history = algorithm.history(dataset_symbol, 10, Resolution.DAILY)
+            algorithm.debug(f"We got {len(history)} items from our history request on {dataset_symbol}.")
+
+        for security in changes.removed_securities:
+            dataset_symbol = self.dataset_symbol_by_symbol.pop(security.symbol, None)
+            if dataset_symbol:
+                # Remove government contract data subscription to release computation resources
+                algorithm.remove_security(dataset_symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class QuiverGovernmentContractFrameworkAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 7, 1);
+            SetCash(100000);
+            
+            UniverseSettings.Resolution = Resolution.Minute;
+            // Filter universe using government contract data
+            AddUniverse&lt;QuiverGovernmentContractUniverse&gt;(data =&gt;
+            {
+                var govContractDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverGovernmentContractUniverse&gt;&gt;();
+
+                foreach (var datum in data.OfType&lt;QuiverGovernmentContractUniverse&gt;())
+                {
+                    var symbol = datum.Symbol;
+
+                    if (!govContractDataBySymbol.ContainsKey(symbol))
+                    {
+                        govContractDataBySymbol.Add(symbol, new List&lt;QuiverGovernmentContractUniverse&gt;());
+                    }
+                    govContractDataBySymbol[symbol].Add(datum);
+                }
+
+                // Only select the stocks with over 5000 government contracts, which is considered material information
+                return from kvp in govContractDataBySymbol
+                    where kvp.Value.Sum(x =&gt; x.Amount) &gt; 5000m
+                    select kvp.Key;
+            });
+
+            // Custom alpha model that emit insights based on updated government contract data
+            AddAlpha(new QuiverGovernmentContractAlphaModel());
+
+            // Invest equally to evenly dissipate the capital concentration risk
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+    
+    public class QuiverGovernmentContractAlphaModel: AlphaModel
+    {
+        // A variable to control the rebalancing time
+        private DateTime _time;
+        // To hold the government contract dataset symbol for managing subscription
+        private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new();
+        
+        public QuiverGovernmentContractAlphaModel()
+        {
+            _time = DateTime.MinValue;
+        }
+        
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
+            
+            // Trade signal only based on government contract data
+            var dataPoints = slice.Get&lt;QuiverGovernmentContract&gt;();
+            
+            if (dataPoints.IsNullOrEmpty()) return new List&lt;Insight&gt;();
+
+            // To aggregate all data per symbol for analysis
+            var govContracts = dataPoints.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.Sum(x =&gt; ((QuiverGovernmentContract)x).Amount));
+            
+            // Long the top 10 highest government contract amount, predicting a higher expected income and return
+            // Short the lowest 10 government contract amount, predicting a lower expected income and return
+            var sortedByGovContract = from kvp in govContracts
+                            orderby kvp.Value descending
+                            select kvp.Key.Underlying;
+            var longSymbols = sortedByGovContract.Take(10).ToList();
+            var shortSymbols = sortedByGovContract.TakeLast(10).ToList();
+            
+            var insights = new List&lt;Insight&gt;();
+            insights.AddRange(longSymbols.Select(symbol =&gt; 
+                new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
+            insights.AddRange(shortSymbols.Select(symbol =&gt; 
+                new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
+            
+            _time = Expiry.EndOfDay(algorithm.Time);
+            
+            return insights;
+        }
+        
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                // Requesting government contract data for trade signal generation
+                var symbol = security.Symbol;
+                var datasetSymbol = algorithm.AddData&lt;QuiverGovernmentContract&gt;(symbol).Symbol;
+                _datasetSymbolBySymbol.Add(symbol, datasetSymbol);
+
+                // History request
+                var history = algorithm.History&lt;QuiverGovernmentContract&gt;(datasetSymbol, 10, Resolution.Daily);
+                algorithm.Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
+            }
+            
+            foreach (var security in changes.RemovedSecurities)
+            {
+                var symbol = security.Symbol;
+                if (_datasetSymbolBySymbol.ContainsKey(symbol))
+                {
+                    // Remove government contract data subscription to release computation resources
+                    _datasetSymbolBySymbol.Remove(symbol, out var datasetSymbol);
+                    algorithm.RemoveSecurity(datasetSymbol);
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists all US Equities with Government contracts in the past year.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.QuiverGovernmentContracts.dll"
+using QuantConnect.DataSource;
+
+// Requesting data
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol;
+var symbol = qb.AddData&lt;QuiverGovernmentContract&gt;(aapl).Symbol;
+
+// Historical data
+var history = qb.History&lt;QuiverGovernmentContract&gt;(symbol, 360, Resolution.Daily);
+foreach (var contracts in history)
+{
+    foreach (QuiverGovernmentContract contract in contracts)
+    {
+        Console.WriteLine($"{contract.Symbol} amount at {contract.EndTime}: {contract.Amount}");
+    }
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return from d in altCoarse.OfType&lt;QuiverGovernmentContractUniverse&gt;()
+        select d.Symbol;
+}
+var universe = qb.AddUniverse&lt;QuiverGovernmentContractUniverse&lt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-360), qb.Time);
+foreach (var contracts in universeHistory)
+{
+    foreach (QuiverGovernmentContractUniverse contract in contracts)
+    {
+        Console.WriteLine($"{contract.Symbol} amount at {contract.EndTime}: {contract.Amount}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Requesting Data
+aapl = qb.add_equity("AAPL", Resolution.DAILY).symbol
+symbol = qb.add_data(QuiverGovernmentContract, aapl).symbol
+
+# Historical data
+history = qb.history(QuiverGovernmentContract, symbol, 360, Resolution.DAILY)
+for (symbol, time), contracts in history.items():
+    for contract in contracts:
+        print(f"{contract.symbol} amount at {contract.end_time}: {contract.amount}")
+
+# Add Universe Selection
+def universe_selection(alt_coarse: List[QuiverGovernmentContractUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in alt_coarse]
+
+universe = qb.add_universe(QuiverGovernmentContractUniverse, universe_selection)
+        
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(360), qb.time)
+for (_, time), contracts in universe_history.items():
+    for contract in contracts:
+        print(f"{contract.symbol} amount at {contract.end_time}: {contract.amount}")</pre>
+</div>

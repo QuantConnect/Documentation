@@ -1,0 +1,212 @@
+<p>
+The Nasdaq Data Link sources allow you to explore different kinds of data in their database to develop trading strategies. Examples include the following strategies:
+</p>
+<ul><li>Using alternative data to regress market regime/asset price.</li>
+<li>Backtesting exotic derivatives or private Equity investments.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm subscribes to the Bitfinex Crypto Exchange Rate datasets. The algorithm takes a long position in Bitfinex BTCUSD.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class NasdaqImporterAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.nasdaq_code = "QDL/BITFINEX"
+        ## Optional argument - personal token necessary for restricted dataset
+        # NasdaqDataLink.set_auth_code(self.get_parameter("nasdaq-data-link-api-key"))
+        self.set_start_date(2014,4,1)
+        self.set_end_date(datetime.today() - timedelta(1))
+        self.set_cash(25000)
+        # Request nasdaq data link data to trade
+        self.add_data(NasdaqCustomColumns, self.nasdaq_code, Resolution.DAILY, TimeZones.NEW_YORK)
+        # Create SMA indicator that feed with nasdaq data link data, which can be used to determine trend for trend following trade
+        self.sma = self.SMA(self.nasdaq_code, 14)
+
+    def on_data(self, data):
+        if not self.portfolio.hold_stock:
+            self.set_holdings(self.nasdaq_code, 1)
+            self.debug("Purchased {0} &gt;&gt; {1}".format(self.nasdaq_code, self.time))
+
+        self.plot(self.nasdaq_code, "PriceSMA", self.sma.current.value)
+
+# NasdaqDataLink often doesn't use close columns so need to tell LEAN which is the "value" column.
+class NasdaqCustomColumns(NasdaqDataLink):
+    def __init__(self):
+        # Define ValueColumnName: cannot be None, Empty or non-existant column name
+        super().__init__("mid")
+        self.value_column_name = "mid"</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class NasdaqImporterAlgorithm : QCAlgorithm
+    {
+        private string nasdaqCode = "QDL/BITFINEX";
+        private SimpleMovingAverage sma;
+
+        public override void Initialize()
+        {
+            // Optional argument - personal token necessary for restricted dataset
+            // NasdaqDataLink.SetAuthCode(this.GetParameter("nasdaq-data-link-api-key"));
+            SetStartDate(2014, 4, 1);
+            SetEndDate(DateTime.Today.AddDays(-1));
+            SetCash(25000); 
+            // Request nasdaq data link data to trade
+            AddData&lt;NasdaqCustomColumns&gt;(nasdaqCode, Resolution.Daily, TimeZones.NewYork);
+            // Create SMA indicator that feed with nasdaq data link data, which can be used to determine trend for trend following trade
+            sma = SMA(nasdaqCode, 14);
+        }
+
+        public override void OnData(Slice data)
+        {
+            // OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
+            if (!Portfolio.HoldStock)
+            {
+                SetHoldings(nasdaqCode, 1);
+                Debug("Purchased " + nasdaqCode + " &gt;&gt; " + Time);
+            }
+
+            Plot(nasdaqCode, "PriceSMA", sma.Current.Value);
+        }
+    }
+
+    // NasdaqDataLink often doesn't use close columns so need to tell LEAN which is the "value" column.
+    public class NasdaqCustomColumns : NasdaqDataLink
+    {
+        // Custom nasdaq data type for setting customized value column name.
+        // Value column is used for the primary trading calculations and charting.
+        public NasdaqCustomColumns() : base("mid")
+        {
+            ValueColumnName = "mid";
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm subscribes to the Bitcoin Chain dataset and Bitfinex Crypto Exchange Rate dataset. The algorithm takes a long position in Bitfinex BTCUSD.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class NasdaqDataLinkFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2024, 12, 1) 
+        self.set_cash(1000000)
+
+        ### Requesting Data
+        # For premium datasets, provide your API Key
+        # NasdaqDataLink.set_auth_code(self.get_parameter("nasdaq-data-link-api-key"))
+
+        # Add nasdaq data link data as trading vehicle
+        bitfinex_exchange_rate_symbol = self.add_data(NasdaqDataLink, 'QDL/BCHAIN', Resolution.DAILY).symbol
+
+        ### Historical Data
+        history = self.history(bitfinex_exchange_rate_symbol, 1000, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request for {bitfinex_exchange_rate_symbol} Nasdaq Data Link")
+
+        # Custom alpha model that emit insights based on updated nasdaq data link data
+        self.add_alpha(NasdaqDataLinkAlphaModel(self))
+
+        # Invest equally to evenly dissipate the capital concentration risk
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(lambda time: None))
+        
+        
+class NasdaqDataLinkAlphaModel(AlphaModel):
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:        
+        ### Requesting NASDAQ data link custom data   
+        self.bitfinex_exchange_rate_symbol = algorithm.add_data(NasdaqCustomColumns, "QDL/BITFINEX", Resolution.DAILY).symbol
+        # This dataset has multiple data columns, so create a custom class to set the value column name
+
+        ### Historical Data
+        history = algorithm.history(self.bitfinex_exchange_rate_symbol, 100, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} items from our history request for {self.bitfinex_exchange_rate_symbol} Nasdaq Data Link")
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        # Trade only based on updated NASDAQ data link data
+        for dataset_symbol, data_point in slice.Get(NasdaqCustomColumns).items():
+            if dataset_symbol != self.bitfinex_exchange_rate_symbol or algorithm.portfolio[dataset_symbol].invested:
+                continue
+            insights.append(Insight.price(dataset_symbol, timedelta(days=6*22), InsightDirection.UP))
+            
+        return insights
+
+# NasdaqDataLink often doesn't use close columns so need to tell LEAN which is the "value" column.
+class NasdaqCustomColumns(NasdaqDataLink):
+    def __init__(self) -&gt; None:
+        # Select the column "mid".
+        self.value_column_name = "mid" </pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class NasdaqDataLinkFrameworkAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2024, 12, 1);
+            SetCash(100000);
+            
+            /// Requesting Data
+            // For premium datasets, provide your API Key
+            // NasdaqDataLink.SetAuthCode(GetParameter("nasdaq-data-link-api-key"));
+
+            // Add nasdaq data link data as trading vehicle
+            var bitcoinChainSymbol = AddData&lt;NasdaqDataLink&gt;("QDL/BCHAIN", Resolution.Daily).Symbol;
+
+            /// Historical Data
+            var history = History&lt;NasdaqDataLink&gt;(bitcoinChainSymbol, 1000, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request for {bitcoinChainSymbol} Nasdaq Data Link");
+
+            // Custom alpha model that emit insights based on updated nasdaq data link data
+            AddAlpha(new NasdaqDataLinkAlphaModel(this));
+
+            // Invest equally to evenly dissipate the capital concentration risk
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
+        }
+    }
+
+    public class NasdaqDataLinkAlphaModel : AlphaModel
+    {
+        private Symbol _bitfinexExchangeRateSymbol;
+
+        public NasdaqDataLinkAlphaModel(QCAlgorithm algorithm)
+        {
+            /// Requesting NASDAQ data link custom data   
+            _bitfinexExchangeRateSymbol = algorithm.AddData&lt;NasdaqCustomColumns&gt;("QDL/BITFINEX", Resolution.Daily).Symbol;
+            // This dataset has multiple data columns, so create a custom class to set the value column name
+
+            /// Historical Data
+            var history = algorithm.History&lt;NasdaqCustomColumns&gt;(_bitfinexExchangeRateSymbol, 100, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request for {_bitfinexExchangeRateSymbol} Nasdaq Data Link");
+        }
+
+        public override List&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            List&lt;Insight&gt; insights = new List&lt;Insight&gt;();
+            
+            /// Trade only based on updated NASDAQ data link data
+            foreach (var kvp in slice.Get&lt;NasdaqCustomColumns&gt;())
+            {
+                var datasetSymbol = kvp.Key;
+                if (datasetSymbol != _bitfinexExchangeRateSymbol || algorithm.Portfolio[datasetSymbol].Invested)
+                {
+                    continue;
+                }
+                insights.Add(Insight.Price(datasetSymbol, TimeSpan.FromDays(6*22), InsightDirection.Up));
+            }
+
+            return insights;
+        }
+    }
+
+    public class NasdaqCustomColumns : NasdaqDataLink
+    {
+        // Select the column "mid".
+        public NasdaqCustomColumns() : base(valueColumnName: "mid") { }
+    }
+}</pre>
+</div>

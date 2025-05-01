@@ -1,0 +1,292 @@
+<p>
+This regulatory dataset enables you to accurately design strategies while mitigating regulatory risk. Examples include the following strategies: 
+</p>
+<ul><li>Temporarily increasing/decreasing exposure to securities when new regulations are announced</li>
+<li>Parsing the content of regulatory announcements to determine market or sector impact</li>
+<li><a href="/research/14843/country-rotation-based-on-regulatory-alerts-sentiment/p1">Country rotation based on regulatory alert sentiment</a></li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm sells short 100% SPY if any predetermined negative sentimental phrase was present in any of the previous day's regulatory articles. Otherwise, it buys and hold 100% SPY.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class RegalyticsDataAlgorithm(QCAlgorithm): 
+    # Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
+    negative_sentiment_phrases = ["emergency rule", "proposed rule change", "development of rulemaking"]
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 7, 10)
+        self.set_end_date(2022, 7, 15)
+        self.set_cash(100000)
+        
+        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+            
+        # Requesting data to receive updated regulatory news for timely short selling
+        self.regalytics_symbol = self.add_data(RegalyticsRegulatoryArticles, "REG").symbol
+            
+        # Historical data for past articles
+        history = self.history(self.regalytics_symbol, 7, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only trade on regulatory news data
+        data = slice.Get(RegalyticsRegulatoryArticles)
+        if data:
+            for articles in data.values():
+                self.log(articles.to_string())
+                # If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+                if any([p in article.title.lower() for p in self.negative_sentiment_phrases for article in articles]):
+                    self.set_holdings(self.spy, -1)
+                else:
+                    self.set_holdings(self.spy, 1)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class RegalyticsDataAlgorithm : QCAlgorithm
+    {
+        // Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
+        private readonly string[] _negativeSentimentPhrases = new [] {"emergency rule", "proposed rule change", "development of rulemaking"};
+        private Symbol _symbol, _regalyticsSymbol; 
+        
+        public override void Initialize()
+        {
+            SetStartDate(2022, 7, 10);
+            SetEndDate(2022, 7, 15);
+            SetCash(100000);
+            
+            _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+            
+            // Requesting data to receive updated regulatory news for timely short selling
+            _regalyticsSymbol = AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
+            
+            // Historical data for past articles
+            var history = History&lt;RegalyticsRegulatoryArticles&gt;(_regalyticsSymbol, 7, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Only trade on regulatory news data
+            var data = slice.Get&lt;RegalyticsRegulatoryArticles&gt;();
+            if (!data.IsNullOrEmpty())
+            {
+                foreach (var articles in data.Values)
+                {
+                    Log($"{Time} {articles.ToString()}");
+                    // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+                    if (_negativeSentimentPhrases.Any(p =&gt; articles.Any(x =&gt; 
+                        ((RegalyticsRegulatoryArticle) x).Title.ToLower().Contains(p))))
+                    {
+                        SetHoldings(_symbol, -1);
+                    }
+                    else
+                    {
+                        SetHoldings(_symbol, 1);
+                    }
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm buys and holds the S&amp;P 500 ETF, SPY. To reduce regulatory risk, it liquidates your holdings for 2 days following regulatory announcements regarding new rules.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+from QuantConnect.Data.UniverseSelection import *
+
+class RegalyticsDataAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000) 
+        
+        self.universe_settings.resolution = Resolution.DAILY
+        # Trade SPY as the proxy of the whole equity market movement on the regulatory news
+        symbols = [ Symbol.create("SPY", SecurityType.EQUITY, Market.USA) ]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))
+        
+        self.add_alpha(RegAnalyticsAlphaModel(self))
+        
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(lambda time: None))
+        
+        self.add_risk_management(NullRiskManagementModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+
+                
+class RegAnalyticsAlphaModel(AlphaModel):
+    
+    symbols = []
+    last_news_date = datetime.min
+    target_direction = InsightDirection.UP
+    # Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
+    negative_sentiment_phrases = ["emergency rule", "proposed rule change", "development of rulemaking"]
+    # Assuming the negative impact of the regulatory news will last for 2 days
+    news_affect_duration = timedelta(days = 2)
+    
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        # Requesting data to receive updated regulatory news for timely short selling
+        self.regalytics_symbol = algorithm.add_data(RegalyticsRegulatoryArticles, "REG").symbol
+        
+        # Historical data for past articles
+        history = algorithm.history(self.regalytics_symbol, 14, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} from our history request")
+
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        # Only trade on regulatory news data
+        if slice.contains_key(self.regalytics_symbol) and slice[self.regalytics_symbol] is not None:
+            articles = slice[self.regalytics_symbol]
+            title = [article.title.lower() for article in articles]
+
+            # If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+            # Signal an exit from the market when regulatory articles with negative sentiment are released
+            for phrase in self.negative_sentiment_phrases:
+                if any(phrase in title):
+                    self.target_direction = InsightDirection.FLAT
+                    self.last_news_date = slice.time
+        
+        
+        # Signal an entry if we've waited long enough for the market to digest the negative news
+        if self.last_news_date + self.news_affect_duration &lt; slice.time:
+            self.target_direction = InsightDirection.UP
+        
+        for symbol in self.symbols:
+            # Ensure we have security data in the current Slice to avoid stale fill
+            if not (slice.contains_key(symbol) and slice[symbol] is not None):
+                continue
+            
+            if self.target_direction == InsightDirection.UP and not algorithm.portfolio[symbol].invested:
+                insights += [Insight.price(symbol, timedelta(days=90), InsightDirection.UP)]
+            elif self.target_direction == InsightDirection.FLAT and algorithm.portfolio[symbol].invested:
+                insights += [Insight.price(symbol, self.news_affect_duration, InsightDirection.FLAT)]
+        
+        return insights
+        
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            self.symbols.append(security.symbol)
+        
+        for security in changes.removed_securities:
+            symbol = security.symbol
+            if symbol in self.symbols:
+                self.symbols.remove(symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+
+namespace QuantConnect
+{
+    public class RegalyticsDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            
+            UniverseSettings.Resolution = Resolution.Daily;
+            //  Trade SPY as the proxy of the whole equity market movement on the regulatory news
+            AddUniverseSelection(
+                new ManualUniverseSelectionModel(
+                    QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+            ));
+            
+            AddAlpha(new RegAnalyticsAlphaModel(this));
+            
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+        
+        public class RegAnalyticsAlphaModel : AlphaModel
+        {
+            private List&lt;Symbol&gt; _symbols = new List&lt;Symbol&gt;();
+            private Symbol _regalyticsSymbol;
+            private DateTime _lastNewsDate = DateTime.MinValue;
+            private InsightDirection _targetDirection = InsightDirection.Up;
+            // Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
+            private string[] _negativeSentimentPhrases = new string[] {"emergency rule", "proposed rule change", "development of rulemaking"};
+            // Assuming the negative impact of the regulatory news will last for 2 days
+            private TimeSpan _newsAffectDuration = TimeSpan.FromDays(2);
+             
+            public RegAnalyticsAlphaModel(QCAlgorithm algorithm)
+            {
+                // Requesting data to receive updated regulatory news for timely short selling
+                _regalyticsSymbol = algorithm.AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
+                
+                // Historical data for past articles
+                var history = algorithm.History&lt;RegalyticsRegulatoryArticles&gt;(_regalyticsSymbol, 14, Resolution.Daily);
+                algorithm.Debug($"We got {history.Count()} items from our history request");
+            }
+    
+            public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+            {
+                var insights = new List&lt;Insight&gt;();
+
+                // Only trade on regulatory news data
+                if (slice.ContainsKey(_regalyticsSymbol) &amp;&amp; slice[_regalyticsSymbol] != None)
+                {
+                    var articles = slice[_regalyticsSymbol];
+                    foreach (RegalyticsRegulatoryArticle article in articles)
+                    {
+                        // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+                        // Signal an exit from the market when regulatory articles with negative sentiment are released
+                        if (_negativeSentimentPhrases.Any(x =&gt; article.Title.Contains(x)))
+                        {
+                            _targetDirection = InsightDirection.Flat;
+                            _lastNewsDate = slice.Time;
+                        }
+                    }
+                }
+                
+                // Signal an entry if we've waited long enough for the market to digest the negative news
+                if (_lastNewsDate + _newsAffectDuration &lt; slice.Time)
+                {
+                    _targetDirection = InsightDirection.Up;
+                }
+                
+                foreach (var symbol in _symbols)
+                {
+                    // Ensure we have security data in the current Slice to avoid stale fill
+                    if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
+                    {
+                        continue;
+                    }
+                    
+                    if (_targetDirection == InsightDirection.Up &amp;&amp; !algorithm.Portfolio[symbol].Invested)
+                    {
+                        insights.Add(Insight.Price(symbol, TimeSpan.FromDays(90), InsightDirection.Up));
+                    }
+                    else if (_targetDirection == InsightDirection.Flat &amp;&amp; algorithm.Portfolio[symbol].Invested)
+                    {
+                        insights.Add(Insight.Price(symbol, _newsAffectDuration, InsightDirection.Flat));
+                    }
+                }
+                return insights;
+            }
+    
+            public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+            {
+                foreach (var security in changes.AddedSecurities)
+                {
+                    _symbols.Add(security.Symbol);
+                }
+                
+                foreach (var security in changes.RemovedSecurities)
+                {
+                    _symbols.Remove(security.Symbol);
+                }
+            }
+        }
+    }
+}</pre>
+</div>

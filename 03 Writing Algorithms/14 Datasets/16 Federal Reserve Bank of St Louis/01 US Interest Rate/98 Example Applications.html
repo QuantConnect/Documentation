@@ -1,0 +1,46 @@
+<p>The US Interest Rate dataset provides an important economic indicator. Examples include the following applications:</p>
+
+<ul><li>Accurately calculating indicators that are a function of the risk free rate, like Sharpe ratios.</li>
+<li>Forming a portfolio of assets that have a history of outperforming when the rate is increasing/decreasing.</li>
+<li>Canceling orders in a <a href="/docs/v2/writing-algorithms/algorithm-framework/risk-management/key-concepts">Risk Management model</a> when the expected return of the asset is less than the risk-free rate.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm plots the current interest rate and the last year's average.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class RiskFreeInterestRateModelAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2022, 5, 21)
+        self.set_cash(100000)
+        self.add_equity("SPY", Resolution.DAILY)
+
+    def on_end_of_day(self, symbol):
+        self.set_holdings(symbol, 1)
+        # Get the average risk free rate of the last year at the current time
+        risk_free_rate = RiskFreeInterestRateModelExtensions.get_risk_free_rate(self.risk_free_interest_rate_model, self.time - timedelta(365), self.time)
+        # Plot the current interest rate and the 1-year average rate for comparison
+        self.plot('Interest', 'EOD', self.risk_free_interest_rate_model.get_interest_rate(self.time))
+        self.plot('Interest', '1Y-RW', risk_free_rate)</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class RiskFreeInterestRateModelAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2022, 5, 21);
+            SetCash(100000);
+            AddEquity("SPY", Resolution.Daily);
+        }
+
+        public override void OnEndOfDay(Symbol symbol)
+        {
+            SetHoldings(symbol, 1);
+            // Plot the current interest rate and the 1-year average rate for comparison
+            Plot("Interest Rate", "EOD", RiskFreeInterestRateModel.GetInterestRate(Time));
+            // Get the average risk free rate of the last year at the current time
+            Plot("Interest Rate", "1-year Window", RiskFreeInterestRateModel.GetRiskFreeRate(Time.AddDays(-365), Time));
+        }
+    }
+}</pre>
+</div>

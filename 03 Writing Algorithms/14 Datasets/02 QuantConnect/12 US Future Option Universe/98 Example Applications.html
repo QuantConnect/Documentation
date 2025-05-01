@@ -1,0 +1,88 @@
+<p>
+The US Future Options dataset enables you to accurately design Future Option strategies. Examples include the following strategies:
+</p>
+<ul><li>Selling out of the money Future Option contracts to collect the premium that the Option buyer pays</li>
+<li>Buying put Options to hedge against downward price movement in Future contracts you bought</li>
+<li>Exploiting arbitrage opportunities that arise when the price of Option contracts deviate from their theoretical value</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example demonstrates a bull call spread Option strategy using universe filtering.</p>
+
+<div class="section-example-container">
+<pre><code class="language-python">class FutureOptionAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020,1,1)
+        # Filter the underlying continuous Futures to narrow the FOP spectrum.
+        self.underlying = self.add_future(Futures.Indices.SP_500_E_MINI,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0)
+        self.underlying.set_filter(0, 182)
+        # Use CallSpread filter to obtain the 2 best-matched contracts that forms a call spread.
+        # It simplifies from further filtering and reduce computation on redundant subscription.
+        self.add_future_option(self.underlying.symbol, lambda u: u.call_spread(5, 5, -5))
+    
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.portfolio.invested:
+            return
+        # Create canonical symbol for the mapped future contract, since we need that to access the option chain.
+        symbol = Symbol.create_canonical_option(self.underlying.mapped)
+    
+        # Get option chain data for the mapped future only.
+        # It requires 2 contracts with different strikes to form a call spread, so we make sure at least 2 contracts are present.
+        chain = slice.option_chains.get(symbol)
+        if not chain or len(list(chain)) < 2:
+            return
+            
+        # Separate the contracts by strike, as we need to access their strike.
+        expiry = min([x.expiry for x in chain])
+        sorted_by_strike = sorted([x.strike for x in chain])
+        itm_strike = sorted_by_strike[0]
+        otm_strike = sorted_by_strike[-1]
+        
+        # Use abstraction method to order a bull call spread to avoid manual error.
+        option_strategy = OptionStrategies.bull_call_spread(symbol, itm_strike, otm_strike, expiry)
+        self.buy(option_strategy, 1)</code></pre>
+<pre class="csharp">public class FutureOptionAlgorithm : QCAlgorithm
+{
+    private Future _underlying;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020,1,1);
+        // Filter the underlying continuous Futures to narrow the FOP spectrum.
+        _underlying = AddFuture(Futures.Indices.SP500EMini,
+            extendedMarketHours: True,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        _underlying.SetFilter(0, 182);
+        // Use CallSpread filter to obtain the 2 best-matched contracts that forms a call spread.
+        // It simplifies from further filtering and reduce computation on redundant subscription.
+        AddFutureOption(_underlying.Symbol, (u) =&gt; u.CallSpread(5, 5, -5));
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested)
+            return;
+
+        // Create canonical symbol for the mapped future contract, since we need that to access the option chain.
+        var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
+    
+        // Get option chain data for the mapped future only.
+        // It requires 2 contracts with different strikes to form a call spread, so we make sure at least 2 contracts are present.
+        if (!slice.OptionChains.TryGetValue(symbol, out var chain) || chain.Count() &lt; 2)
+            return;
+    
+        // Separate the contracts by strike, as we need to access their strike.
+        var expiry = chain.Min(x =&gt; x.Expiry);
+        var itmStrike = chain.Min(x =&gt; x.Strike);
+        var otmStrike = chain.Max(x =&gt; x.Strike);
+    
+        // Use abstraction method to order a bull call spread to avoid manual error.
+        var optionStrategy = OptionStrategies.BullCallSpread(symbol, itmStrike, otmStrike, expiry);
+        Buy(optionStrategy, 1);
+    }
+}</pre>
+</div>

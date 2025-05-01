@@ -1,0 +1,202 @@
+<p>The VIX Central Contango dataset enable you to explore VIX Future contracts pricing data. Examples include the following strategies:</p><ul><li>Determining forward-looking expectations by Futures market participants of the underlying commodity's spot price by the time of expiration/maturity</li><li>Creating cash-and-carry arbitrage strategies by trading the spread/convergence of the contango/backwardation curves as a Future nears expiration/maturity</li></ul>
+<h4>Classic Algorithm Design</h4><p>The following example algorithm buys SPY when the percentage change between contract F2 and F1 (<code>Contango_F2_Minus_F1</code>) is positive. Otherwise, it remains in cash.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class VixCentralContangoAlgorithm (QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2014,1,1) 
+        self.set_end_date(2018,1,1)  
+        self.set_cash(25000)
+        # SPY as market representative for macroeconomy indicator trading
+        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        # Request VIX Contango data for trade signal generation
+        self.contango = self.add_data(VIXCentralContango, "VX", Resolution.DAILY).symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade base on the updated VIX contango data
+        contango_data = slice.Get(VIXCentralContango, self.contango)
+        ratio = contango_data.contango_f2_minus_f1 if contango_data else 0
+
+        # Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
+        if not self.portfolio.invested and ratio &gt; 0:
+            self.market_order(self.spy, 100)
+        # Liqudiate otherwise to avoid excessive market volatility
+        elif ratio &lt; 0:
+            self.liquidate()
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class VixCentralContangoAlgorithm : QCAlgorithm
+    {
+        private Symbol _spy;
+        private Symbol _contango;
+
+        public override void Initialize()
+        {
+            SetStartDate(2014, 1, 1);
+            SetEndDate(2018, 1, 1);
+            SetCash(25000);
+            // SPY as market representative for macroeconomy indicator trading
+            _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+            // Request VIX Contango data for trade signal generation
+            _contango = AddData&lt;VIXCentralContango&gt;("VX", Resolution.Daily).Symbol;
+        }
+    
+        public override void OnData(Slice slice)
+        {
+            // Trade base on the updated VIX contango data
+            var contangoData = slice.Get&lt;VIXCentralContango&gt;(_contango);
+            var ratio = contangoData?.Contango_F2_Minus_F1 ?? 0;
+
+            // Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
+            if (!Portfolio.Invested &amp;&amp; ratio &gt; 0)
+            {
+                MarketOrder(_spy, 100);
+            }
+            // Liqudiate otherwise to avoid excessive market volatility
+            else if(ratio &lt; 0)
+            {
+                 Liquidate();
+            }
+        }
+    }
+}</pre></div><h4>Framework Algorithm Design</h4><p>The following example algorithm buys SPY when the percentage change between contract F2 and F1 (<code>Contango_F2_Minus_F1</code>) is positive. Otherwise, it remains in cash.</p>
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class VixCentralContangoAlgorithm (QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2014,1,1) 
+        self.set_end_date(2018,1,1)  
+        self.set_cash(25000)
+        
+        self.universe_settings.resolution = Resolution.DAILY
+        # Include SPY as market representative for macroeconomy indicator trading
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))   
+        # Custom alpha model that emit insights base on VIX contango data
+        self.add_alpha(ContangoAlphaModel(self))
+        # Equal weighting investment to evenly dissipate the capital concentration risk on non-systematic risky event
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+class ContangoAlphaModel(AlphaModel):
+
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        self.symbols = []
+        # Request VIX Contango data for trade signal generation
+        self.contango = algorithm.add_data(VIXCentralContango, "VX", Resolution.DAILY).symbol
+
+        # Historical data
+        history = algorithm.history(VIXCentralContango, self.contango, 60, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history.index)} items from our history request")
+        
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        # Trade base on the updated VIX contango data
+        contango_data = slice.Get(VIXCentralContango, self.contango)
+        ratio = contango_data.contango_f2_minus_f1 if contango_data else 0
+
+        # Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
+        if not algorithm.portfolio.invested and ratio &gt; 0:
+            for symbol in self.symbols:
+                insights += [Insight.price(symbol, Expiry.ONE_MONTH, InsightDirection.UP)]
+        # Liqudiate otherwise to avoid excessive market volatility
+        elif ratio &lt; 0:
+            for symbol in self.symbols:
+                insights += [Insight.price(symbol, Expiry.ONE_MONTH, InsightDirection.FLAT)]
+
+        return insights
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for symbol in [x.symbol for x in changes.removed_securities]:
+            if symbol in self.symbols: 
+                self.symbols.pop(symbol)
+
+        self.symbols += [x.symbol for x in changes.added_securities]
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class VixCentralContangoAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2014, 1, 1);
+            SetEndDate(2018, 1, 1);
+            SetCash(25000);
+
+            UniverseSettings.Resolution = Resolution.Daily;
+            // Include SPY as market representative for macroeconomy indicator trading
+            var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
+            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+            // Custom alpha model that emit insights base on VIX contango data
+            AddAlpha(new ContangoAlphaModel(this));
+            // Equal weighting investment to evenly dissipate the capital concentration risk on non-systematic risky event
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+    }
+
+    public class ContangoAlphaModel : AlphaModel
+    {
+        private Symbol _contango;
+        private List&lt;Symbol&gt; _symbols;
+
+        public ContangoAlphaModel(QCAlgorithm algorithm)
+        {
+            _symbols = new List&lt;Symbol&gt;();
+            // Request VIX Contango data for trade signal generation
+            _contango = algorithm.AddData&lt;VIXCentralContango&gt;("VX", Resolution.Daily).Symbol;
+
+            // Historical data
+            var history = algorithm.History&lt;VIXCentralContango&gt;(_contango, 60, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request");
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            // Trade base on the updated VIX contango data
+            var contangoData = slice.Get&lt;VIXCentralContango&gt;(_contango);
+            var ratio = contangoData?.Contango_F2_Minus_F1 ?? 0;
+
+            // Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
+            if (!algorithm.Portfolio.Invested &amp;&amp; ratio &gt; 0)
+            {
+                foreach (var symbol in _symbols)
+                {
+                    insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Up));
+                }
+            }
+            // Liqudiate otherwise to avoid excessive market volatility
+            else if (ratio &lt; 0)
+            {
+                foreach (var symbol in _symbols)
+                {
+                    insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Flat));
+                }
+            }
+        	
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var symbol in changes.RemovedSecurities.Select(x=&gt; x.Symbol))
+            {
+                _symbols.Remove(symbol);
+            }
+            _symbols.AddRange(changes.AddedSecurities.Select(x=&gt; x.Symbol));
+        }
+    }
+}</pre></div>

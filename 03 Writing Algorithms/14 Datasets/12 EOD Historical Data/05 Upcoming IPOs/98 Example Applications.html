@@ -1,0 +1,624 @@
+
+<
+p
+>
+
+
+T
+h
+e
+ 
+U
+p
+c
+o
+m
+i
+n
+g
+ 
+I
+P
+O
+s
+ 
+d
+a
+t
+a
+s
+e
+t
+ 
+p
+r
+o
+v
+i
+d
+e
+s
+ 
+t
+i
+m
+e
+l
+y
+ 
+n
+o
+t
+i
+f
+i
+c
+a
+t
+i
+o
+n
+s
+ 
+a
+b
+o
+u
+t
+ 
+u
+p
+c
+o
+m
+i
+n
+g
+ 
+I
+P
+O
+s
+ 
+s
+t
+a
+r
+t
+,
+ 
+a
+l
+l
+o
+w
+i
+n
+g
+ 
+t
+r
+a
+d
+e
+r
+s
+ 
+t
+o
+ 
+c
+a
+p
+i
+t
+a
+l
+i
+z
+e
+ 
+o
+n
+ 
+t
+h
+e
+ 
+h
+i
+g
+h
+ 
+v
+o
+l
+a
+t
+i
+l
+i
+t
+y
+ 
+o
+f
+ 
+n
+e
+w
+ 
+s
+t
+o
+c
+k
+s
+.
+ 
+E
+x
+a
+m
+p
+l
+e
+s
+ 
+i
+n
+c
+l
+u
+d
+e
+ 
+t
+h
+e
+ 
+f
+o
+l
+l
+o
+w
+i
+n
+g
+ 
+s
+t
+r
+a
+t
+e
+g
+i
+e
+s
+:
+ 
+
+
+<
+/
+p
+>
+
+
+
+
+<
+u
+l
+>
+<
+l
+i
+>
+L
+o
+n
+g
+ 
+s
+t
+r
+a
+d
+d
+l
+e
+ 
+t
+o
+ 
+t
+r
+a
+d
+e
+ 
+t
+h
+e
+ 
+v
+o
+l
+a
+t
+i
+l
+i
+t
+y
+ 
+o
+f
+ 
+t
+h
+e
+ 
+n
+e
+w
+ 
+I
+P
+O
+ 
+s
+t
+o
+c
+k
+.
+<
+/
+l
+i
+>
+
+
+<
+l
+i
+>
+A
+r
+b
+i
+t
+r
+a
+t
+i
+o
+n
+ 
+o
+n
+ 
+f
+a
+i
+r
+ 
+p
+r
+i
+c
+e
+ 
+v
+e
+r
+s
+u
+s
+ 
+I
+P
+O
+ 
+p
+r
+i
+c
+e
+.
+<
+/
+l
+i
+>
+
+
+<
+l
+i
+>
+U
+s
+e
+ 
+S
+M
+A
+ 
+o
+f
+ 
+I
+P
+O
+ 
+n
+u
+m
+b
+e
+r
+ 
+t
+o
+ 
+e
+s
+t
+i
+m
+a
+t
+e
+ 
+t
+h
+e
+ 
+I
+P
+O
+ 
+t
+r
+e
+n
+d
+ 
+a
+n
+d
+ 
+m
+a
+r
+k
+e
+t
+ 
+p
+o
+p
+u
+l
+a
+r
+i
+t
+y
+.
+<
+/
+l
+i
+>
+
+
+<
+/
+u
+l
+>
+<h4>Classic Algorithm Example</h4><h4>Example 1: New Stock</h4>
+<p>The following example algorithm holds new stocks for its IPO day to capitalize its hype.</p>
+
+<div class="section-example-container">
+<pre class="python">class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
+    _universe = []
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000)
+
+        # Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
+        self.add_universe(EODHDUpcomingIPOs, self.selection)
+
+    def selection(self, ipos: List[EODHDUpcomingIPOs]) -&gt; List[Symbol]:
+        # Select the stocks that IPO starts today and traded in Nasdaq
+        self._universe = [x.symbol for x in ipos if x.ipo_date and x.ipo_date &lt;= self.time + timedelta(1) and x.exchange == Exchange.NASDAQ]
+        return self._universe
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Invest in new stocks and trade on their first day for their hype.
+        # Equally invest in each new stocks to evenly dissipate the capital risk.
+        self.set_holdings([PortfolioTarget(x, 0.5 / len(self._universe)) for x in self._universe])
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Liquidate the new stocks traded today/yesterday to capitalize the first-day hype.
+        for removed in changes.removed_securities:
+            self.liquidate(removed.symbol)</pre>
+<pre><code class="language-cs">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _universe = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
+        
+        // Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
+        AddUniverse&lt;EODHDUpcomingIPOs&gt;((ipos) =&gt; {
+            // Select the stocks that IPO starts today and traded in Nasdaq
+            _universe = (from EODHDUpcomingIPOs x in ipos
+                where x.IpoDate &lt;= Time.AddDays(1) && x.Exchange == Exchange.NASDAQ
+                select x.Symbol).ToList();
+            return _universe;
+        });
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Invest in new stocks and trade on their first day for their hype.
+        // Equally invest in each new stocks to evenly dissipate the capital risk.
+        var count = _universe.Count;
+        SetHoldings(_universe.Select(x =&gt; new PortfolioTarget(x, 0.5m / count)).ToList());
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Liquidate the new stocks traded today/yesterday to capitalize the first-day hype.
+        foreach (var removed in changes.RemovedSecurities)
+        {
+            Liquidate(removed.Symbol);
+        }
+    }
+}</code></pre>
+</div>
+
+<h4>Example 2: Market Popularity</h4>
+<p>The following example algorithm buy QQQ if the number of IPO in Nasdaq is in increasing trend, sell otherwise.</p>
+
+<div class="section-example-container">
+<pre class="python">class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 7, 1)
+        self.set_end_date(2022, 1, 1)
+        self.set_cash(100000)
+        # Create a EMA indicator to estimate the trend of IPO number to reflect the market popularity.
+        self._ema = ExponentialMovingAverage(50)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        # Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
+        self.add_universe(EODHDUpcomingIPOs, self.selection)
+        # Request QQQ data to trade.
+        self.qqq = self.add_equity("QQQ", Resolution.DAILY).symbol
+
+        self.set_warm_up(50, Resolution.DAILY)
+
+    def selection(self, ipos: List[EODHDUpcomingIPOs]) -&gt; List[Symbol]:
+        # Filter for the stocks that IPO starts today and traded in Nasdaq.
+        universe = [x.symbol for x in ipos if x.ipo_date and x.ipo_date &lt;= self.time + timedelta(1) and x.exchange == Exchange.NASDAQ]
+        # Feed to the EMA indicator.
+        self._ema.update(self.time, len(universe))
+        return Universe.UNCHANGED
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self._ema.is_ready:
+            # If the EMA is decreasing, we estimate the market popularity is decreasing, so we sell QQQ.
+            if self._ema.previous.value &gt; self._ema.current.value:
+                self.set_holdings(self.qqq, -1)
+            # Otherwise, we estimate the market popularity is increasing, so we buy QQQ.
+            else:
+                self.set_holdings(self.qqq, 1)</pre>
+<pre class="csharp">public class IndexOptionHandlingDataAlgorithm : QCAlgorithm
+{
+    // Create a EMA indicator to estimate the trend of IPO number to reflect the market popularity.
+    private ExponentialMovingAverage _ema = new(50);
+    private Symbol _qqq;
+        
+    public override void Initialize()
+    {        
+        SetStartDate(2021, 7, 1);
+        SetEndDate(2022, 1, 1);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
+        AddUniverse&lt;EODHDUpcomingIPOs&gt;(Selection);
+        // Request QQQ data to trade.
+        _qqq = AddEquity("QQQ", Resolution.Daily).Symbol;
+
+        SetWarmUp(50, Resolution.Daily);
+    }
+
+    private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;BaseData&gt; ipos)
+    {
+        // Filter for the stocks that IPO starts today and traded in Nasdaq.
+        var universeCount = ipos.Select(x =&gt; x as EODHDUpcomingIPOs)
+            .Where(x =&gt; x.IpoDate.HasValue &amp;&amp; x.IpoDate.Value &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ)
+            .Count();
+        _ema.Update(Time, Convert.ToDecimal(universeCount));
+        return Universe.Unchanged;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_ema.IsReady)
+        {
+            // If the EMA is decreasing, we estimate the market popularity is decreasing, so we sell QQQ.
+            if (_ema.Previous &gt; _ema)
+            {
+                SetHoldings(_qqq, -1m);
+            }
+            // Otherwise, we estimate the market popularity is increasing, so we buy QQQ.
+            else
+            {
+                SetHoldings(_qqq, 1m);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm holds new stocks for its IPO day to capitalize its hype using framework algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000)
+
+        # Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
+        self.add_universe(EODHDUpcomingIPOs, self.selection)
+
+        # Invest in new stocks and trade on their first day for their hype.
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
+
+        # Equally invest in each new stocks to evenly dissipate the capital risk.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_DAY))
+
+    def selection(self, ipos: List[EODHDUpcomingIPOs]) -&gt; List[Symbol]:
+        # Select the stocks that IPO starts today and traded in Nasdaq
+        return [x.symbol for x in ipos if x.ipo_date and x.ipo_date &lt;= self.time + timedelta(1) and x.exchange == Exchange.NASDAQ]
+</pre>
+<pre><code class="language-cs">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
+        
+        // Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
+        AddUniverse&lt;EODHDUpcomingIPOs&gt;((ipos) =&gt; {
+            // Select the stocks that IPO starts today and traded in Nasdaq
+            return (from EODHDUpcomingIPOs x in ipos
+                where x.IpoDate &lt;= Time.AddDays(1) && x.Exchange == Exchange.NASDAQ
+                select x.Symbol).ToList();
+        });
+        
+        // Invest in new stocks and trade on their first day for their hype.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+
+        // Equally invest in each new stocks to evenly dissipate the capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
+    }
+}</code></pre>
+</div>

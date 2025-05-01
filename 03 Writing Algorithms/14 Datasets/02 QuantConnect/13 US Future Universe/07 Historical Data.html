@@ -1,0 +1,51 @@
+<p>You can get historical US Future Universe data in an algorithm and the Research Environment.</p>
+
+<h4>Historical Data In Algorithms</h4>
+
+<p>To get historical US Future Universe data in an algorithm, call the <code class="csharp">History&lt;FutureUniverse&gt;</code><code class="python">history</code> method with continuous Future <code>Symbol</code> and a lookback period. This method returns the all the available contracts for each trading day, not the subset of contracts that pass your universe filter. If there is no data for the period you requested, the history result is empty.</p>
+
+<div class="section-example-container">
+<pre class="python"># Add the Future and save a reference to it.
+future = self.add_future(Futures.Metals.GOLD)
+
+# DataFrame example where the columns are the FutureUniverse attributes:
+history_df = self.history(FutureUniverse, future.symbol, 5, flatten=True)
+
+# Series example where the values are lists of FutureUniverse objects: 
+history_series = self.history(FutureUniverse, future.symbol, 5, flatten=False)
+
+# FutureUniverse objects example:
+history = self.history[FutureUniverse](future.symbol, 5)</pre>
+<pre class="csharp">// Add the Future and save a reference to it.
+var future = AddFuture(Futures.Metals.Gold);
+
+// Get historical data.
+var history = History&lt;FutureUniverse&gt;(future.Symbol, 5);</pre>
+</div>
+
+<p>For more information about historical US Future Universe data in algorithms, see <a href="/docs/v2/writing-algorithms/historical-data/asset-classes/futures#09-Contracts">Contracts</a>.
+
+<h4>Historical Data In Research</h4>
+
+<p>To get historical US Future Universe data in the Research Environment, call the <code class="csharp">History&lt;FutureUniverse&gt;</code><code class="python">history</code> method with continuous Future <code>Symbol</code> and a time period. This method returns the all the available contracts for each trading day, not the subset of contracts that pass your universe filter. If there is no data for the period you requested, the history result is empty.</p>
+
+<div class="section-example-container">
+<pre class="python"># Add the Future and save a reference to it.
+future = qb.add_future(Futures.Metals.GOLD)
+
+# DataFrame example where the columns are the FutureUniverse attributes:
+history_df = qb.history(FutureUniverse, future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1), flatten=True)
+
+# Series example where the values are lists of FutureUniverse objects: 
+history_series = qb.history(FutureUniverse, future.symbol, 5, flatten=False)
+
+# FutureUniverse objects example:
+history = qb.history[FutureUniverse](future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1))</pre>
+<pre class="csharp">// Add the Future and save a reference to it.
+var future = qb.AddFuture(Futures.Metals.Gold);
+
+// Get historical data.
+var history = qb.History&lt;FutureUniverse&gt;(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1));</pre>
+</div>
+
+<p>For more information about historical US Future Universe data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/futures/universes#05-Daily-Prices-History">Daily Prices History</a>.</p>

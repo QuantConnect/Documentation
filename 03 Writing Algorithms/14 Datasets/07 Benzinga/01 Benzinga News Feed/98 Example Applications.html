@@ -1,0 +1,318 @@
+<p>
+The Benzinga News Feed enables you to accurately design strategies harnessing real-time news releases. Examples include the following strategies:
+</p>
+<ul><li>Creating a dictionary of sentiment scores for various words and assigning a sentiment score to the content of each news release</li>
+<li>Calculating the sentiment of news releases with Natural Language Processing (NLP)</li>
+<li>Trading securities when their news releases that Benzinga tags with current buzzwords</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm parses the Benzinga news articles related to Apple. If the sentiment is positive, the algorithm buys Apple. Otherwise, it holds cash.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class BenzingaNewsDataAlgorithm(QCAlgorithm):
+
+    current_holdings = 0
+    target_holdings = 0
+    # A custom word-score map for calculating the total sentiment score
+    word_scores = {
+        'good': 1, 'great': 1, 'best': 1, 'growth': 1,
+        'bad': -1, 'terrible': -1, 'worst': -1, 'loss': -1}
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+        
+        # Requesting data to obtain the updated news for sentiment score calculation
+        self.aapl = self.add_equity("AAPL", Resolution.MINUTE).symbol
+        self.benzinga_symbol = self.add_data(BenzingaNews, self.aapl).symbol
+        
+        # Historical data
+        history = self.history(self.benzinga_symbol, 14, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request")
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        if slice.contains_key(self.benzinga_symbol):
+            # Assign a sentiment score to the news article by specific word appearance scoring
+            content_words = slice[self.benzinga_symbol].contents.lower()
+            score = 0
+            for word, word_score in self.word_scores.items():
+                score += (content_words.count(word) * word_score)
+            self.target_holdings = int(score &gt; 0)
+        
+        # Ensure we have AAPL data in the current Slice to avoid stale filling
+        if not (slice.contains_key(self.aapl) and slice[self.aapl] is not None and not slice[self.aapl].is_fill_forward):
+            return
+        
+        # Buy or sell if the sentiment has changed from our current holdings
+        if self.current_holdings != self.target_holdings:
+            self.set_holdings(self.aapl, self.target_holdings)
+            self.current_holdings = self.target_holdings</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class BenzingaNewsDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _aapl;
+        private Symbol _benzingaSymbol;
+        private int _currentHoldings = 0;
+        private int _targetHoldings = 0;
+        //  A custom word-score map for calculating the total sentiment score
+        private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
+            {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
+            {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
+        };
+        
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            
+            // Requesting data to obtain the updated news for sentiment score calculation
+            _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+            _benzingaSymbol = AddData&lt;BenzingaNews&gt;(_aapl).Symbol;
+            
+            // Historical data
+            var history = History&lt;BenzingaNews&gt;(_benzingaSymbol, 14, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+        }
+        
+        public override void OnData(Slice slice)
+        {
+            if (slice.ContainsKey(_benzingaSymbol))
+            {
+                // Assign a sentiment score to the news article by specific word appearance scoring
+                var contentWords = slice[_benzingaSymbol].Contents.ToLower();
+                var score = 0;
+                foreach (KeyValuePair&lt;string, int&gt; entry in _wordScores)
+                {
+                    score += (Regex.Matches(contentWords, entry.Key).Count * entry.Value);
+                }
+                _targetHoldings = Convert.ToInt32(score &gt; 0);
+            }
+            
+            // Ensure we have AAPL data in the current Slice to avoid stale filling
+            if (!(slice.ContainsKey(_aapl) &amp;&amp; slice[_aapl] != None &amp;&amp; !slice[_aapl].IsFillForward))
+            {
+                return;
+            }
+            
+            // Buy or sell if the sentiment has changed from our current holdings
+            if (_currentHoldings != _targetHoldings)
+            {
+                SetHoldings(_aapl, _targetHoldings);
+                _currentHoldings = _targetHoldings;
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm parses the Benzinga news articles related to Apple. If the sentiment is positive, the algorithm buys Apple. Otherwise, it holds cash.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class BenzingaNewsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+        
+        symbols = [ Symbol.create("AAPL", SecurityType.EQUITY, Market.USA) ]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))
+        
+        self.add_alpha(BenzingaNewsAlphaModel())
+        
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        
+        self.add_risk_management(NullRiskManagementModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+        
+            
+class BenzingaNewsAlphaModel(AlphaModel):
+    
+    symbol_data_by_symbol = {}
+    # A custom word-score map for calculating the total sentiment score
+    word_scores = {'good': 1, 'great': 1, 'best': 1, 'growth': 1,
+                   'bad': -1, 'terrible': -1, 'worst': -1, 'loss': -1}
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+        
+        for symbol, symbol_data in self.symbol_data_by_symbol.items():
+            if slice.contains_key(symbol_data.benzinga_symbol):
+                # Assign a sentiment score to the news article by specific word appearance scoring
+                content_words = slice[symbol_data.benzinga_symbol].contents.lower()
+                score = 0
+                for word, word_score in self.word_scores.items():
+                    score += (content_words.count(word) * word_score)
+                symbol_data.target_direction = InsightDirection.UP if score &gt; 0 else InsightDirection.FLAT
+        
+            # Ensure we have security data in the current Slice to avoid stale filling
+            if not (slice.contains_key(symbol) and slice[symbol] is not None and not slice[symbol].is_fill_forward):
+                continue
+        
+            # Buy or sell if the sentiment has changed from our current holdings
+            if symbol_data.current_direction != symbol_data.target_direction:
+                symbol_data.current_direction = symbol_data.target_direction
+                insights.append(Insight.price(symbol, timedelta(days=14), symbol_data.target_direction))
+        
+        return insights
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            self.symbol_data_by_symbol[symbol] = SymbolData(algorithm, symbol)
+        
+        for security in changes.removed_securities:
+            symbol_data = self.symbol_data_by_symbol.pop(security.symbol, None)
+            if symbol_data:
+                symbol_data.dispose()
+            
+class SymbolData:
+    
+    current_direction = InsightDirection.FLAT
+    target_direction = InsightDirection.FLAT
+    
+    def __init__(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
+        self.algorithm = algorithm
+        
+        # Requesting data to obtain the updated news for sentiment score calculation
+        self.benzinga_symbol = algorithm.add_data(BenzingaNews, symbol).symbol
+        
+        # Historical data
+        history = algorithm.history(self.benzinga_symbol, 14, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} items from our history request")
+        
+    def dispose(self) -&gt; None:
+        # Unsubscribe from Benzinga news feed for this security to release computational resources
+        self.algorithm.remove_security(self.benzinga_symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class BenzingaNewsDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            
+            AddUniverseSelection(
+                new ManualUniverseSelectionModel(
+                    QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)
+            ));
+            
+            AddAlpha(new BenzingaAlphaModel());
+            
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+    
+    public class BenzingaAlphaModel : AlphaModel
+    {
+        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+        // A custom word-score map for calculating the total sentiment score
+        private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
+            {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
+            {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
+        };
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+            
+            foreach (var kvp in _symbolDataBySymbol)
+            {
+                var symbol = kvp.Key;
+                var symbolData = kvp.Value;
+                
+                if (slice.ContainsKey(symbolData.benzingaSymbol))
+                {
+                    // Assign a sentiment score to the news article by specific word appearance scoring
+                    var contentWords = slice[symbolData.benzingaSymbol].Contents.ToLower();
+                    var score = 0;
+                    foreach (var entry in _wordScores)
+                    {
+                        score += (Regex.Matches(contentWords, entry.Key).Count * entry.Value);
+                    }
+                    symbolData.targetDirection = score &gt; 0 ? InsightDirection.Up : InsightDirection.Flat;
+                }
+                
+                
+                // Ensure we have security data in the current Slice to avoid stale filling
+                if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None &amp;&amp; !slice[symbol].IsFillForward))
+                {
+                    continue;
+                }
+                
+                // Buy or sell if the sentiment has changed from our current holdings
+                if (symbolData.currentDirection != symbolData.targetDirection)
+                {
+                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(14), symbolData.targetDirection));
+                    symbolData.currentDirection = symbolData.targetDirection;
+                }
+            }
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                var symbol = security.Symbol;
+                _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
+            }
+
+            foreach (var security in changes.RemovedSecurities)
+            {
+                var symbol = security.Symbol;
+                if (_symbolDataBySymbol.ContainsKey(symbol))
+                {
+                    _symbolDataBySymbol[symbol].dispose();
+                    _symbolDataBySymbol.Remove(symbol);
+                }
+            }
+        }
+    }
+    
+    
+    public class SymbolData
+    {
+        private QCAlgorithm _algorithm;
+        public Symbol benzingaSymbol;
+        public InsightDirection currentDirection = InsightDirection.Flat;
+        public InsightDirection targetDirection = InsightDirection.Flat;
+        
+        
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+        {
+            _algorithm = algorithm;
+            
+            // Requesting data to obtain the updated news for sentiment score calculation
+            benzingaSymbol = algorithm.AddData&lt;BenzingaNews&gt;(symbol).Symbol;
+            
+            // Historical data
+            var history = algorithm.History&lt;BenzingaNews&gt;(benzingaSymbol, 14, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request");
+        }
+        
+        public void dispose()
+        {
+            // Unsubscribe from the Benzinga feed for this security to release computational resources
+            _algorithm.RemoveSecurity(benzingaSymbol);
+        }
+    }
+}</pre>
+</div>

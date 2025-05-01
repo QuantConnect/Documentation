@@ -1,0 +1,402 @@
+<p>
+The Brain ML Stock Ranking dataset enables you to test strategies using the machine learning ranking provided by Brain. Examples include the following strategies:
+</p>
+<ul><li>Constructing a portfolio of securities with each security's weight in the portfolio reflecting its Brain ML Stock Ranking</li>
+<li>Buying stocks with the largest Brain ML Stock Ranking</li>
+<li>Building a market-neutral strategy based on the top N and bottom N stocks in the Brain ML Stock Ranking</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm constructs a portfolio where the weight of each security in the portfolio is scaled based on its Brain ML Ranking. It gives a larger allocation to securities that have a higher Brain ML Ranking.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class BrainMLRankingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 8)
+        self.set_cash(100000) 
+        
+        # We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
+        tickers = ["AAPL", "TSLA", "MSFT", "F", "KO"]
+        self.symbol_by_dataset_symbol = {}
+        for ticker in tickers:
+            # Requesting data to get 2 days estimated relative ranking
+            symbol = self.add_equity(ticker, Resolution.DAILY).symbol
+            dataset_symbol = self.add_data(BrainStockRanking2Day, symbol).symbol
+            self.symbol_by_dataset_symbol[dataset_symbol] = symbol
+            
+            # Historical data
+            history = self.history(dataset_symbol, 365, Resolution.DAILY)
+            self.debug(f"We got {len(history)} items from our history request for {symbol}")
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        # Collect rankings for all selected symbols for ranking them
+        points = slice.Get(BrainStockRanking2Day)
+        if points is None:
+            return
+        symbols = []
+        ranks = []
+        for point in points.Values:
+            symbols.append(self.symbol_by_dataset_symbol[point.symbol])
+            ranks.append(point.rank)
+        
+        # Rank each symbol's Brain ML ranking relative to each other for positional sizing
+        if len(ranks) == 0:
+            return
+        ranks = [sorted(ranks).index(rank) + 1 for rank in ranks]
+        
+        # Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight
+        for i, rank in enumerate(ranks):
+            weight = rank / sum(ranks)
+            self.set_holdings(symbols[i], weight)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class BrainMLRankingDataAlgorithm : QCAlgorithm
+    {
+        private Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+        
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 7, 8);
+            SetCash(100000);
+            
+            // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
+            var tickers = new List&lt;string&gt;() {"AAPL", "TSLA", "MSFT", "F", "KO"};
+            foreach (var ticker in tickers)
+            {
+                // Requesting data to get 2 days estimated relative ranking
+                var symbol = AddEquity(ticker, Resolution.Daily).Symbol;
+                var datasetSymbol = AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
+                _symbolByDatasetSymbol.Add(datasetSymbol, symbol);
+                
+                // Historical data
+                var history = History&lt;BrainStockRanking2Day&gt;(datasetSymbol, 365, Resolution.Daily);
+                Debug($"We got {history.Count()} items from our history request for {symbol}");
+            }
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Collect rankings for all symbols for ranking them
+            var points = slice.Get&lt;BrainStockRanking2Day&gt;();
+            if (points == None)
+            {
+                return;
+            }
+            var symbols = new List&lt;Symbol&gt;();
+            var ranks = new List&lt;decimal&gt;();
+            foreach (var point in points.Values)
+            {
+                symbols.Add(_symbolByDatasetSymbol[point.Symbol]);
+                ranks.Add(point.Rank);
+            }
+            
+            // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing
+            if (ranks.Count() == 0) return;
+            var sortedRanksTemp = new List&lt;decimal&gt;(ranks); 
+            sortedRanksTemp.Sort();
+            var sortedRanks = new List&lt;decimal&gt;();
+            for (var i = 0; i &lt; symbols.Count(); i++)
+            {
+                sortedRanks.Add(sortedRanksTemp.IndexOf(ranks[i]) + 1);
+            }
+            
+            // Place orders, the better the rank, the higher the estimated return and hence weight
+            for (var i = 0; i &lt; symbols.Count(); i++)
+            {
+                var rank = sortedRanks[i];
+                var weight = rank / sortedRanks.Sum();
+                SetHoldings(symbols[i], weight);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm constructs a portfolio where the weight of each security in the portfolio is scaled based on its Brain ML Ranking. It gives a larger allocation to securities that have a higher Brain ML Ranking.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class BrainMLRankingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 8)
+        self.set_cash(100000) 
+        
+        self.universe_settings.resolution = Resolution.DAILY
+        # Select based on ML ranking data
+        self.add_universe(BrainStockRankingUniverse, self.universe_selection)
+        
+        self.add_alpha(BrainMLRankingAlphaModel())
+        
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+         
+        self.add_risk_management(NullRiskManagementModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+
+    def universe_selection(self, alt_coarse: List[BrainStockRankingUniverse]) -&gt; List[Symbol]:
+        # Select the ones that expected to out-perform the median of the whole market in 2-3 days
+        return [d.symbol for d in alt_coarse \
+                if d.Rank2Days &gt; 0.2  \
+                and d.Rank3Days &gt; 0.2]
+
+class BrainMLRankingAlphaModel(AlphaModel):
+    
+    symbol_data_by_symbol = {}
+    symbol_by_dataset_symbol = {}
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+        
+        # Collect rankings for all selected symbols for ranking them
+        points = slice.Get(BrainStockRanking2Day)
+        if points is None:
+            return []
+        symbols = []
+        ranks = []
+        for point in points.Values:
+            symbols.append(self.symbol_by_dataset_symbol[point.symbol])
+            ranks.append(point.rank)
+        
+        # Rank each symbol's Brain ML ranking relative to each other for positional sizing
+        if len(ranks) == 0:
+            return []
+        ranks = [sorted(ranks).index(rank) + 1 for rank in ranks]
+        
+        # Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight
+        for i, rank in enumerate(ranks):
+            weight = rank / sum(ranks)
+            insights.append(Insight.price(symbols[i], timedelta(days=7), InsightDirection.UP, None, None, None, weight))
+        
+        return insights
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            symbol_data = SymbolData(algorithm, symbol)
+            self.symbol_data_by_symbol[symbol] = symbol_data
+            self.symbol_by_dataset_symbol[symbol_data.dataset_symbol] = symbol
+        
+        for security in changes.removed_securities:
+            symbol_data = self.symbol_data_by_symbol.pop(security.symbol, None)
+            if symbol_data:
+                symbol_data.dispose()
+                
+            for dataset_symbol, symbol in self.symbol_by_dataset_symbol.items():
+                if symbol == security.symbol:
+                    self.symbol_by_dataset_symbol.pop(dataset_symbol)
+                    break
+
+
+class SymbolData:
+    def __init__(self, algorithm, symbol):
+        self.algorithm = algorithm
+        
+        # Requesting data to get 2 days estimated relative ranking
+        self.dataset_symbol = algorithm.add_data(BrainStockRanking2Day, symbol).symbol
+        
+        # Historical data
+        history = algorithm.history(self.dataset_symbol, 365, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} items from our history request for {symbol}")
+        
+    def dispose(self):
+        # Unsubscribe from the Brain ML Ranking feed for this security to release computation resources
+        self.algorithm.remove_security(self.dataset_symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class BrainMLRankingDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 7, 8);
+            SetCash(100000);
+            
+            // Select based on ML ranking data
+            AddUniverse&lt;BrainStockRankingUniverse&gt;(altCoarse =&gt;
+            {
+                // Select the ones that expected to out-perform the median of the whole market in 2-3 days
+                return from d in altCoarse.OfType&lt;BrainStockRankingUniverse&gt;() 
+                    where d.Rank2Days &gt; 0.2m &amp;&amp; d.Rank3Days &gt; 0.2m
+                    select d.Symbol;
+            });
+            
+            AddAlpha(new BrainMLRankingAlphaModel());
+            
+            SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+        
+        
+    public class BrainMLRankingAlphaModel : AlphaModel
+    {
+        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+        private Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+            
+            // Collect rankings for all selected symbols for ranking them
+            var points = slice.Get&lt;BrainStockRanking2Day&gt;();
+            if (points == None)
+            {
+                return insights;
+            }
+            var symbols = new List&lt;Symbol&gt;();
+            var ranks = new List&lt;decimal&gt;();
+            foreach (var point in points.Values)
+            {
+                symbols.Add(_symbolByDatasetSymbol[point.Symbol]);
+                ranks.Add(point.Rank);
+            }
+            
+            // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing
+            if (ranks.Count() == 0) 
+            {
+                return insights; 
+            }
+            var sortedRanksTemp = new List&lt;decimal&gt;(ranks); 
+            sortedRanksTemp.Sort();
+            var sortedRanks = new List&lt;decimal&gt;();
+            for (var i = 0; i &lt; symbols.Count(); i++)
+            {
+                sortedRanks.Add(sortedRanksTemp.IndexOf(ranks[i]) + 1);
+            }
+            
+            // Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight
+            for (var i = 0; i &lt; symbols.Count(); i++)
+            {
+                var rank = sortedRanks[i];
+                var weight = rank / sortedRanks.Sum();
+                insights.Add(Insight.Price(symbols[i], TimeSpan.FromDays(7), InsightDirection.Up, None, None, None, (double)weight));
+            }
+            
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                var symbol = security.Symbol;
+                var symbolData = new SymbolData(algorithm, symbol);
+                _symbolDataBySymbol.Add(symbol, symbolData);
+                _symbolByDatasetSymbol.Add(symbolData.datasetSymbol, symbol);
+            }
+
+            foreach (var security in changes.RemovedSecurities)
+            {
+                var symbol = security.Symbol;
+                if (_symbolDataBySymbol.ContainsKey(symbol))
+                {
+                    _symbolDataBySymbol[symbol].dispose();
+                    _symbolDataBySymbol.Remove(symbol);
+                }
+                
+                foreach (var entry in _symbolByDatasetSymbol)
+                {
+                    if (entry.Value == symbol)
+                    {
+                        _symbolByDatasetSymbol.Remove(entry.Key);
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    public class SymbolData
+    {
+        private QCAlgorithm _algorithm;
+        public Symbol datasetSymbol;
+
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+        {
+            _algorithm = algorithm;
+            
+            // Requesting data to get 2 days estimated relative ranking
+            datasetSymbol = algorithm.AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
+            
+            // Historical data
+            var history = algorithm.History&lt;BrainStockRanking2Day&gt;(datasetSymbol, 365, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol}");
+        }
+        
+        public void dispose()
+        {
+            // Unsubscribe from the Brain ML Ranking feed for this security to release computation resources
+            _algorithm.RemoveSecurity(datasetSymbol);
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists US Equities having the highest 2-day rank.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.BrainSentiment.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Requesting data
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol;
+var symbol = qb.AddData&lt;BrainStockRanking2Day&gt;(aapl).Symbol;
+
+// Historical data
+var history = qb.History&lt;BrainStockRanking2Day&gt;(symbol, 30, Resolution.Daily);
+foreach (BrainStockRanking2Day rank in history)
+{
+    Console.WriteLine($"{rank} at {rank.EndTime}");
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return (from d in altCoarse.OfType&lt;BrainStockRankingUniverse&gt;()
+        orderby d.Rank2Days descending select d.Symbol).Take(10);
+}
+var universe = qb.AddUniverse&lt;BrainStockRankingUniverse&gt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);
+foreach (var ranks in universeHistory)
+{
+    foreach (BrainStockRankingUniverse rank in ranks)
+    {
+        Console.WriteLine($"{rank.Symbol} 2-day rank at {rank.EndTime}: {rank.Rank2Days}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Requesting Data
+aapl = qb.add_equity("AAPL", Resolution.DAILY).symbol
+symbol = qb.add_data(BrainStockRanking2Day, aapl).symbol
+
+# Historical data
+history = qb.history(BrainStockRanking2Day, symbol, 30, Resolution.DAILY)
+for (symbol, time), row in history.iterrows():
+    print(f"{symbol} rank at {time}: {row['rank']}")
+
+# Add Universe Selection
+def universe_selection(alt_coarse: List[BrainStockRankingUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in sorted(alt_coarse, key=lambda x: x.Rank2Days, reverse=True)[:10]]
+
+universe = qb.add_universe(BrainStockRankingUniverse, universe_selection)
+
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(5), qb.time)
+for (_, time), ranks in universe_history.items():
+    for rank in ranks:
+        print(f"{rank.symbol} 2-day rank at {rank.end_time}: {rank.Rank2Days}")</pre>
+</div>

@@ -1,0 +1,283 @@
+<p>
+The CFD price data enables you to trade CFD assets in your algorithm. Examples include the following strategies:</p>
+<ul><li>Exploring the daily worldwide news cycles with CFDs that track international indices.</li>
+<li>Trading price movements of commodities with no delivery of physical goods. For example, pairs trading between gold and silver, corn and wheat, brent and crude oil, etc.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm implements a pairs trading strategy using Gold and Silver CFDs, XAUUSD and XAGUSD, respectively. When the spread is higher than one standard deviation above its mean, the algorithm buys the spread (buy XAUUSD and sell XAGUSD). When the spread is lower than one standard deviation below its mean, it sells the spread (buy XAGUSD and sell XAUUSD).</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class SMAPairsTrading(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 7, 1)   
+        self.set_end_date(2019, 3, 31)
+        self.set_cash(100000)
+
+        # Request gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
+        self.add_cfd('XAUUSD', Resolution.HOUR)
+        self.add_cfd('XAGUSD', Resolution.HOUR)
+
+        # Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
+        self.pair = [ ]
+        self.spread_mean = SimpleMovingAverage(500)
+        self.spread_std = StandardDeviation(500)
+        
+    def on_data(self, slice: Slice) -&gt; None:
+        # Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
+        spread = self.pair[1].price - self.pair[0].price
+        self.spread_mean.update(self.time, spread)
+        self.spread_std.update(self.time, spread) 
+        
+        spread_mean = self.spread_mean.current.value
+        upperthreshold = spread_mean  + self.spread_std.current.value
+        lowerthreshold = spread_mean  - self.spread_std.current.value
+
+        # If the spread is higher than upper threshold, bet their spread series will revert to mean
+        if spread &gt; upperthreshold:
+            self.set_holdings(self.pair[0].symbol, 1)
+            self.set_holdings(self.pair[1].symbol, -1)
+        elif spread &lt; lowerthreshold:
+            self.set_holdings(self.pair[0].symbol, -1)
+            self.set_holdings(self.pair[1].symbol, 1)
+        # Close positions if mean reverted
+        elif (self.portfolio[self.pair[0].symbol].quantity &gt; 0 and spread &lt; spread_mean)\
+        or (self.portfolio[self.pair[0].symbol].quantity &lt; 0 and spread &gt; spread_mean):
+            self.liquidate()
+    
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        self.pair = [x for x in changes.added_securities]
+        
+        #1. Call for 500 bars of history data for each symbol in the pair and save to the variable history
+        history = self.history([x.symbol for x in self.pair], 500)
+        #2. Unstack the Pandas data frame to reduce it to the history close price
+        history = history.close.unstack(level=0)
+        #3. Iterate through the history tuple and update the mean and standard deviation with historical data 
+        for tuple in history.itertuples():
+            self.spread_mean.update(tuple[0], tuple[2]-tuple[1])
+            self.spread_std.update(tuple[0], tuple[2]-tuple[1])
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class GoldSilverPairsTradingAlgorithm : QCAlgorithm
+    {
+        // Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
+        private SimpleMovingAverage _spreadMean = new SimpleMovingAverage(500);
+        private StandardDeviation _spreadStd = new StandardDeviation(500);
+        private Security[] _pair = new Security[2];
+
+        public override void Initialize()
+        {
+            SetStartDate(2018, 7, 1);  
+            SetEndDate(2019, 3, 31);  
+            SetCash(100000);  
+
+            // Request gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
+            AddCfd("XAUUSD", Resolution.Hour);
+            AddCfd("XAGUSD", Resolution.Hour);
+        }
+
+        public override void OnData(Slice slice) 
+        {
+            // Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
+            var spread = _pair[1].Price - _pair[0].Price;
+            _spreadMean.Update(Time, spread);
+            _spreadStd.Update(Time, spread);
+            
+            var upperthreshold = _spreadMean + _spreadStd;
+            var lowerthreshold = _spreadMean - _spreadStd;
+            
+            // If the spread is higher than upper threshold, bet their spread series will revert to mean
+            if (spread &gt; upperthreshold)
+            {
+                SetHoldings(_pair[0].Symbol, 1);
+                SetHoldings(_pair[1].Symbol, -1);
+            }
+            else if (spread &lt; lowerthreshold)
+            {
+                SetHoldings(_pair[0].Symbol, -1);
+                SetHoldings(_pair[1].Symbol, 1);
+            }
+            // Close positions if mean reverted
+            else if ((Portfolio[_pair[0].Symbol].Quantity &gt; 0m &amp;&amp; spread &lt; _spreadMean)
+            || (Portfolio[_pair[0].Symbol].Quantity &lt; 0m &amp;&amp; spread &gt; _spreadMean))
+            {
+                Liquidate();
+            }
+        }
+        
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {    
+            _pair = changes.AddedSecurities.ToArray();
+            
+            //1. Call for 500 days of history data for each symbol in the pair and save to the variable history
+            var history = History(_pair.Select(x =&gt; x.Symbol), 500);
+            
+            //2. Iterate through the history tuple and update the mean and standard deviation with historical data 
+            foreach(var slice in history)
+            {
+                var spread = slice[_pair[1].Symbol].Close - slice[_pair[0].Symbol].Close;
+                _spreadMean.Update(slice.Time, spread);
+                _spreadStd.Update(slice.Time, spread);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm implements a pairs trading strategy using Gold and Silver CFDs, XAUUSD and XAGUSD, respectively. When the spread is higher than one standard deviation above its mean, the algorithm buys the spread (buy XAUUSD and sell XAGUSD). When the spread is lower than one standard deviation below its mean, it sells the spread (buy XAGUSD and sell XAUUSD).</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class GoldSilverPairsTradingAlgorithm (QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 7, 1)   
+        self.set_end_date(2019, 3, 31)
+        self.set_cash(100000)
+        
+        self.universe_settings.resolution = Resolution.HOUR
+        # Custom universe contains only gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
+        self.set_universe_selection(ManualUniverseSelectionModel
+        (
+            [ Symbol.create(x, SecurityType.CFD, Market.OANDA) for x in ["XAUUSD", "XAGUSD"] ]
+        ))
+        # Custom alpha model to emit trade insights based on the gold-sliver price spread
+        self.add_alpha(PairsTradingAlphaModel())
+        # Equal weighting trades assuming the spread is cointegrated by 1:1 ratio
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+class PairsTradingAlphaModel(AlphaModel):
+
+    def __init__(self) -&gt; None:
+        # Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
+        self.pair = [ ]
+        self.spread_mean = SimpleMovingAverage(500)
+        self.spread_std = StandardDeviation(500)
+        # Assume efficient mean reversal happens within 2 hours
+        self.period = timedelta(hours=2)
+        
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
+        spread = self.pair[1].price - self.pair[0].price
+        self.spread_mean.update(algorithm.time, spread)
+        self.spread_std.update(algorithm.time, spread) 
+        
+        upperthreshold = self.spread_mean.current.value + self.spread_std.current.value
+        lowerthreshold = self.spread_mean.current.value - self.spread_std.current.value
+
+        # If the spread is higher than upper threshold, bet their spread series will revert to mean
+        if spread &gt; upperthreshold:
+            return Insight.group(
+                [
+                    Insight.price(self.pair[0].symbol, self.period, InsightDirection.UP),
+                    Insight.price(self.pair[1].symbol, self.period, InsightDirection.DOWN)
+                ])
+        elif spread &lt; lowerthreshold:
+            return Insight.group(
+                [
+                    Insight.price(self.pair[0].symbol, self.period, InsightDirection.DOWN),
+                    Insight.price(self.pair[1].symbol, self.period, InsightDirection.UP)
+                ])
+
+        return []
+    
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        self.pair = [x for x in changes.added_securities]
+        
+        #1. Call for 500 bars of history data for each symbol in the pair and save to the variable history
+        history = algorithm.history([x.symbol for x in self.pair], 500)
+        #2. Unstack the Pandas data frame to reduce it to the history close price
+        history = history.close.unstack(level=0)
+        #3. Iterate through the history tuple and update the mean and standard deviation with historical data 
+        for tuple in history.itertuples():
+            self.spread_mean.update(tuple[0], tuple[2]-tuple[1])
+            self.spread_std.update(tuple[0], tuple[2]-tuple[1])
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class GoldSilverPairsTradingAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2018, 7, 1);  
+            SetEndDate(2019, 3, 31);  
+            SetCash(100000);  
+
+            UniverseSettings.Resolution = Resolution.Hour;
+            // Custom universe contains only gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
+            SetUniverseSelection(new ManualUniverseSelectionModel
+            (
+                new [] {"XAUUSD", "XAGUSD"}
+                    .Select(x =&gt; QuantConnect.Symbol.Create(x, SecurityType.Cfd, Market.Oanda))
+            ));
+            // Custom alpha model to emit trade insights based on the gold-sliver price spread
+            AddAlpha(new PairsTradingAlphaModel());
+            // Equal weighting trades assuming the spread is cointegrated by 1:1 ratio
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel()); 
+        }
+    }
+    
+    public partial class PairsTradingAlphaModel : AlphaModel
+    {
+        // Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
+        private SimpleMovingAverage _spreadMean = new SimpleMovingAverage(500);
+        private StandardDeviation _spreadStd = new StandardDeviation(500);
+        // Assume efficient mean reversal happens within 2 hours
+        private TimeSpan _period = TimeSpan.FromHours(2);
+        private Security[] _pair = new Security[2];
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice) 
+        {
+            // Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
+            var spread = _pair[1].Price - _pair[0].Price;
+            _spreadMean.Update(algorithm.Time, spread);
+            _spreadStd.Update(algorithm.Time, spread);
+            
+            var upperthreshold = _spreadMean + _spreadStd;
+            var lowerthreshold = _spreadMean - _spreadStd;
+
+            // If the spread is higher than upper threshold, bet their spread series will revert to mean
+            if (spread &gt; upperthreshold)
+            {
+                return Insight.Group( 
+                    Insight.Price(_pair[0].Symbol, _period, InsightDirection.Up),
+                    Insight.Price(_pair[1].Symbol, _period, InsightDirection.Down)
+                );
+            }
+            else if (spread &lt; lowerthreshold)
+            {
+                return Insight.Group( 
+                    Insight.Price(_pair[0].Symbol, _period, InsightDirection.Down), 
+                    Insight.Price(_pair[1].Symbol, _period, InsightDirection.Up) 
+                );
+            }
+
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+        
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {    
+            _pair = changes.AddedSecurities.ToArray();
+            
+            //1. Call for 500 days of history data for each symbol in the pair and save to the variable history
+            var history = algorithm.History(_pair.Select(x =&gt; x.Symbol), 500);
+            
+            //2. Iterate through the history tuple and update the mean and standard deviation with historical data 
+            foreach (var slice in history)
+            {
+                var spread = slice[_pair[1].Symbol].Close - slice[_pair[0].Symbol].Close;
+                _spreadMean.Update(slice.Time, spread);
+                _spreadStd.Update(slice.Time, spread);
+            }
+        }
+    }
+}
+</pre>
+</div>

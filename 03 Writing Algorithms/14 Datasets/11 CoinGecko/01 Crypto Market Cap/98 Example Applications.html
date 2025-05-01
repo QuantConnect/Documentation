@@ -1,0 +1,306 @@
+<p>
+The CoinGecko Crypto Market Cap dataset provide information on the size of the crypto coin and can be used to compare the size of one coin to another. Examples include the following strategies: 
+</p>
+
+<ul><li>Construct a major crypto index fund.</li>
+<li>Invest on the cryptos with the fastest growth in market size.</li>
+<li>Red flag stop when there might be a crypto bank run.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buy BTCUSD when the market cap of BTC is rising, while sell it when the market cap of BTC is dropping.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class CoinGeckoAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 4, 4)   # Set Start Date
+        self.set_end_date(2018, 4, 6)    # Set End Date
+
+        # Request BTCUSD crypto data for trading
+        self.crypto_symbol = self.add_crypto("BTCUSD").symbol
+        # Request CoinGecko Market Cap data of BTC for trade signal generation
+        self.custom_data_symbol = self.add_data(CoinGecko, "BTC").symbol
+        # Use RollingWindow to save the last 2 market cap data for capital flow analysis
+        self.window = RollingWindow[CoinGecko](2)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade based on updated market cap data
+        data = slice.get(CoinGecko)
+        if data and self.custom_data_symbol in data:
+            # Update RollingWindow for updated comparison
+            self.window.add(data[self.custom_data_symbol])
+            if not self.window.is_ready:
+                return
+
+            # Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
+            if self.window[0].market_cap &gt; self.window[1].market_cap:
+                self.set_holdings(self.crypto_symbol, 1)
+            # Sell otherwise, since the capital is flowing out and the demand of BTC lowered
+            else:
+                self.set_holdings(self.crypto_symbol, -1)
+
+    def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
+        if orderEvent.status == OrderStatus.FILLED:
+            self.debug(f'Purchased Stock: {orderEvent.symbol}')</pre>
+<pre class="csharp">using QuantConnect.Data;
+using QuantConnect.Util;
+using QuantConnect.Orders;
+using QuantConnect.Algorithm;
+using QuantConnect.Indicators;
+using QuantConnect.DataSource;
+
+namespace QuantConnect.DataLibrary.Tests
+{
+    public class CoinGeckoAlgorithm : QCAlgorithm
+    {
+        private Symbol _cryptoSymbol;
+        private Symbol _customDataSymbol;
+        private RollingWindow&lt;CoinGecko&gt; _window;
+
+        public override void Initialize()
+        {
+            SetStartDate(2018, 4, 4);  //Set Start Date
+            SetEndDate(2018, 4, 6);    //Set End Date
+
+            // Request BTCUSD crypto data for trading
+            _cryptoSymbol = AddCrypto("BTCUSD").Symbol;
+            // Request CoinGecko Market Cap data of BTC for trade signal generation
+            _customDataSymbol = AddData&lt;CoinGecko&gt;("BTC").Symbol;
+            // Use RollingWindow to save the last 2 market cap data for capital flow analysis
+            _window = new RollingWindow&lt;CoinGecko&gt;(2);
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Trade based on updated market cap data
+            var data = slice.Get&lt;CoinGecko&gt;();
+            if (!data.IsNullOrEmpty() &amp;&amp; data.ContainsKey(_customDataSymbol))
+            {
+                // Update RollingWindow for updated comparison
+                _window.Add(data[_customDataSymbol]);
+                if (!_window.IsReady)
+                {
+                    return;
+                }
+
+                // Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
+                if (_window[0].MarketCap &gt; _window[1].MarketCap)
+                {
+                    SetHoldings(_cryptoSymbol, 1);
+                }
+                // Sell otherwise, since the capital is flowing out and the demand of BTC lowered
+                else
+                {
+                    SetHoldings(_cryptoSymbol, -1);
+                }
+            }
+        }
+
+        public override void OnOrderEvent(OrderEvent orderEvent)
+        {
+            if (orderEvent.Status.IsFill())
+            {
+                Debug($"Purchased Stock: {orderEvent.Symbol}");
+            }
+        }
+    }
+}
+</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm buy BTCUSD when the market cap of BTC is rising, while sell it when the market cap of BTC is dropping with framework implementation.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class CoinGeckoAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 4, 4)   # Set Start Date
+        self.set_end_date(2018, 4, 6)    # Set End Date
+
+        # Request CoinGecko Market Cap data of BTC for trade signal generation
+        symbol = self.add_data(CoinGecko, "BTC").symbol
+        # Request BTCUSD crypto data for trading
+        crypto = self.add_crypto("BTCUSD", market=Market.COINBASE).symbol
+        symbol_dict = {symbol: crypto}
+        # Use RollingWindow to save the last 2 market cap data for capital flow analysis
+        window = {symbol: RollingWindow[CoinGecko](2)}
+
+        # Custom alpha model that emit insights based on updated market cap data
+        self.add_alpha(CoinGeckoAlphaModel(symbol_dict, window))
+        # Equal invest to evenly dissipate capital concentration risk from non-systematic individual risky event
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+class CoinGeckoAlphaModel(AlphaModel):
+
+    def __init__(self, symbol_dict: Dict[Symbol, Symbol], window: Dict[Symbol, RollingWindow[CoinGecko]]) -&gt; None:
+        self.symbol_dict = symbol_dict
+        self.window = window
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        # Trade based on updated market cap data
+        data = slice.Get(CoinGecko)
+        for dataset_symbol, crypto_symbol in self.symbol_dict.items():
+            if not data.contains_key(dataset_symbol): 
+                continue
+
+            # Update RollingWindow for updated comparison
+            self.window[dataset_symbol].add(data[dataset_symbol])
+
+            # Can only compare market cap if the RollingWindow is ready
+            window = self.window[dataset_symbol]
+            if not window.is_ready: 
+                continue
+
+            # Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
+            if window[0].market_cap &gt; window[1].market_cap:
+                insight = Insight.price(crypto_symbol, timedelta(1), InsightDirection.UP)
+                insights.append(insight)
+            # Sell otherwise, since the capital is flowing out and the demand of BTC lowered
+            else:
+                insight = Insight.price(crypto_symbol, timedelta(1), InsightDirection.DOWN)
+                insights.append(insight)
+        
+        return insights</pre>
+<pre class="csharp">using System;
+using System.Collections.Generic;
+using QuantConnect.Algorithm.Framework.Alphas;
+using QuantConnect.Algorithm.Framework.Portfolio;
+using QuantConnect.Algorithm.Framework.Execution;
+using QuantConnect.Indicators;
+using QuantConnect.Data;
+using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class CoinGeckoAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2018, 4, 4);  //Set Start Date
+            SetEndDate(2018, 4, 6);    //Set End Date
+
+            // Request CoinGecko Market Cap data of BTC for trade signal generation
+            var symbol = AddData&lt;CoinGecko&gt;("BTC").Symbol;
+            // Request BTCUSD crypto data for trading
+            var crypto = AddCrypto("BTCUSD", market: Market.Coinbase).Symbol;
+            var symbolDict = new Dictionary&lt;Symbol, Symbol&gt; { {symbol, crypto} };
+            // Use RollingWindow to save the last 2 market cap data for capital flow analysis
+            var window = new Dictionary&lt;Symbol, RollingWindow&lt;CoinGecko&gt;&gt;{ {symbol, new RollingWindow&lt;CoinGecko&gt;(2)} };
+
+            // Custom alpha model that emit insights based on updated market cap data
+            AddAlpha(new CoinGeckoAlphaModel(symbolDict, window));
+            // Equal invest to evenly dissipate capital concentration risk from non-systematic individual risky event
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+    }
+
+    public class CoinGeckoAlphaModel : AlphaModel
+    {
+        private Dictionary&lt;Symbol, Symbol&gt; _symbolDict = new();
+        private Dictionary&lt;Symbol, RollingWindow&lt;CoinGecko&gt;&gt; _window = new();
+
+        public CoinGeckoAlphaModel(Dictionary&lt;Symbol, Symbol&gt; symbolDict, Dictionary&lt;Symbol, RollingWindow&lt;CoinGecko&gt;&gt; window)
+        {
+            _symbolDict = symbolDict;
+            _window = window;
+        }
+
+        public override List&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            // Trade based on updated market cap data
+            var data = slice.Get&lt;CoinGecko&gt;();
+
+            foreach (var kvp in _symbolDict)
+            {
+                var datasetSymbol = kvp.Key;
+                var cryptoSymbol = kvp.Value;
+
+                if (!data.ContainsKey(kvp.Key)) continue;
+                // Update RollingWindow for updated comparison
+                _window[datasetSymbol].Add(data[datasetSymbol]);
+
+                // Can only compare market cap if the RollingWindow is ready
+                var window = _window[datasetSymbol];
+                if (!window.IsReady) continue;
+
+                // Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
+                if (window[0].MarketCap &gt; window[1].MarketCap)
+                {
+                    var insight = new Insight(cryptoSymbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Up);
+                    insights.Add(insight);
+                }
+                // Sell otherwise, since the capital is flowing out and the demand of BTC lowered
+                else
+                {
+                    var insight = new Insight(cryptoSymbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Down);
+                    insights.Add(insight);
+                }
+            }
+
+            return insights;
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists US Equities having the highest 7-day sentiment.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.CoinGecko.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Requesting Data
+var symbol = qb.AddData&lt;CoinGecko&gt;("BTC").Symbol;
+
+// Historical data
+var history = qb.History&lt;CoinGecko&gt;(symbol, 30, Resolution.Daily);
+foreach (CoinGecko coin in history)
+{
+    Console.WriteLine($"{coin} at {coin.EndTime}");
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return (from d in altCoarse.OfType&lt;CoinGecko&gt;()
+        orderby d.MarketCap descending select d.Symbol).Take(10);
+}
+var universe = qb.AddUniverse&lt;CoinGeckoUniverse&lt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);
+foreach (var coins in universeHistory)
+{
+    foreach (CoinGecko coin in coins)
+    {
+        Console.WriteLine($"{coin.Symbol.Value} market cap at {coin.EndTime}: {coin.MarketCap}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Requesting Data
+symbol = qb.add_data(CoinGecko, "BTC").symbol
+
+# Historical data
+history = qb.history(CoinGecko, symbol, 30, Resolution.DAILY)
+for (symbol, time), row in history.iterrows():
+    print(f"{symbol} sentiment at {time}: {row['marketcap']}")
+
+# Add Universe Selection
+def universe_selection(alt_coarse: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in sorted([x for x in alt_coarse if x.market_cap],
+        key=lambda x: x.market_cap, reverse=True)[:10]]
+
+universe = qb.add_universe(CoinGeckoUniverse, universe_selection)
+
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(10), qb.time)
+for (_, time), coins in universe_history.items():
+    for coin in coins:
+        print(f"{coin.symbol.value} market cap at {coin.end_time}: {coin.market_cap}")</pre>
+</div>

@@ -1,0 +1,367 @@
+<p>
+The US Equity Options Universe dataset enables you to accurately design Option strategies. Examples include the following strategies:
+</p>
+<ul><li>Buying put Options to hedge against downward price movement in positive Equity positions</li>
+<li>Exploiting arbitrage opportunities that arise when the price of Option contracts deviate from their theoretical value</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm subscribes to Google put options that fall within delta range between -1 and -0.95, open interest range between 10 and 1000, and expire within seven days. Within this Option chain, the algorithm holds the put Option contract that has the minimum delta (closest to -1) during market hour to hedge the underlying intra-day movement completely. It avoid volatility from sentiment and only earns from inter-day movement from longer-term factors. When the contract expires, the algorithm rolls over to the next contract that meets this criteria.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class USEquityOptionsUniverseAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 2, 1)
+        self.set_cash(10000000)
+
+        # Asynchronous can use computational resources efficiently
+        self.universe_settings.asynchronous = True
+        # Subscribe to the underlying for the underlying position
+        # Set the data normalization mode to raw for strike price comparability
+        self.equity = self.add_equity("GOOG", data_normalization_mode=DataNormalizationMode.RAW).symbol
+        # Requesting option data and filter for the hedge candidates
+        option = self.add_option(self.equity)
+        option.set_filter(self.option_filter)
+        self.option_symbol = option.symbol
+
+        # Set scheduled event to buy a hedge option contract at market open to eliminate the intra-day movement
+        self.schedule.on(
+            self.date_rules.every_day(self.equity),
+            self.time_rules.after_market_open(self.equity, 1),
+            self.buy_hedge_contract
+        )
+
+        # Set a scheduled event to sell the hedge contract before market close, since we want to earn from inter-day movement
+        # Leave 2 minutes contingency to fill
+        self.schedule.on(
+            self.date_rules.every_day(self.equity),
+            self.time_rules.before_market_close(self.equity, 2),
+            self.sell_hedge_contract
+        )
+
+        self.hedge = None
+        
+    def option_filter(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        # Select the contracts with delta very close to -1 and high open interest
+        # This can effectively hedge most of the price change of the underlying and ensure the liquidity
+        # Make sure the contract is expiring close for its tradbility
+        return universe.include_weeklys().puts_only().expiration(2, 7).delta(-1, -0.95).open_interest(10, 1000)
+
+    def buy_hedge_contract(self) -&gt; None:
+        chain = self.current_slice.option_chains.get(self.option_symbol)
+        if chain:
+            # Order the underlying if not hold, the order size should match the option contract
+            # Order only if option chain data ready for hedging
+            if not self.portfolio[self.equity].invested:
+                self.market_order(self.equity, self.securities[self.option_symbol].symbol_properties.contract_multiplier)
+
+            # Get the contract with delta closest to -1 (lowest possible delta)
+            contract = sorted(chain, key=lambda x: x.greeks.delta)[0]
+            self.hedge = contract.symbol
+            # Buy 1 deep ITM put with delta close to -1 to eliminate the intraday movement
+            self.market_order(self.hedge, 1)
+        
+    def sell_hedge_contract(self) -&gt; None:
+        # Check if any hedge contract position, if so, liquidate before market close to expose to underlying overnight movement
+        if self.hedge:
+            self.liquidate(self.hedge)
+            self.hedge = None</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class USEquityOptionsUniverseAlgorithm : QCAlgorithm
+    {
+        private Symbol _equity, _optionSymbol, _hedge;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 2, 1);
+            SetCash(10000000);
+            // Asynchronous can use computational resources efficiently
+            UniverseSettings.Asynchronous = True;
+
+            // Subscribe to the underlying for the underlying position
+            // Set the data normalization mode to raw for strike price comparability
+            _equity = AddEquity("GOOG", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+            // Requesting option data and filter for the hedge candidates
+            var option = AddOption(_equity);
+            _optionSymbol = option.Symbol;
+            option.SetFilter(OptionFilter);
+
+            // Set scheduled event to buy a hedge option contract at market open to eliminate the intra-day movement
+            Schedule.On(
+                DateRules.EveryDay(_equity),
+                TimeRules.AfterMarketOpen(_equity, 1),
+                BuyHedgeContract
+            );
+
+            // Set a scheduled event to sell the hedge contract before market close, since we want to earn from inter-day movement
+            // Leave 2 minutes contingency to fill
+            Schedule.On(
+                DateRules.EveryDay(_equity),
+                TimeRules.BeforeMarketClose(_equity, 2),
+                SellHedgeContract
+            );
+        }
+
+        private OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
+        {
+            // Select the contracts with delta very close to -1 and high open interest
+            // This can effectively hedge most of the price change of the underlying and ensure the liquidity
+            // Make sure the contract is expiring close for its tradbility
+            return universe
+                .IncludeWeeklys()
+                .PutsOnly()
+                .Expiration(2, 7)
+                .Delta(-1m, -0.95m)
+                .OpenInterest(10, 1000);
+        }
+
+        private void BuyHedgeContract()
+        {
+            if (CurrentSlice.OptionChains.TryGetValue(_optionSymbol, out var chain))
+            {
+                // Order the underlying if not hold, the order size should match the option contract
+                // Order only if option chain data ready for hedging
+                if (!Portfolio[_equity].Invested)
+                {
+                    MarketOrder(_equity, Securities[_optionSymbol].SymbolProperties.ContractMultiplier);
+                }
+
+                // Get the contract with delta closest to -1 (lowest possible delta)
+                var contract = chain.MinBy(x =&gt; x.Greeks.Delta);
+                _hedge = contract.Symbol;
+                // Buy 1 deep ITM put with delta close to -1 to eliminate the intraday movement
+                MarketOrder(_hedge, 1);
+            }
+        }
+
+        private void SellHedgeContract()
+        {
+            // Check if any hedge contract position, if so, liquidate before market close to expose to underlying overnight movement
+            if (_hedge != None)
+            {
+                Liquidate(_hedge);
+                _hedge = None;
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm demonstrating a Gamma Scalping strategy through framework algorithm. It filters NVDA options with expiration between 30 to 90 days and open interest between 50 and 1000, due to liquidity concern and lower Gamma fluctuation. Assuming a significant upward trend is expecting, it orders a long straddle strategy from the strike price with Delta-neutral and the highest Gamma to earn the highest profit from upward underlying movement.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class USEquityOptionsUniverseFrameworkAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2023, 12, 31)
+        self.set_cash(100000)
+        # Asynchronous can use computational resources efficiently
+        self.universe_settings.asynchronous = True
+
+        # Universe selection that select based on liquidity of the option contracts (by open interest)
+        self.add_universe_selection(EquityOptionsUniverseSelectionModel())
+        # Custom alpha model that use Delta and Gamma to signal insights
+        self.add_alpha(OptionDeltaGammaAlphaModel())
+        # To maintain long-short size equal, use a PCM that order a single contract
+        self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
+
+class EquityOptionsUniverseSelectionModel(OptionUniverseSelectionModel):
+    def __init__(self) -&gt; None:
+        # Daily update with the select_option_chain_symbols function
+        super().__init__(timedelta(1), self.select_option_chain_symbols)
+
+    def select_option_chain_symbols(self, dt: datetime) -&gt; List[Symbol]:
+        # Select only NVDA options as our focus, which is a highly traded volatile equity with great upward momentum
+        return [Symbol.create("NVDA", SecurityType.OPTION, Market.USA)]
+
+    def filter(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        # To ensure the liquidity and tradability, make sure the option is not 0-DTE and have a fair open interest
+        # A longer TTM will have lower Gamma thus more stable in the local delta-neutral position
+        return universe.include_weeklys().expiration(30, 90).open_interest(50, 1000)
+
+class OptionDeltaGammaAlphaModel(AlphaModel):
+    def __init__(self) -&gt; None:
+        # A day count variable to control the alpha model only trade once a day
+        self._day = -1
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        if self._day != slice.time.day:
+            # We open position for each option underlying as separate bet
+            for _, chain in slice.option_chains.items():
+                # For theta-neutral, select the same expiry for both call and put
+                expiry = min(x.expiry for x in chain)
+                contracts = [x for x in chain if x.expiry == expiry]
+
+                # Calculate delta and gamma per strike price group for later filtering, ensure both call and put available for option strategy
+                delta_gamma_symbols = []
+                strikes = set(x.strikes for x in contracts if len([y for y in contracts if y.strike == x.strike]) == 2)
+                for strike in strikes:
+                    # Get both call and put for their aggregated delta and gamma
+                    call = next(filter(lambda x: x.right == OptionRight.CALL and x.strike == strike), contracts)
+                    put = next(filter(lambda x: x.right == OptionRight.PUT and x.strike == strike), contracts)
+                    delta_gamma_symbols.append((call.greeks.delta + put.greeks.delta, call.greeks.gamma + put.greeks.gamma, call.symbol, put.symbol))
+                
+                if len(delta_gamma_symbols) == 0:
+                    continue
+
+                # We want a delta-neutral position, so it is likely to be ATM (like a long straddle)
+                # Less than 2d.p. difference is non-significant, which we can risk for better reward
+                # Assuming the market direction is up in most scenario, we try to get the strike providing max overall Gamma
+                # Make sure the aggregated gamma to be positive to bet on large uptrend
+                # So it will earn more when the price really go up higher and higher, but locally immune for small noise
+                filtered = [item for item in delta_gamma_symbols if round(item[0], 2) &lt;= 0.01 and item[1] &gt; 0]
+                if len(filtered) == 0:
+                    continue
+                selected = sorted(filtered, key=lambda x: x[1])[0]
+
+                # Provide trade signal and roll the day count to let the position stay for the whole day
+                selected_call = selected[2]
+                selected_put = selected[3]
+                insights.extend([
+                    Insight.price(selected_call, Expiry.END_OF_DAY, InsightDirection.UP),
+                    Insight.price(selected_put, Expiry.END_OF_DAY, InsightDirection.UP)
+                ])
+                self._day = slice.time.day
+        
+        return insights
+
+class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        targets = []
+        for insight in insights:
+            if algorithm.securities[insight.symbol].is_tradable:
+                # Use a whole number target to order the exact number of share for size-matching
+                targets.append(PortfolioTarget(insight.symbol, insight.direction))
+        return targets</pre>
+<pre><code class="language-cs">namespace QuantConnect
+{
+    public class USEquityOptionsUniverseFrameworkAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2024, 1, 1);
+            SetEndDate(2024, 3, 31);
+            SetCash(100000);
+            // Asynchronous can use computational resources efficiently
+            UniverseSettings.Asynchronous = True;
+
+            // Universe selection that select based on liquidity of the option contracts (by open interest)
+            AddUniverseSelection(new EquityOptionsUniverseSelectionModel());
+            // Custom alpha model that use Delta and Gamma to signal insights
+            AddAlpha(new OptionDeltaGammaAlphaModel());
+            // To maintain long-short size equal, use a PCM that order a single contract
+            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+        }
+    }       
+        
+    class EquityOptionsUniverseSelectionModel : OptionUniverseSelectionModel
+    {
+        // Daily update with the SelectOptionChainSymbols function
+        public EquityOptionsUniverseSelectionModel()
+                : base(TimeSpan.FromDays(1), SelectOptionChainSymbols) {}
+        
+        private static IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
+        {
+            // Select only NVDA options as our focus, which is a highly traded volatile equity with great upward momentum
+            return new[] {QuantConnect.Symbol.Create("NVDA", SecurityType.Option, Market.USA)};
+        }
+
+        protected override OptionFilterUniverse Filter(OptionFilterUniverse filter)
+        {
+            // To ensure the liquidity and tradability, make sure the option is not 0-DTE and have a fair open interest
+            // A longer TTM will have lower Gamma thus more stable in the local delta-neutral position
+            return filter
+                .IncludeWeeklys()
+                .Expiration(30, 90)
+                .OpenInterest(50, 1000);
+        }
+    }
+        
+    class OptionDeltaGammaAlphaModel : AlphaModel
+    {
+        // A day count variable to control the alpha model only trade once a day
+        private int _day = -1;
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+            
+            if (_day != slice.Time.Day)
+            {
+                // We open position for each option underlying as separate bet
+                foreach (var kvp in slice.OptionChains)
+                {
+                    var chain = kvp.Value;
+
+                    // For theta-neutral, select the same expiry for both call and put
+                    var expiry = chain.Min(x =&gt; x.Expiry);
+                    var contracts = chain.Where(x =&gt; x.Expiry == expiry).ToList();
+
+                    // Calculate delta and gamma per strike price group for later filtering, ensure both call and put available for option strategy
+                    var deltaGammaSymbols = new List&lt;(decimal, decimal, Symbol, Symbol)&gt;();
+                    var strikes = contracts.Select(x =&gt; x.Strike)
+                        .Where(x =&gt; contracts.Count(y =&gt; y.Strike == x) == 2)
+                        .Distinct();
+                    foreach (var strike in strikes)
+                    {
+                        // Get both call and put for their aggregated delta and gamma
+                        var call = contracts.Single(x =&gt; x.Right == OptionRight.Call && x.Strike == strike);
+                        var put = contracts.Single(x =&gt; x.Right == OptionRight.Put && x.Strike == strike);
+                        deltaGammaSymbols.Add((call.Greeks.Delta + put.Greeks.Delta, call.Greeks.Gamma + put.Greeks.Gamma, call.Symbol, put.Symbol));
+                    }
+
+                    if (deltaGammaSymbols.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    // We want a delta-neutral position, so it is likely to be ATM (like a long straddle)
+                    // Less than 2d.p. difference is non-significant, which we can risk for better reward
+                    // Assuming the market direction is up in most scenario, we try to get the strike providing max overall Gamma
+                    // Make sure the aggregated gamma to be positive to bet on large uptrend
+                    // So it will earn more when the price really go up higher and higher, but locally immune for small noise
+                    var filtered = deltaGammaSymbols.Where(item =&gt; Math.Round(item.Item1, 2) &lt;= 0.01m && item.Item2 &gt; 0).ToList();
+                    if (filtered.Count == 0)
+                    {
+                        continue;
+                    }
+                    var selected = filtered.OrderByDescending(item =&gt; item.Item2).First();
+
+                    // Provide trade signal and roll the day count to let the position stay for the whole day
+                    var selectedCall = selected.Item3;
+                    var selectedPut = selected.Item4;
+                    insights.AddRange(new[] {
+                        Insight.Price(selectedCall, Expiry.EndOfDay, InsightDirection.Up),
+                        Insight.Price(selectedPut, Expiry.EndOfDay, InsightDirection.Up)
+                    });
+                    _day = slice.Time.Day;
+                }
+            }
+
+            return insights;
+        }
+    }
+        
+    class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+    {
+        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        {
+            var targets = new List&lt;PortfolioTarget&gt;();
+            foreach (var insight in insights)
+            {
+                if (algorithm.Securities[insight.Symbol].IsTradable)
+                {
+                    // Use a whole number target to order the exact number of share for size-matching
+                    targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
+                }
+            }
+            return targets;
+        }
+    }
+}</code></pre>
+</div>

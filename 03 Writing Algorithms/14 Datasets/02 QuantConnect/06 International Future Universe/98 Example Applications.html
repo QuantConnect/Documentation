@@ -1,0 +1,112 @@
+<p>
+The International Futures Universe dataset enables you to design Futures strategies accurately. Examples include the following strategies:
+</p>
+<ul><li>Buying the Futures contract with the most open interest to reduce slippage and market impact</li>
+<li>Trade speculation on an International Index</li>
+<li>Trading bull calendar spreads to reduce volatility and margin requirements</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm uses the <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/zig-zag">ZigZag indicator</a> to determine the trend of Hang Seng Index. It then trades the Index with HSI Futures.</p>
+
+<div class="section-example-container">
+<pre class="python">class InternationalFuturesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 1)
+        # Set the time zone to HKT to make it more comparable with the exchange.
+        self.set_time_zone(TimeZones.HONG_KONG)
+        # Set the account currency as HKD to trade HSI Futures.
+        self.set_account_currency("HKD", 1000000)
+        # Seed the last price of the contracts for filling.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Request HSI Futures to trade. 
+        # Note that we will trade the contract with the highest open interest for liquidity.
+        self.hsi_future = self.add_future(
+            Futures.Indices.HANG_SENG,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.LAST_TRADING_DAY,
+            contract_depth_offset=0
+        )
+        # Adds contracts that expiry within 90 days. We will trade the farthest contract
+        self.hsi_future.set_filter(0,90)
+        # Request the corresponding underlying Index for feeding indicator for trade signal generation.
+        hsi_index = self.add_index("HSI").symbol
+
+        # Create a ZigZag indicator to trade Hang Seng Index price pivot points.
+        self._zz = self.zz(hsi_index, 0.15, 5, Resolution.DAILY)
+        # Warm up indicator for immediate readiness to trade.
+        self.warm_up_indicator(hsi_index, self._zz, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only place trade if the Future contracts is in market opening hours to avoid stale fills.
+        if self.is_market_open(self.hsi_future.symbol) and self._zz.is_ready:
+            pivot = self._zz.pivot_type
+            # If the last pivot point is a low point, the current trend is increasing after this low point.
+            if pivot == PivotPointType.LOW:
+                contracts = sorted([x.symbol for x in slice.future_chains.get(self.hsi_future.symbol)],
+                    key=lambda x: x.id.date)
+                self.set_holdings(contracts[-1], 0.2)
+            # If the last pivot point is a high point, the current trend is decreasing after this high point.
+            if pivot == PivotPointType.HIGH:
+                contracts = sorted([x.symbol for x in slice.future_chains.get(self.hsi_future.symbol)],
+                    key=lambda x: x.id.date)
+                self.set_holdings(contracts[-1], -0.2)</pre>
+<pre class="csharp">public class InternationalFuturesDataAlgorithm : QCAlgorithm
+{
+    private Future _hsiFuture;
+    private ZigZag _zz;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        // Set the time zone to HKT to make it more comparable with the exchange.
+        SetTimeZone(TimeZones.HongKong);
+        // Set the account currency as HKD to trade HSI Futures.
+        SetAccountCurrency("HKD", 1000000);
+
+        // Seed the last price of the contracts for filling.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Request HSI Futures to trade. 
+        // Note that we will trade the contract with the highest open interest for liquidity.
+        _hsiFuture = AddFuture(
+            Futures.Indices.HangSeng,
+            extendedMarketHours: True,
+            dataMappingMode: DataMappingMode.LastTradingDay,
+            contractDepthOffset: 0
+        );
+        // Adds contracts that expiry within 90 days. We will trade the farthest contract
+        _hsiFuture.SetFilter(0,90);
+        // Request the corresponding underlying index for feeding indicators for trade signal generation.
+        var hsiIndex = AddIndex("HSI").Symbol;
+
+        // Create a ZigZag indicator to trade Hang Seng Index price pivot points.
+        _zz = ZZ(hsiIndex, 0.15m, 5, Resolution.Daily);
+        // Warm up indicator for immediate readiness to trade.
+        WarmUpIndicator(hsiIndex, _zz, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only place trade if the Future contracts is in market opening hours to avoid stale fills.
+        if (IsMarketOpen(_hsiFuture.Symbol) &amp;&amp; _zz.IsReady)
+        {
+            var pivot = _zz.PivotType;
+            FuturesChain chain;
+            // If the last pivot point is low, the current trend is increasing after this low point.
+            if (pivot == PivotPointType.Low &amp;&amp; slice.FutureChains.TryGetValue(_hsiFuture.Symbol, out chain))
+            {
+                var contract = chain.OrderBy(x =&gt; x.Expiry).LastOrDefault()?.Symbol;                    
+                SetHoldings(contract, 0.2m);
+            }
+            // If the last pivot point is high, the current trend decreases after this high point.
+            if (pivot == PivotPointType.High &amp;&amp; slice.FutureChains.TryGetValue(_hsiFuture.Symbol, out chain))
+            {
+                var contract = chain.OrderBy(x =&gt; x.Expiry).LastOrDefault()?.Symbol;                    
+                SetHoldings(contract, -0.2m);
+            }
+        }
+    }
+}</pre>
+</div>

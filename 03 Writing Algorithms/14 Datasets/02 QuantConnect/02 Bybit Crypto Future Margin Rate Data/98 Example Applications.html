@@ -1,0 +1,280 @@
+<p>
+The Binance Crypto Future Margin Rate dataset enables correct margin cost so you can accurately design strategies for Cryptocurrencies with term structure. Examples include the following strategies:
+</p>
+<ul><li>Horizontal/Diagonal arbitrage with the underlying Cryptocurrencies</li>
+<li>Trade Contango/Backwardation predictions</li>
+<li>Hedge for illiquid Cryptocurrencies</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys a BTCUSDT perpetual Futures contract through the Bybit exchange if the previous day's closing price was closer to ask close price than bid close price. Otherwise, it short sells the contract.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class BybitCryptoFutureDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 10, 1)
+        self.set_end_date(2022, 10, 10)
+        # Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+        self.set_account_currency("USDT", 100000)
+        # Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        self.set_brokerage_model(BrokerageName.BYBIT, AccountType.MARGIN)
+
+        # Requesting data, we only trade on BTCUSDT Future in Bybit exchange
+        crypto_future = self.add_crypto_future("BTCUSDT", Resolution.DAILY)
+        # perpetual futures does not have a filter function
+        self.btcusdt = crypto_future.symbol
+
+        # Historical data
+        history = self.history(self.btcusdt, 10, Resolution.DAILY)
+        self.debug(f"We got {len(history)} from our history request for {self.btcusdt}")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
+        # Or you can calculate the trade size on keeping the quote currency constant
+        if self.btcusdt in slice.margin_interest_rates:
+            interest_rate = slice.margin_interest_rates[self.btcusdt].interest_rate
+            self.log(f"{self.btcusdt} close at {slice.time}: {interest_rate}")      
+  
+        # Trade only based on updated price data
+        if not slice.bars.contains_key(self.btcusdt) or not slice.quote_bars.contains_key(self.btcusdt):
+            return
+
+        quote = slice.quote_bars[self.btcusdt]
+        price = slice.bars[self.btcusdt].price
+
+        # Scalp-trade the bid-ask spread based on the supply-demand strength
+        if price - quote.bid.close &gt; quote.ask.close - price:
+            self.set_holdings(self.btcusdt, -1)
+        else:
+            self.set_holdings(self.btcusdt, 1)</pre>
+<pre class="csharp">using System.Linq;
+using QuantConnect.Data;
+using QuantConnect.Brokerages;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class BybitCryptoFutureDataAlgorithm : QCAlgorithm
+    {
+        public Symbol _symbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2022, 1, 1);
+            SetEndDate(2023, 1, 1);
+            // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+            SetAccountCurrency("USDT", 100000);
+            // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+            SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+
+            // Requesting data, we only trade on BTCUSDT Future in Bybit exchange
+            var cryptoFuture = AddCryptoFuture("BTCUSDT", Resolution.Daily);
+            // perpetual futures does not have a filter function
+            _symbol = cryptoFuture.Symbol;
+
+            // Historical data
+            var history = History(_symbol, 10, Resolution.Daily);
+            Debug($"We got {history.Count()} from our history request for {_symbol}");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
+            // Or you can calculate the trade size on keeping the quote currency constant
+            if (slice.MarginInterestRates.ContainsKey(_symbol))
+            {
+                var interestRate = slice.MarginInterestRates[_symbol].InterestRate;
+                Log($"{_symbol} price at {slice.Time}: {interestRate}");
+            }
+
+            // Trade only based on updated price data
+            if (!slice.QuoteBars.TryGet(_symbol, out var quote) || !slice.Bars.ContainsKey(_symbol))
+            {
+                return;
+            }
+            var price = slice.Bars[_symbol].Price;
+            
+            // Scalp-trade the bid-ask spread based on the supply-demand strength
+            if (price - quote.Bid.Close &gt; quote.Ask.Close - price)
+            {
+                SetHoldings(_symbol, -1m);
+            }
+            else
+            {
+                SetHoldings(_symbol, 1m);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example <a href="/docs/v2/writing-algorithms/algorithm-framework/overview">framework algorithm</a> holds a 100% long BTCUST Future portfolio if the previous day's closing price was closer to ask close price than bid close price. Otherwise, it holds a short position in the contract.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class BybitCryptoFutureDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 10, 1)
+        self.set_end_date(2022, 10, 10)
+        # Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+        self.set_account_currency("USDT", 100000)
+        # Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        self.set_brokerage_model(BrokerageName.BYBIT, AccountType.MARGIN)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.leverage = 2
+        # We only trade on BTCUSDT Future in Bybit exchange
+        symbols = [Symbol.create("BTCUSDT", SecurityType.CRYPTO_FUTURE, Market.BYBIT)]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))
+        # Custom alpha model to emit insights based on the Crypto Future price data
+        self.add_alpha(CryptoFutureAlphaModel())
+        # Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+class CryptoFutureAlphaModel(AlphaModel):
+
+    def __init__(self) -&gt; None:
+        self.symbols = []
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        for symbol in self.symbols:
+            # Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
+            # Or you can calculate the trade size on keeping the quote currency constant
+            if symbol in slice.margin_interest_rates:
+                interest_rate = slice.margin_interest_rates[symbol].interest_rate
+                algorithm.log(f"{symbol} close at {slice.time}: {interest_rate}")      
+
+            # Trade only based on updated price data
+            if not slice.bars.contains_key(symbol) or not slice.quote_bars.contains_key(symbol):
+                continue
+            quote = slice.quote_bars[symbol]
+            price = slice.bars[symbol].price
+
+            # Scalp-trade the bid-ask spread based on the supply-demand strength
+            if price - quote.bid.close &gt; quote.ask.close - price:
+                insights.append(Insight.price(symbol, timedelta(1), InsightDirection.DOWN))
+            else:
+                insights.append(Insight.price(symbol, timedelta(1), InsightDirection.UP))
+            
+        return insights
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            self.symbols.append(symbol)
+
+            # Historical data
+            history = algorithm.history(symbol, 10, Resolution.DAILY)
+            algorithm.debug(f"We got {len(history)} from our history request for {symbol}")
+
+        for security in changes.removed_securities:
+            symbol = security.symbol
+            if symbol in self.symbols:
+                self.symbols.remove(symbol)</pre>
+<pre class="csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+using QuantConnect.Brokerages;
+using QuantConnect.Data;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Algorithm.Framework.Selection;
+using QuantConnect.Algorithm.Framework.Alphas;
+using QuantConnect.Algorithm.Framework.Portfolio;
+using QuantConnect.Algorithm.Framework.Execution;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class BybitCryptoFutureDataAlgorithm : QCAlgorithm
+    {
+        public Symbol _symbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2022, 10, 1);
+            SetEndDate(2022, 10, 10);
+            // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+            SetAccountCurrency("USDT", 100000);
+            // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+            SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+
+            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Leverage = 2;
+            // We only trade on BTCUSDT Future in Bybit exchange
+            var symbols = new []{
+                QuantConnect.Symbol.Create("BTCUSDT", SecurityType.CryptoFuture, Market.Bybit)
+            };
+            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+            // Custom alpha model to emit insights based on the Crypto Future price data
+            AddAlpha(new CryptoFutureAlphaModel());
+            // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+
+    public class CryptoFutureAlphaModel : AlphaModel
+    {
+        private List&lt;Symbol&gt; _symbols = new();
+
+        public override List&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            foreach (var symbol in _symbols)
+            {
+                // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
+                // Or you can calculate the trade size on keeping the quote currency constant
+                if (slice.MarginInterestRates.ContainsKey(symbol))
+                {
+                    var interestRate = slice.MarginInterestRates[symbol].InterestRate;
+                    algorithm.Log($"{symbol} price at {slice.Time}: {interestRate}");
+                }
+
+                // Trade only based on updated price data
+                if (!slice.Bars.ContainsKey(symbol) || !slice.QuoteBars.TryGet(symbol, out var qoute))
+                {
+                    continue;
+                }
+                var price = slice.Bars[symbol].Price;
+
+                // Scalp-trade the bid-ask spread based on the supply-demand strength
+                if (price - quote.Bid.Close &gt; quote.Ask.Close - price)
+                {
+                    insights.Add(
+                        Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)
+                    );
+                }
+                else
+                {
+                    insights.Add(
+                        Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)
+                    );
+                }
+            }
+            
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                var symbol = security.Symbol;
+                _symbols.Add(symbol);
+
+                // Historical data
+                var history = algorithm.History(symbol, 10, Resolution.Daily);
+                algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
+            }
+
+            foreach (var security in changes.RemovedSecurities)
+            {
+                _symbols.Remove(security.Symbol);
+            }
+        }
+    }
+}</pre>
+</div>

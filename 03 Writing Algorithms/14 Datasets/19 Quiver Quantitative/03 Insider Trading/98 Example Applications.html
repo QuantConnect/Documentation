@@ -1,0 +1,261 @@
+<p>The Quiver Quantitative Insider Trading dataset enables researchers to create strategies using the latest information on insider trading activity. Examples include:</p>
+<ul><li>Taking a short position in securities that have had the most insider selling over the last 5 days</li>
+<li>Buying any security that has had over $100,000 worth of shares purchased by insiders in the last month</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p> In this example, we would 100% long AAPL if there was any insider buying event. Otherwise, we liquidate it.</p>
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverInsiderTradingAlgorithm(QCAlgorithm):
+    
+    def initialize(self):
+        self.set_start_date(2022, 2, 1)   #Set Start Date
+        self.set_end_date(2022, 2, 28)    #Set End Date
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        # Subscribe to insider trade data for AAPL to generate trade signal
+        self.dataset_symbol = self.add_data(QuiverInsiderTrading, self.aapl).symbol
+
+        # history request
+        history = self.history(self.dataset_symbol, 10, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from historical data request of {self.dataset_symbol}.")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade only base on insider trade data
+        for insider_trades in slice.Get(QuiverInsiderTrading).values():
+            for insider_trade in insider_trades:
+                # Any buy insider trade will result in buying, assuming insider have confidence in stock price with more informed information and projection
+                if insider_trade.shares &gt; 0:
+                    self.set_holdings(self.symbol, 1)
+                # Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
+                else:
+                    self.liquidate(self.symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.DataLibrary.Tests
+{
+    public class QuiverInsiderTradingAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol, _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2022, 2, 1);  //Set Start Date
+            SetEndDate(2022, 2, 28);    //Set End Date
+            _symbol = AddEquity("AAPL").Symbol;
+            // Subscribe to insider trade data for AAPL to generate trade signal
+            _datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(_symbol).Symbol;
+
+            // history request
+            var history = History&lt;QuiverInsiderTrading&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+            Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Trade only base on insider trade data
+            foreach (var kvp in slice.Get&lt;QuiverInsiderTrading&gt;())
+            {
+                foreach (QuiverInsiderTrading insiderTrade in kvp.Value)
+                {
+                    // Any buy insider trade will result in buying, assuming insider have confidence in stock price with more informed information and projection
+                    if (insiderTrade.Shares &gt; 0)
+                    {
+                        SetHoldings(_symbol, 1);
+                    }
+                    // Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
+                    else
+                    {
+                        Liquidate(_symbol);
+                    }
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>In this example, we long a equal-sized portfolio with equities that having insider trading for over $100000 USD in the previous day.</p>
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class QuiverInsiderTradingDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+        # To hold the insider trade dataset symbol for managing subscription
+        self.data_symbols = {}
+
+        # Filter universe using insider trade data
+        self.add_universe(QuiverInsiderTradingUniverse, self.universe_selection)
+
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
+
+        # Invest equally to evenly dissipate the capital concentration risk
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+    def universe_selection(self, data: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
+        symbol_data = {}
+
+        for datum in data:
+            symbol = datum.symbol
+            
+            if symbol not in symbol_data:
+                symbol_data[symbol] = []
+            symbol_data[symbol].append(datum)
+    
+        # Select the ones with insider trading dollar amount above 100k, assuming insider have confidence in stock price with more informed information and projection
+        return [symbol for symbol, d in symbol_data.items()
+                if sum([x.shares * x.price_per_share for x in d if x.shares and x.price_per_share]) &gt;= 100000]
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            # Requesting insider trade data for trading
+            symbol = security.symbol
+            dataset_symbol = self.add_data(QuiverInsiderTrading, symbol).symbol
+            self.data_symbols[symbol] = dataset_symbol
+            
+            # Historical Data
+            history = self.history(dataset_symbol, 10, Resolution.DAILY)
+            self.debug(f"We got {len(history)} items from our history request on {dataset_symbol}.")
+
+        for security in changes.removed_securities:
+            dataset_symbol = self.data_symbols.pop(security.symbol, None)
+            if dataset_symbol:
+                # Remove insider trade data subscription to release computation resources
+                self.remove_security(dataset_symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class QuiverInsiderTradingDataAlgorithm : QCAlgorithm
+    {
+        // To hold the insider trade dataset symbol for managing subscription
+        private Dictionary&lt;Symbol, Symbol&gt; _dataSymbols = new();
+
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+
+            // Filter universe using insider trade data
+            AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(data =&gt;
+            {
+                var symbolData = new Dictionary&lt;Symbol, List&lt;QuiverInsiderTradingUniverse&gt;&gt;();
+
+                foreach (var datum in data.OfType&lt;QuiverInsiderTradingUniverse&gt;())
+                {
+                    var symbol = datum.Symbol;
+
+                    if (!symbolData.ContainsKey(symbol))
+                    {
+                        symbolData.Add(symbol, new List&lt;QuiverInsiderTradingUniverse&gt;());
+                    }
+                    symbolData[symbol].Add(datum);
+                }
+
+                // Select the ones with insider trading dollar amount above 100k, assuming insider have confidence in stock price with more informed information and projection
+                return from kvp in symbolData
+                    where kvp.Value.Sum(x =&gt; x.Shares * x.PricePerShare) &gt;= 100000
+                    select kvp.Key;
+            });
+
+            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+
+            // Invest equally to evenly dissipate the capital concentration risk
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                // Requesting insider trade data for trading
+                var symbol = security.Symbol;
+                var datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(symbol).Symbol;
+                _dataSymbols.Add(symbol, datasetSymbol);
+
+                // History request
+                var history = History&lt;QuiverInsiderTrading&gt;(datasetSymbol, 10, Resolution.Daily);
+                Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
+            }
+            
+            foreach (var security in changes.RemovedSecurities)
+            {
+                var symbol = security.Symbol;
+                if (_dataSymbols.ContainsKey(symbol))
+                {
+                    // Remove insider trade data subscription to release computation resources
+                    _dataSymbols.Remove(symbol, out var datasetSymbol);
+                    RemoveSecurity(datasetSymbol);
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists US Equities having insider trading for over $10,000,000.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.QuiverInsiderTrading.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Requesting data
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol;
+var symbol = qb.AddData&lt;QuiverInsiderTrading&gt;(aapl).Symbol;
+
+// Historical data
+var history = qb.History&lt;QuiverInsiderTrading&gt;(symbol, 60, Resolution.Daily);
+foreach (var insiders in history)
+{
+    foreach (QuiverInsiderTrading insider in insiders)
+    {
+        Console.WriteLine($"{insider.Symbol} shares at {insider.EndTime}: {insider.Shares}");
+    }
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return from d in altCoarse.OfType&lt;QuiverInsiderTradingUniverse&gt;()
+        where d.Shares * d.PricePerShare &gt;= 10000000 select d.Symbol;
+}
+var universe = qb.AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);
+foreach (var insiders in universeHistory)
+{
+    foreach (QuiverInsiderTradingUniverse insider in insiders)
+    {
+        Console.WriteLine($"{insider.Symbol} volume at {insider.EndTime}: {insider.Shares * insider.PricePerShare}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Requesting Data
+aapl = qb.add_equity("AAPL", Resolution.DAILY).symbol
+symbol = qb.add_data(QuiverInsiderTrading, aapl).symbol
+
+# Historical data
+history = qb.history(QuiverInsiderTrading, symbol, 60, Resolution.DAILY)
+for (symbol, time), insiders in history.items():
+    for insider in insiders:
+        print(f"{insider.symbol} shares at {insider.end_time}: {insider.shares}")
+
+# Add Universe Selection
+def universe_selection(alt_coarse: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in alt_coarse if d.price_per_share and d.shares * d.price_per_share &gt;= 10000000]
+
+universe = qb.add_universe(QuiverInsiderTradingUniverse, universe_selection)
+        
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(5), qb.time)
+for (_, time), insiders in universe_history.items():
+    for insider in insiders:
+        if insider.price_per_share:
+            print(f"{insider.symbol} volume at {insider.end_time}: {insider.shares * insider.price_per_share}")</pre>
+</div>

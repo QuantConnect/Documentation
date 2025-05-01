@@ -1,0 +1,162 @@
+<p>
+The Economic Events dataset provides timely notifications about upcoming economic events, allowing traders to trade the volatility upon that. Examples include the following strategies: 
+</p>
+
+<ul><li>Long straddle to trade the volatility brought by the economic events.</li>
+<li>Trade market representative ETFs upon estimate figures on the upcoming events.</li>
+<li>Statistical arbitrage on 2 or more correlated global markets based on economic events of different locations.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm trade Industrial sector ETF based on US PMI estimated change direction. If the estimated PMI of the upcoming announcement is above the previous PMI, buy the Industrial ETF, and sell it otherwise.</p>
+
+<div class="section-example-container">
+<pre class="python">class EODHDEconomicEventsAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        # Use industrial sector ETF as a vehicle to trade.
+        self.equity_symbol = self.add_equity("XLI").symbol
+        # Request US PMI economic event data to generate trade signals.
+        ticker = EODHD.Events.UnitedStates.MARKIT_MANUFACTURING_PURCHASING_MANAGERS_INDEX
+        self.dataset_symbol = self.add_data(EODHDEconomicEvents, ticker).symbol
+
+    def on_data(self, slice):
+        # Trade based on the updated economic events.
+        if self.dataset_symbol in slice.get(EODHDEconomicEvents):
+            # Use the Manufacturing Index to generate trade signals on manufacturing industry vehicles.
+            # Make sure previous and estimate are available to estimate the direction of the industry.
+            event = slice[self.dataset_symbol].data[0]
+            if event.previous and event.estimate:
+                # If the estimated PMI is higher than the previous PMI, the manufacturing ETF price is expected to rise.
+                if event.previous &gt; event.estimate:
+                    self.set_holdings(self.equity_symbol, 1)
+                # Otherwise, it is expected manufacturing ETF prices will drop.
+                else:
+                    self.set_holdings(self.equity_symbol, -1)</pre>
+<pre><code class="language-cs">public class EODHDEconomicEventsAlgorithm : QCAlgorithm
+{
+    private Symbol _equitySymbol, _datasetSymbol;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        // Use industrial sector ETF as a vehicle to trade.
+        _equitySymbol = AddEquity("XLI").Symbol;
+        // Request US PMI economic event data to generate trade signals.
+        var ticker = EODHD.Events.UnitedStates.MarkitManufacturingPurchasingManagersIndex;
+        _datasetSymbol = AddData&lt;EODHDEconomicEvents&gt;(ticker).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade based on the updated economic events.
+        if (slice.Get&lt;EODHDEconomicEvents&gt;().TryGetValue(_datasetSymbol, out var economicEvents))
+        {
+            var economicEvent = economicEvents.FirstOrDefault() as EODHDEconomicEvent;         
+            // Use the Manufacturing Index to generate trade signals on manufacturing industry vehicles.
+            // Make sure previous and estimate are available to estimate the direction of the industry.
+            if (economicEvent.Previous.HasValue && economicEvent.Estimate.HasValue)
+            {
+                //If the estimated PMI is higher than the previous PMI, the manufacturing ETF price is expected to rise.
+                if (economicEvent.Previous.Value &gt; economicEvent.Estimate.Value)
+                {
+                    SetHoldings(_equitySymbol, 1);
+                }
+                // Otherwise, it is expected manufacturing ETF price will drop.
+                else
+                {
+                    SetHoldings(_equitySymbol, -1);
+                }
+            }
+        }
+    }
+}</code></pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm trade Industrial sector ETF based on US PMI estimated change direction using algorithm framework. If the estimated PMI of the upcoming announcement is above the previous PMI, buy the Industrial ETF, sell it otherwise.</p>
+
+<div class="section-example-container">
+<pre class="python">class EODHDEconomicEventsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        # Use industrial sector ETF as a vehicle to trade.
+        symbol = Symbol.create("XLI", SecurityType.EQUITY, Market.USA)
+        self.add_universe_selection(ManualUniverseSelectionModel(symbol))
+        # Custom alpha model to emit insights according to economic events.
+        self.add_alpha(EconomicEventAlphaModel(self))
+        # Equal weighting position sizing to dissipate capital risk evenly.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_MONTH))
+
+class EconomicEventAlphaModel(AlphaModel):
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        # Request US PMI economic event data to generate trade signals.
+        ticker = EODHD.Events.UnitedStates.MARKIT_MANUFACTURING_PURCHASING_MANAGERS_INDEX
+        self.dataset_symbol = algorithm.add_data(EODHDEconomicEvents, ticker).symbol
+        self._symbol = None
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # Trade based on the updated economic events.
+        if self.dataset_symbol not in slice.get(EODHDEconomicEvents):
+            return []
+        # Use the US Manufacturing Index to generate trade signals on manufacturing industry vehicles.
+        # Make sure previous and estimate are available to estimate the direction of the industry.
+        event = slice[self.dataset_symbol].data[0]
+        # If the estimated PMI is higher than the previous PMI, the manufacturing ETF price is expected to rise.
+        # Otherwise, it is expected manufacturing ETF prices will drop.
+        direction = InsightDirection.UP if event.previous &gt; event.estimate else InsightDirection.DOWN
+        return [Insight.price(self._symbol, timedelta(5), direction)]
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for added in changes.added_securities:
+            self._symbol = added.symbol</pre>
+<pre><code class="language-cs">public class EODHDEconomicEventsAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        // Use industrial sector ETF as a vehicle to trade.
+        var symbol = QuantConnect.Symbol.Create("XLI", SecurityType.Equity, Market.USA);
+        AddUniverseSelection(new ManualUniverseSelectionModel(new[] {symbol}));
+        // Custom alpha model to emit insights according to economic events.
+        AddAlpha(new EconomicEventAlphaModel(this));
+        // Equal weighting position sizing to dissipate capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+    }
+}
+
+public class EconomicEventAlphaModel : AlphaModel
+{
+    private Symbol _symbol, _datasetSymbol;
+
+    public EconomicEventAlphaModel(QCAlgorithm algorithm)
+    {
+        // Request US PMI economic event data to generate trade signals.
+        var ticker = EODHD.Events.UnitedStates.MarkitManufacturingPurchasingManagersIndex;
+        _datasetSymbol = algorithm.AddData<EODHDEconomicEvents>(ticker).Symbol;
+    }
+
+    public override IEnumerable<Insight> Update(QCAlgorithm algorithm, Slice slice)
+    {
+        // Trade based on the updated economic events.
+        if (slice.Get<EODHDEconomicEvents>().TryGetValue(_datasetSymbol, out var economicEvents))
+        {
+            // Use the US Manufacturing Index to generate trade signals on manufacturing industry vehicles.
+            // Make sure previous and estimate are available to estimate the direction of the industry.
+            var economicEvent = economicEvents.FirstOrDefault() as EODHDEconomicEvent;
+            if (economicEvent.Previous.HasValue && economicEvent.Estimate.HasValue)
+            {
+                // If the estimated PMI is higher than the previous PMI, the manufacturing ETF price is expected to rise.
+                // Otherwise, it is expected manufacturing ETF prices will drop.
+                var direction = economicEvent.Previous.Value > economicEvent.Estimate.Value
+                    ? InsightDirection.Up
+                    : InsightDirection.Down;
+                yield return Insight.Price(_symbol, TimeSpan.FromDays(5), direction);
+            }
+        }
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var added in changes.AddedSecurities)
+        {
+            _symbol = added.Symbol;
+        }
+    }
+}</code></pre>
+</div>

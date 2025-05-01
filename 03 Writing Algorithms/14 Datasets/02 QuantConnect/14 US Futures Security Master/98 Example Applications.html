@@ -1,0 +1,352 @@
+<p>
+The US Futures Security Master enables you to design strategies harnessing continuous Futures contracts. Examples include the following strategies:
+</p>
+<ul><li>Trading cyclical patterns in commodity Futures.</li>
+<li>Buying gold Futures as an inflation hedge with automatic contract roll overs.</li>
+<li>Detecting arbitrage opportunities between index Futures and Equities.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys the continuous Future contract for Crude Oil when its price rises above its simple moving average. When its price drops below its simple moving average, the algorithm sells the continuous contract. Each time the continuous Future contract rolls over, the algorithm logs the event.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USFuturesSecurityMasterDataClassicAlgorithm (QCAlgorithm):
+    # 1% margin to reassure trend direction
+    threshold = 0.01
+    
+    def initialize(self) -&gt; None:
+        self.set_cash(1000000)
+        self.set_start_date(2019, 2, 1)
+        self.set_end_date(2021, 6, 1)
+
+        # Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
+        self.continuous_contract = self.add_future(Futures.Energies.CRUDE_OIL_WTI,
+                                                  data_normalization_mode = DataNormalizationMode.BACKWARDS_RATIO,
+                                                  data_mapping_mode = DataMappingMode.OPEN_INTEREST,
+                                                  contract_depth_offset = 0)
+        self.continuous_contract_symbol = self.continuous_contract.symbol
+                      
+        # Historical data
+        history = self.history(self.continuous_contract_symbol, 500, Resolution.MINUTE)
+        self.debug(f"We got {len(history)} items from our history request")
+        
+        # Set up SMA indicator for trend direction estimator
+        self.sma = self.SMA(self.continuous_contract_symbol, 10, Resolution.DAILY)
+        # Warm up the SMA indicator for its readiness for immediate use
+        if not history.empty:
+            for time, row in history.droplevel(0).loc[self.continuous_contract_symbol].iterrows():
+                self.sma.update(IndicatorDataPoint(time, row.close))
+        
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Up-to-date handling of switching the mapped contract for trade liquidity
+        for symbol, changed_event in slice.symbol_changed_events.items():
+            old_symbol = changed_event.old_symbol
+            # Newly mapped contract might not have subscription data for trading yet, so we request its data
+            new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
+            tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -&gt; {new_symbol}"
+            quantity = self.portfolio[old_symbol].quantity
+
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            self.liquidate(old_symbol, tag = tag)
+            if quantity != 0: 
+                self.market_order(new_symbol, quantity, tag = tag)
+            self.log(tag)
+                
+        mapped_symbol = self.continuous_contract.mapped
+        
+        # Make sure trade decisions are based on newly received data
+        if not (slice.bars.contains_key(self.continuous_contract_symbol) and self.sma.is_ready and mapped_symbol):
+            return
+        
+        # Buy if trend up by threshold to follow the trend
+        if slice.bars[self.continuous_contract_symbol].price &gt; self.sma.current.value * (1+self.threshold) and not self.portfolio[mapped_symbol].is_long:
+            self.market_order(mapped_symbol, 1)
+        # Sell if trend down by threshold to follow the trend
+        elif slice.bars[self.continuous_contract_symbol].price &lt; self.sma.current.value * (1-self.threshold) and not self.portfolio[mapped_symbol].is_short:
+            self.market_order(mapped_symbol, -1)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class USFuturesSecurityMasterDataClassicAlgorithm  : QCAlgorithm
+    {
+        private Future _continuousContract;
+        private Symbol _symbol;
+        // 1% margin to reassure trend direction
+        private decimal _threshold = 0.01m;
+        private SimpleMovingAverage _sma;
+        
+        public override void Initialize()
+        {
+            SetCash(1000000);
+            SetStartDate(2019, 2, 1);
+            SetEndDate(2021, 6, 1);
+
+            // Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
+            _continuousContract = AddFuture(Futures.Energies.CrudeOilWTI,
+                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+                dataMappingMode: DataMappingMode.OpenInterest,
+                contractDepthOffset: 0
+            );
+            _symbol = _continuousContract.Symbol;
+            
+            // Historical data
+            var history = History(_symbol, 60*24*10, Resolution.Minute);
+            Debug($"We got {history.Count()} items from our history request");
+            
+            // Set up SMA indicator for trend direction estimator
+            _sma = SMA(_symbol, 10, Resolution.Daily);
+            // Warm up the SMA indicator for its readiness for immediate use
+            foreach (var bar in history)
+            {
+                _sma.Update(new IndicatorDataPoint(bar.Time, bar.Close));
+            }
+        }
+        
+        public override void OnData(Slice slice)
+        {
+            // Up-to-date handling of switching the mapped contract for trade liquidity
+            foreach (var (symbol, changedEvent) in slice.SymbolChangedEvents)
+            {
+                var oldSymbol = changedEvent.OldSymbol;
+                // Newly mapped contract might not have subscription data for trading yet, so we request its data
+                var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+                var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -&gt; {newSymbol}";
+                var quantity = Portfolio[oldSymbol].Quantity;
+                // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+                Liquidate(oldSymbol, tag: tag);
+                if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
+                Log(tag);
+            }
+            
+            var mappedSymbol = _continuousContract.Mapped;
+
+            // Make sure trade decisions are based on newly received data
+            if (!(slice.Bars.ContainsKey(_symbol) &amp;&amp; _sma.IsReady &amp;&amp; mappedSymbol != None))
+            {
+                return;
+            }
+            
+            // Buy if trend up by threshold to follow the trend
+            if (slice.Bars[_symbol].Price &gt; _sma.Current.Value * (1+_threshold) &amp;&amp; !Portfolio[mappedSymbol].IsLong)
+            {
+                MarketOrder(mappedSymbol, 1);
+            }
+            // Sell  if trend down by threshold to follow the trend
+            else if (slice.Bars[_symbol].Price &lt; _sma.Current.Value * (1-_threshold) &amp;&amp; !Portfolio[mappedSymbol].IsShort)
+            {
+                MarketOrder(mappedSymbol, -1);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm buys the continuous Future contract for Crude Oil when its price rises above its simple moving average. When its price drops below its simple moving average, the algorithm sells the continuous contract. Each time the contract rolls over, the algorithm logs the event.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USFuturesSecurityMasterDataFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_cash(1000000)
+        self.set_start_date(2019, 2, 1)
+        self.set_end_date(2021, 6, 1)
+
+        # Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
+        self.add_future(Futures.Energies.CRUDE_OIL_WTI,
+                       data_normalization_mode = DataNormalizationMode.BACKWARDS_RATIO,
+                       data_mapping_mode = DataMappingMode.OPEN_INTEREST,
+                       contract_depth_offset = 0)
+        self.add_alpha(ContinuousFuturesAlphaModel())
+        self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
+
+class ContinuousFuturesAlphaModel(AlphaModel):
+    # 1% margin to reassure trend direction
+    threshold = 0.01
+    symbol = None
+    continuous_contract = None
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+        # Check if contract data available, since all trades are based on that only
+        if self.continuous_contract_symbol is None or self.continuous_contract is None:
+            return insights 
+        
+        # Up-to-date handling of switching the mapped contract for trade liquidity
+        for symbol, changed_event in slice.symbol_changed_events.items():
+            old_symbol = changed_event.old_symbol
+            if algorithm.insights.has_active_insights(old_symbol, algorithm.utc_time):
+                new_symbol = changed_event.new_symbol
+                tag = f"Rollover - Symbol changed at {algorithm.time}: {old_symbol} -&gt; {new_symbol}"
+                last_insight = sorted(algorithm.insights[old_symbol], key=lambda x: x.close_time_utc)[-1]
+                insights.append(Insight.price(new_symbol, last_insight.close_time_utc, last_insight.direction, tag= tag))
+                algorithm.insights.clear([old_symbol])
+                algorithm.log(tag)
+         
+        mapped_symbol = self.continuous_contract.mapped
+        # Make sure trade decisions are based on newly received data
+        if not slice.bars.contains_key(self.continuous_contract_symbol) or not self.sma.is_ready or not mapped_symbol:
+            return insights 
+        
+        direction = None
+        # Long if trend up by threshold to follow the trend
+        if slice.bars[self.continuous_contract_symbol].price &gt; self.sma.current.value * (1+self.threshold) and not algorithm.portfolio[mapped_symbol].is_long:
+            direction = InsightDirection.UP
+        # Short if trend down by threshold to follow the trend
+        elif slice.bars[self.continuous_contract_symbol].price &lt; self.sma.current.value * (1-self.threshold) and not algorithm.portfolio[mapped_symbol].is_short:
+            direction = InsightDirection.DOWN
+        
+        if direction:
+            insights.append(Insight.price(mapped_symbol, timedelta(days=14), direction))
+        
+        return insights
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            # Set up SMA indicator for trend direction estimator, only for the canonical symbol
+            if symbol.is_canonical():
+                self.continuous_contract = security
+                self.continuous_contract_symbol = symbol
+                self.sma = algorithm.SMA(self.continuous_contract_symbol, 10, Resolution.DAILY)
+            
+                # Historical data
+                history = algorithm.history(symbol, 60*24*10, Resolution.MINUTE)
+                algorithm.debug(f"We got {len(history)} from our history request for {symbol}")
+                
+                if history.empty:
+                    continue
+                # Warm up the SMA indicator for its readiness for immediate use
+                for time, row in history.droplevel(0).loc[self.continuous_contract_symbol].iterrows():
+                    self.sma.update(IndicatorDataPoint(time, row.close))
+
+class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        targets = []
+        for insight in insights:
+            if algorithm.securities[insight.symbol].is_tradable:
+                targets.append(PortfolioTarget(insight.symbol, insight.direction))
+        return targets</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class USFuturesSecurityMasterDataFrameworkAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetCash(1000000);
+            SetStartDate(2019, 2, 1);
+            SetEndDate(2021, 6, 1);
+
+            // Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
+            AddFuture(Futures.Energies.CrudeOilWTI,
+                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+                dataMappingMode: DataMappingMode.OpenInterest,
+                contractDepthOffset: 0
+            );
+            AddAlpha(new ContinuousFuturesAlphaModel());
+            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+        }
+        
+        class ContinuousFuturesAlphaModel : AlphaModel
+        {
+            private Future _continuousContract;
+            private Symbol _symbol;
+            // 1% margin to reassure trend direction
+            private decimal _threshold = 0.01m;
+            private SimpleMovingAverage _sma;
+        
+            public override IEnumerable Update(QCAlgorithm algorithm, Slice slice)
+            {
+                var insights = new List();
+                
+                //  Check if contract data available, since all trades are based on that only
+                if (_symbol == None || _continuousContract == None)
+                {
+                    return insights;
+                }
+                
+                // Up-to-date handling of switching the mapped contract for trade liquidity
+                foreach (var (symbol, changedEvent) in slice.SymbolChangedEvents)
+                {
+                    var oldSymbol = changedEvent.OldSymbol;
+                    if (algorithm.Insights.HasActiveInsights(oldSymbol, algorithm.UtcTime))
+                    {
+                        var newSymbol = changedEvent.NewSymbol;
+                        var tag = $"Rollover - Symbol changed at {algorithm.Time}: {oldSymbol} -&gt; {newSymbol}";
+                        var lastInsight = algorithm.Insights[oldSymbol].OrderBy(x =&gt; x.CloseTimeUtc).LastOrDefault();
+                        insights.Add(Insight.Price(newSymbol, lastInsight.CloseTimeUtc, lastInsight.Direction, tag: tag));
+                        algorithm.Insights.Clear(new Symbol[] { oldSymbol });
+                        algorithm.Log(tag);
+                    }
+                }
+                
+                var mappedSymbol = _continuousContract.Mapped;
+                // Make sure trade decisions are based on newly received data
+                if (!slice.Bars.ContainsKey(_symbol) || !_sma.IsReady || mappedSymbol == None)
+                {
+                    return insights;
+                }
+                
+                // Long if trend up by threshold to follow the trend
+                if (slice.Bars[_symbol].Price &gt; _sma.Current.Value * (1+_threshold) &amp;&amp; !algorithm.Portfolio[mappedSymbol].IsLong)
+                {
+                    insights.Add(Insight.Price(mappedSymbol, TimeSpan.FromDays(14), InsightDirection.Up));
+                }
+                // Short if trend down by threshold to follow the trend
+                else if (slice.Bars[_symbol].Price &lt; _sma.Current.Value * (1-_threshold) &amp;&amp; !algorithm.Portfolio[mappedSymbol].IsShort)
+                {
+                    insights.Add(Insight.Price(mappedSymbol, TimeSpan.FromDays(14), InsightDirection.Down));
+                }
+                
+                return insights;
+            }
+        
+            public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+            {
+                foreach (var security in changes.AddedSecurities)
+                {
+                    var symbol = security.Symbol;
+                    // Set up SMA indicator for trend direction estimator, only for the canonical symbol
+                    if (symbol.IsCanonical())
+                    {
+                        _continuousContract = (Future)security;
+                        _symbol = symbol;
+                        _sma = algorithm.SMA(_symbol, 10, Resolution.Daily);
+                        
+                        // Historical data 
+                        var history = algorithm.History(symbol, 60*24*10, Resolution.Minute);
+                        algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
+                        
+                        // Warm up the SMA indicator for its readiness for immediate use
+                        foreach (var bar in history)
+                        {
+                            _sma.Update(new IndicatorDataPoint(bar.Time, bar.Close));
+                        }
+                    }
+                }
+            }
+        }
+        
+        class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+        {
+            public override IEnumerable CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+            {
+                var targets = new List();
+                foreach (var insight in insights)
+                {
+                    if (algorithm.Securities[insight.Symbol].IsTradable)
+                    {
+                        targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
+                    }
+                }
+                return targets;
+            }
+        }
+    }
+}</pre>
+</div>

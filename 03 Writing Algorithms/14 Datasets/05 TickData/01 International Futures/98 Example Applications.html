@@ -1,0 +1,245 @@
+<p>
+The International Futures dataset enables you to design Futures strategies accurately. Examples include the following strategies:
+</p>
+<ul><li>Buying the Futures contract with the most open interest to reduce slippage and market impact</li>
+<li>Trade speculation on an International Index</li>
+<li>Trading bull calendar spreads to reduce volatility and margin requirements</li>
+</ul>
+<h4>Classic Algorithm Example -- HSI Futures</h4><p>The following example algorithm uses <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/zig-zag">ZigZag</a> to determine the trend of Hang Seng Index. To trade the Indices, we make use of the HSI Futures.</p>
+
+<div class="section-example-container">
+<pre class="python">class InternationalFuturesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 1)
+        # Set the time zone to HKT to make it more comparable with the exchange.
+        self.set_time_zone(TimeZones.HONG_KONG)
+        # Set the account currency as HKD to trade HSI Futures.
+        self.set_account_currency("HKD", 1000000)
+        # Seed the last price of the contracts for filling.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Request HSI Futures to trade. 
+        # Note that we will trade the contract with the highest open interest for liquidity.
+        self.hsi_future = self.add_future(
+            Futures.Indices.HANG_SENG,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.LAST_TRADING_DAY,
+            contract_depth_offset=0
+        )
+        # Request the corresponding underlying Index for feeding indicator for trade signal generation.
+        hsi_index = self.add_index("HSI").symbol
+
+        # Create a ZigZag indicator to trade Hang Seng Index price pivot points.
+        self._zz = self.zz(hsi_index, 0.15, 5, Resolution.DAILY)
+        # Warm up indicator for immediate readiness to trade.
+        self.warm_up_indicator(hsi_index, self._zz, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only place trade if the Future contracts is in market opening hours to avoid stale fills.
+        if self.is_market_open(self.hsi_future.symbol) and self._zz.is_ready:
+            pivot = self._zz.pivot_type
+            # If the last pivot point is a low point, the current trend is increasing after this low point.
+            if pivot == PivotPointType.LOW and not self.portfolio[self.hsi_future.symbol].is_long:
+                self.set_holdings(self.hsi_future.mapped, 0.2)
+            # If the last pivot point is a high point, the current trend is decreasing after this high point.
+            elif pivot == PivotPointType.HIGH and not self.portfolio[self.hsi_future.symbol].is_short:
+                self.set_holdings(self.hsi_future.mapped, -0.2)
+
+        # Handle rollover in case the current mapped contract changes.
+        for _, changed_event in slice.symbol_changed_events.items():
+            old_symbol = changed_event.old_symbol
+            new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
+            quantity = self.portfolio[old_symbol].quantity
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            self.liquidate(old_symbol)
+            if quantity != 0:
+                self.market_order(new_symbol, quantity)</pre>
+<pre class="csharp">public class InternationalFuturesDataAlgorithm : QCAlgorithm
+{
+    private Future _hsiFuture;
+    private ZigZag _zz;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        // Set the time zone to HKT to make it more comparable with the exchange.
+        SetTimeZone(TimeZones.HongKong);
+        // Set the account currency as HKD to trade HSI Futures.
+        SetAccountCurrency("HKD", 1000000);
+
+        // Seed the last price of the contracts for filling.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Request HSI Futures to trade. 
+        // Note that we will trade the contract with the highest open interest for liquidity.
+        _hsiFuture = AddFuture(
+            Futures.Indices.HangSeng,
+            extendedMarketHours: True,
+            dataMappingMode: DataMappingMode.LastTradingDay,
+            contractDepthOffset: 0
+        );
+        // Request the corresponding underlying index for feeding indicators for trade signal generation.
+        var hsiIndex = AddIndex("HSI").Symbol;
+
+        // Create a ZigZag indicator to trade Hang Seng Index price pivot points.
+        _zz = ZZ(hsiIndex, 0.15m, 5, Resolution.Daily);
+        // Warm up indicator for immediate readiness to trade.
+        WarmUpIndicator(hsiIndex, _zz, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only place trade if the Future contracts is in market opening hours to avoid stale fills.
+        if (IsMarketOpen(_hsiFuture.Symbol) &amp;&amp; _zz.IsReady)
+        {
+            var pivot = _zz.PivotType;
+            // If the last pivot point is low, the current trend is increasing after this low point.
+            if (pivot == PivotPointType.Low &amp;&amp; !Portfolio[_hsiFuture.Symbol].IsLong)
+            {
+                SetHoldings(_hsiFuture.Mapped, 0.2m);
+            }
+            // If the last pivot point is high, the current trend decreases after this high point.
+            else if (pivot == PivotPointType.High &amp;&amp; !Portfolio[_hsiFuture.Symbol].IsShort)
+            {
+                SetHoldings(_hsiFuture.Mapped, -0.2m);
+            }
+        }
+
+        // Handle rollover in case the current mapped contract changes.
+        foreach (var (_, changedEvent) in slice.SymbolChangedEvents)
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+            var quantity = Portfolio[oldSymbol].Quantity;
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            Liquidate(oldSymbol);
+            if (quantity != 0)
+            {
+                MarketOrder(newSymbol, quantity);
+            }
+        }
+    }
+}</pre>
+</div><h4>Classic Algorithm Example -- FESX Futures</h4><p>The following example algorithm uses <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/moving-average-convergence-divergence">MACD</a> to determine the trend of the EuroStoxx50 Index.  To trade the Index, we make use of the FESX Futures.</p>
+
+<div class="section-example-container">
+<pre class="python">class InternationalFuturesDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 1)
+        # Set the time zone to Berlin to make it more comparable with the exchange.
+        self.set_time_zone(TimeZones.BERLIN)
+        # Set the account currency as EUR to trade FSX Futures.
+        self.set_account_currency("EUR", 1000000)
+        # Seed the last price of the contracts for filling.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Request FESX Futures to trade. 
+        # Note that we will trade the contract with the highest open interest for liquidity.
+        self.fesx_future = self.add_future(
+            Futures.Indices.EURO_STOXX_50,
+            extended_market_hours=True,
+            data_mapping_mode=DataMappingMode.LAST_TRADING_DAY,
+            contract_depth_offset=0
+        )
+        # Request the corresponding underlying Index for feeding indicator for trade signal generation.
+        fesx_index = self.add_index("SX5E").symbol
+
+        # Create a MACD indicator to trade EuroStoxx trend changes on the fast-slow term trend convergence.
+        self._macd = self.macd(fesx_index, 12, 26, 9, Resolution.DAILY)
+        # Warm up indicator for immediate readiness to trade.
+        self.warm_up_indicator(fesx_index, self._macd, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Only place trade if the Future contracts is in market opening hours to avoid stale fills.
+        if self.is_market_open(self.fesx_future.symbol) and self._macd.is_ready:
+            # To identify a sensitive change in trend, use the change in the histogram value of the MACD.
+            histogram = self._macd.histogram
+            histogram_chg = histogram.current.value - histogram.previous.value
+            # Positive histogram value increasing means the fast trend is rising faster than the slow trend, indicating a strong uptrend.
+            if histogram_chg &gt; 0 and histogram.current.value &gt; 0 and not self.portfolio[self.fesx_future.symbol].is_long:
+                self.set_holdings(self.fesx_future.mapped, 0.2)
+            # Negative histogram value decreasing means the slow trend is dropping faster than the fast trend, indicating a strong downtrend.
+            elif histogram_chg &lt; 0 and histogram.current.value &lt; 0 and not self.portfolio[self.fesx_future.symbol].is_short:
+                self.set_holdings(self.fesx_future.mapped, -0.2)
+
+        # Handle rollover in case the current mapped contract changes.
+        for _, changed_event in slice.symbol_changed_events.items():
+            old_symbol = changed_event.old_symbol
+            new_symbol = self.add_future_contract(changed_event.new_symbol).symbol
+            quantity = self.portfolio[old_symbol].quantity
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            self.liquidate(old_symbol)
+            if quantity != 0:
+                self.market_order(new_symbol, quantity)</pre>
+<pre class="csharp">public class InternationalFuturesDataAlgorithm : QCAlgorithm
+{
+    private Future _fesxFuture;
+    private MovingAverageConvergenceDivergence _macd;
+
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        // Set the time zone to Berlin to make it more comparable with the exchange.
+        SetTimeZone(TimeZones.Berlin);
+        // Set the account currency as EUR to trade FSX Futures.
+        SetAccountCurrency("EUR", 1000000);
+        // Seed the last price of the contracts for filling.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        // Request FESX Futures to trade. 
+        // Note that we will trade the contract with the highest open interest for liquidity.
+        _fesxFuture = AddFuture(
+            Futures.Indices.EuroStoxx50,
+            extendedMarketHours: True,
+            dataMappingMode: DataMappingMode.LastTradingDay,
+            contractDepthOffset: 0
+        );
+        // Request the corresponding underlying Index for feeding indicator for trade signal generation.
+        var fesxIndex = AddIndex("SX5E").Symbol;
+
+        // Create a MACD indicator to trade EuroStoxx trend changes on the fast-slow term trend convergence.
+        _macd = MACD(fesxIndex, 12, 26, 9, resolution: Resolution.Daily);
+        // Warm up indicator for immediate readiness to trade.
+        WarmUpIndicator(fesxIndex, _macd, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Only place trade if the Future contracts is in market opening hours to avoid stale fills.
+        if (IsMarketOpen(_fesxFuture.Symbol) &amp;&amp; _macd.IsReady)
+        {
+            // To identify a sensitive change in trend, use the change in the histogram value of the MACD.
+            var histogram = _macd.Histogram;
+            var histogramChg = histogram - histogram.Previous;
+            // Positive histogram value increasing means the fast trend is rising faster than the slow trend, indicating a strong uptrend.
+            if (histogramChg &gt; 0 &amp;&amp; histogram &gt; 0 &amp;&amp; !Portfolio[_fesxFuture.Symbol].IsLong)
+            {
+                SetHoldings(_fesxFuture.Mapped, 0.2m);
+            }
+            // Negative histogram value decreasing means the slow trend is dropping faster than the fast trend, indicating a strong downtrend.
+            else if (histogramChg &lt; 0 &amp;&amp; histogram &lt; 0 &amp;&amp; !Portfolio[_fesxFuture.Symbol].IsShort)
+            {
+                SetHoldings(_fesxFuture.Mapped, -0.2m);
+            }
+        }
+
+        // Handle rollover in case the current mapped contract changes.
+        foreach (var (_, changedEvent) in slice.SymbolChangedEvents)
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+            var quantity = Portfolio[oldSymbol].Quantity;
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            Liquidate(oldSymbol);
+            if (quantity != 0)
+            {
+                MarketOrder(newSymbol, quantity);
+            }
+        }
+    }
+}</pre>
+</div>

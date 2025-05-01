@@ -1,0 +1,228 @@
+<p>
+The Brain Language Metrics on Company Filings dataset enables you to test strategies using language metrics and their differences gathered from 10K and 10Q reports. Examples include the following strategies:
+</p>
+
+<ul><li>Using the similarity among reports to determine position sizing of securities. Some examples are discussed in <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1658471">Lazy Prices, Cohen et al. 2018</a> and <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3690461">The Positive Similarity of Company Filings and the Cross-section of Stock Returns, M. Padyšák 2020</a>.</li>
+<li>Using the sentiment of the latest report to determine the portfolio allocation to give to each security in the universe.</li>
+<li>Using levels of uncertainty, readability, or litigious language in the report to determine position sizing of securities.</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys Apple when the sentiment of their 10K report is positive. Otherwise, it holds cash.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2010, 1, 1)
+        self.set_end_date(2021, 7, 8)
+        self.set_cash(100000) 
+        
+        # Requesting data -- we aim to obtain a sentiment score from the company filings
+        # Combining both fundamental and sentiment factor, as well as past performance and future provision
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.dataset_symbol = self.add_data(BrainCompanyFilingLanguageMetrics10K , self.aapl).symbol
+        
+        # Historical data
+        history = self.history(self.dataset_symbol, 365, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request for {self.dataset_symbol}")
+        
+        
+    def on_data(self, data):
+        # Trade base on the updated report sentiment
+        if data.contains_key(self.dataset_symbol):
+            sentiment = data[self.dataset_symbol].report_sentiment.sentiment
+            # Buy for a positive sentiment score for the positive return projection
+            self.set_holdings(self.symbol, int(sentiment &gt; 0))</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol;
+        private Symbol _datasetSymbol;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2010, 1, 1);
+            SetEndDate(2021, 7, 8);
+            SetCash(100000);
+            
+            // Requesting data -- we aim to obtain a sentiment score from the company filings
+            // Combining both fundamental and sentiment factor, as well as past performance and future provision
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _datasetSymbol = AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_symbol).Symbol;
+            
+            // Historical data
+            var history = History&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_datasetSymbol, 365, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Trade base on the updated report sentiment
+            if (slice.ContainsKey(_datasetSymbol))
+            {
+                // Buy for a positive sentiment score for the positive return projection
+                var sentiment = slice[_datasetSymbol].ReportSentiment.Sentiment;
+                SetHoldings(_symbol, sentiment &gt; 0 ? 1 : 0);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of US Equities that have positive sentiment in their 10K report and then forms an equal-weighted portfolio:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2010, 1, 1)
+        self.set_end_date(2021, 7, 8)
+        self.set_cash(100000) 
+        
+        self.universe_settings.resolution = Resolution.DAILY
+        # Filter based on company filing data
+        self.add_universe(BrainCompanyFilingLanguageMetricsUniverse10K, self.universe_selection)
+        
+        self.add_alpha(BrainCompanyFilingNLPAlphaModel())
+        
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+         
+        self.add_risk_management(NullRiskManagementModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+
+    def universe_selection(self, alt_coarse: List[BrainCompanyFilingLanguageMetricsUniverse10K]) -&gt; List[Symbol]:
+        # Filter for the stocks with positive sentiment score for the positive return projection
+        # Combining both fundamental and sentiment factor, as well as past performance and future provision
+        return [d.symbol for d in alt_coarse \
+                if d.report_sentiment.sentiment is not None and d.report_sentiment.sentiment &gt; 0]
+        
+class BrainCompanyFilingNLPAlphaModel(AlphaModel):
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice):
+        insights = []
+
+        # Signal to invest in the selected universe, which are expected to have a positive return due to positive fundamentals and future prospect
+        for symbol in algorithm.active_securities.keys:
+            if not slice.contains_key(symbol):
+                continue
+            insights.append(Insight.price(symbol, timedelta(days=1), InsightDirection.UP))
+        
+        return insights</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2010, 1, 1);
+            SetEndDate(2021, 7, 8);
+            SetCash(100000);
+            
+            // Filter based on company filing data
+            UniverseSettings.Resolution = Resolution.Daily;
+            AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;(altCoarse =&gt;
+            {
+                // Filter for the stocks with positive sentiment score for the positive return projection
+                // Combining both fundamental and sentiment factor, as well as past performance and future provision
+                return from d in altCoarse.OfType&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;() 
+                    where d.ReportSentiment.Sentiment &gt; 0m
+                    select d.Symbol;
+            });
+            
+            AddAlpha(new BrainCompanyFilingNLPAlphaModel());
+            
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+        
+    public class BrainCompanyFilingNLPAlphaModel : AlphaModel
+    {
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+            
+            // Signal to invest in the selected universe, which are expected to have a positive return due to positive fundamentals and future prospect
+            foreach (var symbol in algorithm.ActiveSecurities.Keys)
+            {
+                if (!slice.ContainsKey(symbol))
+                {
+                    continue;
+                }
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up));
+            }
+            return insights;
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists US Equities having the highest 2-day rank.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.BrainSentiment.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Requesting data
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol;
+var symbol = qb.AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(aapl).Symbol;
+
+// Historical data
+var history = qb.History&lt;BrainCompanyFilingLanguageMetrics10K&gt;(symbol, 180, Resolution.Daily);
+foreach (BrainCompanyFilingLanguageMetrics10K languageMetrics in history)
+{
+    Console.WriteLine($"{languageMetrics} at {languageMetrics.EndTime}");
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    var symbols = (from d in altCoarse.OfType&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;()
+        orderby d.ReportSentiment.Sentiment descending select d.Symbol).Take(10);
+    return symbols;
+}
+var universe = qb.AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-10), qb.Time);
+foreach (var universeDay in universeHistory)
+{
+    foreach (BrainCompanyFilingLanguageMetricsUniverse10K languageMetrics in universeDay)
+    {
+        Console.WriteLine($"{languageMetrics.Symbol} sentiment at {languageMetrics.EndTime}: {languageMetrics.ReportSentiment.Sentiment}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Requesting Data
+aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol
+symbol = qb.AddData(BrainCompanyFilingLanguageMetrics10K, aapl).Symbol
+
+# Historical data
+history = qb.History(BrainCompanyFilingLanguageMetrics10K, symbol, 180, Resolution.Daily)
+for (symbol, time), row in history.iterrows():
+    print(f"{symbol} sentiment at {time}: {row['reportsentiment'].Sentiment}")
+
+# Add Universe Selection
+def UniverseSelection(alt_coarse: List[BrainCompanyFilingLanguageMetricsUniverse10K]) -&gt; List[Symbol]:
+    return [d.Symbol for d in sorted([x for x in alt_coarse if x.ReportSentiment.Sentiment],
+        key=lambda x: x.ReportSentiment.Sentiment, reverse=True)[:10]]
+
+universe = qb.AddUniverse(BrainCompanyFilingLanguageMetricsUniverse10K, UniverseSelection)
+
+# Historical Universe data
+universe_history = qb.UniverseHistory(universe, qb.Time-timedelta(10), qb.Time)
+for (_, time), universeDay in universe_history.items():
+    for language_metrics in universeDay:
+        print(f"{language_metrics.Symbol} sentiment at {language_metrics.EndTime}: {language_metrics.ReportSentiment.Sentiment}")</pre>
+</div>

@@ -1,0 +1,301 @@
+<p>The Corporate Buybacks dataset enables you to design strategies using information on company buyback programs. Examples include the following strategies:</p>
+<ul><li>Buying securities when the company announces an upcoming share buyback on the premise that the reduction in supply (shares outstanding) will drive up the remaining shares price</li>
+<li>Buying securities when the company executes an upcoming share buyback on the premise that the reduction in supply (shares outstanding) will drive up the remaining shares price</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys Apple stock when there is a buyback intention or transaction and then it sells the stock 3 days later:</p>
+
+<div class="section-example-container"><pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class CorporateBuybacksDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2016, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000)
+ 
+        self.aapl = self.add_equity("AAPL", Resolution.MINUTE).symbol
+        
+        # Requesting insider trade intention news and actual trades to estimate the return, since insiders may have better information of the future confidence
+        self.smart_insider_intention = self.add_data(SmartInsiderIntention, self.aapl).symbol
+        self.smart_insider_transaction = self.add_data(SmartInsiderTransaction, self.aapl).symbol
+        
+        # Historical data
+        history = self.history(self.smart_insider_intention, 365, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request for intentions")
+        
+        history = self.history(self.smart_insider_transaction, 365, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request for transactions")
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Buy Apple whenever we receive a buyback intention or transaction notification, given the insiders may have confidence in the future to buy more
+        # This news may stimulate market popularity
+        if slice.contains_key(self.smart_insider_intention) or slice.contains_key(self.smart_insider_transaction):
+            self.set_holdings(self.aapl, 1)
+            self.entry_time = self.time
+        
+        # Liquidate holdings 3 days after the latest entry
+        # The market popularity and possible overbrought is cooled
+        if self.portfolio.invested and self.time &gt;= self.entry_time + timedelta(days=3):
+            self.liquidate()</pre><pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class CorporateBuybacksDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _aapl;
+        private Symbol _smartInsiderIntention;
+        private Symbol _smartInsiderTransaction;
+        private DateTime _entryTime;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2016, 1, 1);
+            SetEndDate(2021, 1, 1);
+            SetCash(100000);
+            
+            _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+            
+            // Requesting insider trade intention news and actual trades to estimate the return, since insiders may have better information of the future confidence
+            _smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
+            _smartInsiderTransaction = AddData&lt;SmartInsiderTransaction&gt;(_aapl).Symbol;
+            
+            // Historical data
+            var intentionHistory = History&lt;SmartInsiderIntention&gt;(_smartInsiderIntention, 365, Resolution.Daily);
+            Debug($"We got {intentionHistory.Count()} items from our history request for intentions");
+            
+            var transactionHistory = History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransaction, 365, Resolution.Daily);
+            Debug($"We got {transactionHistory.Count()} items from our history request for transactions");
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Buy Apple whenever we receive a buyback intention or transaction notification, given the insiders may have confidence in the future to buy more
+            // This news may stimulate market popularity
+            if (slice.ContainsKey(_smartInsiderIntention) || slice.ContainsKey(_smartInsiderTransaction))
+            {
+                SetHoldings(_aapl, 1);
+                _entryTime = Time;
+            }
+ 
+            // Liquidate holdings 3 days after the latest entry
+            // The market popularity and possible overbrought is cooled
+            if (Portfolio.Invested &amp;&amp; Time &gt;= _entryTime + TimeSpan.FromDays(3))
+            {
+                Liquidate();
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm buys Apple stock when there is a buyback intention or transaction and then it sells the stock 3 days later:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class CorporateBuybacksDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2016, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000)
+ 
+        # Only interest in AAPL's insider trades information
+        symbols = [Symbol.create("AAPL", SecurityType.EQUITY, Market.USA)]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))
+        self.add_alpha(CorporateBuybacksAlphaModel())
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+
+class CorporateBuybacksAlphaModel(AlphaModel):
+    
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # Buy Apple whenever we receive a buyback intention or transaction notification, given the insiders may have confidence in the future to buy more
+        # This news may stimulate market popularity, so we hold for 3 days
+        if slice.contains_key(self.smart_insider_intention) or slice.contains_key(self.smart_insider_transaction):
+            return [Insight.price(self.aapl, timedelta(days=3), InsightDirection.UP)]
+        return []
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            self.aapl = security.symbol
+            
+            # Requesting insider trade intention news and actual trades to estimate the return, since insiders may have better information of the future confidence
+            self.smart_insider_intention = algorithm.add_data(SmartInsiderIntention, self.aapl).symbol
+            self.smart_insider_transaction = algorithm.add_data(SmartInsiderTransaction, self.aapl).symbol
+            
+            # Historical data
+            history = algorithm.history(self.smart_insider_intention, 365, Resolution.DAILY)
+            algorithm.debug(f"We got {len(history)} items from our history request for intentions")
+            
+            history = algorithm.history(self.smart_insider_transaction, 365, Resolution.DAILY)
+            algorithm.debug(f"We got {len(history)} items from our history request for transactions")</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class CorporateBuybacksDataAlgorithm : QCAlgorithm
+    {
+
+        public override void Initialize()
+        {
+            SetStartDate(2016, 1, 1);
+            SetEndDate(2021, 1, 1);
+            SetCash(100000);
+            
+            // Only interest in AAPL's insider trades information
+            var symbols = new[] {QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)};
+            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+            AddAlpha(new CorporateBuybacksAlphaModel());
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+
+        public class CorporateBuybacksAlphaModel : AlphaModel
+        {
+            private Symbol _aapl;
+            private Symbol _smartInsiderIntention;
+            private Symbol _smartInsiderTransaction;
+    
+            public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+            {
+                var insights = new List&lt;Insight&gt;();
+                
+                // Buy Apple whenever we receive a buyback intention or transaction notification, given the insiders may have confidence in the future to buy more
+                // This news may stimulate market popularity, so we hold for 3 days
+                if (slice.ContainsKey(_smartInsiderIntention) || slice.ContainsKey(_smartInsiderTransaction))
+                {
+                    insights.Add(Insight.Price(_aapl, TimeSpan.FromDays(3),  InsightDirection.Up));
+                } 
+                return insights;
+            }
+    
+            public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+            {
+                foreach (var security in changes.AddedSecurities)
+                {
+                    _aapl = security.Symbol;
+                    
+                    // Requesting insider trade intention news and actual trades to estimate the return, since insiders may have better information of the future confidence
+                    _smartInsiderIntention = algorithm.AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
+                    _smartInsiderTransaction = algorithm.AddData&lt;SmartInsiderTransaction&gt;(_aapl).Symbol;
+                    
+                    // Historical data
+                    var intentionHistory = algorithm.History&lt;SmartInsiderIntention&gt;(_smartInsiderIntention, 365, Resolution.Daily);
+                    algorithm.Debug($"We got {intentionHistory.Count()} items from our history request for intentions");
+                    
+                    var transactionHistory = algorithm.History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransaction, 365, Resolution.Daily);
+                    algorithm.Debug($"We got {transactionHistory.Count()} items from our history request for transactions");
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example lists US Equities with the highest buyback amount.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.SmartInsiderIntentionsTransactions.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Requesting data
+var symbol = qb.AddEquity("AAPL").Symbol;
+var intentionSymbol = qb.AddData&lt;SmartInsiderIntention&gt;(symbol).Symbol;
+var transactionSymbol = qb.AddData&lt;SmartInsiderTransaction&gt;(symbol).Symbol;
+
+// Historical data for SmartInsiderIntention
+var intentionHistory = qb.History&lt;SmartInsiderIntention&gt;(symbol, 300, Resolution.Daily);
+foreach (SmartInsiderIntention intention in intentionHistory)
+{
+    Console.WriteLine($"{intention.NoteText} at {intention.EndTime}");
+}
+
+// Historical data for SmartInsiderTransaction
+var transactionHistory = qb.History&lt;SmartInsiderTransaction&gt;(symbol, 300, Resolution.Daily);
+foreach (SmartInsiderTransaction transaction in transactionHistory)
+{
+    Console.WriteLine($"{transaction.NoteText} at {transaction.EndTime}");
+}
+
+// Add Universe Selection for SmartInsiderIntention
+IEnumerable&lt;Symbol&gt; IntentionSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return (from d in altCoarse.OfType&lt;SmartInsiderIntentionUniverse&gt;()
+        where d.AmountValue.HasValue
+        orderby d.AmountValue descending select d.Symbol).Take(10);
+}
+var intentionUniverse = qb.AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(IntentionSelection);
+
+// Historical Universe data
+var intentionUniverseHistory = qb.UniverseHistory(intentionUniverse, qb.Time.AddDays(-10), qb.Time);
+foreach (var intentions in intentionUniverseHistory)
+{
+    foreach (SmartInsiderIntentionUniverse intention in intentions)
+    {
+        Console.WriteLine($"{intention.Symbol.Value} amount at {intention.EndTime}: {intention.AmountValue}");
+    }
+}
+
+// Add Universe Selection for SmartInsiderTransaction
+IEnumerable&lt;Symbol&gt; TransactionSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return (from d in altCoarse.OfType&lt;SmartInsiderTransactionUniverse&gt;()
+        where d.Amount.HasValue
+        orderby d.Amount descending select d.Symbol).Take(10);
+}
+var transactionUniverse = qb.AddUniverse&lt;SmartInsiderTransactionUniverse&gt;(TransactionSelection);
+
+// Historical Universe data
+var transactionHistory = qb.UniverseHistory(transactionUniverse, qb.Time.AddDays(-10), qb.Time);
+foreach (var transactions in transactionHistory)
+{
+    foreach (SmartInsiderTransactionUniverse transaction in transactions)
+    {
+        Console.WriteLine($"{transaction.Symbol.Value} amount at {transaction.EndTime}: {transaction.Amount}");
+    }
+}</pre>
+     <pre class="python">from math import isnan
+qb = QuantBook()
+
+# Requesting Data
+symbol = qb.AddEquity("AAPL").Symbol
+intention_symbol = qb.AddData(SmartInsiderIntention, symbol).Symbol
+transaction_symbol = qb.AddData(SmartInsiderTransaction, symbol).Symbol
+
+# Historical data
+intention_history = qb.History(SmartInsiderIntention, intention_symbol, 300, Resolution.Daily)
+for (symbol, time), row in intention_history.iterrows():
+    if isnan(row['amountvalue']): continue
+    print(f"{symbol} amount value at {time}: {row['amountvalue']}")
+
+transaction_history = qb.History(SmartInsiderTransaction, transaction_symbol, 300, Resolution.Daily)
+for (symbol, time), row in transaction_history.iterrows():
+    if isnan(row['amount']): continue
+    print(f"{symbol} amount at {time}: {row['amount']}")
+
+# Add Universe Selection for SmartInsiderIntention
+def IntentionSelection(alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
+    return [d.Symbol for d in sorted([x for x in alt_coarse if x.AmountValue],
+        key=lambda x: x.AmountValue, reverse=True)[:10]]
+
+intention_universe  = qb.AddUniverse(SmartInsiderIntentionUniverse, IntentionSelection)
+
+# Historical Universe data
+intention_universe_history = qb.UniverseHistory(intention_universe, qb.Time-timedelta(10), qb.Time)
+for (_, time), intentions in intention_universe_history.items():
+    for intention in intentions:
+        print(f"{intention.Symbol.Value} amount value at {intention.EndTime}: {intention.AmountValue}")
+
+# Add Universe Selection for SmartInsiderTransaction
+def IntentionSelection(alt_coarse: List[SmartInsiderTransactionUniverse]) -&gt; List[Symbol]:
+    return [d.Symbol for d in sorted([x for x in alt_coarse if x.Amount],
+        key=lambda x: x.Amount, reverse=True)[:10]]
+
+transaction_universe  = qb.AddUniverse(SmartInsiderTransactionUniverse, IntentionSelection)
+
+# Historical Universe data
+transaction_universe_history = qb.UniverseHistory(transaction_universe, qb.Time-timedelta(10), qb.Time)
+for (_, time), transactions in transaction_universe_history.items():
+    for transaction in transactions:
+        print(f"{transaction.Symbol.Value} amount at {transaction.EndTime}: {transaction.Amount}")</pre>
+</div>

@@ -1,0 +1,269 @@
+<p>The US Treasury Yield Curve dataset enables you to monitor the yields of bonds with numerous maturities in your strategies. Examples include the following strategies:</p>
+
+<ul><li>Short selling SPY when the yield curve inverts</li>
+<li>Buying short-term Treasuries and short selling long-term Treasuries when the yield curve becomes steeper (aka curve steepener trade)</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm short sells SPY for two years when the yield curve inverts:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USTreasuryDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2000, 3, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+
+        # Request SPY as the market representative for trading
+        self.spy_symbol = self.add_equity("SPY", Resolution.HOUR).symbol
+
+        # Requesting yield curve data for trade signal generation (inversion)
+        self.yield_curve_symbol = self.add_data(USTreasuryYieldCurveRate, "USTYCR").symbol
+
+        # Historical data
+        history = self.history(USTreasuryYieldCurveRate, self.yield_curve_symbol, 60, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request")
+        
+        self.last_inversion = datetime.min
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade only based on updated yield curve data
+        if not slice.contains_key(self.yield_curve_symbol):
+            return
+        rates = slice[self.yield_curve_symbol]
+        
+        # We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
+        if not (rates.ten_year is not None and rates.two_year is not None):
+            return
+        
+        # Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
+        if (self.time - self.last_inversion &lt; timedelta(days=365)):
+            return
+
+        # Normally, 10y yield should be greater than 2y yield due to default risk accumulation
+        # But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
+        # if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
+        if (not self.portfolio.invested and rates.two_year &gt; rates.ten_year):
+            self.debug(f"{self.time} - Yield curve inversion! Shorting the market for two years")
+            self.set_holdings(self.spy_symbol, -0.5)
+            self.last_inversion = self.time
+            return
+        
+        # If two years have passed, liquidate our position in SPY assuming the market starts resilience
+        if (self.time - self.last_inversion &gt;= timedelta(days=365 * 2)):
+            self.liquidate(self.spy_symbol)</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class USTreasuryDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _spySymbol;
+        private Symbol _yieldCurveSymbol;
+        private DateTime _lastInversion = DateTime.MinValue;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2000, 3, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+
+            // Request SPY as the market representative for trading
+            _spySymbol = AddEquity("SPY", Resolution.Hour).Symbol;
+
+            // Requesting yield curve data for trade signal generation (inversion)
+            _yieldCurveSymbol = AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
+
+            // Historical data
+            var history = History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 60, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+        }
+        
+        
+        public override void OnData(Slice slice)
+        {
+            // Trade only based on updated yield curve data
+            if (!slice.TryGetValue(_yieldCurveSymbol, out var rates))
+            {
+                return;
+            }
+            
+            // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
+            if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
+            {
+                return;
+            }
+            
+            // Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
+            if (Time - _lastInversion &lt; TimeSpan.FromDays(365))
+            {
+                return;
+            }
+            
+            // Normally, 10y yield should be greater than 2y yield due to default risk accumulation
+            // But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
+            // if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
+            if (!Portfolio.Invested &amp;&amp; rates.TwoYear &gt; rates.TenYear)
+            {
+                Debug($"{Time} - Yield curve inversion! Shorting the market for two years");
+                SetHoldings(_spySymbol, -0.5); 
+                 _lastInversion = Time;
+                return;
+            }
+            
+            
+            // If two years have passed, liquidate our position in SPY assuming the market starts resilience
+            if (Time - _lastInversion &gt;= TimeSpan.FromDays(365 * 2))
+            {
+                Liquidate(_spySymbol);
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm short sells SPY for two years when the yield curve inverts:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USTreasuryDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2000, 3, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.HOUR
+        # Universe only have SPY as the market representative for trading
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))   
+        # Custom alpha model that emit insight according to US Treasury data
+        self.add_alpha(USTreasuryAlphaModel(self))
+        # Use insight weighting PCM to limit the size of investment, reduce the fluctuation of the portfolio value
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel(lambda time: None))
+        
+class USTreasuryAlphaModel(AlphaModel):
+
+    spy_symbol = None
+    last_inversion = datetime.min
+    
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        # Requesting yield curve data for trade signal generation (inversion)
+        self.yield_curve_symbol = algorithm.add_data(USTreasuryYieldCurveRate, "USTYCR").symbol
+
+        # Historical data
+        history = algorithm.history(self.yield_curve_symbol, 60, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} items from our history request")
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # Trade only based on updated yield curve data
+        if not (slice.contains_key(self.yield_curve_symbol) and self.spy_symbol is not None):
+            return []
+        rates = slice[self.yield_curve_symbol]
+        
+        # We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
+        if not (rates.ten_year is not None and rates.two_year is not None):
+            return []
+        
+        # Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
+        if (slice.time - self.last_inversion &lt; timedelta(days=365)):
+            return []
+        
+        # Normally, 10y yield should be greater than 2y yield due to default risk accumulation
+        # But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
+        # if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
+        if (not algorithm.portfolio.invested and rates.two_year &gt; rates.ten_year):
+            algorithm.debug(f"{slice.time} - Yield curve inversion! Shorting the market for two years")
+            self.last_inversion = slice.time
+            return [Insight.price(self.spy_symbol, slice.time + timedelta(days=2*365), InsightDirection.DOWN, None, None, None, 0.5)]
+        return []
+        
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            self.spy_symbol = security.symbol
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class USTreasuryYieldCurveDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2000, 3, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+
+            UniverseSettings.Resolution = Resolution.Hour;
+            // Universe only have SPY as the market representative for trading
+            var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
+            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+            // Custom alpha model that emit insight according to US Treasury data
+            AddAlpha(new USTreasuryAlphaModel(this));
+            // Use insight weighting PCM to limit the size of investment, reduce the fluctuation of the portfolio value
+            SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel((time) =&gt; None));
+        }
+    }
+    
+    public class USTreasuryAlphaModel : AlphaModel
+    {
+        private Symbol? _spySymbol = None;
+        private Symbol _yieldCurveSymbol;
+        private DateTime _lastInversion = DateTime.MinValue;
+        
+        public USTreasuryAlphaModel(QCAlgorithm algorithm)
+        {
+            // Requesting yield curve data for trade signal generation (inversion)
+            _yieldCurveSymbol = algorithm.AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
+
+            // Historical data
+            var history = algorithm.History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 60, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request");
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            // Trade only based on updated yield curve data
+            if (!slice.TryGetValue(_yieldCurveSymbol, out var rates) || _spySymbol == None)
+            {
+                return insights;
+            }
+            
+            // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
+            if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
+            {
+                return insights;
+            }
+            
+            // Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
+            if (slice.Time - _lastInversion &lt; TimeSpan.FromDays(365))
+            {
+                return insights;
+            }
+            
+            // Normally, 10y yield should be greater than 2y yield due to default risk accumulation
+            // But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
+            // if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
+            if (!algorithm.Portfolio.Invested &amp;&amp; rates.TwoYear &gt; rates.TenYear)
+            {
+                algorithm.Debug($"{slice.Time} - Yield curve inversion! Shorting the market for two years");
+                _lastInversion = slice.Time;
+                insights.Add(Insight.Price(_spySymbol, slice.Time + TimeSpan.FromDays(2*365), InsightDirection.Down, None, None, None, 0.5));
+            }
+            
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                _spySymbol = security.Symbol;
+            }
+        }
+    }
+}</pre>
+</div>

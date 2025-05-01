@@ -1,0 +1,261 @@
+<p>
+The US Fundamentals dataset enables you to design strategies harnessing fundamental data points. Examples include the following strategies:
+</p>
+<ul><li>Ranking a universe of securities by a value factor like the <a href="/research/15728/piotroski-f-score-investing">Piotroski F-score</a> and buying a subset of the universe with the best factor ranking</li>
+<li>Using the Morningstar asset classification to target specific industries or to ensure your strategy is diversified across several sectors</li>
+<li>Trading securities that recently performed an IPO</li>
+
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of US Equities. The first stage filter selects the 100 most liquid US Equities and the second stage filter selects the 10 assets with the greatest PE ratio. The algorithm then forms an equal-weighted portfolio with the 10 assets in the universe.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class MorningStarDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 1)
+        self.set_cash(100000) 
+        
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_size = 10
+        # Add universe selection to filter with fundamental data
+        self.add_universe(self.fundamental_selection_function)
+        
+    def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Make sure fundamental data and PE ratio available 
+        # To avoid penny stocks with high volatility, set price above $1
+        selected = [f for f in fundamental if f.has_fundamental_data and f.price &gt; 1 and not np.isnan(f.valuation_ratios.pe_ratio)]
+        # Filter the top 100 high dollar volume equities to ensure liquidity
+        sorted_by_dollar_volume = sorted(selected, key=lambda f: f.dollar_volume, reverse=True)[:100]
+        # Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
+        sorted_by_pe_ratio = sorted(sorted_by_dollar_volume, key=lambda f: f.valuation_ratios.pe_ratio, reverse=True)[:self.universe_size]
+        return [ f.symbol for f in sorted_by_pe_ratio ]
+        
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # if we have no changes, do nothing
+        if self._changes is None: return
+
+        # liquidate removed securities, as not being the most popular stocks anymore
+        for security in self._changes.removed_securities:
+            if security.invested:
+                self.liquidate(security.symbol)
+
+        # we want 1/N allocation in each security in our universe to evenly dissipate risk
+        for security in self._changes.added_securities:
+            self.set_holdings(security.symbol, 1 / self.universe_size)
+
+        self._changes = None
+           
+           
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        self._changes = changes
+        
+        for security in changes.added_securities:
+            # Historical data
+            history = self.history(security.symbol, 7, Resolution.DAILY)
+            self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class MorningStarDataAlgorithm : QCAlgorithm
+    {
+        private int _universeSize = 10;
+        private SecurityChanges _changes = SecurityChanges.None;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 7, 1);
+            SetCash(100000);
+            
+            // Requesting data
+            UniverseSettings.Resolution = Resolution.Daily;
+            # Add universe selection to filter with fundamental data
+            AddUniverse(FundamentalSelectionFunction);
+        }
+
+        public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+        {
+            // Make sure fundamental data and PE ratio available 
+            // To avoid penny stocks with high volatility, set price above $1
+            // Filter the top 100 high dollar volume equities to ensure liquidity
+            // Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
+            return fundamental
+                .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 1 &amp;&amp; !Double.IsNaN(x.ValuationRatios.PERatio))
+                .OrderByDescending(x =&gt; x.DollarVolume)
+                .Take(100)
+                .OrderByDescending(x =&gt; x.ValuationRatios.PERatio)
+                .Take(_universeSize)
+                .Select(x =&gt; x.Symbol);
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // if we have no changes, do nothing
+            if (_changes == SecurityChanges.None) return;
+
+            // liquidate removed securities, as not being the most popular stocks anymore
+            foreach (var security in _changes.RemovedSecurities)
+            {
+                if (security.Invested)
+                {
+                    Liquidate(security.Symbol);
+                }
+            }
+
+            // we want 1/N allocation in each security in our universe to evenly dissipate risk
+            foreach (var security in _changes.AddedSecurities)
+            {
+                SetHoldings(security.Symbol, 1m / _universeSize);
+            }
+
+            _changes = SecurityChanges.None;
+        }
+        
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            _changes = changes;
+
+
+            foreach (var security in changes.AddedSecurities)
+            {
+                // Historical data
+                var history = History(security.Symbol, 7, Resolution.Daily);
+                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm creates a dynamic universe of US Equities. The first stage filter selects the 100 most liquid US Equities and the second stage filter selects the 10 assets with the greatest PE ratio. The algorithm then forms an equal-weighted portfolio with the 10 assets in the universe.</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
+
+class MorningStarDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 7, 1)
+        self.set_cash(100000) 
+        
+        # Add universe selection to filter with fundamental data
+        self.universe_settings.resolution = Resolution.DAILY
+        self.set_universe_selection(CustomFundamentalUniverseSelectionModel())
+        
+        self.set_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
+
+        # we want 1/N allocation in each security in our universe to evenly dissipate risk
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+         
+        self.add_risk_management(NullRiskManagementModel())
+        
+        self.set_execution(ImmediateExecutionModel())
+        
+
+class CustomFundamentalUniverseSelectionModel(FundamentalUniverseSelectionModel):
+
+    def Select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Make sure fundamental data and PE ratio available 
+        # To avoid penny stocks with high volatility, set price above $1
+        filtered = [x for x in fundamental if x.has_fundamental_data and x.price &gt; 1 and not np.isnan(x.valuation_ratios.pe_ratio)]
+        # Filter the top 100 high dollar volume equities to ensure liquidity
+        sorted_by_dollar_volume = sorted(filtered, key=lambda x: x.dollar_volume, reverse=True)[:100]
+        # Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
+        sorted_by_pe_ratio = sorted(sorted_by_dollar_volume, key=lambda x: x.valuation_ratios.pe_ratio, reverse=True)[:10]
+
+        # take the top entries from our sorted collection
+        return [ x.symbol for x in sorted_by_pe_ratio ]</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class MorningStarDataAlgorithm : QCAlgorithm
+    {        
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 7, 1);
+            SetCash(100000);
+            
+            // Add universe selection to filter with fundamental data
+            UniverseSettings.Resolution = Resolution.Daily;
+            AddUniverseSelection(new CustomFundamentalUniverseSelectionModel());
+            
+            SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+
+            // we want 1/N allocation in each security in our universe to evenly dissipate risk
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+
+    public class CustomFundamentalUniverseSelectionModel : FundamentalUniverseSelectionModel
+    {
+        public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamental)
+        {
+            return fundamental
+                // Make sure fundamental data and PE ratio available 
+                // To avoid penny stocks with high volatility, set price above $1
+                .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 1 &amp;&amp; !Double.IsNaN(x.ValuationRatios.PERatio))
+                // Filter the top 100 high dollar volume equities to ensure liquidity
+                .OrderByDescending(x =&gt; x.DollarVolume)
+                .Take(100)
+                // Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
+                .OrderByDescending(x =&gt; x.ValuationRatios.PERatio)
+                .Take(10)
+                .Select(x =&gt; x.Symbol);
+        }
+    }
+}</pre>
+</div><h4>Research Example</h4><p>The following example selects the 100 most liquid US Equities and lists the 10 assets with the greatest PE ratio.:</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();
+
+// Add Fundamental Universe Selection
+IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamentals)
+{
+    return fundamentals
+        .Where(x =&gt; !Double.IsNaN(x.ValuationRatios.PERatio))
+        .OrderByDescending(x =&gt; x.DollarVolume).Take(100)
+        .OrderByDescending(x =&gt; x.ValuationRatios.PERatio).Take(10)
+        .Select(x =&gt; x.Symbol);
+}
+
+var universe = qb.AddUniverse(FundamentalSelectionFunction); 
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);
+foreach (var fundamentals in universeHistory)
+{
+    foreach (Fundamental fundamental in fundamentals)
+    {
+        Console.WriteLine($"{fundamental.Symbol} PE ratio at {fundamental.EndTime}: {fundamental.ValuationRatios.PERatio}");
+    }
+}</pre>
+     <pre class="python">qb = QuantBook()
+
+# Add Fundamental Universe Selection
+def fundamental_selection_function(fundamentals):
+    selected = [f for f in fundamentals if not np.isnan(f.valuation_ratios.pe_ratio)]
+    sorted_by_dollar_volume = sorted(selected, key=lambda f: f.dollar_volume, reverse=True)[:100]
+
+    sorted_by_pe_ratio = sorted(sorted_by_dollar_volume,
+        key=lambda f: f.valuation_ratios.pe_ratio, reverse=True)[:10]
+    return [ f.symbol for f in sorted_by_pe_ratio ]
+
+universe = qb.add_universe(fundamental_selection_function)
+
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
+for (universe_symbol, time), fundamentals in universe_history.items():
+    for fundamental in fundamentals:
+        print(f"{fundamental.symbol} PE ratio volume at {fundamental.end_time}: {fundamental.valuation_ratios.pe_ratio}")</pre>
+</div>

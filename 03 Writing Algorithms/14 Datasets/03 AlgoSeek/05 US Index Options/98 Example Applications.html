@@ -1,0 +1,320 @@
+<p>
+The US Index Options dataset enables you to accurately design strategies for Index Options. Examples include the following strategies: 
+</p>
+<ul><li>Buying VIX call Options to hedge against upcoming volatility</li>
+<li>Buying VIX put Options to capture the natural downward price movement in the VIX index</li>
+<li>Buying SPX put Options to protect against downward price movement in the S&amp;P 500</li>
+</ul>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm buys the VIX Index Option Bull Call Spread with the furthest expiration:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+
+class IndexOptionsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(200000)
+        # Asynchronous can use computational resources efficiently
+        self.universe_settings.asynchronous = True
+        # Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
+        option = self.add_index_option("SPX")
+        option.set_filter(lambda u: u.calls_only().strikes(-2, +2).expiration(0, 180))
+        self.option_symbol = option.symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if not self.portfolio.invested and self.is_market_open(self.option_symbol):
+            # Make sure getting the updated VIX option chain
+            chain = slice.option_chains.get(self.option_symbol)
+            if chain:
+                expiry = max([c.expiry for c in chain])
+                call_contracts = sorted([c for c in chainif c.expiry == expiry],
+                    key=lambda c: c.strike)
+                
+                # Need 2 contracts to form a call spread
+                if len(call_contracts) &lt; 2:
+                    return
+                
+                # Obtain 2 call contracts with different strike price to form the call spread
+                longCall, shortCall = call_contracts[0:2]
+                
+                # Use all the buying power, but need to ensure the order size of the long and short call are the same
+                quantity = min([
+                    abs(self.calculate_order_quantity(shortCall.symbol, -0.5)),
+                    abs(self.calculate_order_quantity(longCall.symbol, 0.5))])
+                
+                # Bull call spread consists of long a lower-strike call and short a higher-strike call
+                self.market_order(shortCall.symbol, -quantity)
+                self.market_order(longCall.symbol, quantity)
+                
+                expected_margin_usage = max((longCall.strike - shortCall.strike) * self.securities[longCall.symbol].symbol_properties.contract_multiplier * quantity, 0)
+                if expected_margin_usage != self.portfolio.total_margin_used:
+                    raise Exception("Unexpect margin used!")
+
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            if security.type == SecurityType.INDEX_OPTION:
+                # Historical data
+                history = self.history(security.symbol, 10, Resolution.MINUTE)
+                self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class VixBullSpreadAlgorithm : QCAlgorithm
+    {
+        private Symbol _optionSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 1, 1);
+            SetCash(200000);
+            // Asynchronous can use computational resources efficiently
+            UniverseSettings.Asynchronous = True;
+            // Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
+            var option = AddIndexOption("SPX");
+            option.SetFilter((u) =&gt; u.CallsOnly().Strikes(-2, +2).Expiration(0, 180));
+            _optionSymbol = option.Symbol;
+        }
+        
+        public override void OnData(Slice slice)
+        {
+            if (!Portfolio.Invested &amp;&amp; IsMarketOpen(_optionSymbol))
+            {
+                // Make sure getting the updated VIX option chain
+                if (slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
+                {
+                    var expiry = chain.Max(x =&gt; x.Expiry);
+                    var callContracts = chain
+                        .Where(x =&gt; x.Expiry == expiry)
+                        .OrderBy(x =&gt; x.Strike)
+                        .ToList();
+
+                    // Need 2 contracts to form a call spread
+                    if (callContracts.Count &lt; 2)
+                    {
+                        return;
+                    }
+
+                    // Obtain 2 call contracts with different strike price to form the call spread
+                    var longCall = callContracts.First();
+                    var shortCall = callContracts.First(contract =&gt; contract.Strike &gt; longCall.Strike);
+
+                    // Use all the buying power, but need to ensure the order size of the long and short call are the same
+                    var quantity = new[] {
+                        CalculateOrderQuantity(shortCall.Symbol, -1m),
+                        CalculateOrderQuantity(longCall.Symbol, 1m) }
+                        .Min(x=&gt; Math.Abs(x));
+
+                    // Bull call spread consists of long a lower-strike call and short a higher-strike call
+                    MarketOrder(shortCall.Symbol, -quantity);
+                    MarketOrder(longCall.Symbol, quantity);
+
+                    var expectedMarginUsage = Math.Max((longCall.Strike - shortCall.Strike) * Securities[longCall.Symbol].SymbolProperties.ContractMultiplier * quantity, 0);
+                    if (expectedMarginUsage != Portfolio.TotalMarginUsed)
+                    {
+                        throw new Exception("Unexpect margin used!");
+                    }
+                }
+            }
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                if (security.Type == SecurityType.IndexOption)
+                {
+                    // Historical data
+                    var history = History(security.Symbol, 10, Resolution.Minute);
+                    Debug($"We got {history.Count()} from our history request for {security.Symbol}");
+                }
+            }
+        }
+    }
+}</pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm buys the VIX Index Option Bull Call Spread with the furthest expiration:</p>
+
+<div class="section-example-container">
+<pre class="python">from AlgorithmImports import *
+from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel
+
+class IndexOptionsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(200000)
+        self.universe_settings.asynchronous = True
+        self.set_universe_selection(VIXIndexOptionUniverseSelectionModel())
+
+        self.set_alpha(BullCallSpreadAlphaModel())
+
+        self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
+
+
+class VIXIndexOptionUniverseSelectionModel(OptionUniverseSelectionModel):
+
+    def __init__(self):
+        super().__init__(timedelta(1), self.option_chain_symbol_selector)
+    
+    def option_chain_symbol_selector(self, utc_time: datetime) -&gt; List[Symbol]:
+        # Only interest in VIX options
+        return [Symbol.create("VIX", SecurityType.INDEX_OPTION, Market.USA)]
+
+    def filter(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        # Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
+        return option_filter_universe.calls_only().strikes(-2, +2).expiration(0, 180)
+
+
+class BullCallSpreadAlphaModel(AlphaModel):
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        if algorithm.portfolio.invested:
+            return []
+            
+        for canonical_symbol, chain in slice.option_chains.items():
+            if not chain:
+                return []
+            # Bull call spread legs are having the same expiry                  
+            expiry = max([c.expiry for c in chain])
+            call_contracts = sorted([c for c in chain if c.expiry == expiry],
+                key=lambda c: c.strike)
+
+            # Need 2 contracts to form a call spread
+            if len(call_contracts) &lt; 2:
+                return []
+
+            # Obtain 2 call contracts with different strike price to form the call spread
+            long_call, short_call = call_contracts[0:2]
+            
+            # Bull call spread consists of long a lower-strike call and short a higher-strike call
+            return Insight.group(
+                [
+                    Insight.price(long_call.symbol, expiry + timedelta(1), InsightDirection.UP),
+                    Insight.price(short_call.symbol, expiry + timedelta(1), InsightDirection.DOWN)
+                ])
+        return []
+        
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            if security.type == SecurityType.INDEX_OPTION:
+                # Historical data
+                history = algorithm.history(security.symbol, 10, Resolution.MINUTE)
+                algorithm.debug(f"We got {len(history)} from our history request for {security.symbol}")
+
+
+class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
+
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        if not insights:
+            return []
+        # Only a single contract toi ensure both legs size is equal
+        quantity = min([abs(algorithm.calculate_order_quantity(i.symbol, i.direction))
+            for i in insights])
+    
+        return [PortfolioTarget(i.symbol, quantity * i.direction)
+            for i in insights]</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect
+{
+    public class IndexOptionsDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 1, 1);
+            SetCash(200000);
+            UniverseSettings.Asynchronous = True;
+            SetUniverseSelection(new VIXIndexOptionUniverseSelectionModel());
+
+            SetAlpha(new BullCallSpreadAlphaModel());
+
+            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+        }
+    }
+
+    public class VIXIndexOptionUniverseSelectionModel : OptionUniverseSelectionModel
+    {
+        // Only interest in VIX options
+        public VIXIndexOptionUniverseSelectionModel()
+            : base(TimeSpan.FromDays(1), 
+                _ =&gt; new[] {QuantConnect.Symbol.Create("VIX", SecurityType.IndexOption, Market.USA)})
+        {
+        }
+
+        protected override OptionFilterUniverse Filter(OptionFilterUniverse optionFilterUniverse)
+        {
+            // Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
+            return optionFilterUniverse.CallsOnly().Strikes(-2, +2).Expiration(0, 180);
+        }
+    }
+
+    public class BullCallSpreadAlphaModel : AlphaModel
+    {
+        public BullCallSpreadAlphaModel()
+        {
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = Enumerable.Empty&lt;Insight&gt;();
+            if (algorithm.Portfolio.Invested)
+            {
+                return insights;
+            }
+                
+            foreach (var kvp in slice.OptionChains)
+            {
+                var canoncialSymbol = kvp.Key;
+                var chain = kvp.Value;
+                if (chain.IsNullOrEmpty())
+                {
+                    return insights;
+                }
+                // Bull call spread legs are having the same expiry
+                var callContracts = chain
+                    .Where(contract =&gt; contract.Expiry == expiry)
+                    .OrderBy(x =&gt; x.Strike)
+                    .ToList();
+
+                // Need 2 contracts to form a call spread
+                if (callContracts.Count &lt; 2)
+                {
+                    return insights;
+                }
+
+                // Obtain 2 call contracts with different strike price to form the call spread
+                var longCall = callContracts.First();
+                var shortCall = callContracts.First(contract =&gt; contract.Strike &gt; longCall.Strike);
+
+                // Bull call spread consists of long a lower-strike call and short a higher-strike call
+                var expiry = longCall.Expiry.AddDays(1);
+                return Insight.Group(
+                    Insight.Price(longCall.Symbol, expiry, InsightDirection.Up),
+                    Insight.Price(shortCall.Symbol, expiry, InsightDirection.Down));
+            }
+            return insights;
+        }
+    }
+        
+    public class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+    {
+        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        {
+            if (insights.Count() == 0)
+            {
+                return Enumerable.Empty&lt;PortfolioTarget&gt;();
+            }
+            // Only a single contract toi ensure both legs size is equal
+            var quantity = insights
+                .Select(i =&gt; Math.Abs(algorithm.CalculateOrderQuantity(i.Symbol, (decimal)i.Direction)))
+                .Min();
+
+            return insights.Select(i =&gt; new PortfolioTarget(i.Symbol, quantity * (decimal)i.Direction));
+        }
+    }
+}</pre>
+</div>

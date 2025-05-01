@@ -1,0 +1,1034 @@
+
+<
+p
+>
+
+
+T
+h
+e
+ 
+U
+p
+c
+o
+m
+i
+n
+g
+ 
+E
+a
+r
+n
+i
+n
+g
+s
+ 
+d
+a
+t
+a
+s
+e
+t
+ 
+p
+r
+o
+v
+i
+d
+e
+s
+ 
+t
+i
+m
+e
+l
+y
+ 
+n
+o
+t
+i
+f
+i
+c
+a
+t
+i
+o
+n
+s
+ 
+a
+b
+o
+u
+t
+ 
+e
+a
+r
+n
+i
+n
+g
+s
+ 
+a
+n
+n
+o
+u
+n
+c
+e
+m
+e
+n
+t
+s
+,
+ 
+a
+l
+l
+o
+w
+i
+n
+g
+ 
+t
+r
+a
+d
+e
+r
+s
+ 
+t
+o
+ 
+m
+a
+k
+e
+ 
+c
+a
+p
+i
+t
+a
+l
+i
+z
+e
+ 
+o
+n
+ 
+p
+o
+t
+e
+n
+t
+i
+a
+l
+ 
+p
+r
+i
+c
+e
+ 
+m
+o
+v
+e
+m
+e
+n
+t
+s
+ 
+a
+n
+d
+ 
+m
+a
+n
+a
+g
+e
+ 
+r
+i
+s
+k
+s
+ 
+e
+f
+f
+e
+c
+t
+i
+v
+e
+l
+y
+.
+ 
+E
+x
+a
+m
+p
+l
+e
+s
+ 
+i
+n
+c
+l
+u
+d
+e
+ 
+t
+h
+e
+ 
+f
+o
+l
+l
+o
+w
+i
+n
+g
+ 
+s
+t
+r
+a
+t
+e
+g
+i
+e
+s
+:
+ 
+
+
+<
+/
+p
+>
+
+
+
+
+<
+u
+l
+>
+<
+l
+i
+>
+<
+a
+ 
+h
+r
+e
+f
+=
+"
+/
+d
+o
+c
+s
+/
+v
+2
+/
+w
+r
+i
+t
+i
+n
+g
+-
+a
+l
+g
+o
+r
+i
+t
+h
+m
+s
+/
+t
+r
+a
+d
+i
+n
+g
+-
+a
+n
+d
+-
+o
+r
+d
+e
+r
+s
+/
+o
+p
+t
+i
+o
+n
+-
+s
+t
+r
+a
+t
+e
+g
+i
+e
+s
+/
+s
+h
+o
+r
+t
+-
+s
+t
+r
+a
+d
+d
+l
+e
+"
+>
+S
+h
+o
+r
+t
+ 
+S
+t
+r
+a
+d
+d
+l
+e
+<
+/
+a
+>
+ 
+t
+o
+ 
+t
+r
+a
+d
+e
+ 
+o
+n
+ 
+h
+e
+i
+g
+h
+t
+e
+n
+e
+d
+ 
+v
+o
+l
+a
+t
+i
+l
+i
+t
+y
+ 
+d
+u
+r
+i
+n
+g
+ 
+e
+a
+r
+n
+i
+n
+g
+s
+ 
+r
+e
+p
+o
+r
+t
+.
+<
+/
+l
+i
+>
+
+
+<
+l
+i
+>
+F
+i
+l
+t
+e
+r
+ 
+u
+n
+i
+v
+e
+r
+s
+e
+ 
+f
+o
+r
+ 
+t
+h
+e
+ 
+s
+t
+o
+c
+k
+s
+ 
+w
+i
+t
+h
+ 
+o
+r
+ 
+w
+i
+t
+h
+o
+u
+t
+ 
+u
+p
+c
+o
+m
+i
+n
+g
+ 
+e
+a
+r
+n
+i
+n
+g
+s
+ 
+r
+e
+p
+o
+r
+t
+ 
+t
+o
+ 
+t
+r
+a
+d
+e
+ 
+o
+r
+ 
+a
+v
+o
+i
+d
+ 
+v
+o
+l
+a
+t
+i
+l
+i
+t
+y
+.
+<
+/
+l
+i
+>
+
+
+<
+l
+i
+>
+H
+o
+l
+d
+ 
+t
+h
+e
+ 
+s
+t
+o
+c
+k
+s
+ 
+w
+i
+t
+h
+ 
+u
+p
+c
+o
+m
+i
+n
+g
+ 
+e
+a
+r
+n
+i
+n
+g
+s
+ 
+e
+s
+t
+i
+m
+a
+t
+e
+d
+ 
+t
+o
+ 
+b
+e
+ 
+p
+o
+s
+i
+t
+i
+v
+e
+.
+<
+/
+l
+i
+>
+
+
+<
+/
+u
+l
+>
+<h4>Classic Algorithm Example</h4><p>The following example algorithm long a straddle on the stocks with upcoming earnings report within 5 days to trade the volatility. It allows 5 days to build up the volatility and capitalize the positions 1 day after the earnings announcement.</p>
+
+<div class="section-example-container">
+<pre><code class="language-python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
+    options_by_symbol = {}
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 10, 1)
+        self.set_cash(100000)
+
+        # Seed the last price as price since we need to use the underlying price for option contract filtering when it join the universe.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Trade on daily basis based on daily upcoming earnings signals.
+        self.universe_settings.resolution = Resolution.DAILY
+        # Option trading requires raw price for strike price comparison.
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        # Universe consists of equities with upcoming earnings events.
+        self.add_universe(EODHDUpcomingEarnings, self.selection)
+
+    def selection(self, earnings: List[EODHDUpcomingEarnings]) -&gt; List[Symbol]:
+        # We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
+        # Assuming 5 days before the earnings report publish is less volatile.
+        # We do not want depository due to their low liquidity.
+        return [d.symbol for d in earnings
+                if d.report_date <= self.time + timedelta(5)]
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+
+        # Actions only based on the equity universe changes.
+        for added in [security for security in changes.added_securities if security.type == SecurityType.EQUITY]:
+            # Select the option contracts to construct a straddle to trade the volatility.
+            call, put = self.select_option_contracts(added.symbol)
+            if not call or not put:
+                continue
+            self.options_by_symbol[added.symbol] = (call, put)
+            # Request the option contract data for trading.
+            call = self.add_option_contract(call).symbol
+            put = self.add_option_contract(put).symbol
+            # Long a straddle by shorting the selected ATM call and put.
+            self.combo_market_order([
+                    Leg.create(call, 1),
+                    Leg.create(put, 1)
+                ],
+                1
+            )
+
+        # Actions only based on the equity universe changes.
+        for removed in [security for security in changes.removed_securities if security.type == SecurityType.EQUITY]:
+            # Liquidate any assigned position.
+            self.liquidate(removed.symbol)
+            # Liquidate the option positions and capitalize the volatility 1-day after the earnings announcement.
+            contracts = self.options_by_symbol.pop(removed.symbol, None)
+            if contracts:
+                for contract in contracts:
+                    self.remove_option_contract(contract)
+
+    def select_option_contracts(self, underlying: Symbol) -&gt; Tuple[Symbol, Symbol]:
+        # Get all tradable option contracts for filtering.
+        option_contract_list = self.option_chain(underlying)
+
+        # Expiry at least 30 days later to have a smaller theta to reduce time decay loss.
+        # Yet also be ensure liquidity over the volatility fluctuation hence we take the closet expiry after that.
+        long_expiries = [x for x in option_contract_list if x.id.date &gt;= self.time + timedelta(30)]
+        if len(long_expiries) &lt; 2:
+            return None, None
+        expiry = min(x.id.date for x in long_expiries)
+        filtered_contracts = [x for x in option_contract_list if x.id.date == expiry]
+
+        # Select ATM call and put to form a straddle for trading the volatility.
+        strike = sorted(filtered_contracts, 
+            key=lambda x: abs(x.id.strike_price - self.securities[underlying].price))[0].id.strike_price
+        atm_contracts = [x for x in filtered_contracts if x.id.strike_price == strike]
+        if len(atm_contracts) < 2:
+            return None, None
+        
+        atm_call = next(filter(lambda x: x.id.option_right == OptionRight.CALL, atm_contracts))
+        atm_put = next(filter(lambda x: x.id.option_right == OptionRight.PUT, atm_contracts))
+        return atm_call, atm_put</code></pre>
+<pre><code class="language-cs">namespace QuantConnect
+{
+    public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
+    {
+        // A dictionary to save the underlying-call,put pair for position open/close management.
+        private Dictionary&lt;Symbol, (Symbol Call, Symbol Put)&gt; _optionsBySymbol = new();
+
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2024, 10, 1);
+            SetCash(100000);
+
+            // Seed the last price as price since we need to use the underlying price for option contract filtering when it join the universe.
+            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+            // Trade on daily basis based on daily upcoming earnings signals.
+            UniverseSettings.Resolution = Resolution.Daily;
+            // Option trading requires raw price for strike price comparison.
+            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+            // Universe consists of equities with upcoming earnings events.
+            AddUniverse&lt;EODHDUpcomingEarnings&gt;((earnings) =&gt; {
+                return earnings
+                    // We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
+                    // Assuming 5 days before the earnings report publish is less volatile.
+                    // We do not want depository due to their low liquidity.
+                    .Where(datum =&gt; (datum as EODHDUpcomingEarnings).ReportDate <= Time.AddDays(5))
+                    .Select(datum =&gt; datum.Symbol);
+            });
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            // Actions only based on the equity universe changes.
+            foreach (var removed in changes.RemovedSecurities.Where(x=&gt; x.Type == SecurityType.Equity))
+            {
+                // Liquidate any assigned position.
+                Liquidate(removed.Symbol);
+                // Liquidate the option positions and capitalize the volatility 1-day after the earnings announcement.
+                if (_optionsBySymbol.Remove(removed.Symbol, out var options))
+                {
+                    RemoveOptionContract(options.Call);
+                    RemoveOptionContract(options.Put);
+                }
+            }
+
+            // Actions only based on the equity universe changes.
+            foreach (var added in changes.AddedSecurities.Where(x=&gt; x.Type == SecurityType.Equity))
+            {
+                // Select the option contracts to construct a straddle to trade the volatility.
+                var (call, put) = SelectOptionContracts(added.Symbol);
+                if (call == None || put == None)
+                {
+                    continue;
+                }
+                 _optionsBySymbol[added.Symbol] = (call, put);
+                // Request the option contract data for trading.
+                call = AddOptionContract(call).Symbol;
+                put = AddOptionContract(put).Symbol;
+                // Long a straddle by shorting the selected ATM call and put.
+                ComboMarketOrder(
+                    new List&lt;Leg&gt; {
+                        Leg.Create(call, 1),
+                        Leg.Create(put, 1)
+                    },
+                    1
+                );    
+            }
+        }
+
+        private (Symbol, Symbol) SelectOptionContracts(Symbol underlying)
+        {
+            // Get all tradable option contracts for filtering.
+            var optionContractList = OptionChain(underlying);
+
+            // Expiry at least 30 days later to have a smaller theta to reduce time decay loss.
+            // Yet also be ensure liquidity over the volatility fluctuation hence we take the closet expiry after that.
+            var longExpiries = optionContractList.Where(x =&gt; x.ID.Date >= Time.AddDays(30)).ToList();
+            if (longExpiries.Count < 2)
+            {
+                return (None, None);
+            }
+            var expiry = longExpiries.Min(x =&gt; x.ID.Date);
+            var filteredContracts = optionContractList.Where(x =&gt; x.ID.Date == expiry).ToList();
+
+            // Select ATM call and put to form a straddle for trading the volatility.
+            var strike = filteredContracts.MinBy(x =&gt; Math.Abs(x.ID.StrikePrice - Securities[underlying].Price))
+                .ID.StrikePrice;
+            var atmContracts = filteredContracts.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
+            if (atmContracts.Count < 2)
+            {
+                return (None, None);
+            }
+
+            var atmCall = atmContracts.Single(x =&gt; x.ID.OptionRight == OptionRight.Call);
+            var atmPut = atmContracts.Single(x =&gt; x.ID.OptionRight == OptionRight.Put);
+            return (atmCall, atmPut);
+        }
+    }
+}</code></pre>
+</div><h4>Framework Algorithm Example</h4><p>The following example algorithm long a straddle on the stocks with upcoming earnings report within 5 days to trade the volatility implemented in framework algorithm. It allows 5 days to build up the volatility and capitalize the positions 1 day after the earnings announcement.</p>
+
+<div class="section-example-container">
+<pre><code class="language-python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2024, 10, 1)
+        self.set_cash(100000)
+
+        # Seed the last price as price since we need to use the underlying price for option contract filtering when it join the universe.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
+        # Trade on daily basis based on daily upcoming earnings signals.
+        self.universe_settings.resolution = Resolution.DAILY
+        # Option trading requires raw price for strike price comparison.
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        # Universe consists of equities with upcoming earnings events.
+        self.add_universe(EODHDUpcomingEarnings, self.selection)
+
+        # A custom alpha model that emit signal based on upcoming earnings events.
+        self.add_alpha(UpcomingEarningsAlphaModel())
+
+        # To trade 1 contract per signal to ensure equal size per leg of the short straddle.
+        self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
+    
+    def selection(self, earnings: List[EODHDUpcomingEarnings]) -&gt; List[Symbol]:
+        # We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
+        # Assuming 5 days before the earnings report publish is less volatile.
+        # We do not want depository due to their low liquidity.
+        return [d.symbol for d in earnings
+                if d.report_date <= self.time + timedelta(5)]
+
+class UpcomingEarningsAlphaModel(AlphaModel):
+    options_by_symbol = {}
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+
+        # Iterate the newly added equities to trade their volatility.
+        while len(self.options_by_symbol) > 0:
+            key = list(self.options_by_symbol.keys())[0]
+            # Obtain the selected option contracts to trade and remove the key-value pair to avoid repeat ordering.
+            contracts = self.options_by_symbol.pop(key)
+            # Long straddle (long the ATM call and put contracts) for 7 days to trade the volatility.
+            # Assuming the volatility will go up due to earning announcement and reach highest volatility at 2-3 days after the report.
+            insights.extend([
+                Insight.price(contracts[0], timedelta(7), InsightDirection.UP),
+                Insight.price(contracts[1], timedelta(7), InsightDirection.UP)
+            ])
+
+        # Remove any assigned positions of the underlying.
+        for symbol, holding in algorithm.portfolio.items():
+            if holding.type == SecurityType.EQUITY and holding.invested:
+                insights.append(Insight.price(symbol, timedelta(7), InsightDirection.FLAT))
+
+        return insights
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        # Actions only based on the equity universe changes.
+        for added in [x for x in changes.added_securities if x.type == SecurityType.EQUITY]:
+            # Select the option contracts to construct a straddle to trade the volatility.
+            call, put = self.select_option_contracts(algorithm, added.symbol, algorithm.time)
+            if not call or not put:
+                continue
+            # Request the option contract data for trading.
+            call = algorithm.add_option_contract(call).symbol
+            put = algorithm.add_option_contract(put).symbol
+            self.options_by_symbol[added.symbol] = (call, put)
+
+    def select_option_contracts(self, algorithm: QCAlgorithm, underlying: Symbol, time: datetime) -&gt; Tuple[Symbol, Symbol]:
+        # Get all tradable option contracts for filtering.
+        option_contract_list = algorithm.option_chain(underlying)
+
+        # Expiry at least 30 days later to have a smaller theta to reduce time decay loss.
+        # Yet also be ensure liquidity over the volatility fluctuation hence we take the closet expiry after that.
+        long_expiries = [x for x in option_contract_list if x.id.date >= time + timedelta(30)]
+        if len(long_expiries) < 2:
+            return None, None
+        expiry = min(x.id.date for x in long_expiries)
+        filtered_contracts = [x for x in option_contract_list if x.id.date == expiry]
+
+        # Select ATM call and put to form a straddle for trading the volatility.
+        strike = sorted(filtered_contracts, 
+            key=lambda x: abs(x.id.strike_price - algorithm.securities[underlying].price))[0].id.strike_price
+        atm_contracts = [x for x in filtered_contracts if x.id.strike_price == strike]
+        if len(atm_contracts) < 2:
+            return None, None
+        
+        atm_call = next(filter(lambda x: x.id.option_right == OptionRight.CALL, atm_contracts))
+        atm_put = next(filter(lambda x: x.id.option_right == OptionRight.PUT, atm_contracts))
+        return atm_call, atm_put
+
+class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        if not insights:
+            return []
+        # Only a single contract toi ensure both legs size is equal
+        quantity = min([abs(algorithm.calculate_order_quantity(i.symbol, i.direction))
+            for i in insights])
+        return [PortfolioTarget(i.symbol, quantity * i.direction) for i in insights]</code></pre>
+<pre><code class="language-cs">namespace QuantConnect
+{
+    public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2024, 10, 1);
+            SetCash(100000);
+
+            // Seed the last price as price since we need to use the underlying price for option contract filtering when it join the universe.
+            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+            // Trade on daily basis based on daily upcoming earnings signals.
+            UniverseSettings.Resolution = Resolution.Daily;
+            // Option trading requires raw price for strike price comparison.
+            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+            // Universe consists of equities with upcoming earnings events.
+            AddUniverse&lt;EODHDUpcomingEarnings&gt;((earnings) =&gt; {
+                return earnings
+                    // We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
+                    // Assuming 5 days before the earnings report publish is less volatile.
+                    // We do not want depository due to their low liquidity.
+                    .Where(datum =&gt; (datum as EODHDUpcomingEarnings).ReportDate &lt;= Time.AddDays(5))
+                    .Select(datum =&gt; datum.Symbol);
+            });
+
+            // A custom alpha model that emit signal based on upcoming earnings events.
+            AddAlpha(new UpcomingEarningsAlphaModel());
+
+            // To trade 1 contract per signal to ensure equal size per leg of the short straddle.
+            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+        }
+    }
+
+    public class UpcomingEarningsAlphaModel : AlphaModel
+    {
+        // A dictionary to save the underlying-call,put pair for position open/close management.
+        private Dictionary&lt;Symbol, (Symbol Call, Symbol Put)&gt; _optionsBySymbol = new();
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithmFrameworkBridge algorithm, Slice data)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            // Iterate the newly added equities to trade their volatility.
+            while (_optionsBySymbol.Count &gt; 0)
+            {
+                var key = _optionsBySymbol.Keys.First();
+                // Obtain the selected option contracts to trade and remove the key-value pair to avoid repeat ordering.
+                _optionsBySymbol.Remove(key, out var contracts);
+                // Long straddle (long the ATM call and put contracts) for 7 days to trade the volatility.
+                // Assuming the volatility will go up due to earning announcement and reach highest volatility at 2-3 days after the report.
+                insights.AddRange(new Insight[]{
+                    Insight.Price(contracts.Call, TimeSpan.FromDays(7), InsightDirection.Up),
+                    Insight.Price(contracts.Put, TimeSpan.FromDays(7), InsightDirection.Up)
+                });
+            }
+
+            // Remove any assigned positions of the underlying.
+            foreach (var (symbol, holding) in algorithm.Portfolio)
+            {
+                if (holding.Type == SecurityType.Equity && holding.Invested)
+                {
+                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Flat));
+                }
+            }
+
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            // Actions only based on the equity universe changes.
+            foreach (var added in changes.AddedSecurities.Where(x=&gt; x.Type == SecurityType.Equity))
+            {
+                // Select the option contracts to construct a straddle to trade the volatility.
+                var (call, put) = SelectOptionContracts(algorithm, added.Symbol, algorithm.Time);
+                if (call == None || put == None)
+                {
+                    continue;
+                }
+                // Request the option contract data for trading.
+                call = algorithm.AddOptionContract(call).Symbol;
+                put = algorithm.AddOptionContract(put).Symbol;
+                _optionsBySymbol[added.Symbol] = (call, put);
+            }
+        }
+
+        private (Symbol, Symbol) SelectOptionContracts(QCAlgorithm algorithm, Symbol underlying, DateTime time)
+        {
+            // Get all tradable option contracts for filtering.
+            var optionContractList = algorithm.OptionChain(underlying);
+
+            // Expiry at least 30 days later to have a smaller theta to reduce time decay loss.
+            // Yet also be ensure liquidity over the volatility fluctuation hence we take the closet expiry after that.
+            var longExpiries = optionContractList.Where(x =&gt; x.ID.Date &gt;= time.AddDays(30)).ToList();
+            if (longExpiries.Count &lt; 2)
+            {
+                return (None, None);
+            }
+            var expiry = longExpiries.Min(x =&gt; x.ID.Date);
+            var filteredContracts = optionContractList.Where(x =&gt; x.ID.Date == expiry).ToList();
+
+            // Select ATM call and put to form a straddle for trading the volatility.
+            var strike = filteredContracts.MinBy(x =&gt; Math.Abs(x.ID.StrikePrice - algorithm.Securities[underlying].Price))
+                .ID.StrikePrice;
+            var atmContracts = filteredContracts.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
+            if (atmContracts.Count &lt; 2)
+            {
+                return (None, None);
+            }
+
+            var atmCall = atmContracts.Single(x =&gt; x.ID.OptionRight == OptionRight.Call);
+            var atmPut = atmContracts.Single(x =&gt; x.ID.OptionRight == OptionRight.Put);
+            return (atmCall, atmPut);
+        }
+    }
+
+    public class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+    {
+        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        {
+            if (insights.Count() == 0)
+            {
+                return Enumerable.Empty&lt;PortfolioTarget&gt;();
+            }
+            // Only a single contract to ensure both legs size is equal.
+            var quantity = insights
+                .Select(i =&gt; Math.Abs(algorithm.CalculateOrderQuantity(i.Symbol, (decimal)i.Direction)))
+                .Min();
+
+            return insights.Select(i =&gt; new PortfolioTarget(i.Symbol, quantity * (decimal)i.Direction));
+        }
+    }
+}</code></pre>
+</div>
