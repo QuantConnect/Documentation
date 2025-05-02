@@ -137,10 +137,12 @@ if __name__ == '__main__':
                 if title.lower() == "example applications":
                     start = content.find('</ul>')
                     if start > 0:
-                        content = content.replace(content[start+5:],'\n')
+                        content = content.replace(content[start+5:],'')
                     for item in [x for x in dataset["examples"] if x["title"]]:
                         h4_content = _parse_content(item["content"])
-                        content += f"<h4>{item['title'].strip()}</h4>{h4_content}"
+                        if h4_content.find('QuantBook') < 0 and h4_content.find('section-example-container testable') < 0:
+                            h4_content = h4_content.replace('section-example-container', 'section-example-container testable')
+                        content += f'\n<h4>{item["title"].strip()}</h4>\n{h4_content}'
 
                     with open(folder / f'98 Example Applications.html', "w", encoding="utf-8") as html_file:
                         html_file.write(content)
