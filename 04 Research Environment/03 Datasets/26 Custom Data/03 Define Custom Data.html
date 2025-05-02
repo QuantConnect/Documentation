@@ -44,10 +44,10 @@ public class Nifty : BaseData
             var data = line.Split(',');
             index.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
             index.EndTime = index.Time.AddDays(1);
-            index.Open = Convert.ToDecimal(data[1], CultureInfo.InvariantCulture);
-            index.High = Convert.ToDecimal(data[2], CultureInfo.InvariantCulture);
-            index.Low = Convert.ToDecimal(data[3], CultureInfo.InvariantCulture);
-            index.Close = Convert.ToDecimal(data[4], CultureInfo.InvariantCulture);
+            index.Open = data[1].IfNotNullOrEmpty&lt;decimal&gt;(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            index.High = data[2].IfNotNullOrEmpty&lt;decimal&gt;(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            index.Low = data[3].IfNotNullOrEmpty&lt;decimal&gt;(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            index.Close = data[4].IfNotNullOrEmpty&lt;decimal&gt;(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
             index.Value = index.Close;
         }
         catch
