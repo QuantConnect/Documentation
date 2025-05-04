@@ -1,5 +1,5 @@
 <p>
-Make authenticated REST requests to the QuantConnect API with your User-id and API-Token. Use a simple API endpoint to verify the authentication is working correctly. 
+You can make authenticated REST requests to the QuantConnect API with your User Id and API Token. You can use the authentication endpoint described in this page to verify it is working correctly. 
 </p>
 <p>The base URL of QuantConnect API is <code>https://www.quantconnect.com/api/v2</code>.</p>
 
