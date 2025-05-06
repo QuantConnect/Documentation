@@ -33,8 +33,15 @@ public class BrokerageModelExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        // In the Initialize method, set the security initializer to seed initial the prices and models of assets.
-        SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)<?=$extraArgsC?>));
+        // In the Initialize method, set the security initializer to set models of assets.
+        // To seed the security with the last known prices, set the security seeder to FuncSecuritySeeder with the GetLastKnownPrices method.
+        var securitySeeder = new FuncSecuritySeeder(GetLastKnownPrices);
+        
+        // In some case, for example, adding Options and Futures using Universes, we don't need to seed prices.
+        // To avoid the overhead of and potential timeouts for calling the GetLastKnownPrices method, set the security seeder to SecuritySeeder.Null.
+        securitySeeder = SecuritySeeder.Null;
+
+        SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, securitySeeder<?=$extraArgsC?>));
     }
 }
 
@@ -56,8 +63,15 @@ public class MySecurityInitializer : BrokerageModelSecurityInitializer
 }</pre>
 <pre class='python'>class BrokerageModelExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        # In the Initialize method, set the security initializer to seed initial the prices and models of assets.
-        self.set_security_initializer(MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)<?=$extraArgsPy?>))
+        # In the Initialize method, set the security initializer to set models of assets.
+        # To seed the security with the last known prices, set the security seeder to FuncSecuritySeeder with the get_last_known_prices method.
+        security_seeder = FuncSecuritySeeder(self.get_last_known_prices)
+        
+        # In some case, for example, adding Options and Futures using Universes, we don't need to seed prices.
+        # To avoid the overhead of and potential timeouts for calling the get_last_known_prices method, set the security seeder to SecuritySeeder.NULL.
+        security_seeder = SecuritySeeder.NULL
+
+        self.set_security_initializer(MySecurityInitializer(self.brokerage_model, security_seeder<?=$extraArgsPy?>))
 
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
