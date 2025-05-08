@@ -1,4 +1,20 @@
-<p>Futures algorithms require some data from the <a href='https://www.quantconnect.com/datasets/algoseek-us-futures'>US Futures</a> dataset. The US Futures dataset is available in several resolutions. The resolution you need depends on the US Future subscriptions you create in your algorithm and the resolution of data you get in <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests'>history requests</a>. The following table describes the file format and costs of each resolution:</p>
+<p>Futures algorithms require the following data:</p>
+<ul>
+    <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master'>US Futures Security Master</a></li>
+    <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-future-universe'>US Future Universe</a></li>
+    <li>Some data from the <a href='https://www.quantconnect.com/datasets/algoseek-us-futures'>US Futures</a> dataset</li>
+</ul>
+
+<p>The following table shows the cost of an annual subscription to the US Futures Security Master for each organization tier:</p>
+<? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
+
+<p>The file format of the US Future Universe dataset is one file per Future per day and each file costs 100 QCC = $1 USD.</p>
+
+<p>
+    The US Futures dataset is available in several resolutions. 
+    The resolution you need depends on the US Future subscriptions you create in your algorithm and the resolution of data you get in <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests'>history requests</a>. 
+    The following table describes the file format and costs of each resolution:
+</p>
 
 <table class="qc-table table">
     <thead>
@@ -37,39 +53,34 @@
     </tbody>
 </table>
 
-<p>If you want <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous contracts</a> in your algorithm, you also need the <a href='https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master'>US Futures Security Master</a> dataset. The following table shows the cost of an annual subscription to the US Futures Security Master for each organization tier:</p>
-
-<?php include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
-
 <p>For example, the following algorithm subscribes to minute resolution data for a universe of ES Futures contracts and creates a continuous contract:</p>
 
 <div class="section-example-container">
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class USFuturesDataAlgorithm : QCAlgorithm
 {
-    public class USFuturesDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            var future = AddFuture(Futures.Indices.SP500EMini,
-                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-                dataMappingMode: DataMappingMode.OpenInterest,
-                contractDepthOffset: 0
-            );
-            future.SetFilter(0, 90);
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        var future = AddFuture(
+            Futures.Indices.SP500EMini,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            contractDepthOffset: 0
+        );
+        future.SetFilter(0, 90);
     }
-}
-</pre>
+}</pre>
 <pre class="python">class USFuturesDataAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2021, 1, 1)
-        future = self.add_future(Futures.Indices.SP500E_MINI,
-                                data_normalization_mode = DataNormalizationMode.BACKWARDS_RATIO,
-                                data_mapping_mode = DataMappingMode.OPEN_INTEREST,
-                                contract_depth_offset = 0)
+        future = self.add_future(
+            Futures.Indices.SP500E_MINI,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            contract_depth_offset=0
+        )
         future.set_filter(0, 90)</pre>
 </div>
 
@@ -90,6 +101,25 @@
             <td>Download On Premise</td>
             <td>$600 USD</td>
             <td>$0 USD/year</td>
+        </tr>
+        <tr>
+            <td>US Future Universe</td>
+            <td>Download On Premise</td>
+            <td>1 ticker over 252 trading days
+                <br>=> 1 * 252 files
+                <br>= 252 files
+                <br>
+                <br>252 files @ 100 QCC/file
+                <br>=> 25,200 QCC
+                <br>= $252 USD
+            </td>
+            <td>1 ticker
+                <br>=> 1 file/day
+                <br>
+                <br>1 file/day @ 100 QCC/file
+                <br>=> 100 QCC/day
+                <br>= $1 USD/day
+            </td>
         </tr>
         <tr>
             <td>US Futures</td>
