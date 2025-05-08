@@ -1,0 +1,78 @@
+<p class='csharp'>To get historical <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#09-Symbol-Changes'>symbol change data</a>, call the <code>History&lt;SymbolChangedEvent&gt;</code> method with the continuous contract Symbol.</p>
+<p class='python'>
+  To get historical <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#09-Symbol-Changes'>symbol change data</a>, call the <code>history</code> method with the <code>SymbolChangedEvent</code> type and the continuous contract Symbol. 
+  This method returns a DataFrame that contains the old and new Symbol for each rollover.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Get the rollovers of the continuous contract. 
+var history = qb.History&lt;SymbolChangedEvent&gt;(future.Symbol, new DateTime(2024, 1, 1), new DateTime(2025, 1, 1));</pre>
+    <pre class="python"># Get the rollovers of the continuous contract. 
+history = qb.history(SymbolChangedEvent, future.symbol, datetime(2024, 1, 1), datetime(2025, 1, 1))</pre>
+</div>
+
+<div class='dataframe-wrapper'>
+<table class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>newsymbol</th>
+      <th>oldsymbol</th>
+    </tr>
+    <tr>
+      <th>expiry</th>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="4" valign="top">1899-12-30</th>
+      <th rowspan="4" valign="top">/ES</th>
+      <th>2024-03-13</th>
+      <td>ES YJHOAMPYKQGX</td>
+      <td>ES YGT6HGVF2SQP</td>
+    </tr>
+    <tr>
+      <th>2024-06-19</th>
+      <td>ES YLZ9Z50BJE2P</td>
+      <td>ES YJHOAMPYKQGX</td>
+    </tr>
+    <tr>
+      <th>2024-09-18</th>
+      <td>ES YOGVNNAOI1OH</td>
+      <td>ES YLZ9Z50BJE2P</td>
+    </tr>
+    <tr>
+      <th>2024-12-18</th>
+      <td>ES YQYHC5L1GPA9</td>
+      <td>ES YOGVNNAOI1OH</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="python section-example-container">
+    <pre class="python"># Select the dates of each rollover.
+dates = list(history.index.levels[2])</pre>
+</div>
+
+<p class='python'>
+  If you intend to use the data in the DataFrame to create <code>SymbolChangedEvent</code> objects, request that the history request returns the data type you need. 
+  Otherwise, LEAN consumes unnecessary computational resources populating the DataFrame.  
+  To get a list of <code>SymbolChangedEvent</code> objects instead of a DataFrame, call the <code>history[SymbolChangedEvent]</code> method.
+</p>
+
+<div class="python section-example-container">
+    <pre class="python"># Get the rollovers of the continuous contract in SymbolChangedEvent format. 
+history = qb.history[SymbolChangedEvent](symbol, datetime(2024, 1, 1), datetime(2025, 1, 1))
+# Iterate through each SymbolChangedEvent object.
+for symbol_changed_event in history:
+    t = symbol_changed_event.end_time
+    old_symbol = symbol_changed_event.old_symbol
+    new_symbol = symbol_changed_event.new_symbol</pre>
+</div>
