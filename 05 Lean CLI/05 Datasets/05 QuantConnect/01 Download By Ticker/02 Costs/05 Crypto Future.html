@@ -1,0 +1,121 @@
+<p>
+    Crypto Future algorithms require data from one of the price datasets and one of the margin rate datasets.
+    The price datasets are available in several resolutions. 
+    The resolution you need depends on the Crypto Future subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. 
+    The following table describes the file format and costs of each resolution:
+</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Resolution</th>
+            <th>File Format</th>
+            <th>Cost per file</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Tick</td>
+            <td>One file per security per trading day per data format. Quote and trade data are separate files.<br></td>
+            <td>100 QCC = $1 USD</td>
+        </tr>
+        <tr>
+            <td>Second</td>
+            <td>One file per security per trading day per data format. Quote and trade data are separate files.<br></td>
+            <td>25 QCC = $0.25 USD</td>
+        </tr>
+        <tr>
+            <td>Minute</td>
+            <td>One file per security per trading day per data format. Quote and trade data are separate files.<br></td>
+            <td>5 QCC = $0.05 USD</td>
+        </tr>
+        <tr>
+            <td>Hour</td>
+            <td>One file per security. Quote and trade data are separate files.<br></td>
+            <td>400 QCC = $4 USD</td>
+        </tr>
+        <tr>
+            <td>Daily</td>
+            <td>One file per security. Quote and trade data are separate files.<br></td>
+            <td>100 QCC = $1 USD</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The file format of the margin rate data is one file per Crypto Future and each file costs 100 QCC = $1 USD.</p>
+
+<p>For example, the following algorithm subscribes to minute resolution data for one Crypto Future:</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class CryptoFutureDataAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetBrokerageModel(BrokerageName.BinanceFutures, AccountType.Margin);
+        AddCryptoFuture("BTCUSD");
+    }
+}</pre>
+<pre class="python">class CryptoFutureDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_brokerage_model(BrokerageName.BINANCE_FUTURES, AccountType.MARGIN)
+        self.add_crypto_future('BTCUSD')</pre>
+</div>
+
+<p>The following table shows the data cost of the preceding algorithm:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Package</th>
+            <th>Initial Cost</th>
+            <th>Ongoing Cost</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Binance Crypto Future Price Data</td>
+            <td>Minute Download</td>
+            <td>1 security over 365 trading days with 2 data formats<br>
+                => 1 * 365 * 2 files<br>
+                = 730 files<br>
+                <br>
+                730 files @ 5 QCC/file<br>
+                => 730 * 5 QCC<br>
+                = 3,650 QCC <br>
+                = $36.50 USD
+            </td>
+            <td>2 files per day @ 5 QCC/file<br>
+                => 2 * 5 QCC/day<br>
+                = 10 QCC/day<br>
+                = $0.10 USD/day
+            </td>
+        </tr>
+        <tr>
+            <td>Binance Crypto Future Margin Rate Data</td>
+            <td>Download On Premise</td>
+            <td>1 security<br>
+                =&gt; 1 file<br><br>
+                <br>
+                1 file @ 100 QCC/file<br>
+                =&gt; 1 * 100 QCC <br>
+                = 100 QCC <br>
+                = $1 USD
+            </td>
+            <td>1 security<br>
+                =&gt; 1 file/day<br>
+                <br>
+                1 file/day @ 100 QCC/file<br>
+                =&gt; 1 * 100 QCC/day<br>
+                = 100 QCC/day<br>
+                = $1 USD/day
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The preceding table assumes you download trade and quote data, but you can run backtests with only trade data.</p>
