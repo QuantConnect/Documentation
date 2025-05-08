@@ -1,0 +1,110 @@
+<p class='csharp'>To get historical <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#09-Symbol-Changes'>symbol change data</a>, call the <code>History&lt;SymbolChangedEvent&gt;</code> method with the continuous contract Symbol.</p>
+<p class='python'>
+  To get historical <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#09-Symbol-Changes'>symbol change data</a>, call the <code>history</code> method with the <code>SymbolChangedEvent</code> type and the continuous contract Symbol. 
+  This method returns a DataFrame that contains the old and new Symbol for each rollover.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class FutureSymbolChangeEventsHistoryAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 12, 19);
+        // Add the Future and specify the contract rollover settings.
+        var future = AddFuture(
+            Futures.Indices.SP500EMini,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0
+        );
+        // Get the contract rollovers for the trailing year. 
+        var history = History&lt;SymbolChangedEvent&gt;(future.Symbol, TimeSpan.FromDays(365));
+        // Iterate through each rollover and select the Symbol of each contract.
+        foreach (var event in history)
+        {
+            var t = event.EndTime;
+            var oldSymbol = event.OldSymbol;
+            var newSymbol = event.NewSymbol;
+        }
+    }
+}</pre>
+    <pre class="python">class FutureSymbolChangeEventsHistoryAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 12, 19)
+        # Add the Future and specify the contract rollover settings.
+        future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
+            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+            contract_depth_offset=0
+        )
+        # Get the contract rollovers for the trailing year.
+        history = self.history(SymbolChangedEvent, future.symbol, timedelta(365))</pre>
+</div>
+
+<div class='dataframe-wrapper'>
+<table class="dataframe python">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>newsymbol</th>
+      <th>oldsymbol</th>
+    </tr>
+    <tr>
+      <th>expiry</th>
+      <th>symbol</th>
+      <th>time</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="4" valign="top">1899-12-30</th>
+      <th rowspan="4" valign="top">/ES</th>
+      <th>2024-03-13</th>
+      <td>ES YJHOAMPYKQGX</td>
+      <td>ES YGT6HGVF2SQP</td>
+    </tr>
+    <tr>
+      <th>2024-06-19</th>
+      <td>ES YLZ9Z50BJE2P</td>
+      <td>ES YJHOAMPYKQGX</td>
+    </tr>
+    <tr>
+      <th>2024-09-18</th>
+      <td>ES YOGVNNAOI1OH</td>
+      <td>ES YLZ9Z50BJE2P</td>
+    </tr>
+    <tr>
+      <th>2024-12-18</th>
+      <td>ES YQYHC5L1GPA9</td>
+      <td>ES YOGVNNAOI1OH</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="python section-example-container">
+    <pre class="python"># Select the dates of each rollover.
+dates = list(history.index.levels[1])</pre>
+</div>
+
+<p class='python'>
+  If you intend to use the data in the DataFrame to create <code>SymbolChangedEvent</code> objects, request that the history request returns the data type you need. 
+  Otherwise, LEAN consumes unnecessary computational resources populating the DataFrame.  
+  To get a list of <code>SymbolChangedEvent</code> objects instead of a DataFrame, call the <code>history[SymbolChangedEvent]</code> method.
+</p>
+
+<div class="python section-example-container">
+    <pre class="python"># Get the rollovers of the continuous contract during the last 10 years in SymbolChangedEvent format. 
+history = self.history[SymbolChangedEvent](symbol, timedelta(10*365))
+# Iterate through each SymbolChangedEvent object.
+for event in history:
+    t = event.end_time
+    old_symbol = event.old_symbol
+    new_symbol = event.new_symbol</pre>
+</div>
