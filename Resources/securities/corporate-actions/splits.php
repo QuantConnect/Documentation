@@ -10,7 +10,7 @@
     If you backtest without the <code class="csharp">Raw</code><code class="python">RAW</code> <a href='<?=$dataNormalizationModeLink?>'>data normalization mode</a>, the splits are factored into the price and volume. 
     If you backtest with the <code class="csharp">Raw</code><code class="python">RAW</code> data normalization mode or trade live, when a split occurs, LEAN automatically adjusts your positions based on the <code class="csharp">SplitFactor</code><code class="python">split_factor</code>. 
     If the post-split quantity isn't a valid <a href='/docs/v2/writing-algorithms/securities/key-concepts#06-Symbol-Properties'>lot size</a>, LEAN credits the remaining value to your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cashbook</a> in your account currency. 
-    If you have indicators or consolidators in your algorithm, reset and warm-up your them up with <code class='csharp'>ScaledRaw</code><code class='csharp'>SCALED_RAW</code> data when splits occur so that the data in your indicators and consolidators account for the price adjustments that the splits cause.
+    If you have indicators or consolidators in your algorithm, reset and warm-up them up with <code class='csharp'>ScaledRaw</code><code class='python'>SCALED_RAW</code> data when splits occur so that the data in your indicators and consolidators account for the price adjustments that the splits cause.
     For examples, see <a href='/docs/v2/writing-algorithms/indicators/key-concepts#11-Reset-Indicators'>Reset Indicators</a> or <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started#08-Reset-Consolidators'>Reset Consolidators</a>.
 </p>
 
