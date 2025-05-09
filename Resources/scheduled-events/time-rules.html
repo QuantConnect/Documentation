@@ -35,7 +35,7 @@
         <tr>
             <td><code class="python">self.time_rules.every(interval: timedelta)</code>
             <code class="csharp">TimeRules.Every(TimeSpan interval)</code></td>
-        <td>Trigger an event every period interval starting at midnight.</td>
+            <td>Trigger an event every period interval starting at midnight. This time rule triggers every period, regardless of whether or not the market is open.</td>
         </tr>
         </tr>
         <tr>
@@ -78,4 +78,15 @@
     name="CustomTimeRule", 
     create_utc_event_times_function=lambda dates: [d + timedelta(hours=10) for d in dates]
 )</pre>
+</div>
+
+<p>
+    Some time rules require a Symbol. 
+    However, in some cases, you may not have a one. 
+    For example, if you only add an <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>Equity fundamental universe</a> to your <a href='/docs/v2/writing-algorithms/initialization'><span class='python'>initialize</span><span class='csharp'>Initialize</span></a> method, you won't have an asset Symbol to use for the time rule.
+    To create a Symbol without adding a security to your algorithm, call the <code class='python'>Symbol.create</code><code class='csharp'>QuantConnect.Symbol.Create</code> method.
+</p>
+<div class="section-example-container">
+    <pre class="csharp">var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
+    <pre class="python">symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)</pre>
 </div>
