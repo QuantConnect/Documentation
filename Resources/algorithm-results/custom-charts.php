@@ -11,7 +11,7 @@
 
 <h4>Supported Markers</h4>
 <p>When you create scatter plots, you can set a marker symbol. We support the following marker symbols:</p>
-<div data-tree='QuantConnect.ScatterMarkerSymbol'></div>
+<div data-tree='QuantConnect.Series.ScatterMarkerSymbol'></div>
 
 <? if (!in_array("live-trading", $BREADCRUMBS)) { ?>
 <h4>Chart Quotas</h4>
