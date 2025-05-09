@@ -33,11 +33,10 @@
         data.Dividends.ContainsKey(_symbol))
     {
         // If the consolidator is working on a bar...
-        if (_consolidator.WorkingBar != null)
+        if (_consolidator.WorkingData != null)
         {
             // Get adjusted prices for the time period of the working bar.
-            var startTime = _consolidator.WorkingBar.Time;
-            var history = History&lt;TradeBar&gt;(_symbol, startTime, Time, dataNormalizationMode: DataNormalizationMode.ScaledRaw);
+            var history = History&lt;TradeBar&gt;(_symbol, _consolidator.WorkingData.Time, Time, dataNormalizationMode: DataNormalizationMode.ScaledRaw);
             // Reset the consolidator.
             _consolidator.Reset();
             // Warm-up the consolidator with the adjusted price data.
