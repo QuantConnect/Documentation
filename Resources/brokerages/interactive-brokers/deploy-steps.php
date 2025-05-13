@@ -1,4 +1,4 @@
-    <li>Enter your IB user name, ID, and password.</li>
+    <li>Enter your <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>IB</a> user name, ID, and password.</li>
     <? if ($localPlatform) { include(DOCS_RESOURCES."/brokerages/interactive-brokers/paper-trading-data-feeds.html"); } ?>
     <p>Your account details are not saved on QuantConnect.</p>
     <li>In the <span class="field-name">Weekly Restart UTC</span> field, enter the Coordinated Universal Time (UTC) time of when you want to receive notifications on Sundays to re-authenticate your account connection.</li>

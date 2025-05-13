@@ -1,4 +1,4 @@
-<p><?= $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code>" : "Our Interactive Brokers integration" ?> supports the following asset classes:</p>
+<p><?= $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code>" : "Our <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a> integration" ?> supports the following asset classes:</p>
 
 <ul>
     <li><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equities</a></li>

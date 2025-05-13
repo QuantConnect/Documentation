@@ -1,5 +1,5 @@
 <?
-$brokerageName = "IB";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>IB</a>";
 $statusPageURL = "https://www.interactivebrokers.com/en/software/systemStatus.php";
 include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
 ?>

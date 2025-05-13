@@ -1,4 +1,4 @@
-<p>We model the IB API by supporting several order types, order properties, and order updates. When you deploy live algorithms, you can <a href='/docs/v2/cloud-platform/live-trading/algorithm-control#03-Place-Manual-Trades'>place manual orders</a> through the IDE.</p>
+<p>We model the <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>IB</a> API by supporting several order types, order properties, and order updates. When you deploy live algorithms, you can <a href='/docs/v2/cloud-platform/live-trading/algorithm-control#03-Place-Manual-Trades'>place manual orders</a> through the IDE.</p>
 
 
 <?php include(DOCS_RESOURCES."/brokerages/interactive-brokers/orders.php"); ?>

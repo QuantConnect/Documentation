@@ -1,5 +1,5 @@
 <h4>Order Types</h4>
-<p>The following table describes the order types that <?= $cloudPlatform ? "our IB integration" : "the <code>InteractiveBrokersBrokerageModel</code>" ?> supports: supports. For specific details about each order type, refer to the IB documentation.<br></p>
+<p>The following table describes the order types that <?= $cloudPlatform ? "our IB integration" : "the <code>InteractiveBrokersBrokerageModel</code>" ?> supports: supports. For specific details about each order type, refer to the <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>IB</a> documentation.<br></p>
 
 
 <table class="qc-table table">
@@ -62,7 +62,7 @@
 </table>
 
 
-<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "IB" : "the <code>InteractiveBrokersBrokerageModel</code>" ?> supports:</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>IB</a>" : "the <code>InteractiveBrokersBrokerageModel</code>" ?> supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>

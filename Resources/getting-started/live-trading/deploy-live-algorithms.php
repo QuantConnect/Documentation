@@ -1,6 +1,7 @@
 <? 
 $openProjectLink = $cloudPlatform ? "/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects" : "/docs/v2/local-platform/projects/getting-started#04-Open-Projects";
-$brokerageName = $cloudPlatform ? "Paper Trading" : "Interactive Brokers";
+$brokerageName = $cloudPlatform ? "Paper Trading" : "<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a>
+";
 $liveTradingResultsPage = $cloudPlatform ? "<a href='/docs/v2/cloud-platform/live-trading/results'>live results page</a>" : "live results page";
 
 if ($cloudPlatform) { 
@@ -9,7 +10,7 @@ if ($cloudPlatform) {
 
 <p>Follow these steps to deploy a live paper trading algorithm:</p>
 <? } else { ?>
-<p>Follow these steps to deploy a live trading algorithm with the Interactive Brokers (IB) brokerage:</p>
+<p>Follow these steps to deploy a live trading algorithm with the <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers (IB)</a> brokerage:</p>
 <? } ?>
 
 <ol>

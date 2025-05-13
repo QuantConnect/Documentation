@@ -1,7 +1,8 @@
 <p>If you have an ARM M1, M2, or M3 chip, you can't deploy a local live algorithm with the IB brokerage, see the <a href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers#09-Troubleshooting">Troubleshooting</a>.</p>
 
 <?
-$brokerageName = "Interactive Brokers";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a>
+";
 $dataFeedName = "";
 $isBrokerage = true;
 

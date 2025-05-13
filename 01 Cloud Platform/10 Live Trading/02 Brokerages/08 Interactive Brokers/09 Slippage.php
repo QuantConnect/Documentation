@@ -1,5 +1,5 @@
 <?php
-$brokerageName = "IB";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>IB</a>";
 $paperTradingSupported = true;
 include(DOCS_RESOURCES."/brokerages/slippage.php");
 ?>

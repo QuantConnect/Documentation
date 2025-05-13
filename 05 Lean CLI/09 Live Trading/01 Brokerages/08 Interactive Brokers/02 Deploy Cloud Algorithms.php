@@ -7,7 +7,7 @@ $weeklyRestartText = ob_get_clean();
 $brokerageDetails = "
 <li>Set up IB Key Security via IBKR Mobile. For instructions, see <a href='https://ibkrguides.com/securelogin/sls/ibkrmobile.htm' target='_blank' rel='nofollow'>IB Key Security via IBKR Mobile</a> on the IB website.</li>
 
-<li>Go back to the terminal and enter your Interactive Brokers username, account id, and password.</li>
+<li>Go back to the terminal and enter your <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a> username, account id, and password.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Username: trader777
@@ -28,7 +28,7 @@ Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
 Do you want to use the Interactive Brokers price data feed instead of the QuantConnect price data feed? (yes/no): y</pre>
 </div>
 ";
-$brokerageName="Interactive Brokers";
+$brokerageName="<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a>";
 $dataProviderName=$brokerageName;
 $isSupported=true;
 $supportsCashHoldings=false;
