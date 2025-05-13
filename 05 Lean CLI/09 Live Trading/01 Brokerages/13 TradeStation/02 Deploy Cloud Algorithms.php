@@ -1,5 +1,5 @@
 <?
-$brokerageName = "TradeStation";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/tradestation-signup'>TradeStation</a>";
 $dataProviderName=$brokerageName;
 $brokerageDetails = "
 <li>In the browser window that automatically opens, log in to your TradeStation account.

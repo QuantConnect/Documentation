@@ -1,5 +1,5 @@
 <?
-$brokerageName = "TradeStation";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/tradestation-signup'>TradeStation</a>";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
@@ -33,6 +33,6 @@ Will sleep 5 seconds and retry fetching authorization...
 </li>";
 $supportsIQFeed = true;
 $requiresSubscription = true;
-$moduleName = "TradeStation";
+$moduleName = "<a rel='nofollow' target='_blank' href='https://qnt.co/tradestation-signup'>TradeStation</a>";
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

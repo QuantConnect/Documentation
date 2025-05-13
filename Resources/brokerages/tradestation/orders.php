@@ -1,6 +1,6 @@
 <h4>Order Types</h4>
 
-<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our TradeStation integration" : "the <code>TradeStationBrokerageModel</code>" ?> supports:</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our <a rel='nofollow' target='_blank' href='https://qnt.co/tradestation-signup'>TradeStation</a> integration" : "the <code>TradeStationBrokerageModel</code>" ?> supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>

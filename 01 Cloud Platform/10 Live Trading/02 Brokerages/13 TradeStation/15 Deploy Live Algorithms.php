@@ -1,5 +1,5 @@
 <?
-$brokerageName = "TradeStation";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/tradestation-signup'>TradeStation</a>";
 $cashState = false;
 $holdingsState = false;
 $secondBullet = "";
