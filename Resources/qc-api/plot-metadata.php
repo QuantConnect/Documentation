@@ -22,6 +22,6 @@ ax2.set_ylabel("Benchmark Price ($)", color="grey")
 ax[1].plot(df.index, df["Drawdown"], color="red")
 ax[1].set_title("Drawdown")
 ax[1].set_xlabel("Time")
-ax[1].set_ylabel("%")</pre>
+ax[1].set_ylabel("%");</pre>
 </div>
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/api-result-plot.png" alt="api-equity-curve">
