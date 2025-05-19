@@ -1,48 +1,34 @@
 <p>Follow these steps to plot the equity curve, benchmark, and drawdown of a live algorithm:</p>
 
 <ol>
-	<li>Get the live algorithm instance.</li>	
-	<div class="section-example-container">
-	    <pre class="python">live_algorithm = api.read_live_algorithm(project_id, deploy_id)</pre>
-	</div>
-<p>The following table provides links to documentation that explains how to get the project Id and deployment Id, depending on the platform you use:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Platform</th>
-            <th>Project Id</th>
-            <th>Deployment Id</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Cloud Platform</td>
-            <td><a href='/docs/v2/cloud-platform/projects/getting-started#13-Get-Project-Id'>Get Project Id</a></td>
-            <td><a href='/docs/v2/cloud-platform/live-trading/getting-started#08-Get-Deployment-Id'>Get Deployment Id</a></td>
-        </tr>
-        <tr>
-            <td>Local Platform</td>
-            <td><a href='/docs/v2/local-platform/projects/getting-started#14-Get-Project-Id'>Get Project Id</a></td>
-            <td><a href='/docs/v2/local-platform/live-trading/getting-started#10-Get-Deployment-Id'>Get Deployment Id</a></td>
-        </tr>
-        <tr>
-            <td>CLI</td>
-            <td><a href='/docs/v2/lean-cli/projects/project-management#07-Get-Project-Id'>Get Project Id</a></td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
-	
-    <li>Get the results of the live algorithm.</li>
+    <li>Define some helper methods to get the live algorithm charts.</li>
     <div class="section-example-container">
-	    <pre class="python">results = live_algorithm.live_results.results</pre>
+	    <pre class="python">import pytz
+
+def eastern_time(unix_timestamp): 
+    return unix_timestamp.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('US/Eastern')).replace(tzinfo=None)
+
+def series(project_id, chart_name, series_name, start=0, end=int(datetime.now().timestamp()), count=999999999, selector=lambda x: x.y):
+    return pd.Series({
+        eastern_time(value.time): selector(value)
+        for value in api.read_live_chart(project_id, chart_name, start, end, count).chart.series[series_name].values
+    })</pre>
 	</div>
 
-    <?
-    $isLive = true;
-    include(DOCS_RESOURCES."/qc-api/plot-metadata.php");
-    ?>
+	<li>Define the project Id.</li>
+    <div class="section-example-container">
+	    <pre class="python">project_id = 23034953</pre>
+	</div>
+	<p>The process to get your project Id depends on if you use the <a href='/docs/v2/cloud-platform/projects/getting-started#13-Get-Project-Id'>Cloud Platform</a>, <a href='/docs/v2/local-platform/projects/getting-started#14-Get-Project-Id'>Local Platform</a>, or <a href='/docs/v2/lean-cli/projects/project-management#07-Get-Project-Id'>CLI</a>.</p>
+	
+    <li>Get the "Equity", "Equity Drawdown", and "Benchmark" time series data.</li>
+    <div class="section-example-container">
+	    <pre class="python">equity = series(project_id, 'Strategy Equity', 'Equity', selector=lambda x: x.close)
+drawdown = series(project_id, 'Drawdown', 'Equity Drawdown')
+benchmark = series(project_id, 'Benchmark', 'Benchmark')</pre>
+	</div>
+
+    <? include(DOCS_RESOURCES."/qc-api/plot-metadata.php"); ?>
 </ol>
 
 <p>The following table shows all the chart series you can plot:</p>
