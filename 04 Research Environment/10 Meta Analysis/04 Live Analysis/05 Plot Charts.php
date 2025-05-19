@@ -12,8 +12,7 @@ def series(
         project_id, chart_name, series_name, start=0, end=int(datetime.now().timestamp()), 
         count=999999999, selector=lambda x: x.y):
     return pd.Series({
-        eastern_time(value.time): selector(value)
-        for value in api.read_live_chart(
+        eastern_time(value.time): selector(value) for value in api.read_live_chart(
             project_id, chart_name, start, end, count
         ).chart.series[series_name].values
     })</pre>
