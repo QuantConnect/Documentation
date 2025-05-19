@@ -12,8 +12,7 @@ def series(
         project_id, backtest_id, chart_name, series_name, start=0, end=int(datetime.now().timestamp()), 
         count=999999999, selector=lambda x: x.y):
     return pd.Series({
-        eastern_time(value.time): selector(value)
-        for value in api.read_backtest_chart(
+        eastern_time(value.time): selector(value) for value in api.read_backtest_chart(
             project_id, chart_name, start, end, count, backtest_id
         ).chart.series[series_name].values
     })</pre>
