@@ -1,5 +1,5 @@
-<p>Hello World</p>
-<div data-tree='QuantConnect.ScatterMarkerSymbol'></div>
+<p>Hello World 2</p>
+<div data-tree="QuantConnect.ScatterMarkerSymbol"></div>
 
 <?php 
 $backtest = true;
