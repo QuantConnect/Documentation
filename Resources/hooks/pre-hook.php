@@ -43,7 +43,7 @@ if (!function_exists('DOCS_URL')) {
     function DOCS_VIMEO($vimeoCode)
     {
         ?>
-        <div class='sub-heading-content' data-bind='html: subheading.content'>
+        <div class='sub-heading-content'>
             <style>
                 .videoWrapper {
                   position: relative;
