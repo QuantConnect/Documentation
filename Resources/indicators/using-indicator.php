@@ -1,5 +1,5 @@
 <? if($hasAutomaticIndicatorHelper) { ?>
-<p>To create an automatic indicators for <code><?=$typeName?></code>, call the <code><?=$helperName?></code> helper method from the <code>QCAlgorithm</code> class. The <code><?=$helperName?></code> method creates a <code><?=$typeName?></code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<p>To create an automatic indicators for <code><?=$typeName?></code>, call the <code class='csharp'><?=$helperName?></code><code class='python'><?=$pyHelperName?></code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'><?=$helperName?></code><code class='python'><?=$pyHelperName?></code> method creates a <code><?=$typeName?></code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 
 <div class="section-example-container">
     <pre class="csharp">public class <?=$typeName?>Algorithm : QCAlgorithm
