@@ -4,7 +4,7 @@
 
 <p class='python'>
   To get historical <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-fundamentals'>fundamental data</a>, call the <code>history</code> method with the <code>Fundamental</code> type and an asset's <code>Symbol</code>.
-  This method returns a DataFrame with columns for the <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#06-Data-Point-Attributes'>data point attributes</a>.
+  This method returns a DataFrame with columns for the <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#99-Data-Point-Attributes'>data point attributes</a>.
 </p>
 
 <div class="section-example-container">

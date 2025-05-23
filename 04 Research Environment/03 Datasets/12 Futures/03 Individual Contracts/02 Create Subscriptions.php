@@ -17,7 +17,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini);</pre>
         <pre class="python">future = qb.add_future(Futures.Indices.SP_500_E_MINI)</pre>
     </div>
-    <p>To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#08-Supported-Assets'>Supported Assets</a>.</p>
+    <p>To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#09-Supported-Assets'>Supported Assets</a>.</p>
 
     <li><a href='/docs/v2/research-environment/initialization#02-Set-Dates'>Set the start date</a> to a date in the past that you want to use as the analysis date.</li>
     <div class="section-example-container">

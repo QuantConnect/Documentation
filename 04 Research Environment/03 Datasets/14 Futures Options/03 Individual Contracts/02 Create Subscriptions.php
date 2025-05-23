@@ -26,7 +26,7 @@ chain = list(qb.history[FutureUniverse](future.symbol, start_date, start_date+ti
 futures_contract_symbol = list(chain)[0].symbol
 qb.add_future_contract(futures_contract_symbol, fill_forward=False)</pre>
     </div>
-    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#07-Supported-Assets">Supported Assets</a>.</p>
+    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#08-Supported-Assets">Supported Assets</a>.</p>
 
     <li><a href='/docs/v2/research-environment/initialization#02-Set-Dates'>Set the start date</a> to a date in the past that you want to use as the analysis date.</li>
     <div class="section-example-container">

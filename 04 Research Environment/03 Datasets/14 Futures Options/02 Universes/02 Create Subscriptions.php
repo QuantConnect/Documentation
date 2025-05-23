@@ -18,5 +18,5 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini);</pre>
         <pre class="python">future = qb.add_future(Futures.Indices.SP_500_E_MINI)</pre>
     </div>
-    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#07-Supported-Assets">Supported Assets</a>.</p>
+    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#08-Supported-Assets">Supported Assets</a>.</p>
 </ol>
