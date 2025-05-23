@@ -267,12 +267,14 @@ def ExtractImage(content: str) -> dict:
                     png_path = path.replace("webp", "png")
                     image = Image.open(path).convert("RGBA")
                     image.save(png_path, "png")
+                    path = png_path
                     
                 elif url.endswith('.svg'):
                     with WandImage(filename=path) as img:
                         with img.convert('png') as output_img:
                             png_path = path.lower().replace("svg", "png")
                             output_img.save(filename=png_path)
+                            path = png_path
                 
                 # to avoid libpng warning: iCCP: known incorrect sRGB profile
                 if path.lower().endswith('.png'):
@@ -280,10 +282,6 @@ def ExtractImage(content: str) -> dict:
                     if 'icc_profile' in img.info:
                         del img.info['icc_profile']
                         img.save(path)
-                        
-            if path.lower().endswith('.svg') or path.lower().endswith('.webp'):
-                # Update the image source to the relative PNG path
-                path = f'{".".join(path.split(".")[:-1])}.png'
             
             conversions[url] = path
             
