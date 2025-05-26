@@ -207,6 +207,7 @@ for key, entry in entries.items():
         'Index-usa-[*]': 'US Indices',
         'Index-eurex-[*]': 'EUREX Indices',
         'Index-hkfe-[*]': 'HKFE Indices',
+        'Index-ose-[*]': 'Japan Indices',
         'IndexOption-usa-[*]': 'US Index Option',
     }.get(key, tmp[0])
     asset_class = tmp[0].replace("Cfd", "CFD").replace("IndexOption", "US Index Option")
@@ -238,8 +239,9 @@ for key, entry in entries.items():
         'option-usa': '02 Equity Options/04 Market Hours',
         'forex-oanda': '05 Forex/04 Market Hours',
         'index-usa': '08 Index/04 Market Hours/01 USA',
-        'index-eurex': '08 Index/04 Market Hours/98 EUREX',
-        'index-hkfe': '08 Index/04 Market Hours/99 HKFE',
+        'index-eurex': '08 Index/04 Market Hours/02 EUREX',
+        'index-hkfe': '08 Index/04 Market Hours/03 HKFE',
+        'index-ose': '08 Index/04 Market Hours/04 OSE',
         'indexoption-usa': '09 Index Options/04 Market Hours/01 USA',
         'cfd-interactivebrokers': '10 CFD/04 Market Hours/01 Interactive Brokers',
         'cfd-oanda': '10 CFD/04 Market Hours/02 Oanda',
