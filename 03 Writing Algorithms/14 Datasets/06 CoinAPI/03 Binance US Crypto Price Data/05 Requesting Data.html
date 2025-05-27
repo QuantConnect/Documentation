@@ -12,23 +12,20 @@
         self.set_brokerage_model(BrokerageName.BINANCE_US, AccountType.CASH)
         
         self.btcbusd = self.add_crypto("BTCUSD", Resolution.MINUTE, Market.BINANCE_US).symbol</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    public class CoinAPIDataAlgorithm : QCAlgorithm
+    private Symbol _symbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-        
-            // BinanceUS accepts Cash account type only, AccountType.Margin will result in an exception.
-            SetBrokerageModel(BrokerageName.BinanceUS, AccountType.Cash);
-            
-            _symbol = AddCrypto("BTCUSD", Resolution.Minute, Market.BinanceUS).Symbol;
-        }
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
+
+        // BinanceUS accepts Cash account type only, AccountType.Margin will result in an exception.
+        SetBrokerageModel(BrokerageName.BinanceUS, AccountType.Cash);
+
+        _symbol = AddCrypto("BTCUSD", Resolution.Minute, Market.BinanceUS).Symbol;
     }
 }</pre>
 </div>

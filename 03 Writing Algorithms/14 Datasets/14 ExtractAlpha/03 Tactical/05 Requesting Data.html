@@ -9,21 +9,18 @@
 
         self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
         self.dataset_symbol = self.add_data(ExtractAlphaTacticalModel, self.aapl).symbol</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class ExtractAlphaTacticalModelDataAlgorithm : QCAlgorithm
 {
-    public class ExtractAlphaTacticalModelDataAlgorithm : QCAlgorithm
+    private Symbol _symbol, _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol, _datasetSymbol;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-
-            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-            _datasetSymbol = AddData&lt;ExtractAlphaTacticalModel&gt;(_symbol).Symbol;
-        }
+        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _datasetSymbol = AddData&lt;ExtractAlphaTacticalModel&gt;(_symbol).Symbol;
     }
 }</pre>
 </div>

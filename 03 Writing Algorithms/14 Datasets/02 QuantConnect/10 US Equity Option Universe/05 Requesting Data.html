@@ -28,39 +28,36 @@
             .implied_volatility(1, 3) \
             .open_interest(100,500)
 </pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
 {
-    public class USEquityOptionsDataAlgorithm : QCAlgorithm
-    {
-        private Symbol _optionSymbol;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = True;
-            // Requesting data
-            var option = AddOption("GOOG");
-            _optionSymbol = option.Symbol;
-            // Set our strike/expiry filter for this option chain
-            option.SetFilter(OptionFilter);
-            // Get the entire Option chain for the current day.
-            var chain = OptionChain(option.Symbol.Underlying);
-        }
+    private Symbol _optionSymbol;
 
-        private virtual OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
-        {
-            // Contracts can be filtered by greeks, implied volatility, open interest:
-            return universe
-                .Delta(0.5m, 1.5m)
-                .Gamma(0.0001m, 0.0006m)
-                .Vega(0.01m, 1.5m)
-                .Theta(-2.0m, -0.5m)
-                .Rho(0.5m, 3.0m)
-                .ImpliedVolatility(1.0m, 3.0m)
-                .OpenInterest(100m, 500m);
-        }
+    public override void Initialize()
+    {
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = True;
+        // Requesting data
+        var option = AddOption("GOOG");
+        _optionSymbol = option.Symbol;
+        // Set our strike/expiry filter for this option chain
+        option.SetFilter(OptionFilter);
+        // Get the entire Option chain for the current day.
+        var chain = OptionChain(option.Symbol.Underlying);
+    }
+
+    private virtual OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
+    {
+        // Contracts can be filtered by greeks, implied volatility, open interest:
+        return universe
+            .Delta(0.5m, 1.5m)
+            .Gamma(0.0001m, 0.0006m)
+            .Vega(0.01m, 1.5m)
+            .Theta(-2.0m, -0.5m)
+            .Rho(0.5m, 3.0m)
+            .ImpliedVolatility(1.0m, 3.0m)
+            .OpenInterest(100m, 500m);
     }
 }</pre>
 </div>

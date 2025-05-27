@@ -51,51 +51,48 @@ class ForexCarryTradeAlgorithm(QCAlgorithm):
 </pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class ForexCarryTradeAlgorithm : QCAlgorithm
 {
-    public class ForexCarryTradeAlgorithm : QCAlgorithm
+    // Use a month counter as variable to control rebalancing
+    private int _month = -1;
+    private Dictionary&lt;string, decimal&gt; _rates;
+
+    public override void Initialize()
     {
-        // Use a month counter as variable to control rebalancing
-        private int _month = -1;
-        private Dictionary&lt;string, decimal&gt; _rates;
-        
-        public override void Initialize()
+        SetStartDate(2008, 1, 1);
+        SetCash(25000);
+
+        // We will use hard-coded interest rates for each base currency
+        _rates = new Dictionary&lt;string, decimal&gt;()
         {
-            SetStartDate(2008, 1, 1);
-            SetCash(25000);
-            
-            // We will use hard-coded interest rates for each base currency
-            _rates = new Dictionary&lt;string, decimal&gt;()
-            {
-                {"USDAUD", 1.5m},    // Australia
-                {"USDCAD", 0.5m},    // Canada
-                {"USDCNY", 4.35m},   // China
-                {"USDEUR", 0.0m},    // Euro Area
-                {"USDINR", 6.5m},    // India
-                {"USDJPY", -0.1m},   // Japan
-                {"USDMXN", 4.25m},   // Mexico
-                {"USDTRY", 7.5m},    // Turkey
-                {"USDZAR", 7.0m}     // South Africa
-            };
+            {"USDAUD", 1.5m},    // Australia
+            {"USDCAD", 0.5m},    // Canada
+            {"USDCNY", 4.35m},   // China
+            {"USDEUR", 0.0m},    // Euro Area
+            {"USDINR", 6.5m},    // India
+            {"USDJPY", -0.1m},   // Japan
+            {"USDMXN", 4.25m},   // Mexico
+            {"USDTRY", 7.5m},    // Turkey
+            {"USDZAR", 7.0m}     // South Africa
+        };
 
-            // Subscribe to forex data for trading
-            foreach (var ticker in _rates.Keys)
-            {
-                AddForex(ticker, Resolution.Daily);
-            }
-        }
-
-        public override void OnData(Slice slice)
+        // Subscribe to forex data for trading
+        foreach (var ticker in _rates.Keys)
         {
-            // Monthly rebalance checker
-            if (_month == Time.Month) return;
-            _month = Time.Month;
-
-            // Long the pair with highest interest rate and sell the pair with the lowest to earn the max monetary inflation difference between the two
-            var sortedRates = (from kvp in _rates orderby kvp.Value ascending select kvp.Key).ToArray();
-            SetHoldings(sortedRates[0], -0.5);
-            SetHoldings(sortedRates[sortedRates.Length-1], 0.5);
+            AddForex(ticker, Resolution.Daily);
         }
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Monthly rebalance checker
+        if (_month == Time.Month) return;
+        _month = Time.Month;
+
+        // Long the pair with highest interest rate and sell the pair with the lowest to earn the max monetary inflation difference between the two
+        var sortedRates = (from kvp in _rates orderby kvp.Value ascending select kvp.Key).ToArray();
+        SetHoldings(sortedRates[0], -0.5);
+        SetHoldings(sortedRates[sortedRates.Length-1], 0.5);
     }
 }</pre>
 </div>
@@ -160,74 +157,71 @@ class IntestRatesAlphaModel(AlphaModel):
 </pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class ForexCarryTradeAlgorithm : QCAlgorithm
 {
-    public class ForexCarryTradeAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        SetStartDate(2008, 1, 1);
+        SetCash(25000);
+
+        Symbol toSymbol(string ticker)
         {
-            SetStartDate(2008, 1, 1);
-            SetCash(25000);
-            
-            Symbol toSymbol(string ticker)
-            {
-                return QuantConnect.Symbol.Create(ticker, SecurityType.Forex, Market.Oanda);
-            }
-            
-            // We will use hard-coded interest rates for each base currency
-            var rates = new Dictionary&lt;Symbol, decimal&gt;()
-            {
-                {toSymbol("USDAUD"), 1.5m},    // Australia
-                {toSymbol("USDCAD"), 0.5m},    // Canada
-                {toSymbol("USDCNY"), 4.35m},   // China
-                {toSymbol("USDEUR"), 0.0m},    // Euro Area
-                {toSymbol("USDINR"), 6.5m},    // India
-                {toSymbol("USDJPY"), -0.1m},   // Japan
-                {toSymbol("USDMXN"), 4.25m},   // Mexico
-                {toSymbol("USDTRY"), 7.5m},    // Turkey
-                {toSymbol("USDZAR"), 7.0m}     // South Africa
-            };
- 
-            SetUniverseSelection(new ManualUniverseSelectionModel(rates.Keys));
-            // A custom alpha model to emit insight according to interest rate
-            SetAlpha(new IntestRatesAlphaModel(rates));
-            // Equal size to capitalize the monetary value of quote currency only based on interest rate difference
-            // For dollar-neutral to save margin cost
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+            return QuantConnect.Symbol.Create(ticker, SecurityType.Forex, Market.Oanda);
         }
+
+        // We will use hard-coded interest rates for each base currency
+        var rates = new Dictionary&lt;Symbol, decimal&gt;()
+        {
+            {toSymbol("USDAUD"), 1.5m},    // Australia
+            {toSymbol("USDCAD"), 0.5m},    // Canada
+            {toSymbol("USDCNY"), 4.35m},   // China
+            {toSymbol("USDEUR"), 0.0m},    // Euro Area
+            {toSymbol("USDINR"), 6.5m},    // India
+            {toSymbol("USDJPY"), -0.1m},   // Japan
+            {toSymbol("USDMXN"), 4.25m},   // Mexico
+            {toSymbol("USDTRY"), 7.5m},    // Turkey
+            {toSymbol("USDZAR"), 7.0m}     // South Africa
+        };
+
+        SetUniverseSelection(new ManualUniverseSelectionModel(rates.Keys));
+        // A custom alpha model to emit insight according to interest rate
+        SetAlpha(new IntestRatesAlphaModel(rates));
+        // Equal size to capitalize the monetary value of quote currency only based on interest rate difference
+        // For dollar-neutral to save margin cost
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
     }
-    
-    public class IntestRatesAlphaModel : AlphaModel
+}
+
+public class IntestRatesAlphaModel : AlphaModel
+{
+    // Variable to control the rebalancing time
+    private int _month = -1;
+    private Dictionary&lt;Symbol, decimal&gt; _rates;
+
+    public IntestRatesAlphaModel(Dictionary&lt;Symbol, decimal&gt; rates)
     {
-        // Variable to control the rebalancing time
-        private int _month = -1;
-        private Dictionary&lt;Symbol, decimal&gt; _rates;
+        _rates = rates;
+    }
 
-        public IntestRatesAlphaModel(Dictionary&lt;Symbol, decimal&gt; rates)
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        // Monthly rebalance
+        if (_month == algorithm.Time.Month)
         {
-            _rates = rates;
+            return Enumerable.Empty&lt;Insight&gt;();
         }
+        _month = algorithm.Time.Month;
 
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            // Monthly rebalance
-            if (_month == algorithm.Time.Month)
-            {
-                return Enumerable.Empty&lt;Insight&gt;();
-            }
-            _month = algorithm.Time.Month;
+        // Long the pair with highest interest rate and sell the pair with the lowest to earn the max monetary inflation difference between the two
+    sorted_rates = sorted(self.rates.items(), key = lambda x: x[1])
+    self.set_holdings(sorted_rates[0][0], -0.5)
+    self.set_holdings(sorted_rates[-1][0], 0.5)
+        var sortedRates = (from kvp in _rates orderby kvp.Value ascending select kvp.Key).ToArray();
 
-            // Long the pair with highest interest rate and sell the pair with the lowest to earn the max monetary inflation difference between the two
-        sorted_rates = sorted(self.rates.items(), key = lambda x: x[1])
-        self.set_holdings(sorted_rates[0][0], -0.5)
-        self.set_holdings(sorted_rates[-1][0], 0.5)
-            var sortedRates = (from kvp in _rates orderby kvp.Value ascending select kvp.Key).ToArray();
-            
-            return Insight.Group(
-                Insight.Price(sortedRates[0], Expiry.EndOfMonth, InsightDirection.Up),
-                Insight.Price(sortedRates[sortedRates.Length-1], Expiry.EndOfMonth, InsightDirection.Down)
-                );
-        }
+        return Insight.Group(
+            Insight.Price(sortedRates[0], Expiry.EndOfMonth, InsightDirection.Up),
+            Insight.Price(sortedRates[sortedRates.Length-1], Expiry.EndOfMonth, InsightDirection.Down)
+            );
     }
 }</pre>
 </div>

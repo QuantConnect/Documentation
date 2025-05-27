@@ -55,63 +55,60 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         # Set the shortable provider as your broker for accurate short reality modeling
         security.set_shortable_provider(InteractiveBrokersShortableProvider())</pre>
 <pre class="csharp">using QuantConnect.Data.Shortable;
-namespace QuantConnect
+public class ShortAvailabilityDataAlgorithm : QCAlgorithm
 {
-    public class ShortAvailabilityDataAlgorithm : QCAlgorithm
+    private Equity _equity;
+
+    public override void Initialize()
     {
-        private Equity _equity;
-        
-        public override void Initialize()
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        SetCash(1000);
+        // Seed the security price as the last known price, such that the price data is immediately available at initial rebalance
+        SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        _equity = AddEquity("GME");
+
+        // Set up daily rebalance scheduled event, since shortable quantity is updated daily
+        Schedule.On(
+            DateRules.EveryDay(_equity.Symbol),
+            TimeRules.AfterMarketOpen(_equity.Symbol, 10),
+            Rebalance);
+    }
+
+    public void Rebalance()
+    {
+        var symbol = _equity.Symbol;
+
+        // You can obtain the shortable quantity to decide the submission of a short order
+        // Fee and rebate rate is also available, such that you can calculate the expected return and decide if the margin is worthwhile
+        Plot("Total Shortable Quantity", symbol, _equity.ShortableProvider.ShortableQuantity(symbol, Time) ?? 0m);
+        Plot("Borrowing Cost", "Fee Rate", _equity.ShortableProvider.FeeRate(symbol, Time));
+        Plot("Borrowing Cost", "Rebate Rate", _equity.ShortableProvider.RebateRate(symbol, Time));
+
+        // Test whether we can short the desired quantity
+        var quantity = CalculateOrderQuantity(symbol, -1m);
+        if (Shortable(symbol, quantity))
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 1);
-            SetCash(1000);
-            // Seed the security price as the last known price, such that the price data is immediately available at initial rebalance
-            SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
-            
-            _equity = AddEquity("GME");
-            
-            // Set up daily rebalance scheduled event, since shortable quantity is updated daily
-            Schedule.On(
-                DateRules.EveryDay(_equity.Symbol),
-                TimeRules.AfterMarketOpen(_equity.Symbol, 10),
-                Rebalance);
+            MarketOrder(symbol, quantity);
         }
-        
-        public void Rebalance()
+    }
+
+    public override void OnMarginCallWarning()
+    {
+        Liquidate();
+    }
+
+    class MySecurityInitializer : BrokerageModelSecurityInitializer
+    {
+        public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
+            : base(brokerageModel, securitySeeder) {}    
+
+        public override void Initialize(Security security)
         {
-            var symbol = _equity.Symbol;
-
-            // You can obtain the shortable quantity to decide the submission of a short order
-            // Fee and rebate rate is also available, such that you can calculate the expected return and decide if the margin is worthwhile
-            Plot("Total Shortable Quantity", symbol, _equity.ShortableProvider.ShortableQuantity(symbol, Time) ?? 0m);
-            Plot("Borrowing Cost", "Fee Rate", _equity.ShortableProvider.FeeRate(symbol, Time));
-            Plot("Borrowing Cost", "Rebate Rate", _equity.ShortableProvider.RebateRate(symbol, Time));
-
-            // Test whether we can short the desired quantity
-            var quantity = CalculateOrderQuantity(symbol, -1m);
-            if (Shortable(symbol, quantity))
-            {
-                MarketOrder(symbol, quantity);
-            }
-        }
-
-        public override void OnMarginCallWarning()
-        {
-            Liquidate();
-        }
-
-        class MySecurityInitializer : BrokerageModelSecurityInitializer
-        {
-            public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-                : base(brokerageModel, securitySeeder) {}    
-
-            public override void Initialize(Security security)
-            {
-                base.Initialize(security);
-                // Set the shortable provider as your broker for accurate short reality modeling
-                security.SetShortableProvider(new InteractiveBrokersShortableProvider());    
-            }
+            base.Initialize(security);
+            // Set the shortable provider as your broker for accurate short reality modeling
+            security.SetShortableProvider(new InteractiveBrokersShortableProvider());    
         }
     }
 }</pre>
@@ -176,73 +173,70 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         # Set the shortable provider as IB
         security.set_shortable_provider(InteractiveBrokersShortableProvider())</pre>
 <pre class="csharp">using QuantConnect.Data.Shortable;
-namespace QuantConnect
+public class ShortAvailabilityDataAlgorithm : QCAlgorithm
 {
-    public class ShortAvailabilityDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        SetCash(1000);
+        // Seed the security price as the last known price, such that the price data is immediately available at initial rebalance
+        SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+        SetUniverseSelection(new ManualUniverseSelectionModel(
+            QuantConnect.Symbol.Create("GME", SecurityType.Equity, Market.USA)));            
+
+        // Emit down-direction insights to short all securities in the universe            
+        SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Down, TimeSpan.FromDays(1)));
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ShortableExecutionModel());
+    }
+
+    // On Margin Call, emit flat-direction insights to liquidate the positions
+    public override void OnMarginCallWarning()
+    {
+        EmitInsights(Securities
+            .Where(kvp =&gt; kvp.Value.Invested)
+            .Select(kvp =&gt; Insight.Price(kvp.Key, TimeSpan.FromDays(1), InsightDirection.Flat))
+            .ToArray());
+    }
+
+    public class ShortableExecutionModel : ImmediateExecutionModel
+    {
+        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+
+        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 1);
-            SetCash(1000);
-            // Seed the security price as the last known price, such that the price data is immediately available at initial rebalance
-            SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
-
-            SetUniverseSelection(new ManualUniverseSelectionModel(
-                QuantConnect.Symbol.Create("GME", SecurityType.Equity, Market.USA)));            
-            
-            // Emit down-direction insights to short all securities in the universe            
-            SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Down, TimeSpan.FromDays(1)));
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            SetExecution(new ShortableExecutionModel());
-        }
-
-        // On Margin Call, emit flat-direction insights to liquidate the positions
-        public override void OnMarginCallWarning()
-        {
-            EmitInsights(Securities
-                .Where(kvp =&gt; kvp.Value.Invested)
-                .Select(kvp =&gt; Insight.Price(kvp.Key, TimeSpan.FromDays(1), InsightDirection.Flat))
-                .ToArray());
-        }
-
-        public class ShortableExecutionModel : ImmediateExecutionModel
-        {
-            private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
-
-            public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+            _targetsCollection.AddRange(targets);
+            // for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+            if (_targetsCollection.Count &gt; 0)
             {
-                _targetsCollection.AddRange(targets);
-                // for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
-                if (_targetsCollection.Count &gt; 0)
+                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
                 {
-                    foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+                    // calculate remaining quantity to be ordered
+                    var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
+                    // If the quantity is negative, ensure that the security is shortable
+                    if (quantity &gt; 0 || algorithm.Shortable(target.Symbol, quantity))
                     {
-                        // calculate remaining quantity to be ordered
-                        var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
-                        // If the quantity is negative, ensure that the security is shortable
-                        if (quantity &gt; 0 || algorithm.Shortable(target.Symbol, quantity))
-                        {
-                            algorithm.MarketOrder(target.Symbol, quantity);
-                        }
+                        algorithm.MarketOrder(target.Symbol, quantity);
                     }
-
-                    _targetsCollection.ClearFulfilled(algorithm);
                 }
+
+                _targetsCollection.ClearFulfilled(algorithm);
             }
         }
+    }
 
-        class MySecurityInitializer : BrokerageModelSecurityInitializer
+    class MySecurityInitializer : BrokerageModelSecurityInitializer
+    {
+        public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
+            : base(brokerageModel, securitySeeder) {}    
+
+        public override void Initialize(Security security)
         {
-            public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-                : base(brokerageModel, securitySeeder) {}    
-
-            public override void Initialize(Security security)
-            {
-                base.Initialize(security);
-                // Set the shortable provider as IB
-                security.SetShortableProvider(new InteractiveBrokersShortableProvider());    
-            }
+            base.Initialize(security);
+            // Set the shortable provider as IB
+            security.SetShortableProvider(new InteractiveBrokersShortableProvider());    
         }
     }
 }</pre>

@@ -53,60 +53,57 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
             self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class USEquityOptionsDataAlgorithm : QCAlgorithm
 {
-    public class USEquityOptionsDataAlgorithm : QCAlgorithm
+    private Symbol _underlying;
+    private Symbol _optionSymbol;
+    private OptionContract? _contract = None;
+
+    public override void Initialize()
     {
-        private Symbol _underlying;
-        private Symbol _optionSymbol;
-        private OptionContract? _contract = None;
-        
-        public override void Initialize()
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2020, 8, 1);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = True;
+        // Requesting data
+        _underlying = AddEquity("GOOG").Symbol;
+        var option = AddOption("GOOG");
+        _optionSymbol = option.Symbol;
+        // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
+        // -2/+2 strike buffer is given for small price change
+        option.SetFilter((u) =&gt; u.IncludeWeeklys().CallsOnly().Strikes(-2, +2).Expiration(0, 7));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Close the underlying position if the option contract is exercised
+        if (Portfolio[_underlying].Invested)
         {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2020, 8, 1);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = True;
-            // Requesting data
-            _underlying = AddEquity("GOOG").Symbol;
-            var option = AddOption("GOOG");
-            _optionSymbol = option.Symbol;
-            // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
-            // -2/+2 strike buffer is given for small price change
-            option.SetFilter((u) =&gt; u.IncludeWeeklys().CallsOnly().Strikes(-2, +2).Expiration(0, 7));
+            Liquidate(_underlying);
         }
 
-        public override void OnData(Slice slice)
+        // Select with the lastest option chain data only
+        if (_contract != None &amp;&amp; !Portfolio[_contract.Symbol].Invested &amp;&amp; 
+            slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
         {
-            // Close the underlying position if the option contract is exercised
-            if (Portfolio[_underlying].Invested)
-            {
-                Liquidate(_underlying);
-            }
-            
-            // Select with the lastest option chain data only
-            if (_contract != None &amp;&amp; !Portfolio[_contract.Symbol].Invested &amp;&amp; 
-                slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
-            {
-                // Select the call contracts with the furthest expiration (week end)
-                var furthestExpiry = calls.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
-                var furthestExpiryCalls = calls.Where(x =&gt; x.Expiry == furthestExpiry).ToList();
-                
-                // Get the ATM call for speculate trade with low cost and limited loss
-                var contract = furthestExpiryCalls.OrderByDescending(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).Last();
-                _contract = contract;
-                MarketOrder(contract.Symbol, 1);
-            }
+            // Select the call contracts with the furthest expiration (week end)
+            var furthestExpiry = calls.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
+            var furthestExpiryCalls = calls.Where(x =&gt; x.Expiry == furthestExpiry).ToList();
+
+            // Get the ATM call for speculate trade with low cost and limited loss
+            var contract = furthestExpiryCalls.OrderByDescending(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).Last();
+            _contract = contract;
+            MarketOrder(contract.Symbol, 1);
         }
-        
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
         {
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = History(security.Symbol, 100, Resolution.Minute);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-            }
+            // Historical data
+            var history = History(security.Symbol, 100, Resolution.Minute);
+            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
 }</pre>

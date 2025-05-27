@@ -14,25 +14,22 @@
         
         crypto_future = self.add_crypto_future("BTCUSDT", Resolution.MINUTE)
         self.btcusdt = crypto_future.symbol</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    public class CoinAPIDataAlgorithm : QCAlgorithm
+    private Symbol _symbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2021, 6, 1);
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 6, 1);
 
-            // Set Account Currency to Tether
-            SetAccountCurrency("USDT", 100000);
+        // Set Account Currency to Tether
+        SetAccountCurrency("USDT", 100000);
 
-            SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
-            
-            var cryptoFuture = AddCryptoFuture("BTCUSDT", Resolution.Minute);
-            _symbol = cryptoFuture.Symbol;
-        }
+        SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+
+        var cryptoFuture = AddCryptoFuture("BTCUSDT", Resolution.Minute);
+        _symbol = cryptoFuture.Symbol;
     }
 }</pre>
 </div>
