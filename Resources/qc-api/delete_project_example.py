@@ -8,8 +8,11 @@ BASE_URL = 'https://www.quantconnect.com/api/v2/'
 # You can request your credentials at https://www.quantconnect.com/settings/
 # You can find our organization ID at https://www.quantconnect.com/organization/ 
 USER_ID = 0
-API_TOKEN = '_____'
-ORGANIZATION_ID = '_____'
+API_TOKEN = '____'
+ORGANIZATION_ID = '____'
+# Define a key to filter projects by name.
+# This key will be used to search for projects that contain this string in their name.
+PROJECT_NAME_SEARCH_KEY = 'unsorted'
 
 def get_headers():
     # Get timestamp
@@ -56,9 +59,7 @@ if __name__ == "__main__":
     print("All Projects:", len(projects))
     
     # Filter projects by a specific key in the name
-    # For example, filtering projects that contain 'unsorted' in their name
-    key = 'unsorted'
-    projects = [p for p in projects if key in p['name']]
+    projects = [p for p in projects if PROJECT_NAME_SEARCH_KEY in p['name']]
     print("Filtered Projects:", len(projects))
 
     for project in projects:
