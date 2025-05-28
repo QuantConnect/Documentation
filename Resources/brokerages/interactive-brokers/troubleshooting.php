@@ -42,16 +42,18 @@
             </td>
         </tr>
         <tr>
-            <td rowspan="2">
+            <td rowspan="3">
                 <div class="error-messages">The two factor authentication request timed out.</div>
             <br>
                 <div class="error-messages">A security dialog was detected for Code Card Authentication.</div>
+            <br>
+                <div class="error-messages">Unknown message window detected: Challenge: 123 456</div>
             </td>
         </tr>
         <tr>
             <td>
                 You haven't replied to the two factor authentication requests. 
-                The code card authentication is triggered when you don't reply to the IB mobile 2FA requests.
+                The code card authentication ("Challenge") is triggered when you don't reply to the IB mobile 2FA requests.
                 Ensure your IB Key device has sufficient battery for the time you expect to receive the notification. 
                 If you don't receive a notification, see <a rel='nofollow' target='_blank' href='https://ibkr.info/article/3234'>I am not receiving IBKR Mobile notifications</a> on the IB website.
             </td>
