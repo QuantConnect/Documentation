@@ -42,7 +42,7 @@
             </td>
         </tr>
         <tr>
-            <td rowspan="3">
+            <td rowspan="2">
                 <div class="error-messages">The two factor authentication request timed out.</div>
             <br>
                 <div class="error-messages">A security dialog was detected for Code Card Authentication.</div>
