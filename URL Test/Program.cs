@@ -23,11 +23,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace UrlCheck
 {
@@ -114,75 +117,86 @@ namespace UrlCheck
                             }
 
                             // Check "go to section" mapping is wrong
-                            if (url.Contains('#') && url.Contains("/docs/v2") && !url.Contains("api-reference") &&
-                                !edgeCaseUrls.Contains(url))
+                            if (url.Contains("/docs/v2") && !url.Contains("api-reference") && !edgeCaseUrls.Contains(url))
                             {
-                                var expected = url.Split("docs/v2/").Last()
-                                    .Replace('/', Path.DirectorySeparatorChar)
-                                    .Replace('-', ' ')
-                                    .Replace('#', Path.DirectorySeparatorChar)
-                                    .Replace("Look ahead", "Look-ahead") // special case
-                                    .Replace("look ahead", "look-ahead") // special case
-                                    .Replace("profit loss", "profit-loss") // special case
-                                    .Replace("out of the money", "out-of-the-money") // special case
-                                    .Replace("Built in", "Built-in") // special case
-                                    .Replace("scikit learn", "scikit-learn") // special case
-                                    .Replace("third party", "third-party") // special case
-                                    .Replace("Third Party", "Third-Party") // special case
-                                    .Replace("Fine Tune", "Fine-Tune") // special case
-                                    .Replace("Pre Trained", "Pre-Trained") // special case
-                                    .Replace("chronos t5", "chronos-t5") // special case
-                                    .Replace("C and Visual Studio", "C# and Visual Studio") // special case
-                                    .Replace("C and VS Code", "C# and VS Code") // special case
-                                    .Replace("C and Rider", "C# and Rider") // special case
-                                    .Replace("C and Rider", "C# and Rider") // special case
-                                    .Replace("mixed mode consolidators", "mixed-mode consolidators") // special case
-                                    .Replace("Multi Alpha", "Multi-Alpha") // special case
-                                    .Replace("Self Managed", "Self-Managed") // special case
-                                    .Replace("Margin3F", "Margin%3F") // special case
-                                    .Replace("Greeks3F", "Greeks%3F") // special case
-                                    .Replace("Smile3F", "Smile%3F") // special case
-                                    .Replace("Smoothing3F", "Smoothing%3F") // special case
-                                    .Replace("Volatility3F", "Volatility%3F") // special case
-                                    .ToLower();
-
-                                var section = url.Split('#').Last()
-                                    .Replace('-', ' ')
-                                    .Replace("Look ahead", "Look-ahead") // special case
-                                    .Replace("look ahead", "look-ahead") // special case
-                                    .Replace("profit loss", "profit-loss") // special case
-                                    .Replace("out of the money", "out-of-the-money") // special case
-                                    .Replace("Third Party", "Third-Party") // special case
-                                    .Replace("Fine Tune", "Fine-Tune") // special case
-                                    .Replace("Pre Trained", "Pre-Trained") // special case
-                                    .Replace("Built in", "Built-in") // special case
-                                    .Replace("C and Visual Studio", "C# and Visual Studio") // special case
-                                    .Replace("C and VS Code", "C# and VS Code") // special case
-                                    .Replace("C and Rider", "C# and Rider") // special case
-                                    .Replace("Multi Alpha", "Multi-Alpha") // special case
-                                    .Replace("Self Managed", "Self-Managed") // special case
-                                    .Replace("Margin3F", "Margin%3F") // special case
-                                    .Replace("Greeks3F", "Greeks%3F") // special case
-                                    .Replace("Smile3F", "Smile%3F") // special case
-                                    .Replace("Smoothing3F", "Smoothing%3F") // special case
-                                    .Replace("Volatility3F", "Volatility%3F"); // special case
-                                var allFiles = Directory.GetFiles(path, $"{section}.*", SearchOption.AllDirectories);
-                                var noEquals = allFiles.All(dir =>
+                                if (url.Contains('#'))
                                 {
-                                    var subPaths = dir.Split(Path.DirectorySeparatorChar)
-                                        .Where(x => int.TryParse(x.AsSpan(0, 1), out _));
-                                    var nonNumberedPath = string.Join(Path.DirectorySeparatorChar,
-                                        subPaths.SkipLast(1).Select(x => x[x.IndexOf(' ')..].Trim()));
-                                    var sectionPath = subPaths.Last().Split('.').First();
+                                    var expected = url.Split("docs/v2/").Last()
+                                        .Replace('/', Path.DirectorySeparatorChar)
+                                        .Replace('-', ' ')
+                                        .Replace('#', Path.DirectorySeparatorChar)
+                                        .Replace("Look ahead", "Look-ahead") // special case
+                                        .Replace("look ahead", "look-ahead") // special case
+                                        .Replace("profit loss", "profit-loss") // special case
+                                        .Replace("out of the money", "out-of-the-money") // special case
+                                        .Replace("Built in", "Built-in") // special case
+                                        .Replace("scikit learn", "scikit-learn") // special case
+                                        .Replace("third party", "third-party") // special case
+                                        .Replace("Third Party", "Third-Party") // special case
+                                        .Replace("Fine Tune", "Fine-Tune") // special case
+                                        .Replace("Pre Trained", "Pre-Trained") // special case
+                                        .Replace("chronos t5", "chronos-t5") // special case
+                                        .Replace("C and Visual Studio", "C# and Visual Studio") // special case
+                                        .Replace("C and VS Code", "C# and VS Code") // special case
+                                        .Replace("C and Rider", "C# and Rider") // special case
+                                        .Replace("C and Rider", "C# and Rider") // special case
+                                        .Replace("mixed mode consolidators", "mixed-mode consolidators") // special case
+                                        .Replace("Multi Alpha", "Multi-Alpha") // special case
+                                        .Replace("Self Managed", "Self-Managed") // special case
+                                        .Replace("Margin3F", "Margin%3F") // special case
+                                        .Replace("Greeks3F", "Greeks%3F") // special case
+                                        .Replace("Smile3F", "Smile%3F") // special case
+                                        .Replace("Smoothing3F", "Smoothing%3F") // special case
+                                        .Replace("Volatility3F", "Volatility%3F") // special case
+                                        .ToLower();
 
-                                    return $"{nonNumberedPath}{Path.DirectorySeparatorChar}{sectionPath}".ToLower() != expected;
-                                });
+                                    var section = url.Split('#').Last()
+                                        .Replace('-', ' ')
+                                        .Replace("Look ahead", "Look-ahead") // special case
+                                        .Replace("look ahead", "look-ahead") // special case
+                                        .Replace("profit loss", "profit-loss") // special case
+                                        .Replace("out of the money", "out-of-the-money") // special case
+                                        .Replace("Third Party", "Third-Party") // special case
+                                        .Replace("Fine Tune", "Fine-Tune") // special case
+                                        .Replace("Pre Trained", "Pre-Trained") // special case
+                                        .Replace("Built in", "Built-in") // special case
+                                        .Replace("C and Visual Studio", "C# and Visual Studio") // special case
+                                        .Replace("C and VS Code", "C# and VS Code") // special case
+                                        .Replace("C and Rider", "C# and Rider") // special case
+                                        .Replace("Multi Alpha", "Multi-Alpha") // special case
+                                        .Replace("Self Managed", "Self-Managed") // special case
+                                        .Replace("Margin3F", "Margin%3F") // special case
+                                        .Replace("Greeks3F", "Greeks%3F") // special case
+                                        .Replace("Smile3F", "Smile%3F") // special case
+                                        .Replace("Smoothing3F", "Smoothing%3F") // special case
+                                        .Replace("Volatility3F", "Volatility%3F"); // special case
+                                    var allFiles = Directory.GetFiles(path, $"{section}.*", SearchOption.AllDirectories);
+                                    var noEquals = allFiles.All(dir =>
+                                    {
+                                        var subPaths = dir.Split(Path.DirectorySeparatorChar)
+                                            .Where(x => int.TryParse(x.AsSpan(0, 1), out _));
+                                        var nonNumberedPath = string.Join(Path.DirectorySeparatorChar,
+                                            subPaths.SkipLast(1).Select(x => x[x.IndexOf(' ')..].Trim()));
+                                        var sectionPath = subPaths.Last().Split('.').First();
 
-                                if (noEquals || allFiles.Length == 0)
+                                        return $"{nonNumberedPath}{Path.DirectorySeparatorChar}{sectionPath}".ToLower() != expected;
+                                    });
+
+                                    if (noEquals || allFiles.Length == 0)
+                                    {
+                                        Log.Error(
+                                            $"No Section \"{section}\" was found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                        errorFlag = true;
+                                    }
+                                }
+                                else
                                 {
-                                    Log.Error(
-                                        $"No Section \"{section}\" was found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
-                                    errorFlag = true;
+                                    if (!CheckGitHubFolderForFiles(url))
+                                    {
+                                        Log.Error(
+                                            $"Not a valid docs page:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                        errorFlag = true;
+                                    }
                                 }
                             }
                             else if (url.Contains("api.github.com/repos/QuantConnect/Lean/issues"))
@@ -482,13 +496,52 @@ namespace UrlCheck
 
             return $"Fail to request:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
         }
+        
+        private static readonly HttpClient client = new HttpClient();
+
+        public static bool CheckGitHubFolderForFiles(string url)
+        {
+            try
+            {
+                // Initialize HttpClient for webpage
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+
+                // Fetch and parse HTML
+                var html = client.GetStringAsync(url).Result;
+                var doc = new HtmlDocument();
+                doc.LoadHtml(html);
+
+                // Find <a> with class="anchor-link"
+                var hrefs = doc.DocumentNode
+                    .SelectNodes("//a[contains(@class, 'anchor-link')]")
+                    ?.Select(x => x.GetAttributeValue("href", ""))
+                    .Where(x => x.StartsWith("https://github.com/QuantConnect/Documentation/tree/master/"))
+                    .ToList();
+
+                if (hrefs.Count == 0)
+                {
+                    return false;
+                }
+                
+                // Check for .html or .php or .json files
+                return hrefs.Any(item =>
+                    item.EndsWith(".html", StringComparison.OrdinalIgnoreCase) ||
+                    item.EndsWith(".php", StringComparison.OrdinalIgnoreCase) ||
+                    item.EndsWith(".json", StringComparison.OrdinalIgnoreCase)
+                );
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private static bool filter(string x)
         {
             // Exclude Documentation Updates since it may include broken links
             // Exclude single-page docs since it is generated from basic docs
             return !x.Contains(".git") && !x.Contains(".vs") && !x.Contains("single-page") && !x.Contains("08 Drafts") &&
-                !x.Contains("Resources/qcalgorithm-api/") && !x.Contains("Resources/indicators/") && 
+                !x.Contains("Resources/qcalgorithm-api/") && !x.Contains("Resources/indicators/") &&
                 !x.EndsWith("Documentation Updates.html");
         }
 
