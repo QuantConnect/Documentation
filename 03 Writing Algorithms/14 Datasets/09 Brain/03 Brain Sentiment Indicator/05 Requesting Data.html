@@ -11,22 +11,19 @@
         symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
         self.dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, symbol).symbol
         self.dataset_30day_symbol = self.add_data(BrainSentimentIndicator30Day, symbol).symbol</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class BrainSentimentDataAlgorithm : QCAlgorithm
 {
-    public class BrainSentimentDataAlgorithm : QCAlgorithm
+    private Symbol _dataset7DaySymbol, _dataset30DaySymbol;
+
+    public override void Initialize()
     {
-        private Symbol _dataset7DaySymbol, _dataset30DaySymbol;
-    	
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(100000);
-            
-            var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-            _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(symbol).Symbol;
-            _dataset30DaySymbol = AddData&lt;BrainSentimentIndicator30Day&gt;(symbol).Symbol;
-        }
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(100000);
+
+        var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(symbol).Symbol;
+        _dataset30DaySymbol = AddData&lt;BrainSentimentIndicator30Day&gt;(symbol).Symbol;
     }
 }</pre>
 </div>

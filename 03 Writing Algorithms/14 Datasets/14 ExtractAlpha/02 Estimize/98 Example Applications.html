@@ -76,91 +76,88 @@ class ExtractAlphaEstimizeAlgorithm(QCAlgorithm):
 </pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class ExtractAlphaEstimizeAlgorithm : QCAlgorithm
 {
-    public class ExtractAlphaEstimizeAlgorithm : QCAlgorithm
+    // A variable to control the next rebalance time
+    private DateTime _time = DateTime.MinValue;
+
+    public override void Initialize()
     {
-        // A variable to control the next rebalance time
-        private DateTime _time = DateTime.MinValue;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 12, 31);
-            SetCash(100000);
-            
-            AddUniverse(MyCoarseFilterFunction);
-            UniverseSettings.Resolution = Resolution.Minute;
-        }
-        
-        private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
-        {
-            // Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
-            return (from c in coarse
-                    where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-                    orderby c.DollarVolume descending
-                    select c.Symbol).Take(500);
-        }
-        
-        public override void OnData(Slice slice)
-        {
-            if (_time &gt; Time) return;
-            
-            // Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
-            var consensus = slice.Get&lt;EstimizeConsensus&gt;();
-            var estimate = slice.Get&lt;EstimizeEstimate&gt;();
-            var release = slice.Get&lt;EstimizeRelease&gt;();
-            
-            if (estimate.IsNullOrEmpty()) return;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 12, 31);
+        SetCash(100000);
 
-            // Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
-            var sortedByEpsEstimate = from value in estimate.Values
-                            where (value.Eps != None)
-                            orderby value.Eps descending
-                            select value.Symbol.Underlying;
-            var longSymbols = sortedByEpsEstimate.Take(10).ToList();
-            var shortSymbols = sortedByEpsEstimate.TakeLast(10).ToList();
-            
-            // Liquidate the ones that fall out of the earning extremes
-            foreach (var kvp in Portfolio)
-            {
-                var symbol = kvp.Key;
-                if (kvp.Value.Invested &amp;&amp; 
-                !longSymbols.Contains(symbol) &amp;&amp; 
-                !shortSymbols.Contains(symbol))
-                {
-                    Liquidate(symbol);
-                }
-            }
-            
-            // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-            var targets = new List&lt;PortfolioTarget&gt;();
-            targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
-            targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
-            
-            SetHoldings(targets);
+        AddUniverse(MyCoarseFilterFunction);
+        UniverseSettings.Resolution = Resolution.Minute;
+    }
 
-            // Update the rebalance time to next month start
-            _time = Expiry.EndOfMonth(Time);
-        }
-        
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    {
+        // Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
+        return (from c in coarse
+                where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
+                orderby c.DollarVolume descending
+                select c.Symbol).Take(500);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_time &gt; Time) return;
+
+        // Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
+        var consensus = slice.Get&lt;EstimizeConsensus&gt;();
+        var estimate = slice.Get&lt;EstimizeEstimate&gt;();
+        var release = slice.Get&lt;EstimizeRelease&gt;();
+
+        if (estimate.IsNullOrEmpty()) return;
+
+        // Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
+        var sortedByEpsEstimate = from value in estimate.Values
+                        where (value.Eps != None)
+                        orderby value.Eps descending
+                        select value.Symbol.Underlying;
+        var longSymbols = sortedByEpsEstimate.Take(10).ToList();
+        var shortSymbols = sortedByEpsEstimate.TakeLast(10).ToList();
+
+        // Liquidate the ones that fall out of the earning extremes
+        foreach (var kvp in Portfolio)
         {
-            foreach(var security in changes.AddedSecurities)
+            var symbol = kvp.Key;
+            if (kvp.Value.Invested &amp;&amp; 
+            !longSymbols.Contains(symbol) &amp;&amp; 
+            !shortSymbols.Contains(symbol))
             {
-                // Requesting data for trading signal generation
-                var consensusSymbol = AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
-                var estimateSymbol = AddData&lt;EstimizeEstimate&gt;(security.Symbol).Symbol;
-                var releaseSymbol = AddData&lt;EstimizeRelease&gt;(security.Symbol).Symbol;
-                
-                // Historical Data
-                var history = History(new[]{
-                    consensusSymbol,
-                    estimateSymbol,
-                    releaseSymbol
-                }, 10, Resolution.Daily);
-                Debug($"We got {history.Count()} items from our history request");
+                Liquidate(symbol);
             }
+        }
+
+        // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+        var targets = new List&lt;PortfolioTarget&gt;();
+        targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
+        targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
+
+        SetHoldings(targets);
+
+        // Update the rebalance time to next month start
+        _time = Expiry.EndOfMonth(Time);
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach(var security in changes.AddedSecurities)
+        {
+            // Requesting data for trading signal generation
+            var consensusSymbol = AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
+            var estimateSymbol = AddData&lt;EstimizeEstimate&gt;(security.Symbol).Symbol;
+            var releaseSymbol = AddData&lt;EstimizeRelease&gt;(security.Symbol).Symbol;
+
+            // Historical Data
+            var history = History(new[]{
+                consensusSymbol,
+                estimateSymbol,
+                releaseSymbol
+            }, 10, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
         }
     }
 }
@@ -246,94 +243,91 @@ class ExtractAlphaEstimizeAlphaModel(AlphaModel):
 </pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class ExtractAlphaEstimizeAlgorithm : QCAlgorithm
 {
-    public class ExtractAlphaEstimizeAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2021, 1, 1);
-            SetCash(100000);
-            
-            AddUniverse(MyCoarseFilterFunction);
-            UniverseSettings.Resolution = Resolution.Minute;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
 
-            // Custom alpha model that emit signal according to Estimize data
-            AddAlpha(new ExtractAlphaEstimizeAlphaModel());
+        AddUniverse(MyCoarseFilterFunction);
+        UniverseSettings.Resolution = Resolution.Minute;
 
-            // Invest equally to evenly dissipate capital concentration risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
-        
-        private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
-        {
-            // Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
-            return (from c in coarse
-                    where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-                    orderby c.DollarVolume descending
-                    select c.Symbol).Take(500);
-        }
+        // Custom alpha model that emit signal according to Estimize data
+        AddAlpha(new ExtractAlphaEstimizeAlphaModel());
+
+        // Invest equally to evenly dissipate capital concentration risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        SetExecution(new ImmediateExecutionModel());
     }
-    
-    public class ExtractAlphaEstimizeAlphaModel: AlphaModel
-    {
-        // A variable to control the next rebalance time
-        public DateTime _time;
-        
-        public ExtractAlphaEstimizeAlphaModel()
-        {
-            _time = DateTime.MinValue;
-        }
-        
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-            
-            // Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
-            var consensus = slice.Get&lt;EstimizeConsensus&gt;();
-            var estimate = slice.Get&lt;EstimizeEstimate&gt;();
-            var release = slice.Get&lt;EstimizeRelease&gt;();
-            
-            if (estimate.IsNullOrEmpty()) return new List&lt;Insight&gt;();
-            
-            // Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
-            var sortedByEpsEstimate = from s in estimate.Values
-                            where (s.Eps != None)
-                            orderby s.Eps descending
-                            select s.Symbol.Underlying;
-            var longSymbols = sortedByEpsEstimate.Take(10).ToList();
-            var shortSymbols = sortedByEpsEstimate.TakeLast(10).ToList();
-            
-            var insights = new List&lt;Insight&gt;();
-            insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Up)));
-            insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Down)));
 
-            // Update the rebalance time to next month start
-            _time = Expiry.EndOfMonth(algorithm.Time);
-            
-            return insights;
-        }
-        
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    {
+        // Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
+        return (from c in coarse
+                where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
+                orderby c.DollarVolume descending
+                select c.Symbol).Take(500);
+    }
+}
+
+public class ExtractAlphaEstimizeAlphaModel: AlphaModel
+{
+    // A variable to control the next rebalance time
+    public DateTime _time;
+
+    public ExtractAlphaEstimizeAlphaModel()
+    {
+        _time = DateTime.MinValue;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
+
+        // Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
+        var consensus = slice.Get&lt;EstimizeConsensus&gt;();
+        var estimate = slice.Get&lt;EstimizeEstimate&gt;();
+        var release = slice.Get&lt;EstimizeRelease&gt;();
+
+        if (estimate.IsNullOrEmpty()) return new List&lt;Insight&gt;();
+
+        // Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
+        var sortedByEpsEstimate = from s in estimate.Values
+                        where (s.Eps != None)
+                        orderby s.Eps descending
+                        select s.Symbol.Underlying;
+        var longSymbols = sortedByEpsEstimate.Take(10).ToList();
+        var shortSymbols = sortedByEpsEstimate.TakeLast(10).ToList();
+
+        var insights = new List&lt;Insight&gt;();
+        insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Up)));
+        insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Down)));
+
+        // Update the rebalance time to next month start
+        _time = Expiry.EndOfMonth(algorithm.Time);
+
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach(var security in changes.AddedSecurities)
         {
-            foreach(var security in changes.AddedSecurities)
-            {
-                // Requesting data for trading signal generation
-                var consensusSymbol = algorithm.AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
-                var estimateSymbol = algorithm.AddData&lt;EstimizeEstimate&gt;(security.Symbol).Symbol;
-                var releaseSymbol = algorithm.AddData&lt;EstimizeRelease&gt;(security.Symbol).Symbol;
-                
-                // Historical Data
-                var history = algorithm.History(new[]{
-                    consensusSymbol,
-                    estimateSymbol,
-                    releaseSymbol
-                }, 10, Resolution.Daily);
-                algorithm.Debug($"We got {history.Count()} items from our history request");
-            }
+            // Requesting data for trading signal generation
+            var consensusSymbol = algorithm.AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
+            var estimateSymbol = algorithm.AddData&lt;EstimizeEstimate&gt;(security.Symbol).Symbol;
+            var releaseSymbol = algorithm.AddData&lt;EstimizeRelease&gt;(security.Symbol).Symbol;
+
+            // Historical Data
+            var history = algorithm.History(new[]{
+                consensusSymbol,
+                estimateSymbol,
+                releaseSymbol
+            }, 10, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request");
         }
     }
 }

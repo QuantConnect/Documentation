@@ -55,66 +55,63 @@ class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
             self.debug(f"We got {len(history)} from our history request for {security.symbol}") </pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class USEquityCoarseUniverseConstituentsDataAlgorithm : QCAlgorithm
 {
-    public class USEquityCoarseUniverseConstituentsDataAlgorithm : QCAlgorithm
+    private int _numberOfSymbols = 3;
+    private SecurityChanges _changes = SecurityChanges.None;
+
+    public override void Initialize()
     {
-        private int _numberOfSymbols = 3;
-        private SecurityChanges _changes = SecurityChanges.None;
-        
-        public override void Initialize()
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        SetCash(100000);
+
+        // Set Asynchronous to True to improve speed performance 
+        UniverseSettings.Asynchronous = True;
+        // Requesting data
+        AddUniverse(FundamentalSelectionFunction);
+    }
+
+    public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Select the top traded stocks, since they are the most popular with high capital flow
+        return fundamental.OrderByDescending(x =&gt; x.DollarVolume)
+            .Take(_numberOfSymbols).Select(x =&gt; x.Symbol);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // if we have no changes, do nothing
+        if (_changes == SecurityChanges.None) return;
+
+        // liquidate removed securities, since they are not the most popular stocks
+        foreach (var security in _changes.RemovedSecurities)
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 1);
-            SetCash(100000);
-        
-            // Set Asynchronous to True to improve speed performance 
-            UniverseSettings.Asynchronous = True;
-            // Requesting data
-            AddUniverse(FundamentalSelectionFunction);
+            if (security.Invested)
+            {
+                Liquidate(security.Symbol);
+            }
         }
 
-        public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+        // we want 1/N allocation in each security in our universe to evenly dissipate risk
+        foreach (var security in _changes.AddedSecurities)
         {
-            // Select the top traded stocks, since they are the most popular with high capital flow
-            return fundamental.OrderByDescending(x =&gt; x.DollarVolume)
-                .Take(_numberOfSymbols).Select(x =&gt; x.Symbol);
+            SetHoldings(security.Symbol, 1m / _numberOfSymbols);
         }
 
-        public override void OnData(Slice slice)
+        _changes = SecurityChanges.None;
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        _changes = changes;
+
+
+        foreach (var security in changes.AddedSecurities)
         {
-            // if we have no changes, do nothing
-            if (_changes == SecurityChanges.None) return;
-
-            // liquidate removed securities, since they are not the most popular stocks
-            foreach (var security in _changes.RemovedSecurities)
-            {
-                if (security.Invested)
-                {
-                    Liquidate(security.Symbol);
-                }
-            }
-
-            // we want 1/N allocation in each security in our universe to evenly dissipate risk
-            foreach (var security in _changes.AddedSecurities)
-            {
-                SetHoldings(security.Symbol, 1m / _numberOfSymbols);
-            }
-
-            _changes = SecurityChanges.None;
-        }
-        
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {
-            _changes = changes;
-
-
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = History(security.Symbol, 7, Resolution.Daily);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-            }
+            // Historical data
+            var history = History(security.Symbol, 7, Resolution.Daily);
+            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
 }</pre>
@@ -156,40 +153,37 @@ class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
         return [ x.symbol for x in sortedByDollarVolume[:self._number_of_symbols] ]</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class USEquityCoarseUniverseConstituentsDataAlgorithm : QCAlgorithm
 {
-    public class USEquityCoarseUniverseConstituentsDataAlgorithm : QCAlgorithm
+    private int _numberOfSymbols = 3;
+
+    public override void Initialize()
     {
-        private int _numberOfSymbols = 3;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 1);
-            SetCash(100000);
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        SetCash(100000);
 
-            // Set Asynchronous to True to improve speed performance
-            UniverseSettings.Asynchronous = True;
+        // Set Asynchronous to True to improve speed performance
+        UniverseSettings.Asynchronous = True;
 
-            // Requesting data
-            SetUniverseSelection(
-                new FundamentalUniverseSelectionModel(FundamentalSelectionFunction));
+        // Requesting data
+        SetUniverseSelection(
+            new FundamentalUniverseSelectionModel(FundamentalSelectionFunction));
 
-            // we want 1/N allocation in each security in our universe to evenly dissipate risk
-            SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+        // we want 1/N allocation in each security in our universe to evenly dissipate risk
+        SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
 
-        public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
-        {
-            // Select the top traded stocks, since they are the most popular with high capital flow
-            return fundamental.OrderByDescending(x =&gt; x.DollarVolume)
-                .Take(_numberOfSymbols).Select(x =&gt; x.Symbol);
-        }
+        AddRiskManagement(new NullRiskManagementModel());
+
+        SetExecution(new ImmediateExecutionModel());
+    }
+
+    public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Select the top traded stocks, since they are the most popular with high capital flow
+        return fundamental.OrderByDescending(x =&gt; x.DollarVolume)
+            .Take(_numberOfSymbols).Select(x =&gt; x.Symbol);
     }
 }</pre>
 </div>

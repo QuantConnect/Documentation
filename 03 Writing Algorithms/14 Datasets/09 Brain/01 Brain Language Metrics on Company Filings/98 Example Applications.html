@@ -37,38 +37,35 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
             self.set_holdings(self.symbol, int(sentiment &gt; 0))</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
 {
-    public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
-    {
-        private Symbol _symbol;
-        private Symbol _datasetSymbol;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2010, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(100000);
-            
-            // Requesting data -- we aim to obtain a sentiment score from the company filings
-            // Combining both fundamental and sentiment factor, as well as past performance and future provision
-            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-            _datasetSymbol = AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_symbol).Symbol;
-            
-            // Historical data
-            var history = History&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_datasetSymbol, 365, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
-        }
+    private Symbol _symbol;
+    private Symbol _datasetSymbol;
 
-        public override void OnData(Slice slice)
+    public override void Initialize()
+    {
+        SetStartDate(2010, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(100000);
+
+        // Requesting data -- we aim to obtain a sentiment score from the company filings
+        // Combining both fundamental and sentiment factor, as well as past performance and future provision
+        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _datasetSymbol = AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_symbol).Symbol;
+
+        // Historical data
+        var history = History&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_datasetSymbol, 365, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade base on the updated report sentiment
+        if (slice.ContainsKey(_datasetSymbol))
         {
-            // Trade base on the updated report sentiment
-            if (slice.ContainsKey(_datasetSymbol))
-            {
-                // Buy for a positive sentiment score for the positive return projection
-                var sentiment = slice[_datasetSymbol].ReportSentiment.Sentiment;
-                SetHoldings(_symbol, sentiment &gt; 0 ? 1 : 0);
-            }
+            // Buy for a positive sentiment score for the positive return projection
+            var sentiment = slice[_datasetSymbol].ReportSentiment.Sentiment;
+            SetHoldings(_symbol, sentiment &gt; 0 ? 1 : 0);
         }
     }
 }</pre>
@@ -118,54 +115,51 @@ class BrainCompanyFilingNLPAlphaModel(AlphaModel):
         return insights</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
 {
-    public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        SetStartDate(2010, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(100000);
+
+        // Filter based on company filing data
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;(altCoarse =&gt;
         {
-            SetStartDate(2010, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(100000);
-            
-            // Filter based on company filing data
-            UniverseSettings.Resolution = Resolution.Daily;
-            AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;(altCoarse =&gt;
-            {
-                // Filter for the stocks with positive sentiment score for the positive return projection
-                // Combining both fundamental and sentiment factor, as well as past performance and future provision
-                return from d in altCoarse.OfType&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;() 
-                    where d.ReportSentiment.Sentiment &gt; 0m
-                    select d.Symbol;
-            });
-            
-            AddAlpha(new BrainCompanyFilingNLPAlphaModel());
-            
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+            // Filter for the stocks with positive sentiment score for the positive return projection
+            // Combining both fundamental and sentiment factor, as well as past performance and future provision
+            return from d in altCoarse.OfType&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;() 
+                where d.ReportSentiment.Sentiment &gt; 0m
+                select d.Symbol;
+        });
+
+        AddAlpha(new BrainCompanyFilingNLPAlphaModel());
+
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        AddRiskManagement(new NullRiskManagementModel());
+
+        SetExecution(new ImmediateExecutionModel());
     }
-        
-    public class BrainCompanyFilingNLPAlphaModel : AlphaModel
+}
+
+public class BrainCompanyFilingNLPAlphaModel : AlphaModel
+{
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        var insights = new List&lt;Insight&gt;();
+
+        // Signal to invest in the selected universe, which are expected to have a positive return due to positive fundamentals and future prospect
+        foreach (var symbol in algorithm.ActiveSecurities.Keys)
         {
-            var insights = new List&lt;Insight&gt;();
-            
-            // Signal to invest in the selected universe, which are expected to have a positive return due to positive fundamentals and future prospect
-            foreach (var symbol in algorithm.ActiveSecurities.Keys)
+            if (!slice.ContainsKey(symbol))
             {
-                if (!slice.ContainsKey(symbol))
-                {
-                    continue;
-                }
-                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up));
+                continue;
             }
-            return insights;
+            insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up));
         }
+        return insights;
     }
 }</pre>
 </div>

@@ -88,118 +88,115 @@ class SECReport8KAlgorithm(QCAlgorithm):
 
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class SECReport8KAlgorithm : QCAlgorithm
 {
-    public class SECReport8KAlgorithm : QCAlgorithm
+    private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+    private List&lt;Symbol&gt; _longSymbols = new List&lt;Symbol&gt;();
+    private bool _rebalance = False;
+
+    public override void Initialize()
     {
-        private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
-        private List&lt;Symbol&gt; _longSymbols = new List&lt;Symbol&gt;();
-        private bool _rebalance = False;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2019, 12, 31);
+        SetCash(100000);
 
-        public override void Initialize()
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverse(CoarseSelector);
+
+        // Request underlying equity data.
+        var ibm = AddEquity("IBM", Resolution.Daily).Symbol;
+        // Add SEC report 10-Q data for the underlying IBM asset for trade signal generation
+        var earningsFiling = AddData&lt;SECReport10Q&gt;(ibm, Resolution.Daily).Symbol;
+        // Request 120 days of history with the SECReport10Q IBM custom data Symbol.
+        var history = History&lt;SECReport10Q&gt;(earningsFiling, 120, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
+
+    public IEnumerable&lt;Symbol&gt; CoarseSelector(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    {
+        // Select the top 10 traded companies with fundamental data, since the market activities can better reflect the fundamental factor efficiently
+        return coarse.Where(x =&gt; x.HasFundamentalData)
+            .OrderByDescending(x =&gt; x.DollarVolume)
+            .Take(10).Select(x =&gt; x.Symbol);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade from SEC data 
+        foreach (var report in slice.Get&lt;SECReport8K&gt;().Values)
         {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2019, 12, 31);
-            SetCash(100000);
-
-            UniverseSettings.Resolution = Resolution.Daily;
-            AddUniverse(CoarseSelector);
-
-            // Request underlying equity data.
-            var ibm = AddEquity("IBM", Resolution.Daily).Symbol;
-            // Add SEC report 10-Q data for the underlying IBM asset for trade signal generation
-            var earningsFiling = AddData&lt;SECReport10Q&gt;(ibm, Resolution.Daily).Symbol;
-            // Request 120 days of history with the SECReport10Q IBM custom data Symbol.
-            var history = History&lt;SECReport10Q&gt;(earningsFiling, 120, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
-        }
-
-        public IEnumerable&lt;Symbol&gt; CoarseSelector(IEnumerable&lt;CoarseFundamental&gt; coarse)
-        {
-            // Select the top 10 traded companies with fundamental data, since the market activities can better reflect the fundamental factor efficiently
-            return coarse.Where(x =&gt; x.HasFundamentalData)
-                .OrderByDescending(x =&gt; x.DollarVolume)
-                .Take(10).Select(x =&gt; x.Symbol);
-        }
-
-        public override void OnData(Slice slice)
-        {
-            // Trade from SEC data 
-            foreach (var report in slice.Get&lt;SECReport8K&gt;().Values)
+            var underlyingSymbol = report.Symbol.Underlying;
+            // Skip the Symbol if it's no longer in the universe (insuffucient popularity to reach market efficiency of fundamental factor)
+            if (!_datasetSymbolBySymbol.ContainsKey(underlyingSymbol))
             {
-                var underlyingSymbol = report.Symbol.Underlying;
-                // Skip the Symbol if it's no longer in the universe (insuffucient popularity to reach market efficiency of fundamental factor)
-                if (!_datasetSymbolBySymbol.ContainsKey(underlyingSymbol))
-                {
-                    if (_longSymbols.Contains(underlyingSymbol))
-                    {
-                        _rebalance = True;
-                        _longSymbols.Remove(underlyingSymbol);
-                    }
-                    continue;
-                }
-
-                // Long the stocks with SEC report over 20000 text length, suggesting excessive insights or future projections are highlighted
-                var reportTextLength = report.Report.Documents.Select(x =&gt; x.Text.Length).Sum();
-                if (reportTextLength &gt; 20000)
-                {
-                    if (!_longSymbols.Contains(underlyingSymbol))
-                    {
-                        _rebalance = True;
-                        _longSymbols.Add(underlyingSymbol);
-                    }
-                }
-                else if (_longSymbols.Contains(underlyingSymbol))
+                if (_longSymbols.Contains(underlyingSymbol))
                 {
                     _rebalance = True;
                     _longSymbols.Remove(underlyingSymbol);
                 }
+                continue;
             }
 
-            if (!_rebalance)
+            // Long the stocks with SEC report over 20000 text length, suggesting excessive insights or future projections are highlighted
+            var reportTextLength = report.Report.Documents.Select(x =&gt; x.Text.Length).Sum();
+            if (reportTextLength &gt; 20000)
             {
-                return;
+                if (!_longSymbols.Contains(underlyingSymbol))
+                {
+                    _rebalance = True;
+                    _longSymbols.Add(underlyingSymbol);
+                }
             }
-            _rebalance = False;
-
-            // Invest equally to evenly dissipate the capital concentration risk
-            var portfolioTargets = new List&lt;PortfolioTarget&gt;();
-            var equalWeighting = _longSymbols.Count &gt; 0 ? 1.0m / _longSymbols.Count : 0m;
-            foreach (var kvp in Portfolio)
+            else if (_longSymbols.Contains(underlyingSymbol))
             {
-                var symbol = kvp.Key;
-                var securityHolding = kvp.Value;
-                var weight = 0m;
-                if (_longSymbols.Contains(symbol))
-                {
-                    weight = equalWeighting;
-                }
-                else if (!securityHolding.Invested)
-                {
-                    continue;
-                }
-                portfolioTargets.Add(new PortfolioTarget(symbol, weight));
+                _rebalance = True;
+                _longSymbols.Remove(underlyingSymbol);
             }
-            SetHoldings(portfolioTargets);
         }
 
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+        if (!_rebalance)
         {
-            foreach (var security in changes.AddedSecurities)
-            {
-                // If added to universe, adds SECReport8K for trade signal generation
-                _datasetSymbolBySymbol[security.Symbol] = AddData&lt;SECReport8K&gt;(security.Symbol).Symbol;
-            }
+            return;
+        }
+        _rebalance = False;
 
-            foreach (var security in changes.RemovedSecurities)
-            {                
-                Symbol reportSymbol;
-                if (_datasetSymbolBySymbol.TryGetValue(security.Symbol, out reportSymbol))
-                {
-                    // Remove SEC data subscription to release computation resources
-                    RemoveSecurity(reportSymbol);
-                    _datasetSymbolBySymbol.Remove(security.Symbol);
-                }
+        // Invest equally to evenly dissipate the capital concentration risk
+        var portfolioTargets = new List&lt;PortfolioTarget&gt;();
+        var equalWeighting = _longSymbols.Count &gt; 0 ? 1.0m / _longSymbols.Count : 0m;
+        foreach (var kvp in Portfolio)
+        {
+            var symbol = kvp.Key;
+            var securityHolding = kvp.Value;
+            var weight = 0m;
+            if (_longSymbols.Contains(symbol))
+            {
+                weight = equalWeighting;
+            }
+            else if (!securityHolding.Invested)
+            {
+                continue;
+            }
+            portfolioTargets.Add(new PortfolioTarget(symbol, weight));
+        }
+        SetHoldings(portfolioTargets);
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            // If added to universe, adds SECReport8K for trade signal generation
+            _datasetSymbolBySymbol[security.Symbol] = AddData&lt;SECReport8K&gt;(security.Symbol).Symbol;
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {                
+            Symbol reportSymbol;
+            if (_datasetSymbolBySymbol.TryGetValue(security.Symbol, out reportSymbol))
+            {
+                // Remove SEC data subscription to release computation resources
+                RemoveSecurity(reportSymbol);
+                _datasetSymbolBySymbol.Remove(security.Symbol);
             }
         }
     }
@@ -275,97 +272,94 @@ class SECReport8KAlphaModel(AlphaModel):
                 algorithm.remove_security(symbol_data)</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class SECReport8KAlgorithm : QCAlgorithm
 {
-    public class SECReport8KAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2019, 12, 31);
-            SetCash(100000);
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2019, 12, 31);
+        SetCash(100000);
 
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Filter for the most liquid stocks for trading due to high market activities for effecient pricing from fundamental factor
-            AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel(UniverseSettings));
-            // Custom alpha model that generates insights from SEC data
-            AddAlpha(new SECReport8KAlphaModel());
-            // Invest equally to evenly dissipate the capital concentration risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
-        }
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter for the most liquid stocks for trading due to high market activities for effecient pricing from fundamental factor
+        AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel(UniverseSettings));
+        // Custom alpha model that generates insights from SEC data
+        AddAlpha(new SECReport8KAlphaModel());
+        // Invest equally to evenly dissipate the capital concentration risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
+    }
+}
+
+class MostLiquidFundamentalUniverseSelectionModel : CoarseFundamentalUniverseSelectionModel
+{
+    public MostLiquidFundamentalUniverseSelectionModel(UniverseSettings universeSettings)
+        : base(default(Func&lt;IEnumerable&lt;CoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;), universeSettings)
+    {
     }
 
-    class MostLiquidFundamentalUniverseSelectionModel : CoarseFundamentalUniverseSelectionModel
+    public override IEnumerable&lt;Symbol&gt; SelectCoarse(QCAlgorithm algorithm, IEnumerable&lt;CoarseFundamental&gt; coarse)
     {
-        public MostLiquidFundamentalUniverseSelectionModel(UniverseSettings universeSettings)
-            : base(default(Func&lt;IEnumerable&lt;CoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;), universeSettings)
+        // Select the top 10 traded companies with fundamental data, since the market activities can better reflect the fundamental factor efficiently
+        return coarse.Where(x =&gt; x.HasFundamentalData)
+            .OrderByDescending(x =&gt; x.DollarVolume)
+            .Take(10).Select(x =&gt; x.Symbol);
+    }
+}
+
+public class SECReport8KAlphaModel : AlphaModel
+{
+    private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        // Trade only based on SEC data 
+        foreach (var report in slice.Get&lt;SECReport8K&gt;().Values)
         {
+            var underlyingSymbol = report.Symbol.Underlying;
+            if (!_datasetSymbolBySymbol.ContainsKey(underlyingSymbol))
+            {
+                continue;
+            }
+
+            // Long the stocks with SEC report over 20000 text length, suggesting excessive insights or future projections are highlighted
+            var reportTextLength = report.Report.Documents.Select(x =&gt; x.Text.Length).Sum();
+            InsightDirection direction;
+            if (reportTextLength &gt; 20000)
+            {
+                direction = InsightDirection.Up;
+            }
+            else if (algorithm.Portfolio[underlyingSymbol].Invested)
+            {
+                direction = InsightDirection.Flat;
+            }
+            else
+            {
+                continue;
+            }
+            insights.Add(Insight.Price(underlyingSymbol, TimeSpan.FromDays(30), direction));
         }
 
-        public override IEnumerable&lt;Symbol&gt; SelectCoarse(QCAlgorithm algorithm, IEnumerable&lt;CoarseFundamental&gt; coarse)
-        {
-            // Select the top 10 traded companies with fundamental data, since the market activities can better reflect the fundamental factor efficiently
-            return coarse.Where(x =&gt; x.HasFundamentalData)
-                .OrderByDescending(x =&gt; x.DollarVolume)
-                .Take(10).Select(x =&gt; x.Symbol);
-        }
+        return insights;
     }
 
-    public class SECReport8KAlphaModel : AlphaModel
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        foreach (var symbol in changes.AddedSecurities.Select(x =&gt; x.Symbol))
         {
-            var insights = new List&lt;Insight&gt;();
-
-            // Trade only based on SEC data 
-            foreach (var report in slice.Get&lt;SECReport8K&gt;().Values)
-            {
-                var underlyingSymbol = report.Symbol.Underlying;
-                if (!_datasetSymbolBySymbol.ContainsKey(underlyingSymbol))
-                {
-                    continue;
-                }
-
-                // Long the stocks with SEC report over 20000 text length, suggesting excessive insights or future projections are highlighted
-                var reportTextLength = report.Report.Documents.Select(x =&gt; x.Text.Length).Sum();
-                InsightDirection direction;
-                if (reportTextLength &gt; 20000)
-                {
-                    direction = InsightDirection.Up;
-                }
-                else if (algorithm.Portfolio[underlyingSymbol].Invested)
-                {
-                    direction = InsightDirection.Flat;
-                }
-                else
-                {
-                    continue;
-                }
-                insights.Add(Insight.Price(underlyingSymbol, TimeSpan.FromDays(30), direction));
-            }
-
-            return insights;
+            // If added to universe, adds SECReport8K for trade signal generation
+            _datasetSymbolBySymbol[symbol] = algorithm.AddData&lt;SECReport8K&gt;(symbol).Symbol;
         }
 
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        foreach (var symbol in changes.RemovedSecurities.Select(x =&gt; x.Symbol))
         {
-            foreach (var symbol in changes.AddedSecurities.Select(x =&gt; x.Symbol))
+            // Remove SEC data subscription to release computation resources
+            Symbol reportSymbol;
+            if (_datasetSymbolBySymbol.TryGetValue(symbol, out reportSymbol))
             {
-                // If added to universe, adds SECReport8K for trade signal generation
-                _datasetSymbolBySymbol[symbol] = algorithm.AddData&lt;SECReport8K&gt;(symbol).Symbol;
-            }
-        	
-            foreach (var symbol in changes.RemovedSecurities.Select(x =&gt; x.Symbol))
-            {
-                // Remove SEC data subscription to release computation resources
-                Symbol reportSymbol;
-                if (_datasetSymbolBySymbol.TryGetValue(symbol, out reportSymbol))
-                {
-                        algorithm.RemoveSecurity(reportSymbol);
-                        _datasetSymbolBySymbol.Remove(symbol);
-                }
+                    algorithm.RemoveSecurity(reportSymbol);
+                    _datasetSymbolBySymbol.Remove(symbol);
             }
         }
     }

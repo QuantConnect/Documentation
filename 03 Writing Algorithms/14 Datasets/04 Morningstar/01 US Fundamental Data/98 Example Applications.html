@@ -61,74 +61,71 @@ class MorningStarDataAlgorithm(QCAlgorithm):
             self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class MorningStarDataAlgorithm : QCAlgorithm
 {
-    public class MorningStarDataAlgorithm : QCAlgorithm
+    private int _universeSize = 10;
+    private SecurityChanges _changes = SecurityChanges.None;
+
+    public override void Initialize()
     {
-        private int _universeSize = 10;
-        private SecurityChanges _changes = SecurityChanges.None;
-        
-        public override void Initialize()
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        SetCash(100000);
+
+        // Requesting data
+        UniverseSettings.Resolution = Resolution.Daily;
+        # Add universe selection to filter with fundamental data
+        AddUniverse(FundamentalSelectionFunction);
+    }
+
+    public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Make sure fundamental data and PE ratio available 
+        // To avoid penny stocks with high volatility, set price above $1
+        // Filter the top 100 high dollar volume equities to ensure liquidity
+        // Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
+        return fundamental
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 1 &amp;&amp; !Double.IsNaN(x.ValuationRatios.PERatio))
+            .OrderByDescending(x =&gt; x.DollarVolume)
+            .Take(100)
+            .OrderByDescending(x =&gt; x.ValuationRatios.PERatio)
+            .Take(_universeSize)
+            .Select(x =&gt; x.Symbol);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // if we have no changes, do nothing
+        if (_changes == SecurityChanges.None) return;
+
+        // liquidate removed securities, as not being the most popular stocks anymore
+        foreach (var security in _changes.RemovedSecurities)
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 1);
-            SetCash(100000);
-            
-            // Requesting data
-            UniverseSettings.Resolution = Resolution.Daily;
-            # Add universe selection to filter with fundamental data
-            AddUniverse(FundamentalSelectionFunction);
+            if (security.Invested)
+            {
+                Liquidate(security.Symbol);
+            }
         }
 
-        public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+        // we want 1/N allocation in each security in our universe to evenly dissipate risk
+        foreach (var security in _changes.AddedSecurities)
         {
-            // Make sure fundamental data and PE ratio available 
-            // To avoid penny stocks with high volatility, set price above $1
-            // Filter the top 100 high dollar volume equities to ensure liquidity
-            // Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
-            return fundamental
-                .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 1 &amp;&amp; !Double.IsNaN(x.ValuationRatios.PERatio))
-                .OrderByDescending(x =&gt; x.DollarVolume)
-                .Take(100)
-                .OrderByDescending(x =&gt; x.ValuationRatios.PERatio)
-                .Take(_universeSize)
-                .Select(x =&gt; x.Symbol);
+            SetHoldings(security.Symbol, 1m / _universeSize);
         }
 
-        public override void OnData(Slice slice)
+        _changes = SecurityChanges.None;
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        _changes = changes;
+
+
+        foreach (var security in changes.AddedSecurities)
         {
-            // if we have no changes, do nothing
-            if (_changes == SecurityChanges.None) return;
-
-            // liquidate removed securities, as not being the most popular stocks anymore
-            foreach (var security in _changes.RemovedSecurities)
-            {
-                if (security.Invested)
-                {
-                    Liquidate(security.Symbol);
-                }
-            }
-
-            // we want 1/N allocation in each security in our universe to evenly dissipate risk
-            foreach (var security in _changes.AddedSecurities)
-            {
-                SetHoldings(security.Symbol, 1m / _universeSize);
-            }
-
-            _changes = SecurityChanges.None;
-        }
-        
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {
-            _changes = changes;
-
-
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = History(security.Symbol, 7, Resolution.Daily);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-            }
+            // Historical data
+            var history = History(security.Symbol, 7, Resolution.Daily);
+            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
 }</pre>
@@ -174,47 +171,44 @@ class CustomFundamentalUniverseSelectionModel(FundamentalUniverseSelectionModel)
 
         # take the top entries from our sorted collection
         return [ x.symbol for x in sorted_by_pe_ratio ]</pre>
-<pre class="csharp">namespace QuantConnect
-{
-    public class MorningStarDataAlgorithm : QCAlgorithm
-    {        
-        public override void Initialize()
-        {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 1);
-            SetCash(100000);
-            
-            // Add universe selection to filter with fundamental data
-            UniverseSettings.Resolution = Resolution.Daily;
-            AddUniverseSelection(new CustomFundamentalUniverseSelectionModel());
-            
-            SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
-
-            // we want 1/N allocation in each security in our universe to evenly dissipate risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
-    }
-
-    public class CustomFundamentalUniverseSelectionModel : FundamentalUniverseSelectionModel
+<pre class="csharp">public class MorningStarDataAlgorithm : QCAlgorithm
+{        
+    public override void Initialize()
     {
-        public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamental)
-        {
-            return fundamental
-                // Make sure fundamental data and PE ratio available 
-                // To avoid penny stocks with high volatility, set price above $1
-                .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 1 &amp;&amp; !Double.IsNaN(x.ValuationRatios.PERatio))
-                // Filter the top 100 high dollar volume equities to ensure liquidity
-                .OrderByDescending(x =&gt; x.DollarVolume)
-                .Take(100)
-                // Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
-                .OrderByDescending(x =&gt; x.ValuationRatios.PERatio)
-                .Take(10)
-                .Select(x =&gt; x.Symbol);
-        }
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        SetCash(100000);
+
+        // Add universe selection to filter with fundamental data
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverseSelection(new CustomFundamentalUniverseSelectionModel());
+
+        SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+
+        // we want 1/N allocation in each security in our universe to evenly dissipate risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+        AddRiskManagement(new NullRiskManagementModel());
+
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class CustomFundamentalUniverseSelectionModel : FundamentalUniverseSelectionModel
+{
+    public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        return fundamental
+            // Make sure fundamental data and PE ratio available 
+            // To avoid penny stocks with high volatility, set price above $1
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 1 &amp;&amp; !Double.IsNaN(x.ValuationRatios.PERatio))
+            // Filter the top 100 high dollar volume equities to ensure liquidity
+            .OrderByDescending(x =&gt; x.DollarVolume)
+            .Take(100)
+            // Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
+            .OrderByDescending(x =&gt; x.ValuationRatios.PERatio)
+            .Take(10)
+            .Select(x =&gt; x.Symbol);
     }
 }</pre>
 </div>

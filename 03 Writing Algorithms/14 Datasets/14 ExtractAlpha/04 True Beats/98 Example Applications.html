@@ -71,91 +71,88 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
             self.log(f"We got {len(history)} items from our history request for {security.symbol} ExtractAlpha True Beats data")
 </pre><pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class ExtractAlphaTrueBeatsDataAlgorithm : QCAlgorithm
 {
-	public class ExtractAlphaTrueBeatsDataAlgorithm : QCAlgorithm
-	{
-                // A variable to control the time of rebalancing
-		private DateTime _time = DateTime.MinValue;
-		
-		public override void Initialize()
-		{
-			SetStartDate(2021, 1, 1);
-			SetEndDate(2021, 7, 1);
-			SetCash(100000);
-			
-			AddUniverse(MyCoarseFilterFunction);
-			UniverseSettings.Resolution = Resolution.Minute;
-		}
-		
-		private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
-		{
-                        // Select the stocks with highest dollar volume due to better informed information from more market activities
-                        // Only the ones with fundamental data are supported by True beats data
-			return (from c in coarse
-					where c.HasFundamentalData
-					orderby c.DollarVolume descending
-					select c.Symbol).Take(100);
-		}
-		
-		public override void OnData(Slice slice)
-		{
-			if (_time &gt; Time) return;
-			
-			// Trade only based on the updated True beats data
-			var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
-			if (points.IsNullOrEmpty()) return;
+               // A variable to control the time of rebalancing
+ private DateTime _time = DateTime.MinValue;
 
-			// Extract the True beats data (earning and revenue estimates) as trading signals
-			List&lt;ExtractAlphaTrueBeat&gt; TrueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
-				points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
-			);
+ public override void Initialize()
+ {
+  SetStartDate(2021, 1, 1);
+  SetEndDate(2021, 7, 1);
+  SetCash(100000);
 
-                        // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
-                        // Short the lowest that predicted to bring stock price down
-			var sortedByTrueBeat = from TrueBeat in TrueBeats
-									where (TrueBeat.TrueBeat != None)
-									orderby TrueBeat.TrueBeat descending
-									select TrueBeat.Symbol.Underlying;
+  AddUniverse(MyCoarseFilterFunction);
+  UniverseSettings.Resolution = Resolution.Minute;
+ }
 
-			var longSymbols = sortedByTrueBeat.Take(10).ToList();
-			var shortSymbols = sortedByTrueBeat.TakeLast(10).ToList();
+ private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+ {
+                       // Select the stocks with highest dollar volume due to better informed information from more market activities
+                       // Only the ones with fundamental data are supported by True beats data
+  return (from c in coarse
+    where c.HasFundamentalData
+    orderby c.DollarVolume descending
+    select c.Symbol).Take(100);
+ }
 
-			// Liquidate the ones without a strong earning and revenue that support stock price direction
-			foreach (var kvp in Portfolio)
-			{
-				var symbol = kvp.Key;
-				if (kvp.Value.Invested &amp;&amp; 
-				!longSymbols.Contains(symbol) &amp;&amp; 
-				!shortSymbols.Contains(symbol))
-				{
-					Liquidate(symbol);
-				}
-			}
+ public override void OnData(Slice slice)
+ {
+  if (_time &gt; Time) return;
 
-			// Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-			var targets = new List&lt;PortfolioTarget&gt;();
-			targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
-			targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
-			
-			SetHoldings(targets);
-			
-			_time = Expiry.EndOfDay(Time);
-		}
-		
-		public override void OnSecuritiesChanged(SecurityChanges changes)
-		{
-			foreach(var security in changes.AddedSecurities)
-			{
-				//  Requesting True beats data for trading signal generation
-				var extractAlphaTrueBeatsSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
-				
-				// Historical Data
-	            var history = History(new[]{extractAlphaTrueBeatsSymbol}, 10, Resolution.Daily);
-	            Log($"We got {history.Count()} items from our history request for {security.Symbol} ExtractAlpha True Beats data");
-			}
-		}
-	}
+  // Trade only based on the updated True beats data
+  var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
+  if (points.IsNullOrEmpty()) return;
+
+  // Extract the True beats data (earning and revenue estimates) as trading signals
+  List&lt;ExtractAlphaTrueBeat&gt; TrueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
+   points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
+  );
+
+                       // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
+                       // Short the lowest that predicted to bring stock price down
+  var sortedByTrueBeat = from TrueBeat in TrueBeats
+        where (TrueBeat.TrueBeat != None)
+        orderby TrueBeat.TrueBeat descending
+        select TrueBeat.Symbol.Underlying;
+
+  var longSymbols = sortedByTrueBeat.Take(10).ToList();
+  var shortSymbols = sortedByTrueBeat.TakeLast(10).ToList();
+
+  // Liquidate the ones without a strong earning and revenue that support stock price direction
+  foreach (var kvp in Portfolio)
+  {
+   var symbol = kvp.Key;
+   if (kvp.Value.Invested &amp;&amp; 
+   !longSymbols.Contains(symbol) &amp;&amp; 
+   !shortSymbols.Contains(symbol))
+   {
+    Liquidate(symbol);
+   }
+  }
+
+  // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+  var targets = new List&lt;PortfolioTarget&gt;();
+  targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
+  targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
+
+  SetHoldings(targets);
+
+  _time = Expiry.EndOfDay(Time);
+ }
+
+ public override void OnSecuritiesChanged(SecurityChanges changes)
+ {
+  foreach(var security in changes.AddedSecurities)
+  {
+   //  Requesting True beats data for trading signal generation
+   var extractAlphaTrueBeatsSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
+
+   // Historical Data
+            var history = History(new[]{extractAlphaTrueBeatsSymbol}, 10, Resolution.Daily);
+            Log($"We got {history.Count()} items from our history request for {security.Symbol} ExtractAlpha True Beats data");
+  }
+ }
 }
 </pre></div>
 <h4>Framework Algorithm Example</h4>
@@ -234,95 +231,92 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
 </pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-namespace QuantConnect
+public class ExtractAlphaTrueBeatsFrameworkAlgorithm : QCAlgorithm
 {
-	public class ExtractAlphaTrueBeatsFrameworkAlgorithm : QCAlgorithm
-	{
-		public override void Initialize()
-		{
-			SetStartDate(2021, 1, 1);
-			SetEndDate(2021, 7, 1);
-			SetCash(100000);
-			
-			AddUniverse(MyCoarseFilterFunction);
-			UniverseSettings.Resolution = Resolution.Minute;
+ public override void Initialize()
+ {
+  SetStartDate(2021, 1, 1);
+  SetEndDate(2021, 7, 1);
+  SetCash(100000);
 
-		        // Custom alpha model to trade based on True beats data signals
-			AddAlpha(new ExtractAlphaTrueBeatsAlphaModel());
+  AddUniverse(MyCoarseFilterFunction);
+  UniverseSettings.Resolution = Resolution.Minute;
 
-			// Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-			SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-			
-			SetExecution(new ImmediateExecutionModel());
-		}
-		
-		private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
-		{
-                        // Select the stocks with highest dollar volume due to better informed information from more market activities
-                        // Only the ones with fundamental data are supported by True beats data
-			return (from c in coarse
-					where c.HasFundamentalData
-					orderby c.DollarVolume descending
-					select c.Symbol).Take(100);
-		}
-	}
-	
-	public class ExtractAlphaTrueBeatsAlphaModel: AlphaModel
-	{
-                // A variable to control the time of rebalancing
-		private DateTime _time;
-		
-		public ExtractAlphaTrueBeatsAlphaModel()
-		{
-			_time = DateTime.MinValue;
-		}
-		
-		public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-		{
-			if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-			
-			// Trade only based on the updated True beats data
-			var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
-			if (points.IsNullOrEmpty()) return new List&lt;Insight&gt;();
-			
-                        // Extract the True beats data (earning and revenue estimates) as trading signals
-			List&lt;ExtractAlphaTrueBeat&gt; TrueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
-				points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
-			);
+         // Custom alpha model to trade based on True beats data signals
+  AddAlpha(new ExtractAlphaTrueBeatsAlphaModel());
 
-			// Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
-                        // Short the lowest that predicted to bring stock price down
-			var sortedByTrueBeat = from s in TrueBeats
-							where (s.TrueBeat != None)
-							orderby s.TrueBeat descending
-							select s.Symbol.Underlying;
-			var longSymbols = sortedByTrueBeat.Take(10).ToList();
-			var shortSymbols = sortedByTrueBeat.TakeLast(10).ToList();
-			
-			var insights = new List&lt;Insight&gt;();
-			insights.AddRange(longSymbols.Select(symbol =&gt; 
-				new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
-			insights.AddRange(shortSymbols.Select(symbol =&gt; 
-				new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-			
-			_time = Expiry.EndOfDay(algorithm.Time);
-			
-			return insights;
-		}
-		
-		public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-		{
-			foreach(var security in changes.AddedSecurities)
-			{
-				// Requesting True beats data for trading signal generation
-				var extractAlphaTrueBeatsSymbol = algorithm.AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
-				
-				// Historical Data
-				var history = algorithm.History(new[]{extractAlphaTrueBeatsSymbol}, 10, Resolution.Daily);
-				algorithm.Debug($"We got {history.Count()} items from our history request");
-			}
-		}
-	}
+  // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+  SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+
+  SetExecution(new ImmediateExecutionModel());
+ }
+
+ private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+ {
+                       // Select the stocks with highest dollar volume due to better informed information from more market activities
+                       // Only the ones with fundamental data are supported by True beats data
+  return (from c in coarse
+    where c.HasFundamentalData
+    orderby c.DollarVolume descending
+    select c.Symbol).Take(100);
+ }
+}
+
+public class ExtractAlphaTrueBeatsAlphaModel: AlphaModel
+{
+               // A variable to control the time of rebalancing
+ private DateTime _time;
+
+ public ExtractAlphaTrueBeatsAlphaModel()
+ {
+  _time = DateTime.MinValue;
+ }
+
+ public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+ {
+  if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
+
+  // Trade only based on the updated True beats data
+  var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
+  if (points.IsNullOrEmpty()) return new List&lt;Insight&gt;();
+
+                       // Extract the True beats data (earning and revenue estimates) as trading signals
+  List&lt;ExtractAlphaTrueBeat&gt; TrueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
+   points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
+  );
+
+  // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
+                       // Short the lowest that predicted to bring stock price down
+  var sortedByTrueBeat = from s in TrueBeats
+      where (s.TrueBeat != None)
+      orderby s.TrueBeat descending
+      select s.Symbol.Underlying;
+  var longSymbols = sortedByTrueBeat.Take(10).ToList();
+  var shortSymbols = sortedByTrueBeat.TakeLast(10).ToList();
+
+  var insights = new List&lt;Insight&gt;();
+  insights.AddRange(longSymbols.Select(symbol =&gt; 
+   new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
+  insights.AddRange(shortSymbols.Select(symbol =&gt; 
+   new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
+
+  _time = Expiry.EndOfDay(algorithm.Time);
+
+  return insights;
+ }
+
+ public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+ {
+  foreach(var security in changes.AddedSecurities)
+  {
+   // Requesting True beats data for trading signal generation
+   var extractAlphaTrueBeatsSymbol = algorithm.AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
+
+   // Historical Data
+   var history = algorithm.History(new[]{extractAlphaTrueBeatsSymbol}, 10, Resolution.Daily);
+   algorithm.Debug($"We got {history.Count()} items from our history request");
+  }
+ }
 }
 </pre>
 </div>
