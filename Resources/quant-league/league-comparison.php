@@ -34,11 +34,6 @@
       <td>Private listing with an anonymous Author</td>
     </tr>
     <tr>
-      <td>Sponsorships</td>
-      <td>3 corporate sponsorship tiers available</td>
-      <td>Free live node for Quant League entry (up to $48/mo, applied as a Stripe credit post-competition)</td>
-    </tr>
-    <tr>
       <td>Minimum account size</td>
       <td>N/A</td>
       <td>$25,000 USD</td>
@@ -50,8 +45,8 @@
     </tr>
     <tr>
       <td>Ranking</td>
-      <td>Sharpe</td>
-      <td>Sharpe</td>
+      <td>Sharpe Ratio</td>
+      <td>Sharpe Ratio</td>
     </tr>
     <tr>
       <td>Prizes</td>
