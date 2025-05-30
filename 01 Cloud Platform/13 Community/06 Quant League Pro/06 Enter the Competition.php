@@ -8,7 +8,7 @@
 
 <p>You must observe the following rules:</p>
 <ul>
-  <li><b>You must be are proficient at <a href='/docs/v2/writing-algorithms'>coding with the QuantConnect API</a>.</b></li>
+  <li><b>You must be proficient at <a href='/docs/v2/writing-algorithms'>coding with the QuantConnect API</a>.</b></li>
   <li>You must have completed <a href="/learning/course/1/Boot-Camp-101-US-Equities">Boot Camp</a>.</li>
   <li>Cash deposits during the quarter result in disqualification.</li>
 </ul>
