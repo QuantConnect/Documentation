@@ -41,7 +41,7 @@
     <tr>
       <td>Minimum capacity</td>
       <td>N/A</td>
-      <td>_________ minimum <a href='/docs/v2/lean-engine/statistics/capacity'>capacity</a> during backtests</td>
+      <td>$1M minimum <a href='/docs/v2/lean-engine/statistics/capacity'>capacity</a> during backtests</td>
     </tr>
     <tr>
       <td>Ranking</td>
