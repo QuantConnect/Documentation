@@ -34,8 +34,8 @@
 	    </tbody>
 	</table>
 	
-	<p>The <code class="csharp">ReadBacktestOrders</code><code class="python">read_backtest_orders</code> method returns a list of <code>Order</code> objects, which have the following properties:</p>
-	<div data-tree='QuantConnect.Orders.Order'></div>
+	<p>The <code class="csharp">ReadBacktestOrders</code><code class="python">read_backtest_orders</code> method returns a list of <code>ApiOrderResponse</code> objects, which have the following properties:</p>
+	<div data-tree='QuantConnect.Orders.ApiOrderResponse'></div>
 
 	<? include(DOCS_RESOURCES."/qc-api/plot-fills.php"); ?>
 </ol>
