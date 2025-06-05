@@ -71,7 +71,8 @@
                 <div class="error-messages">No security definition has been found for the request.</div>
             </td>
             <td>
-                Your algorithm added an invalid security. For example, a deslisted stock, an expired contract, or inexistent contract (invalid expiration date or strike price). If the security should be valid, <a href='/contact'>contact us</a> and provide the algorithm Id and deployment Id.
+                Your algorithm added an invalid or unsupported security. For example, a delisted stock, an expired contract, inexistent contract (invalid expiration date or strike price), or a warrant (unsupported). If the security should be valid and <a href='/docs/v2/cloud-platform/live-trading/brokerages/interactive-brokers#04-Asset-Classes'>supported</a>, open a <a href='/docs/v2/cloud-platform/organizations/support'>support ticket</a> and attach the live deployment Id.
+                The algorithm will continue running, but it won't trade the security. If you don't want to deploy to an account with an invalid or unsupported security, set <code class="csharp">Settings.IgnoreUnknownAssets</code><code class="python">self.settings.ignore_unknown_assets</code> is <code class="csharp">false</code><code class="python">False</code>. 
             </td>
         </tr>
         <tr>
