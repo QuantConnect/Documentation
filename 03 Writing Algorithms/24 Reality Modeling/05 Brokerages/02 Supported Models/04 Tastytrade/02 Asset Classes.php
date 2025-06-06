@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/brokerages/tastytrade/asset-classes.php"); ?>
