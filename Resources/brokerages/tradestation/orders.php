@@ -42,6 +42,13 @@
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>Trailing stop</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>Market on Open</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td></td>
@@ -111,6 +118,12 @@
             <td>A flag to signal that the order may be triggered and filled outside of regular trading hours.</td>
             <td></td>
         </tr>
+            <tr>
+            <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
+            <td><code>bool</code></td>
+            <td>This flag will ensure the limit order executes only as a maker (no fee) order. If part of the order results in taking liquidity rather than providing, it will be rejected and no part of the order will execute. Equities only.</td>
+            <td><code class='csharp'>false</code><code class='python'>False</code></td>
+        </tr>
     </tbody>
 </table>
 
@@ -136,6 +149,7 @@ public override void OnData(Slice slice)
     LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new TradeStationOrderProperties
                { 
+                   PostOnly = true,
                    TimeInForce = TimeInForce.Day
                });
     LimitOrder(_symbol, quantity, limitPrice, 
@@ -157,6 +171,7 @@ def on_data(self, slice: Slice) -&gt; None:
     
     # Override the default order properties
     order_properties = TradeStationOrderProperties()
+    order_properties.post_only = True
     order_properties.time_in_force = TimeInForce.DAY
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
