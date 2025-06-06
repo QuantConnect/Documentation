@@ -41,46 +41,49 @@ class USEquitySecurityMasterAlgorithm (QCAlgorithm):
         if symbolChangedEvent:
             self.debug(f"{self.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbolChangedEvent.old_symbol} -&gt; {symbolChangedEvent.new_symbol}")
 </pre>
-<pre><code class="language-cs">public class USEquitySecurityMasterAlgorithm : QCAlgorithm
+<pre><code class="language-cs">namespace QuantConnect
 {
-    private Symbol _equity;
-
-    public override void Initialize()
+    public class USEquitySecurityMasterAlgorithm : QCAlgorithm
     {
-        SetStartDate(1998, 1, 1);
-        SetCash(1000000);
-
-        _equity = AddEquity("AAPL", Resolution.Daily).Symbol;
-    }
-
-    public override void OnData(Slice slice)
-    {
-        // Accessing Data - Splits
-        if (slice.Splits.ContainsKey(_equity))
+        private Symbol _equity;
+        
+        public override void Initialize()
         {
-            var split = slice.Splits[_equity];
-            Debug($"Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{split.Type}");
+            SetStartDate(1998, 1, 1);
+            SetCash(1000000);
+            
+            _equity = AddEquity("AAPL", Resolution.Daily).Symbol;
         }
-
-        // Accessing Data - Dividends
-        if (slice.Dividends.ContainsKey(_equity))
+        
+        public override void OnData(Slice slice)
         {
-            var dividend = slice.Dividends[_equity];
-            Log($"Dividend: {dividend.Symbol}\t{dividend.Distribution}\t{dividend.ReferencePrice}");
-        }
-
-        // Accessing Data - Delisting
-        if (slice.Delistings.ContainsKey(_equity))
-        {
-            var delisting = slice.Delistings[_equity];
-            Log($"Delistings: {delisting.Type}");
-        }
-
-        // Accessing Data - Symbol Changed Event
-        if (slice.SymbolChangedEvents.ContainsKey(_equity))
-        {
-            var symbolChangedEvent = slice.SymbolChangedEvents[_equity];
-            Log($"Symbol changed: {symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.NewSymbol}");
+            // Accessing Data - Splits
+            if (slice.Splits.ContainsKey(_equity))
+            {
+                var split = slice.Splits[_equity];
+                Debug($"Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{split.Type}");
+            }
+            
+            // Accessing Data - Dividends
+            if (slice.Dividends.ContainsKey(_equity))
+            {
+                var dividend = slice.Dividends[_equity];
+                Log($"Dividend: {dividend.Symbol}\t{dividend.Distribution}\t{dividend.ReferencePrice}");
+            }
+            
+            // Accessing Data - Delisting
+            if (slice.Delistings.ContainsKey(_equity))
+            {
+                var delisting = slice.Delistings[_equity];
+                Log($"Delistings: {delisting.Type}");
+            }
+            
+            // Accessing Data - Symbol Changed Event
+            if (slice.SymbolChangedEvents.ContainsKey(_equity))
+            {
+                var symbolChangedEvent = slice.SymbolChangedEvents[_equity];
+                Log($"Symbol changed: {symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.NewSymbol}");
+            }
         }
     }
 }</div>

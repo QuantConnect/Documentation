@@ -75,79 +75,82 @@ using QuantConnect.Data;
 using QuantConnect.Data.UniverseSelection;
 using QuantConnect.DataSource;
 
-public class ExtractAlphaTacticalModelAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    // A variable to control the time of rebalance
-    private DateTime _time = DateTime.MinValue;
-
-    public override void Initialize()
+    public class ExtractAlphaTacticalModelAlgorithm : QCAlgorithm
     {
-        SetStartDate(2021, 10, 10);
-        SetEndDate(2023, 10, 10);
-        SetCash(100000);
-
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
-    }
-
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
-    {
-        // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
-        // Only the ones with fundamental data are supported by tactical data
-        return (from c in coarse
-                where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(100);
-    }
-
-    public override void OnData(Slice slice)
-    {
-        if (_time &gt; Time) return;
-
-        // Trade only based on the updated tactical data
-        var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;();
-
-        // Long the ones with the highest return estimates riding from tactical strategies
-        // Short the lowest that predicted stock price goes down
-        var sortedByScore = from s in points.Values
-                        where (s.Score != None)
-                        orderby s.Score descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByScore.Take(10).ToList();
-        var shortSymbols = sortedByScore.TakeLast(10).ToList();
-
-        // Liquidate the ones without a strong tactical support
-        foreach (var kvp in Portfolio)
+        // A variable to control the time of rebalance
+        private DateTime _time = DateTime.MinValue;
+        
+        public override void Initialize()
         {
-            var symbol = kvp.Key;
-            if (kvp.Value.Invested &amp;&amp; 
-            !longSymbols.Contains(symbol) &amp;&amp; 
-            !shortSymbols.Contains(symbol))
-            {
-                Liquidate(symbol);
-            }
+            SetStartDate(2021, 10, 10);
+            SetEndDate(2023, 10, 10);
+            SetCash(100000);
+            
+            AddUniverse(MyCoarseFilterFunction);
+            UniverseSettings.Resolution = Resolution.Minute;
         }
-
-        // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-        var targets = new List&lt;PortfolioTarget&gt;();
-        targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
-        targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
-
-        SetHoldings(targets);
-
-        _time = Expiry.EndOfDay(Time);
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach(var security in changes.AddedSecurities)
+        
+        private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
         {
-            // Requesting tactical data for trading signal generation
-            var extractAlphaTacticalModelSymbol = AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
+            // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
+            // Only the ones with fundamental data are supported by tactical data
+            return (from c in coarse
+                    where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
+                    orderby c.DollarVolume descending
+                    select c.Symbol).Take(100);
+        }
+        
+        public override void OnData(Slice slice)
+        {
+            if (_time &gt; Time) return;
+            
+            // Trade only based on the updated tactical data
+            var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;();
 
-            // Historical Data
-            var history = History(new[]{extractAlphaTacticalModelSymbol}, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            // Long the ones with the highest return estimates riding from tactical strategies
+            // Short the lowest that predicted stock price goes down
+            var sortedByScore = from s in points.Values
+                            where (s.Score != None)
+                            orderby s.Score descending
+                            select s.Symbol.Underlying;
+            var longSymbols = sortedByScore.Take(10).ToList();
+            var shortSymbols = sortedByScore.TakeLast(10).ToList();
+
+            // Liquidate the ones without a strong tactical support
+            foreach (var kvp in Portfolio)
+            {
+                var symbol = kvp.Key;
+                if (kvp.Value.Invested &amp;&amp; 
+                !longSymbols.Contains(symbol) &amp;&amp; 
+                !shortSymbols.Contains(symbol))
+                {
+                    Liquidate(symbol);
+                }
+            }
+
+            // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+            var targets = new List&lt;PortfolioTarget&gt;();
+            targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
+            targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
+            
+            SetHoldings(targets);
+            
+            _time = Expiry.EndOfDay(Time);
+        }
+        
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach(var security in changes.AddedSecurities)
+            {
+                // Requesting tactical data for trading signal generation
+                var extractAlphaTacticalModelSymbol = AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
+                
+                // Historical Data
+                var history = History(new[]{extractAlphaTacticalModelSymbol}, 60, Resolution.Daily);
+                Debug($"We got {history.Count()} items from our history request");
+            }
         }
     }
 }
@@ -233,84 +236,87 @@ using QuantConnect.Data;
 using QuantConnect.Data.UniverseSelection;
 using QuantConnect.DataSource;
 
-public class ExtractAlphaTacticalModelAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
- public override void Initialize()
- {
-  SetStartDate(2021, 10, 10);
-  SetEndDate(2023, 10, 10);
-  SetCash(100000);
+	public class ExtractAlphaTacticalModelAlgorithm : QCAlgorithm
+	{
+		public override void Initialize()
+		{
+			SetStartDate(2021, 10, 10);
+			SetEndDate(2023, 10, 10);
+			SetCash(100000);
+			
+			AddUniverse(MyCoarseFilterFunction);
+			UniverseSettings.Resolution = Resolution.Minute;
+			
+                        // Custom alpha model to generate trading signal based on tactical data
+			AddAlpha(new ExtractAlphaTacticalModelAlphaModel());
 
-  AddUniverse(MyCoarseFilterFunction);
-  UniverseSettings.Resolution = Resolution.Minute;
+			// Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+			SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+			
+			SetExecution(new ImmediateExecutionModel());
+		}
+		
+		private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+		{
+                        // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
+                        // Only the ones with fundamental data are supported by tactical data
+			return (from c in coarse
+					where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
+					orderby c.DollarVolume descending
+					select c.Symbol).Take(100);
+		}
+	}
+	
+	public class ExtractAlphaTacticalModelAlphaModel: AlphaModel
+	{
+                // A variable to control the time of rebalance
+		public DateTime _time;
+		
+		public ExtractAlphaTacticalModelAlphaModel()
+		{
+			_time = DateTime.MinValue;
+		}
+		
+		public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+		{
+			if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
+			
+			// Trade only based on the updated tactical data
+			var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;();
 
-                       // Custom alpha model to generate trading signal based on tactical data
-  AddAlpha(new ExtractAlphaTacticalModelAlphaModel());
-
-  // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-  SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-
-  SetExecution(new ImmediateExecutionModel());
- }
-
- private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
- {
-                       // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
-                       // Only the ones with fundamental data are supported by tactical data
-  return (from c in coarse
-    where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-    orderby c.DollarVolume descending
-    select c.Symbol).Take(100);
- }
-}
-
-public class ExtractAlphaTacticalModelAlphaModel: AlphaModel
-{
-               // A variable to control the time of rebalance
- public DateTime _time;
-
- public ExtractAlphaTacticalModelAlphaModel()
- {
-  _time = DateTime.MinValue;
- }
-
- public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
- {
-  if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-
-  // Trade only based on the updated tactical data
-  var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;();
-
-                       // Long the ones with the highest return estimates riding from tactical strategies
-                       // Short the lowest that predicted stock price goes down
-  var sortedByScore = from s in points.Values
-      where (s.Score != None)
-      orderby s.Score descending
-      select s.Symbol.Underlying;
-  var longSymbols = sortedByScore.Take(10).ToList();
-  var shortSymbols = sortedByScore.TakeLast(10).ToList();
-
-  var insights = new List&lt;Insight&gt;();
-  insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
-  insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-
-  _time = Expiry.EndOfDay(algorithm.Time);
-
-  return insights;
- }
-
- public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
- {
-  foreach(var security in changes.AddedSecurities)
-  {
-   // Requesting tactical data for trading signal generation
-   var extractAlphaTacticalModelSymbol = algorithm.AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
-
-   // Historical Data
-   var history = algorithm.History(new[]{extractAlphaTacticalModelSymbol}, 60, Resolution.Daily);
-   algorithm.Debug($"We got {history.Count()} items from our history request");
-  }
- }
+                        // Long the ones with the highest return estimates riding from tactical strategies
+                        // Short the lowest that predicted stock price goes down
+			var sortedByScore = from s in points.Values
+							where (s.Score != None)
+							orderby s.Score descending
+							select s.Symbol.Underlying;
+			var longSymbols = sortedByScore.Take(10).ToList();
+			var shortSymbols = sortedByScore.TakeLast(10).ToList();
+			
+			var insights = new List&lt;Insight&gt;();
+			insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
+			insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
+			
+			_time = Expiry.EndOfDay(algorithm.Time);
+			
+			return insights;
+		}
+		
+		public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+		{
+			foreach(var security in changes.AddedSecurities)
+			{
+				// Requesting tactical data for trading signal generation
+				var extractAlphaTacticalModelSymbol = algorithm.AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
+		
+				// Historical Data
+				var history = algorithm.History(new[]{extractAlphaTacticalModelSymbol}, 60, Resolution.Daily);
+				algorithm.Debug($"We got {history.Count()} items from our history request");
+			}
+		}
+	}
 }
 </pre>
 </div>

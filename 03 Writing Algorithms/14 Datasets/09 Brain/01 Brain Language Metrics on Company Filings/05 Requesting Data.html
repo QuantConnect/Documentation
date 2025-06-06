@@ -10,19 +10,22 @@
         self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
         self.dataset_10k_symbol = self.add_data(BrainCompanyFilingLanguageMetrics10K, self.aapl).symbol
         self.dataset_all_symbol = self.add_data(BrainCompanyFilingLanguageMetricsAll, self.aapl).symbol</pre>
-<pre class="csharp">public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
+<pre class="csharp">namespace QuantConnect
 {
-    private Symbol _symbol, _dataset10KSymbol, _datasetAllSymbol;
-
-    public override void Initialize()
+    public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2010, 1, 1);
-        SetEndDate(2021, 7, 8);
-        SetCash(100000);
-
-        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-        _dataset10KSymbol= AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_symbol).Symbol;
-        _datasetAllSymbol= AddData&lt;BrainCompanyFilingLanguageMetricsAll&gt;(_symbol).Symbol;
+        private Symbol _symbol, _dataset10KSymbol, _datasetAllSymbol;
+    	
+        public override void Initialize()
+        {
+            SetStartDate(2010, 1, 1);
+            SetEndDate(2021, 7, 8);
+            SetCash(100000);
+            
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _dataset10KSymbol= AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_symbol).Symbol;
+            _datasetAllSymbol= AddData&lt;BrainCompanyFilingLanguageMetricsAll&gt;(_symbol).Symbol;
+        }
     }
 }</pre>
 </div>

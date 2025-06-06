@@ -24,35 +24,38 @@
     def _option_filter(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
         # Contracts can be filtered by strike, and expiration
         return universe.strikes(-1, 1)</pre>
-<pre class="csharp">public class USFutureOptionsDataAlgorithm : QCAlgorithm
+<pre class="csharp">namespace QuantConnect
 {
-    private Future _future;
-
-    public override void Initialize()
+    public class USFutureOptionsDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 6, 1);
-        SetEndDate(2021, 6, 1);
-        SetCash(100000);
-        UniverseSettings.Asynchronous = True;
+        private Future _future;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            UniverseSettings.Asynchronous = True;
+            
+            _future = AddFuture(Futures.Metals.Gold, Resolution.Minute);
+            _future.SetFilter(0, 90);
+            // Set our strike/expiry filter for this option chain
+            AddFutureOption(_future.Symbol, OptionFilter);
+        }
 
-        _future = AddFuture(Futures.Metals.Gold, Resolution.Minute);
-        _future.SetFilter(0, 90);
-        // Set our strike/expiry filter for this option chain
-        AddFutureOption(_future.Symbol, OptionFilter);
-    }
+        public override void OnData(Slice slice)
+        {
+            // Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol.
+            var symbol = QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped);
+            // Get the entire Option chain for the current day.
+            var chain = OptionChain(symbol);
+        }
 
-    public override void OnData(Slice slice)
-    {
-        // Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol.
-        var symbol = QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped);
-        // Get the entire Option chain for the current day.
-        var chain = OptionChain(symbol);
-    }
-
-    private virtual OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
-    {
-        // Contracts can be filtered by strike, and expiration
-        return universe.Strikes(-1, 1);
+        private virtual OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)
+        {
+            // Contracts can be filtered by strike, and expiration
+            return universe.Strikes(-1, 1);
+        }
     }
 }</pre>
 </div>

@@ -46,59 +46,62 @@ class USEnergyDataAlgorithm(QCAlgorithm):
         self.previous_value = current_value</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-public class USEnergyDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    private decimal? previousValue;
-    private Symbol tradableSymbol;
-
-    public override void Initialize()
+    public class USEnergyDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 1, 1);
-        SetEndDate(2021, 6, 1);
-        SetCash(100000);
-
-        // Requesting data, we trade Abraxas Petroleum Corporation (AXAS) as the proxy of petroleum investment
-        tradableSymbol = AddEquity("AXAS", Resolution.Daily).Symbol;
-        // Request US weekly net import petroleum products data for trade signal generation
-        var USEnergySymbol = AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;
-
-        // Historical data            
-        var history = History&lt;USEnergy&gt;(USEnergySymbol, 60, Resolution.Daily);
-        Debug($"We got {history.Count()} items from our history request");
-
-        // Get latest value for net imports of petroleum products for trade system readiness
-        previousValue = history.Last().Value;
-    }
-
-
-    public override void OnData(Slice slice)
-    {
-        // Trade based on the current net imports of petroleum products
-        var points = slice.Get&lt;USEnergy&gt;();
-        decimal? currentValue = None;
-        foreach (var point in points.Values)
+        private decimal? previousValue;
+        private Symbol tradableSymbol;
+        
+        public override void Initialize()
         {
-            currentValue = point.Value;
-        }
-        if (currentValue == None)
-        {
-            return;
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            
+            // Requesting data, we trade Abraxas Petroleum Corporation (AXAS) as the proxy of petroleum investment
+            tradableSymbol = AddEquity("AXAS", Resolution.Daily).Symbol;
+            // Request US weekly net import petroleum products data for trade signal generation
+            var USEnergySymbol = AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;
+
+            // Historical data            
+            var history = History&lt;USEnergy&gt;(USEnergySymbol, 60, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+            
+            // Get latest value for net imports of petroleum products for trade system readiness
+            previousValue = history.Last().Value;
         }
 
-        // Buy when net imports of petroleum products are increasing, assuming the demand increases that bring up the petroleum price
-        // Hence the inventory and revenue of the proxy increase, supporting the stock price goes up
-        if (currentValue &gt; previousValue)
+        
+        public override void OnData(Slice slice)
         {
-            SetHoldings(tradableSymbol, 1);
+            // Trade based on the current net imports of petroleum products
+            var points = slice.Get&lt;USEnergy&gt;();
+            decimal? currentValue = None;
+            foreach (var point in points.Values)
+            {
+                currentValue = point.Value;
+            }
+            if (currentValue == None)
+            {
+                return;
+            }
+            
+            // Buy when net imports of petroleum products are increasing, assuming the demand increases that bring up the petroleum price
+            // Hence the inventory and revenue of the proxy increase, supporting the stock price goes up
+            if (currentValue &gt; previousValue)
+            {
+                SetHoldings(tradableSymbol, 1);
+            }
+            
+            //  Short sell when net imports of petroleum products are decreasing, decreasing demand lowers the petroleum price and the proxy stock price
+            if (currentValue &lt; previousValue)
+            {
+                SetHoldings(tradableSymbol, -1);
+            }
+            
+            previousValue = currentValue;
         }
-
-        //  Short sell when net imports of petroleum products are decreasing, decreasing demand lowers the petroleum price and the proxy stock price
-        if (currentValue &lt; previousValue)
-        {
-            SetHoldings(tradableSymbol, -1);
-        }
-
-        previousValue = currentValue;
     }
 }
 </pre>
@@ -166,85 +169,88 @@ class USEnergyAlphaModel(AlphaModel):
             self.tradable_symbols.append(security.symbol)</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-public class USEnergyDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    public override void Initialize()
+    public class USEnergyDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 1, 1);
-        SetEndDate(2021, 6, 1);
-        SetCash(100000);
-
-        UniverseSettings.Resolution = Resolution.Daily;
-        // We only trade Abraxas Petroleum Corporation (AXAS) as the proxy of petroleum investment
-        var symbols = new[] {QuantConnect.Symbol.Create("AXAS", SecurityType.Equity, Market.USA)};
-        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
-        // A custom alpha model that emit trade insights based on US Energy data
-        AddAlpha(new USEnergyAlphaModel(this));
-        // Equally invest to dissipate non-systematic capital concentration risk on individual stock
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-    }
-}
-
-
-public class USEnergyAlphaModel : AlphaModel
-{
-    private Symbol USEnergySymbol;
-    private List&lt;Symbol&gt; tradableSymbols = new List&lt;Symbol&gt;();
-    private decimal? previousValue;
-
-    public USEnergyAlphaModel(QCAlgorithm algorithm)
-    {
-        // Request US weekly net import petroleum products data for trade signal generation
-        USEnergySymbol = algorithm.AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;
-
-        // Historical data
-        var history = algorithm.History&lt;USEnergy&gt;(USEnergySymbol, 60, Resolution.Daily);
-        algorithm.Debug($"We got {history.Count()} items from our history request");
-        // Get latest value for net imports of petroleum products for trade system readiness
-        previousValue = history.Last().Value;
-    }
-
-    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-    {
-        var insights = new List&lt;Insight&gt;();
-
-        // Trade based on the current net imports of petroleum products
-        var points = slice.Get&lt;USEnergy&gt;();
-        decimal? currentValue = None;
-        foreach (var point in points.Values)
+        public override void Initialize()
         {
-            currentValue = point.Value;
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            
+            UniverseSettings.Resolution = Resolution.Daily;
+            // We only trade Abraxas Petroleum Corporation (AXAS) as the proxy of petroleum investment
+            var symbols = new[] {QuantConnect.Symbol.Create("AXAS", SecurityType.Equity, Market.USA)};
+            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+            // A custom alpha model that emit trade insights based on US Energy data
+            AddAlpha(new USEnergyAlphaModel(this));
+            // Equally invest to dissipate non-systematic capital concentration risk on individual stock
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
         }
-        if (currentValue == None)
+    }
+
+
+    public class USEnergyAlphaModel : AlphaModel
+    {
+        private Symbol USEnergySymbol;
+        private List&lt;Symbol&gt; tradableSymbols = new List&lt;Symbol&gt;();
+        private decimal? previousValue;
+        
+        public USEnergyAlphaModel(QCAlgorithm algorithm)
         {
+            // Request US weekly net import petroleum products data for trade signal generation
+            USEnergySymbol = algorithm.AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;
+            
+            // Historical data
+            var history = algorithm.History&lt;USEnergy&gt;(USEnergySymbol, 60, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request");
+            // Get latest value for net imports of petroleum products for trade system readiness
+            previousValue = history.Last().Value;
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+            
+            // Trade based on the current net imports of petroleum products
+            var points = slice.Get&lt;USEnergy&gt;();
+            decimal? currentValue = None;
+            foreach (var point in points.Values)
+            {
+                currentValue = point.Value;
+            }
+            if (currentValue == None)
+            {
+                return insights;
+            }
+            
+            foreach (var symbol in tradableSymbols)
+            {
+                // Buy when net imports of petroleum products are increasing, assuming the demand increases that bring up the petroleum price
+                // Hence the inventory and revenue of the proxy increase, supporting the stock price goes up
+                if (currentValue &gt; previousValue)
+                {
+                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Up));
+                }
+                
+                //  Short sell when net imports of petroleum products are decreasing, decreasing demand lowers the petroleum price and the proxy stock price
+                if (currentValue &lt; previousValue)
+                {
+                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Down));
+                }    
+            }
+            
+            previousValue = currentValue;
             return insights;
         }
 
-        foreach (var symbol in tradableSymbols)
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
         {
-            // Buy when net imports of petroleum products are increasing, assuming the demand increases that bring up the petroleum price
-            // Hence the inventory and revenue of the proxy increase, supporting the stock price goes up
-            if (currentValue &gt; previousValue)
+            foreach (var security in changes.AddedSecurities)
             {
-                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Up));
+                tradableSymbols.Add(security.Symbol);
             }
-
-            //  Short sell when net imports of petroleum products are decreasing, decreasing demand lowers the petroleum price and the proxy stock price
-            if (currentValue &lt; previousValue)
-            {
-                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Down));
-            }    
-        }
-
-        previousValue = currentValue;
-        return insights;
-    }
-
-    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-    {
-        foreach (var security in changes.AddedSecurities)
-        {
-            tradableSymbols.Add(security.Symbol);
         }
     }
 }</pre>
