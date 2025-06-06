@@ -116,7 +116,7 @@
             <td><code class="csharp">OutsideRegularTradingHours</code><code class="python">outside_regular_trading_hours</code></td>
             <td><code>bool</code></td>
             <td>A flag to signal that the order may be triggered and filled outside of regular trading hours.</td>
-            <td></td>
+            <td><code class='csharp'>false</code><code class='python'>False</code></td>
         </tr>
             <tr>
             <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
