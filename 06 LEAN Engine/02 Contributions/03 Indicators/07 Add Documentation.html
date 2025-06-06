@@ -1,26 +1,36 @@
-<p>After the indicator is merged into LEAN, follow these steps to document it:</p>
+<p>Follow these steps to document the indicator you're contributing:</p>
 <ol>
-    <li>Create an issue in the <a href="https://github.com/QuantConnect/Documentation/issues">Documentation GitHub repository</a> regarding the required changes to the documentation.</li>
+    <li>In the <a href="https://github.com/QuantConnect/Documentation/blob/master/Resources/indicators/IndicatorImageGenerator.py" rel='nofollow' target='_blank'><span class='public-file-name'>Documentation / Resources / indicators / IndicatorImageGenerator.py</span></a> file, add the indicator to one of the following dictionaries:</li>
 
-    <li>Fork the Documentation GitHub repository and create a new branch named by <code>feature-&lt;ISSUE_NUMBER&gt;-&lt;INDICATOR_NAME&gt;-indicator</code>.</li>
-
-    <li>Edit the <a href="https://github.com/QuantConnect/Documentation/blob/master/Resources/indicators/IndicatorImageGenerator.py">IndicatorImageGenerator.py</a> file to include the details of the newly added indicator for documentation page generation.</li>
-    <p>If the indicator only involves 1 symbol and does not depend on other indicators, put it under the <code>indicators</code> dictionary.</p>
-    <p>If the indicator involves 2 or more symbols or it is a composite indicator, put it under the <code>special_indicators</code> dictionary.</p>
-    <p>If the indicator is an option-related indicator (e.g. option greeks indicator), put it under the <code>option_indicators</code> dictionary.</p>
-    <p>Format of the added member should be as below:</p>
+    <ol>
+        <li><code>indicators</code> if the indicator only involves one symbol and doesn't depend on other indicators</li>
+        <li><code>special_indicators</code> if the indicator involves multiple symbols or it's a composite indicator</li>
+        <li><code>option_indicators</code> if the indicator is an Option-related indicator (for example, Option greeks indicators)</li>
+    </ol>
+    
+    <p>The following code block explains the format of the key-value pairs of the dictionaries:</p>
     <div class="python section-example-container">
-        <pre>'&lt;hyphenated-title-case-of-the-indicator&gt;':
-{
-    'code': &lt;IndicatorConstructor&gt;(&lt;constructor-arguments&gt;),
-    'title' : '&lt;CSharpHelperMethod&gt;(&lt;helper-method-arguments&gt;)',
-    'columns' : [&lt;any-extra-series-of-the-indicator&gt;]
-},</pre>
+        <pre>'&lt;hyphenated-title-case-of-the-indicator&gt;': IndicatorInfo(
+    &lt;PythonConstructor&gt;(&lt;python-constructor-arguments&gt;),
+    '&lt;CSharpHelperMethod&gt;(&lt;csharp-helper-method-arguments&gt;)',
+    'self.&lt;python_helper_method&gt;(&lt;python-helper-method-arguments&gt;)'
+),</pre>
     </div>
 
-    <li>Save the file and run the <a href="https://github.com/QuantConnect/Documentation/blob/master/code-generators/writing-algorithm-api-reference-sphinx-code-generator.py">API generator</a>. It will help generate the indicator reference page.</li>
+    <p>
+        The fourth argument to the <code>IndicatorInfo</code> defines which of the indicator's properties to plot on each subplot in the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/regression-channel#03-Visualization'>Visualization</a> section of the documentation.
+        By default, it plots the <code class='python'>current</code><code class='csharp'>Current</code> property on a single subplot (<code>[['current']]</code>).
+        In this argument, each element in the list you pass defines which properties to plot on each subplot.
+        Group properties that are on the same scale together so they show up on the same subplot.
+        For example, the <code>AbsolutePriceOscillator</code> uses <code>[['fast', 'slow'], ['current', 'histogram', 'signal']]</code> to plot the <code>fast</code> and <code>slow</code> properties on the first subplot and plot the <code>current</code>, <code>histogram</code>, and <code>signal</code> properties on the second subplot.
+    </p>
 
-    <li>(Optional) Run the <code>IndicatorImageGenerator.py</code> in LeanCLI to obtain the generated plotly image of the indicator. You can retreive it from the <code>storage</code> folder from the root directory of the LeanCLI. Put it in the <a href="https://github.com/QuantConnect/Documentation/tree/master/Resources/indicators/images">Resource indicator image folder</a> by the name <code>&lt;hyphenated-title-case-of-the-indicator&gt;</code>.</li>
+    <li>Save the file.</li>
+    
+    <li>Run the <a href="https://github.com/QuantConnect/Documentation/blob/master/code-generators/writing-algorithm-api-reference-sphinx-code-generator.py" rel='nofollow' target='_blank'><span class='public-file-name'>Documentation / code-generators / writing-algorithm-api-reference-sphinx-code-generator.py</span></a> file.</li> 
+    <p>This script generates the indicator reference page. For an example, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average'>Simple Moving Average</a>.</p>
 
-    <li>Push the branch and start a <a href="https://github.com/QuantConnect/Documentation/pulls">pull request</a> on the documentation changes.</li>
+    <li><span class='qualifier'>(Optional)</span> Run the <code>IndicatorImageGenerator.py</code> in LeanCLI to obtain the generated plotly image of the indicator. You can retreive it from the <code>storage</code> folder from the root directory of the LeanCLI. Put it in the <a href="https://github.com/QuantConnect/Documentation/tree/master/Resources/indicators/images">Resource indicator image folder</a> by the name <code>&lt;hyphenated-title-case-of-the-indicator&gt;</code>.</li>
+
+    <li>Submit a pull request to the <a href="https://github.com/QuantConnect/Documentation/" rel='nofollow' target='_blank'>Documentation repository</a> with your changes.</li>
 </ol>
