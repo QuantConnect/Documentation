@@ -1,5 +1,26 @@
 <p>The <code>TastytradeBrokerageModel</code> sets the buying power model based on the asset class of the security. The following table shows the default buying power model of each asset class:</p>
 
-<? echo file_get_contents(DOCS_RESOURCES."/brokerages/default-buying-power-models.html"); ?>
+table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Asset Class</th>
+            <th>Model</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Equities</td>
+            <td><code>SecurityMarginModel</code></td>
+        </tr>
+        <tr>
+            <td>Futures</td>
+            <td><code>FutureMarginModel</code></td>
+        </tr>
+        <tr>
+            <td>All Options Types</td>
+            <td><code>OptionMarginModel</code></td>
+        </tr>
+    </tbody>
+</table>
 
-<p>If you have a margin account, the <code>TastytradeBrokerageModel</code> allows 2x leverage for Equities, 50x leverage for Forex, 10x leverage for CFDs, and 1x leverage for the remaining asset classes.</p>
+<p>If you have a margin account, the <code>TastytradeBrokerageModel</code> allows 2x leverage for Equities. The remaining asset classes are derivatives.</p>
