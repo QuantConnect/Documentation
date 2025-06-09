@@ -15,23 +15,26 @@
         self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
         
         self.btcbusd = self.add_crypto("BTCBUSD", Resolution.MINUTE, Market.BINANCE).symbol</pre>
-<pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
+<pre class="csharp">namespace QuantConnect
 {
-    private Symbol _symbol;
-
-    public override void Initialize()
+    public class CoinAPIDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 6, 1);
-        SetEndDate(2021, 6, 1);
+        private Symbol _symbol;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
 
-        // Set Account Currency to Binance Stable Coin for USD
-        SetAccountCurrency("BUSD");
-        SetCash(100000);
+            // Set Account Currency to Binance Stable Coin for USD
+            SetAccountCurrency("BUSD");
+            SetCash(100000);
 
-        // Binance accepts both Cash and Margin account types.
-        SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
-
-        _symbol = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol;
+            // Binance accepts both Cash and Margin account types.
+            SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+            
+            _symbol = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol;
+        }
     }
 }</pre>
 </div>

@@ -14,21 +14,24 @@
         # Set our strike/expiry filter for this option chain
         option.set_filter(-2, +2, 0, 180)
 </pre>
-<pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
+<pre class="csharp">namespace QuantConnect
 {
-    private Symbol _optionSymbol;
-
-    public override void Initialize()
+    public class USEquityOptionsDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 6, 1);
-        SetEndDate(2021, 6, 1);
-        SetCash(100000);
-        UniverseSettings.Asynchronous = True;
-        // Request GOOG option data
-        var option = AddOption("GOOG");
-        _optionSymbol = option.Symbol;
-        // Set our strike/expiry filter for this option chain
-        option.SetFilter(-2, +2, 0, 180);
+        private Symbol _optionSymbol;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            UniverseSettings.Asynchronous = True;
+            // Request GOOG option data
+            var option = AddOption("GOOG");
+            _optionSymbol = option.Symbol;
+            // Set our strike/expiry filter for this option chain
+            option.SetFilter(-2, +2, 0, 180);
+        }
     }
 }</pre>
 </div>

@@ -60,74 +60,77 @@ class IndexOptionsDataAlgorithm(QCAlgorithm):
                 # Historical data
                 history = self.history(security.symbol, 10, Resolution.MINUTE)
                 self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
-<pre class="csharp">public class VixBullSpreadAlgorithm : QCAlgorithm
+<pre class="csharp">namespace QuantConnect
 {
-    private Symbol _optionSymbol;
-
-    public override void Initialize()
+    public class VixBullSpreadAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 1, 1);
-        SetEndDate(2021, 1, 1);
-        SetCash(200000);
-        // Asynchronous can use computational resources efficiently
-        UniverseSettings.Asynchronous = True;
-        // Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
-        var option = AddIndexOption("SPX");
-        option.SetFilter((u) =&gt; u.CallsOnly().Strikes(-2, +2).Expiration(0, 180));
-        _optionSymbol = option.Symbol;
-    }
+        private Symbol _optionSymbol;
 
-    public override void OnData(Slice slice)
-    {
-        if (!Portfolio.Invested &amp;&amp; IsMarketOpen(_optionSymbol))
+        public override void Initialize()
         {
-            // Make sure getting the updated VIX option chain
-            if (slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 1, 1);
+            SetCash(200000);
+            // Asynchronous can use computational resources efficiently
+            UniverseSettings.Asynchronous = True;
+            // Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
+            var option = AddIndexOption("SPX");
+            option.SetFilter((u) =&gt; u.CallsOnly().Strikes(-2, +2).Expiration(0, 180));
+            _optionSymbol = option.Symbol;
+        }
+        
+        public override void OnData(Slice slice)
+        {
+            if (!Portfolio.Invested &amp;&amp; IsMarketOpen(_optionSymbol))
             {
-                var expiry = chain.Max(x =&gt; x.Expiry);
-                var callContracts = chain
-                    .Where(x =&gt; x.Expiry == expiry)
-                    .OrderBy(x =&gt; x.Strike)
-                    .ToList();
-
-                // Need 2 contracts to form a call spread
-                if (callContracts.Count &lt; 2)
+                // Make sure getting the updated VIX option chain
+                if (slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
                 {
-                    return;
-                }
+                    var expiry = chain.Max(x =&gt; x.Expiry);
+                    var callContracts = chain
+                        .Where(x =&gt; x.Expiry == expiry)
+                        .OrderBy(x =&gt; x.Strike)
+                        .ToList();
 
-                // Obtain 2 call contracts with different strike price to form the call spread
-                var longCall = callContracts.First();
-                var shortCall = callContracts.First(contract =&gt; contract.Strike &gt; longCall.Strike);
+                    // Need 2 contracts to form a call spread
+                    if (callContracts.Count &lt; 2)
+                    {
+                        return;
+                    }
 
-                // Use all the buying power, but need to ensure the order size of the long and short call are the same
-                var quantity = new[] {
-                    CalculateOrderQuantity(shortCall.Symbol, -1m),
-                    CalculateOrderQuantity(longCall.Symbol, 1m) }
-                    .Min(x=&gt; Math.Abs(x));
+                    // Obtain 2 call contracts with different strike price to form the call spread
+                    var longCall = callContracts.First();
+                    var shortCall = callContracts.First(contract =&gt; contract.Strike &gt; longCall.Strike);
 
-                // Bull call spread consists of long a lower-strike call and short a higher-strike call
-                MarketOrder(shortCall.Symbol, -quantity);
-                MarketOrder(longCall.Symbol, quantity);
+                    // Use all the buying power, but need to ensure the order size of the long and short call are the same
+                    var quantity = new[] {
+                        CalculateOrderQuantity(shortCall.Symbol, -1m),
+                        CalculateOrderQuantity(longCall.Symbol, 1m) }
+                        .Min(x=&gt; Math.Abs(x));
 
-                var expectedMarginUsage = Math.Max((longCall.Strike - shortCall.Strike) * Securities[longCall.Symbol].SymbolProperties.ContractMultiplier * quantity, 0);
-                if (expectedMarginUsage != Portfolio.TotalMarginUsed)
-                {
-                    throw new Exception("Unexpect margin used!");
+                    // Bull call spread consists of long a lower-strike call and short a higher-strike call
+                    MarketOrder(shortCall.Symbol, -quantity);
+                    MarketOrder(longCall.Symbol, quantity);
+
+                    var expectedMarginUsage = Math.Max((longCall.Strike - shortCall.Strike) * Securities[longCall.Symbol].SymbolProperties.ContractMultiplier * quantity, 0);
+                    if (expectedMarginUsage != Portfolio.TotalMarginUsed)
+                    {
+                        throw new Exception("Unexpect margin used!");
+                    }
                 }
             }
         }
-    }
 
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach (var security in changes.AddedSecurities)
+        public override void OnSecuritiesChanged(SecurityChanges changes)
         {
-            if (security.Type == SecurityType.IndexOption)
+            foreach (var security in changes.AddedSecurities)
             {
-                // Historical data
-                var history = History(security.Symbol, 10, Resolution.Minute);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
+                if (security.Type == SecurityType.IndexOption)
+                {
+                    // Historical data
+                    var history = History(security.Symbol, 10, Resolution.Minute);
+                    Debug($"We got {history.Count()} from our history request for {security.Symbol}");
+                }
             }
         }
     }
@@ -218,100 +221,103 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
             for i in insights]</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-public class IndexOptionsDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    public override void Initialize()
+    public class IndexOptionsDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 1, 1);
-        SetEndDate(2021, 1, 1);
-        SetCash(200000);
-        UniverseSettings.Asynchronous = True;
-        SetUniverseSelection(new VIXIndexOptionUniverseSelectionModel());
-
-        SetAlpha(new BullCallSpreadAlphaModel());
-
-        SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
-    }
-}
-
-public class VIXIndexOptionUniverseSelectionModel : OptionUniverseSelectionModel
-{
-    // Only interest in VIX options
-    public VIXIndexOptionUniverseSelectionModel()
-        : base(TimeSpan.FromDays(1), 
-            _ =&gt; new[] {QuantConnect.Symbol.Create("VIX", SecurityType.IndexOption, Market.USA)})
-    {
-    }
-
-    protected override OptionFilterUniverse Filter(OptionFilterUniverse optionFilterUniverse)
-    {
-        // Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
-        return optionFilterUniverse.CallsOnly().Strikes(-2, +2).Expiration(0, 180);
-    }
-}
-
-public class BullCallSpreadAlphaModel : AlphaModel
-{
-    public BullCallSpreadAlphaModel()
-    {
-    }
-
-    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-    {
-        var insights = Enumerable.Empty&lt;Insight&gt;();
-        if (algorithm.Portfolio.Invested)
+        public override void Initialize()
         {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 1, 1);
+            SetCash(200000);
+            UniverseSettings.Asynchronous = True;
+            SetUniverseSelection(new VIXIndexOptionUniverseSelectionModel());
+
+            SetAlpha(new BullCallSpreadAlphaModel());
+
+            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+        }
+    }
+
+    public class VIXIndexOptionUniverseSelectionModel : OptionUniverseSelectionModel
+    {
+        // Only interest in VIX options
+        public VIXIndexOptionUniverseSelectionModel()
+            : base(TimeSpan.FromDays(1), 
+                _ =&gt; new[] {QuantConnect.Symbol.Create("VIX", SecurityType.IndexOption, Market.USA)})
+        {
+        }
+
+        protected override OptionFilterUniverse Filter(OptionFilterUniverse optionFilterUniverse)
+        {
+            // Filter to get ATM calls expiring in 180 days to form the Bull Call Spread
+            return optionFilterUniverse.CallsOnly().Strikes(-2, +2).Expiration(0, 180);
+        }
+    }
+
+    public class BullCallSpreadAlphaModel : AlphaModel
+    {
+        public BullCallSpreadAlphaModel()
+        {
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = Enumerable.Empty&lt;Insight&gt;();
+            if (algorithm.Portfolio.Invested)
+            {
+                return insights;
+            }
+                
+            foreach (var kvp in slice.OptionChains)
+            {
+                var canoncialSymbol = kvp.Key;
+                var chain = kvp.Value;
+                if (chain.IsNullOrEmpty())
+                {
+                    return insights;
+                }
+                // Bull call spread legs are having the same expiry
+                var callContracts = chain
+                    .Where(contract =&gt; contract.Expiry == expiry)
+                    .OrderBy(x =&gt; x.Strike)
+                    .ToList();
+
+                // Need 2 contracts to form a call spread
+                if (callContracts.Count &lt; 2)
+                {
+                    return insights;
+                }
+
+                // Obtain 2 call contracts with different strike price to form the call spread
+                var longCall = callContracts.First();
+                var shortCall = callContracts.First(contract =&gt; contract.Strike &gt; longCall.Strike);
+
+                // Bull call spread consists of long a lower-strike call and short a higher-strike call
+                var expiry = longCall.Expiry.AddDays(1);
+                return Insight.Group(
+                    Insight.Price(longCall.Symbol, expiry, InsightDirection.Up),
+                    Insight.Price(shortCall.Symbol, expiry, InsightDirection.Down));
+            }
             return insights;
         }
-
-        foreach (var kvp in slice.OptionChains)
-        {
-            var canoncialSymbol = kvp.Key;
-            var chain = kvp.Value;
-            if (chain.IsNullOrEmpty())
-            {
-                return insights;
-            }
-            // Bull call spread legs are having the same expiry
-            var callContracts = chain
-                .Where(contract =&gt; contract.Expiry == expiry)
-                .OrderBy(x =&gt; x.Strike)
-                .ToList();
-
-            // Need 2 contracts to form a call spread
-            if (callContracts.Count &lt; 2)
-            {
-                return insights;
-            }
-
-            // Obtain 2 call contracts with different strike price to form the call spread
-            var longCall = callContracts.First();
-            var shortCall = callContracts.First(contract =&gt; contract.Strike &gt; longCall.Strike);
-
-            // Bull call spread consists of long a lower-strike call and short a higher-strike call
-            var expiry = longCall.Expiry.AddDays(1);
-            return Insight.Group(
-                Insight.Price(longCall.Symbol, expiry, InsightDirection.Up),
-                Insight.Price(shortCall.Symbol, expiry, InsightDirection.Down));
-        }
-        return insights;
     }
-}
-
-public class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
-{
-    public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        
+    public class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
     {
-        if (insights.Count() == 0)
+        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
         {
-            return Enumerable.Empty&lt;PortfolioTarget&gt;();
-        }
-        // Only a single contract toi ensure both legs size is equal
-        var quantity = insights
-            .Select(i =&gt; Math.Abs(algorithm.CalculateOrderQuantity(i.Symbol, (decimal)i.Direction)))
-            .Min();
+            if (insights.Count() == 0)
+            {
+                return Enumerable.Empty&lt;PortfolioTarget&gt;();
+            }
+            // Only a single contract toi ensure both legs size is equal
+            var quantity = insights
+                .Select(i =&gt; Math.Abs(algorithm.CalculateOrderQuantity(i.Symbol, (decimal)i.Direction)))
+                .Min();
 
-        return insights.Select(i =&gt; new PortfolioTarget(i.Symbol, quantity * (decimal)i.Direction));
+            return insights.Select(i =&gt; new PortfolioTarget(i.Symbol, quantity * (decimal)i.Direction));
+        }
     }
 }</pre>
 </div>

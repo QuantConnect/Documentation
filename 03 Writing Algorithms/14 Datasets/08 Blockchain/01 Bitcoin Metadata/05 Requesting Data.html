@@ -10,18 +10,21 @@
 
         self.btcusd = self.add_crypto("BTCUSD", Resolution.DAILY, Market.BITFINEX).symbol
         self.dataset_symbol = self.add_data(BitcoinMetadata, self.btcusd).symbol </pre>
-<pre class="csharp">public class BlockchainBitcoinMetadataAlgorithm: QCAlgorithm
+<pre class="csharp">namespace QuantConnect
 {
-    private Symbol _symbol, _datasetSymbol;
-
-    public override void Initialize()
+    public class BlockchainBitcoinMetadataAlgorithm: QCAlgorithm
     {
-        SetStartDate(2019, 1, 1);
-        SetEndDate(2020, 6, 1);
-        SetCash(100000);
+        private Symbol _symbol, _datasetSymbol;
 
-        _symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
-        _datasetSymbol = AddData&lt;BitcoinMetadata&gt;(_symbol).Symbol;
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+
+            _symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
+            _datasetSymbol = AddData&lt;BitcoinMetadata&gt;(_symbol).Symbol;
+        }
     }
 }
 </pre>

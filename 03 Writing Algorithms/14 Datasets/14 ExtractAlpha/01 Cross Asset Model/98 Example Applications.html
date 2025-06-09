@@ -78,99 +78,102 @@ class ExtractAlphaCrossAssetModelAlgorithm(QCAlgorithm):
                 self.remove_security(dataset_symbol)</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-public class ExtractAlphaCrossAssetModelAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    // A variable to control the rebalance time
-    private DateTime _time = DateTime.MinValue;
-    private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
-    private DataDictionary&lt;ExtractAlphaCrossAssetModel&gt; _points = new DataDictionary&lt;ExtractAlphaCrossAssetModel&gt;();
-
-    public override void Initialize()
+    public class ExtractAlphaCrossAssetModelAlgorithm : QCAlgorithm
     {
-        SetStartDate(2019, 1, 1);
-        SetEndDate(2019, 12, 31);
-        SetCash(100000);
-
-        AddUniverse(MyCoarseFilterFunction);
-    }
-
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
-    {
-        // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
-        // Only the ones with fundamental data are supported by cross asset model data
-        return (from c in coarse
-                where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(100);
-    }
-
-    public override void OnData(Slice slice)
-    {
-        if (_time &gt; Time) return;
-
-        // Trade only based on corss asset model data
-        var points = slice.Get&lt;ExtractAlphaCrossAssetModel&gt;();
-        if (points.Count &gt; 0)
+        // A variable to control the rebalance time
+        private DateTime _time = DateTime.MinValue;
+        private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+        private DataDictionary&lt;ExtractAlphaCrossAssetModel&gt; _points = new DataDictionary&lt;ExtractAlphaCrossAssetModel&gt;();
+        
+        public override void Initialize()
         {
-            _points = points;
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2019, 12, 31);
+            SetCash(100000);
+            
+            AddUniverse(MyCoarseFilterFunction);
         }
-        // Avoid too frequent trades
-        if (Time.TimeOfDay &lt; TimeSpan.FromHours(10))
+        
+        private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
         {
-            return;
+            // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
+            // Only the ones with fundamental data are supported by cross asset model data
+            return (from c in coarse
+                    where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
+                    orderby c.DollarVolume descending
+                    select c.Symbol).Take(100);
         }
-
-        // Long the ones with the highest return estimates based on option trade data
-        // Short the lowest return ones
-        var sortedByScore = from s in _points.Values
-                        where (s.Score != None)
-                        orderby s.Score descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByScore.Take(10).ToList();
-        var shortSymbols = sortedByScore.TakeLast(10).ToList();
-
-        // Liquidate the ones without a strong trading signal
-        // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-        var portfolioTargets = new List&lt;PortfolioTarget&gt;();
-        foreach (var kvp in Portfolio)
+        
+        public override void OnData(Slice slice)
         {
-            var symbol = kvp.Key;
-            var securityHolding = kvp.Value;
-            var weight = 0.0m;
-            if (longSymbols.Contains(symbol))
+            if (_time &gt; Time) return;
+            
+            // Trade only based on corss asset model data
+            var points = slice.Get&lt;ExtractAlphaCrossAssetModel&gt;();
+            if (points.Count &gt; 0)
             {
-                weight = 0.05m;
+                _points = points;
             }
-            else if (shortSymbols.Contains(symbol))
+            // Avoid too frequent trades
+            if (Time.TimeOfDay &lt; TimeSpan.FromHours(10))
             {
-                weight = -0.05m;
+                return;
             }
-            else if (!securityHolding.Invested)
+
+            // Long the ones with the highest return estimates based on option trade data
+            // Short the lowest return ones
+            var sortedByScore = from s in _points.Values
+                            where (s.Score != None)
+                            orderby s.Score descending
+                            select s.Symbol.Underlying;
+            var longSymbols = sortedByScore.Take(10).ToList();
+            var shortSymbols = sortedByScore.TakeLast(10).ToList();
+
+            // Liquidate the ones without a strong trading signal
+            // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+            var portfolioTargets = new List&lt;PortfolioTarget&gt;();
+            foreach (var kvp in Portfolio)
             {
-                continue;
+                var symbol = kvp.Key;
+                var securityHolding = kvp.Value;
+                var weight = 0.0m;
+                if (longSymbols.Contains(symbol))
+                {
+                    weight = 0.05m;
+                }
+                else if (shortSymbols.Contains(symbol))
+                {
+                    weight = -0.05m;
+                }
+                else if (!securityHolding.Invested)
+                {
+                    continue;
+                }
+                portfolioTargets.Add(new PortfolioTarget(symbol, weight));
             }
-            portfolioTargets.Add(new PortfolioTarget(symbol, weight));
+            SetHoldings(portfolioTargets);
+            
+            _time = Expiry.EndOfDay(Time);
         }
-        SetHoldings(portfolioTargets);
-
-        _time = Expiry.EndOfDay(Time);
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach(var security in changes.AddedSecurities)
+        
+        public override void OnSecuritiesChanged(SecurityChanges changes)
         {
-            // Requesting cross asset model data for trading signal generation
-            _datasetSymbolBySymbol[security.Symbol] = AddData&lt;ExtractAlphaCrossAssetModel&gt;(security.Symbol).Symbol;
-        }
-
-        foreach(var security in changes.RemovedSecurities)
-        {
-            Symbol datasetSymbol;
-            if (_datasetSymbolBySymbol.TryGetValue(security.Symbol, out datasetSymbol))
+            foreach(var security in changes.AddedSecurities)
             {
-                RemoveSecurity(datasetSymbol);
-                _datasetSymbolBySymbol.Remove(security.Symbol);
+                // Requesting cross asset model data for trading signal generation
+                _datasetSymbolBySymbol[security.Symbol] = AddData&lt;ExtractAlphaCrossAssetModel&gt;(security.Symbol).Symbol;
+            }
+
+            foreach(var security in changes.RemovedSecurities)
+            {
+                Symbol datasetSymbol;
+                if (_datasetSymbolBySymbol.TryGetValue(security.Symbol, out datasetSymbol))
+                {
+                    RemoveSecurity(datasetSymbol);
+                    _datasetSymbolBySymbol.Remove(security.Symbol);
+                }
             }
         }
     }
@@ -247,83 +250,86 @@ class ExtractAlphaCrossAssetModelAlphaModel(AlphaModel):
 </pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-public class ExtractAlphaCrossAssetModelAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
- public override void Initialize()
- {
-  SetStartDate(2019, 1, 1);
-  SetEndDate(2021, 1, 1);
-  SetCash(100000);
+	public class ExtractAlphaCrossAssetModelAlgorithm : QCAlgorithm
+	{
+		public override void Initialize()
+		{
+			SetStartDate(2019, 1, 1);
+			SetEndDate(2021, 1, 1);
+			SetCash(100000);
+			
+			AddUniverse(MyCoarseFilterFunction);
+			UniverseSettings.Resolution = Resolution.Minute;
 
-  AddUniverse(MyCoarseFilterFunction);
-  UniverseSettings.Resolution = Resolution.Minute;
+			// Custom alpha model emits insights based on cross asset model data
+			AddAlpha(new ExtractAlphaCrossAssetModelAlphaModel());
 
-  // Custom alpha model emits insights based on cross asset model data
-  AddAlpha(new ExtractAlphaCrossAssetModelAlphaModel());
-
-  // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-  SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-
-  SetExecution(new ImmediateExecutionModel());
- }
-
- private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
- {
-                       // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
-                       // Only the ones with fundamental data are supported by cross asset model data
-  return (from c in coarse
-    where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-    orderby c.DollarVolume descending
-    select c.Symbol).Take(100);
- }
-}
-
-public class ExtractAlphaCrossAssetModelAlphaModel: AlphaModel
-{
-               // A variable to control the rebalance time
- public DateTime _time;
-
- public ExtractAlphaCrossAssetModelAlphaModel()
- {
-  _time = DateTime.MinValue;
- }
-
- public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
- {
-  if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-
-  // Trade only based on corss asset model data
-  var points = slice.Get&lt;ExtractAlphaCrossAssetModel&gt;();
-                       // Long the ones with the highest return estimates based on option trade data
-                       // Short the lowest return ones
-  var sortedByScore = from s in points.Values
-      where (s.Score != None)
-      orderby s.Score descending
-      select s.Symbol.Underlying;
-  var longSymbols = sortedByScore.Take(10).ToList();
-  var shortSymbols = sortedByScore.TakeLast(10).ToList();
-
-  var insights = new List&lt;Insight&gt;();
-  insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
-  insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-
-  _time = Expiry.EndOfDay(algorithm.Time);
-
-  return insights;
- }
-
- public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
- {
-  foreach(var security in changes.AddedSecurities)
-  {
-   // Requesting cross asset model data for trading signal generation
-   var extractAlphaCrossAssetModelSymbol = algorithm.AddData&lt;ExtractAlphaCrossAssetModel&gt;(security.Symbol).Symbol;
-
-   // Historical Data
-   var history = algorithm.History(new[]{extractAlphaCrossAssetModelSymbol}, 60, Resolution.Daily);
-   algorithm.Debug($"We got {history.Count()} items from our history request");
-  }
- }
+			// Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+			SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+			
+			SetExecution(new ImmediateExecutionModel());
+		}
+		
+		private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+		{
+                        // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
+                        // Only the ones with fundamental data are supported by cross asset model data
+			return (from c in coarse
+					where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
+					orderby c.DollarVolume descending
+					select c.Symbol).Take(100);
+		}
+	}
+	
+	public class ExtractAlphaCrossAssetModelAlphaModel: AlphaModel
+	{
+                // A variable to control the rebalance time
+		public DateTime _time;
+		
+		public ExtractAlphaCrossAssetModelAlphaModel()
+		{
+			_time = DateTime.MinValue;
+		}
+		
+		public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+		{
+			if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
+			
+			// Trade only based on corss asset model data
+			var points = slice.Get&lt;ExtractAlphaCrossAssetModel&gt;();
+                        // Long the ones with the highest return estimates based on option trade data
+                        // Short the lowest return ones
+			var sortedByScore = from s in points.Values
+							where (s.Score != None)
+							orderby s.Score descending
+							select s.Symbol.Underlying;
+			var longSymbols = sortedByScore.Take(10).ToList();
+			var shortSymbols = sortedByScore.TakeLast(10).ToList();
+			
+			var insights = new List&lt;Insight&gt;();
+			insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
+			insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
+			
+			_time = Expiry.EndOfDay(algorithm.Time);
+			
+			return insights;
+		}
+		
+		public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+		{
+			foreach(var security in changes.AddedSecurities)
+			{
+				// Requesting cross asset model data for trading signal generation
+				var extractAlphaCrossAssetModelSymbol = algorithm.AddData&lt;ExtractAlphaCrossAssetModel&gt;(security.Symbol).Symbol;
+		
+				// Historical Data
+				var history = algorithm.History(new[]{extractAlphaCrossAssetModelSymbol}, 60, Resolution.Daily);
+				algorithm.Debug($"We got {history.Count()} items from our history request");
+			}
+		}
+	}
 }
 </pre>
 </div>

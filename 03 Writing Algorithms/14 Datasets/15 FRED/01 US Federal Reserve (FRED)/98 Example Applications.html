@@ -40,44 +40,47 @@ class FredAlternativeDataAlgorithm(QCAlgorithm):
                 self.liquidate(self.spy)</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-public class FredAlternativeDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    private Symbol _fredPeakToTrough;
-    private Symbol _spy;
-
-    public override void Initialize()
+    public class FredAlternativeDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2000, 1, 1);
-        SetEndDate(2023, 12, 31);
-        SetCash(100000);
-
-        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
-
-        // Requesting FED US peak-to-trough OECD recession indicators for trade signal generation
-        _fredPeakToTrough = AddData&lt;Fred&gt;(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough).Symbol;
-
-        // Historical data
-        var history = History&lt;Fred&gt;(_fredPeakToTrough, 60, Resolution.Daily);
-        Debug($"We got {history.Count()} items from our history request");
-    }
-
-    public override void OnData(Slice slice)
-    {
-        // Trade with updated FED peak-to-trough indicator
-        if (slice.ContainsKey(_fredPeakToTrough) &amp;&amp; slice.ContainsKey(_spy))
+        private Symbol _fredPeakToTrough;
+        private Symbol _spy;
+        
+        public override void Initialize()
         {
-            var peakToTrough = slice.Get&lt;Fred&gt;(_fredPeakToTrough).Value;
+            SetStartDate(2000, 1, 1);
+            SetEndDate(2023, 12, 31);
+            SetCash(100000);
+            
+            _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+            
+            // Requesting FED US peak-to-trough OECD recession indicators for trade signal generation
+            _fredPeakToTrough = AddData&lt;Fred&gt;(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough).Symbol;
+            
+            // Historical data
+            var history = History&lt;Fred&gt;(_fredPeakToTrough, 60, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+        }
 
-            // Buy SPY if peak to trough value is 0, which is the expansionary period
-            if (peakToTrough == 0m &amp;&amp; !Portfolio.Invested)
+        public override void OnData(Slice slice)
+        {
+            // Trade with updated FED peak-to-trough indicator
+            if (slice.ContainsKey(_fredPeakToTrough) &amp;&amp; slice.ContainsKey(_spy))
             {
-                SetHoldings(_spy, 1);
-            }
-
-            // Liquidate holdings if peak to trough value is 1, which is recessionary period
-            else if (peakToTrough == 1m &amp;&amp; Portfolio.Invested)
-            {
-                Liquidate(_spy);
+                var peakToTrough = slice.Get&lt;Fred&gt;(_fredPeakToTrough).Value;
+                
+                // Buy SPY if peak to trough value is 0, which is the expansionary period
+                if (peakToTrough == 0m &amp;&amp; !Portfolio.Invested)
+                {
+                    SetHoldings(_spy, 1);
+                }
+                
+                // Liquidate holdings if peak to trough value is 1, which is recessionary period
+                else if (peakToTrough == 1m &amp;&amp; Portfolio.Invested)
+                {
+                    Liquidate(_spy);
+                }
             }
         }
     }
@@ -159,95 +162,98 @@ class FredAlphaModel(AlphaModel):
                 self.symbols.remove(security.symbol)</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
-public class FredAlternativeDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    public override void Initialize()
+    public class FredAlternativeDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2003, 1, 1);
-        SetEndDate(2019, 10, 11);
-        SetCash(100000);
-
-        // Universe contains only SPY as the market representative
-        AddUniverseSelection(
-            new ManualUniverseSelectionModel(
-                QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-        ));
-        // Custom alpha model that use FED data as trade signals
-        AddAlpha(new FredAlphaModel(this));
-        // Invest equally to evenly dissipate the capital concentration risk
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-    }
-
-    public class FredAlphaModel : AlphaModel
-    {
-        private List&lt;Symbol&gt; _symbols = new List&lt;Symbol&gt;();
-        private Symbol _fredPeakToTrough;
-        private decimal? _fredPeakToTroughValue = None;
-
-        public FredAlphaModel(QCAlgorithm algorithm)
+        public override void Initialize()
         {
-            // Requesting FED US peak-to-trough OECD recession indicators for trade signal generation
-            _fredPeakToTrough = algorithm.AddData&lt;Fred&gt;(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol;
+            SetStartDate(2003, 1, 1);
+            SetEndDate(2019, 10, 11);
+            SetCash(100000);
 
-            // Historical data
-            var history = algorithm.History&lt;Fred&gt;(_fredPeakToTrough, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
-            if (history.Count() == 0)
-            {
-                return;
-            }
-            _fredPeakToTroughValue = history.Last().Value;
+            // Universe contains only SPY as the market representative
+            AddUniverseSelection(
+                new ManualUniverseSelectionModel(
+                    QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+            ));
+            // Custom alpha model that use FED data as trade signals
+            AddAlpha(new FredAlphaModel(this));
+            // Invest equally to evenly dissipate the capital concentration risk
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
         }
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        
+        public class FredAlphaModel : AlphaModel
         {
-            var insights = new List&lt;Insight&gt;();
-
-            // Trade with updated FED peak-to-trough indicator
-            if (slice.ContainsKey(_fredPeakToTrough))
+            private List&lt;Symbol&gt; _symbols = new List&lt;Symbol&gt;();
+            private Symbol _fredPeakToTrough;
+            private decimal? _fredPeakToTroughValue = None;
+            
+            public FredAlphaModel(QCAlgorithm algorithm)
             {
-                _fredPeakToTroughValue = slice.Get&lt;Fred&gt;(_fredPeakToTrough).Value;
+                // Requesting FED US peak-to-trough OECD recession indicators for trade signal generation
+                _fredPeakToTrough = algorithm.AddData&lt;Fred&gt;(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol;
+                
+                // Historical data
+                var history = algorithm.History&lt;Fred&gt;(_fredPeakToTrough, 60, Resolution.Daily);
+                algorithm.Debug($"We got {history.Count()} items from our history request");
+                if (history.Count() == 0)
+                {
+                    return;
+                }
+                _fredPeakToTroughValue = history.Last().Value;
             }
-
-            // Ensure we have a FRED peak to trough value
-            if (_fredPeakToTroughValue == None)
+    
+            public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
             {
+                var insights = new List&lt;Insight&gt;();
+                
+                // Trade with updated FED peak-to-trough indicator
+                if (slice.ContainsKey(_fredPeakToTrough))
+                {
+                    _fredPeakToTroughValue = slice.Get&lt;Fred&gt;(_fredPeakToTrough).Value;
+                }
+                
+                // Ensure we have a FRED peak to trough value
+                if (_fredPeakToTroughValue == None)
+                {
+                    return insights;
+                }
+                
+                foreach (var symbol in _symbols)
+                {
+                    // Ensure we have data for the security in the current Slice to avoid stale filling
+                    if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
+                    {
+                        continue;
+                    }
+                    
+                    // Buy SPY if peak to trough value is 0, which is the expansionary period
+                    if (_fredPeakToTroughValue == 0m &amp;&amp; !algorithm.Portfolio[symbol].Invested)
+                    {
+                        insights.Add(Insight.Price(symbol, TimeSpan.FromDays(365*2),  InsightDirection.Up));
+                    }
+                    // Liquidate holdings if peak to trough value is 1, which is recessionary period
+                    else if (_fredPeakToTroughValue == 1m &amp;&amp; algorithm.Portfolio[symbol].Invested)
+                    {
+                        insights.Add(Insight.Price(symbol, TimeSpan.FromDays(365*2),  InsightDirection.Flat));
+                    }
+                }
+                
                 return insights;
             }
-
-            foreach (var symbol in _symbols)
+    
+            public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
             {
-                // Ensure we have data for the security in the current Slice to avoid stale filling
-                if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
+                foreach (var security in changes.AddedSecurities)
                 {
-                    continue;
+                    _symbols.Add(security.Symbol);
                 }
-
-                // Buy SPY if peak to trough value is 0, which is the expansionary period
-                if (_fredPeakToTroughValue == 0m &amp;&amp; !algorithm.Portfolio[symbol].Invested)
+                
+                foreach (var security in changes.RemovedSecurities)
                 {
-                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(365*2),  InsightDirection.Up));
+                    _symbols.Remove(security.Symbol);
                 }
-                // Liquidate holdings if peak to trough value is 1, which is recessionary period
-                else if (_fredPeakToTroughValue == 1m &amp;&amp; algorithm.Portfolio[symbol].Invested)
-                {
-                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(365*2),  InsightDirection.Flat));
-                }
-            }
-
-            return insights;
-        }
-
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-        {
-            foreach (var security in changes.AddedSecurities)
-            {
-                _symbols.Add(security.Symbol);
-            }
-
-            foreach (var security in changes.RemovedSecurities)
-            {
-                _symbols.Remove(security.Symbol);
             }
         }
     }

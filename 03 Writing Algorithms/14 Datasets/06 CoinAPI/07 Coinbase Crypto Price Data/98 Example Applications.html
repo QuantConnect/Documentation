@@ -63,69 +63,72 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
 <pre class="csharp">using QuantConnect.DataSource;
 using QuantConnect.Data.UniverseSelection;
 
-public class CoinAPIDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    private Symbol _btcusd;
-    private Universe _universe;
-    private decimal? _minimumOrderSize;
-    private decimal? _threshold = 0.5m;
-
-    public override void Initialize()
+    public class CoinAPIDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 6, 1);
-        SetEndDate(2021, 6, 1);
-        SetCash(100000);
-        UniverseSettings.Asynchronous = True;
-        // Coinbase accepts Cash account type only, AccountType.Margin will result in an exception.
-        SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
-
-        // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
-
-        // Requesting data, we only trade on BTCUSD in Coinbase exchange
-        var crypto = AddCrypto("BTCUSD", Resolution.Minute, Market.Coinbase);
-        _btcusd = crypto.Symbol;
-        _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
-
-         // Historical data
-        var history = History(_btcusd, 30, Resolution.Daily);
-        Debug($"We got {history.Count()} items from our history request");
-
-        // Add Crypto Universe Selection that select crypto pairs in Coinbase exchange
-        _universe = AddUniverse(CryptoUniverse.Coinbase(UniverseSelectionFilter));
-
-        // Historical Universe data
-        var universeHistory = History(_universe, 30, Resolution.Daily);
-        Debug($"We got {universeHistory.Count()} items from our history request");
-        foreach (var universeDay in universeHistory)
+        private Symbol _btcusd;
+        private Universe _universe;
+        private decimal? _minimumOrderSize;
+        private decimal? _threshold = 0.5m;
+        
+        public override void Initialize()
         {
-            foreach (CryptoUniverse universeItem in universeDay)
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+            UniverseSettings.Asynchronous = True;
+            // Coinbase accepts Cash account type only, AccountType.Margin will result in an exception.
+            SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
+
+            // Warm up the security with the last known price to avoid conversion error
+            SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
+            
+            // Requesting data, we only trade on BTCUSD in Coinbase exchange
+            var crypto = AddCrypto("BTCUSD", Resolution.Minute, Market.Coinbase);
+            _btcusd = crypto.Symbol;
+            _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
+                
+             // Historical data
+            var history = History(_btcusd, 30, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+
+            // Add Crypto Universe Selection that select crypto pairs in Coinbase exchange
+            _universe = AddUniverse(CryptoUniverse.Coinbase(UniverseSelectionFilter));
+
+            // Historical Universe data
+            var universeHistory = History(_universe, 30, Resolution.Daily);
+            Debug($"We got {universeHistory.Count()} items from our history request");
+            foreach (var universeDay in universeHistory)
             {
-                Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
+                foreach (CryptoUniverse universeItem in universeDay)
+                {
+                    Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
+                }
             }
         }
-    }
 
-    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
-    {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return from universeItem in universeDay
-               where universeItem.Volume &gt;= 100m 
-               &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-               select universeItem.Symbol;
-    }
-
-    public override void OnData(Slice slice)
-    {
-        // Speculate-invest all available free cash on BTCUSD, obeying the order quantity restriction to avoid invalid order
-        if (Portfolio.CashBook["BTC"].Amount == 0)
+        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
         {
-            var freeCash = Portfolio.CashBook["USD"].Amount * (1-Settings.FreePortfolioValuePercentage);
-            var quantity = _threshold*freeCash / slice[_btcusd].Price;
-            quantity -= quantity % _minimumOrderSize;
-            if (quantity &gt; 0m)
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            return from universeItem in universeDay
+                   where universeItem.Volume &gt;= 100m 
+                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                   select universeItem.Symbol;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Speculate-invest all available free cash on BTCUSD, obeying the order quantity restriction to avoid invalid order
+            if (Portfolio.CashBook["BTC"].Amount == 0)
             {
-                MarketOrder(_btcusd, quantity);
+                var freeCash = Portfolio.CashBook["USD"].Amount * (1-Settings.FreePortfolioValuePercentage);
+                var quantity = _threshold*freeCash / slice[_btcusd].Price;
+                quantity -= quantity % _minimumOrderSize;
+                if (quantity &gt; 0m)
+                {
+                    MarketOrder(_btcusd, quantity);
+                }
             }
         }
     }
@@ -171,44 +174,47 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
 <pre class="csharp">using QuantConnect.DataSource;
 using QuantConnect.Data.UniverseSelection;
 
-public class CoinAPIDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    private Symbol _btcusd;
-
-    public override void Initialize()
+    public class CoinAPIDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2020, 6, 1);
-        SetEndDate(2021, 6, 1);
-        SetCash(100000);
-
-        // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
-        UniverseSettings.Asynchronous = True;
-        UniverseSettings.Resolution = Resolution.Minute;
-        // Add Crypto Universe Selection that select crypto pairs in Coinbase exchange
-        AddUniverse(CryptoUniverse.Coinbase(UniverseSelectionFilter));
-
-        AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None) );
-        // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-    }
-
-    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
-    {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return from universeItem in universeDay
-               where universeItem.Volume &gt;= 100m 
-               &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-               select universeItem.Symbol;
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach(var security in changes.AddedSecurities)
+        private Symbol _btcusd;
+        
+        public override void Initialize()
         {
-            // Historical data
-            var history = History(security.Symbol, 30, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+
+            // Warm up the security with the last known price to avoid conversion error
+            SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
+            UniverseSettings.Asynchronous = True;
+            UniverseSettings.Resolution = Resolution.Minute;
+            // Add Crypto Universe Selection that select crypto pairs in Coinbase exchange
+            AddUniverse(CryptoUniverse.Coinbase(UniverseSelectionFilter));
+        
+            AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None) );
+            // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+
+        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+        {
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            return from universeItem in universeDay
+                   where universeItem.Volume &gt;= 100m 
+                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                   select universeItem.Symbol;
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach(var security in changes.AddedSecurities)
+            {
+                // Historical data
+                var history = History(security.Symbol, 30, Resolution.Daily);
+                Debug($"We got {history.Count()} items from our history request");
+            }
         }
     }
 }</pre>

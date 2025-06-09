@@ -15,20 +15,23 @@ class SECReportAlgorithm(QCAlgorithm):
 </pre>
 
 <pre class="csharp">
-public class SECReportAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    private Symbol _symbol, _report8KSymbol, _report10KSymbol, _report10QSymbol;
-
-    public override void Initialize()
+    public class SECReportAlgorithm : QCAlgorithm
     {
-        SetStartDate(2019, 1, 1);
-        SetEndDate(2019, 8, 21);
-        SetCash(100000);
+        private Symbol _symbol, _report8KSymbol, _report10KSymbol, _report10QSymbol;
 
-        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-        _report8KSymbol = AddData&lt;SECReport8K&gt;(_symbol, Resolution.Daily).Symbol;
-        _report10KSymbol = AddData&lt;SECReport10K&gt;(_symbol, Resolution.Daily).Symbol;
-        _report10QSymbol = AddData&lt;SECReport10Q&gt;(_symbol, Resolution.Daily).Symbol;
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2019, 8, 21);
+            SetCash(100000);
+
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _report8KSymbol = AddData&lt;SECReport8K&gt;(_symbol, Resolution.Daily).Symbol;
+            _report10KSymbol = AddData&lt;SECReport10K&gt;(_symbol, Resolution.Daily).Symbol;
+            _report10QSymbol = AddData&lt;SECReport10Q&gt;(_symbol, Resolution.Daily).Symbol;
+        }
     }
 }</pre>
 </div>

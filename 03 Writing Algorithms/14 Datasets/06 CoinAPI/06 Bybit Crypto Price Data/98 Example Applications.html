@@ -61,69 +61,72 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
 <pre class="csharp">using QuantConnect.DataSource;
 using QuantConnect.Data.UniverseSelection;
 
-public class CoinAPIDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    private Symbol _btcusdt;
-    private  _universe;
-    private decimal? _minimumOrderSize;
-
-    public override void Initialize()
+    public class CoinAPIDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2022, 6, 1);
-        SetEndDate(2023, 1, 1);
-        // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
-        SetAccountCurrency("USDT", 100000);
-
-        // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
-        SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
-
-        // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
-
-        // Requesting data, we only trade on BTCUSDT in Bybit exchange
-        var crypto = AddCrypto("BTCUSDT", Resolution.Minute, Market.Bybit);
-        _btcusdt = crypto.Symbol;
-        _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
-
-         // Historical data
-        var history = History(_btcusdt, 30, Resolution.Daily);
-        Debug($"We got {history.Count()} items from our history request");
-
-        // Add Crypto Universe Selection that select crypto pairs in Bybit exchange
-        _universe = AddUniverse(CryptoUniverse.Bybit(UniverseSelectionFilter));
-
-        // Historical Universe data
-        var universeHistory = History(_universe, 30, Resolution.Daily);
-        Debug($"We got {universeHistory.Count()} items from our history request");
-        foreach (var universeDay in universeHistory)
+        private Symbol _btcusdt;
+        private  _universe;
+        private decimal? _minimumOrderSize;
+        
+        public override void Initialize()
         {
-            foreach (CryptoUniverse universeItem in universeDay)
+            SetStartDate(2022, 6, 1);
+            SetEndDate(2023, 1, 1);
+            // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+            SetAccountCurrency("USDT", 100000);
+
+            // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+            SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+
+            // Warm up the security with the last known price to avoid conversion error
+            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
+            
+            // Requesting data, we only trade on BTCUSDT in Bybit exchange
+            var crypto = AddCrypto("BTCUSDT", Resolution.Minute, Market.Bybit);
+            _btcusdt = crypto.Symbol;
+            _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
+        
+             // Historical data
+            var history = History(_btcusdt, 30, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
+
+            // Add Crypto Universe Selection that select crypto pairs in Bybit exchange
+            _universe = AddUniverse(CryptoUniverse.Bybit(UniverseSelectionFilter));
+
+            // Historical Universe data
+            var universeHistory = History(_universe, 30, Resolution.Daily);
+            Debug($"We got {universeHistory.Count()} items from our history request");
+            foreach (var universeDay in universeHistory)
             {
-                Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
+                foreach (CryptoUniverse universeItem in universeDay)
+                {
+                    Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
+                }
             }
         }
-    }
 
-    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
-    {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return from universeItem in universeDay
-               where universeItem.Volume &gt;= 100m 
-               &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-               select universeItem.Symbol;
-    }
-
-    public override void OnData(Slice slice)
-    {
-        // Speculate-invest all available free cash on BTCUSDT, obeying the order quantity restriction to avoid invalid order
-        if (Portfolio.CashBook["BTC"].Amount == 0)
+        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
         {
-            var freeCash = Portfolio.CashBook["USDT"].Amount * (1-Settings.FreePortfolioValuePercentage);
-            var quantity = freeCash / slice[_btcusdt].Price;
-            quantity -= quantity % _minimumOrderSize;
-            if (quantity &gt; 0m)
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            return from universeItem in universeDay
+                   where universeItem.Volume &gt;= 100m 
+                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                   select universeItem.Symbol;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            // Speculate-invest all available free cash on BTCUSDT, obeying the order quantity restriction to avoid invalid order
+            if (Portfolio.CashBook["BTC"].Amount == 0)
             {
-                MarketOrder(_btcusdt, quantity);
+                var freeCash = Portfolio.CashBook["USDT"].Amount * (1-Settings.FreePortfolioValuePercentage);
+                var quantity = freeCash / slice[_btcusdt].Price;
+                quantity -= quantity % _minimumOrderSize;
+                if (quantity &gt; 0m)
+                {
+                    MarketOrder(_btcusdt, quantity);
+                }
             }
         }
     }
@@ -171,46 +174,49 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
 <pre class="csharp">using QuantConnect.DataSource;
 using QuantConnect.Data.UniverseSelection;
 
-public class CoinAPIDataAlgorithm : QCAlgorithm
+namespace QuantConnect
 {
-    public override void Initialize()
+    public class CoinAPIDataAlgorithm : QCAlgorithm
     {
-        SetStartDate(2022, 6, 1);
-        SetEndDate(2023, 1, 1);
-
-        // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
-        SetAccountCurrency("USDT", 100000);
-        // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
-        SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
-
-        // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
-        UniverseSettings.Asynchronous = True;
-        UniverseSettings.Resolution = Resolution.Minute;
-        // Add Crypto Universe Selection that select crypto pairs in Bybit exchange
-        AddUniverse(CryptoUniverse.Bybit(UniverseSelectionFilter));
-
-        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None));
-        // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-    }
-
-    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
-    {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return from universeItem in universeDay
-               where universeItem.Volume &gt;= 100m 
-               &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-               select universeItem.Symbol;
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach(var security in changes.AddedSecurities)
+        public override void Initialize()
         {
-            // Historical data
-            var history = History(security.Symbol, 30, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            SetStartDate(2022, 6, 1);
+            SetEndDate(2023, 1, 1);
+
+            // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+            SetAccountCurrency("USDT", 100000);
+            // Bybit accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+            SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+ 
+            // Warm up the security with the last known price to avoid conversion error
+            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
+            UniverseSettings.Asynchronous = True;
+            UniverseSettings.Resolution = Resolution.Minute;
+            // Add Crypto Universe Selection that select crypto pairs in Bybit exchange
+            AddUniverse(CryptoUniverse.Bybit(UniverseSelectionFilter));
+
+            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None));
+            // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        }
+
+        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+        {
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            return from universeItem in universeDay
+                   where universeItem.Volume &gt;= 100m 
+                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                   select universeItem.Symbol;
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach(var security in changes.AddedSecurities)
+            {
+                // Historical data
+                var history = History(security.Symbol, 30, Resolution.Daily);
+                Debug($"We got {history.Count()} items from our history request");
+            }
         }
     }
 }</pre>
