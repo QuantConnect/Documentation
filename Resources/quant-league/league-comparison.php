@@ -36,7 +36,7 @@
     <tr>
       <td>Minimum account size</td>
       <td>N/A</td>
-      <td>$25,000 USD</td>
+      <td>$30,000 USD</td>
     </tr>
     <tr>
       <td>Minimum capacity</td>
