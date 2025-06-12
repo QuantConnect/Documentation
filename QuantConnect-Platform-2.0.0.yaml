@@ -219,7 +219,36 @@ paths:
               explode: false
               schema:
                 type: string
-
+  /projects/collaboration/create:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 02 Project Management
+      - 05 Collaboration
+      - 03 Delete Project Collaborator
+      summary: Removes collaborator from the project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteCollaboratorRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCollaboratorResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /projects/nodes/read:
     post:
       tags:
@@ -2201,7 +2230,7 @@ components:
       properties:
         projectId:
           type: integer
-          description: Project Id we sent for compile.
+          description: Project Id we want to add the collaborator to.
         collaboratorUserId:
           type: string
           description: User Id of the collaborator we want to add.
@@ -2211,7 +2240,7 @@ components:
         collaborationWrite:
           type: bool
           description: Gives the right to edit the code.
-      description: Request to create a new backtest.
+      description: Request to add a new collaborator.
     CreateCollaboratorResponse:
       type: object
       properties:
@@ -2251,6 +2280,28 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Response received when reading the collaborators of a project.
+    DeleteCollaboratorRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id we want to remove the collaborator from.
+        collaboratorUserId:
+          type: string
+          description: User Id of the collaborator we want to remove.
+      description: Request to remove a collaborator.
+    DeleteCollaboratorResponse:
+      type: object
+      properties:
+        collaborators:
+          type: array
+          description: List of collaborators.
+          items:
+            $ref: '#/components/schemas/Collaborator'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+      description: Response received when removing collaborator.
     CompileFile:
       type: object
       properties:
