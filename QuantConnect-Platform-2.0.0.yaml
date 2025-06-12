@@ -1533,8 +1533,352 @@ paths:
               explode: false
               schema:
                 type: string
+  /ai/tools/backtest-init:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 10 AI
+      - 01 Tools
+      - 01 Backtest Initialization
+      summary: Initialize a backtest for a specific algorithm.
+      requestBody:
+        description: Initialize a backtest for a specific algorithm.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicFilesRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestInitResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /ai/tools/complete:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 10 AI
+      - 01 Tools
+      - 02 Code Completion
+      summary: Show the code completion for a specific algorithm attribute.
+      requestBody:
+        description: Show the code completion for a specific algorithm attribute.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeCompletionRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CodeCompletionResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /ai/tools/pep8-convert:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 10 AI
+      - 01 Tools
+      - 03 PEP8 Conversion
+      summary: Ensure a Python code follows PEP8 style.
+      requestBody:
+        description: Ensure a Python code follows PEP8 style.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PEP8ConvertRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PEP8ConvertResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /ai/tools/syntax-check:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 10 AI
+      - 01 Tools
+      - 04 Syntax Check
+      summary: Check the syntax of a code.
+      requestBody:
+        description: Check the syntax of a code.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicFilesRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyntaxCheckResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /ai/tools/search:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 10 AI
+      - 01 Tools
+      - 05 Search
+      summary: Search for content in QuantConnect.
+      requestBody:
+        description: Search for content in QuantConnect.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+
+
 components:
   schemas:
+    BasicFilesRequest:
+      type: object
+      properties:
+        language:
+          type: string
+          example: Python
+          description: Programming language.
+        files:
+          type: array
+          description: Files to process.
+          items:
+            $ref: '#/components/schemas/File'
+      description: Request to process files.
+    BacktestInitResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          example: End
+          description: State of the backtest (e.g. Error, End).
+        version:
+          type: string
+          example: 2.0
+          description: Version of the response.
+        payload:
+          type: string
+          description: Information about the backtest initialization. 
+        payloadType:
+          type: string
+          example: String
+          description: Type of the payload, e.g. String.
+      description: Response to a backtest initialization request.
+    CodeCompletionRequest:
+      type: object
+      properties:
+        language:
+          type: string
+          example: Python
+          description: Programming language for the code completion.
+        sentence:
+          type: string
+          description: Sentence to complete.
+        responseSizeLimit:
+          type: int
+          example: 10
+          description: Maximum size of the responses.
+      description: Request to show code completion for a specific algorithm attribute.
+    CodeCompletionResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          example: End
+          description: State of the code completion.
+        version:
+          type: string
+          example: 2.0
+          description: Version of the response.
+        payload:
+          type: array
+          items:
+            type: string
+          description: Code completion suggestions. 
+        payloadType:
+          type: string
+          example: StringArray
+          description: Type of the payload, e.g. StringArray.
+      description: Response to a code completion request.
+    PEP8ConvertRequest:
+      type: object
+      properties:
+        files:
+          type: array
+          description: Files present in the project in which the algorithm is.
+          items:
+            $ref: '#/components/schemas/File'
+      description: Request to convert Python code to PEP8 style.
+    PEP8ConvertResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          example: End
+          description: State of PEP8 conversion.
+        version:
+          type: string
+          example: 2.0
+          description: Version of the response.
+        payload:
+          type: dict
+          example: {"utils.py": "def add(a,b):\n    return a+b\n"}
+          description: PEP8 converted code.
+        payloadType:
+          type: string
+          example: StringDict
+          description: Type of the payload, e.g. StringDict.
+      description: Response to a PEP8 conversion request.
+    SyntaxCheckResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          example: End
+          description: State of the syntax check.
+        version:
+          type: string
+          example: 2.0
+          description: Version of the response.
+        payload:
+          type: array
+          items:
+            type: string
+          description: Code completion suggestions. 
+        payloadType:
+          type: string
+          example: StringArray
+          description: Type of the payload, e.g. StringArray.
+      description: Response to a syntax check request.
+    SearchRequest:
+      type: object
+      properties:
+        language:
+          type: string
+          example: Python
+          description: Programming language of the content to search.
+        criteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCriteria'
+          description: Criteria for the search.
+      description: Request to search content in QuantConnect.
+    SearchCriteria:
+      type: object
+      properties:
+        input:
+          type: string
+          example: option
+          description: Input for the search.
+        type:
+          type: string
+          example: Docs
+          description: Type of the search criteria.
+        count:
+          type: int
+          example: 1
+          description: Number of results to return.
+      description: Search criteria.
+    SearchResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          example: End
+          description: State of the search.
+        version:
+          type: string
+          example: 2.0
+          description: Version of the response.
+        retrivals:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchRetrieval'
+          description: List of search results.
+        messageId:
+          type: int
+          example: 0
+          description: ID of the message.
+      description: Response to a search request.
+    SearchRetrieval:
+      type: object
+      properties:
+        url:
+          type: string
+          example: option[Index Options - QuantConnect.com](https://www.quantconnect.com/docs/v2/writing-algorithms/universes/index-options)
+          description: Input for the search.
+        score:
+          type: number
+          example: 0.320344448
+          description: Relevance score of the search result.
+        content:
+          type: string
+          description: Content of the search result.
+        type:
+          type: number
+          example: 2
+          description: Type of the search result.
+      description: Search criteria.
     AbortOptimizationRequest:
       type: object
       properties:
@@ -4270,6 +4614,16 @@ components:
           items:
             type: string
       description: Response received when reading files from a project.
+    File:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of a file.
+        content:
+          type: string
+          description: Contents of the file.
+      description: File for a AI.
     ProjectListResponse:
       type: object
       properties:
