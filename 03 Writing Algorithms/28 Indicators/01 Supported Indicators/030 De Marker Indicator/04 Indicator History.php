@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'DeMarkerIndicator';
-$helperName = 'DEM';
-$pyHelperName = 'dem';
-$helperArguments = 'symbol, 20, MovingAverageType.Simple';
+$helperName = 'DeMarkerIndicator';
+$pyHelperName = 'de_marker_indicator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

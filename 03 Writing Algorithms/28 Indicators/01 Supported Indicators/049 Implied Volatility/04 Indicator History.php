@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ImpliedVolatility';
-$helperName = 'IV';
-$pyHelperName = 'iv';
-$helperArguments = 'option_symbol, option_mirror_symbol';
+$helperName = 'ImpliedVolatility';
+$pyHelperName = 'implied_volatility';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = true;
 $csharpProperties = array("OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");

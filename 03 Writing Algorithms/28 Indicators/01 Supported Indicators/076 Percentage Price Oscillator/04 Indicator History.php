@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'PercentagePriceOscillator';
-$helperName = 'PPO';
-$pyHelperName = 'ppo';
-$helperArguments = 'symbol, 10, 20, MovingAverageType.Simple';
+$helperName = 'PercentagePriceOscillator';
+$pyHelperName = 'percentage_price_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Fast","Slow","Signal","Histogram");

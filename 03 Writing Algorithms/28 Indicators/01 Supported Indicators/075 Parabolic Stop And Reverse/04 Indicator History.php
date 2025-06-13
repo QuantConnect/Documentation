@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ParabolicStopAndReverse';
-$helperName = 'PSAR';
-$pyHelperName = 'psar';
-$helperArguments = 'symbol, 0.02, 0.02, 0.2';
+$helperName = 'ParabolicStopAndReverse';
+$pyHelperName = 'parabolic_stop_and_reverse';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

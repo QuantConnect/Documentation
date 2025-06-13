@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AwesomeOscillator';
-$helperName = 'AO';
-$pyHelperName = 'ao';
-$helperArguments = 'symbol, 10, 20, MovingAverageType.Simple';
+$helperName = 'AwesomeOscillator';
+$pyHelperName = 'awesome_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("SlowAo","FastAo");

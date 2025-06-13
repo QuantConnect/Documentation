@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'WilliamsPercentR';
-$helperName = 'WILR';
-$pyHelperName = 'wilr';
-$helperArguments = 'symbol, 20';
+$helperName = 'WilliamsPercentR';
+$pyHelperName = 'williams_percent_r';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Maximum","Minimum");

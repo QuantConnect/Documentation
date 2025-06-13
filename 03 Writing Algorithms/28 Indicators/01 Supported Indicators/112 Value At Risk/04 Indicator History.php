@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ValueAtRisk';
-$helperName = 'VAR';
-$pyHelperName = 'var';
-$helperArguments = 'symbol, 252, 0.95';
+$helperName = 'ValueAtRisk';
+$pyHelperName = 'value_at_risk';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

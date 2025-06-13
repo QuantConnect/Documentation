@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RelativeStrengthIndex';
-$helperName = 'RSI';
-$pyHelperName = 'rsi';
-$helperArguments = 'symbol, 14';
+$helperName = 'RelativeStrengthIndex';
+$pyHelperName = 'relative_strength_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("AverageLoss","AverageGain");

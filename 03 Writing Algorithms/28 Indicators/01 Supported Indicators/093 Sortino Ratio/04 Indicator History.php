@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SortinoRatio';
-$helperName = 'SORTINO';
-$pyHelperName = 'sortino';
-$helperArguments = 'symbol, 22';
+$helperName = 'SortinoRatio';
+$pyHelperName = 'sortino_ratio';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

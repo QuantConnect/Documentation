@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AugenPriceSpike';
-$helperName = 'APS';
-$pyHelperName = 'aps';
-$helperArguments = 'symbol, 3';
+$helperName = 'AugenPriceSpike';
+$pyHelperName = 'augen_price_spike';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

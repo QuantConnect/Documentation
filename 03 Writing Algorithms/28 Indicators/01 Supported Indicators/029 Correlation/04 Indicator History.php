@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Correlation';
-$helperName = 'C';
-$pyHelperName = 'c';
-$helperArguments = 'symbol, reference, 20, correlationType=CorrelationType.Pearson';
-$hasReference = true;
+$helperName = 'Correlation';
+$pyHelperName = 'correlation';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();
 $pythonProperties = array();

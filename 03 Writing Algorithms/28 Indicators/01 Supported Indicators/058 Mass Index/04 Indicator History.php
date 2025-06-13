@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MassIndex';
-$helperName = 'MASS';
-$pyHelperName = 'mass';
-$helperArguments = 'symbol, 9, 25';
+$helperName = 'MassIndex';
+$pyHelperName = 'mass_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

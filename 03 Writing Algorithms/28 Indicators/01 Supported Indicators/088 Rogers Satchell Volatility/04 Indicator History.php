@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RogersSatchellVolatility';
-$helperName = 'RSV';
-$pyHelperName = 'rsv';
-$helperArguments = 'symbol, 30';
+$helperName = 'RogersSatchellVolatility';
+$pyHelperName = 'rogers_satchell_volatility';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

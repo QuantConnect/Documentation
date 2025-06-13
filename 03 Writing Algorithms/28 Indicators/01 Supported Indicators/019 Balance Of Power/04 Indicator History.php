@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'BalanceOfPower';
-$helperName = 'BOP';
-$pyHelperName = 'bop';
+$helperName = 'BalanceOfPower';
+$pyHelperName = 'balance_of_power';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

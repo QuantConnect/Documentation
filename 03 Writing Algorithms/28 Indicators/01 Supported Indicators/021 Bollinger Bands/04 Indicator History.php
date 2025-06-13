@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'BollingerBands';
-$helperName = 'BB';
-$pyHelperName = 'bb';
-$helperArguments = 'symbol, 30, 2';
+$helperName = 'BollingerBands';
+$pyHelperName = 'bollinger_bands';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("StandardDeviation","MiddleBand","UpperBand","LowerBand","BandWidth","PercentB","Price");

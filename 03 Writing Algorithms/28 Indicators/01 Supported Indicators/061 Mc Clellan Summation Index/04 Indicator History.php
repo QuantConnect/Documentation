@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'McClellanSummationIndex';
-$helperName = 'MSI';
-$pyHelperName = 'msi';
-$helperArguments = '[symbol, reference]';
-$hasReference = true;
+$helperName = 'McClellanSummationIndex';
+$pyHelperName = 'mc_clellan_summation_index';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("McClellanOscillator");
 $pythonProperties = array("mc_clellan_oscillator");

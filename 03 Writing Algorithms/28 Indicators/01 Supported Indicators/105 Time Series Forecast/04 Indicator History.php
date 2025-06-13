@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'TimeSeriesForecast';
-$helperName = 'TSF';
-$pyHelperName = 'tsf';
-$helperArguments = 'symbol, 3';
+$helperName = 'TimeSeriesForecast';
+$pyHelperName = 'time_series_forecast';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

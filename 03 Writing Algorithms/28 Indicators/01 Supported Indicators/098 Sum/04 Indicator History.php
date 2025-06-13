@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Sum';
-$helperName = 'SUM';
+$helperName = 'Sum';
 $pyHelperName = 'sum';
-$helperArguments = 'symbol, 20';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

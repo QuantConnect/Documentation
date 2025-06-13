@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MomentumPercent';
-$helperName = 'MOMP';
-$pyHelperName = 'momp';
-$helperArguments = 'symbol, 20';
+$helperName = 'MomentumPercent';
+$pyHelperName = 'momentum_percent';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

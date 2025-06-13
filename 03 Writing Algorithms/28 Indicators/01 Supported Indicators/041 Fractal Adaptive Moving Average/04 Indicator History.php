@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'FractalAdaptiveMovingAverage';
-$helperName = 'FRAMA';
-$pyHelperName = 'frama';
-$helperArguments = 'symbol, 20, 198';
+$helperName = 'FractalAdaptiveMovingAverage';
+$pyHelperName = 'fractal_adaptive_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

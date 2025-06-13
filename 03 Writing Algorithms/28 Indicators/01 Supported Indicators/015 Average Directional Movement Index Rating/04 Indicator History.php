@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AverageDirectionalMovementIndexRating';
-$helperName = 'ADXR';
-$pyHelperName = 'adxr';
-$helperArguments = 'symbol, 20';
+$helperName = 'AverageDirectionalMovementIndexRating';
+$pyHelperName = 'average_directional_movement_index_rating';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("ADX");

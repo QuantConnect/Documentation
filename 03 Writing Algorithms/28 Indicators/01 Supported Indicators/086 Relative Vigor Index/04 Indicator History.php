@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RelativeVigorIndex';
-$helperName = 'RVI';
-$pyHelperName = 'rvi';
-$helperArguments = 'symbol, 20, MovingAverageType.Simple';
+$helperName = 'RelativeVigorIndex';
+$pyHelperName = 'relative_vigor_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Signal");

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ConnorsRelativeStrengthIndex';
-$helperName = 'CRSI';
-$pyHelperName = 'crsi';
-$helperArguments = 'symbol, 3, 2, 100';
+$helperName = 'ConnorsRelativeStrengthIndex';
+$pyHelperName = 'connors_relative_strength_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

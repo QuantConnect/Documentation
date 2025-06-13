@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ChoppinessIndex';
-$helperName = 'CHOP';
-$pyHelperName = 'chop';
-$helperArguments = 'symbol, 14';
+$helperName = 'ChoppinessIndex';
+$pyHelperName = 'choppiness_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

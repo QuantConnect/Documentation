@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'StochasticRelativeStrengthIndex';
-$helperName = 'SRSI';
-$pyHelperName = 'srsi';
-$helperArguments = 'symbol, 14, 14, 3, 3';
+$helperName = 'StochasticRelativeStrengthIndex';
+$pyHelperName = 'stochastic_relative_strength_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("K","D");

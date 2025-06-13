@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'KaufmanAdaptiveMovingAverage';
-$helperName = 'KAMA';
-$pyHelperName = 'kama';
-$helperArguments = 'symbol, 20, 10, 20';
+$helperName = 'KaufmanAdaptiveMovingAverage';
+$pyHelperName = 'kaufman_adaptive_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

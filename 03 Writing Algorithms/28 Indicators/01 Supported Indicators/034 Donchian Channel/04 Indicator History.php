@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'DonchianChannel';
-$helperName = 'DCH';
-$pyHelperName = 'dch';
-$helperArguments = 'symbol, 20, 20';
+$helperName = 'DonchianChannel';
+$pyHelperName = 'donchian_channel';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("UpperBand","LowerBand");

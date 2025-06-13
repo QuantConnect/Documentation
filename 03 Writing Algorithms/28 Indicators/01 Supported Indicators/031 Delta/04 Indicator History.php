@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Delta';
-$helperName = 'D';
-$pyHelperName = 'd';
-$helperArguments = 'option_symbol, option_mirror_symbol';
+$helperName = 'Delta';
+$pyHelperName = 'delta';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = true;
 $csharpProperties = array("ImpliedVolatility","OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");

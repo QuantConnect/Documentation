@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Minimum';
-$helperName = 'MIN';
-$pyHelperName = 'min';
-$helperArguments = 'symbol, 20';
+$helperName = 'Minimum';
+$pyHelperName = 'minimum';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

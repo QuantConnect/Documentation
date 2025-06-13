@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ArnaudLegouxMovingAverage';
-$helperName = 'ALMA';
-$pyHelperName = 'alma';
-$helperArguments = 'symbol, 10, 6, 0.85';
+$helperName = 'ArnaudLegouxMovingAverage';
+$pyHelperName = 'arnaud_legoux_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

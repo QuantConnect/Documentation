@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Vega';
-$helperName = 'V';
-$pyHelperName = 'v';
-$helperArguments = 'option_symbol, option_mirror_symbol';
+$helperName = 'Vega';
+$pyHelperName = 'vega';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = true;
 $csharpProperties = array("ImpliedVolatility","OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MoneyFlowIndex';
-$helperName = 'MFI';
-$pyHelperName = 'mfi';
-$helperArguments = 'symbol, 20';
+$helperName = 'MoneyFlowIndex';
+$pyHelperName = 'money_flow_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("PositiveMoneyFlow","NegativeMoneyFlow");

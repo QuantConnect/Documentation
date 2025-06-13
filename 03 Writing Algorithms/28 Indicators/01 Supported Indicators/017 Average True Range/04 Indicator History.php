@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AverageTrueRange';
-$helperName = 'ATR';
-$pyHelperName = 'atr';
-$helperArguments = 'symbol, 20, MovingAverageType.Simple';
+$helperName = 'AverageTrueRange';
+$pyHelperName = 'average_true_range';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("TrueRange");

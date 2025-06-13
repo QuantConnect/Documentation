@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MidPoint';
-$helperName = 'MIDPOINT';
-$pyHelperName = 'midpoint';
-$helperArguments = 'symbol, 20';
+$helperName = 'MidPoint';
+$pyHelperName = 'mid_point';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

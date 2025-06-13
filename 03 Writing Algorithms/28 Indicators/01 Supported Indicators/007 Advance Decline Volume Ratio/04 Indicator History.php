@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineVolumeRatio';
-$helperName = 'ADVR';
-$pyHelperName = 'advr';
-$helperArguments = '[symbol, reference]';
-$hasReference = true;
+$helperName = 'AdvanceDeclineVolumeRatio';
+$pyHelperName = 'advance_decline_volume_ratio';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();
 $pythonProperties = array();

@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'InternalBarStrength';
-$helperName = 'IBS';
-$pyHelperName = 'ibs';
+$helperName = 'InternalBarStrength';
+$pyHelperName = 'internal_bar_strength';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'CoppockCurve';
-$helperName = 'CC';
-$pyHelperName = 'cc';
-$helperArguments = 'symbol, 11, 14, 10';
+$helperName = 'CoppockCurve';
+$pyHelperName = 'coppock_curve';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

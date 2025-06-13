@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ZeroLagExponentialMovingAverage';
-$helperName = 'ZLEMA';
-$pyHelperName = 'zlema';
-$helperArguments = 'symbol, 10';
+$helperName = 'ZeroLagExponentialMovingAverage';
+$pyHelperName = 'zero_lag_exponential_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

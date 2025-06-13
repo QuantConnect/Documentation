@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'TriangularMovingAverage';
-$helperName = 'TRIMA';
-$pyHelperName = 'trima';
-$helperArguments = 'symbol, 20';
+$helperName = 'TriangularMovingAverage';
+$pyHelperName = 'triangular_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

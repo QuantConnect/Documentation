@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'TripleExponentialMovingAverage';
-$helperName = 'TEMA';
-$pyHelperName = 'tema';
-$helperArguments = 'symbol, 20';
+$helperName = 'TripleExponentialMovingAverage';
+$pyHelperName = 'triple_exponential_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

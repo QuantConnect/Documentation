@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'TargetDownsideDeviation';
-$helperName = 'TDD';
-$pyHelperName = 'tdd';
-$helperArguments = 'symbol, 50';
+$helperName = 'TargetDownsideDeviation';
+$pyHelperName = 'target_downside_deviation';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

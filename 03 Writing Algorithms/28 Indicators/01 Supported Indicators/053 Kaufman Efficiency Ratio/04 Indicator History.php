@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'KaufmanEfficiencyRatio';
-$helperName = 'KER';
-$pyHelperName = 'ker';
-$helperArguments = 'symbol, 20';
+$helperName = 'KaufmanEfficiencyRatio';
+$pyHelperName = 'kaufman_efficiency_ratio';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

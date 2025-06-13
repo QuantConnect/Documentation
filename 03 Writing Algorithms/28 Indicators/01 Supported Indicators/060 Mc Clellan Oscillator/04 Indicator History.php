@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'McClellanOscillator';
-$helperName = 'MOSC';
-$pyHelperName = 'mosc';
-$helperArguments = '[symbol, reference]';
-$hasReference = true;
+$helperName = 'McClellanOscillator';
+$pyHelperName = 'mc_clellan_oscillator';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("EMAFast","EMASlow","ADDifference");
 $pythonProperties = array("ema_fast","ema_slow","ad_difference");

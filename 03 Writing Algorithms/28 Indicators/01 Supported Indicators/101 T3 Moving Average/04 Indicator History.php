@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'T3MovingAverage';
-$helperName = 'T3';
-$pyHelperName = 't3';
-$helperArguments = 'symbol, 30, 0.7';
+$helperName = 'T3MovingAverage';
+$pyHelperName = 't3_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

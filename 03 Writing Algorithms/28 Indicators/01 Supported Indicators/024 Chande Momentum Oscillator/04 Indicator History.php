@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ChandeMomentumOscillator';
-$helperName = 'CMO';
-$pyHelperName = 'cmo';
-$helperArguments = 'symbol, 20';
+$helperName = 'ChandeMomentumOscillator';
+$pyHelperName = 'chande_momentum_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

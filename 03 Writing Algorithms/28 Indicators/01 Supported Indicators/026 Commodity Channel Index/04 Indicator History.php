@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'CommodityChannelIndex';
-$helperName = 'CCI';
-$pyHelperName = 'cci';
-$helperArguments = 'symbol, 20, MovingAverageType.Simple';
+$helperName = 'CommodityChannelIndex';
+$pyHelperName = 'commodity_channel_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("TypicalPriceAverage","TypicalPriceMeanDeviation");

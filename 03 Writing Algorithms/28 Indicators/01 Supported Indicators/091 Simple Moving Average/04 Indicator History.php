@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SimpleMovingAverage';
-$helperName = 'SMA';
-$pyHelperName = 'sma';
-$helperArguments = 'symbol, 20';
+$helperName = 'SimpleMovingAverage';
+$pyHelperName = 'simple_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("RollingSum");

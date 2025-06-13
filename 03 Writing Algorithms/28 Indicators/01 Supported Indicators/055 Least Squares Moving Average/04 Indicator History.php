@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'LeastSquaresMovingAverage';
-$helperName = 'LSMA';
-$pyHelperName = 'lsma';
-$helperArguments = 'symbol, 20';
+$helperName = 'LeastSquaresMovingAverage';
+$pyHelperName = 'least_squares_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Intercept","Slope");

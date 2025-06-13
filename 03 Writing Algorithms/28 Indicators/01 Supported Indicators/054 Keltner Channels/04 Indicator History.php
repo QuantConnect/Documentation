@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'KeltnerChannels';
-$helperName = 'KCH';
-$pyHelperName = 'kch';
-$helperArguments = 'symbol, 20, 2, MovingAverageType.Simple';
+$helperName = 'KeltnerChannels';
+$pyHelperName = 'keltner_channels';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("MiddleBand","UpperBand","LowerBand","AverageTrueRange");

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MovingAverageConvergenceDivergence';
-$helperName = 'MACD';
-$pyHelperName = 'macd';
-$helperArguments = 'symbol, 12, 26, 9, MovingAverageType.Exponential';
+$helperName = 'MovingAverageConvergenceDivergence';
+$pyHelperName = 'moving_average_convergence_divergence';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Fast","Slow","Signal","Histogram");

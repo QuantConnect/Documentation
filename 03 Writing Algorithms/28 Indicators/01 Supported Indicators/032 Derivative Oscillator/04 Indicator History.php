@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'DerivativeOscillator';
-$helperName = 'DO';
-$pyHelperName = 'do';
-$helperArguments = 'symbol, 14, 5, 3, 9';
+$helperName = 'DerivativeOscillator';
+$pyHelperName = 'derivative_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

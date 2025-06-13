@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ArmsIndex';
-$helperName = 'TRIN';
-$pyHelperName = 'trin';
-$helperArguments = '[symbol, reference]';
-$hasReference = true;
+$helperName = 'ArmsIndex';
+$pyHelperName = 'arms_index';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("ADRatio","ADVRatio");
 $pythonProperties = array("ad_ratio","adv_ratio");

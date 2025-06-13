@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'VariableIndexDynamicAverage';
-$helperName = 'VIDYA';
-$pyHelperName = 'vidya';
-$helperArguments = 'symbol, 20';
+$helperName = 'VariableIndexDynamicAverage';
+$pyHelperName = 'variable_index_dynamic_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

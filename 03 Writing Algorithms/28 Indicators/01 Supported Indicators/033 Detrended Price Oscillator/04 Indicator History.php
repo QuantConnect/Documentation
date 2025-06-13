@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'DetrendedPriceOscillator';
-$helperName = 'DPO';
-$pyHelperName = 'dpo';
-$helperArguments = 'symbol, 20';
+$helperName = 'DetrendedPriceOscillator';
+$pyHelperName = 'detrended_price_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'NormalizedAverageTrueRange';
-$helperName = 'NATR';
-$pyHelperName = 'natr';
-$helperArguments = 'symbol, 20';
+$helperName = 'NormalizedAverageTrueRange';
+$pyHelperName = 'normalized_average_true_range';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

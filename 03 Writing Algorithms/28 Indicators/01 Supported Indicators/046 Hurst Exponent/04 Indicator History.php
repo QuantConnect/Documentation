@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'HurstExponent';
-$helperName = 'HE';
-$pyHelperName = 'he';
-$helperArguments = 'symbol, 32';
+$helperName = 'HurstExponent';
+$pyHelperName = 'hurst_exponent';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

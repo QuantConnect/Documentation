@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'TrueStrengthIndex';
-$helperName = 'TSI';
-$pyHelperName = 'tsi';
-$helperArguments = 'symbol, 25, 13, 7, MovingAverageType.Exponential';
+$helperName = 'TrueStrengthIndex';
+$pyHelperName = 'true_strength_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Signal");

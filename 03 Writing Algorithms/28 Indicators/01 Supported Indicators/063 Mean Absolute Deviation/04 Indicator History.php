@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MeanAbsoluteDeviation';
-$helperName = 'MAD';
-$pyHelperName = 'mad';
-$helperArguments = 'symbol, 20';
+$helperName = 'MeanAbsoluteDeviation';
+$pyHelperName = 'mean_absolute_deviation';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Mean");

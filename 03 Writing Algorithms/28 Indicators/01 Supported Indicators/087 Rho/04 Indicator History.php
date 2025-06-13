@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Rho';
-$helperName = 'R';
-$pyHelperName = 'r';
-$helperArguments = 'option_symbol, option_mirror_symbol';
+$helperName = 'Rho';
+$pyHelperName = 'rho';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = true;
 $csharpProperties = array("ImpliedVolatility","OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");

@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineDifference';
-$helperName = 'ADDIFF';
-$pyHelperName = 'addiff';
-$helperArguments = '[symbol, reference]';
-$hasReference = true;
+$helperName = 'AdvanceDeclineDifference';
+$pyHelperName = 'advance_decline_difference';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();
 $pythonProperties = array();

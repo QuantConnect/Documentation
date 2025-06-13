@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'IchimokuKinkoHyo';
-$helperName = 'ICHIMOKU';
-$pyHelperName = 'ichimoku';
-$helperArguments = 'symbol, 9, 26, 17, 52, 26, 26';
+$helperName = 'IchimokuKinkoHyo';
+$pyHelperName = 'ichimoku_kinko_hyo';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("Tenkan","Kijun","SenkouA","SenkouB","Chikou","TenkanMaximum","TenkanMinimum","KijunMaximum","KijunMinimum","SenkouBMaximum","SenkouBMinimum","DelayedTenkanSenkouA","DelayedKijunSenkouA","DelayedMaximumSenkouB","DelayedMinimumSenkouB");

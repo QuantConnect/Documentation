@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ChaikinMoneyFlow';
-$helperName = 'CMF';
-$pyHelperName = 'cmf';
-$helperArguments = 'symbol, 20';
+$helperName = 'ChaikinMoneyFlow';
+$pyHelperName = 'chaikin_money_flow';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

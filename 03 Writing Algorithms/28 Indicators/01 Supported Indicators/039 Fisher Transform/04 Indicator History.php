@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'FisherTransform';
-$helperName = 'FISH';
-$pyHelperName = 'fish';
-$helperArguments = 'symbol, 20';
+$helperName = 'FisherTransform';
+$pyHelperName = 'fisher_transform';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'DoubleExponentialMovingAverage';
-$helperName = 'DEMA';
-$pyHelperName = 'dema';
-$helperArguments = 'symbol, 20';
+$helperName = 'DoubleExponentialMovingAverage';
+$pyHelperName = 'double_exponential_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

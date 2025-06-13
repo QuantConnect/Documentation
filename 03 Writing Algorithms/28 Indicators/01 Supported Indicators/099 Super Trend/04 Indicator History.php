@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SuperTrend';
-$helperName = 'STR';
-$pyHelperName = 'str';
-$helperArguments = 'symbol, 20, 2, MovingAverageType.Wilders';
+$helperName = 'SuperTrend';
+$pyHelperName = 'super_trend';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

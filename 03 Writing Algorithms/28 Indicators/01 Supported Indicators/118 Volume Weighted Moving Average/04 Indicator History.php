@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'VolumeWeightedMovingAverage';
-$helperName = 'VWMA';
-$pyHelperName = 'vwma';
-$helperArguments = 'symbol, 20';
+$helperName = 'VolumeWeightedMovingAverage';
+$pyHelperName = 'volume_weighted_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

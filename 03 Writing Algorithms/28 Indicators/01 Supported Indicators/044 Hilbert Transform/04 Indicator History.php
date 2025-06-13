@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'HilbertTransform';
-$helperName = 'HT';
-$pyHelperName = 'ht';
-$helperArguments = 'symbol, 7, 0.635, 0.338';
+$helperName = 'HilbertTransform';
+$pyHelperName = 'hilbert_transform';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("InPhase","Quadrature");

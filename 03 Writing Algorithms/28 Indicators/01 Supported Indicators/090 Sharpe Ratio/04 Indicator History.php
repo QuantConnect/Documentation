@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SharpeRatio';
-$helperName = 'SR';
-$pyHelperName = 'sr';
-$helperArguments = 'symbol, 22, 0.03';
+$helperName = 'SharpeRatio';
+$pyHelperName = 'sharpe_ratio';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

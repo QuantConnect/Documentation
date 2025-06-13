@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'WilderMovingAverage';
-$helperName = 'WWMA';
-$pyHelperName = 'wwma';
-$helperArguments = 'symbol, 20';
+$helperName = 'WilderMovingAverage';
+$pyHelperName = 'wilder_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

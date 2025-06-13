@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'McGinleyDynamic';
-$helperName = 'MGD';
-$pyHelperName = 'mgd';
-$helperArguments = 'symbol, 10';
+$helperName = 'McGinleyDynamic';
+$pyHelperName = 'mc_ginley_dynamic';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

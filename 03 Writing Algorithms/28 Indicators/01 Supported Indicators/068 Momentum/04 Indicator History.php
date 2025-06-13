@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Momentum';
-$helperName = 'MOM';
-$pyHelperName = 'mom';
-$helperArguments = 'symbol, 20';
+$helperName = 'Momentum';
+$pyHelperName = 'momentum';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

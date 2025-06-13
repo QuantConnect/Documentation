@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'LinearWeightedMovingAverage';
-$helperName = 'LWMA';
-$pyHelperName = 'lwma';
-$helperArguments = 'symbol, 20';
+$helperName = 'LinearWeightedMovingAverage';
+$pyHelperName = 'linear_weighted_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

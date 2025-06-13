@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'TrueRange';
-$helperName = 'TR';
-$pyHelperName = 'tr';
+$helperName = 'TrueRange';
+$pyHelperName = 'true_range';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

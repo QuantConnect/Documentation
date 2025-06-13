@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SmoothedOnBalanceVolume';
-$helperName = 'SOBV';
-$pyHelperName = 'sobv';
-$helperArguments = 'symbol, 20';
+$helperName = 'SmoothedOnBalanceVolume';
+$pyHelperName = 'smoothed_on_balance_volume';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("OnBalanceVolume");

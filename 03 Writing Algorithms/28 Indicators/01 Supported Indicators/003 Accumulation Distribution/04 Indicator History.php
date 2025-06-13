@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AccumulationDistribution';
-$helperName = 'AD';
-$pyHelperName = 'ad';
+$helperName = 'AccumulationDistribution';
+$pyHelperName = 'accumulation_distribution';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

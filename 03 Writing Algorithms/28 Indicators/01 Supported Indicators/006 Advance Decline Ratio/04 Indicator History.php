@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineRatio';
-$helperName = 'ADR';
-$pyHelperName = 'adr';
-$helperArguments = '[symbol, reference]';
-$hasReference = true;
+$helperName = 'AdvanceDeclineRatio';
+$pyHelperName = 'advance_decline_ratio';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();
 $pythonProperties = array();

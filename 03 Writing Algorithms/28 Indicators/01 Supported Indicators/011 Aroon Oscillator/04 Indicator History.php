@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AroonOscillator';
-$helperName = 'AROON';
-$pyHelperName = 'aroon';
-$helperArguments = 'symbol, 10, 20';
+$helperName = 'AroonOscillator';
+$pyHelperName = 'aroon_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("AroonUp","AroonDown");

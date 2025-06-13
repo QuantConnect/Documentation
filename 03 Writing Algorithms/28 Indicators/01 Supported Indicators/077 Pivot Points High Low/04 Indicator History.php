@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'PivotPointsHighLow';
-$helperName = 'PPHL';
-$pyHelperName = 'pphl';
-$helperArguments = 'symbol, 10, 10, 100';
+$helperName = 'PivotPointsHighLow';
+$pyHelperName = 'pivot_points_high_low';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

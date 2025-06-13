@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ZigZag';
-$helperName = 'ZZ';
-$pyHelperName = 'zz';
-$helperArguments = 'symbol, 0.05, 1';
+$helperName = 'ZigZag';
+$pyHelperName = 'zig_zag';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("HighPivot","LowPivot","PivotType");

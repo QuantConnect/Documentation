@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'VolumeProfile';
-$helperName = 'VP';
-$pyHelperName = 'vp';
-$helperArguments = 'symbol, 3, 0.70, 0.05';
+$helperName = 'VolumeProfile';
+$pyHelperName = 'volume_profile';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

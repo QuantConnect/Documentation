@@ -2,10 +2,10 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Beta';
-$helperName = 'B';
-$pyHelperName = 'b';
-$helperArguments = 'symbol, reference, 20';
-$hasReference = true;
+$helperName = 'Beta';
+$pyHelperName = 'beta';
+$helperArguments = 'symbol';
+$hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();
 $pythonProperties = array();

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'UltimateOscillator';
-$helperName = 'ULTOSC';
-$pyHelperName = 'ultosc';
-$helperArguments = 'symbol, 5, 10, 20';
+$helperName = 'UltimateOscillator';
+$pyHelperName = 'ultimate_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RateOfChangePercent';
-$helperName = 'ROCP';
-$pyHelperName = 'rocp';
-$helperArguments = 'symbol, 10';
+$helperName = 'RateOfChangePercent';
+$pyHelperName = 'rate_of_change_percent';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AverageDirectionalIndex';
-$helperName = 'ADX';
-$pyHelperName = 'adx';
-$helperArguments = 'symbol, 20';
+$helperName = 'AverageDirectionalIndex';
+$pyHelperName = 'average_directional_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("PositiveDirectionalIndex","NegativeDirectionalIndex");

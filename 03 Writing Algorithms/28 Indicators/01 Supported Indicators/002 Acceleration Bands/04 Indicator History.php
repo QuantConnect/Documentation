@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AccelerationBands';
-$helperName = 'ABANDS';
-$pyHelperName = 'abands';
-$helperArguments = 'symbol, 10, 4, MovingAverageType.Simple';
+$helperName = 'AccelerationBands';
+$pyHelperName = 'acceleration_bands';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("MiddleBand","UpperBand","LowerBand");

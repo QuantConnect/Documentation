@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'TimeProfile';
-$helperName = 'TP';
-$pyHelperName = 'tp';
-$helperArguments = 'symbol, 3, 0.70, 0.05';
+$helperName = 'TimeProfile';
+$pyHelperName = 'time_profile';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

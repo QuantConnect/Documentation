@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Maximum';
-$helperName = 'MAX';
-$pyHelperName = 'max';
-$helperArguments = 'symbol, 20';
+$helperName = 'Maximum';
+$pyHelperName = 'maximum';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

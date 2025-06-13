@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RelativeMovingAverage';
-$helperName = 'RMA';
-$pyHelperName = 'rma';
-$helperArguments = 'symbol, 20';
+$helperName = 'RelativeMovingAverage';
+$pyHelperName = 'relative_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("ShortAverage","MediumAverage","LongAverage");

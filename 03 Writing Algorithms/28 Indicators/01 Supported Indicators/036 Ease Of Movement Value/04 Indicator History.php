@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'EaseOfMovementValue';
-$helperName = 'EMV';
-$pyHelperName = 'emv';
-$helperArguments = 'symbol, 1, 10000';
+$helperName = 'EaseOfMovementValue';
+$pyHelperName = 'ease_of_movement_value';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

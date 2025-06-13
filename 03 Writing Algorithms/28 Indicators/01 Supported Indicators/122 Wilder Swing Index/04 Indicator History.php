@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'WilderSwingIndex';
-$helperName = 'SI';
-$pyHelperName = 'si';
-$helperArguments = 'symbol, 20';
+$helperName = 'WilderSwingIndex';
+$pyHelperName = 'wilder_swing_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

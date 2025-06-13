@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Stochastic';
-$helperName = 'STO';
-$pyHelperName = 'sto';
-$helperArguments = 'symbol, 20, 10, 20';
+$helperName = 'Stochastic';
+$pyHelperName = 'stochastic';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("FastStoch","StochK","StochD");

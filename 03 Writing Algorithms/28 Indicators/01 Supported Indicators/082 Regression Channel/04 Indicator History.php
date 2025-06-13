@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RegressionChannel';
-$helperName = 'RC';
-$pyHelperName = 'rc';
-$helperArguments = 'symbol, 20, 2';
+$helperName = 'RegressionChannel';
+$pyHelperName = 'regression_channel';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("LinearRegression","UpperChannel","LowerChannel","Intercept","Slope");

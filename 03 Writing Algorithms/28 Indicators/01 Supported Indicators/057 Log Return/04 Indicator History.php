@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'LogReturn';
-$helperName = 'LOGR';
-$pyHelperName = 'logr';
-$helperArguments = 'symbol, 20';
+$helperName = 'LogReturn';
+$pyHelperName = 'log_return';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

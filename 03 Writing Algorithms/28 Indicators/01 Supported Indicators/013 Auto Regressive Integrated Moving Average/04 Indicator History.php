@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AutoRegressiveIntegratedMovingAverage';
-$helperName = 'ARIMA';
-$pyHelperName = 'arima';
-$helperArguments = 'symbol, 1, 1, 1, 20';
+$helperName = 'AutoRegressiveIntegratedMovingAverage';
+$pyHelperName = 'auto_regressive_integrated_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

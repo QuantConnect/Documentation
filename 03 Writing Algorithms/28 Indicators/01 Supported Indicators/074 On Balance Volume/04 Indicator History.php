@@ -2,8 +2,8 @@
 <? 
 $helperPrefix = '';
 $typeName = 'OnBalanceVolume';
-$helperName = 'OBV';
-$pyHelperName = 'obv';
+$helperName = 'OnBalanceVolume';
+$pyHelperName = 'on_balance_volume';
 $helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;

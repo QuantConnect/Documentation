@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'ForceIndex';
-$helperName = 'FI';
-$pyHelperName = 'fi';
-$helperArguments = 'symbol, 13';
+$helperName = 'ForceIndex';
+$pyHelperName = 'force_index';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

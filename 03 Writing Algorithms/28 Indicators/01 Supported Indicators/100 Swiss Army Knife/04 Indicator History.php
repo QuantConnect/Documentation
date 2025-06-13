@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SwissArmyKnife';
-$helperName = 'SWISS';
-$pyHelperName = 'swiss';
-$helperArguments = 'symbol, 20, 0.2, SwissArmyKnifeTool.Gauss';
+$helperName = 'SwissArmyKnife';
+$pyHelperName = 'swiss_army_knife';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

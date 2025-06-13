@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Variance';
-$helperName = 'VAR';
-$pyHelperName = 'var';
-$helperArguments = 'symbol, 20';
+$helperName = 'Variance';
+$pyHelperName = 'variance';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

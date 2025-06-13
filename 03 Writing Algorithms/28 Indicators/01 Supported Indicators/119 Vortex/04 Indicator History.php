@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Vortex';
-$helperName = 'VTX';
-$pyHelperName = 'vtx';
-$helperArguments = 'symbol, 14';
+$helperName = 'Vortex';
+$pyHelperName = 'vortex';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array("PlusVortex","MinusVortex");

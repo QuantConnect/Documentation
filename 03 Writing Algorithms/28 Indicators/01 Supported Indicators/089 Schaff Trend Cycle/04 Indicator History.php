@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'SchaffTrendCycle';
-$helperName = 'STC';
-$pyHelperName = 'stc';
-$helperArguments = 'symbol, 5, 10, 20, MovingAverageType.Exponential';
+$helperName = 'SchaffTrendCycle';
+$pyHelperName = 'schaff_trend_cycle';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

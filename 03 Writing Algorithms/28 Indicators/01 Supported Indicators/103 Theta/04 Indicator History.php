@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'Theta';
-$helperName = 'T';
-$pyHelperName = 't';
-$helperArguments = 'option_symbol, option_mirror_symbol';
+$helperName = 'Theta';
+$pyHelperName = 'theta';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = true;
 $csharpProperties = array("ImpliedVolatility","OptionSymbol","RiskFreeRate","DividendYield","Price","OppositePrice","UnderlyingPrice");

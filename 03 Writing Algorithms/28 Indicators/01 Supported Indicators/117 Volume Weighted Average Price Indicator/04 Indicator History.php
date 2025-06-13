@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'VolumeWeightedAveragePriceIndicator';
-$helperName = 'VWAP';
-$pyHelperName = 'vwap';
-$helperArguments = 'symbol, 20';
+$helperName = 'VolumeWeightedAveragePriceIndicator';
+$pyHelperName = 'volume_weighted_average_price_indicator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

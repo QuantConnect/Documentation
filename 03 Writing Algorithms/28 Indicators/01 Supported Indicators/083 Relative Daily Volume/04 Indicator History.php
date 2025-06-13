@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'RelativeDailyVolume';
-$helperName = 'RDV';
-$pyHelperName = 'rdv';
-$helperArguments = 'symbol, 2';
+$helperName = 'RelativeDailyVolume';
+$pyHelperName = 'relative_daily_volume';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

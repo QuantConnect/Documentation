@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'HullMovingAverage';
-$helperName = 'HMA';
-$pyHelperName = 'hma';
-$helperArguments = 'symbol, 20';
+$helperName = 'HullMovingAverage';
+$pyHelperName = 'hull_moving_average';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

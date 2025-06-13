@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'MidPrice';
-$helperName = 'MIDPRICE';
-$pyHelperName = 'midprice';
-$helperArguments = 'symbol, 20';
+$helperName = 'MidPrice';
+$pyHelperName = 'mid_price';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

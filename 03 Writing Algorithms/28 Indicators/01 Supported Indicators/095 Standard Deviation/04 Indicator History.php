@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'StandardDeviation';
-$helperName = 'STD';
-$pyHelperName = 'std';
-$helperArguments = 'symbol, 22';
+$helperName = 'StandardDeviation';
+$pyHelperName = 'standard_deviation';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

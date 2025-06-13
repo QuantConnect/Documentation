@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AccumulationDistributionOscillator';
-$helperName = 'ADOSC';
-$pyHelperName = 'adosc';
-$helperArguments = 'symbol, 10, 2';
+$helperName = 'AccumulationDistributionOscillator';
+$pyHelperName = 'accumulation_distribution_oscillator';
+$helperArguments = 'symbol';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();
