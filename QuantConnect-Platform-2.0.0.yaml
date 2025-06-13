@@ -1595,6 +1595,37 @@ paths:
               explode: false
               schema:
                 type: string
+  /ai/tools/error-enhance:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 10 AI Assistance
+      - 02 Tools
+      - 03 Error Enhancement
+      summary: Shows additional context and suggestions for error messages.
+      requestBody:
+        description: Shows additional context and suggestions for error messages.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorEnhanceRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnhanceResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /ai/tools/pep8-convert:
     post:
       tags:
@@ -1602,7 +1633,7 @@ paths:
       - 99 API Reference
       - 10 AI Assistance
       - 02 Tools
-      - 03 PEP8 Conversion
+      - 04 PEP8 Conversion
       summary: Ensure a Python code follows PEP8 style.
       requestBody:
         description: Ensure a Python code follows PEP8 style.
@@ -1633,7 +1664,7 @@ paths:
       - 99 API Reference
       - 10 AI Assistance
       - 02 Tools
-      - 04 Syntax Check
+      - 05 Syntax Check
       summary: Check the syntax of a code.
       requestBody:
         description: Check the syntax of a code.
@@ -1664,7 +1695,7 @@ paths:
       - 99 API Reference
       - 10 AI Assistance
       - 02 Tools
-      - 05 Search
+      - 06 Search
       summary: Search for content in QuantConnect.
       requestBody:
         description: Search for content in QuantConnect.
@@ -1766,6 +1797,40 @@ components:
           example: StringArray
           description: Type of the payload, e.g. StringArray.
       description: Response to a code completion request.
+    ErrorEnhanceRequest:
+      type: object
+      properties:
+        language:
+          type: string
+          enum:
+          - CSharp
+          - Python
+          example: Python
+          description: Programming language for the code completion.
+        error::
+          type: object
+          $ref: '#/components/schemas/Error'
+          description: Error message to enhance.
+      description: Request to show additional context and suggestions for error messages.
+    ErrorEnhanceResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          example: End
+          description: State of the code completion.
+        version:
+          type: string
+          example: 2.0
+          description: Version of the response.
+        payload:
+          type: string
+          description: Error message suggestions.
+        payloadType:
+          type: string
+          example: String
+          description: Type of the payload, e.g. String.
+      description: Response to error enhancement request.
     PEP8ConvertRequest:
       type: object
       properties:
@@ -4633,6 +4698,16 @@ components:
           type: string
           description: Contents of the file.
       description: File for a AI.
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message.
+        stacktrace:
+          type: string
+          description: Stack trace of the error.
+      description: Error information.
     ProjectListResponse:
       type: object
       properties:

@@ -30,3 +30,6 @@ def get_headers():
 # Authenticate to verify credentials
 response = post(f'{BASE_URL}/authenticate', headers = get_headers())
 print(response.json())
+
+# --------------------
+
