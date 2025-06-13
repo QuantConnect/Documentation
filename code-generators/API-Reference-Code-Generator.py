@@ -1,8 +1,10 @@
 import json
 import pathlib
 import yaml
+import os
 
 documentations = {"Cloud Platform": "QuantConnect-Platform-2.0.0.yaml"}
+RESOURCE = "Resources\\qc-api"
 
 def RequestTable(api_call, params):
     writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
@@ -406,7 +408,19 @@ for section, source in documentations.items():
         link = "/".join(content["tags"])
         destination_folder = pathlib.Path(link)
         destination_folder.mkdir(parents=True, exist_ok=True)
-        
+
+        # Write Examples file if having one
+        example = content["tags"][2][3:].replace(" ", "-").lower()
+        if example == "ai-assistance":
+            example = "ai-assistance/" + '/'.join([x[3:].replace(" ", "-").lower() for x in content["tags"][3:5]])
+        example = os.path.join(RESOURCE, "examples", f"{example}.html")
+        if os.path.exists(example):
+            example = example.replace("Resources", "").replace("\\", "/")
+            with open(destination_folder / f'99 Examples.php', "w") as php_file:
+                php_file.write(f'<? include(DOCS_RESOURCES."{example}");?>')
+        else:
+            print(f"Example file {example} does not exist, skipping...")
+
         # Create Introduction part
         with open(destination_folder / f'{j:02} Introduction.html', "w") as html_file:
             summary = content.get('summary')

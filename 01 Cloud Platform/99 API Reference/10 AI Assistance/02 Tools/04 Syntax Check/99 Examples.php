@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/qc-api/examples/ai-assistance/tools/syntax-check.html");?>

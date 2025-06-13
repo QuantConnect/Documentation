@@ -1,3 +1,1 @@
-<?
-include(DOCS_RESOURCES."/cloud-api-ref-example/object-store-management.html");
-?>
+<? include(DOCS_RESOURCES."/qc-api/examples/object-store-management.html");?>

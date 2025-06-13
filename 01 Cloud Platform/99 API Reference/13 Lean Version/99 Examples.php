@@ -1,3 +1,1 @@
-<?
-include(DOCS_RESOURCES."/cloud-api-ref-example/lean-version.html");
-?>
+<? include(DOCS_RESOURCES."/qc-api/examples/lean-version.html");?>

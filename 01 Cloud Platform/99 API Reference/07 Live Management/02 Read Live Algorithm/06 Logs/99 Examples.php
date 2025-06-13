@@ -1,3 +1,1 @@
-<?
-include(DOCS_RESOURCES."/cloud-api-ref-example/read-live-algorithm.html");
-?>
+<? include(DOCS_RESOURCES."/qc-api/examples/live-management.html");?>

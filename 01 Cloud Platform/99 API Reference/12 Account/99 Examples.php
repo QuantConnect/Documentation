@@ -1,3 +1,1 @@
-<?
-include(DOCS_RESOURCES."/cloud-api-ref-example/account.html");
-?>
+<? include(DOCS_RESOURCES."/qc-api/examples/account.html");?>

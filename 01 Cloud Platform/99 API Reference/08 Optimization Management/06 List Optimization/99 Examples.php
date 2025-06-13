@@ -1,3 +1,1 @@
-<?
-include(DOCS_RESOURCES."/cloud-api-ref-example/optimization-management.html");
-?>
+<? include(DOCS_RESOURCES."/qc-api/examples/optimization-management.html");?>
