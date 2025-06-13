@@ -1,0 +1,68 @@
+<p>The following example demonstates creating, reading, updating, deleting, and listing backtests of a project through the cloud API.</p>
+
+<div class="python section-example-container testable">
+    <pre>from base64 import b64encode
+from hashlib import sha256
+from time import time
+from requests import get, post
+
+USER_ID = 0
+ORG_ID = ""
+API_TOKEN = '...'
+BASE_URL = 'https://www.quantconnect.com/api/v2/'
+project_id = 12345678
+
+def get_headers():
+    # Get timestamp
+    timestamp = f'{int(time())}'
+    time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
+
+    # Get hased API token
+    hashed_token = sha256(time_stamped_token).hexdigest()
+    authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
+    authentication = b64encode(authentication).decode('ascii')
+
+    # Create headers dictionary.
+    return {
+        'Authorization': f'Basic {authentication}',
+        'Timestamp': timestamp
+    }
+
+# Create Backtest
+compile_id = "compile_id..."
+headers = get_headers()
+response = post(f'{BASE_URL}/backtests/create', headers = headers,
+                data = {
+                    "projectId": project_id,
+                    "compileId": compile_id,
+                    "backtestName": f"Backtest {int(time())}"
+                })
+result = response.json()
+backtest_id = result['backtest']['backtestId']
+
+# Read Backtest Statistics
+headers = get_headers()
+response = post(f'{BASE_URL}/backtests/read', headers = headers, data = { "projectId": project_id, "backtestId": backtest_id })
+response.json()
+
+# Update Backtest
+headers = get_headers()
+response = post(f'{BASE_URL}/backtests/update', headers = headers,
+                data = {
+                    "projectId": project_id,
+                    "backtestId": backtest_id,
+                    "name": f"Backtest_{backtestId}",
+                    "note": "The new backtest name is awesome!"
+                })
+response.json()
+
+# Delete Backtest
+headers = get_headers()
+response = post(f'{BASE_URL}/backtests/delete', headers = headers, data = { "projectId": project_id, "backtestId": backtest_id })
+response.json()
+
+# List Backtest
+headers = get_headers()
+response = post(f'{BASE_URL}/backtests/list', headers = headers, data = { "projectId": project_id, "includeStatistics": True })
+response.json()</pre>
+</div>
