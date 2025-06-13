@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/optimization-management.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/optimization-management.php");?>

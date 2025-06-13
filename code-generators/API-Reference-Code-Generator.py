@@ -413,7 +413,7 @@ for section, source in documentations.items():
         example = content["tags"][2][3:].replace(" ", "-").lower()
         if example == "ai-assistance":
             example = "ai-assistance/" + '/'.join([x[3:].replace(" ", "-").lower() for x in content["tags"][3:5]])
-        example = os.path.join(RESOURCE, "examples", f"{example}.html")
+        example = os.path.join(RESOURCE, "examples", f"{example}.php")
         if os.path.exists(example):
             example = example.replace("Resources", "").replace("\\", "/")
             with open(destination_folder / f'99 Examples.php', "w") as php_file:

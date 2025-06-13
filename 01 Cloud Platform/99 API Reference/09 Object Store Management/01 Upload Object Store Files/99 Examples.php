@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/object-store-management.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/object-store-management.php");?>

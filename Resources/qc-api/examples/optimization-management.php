@@ -1,37 +1,11 @@
 <p>The following example demonstates creating, reading, updating, deleting, aborting and listing backtests of a project through the cloud API.</p>
 
 <div class="python section-example-container testable">
-    <pre>from base64 import b64encode
-from hashlib import sha256
-from time import time
-from requests import get, post
-
-USER_ID = 0
-ORG_ID = ""
-API_TOKEN = '...'
-BASE_URL = 'https://www.quantconnect.com/api/v2/'
-project_id = 12345678
-compile_id = "compile_id..."
-
-def get_headers():
-    # Get timestamp
-    timestamp = f'{int(time())}'
-    time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
-
-    # Get hased API token
-    hashed_token = sha256(time_stamped_token).hexdigest()
-    authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
-    authentication = b64encode(authentication).decode('ascii')
-
-    # Create headers dictionary.
-    return {
-        'Authorization': f'Basic {authentication}',
-        'Timestamp': timestamp
-    }
+    <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
 # Estimate Optimization Cost
 headers = get_headers()
-response = post(f'{BASE_URL}/optimizations/estimate', headers = headers,
+response = post(f'{BASE_URL}/optimizations/estimate', headers = get_headers(),
                data = {
                   "projectId": project_id,
                   "name": f"Optimization_{compileId[:5]}",
@@ -58,8 +32,7 @@ response = post(f'{BASE_URL}/optimizations/estimate', headers = headers,
 response.json()
 
 # Create Optimization
-headers = get_headers()
-response = post(f'{BASE_URL}/optimizations/create', headers = headers,
+response = post(f'{BASE_URL}/optimizations/create', headers = get_headers(),
                 data = {
                   "projectId": project_id,
                   "name": f"Optimization_{compileId[:5]}",
@@ -90,8 +63,7 @@ response.json()
 optimization_id = response.json()['optimizations'][0]['optimizationId']
 
 # Update Optimization
-headers = get_headers()
-response = post(f'{BASE_URL}/optimizations/update', headers = headers,
+response = post(f'{BASE_URL}/optimizations/update', headers = get_headers(),
                 data = {
                     "optimizationId": optimization_id,
                     "name": f"Optimization_{optimizationId[:5]}"
@@ -99,22 +71,18 @@ response = post(f'{BASE_URL}/optimizations/update', headers = headers,
 response.json()
 
 # Read Optimization
-headers = get_headers()
-response = post(f'{BASE_URL}/optimizations/read', headers = headers, data = { "optimizationId": optimization_id })
+response = post(f'{BASE_URL}/optimizations/read', headers = get_headers(), data = { "optimizationId": optimization_id })
 response.json()
 
 # Abort Optimization
-headers = get_headers()
-response = post(f'{BASE_URL}/optimizations/abort', headers = headers, data = { "optimizationId": optimization_id })
+response = post(f'{BASE_URL}/optimizations/abort', headers = get_headers(), data = { "optimizationId": optimization_id })
 response.json()
 
 # Delete Optimization
-headers = get_headers()
-response = post(f'{BASE_URL}/optimizations/delete', headers = headers, data = { "optimizationId": optimization_id })
+response = post(f'{BASE_URL}/optimizations/delete', headers = get_headers(), data = { "optimizationId": optimization_id })
 response.json()
 
 # List Optimization
-headers = get_headers()
-response = post(f'{BASE_URL}/optimizations/list', headers = headers, data = { "projectId": project_id })
+response = post(f'{BASE_URL}/optimizations/list', headers = get_headers(), data = { "projectId": project_id })
 response.json()</pre>
 </div>

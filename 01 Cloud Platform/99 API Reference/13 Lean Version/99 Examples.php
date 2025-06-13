@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/lean-version.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/lean-version.php");?>

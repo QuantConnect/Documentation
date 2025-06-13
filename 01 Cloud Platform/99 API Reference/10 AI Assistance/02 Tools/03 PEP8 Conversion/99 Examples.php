@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/ai-assistance/tools/pep8-conversion.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/ai-assistance/tools/pep8-conversion.php");?>

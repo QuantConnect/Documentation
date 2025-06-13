@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/file-management.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/file-management.php");?>

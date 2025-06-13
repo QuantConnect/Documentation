@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/compiling-code.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/compiling-code.php");?>

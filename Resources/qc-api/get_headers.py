@@ -1,16 +1,15 @@
-<p>The following example demonstates getting a list of Lean versions through the cloud API.</p>
-
-<div class="python section-example-container testable">
-    <pre>from base64 import b64encode
+from base64 import b64encode
 from hashlib import sha256
 from time import time
 from requests import get, post
-
-USER_ID = 0
-ORG_ID = ""
-API_TOKEN = '...'
 BASE_URL = 'https://www.quantconnect.com/api/v2/'
-project_id = 12345678
+
+# You need to replace these with your actual credentials.
+# You can request your credentials at https://www.quantconnect.com/settings/
+# You can find our organization ID at https://www.quantconnect.com/organization/ 
+USER_ID = 0
+API_TOKEN = '____'
+ORGANIZATION_ID = '____'
 
 def get_headers():
     # Get timestamp
@@ -28,7 +27,6 @@ def get_headers():
         'Timestamp': timestamp
     }
 
-headers = get_headers()
-response = post(f'{BASE_URL}/lean/versions/read', headers = headers)
-response.json()</pre>
-</div>
+# Authenticate to verify credentials
+response = post(f'{BASE_URL}/authenticate', headers = get_headers())
+print(response.json())

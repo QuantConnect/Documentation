@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/ai-assistance/tools/code-completion.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/ai-assistance/tools/code-completion.php");?>

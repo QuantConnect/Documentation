@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/backtest-management.html");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/backtest-management.php");?>
