@@ -189,7 +189,7 @@ namespace UrlCheck
                                         errorFlag = true;
                                     }
                                 }
-                                else
+                                else if (url.Contains("lean.io") && files.All(x => x.Contains("/Resources/")))
                                 {
                                     if (!CheckGitHubFolderForFiles(url))
                                     {
