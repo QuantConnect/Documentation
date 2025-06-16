@@ -1,10 +1,4 @@
-<p>To add an algorithm to the competition, follow these steps:</p>
-
-<ol>
-    <li>______</li>
-    <li>______</li>
-    <li>______</li>
-</ol>
+<p>To add an algorithm to the competition, fill out the <a href='/league/join'>Pro League Submission</a> form.</p>
 
 <p>You must observe the following rules:</p>
 <ul>
