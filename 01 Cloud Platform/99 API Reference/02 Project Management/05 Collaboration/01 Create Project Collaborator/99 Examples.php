@@ -1,3 +1,1 @@
-<?
-include(DOCS_RESOURCES."/cloud-api-ref-example/project-collaborator.html");
-?>
+<? include(DOCS_RESOURCES."/qc-api/examples/project-collaborator.php");?>

@@ -411,6 +411,10 @@ for section, source in documentations.items():
 
         # Write Examples file if having one
         example = content["tags"][2][3:].replace(" ", "-").lower()
+        if 'collaboration' in api_call:
+            example = 'project-collaborator'
+        if example == "reports":
+            example = 'backtest-management'
         if example == "ai-assistance":
             example = "ai-assistance/" + '/'.join([x[3:].replace(" ", "-").lower() for x in content["tags"][3:5]])
         example = os.path.join(RESOURCE, "examples", f"{example}.php")

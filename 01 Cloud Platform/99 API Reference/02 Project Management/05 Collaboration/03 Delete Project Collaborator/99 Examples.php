@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/project-management.php");?>
+<? include(DOCS_RESOURCES."/qc-api/examples/project-collaborator.php");?>
