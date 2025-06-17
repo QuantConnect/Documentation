@@ -31,42 +31,37 @@ class QuiverGovernmentContractAlgorithm(QCAlgorithm):
             # Sell if below 10000 government contract amount, suggesting a smaller than usual income
             elif any([gov_contract.amount &lt; 10000 for gov_contract in gov_contracts]):
                 self.set_holdings(self.aapl, -1)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class QuiverGovernmentContractAlgorithm : QCAlgorithm
 {
-    public class QuiverGovernmentContractAlgorithm : QCAlgorithm
+    private Symbol _symbol, _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol, _datasetSymbol;
+        SetStartDate(2020, 10, 7);  //Set Start Date
+        SetEndDate(2021, 10, 11);    //Set End Date
+        _symbol = AddEquity("AAPL").Symbol;
+        // Subscribe to government contract data for AAPL to generate trade signal
+        _datasetSymbol = AddData&lt;QuiverGovernmentContract&gt;(_symbol).Symbol;
 
-        public override void Initialize()
+        // history request
+        var history = History&lt;QuiverGovernmentContract&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+        Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade only base on government contract data
+        foreach (var kvp in slice.Get&lt;QuiverGovernmentContract&gt;())
         {
-            SetStartDate(2020, 10, 7);  //Set Start Date
-            SetEndDate(2021, 10, 11);    //Set End Date
-            _symbol = AddEquity("AAPL").Symbol;
-            // Subscribe to government contract data for AAPL to generate trade signal
-            _datasetSymbol = AddData&lt;QuiverGovernmentContract&gt;(_symbol).Symbol;
-
-            // history request
-            var history = History&lt;QuiverGovernmentContract&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
-            Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
-        }
-
-        public override void OnData(Slice slice)
-        {
-            // Trade only base on government contract data
-            foreach (var kvp in slice.Get&lt;QuiverGovernmentContract&gt;())
+            // Buy if over 50000 government contract amount, suggesting a large income
+            if (kvp.Value.Any(x =&gt; (int) (x as QuiverGovernmentContract).Amount &gt; 50000m))
             {
-                // Buy if over 50000 government contract amount, suggesting a large income
-                if (kvp.Value.Any(x =&gt; (int) (x as QuiverGovernmentContract).Amount &gt; 50000m))
-                {
-                    SetHoldings(_symbol, 1);
-                }
-                // Sell if below 10000 government contract amount, suggesting a smaller than usual income
-                else if (kvp.Value.Any(x =&gt; (int) (x as QuiverGovernmentContract).Amount &lt; 10000m))
-                {
-                    SetHoldings(_symbol, -1);
-                }
+                SetHoldings(_symbol, 1);
+            }
+            // Sell if below 10000 government contract amount, suggesting a smaller than usual income
+            else if (kvp.Value.Any(x =&gt; (int) (x as QuiverGovernmentContract).Amount &lt; 10000m))
+            {
+                SetHoldings(_symbol, -1);
             }
         }
     }
@@ -172,117 +167,112 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
             if dataset_symbol:
                 # Remove government contract data subscription to release computation resources
                 algorithm.remove_security(dataset_symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class QuiverGovernmentContractFrameworkAlgorithm : QCAlgorithm
 {
-    public class QuiverGovernmentContractFrameworkAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 1);
+        SetCash(100000);
+        
+        UniverseSettings.Resolution = Resolution.Minute;
+        // Filter universe using government contract data
+        AddUniverse&lt;QuiverGovernmentContractUniverse&gt;(data =&gt;
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 1);
-            SetCash(100000);
-            
-            UniverseSettings.Resolution = Resolution.Minute;
-            // Filter universe using government contract data
-            AddUniverse&lt;QuiverGovernmentContractUniverse&gt;(data =&gt;
+            var govContractDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverGovernmentContractUniverse&gt;&gt;();
+
+            foreach (var datum in data.OfType&lt;QuiverGovernmentContractUniverse&gt;())
             {
-                var govContractDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverGovernmentContractUniverse&gt;&gt;();
+                var symbol = datum.Symbol;
 
-                foreach (var datum in data.OfType&lt;QuiverGovernmentContractUniverse&gt;())
+                if (!govContractDataBySymbol.ContainsKey(symbol))
                 {
-                    var symbol = datum.Symbol;
-
-                    if (!govContractDataBySymbol.ContainsKey(symbol))
-                    {
-                        govContractDataBySymbol.Add(symbol, new List&lt;QuiverGovernmentContractUniverse&gt;());
-                    }
-                    govContractDataBySymbol[symbol].Add(datum);
+                    govContractDataBySymbol.Add(symbol, new List&lt;QuiverGovernmentContractUniverse&gt;());
                 }
+                govContractDataBySymbol[symbol].Add(datum);
+            }
 
-                // Only select the stocks with over 5000 government contracts, which is considered material information
-                return from kvp in govContractDataBySymbol
-                    where kvp.Value.Sum(x =&gt; x.Amount) &gt; 5000m
-                    select kvp.Key;
-            });
+            // Only select the stocks with over 5000 government contracts, which is considered material information
+            return from kvp in govContractDataBySymbol
+                where kvp.Value.Sum(x =&gt; x.Amount) &gt; 5000m
+                select kvp.Key;
+        });
 
-            // Custom alpha model that emit insights based on updated government contract data
-            AddAlpha(new QuiverGovernmentContractAlphaModel());
+        // Custom alpha model that emit insights based on updated government contract data
+        AddAlpha(new QuiverGovernmentContractAlphaModel());
 
-            // Invest equally to evenly dissipate the capital concentration risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+        // Invest equally to evenly dissipate the capital concentration risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class QuiverGovernmentContractAlphaModel: AlphaModel
+{
+    // A variable to control the rebalancing time
+    private DateTime _time;
+    // To hold the government contract dataset symbol for managing subscription
+    private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new();
+    
+    public QuiverGovernmentContractAlphaModel()
+    {
+        _time = DateTime.MinValue;
     }
     
-    public class QuiverGovernmentContractAlphaModel: AlphaModel
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        // A variable to control the rebalancing time
-        private DateTime _time;
-        // To hold the government contract dataset symbol for managing subscription
-        private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new();
+        if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
         
-        public QuiverGovernmentContractAlphaModel()
+        // Trade signal only based on government contract data
+        var dataPoints = slice.Get&lt;QuiverGovernmentContract&gt;();
+        
+        if (dataPoints.IsNullOrEmpty()) return new List&lt;Insight&gt;();
+
+        // To aggregate all data per symbol for analysis
+        var govContracts = dataPoints.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.Sum(x =&gt; ((QuiverGovernmentContract)x).Amount));
+        
+        // Long the top 10 highest government contract amount, predicting a higher expected income and return
+        // Short the lowest 10 government contract amount, predicting a lower expected income and return
+        var sortedByGovContract = from kvp in govContracts
+                        orderby kvp.Value descending
+                        select kvp.Key.Underlying;
+        var longSymbols = sortedByGovContract.Take(10).ToList();
+        var shortSymbols = sortedByGovContract.TakeLast(10).ToList();
+        
+        var insights = new List&lt;Insight&gt;();
+        insights.AddRange(longSymbols.Select(symbol =&gt; 
+            new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
+        insights.AddRange(shortSymbols.Select(symbol =&gt; 
+            new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
+        
+        _time = Expiry.EndOfDay(algorithm.Time);
+        
+        return insights;
+    }
+    
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
         {
-            _time = DateTime.MinValue;
+            // Requesting government contract data for trade signal generation
+            var symbol = security.Symbol;
+            var datasetSymbol = algorithm.AddData&lt;QuiverGovernmentContract&gt;(symbol).Symbol;
+            _datasetSymbolBySymbol.Add(symbol, datasetSymbol);
+
+            // History request
+            var history = algorithm.History&lt;QuiverGovernmentContract&gt;(datasetSymbol, 10, Resolution.Daily);
+            algorithm.Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
         }
         
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        foreach (var security in changes.RemovedSecurities)
         {
-            if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-            
-            // Trade signal only based on government contract data
-            var dataPoints = slice.Get&lt;QuiverGovernmentContract&gt;();
-            
-            if (dataPoints.IsNullOrEmpty()) return new List&lt;Insight&gt;();
-
-            // To aggregate all data per symbol for analysis
-            var govContracts = dataPoints.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.Sum(x =&gt; ((QuiverGovernmentContract)x).Amount));
-            
-            // Long the top 10 highest government contract amount, predicting a higher expected income and return
-            // Short the lowest 10 government contract amount, predicting a lower expected income and return
-            var sortedByGovContract = from kvp in govContracts
-                            orderby kvp.Value descending
-                            select kvp.Key.Underlying;
-            var longSymbols = sortedByGovContract.Take(10).ToList();
-            var shortSymbols = sortedByGovContract.TakeLast(10).ToList();
-            
-            var insights = new List&lt;Insight&gt;();
-            insights.AddRange(longSymbols.Select(symbol =&gt; 
-                new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
-            insights.AddRange(shortSymbols.Select(symbol =&gt; 
-                new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-            
-            _time = Expiry.EndOfDay(algorithm.Time);
-            
-            return insights;
-        }
-        
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-        {
-            foreach (var security in changes.AddedSecurities)
+            var symbol = security.Symbol;
+            if (_datasetSymbolBySymbol.ContainsKey(symbol))
             {
-                // Requesting government contract data for trade signal generation
-                var symbol = security.Symbol;
-                var datasetSymbol = algorithm.AddData&lt;QuiverGovernmentContract&gt;(symbol).Symbol;
-                _datasetSymbolBySymbol.Add(symbol, datasetSymbol);
-
-                // History request
-                var history = algorithm.History&lt;QuiverGovernmentContract&gt;(datasetSymbol, 10, Resolution.Daily);
-                algorithm.Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
-            }
-            
-            foreach (var security in changes.RemovedSecurities)
-            {
-                var symbol = security.Symbol;
-                if (_datasetSymbolBySymbol.ContainsKey(symbol))
-                {
-                    // Remove government contract data subscription to release computation resources
-                    _datasetSymbolBySymbol.Remove(symbol, out var datasetSymbol);
-                    algorithm.RemoveSecurity(datasetSymbol);
-                }
+                // Remove government contract data subscription to release computation resources
+                _datasetSymbolBySymbol.Remove(symbol, out var datasetSymbol);
+                algorithm.RemoveSecurity(datasetSymbol);
             }
         }
     }

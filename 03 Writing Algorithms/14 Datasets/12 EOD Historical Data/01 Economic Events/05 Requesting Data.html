@@ -10,22 +10,19 @@
         ticker = EODHD.Events.UnitedStates.CPI
         # ticker = Country.UNITED_STATES
         self.dataset_symbol = self.add_data(EODHDEconomicEvents, ticker).symbol</pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class EconomicEventsDataAlgorithm : QCAlgorithm
 {
-    public class EconomicEventsDataAlgorithm : QCAlgorithm
+    private Symbol _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _datasetSymbol;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-
-            var ticker = EODHD.Events.UnitedStates.Cpi;
-            // var ticker = Country.UnitedStates;
-            _datasetSymbol = AddData&lt;EODHDEconomicEvents&gt;(ticker).Symbol;
-        }
+        var ticker = EODHD.Events.UnitedStates.Cpi;
+        // var ticker = Country.UnitedStates;
+        _datasetSymbol = AddData&lt;EODHDEconomicEvents&gt;(ticker).Symbol;
     }
 }</pre>
 </div>

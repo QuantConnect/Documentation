@@ -49,61 +49,54 @@ class BinanceCryptoFutureDataAlgorithm(QCAlgorithm):
             self.set_holdings(self.btcbusd, -1)
         else:
             self.set_holdings(self.btcbusd, 1)</pre>
-<pre class="csharp">using System.Linq;
-using QuantConnect.Data;
-using QuantConnect.Brokerages;
-
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class BinanceCryptoFutureDataAlgorithm : QCAlgorithm
 {
-    public class BinanceCryptoFutureDataAlgorithm : QCAlgorithm
+    public Symbol _symbol;
+
+    public override void Initialize()
     {
-        public Symbol _symbol;
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2023, 1, 1);
+        // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
+        SetCash("BUSD", 100000);
+        // Binance Futures Exchange accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        SetBrokerageModel(BrokerageName.BinanceFutures, AccountType.Margin);
 
-        public override void Initialize()
+        // Requesting data, we only trade on BTCBUSD Future in Binance Future exchange
+        var cryptoFuture = AddCryptoFuture("BTCBUSD", Resolution.Daily);
+        // perpetual futures does not have a filter function
+        _symbol = cryptoFuture.Symbol;
+
+        // Historical data
+        var history = History(_symbol, 10, Resolution.Daily);
+        Debug($"We got {history.Count()} from our history request for {_symbol}");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
+        // Or you can calculate the trade size on keeping the quote currency constant
+        if (slice.MarginInterestRates.ContainsKey(_symbol))
         {
-            SetStartDate(2022, 1, 1);
-            SetEndDate(2023, 1, 1);
-            // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
-            SetCash("BUSD", 100000);
-            // Binance Futures Exchange accepts both Cash and Margin account types, select the one you need for the best reality modeling.
-            SetBrokerageModel(BrokerageName.BinanceFutures, AccountType.Margin);
-
-            // Requesting data, we only trade on BTCBUSD Future in Binance Future exchange
-            var cryptoFuture = AddCryptoFuture("BTCBUSD", Resolution.Daily);
-            // perpetual futures does not have a filter function
-            _symbol = cryptoFuture.Symbol;
-
-            // Historical data
-            var history = History(_symbol, 10, Resolution.Daily);
-            Debug($"We got {history.Count()} from our history request for {_symbol}");
+            var interestRate = slice.MarginInterestRates[_symbol].InterestRate;
+            Log($"{_symbol} price at {slice.Time}: {interestRate}");
         }
 
-        public override void OnData(Slice slice)
+        // Trade only based on updated price data
+        if (!slice.Bars.ContainsKey(_symbol) || !slice.QuoteBars.TryGet(_symbol, out var quote))
         {
-            // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
-            // Or you can calculate the trade size on keeping the quote currency constant
-            if (slice.MarginInterestRates.ContainsKey(_symbol))
-            {
-                var interestRate = slice.MarginInterestRates[_symbol].InterestRate;
-                Log($"{_symbol} price at {slice.Time}: {interestRate}");
-            }
+            return;
+        }
+        var price = slice.Bars[_symbol].Price;
 
-            // Trade only based on updated price data
-            if (!slice.Bars.ContainsKey(_symbol) || !slice.QuoteBars.TryGet(_symbol, out var quote))
-            {
-                return;
-            }
-            var price = slice.Bars[_symbol].Price;
-
-            // Scalp-trade the bid-ask spread based on the supply-demand strength
-            if (price - quote.Bid.Close &gt; quote.Ask.Close - price)
-            {
-                SetHoldings(_symbol, -1m);
-            }
-            else
-            {
-                SetHoldings(_symbol, 1m);
-            }
+        // Scalp-trade the bid-ask spread based on the supply-demand strength
+        if (price - quote.Bid.Close &gt; quote.Ask.Close - price)
+        {
+            SetHoldings(_symbol, -1m);
+        }
+        else
+        {
+            SetHoldings(_symbol, 1m);
         }
     }
 }</pre>
@@ -178,106 +171,92 @@ class CryptoFutureAlphaModel(AlphaModel):
             symbol = security.symbol
             if symbol in self.symbols:
                 self.symbols.remove(symbol)</pre>
-<pre class="csharp">using System;
-using System.Collections.Generic;
-using System.Linq;
-using QuantConnect.Brokerages;
-using QuantConnect.Data;
-using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Algorithm.Framework.Selection;
-using QuantConnect.Algorithm.Framework.Alphas;
-using QuantConnect.Algorithm.Framework.Portfolio;
-using QuantConnect.Algorithm.Framework.Execution;
-
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class BinanceCryptoFutureDataAlgorithm : QCAlgorithm
 {
-    public class BinanceCryptoFutureDataAlgorithm : QCAlgorithm
+    public Symbol _symbol;
+
+    public override void Initialize()
     {
-        public Symbol _symbol;
+        SetStartDate(2022, 10, 1);
+        SetEndDate(2022, 10, 10);
+        // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
+        SetCash("BUSD", 100000);
+        // Binance Futures Exchange accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        SetBrokerageModel(BrokerageName.BinanceFutures, AccountType.Margin);
 
-        public override void Initialize()
+        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.Leverage = 2;
+        // We only trade on BTCBUSD Future in Binance Future exchange
+        var symbols = new List{
+            QuantConnect.Symbol.Create("BTCBUSD", SecurityType.CryptoFuture, Market.Binance)
+        };
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        // Custom alpha model to emit insights based on the Crypto Future price data
+        AddAlpha(new CryptoFutureAlphaModel());
+        // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class CryptoFutureAlphaModel : AlphaModel
+{
+    private List _symbols = new();
+
+    public override List Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List();
+
+        foreach (var symbol in _symbols)
         {
-            SetStartDate(2022, 10, 1);
-            SetEndDate(2022, 10, 10);
-            // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
-            SetCash("BUSD", 100000);
-            // Binance Futures Exchange accepts both Cash and Margin account types, select the one you need for the best reality modeling.
-            SetBrokerageModel(BrokerageName.BinanceFutures, AccountType.Margin);
+            // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
+            // Or you can calculate the trade size on keeping the quote currency constant
+            if (slice.MarginInterestRates.ContainsKey(symbol))
+            {
+                var interestRate = slice.MarginInterestRates[symbol].InterestRate;
+                algorithm.Log($"{symbol} price at {slice.Time}: {interestRate}");
+            }
 
-            UniverseSettings.Resolution = Resolution.Daily;
-            UniverseSettings.Leverage = 2;
-            // We only trade on BTCBUSD Future in Binance Future exchange
-            var symbols = new List{
-                QuantConnect.Symbol.Create("BTCBUSD", SecurityType.CryptoFuture, Market.Binance)
-            };
-            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
-            // Custom alpha model to emit insights based on the Crypto Future price data
-            AddAlpha(new CryptoFutureAlphaModel());
-            // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            SetExecution(new ImmediateExecutionModel());
+            // Trade only based on updated price data
+            if (!slice.Bars.ContainsKey(symbol) || !slice.QuoteBars.TryGet(symbol, out var quote))
+            {
+                continue;
+            }
+            var price = slice.Bars[symbol].Price;
+
+            // Scalp-trade the bid-ask spread based on the supply-demand strength
+            if (price - quote.Bid.Close &gt; quote.Ask.Close - price)
+            {
+                insights.Add(
+                    Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)
+                );
+            }
+            else
+            {
+                insights.Add(
+                    Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)
+                );
+            }
         }
+        
+        return insights;
     }
 
-    public class CryptoFutureAlphaModel : AlphaModel
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        private List _symbols = new();
-
-        public override List Update(QCAlgorithm algorithm, Slice slice)
+        foreach (var security in changes.AddedSecurities)
         {
-            var insights = new List();
+            var symbol = security.Symbol;
+            _symbols.Add(symbol);
 
-            foreach (var symbol in _symbols)
-            {
-                // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
-                // Or you can calculate the trade size on keeping the quote currency constant
-                if (slice.MarginInterestRates.ContainsKey(symbol))
-                {
-                    var interestRate = slice.MarginInterestRates[symbol].InterestRate;
-                    algorithm.Log($"{symbol} price at {slice.Time}: {interestRate}");
-                }
-
-                // Trade only based on updated price data
-                if (!slice.Bars.ContainsKey(symbol) || !slice.QuoteBars.TryGet(symbol, out var quote))
-                {
-                    continue;
-                }
-                var price = slice.Bars[symbol].Price;
-
-                // Scalp-trade the bid-ask spread based on the supply-demand strength
-                if (price - quote.Bid.Close &gt; quote.Ask.Close - price)
-                {
-                    insights.Add(
-                        Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)
-                    );
-                }
-                else
-                {
-                    insights.Add(
-                        Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)
-                    );
-                }
-            }
-            
-            return insights;
+            // Historical data
+            var history = algorithm.History(symbol, 10, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
         }
 
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        foreach (var security in changes.RemovedSecurities)
         {
-            foreach (var security in changes.AddedSecurities)
-            {
-                var symbol = security.Symbol;
-                _symbols.Add(symbol);
-
-                // Historical data
-                var history = algorithm.History(symbol, 10, Resolution.Daily);
-                algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
-            }
-
-            foreach (var security in changes.RemovedSecurities)
-            {
-                _symbols.Remove(security.Symbol);
-            }
+            _symbols.Remove(security.Symbol);
         }
     }
 }</pre>

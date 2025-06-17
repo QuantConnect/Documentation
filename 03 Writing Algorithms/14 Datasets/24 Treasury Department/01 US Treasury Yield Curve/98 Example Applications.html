@@ -54,71 +54,66 @@ class USTreasuryDataAlgorithm(QCAlgorithm):
         # If two years have passed, liquidate our position in SPY assuming the market starts resilience
         if (self.time - self.last_inversion &gt;= timedelta(days=365 * 2)):
             self.liquidate(self.spy_symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class USTreasuryDataAlgorithm : QCAlgorithm
 {
-    public class USTreasuryDataAlgorithm : QCAlgorithm
+    private Symbol _spySymbol;
+    private Symbol _yieldCurveSymbol;
+    private DateTime _lastInversion = DateTime.MinValue;
+    
+    public override void Initialize()
     {
-        private Symbol _spySymbol;
-        private Symbol _yieldCurveSymbol;
-        private DateTime _lastInversion = DateTime.MinValue;
-        
-        public override void Initialize()
+        SetStartDate(2000, 3, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
+
+        // Request SPY as the market representative for trading
+        _spySymbol = AddEquity("SPY", Resolution.Hour).Symbol;
+
+        // Requesting yield curve data for trade signal generation (inversion)
+        _yieldCurveSymbol = AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
+
+        // Historical data
+        var history = History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 60, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
+    
+    
+    public override void OnData(Slice slice)
+    {
+        // Trade only based on updated yield curve data
+        if (!slice.TryGetValue(_yieldCurveSymbol, out var rates))
         {
-            SetStartDate(2000, 3, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-
-            // Request SPY as the market representative for trading
-            _spySymbol = AddEquity("SPY", Resolution.Hour).Symbol;
-
-            // Requesting yield curve data for trade signal generation (inversion)
-            _yieldCurveSymbol = AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
-
-            // Historical data
-            var history = History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            return;
+        }
+        
+        // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
+        if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
+        {
+            return;
+        }
+        
+        // Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
+        if (Time - _lastInversion &lt; TimeSpan.FromDays(365))
+        {
+            return;
+        }
+        
+        // Normally, 10y yield should be greater than 2y yield due to default risk accumulation
+        // But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
+        // if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
+        if (!Portfolio.Invested &amp;&amp; rates.TwoYear &gt; rates.TenYear)
+        {
+            Debug($"{Time} - Yield curve inversion! Shorting the market for two years");
+            SetHoldings(_spySymbol, -0.5); 
+                _lastInversion = Time;
+            return;
         }
         
         
-        public override void OnData(Slice slice)
+        // If two years have passed, liquidate our position in SPY assuming the market starts resilience
+        if (Time - _lastInversion &gt;= TimeSpan.FromDays(365 * 2))
         {
-            // Trade only based on updated yield curve data
-            if (!slice.TryGetValue(_yieldCurveSymbol, out var rates))
-            {
-                return;
-            }
-            
-            // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
-            if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
-            {
-                return;
-            }
-            
-            // Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
-            if (Time - _lastInversion &lt; TimeSpan.FromDays(365))
-            {
-                return;
-            }
-            
-            // Normally, 10y yield should be greater than 2y yield due to default risk accumulation
-            // But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
-            // if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
-            if (!Portfolio.Invested &amp;&amp; rates.TwoYear &gt; rates.TenYear)
-            {
-                Debug($"{Time} - Yield curve inversion! Shorting the market for two years");
-                SetHoldings(_spySymbol, -0.5); 
-                 _lastInversion = Time;
-                return;
-            }
-            
-            
-            // If two years have passed, liquidate our position in SPY assuming the market starts resilience
-            if (Time - _lastInversion &gt;= TimeSpan.FromDays(365 * 2))
-            {
-                Liquidate(_spySymbol);
-            }
+            Liquidate(_spySymbol);
         }
     }
 }</pre>
@@ -186,86 +181,81 @@ class USTreasuryAlphaModel(AlphaModel):
         for security in changes.added_securities:
             self.spy_symbol = security.symbol
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class USTreasuryYieldCurveDataAlgorithm : QCAlgorithm
 {
-    public class USTreasuryYieldCurveDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2000, 3, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
+        SetStartDate(2000, 3, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
 
-            UniverseSettings.Resolution = Resolution.Hour;
-            // Universe only have SPY as the market representative for trading
-            var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
-            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
-            // Custom alpha model that emit insight according to US Treasury data
-            AddAlpha(new USTreasuryAlphaModel(this));
-            // Use insight weighting PCM to limit the size of investment, reduce the fluctuation of the portfolio value
-            SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel((time) =&gt; None));
-        }
+        UniverseSettings.Resolution = Resolution.Hour;
+        // Universe only have SPY as the market representative for trading
+        var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        // Custom alpha model that emit insight according to US Treasury data
+        AddAlpha(new USTreasuryAlphaModel(this));
+        // Use insight weighting PCM to limit the size of investment, reduce the fluctuation of the portfolio value
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel((time) =&gt; None));
     }
+}
+
+public class USTreasuryAlphaModel : AlphaModel
+{
+    private Symbol? _spySymbol = None;
+    private Symbol _yieldCurveSymbol;
+    private DateTime _lastInversion = DateTime.MinValue;
     
-    public class USTreasuryAlphaModel : AlphaModel
+    public USTreasuryAlphaModel(QCAlgorithm algorithm)
     {
-        private Symbol? _spySymbol = None;
-        private Symbol _yieldCurveSymbol;
-        private DateTime _lastInversion = DateTime.MinValue;
-        
-        public USTreasuryAlphaModel(QCAlgorithm algorithm)
+        // Requesting yield curve data for trade signal generation (inversion)
+        _yieldCurveSymbol = algorithm.AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
+
+        // Historical data
+        var history = algorithm.History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 60, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request");
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        // Trade only based on updated yield curve data
+        if (!slice.TryGetValue(_yieldCurveSymbol, out var rates) || _spySymbol == None)
         {
-            // Requesting yield curve data for trade signal generation (inversion)
-            _yieldCurveSymbol = algorithm.AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
-
-            // Historical data
-            var history = algorithm.History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
-        }
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            var insights = new List&lt;Insight&gt;();
-
-            // Trade only based on updated yield curve data
-            if (!slice.TryGetValue(_yieldCurveSymbol, out var rates) || _spySymbol == None)
-            {
-                return insights;
-            }
-            
-            // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
-            if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
-            {
-                return insights;
-            }
-            
-            // Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
-            if (slice.Time - _lastInversion &lt; TimeSpan.FromDays(365))
-            {
-                return insights;
-            }
-            
-            // Normally, 10y yield should be greater than 2y yield due to default risk accumulation
-            // But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
-            // if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
-            if (!algorithm.Portfolio.Invested &amp;&amp; rates.TwoYear &gt; rates.TenYear)
-            {
-                algorithm.Debug($"{slice.Time} - Yield curve inversion! Shorting the market for two years");
-                _lastInversion = slice.Time;
-                insights.Add(Insight.Price(_spySymbol, slice.Time + TimeSpan.FromDays(2*365), InsightDirection.Down, None, None, None, 0.5));
-            }
-            
             return insights;
         }
-
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        
+        // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
+        if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
         {
-            foreach (var security in changes.AddedSecurities)
-            {
-                _spySymbol = security.Symbol;
-            }
+            return insights;
+        }
+        
+        // Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
+        if (slice.Time - _lastInversion &lt; TimeSpan.FromDays(365))
+        {
+            return insights;
+        }
+        
+        // Normally, 10y yield should be greater than 2y yield due to default risk accumulation
+        // But if an inversion occurs, it means the market expects a recession in short term such that the near-expiry bond is more likely to default
+        // if there is a yield curve inversion after not having one for a year, short sell SPY for two years for the expected down market
+        if (!algorithm.Portfolio.Invested &amp;&amp; rates.TwoYear &gt; rates.TenYear)
+        {
+            algorithm.Debug($"{slice.Time} - Yield curve inversion! Shorting the market for two years");
+            _lastInversion = slice.Time;
+            insights.Add(Insight.Price(_spySymbol, slice.Time + TimeSpan.FromDays(2*365), InsightDirection.Down, None, None, None, 0.5));
+        }
+        
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _spySymbol = security.Symbol;
         }
     }
 }</pre>

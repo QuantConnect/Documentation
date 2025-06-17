@@ -71,94 +71,89 @@ class ETFConstituentUniverseAlgorithm(QCAlgorithm):
             # Historical data
             history = self.history(security.symbol, 7, Resolution.DAILY)
             self.debug(f'We got {len(history)} from our history request for {security.symbol}')</pre>
-<pre class="csharp">using QuantConnect.DataSource;
+<pre class="csharp">public class ETFConstituentUniverseAlgorithm : QCAlgorithm
+{ 
+    private Symbol _spy;
+    private Universe _universe;
+    private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+    
+    public override void Initialize()
+    {
+        SetStartDate(2016, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Resolution = Resolution.Minute;
 
-namespace QuantConnect
-{
-    public class ETFConstituentUniverseAlgorithm : QCAlgorithm
-    { 
-        private Symbol _spy;
-        private Universe _universe;
-        private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+        // Add universe selection on SPY's constituents to select only from large cap stocks
+        // Save the universe to access its members for historical data call
+        _spy = AddEquity("SPY").Symbol;
+        _universe = AddUniverse(Universe.ETF(_spy, UniverseSettings, ETFConstituentsFilter));
         
-        public override void Initialize()
+        // Historical Universe data, so you can work on the selection longitudinally
+        var history = History(_universe, 30, Resolution.Daily);
+        foreach (var constituents in history)
         {
-            SetStartDate(2016, 1, 1);
-            SetEndDate(2021, 1, 1);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = True;
-            UniverseSettings.Resolution = Resolution.Minute;
-
-            // Add universe selection on SPY's constituents to select only from large cap stocks
-            // Save the universe to access its members for historical data call
-            _spy = AddEquity("SPY").Symbol;
-            _universe = AddUniverse(Universe.ETF(_spy, UniverseSettings, ETFConstituentsFilter));
-            
-            // Historical Universe data, so you can work on the selection longitudinally
-            var history = History(_universe, 30, Resolution.Daily);
-            foreach (var constituents in history)
+            foreach (ETFConstituentUniverse constituent in constituents)
             {
-                foreach (ETFConstituentUniverse constituent in constituents)
+                Debug($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
+            }
+        }
+
+        // Rebalance daily using scheduled event since selection is on daily basis
+        Schedule.On(
+            DateRules.EveryDay(_spy),
+            TimeRules.AfterMarketOpen(_spy, 1),
+            Rebalance);
+    }
+    
+    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    {
+        // The top 10 weighted securities are considered better active selections
+        // Save the weights for position sizing
+        _weightBySymbol = constituents.OrderByDescending(c =&gt; c.Weight).Take(10)
+            .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight ?? 0m);
+
+        return _weightBySymbol.Keys;
+    }
+    
+    private void Rebalance()
+    {
+        var spyWeight = _weightBySymbol.Values.Sum();
+
+        // Liquidate the ones not in top 10 weights
+        if (spyWeight &gt; 0)
+        {
+            foreach(var symbol in Portfolio.Keys)
+            {
+                if (!_weightBySymbol.ContainsKey(symbol))
                 {
-                    Debug($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
+                    Liquidate(symbol);
                 }
             }
 
-            // Rebalance daily using scheduled event since selection is on daily basis
-            Schedule.On(
-                DateRules.EveryDay(_spy),
-                TimeRules.AfterMarketOpen(_spy, 1),
-                Rebalance);
-        }
-        
-        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+        // Create a long-short portfolio to earn excess return of the top 10 weighted stocks from SPY
+        foreach(var kvp in _weightBySymbol)
         {
-            // The top 10 weighted securities are considered better active selections
-            // Save the weights for position sizing
-            _weightBySymbol = constituents.OrderByDescending(c =&gt; c.Weight).Take(10)
-                .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight ?? 0m);
-
-            return _weightBySymbol.Keys;
+            SetHoldings(kvp.Key, 0.5m * kvp.Value / spyWeight);
         }
-        
-        private void Rebalance()
-        {
-            var spyWeight = _weightBySymbol.Values.Sum();
-
-            // Liquidate the ones not in top 10 weights
-            if (spyWeight &gt; 0)
-            {
-                foreach(var symbol in Portfolio.Keys)
-                {
-                	if (!_weightBySymbol.ContainsKey(symbol))
-                	{
-                		Liquidate(symbol);
-                	}
-                }
-
-	        // Create a long-short portfolio to earn excess return of the top 10 weighted stocks from SPY
-	        foreach(var kvp in _weightBySymbol)
-	        {
-	            SetHoldings(kvp.Key, 0.5m * kvp.Value / spyWeight);
-	        }
-	        SetHoldings(_spy, -0.5m);
-            }
+        SetHoldings(_spy, -0.5m);
         }
-        
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+    }
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Liquidate the ones not in top 10 weights
+        foreach (var security in changes.RemovedSecurities.Where(x =&gt; x.Invested))
         {
-            // Liquidate the ones not in top 10 weights
-            foreach (var security in changes.RemovedSecurities.Where(x =&gt; x.Invested))
-            {
-                 Liquidate(security.Symbol, "Removed From Universe");
-            }
+                Liquidate(security.Symbol, "Removed From Universe");
+        }
 
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = History(security.Symbol, 7, Resolution.Daily);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-            }
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Historical data
+            var history = History(security.Symbol, 7, Resolution.Daily);
+            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
 }</pre>
@@ -247,107 +242,102 @@ class ETFConstituentsAlphaModel(AlphaModel):
                 history = algorithm.history(security.symbol, 7, Resolution.DAILY)
                 algorithm.debug(f'We got {len(history)} from our history request for {security.symbol}')
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
+<pre class="csharp">public class ETFConstituentUniverseFrameworkAlgorithm : QCAlgorithm
+{ 
+    public Dictionary&lt;Symbol, decimal&gt; WeightBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+    
+    public override void Initialize()
+    {
+        SetStartDate(2016, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Resolution = Resolution.Minute;
 
-namespace QuantConnect
-{
-    public class ETFConstituentUniverseFrameworkAlgorithm : QCAlgorithm
-    { 
-        public Dictionary&lt;Symbol, decimal&gt; WeightBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
-    	
-        public override void Initialize()
-        {
-            SetStartDate(2016, 1, 1);
-            SetEndDate(2021, 1, 1);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = True;
-            UniverseSettings.Resolution = Resolution.Minute;
-
-            // Add universe selection on SPY's constituents to select only from large cap stocks
-            // Save the universe to access its members for historical data call
-            var spy = AddEquity("SPY").Symbol;
-            AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(spy, UniverseSettings, ETFConstituentsFilter));
-            
-            // Add alpha model that set normalized weight as investment insight
-            AddAlpha(new ETFConstituentsAlphaModel(this, spy));
-            
-            // Set up portfolio construction model that invest by the insight weights
-            var pcm = new InsightWeightingPortfolioConstructionModel();
-            // Avoid excessive rebalance on insight changes
-            pcm.RebalanceOnInsightChanges = False;
-            SetPortfolioConstruction(pcm);
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+        // Add universe selection on SPY's constituents to select only from large cap stocks
+        // Save the universe to access its members for historical data call
+        var spy = AddEquity("SPY").Symbol;
+        AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(spy, UniverseSettings, ETFConstituentsFilter));
         
-        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
-        {
-            // The top 10 weighted securities are considered better active selections
-            // Save the weights for position sizing
-            WeightBySymbol = constituents.OrderByDescending(c =&gt; c.Weight).Take(10)
-                .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight ?? 0m);
-
-            return WeightBySymbol.Keys;
-        }
+        // Add alpha model that set normalized weight as investment insight
+        AddAlpha(new ETFConstituentsAlphaModel(this, spy));
+        
+        // Set up portfolio construction model that invest by the insight weights
+        var pcm = new InsightWeightingPortfolioConstructionModel();
+        // Avoid excessive rebalance on insight changes
+        pcm.RebalanceOnInsightChanges = False;
+        SetPortfolioConstruction(pcm);
+        
+        AddRiskManagement(new NullRiskManagementModel());
+        
+        SetExecution(new ImmediateExecutionModel());
     }
     
-    public class ETFConstituentsAlphaModel : AlphaModel
+    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
     {
-    	private int _day = -1;
-    	private Symbol _etf;
-    	private ETFConstituentsDataFrameworkAlgorithm _algorithm;
-    	
-    	public ETFConstituentsAlphaModel(ETFConstituentsDataFrameworkAlgorithm algorithm, Symbol etf)
-    	{
-    		_etf = etf;
-    		_algorithm = algorithm;
-    	}
-    	
-    	public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-    	{
-            // Rebalance daily since selection is on daily basis
-            if (_day == algorithm.Time.Day)
-    	    {
-                return Enumerable.Empty&lt;Insight&gt;();
-    	    }
-    		
-    	    _day = algorithm.Time.Day;
-    		
-    	    var insights = new List&lt;Insight&gt;();
-    		
-            // Create a long-short portfolio to earn excess return of the top 10 weighted stocks from SPY
-    	    var etfWeight = (double)_algorithm.WeightBySymbol.Values.Sum();
-            if (etfWeight &gt; 0)
-            {
-                // Invest half the portfolio by normalized weights of the top 10 constituents
-                foreach(var kvp in _algorithm.WeightBySymbol)
-	        {
-	            insights.Add(Insight.Price(kvp.Key, Expiry.EndOfDay, InsightDirection.Up, weight: (double)kvp.Value/etfWeight * 0.5));
-	        }
+        // The top 10 weighted securities are considered better active selections
+        // Save the weights for position sizing
+        WeightBySymbol = constituents.OrderByDescending(c =&gt; c.Weight).Take(10)
+            .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight ?? 0m);
 
-                // Short the other half with SPY, looking to profit from the active selection
-                insights.Add(Insight.Price(_etf, Expiry.EndOfDay, InsightDirection.Down, weight: 0.5));
-            }
-            
-            return insights;
-    	}
-    	
-    	public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        return WeightBySymbol.Keys;
+    }
+}
+
+public class ETFConstituentsAlphaModel : AlphaModel
+{
+    private int _day = -1;
+    private Symbol _etf;
+    private ETFConstituentsDataFrameworkAlgorithm _algorithm;
+    
+    public ETFConstituentsAlphaModel(ETFConstituentsDataFrameworkAlgorithm algorithm, Symbol etf)
+    {
+        _etf = etf;
+        _algorithm = algorithm;
+    }
+    
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        // Rebalance daily since selection is on daily basis
+        if (_day == algorithm.Time.Day)
         {
-            // Liquidate the ones not in top 10 weights
-            foreach (var security in changes.RemovedSecurities.Where(x =&gt; x.Invested))
-            {
-                algorithm.Liquidate(security.Symbol, "Removed From Universe");
-            }
- 
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = algorithm.History(security.Symbol, 7, Resolution.Daily);
-                algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-            }
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+        
+        _day = algorithm.Time.Day;
+        
+        var insights = new List&lt;Insight&gt;();
+        
+        // Create a long-short portfolio to earn excess return of the top 10 weighted stocks from SPY
+        var etfWeight = (double)_algorithm.WeightBySymbol.Values.Sum();
+        if (etfWeight &gt; 0)
+        {
+            // Invest half the portfolio by normalized weights of the top 10 constituents
+            foreach(var kvp in _algorithm.WeightBySymbol)
+        {
+            insights.Add(Insight.Price(kvp.Key, Expiry.EndOfDay, InsightDirection.Up, weight: (double)kvp.Value/etfWeight * 0.5));
+        }
+
+            // Short the other half with SPY, looking to profit from the active selection
+            insights.Add(Insight.Price(_etf, Expiry.EndOfDay, InsightDirection.Down, weight: 0.5));
+        }
+        
+        return insights;
+    }
+    
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        // Liquidate the ones not in top 10 weights
+        foreach (var security in changes.RemovedSecurities.Where(x =&gt; x.Invested))
+        {
+            algorithm.Liquidate(security.Symbol, "Removed From Universe");
+        }
+
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Historical data
+            var history = algorithm.History(security.Symbol, 7, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
 }</pre>

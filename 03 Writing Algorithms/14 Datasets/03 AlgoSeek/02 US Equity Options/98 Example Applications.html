@@ -51,62 +51,57 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
             # Historical data
             history = self.history(security.symbol, 10, Resolution.MINUTE)
             self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
 {
-    public class USEquityOptionsDataAlgorithm : QCAlgorithm
+    private Symbol _underlying;
+    private Symbol _optionSymbol;
+    private OptionContract? _contract = None;
+    
+    public override void Initialize()
     {
-        private Symbol _underlying;
-        private Symbol _optionSymbol;
-        private OptionContract? _contract = None;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2020, 8, 1);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = True;
-            // Requesting data
-            _underlying = AddEquity("GOOG").Symbol;
-            var option = AddOption("GOOG");
-            _optionSymbol = option.Symbol;
-            // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
-            // -2/+2 strike buffer is given for small price change
-            option.SetFilter((u) =&gt; u.IncludeWeeklys().CallsOnly().Strikes(-2, +2).Expiration(0, 7));
-        }
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2020, 8, 1);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = True;
+        // Requesting data
+        _underlying = AddEquity("GOOG").Symbol;
+        var option = AddOption("GOOG");
+        _optionSymbol = option.Symbol;
+        // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
+        // -2/+2 strike buffer is given for small price change
+        option.SetFilter((u) =&gt; u.IncludeWeeklys().CallsOnly().Strikes(-2, +2).Expiration(0, 7));
+    }
 
-        public override void OnData(Slice slice)
+    public override void OnData(Slice slice)
+    {
+        // Close the underlying position if the option contract is exercised
+        if (Portfolio[_underlying].Invested)
         {
-            // Close the underlying position if the option contract is exercised
-            if (Portfolio[_underlying].Invested)
-            {
-                Liquidate(_underlying);
-            }
-            
-            // Select with the lastest option chain data only
-            if (_contract != None &amp;&amp; !Portfolio[_contract.Symbol].Invested &amp;&amp; 
-                slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
-            {
-                // Select the call contracts with the furthest expiration (week end)
-                var furthestExpiry = calls.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
-                var furthestExpiryCalls = calls.Where(x =&gt; x.Expiry == furthestExpiry).ToList();
-                
-                // Get the ATM call for speculate trade with low cost and limited loss
-                var contract = furthestExpiryCalls.OrderByDescending(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).Last();
-                _contract = contract;
-                MarketOrder(contract.Symbol, 1);
-            }
+            Liquidate(_underlying);
         }
         
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+        // Select with the lastest option chain data only
+        if (_contract != None &amp;&amp; !Portfolio[_contract.Symbol].Invested &amp;&amp; 
+            slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
         {
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = History(security.Symbol, 100, Resolution.Minute);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-            }
+            // Select the call contracts with the furthest expiration (week end)
+            var furthestExpiry = calls.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
+            var furthestExpiryCalls = calls.Where(x =&gt; x.Expiry == furthestExpiry).ToList();
+            
+            // Get the ATM call for speculate trade with low cost and limited loss
+            var contract = furthestExpiryCalls.OrderByDescending(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).Last();
+            _contract = contract;
+            MarketOrder(contract.Symbol, 1);
+        }
+    }
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Historical data
+            var history = History(security.Symbol, 100, Resolution.Minute);
+            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
 }</pre>
@@ -198,116 +193,111 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
             if algorithm.securities[insight.symbol].is_tradable:
                 targets.append(PortfolioTarget(insight.symbol, insight.direction))
         return targets</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp
-{
-    public class USEquityOptionsDataAlgorithm : QCAlgorithm
-    {        
-        public override void Initialize()
-        {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2020, 8, 1);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = True;
-            // Requesting data
-            SetUniverseSelection(new EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel());
-            
-            SetAlpha(new ConstantOptionsAlphaModel());
-            
-            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
-        }
-    }   
-        
-    class EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel : OptionUniverseSelectionModel
+<pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
+{        
+    public override void Initialize()
     {
-        // Daily update with the SelectOptionChainSymbols function
-        public EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel()
-                : base(TimeSpan.FromDays(1), SelectOptionChainSymbols) {}
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2020, 8, 1);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = True;
+        // Requesting data
+        SetUniverseSelection(new EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel());
         
-        private static IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
-        {
-            // Select only GOOG options as our focus
-            return new[] {QuantConnect.Symbol.Create("GOOG", SecurityType.Option, Market.USA)};
-        }
-
-        protected override OptionFilterUniverse Filter(OptionFilterUniverse filter)
-        {
-            // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
-            // -2/+2 strike buffer is given for small price change
-            return filter
-                .Strikes(-1, -1)
-                .Expiration(0, 7)
-                .WeeklysOnly()
-                .CallsOnly();
-        }
+        SetAlpha(new ConstantOptionsAlphaModel());
+        
+        SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
     }
+}   
+    
+class EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel : OptionUniverseSelectionModel
+{
+    // Daily update with the SelectOptionChainSymbols function
+    public EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel()
+            : base(TimeSpan.FromDays(1), SelectOptionChainSymbols) {}
+    
+    private static IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
+    {
+        // Select only GOOG options as our focus
+        return new[] {QuantConnect.Symbol.Create("GOOG", SecurityType.Option, Market.USA)};
+    }
+
+    protected override OptionFilterUniverse Filter(OptionFilterUniverse filter)
+    {
+        // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
+        // -2/+2 strike buffer is given for small price change
+        return filter
+            .Strikes(-1, -1)
+            .Expiration(0, 7)
+            .WeeklysOnly()
+            .CallsOnly();
+    }
+}
+    
+class ConstantOptionsAlphaModel : AlphaModel
+{ 
+    private Symbol? _underlying = None;
+    private OptionContract? _contract = None;
+    
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
         
-    class ConstantOptionsAlphaModel : AlphaModel
-    { 
-        private Symbol? _underlying = None;
-        private OptionContract? _contract = None;
-        
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        // Liquidate the underlying if the option is being exercised/assigned
+        if (algorithm.Portfolio[_underlying].Invested)
         {
-            var insights = new List&lt;Insight&gt;();
+            insights.Add(Insight.Price(_underlying, TimeSpan.FromDays(7), InsightDirection.Flat));
+        }
             
-            // Liquidate the underlying if the option is being exercised/assigned
-            if (algorithm.Portfolio[_underlying].Invested)
-            {
-                insights.Add(Insight.Price(_underlying, TimeSpan.FromDays(7), InsightDirection.Flat));
-            }
-                
-            if (_contract != None &amp;&amp; algorithm.Portfolio[_contract.Symbol].Invested)
-            {
-                return insights;
-            }
-            
-            // Get the ATM call for speculate trade with low cost and limited loss that expires at week end
-            foreach (var kvp in slice.OptionChains)
-            {
-                var chain = kvp.Value;
-                var expiry = chain.Max(x =&gt; x.Expiry);
-                _contract = chain.Where(x =&gt; x.Expiry == expiry)
-                    .OrderBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
-                    .First();
-                insights.Add(Insight.Price(_contract.Symbol, _contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Up));
-            }    
+        if (_contract != None &amp;&amp; algorithm.Portfolio[_contract.Symbol].Invested)
+        {
             return insights;
         }
-    
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        
+        // Get the ATM call for speculate trade with low cost and limited loss that expires at week end
+        foreach (var kvp in slice.OptionChains)
         {
-            foreach (var security in changes.AddedSecurities)
+            var chain = kvp.Value;
+            var expiry = chain.Max(x =&gt; x.Expiry);
+            _contract = chain.Where(x =&gt; x.Expiry == expiry)
+                .OrderBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
+                .First();
+            insights.Add(Insight.Price(_contract.Symbol, _contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Up));
+        }    
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            if (security.Type == SecurityType.Equity)
             {
-                if (security.Type == SecurityType.Equity)
-                {
-                    _underlying = security.Symbol;
-                }
-                else {
-                    // Historical data
-                    var history = algorithm.History(security.Symbol, 100, Resolution.Minute);
-                    algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");    
-                }
+                _underlying = security.Symbol;
+            }
+            else {
+                // Historical data
+                var history = algorithm.History(security.Symbol, 100, Resolution.Minute);
+                algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");    
             }
         }
     }
-        
-        
-    class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+}
+    
+    
+class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+{
+    public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
     {
-        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        var targets = new List&lt;PortfolioTarget&gt;();
+        foreach (var insight in insights)
         {
-            var targets = new List&lt;PortfolioTarget&gt;();
-            foreach (var insight in insights)
+            if (algorithm.Securities[insight.Symbol].IsTradable)
             {
-                if (algorithm.Securities[insight.Symbol].IsTradable)
-                {
-                    targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
-                }
+                targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
             }
-            return targets;
         }
+        return targets;
     }
 }</pre>
 </div>

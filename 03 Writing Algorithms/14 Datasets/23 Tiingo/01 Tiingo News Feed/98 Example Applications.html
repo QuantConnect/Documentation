@@ -53,69 +53,64 @@ class TiingoNewsDataAlgorithm(QCAlgorithm):
         if slice.contains_key(self.aapl) and self.current_holdings != self.target_holdings:
             self.set_holdings(self.aapl, self.target_holdings)
             self.current_holdings = self.target_holdings</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class TiingoNewsDataAlgorithm : QCAlgorithm
 {
-    public class TiingoNewsDataAlgorithm : QCAlgorithm
+    private Symbol _aapl;
+    private Symbol _tiingoSymbol;
+    private int _currentHoldings = 0;
+    private int _targetHoldings = 0;
+    // Custom word-score map to assign score for each word in article
+    private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
+        {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
+        {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
+    };
+    
+    public override void Initialize()
     {
-        private Symbol _aapl;
-        private Symbol _tiingoSymbol;
-        private int _currentHoldings = 0;
-        private int _targetHoldings = 0;
-        // Custom word-score map to assign score for each word in article
-        private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
-            {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
-            {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
-        };
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
         
-        public override void Initialize()
+        // Requesting Tiingo news data to obtain the updated news articles to calculate the sentiment score
+        _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+        _tiingoSymbol = AddData&lt;TiingoNews&gt;(_aapl).Symbol;
+        
+        // Historical data
+        var history = History&lt;TiingoNews&gt;(_tiingoSymbol, 14, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        if (slice.ContainsKey(_tiingoSymbol))
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-            
-            // Requesting Tiingo news data to obtain the updated news articles to calculate the sentiment score
-            _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-            _tiingoSymbol = AddData&lt;TiingoNews&gt;(_aapl).Symbol;
-            
-            // Historical data
-            var history = History&lt;TiingoNews&gt;(_tiingoSymbol, 14, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            // Assign a sentiment score to the news article
+            var titleWords = slice[_tiingoSymbol].Description.ToLower();
+            var score = 0;
+            foreach (KeyValuePair&lt;string, int&gt; entry in _wordScores)
+            {
+                if (titleWords.Contains(entry.Key))
+                {
+                    score += entry.Value;
+                }
+            }
+
+            // Buy if aggregated sentiment score shows positive sentiment, sell vice versa
+            if (score &gt; 0)
+            {
+                _targetHoldings = 1;
+            }
+            else if (score &lt; 0)
+            {
+                _targetHoldings = -1;
+            }
         }
         
-        public override void OnData(Slice slice)
+        // Buy or short sell if the sentiment has changed from our current holdings
+        if (slice.ContainsKey(_aapl) &amp;&amp; _currentHoldings != _targetHoldings)
         {
-            if (slice.ContainsKey(_tiingoSymbol))
-            {
-                // Assign a sentiment score to the news article
-                var titleWords = slice[_tiingoSymbol].Description.ToLower();
-                var score = 0;
-                foreach (KeyValuePair&lt;string, int&gt; entry in _wordScores)
-                {
-                    if (titleWords.Contains(entry.Key))
-                    {
-                        score += entry.Value;
-                    }
-                }
-
-                // Buy if aggregated sentiment score shows positive sentiment, sell vice versa
-                if (score &gt; 0)
-                {
-                    _targetHoldings = 1;
-                }
-                else if (score &lt; 0)
-                {
-                    _targetHoldings = -1;
-                }
-            }
-            
-            // Buy or short sell if the sentiment has changed from our current holdings
-            if (slice.ContainsKey(_aapl) &amp;&amp; _currentHoldings != _targetHoldings)
-            {
-                SetHoldings(_aapl, _targetHoldings);
-                _currentHoldings = _targetHoldings;
-            }
+            SetHoldings(_aapl, _targetHoldings);
+            _currentHoldings = _targetHoldings;
         }
     }
 }</pre>
@@ -182,89 +177,84 @@ class TiingoNewsAlphaModel(AlphaModel):
             # Historical data
             history = algorithm.history(self.tiingo_symbol, 14, Resolution.DAILY)
             algorithm.debug(f"We got {len(history)} items from our history request")</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class TiingoNewsDataAlgorithm : QCAlgorithm
 {
-    public class TiingoNewsDataAlgorithm : QCAlgorithm
+
+    public override void Initialize()
     {
-
-        public override void Initialize()
-        {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-            
-            var symbols = new[] {QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)};
-            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
-            AddAlpha(new TiingoNewsAlphaModel());
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        }
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
         
-        public class TiingoNewsAlphaModel : AlphaModel
-        {
-            private Symbol _aapl;
-            private Symbol _tiingoSymbol;
-            private int _currentHoldings = 0;
-            private int _targetHoldings = 0;
-            // Custom word-score map to assign score for each word in article
-            private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
-                {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
-                {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
-            };
+        var symbols = new[] {QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)};
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        AddAlpha(new TiingoNewsAlphaModel());
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
     
-            public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-            {
-                var insights = new List&lt;Insight&gt;();
-                
-                if (slice.ContainsKey(_tiingoSymbol))
-                {
-                    // Assign a sentiment score to the news article by the word-score map
-                    var titleWords = slice[_tiingoSymbol].Description.ToLower();
-                    var score = 0;
-                    foreach (KeyValuePair&lt;string, int&gt; entry in _wordScores)
-                    {
-                        if (titleWords.Contains(entry.Key))
-                        {
-                            score += entry.Value;
-                        }
-                    }
+    public class TiingoNewsAlphaModel : AlphaModel
+    {
+        private Symbol _aapl;
+        private Symbol _tiingoSymbol;
+        private int _currentHoldings = 0;
+        private int _targetHoldings = 0;
+        // Custom word-score map to assign score for each word in article
+        private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
+            {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
+            {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
+        };
 
-                    // Buy if aggregated sentiment score shows positive sentiment, sell vice versa
-                    if (score &gt; 0)
-                    {
-                        _targetHoldings = 1;
-                    }
-                    else if (score &lt; 0)
-                    {
-                        _targetHoldings = -1;
-                    }
-                }
-                
-                // Buy or short sell if the sentiment has changed from our current holdings
-                if (slice.ContainsKey(_aapl) &amp;&amp; _currentHoldings != _targetHoldings)
-                {
-                    _currentHoldings = _targetHoldings;
-                    var direction = _targetHoldings == 1 ? InsightDirection.Up : InsightDirection.Down;
-                    insights.Add(Insight.Price(_aapl, TimeSpan.FromDays(14), direction));
-                }
-                
-                return insights;
-            }
-    
-            public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-            {
-                foreach (var security in changes.AddedSecurities)
-                {
-                    _aapl = security.Symbol;
-                    
-                    // Requesting Tiingo news data to obtain the updated news articles to calculate the sentiment score
-                    _tiingoSymbol = algorithm.AddData&lt;TiingoNews&gt;(_aapl).Symbol;
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
             
-                    // Historical data
-                    var history = algorithm.History&lt;TiingoNews&gt;(_tiingoSymbol, 14, Resolution.Daily);
-                    algorithm.Debug($"We got {history.Count()} items from our history request");
+            if (slice.ContainsKey(_tiingoSymbol))
+            {
+                // Assign a sentiment score to the news article by the word-score map
+                var titleWords = slice[_tiingoSymbol].Description.ToLower();
+                var score = 0;
+                foreach (KeyValuePair&lt;string, int&gt; entry in _wordScores)
+                {
+                    if (titleWords.Contains(entry.Key))
+                    {
+                        score += entry.Value;
+                    }
                 }
+
+                // Buy if aggregated sentiment score shows positive sentiment, sell vice versa
+                if (score &gt; 0)
+                {
+                    _targetHoldings = 1;
+                }
+                else if (score &lt; 0)
+                {
+                    _targetHoldings = -1;
+                }
+            }
+            
+            // Buy or short sell if the sentiment has changed from our current holdings
+            if (slice.ContainsKey(_aapl) &amp;&amp; _currentHoldings != _targetHoldings)
+            {
+                _currentHoldings = _targetHoldings;
+                var direction = _targetHoldings == 1 ? InsightDirection.Up : InsightDirection.Down;
+                insights.Add(Insight.Price(_aapl, TimeSpan.FromDays(14), direction));
+            }
+            
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                _aapl = security.Symbol;
+                
+                // Requesting Tiingo news data to obtain the updated news articles to calculate the sentiment score
+                _tiingoSymbol = algorithm.AddData&lt;TiingoNews&gt;(_aapl).Symbol;
+        
+                // Historical data
+                var history = algorithm.History&lt;TiingoNews&gt;(_tiingoSymbol, 14, Resolution.Daily);
+                algorithm.Debug($"We got {history.Count()} items from our history request");
             }
         }
     }

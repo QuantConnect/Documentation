@@ -50,66 +50,61 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         return [d.symbol for d in alt_coarse \
                     if d.mentions &gt; 10 \
                     and d.rank &lt; 100]</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class QuiverWallStreetBetsDataAlgorithm : QCAlgorithm
 {
-    public class QuiverWallStreetBetsDataAlgorithm : QCAlgorithm
+    private Universe _universe;
+    public override void Initialize()
     {
-        private Universe _universe;
-        public override void Initialize()
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter using wall street bet insights
+        _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;
         {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Filter using wall street bet insights
-            _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;
+            foreach (var datum in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;())
             {
-                foreach (var datum in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;())
-                {
-                    Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
-                }
+                Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
+            }
 
-                // Select the ones with popularity (mentions) of better-than-others performance (rank)
-                return from d in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;()
-                       where d.Mentions &gt; 10 &amp;&amp; d.Rank &lt; 100
-                       select d.Symbol;
-            });
-        }
+            // Select the ones with popularity (mentions) of better-than-others performance (rank)
+            return from d in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;()
+                    where d.Mentions &gt; 10 &amp;&amp; d.Rank &lt; 100
+                    select d.Symbol;
+        });
+    }
 
-        public override void OnData(Slice slice)
+    public override void OnData(Slice slice)
+    {
+        var points = slice.Get&lt;QuiverWallStreetBets&gt;();
+        foreach (var point in points.Values)
         {
-            var points = slice.Get&lt;QuiverWallStreetBets&gt;();
-            foreach (var point in points.Values)
+            var symbol = point.Symbol.Underlying;
+            
+            // Buy if the stock was mentioned more than 5 times in the WallStreetBets daily discussion, which translate into high popularity of rise
+            if (point.Mentions &gt; 5 &amp;&amp; !Portfolio[symbol].IsLong)
             {
-                var symbol = point.Symbol.Underlying;
-                
-                // Buy if the stock was mentioned more than 5 times in the WallStreetBets daily discussion, which translate into high popularity of rise
-                if (point.Mentions &gt; 5 &amp;&amp; !Portfolio[symbol].IsLong)
-                {
-                    MarketOrder(symbol, 1);
-                }
-                // Otherwise, short sell
-                else if (point.Mentions &lt;= 5 &amp;&amp; !Portfolio[symbol].IsShort)
-                {
-                    MarketOrder(symbol, -1);
-                }
+                MarketOrder(symbol, 1);
+            }
+            // Otherwise, short sell
+            else if (point.Mentions &lt;= 5 &amp;&amp; !Portfolio[symbol].IsShort)
+            {
+                MarketOrder(symbol, -1);
             }
         }
+    }
 
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach(var added in changes.AddedSecurities)
         {
-            foreach(var added in changes.AddedSecurities)
-            {
-                // Requesting wall street bet data to obtain the trader's insights
-                var quiverWSBSymbol = AddData&lt;QuiverWallStreetBets&gt;(added.Symbol).Symbol;
+            // Requesting wall street bet data to obtain the trader's insights
+            var quiverWSBSymbol = AddData&lt;QuiverWallStreetBets&gt;(added.Symbol).Symbol;
 
-                // Historical data
-                var history = History&lt;QuiverWallStreetBets&gt;(quiverWSBSymbol, 60, Resolution.Daily);
-                Debug($"We got {history.Count()} items from our history request");
-            }
+            // Historical data
+            var history = History&lt;QuiverWallStreetBets&gt;(quiverWSBSymbol, 60, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
         }
     }
 }</pre>
@@ -203,130 +198,125 @@ class SymbolData:
     def dispose(self) -&gt; None:
         # Unsubscribe from the Quiver WallStreetBets feed for this security to release computationa resources
         self.algorithm.remove_security(self.quiver_wsb_symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class QuiverWallStreetBetsDataAlgorithm : QCAlgorithm
 {
-    public class QuiverWallStreetBetsDataAlgorithm : QCAlgorithm
+    private Universe _universe;
+    public override void Initialize()
     {
-        private Universe _universe;
-        public override void Initialize()
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter using wall street bet insights
+        _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;
         {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Filter using wall street bet insights
-            _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;
+            foreach (var datum in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;())
             {
-                foreach (var datum in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;())
-                {
-                    Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
-                }
+                Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
+            }
 
-                // Select the ones with popularity (mentions) of better-than-others performance (rank)
-                return from d in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;()
-                       where d.Mentions &gt; 10 &amp;&amp; d.Rank &gt; 10
-                       select d.Symbol;
-            });
+            // Select the ones with popularity (mentions) of better-than-others performance (rank)
+            return from d in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;()
+                    where d.Mentions &gt; 10 &amp;&amp; d.Rank &gt; 10
+                    select d.Symbol;
+        });
 
-            AddAlpha(new WallStreamBetsAlphaModel());
-            
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+        AddAlpha(new WallStreamBetsAlphaModel());
+        
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        
+        AddRiskManagement(new NullRiskManagementModel());
+        
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class WallStreamBetsAlphaModel : AlphaModel
+{
+    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+    private int _mentionsThreshold;
+    
+    public WallStreamBetsAlphaModel(int mentionsThreshold=5)
+    {
+        _mentionsThreshold = mentionsThreshold;
     }
 
-    public class WallStreamBetsAlphaModel : AlphaModel
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
-        private int _mentionsThreshold;
+        var insights = new List&lt;Insight&gt;();
         
-        public WallStreamBetsAlphaModel(int mentionsThreshold=5)
+        var points = slice.Get&lt;QuiverWallStreetBets&gt;();
+        foreach (var point in points.Values)
         {
-            _mentionsThreshold = mentionsThreshold;
+            // Buy if the stock was mentioned more than 5 times in the WallStreetBets daily discussion, which translate into high popularity of rise
+            // Otherwise short sell
+            var targetDirection = point.Mentions &gt; _mentionsThreshold ? InsightDirection.Up : InsightDirection.Down;
+            _symbolDataBySymbol[point.Symbol.Underlying].targetDirection = targetDirection;
         }
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        
+        foreach (var kvp in _symbolDataBySymbol)
         {
-            var insights = new List&lt;Insight&gt;();
+            var symbol = kvp.Key;
+            var symbolData = kvp.Value;
             
-            var points = slice.Get&lt;QuiverWallStreetBets&gt;();
-            foreach (var point in points.Values)
+            // Ensure we have security data for the current Slice to avoid stale fill
+            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
             {
-                // Buy if the stock was mentioned more than 5 times in the WallStreetBets daily discussion, which translate into high popularity of rise
-                // Otherwise short sell
-                var targetDirection = point.Mentions &gt; _mentionsThreshold ? InsightDirection.Up : InsightDirection.Down;
-                _symbolDataBySymbol[point.Symbol.Underlying].targetDirection = targetDirection;
+                continue;
             }
             
-            foreach (var kvp in _symbolDataBySymbol)
+            if (symbolData.targetDirection != None)
             {
-                var symbol = kvp.Key;
-                var symbolData = kvp.Value;
-                
-                // Ensure we have security data for the current Slice to avoid stale fill
-                if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
-                {
-                    continue;
-                }
-                
-                if (symbolData.targetDirection != None)
-                {
-                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), (InsightDirection)symbolData.targetDirection));
-                    symbolData.targetDirection = None;
-                }
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), (InsightDirection)symbolData.targetDirection));
+                symbolData.targetDirection = None;
             }
-            return insights;
         }
+        return insights;
+    }
 
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
         {
-            foreach (var security in changes.AddedSecurities)
-            {
-                var symbol = security.Symbol;
-                _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
-            }
+            var symbol = security.Symbol;
+            _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
+        }
 
-            foreach (var security in changes.RemovedSecurities)
+        foreach (var security in changes.RemovedSecurities)
+        {
+            var symbol = security.Symbol;
+            if (_symbolDataBySymbol.ContainsKey(symbol))
             {
-                var symbol = security.Symbol;
-                if (_symbolDataBySymbol.ContainsKey(symbol))
-                {
-                    _symbolDataBySymbol[symbol].dispose();
-                    _symbolDataBySymbol.Remove(symbol);
-                }
+                _symbolDataBySymbol[symbol].dispose();
+                _symbolDataBySymbol.Remove(symbol);
             }
         }
+    }
+}
+
+public class SymbolData
+{
+    private Symbol _quiverWSBSymbol;
+    private QCAlgorithm _algorithm;
+    public InsightDirection? targetDirection = None;
+    
+    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+    {
+        _algorithm = algorithm;
+        
+        // Requesting wall street bet data to obtain the trader's insights
+        _quiverWSBSymbol = algorithm.AddData&lt;QuiverWallStreetBets&gt;(symbol).Symbol;
+        
+        // Historical data
+        var history = algorithm.History&lt;QuiverWallStreetBets&gt;(_quiverWSBSymbol, 60, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Quiver WallStreetBets data");
     }
     
-    public class SymbolData
+    public void dispose()
     {
-        private Symbol _quiverWSBSymbol;
-        private QCAlgorithm _algorithm;
-        public InsightDirection? targetDirection = None;
-        
-        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
-        {
-            _algorithm = algorithm;
-            
-            // Requesting wall street bet data to obtain the trader's insights
-            _quiverWSBSymbol = algorithm.AddData&lt;QuiverWallStreetBets&gt;(symbol).Symbol;
-            
-            // Historical data
-            var history = algorithm.History&lt;QuiverWallStreetBets&gt;(_quiverWSBSymbol, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Quiver WallStreetBets data");
-        }
-        
-        public void dispose()
-        {
-            // Unsubscribe from the Quiver WallStreetBets feed for this security to release computationa resources
-            _algorithm.RemoveSecurity(_quiverWSBSymbol);
-        }
+        // Unsubscribe from the Quiver WallStreetBets feed for this security to release computationa resources
+        _algorithm.RemoveSecurity(_quiverWSBSymbol);
     }
 }</pre>
 </div>

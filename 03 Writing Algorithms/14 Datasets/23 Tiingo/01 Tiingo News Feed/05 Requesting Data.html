@@ -9,21 +9,18 @@
 
         self.aapl = self.add_equity("AAPL", Resolution.MINUTE).symbol
         self.dataset_symbol = self.add_data(TiingoNews, self.aapl).symbol</pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class TiingoNewsDataAlgorithm : QCAlgorithm
 {
-    public class TiingoNewsDataAlgorithm : QCAlgorithm
+    private Symbol _symbol, _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol, _datasetSymbol;
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-
-            _symbol = AddEquity("AAPL", Resolution.Minute).Symbol;
-            _datasetSymbol = AddData&lt;TiingoNews&gt;(_symbol).Symbol;
-        }
+        _symbol = AddEquity("AAPL", Resolution.Minute).Symbol;
+        _datasetSymbol = AddData&lt;TiingoNews&gt;(_symbol).Symbol;
     }
 }</pre>
 </div>

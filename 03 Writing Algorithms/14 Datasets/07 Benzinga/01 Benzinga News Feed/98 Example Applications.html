@@ -51,63 +51,58 @@ class BenzingaNewsDataAlgorithm(QCAlgorithm):
         if self.current_holdings != self.target_holdings:
             self.set_holdings(self.aapl, self.target_holdings)
             self.current_holdings = self.target_holdings</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class BenzingaNewsDataAlgorithm : QCAlgorithm
 {
-    public class BenzingaNewsDataAlgorithm : QCAlgorithm
+    private Symbol _aapl;
+    private Symbol _benzingaSymbol;
+    private int _currentHoldings = 0;
+    private int _targetHoldings = 0;
+    //  A custom word-score map for calculating the total sentiment score
+    private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
+        {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
+        {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
+    };
+    
+    public override void Initialize()
     {
-        private Symbol _aapl;
-        private Symbol _benzingaSymbol;
-        private int _currentHoldings = 0;
-        private int _targetHoldings = 0;
-        //  A custom word-score map for calculating the total sentiment score
-        private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
-            {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
-            {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
-        };
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
         
-        public override void Initialize()
+        // Requesting data to obtain the updated news for sentiment score calculation
+        _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+        _benzingaSymbol = AddData&lt;BenzingaNews&gt;(_aapl).Symbol;
+        
+        // Historical data
+        var history = History&lt;BenzingaNews&gt;(_benzingaSymbol, 14, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        if (slice.ContainsKey(_benzingaSymbol))
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-            
-            // Requesting data to obtain the updated news for sentiment score calculation
-            _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-            _benzingaSymbol = AddData&lt;BenzingaNews&gt;(_aapl).Symbol;
-            
-            // Historical data
-            var history = History&lt;BenzingaNews&gt;(_benzingaSymbol, 14, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            // Assign a sentiment score to the news article by specific word appearance scoring
+            var contentWords = slice[_benzingaSymbol].Contents.ToLower();
+            var score = 0;
+            foreach (KeyValuePair&lt;string, int&gt; entry in _wordScores)
+            {
+                score += (Regex.Matches(contentWords, entry.Key).Count * entry.Value);
+            }
+            _targetHoldings = Convert.ToInt32(score &gt; 0);
         }
         
-        public override void OnData(Slice slice)
+        // Ensure we have AAPL data in the current Slice to avoid stale filling
+        if (!(slice.ContainsKey(_aapl) &amp;&amp; slice[_aapl] != None &amp;&amp; !slice[_aapl].IsFillForward))
         {
-            if (slice.ContainsKey(_benzingaSymbol))
-            {
-                // Assign a sentiment score to the news article by specific word appearance scoring
-                var contentWords = slice[_benzingaSymbol].Contents.ToLower();
-                var score = 0;
-                foreach (KeyValuePair&lt;string, int&gt; entry in _wordScores)
-                {
-                    score += (Regex.Matches(contentWords, entry.Key).Count * entry.Value);
-                }
-                _targetHoldings = Convert.ToInt32(score &gt; 0);
-            }
-            
-            // Ensure we have AAPL data in the current Slice to avoid stale filling
-            if (!(slice.ContainsKey(_aapl) &amp;&amp; slice[_aapl] != None &amp;&amp; !slice[_aapl].IsFillForward))
-            {
-                return;
-            }
-            
-            // Buy or sell if the sentiment has changed from our current holdings
-            if (_currentHoldings != _targetHoldings)
-            {
-                SetHoldings(_aapl, _targetHoldings);
-                _currentHoldings = _targetHoldings;
-            }
+            return;
+        }
+        
+        // Buy or sell if the sentiment has changed from our current holdings
+        if (_currentHoldings != _targetHoldings)
+        {
+            SetHoldings(_aapl, _targetHoldings);
+            _currentHoldings = _targetHoldings;
         }
     }
 }</pre>
@@ -196,126 +191,121 @@ class SymbolData:
     def dispose(self) -&gt; None:
         # Unsubscribe from Benzinga news feed for this security to release computational resources
         self.algorithm.remove_security(self.benzinga_symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class BenzingaNewsDataAlgorithm : QCAlgorithm
 {
-    public class BenzingaNewsDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-            
-            AddUniverseSelection(
-                new ManualUniverseSelectionModel(
-                    QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)
-            ));
-            
-            AddAlpha(new BenzingaAlphaModel());
-            
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
+        
+        AddUniverseSelection(
+            new ManualUniverseSelectionModel(
+                QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)
+        ));
+        
+        AddAlpha(new BenzingaAlphaModel());
+        
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        
+        AddRiskManagement(new NullRiskManagementModel());
+        
+        SetExecution(new ImmediateExecutionModel());
     }
-    
-    public class BenzingaAlphaModel : AlphaModel
-    {
-        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
-        // A custom word-score map for calculating the total sentiment score
-        private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
-            {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
-            {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
-        };
+}
 
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+public class BenzingaAlphaModel : AlphaModel
+{
+    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+    // A custom word-score map for calculating the total sentiment score
+    private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
+        {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
+        {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
+    };
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+        
+        foreach (var kvp in _symbolDataBySymbol)
         {
-            var insights = new List&lt;Insight&gt;();
+            var symbol = kvp.Key;
+            var symbolData = kvp.Value;
             
-            foreach (var kvp in _symbolDataBySymbol)
+            if (slice.ContainsKey(symbolData.benzingaSymbol))
             {
-                var symbol = kvp.Key;
-                var symbolData = kvp.Value;
-                
-                if (slice.ContainsKey(symbolData.benzingaSymbol))
+                // Assign a sentiment score to the news article by specific word appearance scoring
+                var contentWords = slice[symbolData.benzingaSymbol].Contents.ToLower();
+                var score = 0;
+                foreach (var entry in _wordScores)
                 {
-                    // Assign a sentiment score to the news article by specific word appearance scoring
-                    var contentWords = slice[symbolData.benzingaSymbol].Contents.ToLower();
-                    var score = 0;
-                    foreach (var entry in _wordScores)
-                    {
-                        score += (Regex.Matches(contentWords, entry.Key).Count * entry.Value);
-                    }
-                    symbolData.targetDirection = score &gt; 0 ? InsightDirection.Up : InsightDirection.Flat;
+                    score += (Regex.Matches(contentWords, entry.Key).Count * entry.Value);
                 }
-                
-                
-                // Ensure we have security data in the current Slice to avoid stale filling
-                if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None &amp;&amp; !slice[symbol].IsFillForward))
-                {
-                    continue;
-                }
-                
-                // Buy or sell if the sentiment has changed from our current holdings
-                if (symbolData.currentDirection != symbolData.targetDirection)
-                {
-                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(14), symbolData.targetDirection));
-                    symbolData.currentDirection = symbolData.targetDirection;
-                }
+                symbolData.targetDirection = score &gt; 0 ? InsightDirection.Up : InsightDirection.Flat;
             }
-            return insights;
+            
+            
+            // Ensure we have security data in the current Slice to avoid stale filling
+            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None &amp;&amp; !slice[symbol].IsFillForward))
+            {
+                continue;
+            }
+            
+            // Buy or sell if the sentiment has changed from our current holdings
+            if (symbolData.currentDirection != symbolData.targetDirection)
+            {
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(14), symbolData.targetDirection));
+                symbolData.currentDirection = symbolData.targetDirection;
+            }
+        }
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            var symbol = security.Symbol;
+            _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
         }
 
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        foreach (var security in changes.RemovedSecurities)
         {
-            foreach (var security in changes.AddedSecurities)
+            var symbol = security.Symbol;
+            if (_symbolDataBySymbol.ContainsKey(symbol))
             {
-                var symbol = security.Symbol;
-                _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
-            }
-
-            foreach (var security in changes.RemovedSecurities)
-            {
-                var symbol = security.Symbol;
-                if (_symbolDataBySymbol.ContainsKey(symbol))
-                {
-                    _symbolDataBySymbol[symbol].dispose();
-                    _symbolDataBySymbol.Remove(symbol);
-                }
+                _symbolDataBySymbol[symbol].dispose();
+                _symbolDataBySymbol.Remove(symbol);
             }
         }
     }
+}
+
+
+public class SymbolData
+{
+    private QCAlgorithm _algorithm;
+    public Symbol benzingaSymbol;
+    public InsightDirection currentDirection = InsightDirection.Flat;
+    public InsightDirection targetDirection = InsightDirection.Flat;
     
     
-    public class SymbolData
+    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
     {
-        private QCAlgorithm _algorithm;
-        public Symbol benzingaSymbol;
-        public InsightDirection currentDirection = InsightDirection.Flat;
-        public InsightDirection targetDirection = InsightDirection.Flat;
+        _algorithm = algorithm;
         
+        // Requesting data to obtain the updated news for sentiment score calculation
+        benzingaSymbol = algorithm.AddData&lt;BenzingaNews&gt;(symbol).Symbol;
         
-        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
-        {
-            _algorithm = algorithm;
-            
-            // Requesting data to obtain the updated news for sentiment score calculation
-            benzingaSymbol = algorithm.AddData&lt;BenzingaNews&gt;(symbol).Symbol;
-            
-            // Historical data
-            var history = algorithm.History&lt;BenzingaNews&gt;(benzingaSymbol, 14, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
-        }
-        
-        public void dispose()
-        {
-            // Unsubscribe from the Benzinga feed for this security to release computational resources
-            _algorithm.RemoveSecurity(benzingaSymbol);
-        }
+        // Historical data
+        var history = algorithm.History&lt;BenzingaNews&gt;(benzingaSymbol, 14, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request");
+    }
+    
+    public void dispose()
+    {
+        // Unsubscribe from the Benzinga feed for this security to release computational resources
+        _algorithm.RemoveSecurity(benzingaSymbol);
     }
 }</pre>
 </div>

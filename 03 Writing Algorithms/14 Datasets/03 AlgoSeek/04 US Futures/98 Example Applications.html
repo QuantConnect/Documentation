@@ -47,57 +47,52 @@ class USFuturesDataAlgorithm(QCAlgorithm):
             # Historical data
             history = self.history(security.symbol, 10, Resolution.MINUTE)
             self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
-<pre><code class="language-cs">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre><code class="language-cs">public class USFuturesDataAlgorithm : QCAlgorithm
 {
-    public class USFuturesDataAlgorithm : QCAlgorithm
+    private Future _gold, _microGold;
+    private decimal _goldMulitplier, _microGoldMulitplier;
+
+    public override void Initialize()
     {
-        private Future _gold, _microGold;
-        private decimal _goldMulitplier, _microGoldMulitplier;
+        SetCash(1000000);
+        // Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts
+        _gold = AddFuture(Futures.Metals.Gold,
+            extendedMarketHours: True,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        _microGold = AddFuture(Futures.Metals.MicroGold,
+            extendedMarketHours: True,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        // The contract multiplier is cached in the Security SymbolProperties property from the symbol properties database
+        _goldMulitplier = _gold.SymbolProperties.ContractMultiplier;
+        _microGoldMulitplier = _microGold.SymbolProperties.ContractMultiplier;
+    }
 
-        public override void Initialize()
+    public override void OnData(Slice slice)
+    {
+        // Make sure to calculate the order size by the most updated price data of both contracts
+        if (!Portfolio.Invested && slice.Bars.ContainsKey(_gold.Symbol) && slice.Bars.ContainsKey(_microGold.Symbol))
         {
-            SetCash(1000000);
-            // Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts
-            _gold = AddFuture(Futures.Metals.Gold,
-                extendedMarketHours: True,
-                dataMappingMode: DataMappingMode.OpenInterest,
-                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-                contractDepthOffset: 0);
-            _microGold = AddFuture(Futures.Metals.MicroGold,
-               extendedMarketHours: True,
-                dataMappingMode: DataMappingMode.OpenInterest,
-                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-                contractDepthOffset: 0);
-            // The contract multiplier is cached in the Security SymbolProperties property from the symbol properties database
-            _goldMulitplier = _gold.SymbolProperties.ContractMultiplier;
-            _microGoldMulitplier = _microGold.SymbolProperties.ContractMultiplier;
+            // Calculate the order size for $500k
+            // Get the quotient after dividing the contract multiplier since the order size must be whole number
+            var goldQuantity = Math.Floor(500000m / slice.Bars[_gold.Symbol].Close / _goldMulitplier);
+            var microGoldQuantity = Math.Floor(500000m / slice.Bars[_microGold.Symbol].Close / _microGoldMulitplier);
+
+            MarketOrder(_gold.Mapped, goldQuantity);
+            MarketOrder(_microGold.Mapped, microGoldQuantity);
         }
-
-        public override void OnData(Slice slice)
+    }
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
         {
-            // Make sure to calculate the order size by the most updated price data of both contracts
-            if (!Portfolio.Invested && slice.Bars.ContainsKey(_gold.Symbol) && slice.Bars.ContainsKey(_microGold.Symbol))
-            {
-                // Calculate the order size for $500k
-                // Get the quotient after dividing the contract multiplier since the order size must be whole number
-                var goldQuantity = Math.Floor(500000m / slice.Bars[_gold.Symbol].Close / _goldMulitplier);
-                var microGoldQuantity = Math.Floor(500000m / slice.Bars[_microGold.Symbol].Close / _microGoldMulitplier);
-
-                MarketOrder(_gold.Mapped, goldQuantity);
-                MarketOrder(_microGold.Mapped, microGoldQuantity);
-            }
-        }
-        
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = History(security.Symbol, 100, Resolution.Minute);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-            }
+            // Historical data
+            var history = History(security.Symbol, 100, Resolution.Minute);
+            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
 }</code></pre>
@@ -178,113 +173,108 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
                 # Single share only using integer portfolio target
                 targets.append(PortfolioTarget(insight.symbol, insight.direction))
         return targets</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class USFuturesDataAlgorithm : QCAlgorithm
+{        
+    public override void Initialize()
+    {
+        SetStartDate(2013, 12, 20);
+        SetEndDate(2014, 2, 20);
+        SetCash(1000000);
+        UniverseSettings.Asynchronous = True;
+        // Set up an universe selection model that selects the front month contract
+        SetUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
+        SetAlpha(new ConstantFuturesAlphaModel());
+        // A portfolio construction model that only order a single share per insight signal
+        SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+    }
+}
+    
+class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
 {
-    public class USFuturesDataAlgorithm : QCAlgorithm
-    {        
-        public override void Initialize()
-        {
-            SetStartDate(2013, 12, 20);
-            SetEndDate(2014, 2, 20);
-            SetCash(1000000);
-            UniverseSettings.Asynchronous = True;
-            // Set up an universe selection model that selects the front month contract
-            SetUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
-            SetAlpha(new ConstantFuturesAlphaModel());
-            // A portfolio construction model that only order a single share per insight signal
-            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
-        }
-    }
-        
-    class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
+    // Daily updating with select_future_chain_symbols function
+    public FrontMonthFutureUniverseSelectionModel()
+        : base(TimeSpan.FromDays(1), SelectFutureChainSymbols) {}
+
+    private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
     {
-        // Daily updating with select_future_chain_symbols function
-        public FrontMonthFutureUniverseSelectionModel()
-            : base(TimeSpan.FromDays(1), SelectFutureChainSymbols) {}
-
-        private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
-        {
-            //Select gold and micro gold contracts for the strategy need
-            return new List&lt;Symbol&gt; {
-                QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX),
-                QuantConnect.Symbol.Create(Futures.Metals.MicroGold, SecurityType.Future, Market.COMEX)
-            };
-        }
-
-        protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
-        {
-            // Filter only front month contract for liquidity and most informed information
-            return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
-        }
+        //Select gold and micro gold contracts for the strategy need
+        return new List&lt;Symbol&gt; {
+            QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX),
+            QuantConnect.Symbol.Create(Futures.Metals.MicroGold, SecurityType.Future, Market.COMEX)
+        };
     }
 
-
-    class ConstantFuturesAlphaModel : AlphaModel
+    protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
     {
-        // Long gold and short micro gold in this strategy
-        private Symbol 
-            _longSymbol = QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX), 
-            _shortSymbol = QuantConnect.Symbol.Create(Futures.Metals.MicroGold, SecurityType.Future, Market.COMEX);
-        
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        // Filter only front month contract for liquidity and most informed information
+        return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+    }
+}
+
+
+class ConstantFuturesAlphaModel : AlphaModel
+{
+    // Long gold and short micro gold in this strategy
+    private Symbol 
+        _longSymbol = QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX), 
+        _shortSymbol = QuantConnect.Symbol.Create(Futures.Metals.MicroGold, SecurityType.Future, Market.COMEX);
+    
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        if (algorithm.Portfolio.Invested)
         {
-            var insights = new List&lt;Insight&gt;();
-
-            if (algorithm.Portfolio.Invested)
-            {
-                return insights;
-            }
-            
-            // For both gold and micro gold, select the front month contract (only contract) in the chain
-            foreach (var kvp in slice.FutureChains)
-            {
-                var symbol = kvp.Key;
-                var chain = kvp.Value;
-                var contract = chain.First();
-                
-                // Long gold and short micro gold as planned
-                if (symbol == _longSymbol)
-                {
-                    insights.Add(Insight.Price(contract.Symbol, contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Up));
-                }
-                else if (symbol == _shortSymbol)
-                {
-                    insights.Add(Insight.Price(contract.Symbol, contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Down));
-                }
-            }
-
             return insights;
         }
         
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        // For both gold and micro gold, select the front month contract (only contract) in the chain
+        foreach (var kvp in slice.FutureChains)
         {
-            foreach (var security in changes.AddedSecurities)
+            var symbol = kvp.Key;
+            var chain = kvp.Value;
+            var contract = chain.First();
+            
+            // Long gold and short micro gold as planned
+            if (symbol == _longSymbol)
             {
-                // Historical data
-                var history = algorithm.History(security.Symbol, 100, Resolution.Minute);
-                algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");
+                insights.Add(Insight.Price(contract.Symbol, contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Up));
             }
+            else if (symbol == _shortSymbol)
+            {
+                insights.Add(Insight.Price(contract.Symbol, contract.Expiry + TimeSpan.FromDays(1), InsightDirection.Down));
+            }
+        }
+
+        return insights;
+    }
+    
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Historical data
+            var history = algorithm.History(security.Symbol, 100, Resolution.Minute);
+            algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
-        
-        
-    class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+}
+    
+    
+class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+{
+    public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
     {
-        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        var targets = new List&lt;PortfolioTarget&gt;();
+        foreach (var insight in insights)
         {
-            var targets = new List&lt;PortfolioTarget&gt;();
-            foreach (var insight in insights)
+            if (algorithm.Securities[insight.Symbol].IsTradable)
             {
-                if (algorithm.Securities[insight.Symbol].IsTradable)
-                {
-                    // Single share only using integer portfolio target
-                    targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
-                }
+                // Single share only using integer portfolio target
+                targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
             }
-            return targets;
         }
+        return targets;
     }
 }</pre>
 </div>

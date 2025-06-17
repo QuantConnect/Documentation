@@ -12,23 +12,20 @@
         self.set_brokerage_model(BrokerageName.KRAKEN, AccountType.MARGIN)
         
         self.btcusd = self.add_crypto("BTCUSD", Resolution.MINUTE, Market.KRAKEN).symbol</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    public class CoinAPIDataAlgorithm : QCAlgorithm
+    private Symbol _symbol;
+    
+    public override void Initialize()
     {
-        private Symbol _symbol;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
 
-            // Kraken accepts both Cash and Margin type account.
-            SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin);
-            
-            _symbol = AddCrypto("BTCUSD", Resolution.Minute, Market.Kraken).Symbol;
-        }
+        // Kraken accepts both Cash and Margin type account.
+        SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin);
+        
+        _symbol = AddCrypto("BTCUSD", Resolution.Minute, Market.Kraken).Symbol;
     }
 }</pre>
 </div>

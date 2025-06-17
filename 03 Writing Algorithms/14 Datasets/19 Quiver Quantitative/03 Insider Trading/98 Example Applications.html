@@ -31,44 +31,39 @@ class QuiverInsiderTradingAlgorithm(QCAlgorithm):
                 # Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
                 else:
                     self.liquidate(self.symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.DataLibrary.Tests
+<pre class="csharp">public class QuiverInsiderTradingAlgorithm : QCAlgorithm
 {
-    public class QuiverInsiderTradingAlgorithm : QCAlgorithm
+    private Symbol _symbol, _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol, _datasetSymbol;
+        SetStartDate(2022, 2, 1);  //Set Start Date
+        SetEndDate(2022, 2, 28);    //Set End Date
+        _symbol = AddEquity("AAPL").Symbol;
+        // Subscribe to insider trade data for AAPL to generate trade signal
+        _datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(_symbol).Symbol;
 
-        public override void Initialize()
+        // history request
+        var history = History&lt;QuiverInsiderTrading&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+        Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade only base on insider trade data
+        foreach (var kvp in slice.Get&lt;QuiverInsiderTrading&gt;())
         {
-            SetStartDate(2022, 2, 1);  //Set Start Date
-            SetEndDate(2022, 2, 28);    //Set End Date
-            _symbol = AddEquity("AAPL").Symbol;
-            // Subscribe to insider trade data for AAPL to generate trade signal
-            _datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(_symbol).Symbol;
-
-            // history request
-            var history = History&lt;QuiverInsiderTrading&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
-            Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
-        }
-
-        public override void OnData(Slice slice)
-        {
-            // Trade only base on insider trade data
-            foreach (var kvp in slice.Get&lt;QuiverInsiderTrading&gt;())
+            foreach (QuiverInsiderTrading insiderTrade in kvp.Value)
             {
-                foreach (QuiverInsiderTrading insiderTrade in kvp.Value)
+                // Any buy insider trade will result in buying, assuming insider have confidence in stock price with more informed information and projection
+                if (insiderTrade.Shares &gt; 0)
                 {
-                    // Any buy insider trade will result in buying, assuming insider have confidence in stock price with more informed information and projection
-                    if (insiderTrade.Shares &gt; 0)
-                    {
-                        SetHoldings(_symbol, 1);
-                    }
-                    // Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
-                    else
-                    {
-                        Liquidate(_symbol);
-                    }
+                    SetHoldings(_symbol, 1);
+                }
+                // Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
+                else
+                {
+                    Liquidate(_symbol);
                 }
             }
         }
@@ -128,72 +123,67 @@ class QuiverInsiderTradingDataAlgorithm(QCAlgorithm):
             if dataset_symbol:
                 # Remove insider trade data subscription to release computation resources
                 self.remove_security(dataset_symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class QuiverInsiderTradingDataAlgorithm : QCAlgorithm
 {
-    public class QuiverInsiderTradingDataAlgorithm : QCAlgorithm
+    // To hold the insider trade dataset symbol for managing subscription
+    private Dictionary&lt;Symbol, Symbol&gt; _dataSymbols = new();
+
+    public override void Initialize()
     {
-        // To hold the insider trade dataset symbol for managing subscription
-        private Dictionary&lt;Symbol, Symbol&gt; _dataSymbols = new();
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
 
-        public override void Initialize()
+        // Filter universe using insider trade data
+        AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(data =&gt;
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
+            var symbolData = new Dictionary&lt;Symbol, List&lt;QuiverInsiderTradingUniverse&gt;&gt;();
 
-            // Filter universe using insider trade data
-            AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(data =&gt;
+            foreach (var datum in data.OfType&lt;QuiverInsiderTradingUniverse&gt;())
             {
-                var symbolData = new Dictionary&lt;Symbol, List&lt;QuiverInsiderTradingUniverse&gt;&gt;();
+                var symbol = datum.Symbol;
 
-                foreach (var datum in data.OfType&lt;QuiverInsiderTradingUniverse&gt;())
+                if (!symbolData.ContainsKey(symbol))
                 {
-                    var symbol = datum.Symbol;
-
-                    if (!symbolData.ContainsKey(symbol))
-                    {
-                        symbolData.Add(symbol, new List&lt;QuiverInsiderTradingUniverse&gt;());
-                    }
-                    symbolData[symbol].Add(datum);
+                    symbolData.Add(symbol, new List&lt;QuiverInsiderTradingUniverse&gt;());
                 }
-
-                // Select the ones with insider trading dollar amount above 100k, assuming insider have confidence in stock price with more informed information and projection
-                return from kvp in symbolData
-                    where kvp.Value.Sum(x =&gt; x.Shares * x.PricePerShare) &gt;= 100000
-                    select kvp.Key;
-            });
-
-            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
-
-            // Invest equally to evenly dissipate the capital concentration risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        }
-
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Requesting insider trade data for trading
-                var symbol = security.Symbol;
-                var datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(symbol).Symbol;
-                _dataSymbols.Add(symbol, datasetSymbol);
-
-                // History request
-                var history = History&lt;QuiverInsiderTrading&gt;(datasetSymbol, 10, Resolution.Daily);
-                Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
+                symbolData[symbol].Add(datum);
             }
-            
-            foreach (var security in changes.RemovedSecurities)
+
+            // Select the ones with insider trading dollar amount above 100k, assuming insider have confidence in stock price with more informed information and projection
+            return from kvp in symbolData
+                where kvp.Value.Sum(x =&gt; x.Shares * x.PricePerShare) &gt;= 100000
+                select kvp.Key;
+        });
+
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+
+        // Invest equally to evenly dissipate the capital concentration risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Requesting insider trade data for trading
+            var symbol = security.Symbol;
+            var datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(symbol).Symbol;
+            _dataSymbols.Add(symbol, datasetSymbol);
+
+            // History request
+            var history = History&lt;QuiverInsiderTrading&gt;(datasetSymbol, 10, Resolution.Daily);
+            Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
+        }
+        
+        foreach (var security in changes.RemovedSecurities)
+        {
+            var symbol = security.Symbol;
+            if (_dataSymbols.ContainsKey(symbol))
             {
-                var symbol = security.Symbol;
-                if (_dataSymbols.ContainsKey(symbol))
-                {
-                    // Remove insider trade data subscription to release computation resources
-                    _dataSymbols.Remove(symbol, out var datasetSymbol);
-                    RemoveSecurity(datasetSymbol);
-                }
+                // Remove insider trade data subscription to release computation resources
+                _dataSymbols.Remove(symbol, out var datasetSymbol);
+                RemoveSecurity(datasetSymbol);
             }
         }
     }

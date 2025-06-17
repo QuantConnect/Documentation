@@ -30,41 +30,36 @@ class QuiverCNBCsAlgorithm(QCAlgorithm):
                 self.set_holdings(self.aapl, 1)
             else:
                 self.set_holdings(self.aapl, 0)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class QuiverCNBCsAlgorithm : QCAlgorithm
 {
-    public class QuiverCNBCsAlgorithm : QCAlgorithm
+    private Symbol _symbol, _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol, _datasetSymbol;
+        SetStartDate(2021, 10, 1);  //Set Start Date
+        SetEndDate(2021, 10, 31);    //Set End Date
+        _symbol = AddEquity("AAPL").Symbol;
+        // Subscribe to CNBC data for AAPL to generate trade signal
+        _datasetSymbol = AddData&lt;QuiverCNBCs&gt;(_symbol).Symbol;
 
-        public override void Initialize()
+        // history request
+        var history = History&lt;QuiverCNBCs&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+        Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        foreach (var kvp in slice.Get&lt;QuiverCNBCs&gt;())
         {
-            SetStartDate(2021, 10, 1);  //Set Start Date
-            SetEndDate(2021, 10, 31);    //Set End Date
-            _symbol = AddEquity("AAPL").Symbol;
-            // Subscribe to CNBC data for AAPL to generate trade signal
-            _datasetSymbol = AddData&lt;QuiverCNBCs&gt;(_symbol).Symbol;
-
-            // history request
-            var history = History&lt;QuiverCNBCs&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
-            Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
-        }
-
-        public override void OnData(Slice slice)
-        {
-            foreach (var kvp in slice.Get&lt;QuiverCNBCs&gt;())
+            // Using mean prediction from CNBC analysts to be the trade signal
+            // If the average CNBC insight is upward movement, invest AAPL
+            if (kvp.Value.Average(x =&gt; (int) (x as QuiverCNBC).Direction) &gt; 0)
             {
-                // Using mean prediction from CNBC analysts to be the trade signal
-                // If the average CNBC insight is upward movement, invest AAPL
-                if (kvp.Value.Average(x =&gt; (int) (x as QuiverCNBC).Direction) &gt; 0)
-                {
-                    SetHoldings(_symbol, 1);
-                }
-                else
-                {
-                    SetHoldings(_symbol, 0);
-                }
+                SetHoldings(_symbol, 1);
+            }
+            else
+            {
+                SetHoldings(_symbol, 0);
             }
         }
     }
@@ -123,70 +118,65 @@ class QuiverCNBCsDataAlgorithm(QCAlgorithm):
             if dataset_symbol:
                 # Remove subscription of CNBC data to release computation resources
                 self.remove_security(dataset_symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class QuiverCNBCsDataAlgorithm : QCAlgorithm
 {
-    public class QuiverCNBCsDataAlgorithm : QCAlgorithm
+    private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new();
+    public override void Initialize()
     {
-        private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new();
-        public override void Initialize()
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
+
+        // Filter universe based on CNBC data
+        AddUniverse&lt;QuiverCNBCsUniverse&gt;(data =&gt;
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
+            var cnbcDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverCNBCsUniverse&gt;&gt;();
 
-            // Filter universe based on CNBC data
-            AddUniverse&lt;QuiverCNBCsUniverse&gt;(data =&gt;
+            foreach (var datum in data.OfType&lt;QuiverCNBCsUniverse&gt;())
             {
-                var cnbcDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverCNBCsUniverse&gt;&gt;();
+                var symbol = datum.Symbol;
 
-                foreach (var datum in data.OfType&lt;QuiverCNBCsUniverse&gt;())
+                if (!cnbcDataBySymbol.ContainsKey(symbol))
                 {
-                    var symbol = datum.Symbol;
-
-                    if (!cnbcDataBySymbol.ContainsKey(symbol))
-                    {
-                        cnbcDataBySymbol.Add(symbol, new List&lt;QuiverCNBCsUniverse&gt;());
-                    }
-                    cnbcDataBySymbol[symbol].Add(datum);
+                    cnbcDataBySymbol.Add(symbol, new List&lt;QuiverCNBCsUniverse&gt;());
                 }
-
-                // Select the stocks with at least 3 CNBC analysts to suggest buy, reassuring the signal
-                return from kvp in cnbcDataBySymbol
-                    where kvp.Value.Where(x =&gt; x.Direction == OrderDirection.Buy).Count() &gt;= 3
-                    select kvp.Key;
-            });
-
-            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
-
-            // Invest equally to evenly dissipate the capital concentration risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        }
-
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {
-            foreach (var security in changes.AddedSecurities)
-            {
-                // Requesting CNBC Data
-                var symbol = security.Symbol;
-                var datasetSymbol = AddData&lt;QuiverCNBCs&gt;(symbol).Symbol;
-                _datasetSymbolBySymbol.Add(symbol, datasetSymbol);
-
-                // History request
-                var history = History&lt;QuiverCNBCs&gt;(datasetSymbol, 10, Resolution.Daily);
-                Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
+                cnbcDataBySymbol[symbol].Add(datum);
             }
-            
-            foreach (var security in changes.RemovedSecurities)
+
+            // Select the stocks with at least 3 CNBC analysts to suggest buy, reassuring the signal
+            return from kvp in cnbcDataBySymbol
+                where kvp.Value.Where(x =&gt; x.Direction == OrderDirection.Buy).Count() &gt;= 3
+                select kvp.Key;
+        });
+
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+
+        // Invest equally to evenly dissipate the capital concentration risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Requesting CNBC Data
+            var symbol = security.Symbol;
+            var datasetSymbol = AddData&lt;QuiverCNBCs&gt;(symbol).Symbol;
+            _datasetSymbolBySymbol.Add(symbol, datasetSymbol);
+
+            // History request
+            var history = History&lt;QuiverCNBCs&gt;(datasetSymbol, 10, Resolution.Daily);
+            Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
+        }
+        
+        foreach (var security in changes.RemovedSecurities)
+        {
+            var symbol = security.Symbol;
+            if (_datasetSymbolBySymbol.ContainsKey(symbol))
             {
-                var symbol = security.Symbol;
-                if (_datasetSymbolBySymbol.ContainsKey(symbol))
-                {
-                    // Remove subscription of CNBC data to release computation resources
-                    _datasetSymbolBySymbol.Remove(symbol, out var datasetSymbol);
-                    RemoveSecurity(datasetSymbol);
-                }
+                // Remove subscription of CNBC data to release computation resources
+                _datasetSymbolBySymbol.Remove(symbol, out var datasetSymbol);
+                RemoveSecurity(datasetSymbol);
             }
         }
     }

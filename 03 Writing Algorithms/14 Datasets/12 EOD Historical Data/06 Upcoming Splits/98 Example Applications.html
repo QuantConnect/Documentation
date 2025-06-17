@@ -37,48 +37,45 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
         for removed in changes.removed_securities:
             # Liquidate the ones exit the universe (already split) to capitalize the microeconomic demand.
             self.liquidate(removed.symbol)</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class UpcomingSplitsExampleAlgorithm : QCAlgorithm
 {
-    public class UpcomingSplitsExampleAlgorithm : QCAlgorithm
+    private Universe _universe;
+
+    public override void Initialize()
     {
-        private Universe _universe;
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 10, 1);
+        SetCash(100000);
 
-        public override void Initialize()
+        // Trade on daily basis based on daily upcoming earnings signals.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Universe consists of equities with upcoming earnings events.
+        _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
+            return splits
+                // Split (more shares with lower price) will make the stock more affordable and drive up the demand.
+                // Hence, include all stocks that will have a split within the next 7 days.
+                // Note that spliting up the stock means the split factor &gt; 1.
+                .Where(datum =&gt; (datum as EODHDUpcomingSplits).SplitFactor &gt; 1)
+                .Select(datum =&gt; datum.Symbol);
+        });
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Equally invest in each member of the universe to evenly dissipate the capital risk.
+        var totalCount = _universe.Members.Count;
+        var targets = _universe.Members.Keys
+            .Select(symbol =&gt; (PortfolioTarget)PortfolioTarget.Percent(this, symbol, 1m / totalCount))
+            .ToList();
+        SetHoldings(targets);
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var removed in changes.RemovedSecurities)
         {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2024, 10, 1);
-            SetCash(100000);
-
-            // Trade on daily basis based on daily upcoming earnings signals.
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Universe consists of equities with upcoming earnings events.
-            _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
-                return splits
-                    // Split (more shares with lower price) will make the stock more affordable and drive up the demand.
-                    // Hence, include all stocks that will have a split within the next 7 days.
-                    // Note that spliting up the stock means the split factor &gt; 1.
-                    .Where(datum =&gt; (datum as EODHDUpcomingSplits).SplitFactor &gt; 1)
-                    .Select(datum =&gt; datum.Symbol);
-            });
-        }
-
-        public override void OnData(Slice slice)
-        {
-            // Equally invest in each member of the universe to evenly dissipate the capital risk.
-            var totalCount = _universe.Members.Count;
-            var targets = _universe.Members.Keys
-                .Select(symbol =&gt; (PortfolioTarget)PortfolioTarget.Percent(this, symbol, 1m / totalCount))
-                .ToList();
-            SetHoldings(targets);
-        }
-
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {
-            foreach (var removed in changes.RemovedSecurities)
-            {
-                // Liquidate the ones exit the universe (already split) to capitalize the microeconomic demand.
-                Liquidate(removed.Symbol);
-            }
+            // Liquidate the ones exit the universe (already split) to capitalize the microeconomic demand.
+            Liquidate(removed.Symbol);
         }
     }
 }</pre>
@@ -110,37 +107,34 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
         # Hence, include all stocks that will have a split within the next 7 days.
         # Note that spliting up the stock means the split factor &gt; 1.
         return [x.symbol for x in splits if x.split_factor &gt; 1]</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class UpcomingSplitsExampleAlgorithm : QCAlgorithm
 {
-    public class UpcomingSplitsExampleAlgorithm : QCAlgorithm
+    private Universe _universe;
+
+    public override void Initialize()
     {
-        private Universe _universe;
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 10, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2024, 10, 1);
-            SetCash(100000);
+        // Trade on daily basis based on daily upcoming splits signals.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Universe consists of equities with upcoming splits events.
+        _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
+            return splits
+                // Split (more shares with lower price) will make the stock more affordable and drive up the demand.
+                // Hence, include all stocks that will have a split within the next 7 days.
+                // Note that spliting up the stock means the split factor &gt; 1.
+                .Where(datum =&gt; (datum as EODHDUpcomingSplits).SplitFactor &gt; 1)
+                .Select(datum =&gt; datum.Symbol);
+        });
 
-            // Trade on daily basis based on daily upcoming splits signals.
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Universe consists of equities with upcoming splits events.
-            _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
-                return splits
-                    // Split (more shares with lower price) will make the stock more affordable and drive up the demand.
-                    // Hence, include all stocks that will have a split within the next 7 days.
-                    // Note that spliting up the stock means the split factor &gt; 1.
-                    .Where(datum =&gt; (datum as EODHDUpcomingSplits).SplitFactor &gt; 1)
-                    .Select(datum =&gt; datum.Symbol);
-            });
+        // Constant alpha model to emit insights for the stocks with split up event within a week, estimating their demand and price will go up.
+        // Signal stays for 2 days to fully digest the driven up demands.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(2)));
 
-            // Constant alpha model to emit insights for the stocks with split up event within a week, estimating their demand and price will go up.
-            // Signal stays for 2 days to fully digest the driven up demands.
-            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(2)));
-
-            // Equal weighting for each signal to evenly dissipate the capital risk.
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
-        }
+        // Equal weighting for each signal to evenly dissipate the capital risk.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
     }
 }</pre>
 </div>

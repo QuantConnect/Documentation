@@ -19,28 +19,25 @@
         self.weekly_option_symbol = weekly_option.symbol</pre>
 
 
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class IndexOptionsDataAlgorithm : QCAlgorithm
 {
-    public class IndexOptionsDataAlgorithm : QCAlgorithm
+    private Symbol _indexSymbol, _standardOptionSymbol, _weeklyOptionSymbol;
+
+    public override void Initialize()
     {
-    	private Symbol _indexSymbol, _standardOptionSymbol, _weeklyOptionSymbol;
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = True;
+        _indexSymbol = AddIndex("VIX").Symbol;
 
-        public override void Initialize()
-        {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = True;
-            _indexSymbol = AddIndex("VIX").Symbol;
+        var standardOption = AddIndexOption(_indexSymbol);
+        standardOption.SetFilter(-2, 2, 0, 90);
+        _standardOptionSymbol = standardOption.Symbol;
 
-            var standardOption = AddIndexOption(_indexSymbol);
-            standardOption.SetFilter(-2, 2, 0, 90);
-            _standardOptionSymbol = standardOption.Symbol;
-
-            var weeklyOption = AddIndexOption(_indexSymbol, "VIXW");
-            weeklyOption.SetFilter(-2, 2, 0, 90);
-            _weeklyOptionSymbol = weeklyOption.Symbol;
-        }
+        var weeklyOption = AddIndexOption(_indexSymbol, "VIXW");
+        weeklyOption.SetFilter(-2, 2, 0, 90);
+        _weeklyOptionSymbol = weeklyOption.Symbol;
     }
 }</pre>
 </div>

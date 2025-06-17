@@ -11,22 +11,19 @@
         self.aapl = self.add_equity("AAPL", Resolution.MINUTE).symbol
         self.intention_symbol = self.add_data(SmartInsiderIntention, self.aapl).symbol
         self.transaction_symbol = self.add_data(SmartInsiderTransaction, self.aapl).symbol</pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class CorporateBuybacksDataAlgorithm : QCAlgorithm
 {
-    public class CorporateBuybacksDataAlgorithm : QCAlgorithm
+    private Symbol _symbol, _intentionSymbol, _transactionSymbol;
+    
+    public override void Initialize()
     {
-        private Symbol _symbol, _intentionSymbol, _transactionSymbol;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2016, 1, 1);
-            SetEndDate(2021, 1, 1);
-            SetCash(100000);
+        SetStartDate(2016, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
 
-            _symbol = AddEquity("AAPL", Resolution.Minute).Symbol;
-            _intentionSymbol = AddData&lt;SmartInsiderIntention&gt;(_symbol).Symbol;
-            _transactionSymbol = AddData&lt;SmartInsiderTransaction&gt;(_symbol).Symbol;
-        }
+        _symbol = AddEquity("AAPL", Resolution.Minute).Symbol;
+        _intentionSymbol = AddData&lt;SmartInsiderIntention&gt;(_symbol).Symbol;
+        _transactionSymbol = AddData&lt;SmartInsiderTransaction&gt;(_symbol).Symbol;
     }
 }</pre>
 </div>

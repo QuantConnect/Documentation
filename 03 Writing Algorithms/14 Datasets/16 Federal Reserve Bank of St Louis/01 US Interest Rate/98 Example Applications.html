@@ -23,25 +23,22 @@ class RiskFreeInterestRateModelAlgorithm(QCAlgorithm):
         # Plot the current interest rate and the 1-year average rate for comparison
         self.plot('Interest', 'EOD', self.risk_free_interest_rate_model.get_interest_rate(self.time))
         self.plot('Interest', '1Y-RW', risk_free_rate)</pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class RiskFreeInterestRateModelAlgorithm : QCAlgorithm
 {
-    public class RiskFreeInterestRateModelAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2022, 5, 21);
-            SetCash(100000);
-            AddEquity("SPY", Resolution.Daily);
-        }
+        SetStartDate(2022, 5, 21);
+        SetCash(100000);
+        AddEquity("SPY", Resolution.Daily);
+    }
 
-        public override void OnEndOfDay(Symbol symbol)
-        {
-            SetHoldings(symbol, 1);
-            // Plot the current interest rate and the 1-year average rate for comparison
-            Plot("Interest Rate", "EOD", RiskFreeInterestRateModel.GetInterestRate(Time));
-            // Get the average risk free rate of the last year at the current time
-            Plot("Interest Rate", "1-year Window", RiskFreeInterestRateModel.GetRiskFreeRate(Time.AddDays(-365), Time));
-        }
+    public override void OnEndOfDay(Symbol symbol)
+    {
+        SetHoldings(symbol, 1);
+        // Plot the current interest rate and the 1-year average rate for comparison
+        Plot("Interest Rate", "EOD", RiskFreeInterestRateModel.GetInterestRate(Time));
+        // Get the average risk free rate of the last year at the current time
+        Plot("Interest Rate", "1-year Window", RiskFreeInterestRateModel.GetRiskFreeRate(Time.AddDays(-365), Time));
     }
 }</pre>
 </div>

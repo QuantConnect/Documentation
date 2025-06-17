@@ -60,75 +60,69 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
             quantity -= quantity % self.minimum_order_size
             if quantity &gt; 0:
                 self.market_order(self.btcbusd, quantity)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-using QuantConnect.Data.UniverseSelection;
-
-namespace QuantConnect
+<pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    public class CoinAPIDataAlgorithm : QCAlgorithm
+    private Symbol _btcbusd;
+    private Universe _universe;
+    private decimal? _minimumOrderSize;
+    
+    public override void Initialize()
     {
-        private Symbol _btcbusd;
-        private Universe _universe;
-        private decimal? _minimumOrderSize;
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 6, 1);
+        // Set Account Currency to BUSD, since USD-BUSD will not auto-convert and USD cannot be used to trade
+        SetCash("BUSD", 100000);
+        UniverseSettings.Asynchronous = True;
+        // Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
+
+        // Warm up the security with the last known price to avoid conversion error
+        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
         
-        public override void Initialize()
+        // Requesting data, we only trade on BTCBUSD in Binance exchange
+        var crypto = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance);
+        _btcbusd = crypto.Symbol;
+        _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
+    
+            // Historical data
+        var history = History(_btcbusd, 30, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+
+        // Add Crypto Universe Selection that select crypto pairs in Binance exchange
+        _universe = AddUniverse(CryptoUniverse.Binance(UniverseSelectionFilter));
+
+        // Historical Universe data
+        var universeHistory = History(_universe, 30, Resolution.Daily);
+        Debug($"We got {universeHistory.Count()} items from our history request");
+        foreach (var universeDay in universeHistory)
         {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2021, 6, 1);
-            // Set Account Currency to BUSD, since USD-BUSD will not auto-convert and USD cannot be used to trade
-            SetCash("BUSD", 100000);
-            UniverseSettings.Asynchronous = True;
-            // Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
-            SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
-
-            // Warm up the security with the last known price to avoid conversion error
-            SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
-            
-            // Requesting data, we only trade on BTCBUSD in Binance exchange
-            var crypto = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance);
-            _btcbusd = crypto.Symbol;
-            _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
-        
-             // Historical data
-            var history = History(_btcbusd, 30, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
-
-            // Add Crypto Universe Selection that select crypto pairs in Binance exchange
-            _universe = AddUniverse(CryptoUniverse.Binance(UniverseSelectionFilter));
-
-            // Historical Universe data
-            var universeHistory = History(_universe, 30, Resolution.Daily);
-            Debug($"We got {universeHistory.Count()} items from our history request");
-            foreach (var universeDay in universeHistory)
+            foreach (CryptoUniverse universeItem in universeDay)
             {
-                foreach (CryptoUniverse universeItem in universeDay)
-                {
-                    Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
-                }
+                Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
             }
         }
+    }
 
-        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
-        {
-            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-            return from universeItem in universeDay
-                   where universeItem.Volume &gt;= 100m 
-                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-                   select universeItem.Symbol;
-        }
+    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+    {
+        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+        return from universeItem in universeDay
+                where universeItem.Volume &gt;= 100m 
+                &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                select universeItem.Symbol;
+    }
 
-        public override void OnData(Slice slice)
+    public override void OnData(Slice slice)
+    {
+        // Speculate-invest all available free cash on BTCBUSD, obeying the order quantity restriction to avoid invalid order
+        if (Portfolio.CashBook["BTC"].Amount == 0)
         {
-            // Speculate-invest all available free cash on BTCBUSD, obeying the order quantity restriction to avoid invalid order
-            if (Portfolio.CashBook["BTC"].Amount == 0)
+            var freeCash = Portfolio.CashBook["USD"].Amount * (1-Settings.FreePortfolioValuePercentage);
+            var quantity = freeCash / slice[_btcbusd].Price;
+            quantity -= quantity % _minimumOrderSize;
+            if (quantity &gt; 0m)
             {
-                var freeCash = Portfolio.CashBook["USD"].Amount * (1-Settings.FreePortfolioValuePercentage);
-                var quantity = freeCash / slice[_btcbusd].Price;
-                quantity -= quantity % _minimumOrderSize;
-                if (quantity &gt; 0m)
-                {
-                    MarketOrder(_btcbusd, quantity);
-                }
+                MarketOrder(_btcbusd, quantity);
             }
         }
     }
@@ -175,54 +169,48 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
             # Historical data
             history = self.history(security.symbol, 30, Resolution.DAILY)
             self.debug(f"We got {len(history)} items from our history request")</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-using QuantConnect.Data.UniverseSelection;
-
-namespace QuantConnect
+<pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    public class CoinAPIDataAlgorithm : QCAlgorithm
+    private Symbol _btcbusd;
+    
+    public override void Initialize()
     {
-        private Symbol _btcbusd;
-        
-        public override void Initialize()
-        {
-            SetStartDate(2020, 6, 1);
-            SetEndDate(2021, 6, 1);
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2021, 6, 1);
 
-            // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
-            SetCash("BUSD", 100000);
-            // Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
-            SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
- 
-            // Warm up the security with the last known price to avoid conversion error
-            SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
-            UniverseSettings.Asynchronous = True;
-            UniverseSettings.Resolution = Resolution.Minute;
-            // Add Crypto Universe Selection that select crypto pairs in Binance exchange
-            AddUniverse(CryptoUniverse.Binance(UniverseSelectionFilter));
-        
-            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None));
-            // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        }
+        // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
+        SetCash("BUSD", 100000);
+        // Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
 
-        private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
-        {
-            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-            return from universeItem in universeDay
-                   where universeItem.Volume &gt;= 100m 
-                   &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-                   select universeItem.Symbol;
-        }
+        // Warm up the security with the last known price to avoid conversion error
+        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
+        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Resolution = Resolution.Minute;
+        // Add Crypto Universe Selection that select crypto pairs in Binance exchange
+        AddUniverse(CryptoUniverse.Binance(UniverseSelectionFilter));
+    
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None));
+        // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
 
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+    {
+        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+        return from universeItem in universeDay
+                where universeItem.Volume &gt;= 100m 
+                &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                select universeItem.Symbol;
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach(var security in changes.AddedSecurities)
         {
-            foreach(var security in changes.AddedSecurities)
-            {
-                // Historical data
-                var history = History(security.Symbol, 30, Resolution.Daily);
-                Debug($"We got {history.Count()} items from our history request");
-            }
+            // Historical data
+            var history = History(security.Symbol, 30, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request");
         }
     }
 }</pre>

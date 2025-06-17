@@ -51,68 +51,62 @@ class CBOEDataAlgorithmAlgorithm(QCAlgorithm):
         elif self.ratio.current.value &lt; 1:
             self.liquidate()
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class CBOEDataAlgorithmAlgorithm : QCAlgorithm
 {
-    public class CBOEDataAlgorithmAlgorithm : QCAlgorithm
+    private Symbol _spy;
+    private Symbol _vix;
+    private Symbol _vxv;
+    private SimpleMovingAverage _smaVIX;
+    private SimpleMovingAverage _smaVXV;
+    private IndicatorBase _ratio;
+
+    public override void Initialize()
     {
-        private Symbol _spy;
-        private Symbol _vix;
-        private Symbol _vxv;
-        private SimpleMovingAverage _smaVIX;
-        private SimpleMovingAverage _smaVXV;
-        private IndicatorBase _ratio;
+        SetStartDate(2014, 1, 1);
+        SetEndDate(2018, 1, 1);
+        SetCash(25000);
 
-        public override void Initialize()
+        // Request SPY data for trading, since it is the underlying of VIX indices
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        // Request 1-mo and 3-mo CBOE VIX data for trade signal generation
+        _vix = AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
+        _vxv = AddData&lt;CBOE&gt;("VIX3M", Resolution.Daily).Symbol;
+
+        // Create a 3mo-over-1mo VIX price indicator to estimate the relative short-term volatility
+        // Normally 3-mo volatility should be higher due to higher time uncertainty, but if the market preceive a shock within short time, it will invert
+        _smaVIX = SMA(_vix, 1);
+        _smaVXV = SMA(_vxv, 1);
+        _ratio = _smaVXV.Over(_smaVIX);
+
+        // Historical data
+        var history = History&lt;CBOE&gt;(_vix, 60, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Wait for all indicators to fully initialize
+        if (_smaVIX.IsReady &amp;&amp; _smaVXV.IsReady &amp;&amp; _ratio.IsReady)
         {
-            SetStartDate(2014, 1, 1);
-            SetEndDate(2018, 1, 1);
-            SetCash(25000);
-
-            // Request SPY data for trading, since it is the underlying of VIX indices
-            _spy = AddEquity("SPY", Resolution.Daily).Symbol;
-
-            // Request 1-mo and 3-mo CBOE VIX data for trade signal generation
-            _vix = AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
-            _vxv = AddData&lt;CBOE&gt;("VIX3M", Resolution.Daily).Symbol;
-
-            // Create a 3mo-over-1mo VIX price indicator to estimate the relative short-term volatility
-            // Normally 3-mo volatility should be higher due to higher time uncertainty, but if the market preceive a shock within short time, it will invert
-            _smaVIX = SMA(_vix, 1);
-            _smaVXV = SMA(_vxv, 1);
-            _ratio = _smaVXV.Over(_smaVIX);
-
-            // Historical data
-            var history = History&lt;CBOE&gt;(_vix, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
-        }
-
-        public override void OnData(Slice slice)
-        {
-            // Wait for all indicators to fully initialize
-            if (_smaVIX.IsReady &amp;&amp; _smaVXV.IsReady &amp;&amp; _ratio.IsReady)
+            // Invest in SPY if the market is not in panic, assuming the market is always uptrending
+            if (!Portfolio.Invested &amp;&amp; _ratio &gt; 1)
             {
-                // Invest in SPY if the market is not in panic, assuming the market is always uptrending
-                if (!Portfolio.Invested &amp;&amp; _ratio &gt; 1)
-                {
-                    MarketOrder(_spy, 100);
-                }
-                // If the short term volatility is high, exit all positions to avoid excessive risk
-                else if (_ratio &lt; 1)
-                {
-                    Liquidate();
-                }
-
-                // Plot indicators each time they update for data visualization
-                Plot("SMA", "VIX", _smaVIX);
-                Plot("SMA", "VXV", _smaVXV);
-                Plot("Ratio", "Value", _ratio.Current.Value);
+                MarketOrder(_spy, 100);
             }
+            // If the short term volatility is high, exit all positions to avoid excessive risk
+            else if (_ratio &lt; 1)
+            {
+                Liquidate();
+            }
+
+            // Plot indicators each time they update for data visualization
+            Plot("SMA", "VIX", _smaVIX);
+            Plot("SMA", "VXV", _smaVXV);
+            Plot("Ratio", "Value", _ratio.Current.Value);
         }
     }
-}
-</pre></div>
+}</pre></div>
 <h4>Framework Algorithm Design</h4>
 <p>The following example algorithm buys SPY when the ratio between VIX and VIX3M is positive. Otherwise, it holds cash.</p>
 <div class="section-example-container testable">
@@ -182,97 +176,92 @@ class VixRatioAlphaModel(AlphaModel):
             
         self.symbols += [x.symbol for x in changes.added_securities]
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class CBOEDataAlgorithmAlgorithm : QCAlgorithm
 {
-    public class CBOEDataAlgorithmAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2014, 1, 1);
-            SetEndDate(2018, 1, 1);
-            SetCash(25000);
+        SetStartDate(2014, 1, 1);
+        SetEndDate(2018, 1, 1);
+        SetCash(25000);
 
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Universe contains only SPY data for trading, since it is the underlying of VIX indices
-            var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
-            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
-            // A custom alpha model that emit insights based on VIX data
-            AddAlpha(new VixRatioAlphaModel(this));
-            // Equal investing can evenly dissipate non-systematic capital concentration risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        }
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Universe contains only SPY data for trading, since it is the underlying of VIX indices
+        var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        // A custom alpha model that emit insights based on VIX data
+        AddAlpha(new VixRatioAlphaModel(this));
+        // Equal investing can evenly dissipate non-systematic capital concentration risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}
+
+public class VixRatioAlphaModel : AlphaModel
+{
+    private Symbol _vix;
+    private Symbol _vxv;
+    private SimpleMovingAverage _smaVIX;
+    private SimpleMovingAverage _smaVXV;
+    private IndicatorBase _ratio;
+    private List&lt;Symbol&gt; _symbols;
+
+    public VixRatioAlphaModel(QCAlgorithm algorithm)
+    {
+        // Request 1-mo and 3-mo CBOE VIX data for trade signal generation
+        _vix = algorithm.AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
+        _vxv = algorithm.AddData&lt;CBOE&gt;("VIX3M", Resolution.Daily).Symbol;
+
+        // Create a 3mo-over-1mo VIX price indicator to estimate the relative short-term volatility
+        // Normally 3-mo volatility should be higher due to higher time uncertainty, but if the market preceive a shock within short time, it will invert
+        _smaVIX = algorithm.SMA(_vix, 1);
+        _smaVXV = algorithm.SMA(_vxv, 1);
+        _ratio = _smaVXV.Over(_smaVIX);
+        
+        _symbols = new List&lt;Symbol&gt;();
+
+        // Historical data
+        var history = algorithm.History&lt;CBOE&gt;(_vix, 60, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request");
     }
 
-    public class VixRatioAlphaModel : AlphaModel
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        private Symbol _vix;
-        private Symbol _vxv;
-        private SimpleMovingAverage _smaVIX;
-        private SimpleMovingAverage _smaVXV;
-        private IndicatorBase _ratio;
-        private List&lt;Symbol&gt; _symbols;
-
-        public VixRatioAlphaModel(QCAlgorithm algorithm)
+        var insights = new List&lt;Insight&gt;();
+        
+        // Wait for all indicators to fully initialize
+        if (_smaVIX.IsReady &amp;&amp; _smaVXV.IsReady &amp;&amp; _ratio.IsReady)
         {
-            // Request 1-mo and 3-mo CBOE VIX data for trade signal generation
-            _vix = algorithm.AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
-            _vxv = algorithm.AddData&lt;CBOE&gt;("VIX3M", Resolution.Daily).Symbol;
-
-            // Create a 3mo-over-1mo VIX price indicator to estimate the relative short-term volatility
-            // Normally 3-mo volatility should be higher due to higher time uncertainty, but if the market preceive a shock within short time, it will invert
-            _smaVIX = algorithm.SMA(_vix, 1);
-            _smaVXV = algorithm.SMA(_vxv, 1);
-            _ratio = _smaVXV.Over(_smaVIX);
-            
-            _symbols = new List&lt;Symbol&gt;();
-
-            // Historical data
-            var history = algorithm.History&lt;CBOE&gt;(_vix, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
-        }
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            var insights = new List&lt;Insight&gt;();
-        	
-            // Wait for all indicators to fully initialize
-            if (_smaVIX.IsReady &amp;&amp; _smaVXV.IsReady &amp;&amp; _ratio.IsReady)
+            // Invest in SPY if the market is not in panic, assuming the market is always uptrending
+            if (!algorithm.Portfolio.Invested &amp;&amp; _ratio &gt; 1)
             {
-                // Invest in SPY if the market is not in panic, assuming the market is always uptrending
-                if (!algorithm.Portfolio.Invested &amp;&amp; _ratio &gt; 1)
+                foreach (var symbol in _symbols)
                 {
-                    foreach (var symbol in _symbols)
-                    {
-                        insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Up));
-                    }
+                    insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Up));
                 }
-                // If the short term volatility is high, exit all positions to avoid excessive risk
-                else if (_ratio &lt; 1)
-                {
-                    foreach (var symbol in _symbols)
-                    {
-                        insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Flat));
-                    }
-                }
-
-                // Plot indicators each time they update for data visualization
-                algorithm.Plot("SMA", "VIX", _smaVIX);
-                algorithm.Plot("SMA", "VXV", _smaVXV);
-                algorithm.Plot("Ratio", "Value", _ratio.Current.Value);
             }
-            
-            return insights;
-        }
-
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-        {
-            foreach (var symbol in changes.RemovedSecurities.Select(x=&gt;x.Symbol))
+            // If the short term volatility is high, exit all positions to avoid excessive risk
+            else if (_ratio &lt; 1)
             {
-                _symbols.Remove(symbol);
+                foreach (var symbol in _symbols)
+                {
+                    insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Flat));
+                }
             }
-            _symbols.AddRange(changes.AddedSecurities.Select(x=&gt; x.Symbol));
+
+            // Plot indicators each time they update for data visualization
+            algorithm.Plot("SMA", "VIX", _smaVIX);
+            algorithm.Plot("SMA", "VXV", _smaVXV);
+            algorithm.Plot("Ratio", "Value", _ratio.Current.Value);
         }
+        
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var symbol in changes.RemovedSecurities.Select(x=&gt;x.Symbol))
+        {
+            _symbols.Remove(symbol);
+        }
+        _symbols.AddRange(changes.AddedSecurities.Select(x=&gt; x.Symbol));
     }
 }</pre></div>

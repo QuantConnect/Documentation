@@ -23,27 +23,24 @@ The Macroeconomic Indicators dataset provides data on global macro indicators, a
         if indicators:
             gdp = indicators.data[0].value
             self.SetHoldings(self.equity_symbol, 1 if gdp &gt; 0 else -1)</pre>
-<pre class="csharp">namespace QuantConnect.DataLibrary.Tests
+<pre class="csharp">public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
 {
-    public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
+    private Symbol _equitySymbol, _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _equitySymbol, _datasetSymbol;
+        SetStartDate(2020, 10, 07);
+        _equitySymbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        var ticker = EODHD.MacroIndicators.UnitedStates.GdpGrowthAnnual;
+        _datasetSymbol = AddData&lt;EODHDMacroIndicators&gt;(ticker).Symbol;
+    }
 
-        public override void Initialize()
+    public override void OnData(Slice slice)
+    {
+        if (slice.Get&lt;EODHDMacroIndicators&gt;().TryGetValue(_datasetSymbol, out var indicators))
         {
-            SetStartDate(2020, 10, 07);
-            _equitySymbol = AddEquity("SPY", Resolution.Daily).Symbol;
-            var ticker = EODHD.MacroIndicators.UnitedStates.GdpGrowthAnnual;
-            _datasetSymbol = AddData&lt;EODHDMacroIndicators&gt;(ticker).Symbol;
-        }
-
-        public override void OnData(Slice slice)
-        {
-            if (slice.Get&lt;EODHDMacroIndicators&gt;().TryGetValue(_datasetSymbol, out var indicators))
-            {
-                var gdp = indicators.FirstOrDefault() as EODHDMacroIndicator;
-                SetHoldings(_equitySymbol, gdp.Value &gt; 0m ? 1 : -1);
-            }
+            var gdp = indicators.FirstOrDefault() as EODHDMacroIndicator;
+            SetHoldings(_equitySymbol, gdp.Value &gt; 0m ? 1 : -1);
         }
     }
 }</pre>
@@ -83,52 +80,49 @@ class MacroIndicatorAlphaModel(AlphaModel):
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for added in changes.added_securities:
             self._symbol = added.symbol</pre>
-<pre class="csharp">namespace QuantConnect.DataLibrary.Tests
+<pre class="csharp">public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
 {
-    public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        // Use market ETF as a vehicle to trade.
+        var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbol));
+        // Custom alpha model to emit insights according to macroeconomic indicators.
+        AddAlpha(new MacroIndicatorAlphaModel(this));
+        // Equal weighting position sizing to dissipate capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+    }
+}
+
+public class MacroIndicatorAlphaModel : AlphaModel
+{
+    private Symbol _symbol, _datasetSymbol;
+
+    public MacroIndicatorAlphaModel(QCAlgorithm algorithm)
+    {
+        // Request US GDP growth indicator data to generate trade signals.
+        var ticker = EODHD.MacroIndicators.UnitedStates.GdpGrowthAnnual;
+        _datasetSymbol = algorithm.AddData&lt;EODHDMacroIndicators&gt;(ticker).Symbol;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        // Trade based on the updated macroeconomic indicator.
+        if (slice.Get&lt;EODHDMacroIndicators&gt;().TryGetValue(_datasetSymbol, out var indicators))
         {
-            // Use market ETF as a vehicle to trade.
-            var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-            AddUniverseSelection(new ManualUniverseSelectionModel(symbol));
-            // Custom alpha model to emit insights according to macroeconomic indicators.
-            AddAlpha(new MacroIndicatorAlphaModel(this));
-            // Equal weighting position sizing to dissipate capital risk evenly.
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+            var gdp = indicators.FirstOrDefault() as EODHDMacroIndicator;
+            // If the GDP growth is positive, the market ETF is expected to rise.
+            // Otherwise, it is expected the market ETF will drop.
+            var direction = gdp.Value &gt; 0m ? InsightDirection.Up : InsightDirection.Down;
+            yield return Insight.Price(_symbol, TimeSpan.FromDays(5), direction);
         }
     }
 
-    public class MacroIndicatorAlphaModel : AlphaModel
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        private Symbol _symbol, _datasetSymbol;
-
-        public MacroIndicatorAlphaModel(QCAlgorithm algorithm)
+        foreach (var added in changes.AddedSecurities)
         {
-            // Request US GDP growth indicator data to generate trade signals.
-            var ticker = EODHD.MacroIndicators.UnitedStates.GdpGrowthAnnual;
-            _datasetSymbol = algorithm.AddData&lt;EODHDMacroIndicators&gt;(ticker).Symbol;
-        }
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            // Trade based on the updated macroeconomic indicator.
-            if (slice.Get&lt;EODHDMacroIndicators&gt;().TryGetValue(_datasetSymbol, out var indicators))
-            {
-                var gdp = indicators.FirstOrDefault() as EODHDMacroIndicator;
-                // If the GDP growth is positive, the market ETF is expected to rise.
-                // Otherwise, it is expected the market ETF will drop.
-                var direction = gdp.Value &gt; 0m ? InsightDirection.Up : InsightDirection.Down;
-                yield return Insight.Price(_symbol, TimeSpan.FromDays(5), direction);
-            }
-        }
-
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-        {
-            foreach (var added in changes.AddedSecurities)
-            {
-                _symbol = added.Symbol;
-            }
+            _symbol = added.Symbol;
         }
     }
 }</pre>

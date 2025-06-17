@@ -12,26 +12,21 @@ class ForexAlgorithm (QCAlgorithm):
 
         self.set_benchmark(self.eurusd)
 </pre>
-<pre class="csharp">
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class ForexAlgorithm : QCAlgorithm
 {
-    public class ForexAlgorithm : QCAlgorithm
+    private Symbol _symbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol;
+        SetStartDate(2019, 2, 20);
+        SetEndDate(2019, 2, 21);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2019, 2, 20);
-            SetEndDate(2019, 2, 21);
-            SetCash(100000);
+        _symbol = AddForex("EURUSD", Resolution.Minute).Symbol;
 
-            _symbol = AddForex("EURUSD", Resolution.Minute).Symbol;
-
-            SetBenchmark(_symbol);
-        }
+        SetBenchmark(_symbol);
     }
-}
-</pre>
+}</pre>
 </div>
 
 <p>For more information about creating Forex subscriptions, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/forex/requesting-data">Requesting Data</a>.</p>

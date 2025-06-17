@@ -60,71 +60,66 @@ class SMAPairsTrading(QCAlgorithm):
             self.spread_mean.update(tuple[0], tuple[2]-tuple[1])
             self.spread_std.update(tuple[0], tuple[2]-tuple[1])
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class GoldSilverPairsTradingAlgorithm : QCAlgorithm
 {
-    public class GoldSilverPairsTradingAlgorithm : QCAlgorithm
+    // Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
+    private SimpleMovingAverage _spreadMean = new SimpleMovingAverage(500);
+    private StandardDeviation _spreadStd = new StandardDeviation(500);
+    private Security[] _pair = new Security[2];
+
+    public override void Initialize()
     {
-        // Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
-        private SimpleMovingAverage _spreadMean = new SimpleMovingAverage(500);
-        private StandardDeviation _spreadStd = new StandardDeviation(500);
-        private Security[] _pair = new Security[2];
+        SetStartDate(2018, 7, 1);  
+        SetEndDate(2019, 3, 31);  
+        SetCash(100000);  
 
-        public override void Initialize()
-        {
-            SetStartDate(2018, 7, 1);  
-            SetEndDate(2019, 3, 31);  
-            SetCash(100000);  
+        // Request gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
+        AddCfd("XAUUSD", Resolution.Hour);
+        AddCfd("XAGUSD", Resolution.Hour);
+    }
 
-            // Request gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
-            AddCfd("XAUUSD", Resolution.Hour);
-            AddCfd("XAGUSD", Resolution.Hour);
-        }
-
-        public override void OnData(Slice slice) 
-        {
-            // Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
-            var spread = _pair[1].Price - _pair[0].Price;
-            _spreadMean.Update(Time, spread);
-            _spreadStd.Update(Time, spread);
-            
-            var upperthreshold = _spreadMean + _spreadStd;
-            var lowerthreshold = _spreadMean - _spreadStd;
-            
-            // If the spread is higher than upper threshold, bet their spread series will revert to mean
-            if (spread &gt; upperthreshold)
-            {
-                SetHoldings(_pair[0].Symbol, 1);
-                SetHoldings(_pair[1].Symbol, -1);
-            }
-            else if (spread &lt; lowerthreshold)
-            {
-                SetHoldings(_pair[0].Symbol, -1);
-                SetHoldings(_pair[1].Symbol, 1);
-            }
-            // Close positions if mean reverted
-            else if ((Portfolio[_pair[0].Symbol].Quantity &gt; 0m &amp;&amp; spread &lt; _spreadMean)
-            || (Portfolio[_pair[0].Symbol].Quantity &lt; 0m &amp;&amp; spread &gt; _spreadMean))
-            {
-                Liquidate();
-            }
-        }
+    public override void OnData(Slice slice) 
+    {
+        // Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
+        var spread = _pair[1].Price - _pair[0].Price;
+        _spreadMean.Update(Time, spread);
+        _spreadStd.Update(Time, spread);
         
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {    
-            _pair = changes.AddedSecurities.ToArray();
-            
-            //1. Call for 500 days of history data for each symbol in the pair and save to the variable history
-            var history = History(_pair.Select(x =&gt; x.Symbol), 500);
-            
-            //2. Iterate through the history tuple and update the mean and standard deviation with historical data 
-            foreach(var slice in history)
-            {
-                var spread = slice[_pair[1].Symbol].Close - slice[_pair[0].Symbol].Close;
-                _spreadMean.Update(slice.Time, spread);
-                _spreadStd.Update(slice.Time, spread);
-            }
+        var upperthreshold = _spreadMean + _spreadStd;
+        var lowerthreshold = _spreadMean - _spreadStd;
+        
+        // If the spread is higher than upper threshold, bet their spread series will revert to mean
+        if (spread &gt; upperthreshold)
+        {
+            SetHoldings(_pair[0].Symbol, 1);
+            SetHoldings(_pair[1].Symbol, -1);
+        }
+        else if (spread &lt; lowerthreshold)
+        {
+            SetHoldings(_pair[0].Symbol, -1);
+            SetHoldings(_pair[1].Symbol, 1);
+        }
+        // Close positions if mean reverted
+        else if ((Portfolio[_pair[0].Symbol].Quantity &gt; 0m &amp;&amp; spread &lt; _spreadMean)
+        || (Portfolio[_pair[0].Symbol].Quantity &lt; 0m &amp;&amp; spread &gt; _spreadMean))
+        {
+            Liquidate();
+        }
+    }
+    
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {    
+        _pair = changes.AddedSecurities.ToArray();
+        
+        //1. Call for 500 days of history data for each symbol in the pair and save to the variable history
+        var history = History(_pair.Select(x =&gt; x.Symbol), 500);
+        
+        //2. Iterate through the history tuple and update the mean and standard deviation with historical data 
+        foreach(var slice in history)
+        {
+            var spread = slice[_pair[1].Symbol].Close - slice[_pair[0].Symbol].Close;
+            _spreadMean.Update(slice.Time, spread);
+            _spreadStd.Update(slice.Time, spread);
         }
     }
 }</pre>
@@ -201,86 +196,80 @@ class PairsTradingAlphaModel(AlphaModel):
             self.spread_mean.update(tuple[0], tuple[2]-tuple[1])
             self.spread_std.update(tuple[0], tuple[2]-tuple[1])
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class GoldSilverPairsTradingAlgorithm : QCAlgorithm
 {
-    public class GoldSilverPairsTradingAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2018, 7, 1);  
-            SetEndDate(2019, 3, 31);  
-            SetCash(100000);  
+        SetStartDate(2018, 7, 1);  
+        SetEndDate(2019, 3, 31);  
+        SetCash(100000);  
 
-            UniverseSettings.Resolution = Resolution.Hour;
-            // Custom universe contains only gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
-            SetUniverseSelection(new ManualUniverseSelectionModel
-            (
-                new [] {"XAUUSD", "XAGUSD"}
-                    .Select(x =&gt; QuantConnect.Symbol.Create(x, SecurityType.Cfd, Market.Oanda))
-            ));
-            // Custom alpha model to emit trade insights based on the gold-sliver price spread
-            AddAlpha(new PairsTradingAlphaModel());
-            // Equal weighting trades assuming the spread is cointegrated by 1:1 ratio
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel()); 
-        }
-    }
-    
-    public partial class PairsTradingAlphaModel : AlphaModel
-    {
-        // Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
-        private SimpleMovingAverage _spreadMean = new SimpleMovingAverage(500);
-        private StandardDeviation _spreadStd = new StandardDeviation(500);
-        // Assume efficient mean reversal happens within 2 hours
-        private TimeSpan _period = TimeSpan.FromHours(2);
-        private Security[] _pair = new Security[2];
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice) 
-        {
-            // Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
-            var spread = _pair[1].Price - _pair[0].Price;
-            _spreadMean.Update(algorithm.Time, spread);
-            _spreadStd.Update(algorithm.Time, spread);
-            
-            var upperthreshold = _spreadMean + _spreadStd;
-            var lowerthreshold = _spreadMean - _spreadStd;
-
-            // If the spread is higher than upper threshold, bet their spread series will revert to mean
-            if (spread &gt; upperthreshold)
-            {
-                return Insight.Group( 
-                    Insight.Price(_pair[0].Symbol, _period, InsightDirection.Up),
-                    Insight.Price(_pair[1].Symbol, _period, InsightDirection.Down)
-                );
-            }
-            else if (spread &lt; lowerthreshold)
-            {
-                return Insight.Group( 
-                    Insight.Price(_pair[0].Symbol, _period, InsightDirection.Down), 
-                    Insight.Price(_pair[1].Symbol, _period, InsightDirection.Up) 
-                );
-            }
-
-            return Enumerable.Empty&lt;Insight&gt;();
-        }
-        
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-        {    
-            _pair = changes.AddedSecurities.ToArray();
-            
-            //1. Call for 500 days of history data for each symbol in the pair and save to the variable history
-            var history = algorithm.History(_pair.Select(x =&gt; x.Symbol), 500);
-            
-            //2. Iterate through the history tuple and update the mean and standard deviation with historical data 
-            foreach (var slice in history)
-            {
-                var spread = slice[_pair[1].Symbol].Close - slice[_pair[0].Symbol].Close;
-                _spreadMean.Update(slice.Time, spread);
-                _spreadStd.Update(slice.Time, spread);
-            }
-        }
+        UniverseSettings.Resolution = Resolution.Hour;
+        // Custom universe contains only gold and sliver spot CFDs for trading their spread difference, assuming their spread series is cointegrated
+        SetUniverseSelection(new ManualUniverseSelectionModel
+        (
+            new [] {"XAUUSD", "XAGUSD"}
+                .Select(x =&gt; QuantConnect.Symbol.Create(x, SecurityType.Cfd, Market.Oanda))
+        ));
+        // Custom alpha model to emit trade insights based on the gold-sliver price spread
+        AddAlpha(new PairsTradingAlphaModel());
+        // Equal weighting trades assuming the spread is cointegrated by 1:1 ratio
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel()); 
     }
 }
-</pre>
+
+public partial class PairsTradingAlphaModel : AlphaModel
+{
+    // Use 500-step mean and SD indicator on determine the spread relative difference for trading signal generation
+    private SimpleMovingAverage _spreadMean = new SimpleMovingAverage(500);
+    private StandardDeviation _spreadStd = new StandardDeviation(500);
+    // Assume efficient mean reversal happens within 2 hours
+    private TimeSpan _period = TimeSpan.FromHours(2);
+    private Security[] _pair = new Security[2];
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice) 
+    {
+        // Update the indicator with updated spread difference, such that the an updated cointegration threshold is calculated for trade inception
+        var spread = _pair[1].Price - _pair[0].Price;
+        _spreadMean.Update(algorithm.Time, spread);
+        _spreadStd.Update(algorithm.Time, spread);
+        
+        var upperthreshold = _spreadMean + _spreadStd;
+        var lowerthreshold = _spreadMean - _spreadStd;
+
+        // If the spread is higher than upper threshold, bet their spread series will revert to mean
+        if (spread &gt; upperthreshold)
+        {
+            return Insight.Group( 
+                Insight.Price(_pair[0].Symbol, _period, InsightDirection.Up),
+                Insight.Price(_pair[1].Symbol, _period, InsightDirection.Down)
+            );
+        }
+        else if (spread &lt; lowerthreshold)
+        {
+            return Insight.Group( 
+                Insight.Price(_pair[0].Symbol, _period, InsightDirection.Down), 
+                Insight.Price(_pair[1].Symbol, _period, InsightDirection.Up) 
+            );
+        }
+
+        return Enumerable.Empty&lt;Insight&gt;();
+    }
+    
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {    
+        _pair = changes.AddedSecurities.ToArray();
+        
+        //1. Call for 500 days of history data for each symbol in the pair and save to the variable history
+        var history = algorithm.History(_pair.Select(x =&gt; x.Symbol), 500);
+        
+        //2. Iterate through the history tuple and update the mean and standard deviation with historical data 
+        foreach (var slice in history)
+        {
+            var spread = slice[_pair[1].Symbol].Close - slice[_pair[0].Symbol].Close;
+            _spreadMean.Update(slice.Time, spread);
+            _spreadStd.Update(slice.Time, spread);
+        }
+    }
+}</pre>
 </div>

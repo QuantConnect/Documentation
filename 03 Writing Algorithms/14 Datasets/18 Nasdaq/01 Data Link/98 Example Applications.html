@@ -38,48 +38,45 @@ class NasdaqCustomColumns(NasdaqDataLink):
         # Define ValueColumnName: cannot be None, Empty or non-existant column name
         super().__init__("mid")
         self.value_column_name = "mid"</pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class NasdaqImporterAlgorithm : QCAlgorithm
 {
-    public class NasdaqImporterAlgorithm : QCAlgorithm
+    private string nasdaqCode = "QDL/BITFINEX";
+    private SimpleMovingAverage sma;
+
+    public override void Initialize()
     {
-        private string nasdaqCode = "QDL/BITFINEX";
-        private SimpleMovingAverage sma;
-
-        public override void Initialize()
-        {
-            // Optional argument - personal token necessary for restricted dataset
-            // NasdaqDataLink.SetAuthCode(this.GetParameter("nasdaq-data-link-api-key"));
-            SetStartDate(2014, 4, 1);
-            SetEndDate(DateTime.Today.AddDays(-1));
-            SetCash(25000); 
-            // Request nasdaq data link data to trade
-            AddData&lt;NasdaqCustomColumns&gt;(nasdaqCode, Resolution.Daily, TimeZones.NewYork);
-            // Create SMA indicator that feed with nasdaq data link data, which can be used to determine trend for trend following trade
-            sma = SMA(nasdaqCode, 14);
-        }
-
-        public override void OnData(Slice data)
-        {
-            // OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
-            if (!Portfolio.HoldStock)
-            {
-                SetHoldings(nasdaqCode, 1);
-                Debug("Purchased " + nasdaqCode + " &gt;&gt; " + Time);
-            }
-
-            Plot(nasdaqCode, "PriceSMA", sma.Current.Value);
-        }
+        // Optional argument - personal token necessary for restricted dataset
+        // NasdaqDataLink.SetAuthCode(this.GetParameter("nasdaq-data-link-api-key"));
+        SetStartDate(2014, 4, 1);
+        SetEndDate(DateTime.Today.AddDays(-1));
+        SetCash(25000); 
+        // Request nasdaq data link data to trade
+        AddData&lt;NasdaqCustomColumns&gt;(nasdaqCode, Resolution.Daily, TimeZones.NewYork);
+        // Create SMA indicator that feed with nasdaq data link data, which can be used to determine trend for trend following trade
+        sma = SMA(nasdaqCode, 14);
     }
 
-    // NasdaqDataLink often doesn't use close columns so need to tell LEAN which is the "value" column.
-    public class NasdaqCustomColumns : NasdaqDataLink
+    public override void OnData(Slice data)
     {
-        // Custom nasdaq data type for setting customized value column name.
-        // Value column is used for the primary trading calculations and charting.
-        public NasdaqCustomColumns() : base("mid")
+        // OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
+        if (!Portfolio.HoldStock)
         {
-            ValueColumnName = "mid";
+            SetHoldings(nasdaqCode, 1);
+            Debug("Purchased " + nasdaqCode + " &gt;&gt; " + Time);
         }
+
+        Plot(nasdaqCode, "PriceSMA", sma.Current.Value);
+    }
+}
+
+// NasdaqDataLink often doesn't use close columns so need to tell LEAN which is the "value" column.
+public class NasdaqCustomColumns : NasdaqDataLink
+{
+    // Custom nasdaq data type for setting customized value column name.
+    // Value column is used for the primary trading calculations and charting.
+    public NasdaqCustomColumns() : base("mid")
+    {
+        ValueColumnName = "mid";
     }
 }</pre>
 </div>
@@ -141,75 +138,70 @@ class NasdaqCustomColumns(NasdaqDataLink):
     def __init__(self) -&gt; None:
         # Select the column "mid".
         self.value_column_name = "mid" </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class NasdaqDataLinkFrameworkAlgorithm : QCAlgorithm
 {
-    public class NasdaqDataLinkFrameworkAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2024, 12, 1);
-            SetCash(100000);
-            
-            /// Requesting Data
-            // For premium datasets, provide your API Key
-            // NasdaqDataLink.SetAuthCode(GetParameter("nasdaq-data-link-api-key"));
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2024, 12, 1);
+        SetCash(100000);
+        
+        /// Requesting Data
+        // For premium datasets, provide your API Key
+        // NasdaqDataLink.SetAuthCode(GetParameter("nasdaq-data-link-api-key"));
 
-            // Add nasdaq data link data as trading vehicle
-            var bitcoinChainSymbol = AddData&lt;NasdaqDataLink&gt;("QDL/BCHAIN", Resolution.Daily).Symbol;
+        // Add nasdaq data link data as trading vehicle
+        var bitcoinChainSymbol = AddData&lt;NasdaqDataLink&gt;("QDL/BCHAIN", Resolution.Daily).Symbol;
 
-            /// Historical Data
-            var history = History&lt;NasdaqDataLink&gt;(bitcoinChainSymbol, 1000, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request for {bitcoinChainSymbol} Nasdaq Data Link");
+        /// Historical Data
+        var history = History&lt;NasdaqDataLink&gt;(bitcoinChainSymbol, 1000, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request for {bitcoinChainSymbol} Nasdaq Data Link");
 
-            // Custom alpha model that emit insights based on updated nasdaq data link data
-            AddAlpha(new NasdaqDataLinkAlphaModel(this));
+        // Custom alpha model that emit insights based on updated nasdaq data link data
+        AddAlpha(new NasdaqDataLinkAlphaModel(this));
 
-            // Invest equally to evenly dissipate the capital concentration risk
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
-        }
+        // Invest equally to evenly dissipate the capital concentration risk
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
+    }
+}
+
+public class NasdaqDataLinkAlphaModel : AlphaModel
+{
+    private Symbol _bitfinexExchangeRateSymbol;
+
+    public NasdaqDataLinkAlphaModel(QCAlgorithm algorithm)
+    {
+        /// Requesting NASDAQ data link custom data   
+        _bitfinexExchangeRateSymbol = algorithm.AddData&lt;NasdaqCustomColumns&gt;("QDL/BITFINEX", Resolution.Daily).Symbol;
+        // This dataset has multiple data columns, so create a custom class to set the value column name
+
+        /// Historical Data
+        var history = algorithm.History&lt;NasdaqCustomColumns&gt;(_bitfinexExchangeRateSymbol, 100, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request for {_bitfinexExchangeRateSymbol} Nasdaq Data Link");
     }
 
-    public class NasdaqDataLinkAlphaModel : AlphaModel
+    public override List&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        private Symbol _bitfinexExchangeRateSymbol;
-
-        public NasdaqDataLinkAlphaModel(QCAlgorithm algorithm)
+        List&lt;Insight&gt; insights = new List&lt;Insight&gt;();
+        
+        /// Trade only based on updated NASDAQ data link data
+        foreach (var kvp in slice.Get&lt;NasdaqCustomColumns&gt;())
         {
-            /// Requesting NASDAQ data link custom data   
-            _bitfinexExchangeRateSymbol = algorithm.AddData&lt;NasdaqCustomColumns&gt;("QDL/BITFINEX", Resolution.Daily).Symbol;
-            // This dataset has multiple data columns, so create a custom class to set the value column name
-
-            /// Historical Data
-            var history = algorithm.History&lt;NasdaqCustomColumns&gt;(_bitfinexExchangeRateSymbol, 100, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request for {_bitfinexExchangeRateSymbol} Nasdaq Data Link");
-        }
-
-        public override List&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            List&lt;Insight&gt; insights = new List&lt;Insight&gt;();
-            
-            /// Trade only based on updated NASDAQ data link data
-            foreach (var kvp in slice.Get&lt;NasdaqCustomColumns&gt;())
+            var datasetSymbol = kvp.Key;
+            if (datasetSymbol != _bitfinexExchangeRateSymbol || algorithm.Portfolio[datasetSymbol].Invested)
             {
-                var datasetSymbol = kvp.Key;
-                if (datasetSymbol != _bitfinexExchangeRateSymbol || algorithm.Portfolio[datasetSymbol].Invested)
-                {
-                    continue;
-                }
-                insights.Add(Insight.Price(datasetSymbol, TimeSpan.FromDays(6*22), InsightDirection.Up));
+                continue;
             }
-
-            return insights;
+            insights.Add(Insight.Price(datasetSymbol, TimeSpan.FromDays(6*22), InsightDirection.Up));
         }
-    }
 
-    public class NasdaqCustomColumns : NasdaqDataLink
-    {
-        // Select the column "mid".
-        public NasdaqCustomColumns() : base(valueColumnName: "mid") { }
+        return insights;
     }
+}
+
+public class NasdaqCustomColumns : NasdaqDataLink
+{
+    // Select the column "mid".
+    public NasdaqCustomColumns() : base(valueColumnName: "mid") { }
 }</pre>
 </div>

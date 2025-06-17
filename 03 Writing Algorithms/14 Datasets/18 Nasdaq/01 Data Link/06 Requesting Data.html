@@ -22,35 +22,32 @@ class NasdaqCustomColumns(NasdaqDataLink):
     def __init__(self) -&gt; None:
         # Select the column "mid".
         self.value_column_name = "mid"</pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class NasdaqDataLinkDataAlgorithm : QCAlgorithm
 {
-    public class NasdaqDataLinkDataAlgorithm : QCAlgorithm
+    private Symbol _bitcoinChainSymbol , _bitfinexExchangeRateSymbol ;
+
+    public override void Initialize()
     {
-        private Symbol _bitcoinChainSymbol , _bitfinexExchangeRateSymbol ;
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2022, 7, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2022, 1, 1);
-            SetEndDate(2022, 7, 1);
-            SetCash(100000);
+        // For premium datasets, provide your API Key
+        // NasdaqDataLink.SetAuthCode(GetParameter("nasdaq-data-link-api-key"));
 
-            // For premium datasets, provide your API Key
-            // NasdaqDataLink.SetAuthCode(GetParameter("nasdaq-data-link-api-key"));
+        _bitcoinChainSymbol = AddData&lt;NasdaqDataLink&gt;("QDL/BCHAIN", Resolution.Daily).Symbol;
+        // This dataset has one data column ("Value")
+        // Source : https://data.nasdaq.com/databases/BCHAIN
 
-           _bitcoinChainSymbol = AddData&lt;NasdaqDataLink&gt;("QDL/BCHAIN", Resolution.Daily).Symbol;
-           // This dataset has one data column ("Value")
-            // Source : https://data.nasdaq.com/databases/BCHAIN
-
-            _bitfinexExchangeRateSymbol = AddData&lt;NasdaqCustomColumns&gt;("QDL/BITFINEX", Resolution.Daily).Symbol;
-            // This dataset has multiple data columns
-            // Source: https://data.nasdaq.com/databases/BITFINEX
-        }
+        _bitfinexExchangeRateSymbol = AddData&lt;NasdaqCustomColumns&gt;("QDL/BITFINEX", Resolution.Daily).Symbol;
+        // This dataset has multiple data columns
+        // Source: https://data.nasdaq.com/databases/BITFINEX
     }
+}
 
-    public class NasdaqCustomColumns : NasdaqDataLink
-    {
-        // Select the column "mid"
-        public NasdaqCustomColumns() : base(valueColumnName: "mid") { }
-    }
+public class NasdaqCustomColumns : NasdaqDataLink
+{
+    // Select the column "mid"
+    public NasdaqCustomColumns() : base(valueColumnName: "mid") { }
 }</pre>
 </div>

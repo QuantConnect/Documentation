@@ -57,65 +57,60 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
         # Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
         if self.target_holdings != self.portfolio.invested:
             self.set_holdings(self.aapl, self.target_holdings)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class BrainSentimentDataAlgorithm : QCAlgorithm
 {
-    public class BrainSentimentDataAlgorithm : QCAlgorithm
+    private Symbol _symbol;
+    private Symbol _datasetSymbol;
+    private decimal? _latestSentimentValue = None;
+    private int _targetHoldings = 0;
+    
+    public override void Initialize()
     {
-        private Symbol _symbol;
-        private Symbol _datasetSymbol;
-        private decimal? _latestSentimentValue = None;
-        private int _targetHoldings = 0;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(100000);
         
-        public override void Initialize()
+        // Requesting the processed longer term (30-day) sentiment score data for sentiment trading
+        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _datasetSymbol = AddData&lt;BrainSentimentIndicator30Day&gt;(_symbol).Symbol;
+        
+        // Historical data
+        var history = History&lt;BrainSentimentIndicator30Day&gt;(_datasetSymbol, 100, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
+        
+        // Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
+        var previousSentimentValues = history.Select(x =&gt; x.Sentiment);
+        foreach (var sentiment in previousSentimentValues)
         {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(100000);
-            
-            // Requesting the processed longer term (30-day) sentiment score data for sentiment trading
-            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-            _datasetSymbol = AddData&lt;BrainSentimentIndicator30Day&gt;(_symbol).Symbol;
-            
-            // Historical data
-            var history = History&lt;BrainSentimentIndicator30Day&gt;(_datasetSymbol, 100, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
-            
-            // Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
-            var previousSentimentValues = history.Select(x =&gt; x.Sentiment);
-            foreach (var sentiment in previousSentimentValues)
-            {
-                Update(sentiment);
-            }
+            Update(sentiment);
+        }
+    }
+
+    
+    public void Update(decimal sentiment)
+    {
+        // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
+        if (_latestSentimentValue != None)
+        {
+            _targetHoldings = sentiment &gt; _latestSentimentValue ? 1 : 0;
+        }
+        _latestSentimentValue = sentiment;
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Update trade direction based on updated data
+        if (slice.ContainsKey(_datasetSymbol))
+        {
+            var sentiment = slice[_datasetSymbol].Sentiment;
+            Update(sentiment);
         }
 
-        
-        public void Update(decimal sentiment)
+        // Ensure we have security data in the current slice to avoid stale fill
+        // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
+        if (slice.Bar.ContainsKey(_symbol) &amp;&amp; _targetHoldings == 1 != Portfolio.Invested)
         {
-            // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
-            if (_latestSentimentValue != None)
-            {
-                _targetHoldings = sentiment &gt; _latestSentimentValue ? 1 : 0;
-            }
-            _latestSentimentValue = sentiment;
-        }
-        
-        public override void OnData(Slice slice)
-        {
-            // Update trade direction based on updated data
-            if (slice.ContainsKey(_datasetSymbol))
-            {
-                var sentiment = slice[_datasetSymbol].Sentiment;
-                Update(sentiment);
-            }
-
-            // Ensure we have security data in the current slice to avoid stale fill
-            // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
-            if (slice.Bar.ContainsKey(_symbol) &amp;&amp; _targetHoldings == 1 != Portfolio.Invested)
-            {
-                SetHoldings(_symbol, _targetHoldings);
-            }
+            SetHoldings(_symbol, _targetHoldings);
         }
     }
 }</pre>
@@ -219,142 +214,137 @@ class SymbolData:
             else:
                 self.target_direction = InsightDirection.FLAT
         self._latest_sentiment_value = sentiment</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class BrainSentimentDataAlgorithm : QCAlgorithm
 {
-    public class BrainSentimentDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(100000);
+        
+        Settings.MinimumOrderMarginPortfolioPercentage = 0;
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter by sentiment data
+        AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(altCoarse =&gt;
         {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(100000);
-            
-            Settings.MinimumOrderMarginPortfolioPercentage = 0;
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Filter by sentiment data
-            AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(altCoarse =&gt;
-            {
-                // Filter for any sentiment on last 7 days to trade on sentiment news
-                return from d in altCoarse.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
-                    where d.TotalArticleMentions7Days &gt; 0m
-                    select d.Symbol;
-            });
-            
-            AddAlpha(new BrainSentimentAlphaModel());
-            
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+            // Filter for any sentiment on last 7 days to trade on sentiment news
+            return from d in altCoarse.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
+                where d.TotalArticleMentions7Days &gt; 0m
+                select d.Symbol;
+        });
+        
+        AddAlpha(new BrainSentimentAlphaModel());
+        
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        
+        AddRiskManagement(new NullRiskManagementModel());
+        
+        SetExecution(new ImmediateExecutionModel());
     }
-        
-        
-    public class BrainSentimentAlphaModel : AlphaModel
+}
+    
+    
+public class BrainSentimentAlphaModel : AlphaModel
+{
+    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        var insights = new List&lt;Insight&gt;();
+        
+        foreach (var entry in _symbolDataBySymbol)
         {
-            var insights = new List&lt;Insight&gt;();
-            
-            foreach (var entry in _symbolDataBySymbol)
+            var symbol = entry.Key;
+            var symbolData = entry.Value;
+
+            // Update trade direction based on updated data
+            if (slice.ContainsKey(symbolData.datasetSymbol)  &amp;&amp; slice[symbolData.datasetSymbol] != None)
             {
-                var symbol = entry.Key;
-                var symbolData = entry.Value;
-
-                // Update trade direction based on updated data
-                if (slice.ContainsKey(symbolData.datasetSymbol)  &amp;&amp; slice[symbolData.datasetSymbol] != None)
-                {
-                    var sentiment = slice[symbolData.datasetSymbol].Sentiment;
-                    symbolData.Update(sentiment);
-                }
-                
-                // Ensure we have security data in the current slice to avoid stale fill
-                if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
-                {
-                    continue;
-                }
-
-                // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
-                if (symbolData.targetDirection == InsightDirection.Up != algorithm.Portfolio[symbol].Invested)
-                {
-                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(365), symbolData.targetDirection));
-                }
+                var sentiment = slice[symbolData.datasetSymbol].Sentiment;
+                symbolData.Update(sentiment);
             }
             
-            return insights;
+            // Ensure we have security data in the current slice to avoid stale fill
+            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
+            {
+                continue;
+            }
+
+            // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
+            if (symbolData.targetDirection == InsightDirection.Up != algorithm.Portfolio[symbol].Invested)
+            {
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(365), symbolData.targetDirection));
+            }
+        }
+        
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            var symbol = security.Symbol;
+            _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
         }
 
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        foreach (var security in changes.RemovedSecurities)
         {
-            foreach (var security in changes.AddedSecurities)
+            var symbol = security.Symbol;
+            if (_symbolDataBySymbol.ContainsKey(symbol))
             {
-                var symbol = security.Symbol;
-                _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
-            }
-
-            foreach (var security in changes.RemovedSecurities)
-            {
-                var symbol = security.Symbol;
-                if (_symbolDataBySymbol.ContainsKey(symbol))
-                {
-                    _symbolDataBySymbol[symbol].dispose();
-                    _symbolDataBySymbol.Remove(symbol);
-                }
+                _symbolDataBySymbol[symbol].dispose();
+                _symbolDataBySymbol.Remove(symbol);
             }
         }
     }
-    
-    
-    public class SymbolData
-    {
-        public Symbol datasetSymbol;
-        public InsightDirection targetDirection = InsightDirection.Flat;
-        private QCAlgorithm _algorithm;
-        private decimal? _latestSentimentValue = None;
+}
 
-        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+
+public class SymbolData
+{
+    public Symbol datasetSymbol;
+    public InsightDirection targetDirection = InsightDirection.Flat;
+    private QCAlgorithm _algorithm;
+    private decimal? _latestSentimentValue = None;
+
+    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+    {
+        _algorithm = algorithm;
+        
+        // Requesting the processed longer term (30-day) sentiment score data for sentiment trading
+        datasetSymbol = algorithm.AddData&lt;BrainSentimentIndicator30Day&gt;(symbol).Symbol;
+        
+        // Historical data
+        var history = algorithm.History&lt;BrainSentimentIndicator30Day&gt;(datasetSymbol, 100, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request for {symbol}");
+        if (history.Count() == 0)
         {
-            _algorithm = algorithm;
-            
-            // Requesting the processed longer term (30-day) sentiment score data for sentiment trading
-            datasetSymbol = algorithm.AddData&lt;BrainSentimentIndicator30Day&gt;(symbol).Symbol;
-            
-            // Historical data
-            var history = algorithm.History&lt;BrainSentimentIndicator30Day&gt;(datasetSymbol, 100, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol}");
-            if (history.Count() == 0)
-            {
-                return;
-            }
-            
-            // Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
-            var previousSentimentValues = history.Select(x =&gt; x.Sentiment);
-            foreach (var sentiment in previousSentimentValues)
-            {
-                Update(sentiment);
-            }
+            return;
         }
         
-        public void dispose()
+        // Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
+        var previousSentimentValues = history.Select(x =&gt; x.Sentiment);
+        foreach (var sentiment in previousSentimentValues)
         {
-            // Unsubscribe from the Brain Sentiment feed for this security to release computational resources
-            _algorithm.RemoveSecurity(datasetSymbol);
+            Update(sentiment);
         }
-        
-        public void Update(decimal sentiment)
+    }
+    
+    public void dispose()
+    {
+        // Unsubscribe from the Brain Sentiment feed for this security to release computational resources
+        _algorithm.RemoveSecurity(datasetSymbol);
+    }
+    
+    public void Update(decimal sentiment)
+    {
+        // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
+        if (_latestSentimentValue != None)
         {
-            // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
-            if (_latestSentimentValue != None)
-            {
-                targetDirection = sentiment &gt; _latestSentimentValue ? InsightDirection.Up : InsightDirection.Flat;
-            }
-            _latestSentimentValue = sentiment;
+            targetDirection = sentiment &gt; _latestSentimentValue ? InsightDirection.Up : InsightDirection.Flat;
         }
+        _latestSentimentValue = sentiment;
     }
 }</pre>
 </div>

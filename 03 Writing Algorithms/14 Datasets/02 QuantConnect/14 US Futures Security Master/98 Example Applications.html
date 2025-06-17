@@ -68,79 +68,74 @@ class USFuturesSecurityMasterDataClassicAlgorithm (QCAlgorithm):
         # Sell if trend down by threshold to follow the trend
         elif slice.bars[self.continuous_contract_symbol].price &lt; self.sma.current.value * (1-self.threshold) and not self.portfolio[mapped_symbol].is_short:
             self.market_order(mapped_symbol, -1)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class USFuturesSecurityMasterDataClassicAlgorithm  : QCAlgorithm
 {
-    public class USFuturesSecurityMasterDataClassicAlgorithm  : QCAlgorithm
+    private Future _continuousContract;
+    private Symbol _symbol;
+    // 1% margin to reassure trend direction
+    private decimal _threshold = 0.01m;
+    private SimpleMovingAverage _sma;
+    
+    public override void Initialize()
     {
-        private Future _continuousContract;
-        private Symbol _symbol;
-        // 1% margin to reassure trend direction
-        private decimal _threshold = 0.01m;
-        private SimpleMovingAverage _sma;
-        
-        public override void Initialize()
-        {
-            SetCash(1000000);
-            SetStartDate(2019, 2, 1);
-            SetEndDate(2021, 6, 1);
+        SetCash(1000000);
+        SetStartDate(2019, 2, 1);
+        SetEndDate(2021, 6, 1);
 
-            // Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
-            _continuousContract = AddFuture(Futures.Energies.CrudeOilWTI,
-                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-                dataMappingMode: DataMappingMode.OpenInterest,
-                contractDepthOffset: 0
-            );
-            _symbol = _continuousContract.Symbol;
-            
-            // Historical data
-            var history = History(_symbol, 60*24*10, Resolution.Minute);
-            Debug($"We got {history.Count()} items from our history request");
-            
-            // Set up SMA indicator for trend direction estimator
-            _sma = SMA(_symbol, 10, Resolution.Daily);
-            // Warm up the SMA indicator for its readiness for immediate use
-            foreach (var bar in history)
-            {
-                _sma.Update(new IndicatorDataPoint(bar.Time, bar.Close));
-            }
+        // Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
+        _continuousContract = AddFuture(Futures.Energies.CrudeOilWTI,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            contractDepthOffset: 0
+        );
+        _symbol = _continuousContract.Symbol;
+        
+        // Historical data
+        var history = History(_symbol, 60*24*10, Resolution.Minute);
+        Debug($"We got {history.Count()} items from our history request");
+        
+        // Set up SMA indicator for trend direction estimator
+        _sma = SMA(_symbol, 10, Resolution.Daily);
+        // Warm up the SMA indicator for its readiness for immediate use
+        foreach (var bar in history)
+        {
+            _sma.Update(new IndicatorDataPoint(bar.Time, bar.Close));
+        }
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Up-to-date handling of switching the mapped contract for trade liquidity
+        foreach (var (symbol, changedEvent) in slice.SymbolChangedEvents)
+        {
+            var oldSymbol = changedEvent.OldSymbol;
+            // Newly mapped contract might not have subscription data for trading yet, so we request its data
+            var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
+            var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -&gt; {newSymbol}";
+            var quantity = Portfolio[oldSymbol].Quantity;
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            Liquidate(oldSymbol, tag: tag);
+            if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
+            Log(tag);
         }
         
-        public override void OnData(Slice slice)
-        {
-            // Up-to-date handling of switching the mapped contract for trade liquidity
-            foreach (var (symbol, changedEvent) in slice.SymbolChangedEvents)
-            {
-                var oldSymbol = changedEvent.OldSymbol;
-                // Newly mapped contract might not have subscription data for trading yet, so we request its data
-                var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;
-                var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -&gt; {newSymbol}";
-                var quantity = Portfolio[oldSymbol].Quantity;
-                // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-                Liquidate(oldSymbol, tag: tag);
-                if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
-                Log(tag);
-            }
-            
-            var mappedSymbol = _continuousContract.Mapped;
+        var mappedSymbol = _continuousContract.Mapped;
 
-            // Make sure trade decisions are based on newly received data
-            if (!(slice.Bars.ContainsKey(_symbol) &amp;&amp; _sma.IsReady &amp;&amp; mappedSymbol != None))
-            {
-                return;
-            }
-            
-            // Buy if trend up by threshold to follow the trend
-            if (slice.Bars[_symbol].Price &gt; _sma.Current.Value * (1+_threshold) &amp;&amp; !Portfolio[mappedSymbol].IsLong)
-            {
-                MarketOrder(mappedSymbol, 1);
-            }
-            // Sell  if trend down by threshold to follow the trend
-            else if (slice.Bars[_symbol].Price &lt; _sma.Current.Value * (1-_threshold) &amp;&amp; !Portfolio[mappedSymbol].IsShort)
-            {
-                MarketOrder(mappedSymbol, -1);
-            }
+        // Make sure trade decisions are based on newly received data
+        if (!(slice.Bars.ContainsKey(_symbol) &amp;&amp; _sma.IsReady &amp;&amp; mappedSymbol != None))
+        {
+            return;
+        }
+        
+        // Buy if trend up by threshold to follow the trend
+        if (slice.Bars[_symbol].Price &gt; _sma.Current.Value * (1+_threshold) &amp;&amp; !Portfolio[mappedSymbol].IsLong)
+        {
+            MarketOrder(mappedSymbol, 1);
+        }
+        // Sell  if trend down by threshold to follow the trend
+        else if (slice.Bars[_symbol].Price &lt; _sma.Current.Value * (1-_threshold) &amp;&amp; !Portfolio[mappedSymbol].IsShort)
+        {
+            MarketOrder(mappedSymbol, -1);
         }
     }
 }</pre>
@@ -234,122 +229,117 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
             if algorithm.securities[insight.symbol].is_tradable:
                 targets.append(PortfolioTarget(insight.symbol, insight.direction))
         return targets</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class USFuturesSecurityMasterDataFrameworkAlgorithm : QCAlgorithm
 {
-    public class USFuturesSecurityMasterDataFrameworkAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetCash(1000000);
-            SetStartDate(2019, 2, 1);
-            SetEndDate(2021, 6, 1);
+        SetCash(1000000);
+        SetStartDate(2019, 2, 1);
+        SetEndDate(2021, 6, 1);
 
-            // Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
-            AddFuture(Futures.Energies.CrudeOilWTI,
-                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-                dataMappingMode: DataMappingMode.OpenInterest,
-                contractDepthOffset: 0
-            );
-            AddAlpha(new ContinuousFuturesAlphaModel());
-            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
-        }
-        
-        class ContinuousFuturesAlphaModel : AlphaModel
+        // Setting the continuous contract mapping criteria, the contract with highest open interest provide the best price information for trend estimation
+        AddFuture(Futures.Energies.CrudeOilWTI,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            contractDepthOffset: 0
+        );
+        AddAlpha(new ContinuousFuturesAlphaModel());
+        SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+    }
+    
+    class ContinuousFuturesAlphaModel : AlphaModel
+    {
+        private Future _continuousContract;
+        private Symbol _symbol;
+        // 1% margin to reassure trend direction
+        private decimal _threshold = 0.01m;
+        private SimpleMovingAverage _sma;
+    
+        public override IEnumerable Update(QCAlgorithm algorithm, Slice slice)
         {
-            private Future _continuousContract;
-            private Symbol _symbol;
-            // 1% margin to reassure trend direction
-            private decimal _threshold = 0.01m;
-            private SimpleMovingAverage _sma;
-        
-            public override IEnumerable Update(QCAlgorithm algorithm, Slice slice)
+            var insights = new List();
+            
+            //  Check if contract data available, since all trades are based on that only
+            if (_symbol == None || _continuousContract == None)
             {
-                var insights = new List();
-                
-                //  Check if contract data available, since all trades are based on that only
-                if (_symbol == None || _continuousContract == None)
-                {
-                    return insights;
-                }
-                
-                // Up-to-date handling of switching the mapped contract for trade liquidity
-                foreach (var (symbol, changedEvent) in slice.SymbolChangedEvents)
-                {
-                    var oldSymbol = changedEvent.OldSymbol;
-                    if (algorithm.Insights.HasActiveInsights(oldSymbol, algorithm.UtcTime))
-                    {
-                        var newSymbol = changedEvent.NewSymbol;
-                        var tag = $"Rollover - Symbol changed at {algorithm.Time}: {oldSymbol} -&gt; {newSymbol}";
-                        var lastInsight = algorithm.Insights[oldSymbol].OrderBy(x =&gt; x.CloseTimeUtc).LastOrDefault();
-                        insights.Add(Insight.Price(newSymbol, lastInsight.CloseTimeUtc, lastInsight.Direction, tag: tag));
-                        algorithm.Insights.Clear(new Symbol[] { oldSymbol });
-                        algorithm.Log(tag);
-                    }
-                }
-                
-                var mappedSymbol = _continuousContract.Mapped;
-                // Make sure trade decisions are based on newly received data
-                if (!slice.Bars.ContainsKey(_symbol) || !_sma.IsReady || mappedSymbol == None)
-                {
-                    return insights;
-                }
-                
-                // Long if trend up by threshold to follow the trend
-                if (slice.Bars[_symbol].Price &gt; _sma.Current.Value * (1+_threshold) &amp;&amp; !algorithm.Portfolio[mappedSymbol].IsLong)
-                {
-                    insights.Add(Insight.Price(mappedSymbol, TimeSpan.FromDays(14), InsightDirection.Up));
-                }
-                // Short if trend down by threshold to follow the trend
-                else if (slice.Bars[_symbol].Price &lt; _sma.Current.Value * (1-_threshold) &amp;&amp; !algorithm.Portfolio[mappedSymbol].IsShort)
-                {
-                    insights.Add(Insight.Price(mappedSymbol, TimeSpan.FromDays(14), InsightDirection.Down));
-                }
-                
                 return insights;
             }
-        
-            public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+            
+            // Up-to-date handling of switching the mapped contract for trade liquidity
+            foreach (var (symbol, changedEvent) in slice.SymbolChangedEvents)
             {
-                foreach (var security in changes.AddedSecurities)
+                var oldSymbol = changedEvent.OldSymbol;
+                if (algorithm.Insights.HasActiveInsights(oldSymbol, algorithm.UtcTime))
                 {
-                    var symbol = security.Symbol;
-                    // Set up SMA indicator for trend direction estimator, only for the canonical symbol
-                    if (symbol.IsCanonical())
+                    var newSymbol = changedEvent.NewSymbol;
+                    var tag = $"Rollover - Symbol changed at {algorithm.Time}: {oldSymbol} -&gt; {newSymbol}";
+                    var lastInsight = algorithm.Insights[oldSymbol].OrderBy(x =&gt; x.CloseTimeUtc).LastOrDefault();
+                    insights.Add(Insight.Price(newSymbol, lastInsight.CloseTimeUtc, lastInsight.Direction, tag: tag));
+                    algorithm.Insights.Clear(new Symbol[] { oldSymbol });
+                    algorithm.Log(tag);
+                }
+            }
+            
+            var mappedSymbol = _continuousContract.Mapped;
+            // Make sure trade decisions are based on newly received data
+            if (!slice.Bars.ContainsKey(_symbol) || !_sma.IsReady || mappedSymbol == None)
+            {
+                return insights;
+            }
+            
+            // Long if trend up by threshold to follow the trend
+            if (slice.Bars[_symbol].Price &gt; _sma.Current.Value * (1+_threshold) &amp;&amp; !algorithm.Portfolio[mappedSymbol].IsLong)
+            {
+                insights.Add(Insight.Price(mappedSymbol, TimeSpan.FromDays(14), InsightDirection.Up));
+            }
+            // Short if trend down by threshold to follow the trend
+            else if (slice.Bars[_symbol].Price &lt; _sma.Current.Value * (1-_threshold) &amp;&amp; !algorithm.Portfolio[mappedSymbol].IsShort)
+            {
+                insights.Add(Insight.Price(mappedSymbol, TimeSpan.FromDays(14), InsightDirection.Down));
+            }
+            
+            return insights;
+        }
+    
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                var symbol = security.Symbol;
+                // Set up SMA indicator for trend direction estimator, only for the canonical symbol
+                if (symbol.IsCanonical())
+                {
+                    _continuousContract = (Future)security;
+                    _symbol = symbol;
+                    _sma = algorithm.SMA(_symbol, 10, Resolution.Daily);
+                    
+                    // Historical data 
+                    var history = algorithm.History(symbol, 60*24*10, Resolution.Minute);
+                    algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
+                    
+                    // Warm up the SMA indicator for its readiness for immediate use
+                    foreach (var bar in history)
                     {
-                        _continuousContract = (Future)security;
-                        _symbol = symbol;
-                        _sma = algorithm.SMA(_symbol, 10, Resolution.Daily);
-                        
-                        // Historical data 
-                        var history = algorithm.History(symbol, 60*24*10, Resolution.Minute);
-                        algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
-                        
-                        // Warm up the SMA indicator for its readiness for immediate use
-                        foreach (var bar in history)
-                        {
-                            _sma.Update(new IndicatorDataPoint(bar.Time, bar.Close));
-                        }
+                        _sma.Update(new IndicatorDataPoint(bar.Time, bar.Close));
                     }
                 }
             }
         }
-        
-        class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+    }
+    
+    class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+    {
+        public override IEnumerable CreateTargets(QCAlgorithm algorithm, Insight[] insights)
         {
-            public override IEnumerable CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+            var targets = new List();
+            foreach (var insight in insights)
             {
-                var targets = new List();
-                foreach (var insight in insights)
+                if (algorithm.Securities[insight.Symbol].IsTradable)
                 {
-                    if (algorithm.Securities[insight.Symbol].IsTradable)
-                    {
-                        targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
-                    }
+                    targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
                 }
-                return targets;
             }
+            return targets;
         }
     }
 }</pre>

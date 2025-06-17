@@ -51,68 +51,63 @@ class BrainMLRankingDataAlgorithm(QCAlgorithm):
         for i, rank in enumerate(ranks):
             weight = rank / sum(ranks)
             self.set_holdings(symbols[i], weight)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class BrainMLRankingDataAlgorithm : QCAlgorithm
 {
-    public class BrainMLRankingDataAlgorithm : QCAlgorithm
+    private Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+    
+    public override void Initialize()
     {
-        private Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(100000);
         
-        public override void Initialize()
+        // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
+        var tickers = new List&lt;string&gt;() {"AAPL", "TSLA", "MSFT", "F", "KO"};
+        foreach (var ticker in tickers)
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(100000);
+            // Requesting data to get 2 days estimated relative ranking
+            var symbol = AddEquity(ticker, Resolution.Daily).Symbol;
+            var datasetSymbol = AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
+            _symbolByDatasetSymbol.Add(datasetSymbol, symbol);
             
-            // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
-            var tickers = new List&lt;string&gt;() {"AAPL", "TSLA", "MSFT", "F", "KO"};
-            foreach (var ticker in tickers)
-            {
-                // Requesting data to get 2 days estimated relative ranking
-                var symbol = AddEquity(ticker, Resolution.Daily).Symbol;
-                var datasetSymbol = AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
-                _symbolByDatasetSymbol.Add(datasetSymbol, symbol);
-                
-                // Historical data
-                var history = History&lt;BrainStockRanking2Day&gt;(datasetSymbol, 365, Resolution.Daily);
-                Debug($"We got {history.Count()} items from our history request for {symbol}");
-            }
+            // Historical data
+            var history = History&lt;BrainStockRanking2Day&gt;(datasetSymbol, 365, Resolution.Daily);
+            Debug($"We got {history.Count()} items from our history request for {symbol}");
         }
+    }
 
-        public override void OnData(Slice slice)
+    public override void OnData(Slice slice)
+    {
+        // Collect rankings for all symbols for ranking them
+        var points = slice.Get&lt;BrainStockRanking2Day&gt;();
+        if (points == None)
         {
-            // Collect rankings for all symbols for ranking them
-            var points = slice.Get&lt;BrainStockRanking2Day&gt;();
-            if (points == None)
-            {
-                return;
-            }
-            var symbols = new List&lt;Symbol&gt;();
-            var ranks = new List&lt;decimal&gt;();
-            foreach (var point in points.Values)
-            {
-                symbols.Add(_symbolByDatasetSymbol[point.Symbol]);
-                ranks.Add(point.Rank);
-            }
-            
-            // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing
-            if (ranks.Count() == 0) return;
-            var sortedRanksTemp = new List&lt;decimal&gt;(ranks); 
-            sortedRanksTemp.Sort();
-            var sortedRanks = new List&lt;decimal&gt;();
-            for (var i = 0; i &lt; symbols.Count(); i++)
-            {
-                sortedRanks.Add(sortedRanksTemp.IndexOf(ranks[i]) + 1);
-            }
-            
-            // Place orders, the better the rank, the higher the estimated return and hence weight
-            for (var i = 0; i &lt; symbols.Count(); i++)
-            {
-                var rank = sortedRanks[i];
-                var weight = rank / sortedRanks.Sum();
-                SetHoldings(symbols[i], weight);
-            }
+            return;
+        }
+        var symbols = new List&lt;Symbol&gt;();
+        var ranks = new List&lt;decimal&gt;();
+        foreach (var point in points.Values)
+        {
+            symbols.Add(_symbolByDatasetSymbol[point.Symbol]);
+            ranks.Add(point.Rank);
+        }
+        
+        // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing
+        if (ranks.Count() == 0) return;
+        var sortedRanksTemp = new List&lt;decimal&gt;(ranks); 
+        sortedRanksTemp.Sort();
+        var sortedRanks = new List&lt;decimal&gt;();
+        for (var i = 0; i &lt; symbols.Count(); i++)
+        {
+            sortedRanks.Add(sortedRanksTemp.IndexOf(ranks[i]) + 1);
+        }
+        
+        // Place orders, the better the rank, the higher the estimated return and hence weight
+        for (var i = 0; i &lt; symbols.Count(); i++)
+        {
+            var rank = sortedRanks[i];
+            var weight = rank / sortedRanks.Sum();
+            SetHoldings(symbols[i], weight);
         }
     }
 }</pre>
@@ -210,138 +205,133 @@ class SymbolData:
     def dispose(self):
         # Unsubscribe from the Brain ML Ranking feed for this security to release computation resources
         self.algorithm.remove_security(self.dataset_symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class BrainMLRankingDataAlgorithm : QCAlgorithm
 {
-    public class BrainMLRankingDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(100000);
+        
+        // Select based on ML ranking data
+        AddUniverse&lt;BrainStockRankingUniverse&gt;(altCoarse =&gt;
         {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(100000);
-            
-            // Select based on ML ranking data
-            AddUniverse&lt;BrainStockRankingUniverse&gt;(altCoarse =&gt;
-            {
-                // Select the ones that expected to out-perform the median of the whole market in 2-3 days
-                return from d in altCoarse.OfType&lt;BrainStockRankingUniverse&gt;() 
-                    where d.Rank2Days &gt; 0.2m &amp;&amp; d.Rank3Days &gt; 0.2m
-                    select d.Symbol;
-            });
-            
-            AddAlpha(new BrainMLRankingAlphaModel());
-            
-            SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+            // Select the ones that expected to out-perform the median of the whole market in 2-3 days
+            return from d in altCoarse.OfType&lt;BrainStockRankingUniverse&gt;() 
+                where d.Rank2Days &gt; 0.2m &amp;&amp; d.Rank3Days &gt; 0.2m
+                select d.Symbol;
+        });
+        
+        AddAlpha(new BrainMLRankingAlphaModel());
+        
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+        
+        AddRiskManagement(new NullRiskManagementModel());
+        
+        SetExecution(new ImmediateExecutionModel());
     }
-        
-        
-    public class BrainMLRankingAlphaModel : AlphaModel
-    {
-        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
-        private Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+}
+    
+    
+public class BrainMLRankingAlphaModel : AlphaModel
+{
+    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+    private Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new Dictionary&lt;Symbol, Symbol&gt;();
 
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+        
+        // Collect rankings for all selected symbols for ranking them
+        var points = slice.Get&lt;BrainStockRanking2Day&gt;();
+        if (points == None)
         {
-            var insights = new List&lt;Insight&gt;();
-            
-            // Collect rankings for all selected symbols for ranking them
-            var points = slice.Get&lt;BrainStockRanking2Day&gt;();
-            if (points == None)
-            {
-                return insights;
-            }
-            var symbols = new List&lt;Symbol&gt;();
-            var ranks = new List&lt;decimal&gt;();
-            foreach (var point in points.Values)
-            {
-                symbols.Add(_symbolByDatasetSymbol[point.Symbol]);
-                ranks.Add(point.Rank);
-            }
-            
-            // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing
-            if (ranks.Count() == 0) 
-            {
-                return insights; 
-            }
-            var sortedRanksTemp = new List&lt;decimal&gt;(ranks); 
-            sortedRanksTemp.Sort();
-            var sortedRanks = new List&lt;decimal&gt;();
-            for (var i = 0; i &lt; symbols.Count(); i++)
-            {
-                sortedRanks.Add(sortedRanksTemp.IndexOf(ranks[i]) + 1);
-            }
-            
-            // Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight
-            for (var i = 0; i &lt; symbols.Count(); i++)
-            {
-                var rank = sortedRanks[i];
-                var weight = rank / sortedRanks.Sum();
-                insights.Add(Insight.Price(symbols[i], TimeSpan.FromDays(7), InsightDirection.Up, None, None, None, (double)weight));
-            }
-            
             return insights;
         }
-
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        var symbols = new List&lt;Symbol&gt;();
+        var ranks = new List&lt;decimal&gt;();
+        foreach (var point in points.Values)
         {
-            foreach (var security in changes.AddedSecurities)
-            {
-                var symbol = security.Symbol;
-                var symbolData = new SymbolData(algorithm, symbol);
-                _symbolDataBySymbol.Add(symbol, symbolData);
-                _symbolByDatasetSymbol.Add(symbolData.datasetSymbol, symbol);
-            }
+            symbols.Add(_symbolByDatasetSymbol[point.Symbol]);
+            ranks.Add(point.Rank);
+        }
+        
+        // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing
+        if (ranks.Count() == 0) 
+        {
+            return insights; 
+        }
+        var sortedRanksTemp = new List&lt;decimal&gt;(ranks); 
+        sortedRanksTemp.Sort();
+        var sortedRanks = new List&lt;decimal&gt;();
+        for (var i = 0; i &lt; symbols.Count(); i++)
+        {
+            sortedRanks.Add(sortedRanksTemp.IndexOf(ranks[i]) + 1);
+        }
+        
+        // Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight
+        for (var i = 0; i &lt; symbols.Count(); i++)
+        {
+            var rank = sortedRanks[i];
+            var weight = rank / sortedRanks.Sum();
+            insights.Add(Insight.Price(symbols[i], TimeSpan.FromDays(7), InsightDirection.Up, None, None, None, (double)weight));
+        }
+        
+        return insights;
+    }
 
-            foreach (var security in changes.RemovedSecurities)
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            var symbol = security.Symbol;
+            var symbolData = new SymbolData(algorithm, symbol);
+            _symbolDataBySymbol.Add(symbol, symbolData);
+            _symbolByDatasetSymbol.Add(symbolData.datasetSymbol, symbol);
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {
+            var symbol = security.Symbol;
+            if (_symbolDataBySymbol.ContainsKey(symbol))
             {
-                var symbol = security.Symbol;
-                if (_symbolDataBySymbol.ContainsKey(symbol))
+                _symbolDataBySymbol[symbol].dispose();
+                _symbolDataBySymbol.Remove(symbol);
+            }
+            
+            foreach (var entry in _symbolByDatasetSymbol)
+            {
+                if (entry.Value == symbol)
                 {
-                    _symbolDataBySymbol[symbol].dispose();
-                    _symbolDataBySymbol.Remove(symbol);
-                }
-                
-                foreach (var entry in _symbolByDatasetSymbol)
-                {
-                    if (entry.Value == symbol)
-                    {
-                        _symbolByDatasetSymbol.Remove(entry.Key);
-                    }
+                    _symbolByDatasetSymbol.Remove(entry.Key);
                 }
             }
         }
     }
-    
-    
-    public class SymbolData
-    {
-        private QCAlgorithm _algorithm;
-        public Symbol datasetSymbol;
+}
 
-        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
-        {
-            _algorithm = algorithm;
-            
-            // Requesting data to get 2 days estimated relative ranking
-            datasetSymbol = algorithm.AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
-            
-            // Historical data
-            var history = algorithm.History&lt;BrainStockRanking2Day&gt;(datasetSymbol, 365, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol}");
-        }
+
+public class SymbolData
+{
+    private QCAlgorithm _algorithm;
+    public Symbol datasetSymbol;
+
+    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+    {
+        _algorithm = algorithm;
         
-        public void dispose()
-        {
-            // Unsubscribe from the Brain ML Ranking feed for this security to release computation resources
-            _algorithm.RemoveSecurity(datasetSymbol);
-        }
+        // Requesting data to get 2 days estimated relative ranking
+        datasetSymbol = algorithm.AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
+        
+        // Historical data
+        var history = algorithm.History&lt;BrainStockRanking2Day&gt;(datasetSymbol, 365, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request for {symbol}");
+    }
+    
+    public void dispose()
+    {
+        // Unsubscribe from the Brain ML Ranking feed for this security to release computation resources
+        _algorithm.RemoveSecurity(datasetSymbol);
     }
 }</pre>
 </div>

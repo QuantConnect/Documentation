@@ -41,49 +41,46 @@ class USEquitySecurityMasterAlgorithm (QCAlgorithm):
         if symbolChangedEvent:
             self.debug(f"{self.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbolChangedEvent.old_symbol} -&gt; {symbolChangedEvent.new_symbol}")
 </pre>
-<pre><code class="language-cs">namespace QuantConnect
+<pre><code class="language-cs">public class USEquitySecurityMasterAlgorithm : QCAlgorithm
 {
-    public class USEquitySecurityMasterAlgorithm : QCAlgorithm
+    private Symbol _equity;
+    
+    public override void Initialize()
     {
-        private Symbol _equity;
+        SetStartDate(1998, 1, 1);
+        SetCash(1000000);
         
-        public override void Initialize()
+        _equity = AddEquity("AAPL", Resolution.Daily).Symbol;
+    }
+    
+    public override void OnData(Slice slice)
+    {
+        // Accessing Data - Splits
+        if (slice.Splits.ContainsKey(_equity))
         {
-            SetStartDate(1998, 1, 1);
-            SetCash(1000000);
-            
-            _equity = AddEquity("AAPL", Resolution.Daily).Symbol;
+            var split = slice.Splits[_equity];
+            Debug($"Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{split.Type}");
         }
         
-        public override void OnData(Slice slice)
+        // Accessing Data - Dividends
+        if (slice.Dividends.ContainsKey(_equity))
         {
-            // Accessing Data - Splits
-            if (slice.Splits.ContainsKey(_equity))
-            {
-                var split = slice.Splits[_equity];
-                Debug($"Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{split.Type}");
-            }
-            
-            // Accessing Data - Dividends
-            if (slice.Dividends.ContainsKey(_equity))
-            {
-                var dividend = slice.Dividends[_equity];
-                Log($"Dividend: {dividend.Symbol}\t{dividend.Distribution}\t{dividend.ReferencePrice}");
-            }
-            
-            // Accessing Data - Delisting
-            if (slice.Delistings.ContainsKey(_equity))
-            {
-                var delisting = slice.Delistings[_equity];
-                Log($"Delistings: {delisting.Type}");
-            }
-            
-            // Accessing Data - Symbol Changed Event
-            if (slice.SymbolChangedEvents.ContainsKey(_equity))
-            {
-                var symbolChangedEvent = slice.SymbolChangedEvents[_equity];
-                Log($"Symbol changed: {symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.NewSymbol}");
-            }
+            var dividend = slice.Dividends[_equity];
+            Log($"Dividend: {dividend.Symbol}\t{dividend.Distribution}\t{dividend.ReferencePrice}");
+        }
+        
+        // Accessing Data - Delisting
+        if (slice.Delistings.ContainsKey(_equity))
+        {
+            var delisting = slice.Delistings[_equity];
+            Log($"Delistings: {delisting.Type}");
+        }
+        
+        // Accessing Data - Symbol Changed Event
+        if (slice.SymbolChangedEvents.ContainsKey(_equity))
+        {
+            var symbolChangedEvent = slice.SymbolChangedEvents[_equity];
+            Log($"Symbol changed: {symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.NewSymbol}");
         }
     }
 }</div>
@@ -172,115 +169,111 @@ class BracketExecutionModel(ExecutionModel):
 
             self.targets_collection.clear_fulfilled(algorithm)
 </pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class PaymentsAlgorithm : QCAlgorithm
 {
-    public class PaymentsAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(1998, 01, 01);
-                
-            // this will use the Tradier Brokerage open order split behavior
-            // forward split will modify open order to maintain order value
-            // reverse split open orders will be canceled
-            SetBrokerageModel(BrokerageName.TradierBrokerage);
+        SetStartDate(1998, 01, 01);
             
-            UniverseSettings.Resolution = Resolution.Daily;
-            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-            
-            // MSFT: Splits and Dividends
-            // GOOG: Symbol Changed Event
-            // AAA.1: Delisting
-            SetUniverseSelection(new ManualUniverseSelectionModel(
-                QuantConnect.Symbol.Create("MSFT", SecurityType.Equity, Market.USA)));
-
-            SetAlpha(new PaymentAlphaModel());
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            SetExecution(new BracketExecutionModel());
-        }
-    }
-    
-    public class PaymentAlphaModel : AlphaModel
-    {
-        private Symbol _symbol = Symbol.Empty;
+        // this will use the Tradier Brokerage open order split behavior
+        // forward split will modify open order to maintain order value
+        // reverse split open orders will be canceled
+        SetBrokerageModel(BrokerageName.TradierBrokerage);
         
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            // Accessing Data - Splits
-            if (slice.Splits.ContainsKey(_symbol))
-            {
-                var split = slice.Splits[_symbol];
-                algorithm.Debug($"{split.Time.ToIso8601Invariant()} &gt;&gt; SPLIT &gt;&gt; {split.Symbol} - " +
-                    $"{split.SplitFactor.ToStringInvariant()} - " +
-                    $"{algorithm.Portfolio.Cash.ToStringInvariant()} - " +
-                    $"{algorithm.Portfolio[_symbol].Quantity.ToStringInvariant()}");
-            }
-            
-            // Accessing Data - Dividends
-            if (slice.Dividends.ContainsKey(_symbol))
-            {
-                var dividend = slice.Dividends[_symbol];
-                algorithm.Debug($"{dividend.Time.ToStringInvariant("o")} &gt;&gt; DIVIDEND &gt;&gt; {dividend.Symbol} - " +
-                    $"{dividend.Distribution.ToStringInvariant("C")} - {algorithm.Portfolio.Cash} - " +
-                    $"{algorithm.Portfolio[_symbol].Price.ToStringInvariant("C")}");
-            }
-
-            // Accessing Data - Delisting
-            if (slice.Delistings.ContainsKey(_symbol))
-            {
-                var delisting = slice.Delistings[_symbol];
-                algorithm.Debug($"{delisting.Time.ToStringInvariant("o")} &gt;&gt; DELISTING &gt;&gt; {delisting.Type}");
-            }
-
-            // Accessing Data - Symbol Changed Event
-            if (slice.SymbolChangedEvents.ContainsKey(_symbol))
-            {
-                var symbolChangedEvent = slice.SymbolChangedEvents[_symbol];
-                algorithm.Debug($"{symbolChangedEvent.Time.ToStringInvariant("o")} &gt;&gt; Symbol Changed Event &gt;&gt; " +
-                    $"{symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.OldSymbol}");
-            }
-            
-            return slice.Bars.ContainsKey(_symbol)
-                ? new [] { Insight.Price(_symbol, TimeSpan.FromDays(1), InsightDirection.Up) }
-                : Enumerable.Empty&lt;Insight&gt;();
-        }
+        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
         
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-        {
-            _symbol = changes.AddedSecurities.First().Symbol;
-        }
-    }
-    
-    public class BracketExecutionModel : ExecutionModel
-    {
-        private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+        // MSFT: Splits and Dividends
+        // GOOG: Symbol Changed Event
+        // AAA.1: Delisting
+        SetUniverseSelection(new ManualUniverseSelectionModel(
+            QuantConnect.Symbol.Create("MSFT", SecurityType.Equity, Market.USA)));
 
-        public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
-        {
-            _targetsCollection.AddRange(targets);
-            // for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
-            if (_targetsCollection.Count &gt; 0)
-            {
-                foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
-                {
-                    // calculate remaining quantity to be ordered
-                    var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
-                    if (quantity != 0 &amp;&amp; algorithm.Transactions.OrdersCount == 0)
-                    {
-                        var bar = algorithm.Securities[target.Symbol].GetLastData() as TradeBar;
-                        algorithm.MarketOrder(target.Symbol, quantity);
-                        // place some orders that won't fill, when the split comes in they'll get modified to reflect the split
-                        algorithm.StopMarketOrder(target.Symbol, -quantity, bar.Low/2);
-                        algorithm.LimitOrder(target.Symbol, -quantity, bar.High*2);
-                    }
-                }
-
-                _targetsCollection.ClearFulfilled(algorithm);
-            }
-        }
+        SetAlpha(new PaymentAlphaModel());
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new BracketExecutionModel());
     }
 }
-</pre>
+
+public class PaymentAlphaModel : AlphaModel
+{
+    private Symbol _symbol = Symbol.Empty;
+    
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        // Accessing Data - Splits
+        if (slice.Splits.ContainsKey(_symbol))
+        {
+            var split = slice.Splits[_symbol];
+            algorithm.Debug($"{split.Time.ToIso8601Invariant()} &gt;&gt; SPLIT &gt;&gt; {split.Symbol} - " +
+                $"{split.SplitFactor.ToStringInvariant()} - " +
+                $"{algorithm.Portfolio.Cash.ToStringInvariant()} - " +
+                $"{algorithm.Portfolio[_symbol].Quantity.ToStringInvariant()}");
+        }
+        
+        // Accessing Data - Dividends
+        if (slice.Dividends.ContainsKey(_symbol))
+        {
+            var dividend = slice.Dividends[_symbol];
+            algorithm.Debug($"{dividend.Time.ToStringInvariant("o")} &gt;&gt; DIVIDEND &gt;&gt; {dividend.Symbol} - " +
+                $"{dividend.Distribution.ToStringInvariant("C")} - {algorithm.Portfolio.Cash} - " +
+                $"{algorithm.Portfolio[_symbol].Price.ToStringInvariant("C")}");
+        }
+
+        // Accessing Data - Delisting
+        if (slice.Delistings.ContainsKey(_symbol))
+        {
+            var delisting = slice.Delistings[_symbol];
+            algorithm.Debug($"{delisting.Time.ToStringInvariant("o")} &gt;&gt; DELISTING &gt;&gt; {delisting.Type}");
+        }
+
+        // Accessing Data - Symbol Changed Event
+        if (slice.SymbolChangedEvents.ContainsKey(_symbol))
+        {
+            var symbolChangedEvent = slice.SymbolChangedEvents[_symbol];
+            algorithm.Debug($"{symbolChangedEvent.Time.ToStringInvariant("o")} &gt;&gt; Symbol Changed Event &gt;&gt; " +
+                $"{symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.OldSymbol}");
+        }
+        
+        return slice.Bars.ContainsKey(_symbol)
+            ? new [] { Insight.Price(_symbol, TimeSpan.FromDays(1), InsightDirection.Up) }
+            : Enumerable.Empty&lt;Insight&gt;();
+    }
+    
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        _symbol = changes.AddedSecurities.First().Symbol;
+    }
+}
+
+public class BracketExecutionModel : ExecutionModel
+{
+    private readonly PortfolioTargetCollection _targetsCollection = new PortfolioTargetCollection();
+
+    public override void Execute(QCAlgorithm algorithm, IPortfolioTarget[] targets)
+    {
+        _targetsCollection.AddRange(targets);
+        // for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+        if (_targetsCollection.Count &gt; 0)
+        {
+            foreach (var target in _targetsCollection.OrderByMarginImpact(algorithm))
+            {
+                // calculate remaining quantity to be ordered
+                var quantity = OrderSizing.GetUnorderedQuantity(algorithm, target);
+                if (quantity != 0 &amp;&amp; algorithm.Transactions.OrdersCount == 0)
+                {
+                    var bar = algorithm.Securities[target.Symbol].GetLastData() as TradeBar;
+                    algorithm.MarketOrder(target.Symbol, quantity);
+                    // place some orders that won't fill, when the split comes in they'll get modified to reflect the split
+                    algorithm.StopMarketOrder(target.Symbol, -quantity, bar.Low/2);
+                    algorithm.LimitOrder(target.Symbol, -quantity, bar.High*2);
+                }
+            }
+
+            _targetsCollection.ClearFulfilled(algorithm);
+        }
+    }
+}</pre>
  <script class="csharp-result" type="text">
   {
     "Total Orders": "0",

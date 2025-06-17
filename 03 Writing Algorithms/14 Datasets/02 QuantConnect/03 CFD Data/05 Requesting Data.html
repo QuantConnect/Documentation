@@ -13,27 +13,23 @@
 
         self.set_benchmark(self.de30eur)
 </pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class CfdAlgorithm : QCAlgorithm
 {
-    public class CfdAlgorithm : QCAlgorithm
+    private Symbol _symbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol;
+        SetAccountCurrency("EUR");
 
-        public override void Initialize()
-        {
-            SetAccountCurrency("EUR");
+        SetStartDate(2019, 2, 20);
+        SetEndDate(2019, 2, 21);
+        SetCash("EUR", 100000);
 
-            SetStartDate(2019, 2, 20);
-            SetEndDate(2019, 2, 21);
-            SetCash("EUR", 100000);
+        _symbol = AddCfd("DE30EUR").Symbol;
 
-            _symbol = AddCfd("DE30EUR").Symbol;
-
-            SetBenchmark(_symbol);
-        }
+        SetBenchmark(_symbol);
     }
-}
-</pre>
+}</pre>
 </div>
 
 <p>For more information about creating CFD subscriptions, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/cfd/requesting-data">Requesting Data</a>.</p>

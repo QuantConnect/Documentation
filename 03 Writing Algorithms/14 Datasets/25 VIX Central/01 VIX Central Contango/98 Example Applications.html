@@ -29,42 +29,37 @@ class VixCentralContangoAlgorithm (QCAlgorithm):
         elif ratio &lt; 0:
             self.liquidate()
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class VixCentralContangoAlgorithm : QCAlgorithm
 {
-    public class VixCentralContangoAlgorithm : QCAlgorithm
+    private Symbol _spy;
+    private Symbol _contango;
+
+    public override void Initialize()
     {
-        private Symbol _spy;
-        private Symbol _contango;
+        SetStartDate(2014, 1, 1);
+        SetEndDate(2018, 1, 1);
+        SetCash(25000);
+        // SPY as market representative for macroeconomy indicator trading
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        // Request VIX Contango data for trade signal generation
+        _contango = AddData&lt;VIXCentralContango&gt;("VX", Resolution.Daily).Symbol;
+    }
 
-        public override void Initialize()
+    public override void OnData(Slice slice)
+    {
+        // Trade base on the updated VIX contango data
+        var contangoData = slice.Get&lt;VIXCentralContango&gt;(_contango);
+        var ratio = contangoData?.Contango_F2_Minus_F1 ?? 0;
+
+        // Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
+        if (!Portfolio.Invested &amp;&amp; ratio &gt; 0)
         {
-            SetStartDate(2014, 1, 1);
-            SetEndDate(2018, 1, 1);
-            SetCash(25000);
-            // SPY as market representative for macroeconomy indicator trading
-            _spy = AddEquity("SPY", Resolution.Daily).Symbol;
-            // Request VIX Contango data for trade signal generation
-            _contango = AddData&lt;VIXCentralContango&gt;("VX", Resolution.Daily).Symbol;
+            MarketOrder(_spy, 100);
         }
-    
-        public override void OnData(Slice slice)
+        // Liqudiate otherwise to avoid excessive market volatility
+        else if(ratio &lt; 0)
         {
-            // Trade base on the updated VIX contango data
-            var contangoData = slice.Get&lt;VIXCentralContango&gt;(_contango);
-            var ratio = contangoData?.Contango_F2_Minus_F1 ?? 0;
-
-            // Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
-            if (!Portfolio.Invested &amp;&amp; ratio &gt; 0)
-            {
-                MarketOrder(_spy, 100);
-            }
-            // Liqudiate otherwise to avoid excessive market volatility
-            else if(ratio &lt; 0)
-            {
-                 Liquidate();
-            }
+                Liquidate();
         }
     }
 }</pre></div>
@@ -126,80 +121,75 @@ class ContangoAlphaModel(AlphaModel):
 
         self.symbols += [x.symbol for x in changes.added_securities]
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class VixCentralContangoAlgorithm : QCAlgorithm
 {
-    public class VixCentralContangoAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2014, 1, 1);
-            SetEndDate(2018, 1, 1);
-            SetCash(25000);
+        SetStartDate(2014, 1, 1);
+        SetEndDate(2018, 1, 1);
+        SetCash(25000);
 
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Include SPY as market representative for macroeconomy indicator trading
-            var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
-            AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
-            // Custom alpha model that emit insights base on VIX contango data
-            AddAlpha(new ContangoAlphaModel(this));
-            // Equal weighting investment to evenly dissipate the capital concentration risk on non-systematic risky event
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        }
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Include SPY as market representative for macroeconomy indicator trading
+        var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        // Custom alpha model that emit insights base on VIX contango data
+        AddAlpha(new ContangoAlphaModel(this));
+        // Equal weighting investment to evenly dissipate the capital concentration risk on non-systematic risky event
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}
+
+public class ContangoAlphaModel : AlphaModel
+{
+    private Symbol _contango;
+    private List&lt;Symbol&gt; _symbols;
+
+    public ContangoAlphaModel(QCAlgorithm algorithm)
+    {
+        _symbols = new List&lt;Symbol&gt;();
+        // Request VIX Contango data for trade signal generation
+        _contango = algorithm.AddData&lt;VIXCentralContango&gt;("VX", Resolution.Daily).Symbol;
+
+        // Historical data
+        var history = algorithm.History&lt;VIXCentralContango&gt;(_contango, 60, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request");
     }
 
-    public class ContangoAlphaModel : AlphaModel
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        private Symbol _contango;
-        private List&lt;Symbol&gt; _symbols;
+        var insights = new List&lt;Insight&gt;();
 
-        public ContangoAlphaModel(QCAlgorithm algorithm)
+        // Trade base on the updated VIX contango data
+        var contangoData = slice.Get&lt;VIXCentralContango&gt;(_contango);
+        var ratio = contangoData?.Contango_F2_Minus_F1 ?? 0;
+
+        // Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
+        if (!algorithm.Portfolio.Invested &amp;&amp; ratio &gt; 0)
         {
-            _symbols = new List&lt;Symbol&gt;();
-            // Request VIX Contango data for trade signal generation
-            _contango = algorithm.AddData&lt;VIXCentralContango&gt;("VX", Resolution.Daily).Symbol;
-
-            // Historical data
-            var history = algorithm.History&lt;VIXCentralContango&gt;(_contango, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
+            foreach (var symbol in _symbols)
+            {
+                insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Up));
+            }
         }
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        // Liqudiate otherwise to avoid excessive market volatility
+        else if (ratio &lt; 0)
         {
-            var insights = new List&lt;Insight&gt;();
-
-            // Trade base on the updated VIX contango data
-            var contangoData = slice.Get&lt;VIXCentralContango&gt;(_contango);
-            var ratio = contangoData?.Contango_F2_Minus_F1 ?? 0;
-
-            // Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
-            if (!algorithm.Portfolio.Invested &amp;&amp; ratio &gt; 0)
+            foreach (var symbol in _symbols)
             {
-                foreach (var symbol in _symbols)
-                {
-                    insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Up));
-                }
+                insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Flat));
             }
-            // Liqudiate otherwise to avoid excessive market volatility
-            else if (ratio &lt; 0)
-            {
-                foreach (var symbol in _symbols)
-                {
-                    insights.Add(Insight.Price(symbol, Expiry.OneMonth, InsightDirection.Flat));
-                }
-            }
-        	
-            return insights;
         }
+        
+        return insights;
+    }
 
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var symbol in changes.RemovedSecurities.Select(x=&gt; x.Symbol))
         {
-            foreach (var symbol in changes.RemovedSecurities.Select(x=&gt; x.Symbol))
-            {
-                _symbols.Remove(symbol);
-            }
-            _symbols.AddRange(changes.AddedSecurities.Select(x=&gt; x.Symbol));
+            _symbols.Remove(symbol);
         }
+        _symbols.AddRange(changes.AddedSecurities.Select(x=&gt; x.Symbol));
     }
 }</pre></div>

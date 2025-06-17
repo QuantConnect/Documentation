@@ -43,58 +43,53 @@ class QuiverCongressDataAlgorithm(QCAlgorithm):
                 continue
             # Buy when Congress members have bought, short otherwise
             self.set_holdings(symbol, 1 if net_quantity &gt; 0 else -1)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class QuiverCongressDataAlgorithm : QCAlgorithm
 {
-    public class QuiverCongressDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-            
-            // Requesting data per underlying data to subscribe to updated congress members' trade information
-            var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-            var quiverCongressSymbol = AddData&lt;QuiverCongress&gt;(aapl).Symbol;
-
-            // Historical data
-            var history = History&lt;QuiverCongress&gt;(quiverCongressSymbol, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
-        }
-
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
         
-        public override void OnData(Slice slice)
+        // Requesting data per underlying data to subscribe to updated congress members' trade information
+        var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+        var quiverCongressSymbol = AddData&lt;QuiverCongress&gt;(aapl).Symbol;
+
+        // Historical data
+        var history = History&lt;QuiverCongress&gt;(quiverCongressSymbol, 60, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
+
+    
+    public override void OnData(Slice slice)
+    {
+        var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
+        
+        // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+        var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+        foreach (var (s, points) in congressBySymbol)
         {
-            var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
-            
-            // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
-            var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
-            foreach (var (s, points) in congressBySymbol)
+            var symbol = s.Underlying;
+            if (!netQuantityBySymbol.ContainsKey(symbol))
             {
-                var symbol = s.Underlying;
-                if (!netQuantityBySymbol.ContainsKey(symbol))
-                {
-                    netQuantityBySymbol[symbol] = 0m;
-                }
-                // Voting weight is by order size
-                foreach(QuiverCongressDataPoint point in points)
-                {
-                    netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
-                }
+                netQuantityBySymbol[symbol] = 0m;
             }
-            
-            foreach (var (symbol, netQuantity) in netQuantityBySymbol)
+            // Voting weight is by order size
+            foreach(QuiverCongressDataPoint point in points)
             {
-                if (netQuantity == 0)
-                {
-                    Liquidate(symbol);
-                    continue;
-                }
-                // Buy when Congress members have bought, short otherwise
-                SetHoldings(symbol, netQuantity &gt; 0 ? 1 : -1);
+                netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
             }
+        }
+        
+        foreach (var (symbol, netQuantity) in netQuantityBySymbol)
+        {
+            if (netQuantity == 0)
+            {
+                Liquidate(symbol);
+                continue;
+            }
+            // Buy when Congress members have bought, short otherwise
+            SetHoldings(symbol, netQuantity &gt; 0 ? 1 : -1);
         }
     }
 }</pre>
@@ -182,117 +177,114 @@ class SymbolData:
     def dispose(self) -&gt; None:
         # Unsubscribe from Quiver Congress feed for this security to release computational resources
         self.algorithm.remove_security(self.quiver_congress_symbol)</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class QuiverCongressDataAlgorithm : QCAlgorithm
 {
-    public class QuiverCongressDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+        
+        // Filter according to QuiverCongress data
+        AddUniverse&lt;QuiverQuantCongressUniverse&gt;("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
         {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-            
-            // Filter according to QuiverCongress data
-            AddUniverse&lt;QuiverQuantCongressUniverse&gt;("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
+            // Only include the ones with large size buy, since they are estimated to be materially confident to go up
+            return from d in altCoarse 
+                where d.Amount &gt; 200000 &amp;&amp; d.Transaction == OrderDirection.Buy 
+                select d.Symbol;
+        });
+        
+        AddAlpha(new CongressAlphaModel());
+        
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(time =&gt; None));
+        
+        AddRiskManagement(new NullRiskManagementModel());
+        
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class CongressAlphaModel : AlphaModel
+{
+    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new ();
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
+        
+        // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+        var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+        foreach (var (s, points) in congressBySymbol)
+        {
+            var symbol = s.Underlying;
+            if (!netQuantityBySymbol.ContainsKey(symbol))
             {
-                // Only include the ones with large size buy, since they are estimated to be materially confident to go up
-                return from d in altCoarse 
-                    where d.Amount &gt; 200000 &amp;&amp; d.Transaction == OrderDirection.Buy 
-                    select d.Symbol;
-            });
+                netQuantityBySymbol[symbol] = 0m;
+            }
+            // Voting weight is by order size
+            foreach(QuiverCongressDataPoint point in points)
+            {
+                netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
+            }
+        }
+        
+        foreach (var (symbol, netQuantity) in netQuantityBySymbol)
+        {
+            // Buy when Congress members have bought, as they may have advance information to be confident to the return direction
+            if (netQuantity &gt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsLong)
+            {
+                yield return Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Up, weight: 0.5);
+            }
             
-            AddAlpha(new CongressAlphaModel());
-            
-            SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(time =&gt; None));
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
+            // Short sell when Congress members have sold
+            else if (netQuantity &lt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsShort)
+            {
+                yield return Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Down, weight: 0.5);
+            }
         }
     }
 
-    public class CongressAlphaModel : AlphaModel
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new ();
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        foreach (var security in changes.AddedSecurities)
         {
-            var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
-            
-            // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
-            var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
-            foreach (var (s, points) in congressBySymbol)
-            {
-                var symbol = s.Underlying;
-                if (!netQuantityBySymbol.ContainsKey(symbol))
-                {
-                    netQuantityBySymbol[symbol] = 0m;
-                }
-                // Voting weight is by order size
-                foreach(QuiverCongressDataPoint point in points)
-                {
-                    netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
-                }
-            }
-            
-            foreach (var (symbol, netQuantity) in netQuantityBySymbol)
-            {
-                // Buy when Congress members have bought, as they may have advance information to be confident to the return direction
-                if (netQuantity &gt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsLong)
-                {
-                    yield return Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Up, weight: 0.5);
-                }
-                
-                // Short sell when Congress members have sold
-                else if (netQuantity &lt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsShort)
-                {
-                    yield return Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Down, weight: 0.5);
-                }
-            }
+            var symbol = security.Symbol;
+            _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
         }
 
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        foreach (var security in changes.RemovedSecurities)
         {
-            foreach (var security in changes.AddedSecurities)
+            var symbol = security.Symbol;
+            if (_symbolDataBySymbol.ContainsKey(symbol))
             {
-                var symbol = security.Symbol;
-                _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
-            }
-
-            foreach (var security in changes.RemovedSecurities)
-            {
-                var symbol = security.Symbol;
-                if (_symbolDataBySymbol.ContainsKey(symbol))
-                {
-                    _symbolDataBySymbol[symbol].dispose();
-                    _symbolDataBySymbol.Remove(symbol);
-                }
+                _symbolDataBySymbol[symbol].dispose();
+                _symbolDataBySymbol.Remove(symbol);
             }
         }
+    }
+}
+
+public class SymbolData
+{
+    private Symbol _quiverCongressSymbol;
+    private QCAlgorithm _algorithm;
+    
+    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+    {
+        _algorithm = algorithm;
+        
+        // Requesting data per underlying data to subscribe to updated congress members' trade information
+        _quiverCongressSymbol = algorithm.AddData&lt;QuiverCongress&gt;(symbol).Symbol;
+        
+        // Historical data
+        var history = algorithm.History&lt;QuiverCongress&gt;(_quiverCongressSymbol, 60, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Quiver Congress data");
     }
     
-    public class SymbolData
+    public void dispose()
     {
-        private Symbol _quiverCongressSymbol;
-        private QCAlgorithm _algorithm;
-        
-        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
-        {
-            _algorithm = algorithm;
-            
-            // Requesting data per underlying data to subscribe to updated congress members' trade information
-            _quiverCongressSymbol = algorithm.AddData&lt;QuiverCongress&gt;(symbol).Symbol;
-            
-            // Historical data
-            var history = algorithm.History&lt;QuiverCongress&gt;(_quiverCongressSymbol, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Quiver Congress data");
-        }
-        
-        public void dispose()
-        {
-            // Unsubscribe from Quiver Congress feed for this security to release computational resources
-            _algorithm.RemoveSecurity(_quiverCongressSymbol);
-        }
+        // Unsubscribe from Quiver Congress feed for this security to release computational resources
+        _algorithm.RemoveSecurity(_quiverCongressSymbol);
     }
 }</pre>
 </div>

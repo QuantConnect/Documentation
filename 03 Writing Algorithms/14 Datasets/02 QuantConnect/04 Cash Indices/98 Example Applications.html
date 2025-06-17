@@ -45,56 +45,51 @@ class IndexDataAlgorithm(QCAlgorithm):
         elif self.ema_fast &lt; self.ema_slow:
             self.liquidate()
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class IndexDataAlgorithm : QCAlgorithm
 {
-    public class IndexDataAlgorithm : QCAlgorithm
+    private Symbol _spy;
+    private ExponentialMovingAverage _emaSlow;
+    private ExponentialMovingAverage _emaFast;
+
+    public override void Initialize()
     {
-        private Symbol _spy;
-        private ExponentialMovingAverage _emaSlow;
-        private ExponentialMovingAverage _emaFast;
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(1000000);
 
-        public override void Initialize()
+        // Request SPY data as trading vehicle for SPX
+        _spy = AddEquity("SPY").Symbol;
+
+        // Request SPX data for trade signal generation
+        var spx = AddIndex("SPX").Symbol;
+
+        // Create short and long-term EMA indicators for trend estimation to trade
+        _emaFast = EMA(spx, 80, Resolution.Daily);
+        _emaSlow = EMA(spx, 200, Resolution.Daily);
+        SetWarmUp(200, Resolution.Daily);
+
+        // Historical data
+        var history = History(spx, 60, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade signals required indicators to be ready
+        if (IsWarmingUp || !_emaSlow.IsReady)
         {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(1000000);
-
-            // Request SPY data as trading vehicle for SPX
-            _spy = AddEquity("SPY").Symbol;
-
-            // Request SPX data for trade signal generation
-            var spx = AddIndex("SPX").Symbol;
-
-            // Create short and long-term EMA indicators for trend estimation to trade
-            _emaFast = EMA(spx, 80, Resolution.Daily);
-            _emaSlow = EMA(spx, 200, Resolution.Daily);
-            SetWarmUp(200, Resolution.Daily);
-
-            // Historical data
-            var history = History(spx, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            return;
         }
 
-        public override void OnData(Slice slice)
+        // If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
+        if (!Portfolio.Invested &amp;&amp; _emaFast &gt; _emaSlow)
         {
-            // Trade signals required indicators to be ready
-            if (IsWarmingUp || !_emaSlow.IsReady)
-            {
-                return;
-            }
-
-            // If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
-            if (!Portfolio.Invested &amp;&amp; _emaFast &gt; _emaSlow)
-            {
-                SetHoldings(_spy, 1);
-            }
-            // If it is the reverse, it indicates a downtrend, and we liquidate any position
-            else if (_emaFast &lt; _emaSlow)
-            {
-                Liquidate();
-            }
+            SetHoldings(_spy, 1);
+        }
+        // If it is the reverse, it indicates a downtrend, and we liquidate any position
+        else if (_emaFast &lt; _emaSlow)
+        {
+            Liquidate();
         }
     }
 }</pre></div>
@@ -152,74 +147,69 @@ class SpxEmaCrossAlphaModel(AlphaModel):
             
         return []
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class IndexDataAlgorithm : QCAlgorithm
 {
-    public class IndexDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 7, 8);
-            SetCash(1000000);
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 7, 8);
+        SetCash(1000000);
 
-            // Universe contains only SPY as a trading vehicle for SPX
-            SetUniverseSelection(new ManualUniverseSelectionModel
-            (
-                QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-            ));
-            // Custom alpha model that emits insights based on SPX index data
-            SetAlpha(new SpxEmaCrossAlphaModel(this));
-            // Equally invests can dissipate non-systematic risky event's capital concentration risk evenly
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
-        }
+        // Universe contains only SPY as a trading vehicle for SPX
+        SetUniverseSelection(new ManualUniverseSelectionModel
+        (
+            QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        ));
+        // Custom alpha model that emits insights based on SPX index data
+        SetAlpha(new SpxEmaCrossAlphaModel(this));
+        // Equally invests can dissipate non-systematic risky event's capital concentration risk evenly
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfMonth));
+    }
+}
+
+public class SpxEmaCrossAlphaModel : AlphaModel
+{
+    private ExponentialMovingAverage _emaSlow;
+    private ExponentialMovingAverage _emaFast;
+
+    public SpxEmaCrossAlphaModel(QCAlgorithm algorithm)
+    {
+        // Request SPX data for trade signal generation
+        var spx = algorithm.AddIndex("SPX").Symbol;
+
+        // Create short and long-term EMA indicators for trend estimation to trade
+        _emaFast = algorithm.EMA(spx, 80, Resolution.Daily);
+        _emaSlow = algorithm.EMA(spx, 200, Resolution.Daily);
+        algorithm.SetWarmUp(200, Resolution.Daily);
+
+        // Historical data
+        var history = algorithm.History(spx, 60, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request");
     }
 
-    public class SpxEmaCrossAlphaModel : AlphaModel
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        private ExponentialMovingAverage _emaSlow;
-        private ExponentialMovingAverage _emaFast;
-
-        public SpxEmaCrossAlphaModel(QCAlgorithm algorithm)
+        // Trade signals required indicators to be ready
+        if (algorithm.IsWarmingUp || !_emaSlow.IsReady)
         {
-            // Request SPX data for trade signal generation
-            var spx = algorithm.AddIndex("SPX").Symbol;
-
-            // Create short and long-term EMA indicators for trend estimation to trade
-            _emaFast = algorithm.EMA(spx, 80, Resolution.Daily);
-            _emaSlow = algorithm.EMA(spx, 200, Resolution.Daily);
-            algorithm.SetWarmUp(200, Resolution.Daily);
-
-            // Historical data
-            var history = algorithm.History(spx, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
-        }
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-        {
-            // Trade signals required indicators to be ready
-            if (algorithm.IsWarmingUp || !_emaSlow.IsReady)
-            {
-                return Enumerable.Empty&lt;Insight&gt;();
-            }
-
-            // If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
-            if (!algorithm.Portfolio.Invested &amp;&amp; _emaFast &gt; _emaSlow)
-            {
-                return algorithm.ActiveSecurities
-                    .Where(kvp =&gt; kvp.Value.IsTradable)
-                    .Select(kvp =&gt; Insight.Price(kvp.Key, Expiry.EndOfMonth, InsightDirection.Up));
-            }
-            // If it is the reverse, it indicates downtrend, and we liquidate any position
-            else if (_emaFast &lt; _emaSlow)
-            {
-                return algorithm.ActiveSecurities
-                    .Where(kvp =&gt; kvp.Value.IsTradable)
-                    .Select(kvp =&gt; Insight.Price(kvp.Key, Expiry.EndOfMonth, InsightDirection.Flat));
-            }
-    
             return Enumerable.Empty&lt;Insight&gt;();
         }
+
+        // If short-term EMA is above long-term, it indicates an up trend, so we buy SPY
+        if (!algorithm.Portfolio.Invested &amp;&amp; _emaFast &gt; _emaSlow)
+        {
+            return algorithm.ActiveSecurities
+                .Where(kvp =&gt; kvp.Value.IsTradable)
+                .Select(kvp =&gt; Insight.Price(kvp.Key, Expiry.EndOfMonth, InsightDirection.Up));
+        }
+        // If it is the reverse, it indicates downtrend, and we liquidate any position
+        else if (_emaFast &lt; _emaSlow)
+        {
+            return algorithm.ActiveSecurities
+                .Where(kvp =&gt; kvp.Value.IsTradable)
+                .Select(kvp =&gt; Insight.Price(kvp.Key, Expiry.EndOfMonth, InsightDirection.Flat));
+        }
+
+        return Enumerable.Empty&lt;Insight&gt;();
     }
 }</pre></div>

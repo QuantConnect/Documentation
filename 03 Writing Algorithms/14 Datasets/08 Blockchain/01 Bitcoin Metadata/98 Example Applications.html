@@ -47,55 +47,50 @@ class BlockchainBitcoinMetadataAlgorithm(QCAlgorithm):
 
             self.last_demand_supply = current_demand_supply
 </pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class BlockchainBitcoinMetadataAlgorithm : QCAlgorithm
 {
-    public class BlockchainBitcoinMetadataAlgorithm : QCAlgorithm
+    private Symbol _bitcoinMetadataSymbol;
+    private Symbol _btcSymbol;
+    // Cache the last supply-demand ratio for comparison
+    private decimal? _lastDemandSupply = None;
+
+    public override void Initialize()
     {
-        private Symbol _bitcoinMetadataSymbol;
-        private Symbol _btcSymbol;
-        // Cache the last supply-demand ratio for comparison
-        private decimal? _lastDemandSupply = None;
+        SetStartDate(2019, 1, 1);  //Set Start Date
+        SetEndDate(2020, 12, 31);    //Set End Date
+        SetCash(100000);
 
-        public override void Initialize()
+        // Request BTCUSD as the trading vehicle on Bitcoin Metadata
+        _btcSymbol = AddCrypto("BTCUSD", Resolution.Minute, Market.Bitfinex).Symbol; 
+        // Request Bitcoin Metadata for trade signal generation
+        _bitcoinMetadataSymbol = AddData&lt;BitcoinMetadata&gt;(_btcSymbol).Symbol;
+
+        // Historical data
+        var history = History(new[]{_bitcoinMetadataSymbol}, 60, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request for {_btcSymbol} Blockchain Bitcoin Metadata");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade only based on updated Bitcoin Metadata
+        var data = slice.Get&lt;BitcoinMetadata&gt;();
+        if (!data.IsNullOrEmpty())
         {
-            SetStartDate(2019, 1, 1);  //Set Start Date
-            SetEndDate(2020, 12, 31);    //Set End Date
-            SetCash(100000);
+            // Calculate the supply-demand ratio to estimate the microeconomy structure of Bitcoin for scalp-trading
+            // Transaction number as demand, hash production rate as supply
+            var currentDemandSupply = data[_bitcoinMetadataSymbol].NumberofTransactions / data[_bitcoinMetadataSymbol].HashRate;
 
-            // Request BTCUSD as the trading vehicle on Bitcoin Metadata
-            _btcSymbol = AddCrypto("BTCUSD", Resolution.Minute, Market.Bitfinex).Symbol; 
-            // Request Bitcoin Metadata for trade signal generation
-            _bitcoinMetadataSymbol = AddData&lt;BitcoinMetadata&gt;(_btcSymbol).Symbol;
-
-            // Historical data
-            var history = History(new[]{_bitcoinMetadataSymbol}, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request for {_btcSymbol} Blockchain Bitcoin Metadata");
-        }
-
-        public override void OnData(Slice slice)
-        {
-            // Trade only based on updated Bitcoin Metadata
-            var data = slice.Get&lt;BitcoinMetadata&gt;();
-            if (!data.IsNullOrEmpty())
+            // Comparing the average transaction-to-hash-rate ratio changes, buy Bitcoin if demand is higher than supply, sell vice versa
+            if (_lastDemandSupply != None &amp;&amp; currentDemandSupply &gt; _lastDemandSupply)
             {
-                // Calculate the supply-demand ratio to estimate the microeconomy structure of Bitcoin for scalp-trading
-                // Transaction number as demand, hash production rate as supply
-                var currentDemandSupply = data[_bitcoinMetadataSymbol].NumberofTransactions / data[_bitcoinMetadataSymbol].HashRate;
-
-                // Comparing the average transaction-to-hash-rate ratio changes, buy Bitcoin if demand is higher than supply, sell vice versa
-                if (_lastDemandSupply != None &amp;&amp; currentDemandSupply &gt; _lastDemandSupply)
-                {
-                    SetHoldings(_btcSymbol, 1);
-                }
-                else
-                {
-                    SetHoldings(_btcSymbol, 0);
-                }
-
-                _lastDemandSupply = currentDemandSupply;
+                SetHoldings(_btcSymbol, 1);
             }
+            else
+            {
+                SetHoldings(_btcSymbol, 0);
+            }
+
+            _lastDemandSupply = currentDemandSupply;
         }
     }
 }</pre>
@@ -163,82 +158,77 @@ class BlockchainBitcoinMetadataAlphaModel(AlphaModel):
             # Historical data
             history = algorithm.history(BitcoinMetadata, bitcoin_metadata_symbol, 60, Resolution.DAILY)
             algorithm.debug(f"We got {len(history)} items from our history request for {symbol} Blockchain Bitcoin Metadata")</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class BlockchainBitcoinMetadataFrameworkAlgorithm : QCAlgorithm
 {
-    public class BlockchainBitcoinMetadataFrameworkAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);  //Set Start Date
-            SetEndDate(2020, 12, 31);    //Set End Date
-            SetCash(100000);
+        SetStartDate(2019, 1, 1);  //Set Start Date
+        SetEndDate(2020, 12, 31);    //Set End Date
+        SetCash(100000);
 
-            // Universe contains only BTCUSD as the trading vehicle on Bitcoin Metadata
-            AddUniverseSelection(
-                new ManualUniverseSelectionModel(
-                QuantConnect.Symbol.Create("BTCUSD", SecurityType.Crypto, Market.Bitfinex)
-            ));
-            // Custom alpha model that emit insights based on Bitcoin Metadata
-            AddAlpha(new BlockchainBitcoinMetadataAlphaModel());
-            // Equally invest to evenly dissipate the capital concentration risk from non-sysmtematic risky events
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        // Universe contains only BTCUSD as the trading vehicle on Bitcoin Metadata
+        AddUniverseSelection(
+            new ManualUniverseSelectionModel(
+            QuantConnect.Symbol.Create("BTCUSD", SecurityType.Crypto, Market.Bitfinex)
+        ));
+        // Custom alpha model that emit insights based on Bitcoin Metadata
+        AddAlpha(new BlockchainBitcoinMetadataAlphaModel());
+        // Equally invest to evenly dissipate the capital concentration risk from non-sysmtematic risky events
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}
+
+public class BlockchainBitcoinMetadataAlphaModel: AlphaModel
+{
+    private Dictionary&lt;Symbol, Symbol&gt; _bitcoinMetadataSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+    // Cache the last supply-demand ratio for comparison
+    private Dictionary&lt;Symbol, decimal&gt; _lastDemandSupply = new Dictionary&lt;Symbol, decimal&gt;();
+
+    public BlockchainBitcoinMetadataAlphaModel(){}
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+        
+        // Trade only based on updated Bitcoin Metadata
+        var data = slice.Get&lt;BitcoinMetadata&gt;();
+        if (!data.IsNullOrEmpty())
+        {
+            foreach(var kvp in _bitcoinMetadataSymbolBySymbol)
+            {
+                var symbol = kvp.Key;
+                var bitcoinMetadataSymbol = kvp.Value;
+
+                // Calculate the supply-demand ratio to estimate the microeconomy structure of the crypto pair for scalp-trading
+                // Transaction number as demand, hash production rate as supply
+                var currentDemandSupply = data[bitcoinMetadataSymbol].NumberofTransactions / data[bitcoinMetadataSymbol].HashRate;
+
+                // Comparing the average transaction-to-hash-rate ratio changes, buy coin if demand is higher than supply
+                if (_lastDemandSupply.ContainsKey(symbol) &amp;&amp; currentDemandSupply &gt; _lastDemandSupply[symbol])
+                {
+                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up));
+                }
+
+                _lastDemandSupply[symbol] = currentDemandSupply;
+            }
         }
+        
+        return insights;
     }
 
-    public class BlockchainBitcoinMetadataAlphaModel: AlphaModel
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        private Dictionary&lt;Symbol, Symbol&gt; _bitcoinMetadataSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
-        // Cache the last supply-demand ratio for comparison
-        private Dictionary&lt;Symbol, decimal&gt; _lastDemandSupply = new Dictionary&lt;Symbol, decimal&gt;();
-
-        public BlockchainBitcoinMetadataAlphaModel(){}
-
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        foreach (var security in changes.AddedSecurities)
         {
-            var insights = new List&lt;Insight&gt;();
-            
-            // Trade only based on updated Bitcoin Metadata
-            var data = slice.Get&lt;BitcoinMetadata&gt;();
-            if (!data.IsNullOrEmpty())
-            {
-                foreach(var kvp in _bitcoinMetadataSymbolBySymbol)
-                {
-                    var symbol = kvp.Key;
-                    var bitcoinMetadataSymbol = kvp.Value;
+            var symbol = security.Symbol;
+            // Request Bitcoin Metadata for trade signal generation
+            var bitcoinMetadataSymbol = algorithm.AddData&lt;BitcoinMetadata&gt;(symbol).Symbol;
 
-                    // Calculate the supply-demand ratio to estimate the microeconomy structure of the crypto pair for scalp-trading
-                    // Transaction number as demand, hash production rate as supply
-                    var currentDemandSupply = data[bitcoinMetadataSymbol].NumberofTransactions / data[bitcoinMetadataSymbol].HashRate;
+            _bitcoinMetadataSymbolBySymbol.Add(symbol, bitcoinMetadataSymbol);
 
-                    // Comparing the average transaction-to-hash-rate ratio changes, buy coin if demand is higher than supply
-                    if (_lastDemandSupply.ContainsKey(symbol) &amp;&amp; currentDemandSupply &gt; _lastDemandSupply[symbol])
-                    {
-                        insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up));
-                    }
-
-                    _lastDemandSupply[symbol] = currentDemandSupply;
-                }
-            }
-            
-            return insights;
-        }
-
-        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-        {
-            foreach (var security in changes.AddedSecurities)
-            {
-                var symbol = security.Symbol;
-                // Request Bitcoin Metadata for trade signal generation
-                var bitcoinMetadataSymbol = algorithm.AddData&lt;BitcoinMetadata&gt;(symbol).Symbol;
-
-                _bitcoinMetadataSymbolBySymbol.Add(symbol, bitcoinMetadataSymbol);
-
-                // Historical data
-                var history = algorithm.History(new[]{bitcoinMetadataSymbol}, 60, Resolution.Daily);
-                algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Blockchain Bitcoin Metadata");
-            }
+            // Historical data
+            var history = algorithm.History(new[]{bitcoinMetadataSymbol}, 60, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Blockchain Bitcoin Metadata");
         }
     }
 }</pre>

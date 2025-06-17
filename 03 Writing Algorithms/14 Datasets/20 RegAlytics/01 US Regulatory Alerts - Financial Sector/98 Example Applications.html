@@ -41,51 +41,46 @@ class RegalyticsDataAlgorithm(QCAlgorithm):
                     self.set_holdings(self.spy, -1)
                 else:
                     self.set_holdings(self.spy, 1)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class RegalyticsDataAlgorithm : QCAlgorithm
 {
-    public class RegalyticsDataAlgorithm : QCAlgorithm
+    // Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
+    private readonly string[] _negativeSentimentPhrases = new [] {"emergency rule", "proposed rule change", "development of rulemaking"};
+    private Symbol _symbol, _regalyticsSymbol; 
+    
+    public override void Initialize()
     {
-        // Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
-        private readonly string[] _negativeSentimentPhrases = new [] {"emergency rule", "proposed rule change", "development of rulemaking"};
-        private Symbol _symbol, _regalyticsSymbol; 
+        SetStartDate(2022, 7, 10);
+        SetEndDate(2022, 7, 15);
+        SetCash(100000);
         
-        public override void Initialize()
-        {
-            SetStartDate(2022, 7, 10);
-            SetEndDate(2022, 7, 15);
-            SetCash(100000);
-            
-            _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-            
-            // Requesting data to receive updated regulatory news for timely short selling
-            _regalyticsSymbol = AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
-            
-            // Historical data for past articles
-            var history = History&lt;RegalyticsRegulatoryArticles&gt;(_regalyticsSymbol, 7, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
-        }
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        
+        // Requesting data to receive updated regulatory news for timely short selling
+        _regalyticsSymbol = AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
+        
+        // Historical data for past articles
+        var history = History&lt;RegalyticsRegulatoryArticles&gt;(_regalyticsSymbol, 7, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request");
+    }
 
-        public override void OnData(Slice slice)
+    public override void OnData(Slice slice)
+    {
+        // Only trade on regulatory news data
+        var data = slice.Get&lt;RegalyticsRegulatoryArticles&gt;();
+        if (!data.IsNullOrEmpty())
         {
-            // Only trade on regulatory news data
-            var data = slice.Get&lt;RegalyticsRegulatoryArticles&gt;();
-            if (!data.IsNullOrEmpty())
+            foreach (var articles in data.Values)
             {
-                foreach (var articles in data.Values)
+                Log($"{Time} {articles.ToString()}");
+                // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+                if (_negativeSentimentPhrases.Any(p =&gt; articles.Any(x =&gt; 
+                    ((RegalyticsRegulatoryArticle) x).Title.ToLower().Contains(p))))
                 {
-                    Log($"{Time} {articles.ToString()}");
-                    // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
-                    if (_negativeSentimentPhrases.Any(p =&gt; articles.Any(x =&gt; 
-                        ((RegalyticsRegulatoryArticle) x).Title.ToLower().Contains(p))))
-                    {
-                        SetHoldings(_symbol, -1);
-                    }
-                    else
-                    {
-                        SetHoldings(_symbol, 1);
-                    }
+                    SetHoldings(_symbol, -1);
+                }
+                else
+                {
+                    SetHoldings(_symbol, 1);
                 }
             }
         }
@@ -181,113 +176,107 @@ class RegAnalyticsAlphaModel(AlphaModel):
             symbol = security.symbol
             if symbol in self.symbols:
                 self.symbols.remove(symbol)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-using QuantConnect.Data.UniverseSelection;
-
-namespace QuantConnect
+<pre class="csharp">public class RegalyticsDataAlgorithm : QCAlgorithm
 {
-    public class RegalyticsDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2021, 1, 1);
-            SetEndDate(2021, 6, 1);
-            SetCash(100000);
-            
-            UniverseSettings.Resolution = Resolution.Daily;
-            //  Trade SPY as the proxy of the whole equity market movement on the regulatory news
-            AddUniverseSelection(
-                new ManualUniverseSelectionModel(
-                    QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-            ));
-            
-            AddAlpha(new RegAnalyticsAlphaModel(this));
-            
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
-            
-            AddRiskManagement(new NullRiskManagementModel());
-            
-            SetExecution(new ImmediateExecutionModel());
-        }
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
+        SetCash(100000);
         
-        public class RegAnalyticsAlphaModel : AlphaModel
+        UniverseSettings.Resolution = Resolution.Daily;
+        //  Trade SPY as the proxy of the whole equity market movement on the regulatory news
+        AddUniverseSelection(
+            new ManualUniverseSelectionModel(
+                QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        ));
+        
+        AddAlpha(new RegAnalyticsAlphaModel(this));
+        
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
+        
+        AddRiskManagement(new NullRiskManagementModel());
+        
+        SetExecution(new ImmediateExecutionModel());
+    }
+    
+    public class RegAnalyticsAlphaModel : AlphaModel
+    {
+        private List&lt;Symbol&gt; _symbols = new List&lt;Symbol&gt;();
+        private Symbol _regalyticsSymbol;
+        private DateTime _lastNewsDate = DateTime.MinValue;
+        private InsightDirection _targetDirection = InsightDirection.Up;
+        // Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
+        private string[] _negativeSentimentPhrases = new string[] {"emergency rule", "proposed rule change", "development of rulemaking"};
+        // Assuming the negative impact of the regulatory news will last for 2 days
+        private TimeSpan _newsAffectDuration = TimeSpan.FromDays(2);
+            
+        public RegAnalyticsAlphaModel(QCAlgorithm algorithm)
         {
-            private List&lt;Symbol&gt; _symbols = new List&lt;Symbol&gt;();
-            private Symbol _regalyticsSymbol;
-            private DateTime _lastNewsDate = DateTime.MinValue;
-            private InsightDirection _targetDirection = InsightDirection.Up;
-            // Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
-            private string[] _negativeSentimentPhrases = new string[] {"emergency rule", "proposed rule change", "development of rulemaking"};
-            // Assuming the negative impact of the regulatory news will last for 2 days
-            private TimeSpan _newsAffectDuration = TimeSpan.FromDays(2);
-             
-            public RegAnalyticsAlphaModel(QCAlgorithm algorithm)
-            {
-                // Requesting data to receive updated regulatory news for timely short selling
-                _regalyticsSymbol = algorithm.AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
-                
-                // Historical data for past articles
-                var history = algorithm.History&lt;RegalyticsRegulatoryArticles&gt;(_regalyticsSymbol, 14, Resolution.Daily);
-                algorithm.Debug($"We got {history.Count()} items from our history request");
-            }
-    
-            public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-            {
-                var insights = new List&lt;Insight&gt;();
+            // Requesting data to receive updated regulatory news for timely short selling
+            _regalyticsSymbol = algorithm.AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
+            
+            // Historical data for past articles
+            var history = algorithm.History&lt;RegalyticsRegulatoryArticles&gt;(_regalyticsSymbol, 14, Resolution.Daily);
+            algorithm.Debug($"We got {history.Count()} items from our history request");
+        }
 
-                // Only trade on regulatory news data
-                if (slice.ContainsKey(_regalyticsSymbol) &amp;&amp; slice[_regalyticsSymbol] != None)
-                {
-                    var articles = slice[_regalyticsSymbol];
-                    foreach (RegalyticsRegulatoryArticle article in articles)
-                    {
-                        // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
-                        // Signal an exit from the market when regulatory articles with negative sentiment are released
-                        if (_negativeSentimentPhrases.Any(x =&gt; article.Title.Contains(x)))
-                        {
-                            _targetDirection = InsightDirection.Flat;
-                            _lastNewsDate = slice.Time;
-                        }
-                    }
-                }
-                
-                // Signal an entry if we've waited long enough for the market to digest the negative news
-                if (_lastNewsDate + _newsAffectDuration &lt; slice.Time)
-                {
-                    _targetDirection = InsightDirection.Up;
-                }
-                
-                foreach (var symbol in _symbols)
-                {
-                    // Ensure we have security data in the current Slice to avoid stale fill
-                    if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
-                    {
-                        continue;
-                    }
-                    
-                    if (_targetDirection == InsightDirection.Up &amp;&amp; !algorithm.Portfolio[symbol].Invested)
-                    {
-                        insights.Add(Insight.Price(symbol, TimeSpan.FromDays(90), InsightDirection.Up));
-                    }
-                    else if (_targetDirection == InsightDirection.Flat &amp;&amp; algorithm.Portfolio[symbol].Invested)
-                    {
-                        insights.Add(Insight.Price(symbol, _newsAffectDuration, InsightDirection.Flat));
-                    }
-                }
-                return insights;
-            }
-    
-            public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            // Only trade on regulatory news data
+            if (slice.ContainsKey(_regalyticsSymbol) &amp;&amp; slice[_regalyticsSymbol] != None)
             {
-                foreach (var security in changes.AddedSecurities)
+                var articles = slice[_regalyticsSymbol];
+                foreach (RegalyticsRegulatoryArticle article in articles)
                 {
-                    _symbols.Add(security.Symbol);
+                    // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+                    // Signal an exit from the market when regulatory articles with negative sentiment are released
+                    if (_negativeSentimentPhrases.Any(x =&gt; article.Title.Contains(x)))
+                    {
+                        _targetDirection = InsightDirection.Flat;
+                        _lastNewsDate = slice.Time;
+                    }
+                }
+            }
+            
+            // Signal an entry if we've waited long enough for the market to digest the negative news
+            if (_lastNewsDate + _newsAffectDuration &lt; slice.Time)
+            {
+                _targetDirection = InsightDirection.Up;
+            }
+            
+            foreach (var symbol in _symbols)
+            {
+                // Ensure we have security data in the current Slice to avoid stale fill
+                if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
+                {
+                    continue;
                 }
                 
-                foreach (var security in changes.RemovedSecurities)
+                if (_targetDirection == InsightDirection.Up &amp;&amp; !algorithm.Portfolio[symbol].Invested)
                 {
-                    _symbols.Remove(security.Symbol);
+                    insights.Add(Insight.Price(symbol, TimeSpan.FromDays(90), InsightDirection.Up));
                 }
+                else if (_targetDirection == InsightDirection.Flat &amp;&amp; algorithm.Portfolio[symbol].Invested)
+                {
+                    insights.Add(Insight.Price(symbol, _newsAffectDuration, InsightDirection.Flat));
+                }
+            }
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                _symbols.Add(security.Symbol);
+            }
+            
+            foreach (var security in changes.RemovedSecurities)
+            {
+                _symbols.Remove(security.Symbol);
             }
         }
     }

@@ -30,38 +30,35 @@ The Upcoming Dividends dataset allows traders to trade the price change due to d
         total_count = len(self._universe.selected)
         targets = [PortfolioTarget.percent(self, symbol, -1. / total_count) for symbol in self._universe.selected]
         self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class UpcomingDividendsExampleAlgorithm : QCAlgorithm
 {
-    public class UpcomingDividendsExampleAlgorithm : QCAlgorithm
+    private Universe _universe;
+
+    public override void Initialize()
     {
-        private Universe _universe;
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 10, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2024, 10, 1);
-            SetCash(100000);
+        // Trade on daily basis based on daily upcoming dividend signals.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Universe consists of equities with upcoming dividend events.
+        _universe = AddUniverse&lt;EODHDUpcomingDividends&gt;((dividends) =&gt; {
+            // Select the stocks with upcoming dividend record date, with a sufficient dividend size.
+            return from EODHDUpcomingDividends d in dividends
+                    where d.DividendDate &lt; Time.AddDays(1) &amp;&amp; d.Dividend &gt; 0.5
+                    select d.Symbol;
+        });
+    }
 
-            // Trade on daily basis based on daily upcoming dividend signals.
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Universe consists of equities with upcoming dividend events.
-            _universe = AddUniverse&lt;EODHDUpcomingDividends&gt;((dividends) =&gt; {
-                // Select the stocks with upcoming dividend record date, with a sufficient dividend size.
-                return from EODHDUpcomingDividends d in dividends
-                       where d.DividendDate &lt; Time.AddDays(1) &amp;&amp; d.Dividend &gt; 0.5
-                       select d.Symbol;
-            });
-        }
-
-        public override void OnData(Slice slice)
-        {
-            // Equally invest in each member of the universe to evenly dissipate the capital risk.
-            var totalCount = _universe.Members.Count;
-            var targets = _universe.Selected
-                .Select(symbol =&gt; (PortfolioTarget)PortfolioTarget.Percent(this, symbol, -1m / totalCount))
-                .ToList();
-            SetHoldings(targets, liquidateExistingHoldings=True);
-        }
+    public override void OnData(Slice slice)
+    {
+        // Equally invest in each member of the universe to evenly dissipate the capital risk.
+        var totalCount = _universe.Members.Count;
+        var targets = _universe.Selected
+            .Select(symbol =&gt; (PortfolioTarget)PortfolioTarget.Percent(this, symbol, -1m / totalCount))
+            .ToList();
+        SetHoldings(targets, liquidateExistingHoldings=True);
     }
 }</pre>
 </div>
@@ -90,35 +87,32 @@ The Upcoming Dividends dataset allows traders to trade the price change due to d
     def selection(self, splits: List[EODHDUpcomingDividends]) -&gt; List[Symbol]:
         # Select the stocks with upcoming dividend record dates with a sufficient dividend size.
         return [x.symbol for x in dividends if x.dividend_date &lt; self.time + timedelta(1) and x.dividend &gt; 0.5]</pre>
-<pre class="csharp">namespace QuantConnect
+<pre class="csharp">public class UpcomingDividendsExampleAlgorithm : QCAlgorithm
 {
-    public class UpcomingDividendsExampleAlgorithm : QCAlgorithm
+    private Universe _universe;
+
+    public override void Initialize()
     {
-        private Universe _universe;
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 10, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2024, 10, 1);
-            SetCash(100000);
+        // Trade on a daily basis based on upcoming dividend signals daily.
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Universe consists of equities with upcoming dividend events.
+        _universe = AddUniverse&lt;EODHDUpcomingDividends&gt;((dividends) =&gt; {
+            // Select the stocks with upcoming dividend record dates with a sufficient dividend size.
+            return from EODHDUpcomingDividends d in dividends
+                    where d.DividendDate &lt; Time.AddDays(1) &amp;&amp; d.Dividend &gt; 0.5
+                    select d.Symbol;
+        });
 
-            // Trade on a daily basis based on upcoming dividend signals daily.
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Universe consists of equities with upcoming dividend events.
-            _universe = AddUniverse&lt;EODHDUpcomingDividends&gt;((dividends) =&gt; {
-                // Select the stocks with upcoming dividend record dates with a sufficient dividend size.
-                return from EODHDUpcomingDividends d in dividends
-                       where d.DividendDate &lt; Time.AddDays(1) &amp;&amp; d.Dividend &gt; 0.5
-                       select d.Symbol;
-            });
+        // A constant alpha model will emit insights for the stocks with dividend events in the upcoming day.
+        // It is expecting a price shock due to pricing after the dividend, which might affect some momentum traders.
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Down, TimeSpan.FromDays(1)));
 
-            // A constant alpha model will emit insights for the stocks with dividend events in the upcoming day.
-            // It is expecting a price shock due to pricing after the dividend, which might affect some momentum traders.
-            AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Down, TimeSpan.FromDays(1)));
-
-            // Equal weighting for each signal to dissipate the capital risk evenly.
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
-        }
+        // Equal weighting for each signal to dissipate the capital risk evenly.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
     }
 }</pre>
 </div>

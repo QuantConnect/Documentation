@@ -47,57 +47,54 @@ class FutureOptionExampleAlgorithm(QCAlgorithm):
                 # Historical data
                 history = self.history(security.symbol, 10, Resolution.MINUTE)
                 self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class FutureOptionExampleAlgorithm : QCAlgorithm
 {
-    public class FutureOptionExampleAlgorithm : QCAlgorithm
+    private Future _underlying;
+
+    public override void Initialize()
     {
-        private Future _underlying;
+        // Subscribe the underlying since the updated price is needed for filtering
+        _underlying = AddFuture(Futures.Indices.SP500EMini,
+            extendedMarketHours: True,
+            dataMappingMode: DataMappingMode.OpenInterest,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+            contractDepthOffset: 0);
+        // Filter the underlying continuous Futures to narrow the FOP spectrum
+        _underlying.SetFilter(0, 182);
+        // Filter for the current-week-expiring calls to formulate a covered call that expires at the end of week
+        AddFutureOption(_underlying.Symbol, (u) =&gt; u.IncludeWeeklys().CallsOnly().Expiration(0, 5));
+    }
 
-        public override void Initialize()
+    public override void OnData(Slice slice)
+    {
+        // Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol
+        var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
+
+        // Get option chain data for the mapped future, as both the underlying and FOP have the highest liquidity among all other contracts
+        if (!Portfolio.Invested &amp;&amp; 
+            slice.OptionChains.TryGetValue(symbol, out var chain))
         {
-            // Subscribe the underlying since the updated price is needed for filtering
-            _underlying = AddFuture(Futures.Indices.SP500EMini,
-                extendedMarketHours: True,
-                dataMappingMode: DataMappingMode.OpenInterest,
-                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-                contractDepthOffset: 0);
-            // Filter the underlying continuous Futures to narrow the FOP spectrum
-            _underlying.SetFilter(0, 182);
-            // Filter for the current-week-expiring calls to formulate a covered call that expires at the end of week
-            AddFutureOption(_underlying.Symbol, (u) =&gt; u.IncludeWeeklys().CallsOnly().Expiration(0, 5));
+            // Obtain the ATM call that expires at the end of week, such that both underlying and the FOP expires the same time
+            var expiry = chain.Max(x =&gt; x.Expiry);
+            var atmCall = chain.Where(x =&gt; x.Expiry == expiry)
+                .OrderBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
+                .First();
+
+            // Use abstraction method to order a covered call to avoid manual error
+            var optionStrategy = OptionStrategies.CoveredCall(symbol, atmCall.Strike, expiry);
+            Buy(optionStrategy, 1);
         }
+    }
 
-        public override void OnData(Slice slice)
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
         {
-            // Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol
-            var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
-
-            // Get option chain data for the mapped future, as both the underlying and FOP have the highest liquidity among all other contracts
-            if (!Portfolio.Invested &amp;&amp; 
-                slice.OptionChains.TryGetValue(symbol, out var chain))
+            if (security.Type == SecurityType.FutureOption)
             {
-                // Obtain the ATM call that expires at the end of week, such that both underlying and the FOP expires the same time
-                var expiry = chain.Max(x =&gt; x.Expiry);
-                var atmCall = chain.Where(x =&gt; x.Expiry == expiry)
-                    .OrderBy(x =&gt; Math.Abs(x.Strike - x.UnderlyingLastPrice))
-                    .First();
-
-                // Use abstraction method to order a covered call to avoid manual error
-                var optionStrategy = OptionStrategies.CoveredCall(symbol, atmCall.Strike, expiry);
-                Buy(optionStrategy, 1);
-            }
-        }
-
-        public override void OnSecuritiesChanged(SecurityChanges changes)
-        {
-            foreach (var security in changes.AddedSecurities)
-            {
-                if (security.Type == SecurityType.FutureOption)
-                {
-                    // Historical data
-                    var history = History(security.Symbol, 10, Resolution.Minute);
-                    Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-                }
+                // Historical data
+                var history = History(security.Symbol, 10, Resolution.Minute);
+                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
             }
         }
     }
@@ -183,106 +180,101 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
                 # Use integer target to create a portfolio target to trade a single contract
                 targets.append(PortfolioTarget(insight.symbol, insight.direction))
         return targets</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect
+<pre class="csharp">public class FutureOptionDataAlgorithm : QCAlgorithm
 {
-    public class FutureOptionDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 28);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-            // Asynchronous to save computation resources
-            UniverseSettings.Asynchronous = True;
-            // Override an option universe selection model to select the FOPs
-            AddUniverseSelection(new GoldFOPUniverseSelectionModel(this));
-            // Handle the FOP trading logic in an alpha model
-            SetAlpha(new ConstantFutureOptionsAlphaModel());
-            // To order a single contract per insight, use a custom portfolio construction model
-            SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
-        }
+        SetStartDate(2020, 1, 28);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+        // Asynchronous to save computation resources
+        UniverseSettings.Asynchronous = True;
+        // Override an option universe selection model to select the FOPs
+        AddUniverseSelection(new GoldFOPUniverseSelectionModel(this));
+        // Handle the FOP trading logic in an alpha model
+        SetAlpha(new ConstantFutureOptionsAlphaModel());
+        // To order a single contract per insight, use a custom portfolio construction model
+        SetPortfolioConstruction(new SingleSharePortfolioConstructionModel());
+    }
+}
+
+public class GoldFOPUniverseSelectionModel : OptionUniverseSelectionModel
+{
+    // Daily renewed universe since option contract list is updated on a daily basis
+    public GoldFOPUniverseSelectionModel(QCAlgorithm algorithm)
+        : base(TimeSpan.FromDays(1), _ =&gt; OptionChainSymbolSelector(algorithm, _))
+    {
     }
 
-    public class GoldFOPUniverseSelectionModel : OptionUniverseSelectionModel
+    private static IEnumerable&lt;Symbol&gt; OptionChainSymbolSelector(QCAlgorithm algorithm, DateTime utcTime)
     {
-        // Daily renewed universe since option contract list is updated on a daily basis
-        public GoldFOPUniverseSelectionModel(QCAlgorithm algorithm)
-            : base(TimeSpan.FromDays(1), _ =&gt; OptionChainSymbolSelector(algorithm, _))
-        {
-        }
-
-        private static IEnumerable&lt;Symbol&gt; OptionChainSymbolSelector(QCAlgorithm algorithm, DateTime utcTime)
-        {
-            // Create the underlying symbol to get the FOP contracts later
-            var futureSymbol = QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX);
-            // Get all gold FOP contracts of the front month gold contract expiring within 3 months, since their liquidity is the highest
-            return algorithm.FutureChainProvider.GetFutureContractList(futureSymbol, algorithm.Time)
-                .Where(futureContractSymbol =&gt; futureContractSymbol.ID.Date &lt;= algorithm.Time + TimeSpan.FromDays(90))
-                .Select(futureContractSymbol =&gt; QuantConnect.Symbol.CreateCanonicalOption(futureContractSymbol));
-        }
-
-        protected override OptionFilterUniverse Filter(OptionFilterUniverse optionFilterUniverse)
-        {
-            // Filter for the ATM calls that expires latest (same expiry as the underlying)
-            // +/-5 strike range buffer for price movement
-            return optionFilterUniverse.BackMonth().Strikes(-5, +5).CallsOnly();
-        }
+        // Create the underlying symbol to get the FOP contracts later
+        var futureSymbol = QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX);
+        // Get all gold FOP contracts of the front month gold contract expiring within 3 months, since their liquidity is the highest
+        return algorithm.FutureChainProvider.GetFutureContractList(futureSymbol, algorithm.Time)
+            .Where(futureContractSymbol =&gt; futureContractSymbol.ID.Date &lt;= algorithm.Time + TimeSpan.FromDays(90))
+            .Select(futureContractSymbol =&gt; QuantConnect.Symbol.CreateCanonicalOption(futureContractSymbol));
     }
 
+    protected override OptionFilterUniverse Filter(OptionFilterUniverse optionFilterUniverse)
+    {
+        // Filter for the ATM calls that expires latest (same expiry as the underlying)
+        // +/-5 strike range buffer for price movement
+        return optionFilterUniverse.BackMonth().Strikes(-5, +5).CallsOnly();
+    }
+}
+
+
+class ConstantFutureOptionsAlphaModel : AlphaModel
+{
+    // A dictionary to cache the mapped FOP of the underlying Future for filtering wanted option chain data and check if invested
+    private Dictionary&lt;Symbol, OptionContract&gt; optionContractByUnderlyingFutureContract = new Dictionary&lt;Symbol, OptionContract&gt;();
     
-    class ConstantFutureOptionsAlphaModel : AlphaModel
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        // A dictionary to cache the mapped FOP of the underlying Future for filtering wanted option chain data and check if invested
-        private Dictionary&lt;Symbol, OptionContract&gt; optionContractByUnderlyingFutureContract = new Dictionary&lt;Symbol, OptionContract&gt;();
+        var insights = new List&lt;Insight&gt;();
         
-        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+        foreach (var kvp in slice.OptionChains)
         {
-            var insights = new List&lt;Insight&gt;();
-            
-            foreach (var kvp in slice.OptionChains)
+            // Liquidate underlying Future contract after Option assignment
+            var underlyingFutureContract = kvp.Key.Underlying;
+            if (algorithm.Portfolio[underlyingFutureContract].Invested)
             {
-                // Liquidate underlying Future contract after Option assignment
-                var underlyingFutureContract = kvp.Key.Underlying;
-                if (algorithm.Portfolio[underlyingFutureContract].Invested)
-                {
-                    algorithm.Insights.Cancel(new[] { underlyingFutureContract });
-                    optionContractByUnderlyingFutureContract.Remove(underlyingFutureContract);
-                }
-                
-                // Do not repeatly invest in the same underlying's FOP
-                var chain = kvp.Value.Where(contract =&gt; algorithm.Securities[contract.Symbol].IsTradable);
-                if (chain.Count() == 0 || optionContractByUnderlyingFutureContract.ContainsKey(underlyingFutureContract))
-                {
-                    continue;
-                }
-    
-                // Select the Option contract with the lowest strike price to speculate trade the underlying with lowest cost and highest delta
-                var contract = chain.MinBy(contract =&gt; contract.Strike);
-                insights.Add(Insight.Price(contract.Symbol, contract.Expiry.AddDays(1), InsightDirection.Up));
-                optionContractByUnderlyingFutureContract.Add(kvp.Key.Underlying, contract);
-            }            
-            return insights;
-        }
-    }
-    
-    
-    class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
-    {
-        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
-        {
-            var targets = new List&lt;PortfolioTarget&gt;();
-            foreach (var insight in insights)
-            {
-                if (algorithm.Securities[insight.Symbol].IsTradable)
-                {
-                    // Use integer target to create a portfolio target to trade a single contract
-                    targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
-                }
+                algorithm.Insights.Cancel(new[] { underlyingFutureContract });
+                optionContractByUnderlyingFutureContract.Remove(underlyingFutureContract);
             }
-            return targets;
+            
+            // Do not repeatly invest in the same underlying's FOP
+            var chain = kvp.Value.Where(contract =&gt; algorithm.Securities[contract.Symbol].IsTradable);
+            if (chain.Count() == 0 || optionContractByUnderlyingFutureContract.ContainsKey(underlyingFutureContract))
+            {
+                continue;
+            }
+
+            // Select the Option contract with the lowest strike price to speculate trade the underlying with lowest cost and highest delta
+            var contract = chain.MinBy(contract =&gt; contract.Strike);
+            insights.Add(Insight.Price(contract.Symbol, contract.Expiry.AddDays(1), InsightDirection.Up));
+            optionContractByUnderlyingFutureContract.Add(kvp.Key.Underlying, contract);
+        }            
+        return insights;
+    }
+}
+
+
+class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
+{
+    public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+    {
+        var targets = new List&lt;PortfolioTarget&gt;();
+        foreach (var insight in insights)
+        {
+            if (algorithm.Securities[insight.Symbol].IsTradable)
+            {
+                // Use integer target to create a portfolio target to trade a single contract
+                targets.Add(new PortfolioTarget(insight.Symbol, (int) insight.Direction));
+            }
         }
+        return targets;
     }
 }</pre>
 </div>

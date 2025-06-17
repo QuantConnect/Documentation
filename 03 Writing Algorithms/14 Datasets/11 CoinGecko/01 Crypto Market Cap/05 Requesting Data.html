@@ -11,23 +11,18 @@ class CoinGeckoMarketCapDataAlgorithm(QCAlgorithm):
 
         self.btcusd = self.add_crypto("BTCUSD", Resolution.DAILY).symbol
         self.dataset_symbol = self.add_data(CoinGecko, "BTC").symbol</pre>
-<pre class="csharp">using QuantConnect.DataSource;
-
-namespace QuantConnect.Algorithm.CSharp.AltData
+<pre class="csharp">public class CoinGeckoMarketCapDataAlgorithm: QCAlgorithm
 {
-    public class CoinGeckoMarketCapDataAlgorithm: QCAlgorithm
+    private Symbol _symbol, _datasetSymbol;
+
+    public override void Initialize()
     {
-        private Symbol _symbol, _datasetSymbol;
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
 
-        public override void Initialize()
-        {
-            SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-
-            _symbol = AddCrypto("BTCUSD", Resolution.Daily).Symbol;
-            _datasetSymbol = AddData&lt;CoinGecko&gt;("BTC").Symbol;
-        }
+        _symbol = AddCrypto("BTCUSD", Resolution.Daily).Symbol;
+        _datasetSymbol = AddData&lt;CoinGecko&gt;("BTC").Symbol;
     }
 }</pre>
 </div>
