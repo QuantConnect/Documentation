@@ -3,52 +3,106 @@
 <div class="python section-example-container testable">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
-# Read Live Algorithm Statistics
-response = post(f'{BASE_URL}/live/read', headers = get_headers(), data = { "projectId": project_id, "deployId": deploy_id })
-response.json()
+# The project and deployment ID of the live algorithm we wish to read its results
+project_id = 12345678
+deploy_id = "..."
 
-# Read Live Algorithm Charts
+### Read Live Algorithm Statistics
+# Prepare data payload with project and deploy IDs to fetch statistics
+data = {
+    "projectId": project_id,  # ID of the project containing the live algorithm
+    "deployId": deploy_id  # ID of the deployed live algorithm
+}
+# Send a POST request to the /live/read endpoint to get algorithm statistics
+response = post(f'{BASE_URL}/live/read', headers=get_headers(), data=data)
+# Parse the JSON response
+result = response.json()
+# Check if the request was successful and print the statistics
+if result['success']:
+    print("Live Algorithm Statistics:")
+    print(result)
+
+### Read Live Algorithm Charts
+# Define the chart name to retrieve (e.g., Strategy Equity)
 chart_name = "Strategy Equity"
-response = post(f'{BASE_URL}/live/chart/read', headers = get_headers()
-                data = {
-                    "projectId": project_id,
-                    "name": chart_name,
-                    "count": 100
-                    "start": 1717801200,
-                    "end": 1743462000
-                })
-response.json()
+# Prepare data payload to fetch chart data
+data = {
+    "projectId": project_id,  # ID of the project
+    "name": chart_name,  # Name of the chart to retrieve
+    "count": 100,  # Number of data points to fetch
+    "start": 1717801200,  # Start time (Unix timestamp) for the chart data
+    "end": 1743462000  # End time (Unix timestamp) for the chart data
+}
+# Send a POST request to the /live/chart/read endpoint to get chart data
+response = post(f'{BASE_URL}/live/chart/read', headers=get_headers(), data=data)
+# Parse the JSON response
+result = response.json()
+# Check if the request was successful and print the chart data
+if result['success']:
+    print("Live Algorithm Chart Data:")
+    print(result)
 
-# Read Live Algorithm Portfolio State
-response = post(f'{BASE_URL}/live/portfolio/read', headers = get_headers(), data = { "projectId": project_id })
-response.json()
+### Read Live Algorithm Portfolio State
+# Prepare data payload to fetch portfolio state
+data = {
+    "projectId": project_id  # ID of the project
+}
+# Send a POST request to the /live/portfolio/read endpoint to get portfolio state
+response = post(f'{BASE_URL}/live/portfolio/read', headers=get_headers(), data=data)
+# Parse the JSON response
+result = response.json()
+# Check if the request was successful and print the portfolio state
+if result['success']:
+    print("Live Algorithm Portfolio State:")
+    print(result)
 
-# Read Live Algorithm Orders
-response = post(f'{BASE_URL}/live/orders/read', headers = get_headers(),
-                data = {
-                    "projectId": project_id,
-                    "start": 0,
-                    "end": 100
-                })
-response.json()
+### Read Live Algorithm Orders
+# Prepare data payload to fetch orders
+data = {
+    "projectId": project_id,  # ID of the project
+    "start": 0,  # Starting index for orders
+    "end": 100  # Ending index for orders
+}
+# Send a POST request to the /live/orders/read endpoint to get orders
+response = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), data=data)
+# Parse the JSON response
+result = response.json()
+# Check if the request was successful and print the orders
+if result['success']:
+    print("Live Algorithm Orders:")
+    print(result)
 
-# Read Live Algorithm Insights
-response = post(f'{BASE_URL}/live/insights/read', headers = get_headers(),
-                data = {
-                    "projectId": project_id,
-                    "start": 0,
-                    "end": 100
-                })
-response.json()
+### Read Live Algorithm Insights
+# Prepare data payload to fetch insights
+data = {
+    "projectId": project_id,  # ID of the project
+    "start": 0,  # Starting index for insights
+    "end": 100  # Ending index for insights
+}
+# Send a POST request to the /live/insights/read endpoint to get insights
+response = post(f'{BASE_URL}/live/insights/read', headers=get_headers(), data=data)
+# Parse the JSON response
+result = response.json()
+# Check if the request was successful and print the insights
+if result['success']:
+    print("Live Algorithm Insights:")
+    print(result)
 
-# Read Live Algorithm Logs
-response = post(f'{BASE_URL}/live/logs/read', headers = get_headers(),
-                data = {
-                    "projectId": project_id,
-                    "algorithmId": deploy_id,
-                    "format": "json",
-                    "startLine": 0,
-                    "endLine": 100
-                })
-response.json()</pre>
+### Read Live Algorithm Logs
+# Prepare data payload to fetch logs
+data = {
+    "projectId": project_id,  # ID of the project
+    "algorithmId": deploy_id,  # ID of the deployed algorithm (same as deploy_id)
+    "format": "json",  # Format of the logs (JSON in this case)
+    "startLine": 0,  # Starting line for logs
+    "endLine": 100  # Ending line for logs
+}
+# Send a POST request to the /live/logs/read endpoint to get logs
+response = post(f'{BASE_URL}/live/logs/read', headers=get_headers(), data=data)
+# Parse the JSON response
+result = response.json()
+# Check if the request was successful and print the logs
+if result['success']:
+    print("Live Algorithm Logs:")
+    print(result)</pre>
 </div>

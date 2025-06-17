@@ -3,13 +3,37 @@
 <div class="python section-example-container testable">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
-# Read Project Nodes
-response = post(f'{BASE_URL}/projects/nodes/read', headers = get_headers(), data = { "projectId": project_id })
-result = response.json()
-response.json()
+# The project ID of the project to manage
+project_id = 12345678
 
-# Delete Project Collaborator
+### Read Project Nodes
+# Prepare data payload to read project nodes
+data = {
+    "projectId": project_id  # ID of the project
+}
+# Send a POST request to the /projects/nodes/read endpoint to get node details
+response = post(f'{BASE_URL}/projects/nodes/read', headers=get_headers(), data=data)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the node details
+if result['success']:
+    print("Project Nodes:")
+    print(result)
+
+### Update Project Nodes
+# Define a list of node names to update (replace with actual node names)
 nodes = ["node_name_1", "node_name_2"]
-response = post(f'{BASE_URL}/projects/nodes/update', headers = get_headers(), data = { "projectId": project_id, "nodes": nodes })
-result = response.json()</pre>
+# Prepare data payload to update project nodes
+data = {
+    "projectId": project_id,  # ID of the project
+    "nodes": nodes  # List of node names to associate with the project
+}
+# Send a POST request to the /projects/nodes/update endpoint to update nodes
+response = post(f'{BASE_URL}/projects/nodes/update', headers=get_headers(), data=data)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Project Nodes Updated Successfully:")
+    print(result)</pre>
 </div>

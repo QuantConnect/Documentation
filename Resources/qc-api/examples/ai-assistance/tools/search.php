@@ -3,16 +3,22 @@
 <div class="python section-example-container testable">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
-response = post(f'{BASE_URL}/ai/tools/search', headers = get_headers(),
-    json = {
-       "language": "Python",
-        "criteria": [
+### Search Content
+# Send a POST request to the /ai/tools/search endpoint to search content
+response = post(f'{BASE_URL}/ai/tools/search', headers=get_headers(), json={
+    "language": "Python",  # Programming language to filter search results
+    "criteria": [  # Search criteria
         {
-            "input": "option",
-            "type": "Docs",
-            "count": 1
+            "input": "option",  # Search term (e.g., "option")
+            "type": "Docs",  # Type of content to search (e.g., documentation)
+            "count": 1  # Number of results to return
         }
     ]
-    })
-response.json()</pre>
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the search results
+if result['success']:
+    print("Search Results:")
+    print(result)</pre>
 </div>
