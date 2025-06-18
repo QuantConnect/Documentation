@@ -40,7 +40,7 @@ def delete_project(project_id):
     :param project_id: The ID of the project to delete.
     :return: Response from the API.
     """
-    response = post(f'{BASE_URL}/projects/delete', headers=get_headers(), data={'projectId': project_id})
+    response = post(f'{BASE_URL}/projects/delete', headers=get_headers(), json={'projectId': project_id})
     return response.json()
 
 def list_projects(organization_id):

@@ -8,7 +8,7 @@ project_id = 12345678
 
 ### Create File
 # Send a POST request to the /files/create endpoint to create a new file
-response = post(f'{BASE_URL}/files/create', headers=get_headers(), data={
+response = post(f'{BASE_URL}/files/create', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "name": "utils.py",  # Name of the new file
     "content": '''
@@ -31,12 +31,12 @@ if result['success']:
 
 ### Read File
 # Prepare data payload to read files in the project
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "includeLibraries": True  # Include library files in the response
 }
 # Send a POST request to the /files/read endpoint to read files
-response = post(f'{BASE_URL}/files/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/files/read', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Extract filename and content from the first file in the response
@@ -51,7 +51,7 @@ if result['success']:
 # Modify the content by replacing "SPY" with "TSLA"
 content = content.replace("SPY", "TSLA")
 # Send a POST request to the /files/update endpoint to update the file content
-response = post(f'{BASE_URL}/files/update', headers=get_headers(), data={
+response = post(f'{BASE_URL}/files/update', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "name": "utils.py",  # Name of the file to update
     "content": content  # Updated content
@@ -65,7 +65,7 @@ if result['success']:
 
 ### Rename File
 # Send a POST request to the /files/update endpoint to rename the file
-response = post(f'{BASE_URL}/files/update', headers=get_headers(), data={
+response = post(f'{BASE_URL}/files/update', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "name": "utils.py",  # Current name of the file
     "newName": "utils2.py"  # New name for the file
@@ -79,12 +79,12 @@ if result['success']:
 
 ### Delete File
 # Prepare data payload to delete the file
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "name": "utils2.py"  # Name of the file to delete
 }
 # Send a POST request to the /files/delete endpoint to delete the file
-response = post(f'{BASE_URL}/files/delete', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/files/delete', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result

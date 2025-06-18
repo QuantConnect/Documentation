@@ -8,7 +8,7 @@ project_id = 12345678
 
 ### Create Live Command
 # Prepare data payload to create a command to order for a live algorithm
-data = {
+payload = {
     "projectId": project_id,  # ID of the project to send the command to
     "command": {  # Command details
         "$type": "OrderCommand",  # Type of command (OrderCommand for placing orders)
@@ -24,7 +24,7 @@ data = {
     }
 }
 # Send a POST request to the /live/commands/create endpoint to create the command
-response = post(f'{BASE_URL}/live/commands/create', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/commands/create', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result
@@ -36,7 +36,7 @@ if result['success']:
 # Define organization ID placeholder (replace with actual value)
 org_id = "org_id..."
 # Prepare data payload to broadcast a command to order for all listed live algorithms
-data = {
+payload = {
     "organizationId": org_id,  # ID of the organization to broadcast to
     "excludeProjectId": None,  # Optional project ID to exclude (None means no exclusion)
     "command": {  # Command details (same as above)
@@ -53,7 +53,7 @@ data = {
     }
 }
 # Send a POST request to the /live/commands/broadcast endpoint to broadcast the command
-response = post(f'{BASE_URL}/live/commands/broadcast', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/commands/broadcast', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result

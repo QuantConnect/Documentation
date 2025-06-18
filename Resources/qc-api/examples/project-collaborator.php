@@ -10,7 +10,7 @@ project_id = 12345678
 # Define collaborator ID (replace with actual user ID)
 collaborator_id = 'johnny_walker'  # User ID from profile URL (e.g., https://www.quantconnect.com/u/johnny_walker)
 # Send a POST request to the /projects/collaboration/create endpoint to add a collaborator
-response = post(f'{BASE_URL}/projects/collaboration/create', headers=get_headers(), data={
+response = post(f'{BASE_URL}/projects/collaboration/create', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "collaboratorUserId": collaborator_id,  # ID of the user to add as collaborator
     "collaborationLiveControl": True,  # Grant live control permission
@@ -25,11 +25,11 @@ if result['success']:
 
 ### Read Project Collaborator
 # Prepare data payload to read collaborators
-data = {
+payload = {
     "projectId": project_id  # ID of the project
 }
 # Send a POST request to the /projects/collaboration/read endpoint to get collaborators
-response = post(f'{BASE_URL}/projects/collaboration/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/projects/collaboration/read', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the collaborators
@@ -39,12 +39,12 @@ if result['success']:
 
 ### Delete Project Collaborator
 # Prepare data payload to delete a collaborator
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "collaboratorUserId": collaborator_id  # ID of the collaborator to remove
 }
 # Send a POST request to the /projects/collaboration/delete endpoint to remove collaborator
-response = post(f'{BASE_URL}/projects/collaboration/delete', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/projects/collaboration/delete', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result

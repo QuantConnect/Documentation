@@ -8,7 +8,7 @@ project_id = 12345678
 
 ### Estimate Optimization Cost
 # Send a POST request to the /optimizations/estimate endpoint to estimate cost
-response = post(f'{BASE_URL}/optimizations/estimate', headers=get_headers(), data={
+response = post(f'{BASE_URL}/optimizations/estimate', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "name": f"Optimization_{compileId[:5]}",  # Name of the optimization (using compile ID prefix)
     "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",  # Optimization target metric
@@ -39,7 +39,7 @@ if result['success']:
 
 ### Create Optimization
 # Send a POST request to the /optimizations/create endpoint to create an optimization
-response = post(f'{BASE_URL}/optimizations/create', headers=get_headers(), data={
+response = post(f'{BASE_URL}/optimizations/create', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "name": f"Optimization_{compileId[:5]}",  # Name of the optimization
     "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",  # Optimization target
@@ -75,7 +75,7 @@ if result['success']:
 
 ### Update Optimization
 # Send a POST request to the /optimizations/update endpoint to update the optimization
-response = post(f'{BASE_URL}/optimizations/update', headers=get_headers(), data={
+response = post(f'{BASE_URL}/optimizations/update', headers=get_headers(), json={
     "optimizationId": optimization_id,  # ID of the optimization to update
     "name": f"Optimization_{optimizationId[:5]}"  # New name for the optimization
 })
@@ -88,11 +88,11 @@ if result['success']:
 
 ### Read Optimization
 # Prepare data payload to read optimization details
-data = {
+payload = {
     "optimizationId": optimization_id  # ID of the optimization to read
 }
 # Send a POST request to the /optimizations/read endpoint to get details
-response = post(f'{BASE_URL}/optimizations/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/optimizations/read', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the details
@@ -102,11 +102,11 @@ if result['success']:
 
 ### Abort Optimization
 # Prepare data payload to abort the optimization
-data = {
+payload = {
     "optimizationId": optimization_id  # ID of the optimization to abort
 }
 # Send a POST request to the /optimizations/abort endpoint to abort
-response = post(f'{BASE_URL}/optimizations/abort', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/optimizations/abort', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result
@@ -116,11 +116,11 @@ if result['success']:
 
 ### Delete Optimization
 # Prepare data payload to delete the optimization
-data = {
+payload = {
     "optimizationId": optimization_id  # ID of the optimization to delete
 }
 # Send a POST request to the /optimizations/delete endpoint to delete
-response = post(f'{BASE_URL}/optimizations/delete', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/optimizations/delete', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result
@@ -130,11 +130,11 @@ if result['success']:
 
 ### List Optimizations
 # Prepare data payload to list optimizations
-data = {
+payload = {
     "projectId": project_id  # ID of the project
 }
 # Send a POST request to the /optimizations/list endpoint to list optimizations
-response = post(f'{BASE_URL}/optimizations/list', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/optimizations/list', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the list

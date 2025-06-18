@@ -9,7 +9,7 @@ key = "..."
 ### Upload Object Store File
 # Send a POST request to the /object/set endpoint to upload a file
 response = post(f'{BASE_URL}/object/set', headers=get_headers(), 
-                data={"organizationId": ORGANIZATION_ID, "key": key},  # Organization ID and key for the object
+                json={"organizationId": ORGANIZATION_ID, "key": key},  # Organization ID and key for the object
                 files={"objectData": b"Hello, world!"})  # File content as bytes
 # Parse the JSON response into python managable dict
 result = response.json()
@@ -20,12 +20,12 @@ if result['success']:
 
 ### Get Object Store Metadata
 # Prepare data payload to get object metadata
-data = {
+payload = {
     "organizationId": ORGANIZATION_ID,  # ID of the organization
     "key": key  # Key of the object to get metadata for
 }
 # Send a POST request to the /object/properties endpoint to get metadata
-response = post(f'{BASE_URL}/object/properties', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/object/properties', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the metadata
@@ -35,12 +35,12 @@ if result['success']:
 
 ### Get Object Store File
 # Prepare data payload to retrieve the object
-data = {
+payload = {
     "organizationId": ORGANIZATION_ID,  # ID of the organization
     "keys": [key]  # List of keys to retrieve (single key in this case)
 }
 # Send a POST request to the /object/get endpoint to get the object
-response = post(f'{BASE_URL}/object/get', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/object/get', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the file content
@@ -50,12 +50,12 @@ if result['success']:
 
 ### Delete Object Store File
 # Prepare data payload to delete the object
-data = {
+payload = {
     "organizationId": ORGANIZATION_ID,  # ID of the organization
     "key": key  # Key of the object to delete
 }
 # Send a POST request to the /object/delete endpoint to delete the object
-response = post(f'{BASE_URL}/object/delete', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/object/delete', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result
@@ -67,12 +67,12 @@ if result['success']:
 # Define an empty path to list all objects (replace with specific path if needed)
 path = ""
 # Prepare data payload to list objects
-data = {
+payload = {
     "organizationId": ORGANIZATION_ID,  # ID of the organization
     "path": path  # Path to list objects from
 }
 # Send a POST request to the /object/list endpoint to list objects
-response = post(f'{BASE_URL}/object/list', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/object/list', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the list

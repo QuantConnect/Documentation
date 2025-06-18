@@ -7,7 +7,7 @@
 # Define placeholder compilation ID (replace with actual value)
 compile_id = "compile_id..."
 # Send a POST request to the /backtests/create endpoint to create a backtest
-response = post(f'{BASE_URL}/backtests/create', headers=get_headers(), data={
+response = post(f'{BASE_URL}/backtests/create', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project to backtest
     "compileId": compile_id,  # Compilation ID for the backtest
     "backtestName": f"Backtest {int(time())}"  # Unique name for the backtest using current timestamp
@@ -23,12 +23,12 @@ if result['success']:
 
 ### Read Backtest Statistics
 # Prepare data payload to read backtest statistics
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "backtestId": backtest_id  # ID of the backtest to read
 }
 # Send a POST request to the /backtests/read endpoint to get statistics
-response = post(f'{BASE_URL}/backtests/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/backtests/read', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the statistics
@@ -38,7 +38,7 @@ if result['success']:
 
 ### Update Backtest
 # Send a POST request to the /backtests/update endpoint to update backtest details
-response = post(f'{BASE_URL}/backtests/update', headers=get_headers(), data={
+response = post(f'{BASE_URL}/backtests/update', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "backtestId": backtest_id,  # ID of the backtest to update
     "name": f"Backtest_{backtest_id}",  # New name for the backtest
@@ -53,12 +53,12 @@ if result['success']:
 
 ### Delete Backtest
 # Prepare data payload to delete the backtest
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "backtestId": backtest_id  # ID of the backtest to delete
 }
 # Send a POST request to the /backtests/delete endpoint to delete the backtest
-response = post(f'{BASE_URL}/backtests/delete', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/backtests/delete', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result
@@ -68,12 +68,12 @@ if result['success']:
 
 ### List Backtests
 # Prepare data payload to list backtests with statistics
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "includeStatistics": True  # Include statistics in the response
 }
 # Send a POST request to the /backtests/list endpoint to list backtests
-response = post(f'{BASE_URL}/backtests/list', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/backtests/list', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the list

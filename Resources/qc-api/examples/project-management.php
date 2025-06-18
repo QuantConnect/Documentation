@@ -8,7 +8,7 @@ project_id = 12345678
 
 ### Create Project
 # Send a POST request to the /projects/create endpoint to create a new project
-response = post(f'{BASE_URL}/projects/create', headers=get_headers(), data={
+response = post(f'{BASE_URL}/projects/create', headers=get_headers(), json={
     "name": f"Project_{int(time())}",  # Unique project name using current timestamp
     "language": "Py"  # Programming language for the project (Python)
 })
@@ -23,11 +23,11 @@ if result['success']:
 
 ### Read Project
 # Prepare data payload to read project details
-data = {
+payload = {
     "id": project_id  # ID of the project to read
 }
 # Send a POST request to the /projects/read endpoint to get project details
-response = post(f'{BASE_URL}/projects/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/projects/read', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the project details
@@ -37,7 +37,7 @@ if result['success']:
 
 ### Update Project
 # Send a POST request to the /projects/update endpoint to update project details
-response = post(f'{BASE_URL}/projects/update', headers=get_headers(), data={
+response = post(f'{BASE_URL}/projects/update', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project to update
     "name": f"Project_{project_id}",  # New name for the project
     "description": "The new project name is awesome!"  # New description
@@ -51,11 +51,11 @@ if result['success']:
 
 ### Delete Project
 # Prepare data payload to delete the project
-data = {
+payload = {
     "projectId": project_id  # ID of the project to delete
 }
 # Send a POST request to the /projects/delete endpoint to delete the project
-response = post(f'{BASE_URL}/projects/delete', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/projects/delete', headers=get_headers(), json=payload)
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result

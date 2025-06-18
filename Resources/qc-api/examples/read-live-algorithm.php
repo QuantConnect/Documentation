@@ -9,12 +9,12 @@ deploy_id = "..."
 
 ### Read Live Algorithm Statistics
 # Prepare data payload with project and deploy IDs to fetch statistics
-data = {
+payload = {
     "projectId": project_id,  # ID of the project containing the live algorithm
     "deployId": deploy_id  # ID of the deployed live algorithm
 }
 # Send a POST request to the /live/read endpoint to get algorithm statistics
-response = post(f'{BASE_URL}/live/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/read', headers=get_headers(), json=payload)
 # Parse the JSON response
 result = response.json()
 # Check if the request was successful and print the statistics
@@ -26,7 +26,7 @@ if result['success']:
 # Define the chart name to retrieve (e.g., Strategy Equity)
 chart_name = "Strategy Equity"
 # Prepare data payload to fetch chart data
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "name": chart_name,  # Name of the chart to retrieve
     "count": 100,  # Number of data points to fetch
@@ -34,7 +34,7 @@ data = {
     "end": 1743462000  # End time (Unix timestamp) for the chart data
 }
 # Send a POST request to the /live/chart/read endpoint to get chart data
-response = post(f'{BASE_URL}/live/chart/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/chart/read', headers=get_headers(), json=payload)
 # Parse the JSON response
 result = response.json()
 # Check if the request was successful and print the chart data
@@ -44,11 +44,11 @@ if result['success']:
 
 ### Read Live Algorithm Portfolio State
 # Prepare data payload to fetch portfolio state
-data = {
+payload = {
     "projectId": project_id  # ID of the project
 }
 # Send a POST request to the /live/portfolio/read endpoint to get portfolio state
-response = post(f'{BASE_URL}/live/portfolio/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/portfolio/read', headers=get_headers(), json=payload)
 # Parse the JSON response
 result = response.json()
 # Check if the request was successful and print the portfolio state
@@ -58,13 +58,13 @@ if result['success']:
 
 ### Read Live Algorithm Orders
 # Prepare data payload to fetch orders
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "start": 0,  # Starting index for orders
     "end": 100  # Ending index for orders
 }
 # Send a POST request to the /live/orders/read endpoint to get orders
-response = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload)
 # Parse the JSON response
 result = response.json()
 # Check if the request was successful and print the orders
@@ -74,13 +74,13 @@ if result['success']:
 
 ### Read Live Algorithm Insights
 # Prepare data payload to fetch insights
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "start": 0,  # Starting index for insights
     "end": 100  # Ending index for insights
 }
 # Send a POST request to the /live/insights/read endpoint to get insights
-response = post(f'{BASE_URL}/live/insights/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/insights/read', headers=get_headers(), json=payload)
 # Parse the JSON response
 result = response.json()
 # Check if the request was successful and print the insights
@@ -90,7 +90,7 @@ if result['success']:
 
 ### Read Live Algorithm Logs
 # Prepare data payload to fetch logs
-data = {
+payload = {
     "projectId": project_id,  # ID of the project
     "algorithmId": deploy_id,  # ID of the deployed algorithm (same as deploy_id)
     "format": "json",  # Format of the logs (JSON in this case)
@@ -98,7 +98,7 @@ data = {
     "endLine": 100  # Ending line for logs
 }
 # Send a POST request to the /live/logs/read endpoint to get logs
-response = post(f'{BASE_URL}/live/logs/read', headers=get_headers(), data=data)
+response = post(f'{BASE_URL}/live/logs/read', headers=get_headers(), json=payload)
 # Parse the JSON response
 result = response.json()
 # Check if the request was successful and print the logs
