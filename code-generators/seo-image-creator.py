@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
         image_generator = ImageGenerator(fonts, template)
         for dir, subdirs, files in os.walk(product):
-            if dir == product or 'metadata.json' not in files:
+            if 'metadata.json' not in files:
                 # metadata file should only be a must in the tree-leaf dir
                 if not subdirs:
                     missing_metadata.append(dir)
