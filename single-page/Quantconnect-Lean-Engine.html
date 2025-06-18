@@ -309,7 +309,11 @@ $ dotnet QuantConnect.Lean.Launcher.dll</pre>
    </div>
   </ol>
   <p>
-   To set up Interactive Brokers integration, make sure you fix the
+   To set up
+   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+    Interactive Brokers
+   </a>
+   integration, make sure you fix the
    <code>
     ib-tws-dir
    </code>
@@ -650,7 +654,7 @@ $ dotnet QuantConnect.Lean.Launcher.dll</pre>
      Lean.DataSource.FRED
     </a>
     because it has
-    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/fred/us-federal-reserve-(fred)#07-Supported-Datasets">
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/fred/us-federal-reserve-(fred)#09-Supported-Datasets">
      many different series
     </a>
     .
@@ -1549,128 +1553,128 @@ ZVX R735QTJ8XC9X,ZVX,10,15600,156000,False,1,0.666667
    <li>
     If any of the following statements are true, skip the rest of the steps in this tutorial:
    </li>
-  </ol>
-  <ul>
+   <ul>
+    <li>
+     Your dataset is not linked to Equities.
+    </li>
+    <li>
+     Your dataset is related to Equities and already includes the point-in-time tickers.
+    </li>
+   </ul>
+   <p>
+    If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
+   </p>
    <li>
-    Your dataset is not linked to Equities.
+    If you don't have the
+    <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+     US Equity Security Master dataset
+    </a>
+    ,
+    <a href="https://www.quantconnect.com/contact">
+     contact us
+    </a>
+    .
+   </li>
+   <li class="python">
+    In the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+    </span>
+    file, remove the statements of the
+    <code>
+     Main
+    </code>
+    method
    </li>
    <li>
-    Your dataset is related to Equities and already includes the point-in-time tickers.
+    In a terminal, compile the data processing project.
    </li>
-  </ul>
-  <p>
-   If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
-  </p>
-  <li>
-   If you don't have the
-   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
-    US Equity Security Master dataset
-   </a>
-   ,
-   <a href="https://www.quantconnect.com/contact">
-    contact us
-   </a>
-   .
-  </li>
-  <li class="python">
-   In the
-   <span class="public-file-name">
-    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
-   </span>
-   file, remove the statements of the
-   <code>
-    Main
-   </code>
-   method
-  </li>
-  <li>
-   In a terminal, compile the data processing project.
-  </li>
-  <div class="cli section-example-container">
-   <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
-  </div>
-  <p>
-   This step generates a file that the
-   <code>
-    CLRImports
-   </code>
-   library uses.
-  </p>
-  <li class="python">
-   In the
-   <span class="public-directory-name">
-    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py
-   </span>
-   file, import the
-   <code>
-    CLRImports
-   </code>
-   library.
-  </li>
-  <div class="python section-example-container">
-   <pre class="python">from CLRImports import *</pre>
-  </div>
-  <li>
-   Create and initialize a map file provider.
-  </li>
-  <div class="section-example-container">
-   <pre class="python">map_file_provider = LocalZipMapFileProvider()
-map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
-  </div>
-  <li>
-   Create a security identifier.
-  </li>
-  <div class="section-example-container">
-   <pre class="python">sid = SecurityIdentifier.generate_equity(point_in_time_ticker,
-    Market.USA, True, map_file_provider, csv_date)</pre>
-  </div>
-  <li>
-   Copy the
-   <span class="public-file-name">
-    process.sample.py
-   </span>
-   script to the
-   <span class="public-file-name">
-    DataProcessing / bin / debug / net9.0
-   </span>
-   directory.
-  </li>
-  <p>
-   You need to place the script under the
-   <span class="public-file-name">
-    bin
-   </span>
-   directory so that LEAN's packages dlls are correctly loaded for the
-   <code>
-    CLRImports
-   </code>
-   .
-  </p>
-  <div class="cli section-example-container">
-   <pre>$ cp process.sample.py DataProcessing/bin/Debug/net9.0</pre>
-  </div>
-  <li>
-   Run the
-   <span class="public-file-name">
-    DataProcessing / bin / debug / net9.0 / process.sample.py
-   </span>
-   script to populate the
-   <span class="public-directory-name">
-    Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
-   </span>
-   directory and the
-   <span class="public-directory-name">
-    output
-   </span>
-   directory in your machine's root directory.
    <div class="cli section-example-container">
-    <pre>$ cd DataProcessing/bin/debug/net9.0/
+    <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+   </div>
+   <p>
+    This step generates a file that the
+    <code>
+     CLRImports
+    </code>
+    library uses.
+   </p>
+   <li class="python">
+    In the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py
+    </span>
+    file, import the
+    <code>
+     CLRImports
+    </code>
+    library.
+   </li>
+   <div class="python section-example-container">
+    <pre class="python">from CLRImports import *</pre>
+   </div>
+   <li>
+    Create and initialize a map file provider.
+   </li>
+   <div class="section-example-container">
+    <pre class="python">map_file_provider = LocalZipMapFileProvider()
+map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
+   </div>
+   <li>
+    Create a security identifier.
+   </li>
+   <div class="section-example-container">
+    <pre class="python">sid = SecurityIdentifier.generate_equity(point_in_time_ticker,
+    Market.USA, True, map_file_provider, csv_date)</pre>
+   </div>
+   <li>
+    Copy the
+    <span class="public-file-name">
+     process.sample.py
+    </span>
+    script to the
+    <span class="public-file-name">
+     DataProcessing / bin / debug / net9.0
+    </span>
+    directory.
+   </li>
+   <p>
+    You need to place the script under the
+    <span class="public-file-name">
+     bin
+    </span>
+    directory so that LEAN's packages dlls are correctly loaded for the
+    <code>
+     CLRImports
+    </code>
+    .
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ cp process.sample.py DataProcessing/bin/Debug/net9.0</pre>
+   </div>
+   <li>
+    Run the
+    <span class="public-file-name">
+     DataProcessing / bin / debug / net9.0 / process.sample.py
+    </span>
+    script to populate the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+    </span>
+    directory and the
+    <span class="public-directory-name">
+     output
+    </span>
+    directory in your machine's root directory.
+    <div class="cli section-example-container">
+     <pre>$ cd DataProcessing/bin/debug/net9.0/
 $ python process.sample.py</pre>
-   </div>
-   <div class="highlight">
-    Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.
-   </div>
-  </li>
+    </div>
+   </li>
+  </ol>
+  <div class="highlight">
+   Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.
+  </div>
  </body>
 </html>
 
@@ -1836,57 +1840,57 @@ $ python process.sample.py</pre>
    <li>
     If any of the following statements are true, skip the rest of the steps in this tutorial:
    </li>
-  </ol>
-  <ul>
+   <ul>
+    <li>
+     Your dataset is not related to Equities.
+    </li>
+    <li>
+     Your dataset is related to Equities and already includes the point-in-time tickers.
+    </li>
+   </ul>
+   <p>
+    If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
+   </p>
    <li>
-    Your dataset is not related to Equities.
+    If you don't have the
+    <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+     US Equity Security Master dataset
+    </a>
+    ,
+    <a href="https://www.quantconnect.com/contact">
+     contact us
+    </a>
+    .
    </li>
    <li>
-    Your dataset is related to Equities and already includes the point-in-time tickers.
+    In the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+    </span>
+    file, create and initialize a map file provider.
    </li>
-  </ul>
-  <p>
-   If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
-  </p>
-  <li>
-   If you don't have the
-   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
-    US Equity Security Master dataset
-   </a>
-   ,
-   <a href="https://www.quantconnect.com/contact">
-    contact us
-   </a>
-   .
-  </li>
-  <li>
-   In the
-   <span class="public-file-name">
-    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
-   </span>
-   file, create and initialize a map file provider.
-  </li>
-  <div class="section-example-container">
-   <pre class="csharp">var mapFileProvider = new LocalZipMapFileProvider();
+   <div class="section-example-container">
+    <pre class="csharp">var mapFileProvider = new LocalZipMapFileProvider();
 var mapFileProvider.Initialize(new DefaultDataProvider());</pre>
-  </div>
-  <li>
-   Create a security identifier.
-  </li>
-  <div class="section-example-container">
-   <pre class="csharp">var sid = SecurityIdentifier.GenerateEquity(pointInIimeTicker,
-    Market.USA, true, mapFileProvider, csvDate)</pre>
-  </div>
-  <li>
-   In a terminal, compile the data processing project to generate the
-   <span class="public-file-name">
-    process.exe
-   </span>
-   executable file.
-   <div class="cli section-example-container">
-    <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
    </div>
-  </li>
+   <li>
+    Create a security identifier.
+   </li>
+   <div class="section-example-container">
+    <pre class="csharp">var sid = SecurityIdentifier.GenerateEquity(pointInIimeTicker,
+    Market.USA, true, mapFileProvider, csvDate)</pre>
+   </div>
+   <li>
+    In a terminal, compile the data processing project to generate the
+    <span class="public-file-name">
+     process.exe
+    </span>
+    executable file.
+    <div class="cli section-example-container">
+     <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+    </div>
+   </li>
+  </ol>
   <p>
    After you finish compiling the
    <span class="public-file-name">
@@ -2074,81 +2078,81 @@ var mapFileProvider.Initialize(new DefaultDataProvider());</pre>
    <li>
     If any of the following statements are true, skip the rest of the steps in this tutorial:
    </li>
-  </ol>
-  <ul>
+   <ul>
+    <li>
+     Your dataset is not related to Equities.
+    </li>
+    <li>
+     Your dataset is related to Equities and already includes the point-in-time tickers.
+    </li>
+   </ul>
+   <p>
+    If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
+   </p>
    <li>
-    Your dataset is not related to Equities.
+    If you don't have the
+    <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+     US Equity Security Master dataset
+    </a>
+    ,
+    <a href="https://www.quantconnect.com/contact">
+     contact us
+    </a>
+    .
+   </li>
+   <li class="python">
+    In the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+    </span>
+    file, remove the statements of the
+    <code>
+     Main
+    </code>
+    method
    </li>
    <li>
-    Your dataset is related to Equities and already includes the point-in-time tickers.
+    In a terminal, compile the data processing project.
    </li>
-  </ul>
-  <p>
-   If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
-  </p>
-  <li>
-   If you don't have the
-   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
-    US Equity Security Master dataset
-   </a>
-   ,
-   <a href="https://www.quantconnect.com/contact">
-    contact us
-   </a>
-   .
-  </li>
-  <li class="python">
-   In the
-   <span class="public-file-name">
-    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
-   </span>
-   file, remove the statements of the
-   <code>
-    Main
-   </code>
-   method
-  </li>
-  <li>
-   In a terminal, compile the data processing project.
-  </li>
-  <div class="cli section-example-container">
-   <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
-  </div>
-  <p>
-   This step generates a file that the
-   <code>
-    CLRImports
-   </code>
-   library uses.
-  </p>
-  <li class="python">
-   In the
-   <span class="public-directory-name">
-    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.ipynb
-   </span>
-   file, import the
-   <code>
-    CLRImports
-   </code>
-   library.
-  </li>
-  <div class="python section-example-container">
-   <pre class="python">from CLRImports import *</pre>
-  </div>
-  <li>
-   Create and initialize a map file provider.
-  </li>
-  <div class="section-example-container">
-   <pre class="python">map_file_provider = LocalZipMapFileProvider()
+   <div class="cli section-example-container">
+    <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+   </div>
+   <p>
+    This step generates a file that the
+    <code>
+     CLRImports
+    </code>
+    library uses.
+   </p>
+   <li class="python">
+    In the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.ipynb
+    </span>
+    file, import the
+    <code>
+     CLRImports
+    </code>
+    library.
+   </li>
+   <div class="python section-example-container">
+    <pre class="python">from CLRImports import *</pre>
+   </div>
+   <li>
+    Create and initialize a map file provider.
+   </li>
+   <div class="section-example-container">
+    <pre class="python">map_file_provider = LocalZipMapFileProvider()
 map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
-  </div>
-  <li>
-   Create a security identifier.
-  </li>
-  <div class="section-example-container">
-   <pre class="python">sid = SecurityIdentifier.generate_equity(point_in_time_ticker,
+   </div>
+   <li>
+    Create a security identifier.
+   </li>
+   <div class="section-example-container">
+    <pre class="python">sid = SecurityIdentifier.generate_equity(point_in_time_ticker,
     Market.USA, True, map_file_provider, csv_date)</pre>
-  </div>
+   </div>
+  </ol>
   <p>
    After you finish editing the
    <span class="public-file-name">
@@ -2384,6 +2388,7 @@ map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
    </li>
    <div class="section-example-container">
     <pre>"algorithm-type-name": "&lt;vendorNameDatasetName&gt;Algorithm",
+"algorithm-language": "CSharp",
 "algorithm-location": "QuantConnect.Algorithm.CSharp.dll",</pre>
    </div>
    <li>
@@ -2399,7 +2404,7 @@ map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
     <span class="public-file-name">
      Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Algorithm.py
     </span>
-    file and paste it in
+    file and paste it in the
     <span class="public-file-name">
      Lean / Algorithm.Python
     </span>
@@ -2432,6 +2437,7 @@ map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
    </li>
    <div class="section-example-container">
     <pre>"algorithm-type-name": "&lt;vendorNameDatasetName&gt;Algorithm",
+"algorithm-language": "Python",
 "algorithm-location": "../../../Algorithm.Python/&lt;vendorNameDatasetName&gt;Algorithm.py",</pre>
    </div>
    <li>
@@ -3732,7 +3738,11 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/brokerages#05-Monitor-Brokerage-Messages">
     handle the brokerage messages
    </a>
-   . For example, Interactive Brokers resets socket connections at different times globally, so users in other parts of the world can get disconnected at strange times of the day. Knowing this, they may elect to have their algorithm ignore specific disconnection attempts.
+   . For example,
+   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+    Interactive Brokers
+   </a>
+   resets socket connections at different times globally, so users in other parts of the world can get disconnected at strange times of the day. Knowing this, they may elect to have their algorithm ignore specific disconnection attempts.
   </p>
   <p>
    If a hard failure occurs like an incorrect password or an unsupported API method, throw a real exception with details of the error.
@@ -4663,98 +4673,131 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
  </body>
 </html>
 
-<h3>Documentation Changes</h3>
+<h3>Add Documentation</h3>
 <html>
  <body>
   <p>
-   After the indicator was merged in the Lean engine, make sure you also ensure it is porperly documented in the documentation. Follow the below steps to do so:
+   Follow these steps to document the indicator you're contributing:
   </p>
   <ol>
    <li>
-    Create an issue in the
-    <a href="https://github.com/QuantConnect/Documentation/issues">
-     Documentation GitHub repository
+    In the
+    <a href="https://github.com/QuantConnect/Documentation/blob/master/Resources/indicators/IndicatorImageGenerator.py" rel="nofollow" target="_blank">
+     <span class="public-file-name">
+      Documentation / Resources / indicators / IndicatorImageGenerator.py
+     </span>
     </a>
-    regarding the required changes in the documentation.
+    file, add the indicator to one of the following dictionaries:
    </li>
-   <li>
-    Fork the Documentation GitHub repository and create a new branch named by
-    <code>
-     feature-&lt;ISSUE_NUMBER&gt;-&lt;INDICATOR_NAME&gt;-indicator
-    </code>
-    .
-   </li>
-   <li>
-    Edit the
-    <a href="https://github.com/QuantConnect/Documentation/blob/master/Resources/indicators/IndicatorImageGenerator.py">
-     IndicatorImageGenerator.py
-    </a>
-    file to include the details of the newly added indicator for documentation page generation.
-   </li>
+   <ul>
+    <li>
+     <code>
+      indicators
+     </code>
+     if the indicator only involves one symbol and doesn't depend on other indicators
+    </li>
+    <li>
+     <code>
+      special_indicators
+     </code>
+     if the indicator involves multiple symbols or it's a composite indicator
+    </li>
+    <li>
+     <code>
+      option_indicators
+     </code>
+     if the indicator is an Option-related indicator (for example, Option greeks indicators)
+    </li>
+   </ul>
    <p>
-    If the indicator only involves 1 symbol and does not depend on other indicators, put it under the
-    <code>
-     indicators
-    </code>
-    dictionary.
+    The following code block explains the format of the key-value pairs of the dictionaries:
    </p>
-   <p>
-    If the indicator involves 2 or more symbols or it is a composite indicator, put it under the
-    <code>
-     special_indicators
-    </code>
-    dictionary.
-   </p>
-   <p>
-    If the indicator is an option-related indicator (e.g. option greeks indicator), put it under the
-    <code>
-     option_indicators
-    </code>
-    dictionary.
-   </p>
-   <p>
-    Format of the added member should be as below:
-   </p>
-   <div class="python section-example-container">
-    <pre>'&lt;hyphenated-title-case-of-the-indicator&gt;':
-{
-    'code': &lt;IndicatorConstructor&gt;(&lt;constructor-arguments&gt;),
-    'title' : '&lt;CSharpHelperMethod&gt;(&lt;helper-method-arguments&gt;)',
-    'columns' : [&lt;any-extra-series-of-the-indicator&gt;]
-},</pre>
+   <div class="section-example-container">
+    <pre class="python">'&lt;hyphenated-title-case-of-the-indicator&gt;': IndicatorInfo(
+    &lt;PythonConstructor&gt;(&lt;python-constructor-arguments&gt;),
+    '&lt;CSharpHelperMethod&gt;(&lt;csharp-helper-method-arguments&gt;)',
+    'self.&lt;python_helper_method&gt;(&lt;python-helper-method-arguments&gt;)'
+),</pre>
    </div>
-   <li>
-    Save the file and run the
-    <a href="https://github.com/QuantConnect/Documentation/blob/master/code-generators/writing-algorithm-api-reference-sphinx-code-generator.py">
-     API generator
+   <p>
+    The fourth argument to the
+    <code>
+     IndicatorInfo
+    </code>
+    constructor defines which of the indicator's properties to plot on each subplot in the
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/regression-channel#03-Visualization">
+     Visualization
     </a>
-    . It will help generate the indicator reference page.
+    section of the documentation.
+        By default, its value is
+    <code>
+     [['current']]
+    </code>
+    , which plots the
+    <code class="python">
+     current
+    </code>
+    <code class="csharp">
+     Current
+    </code>
+    property on a single subplot.
+        In this argument, each element in the list you pass defines which properties to plot on each subplot.
+        Group properties that are on the same scale together so they show up on the same subplot.
+        For example, the
+    <code>
+     AbsolutePriceOscillator
+    </code>
+    uses
+    <code>
+     [['fast', 'slow'], ['current', 'histogram', 'signal']]
+    </code>
+    to plot the
+    <code>
+     fast
+    </code>
+    and
+    <code>
+     slow
+    </code>
+    properties on the first subplot and plot the
+    <code>
+     current
+    </code>
+    ,
+    <code>
+     histogram
+    </code>
+    , and
+    <code>
+     signal
+    </code>
+    properties on the second subplot.
+   </p>
+   <li>
+    Save the file.
    </li>
    <li>
-    (Optional) Run the
-    <code>
-     IndicatorImageGenerator.py
-    </code>
-    in LeanCLI to obtain the generated plotly image of the indicator. You can retreive it from the
-    <code>
-     storage
-    </code>
-    folder from the root directory of the LeanCLI. Put it in the
-    <a href="https://github.com/QuantConnect/Documentation/tree/master/Resources/indicators/images">
-     Resource indicator image folder
+    Run the
+    <a href="https://github.com/QuantConnect/Documentation/blob/master/code-generators/writing-algorithm-api-reference-sphinx-code-generator.py" rel="nofollow" target="_blank">
+     <span class="public-file-name">
+      Documentation / code-generators / writing-algorithm-api-reference-sphinx-code-generator.py
+     </span>
     </a>
-    by the name
-    <code>
-     &lt;hyphenated-title-case-of-the-indicator&gt;
-    </code>
+    file.
+   </li>
+   <p>
+    This script generates the indicator reference page. For an example, see
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">
+     Simple Moving Average
+    </a>
     .
-   </li>
+   </p>
    <li>
-    Push the branch and start a
-    <a href="https://github.com/QuantConnect/Documentation/pulls">
-     pull request
+    Submit a pull request to the
+    <a href="https://github.com/QuantConnect/Documentation/" rel="nofollow" target="_blank">
+     Documentation repository
     </a>
-    on the documentation changes.
+    with your changes.
    </li>
   </ol>
  </body>
@@ -6152,7 +6195,7 @@ suspended until the primary market determines that an adequate publication or di
    "subHeading": "",
    "content": "",
    "alsoLinks": [],
-   "href": "https://www.lean.io/docs/v2/lean-engine/class-reference/"
+   "href": "https://www.lean.io/docs/v2/lean-engine/class-reference/index.html"
 }
   </p>
  </body>
