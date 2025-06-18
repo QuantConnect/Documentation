@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'PremierStochasticOscillator';
-$helperName = 'PremierStochasticOscillator';
-$pyHelperName = 'premier_stochastic_oscillator';
-$helperArguments = 'symbol';
+$helperName = 'PSO';
+$pyHelperName = 'pso';
+$helperArguments = 'symbol, 14, 3';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

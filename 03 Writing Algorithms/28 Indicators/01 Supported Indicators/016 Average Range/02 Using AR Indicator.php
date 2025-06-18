@@ -3,19 +3,19 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'PremierStochasticOscillator';
-$helperName = 'PremierStochasticOscillator';
-$pyHelperName = 'premier_stochastic_oscillator';
-$helperArguments = 'symbol';
+$typeName = 'AverageRange';
+$helperName = 'AR';
+$pyHelperName = 'ar';
+$helperArguments = 'symbol, 20';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '';
+$constructorArguments = '20';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'premier-stochastic-oscillator';
+$constructorBox = 'average-range';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

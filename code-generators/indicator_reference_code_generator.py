@@ -48,19 +48,85 @@ def _extract_properties(properties: list):
 
     return f'array({indicator_properties[:-1]})', f'array({numerical_properties[:-1]})'
 
+def capitalize_segment(s):
+    # Capitalize first letter, lowercase the rest
+    return s[0].upper() + s[1:].lower() if s else s
+
+def transform_string(input_string):
+    # Handle "XxxXxx.YYY_YYY" → "XxxXxx.YyyYyy"
+    def repl_underscore(m):
+        prefix = m.group(1)  # e.g. "XxxXxx."
+        parts = m.group(2).split('_')  # e.g. ["YYY", "YYY"]
+        transformed_parts = [capitalize_segment(p) for p in parts]
+        return prefix + ''.join(transformed_parts)
+
+    # First replace underscore pattern
+    transformed = re.sub(r'(\w+\.)(([A-Z]+_)+[A-Z]+)', repl_underscore, input_string)
+
+    # Handle "XxxXxx.YYY" → "XxxXxx.Yyy"
+    def repl_simple(m):
+        prefix = m.group(1)
+        part = m.group(2)
+        return prefix + '.' + capitalize_segment(part)
+
+    transformed = re.sub(r'(\w+)\.([A-Z]+)', repl_simple, transformed)
+
+    return transformed
+
+def split_string(s):
+    result = []
+    current = []
+    bracket_stack = []
+
+    i = 0
+    while i < len(s):
+        char = s[i]
+
+        if char in '([{':
+            bracket_stack.append(char)  # Open a new bracket
+            current.append(char)
+        elif char in ')]}':
+            if bracket_stack:
+                bracket_stack.pop()  # Close the last opened bracket
+            current.append(char)
+        elif char == ',':
+            if not bracket_stack:  # Only split if we're not inside any brackets
+                result.append(''.join(current).strip())
+                current = []  # Reset current for the next segment
+            else:
+                current.append(char)  # Keep the comma inside the brackets
+        else:
+            current.append(char)  # Regular character
+
+        i += 1
+
+    # Add the last segment if there's any content
+    if current:
+        result.append(''.join(current).strip())
+    
+    return result
+
 def _get_helpers():
     with open(f'Resources/indicators/IndicatorImageGenerator.py', mode='r') as fp:
         lines = fp.readlines()
         helpers = {}
         for i, line in enumerate(lines):
-            if 'title' in line and ':' in line:
-                name = lines[i-3].split(':')[0].strip()[1:-1]
-                full_constructor = lines[i-1]
-                parts = line.split('(')
+            if 'IndicatorInfo(' in line and ':' in line:
+                j = 0
+                store_lines = []
+                while lines[i+j].strip() != "),":
+                    store_lines.append(lines[i+j].strip())
+                    j += 1
+                    if lines[i+j].strip() in ["),", ')']:
+                        break
+                indicator_infos = split_string(''.join(store_lines).split("IndicatorInfo(")[1])
+                name = line.split(':')[0].strip()[1:-1]
+                full_constructor = transform_string(indicator_infos[0].strip())
+                parts = indicator_infos[1].strip()
 
                 helpers[to_key(name)] = {
-                    'method': parts[0].split(' ')[-1][1:], 
-                    'arguments': ')'.join('('.join(parts[1:]).split(')')[:-1]),
+                    'method': parts.split('(')[0][1:], 
+                    'arguments': ')'.join('('.join(parts.split('(')[1:]).split(')')[:-1]),
                     'constructor-arguments': ')'.join('('.join(full_constructor.split('(')[1:]).split(')')[:-1])
                 }
 
