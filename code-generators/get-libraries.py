@@ -332,3 +332,10 @@ foreach ($libraries as $library) {
 
     with open(f'03 Writing Algorithms/31 Machine Learning/01 Key Concepts/02 Supported Libraries.php', mode='w', encoding='utf-8') as fp:
         fp.write(html)
+
+    for library in ['autogluon','legacy']:
+        maxlen, libraries = __read_libraries_from_file(RESOURCE / f'{library}.txt')
+        with open(RESOURCE / f'supported-libraries-foundation-{library}.html', mode='w', encoding='utf-8') as fp:
+            fp.write('<div class="section-example-container"><pre class="python">\n')
+            fp.write(__library_to_code_block(maxlen, libraries))
+            fp.write('</pre></div>\n')
