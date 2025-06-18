@@ -2,9 +2,9 @@
 <? 
 $helperPrefix = '';
 $typeName = 'AverageRange';
-$helperName = 'AverageRange';
-$pyHelperName = 'average_range';
-$helperArguments = 'symbol';
+$helperName = 'AR';
+$pyHelperName = 'ar';
+$helperArguments = 'symbol, 20';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

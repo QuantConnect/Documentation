@@ -4,7 +4,7 @@ $helperPrefix = '';
 $typeName = 'FilteredIdentity';
 $helperName = 'FilteredIdentity';
 $pyHelperName = 'filtered_identity';
-$helperArguments = 'symbol, filter = lambda x: x.Close > x.Open';
+$helperArguments = 'symbol, filter: x => x.close > x.open';
 $hasReference = false;
 $isOptionIndicator = false;
 $csharpProperties = array();

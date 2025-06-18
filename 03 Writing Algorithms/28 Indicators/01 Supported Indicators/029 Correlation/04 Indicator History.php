@@ -4,7 +4,7 @@ $helperPrefix = '';
 $typeName = 'Correlation';
 $helperName = 'C';
 $pyHelperName = 'c';
-$helperArguments = 'symbol, reference, 20, correlationType=CorrelationType.Pearson';
+$helperArguments = 'symbol, reference, 20, CorrelationType.Pearson';
 $hasReference = true;
 $isOptionIndicator = false;
 $csharpProperties = array();
