@@ -125,7 +125,7 @@ def _get_helpers():
                 parts = indicator_infos[1].strip()
 
                 helpers[to_key(name)] = {
-                    'method': parts.split('(')[0], 
+                    'method': parts.split('(')[0][1:], 
                     'arguments': ')'.join('('.join(parts.split('(')[1:]).split(')')[:-1]),
                     'constructor-arguments': ')'.join('('.join(full_constructor.split('(')[1:]).split(')')[:-1])
                 }

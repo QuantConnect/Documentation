@@ -23,7 +23,7 @@
         _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $helperArguments)))?>);
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("optionMirrorSymbol", "_mirrorOption", str_replace("optionSymbol", "_option", $helperArguments)))?>);
     }
 
     public override void OnData(Slice data)
@@ -52,7 +52,7 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("optionMirrorSymbol", "self.mirror_option", str_replace("optionSymbol", "self.option", $helperArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
         if self._<?=$pyHelperName?>.is_ready:
@@ -105,7 +105,7 @@
         _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $helperArguments)))?>, resolution: Resolution.Daily);
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("optionMirrorSymbol", "_mirrorOption", str_replace("optionSymbol", "_option", $helperArguments)))?>, resolution: Resolution.Daily);
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
@@ -119,7 +119,7 @@
         self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.HOUR)
 <?}?>
-        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
+        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("optionMirrorSymbol", "self.mirror_option", str_replace("optionSymbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
 </pre>
 </div>
 <? } ?>
