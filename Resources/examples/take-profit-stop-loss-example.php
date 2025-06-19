@@ -94,7 +94,7 @@
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         # Set up a rolling window to hold the last 3 trade bars for price action detection as the trade signal.
-        self.windows = RollingWindow[TradeBar](3)
+        self.windows = RollingWindow(3)
         # Warm up the rolling window.
         history = self.history[TradeBar](self.spy, 3, Resolution.MINUTE)
         for bar in history:

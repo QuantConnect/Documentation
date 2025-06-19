@@ -6,7 +6,7 @@
     <pre class="python">def initialize(self) -&gt; None:
     # Create a rolling window to save the spx and ndx price for fitting the copula on their relationship.
     # We use the recent 1 year to fit the model.
-    self.windows = {self.spx: RollingWindow[float](252), self.ndx: RollingWindow[float](252)}
+    self.windows = {self.spx: RollingWindow(252), self.ndx: RollingWindow(252)}
     # Warm up the rolling windows with historical data for its immediate use.
     for bar in self.history[TradeBar](self.spx, 252, Resolution.DAILY):
         self.windows[self.spx].add(bar.close)

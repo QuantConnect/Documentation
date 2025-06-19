@@ -26,7 +26,7 @@ class CopulaOptionTradingAlgorithm(QCAlgorithm):
 
         # Create a rolling window to save the spx and ndx price for fitting the copula on their relationship.
         # We use the recent 1 year to fit the model.
-        self.windows = {self.spx: RollingWindow[float](252), self.ndx: RollingWindow[float](252)}
+        self.windows = {self.spx: RollingWindow(252), self.ndx: RollingWindow(252)}
         # Set a daily consolidator to update the rolling windows automatically.
         self.consolidate(self.spx, Resolution.DAILY, lambda bar: self.windows[bar.symbol].add(bar.close))
         self.consolidate(self.ndx, Resolution.DAILY, lambda bar: self.windows[bar.symbol].add(bar.close))

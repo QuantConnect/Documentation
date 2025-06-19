@@ -260,7 +260,7 @@ class SymbolData:
         # Register the indicator for automatic updating for daily log returns.
         algorithm.register_indicator(symbol, self.log_ret, Resolution.DAILY)
         # Set up a rolling window to save the log return for calculating the mean and SD for TVaR calculation.
-        self.window = RollingWindow[float](252)
+        self.window = RollingWindow(252)
         # Add a handler to save the log return to the rolling window.
         self.log_ret.updated += lambda _, point: self.window.add(point.value)
         # Warm up the rolling window.

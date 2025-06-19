@@ -38,7 +38,7 @@ class TslearnExampleAlgorithm(QCAlgorithm):
         # Warm up the training dataset to train the model immediately.
         history = self.history(self.symbols, training_length, Resolution.DAILY).unstack(0).close
         for symbol in self.symbols:
-            self.training_data[symbol] = RollingWindow[float](training_length)
+            self.training_data[symbol] = RollingWindow(training_length)
             for close_price in history[symbol]:
                 self.training_data[symbol].add(close_price)
 
