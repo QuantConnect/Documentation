@@ -23,7 +23,7 @@ class CoinGeckoAlgorithm(QCAlgorithm):
         # Request CoinGecko Market Cap data of BTC for trade signal generation
         self.custom_data_symbol = self.add_data(CoinGecko, "BTC").symbol
         # Use RollingWindow to save the last 2 market cap data for capital flow analysis
-        self.window = RollingWindow[CoinGecko](2)
+        self.window = RollingWindow(2)
 
     def on_data(self, slice: Slice) -&gt; None:
         # Trade based on updated market cap data
@@ -116,7 +116,7 @@ class CoinGeckoAlgorithm(QCAlgorithm):
         crypto = self.add_crypto("BTCUSD", market=Market.COINBASE).symbol
         symbol_dict = {symbol: crypto}
         # Use RollingWindow to save the last 2 market cap data for capital flow analysis
-        window = {symbol: RollingWindow[CoinGecko](2)}
+        window = {symbol: RollingWindow(2)}
 
         # Custom alpha model that emit insights based on updated market cap data
         self.add_alpha(CoinGeckoAlphaModel(symbol_dict, window))
@@ -125,7 +125,7 @@ class CoinGeckoAlgorithm(QCAlgorithm):
 
 class CoinGeckoAlphaModel(AlphaModel):
 
-    def __init__(self, symbol_dict: Dict[Symbol, Symbol], window: Dict[Symbol, RollingWindow[CoinGecko]]) -&gt; None:
+    def __init__(self, symbol_dict: Dict[Symbol, Symbol], window: Dict[Symbol, RollingWindow]) -&gt; None:
         self.symbol_dict = symbol_dict
         self.window = window
 

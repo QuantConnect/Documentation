@@ -57,7 +57,7 @@
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         # Set up a rolling window to hold the last 20 bar's bid-ask spread for trade signal generation.
-        self.windows = RollingWindow[float](20)
+        self.windows = RollingWindow(20)
         # Warm up for the rolling window with quote data.
         history = self.history[QuoteBar](self.spy, 20, Resolution.MINUTE)
         for bar in history:
