@@ -219,6 +219,36 @@ paths:
               explode: false
               schema:
                 type: string
+  /projects/collaboration/update:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 02 Project Management
+      - 05 Collaboration
+      - 03 Update Project Collaborator
+      summary: Updates collaborator information in the project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCollaboratorRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCollaboratorResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /projects/collaboration/delete:
     post:
       tags:
@@ -226,7 +256,7 @@ paths:
       - 99 API Reference
       - 02 Project Management
       - 05 Collaboration
-      - 03 Delete Project Collaborator
+      - 04 Delete Project Collaborator
       summary: Removes collaborator from the project
       requestBody:
         content:
@@ -2693,6 +2723,38 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Response received when reading the collaborators of a project.
+    UpdateCollaboratorRequest:
+      type: object
+      required:
+        - projectId
+        - collaboratorUserId 
+      properties:
+        projectId:
+          type: integer
+          example: 23456789
+          description: Project Id we want to add the collaborator to.
+        collaboratorUserId:
+          type: string
+          description: User Id of the collaborator we want to add.
+        liveControl:
+          type: bool
+          description: Gives the right to deploy and stop live algorithms.
+        write:
+          type: bool
+          description: Gives the right to edit the code.
+      description: Request to update an existing collaborator.
+    UpdateCollaboratorResponse:
+      type: object
+      properties:
+        collaborators:
+          type: array
+          description: List of collaborators.
+          items:
+            $ref: '#/components/schemas/Collaborator'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+      description: Response received when updating collaborator.
     DeleteCollaboratorRequest:
       type: object
       required:

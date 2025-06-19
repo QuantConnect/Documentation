@@ -20,35 +20,41 @@ response = post(f'{BASE_URL}/projects/collaboration/create', headers=get_headers
 result = response.json()
 # Check if the request was successful and print the result
 if result['success']:
-    print("Project Collaborator Created Successfully:")
-    print(result)
+    print(f"Project Collaborator Created Successfully: {result}")
 
 ### Read Project Collaborator
-# Prepare data payload to read collaborators
-payload = {
-    "projectId": project_id  # ID of the project
-}
 # Send a POST request to the /projects/collaboration/read endpoint to get collaborators
-response = post(f'{BASE_URL}/projects/collaboration/read', headers=get_headers(), json=payload)
+response = post(f'{BASE_URL}/projects/collaboration/read', headers=get_headers(), json={
+    "projectId": project_id  # ID of the project
+})
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the collaborators
 if result['success']:
-    print("Project Collaborators:")
-    print(result)
+    print(f"Project Collaborators: {result}")
+
+### Update Project Collaborator
+# Send a POST request to the /projects/collaboration/update endpoint to update a collaborator's rights
+response = post(f'{BASE_URL}/projects/collaboration/update', headers=get_headers(), json={
+    "projectId": project_id,  # ID of the project
+    "collaboratorUserId": collaborator_id,  # ID of the collaborator to update
+    "liveControl": True,  # Grant live control permission
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the collaborators
+if result['success']:
+    print(f"Project Collaborator Updated Successfully: {result}")
 
 ### Delete Project Collaborator
-# Prepare data payload to delete a collaborator
-payload = {
+# Send a POST request to the /projects/collaboration/delete endpoint to remove collaborator
+response = post(f'{BASE_URL}/projects/collaboration/delete', headers=get_headers(), json={
     "projectId": project_id,  # ID of the project
     "collaboratorUserId": collaborator_id  # ID of the collaborator to remove
-}
-# Send a POST request to the /projects/collaboration/delete endpoint to remove collaborator
-response = post(f'{BASE_URL}/projects/collaboration/delete', headers=get_headers(), json=payload)
+})
 # Parse the JSON response into python managable dict
 result = response.json()
 # Check if the request was successful and print the result
 if result['success']:
-    print("Project Collaborator Deleted Successfully:")
-    print(result)</pre>
+    print(f"Project Collaborator Deleted Successfully: {result}")</pre>
 </div>
