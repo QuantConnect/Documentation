@@ -42,18 +42,15 @@
 <p>For example, the following algorithm creates a universe of 100 Cryptocurrencies and then subscribes to minute resolution data for each one in the universe:</p>
 
 <div class="section-example-container">
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class CryptoDataAlgorithm : QCAlgorithm
 {
-    public class CryptoDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            UniverseSettings.Asynchronous = true;            
-            AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; universeDay.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
-            );
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        UniverseSettings.Asynchronous = true;            
+        AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; universeDay.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
+        );
     }
 }</pre>
 <pre class="python">class CryptoDataAlgorithm(QCAlgorithm):

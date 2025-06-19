@@ -12,52 +12,42 @@
     The output of both universes is the output of the chained universe.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">using QuantConnect.Data;
-using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Securities;
-using QuantConnect.Util;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace QuantConnect.Algorithm.CSharp
+ <pre class="csharp">public class ETFUniverseOptions : QCAlgorithm
 {
-    public class ETFUniverseOptions : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2023, 2, 2);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = true;
-            // Need to set the data normalization mode to raw for fair strike price comparison.
-            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+        SetStartDate(2023, 2, 2);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = true;
+        // Need to set the data normalization mode to raw for fair strike price comparison.
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 
-            // First-pass filtering from QQQ constituents.
-            var etfUniverse = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
-            AddUniverse(etfUniverse);
-            // Filter for equity options from the selected QQQ constituents next.
-            AddUniverseOptions(etfUniverse, OptionFilterFunction);
-        }
-    
-        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+        // First-pass filtering from QQQ constituents.
+        var etfUniverse = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
+        AddUniverse(etfUniverse);
+        // Filter for equity options from the selected QQQ constituents next.
+        AddUniverseOptions(etfUniverse, OptionFilterFunction);
+    }
+
+    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    {
+        // Select the top 10 weighted QQQ constituents for most liquid options.
+        return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
+    }
+
+    private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
+    {
+        // Select the front month ATM standard calls.
+        return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly();
+    }
+
+    public override void OnData(Slice data)
+    {
+        foreach (var (symbol, chain) in data.OptionChains)
         {
-            // Select the top 10 weighted QQQ constituents for most liquid options.
-            return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
-        }
-    
-        private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
-        {
-            // Select the front month ATM standard calls.
-            return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly();
-        }
-    
-        public override void OnData(Slice data)
-        {
-            foreach (var (symbol, chain) in data.OptionChains)
+            foreach (var contract in chain)
             {
-                foreach (var contract in chain)
-                {
-                    Debug($"Found {contract.Symbol} option contract for {symbol}");
-                }
+                Debug($"Found {contract.Symbol} option contract for {symbol}");
             }
         }
     }

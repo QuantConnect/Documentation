@@ -49,18 +49,15 @@
 
 
 <div class="section-example-container">
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
 {
-    public class USEquityOptionsDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            UniverseSettings.Asynchronous = true;
-            var underlying = AddEquity("GOOG").Symbol;
-            AddOption(underlying);
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        UniverseSettings.Asynchronous = true;
+        var underlying = AddEquity("GOOG").Symbol;
+        AddOption(underlying);
     }
 }</pre>
 <pre class="python">class USEquityOptionsDataAlgorithm(QCAlgorithm):

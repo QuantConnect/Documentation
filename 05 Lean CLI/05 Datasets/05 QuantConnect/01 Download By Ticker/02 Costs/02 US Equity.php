@@ -71,17 +71,14 @@
 <p>For example, the following algorithm creates a dollar volume universe with 100 securities and then subscribes to minute resolution data for each US Equity in the universe:</p>
 
 <div class="section-example-container">
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class USEquityDataAlgorithm : QCAlgorithm
 {
-    public class USEquityDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            UniverseSettings.Asynchronous = true;
-            AddUniverse(Universe.DollarVolume.Top(100));
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        UniverseSettings.Asynchronous = true;
+        AddUniverse(Universe.DollarVolume.Top(100));
     }
 }</pre>
 <pre class="python">class USEquityDataAlgorithm(QCAlgorithm):

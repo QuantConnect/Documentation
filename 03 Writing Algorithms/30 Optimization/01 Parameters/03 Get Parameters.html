@@ -45,27 +45,24 @@ parameter_value = self.get_parameter("Parameter Name")</pre>
 
 <div class="section-example-container">
     <pre class="csharp">// Example to get the values of parameters of each data type:
-namespace QuantConnect.Algorithm.CSharp
+public class ParameterizedAlgorithm : QCAlgorithm
 {
-    public class ParameterizedAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            // Get the parameter value and return an integer.
-            var intParameterValue = GetParameter("intParameterName", 100);
+        // Get the parameter value and return an integer.
+        var intParameterValue = GetParameter("intParameterName", 100);
 
-            // Get the parameter value and return a double.
-            var doubleParameterValue = GetParameter("doubleParameterName", 0.95);
+        // Get the parameter value and return a double.
+        var doubleParameterValue = GetParameter("doubleParameterName", 0.95);
 
-            // Get the parameter value and return a decimal.
-            var decimalParameterValue = GetParameter("decimalParameterName", 0.05m);
+        // Get the parameter value and return a decimal.
+        var decimalParameterValue = GetParameter("decimalParameterName", 0.05m);
 
-            // Get the parameter value as a string.
-            var stringParameterValue = GetParameter("parameterName", "defaultStringValue")
+        // Get the parameter value as a string.
+        var stringParameterValue = GetParameter("parameterName", "defaultStringValue")
 
-            // Cast the string to an integer.
-            var castedParameterValue = Convert.ToInt32(stringParameterValue);
-        }
+        // Cast the string to an integer.
+        var castedParameterValue = Convert.ToInt32(stringParameterValue);
     }
 }</pre>
     <pre class="python"># Example to get the values of parameters of each data type:
@@ -87,19 +84,16 @@ class ParameterizedAlgorithm(QCAlgorithm):
 <p class="csharp">Alternatively, you can use the <code>Parameter(name)</code> attribute on top of class fields or properties to set their values. If there are no parameters in your project that match the name you pass to the attribute and you provide a default value to the method, it returns the default value.</p>
 <div class="csharp section-example-container">
     <pre class="csharp">// Use the Parameter attribute to set field values externally, enabling flexible configuration with default fallback.
-namespace QuantConnect.Algorithm.CSharp
+public class ParameterizedAlgorithm : QCAlgorithm
 {
-    public class ParameterizedAlgorithm : QCAlgorithm
-    {
-        [Parameter("intParameterName")]
-        public int IntParameterValue = 100;
+    [Parameter("intParameterName")]
+    public int IntParameterValue = 100;
 
-        [Parameter("doubleParameterName")]
-        public double DoubleParameterValue = 0.95;
+    [Parameter("doubleParameterName")]
+    public double DoubleParameterValue = 0.95;
 
-        [Parameter("decimalParameterName")]
-        public decimal DecimalParameterValue = 0.05m;
-    }
+    [Parameter("decimalParameterName")]
+    public decimal DecimalParameterValue = 0.05m;
 }</pre>
 </div>
 

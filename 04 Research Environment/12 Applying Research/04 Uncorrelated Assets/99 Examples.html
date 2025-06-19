@@ -221,103 +221,100 @@ plt.show()</pre>
 <div class="section-example-container">
     <pre class="csharp">using Accord.Statistics;
 
-namespace QuantConnect.Algorithm.CSharp
+public class UncorrelatedAssetsDemo : QCAlgorithm
 {
-    public class UncorrelatedAssetsDemo : QCAlgorithm
+    private List&lt;string&gt; _asset = new List&lt;string&gt;{"SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+        "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+        "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
+        
+    public override void Initialize()
     {
-        private List&lt;string&gt; _asset = new List&lt;string&gt;{"SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
-            "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
-            "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
-            
-        public override void Initialize()
+        // 1. Required: Five years of backtest history
+        SetStartDate(2014, 1, 1);
+        SetEndDate(2019, 1, 1);
+    
+        // 2. Required: Alpha Streams Models:
+        SetBrokerageModel(BrokerageName.AlphaStreams);
+    
+        // 3. Required: Significant AUM Capacity
+        SetCash(1000000);
+    
+        // 4. Required: Benchmark to SPY
+        SetBenchmark("SPY");
+    
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    
+        // Add Equity ------------------------------------------------ 
+        foreach(var ticker in _asset)
         {
-            // 1. Required: Five years of backtest history
-            SetStartDate(2014, 1, 1);
-            SetEndDate(2019, 1, 1);
+        AddEquity(ticker, Resolution.Minute);
+        }
+    
+        // Set Scheduled Event Method For Our Model. In this example, we'll rebalance every month.
+        Schedule.On(DateRules.MonthStart(), 
+            TimeRules.BeforeMarketClose("SHY", 5),
+            EveryDayBeforeMarketClose);
+    }
+    
+    private void EveryDayBeforeMarketClose()
+    {
+        // Fetch history on our universe
+        var history = History(Securities.Keys, 252*2, Resolution.Daily);
+        if (history.Count() &lt; 0) return;
         
-            // 2. Required: Alpha Streams Models:
-            SetBrokerageModel(BrokerageName.AlphaStreams);
-        
-            // 3. Required: Significant AUM Capacity
-            SetCash(1000000);
-        
-            // 4. Required: Benchmark to SPY
-            SetBenchmark("SPY");
-        
-            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-            SetExecution(new ImmediateExecutionModel());
-        
-            // Add Equity ------------------------------------------------ 
-            foreach(var ticker in _asset)
-            {
-            AddEquity(ticker, Resolution.Minute);
-            }
-        
-            // Set Scheduled Event Method For Our Model. In this example, we'll rebalance every month.
-            Schedule.On(DateRules.MonthStart(), 
-                TimeRules.BeforeMarketClose("SHY", 5),
-                EveryDayBeforeMarketClose);
+        // Extract daily return of close prices for each Symbol from Slice data
+        var returns = new Dictionary&lt;string, List&lt;double&gt;&gt;();
+        var last = new Dictionary&lt;string, double&gt;();
+        foreach(var slice in history){
+            foreach(var symbol in slice.Bars.Keys){
+                if(!returns.ContainsKey(symbol)){
+                    returns.Add(symbol, new List&lt;double&gt;());
+                    last.Add(symbol, (double)slice.Bars[symbol].Close);
+                }
+                var change = (double) ((double)slice.Bars[symbol].Close - last[symbol])/last[symbol];
+                last[symbol] = (double)slice.Bars[symbol].Close;
+                returns[symbol].Add(change);
+            }    
         }
         
-        private void EveryDayBeforeMarketClose()
+        // Convert returns into 2-d array
+        double[,] ret = new double[returns.Values.ElementAt(0).Count - 1, _asset.Count];
+        int k = 0;
+        foreach(var kvp in returns)
         {
-            // Fetch history on our universe
-            var history = History(Securities.Keys, 252*2, Resolution.Daily);
-            if (history.Count() &lt; 0) return;
-            
-            // Extract daily return of close prices for each Symbol from Slice data
-            var returns = new Dictionary&lt;string, List&lt;double&gt;&gt;();
-            var last = new Dictionary&lt;string, double&gt;();
-            foreach(var slice in history){
-                foreach(var symbol in slice.Bars.Keys){
-                    if(!returns.ContainsKey(symbol)){
-                        returns.Add(symbol, new List&lt;double&gt;());
-                        last.Add(symbol, (double)slice.Bars[symbol].Close);
-                    }
-                    var change = (double) ((double)slice.Bars[symbol].Close - last[symbol])/last[symbol];
-                    last[symbol] = (double)slice.Bars[symbol].Close;
-                    returns[symbol].Add(change);
-                }    
-            }
-            
-            // Convert returns into 2-d array
-            double[,] ret = new double[returns.Values.ElementAt(0).Count - 1, _asset.Count];
-            int k = 0;
-            foreach(var kvp in returns)
+            var symbol = kvp.Key;
+            for(int i=0; i &lt; returns[symbol].Count - 1; i++)
             {
-                var symbol = kvp.Key;
-                for(int i=0; i &lt; returns[symbol].Count - 1; i++)
-                {
-                    ret[i, k] = returns[symbol][i + 1];
-                }
-                k++;
+                ret[i, k] = returns[symbol][i + 1];
             }
-            
-            // Get correlation matrix
-            var corrMatrix = Measures.Correlation(ret);
-            
-            // Find 5 assets with the least absolute sum correlation
-            var correlations = new Dictionary&lt;string, double&gt;();
-            for(int i=0; i &lt; corrMatrix.GetLength(0); i++)
+            k++;
+        }
+        
+        // Get correlation matrix
+        var corrMatrix = Measures.Correlation(ret);
+        
+        // Find 5 assets with the least absolute sum correlation
+        var correlations = new Dictionary&lt;string, double&gt;();
+        for(int i=0; i &lt; corrMatrix.GetLength(0); i++)
+        {
+            var symbol = _asset[i];
+            if(!correlations.ContainsKey(symbol)){
+                correlations.Add(symbol, 0);
+            }
+            for (int j=0; j &lt; corrMatrix.GetLength(1); j++)
             {
-                var symbol = _asset[i];
-                if(!correlations.ContainsKey(symbol)){
-                    correlations.Add(symbol, 0);
-                }
-                for (int j=0; j &lt; corrMatrix.GetLength(1); j++)
-                {
-                    var value_ = corrMatrix[i, j];
-                    correlations[symbol] += value_ &gt;= 0 ? value_ : -value_;
-                }
+                var value_ = corrMatrix[i, j];
+                correlations[symbol] += value_ &gt;= 0 ? value_ : -value_;
             }
-            var selected = correlations.OrderBy(x =&gt; x.Value).Take(5).Select(x =&gt; x.Key).ToList();
-            
-            // Emit insights
-            foreach(var symbol in selected)
-            {
-                var insight = new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Up);
-                EmitInsights(insight);
-            }
+        }
+        var selected = correlations.OrderBy(x =&gt; x.Value).Take(5).Select(x =&gt; x.Key).ToList();
+        
+        // Emit insights
+        foreach(var symbol in selected)
+        {
+            var insight = new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Up);
+            EmitInsights(insight);
         }
     }
 }</pre>

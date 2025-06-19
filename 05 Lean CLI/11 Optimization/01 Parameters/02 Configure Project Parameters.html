@@ -19,28 +19,25 @@
     <li>Open your algorithm in the editor.</li>
     <li>Call <code>QCAlgorithm.GetParameter(name)</code> in your algorithm to retrieve the value of a parameter and use that instead of constant values.
 <div class="section-example-container">
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+<pre class="csharp">public class ParameterizedAlgorithm : QCAlgorithm
 {
-    public class ParameterizedAlgorithm : QCAlgorithm
+    private ExponentialMovingAverage _fast;
+    private ExponentialMovingAverage _medium;
+    private ExponentialMovingAverage _slow;
+
+    public override void Initialize()
     {
-        private ExponentialMovingAverage _fast;
-        private ExponentialMovingAverage _medium;
-        private ExponentialMovingAverage _slow;
+        SetStartDate(2020, 1, 1);
+        SetCash(100000);
+        AddEquity("SPY");
 
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetCash(100000);
-            AddEquity("SPY");
+        var fastPeriod = GetParameter("ema-fast", 10);
+        var mediumPeriod = GetParameter("ema-medium", 30);
+        var slowPeriod = GetParameter("ema-slow", 50);
 
-            var fastPeriod = GetParameter("ema-fast", 10);
-            var mediumPeriod = GetParameter("ema-medium", 30);
-            var slowPeriod = GetParameter("ema-slow", 50);
-
-            _fast = EMA("SPY", fastPeriod);
-            _medium = EMA("SPY", mediumPeriod);
-            _slow = EMA("SPY", slowPeriod);
-        }
+        _fast = EMA("SPY", fastPeriod);
+        _medium = EMA("SPY", mediumPeriod);
+        _slow = EMA("SPY", slowPeriod);
     }
 }</pre>
 <pre class="python">class ParameterizedAlgorithm(QCAlgorithm):

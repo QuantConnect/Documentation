@@ -13,21 +13,18 @@
 using System.IO;
 using QuantConnect.Data;
 
-namespace QuantConnect.Algorithm.CSharp
+public class Weather : BaseData
 {
-    public class Weather : BaseData
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLive)
     {
-        public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLive)
-        {
-            // Old:
-            // var source = "https://www.dropbox.com/s/8v6z949n25hyk9o/custom_weather_data.csv?dl=1";
-            // return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
+        // Old:
+        // var source = "https://www.dropbox.com/s/8v6z949n25hyk9o/custom_weather_data.csv?dl=1";
+        // return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
 
-            // New:
-            // Replace custom_weather_data.csv with the path to your data file in the data directory
-            var source = Path.Combine(Globals.DataFolder, "custom_weather_data.csv");
-            return new SubscriptionDataSource(source, SubscriptionTransportMedium.LocalFile);
-        }
+        // New:
+        // Replace custom_weather_data.csv with the path to your data file in the data directory
+        var source = Path.Combine(Globals.DataFolder, "custom_weather_data.csv");
+        return new SubscriptionDataSource(source, SubscriptionTransportMedium.LocalFile);
     }
 }</pre>
 <pre class="python">import os
