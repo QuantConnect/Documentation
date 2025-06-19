@@ -12,134 +12,131 @@
  class implements the selection logic and manages the contract subscriptions.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+ <pre class="csharp">public class OptionChainFullExample : QCAlgorithm
 {
-    public class OptionChainFullExample : QCAlgorithm
+    private Dictionary&lt;Symbol, OptionChainManager&gt; _chainManager = new();
+    public override void Initialize()
     {
-        private Dictionary&lt;Symbol, OptionChainManager&gt; _chainManager = new();
-        public override void Initialize()
+        SetStartDate(2023, 1, 2);
+        SetEndDate(2023, 1, 30);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = true;
+        UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
+
+        // Seed the last price to ensure filtering using the underlying price is available immediately.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+
+        // Request the index underlying data for filtering.
+        var spx = AddIndex("SPX").Symbol;
+        // Create the 5-minute option chain manager on the SPXW weekly index option.
+        _chainManager[QuantConnect.Symbol.CreateCanonicalOption(spx, "SPXW", Market.USA, "?SPXW")] = new(-10, 10, 0, 1);
+        // Populate the updated option chain immediately to trade with.
+        PopulateOptionChain();
+
+        // Set a schedule event to populate the option chain when the market opens since the option contracts are updated daily.
+        Schedule.On(DateRules.EveryDay(spx), TimeRules.AfterMarketOpen(spx, 1), PopulateOptionChain);
+        // Set a scheduled event to filter the closed ATM calls every 5 minutes.
+        Schedule.On(DateRules.EveryDay(spx), TimeRules.Every(TimeSpan.FromMinutes(5)), Filter);
+    }
+    
+    private void PopulateOptionChain()
+    {
+        // The contract list is updated daily, so we can get it and apply
+        // the expiration filter as soon as the market opens.
+        foreach (var (symbol, manager) in _chainManager)
         {
-            SetStartDate(2023, 1, 2);
-            SetEndDate(2023, 1, 30);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = true;
-            UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
-
-            // Seed the last price to ensure filtering using the underlying price is available immediately.
-            SetSecurityInitializer(
-                new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-            );
-
-            // Request the index underlying data for filtering.
-            var spx = AddIndex("SPX").Symbol;
-            // Create the 5-minute option chain manager on the SPXW weekly index option.
-            _chainManager[QuantConnect.Symbol.CreateCanonicalOption(spx, "SPXW", Market.USA, "?SPXW")] = new(-10, 10, 0, 1);
-            // Populate the updated option chain immediately to trade with.
-            PopulateOptionChain();
-
-            // Set a schedule event to populate the option chain when the market opens since the option contracts are updated daily.
-            Schedule.On(DateRules.EveryDay(spx), TimeRules.AfterMarketOpen(spx, 1), PopulateOptionChain);
-            // Set a scheduled event to filter the closed ATM calls every 5 minutes.
-            Schedule.On(DateRules.EveryDay(spx), TimeRules.Every(TimeSpan.FromMinutes(5)), Filter);
+            manager.SetChain(OptionChain(symbol), Time);
         }
-        
-        private void PopulateOptionChain()
+        Filter();
+    }
+    
+    private void Filter()
+    {
+        foreach (var (symbol, manager) in _chainManager)
         {
-            // The contract list is updated daily, so we can get it and apply
-            // the expiration filter as soon as the market opens.
-            foreach (var (symbol, manager) in _chainManager)
-            {
-                manager.SetChain(OptionChain(symbol), Time);
-            }
-            Filter();
-        }
-        
-        private void Filter()
-        {
-            foreach (var (symbol, manager) in _chainManager)
-            {
-                manager.Select(this, symbol);
-            }
-        }
-        
-        public override void OnData(Slice slice)
-        {
-            foreach (var (symbol, manager) in _chainManager)
-            {
-                // Only trade on updated data.
-                if (!slice.OptionChains.TryGetValue(symbol, out var chain))
-                    continue;
-
-                // Filter the closest ATM call contract and trade.
-                var expiry = chain.Min(x =&gt; x.Expiry);
-                var atmCall = chain
-                    .Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call &amp;&amp; Securities[x.Symbol].IsTradable)
-                    .OrderBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike))
-                    .FirstOrDefault();
-
-                if (atmCall != null &amp;&amp; !Portfolio[atmCall.Symbol].Invested)
-                    MarketOrder(atmCall.Symbol, 1);
-            }
+            manager.Select(this, symbol);
         }
     }
-
-    internal class OptionChainManager
+    
+    public override void OnData(Slice slice)
     {
-        private readonly int _minStrike;
-        private readonly int _maxStrike;
-        private readonly int _minExpiry;
-        private readonly int _maxExpiry;
-        private List&lt;OptionContract&gt; _chain = new();
-        private readonly List&lt;Symbol&gt; _symbols = new();
-
-        public OptionChainManager(int minStrike, int maxStrike, int minExpiry, int maxExpiry)
+        foreach (var (symbol, manager) in _chainManager)
         {
-            _minStrike = minStrike;
-            _maxStrike = maxStrike;
-            _minExpiry = minExpiry;
-            _maxExpiry = maxExpiry;
+            // Only trade on updated data.
+            if (!slice.OptionChains.TryGetValue(symbol, out var chain))
+                continue;
+
+            // Filter the closest ATM call contract and trade.
+            var expiry = chain.Min(x =&gt; x.Expiry);
+            var atmCall = chain
+                .Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call &amp;&amp; Securities[x.Symbol].IsTradable)
+                .OrderBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike))
+                .FirstOrDefault();
+
+            if (atmCall != null &amp;&amp; !Portfolio[atmCall.Symbol].Invested)
+                MarketOrder(atmCall.Symbol, 1);
         }
+    }
+}
 
-        public void SetChain(OptionChain chain, DateTime time)
+internal class OptionChainManager
+{
+    private readonly int _minStrike;
+    private readonly int _maxStrike;
+    private readonly int _minExpiry;
+    private readonly int _maxExpiry;
+    private List&lt;OptionContract&gt; _chain = new();
+    private readonly List&lt;Symbol&gt; _symbols = new();
+
+    public OptionChainManager(int minStrike, int maxStrike, int minExpiry, int maxExpiry)
+    {
+        _minStrike = minStrike;
+        _maxStrike = maxStrike;
+        _minExpiry = minExpiry;
+        _maxExpiry = maxExpiry;
+    }
+
+    public void SetChain(OptionChain chain, DateTime time)
+    {
+        // Filter the expiry daily only since the contract list is updated daily.
+        _chain = chain.Where(x =&gt;
         {
-            // Filter the expiry daily only since the contract list is updated daily.
-            _chain = chain.Where(x =&gt;
-            {
-                var totalDays = (x.Expiry - time).TotalDays;
-                return _minExpiry &lt;= totalDays &amp;&amp; totalDays &lt;= _maxExpiry;
-            }).ToList();
+            var totalDays = (x.Expiry - time).TotalDays;
+            return _minExpiry &lt;= totalDays &amp;&amp; totalDays &lt;= _maxExpiry;
+        }).ToList();
+    }
+    
+    public void Select(QCAlgorithm algorithm, Symbol underlyingSymbol)
+    {
+        if (_chain.IsNullOrEmpty())
+            return;
+        if (underlyingSymbol.IsCanonical())
+            underlyingSymbol = underlyingSymbol.Underlying;
+
+        // Filter the contracts with strike range spread between the preset level.
+        var strikes = _chain.Select(x =&gt; x.Strike).OrderBy(x =&gt; x).Distinct().ToList();
+        var spot = algorithm.Securities[underlyingSymbol].Price;
+        var atm = strikes.OrderBy(x =&gt; Math.Abs(spot - x)).FirstOrDefault();
+        var index = strikes.IndexOf(atm);
+        var minStrike = strikes[Math.Max(0, index + _minStrike)];
+        var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
+        var symbols = _chain
+            .Where(x =&gt; minStrike &lt;= x.Strike &amp;&amp; x.Strike &lt;= maxStrike)
+            .Select(x =&gt; x.Symbol).ToList();
+
+        // Remove subscriptions if the contracts are no longer ATMs.
+        foreach (var symbol in _symbols.Except(symbols).ToList())
+        {
+            if (algorithm.RemoveOptionContract(symbol))
+                _symbols.Remove(symbol);
         }
-        
-        public void Select(QCAlgorithm algorithm, Symbol underlyingSymbol)
+        // Request data of the newly identified ATM contracts.
+        foreach (var symbol in symbols.Except(_symbols).ToList())
         {
-            if (_chain.IsNullOrEmpty())
-                return;
-            if (underlyingSymbol.IsCanonical())
-                underlyingSymbol = underlyingSymbol.Underlying;
-
-            // Filter the contracts with strike range spread between the preset level.
-            var strikes = _chain.Select(x =&gt; x.Strike).OrderBy(x =&gt; x).Distinct().ToList();
-            var spot = algorithm.Securities[underlyingSymbol].Price;
-            var atm = strikes.OrderBy(x =&gt; Math.Abs(spot - x)).FirstOrDefault();
-            var index = strikes.IndexOf(atm);
-            var minStrike = strikes[Math.Max(0, index + _minStrike)];
-            var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
-            var symbols = _chain
-                .Where(x =&gt; minStrike &lt;= x.Strike &amp;&amp; x.Strike &lt;= maxStrike)
-                .Select(x =&gt; x.Symbol).ToList();
-
-            // Remove subscriptions if the contracts are no longer ATMs.
-            foreach (var symbol in _symbols.Except(symbols).ToList())
-            {
-                if (algorithm.RemoveOptionContract(symbol))
-                    _symbols.Remove(symbol);
-            }
-            // Request data of the newly identified ATM contracts.
-            foreach (var symbol in symbols.Except(_symbols).ToList())
-            {
-                _symbols.Add(symbol);
-                algorithm.AddOptionContract(symbol);
-            }
+            _symbols.Add(symbol);
+            algorithm.AddOptionContract(symbol);
         }
     }
 }</pre>

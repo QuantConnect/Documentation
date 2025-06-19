@@ -12,57 +12,46 @@
     The output of both universes is the output of the chained universe.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">using QuantConnect.Data;
-using QuantConnect.Data.Fundamental;
-using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Securities;
-using QuantConnect.Util;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace QuantConnect.Algorithm.CSharp
+ <pre class="csharp">public class ETFUniverseOptions : QCAlgorithm
 {
-    public class ETFUniverseOptions : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2023, 2, 2);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = true;
-            // Need to set data normalization mode to raw for options to compare the strike price fairly.
-            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+        SetStartDate(2023, 2, 2);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = true;
+        // Need to set data normalization mode to raw for options to compare the strike price fairly.
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 
-            // Filter for equities with fundamental data first.
-            var universe = AddUniverse(FundamentalFunction);
-            // Based on the filtered equities, request an option universe with them as underlying.
-            AddUniverseOptions(universe, OptionFilterFunction);
-        }
+        // Filter for equities with fundamental data first.
+        var universe = AddUniverse(FundamentalFunction);
+        // Based on the filtered equities, request an option universe with them as underlying.
+        AddUniverseOptions(universe, OptionFilterFunction);
+    }
 
-        private IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    private IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Filter for equities with the lowest PE Ratio first.
+        return fundamental
+            .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
+            .OrderBy(f =&gt; f.ValuationRatios.PERatio)
+            .Take(10)
+            .Select(x =&gt; x.Symbol);
+    }
+
+    private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
+    {
+        // Select the front month ATM calls.
+        return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly();
+    }
+
+    public override void OnData(Slice data)
+    {
+        // Iterate each option chain to assert the contracts being selected.
+        foreach (var (symbol, chain) in data.OptionChains)
         {
-            // Filter for equities with the lowest PE Ratio first.
-            return fundamental
-                .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
-                .OrderBy(f =&gt; f.ValuationRatios.PERatio)
-                .Take(10)
-                .Select(x =&gt; x.Symbol);
-        }
-    
-        private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
-        {
-            // Select the front month ATM calls.
-            return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly();
-        }
-    
-        public override void OnData(Slice data)
-        {
-            // Iterate each option chain to assert the contracts being selected.
-            foreach (var (symbol, chain) in data.OptionChains)
+            foreach (var contract in chain)
             {
-                foreach (var contract in chain)
-                {
-                    Debug($"Found {contract.Symbol} option contract for {symbol}");
-                }
+                Debug($"Found {contract.Symbol} option contract for {symbol}");
             }
         }
     }

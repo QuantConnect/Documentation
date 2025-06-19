@@ -9,12 +9,10 @@
     <li>Import the library into your project to use the library.</li>
     <div class='section-example-container'>
     <pre class='csharp'>using Calculators;
-namespace QuantConnect.Algorithm.CSharp
+
+public class AddLibraryAlgorithm : QCAlgorithm
 {
-    public class AddLibraryAlgorithm : QCAlgorithm
-    {
-        private TaxesCalculator _taxesCalculator = new();
-    }
+    private TaxesCalculator _taxesCalculator = new();
 }</pre>
     <pre class='python'>from Calculators.TaxesCalculator import TaxesCalculator
 class AddLibraryAlgorithm(QCAlgorithm):

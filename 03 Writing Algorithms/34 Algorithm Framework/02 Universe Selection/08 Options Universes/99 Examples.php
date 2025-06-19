@@ -300,94 +300,82 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
 
 <div class="section-example-container testable">
 	<pre class="csharp">// Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
-using QuantConnect.Data;
-using QuantConnect.Data.Fundamental;
-using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Securities;
-using QuantConnect.Securities.Option;
-using QuantConnect.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace QuantConnect.Algorithm.CSharp
+public class ETFUniverseOptions : QCAlgorithm
 {
-    public class ETFUniverseOptions : QCAlgorithm
+    private int _day;
+    public override void Initialize()
     {
-        private int _day;
-        public override void Initialize()
-        {
-            SetStartDate(2023, 2, 2);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = true;
-            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-            SetSecurityInitializer(new CustomSecurityInitializer(this));
+        SetStartDate(2023, 2, 2);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = true;
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+        SetSecurityInitializer(new CustomSecurityInitializer(this));
 
-            var universe = AddUniverse(FundamentalFunction);
-            AddUniverseOptions(universe, OptionFilterFunction);
-        }
-
-        private IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
-        {
-            return fundamental
-                .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
-                .OrderBy(f =&gt; f.ValuationRatios.PERatio)
-                .Take(10)
-                .Select(x =&gt; x.Symbol);
-        }
-
-        private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
-        {
-            return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
-        }
-
-        public override void OnData(Slice data)
-        {
-            if (IsWarmingUp || _day == Time.Day) return;
-
-            foreach (var (symbol, chain) in data.OptionChains)
-            {
-                if (Portfolio[chain.Underlying.Symbol].Invested)
-                    Liquidate(chain.Underlying.Symbol);
-
-                var spot = chain.Underlying.Price;
-                var contract = chain.OrderBy(x =&gt; Math.Abs(spot-x.Strike)).FirstOrDefault();
-                var tag = $"IV: {contract.ImpliedVolatility:F3} Δ: {contract.Greeks.Delta:F3}";
-                MarketOrder(contract.Symbol, 1, true, tag);
-                _day = Time.Day;
-            }
-        }
+        var universe = AddUniverse(FundamentalFunction);
+        AddUniverseOptions(universe, OptionFilterFunction);
     }
 
-    internal class CustomSecurityInitializer : BrokerageModelSecurityInitializer
+    private IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
     {
-        private QCAlgorithm _algorithm;
-        public CustomSecurityInitializer(QCAlgorithm algorithm)
-            : base(algorithm.BrokerageModel, new FuncSecuritySeeder(algorithm.GetLastKnownPrices))
-        {
-            _algorithm = algorithm;
-        }    
-    
-        public override void Initialize(Security security)
-        {
-            // First, call the superclass definition
-            // This method sets the reality models of each security using the default reality models of the brokerage model
-            base.Initialize(security);
+        return fundamental
+            .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
+            .OrderBy(f =&gt; f.ValuationRatios.PERatio)
+            .Take(10)
+            .Select(x =&gt; x.Symbol);
+    }
 
-            // Next, overwrite the price model        
-            if (security.Type == SecurityType.Option) // Option type
-            {
-                (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
-            }
+    private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
+    {
+        return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
+    }
 
-            // Overwrite the volatility model and warm it up
-            if (security.Type == SecurityType.Equity)
-            {
-                security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-                var tradeBars = _algorithm.History(security.Symbol, 30, Resolution.Daily);
-                foreach (var tradeBar in tradeBars)
-                    security.VolatilityModel.Update(security, tradeBar);
-            }    
+    public override void OnData(Slice data)
+    {
+        if (IsWarmingUp || _day == Time.Day) return;
+
+        foreach (var (symbol, chain) in data.OptionChains)
+        {
+            if (Portfolio[chain.Underlying.Symbol].Invested)
+                Liquidate(chain.Underlying.Symbol);
+
+            var spot = chain.Underlying.Price;
+            var contract = chain.OrderBy(x =&gt; Math.Abs(spot-x.Strike)).FirstOrDefault();
+            var tag = $"IV: {contract.ImpliedVolatility:F3} Δ: {contract.Greeks.Delta:F3}";
+            MarketOrder(contract.Symbol, 1, true, tag);
+            _day = Time.Day;
         }
+    }
+}
+
+internal class CustomSecurityInitializer : BrokerageModelSecurityInitializer
+{
+    private QCAlgorithm _algorithm;
+    public CustomSecurityInitializer(QCAlgorithm algorithm)
+        : base(algorithm.BrokerageModel, new FuncSecuritySeeder(algorithm.GetLastKnownPrices))
+    {
+        _algorithm = algorithm;
+    }    
+
+    public override void Initialize(Security security)
+    {
+        // First, call the superclass definition
+        // This method sets the reality models of each security using the default reality models of the brokerage model
+        base.Initialize(security);
+
+        // Next, overwrite the price model        
+        if (security.Type == SecurityType.Option) // Option type
+        {
+            (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
+        }
+
+        // Overwrite the volatility model and warm it up
+        if (security.Type == SecurityType.Equity)
+        {
+            security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+            var tradeBars = _algorithm.History(security.Symbol, 30, Resolution.Daily);
+            foreach (var tradeBar in tradeBars)
+                security.VolatilityModel.Update(security, tradeBar);
+        }    
     }
 }</pre>
 	<pre class="python"># Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.

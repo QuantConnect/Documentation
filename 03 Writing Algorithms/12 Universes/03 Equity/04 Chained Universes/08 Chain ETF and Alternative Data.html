@@ -10,57 +10,46 @@
  . It first selects all constituents of SPY and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">using System.Collections.Generic;
-using System.Linq;
-using QuantConnect.Util;
-using QuantConnect.Data;
-using QuantConnect.DataSource;
-using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Securities;
-    
-namespace QuantConnect.Algorithm.CSharp
+ <pre class="csharp">public class ChainedUniverseAlgorithm : QCAlgorithm
 {
-    public class ChainedUniverseAlgorithm : QCAlgorithm
-    {
-        private List&lt;Symbol&gt; _etf = new();
-    
-        public override void Initialize()
-        {
-            SetStartDate(2023, 1, 2);
-            SetCash(100000);
-            UniverseSettings.Asynchronous = true;
+    private List&lt;Symbol&gt; _etf = new();
 
-            // Save all SPY constituents for the next filtering.
-            AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, constituents =&gt;
-            {
-                _etf = constituents.Select(c =&gt; c.Symbol).ToList();
-                return Universe.Unchanged;
-            }));
-            // Filter the equities being commented on by CNBC analyst Cramer, then select the ones in SPY constituents.
-            AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =&gt;
-            {
-                var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
-                    where d.Traders.ToLower().Contains("cramer")
-                    select d.Symbol;
-                return _etf.Intersect(followers);
-            });
-        }
-    
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 2);
+        SetCash(100000);
+        UniverseSettings.Asynchronous = true;
+
+        // Save all SPY constituents for the next filtering.
+        AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, constituents =&gt;
         {
-            // Request CNBC data for the selected stocks.
-            foreach (var added in changes.AddedSecurities)
-            {
-                AddData&lt;QuiverCNBCs&gt;(added.Symbol);
-            }
-        }
-    
-        public override void OnData(Slice data)
+            _etf = constituents.Select(c =&gt; c.Symbol).ToList();
+            return Universe.Unchanged;
+        }));
+        // Filter the equities being commented on by CNBC analyst Cramer, then select the ones in SPY constituents.
+        AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =&gt;
         {
-            foreach (var dataPoint in data.Get&lt;QuiverCNBCs&gt;().SelectMany(x=&gt; x.Value.OfType&lt;QuiverCNBC&gt;()))
-            {
-                Debug($"{dataPoint.Symbol} traders at {data.Time}: {dataPoint.Traders}");
-            }
+            var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
+                where d.Traders.ToLower().Contains("cramer")
+                select d.Symbol;
+            return _etf.Intersect(followers);
+        });
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Request CNBC data for the selected stocks.
+        foreach (var added in changes.AddedSecurities)
+        {
+            AddData&lt;QuiverCNBCs&gt;(added.Symbol);
+        }
+    }
+
+    public override void OnData(Slice data)
+    {
+        foreach (var dataPoint in data.Get&lt;QuiverCNBCs&gt;().SelectMany(x=&gt; x.Value.OfType&lt;QuiverCNBC&gt;()))
+        {
+            Debug($"{dataPoint.Symbol} traders at {data.Time}: {dataPoint.Traders}");
         }
     }
 }</pre>

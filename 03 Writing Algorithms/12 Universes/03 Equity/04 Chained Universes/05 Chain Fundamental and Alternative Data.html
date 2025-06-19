@@ -10,58 +10,47 @@
  . It first selects the 100 most liquid US Equities and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">using System.Collections.Generic;
-using System.Linq;
-using QuantConnect.Util;
-using QuantConnect.Data;
-using QuantConnect.DataSource;
-using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Securities;
-    
-namespace QuantConnect.Algorithm.CSharp
+ <pre class="csharp">public class ChainedUniverseAlgorithm : QCAlgorithm
 {
-    public class ChainedUniverseAlgorithm : QCAlgorithm
+    private List&lt;Symbol&gt; _fundamental = new();
+
+    public override void Initialize()
     {
-        private List&lt;Symbol&gt; _fundamental = new();
+        SetStartDate(2023, 1, 2);
+        SetCash(100000);
 
-        public override void Initialize()
+        // Filter the top 100 liquid equities of the last trading day, and save the symbols for the next filtering.
+        AddUniverse(fundamental =&gt;
         {
-            SetStartDate(2023, 1, 2);
-            SetCash(100000);
+            _fundamental = (from c in fundamental
+                orderby c.DollarVolume descending
+                select c.Symbol).Take(100).ToList();
+            return Universe.Unchanged;
+        });
+        // Filter the equities being commented on by CNBC analyst Cramer, then select the ones that intersect with the fundamental universe.
+        AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =&gt;
+        {
+            var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
+                where d.Traders.ToLower().Contains("cramer")
+                select d.Symbol;
+            return _fundamental.Intersect(followers);
+        });
+    }
 
-            // Filter the top 100 liquid equities of the last trading day, and save the symbols for the next filtering.
-            AddUniverse(fundamental =&gt;
-            {
-                _fundamental = (from c in fundamental
-                    orderby c.DollarVolume descending
-                    select c.Symbol).Take(100).ToList();
-                return Universe.Unchanged;
-            });
-            // Filter the equities being commented on by CNBC analyst Cramer, then select the ones that intersect with the fundamental universe.
-            AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =&gt;
-            {
-                var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
-                    where d.Traders.ToLower().Contains("cramer")
-                    select d.Symbol;
-                return _fundamental.Intersect(followers);
-            });
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Request CNBC data for the selected stocks.
+        foreach (var added in changes.AddedSecurities)
+        {
+            AddData&lt;QuiverCNBCs&gt;(added.Symbol);
         }
+    }
 
-        public override void OnSecuritiesChanged(SecurityChanges changes)
+    public override void OnData(Slice data)
+    {
+        foreach (var dataPoint in data.Get&lt;QuiverCNBCs&gt;().SelectMany(x=&gt; x.Value.OfType&lt;QuiverCNBC&gt;()))
         {
-            // Request CNBC data for the selected stocks.
-            foreach (var added in changes.AddedSecurities)
-            {
-                AddData&lt;QuiverCNBCs&gt;(added.Symbol);
-            }
-        }
-    
-        public override void OnData(Slice data)
-        {
-            foreach (var dataPoint in data.Get&lt;QuiverCNBCs&gt;().SelectMany(x=&gt; x.Value.OfType&lt;QuiverCNBC&gt;()))
-            {
-                Debug($"{dataPoint.Symbol} traders at {data.Time}: {dataPoint.Traders}");
-            }
+            Debug($"{dataPoint.Symbol} traders at {data.Time}: {dataPoint.Traders}");
         }
     }
 }</pre>
