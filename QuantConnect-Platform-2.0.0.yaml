@@ -1212,7 +1212,7 @@ paths:
       - 01 Cloud Platform
       - 99 API Reference
       - 08 Optimization Management
-      - 02 Update Optimization
+      - 03 Update Optimization
       summary: Updates the name of an optimization.
       requestBody:
         content:
@@ -1241,7 +1241,7 @@ paths:
       - 01 Cloud Platform
       - 99 API Reference
       - 08 Optimization Management
-      - 03 Read Optimization
+      - 02 Read Optimization
       summary: Read an optimization.
       requestBody:
         description: Optimization ID for the optimization we want to read
@@ -1729,9 +1729,9 @@ components:
         language:
           type: string
           enum:
-          - CSharp
-          - Python
-          example: Python
+          - C#
+          - Py
+          example: Py
           description: Programming language.
         files:
           type: array
@@ -1764,9 +1764,9 @@ components:
         language:
           type: string
           enum:
-          - CSharp
-          - Python
-          example: Python
+          - C#
+          - Py
+          example: Py
           description: Programming language for the code completion.
         sentence:
           type: string
@@ -1803,9 +1803,9 @@ components:
         language:
           type: string
           enum:
-          - CSharp
-          - Python
-          example: Python
+          - C#
+          - Py
+          example: Py
           description: Programming language for the code completion.
         error::
           type: object
@@ -1887,9 +1887,9 @@ components:
         language:
           type: string
           enum:
-          - CSharp
-          - Python
-          example: Python
+          - C#
+          - Py
+          example: Py
           description: Programming language of the content to search.
         criteria:
           type: array
@@ -2553,19 +2553,6 @@ components:
             $ref: '#/components/schemas/Series'
           description: List of Series Objects for this Chart.
       description: Single Parent Chart Object for Custom Charting.
-    ChartObject:
-      type: object
-      description:
-        Chart Name:
-          type: object
-          description: Name of this chart.
-          $ref: '#/components/schemas/ChartName'
-    ChartName:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the Chart.
     ChartPoint:
       type: object
       properties:
@@ -2645,6 +2632,9 @@ components:
           description: Indicate if the user is the owner of the project.
     CreateCollaboratorRequest:
       type: object
+      required:
+        - projectId
+        - collaboratorUserId 
       properties:
         projectId:
           type: integer
@@ -3056,6 +3046,10 @@ components:
       description: Request to create a project with the specified name and language via QuantConnect.com API.
     CreateProjectFileRequest:
       type: object
+      required:
+        - projectId
+        - name
+        - content
       properties:
         projectId:
           type: integer
@@ -3070,6 +3064,9 @@ components:
       description: Request to add a file to a project.
     DeleteFileRequest:
       type: object
+      required:
+        - projectId
+        - name
       properties:
         projectId:
           type: integer
@@ -3080,6 +3077,8 @@ components:
       description: Request to delete a file in a project.
     DeleteProjectRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
@@ -4556,6 +4555,14 @@ components:
       description: Portfolio object with the holdings and cash information.
     Project:
       type: object
+      required:
+        - projectId
+        - organizationId
+        - name
+        - modified
+        - created
+        - ownerId
+        - language
       properties:
         projectId:
           type: integer
@@ -4710,6 +4717,9 @@ components:
       description: Error information.
     ProjectListResponse:
       type: object
+      required:
+        - projects
+        - success
       properties:
         projects:
           type: array
@@ -4943,6 +4953,8 @@ components:
       description: Request to get details about a specific project or a details list of all projects.
     ReadProjectNodesRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: string
@@ -5196,7 +5208,7 @@ components:
       properties:
         chart:
           type: object
-          properties: Chart object requested.
+          description: Chart object requested.
           $ref: '#/components/schemas/Chart'
         success:
           type: boolean
@@ -5206,7 +5218,7 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response with the requested chart from a live algorithm or backtest.
+      description: Response with the requested chart from a live algorithm or backtest
     ReadOptimizationRequest:
       required:
       - optimizationId
@@ -5258,6 +5270,8 @@ components:
       description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
     RestResponse:
       type: object
+      required:
+        - success
       properties:
         success:
           type: boolean
@@ -5830,6 +5844,10 @@ components:
       description: Request to update a backtest's name.
     UpdateFileNameRequest:
       type: object
+      required:
+        - projectId
+        - oldFileName
+        - newName
       properties:
         projectId:
           type: integer
@@ -5843,6 +5861,10 @@ components:
       description: Request to update the name of a file.
     UpdateFileContentsRequest:
       type: object
+      required:
+        - projectId
+        - name
+        - content
       properties:
         projectId:
           type: integer
@@ -5868,6 +5890,8 @@ components:
       description: Updates the name of an optimization.
     UpdateProjectRequest:
       type: object
+      required: 
+        - projectId
       properties:
         projectId:
           type: integer
@@ -5880,6 +5904,8 @@ components:
       description: Update a project name, description or parameters.
     UpdateProjectNodesRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer

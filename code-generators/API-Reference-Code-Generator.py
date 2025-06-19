@@ -175,6 +175,8 @@ def ResponseTable(requestBody, type="application/json"):
             
         elif "properties" in request_object:
             request_object_properties = request_object["properties"]
+            for required_item in request_object.get("required", []):
+                request_object_properties[required_item].update({'required': True})
             
         elif "content" in request_object:
             item_list.append(request_object["content"]["application/json"]["schema"]["$ref"].split("/")[1:])
@@ -370,6 +372,9 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
                 example_ = tab + f'  "{name}": "{property}"'
             else:
                 example_ = tab + f'  "{name}": {property}'
+
+        if isinstance(properties, dict) and properties.get("required", False):
+            type_ += f'<br/><i><sub>required</sub></i>'
 
         if "example" in properties:
             eg = properties["example"] 
