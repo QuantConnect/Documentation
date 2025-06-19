@@ -2090,6 +2090,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project to read.
         backtestId:
           type: string
@@ -2109,6 +2110,7 @@ components:
           description: Organization ID.
         projectId:
           type: integer
+          example: 23456789
           description: Project ID
         completed:
           type: boolean
@@ -2569,6 +2571,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id we wish to compile.
       description: Request to compile a project.
     CoinbaseSettings:
@@ -2638,6 +2641,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id we want to add the collaborator to.
         collaboratorUserId:
           type: string
@@ -2668,6 +2672,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read one or multiple collaborators.
       description: Request to list the collaborators in a project.
     ReadCollaboratorsResponse:
@@ -2690,12 +2695,17 @@ components:
       description: Response received when reading the collaborators of a project.
     DeleteCollaboratorRequest:
       type: object
+      required:
+        - projectId
+        - collaboratorUserId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id we want to remove the collaborator from.
         collaboratorUserId:
           type: string
+          example: "mia-ai"
           description: User Id of the collaborator we want to remove.
       description: Request to remove a collaborator.
     DeleteCollaboratorResponse:
@@ -2715,6 +2725,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project id.
         open:
           type: boolean
@@ -2743,6 +2754,7 @@ components:
           - BuildError
         projectId:
           type: integer
+          example: 23456789
           description: Project Id we sent for compile.
         signature:
           type: string
@@ -2771,6 +2783,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id we sent for compile.
         compileId:
           type: string
@@ -2792,6 +2805,7 @@ components:
           example: "-1"
         projectId:
           type: integer
+          example: 23456789
           description: Project Id.
         compileId:
           type: string
@@ -2887,8 +2901,8 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project for the live instance we want to run the command against.
-          example: 19626262
         command:
           type: object
           description: The command to run.
@@ -2903,8 +2917,8 @@ components:
           example: 5cad178b20a1d52567b534553413b691
         excludeProjectId:
           type: integer
+          example: 23456789
           description: Project for the live instance we want to exclude from the broadcast list. If null, all projects will be included.
-          example: 19626262
         command:
           type: object
           description: The command to run.
@@ -2915,6 +2929,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project ID of the project the optimization belongs to.
         name:
           type: string
@@ -2970,7 +2985,8 @@ components:
           type: string
           description: Optimization ID.
         projectId:
-          type: string
+          type: integer
+          example: 23456789
           description: Project ID of the project the optimization belongs to.
         name:
           type: string
@@ -3053,6 +3069,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the file belongs.
         name:
           type: string
@@ -3070,6 +3087,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the file belongs.
         name:
           type: string
@@ -3082,6 +3100,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the file belongs.
       description: Request to delete a project.
     DeleteBacktestRequest:
@@ -3089,6 +3108,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id for the backtest we want to delete.
         backtestId:
           type: string
@@ -3138,9 +3158,12 @@ components:
       description: Response received when estimating the cost of an optimization.
     EstimateOptimizationRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project ID of the project the optimization belongs to.
         name:
           type: string
@@ -3585,9 +3608,12 @@ components:
           description: Indicates if the version is available for the public (1) or not (0).
     Library:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id of the library project.
         libraryName:
           type: string
@@ -3600,9 +3626,12 @@ components:
           description: Indicate if the library project can be accessed.
     LiveAlgorithm:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id for the live instance.
         deployId:
           type: string
@@ -3772,9 +3801,12 @@ components:
       description: List of the live algorithms running which match the requested status.
     LiquidateLiveAlgorithmRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id for the live instance we want to liquidate.
       description: Request to liquidate a live algorithm.
     ListObjectStoreRequest:
@@ -3816,9 +3848,12 @@ components:
       description: Response received containing a list of stored objects metadata, as well as the total size of all of them.
     ListOptimizationRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project ID we'd like to get a list of optimizations for.
       description: Project ID we'd like to get a list of optimizations for.
     ListOptimizationResponse:
@@ -3924,6 +3959,8 @@ components:
       - bittrex
     Node:
       type: object
+      required:
+        - projectId
       properties:
         speed:
           type: float
@@ -3957,6 +3994,7 @@ components:
           description: Project the node is being used for.
         projectId:
           type: int
+          example: 23456789
           description: Id of the project the node is being used for.
         busy:
           type: boolean
@@ -4121,6 +4159,8 @@ components:
       - Live
     Optimization:
       type: object
+      required:
+        - projectId
       properties:
         optimizationId:
           type: string
@@ -4130,6 +4170,7 @@ components:
           description: Snapshot iD of this optimization.
         projectId:
           type: string
+          example: 23456789
           description: Project ID of the project the optimization belongs to.
         name:
           type: string
@@ -4566,6 +4607,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project id.
         organizationId:
           type: integer
@@ -4654,12 +4696,15 @@ components:
       description: Response from reading a project by id.
     ProjectFile:
       type: object
+      required:
+        - projectId
       properties:
         id:
           type: int
           description: ID of the project file. This can also be null.
         projectId:
           type: int
+          example: 23456789
           description: ID of the project.
         name:
           type: string
@@ -4717,9 +4762,6 @@ components:
       description: Error information.
     ProjectListResponse:
       type: object
-      required:
-        - projects
-        - success
       properties:
         projects:
           type: array
@@ -4887,6 +4929,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the file belongs.
         name:
           type: string
@@ -4894,9 +4937,12 @@ components:
       description: Request to read all files from a project or just one (if the name is provided).
     ReadCompileRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id we sent for compile.
         compileId:
           type: string
@@ -4904,12 +4950,15 @@ components:
       description: Request to read a compile packet job.
     ReadLiveLogsRequest:
       type: object
+      required:
+        - projectId
       properties:
         format:
           description: Format of the log results
           example: json
         projectId:
           type: integer
+          example: 23456789
           description: Project Id of the live running algorithm.
         algorithmId:
           type: string
@@ -4949,6 +4998,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project. If not provided the API will return a details list of all projects.
       description: Request to get details about a specific project or a details list of all projects.
     ReadProjectNodesRequest:
@@ -4958,13 +5008,17 @@ components:
       properties:
         projectId:
           type: string
+          example: 23456789
           description: Project Id to which the nodes refer.
       description: Request to get details about nodes of a specific organization.
     ReadLiveAlgorithmRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project to read.
         deployId:
           type: string
@@ -4977,6 +5031,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read the live algorithm.
       description: Request to read the portfolio state from a live algorithm.
     ReadLiveOrdersRequest:
@@ -4994,6 +5049,7 @@ components:
           description: Last index of the orders to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read the live algorithm.
       description: Request to read orders from a live algorithm.
     ReadLiveInsightsRequest:
@@ -5010,6 +5066,7 @@ components:
           description: Last index of the insights to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read the live algorithm.
       description: Request to read insights from a live algorithm.
     ListLiveAlgorithmsRequest:
@@ -5046,6 +5103,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read one or multiple backtests.
         backtestId:
           type: string
@@ -5061,6 +5119,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read one or multiple backtests.
         includeStatistics:
           type: boolean
@@ -5111,6 +5170,8 @@ components:
       description: Settings for using Interactive Brokers as brokerage or data provider.
     ReadBacktestChartRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
@@ -5153,6 +5214,7 @@ components:
           description: Last index of the orders to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read the backtest.
         backtestId:
           type: string
@@ -5174,6 +5236,7 @@ components:
           description: Last index of the insights to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
+          example: 23456789
           description: Id of the project from which to read the backtest.
         backtestId:
           type: string
@@ -5181,11 +5244,13 @@ components:
       description: Request to read insights from a backtest.
     ReadLiveChartRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project ID of the request.
-          example: 12345678
         name:
           type: string
           description: The requested chart name.
@@ -5270,8 +5335,6 @@ components:
       description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
     RestResponse:
       type: object
-      required:
-        - success
       properties:
         success:
           type: boolean
@@ -5500,9 +5563,12 @@ components:
       description: Statistics information sent during the algorithm operations.
     StopLiveAlgorithmRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id for the live instance we want to stop.
       description: Request to stop a live algorithm.
     Symbol:
@@ -5831,6 +5897,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id for the backtest we want to update.
         backtestId:
           type: string
@@ -5851,6 +5918,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the file belongs.
         oldFileName:
           type: string
@@ -5868,6 +5936,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the file belongs.
         name:
           type: string
@@ -5895,6 +5964,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the file belongs.
         name:
           type: string
@@ -5909,6 +5979,7 @@ components:
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id to which the nodes refer.
         nodes:
           type: array
@@ -5918,9 +5989,12 @@ components:
       description: Request to update the nodes of a project.
     UpdateBacktestTagsRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
+          example: 23456789
           description: Project Id for the backtest we want to update.
         backtestId:
           type: Backtest Id we want to update.
