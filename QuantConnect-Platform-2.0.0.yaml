@@ -702,7 +702,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /backtests/read/insights:
+  /backtests/insights/read:
     post:
       tags:
       - 01 Cloud Platform
@@ -958,7 +958,7 @@ paths:
               explode: false
               schema:
                 type: string
-  /live/logs/read:
+  /live/read/logs:
     post:
       tags:
       - 01 Cloud Platform
@@ -1755,6 +1755,9 @@ components:
   schemas:
     BasicFilesRequest:
       type: object
+      required:
+        - language
+        - files
       properties:
         language:
           type: string
@@ -1765,6 +1768,7 @@ components:
           description: Programming language.
         files:
           type: array
+          example: "[{\"name\": \"file.py\", \"content\": \"fileContent\"}]"
           description: Files to process.
           items:
             $ref: '#/components/schemas/File'
@@ -1790,6 +1794,9 @@ components:
       description: Response to a backtest initialization request.
     CodeCompletionRequest:
       type: object
+      required:
+        - language
+        - sentence
       properties:
         language:
           type: string
@@ -1800,6 +1807,7 @@ components:
           description: Programming language for the code completion.
         sentence:
           type: string
+          example: self.add_equity(\"AAPL\"
           description: Sentence to complete.
         responseSizeLimit:
           type: integer
@@ -1829,6 +1837,9 @@ components:
       description: Response to a code completion request.
     ErrorEnhanceRequest:
       type: object
+      required:
+        - language
+        - 
       properties:
         language:
           type: string
@@ -1863,9 +1874,12 @@ components:
       description: Response to error enhancement request.
     PEP8ConvertRequest:
       type: object
+      required:
+        - files
       properties:
         files:
           type: array
+          example: "[{\"name\": \"file.py\", \"content\": \"fileContent\"}]"
           description: Files present in the project in which the algorithm is.
           items:
             $ref: '#/components/schemas/File'
@@ -1913,6 +1927,9 @@ components:
       description: Response to a syntax check request.
     SearchRequest:
       type: object
+      required:
+        - language
+        - criteria
       properties:
         language:
           type: string
@@ -1923,6 +1940,7 @@ components:
           description: Programming language of the content to search.
         criteria:
           type: array
+          example: "[{\"input\": \"option\", \"type\": \"Docs\", \"count\": 1}]"
           items:
             $ref: '#/components/schemas/SearchCriteria'
           description: Criteria for the search.
@@ -1988,6 +2006,7 @@ components:
       properties:
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization ID we want to abort.
       description: Abort an optimization.
     AccountResponse:
@@ -1995,6 +2014,7 @@ components:
       properties:
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: The organization Id.
         creditBalance:
           type: number
@@ -2117,6 +2137,9 @@ components:
       description: Backtest Report Response wrapper.
     BacktestReportRequest:
       type: object
+      required:
+        - projectId
+        - backtestId
       properties:
         projectId:
           type: integer
@@ -2136,8 +2159,9 @@ components:
           type: string
           description: Name of the backtest.
         organizationId:
-          type: integer
-          description: Organization ID.
+          type: string
+          example: 5cad178b20a1d52567b534553413b691
+          description: Orgainization ID.
         projectId:
           type: integer
           example: 23456789
@@ -2147,9 +2171,11 @@ components:
           description: Boolean true when the backtest is completed.
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization task ID, if the backtest is part of an optimization.
         backtestId:
           type: string
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           description: Assigned backtest ID.
         tradeableDates:
           type: integer
@@ -2239,6 +2265,7 @@ components:
       properties:
         backtestId:
           type: string
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           description: Assigned backtest ID
         status:
           type: string
@@ -2260,6 +2287,7 @@ components:
           format: float
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization task ID, if the backtest is part of an optimization.
         tradeableDates:
           type: integer
@@ -2598,6 +2626,8 @@ components:
       description: Location on a chart containing the X-Y location
     CreateCompileRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
@@ -2675,12 +2705,15 @@ components:
           description: Project Id we want to add the collaborator to.
         collaboratorUserId:
           type: string
+          example: "mia-ai"
           description: User Id of the collaborator we want to add.
         collaborationLiveControl:
           type: boolean
+          example: true
           description: Gives the right to deploy and stop live algorithms.
         collaborationWrite:
           type: boolean
+          example: false
           description: Gives the right to edit the code.
       description: Request to add a new collaborator.
     CreateCollaboratorResponse:
@@ -2735,12 +2768,15 @@ components:
           description: Project Id we want to add the collaborator to.
         collaboratorUserId:
           type: string
+          example: "mia-ai"
           description: User Id of the collaborator we want to add.
         liveControl:
           type: boolean
+          example: true
           description: Gives the right to deploy and stop live algorithms.
         write:
           type: boolean
+          example: true
           description: Gives the right to edit the code.
       description: Request to update an existing collaborator.
     UpdateCollaboratorResponse:
@@ -2806,6 +2842,7 @@ components:
       properties:
         compileId:
           type: string
+          example: c0edc6-49048b
           description: Compile Id for a sucessful build.
         state:
           type: string
@@ -2841,6 +2878,9 @@ components:
             type: string
       description: Response from the compiler on a build event.
     CreateBacktestRequest:
+      required:
+        - projectId
+        - compileId
       type: object
       properties:
         projectId:
@@ -2849,17 +2889,25 @@ components:
           description: Project Id we sent for compile.
         compileId:
           type: string
+          example: c0edc6-49048b
           description: Compile Id for the project to backtest.
         backtestName:
           type: string
-          description: Name for the new backtest.
+          example: "New Backtest"
+          description: Optional. Name for the new backtest.
         parameters[name]:
           type: object
-          description: Parameters used in the backtest. E.g., parameters[ema_fast] = 10, parameters[ema_slow] = 100, etc
-          example: 'value'
+          example: parameters[ema_fast] = 10, parameters[ema_slow] = 100
+          description: Optional. Parameters used in the backtest.
       description: Request to create a new backtest.
     CreateLiveAlgorithmRequest:
       type: object
+      required:
+        - projectId
+        - compileId
+        - nodeId
+        - brokerage
+        - dataProviders
       properties:
         versionId:
           type: string
@@ -2871,6 +2919,7 @@ components:
           description: Project Id.
         compileId:
           type: string
+          example: c0edc6-49048b
           description: Compile Id.
         nodeId:
           type: string
@@ -2960,6 +3009,9 @@ components:
       description: Response received when deploying a live algorithm.
     CreateLiveCommandRequest:
       type: object
+      required: 
+        - projectId
+        - command
       properties:
         projectId:
           type: integer
@@ -2972,6 +3024,9 @@ components:
       description: Request to create a live command.
     BroadcastLiveCommandRequest:
       type: object
+      required: 
+        - organizationId
+        - command
       properties:
         organizationId:
           type: string
@@ -2988,6 +3043,18 @@ components:
       description: Request to create a live command.
     CreateOptimizationRequest:
       type: object
+      required:
+        - projectId
+        - name
+        - target
+        - targetTo
+        - targetValue
+        - strategy
+        - compileId
+        - parameters
+        - estimatedCost
+        - nodeType
+        - parallelNodes
       properties:
         projectId:
           type: integer
@@ -2995,23 +3062,27 @@ components:
           description: Project ID of the project the optimization belongs to.
         name:
           type: string
+          example: "Mia First Optimization Job"
           description: Name of the optimization.
         target:
           type: string
           description: Target of the optimization.
+          example: TotalPerformance.PortfolioStatistics.SharpeRatio
         targetTo:
           type: string
           description: Target extremum of the optimization.
-          example: max or min
+          example: \'max\' or \'min\'
         targetValue:
           type: float
           description: Optimization target value.
+          example: 1
         strategy:
           type: string
           description: Optimization strategy.
           example: QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
         compileId:
           type: string
+          example: c0edc6-49048b
           description: Optimization compile ID.
         parameters:
           type: array
@@ -3045,6 +3116,7 @@ components:
       properties:
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization ID.
         projectId:
           type: integer
@@ -3114,12 +3186,13 @@ components:
           description: Project name.
         language:
           type: string
-          description: Programming langage to use.
+          description: Programming language to use.
           enum:
           - C#
           - Py
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Optional parameter for specifying organization to create project under. If none provided web defaults to preferred.
       description: Request to create a project with the specified name and language via QuantConnect.com API.
     CreateProjectFileRequest:
@@ -3135,10 +3208,14 @@ components:
           description: Project Id to which the file belongs.
         name:
           type: string
-          description: The name of the new file.
           example: main.py
+          description: The name of the new file.
         content:
           type: string
+          example: |
+            class CustomClass:
+                def __init__(self):
+                    pass
           description: The content of the new file.
       description: Request to add a file to a project.
     DeleteFileRequest:
@@ -3153,6 +3230,7 @@ components:
           description: Project Id to which the file belongs.
         name:
           type: string
+          example: file.py
           description: The name of the file that should be deleted.
       description: Request to delete a file in a project.
     DeleteProjectRequest:
@@ -3167,6 +3245,9 @@ components:
       description: Request to delete a project.
     DeleteBacktestRequest:
       type: object
+      required:
+        - projectId
+        - backtestId
       properties:
         projectId:
           type: integer
@@ -3174,16 +3255,22 @@ components:
           description: Project Id for the backtest we want to delete.
         backtestId:
           type: string
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           description: Backtest Id we want to delete.
       description: Request to delete a backtest.
     DeleteObjectStoreRequest:
       type: object
+      required:
+        - organizationId
+        - key
       properties:
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Organization ID we'd like to delete the Object Store file from.
         key:
           type: string
+          example: key1
           description: Key to the Object Store file
       description: Request to delete Object Store metadata of a specific organization and key.    
     DeleteOptimizationRequest:
@@ -3191,6 +3278,7 @@ components:
       properties:
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization ID we want to delete.
       description: Delete an optimization.
     EncryptionKey:
@@ -3222,6 +3310,13 @@ components:
       type: object
       required:
         - projectId
+        - name
+        - target
+        - targetValue
+        - targetTo
+        - strategy
+        - compileId
+        - parameters
       properties:
         projectId:
           type: integer
@@ -3229,23 +3324,27 @@ components:
           description: Project ID of the project the optimization belongs to.
         name:
           type: string
+          example: "Mia First Optimization Job"
           description: Name of the optimization.
         target:
           type: string
           description: Target of the optimization.
+          example: TotalPerformance.PortfolioStatistics.SharpeRatio
         targetTo:
           type: string
           description: Target extremum of the optimization.
-          example: max or min
+          example: \'max\' or \'min\'
         targetValue:
           type: float
           description: Optimization target value.
+          example: 1
         strategy:
           type: string
           description: Optimization strategy.
           example: QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
         compileId:
           type: string
+          example: c0edc6-49048b
           description: Optimization compile ID.
         parameters:
           type: array
@@ -3274,34 +3373,49 @@ components:
       description: Response received when estimating the cost of an optimization.
     GetObjectStoreJobIdRequest:
       type: object
+      required:
+        - organizationId
+        - keys
       properties:
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Organization ID we would like to get the Object Store files from.
         keys:
           type: array
+          example: "[\"key1\", \"key2\"]"
           description: Keys to the Object Store files.
           items:
             type: string
       description: Request to get JobId for the requested Object Store files.
     GetObjectStoreURLRequest:
       type: object
+      required:
+        - organizationId
+        - jobId
       properties:
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Organization ID we would like to get the Object Store files from.
         jobId:
           type: string
+          example: string
           description: Job ID for getting a download URL for.
       description: Request to get a download URL for certain Object Store files.
     GetObjectStorePropertiesRequest:
       type: object
+      required:
+        - organizationId
+        - key
       properties:
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Organization ID we would like to get the Object Store properties from.
         key:
           type: string
+          example: key1
           description: Key to the Object Store.
       description: Request to get Object Store properties of a specific organization and keys.
     GetObjectStoreResponse:
@@ -3697,6 +3811,7 @@ components:
           description: Project Id for the live instance.
         deployId:
           type: string
+          example: L-sdf86b7045bb83203e79d2aa6150b321
           description: Unique live algorithm deployment identifier (similar to a backtest id).
         status:
           type: string
@@ -3789,12 +3904,15 @@ components:
       properties:
         message:
           type: string
+          example: message
           description: Error message.
         status:
           type: string
+          example: Running
           description: Indicates the status of the algorihtm, i.e. 'Running', 'Stopped'.
         deployId:
           type: string
+          example: L-sdf86b7045bb83203e79d2aa6150b321
           description: Algorithm deployment ID.
         cloneId:
           type: integer
@@ -3873,13 +3991,17 @@ components:
       description: Request to liquidate a live algorithm.
     ListObjectStoreRequest:
       type: object
+      required:
+        - organizationId
       properties:
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Organization ID we'd like to list the Object Store files from.
         path:
           type: string
-          description: Path to the Object Store files.
+          example: "/folder1"
+          description: Optional. Path to the Object Store files.
       description: Request to list Object Store files of a specific organization and path.
     ListObjectStoreResponse:
       type: object
@@ -4098,7 +4220,19 @@ components:
       description: Settings for using Oanda as a data provider or brokerage.
     ObjectStoreBinaryFile:
       type: object
+      required:
+        - organizationId
+        - key
+        - objectData
       properties:
+        organizationId:
+          type: string
+          example: 5cad178b20a1d52567b534553413b691
+          description: Orgainization ID.
+        key:
+          type: string
+          example: key1
+          description: Unique key to access the object in Object Store.
         objectData:
           type: string
           format: binary
@@ -4226,6 +4360,7 @@ components:
       properties:
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization ID.
         snapshotId:
           type: string
@@ -4672,7 +4807,8 @@ components:
           example: 23456789
           description: Project id.
         organizationId:
-          type: integer
+          type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Orgainization id.
         name:
           type: string
@@ -4986,7 +5122,7 @@ components:
       description: Settings for using RBI as a brokerage.
     ReadFilesRequest:
       required:
-      - projectId
+        - projectId
       type: object
       properties:
         projectId:
@@ -4995,12 +5131,14 @@ components:
           description: Project Id to which the file belongs.
         name:
           type: string
+          example: file.py
           description: Optional. The name of the file that will be read.
       description: Request to read all files from a project or just one (if the name is provided).
     ReadCompileRequest:
       type: object
       required:
         - projectId
+        - compileId
       properties:
         projectId:
           type: integer
@@ -5008,12 +5146,16 @@ components:
           description: Project Id we sent for compile.
         compileId:
           type: string
+          example: c0edc6-49048b
           description: Compile Id returned during the creation request.
       description: Request to read a compile packet job.
     ReadLiveLogsRequest:
       type: object
       required:
         - projectId
+        - algorithmId
+        - startLine
+        - endLine
       properties:
         format:
           description: Format of the log results
@@ -5057,6 +5199,8 @@ components:
       description: Logs from a live algorithm.
     ReadProjectRequest:
       type: object
+      required:
+        - projectId
       properties:
         projectId:
           type: integer
@@ -5084,6 +5228,7 @@ components:
           description: Id of the project to read.
         deployId:
           type: string
+          example: L-sdf86b7045bb83203e79d2aa6150b321
           description: Specific instance Id to read.
       description: Request to read out a single algorithm.
     ReadLivePortfolioRequest:
@@ -5098,16 +5243,17 @@ components:
       description: Request to read the portfolio state from a live algorithm.
     ReadLiveOrdersRequest:
       required:
-      - start
       - end
       - projectId
       type: object
       properties:
         start:
           type: integer
+          example: 0
           description: Starting index of the orders to be fetched. Required if end > 100.
         end:
           type: integer
+          example: 100
           description: Last index of the orders to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
@@ -5122,9 +5268,11 @@ components:
       properties:
         start:
           type: integer
+          example: 0
           description: Starting index of the insights to be fetched. Required if end > 100.
         end:
           type: integer
+          example: 100
           description: Last index of the insights to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
@@ -5152,9 +5300,11 @@ components:
             - History
         start:
           type: number
+          example: 1717801200
           description: Earliest launched time of the algorithms in UNIX timestamp.
         end:
           type: number
+          example: 171851200
           description: Latest launched time of the algorithms in UNIX timestamp.
       description: Request for a list of live running algorithms.
     ReadBacktestRequest:
@@ -5169,14 +5319,16 @@ components:
           description: Id of the project from which to read one or multiple backtests.
         backtestId:
           type: string
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           description: When provided, specific backtest Id to read.
         chart:
           type: string
+          example: "Strategy Equity"
           description: Optional. If provided, the API will return the backtests charts.
       description: Request to read a single backtest from a project.
     ListBacktestRequest:
       required:
-      - projectId
+        - projectId
       type: object
       properties:
         projectId:
@@ -5185,6 +5337,7 @@ components:
           description: Id of the project from which to read one or multiple backtests.
         includeStatistics:
           type: boolean
+          example: true
           description: If true, the backtests summaries from the response will contain the statistics with their corresponding values.
       description: Request to list the backtests from a project.
     QuantConnectSettings:
@@ -5234,6 +5387,11 @@ components:
       type: object
       required:
         - projectId
+        - backtestId
+        - name
+        - count
+        - start
+        - end
       properties:
         projectId:
           type: integer
@@ -5242,7 +5400,7 @@ components:
         backtestId:
           type: string
           description: Associated Backtest ID for this chart request.
-          example: "2a748c241eb93b0b57b4747b3dacc80e"
+          example: 2a748c241eb93b0b57b4747b3dacc80e
         name:
           type: string
           description: The requested chart name.
@@ -5270,9 +5428,11 @@ components:
       properties:
         start:
           type: integer
+          example: 0
           description: Starting index of the orders to be fetched. Required if end > 100.
         end:
           type: integer
+          example: 100
           description: Last index of the orders to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
@@ -5280,6 +5440,7 @@ components:
           description: Id of the project from which to read the backtest.
         backtestId:
           type: string
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           description: Id of the backtest from which to read the orders.
       description: Request to read orders from a backtest.
     ReadBacktestInsightsRequest:
@@ -5292,9 +5453,11 @@ components:
       properties:
         start:
           type: integer
+          example: 0
           description: Starting index of the insights to be fetched. Required if end > 100.
         end:
           type: integer
+          example: 100
           description: Last index of the insights to be fetched. Note that end - start must be less than 100.
         projectId:
           type: integer
@@ -5302,12 +5465,17 @@ components:
           description: Id of the project from which to read the backtest.
         backtestId:
           type: string
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           description: Id of the backtest from which to read the insights.
       description: Request to read insights from a backtest.
     ReadLiveChartRequest:
       type: object
       required:
         - projectId
+        - start
+        - end
+        - name
+        - count
       properties:
         projectId:
           type: integer
@@ -5353,6 +5521,7 @@ components:
       properties:
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization ID for the optimization we want to read.
       description: Request to read a optimization from a project.
     ReadOptimizationResponse:
@@ -5536,6 +5705,7 @@ components:
       properties:
         organizationId:
           type: string
+          example: 5cad178b20a1d52567b534553413b691
           description: Organization ID we'd like to upload the file to.
         key:
           type: string
@@ -5955,6 +6125,7 @@ components:
       required:
       - backtestId
       - projectId
+      - name
       type: object
       properties:
         projectId:
@@ -5963,6 +6134,7 @@ components:
           description: Project Id for the backtest we want to update.
         backtestId:
           type: string
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           description: Backtest Id we want to update.
         name:
           type: string
@@ -5984,9 +6156,11 @@ components:
           description: Project Id to which the file belongs.
         oldFileName:
           type: string
+          example: file1.py
           description: The current name of the file.
         newName:
           type: string
+          example: file2.py
           description: The new name for the file.
       description: Request to update the name of a file.
     UpdateFileContentsRequest:
@@ -6002,27 +6176,36 @@ components:
           description: Project Id to which the file belongs.
         name:
           type: string
+          example: main.py
           description: The name of the file that should be updated.
         content:
           type: string
+          example: |
+            class CustomClass:
+                def __init__(self):
+                    pass
           description: The new contents of the file.
       description: Request to update the contents of a file.
     UpdateOptimizationRequest:
       type: object
       required:
         - optimizationId
+        - name
       properties:
         optimizationId:
           type: string
+          example: O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization ID we want to update.
         name:
           type: string
+          example: "New Optimization Name"
           description: Name we'd like to assign to the optimization.
       description: Updates the name of an optimization.
     UpdateProjectRequest:
       type: object
       required: 
         - projectId
+        - name
       properties:
         projectId:
           type: integer
@@ -6030,10 +6213,13 @@ components:
           description: Project Id to which the file belongs.
         name:
           type: string
+          example: "New Project Name"
           description: The new name for the project.
         description:
+          type: string
+          example: "New Project Description"
           description: The new description for the project.
-      description: Update a project name, description or parameters.
+      description: Update a project name, or description.
     UpdateProjectNodesRequest:
       type: object
       required:
@@ -6053,12 +6239,15 @@ components:
       type: object
       required:
         - projectId
+        - backtestId
+        - tags
       properties:
         projectId:
           type: integer
           example: 23456789
           description: Project Id for the backtest we want to update.
         backtestId:
+          example: 26c7bb06b8487cff1c7b3c44652b30f1
           type: Backtest Id we want to update.
         tags:
           type: array
