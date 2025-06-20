@@ -70,7 +70,7 @@ def RequestTable(api_call, params):
                 example_ = '0'
                 
             elif "boolean" in type_:
-                example_ = 'true'
+                example_ = 'True'
         
         writeUp += f'\n<tr>\n<td width="20%">{item["name"]}</td> <td> <code>{type_}</code><br/>{description_}</td>\n</tr>'
         example += f'  "{item["name"]}": {example_},\n'
@@ -176,6 +176,8 @@ def ResponseTable(requestBody, type="application/json"):
         elif "properties" in request_object:
             request_object_properties = request_object["properties"]
             for required_item in request_object.get("required", []):
+                if required_item not in request_object_properties:
+                    continue
                 request_object_properties[required_item].update({'required': True})
             
         elif "content" in request_object:
