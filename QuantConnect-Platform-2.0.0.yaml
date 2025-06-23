@@ -2306,46 +2306,46 @@ components:
           items:
             type: string
         sharpeRatio:
-          type: float
+          type: number
           description: Sharpe ratio with respect to risk free rate; measures excess of return per unit of risk.
         alpha:
-          type: float
+          type: number
           description: Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.
         beta:
-          type: float
+          type: number
           description: Algorithm "beta" statistic - the covariance between the algorithm and benchmark performance, divided by benchmark's variance.
         compoundingAnnualReturn:
-          type: float
+          type: number
           description: Annual compounded returns statistic based on the final-starting capital and years.
         drawdown:
-          type: float
+          type: number
           description: Drawdown maximum percentage.
         lossRate:
-          type: float
+          type: number
           description: The ratio of the number of losing trades to the total number of trades.
         netProfit:
-          type: float
+          type: number
           description: Net profit percentage.
         parameters:
           type: integer
           description: Number of parameters in the backtest.
         psr:
-          type: float
+          type: number
           description: Price-to-sales ratio.
         securityTypes:
           type: string
           description: SecurityTypes present in the backtest.
         sortinoRatio:
-          type: float
+          type: number
           description: Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.
         trades:
           type: integer
           description: Number of trades in the backtest.
         treynorRatio:
-          type: float
+          type: number
           description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
         winRate:
-          type: float
+          type: number
           description: The ratio of the number of winning trades to the total number of trades.
       description: Result object class for the List Backtest response from the API.
     BaseLiveAlgorithmSettings:
@@ -3073,7 +3073,7 @@ components:
           description: Target extremum of the optimization.
           example: \'max\' or \'min\'
         targetValue:
-          type: float
+          type: number
           description: Optimization target value.
           example: 1
         strategy:
@@ -3095,7 +3095,7 @@ components:
           items:
             $ref: '#/components/schemas/OptimizationConstraint'
         estimatedCost:
-          type: float
+          type: number
           description: Estimated cost for optimization.
           example: 10
         nodeType:
@@ -3193,7 +3193,7 @@ components:
         organizationId:
           type: string
           example: 5cad178b20a1d52567b534553413b691
-          description: Optional parameter for specifying organization to create project under. If none provided web defaults to preferred.
+          description: The organization to create project under. If you don't provide a value, it defaults to your preferred organization.
       description: Request to create a project with the specified name and language via QuantConnect.com API.
     CreateProjectFileRequest:
       type: object
@@ -3335,7 +3335,7 @@ components:
           description: Target extremum of the optimization.
           example: \'max\' or \'min\'
         targetValue:
-          type: float
+          type: number
           description: Optimization target value.
           example: 1
         strategy:
@@ -3466,7 +3466,7 @@ components:
           type: string
           description: Date this project was created.
         size:
-          type: float
+          type: number
           description: Object Store file size.
           example: 24
         md5:
@@ -3702,7 +3702,6 @@ components:
         scoreIsFinal:
           type: boolean
           description: Gets whether or not this is the insight's final score.
-          format: float
         scoreDirection:
           type: number
           description: Gets the direction score.
@@ -3718,7 +3717,6 @@ components:
         tag:
           type: string
           description: The insight's tag containing additional information
-          format: float
       description: Insight struct for emitting new prediction.
     KrakenSettings:
       type: object
@@ -3899,6 +3897,7 @@ components:
           enum:
           - "true"
           - "false"
+      description: The live wizard content used.
     LiveAlgorithmResults:
       type: object
       properties:
@@ -4147,7 +4146,7 @@ components:
         - projectId
       properties:
         speed:
-          type: float
+          type: number
           description: The nodes cpu clock speed in GHz.
         price:
           $ref: '#/components/schemas/NodePrices'
@@ -4156,7 +4155,7 @@ components:
           type: integer
           description: CPU core count of node.
         ram:
-          type: float
+          type: number
           description: Size of RAM in Gigabytes.
         name:
           type: string
@@ -4260,7 +4259,7 @@ components:
           type: boolean
           description: True if it is a folder, false otherwise.
         size:
-          type: float
+          type: number
           description: Object Store file size.
           example: 13
       description: Summary information of the Object Store.
@@ -4276,7 +4275,7 @@ components:
           description: The target comparison operation
           example: greater
         targetValue:
-          type: float
+          type: number
           description: The value of the property we want to track
           example: 1
     OptimizationParameter:
@@ -4287,19 +4286,19 @@ components:
           description: Name of optimization parameter.
           example: rsi_period
         min:
-          type: float
+          type: number
           description: Minimum value of optimization parameter, applicable for boundary conditions.
           example: 10
         max:
-          type: float
+          type: number
           description: Maximum value of optimization parameter, applicable for boundary conditions.
           example: 20
         step:
-          type: float
+          type: number
           description: Movement, should be positive
           example: 1
         minStep:
-          type: float
+          type: number
           description: Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.
           example: 1
     OptimizationTarget:
@@ -4314,7 +4313,7 @@ components:
           description: Defines the direction of optimization.
           example: max or min
         targetValue:
-          type: float
+          type: number
           description: The value of the property we want to track
           example: 1
     ProjectNodes:
@@ -4501,7 +4500,7 @@ components:
           description: Symbol of the asset.
           $ref: '#/components/schemas/Symbol'
         limitPrice:
-          type: nummber
+          type: number
           description: Limit price of the Order.
         stopPrice:
           type: number
@@ -4861,11 +4860,9 @@ components:
           items:
             $ref: '#/components/schemas/Library'
         grid:
-          type: string
           $ref: '#/components/schemas/Grid'
           description: Configuration of the backtest view grid.
         liveGrid:
-          type: string
           $ref: '#/components/schemas/Grid'
           description: Configuration of the live view grid.
         paperEquity:
@@ -4877,7 +4874,7 @@ components:
           description: The last live deployment active time.
           format: date-time
         liveForm:
-          type: object
+          $ref: '#/components/schemas/LiveForm'
           description: The last live wizard content used.
         encrypted:
           type: boolean
