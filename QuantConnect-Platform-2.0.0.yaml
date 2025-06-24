@@ -48,7 +48,7 @@ paths:
       - 02 Project Management
       - 01 Create Project
       summary: Create a new project in your default organization.
-      description: Create a project with the specified name and programming language. If the project-name already exists, API call returns success:false with exception details in the errors array.
+      description: Create a project with the specified name and programming language.
       requestBody:
         description: Name and language of the project to create.
         content:
@@ -108,7 +108,7 @@ paths:
       - 99 API Reference
       - 02 Project Management
       - 03 Update Project
-      summary: Update a project name, description or parameters.
+      summary: Update the project's name or description.
       requestBody:
         content:
           application/json:
@@ -287,7 +287,7 @@ paths:
       - 02 Project Management
       - 06 Nodes
       - 01 Read Project Nodes
-      summary: Read all nodes in a project.
+      summary: Read all the nodes in a project.
       requestBody:
         content:
           application/json:
@@ -905,7 +905,7 @@ paths:
       - 07 Live Management
       - 02 Read Live Algorithm
       - 01 Live Algorithm Statistics
-      summary: If a ReadLiveAlgorithmRequest is provided details on a live algorithm are returned. If a ListLiveAlgorithmsRequest is passed get a list of live running algorithms.
+      summary: Request details on a live algorithm.
       requestBody:
         description: Dynamic arguement to specify whether seeking single project or list response.
         content:
@@ -1213,7 +1213,7 @@ paths:
       - 99 API Reference
       - 08 Optimization Management
       - 01 Create Optimization
-      summary: Create an optimization with the specified parameters
+      summary: Create an optimization job with the specified parameters.
       requestBody:
         description: Project, compile and optimization parameters for launching an optimization job.
         content:
@@ -1896,7 +1896,7 @@ components:
           example: 2.0
           description: Version of the response.
         payload:
-          type: dict
+          type: object
           example: {"utils.py": "def add(a,b):\n    return a+b\n"}
           description: PEP8 converted code.
         payloadType:
@@ -2042,8 +2042,7 @@ components:
       properties:
         orders:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Order'
+          $ref: '#/components/schemas/Order'
         length:
           type: integer
           description: Total number of returned orders
@@ -2221,33 +2220,27 @@ components:
           description: Indicates if the backtest has error during initialization.
         charts:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ChartSummary'
+          $ref: '#/components/schemas/ChartSummary'
           description: Charts updates for the live algorithm since the last result packet.
         parameterSet:
           type: object
           description: Parameters used in the backtest.
-          additionalProperties:
-            $ref: '#/components/schemas/ParameterSet'
+          $ref: '#/components/schemas/ParameterSet'
         rollingWindow:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/AlgorithmPerformance'
+          $ref: '#/components/schemas/AlgorithmPerformance'
           description: Rolling window detailed statistics.
         runtimeStatistics:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/RuntimeStatistics'
+          $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
         statistics:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/StatisticsResult'
+          $ref: '#/components/schemas/StatisticsResult'
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/AlgorithmPerformance'
+          $ref: '#/components/schemas/AlgorithmPerformance'
           description: The algorithm performance statistics.
         nodeName:
           type: string
@@ -2295,8 +2288,7 @@ components:
         parameterSet:
           type: object
           description: Parameters used in the backtest.
-          additionalProperties:
-            $ref: '#/components/schemas/ParameterSet'
+          $ref: '#/components/schemas/ParameterSet'
         snapshotId:
           type: integer
           description: Snapshot id of this backtest result.
@@ -2572,6 +2564,7 @@ components:
           description: The currency conversion rate to the account base currency.
           format: float
         currencySymbol:
+          type: string
           description: The symbol of the currency, such as $.
         valueInAccountCurrency:
           type: number
@@ -2609,8 +2602,7 @@ components:
             - Stacked
         series:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Series'
+          $ref: '#/components/schemas/Series'
           description: List of Series Objects for this Chart.
       description: Single Parent Chart Object for Custom Charting.
     ChartPoint:
@@ -2894,11 +2886,16 @@ components:
         backtestName:
           type: string
           example: "New Backtest"
-          description: Optional. Name for the new backtest.
-        parameters[name]:
+          description: Name for the new backtest.
+        parameters:
           type: object
-          example: parameters[ema_fast] = 10, parameters[ema_slow] = 100
-          description: Optional. Parameters used in the backtest.
+          additionalProperties: 
+            anyOf:
+              - type: string
+              - type: number
+              - type: integer
+          example: {"ema_fast": 10, "ema_slow": 100}
+          description: Parameters to use during the backtest. Parameter values must be string, number, or integer type.
       description: Request to create a new backtest.
     CreateLiveAlgorithmRequest:
       type: object
@@ -3241,7 +3238,7 @@ components:
         projectId:
           type: integer
           example: 23456789
-          description: Project Id to which the file belongs.
+          description: Id of the project to delete.
       description: Request to delete a project.
     DeleteBacktestRequest:
       type: object
@@ -3944,13 +3941,11 @@ components:
             $ref: '#/components/schemas/ProjectFile'
         runtimeStatistics:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/RuntimeStatistics'
+          $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.
         charts:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ChartSummary'
+          $ref: '#/components/schemas/ChartSummary'
           description: Chart updates for the live algorithm since the last result packet.
         success:
           type: boolean
@@ -4000,7 +3995,7 @@ components:
         path:
           type: string
           example: "/folder1"
-          description: Optional. Path to the Object Store files.
+          description: Path to the Object Store files.
       description: Request to list Object Store files of a specific organization and path.
     ListObjectStoreResponse:
       type: object
@@ -4397,9 +4392,8 @@ components:
           $ref: '#/components/schemas/OptimizationTarget'
         runtimeStatistics:
           type: object
-          additionalProperties:
-            type: string
-          description: Dictionary representing a runtime banner/updating statistics for the optimization.
+          description: The runtime banner/updating statistics for the optimization.
+          $ref: '#/components/schemas/OptimizationRuntimeStatistics'
         constraints:
           type: array
           description: Optimization constraints.
@@ -4461,7 +4455,10 @@ components:
             type: number
         parameterSet:
           type: object
-          description: Dictionary representing a combination as key value of parameters, i.e. order doesn't matter.
+          additionalProperties: 
+            type: string
+          example: {"ema_fast": "10", "ema_slow": "100"}
+          description: Parameters used during the backtest.
         equity:
           type: array
           description: The backtest equity chart series.
@@ -4629,15 +4626,53 @@ components:
       description: Order struct for placing new trade.
     OrderProperties:
       type: object
+      required:
+        - timeInForce
       properties:
         timeInForce:
-          type: object
-          description: Defines the length of time over which an order will continue working before it is cancelled.
-          enum:
-            - 0 = GoodTilCanceled
-            - 1 = Day
-            - 2 = GoodTilDate
+          oneOf:
+            - $ref: '#/components/schemas/GoodTilCanceledTimeInForce'
+            - $ref: '#/components/schemas/DayTimeInForce'
+            - $ref: '#/components/schemas/GoodTilDateTimeInForce'
       description: Additional properties of the order.
+
+    GoodTilCanceledTimeInForce:
+      type: object
+      additionalProperties: false
+      description: Order is valid until filled.
+
+    DayTimeInForce:
+      type: object
+      required:
+        - $type
+      properties:
+        $type:
+          type: string
+          enum:
+            - QuantConnect.Orders.TimeInForces.DayTimeInForce
+          description: The type of TimeInForce.
+      additionalProperties: false
+      description: Order is valid until filled or the market closes.
+
+    GoodTilDateTimeInForce:
+      type: object
+      required:
+        - $type
+        - Expiry
+      properties:
+        $type:
+          type: string
+          enum:
+            - QuantConnect.Orders.TimeInForces.GoodTilDateTimeInForce
+          description: The type of TimeInForce.
+        Expiry:
+          type: string
+          format: date-time
+          description: Expiry date and time in ISO 8601 format.
+          example: 2026-06-19T12:00:00
+      additionalProperties: false
+      description: Order is valid until filled or the specified expiration time.
+
     OrderDirection:
       type: string
       description: Direction of the order.
@@ -4981,7 +5016,7 @@ components:
       type: object
       properties:
         nodes:
-          type: '#/components/schemas/ProjectNodes'
+          $ref: '#/components/schemas/ProjectNodes'
           description: List of project nodes.
         autoSelectNode:
           type: boolean
@@ -5129,7 +5164,7 @@ components:
         name:
           type: string
           example: file.py
-          description: Optional. The name of the file that will be read.
+          description: The name of the file that will be read.
       description: Request to read all files from a project or just one (if the name is provided).
     ReadCompileRequest:
       type: object
@@ -5212,7 +5247,7 @@ components:
         projectId:
           type: string
           example: 23456789
-          description: Project Id to which the nodes refer.
+          description: Id of the project to which the nodes refer.
       description: Request to get details about nodes of a specific organization.
     ReadLiveAlgorithmRequest:
       type: object
@@ -5321,7 +5356,7 @@ components:
         chart:
           type: string
           example: "Strategy Equity"
-          description: Optional. If provided, the API will return the backtests charts.
+          description: If provided, the API will return the backtests charts.
       description: Request to read a single backtest from a project.
     ListBacktestRequest:
       required:
@@ -5408,11 +5443,11 @@ components:
           example: 100
         start:
           type: integer
-          description: Optional. If provided, the Utc start seconds timestamp of the request.
+          description: If provided, the Utc start seconds timestamp of the request.
           example: 1717801200
         end:
           type: integer
-          description: Optional. If provided, the Utc end seconds timestamp of the request.
+          description: If provided, the Utc end seconds timestamp of the request.
           example: 1743462000
       description: Request body to obtain a chart from a backtest.
     ReadBacktestOrdersRequest:
@@ -5563,6 +5598,8 @@ components:
       description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
     RestResponse:
       type: object
+      required:
+        - success
       properties:
         success:
           type: boolean
@@ -5617,6 +5654,41 @@ components:
           type: string
           description: Total transaction volume.
           example: '$100.00'
+    OptimizationRuntimeStatistics:
+      type: object
+      properties:
+        Completed:
+          type: string
+          description: The number of backtests that completed.
+          example: '4'
+        Failed:
+          type: string
+          description: The number of backtests that failed.
+          example: '0'
+        Running:
+          type: string
+          description: The number of backtests currently running.
+          example: '2'
+        In Queue:
+          type: string
+          description: The number of backtests in queue to run.
+          example: '2'
+        Average Length:
+          type: string
+          description: The average backtest duration.
+          example: '00:00:06'
+        Total Runtime:
+          type: string
+          description: The total duration to run all the backtests.
+          example: '00:00:24'
+        Total:
+          type: string
+          description: The total number of backtests in the optimization job.
+          example: '8'
+        Consumed:
+          type: string
+          description: The amount of QuantConnect Credit consumed to run the optimization job up to its current state.
+          example: '0.68 QCC'
     ChartResolution:
       type: string
       description: Storage format of the charting data
@@ -6202,12 +6274,11 @@ components:
       type: object
       required: 
         - projectId
-        - name
       properties:
         projectId:
           type: integer
           example: 23456789
-          description: Project Id to which the file belongs.
+          description: The Id of the project to update.
         name:
           type: string
           example: "New Project Name"
@@ -6216,7 +6287,7 @@ components:
           type: string
           example: "New Project Description"
           description: The new description for the project.
-      description: Update a project name, or description.
+      description: Request to update a project's name or description.
     UpdateProjectNodesRequest:
       type: object
       required:
@@ -6244,8 +6315,9 @@ components:
           example: 23456789
           description: Project Id for the backtest we want to update.
         backtestId:
+          type: string
           example: 26c7bb06b8487cff1c7b3c44652b30f1
-          type: Backtest Id we want to update.
+          description: Id of the backtest to update.
         tags:
           type: array
           description: Array of the new backtest tags.
