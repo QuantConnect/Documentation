@@ -24,7 +24,8 @@ paths:
       - 01 Cloud Platform
       - 99 API Reference
       - 12 Account
-      description: Will read the organization account status.
+      summary: Read the organization account status.
+      description: The organization account status includes the organization Id, QCC balance, and credit card information.
       responses:
         "200":
           description: Account information for an organization.
@@ -48,7 +49,6 @@ paths:
       - 02 Project Management
       - 01 Create Project
       summary: Create a new project in your default organization.
-      description: Create a project with the specified name and programming language. If the project-name already exists, API call returns success:false with exception details in the errors array.
       requestBody:
         description: Name and language of the project to create.
         content:
@@ -108,7 +108,7 @@ paths:
       - 99 API Reference
       - 02 Project Management
       - 03 Update Project
-      summary: Update a project name, description or parameters.
+      summary: Update a project's name or description.
       requestBody:
         content:
           application/json:
@@ -2733,6 +2733,7 @@ components:
         email:
           type: string
           description: The registered email of the user.
+          format: email
           examples: 
           - "abc@123.com"
         name:
@@ -4905,7 +4906,10 @@ components:
           type: string
           description: Name of parameter.
         value:
-          type: number
+          oneOf:
+            - type: integer
+            - type: number
+            - type: string
           description: Value of parameter.
       description: Parameter set.
     PolygonSettings:
@@ -6425,7 +6429,6 @@ components:
       type: object
       required: 
         - projectId
-        - name
       properties:
         projectId:
           type: integer
