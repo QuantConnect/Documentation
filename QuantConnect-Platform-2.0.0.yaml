@@ -167,7 +167,7 @@ paths:
       - 02 Project Management
       - 05 Collaboration
       - 01 Create Project Collaborator
-      summary: Adds collaborator to the project
+      summary: Add a collaborator to a project.
       requestBody:
         content:
           application/json:
@@ -197,7 +197,7 @@ paths:
       - 02 Project Management
       - 05 Collaboration
       - 02 Read Project Collaborators
-      summary: List all collaborators in a project
+      summary: List all collaborators on a project.
       requestBody:
         content:
           application/json:
@@ -227,7 +227,7 @@ paths:
       - 02 Project Management
       - 05 Collaboration
       - 03 Update Project Collaborator
-      summary: Updates collaborator information in the project
+      summary: Update collaborator information in a project.
       requestBody:
         content:
           application/json:
@@ -257,7 +257,7 @@ paths:
       - 02 Project Management
       - 05 Collaboration
       - 04 Delete Project Collaborator
-      summary: Removes collaborator from the project
+      summary: Remove a collaborator from a project.
       requestBody:
         content:
           application/json:
@@ -2715,7 +2715,7 @@ components:
           description: User ID.
         liveControl:
           type: boolean
-          description: Indicate if the user have live control.
+          description: Indicate if the user has live control.
         permission:
           type: string
           description: The permission this user is given.
@@ -2749,17 +2749,19 @@ components:
       required:
         - projectId
         - collaboratorUserId 
+        - collaborationLiveControl
+        - collaborationWrite
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id we want to add the collaborator to.
+          description: Id of the project to add the collaborator to.
         collaboratorUserId:
           type: string
           examples: 
           - "mia-ai"
-          description: User Id of the collaborator we want to add.
+          description: User Id of the collaborator to add.
         collaborationLiveControl:
           type: boolean
           examples: 
@@ -2770,7 +2772,7 @@ components:
           examples: 
           - false
           description: Gives the right to edit the code.
-      description: Request to add a new collaborator.
+      description: Request to add a new collaborator to a project.
     CreateCollaboratorResponse:
       type: object
       properties:
@@ -2792,14 +2794,14 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Id of the project from which to read one or multiple collaborators.
+          description: Id of the project from which to read the collaborators.
       description: Request to list the collaborators in a project.
     ReadCollaboratorsResponse:
       type: object
       properties:
         collaborators:
           type: array
-          description: List of collaborators.
+          description: List of collaborators on the project.
           items:
             $ref: '#/components/schemas/Collaborator'
         userLiveControl:
@@ -2817,17 +2819,19 @@ components:
       required:
         - projectId
         - collaboratorUserId 
+        - liveControl
+        - write
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id we want to add the collaborator to.
+          description: Id of the project the collaborator is on.
         collaboratorUserId:
           type: string
           examples: 
           - "mia-ai"
-          description: User Id of the collaborator we want to add.
+          description: User Id of the collaborator to update.
         liveControl:
           type: boolean
           examples: 
@@ -2838,7 +2842,7 @@ components:
           examples: 
           - true
           description: Gives the right to edit the code.
-      description: Request to update an existing collaborator.
+      description: Request to update an existing collaborator on a project.
     UpdateCollaboratorResponse:
       type: object
       properties:
@@ -2855,19 +2859,19 @@ components:
       type: object
       required:
         - projectId
-        - collaboratorUserId
+        - collaboratorId
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id we want to remove the collaborator from.
-        collaboratorUserId:
+          description: Id of the project to remove the collaborator from.
+        collaboratorId:
           type: string
           examples: 
           - "mia-ai"
-          description: User Id of the collaborator we want to remove.
-      description: Request to remove a collaborator.
+          description: User Id of the collaborator to remove.
+      description: Request to remove a collaborator from a project.
     DeleteCollaboratorResponse:
       type: object
       properties:
