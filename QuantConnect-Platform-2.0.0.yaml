@@ -466,7 +466,7 @@ paths:
       - 99 API Reference
       - 04 Compiling Code
       - 01 Create Compilation Job
-      summary: Asynchronously create a compile job request for a project
+      summary: Asynchronously create a compile job request for a project.
       requestBody:
         description: Project Id specifying project to build.
         content:
@@ -480,7 +480,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CompileResponse'
+                $ref: '#/components/schemas/CreateCompileResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -510,7 +510,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CompileResponse'
+                $ref: '#/components/schemas/ReadCompileResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -2681,7 +2681,7 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project Id we wish to compile.
+          description: Id of the project to compile.
       description: Request to compile a project.
     CoinbaseSettings:
       type: object
@@ -2884,46 +2884,31 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Response received when removing collaborator.
-    CompileFile:
-      type: object
-      properties:
-        projectId:
-          type: integer
-          examples: 
-          - 23456789
-          description: Project id.
-        open:
-          type: boolean
-          description: Indicates if the file is being opened.
-        isLibrary:
-          type: boolean
-          description: Indicates if the file is coming from a library project.
-        collaborationId:
-          type: string
-          description: Collaboration id.
-      description: File details of files being compiled.
-      additionalProperties:
-        $ref: '#/components/schemas/ProjectFile'
-    CompileResponse:
+    CreateCompileResponse:
       type: object
       properties:
         compileId:
           type: string
           examples: 
-          - c0edc6-49048b
+          - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
           description: Compile Id for a sucessful build.
         state:
           type: string
-          description: True on successful compile.
+          description: The current state of the compile job.
           enum:
           - InQueue
           - BuildSuccess
           - BuildError
+        parameters:
+          type: array
+          description: List of files and their associated parameters detected during compilation.
+          items:
+            $ref: '#/components/schemas/FileParameters'
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id we sent for compile.
+          description: Id of the project you requested to compile.
         signature:
           type: string
           description: Signature key of compilation.
@@ -2932,6 +2917,30 @@ components:
           description: Signature order of files to be compiled.
           items:
             type: string
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received from creating a compile job.
+    ReadCompileResponse:
+      type: object
+      properties:
+        compileId:
+          type: string
+          examples: 
+          - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
+          description: Compile Id for a sucessful build.
+        state:
+          type: string
+          description: The current state of the compile job.
+          enum:
+          - InQueue
+          - BuildSuccess
+          - BuildError
         logs:
           type: array
           description: Logs of the compilation request.
@@ -2945,7 +2954,34 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response from the compiler on a build event.
+      description: Response received from reading a compile job.
+    FileParameters:
+      type: object
+      properties:
+        file:
+          type: string
+          description: Path of the file in the project.
+          examples:
+          - __init__.py
+          - project/main.py
+        parameters:
+          type: array
+          description: List of parameters detected in the file.
+          items:
+            $ref: '#/components/schemas/ParameterDetail'
+    ParameterDetail:
+      type: object
+      properties:
+        line:
+          type: integer
+          description: Line number where the parameter was detected.
+          examples:
+          - 8
+        type:
+          type: string
+          description: Description of the detected parameter.
+          examples:
+          - 3 LEAN API parameters detected near "self.set_start_date(2024, 1, 3)".
     CreateBacktestRequest:
       required:
         - projectId
@@ -2960,7 +2996,7 @@ components:
         compileId:
           type: string
           examples: 
-          - c0edc6-49048b
+          - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
           description: Compile Id for the project to backtest.
         backtestName:
           type: string
@@ -2995,7 +3031,7 @@ components:
         compileId:
           type: string
           examples: 
-          - c0edc6-49048b
+          - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
           description: Compile Id.
         nodeId:
           type: string
@@ -3171,7 +3207,7 @@ components:
         compileId:
           type: string
           examples: 
-          - c0edc6-49048b
+          - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
           description: Optimization compile ID.
         parameters:
           type: array
@@ -3460,7 +3496,7 @@ components:
         compileId:
           type: string
           examples: 
-          - c0edc6-49048b
+          - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
           description: Optimization compile ID.
         parameters:
           type: array
@@ -5308,11 +5344,11 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project Id we sent for compile.
+          description: Id of the project you requested to compile.
         compileId:
           type: string
           examples: 
-          - c0edc6-49048b
+          - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
           description: Compile Id returned during the creation request.
       description: Request to read a compile packet job.
     ReadLiveLogsRequest:
