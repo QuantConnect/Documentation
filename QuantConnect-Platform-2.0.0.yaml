@@ -287,7 +287,7 @@ paths:
       - 02 Project Management
       - 06 Nodes
       - 01 Read Project Nodes
-      summary: Read all nodes in a project.
+      summary: Read the available and selected nodes of a project.
       requestBody:
         content:
           application/json:
@@ -317,7 +317,7 @@ paths:
       - 02 Project Management
       - 06 Nodes
       - 02 Update Project Nodes
-      summary: Update the active state of some nodes to true. If you don't provide any nodes, all the nodes become inactive and AutoSelectNode is true.
+      summary: Update the active state of the given nodes to true. If you don't provide any nodes, all the nodes become inactive and autoSelectNode is true.
       requestBody:
         content:
           application/json:
@@ -4278,8 +4278,6 @@ components:
       - bittrex
     Node:
       type: object
-      required:
-        - projectId
       properties:
         speed:
           type: number
@@ -4330,7 +4328,7 @@ components:
           description: Node host. 
         active:
           type: boolean
-          description: Indicate if this is the active node. The project will use this node if it's not busy.
+          description: Indicate if this is an active node for the project. The project will use this node if it's not busy.
         hasGpu:
           type: integer
           description: Indicate if the node has GPU (1) or not (0).
@@ -5147,11 +5145,12 @@ components:
       type: object
       properties:
         nodes:
-          type: '#/components/schemas/ProjectNodes'
+          type: object
+          $ref: '#/components/schemas/ProjectNodes'
           description: List of project nodes.
         autoSelectNode:
           type: boolean
-          description: Indicate if a node is automatically selected.
+          description: Indicate if the best-performing node is automatically selected.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -5383,11 +5382,11 @@ components:
         - projectId
       properties:
         projectId:
-          type: string
+          type: integer
           examples: 
           - 23456789
-          description: Project Id to which the nodes refer.
-      description: Request to get details about nodes of a specific organization.
+          description: Id of the project to which the nodes refer.
+      description: Request to get details about the nodes in your organization, including which nodes may be used by the project.
     ReadLiveAlgorithmRequest:
       type: object
       required:
@@ -6461,7 +6460,7 @@ components:
           description: Project Id to which the nodes refer.
         nodes:
           type: array
-          description: List of node Id to update.
+          description: List of node Ids the project may use. If you omit this property or pass an empty list, the best node will be automatically selected for backtest, research, and live trading.
           items:
             type: string
       description: Request to update the nodes of a project.
