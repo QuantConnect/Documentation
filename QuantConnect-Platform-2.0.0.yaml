@@ -346,9 +346,9 @@ paths:
       - 99 API Reference
       - 03 File Management
       - 01 Create File
-      summary: Add a file to given project.
+      summary: Add a file to a given project.
       requestBody:
-        description: Project, file name and file content to create
+        description: Project, file name, and file content to create.
         content:
           application/json:
             schema:
@@ -356,11 +356,11 @@ paths:
         required: true
       responses:
         "200":
-          description: Response received when reading all files of a project.
+          description: Response received when adding a new file to a project.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RestResponse'
+                $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -386,7 +386,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Response received when reading all files of a project.
+          description: Response received when reading the files of a project.
           content:
             application/json:
               schema:
@@ -420,7 +420,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RestResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/RestResponse'
+                  - $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -436,7 +438,7 @@ paths:
       - 99 API Reference
       - 03 File Management
       - 04 Delete File
-      summary: Delete a file in a project
+      summary: Delete a file in a project.
       requestBody:
         description: Project Id and filename to specify the file for deletion.
         content:
@@ -3332,25 +3334,43 @@ components:
       required:
         - projectId
         - name
-        - content
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id to which the file belongs.
+          description: Id of the project to add the file.
         name:
           type: string
           examples: 
-          - main.py
+          - alpha.py
+          - signal_research.ipynb
+          - indicators/momentum.py
+          - Alpha.cs
+          - SignalResearch.ipynb
+          - Indicators/Momentum.cs
           description: The name of the new file.
         content:
           type: string
           examples: 
+          # Python code file
           - |
             class CustomClass:
                 def __init__(self):
                     pass
+          # C# code file
+          - |
+            public class CustomClass
+            {
+                CustomClass()
+                {
+
+                }
+            }
+          # Python research file
+          - "{\"cells\": [{\"cell_type\": \"code\", \"execution_count\": null, \"metadata\": {\"pycharm\": {\"name\": \"#%%\\n\"}}, \"outputs\": [], \"source\": [\"# Hello world!\\n\"]}], \"metadata\": {\"kernelspec\": {\"display_name\": \"Python 3\", \"language\": \"python\", \"name\": \"python3\"}, \"language_info\": {\"codemirror_mode\": {\"name\": \"ipython\", \"version\": 3}, \"file_extension\": \".py\", \"mimetype\": \"text/x-python\", \"name\": \"python\", \"nbconvert_exporter\": \"python\", \"pygments_lexer\": \"ipython3\", \"version\": \"3.6.8\"}}, \"nbformat\": 4, \"nbformat_minor\": 2}"
+          # C# research file
+          - "{\"cells\": [{\"cell_type\": \"code\", \"execution_count\": 1, \"metadata\": {}, \"outputs\": [], \"source\": [\"// We need to load assemblies at the start in their own cell\\n\", \"#load \\\"../Initialize.csx\\\"\"]}], \"metadata\": {\"kernelspec\": {\"display_name\": \".NET (C#)\", \"language\": \"C#\", \"name\": \"csharp\"}, \"language_info\": {\"file_extension\": \".cs\", \"mimetype\": \"text/x-csharp\", \"name\": \"C#\", \"pygments_lexer\": \"csharp\", \"version\": \"9.0\"}}, \"nbformat\": 4, \"nbformat_minor\": 2}"
           description: The content of the new file.
       description: Request to add a file to a project.
     DeleteFileRequest:
@@ -3363,12 +3383,13 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project Id to which the file belongs.
+          description: Id of the project that contains the file.
         name:
           type: string
           examples: 
           - file.py
-          description: The name of the file that should be deleted.
+          - File.cs
+          description: The name of the file to delete.
       description: Request to delete a file in a project.
     DeleteProjectRequest:
       type: object
@@ -3379,7 +3400,7 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project Id to which the file belongs.
+          description: Id of the project to delete.
       description: Request to delete a project.
     DeleteBacktestRequest:
       type: object
@@ -5090,8 +5111,6 @@ components:
       description: Response from reading a project by id.
     ProjectFile:
       type: object
-      required:
-        - projectId
       properties:
         id:
           type: integer
@@ -5134,7 +5153,7 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response received when reading files from a project.
+      description: Response received when creating or reading project files.
     File:
       type: object
       properties:
@@ -5327,12 +5346,13 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project Id to which the file belongs.
+          description: Id of the project that contains the file.
         name:
           type: string
           examples: 
           - file.py
-          description: Optional. The name of the file that will be read.
+          - File.cs
+          description: The name of the file to read.
       description: Request to read all files from a project or just one (if the name is provided).
     ReadCompileRequest:
       type: object
@@ -6401,15 +6421,15 @@ components:
       type: object
       required:
         - projectId
-        - oldFileName
+        - name
         - newName
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id to which the file belongs.
-        oldFileName:
+          description: Id of the project that contains the file.
+        name:
           type: string
           examples: 
           - file1.py
@@ -6431,19 +6451,30 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project Id to which the file belongs.
+          description: Id of the project that contains the file.
         name:
           type: string
           examples: 
           - main.py
-          description: The name of the file that should be updated.
+          - Main.cs
+          description: The name of the file to update.
         content:
           type: string
           examples: 
+          # Python code file
           - |
             class CustomClass:
                 def __init__(self):
                     pass
+          # C# code file
+          - |
+            public class CustomClass
+            {
+                CustomClass()
+                {
+
+                }
+            }
           description: The new contents of the file.
       description: Request to update the contents of a file.
     UpdateOptimizationRequest:
