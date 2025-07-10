@@ -37,7 +37,7 @@
 <? if ($callsBaseClass) { ?>
         super().on_securities_changed(algorithm, changes)
 <? } ?>
-        for security in changes.added_securities::
+        for security in changes.added_securities:
             # Store and manage Symbol-specific data
             security.indicator = algorithm.sma(security.symbol, 20)
             algorithm.warm_up_indicator(security.symbol, security.indicator)
