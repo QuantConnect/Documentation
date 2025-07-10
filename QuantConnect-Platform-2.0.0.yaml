@@ -559,7 +559,7 @@ paths:
       - 05 Backtest Management
       - 02 Read Backtest
       - 01 Backtest Statistics
-      summary: Read out that backtest from the project (optionally with the charts included).
+      summary: Read the results of a backtest.
       requestBody:
         description: Fetch the results for the project Id and backtest Id provided (and optional chart name provided).
         content:
@@ -589,9 +589,9 @@ paths:
       - 99 API Reference
       - 05 Backtest Management
       - 05 List Backtests
-      summary: List all the backtests for the project.
+      summary: List all the backtests for a project.
       requestBody:
-        description: Fetch the results for the project Id provided.
+        description: Fetch the backtest results for the project Id provided.
         content:
           application/json:
             schema:
@@ -650,9 +650,9 @@ paths:
       - 99 API Reference
       - 11 Reports
       - 01 Backtest Report
-      summary: Read out the report of a backtest in the project Id specified
+      summary: Read out the report of a backtest.
       requestBody:
-        description: A JSON object containing info about the project to delete.
+        description: A JSON object containing info about the backtest to use for the report.
         content:
           application/json:
             schema:
@@ -681,7 +681,7 @@ paths:
         - 05 Backtest Management
         - 02 Read Backtest
         - 02 Charts
-      summary: Read chart from a backtest.
+      summary: Read a chart from a backtest.
       requestBody:
         description: Request body to obtain a chart from a backtest.
         content:
@@ -742,9 +742,9 @@ paths:
       - 99 API Reference
       - 05 Backtest Management
       - 03 Update Backtest
-      summary: Update a backtest name or note
+      summary: Update the name or note of a backtest.
       requestBody:
-        description: A JSON object containing info about the backtest and new name.
+        description: A JSON object containing info about the backtest and its new name or note.
         content:
           application/json:
             schema:
@@ -772,7 +772,7 @@ paths:
       - 99 API Reference
       - 05 Backtest Management
       - 04 Delete Backtest
-      summary: Delete a backtest from the specified project and backtestId
+      summary: Delete a backtest from a project.
       requestBody:
         description: Information required to delete the backtest.
         content:
@@ -2079,8 +2079,8 @@ components:
       type: object
       properties:
         orders:
-          type: object
-          additionalProperties:
+          type: array
+          items:
             $ref: '#/components/schemas/Order'
         length:
           type: integer
@@ -2096,7 +2096,7 @@ components:
             $ref: '#/components/schemas/Insight'
         length:
           type: integer
-          description: Total number of returned insights
+          description: Total number of returned insights.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2105,10 +2105,9 @@ components:
       type: object
       properties:
         backtest:
-          type: array
-          description: Collection of backtests for a project.
-          items:
-            $ref: '#/components/schemas/BacktestResult'
+          type: object
+          description: Details on the result of the backtest.
+          $ref: '#/components/schemas/BacktestResult'
         debugging:
           type: boolean
           description: Indicates if the backtest is run under debugging mode.
@@ -2124,7 +2123,7 @@ components:
     BacktestSummaryResponse:
       type: object
       properties:
-        backtest:
+        backtests:
           type: array
           description: Collection of backtest summaries for a project.
           items:
@@ -2141,14 +2140,12 @@ components:
           items:
             type: string
       description: Collection container for a list of backtest summaries for a project.
-    BacktestList:
+    BacktestReport:
       type: object
       properties:
-        backtests:
-          type: array
-          description: Array of BacktestResponse objects
-          items:
-            $ref: '#/components/schemas/BacktestResponse'
+        report:
+          type: string
+          description: HTML data of the report with embedded base64 images.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2157,13 +2154,13 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Collection container for a list of Backtest objects for a project.
-    BacktestReport:
+      description: Backtest Report Response wrapper.
+    BacktestReportGeneratingResponse:
       type: object
       properties:
-        report:
-          type: string
-          description: HTML data of the report with embedded base64 images.
+        generating:
+          type: boolean
+          description: Indicate if the report is generating.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2186,7 +2183,9 @@ components:
           description: Id of the project to read.
         backtestId:
           type: string
-          description: Specific backtest Id to read.
+          description: Id of the backtest to read.
+          examples: 
+          - 26c7bb06b8487cff1c7b3c44652b30f1
       description: Request to read out the report of a backtest.
     BacktestResult:
       type: object
@@ -2200,13 +2199,13 @@ components:
         organizationId:
           type: string
           examples: 
-          - 5cad178b20a1d52567b534553413b691
-          description: Orgainization ID.
+          - d6d62db48592c72e67b534553413b602
+          description: The Id of the orgainization.
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project ID
+          description: Id of the project.
         completed:
           type: boolean
           description: Boolean true when the backtest is completed.
@@ -2222,7 +2221,7 @@ components:
           description: Assigned backtest ID.
         tradeableDates:
           type: integer
-          description: Number of traadeable days.
+          description: Number of tradeable days in the backtest.
         researchGuide:
           type: object
           $ref: '#/components/schemas/ResearchGuide'
@@ -2241,7 +2240,7 @@ components:
           format: date-time
         snapshotId:
           type: integer
-          description: Snapshot id of this backtest result.
+          description: Snapshot Id of this backtest result.
         status:
           type: string
           description: Status of the backtest.
@@ -2249,6 +2248,7 @@ components:
           - Completed.
           - In Queue...
           - '''Running: _%'''
+          - Runtime Error
         error:
           type: string
           description: Backtest error message.
@@ -2268,10 +2268,8 @@ components:
             $ref: '#/components/schemas/ChartSummary'
           description: Charts updates for the live algorithm since the last result packet.
         parameterSet:
-          type: object
           description: Parameters used in the backtest.
-          additionalProperties:
-            $ref: '#/components/schemas/ParameterSet'
+          $ref: '#/components/schemas/ParameterSet'
         rollingWindow:
           type: object
           additionalProperties:
@@ -2279,18 +2277,15 @@ components:
           description: Rolling window detailed statistics.
         runtimeStatistics:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/RuntimeStatistics'
+          $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
         statistics:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/StatisticsResult'
+          $ref: '#/components/schemas/StatisticsResult'
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/AlgorithmPerformance'
+          $ref: '#/components/schemas/AlgorithmPerformance'
           description: The algorithm performance statistics.
         nodeName:
           type: string
@@ -2338,10 +2333,8 @@ components:
           type: integer
           description: Number of traadeable days
         parameterSet:
-          type: object
           description: Parameters used in the backtest.
-          additionalProperties:
-            $ref: '#/components/schemas/ParameterSet'
+          $ref: '#/components/schemas/ParameterSet'
         snapshotId:
           type: integer
           description: Snapshot id of this backtest result.
@@ -2378,8 +2371,8 @@ components:
           type: number
           description: Price-to-sales ratio.
         securityTypes:
-          type: string
-          description: SecurityTypes present in the backtest.
+          type: integer
+          description: The number of security types (QuantConnect.SecurityType) present in the backtest.
         sortinoRatio:
           type: number
           description: Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.
@@ -2652,16 +2645,16 @@ components:
           type: string
           description: Name of the Chart.
         chartType:
-          type: string
-          description: Type of the Chart, Overlayed or Stacked.
+          type: integer
+          description: Type of the Chart. 0=Overlayed, 1=Stacked.
           enum:
-            - Overlay
-            - Stacked
+            - 0
+            - 1
         series:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Series'
-          description: List of Series Objects for this Chart.
+          description: Series Objects for this Chart.
       description: Single Parent Chart Object for Custom Charting.
     ChartPoint:
       type: object
@@ -2988,13 +2981,14 @@ components:
       required:
         - projectId
         - compileId
+        - backtestName
       type: object
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id we sent for compile.
+          description: Id of the project to backtest.
         compileId:
           type: string
           examples: 
@@ -3004,12 +2998,15 @@ components:
           type: string
           examples: 
           - "New Backtest"
-          description: Optional. Name for the new backtest.
-        parameters[name]:
+          description: Name for the new backtest.
+        parameters:
           type: object
-          examples: 
-          - parameters[ema_fast] = 10, parameters[ema_slow] = 100
-          description: Optional. Parameters used in the backtest.
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+              - type: integer
+          description: Parameters to use for the backtest.
       description: Request to create a new backtest.
     CreateLiveAlgorithmRequest:
       type: object
@@ -3412,12 +3409,12 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project Id for the backtest we want to delete.
+          description: Id of the project that contains the backtest.
         backtestId:
           type: string
           examples: 
           - 26c7bb06b8487cff1c7b3c44652b30f1
-          description: Backtest Id we want to delete.
+          description: Id of the backtest to delete.
       description: Request to delete a backtest.
     DeleteObjectStoreRequest:
       type: object
@@ -3829,19 +3826,20 @@ components:
           type: string
           description: Name of the model that sourced the insight.
         generatedTime:
-          type: string
-          description: Gets the utc unixtime this insight was generated.
+          type: integer
+          format: unix-time
+          description: Gets the Unix time this insight was generated.
         createdTime:
-          type: number
-          description: Gets the utc unixtime this insight was created.
-          format: float
+          type: integer
+          format: unix-time
+          description: Gets the Unix time this insight was created.
         closeTime:
-          type: number
-          description: Gets the utc unixtime this insight was closed.
-          format: float
+          type: integer
+          format: unix-time
+          description: Gets the Unix time this insight was closed.
         symbol:
           type: string
-          description: Gets the symbol ID this insight is for.
+          description: Gets the symbol Id this insight is for.
         ticker:
           type: string
           description: Gets the symbol ticker this insight is for.
@@ -3852,22 +3850,21 @@ components:
           - price
           - volatility
         reference:
-          type: string
+          type: number
           description: Gets the initial reference value this insight is predicting against.
         referenceValueFinal:
-          type: string
+          type: number
           description: Gets the final reference value, used for scoring, this insight is predicting against.
         direction:
           type: string
-          description: Gets the predicted direction, down, flat or up.
+          description: Gets the predicted direction.
           enum:
           - down
           - flat
           - up
         period:
-          type: number
+          type: integer
           description: Gets the period, in seconds, over which this insight is expected to come to fruition.
-          format: float
         magnitude:
           type: number
           description: Gets the predicted percent change in the insight type (price/volatility). This value can be null.
@@ -3884,17 +3881,14 @@ components:
           type: boolean
           description: Gets whether or not this is the insight's final score.
         scoreDirection:
-          type: number
+          type: string
           description: Gets the direction score.
-          format: float
         scoreMagnitude:
-          type: number
+          type: string
           description: Gets the magnitude score.
-          format: float
         estimatedValue:
-          type: number
+          type: string
           description: Gets the estimated value of this insight in the account currency.
-          format: float
         tag:
           type: string
           description: The insight's tag containing additional information
@@ -4730,23 +4724,23 @@ components:
           description: Currency for the order price.
         time:
           type: string
-          description: Gets the utc time the order was created.
+          description: Gets the UTC time the order was created.
           format: date-time
         createdTime:
           type: string
-          description: Gets the utc time this order was created. Alias for Time.
+          description: Gets the UTC time this order was created. Alias for Time.
           format: date-time
         lastFillTime:
           type: string
-          description: Gets the utc time the last fill was received, or null if no fills have been received.
+          description: Gets the UTC time the last fill was received, or null if no fills have been received.
           format: date-time
         lastUpdateTime:
           type: string
-          description: Gets the utc time this order was last updated, or null if the order has not been updated.
+          description: Gets the UTC time this order was last updated, or null if the order has not been updated.
           format: date-time
         canceledTime:
           type: string
-          description: Gets the utc time this order was canceled, or null if the order was not canceled.
+          description: Gets the UTC time this order was canceled, or null if the order was not canceled.
           format: date-time
         quantity:
           type: number
@@ -4754,55 +4748,55 @@ components:
           format: float
         type:
           type: integer
-          description: Order type.
+          description: Order type. 0=Market, 1=Limit, 2=StopMarket, 3=StopLimit, 4=MarketOnOpen, 5=MarketOnClose, 6=OptionExercise, 7=LimitIfTouched, 8=ComboMarket, 9=ComboLimit, 10=ComboLegLimit, 11=TrailingStop.
           enum:
-          - 0 = Market
-          - 1 = Limit
-          - 2 = StopMarket
-          - 3 = StopLimit
-          - 4 = MarketOnOpen
-          - 5 = MarketOnClose
-          - 6 = OptionExercise
-          - 7 = LimitIfTouched
-          - 8 = ComboMarket
-          - 9 = ComboLimit
-          - 10 = ComboLegLimit
-          - 11 = TrailingStop
+            - 0 
+            - 1 
+            - 2 
+            - 3 
+            - 4 
+            - 5 
+            - 6 
+            - 7 
+            - 8 
+            - 9 
+            - 10 
+            - 11 
         status:
           type: integer
-          description: Status of the Order.
+          description: Status of the Order. 0=New, 1=Submitted, 2=PartiallyFilled, 3=Filled, 5=Canceled, 6=None, 7=Invalid, 8=CancelPending, 9=UpdateSubmitted.
           enum:
-          - 0 = New
-          - 1 = Submitted
-          - 2 = PartiallyFilled
-          - 3 = Filled
-          - 5 = Canceled
-          - 6 = None
-          - 7 = Invalid
-          - 8 = CancelPending
-          - 9 = UpdateSubmitted
+            - 0
+            - 1
+            - 2
+            - 3
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
         tag:
           type: string
           description: Tag the order with some custom data.
         securityType:
           type: integer
-          description: Type of tradable security / underlying asset.
+          description: Type of tradable security / underlying asset. 0=Base, 1=Equity, 2=Option, 3=Commodity, 4=Forex, 5=Future, 6=Cfd, 7=Crypto.
           enum:
-            - 0 = Base
-            - 1 = Equity
-            - 2 = Option
-            - 3 = Commodity
-            - 4 = Forex
-            - 5 = Future
-            - 6 = Cfd
-            - 7 = Crypto
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
         direction:
           type: integer
-          description: Order Direction Property based off Quantity. 
+          description: Order Direction Property based off Quantity. 0=Buy, 1=Sell, 2=Hold.
           enum:
-            - 0 = Buy
-            - 1 = Sell
-            - 2 = Hold
+            - 0
+            - 1
+            - 2
         value:
           type: number
           description: Gets the executed value of this order. If the order has not yet filled, then this will return zero.
@@ -4846,11 +4840,7 @@ components:
         timeInForce:
           type: object
           description: Defines the length of time over which an order will continue working before it is cancelled.
-          enum:
-            - 0 = GoodTilCanceled
-            - 1 = Day
-            - 2 = GoodTilDate
-      description: Additional properties of the order.
+      description: Additional properties of the order
     OrderDirection:
       type: string
       description: Direction of the order.
@@ -4880,7 +4870,7 @@ components:
           type: integer
           description: The unique order event id for each order.
         id:
-          type: integer
+          type: string
           description: The unique order event Id for each order.
         status:
           type: string
@@ -4946,30 +4936,26 @@ components:
       properties:
         bidPrice:
           type: number
-          description: The bid price at an order submission time.
+          description: The bid price at order submission time.
           format: float
         askPrice:
           type: number
-          description: The ask price at an order submission time.
+          description: The ask price at order submission time.
           format: float
         lastPrice:
           type: number
-          description: The current price at an order submission time.
+          description: The current price at order submission time.
           format: float
       description: Stores time and price information available at the time an order was submitted.
     ParameterSet:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of parameter.
-        value:
-          oneOf:
-            - type: integer
-            - type: number
-            - type: string
-          description: Value of parameter.
-      description: Parameter set.
+      oneOf:
+        - type: array # an empty list
+        - type: object
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+              - type: integer
     PolygonSettings:
       type: object
       properties:
@@ -5070,10 +5056,8 @@ components:
           type: string
           description: Channel id.
         parameters:
-          type: array
           description: Optimization parameters.
-          items:
-            $ref: '#/components/schemas/ParameterSet'
+          $ref: '#/components/schemas/ParameterSet'
         libraries:
           type: array
           description: The library projects.
@@ -5547,24 +5531,19 @@ components:
     ReadBacktestRequest:
       required:
       - projectId
-      - backtestId
+      - backtestId 
       type: object
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Id of the project from which to read one or multiple backtests.
+          description: Id of the project that contains the backtest.
         backtestId:
           type: string
           examples: 
           - 26c7bb06b8487cff1c7b3c44652b30f1
-          description: When provided, specific backtest Id to read.
-        chart:
-          type: string
-          examples: 
-          - "Strategy Equity"
-          description: Optional. If provided, the API will return the backtests charts.
+          description: Id of the backtest to read.
       description: Request to read a single backtest from a project.
     ListBacktestRequest:
       required:
@@ -5580,6 +5559,7 @@ components:
           type: boolean
           examples: 
           - true
+          default: false
           description: If true, the backtests summaries from the response will contain the statistics with their corresponding values.
       description: Request to list the backtests from a project.
     QuantConnectSettings:
@@ -5637,12 +5617,12 @@ components:
       properties:
         projectId:
           type: integer
-          description: Project ID of the request.
+          description: Id of the project that contains the backtest.
           examples: 
           - 12345678
         backtestId:
           type: string
-          description: Associated Backtest ID for this chart request.
+          description: Id of the backtest for this chart request.
           examples: 
           - 2a748c241eb93b0b57b4747b3dacc80e
         name:
@@ -5657,12 +5637,12 @@ components:
           - 100
         start:
           type: integer
-          description: Optional. If provided, the Utc start seconds timestamp of the request.
+          description: The start timestamp of the request in Unix time.
           examples: 
           - 1717801200
         end:
           type: integer
-          description: Optional. If provided, the Utc end seconds timestamp of the request.
+          description: The end timestamp of the request in Unix time.
           examples: 
           - 1743462000
       description: Request body to obtain a chart from a backtest.
@@ -5678,7 +5658,7 @@ components:
           type: integer
           examples: 
           - 0
-          description: Starting index of the orders to be fetched. Required if end > 100.
+          description: Starting index of the orders to be fetched.
         end:
           type: integer
           examples: 
@@ -5707,7 +5687,7 @@ components:
           type: integer
           examples: 
           - 0
-          description: Starting index of the insights to be fetched. Required if end > 100.
+          description: Starting index of the insights to be fetched. 
         end:
           type: integer
           examples: 
@@ -5750,12 +5730,12 @@ components:
           - 100
         start:
           type: integer
-          description: The Utc start seconds timestamp of the request.
+          description: The UTC start seconds timestamp of the request.
           examples: 
           - 1717801200  
         end:
           type: integer
-          description: The Utc end seconds timestamp of the request.
+          description: The UTC end seconds timestamp of the request.
           examples: 
           - 1743462000
       description: Request to body to obtain a chart from a live algorithm.
@@ -5801,18 +5781,6 @@ components:
           items:
             type: string
       description: Response received when reading an optimization.
-    RequestFailedError:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Indicate if the API request was successful.
-        errors:
-          type: array
-          description: List of errors with the API call.
-          items:
-            type: string
-      description: The API method call could not be completed as requested.
     ResearchGuide:
       type: object
       properties:
@@ -5942,23 +5910,25 @@ components:
           type: array
           description: Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest)
           items:
-            type: object
+            type: array
             description: The type of the values depends on the series type.
         seriesType:
-          type: string
-          description: Chart type for the series.
-          enum:
-          - Line
-          - Scatter
-          - Candle
-          - Bar
-          - Flag
-          - StackedArea
-          - Pie
-          - Treemap
+          type: integer
+          description: Chart type for the series. 0=Line, 1=Scatter, 2=Candle, 3=Bar, 4=Flag, 5=StackedArea, 6=Pie, 7=Treemap, 9=Heatmap, 10=Scatter3d.
+          enum: 
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 9
+          - 19
         color:
           type: string
-          description: Color the series.
+          description: Color of the series.
         scatterMarkerSymbol:
           type: string
           description: Shape or symbol for the marker in a scatter plot.
@@ -6086,7 +6056,7 @@ components:
           description: The security identifier for this symbol.
         permtick:
           type: string
-          description: The current symbol for this ticker.
+          description: The ticker at IPO for this security.
       description: Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.
     CharlesSchwabSettings:
       type: object
@@ -6397,26 +6367,25 @@ components:
       required:
       - backtestId
       - projectId
-      - name
       type: object
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project Id for the backtest we want to update.
+          description: Id of the project that contains the backtest.
         backtestId:
           type: string
           examples: 
           - 26c7bb06b8487cff1c7b3c44652b30f1
-          description: Backtest Id we want to update.
+          description: Id of the backtest to update.
         name:
           type: string
-          description: Name we would like to assign to the backtest.
+          description: Name to assign to the backtest.
         note:
           type: string
-          description: Note attached to the backtest.
-      description: Request to update a backtest's name.
+          description: Note to attach to the backtest.
+      description: Request to update a backtest's name or note.
     UpdateFileNameRequest:
       type: object
       required:
@@ -6700,14 +6669,10 @@ components:
       oneOf:
       - $ref: '#/components/schemas/GetObjectStoreJobIdRequest'
       - $ref: '#/components/schemas/GetObjectStoreURLRequest'
-    inline_response_200:
-      oneOf:
-      - $ref: '#/components/responses/BacktestResponse'
-      - $ref: '#/components/responses/BacktestList'
     inline_response_200_1:
       oneOf:
       - $ref: '#/components/responses/BacktestReport'
-      - $ref: '#/components/responses/RequestFailedError'
+      - $ref: '#/components/schemas/BacktestReportGeneratingResponse'
     inline_response_200_3:
       oneOf:
       - $ref: '#/components/responses/LoadingChartResponse'
@@ -6719,12 +6684,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BacktestResponse'
-    BacktestList:
-      description: Collection container for a list of backtests for a project.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BacktestList'
     BacktestReport:
       description: Backtest Report Response wrapper.
       content:
@@ -6773,12 +6732,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ReadLiveLogsResponse'
-    RequestFailedError:
-      description: Request Failed.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestFailedError'
     RestResponse:
       description: Base API response class.
       content:
