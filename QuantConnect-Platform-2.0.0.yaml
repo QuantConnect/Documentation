@@ -1215,9 +1215,9 @@ paths:
       - 99 API Reference
       - 08 Optimization Management
       - 01 Create Optimization
-      summary: Create an optimization with the specified parameters
+      summary: Create an optimization with the specified parameters.
       requestBody:
-        description: Project, compile and optimization parameters for launching an optimization job.
+        description: Project, compile, and optimization parameters for launching an optimization job.
         content:
           application/json:
             schema:
@@ -1245,7 +1245,7 @@ paths:
       - 99 API Reference
       - 08 Optimization Management
       - 03 Update Optimization
-      summary: Updates the name of an optimization.
+      summary: Update the name of an optimization.
       requestBody:
         content:
           application/json:
@@ -1276,7 +1276,7 @@ paths:
       - 02 Read Optimization
       summary: Read an optimization.
       requestBody:
-        description: Optimization ID for the optimization we want to read
+        description: Id of the optimization to read.
         content:
           application/json:
             schema:
@@ -1364,7 +1364,7 @@ paths:
       - 06 List Optimization
       summary: List all the optimizations for a project.
       requestBody:
-        description: Project ID we'd like to get a list of optimizations for.
+        description: If of the Project to get a list of optimizations for.
         content:
           application/json:
             schema:
@@ -1372,7 +1372,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Response received when reading an optimization job.
+          description: Response received when reading the optimizations of a project.
           content:
             application/json:
               schema:
@@ -1392,9 +1392,9 @@ paths:
       - 99 API Reference
       - 08 Optimization Management
       - 07 Estimate Optimization Cost
-      summary: Estimate the cost of an optimization with the specified parameters
+      summary: Estimate the execution time of an optimization with the specified parameters.
       requestBody:
-        description: Project, compile and optimization parameters for estimating the cost of an optimization job.
+        description: Project, compile, and optimization parameters for estimating the execution time of an optimization job.
         content:
           application/json:
             schema:
@@ -1402,7 +1402,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Response received when estimating the cost of an optimization job.
+          description: Response received when estimating the execution time of an optimization job.
           content:
             application/json:
               schema:
@@ -2039,12 +2039,14 @@ components:
       description: Search criteria.
     AbortOptimizationRequest:
       type: object
+      required: 
+        - optimizationId
       properties:
         optimizationId:
           type: string
           examples: 
           - O-401d3d40b5a0e9f8c46c954a303f3ddd
-          description: Optimization ID we want to abort.
+          description: Id of the optimization to abort.
       description: Abort an optimization.
     AccountResponse:
       type: object
@@ -3165,7 +3167,6 @@ components:
         - name
         - target
         - targetTo
-        - targetValue
         - strategy
         - compileId
         - parameters
@@ -3177,37 +3178,31 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project ID of the project the optimization belongs to.
+          description: Id of the project to optimize.
         name:
           type: string
           examples: 
           - "Mia First Optimization Job"
           description: Name of the optimization.
         target:
-          type: string
-          description: Target of the optimization.
-          examples: 
-          - TotalPerformance.PortfolioStatistics.SharpeRatio
+          description: Target statistic of the optimization to minimize or maximize.
+          $ref: '#/components/schemas/OptimizationTargetStatistic'
         targetTo:
-          type: string
           description: Target extremum of the optimization.
-          examples: 
-          - \'max\' or \'min\'
+          $ref: '#/components/schemas/OptimizationTargetTo'
         targetValue:
           type: number
-          description: Optimization target value.
+          description: Desired value for the optimization target statistic.
           examples: 
           - 1
         strategy:
-          type: string
           description: Optimization strategy.
-          examples: 
-          - QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
+          $ref: '#/components/schemas/OptimizationStrategy'
         compileId:
           type: string
           examples: 
           - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
-          description: Optimization compile ID.
+          description: Optimization compile Id.
         parameters:
           type: array
           description: Optimization parameters.
@@ -3224,14 +3219,8 @@ components:
           examples: 
           - 10
         nodeType:
-          type: string
           description: Optimization node type.
-          examples: 
-          - O2-8
-          enum:
-          - O2-8
-          - O4-12
-          - O8-16          
+          $ref: '#/components/schemas/OptimizationNodeType'       
         parallelNodes:
           type: integer
           description: Number of parallel nodes for optimization.
@@ -3245,58 +3234,47 @@ components:
           type: string
           examples: 
           - O-401d3d40b5a0e9f8c46c954a303f3ddd
-          description: Optimization ID.
+          description: Id of the optimization job.
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project ID of the project the optimization belongs to.
+          description: Id of the project the optimization belongs to.
         name:
           type: string
           description: Name of the optimization.
         status:
-          type: string
           description: Status of the optimization.
-          enum:
-          - New
-          - Aborted
-          - Running
-          - Completed
+          $ref: '#/components/schemas/OptimizationStatus' 
         nodeType:
-          type: string
           description: Optimization node type.
-          examples: 
-          - O2-8
-          enum:
-          - O2-8
-          - O4-12
-          - O8-16 
+          $ref: '#/components/schemas/OptimizationNodeType'  
         criterion:
           type: object
           description: Optimization statistical target.
           $ref: '#/components/schemas/OptimizationTarget'
         created:
           type: string
-          description: Date when this optimization was created.
+          description: Date and time of when this optimization was created.
           format: date-time
         psr:
           type: number
-          description: Price-sales ratio stastic.
+          description: Probabilistic Sharpe ratio statistic.
         sharpeRatio:
           type: number
           description: Sharpe ratio statistic.
         trades:
           type: integer
-          description: Number of trades.
+          description: Number of trades in the best backtest (based on the criterion) of the optimziation.
         cloneId:
           type: integer
-          description: ID of project, were this current project was originally cloned.
+          description: Id of project where this current project was originally cloned.
         outOfSampleDays:
           type: integer
-          description: Number of days of out of sample days.
+          description: Number out-of-sample days.
         outOfSampleMaxEndDate:
           type: string
-          description: End date of out of sample data.
+          description: End date of out-of-sample data.
           format: date-time
         parameters:
           type: array
@@ -3304,7 +3282,7 @@ components:
           items:
             type: object
             $ref:  '#/components/schemas/OptimizationParameter'
-      description: Response received when launching an optimization job.
+      description: Response received when launching an optimization job or listing all the optimization jobs of a project.
     CreateProjectRequest:
       type: object
       required:
@@ -3435,12 +3413,14 @@ components:
       description: Request to delete Object Store metadata of a specific organization and key.    
     DeleteOptimizationRequest:
       type: object
+      required:
+        - optimizationId
       properties:
         optimizationId:
           type: string
           examples: 
           - O-401d3d40b5a0e9f8c46c954a303f3ddd
-          description: Optimization ID we want to delete.
+          description: Id of the optimization to delete.
       description: Delete an optimization.
     EncryptionKey:
       type: object
@@ -3460,62 +3440,70 @@ components:
           description: Estimate Id.
         time:
           type: integer
-          description: Estimate time in seconds.
+          description: Estimated time in seconds to run the optimization job.
           examples: 
           - 60
         balance:
           type: integer
-          description: Estimate balance in QCC.
+          description: The organization's QCC balance.
           examples: 
           - 10
-      description: Response received when estimating the cost of an optimization.
+      description: Response received when estimating the time to run an optimization job.
+    OptimizationTargetStatistic:
+      type: string
+      enum:
+        - TotalPerformance.PortfolioStatistics.SharpeRatio
+        - TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn
+        - TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio
+        - TotalPerformance.PortfolioStatistics.Drawdown
+    OptimizationTargetTo:
+      type: string
+      enum:
+        - min
+        - max
+    OptimizationStrategy:
+      type: string
+      enum:
+        - QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
     EstimateOptimizationRequest:
       type: object
       required:
         - projectId
         - name
         - target
-        - targetValue
         - targetTo
         - strategy
-        - compileId
         - parameters
       properties:
         projectId:
           type: integer
           examples: 
           - 23456789
-          description: Project ID of the project the optimization belongs to.
+          description: Id of the project to optimize.
         name:
           type: string
           examples: 
           - "Mia First Optimization Job"
           description: Name of the optimization.
         target:
-          type: string
-          description: Target of the optimization.
-          examples: 
-          - TotalPerformance.PortfolioStatistics.SharpeRatio
+          description: Target statistic of the optimization to minimize or maximize.
+          $ref: '#/components/schemas/OptimizationTargetStatistic'
         targetTo:
-          type: string
           description: Target extremum of the optimization.
-          examples: 
-          - \'max\' or \'min\'
+          $ref: '#/components/schemas/OptimizationTargetTo'
         targetValue:
           type: number
-          description: Optimization target value.
+          description: Desired value for the optimization target statistic.
           examples: 
           - 1
         strategy:
-          type: string
           description: Optimization strategy.
-          examples: 
-          - QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
+          $ref: '#/components/schemas/OptimizationStrategy'
         compileId:
           type: string
           examples: 
           - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
-          description: Optimization compile ID.
+          description: Optimization compile Id.
         parameters:
           type: array
           description: Optimization parameters.
@@ -3523,7 +3511,7 @@ components:
             $ref: '#/components/schemas/OptimizationParameter'
         constraints:
           type: array
-          description: Optimization constraints.
+          description: Optimization constraints. 
           items:
             $ref: '#/components/schemas/OptimizationConstraint'
       description: Request to estimate the cost of an optimization job.
@@ -4223,8 +4211,8 @@ components:
           type: integer
           examples: 
           - 23456789
-          description: Project ID we'd like to get a list of optimizations for.
-      description: Project ID we'd like to get a list of optimizations for.
+          description: Id of the Project to get a list of optimizations for.
+      description: Id of the Project to get a list of optimizations for.
     ListOptimizationResponse:
       type: object
       properties:
@@ -4241,7 +4229,7 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response received when listing optimizations of a project.
+      description: Response received when creating an optimization or listing optimizations of a project.
     LivePortfolioResponse:
       type: object
       properties:
@@ -4456,24 +4444,37 @@ components:
       description: Summary information of the Object Store.
     OptimizationConstraint:
       type: object
+      required: 
+        - target
+        - operator
+        - targetValue
       properties:
         target:
-          type: string
-          description: Property we want to track
-          examples: 
-          - TotalPerformance.PortfolioStatistics.SharpeRatio
+          description: The target statistic to track.
+          $ref: '#/components/schemas/OptimizationTargetStatistic'
         operator:
           type: string
-          description: The target comparison operation
-          examples: 
-          - greater
+          description: The target comparison operation.
+          enum: 
+          - LessOrEqual
+          - Less
+          - GreaterOrEqual
+          - Greater
+          - NotEqual
+          - Equals
         targetValue:
           type: number
-          description: The value of the property we want to track
+          description: The threshold value for the target constraint.
           examples: 
           - 1
+      description: Backtests in the optimization job that don't respect this constraint are excluded from the optimization result.
     OptimizationParameter:
       type: object
+      required: 
+        - name
+        - min
+        - max
+        - step
       properties:
         name:
           type: string
@@ -4492,7 +4493,7 @@ components:
           - 20
         step:
           type: number
-          description: Movement, should be positive
+          description: Movement, should be positive.
           examples: 
           - 1
         minStep:
@@ -4504,18 +4505,15 @@ components:
       type: object
       properties:
         target:
-          type: string
-          description: Property we want to track
-          examples: 
-          - TotalPerformance.PortfolioStatistics.SharpeRatio
+          description: The target statistic to track.
+          $ref: '#/components/schemas/OptimizationTargetStatistic'
         extremum:
           type: string
           description: Defines the direction of optimization.
-          examples: 
-          - max or min
+          $ref: '#/components/schemas/OptimizationTargetTo'
         targetValue:
           type: number
-          description: The value of the property we want to track
+          description: Desired value for the optimization target statistic.
           examples: 
           - 1
     ProjectNodes:
@@ -4547,13 +4545,49 @@ components:
           type: integer
           description: The yearly price of the node in US dollars.
       description: Node prices from node object.
-    NodeType:
+    OptimizationNodeType:
       type: string
-      description: NodeTypes enum for all possible options of target environments.
+      description: Optimization node types available in QuantConnect Cloud.
       enum:
-      - Backtest
-      - Research
-      - Live
+      - O2-8
+      - O4-12
+      - O8-16 
+    OptimizationStatus:
+      description: Status of the optimization job.
+      enum:
+      - new
+      - aborted
+      - running
+      - completed
+    OptimizationRuntimeStatistics:
+      type: object
+      properties:
+        Completed:
+          type: string
+          description: Number of completed backtests in the optimization job.
+        Failed:
+          type: string
+          description: Number of failed backtests in the optimization job.
+        Running:
+          type: string
+          description: Number of running backtests in the optimization job.
+        In Queue:
+          type: string
+          description: Number of backtests waiting in-queue in the optimization job.
+        Average Length:
+          type: string
+          format: time
+          description: The average time of each backtest in the optimization job (HH:MM:SS).
+        Total Runtime:
+          type: string
+          format: time
+          description: The total runtime of the optimization (HH:MM:SS).
+        Total:
+          type: string
+          description: Number of backtests in the optimization job.
+        Consumed:
+          type: string
+          description: Amount of QuantConnect Credit consumed by the optimization job.
     Optimization:
       type: object
       required:
@@ -4563,38 +4597,29 @@ components:
           type: string
           examples: 
           - O-401d3d40b5a0e9f8c46c954a303f3ddd
-          description: Optimization ID.
+          description: Id of the optimization.
         snapshotId:
-          type: string
-          description: Snapshot iD of this optimization.
+          type: integer
+          description: Snapshot Id of this optimization.
+          examples:
+          - 24013333
         projectId:
-          type: string
+          type: integer
           examples: 
           - 23456789
-          description: Project ID of the project the optimization belongs to.
+          description: Id of the project the optimization belongs to.
         name:
           type: string
           description: Name of the optimization.
         status:
-          type: string
           description: Status of the optimization.
-          enum:
-          - New
-          - Aborted
-          - Running
-          - Completed
+          $ref: '#/components/schemas/OptimizationStatus'
         nodeType:
-          type: string
           description: Optimization node type.
-          examples: 
-          - O2-8
-          enum:
-          - O2-8
-          - O4-12
-          - O8-16 
+          $ref: '#/components/schemas/OptimizationNodeType'
         parallelNodes:
           type: integer
-          description: Number of parallel nodes for optimization.
+          description: Number of parallel nodes for the optimization.
           examples: 
           - 4
         criterion:
@@ -4602,10 +4627,8 @@ components:
           description: Optimization statistical target.
           $ref: '#/components/schemas/OptimizationTarget'
         runtimeStatistics:
-          type: object
-          additionalProperties:
-            type: string
           description: Dictionary representing a runtime banner/updating statistics for the optimization.
+          $ref: '#/components/schemas/OptimizationRuntimeStatistics'
         constraints:
           type: array
           description: Optimization constraints.
@@ -4619,20 +4642,23 @@ components:
         backtests:
           type: object
           description: Dictionary of optimization backtests.
-          items:
+          additionalProperties:
             $ref: '#/components/schemas/OptimizationBacktest'
         strategy:
-          type: string
           description: Optimization strategy.
-          examples: 
-          - QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
+          $ref: '#/components/schemas/OptimizationStrategy'
         requested:
           type: string
           description: Optimization requested date and time.
           format: date-time
         optimizationTarget:
-          type: string
           description: Statistic to be optimized.
+          $ref: '#/components/schemas/OptimizationTargetStatistic'
+        targetValue:
+          type: number
+          description: Desired value for the optimization target statistic.
+          examples: 
+          - 1
         gridLayout:
           type: array
           description: List with grid charts representing the grid layout.
@@ -4642,10 +4668,11 @@ components:
         outOfSampleMaxEndDate:
           type: string
           description: End date of out of sample data.
+          format: date-time
         outOfSampleDays:
           type: integer
           description: Number of days of out of sample days.
-      description: Response received when launching an optimization job.
+      description: Response received when reading an optimization job.
     OptimizationBacktest:
       type: object
       properties:
@@ -4654,26 +4681,27 @@ components:
           description: The backtest name.
         id:
           type: string
-          description: The backtest id
+          description: Id of the backtest.
         progress:
-          type: string
+          type: number
           description: Progress of the backtest as a percentage from 0-1 based on the days lapsed from start-finish.
         exitCode:
           type: integer
-          description: The exit code of this backtest
+          description: The exit code of this backtest.
         statistics:
           type: array
-          description: The backtest statistics results.
+          description: The backtest statistics results. [alpha, annual standard deviation, annual variance, average loss (%), average win (%), beta, compounding annual return (%), drawdown (%), estimated strategy capacity, expectancy, information ratio, loss rate (%), net profit (%), probabilistic sharpe ratio, profit-loss ratio, sharpe ratio, total fees, total orders, tracking error, treynor ratio, win rate (%)]
           items:
             type: number
         parameterSet:
-          type: object
-          description: Dictionary representing a combination as key value of parameters, i.e. order doesn't matter.
+          description: Parameters used in the backtest.
+          $ref: '#/components/schemas/ParameterSet'
         equity:
           type: array
           description: The backtest equity chart series.
           items:
-            type: integer
+            type: array
+            description: Time and OHLC values.
         startDate:
           type: string
           description: The backtest start date.
@@ -4684,10 +4712,11 @@ components:
           format: date-time
         outOfSampleDays:
           type: integer
-          description: The backtest out of sample day count.
+          description: The backtest out-of-sample day count.
         outOfSampleMaxEndDate:
           type: string
-          description: Backtest maximum end date.
+          format: date-time
+          description: End date of out-of-sample data.
     Order:
       type: object
       properties:
@@ -5764,8 +5793,8 @@ components:
           type: string
           examples: 
           - O-401d3d40b5a0e9f8c46c954a303f3ddd
-          description: Optimization ID for the optimization we want to read.
-      description: Request to read a optimization from a project.
+          description: Id of the optimization to read.
+      description: Request to read an optimization from a project.
     ReadOptimizationResponse:
       type: object
       properties:
@@ -6111,11 +6140,11 @@ components:
           description: The price at which the trade was opened (or the average price if multiple entries).
           format: float
         direction:
-          type: string
-          description: Direction of a trade.
+          type: integer
+          description: Direction of a trade. 0=Long, 1=Short.
           enum:
-            - Long
-            - Short
+            - 0
+            - 1
         quantity:
           type: number
           description: The total unsigned quantity of the trade.
@@ -6456,13 +6485,13 @@ components:
           type: string
           examples: 
           - O-401d3d40b5a0e9f8c46c954a303f3ddd
-          description: Optimization ID we want to update.
+          description: Id of the optimization to update.
         name:
           type: string
           examples: 
           - "New Optimization Name"
-          description: Name we'd like to assign to the optimization.
-      description: Updates the name of an optimization.
+          description: Name to assign to the optimization.
+      description: Update the name of an optimization.
     UpdateProjectRequest:
       type: object
       required: 
@@ -6483,7 +6512,7 @@ components:
           examples: 
           - "New Project Description"
           description: The new description for the project.
-      description: Update a project name, or description.
+      description: Update a project's name or description.
     UpdateProjectNodesRequest:
       type: object
       required:
