@@ -795,35 +795,6 @@ paths:
               explode: false
               schema:
                 type: string
-  /backtests/tags/update:
-    post:
-      tags:
-      - 01 Cloud Platform
-      - 99 API Reference
-      - 05 Backtest Management
-      summary: Updates the tags collection for a backtest
-      requestBody:
-        description: Information required to update the tags collection for a backtest.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateBacktestTagsRequest'
-        required: true
-      responses:
-        "200":
-          description: Base API response class.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RestResponse'
-        "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
   /lean/versions/read:
     post:
       tags:
@@ -6529,28 +6500,6 @@ components:
           items:
             type: string
       description: Request to update the nodes of a project.
-    UpdateBacktestTagsRequest:
-      type: object
-      required:
-        - projectId
-        - backtestId
-        - tags
-      properties:
-        projectId:
-          type: integer
-          examples: 
-          - 23456789
-          description: Project Id for the backtest we want to update.
-        backtestId:
-          examples: 
-          - 26c7bb06b8487cff1c7b3c44652b30f1
-          type: Backtest Id we want to update.
-        tags:
-          type: array
-          description: Array of the new backtest tags.
-          items:
-            type: string
-      description: Updates the tags collection for a backtest.
     Version:
       type: object
       properties:
