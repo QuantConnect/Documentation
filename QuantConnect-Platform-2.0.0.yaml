@@ -1429,7 +1429,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/get_object_store'
+              oneOf:
+                - $ref: '#/components/schemas/GetObjectStoreJobIdRequest'
+                - $ref: '#/components/schemas/GetObjectStoreURLRequest'
         required: true
       responses:
         "200":
@@ -1453,7 +1455,7 @@ paths:
       - 99 API Reference
       - 09 Object Store Management
       - 02 Get Object Store Metadata
-      summary: Get Object Store properties of a specific organization and key. It does not work if the object store is a directory.
+      summary: Get Object Store properties of a specific organization and key. It doesn't work if the key is a directory in the Object Store.
       requestBody:
         description: Get Object Store properties of a specific organization and key.
         content:
@@ -1513,9 +1515,9 @@ paths:
       - 99 API Reference
       - 09 Object Store Management
       - 05 List Object Store Files
-      summary: List the Object Store files of a specific organization and path.
+      summary: List the Object Store files under a specific directory in an organization.
       requestBody:
-        description: List the Object Store files of a specific organization and path.
+        description: List the Object Store files under a specific directory in an organization.
         content:
           application/json:
             schema:
@@ -3375,13 +3377,13 @@ components:
           type: string
           examples: 
           - 5cad178b20a1d52567b534553413b691
-          description: Organization ID we'd like to delete the Object Store file from.
+          description: Id of the organization that owns the Object Store.
         key:
           type: string
           examples: 
           - key1
-          description: Key to the Object Store file
-      description: Request to delete Object Store metadata of a specific organization and key.    
+          description: Key of the Object Store file to delete.
+      description: Request to delete an object in the Object Store for a specific organization and key.
     DeleteOptimizationRequest:
       type: object
       required:
@@ -3510,15 +3512,15 @@ components:
           type: string
           examples: 
           - 5cad178b20a1d52567b534553413b691
-          description: Organization ID we would like to get the Object Store files from.
+          description: Id of the organization that owns the Object Store.
         keys:
           type: array
-          examples: 
-          - "[\"key1\", \"key2\"]"
-          description: Keys to the Object Store files.
           items:
             type: string
-      description: Request to get JobId for the requested Object Store files.
+          examples: 
+          - ["key1", "key2"]
+          description: Keys of the Object Store files.
+      description: Request to create a download job for some Object Store files.
     GetObjectStoreURLRequest:
       type: object
       required:
@@ -3529,13 +3531,13 @@ components:
           type: string
           examples: 
           - 5cad178b20a1d52567b534553413b691
-          description: Organization ID we would like to get the Object Store files from.
+          description: Id of the organization that owns the Object Store.
         jobId:
           type: string
           examples: 
-          - string
-          description: Job ID for getting a download URL for.
-      description: Request to get a download URL for certain Object Store files.
+          - 2585354eb2e23cbbc4ba714332884650
+          description: Id of the download job for the files.
+      description: Request to get a download URL for some Object Store files.
     GetObjectStorePropertiesRequest:
       type: object
       required:
@@ -3546,22 +3548,22 @@ components:
           type: string
           examples: 
           - 5cad178b20a1d52567b534553413b691
-          description: Organization ID we would like to get the Object Store properties from.
+          description: Id of the organization that owns the Object Store.
         key:
           type: string
           examples: 
           - key1
-          description: Key to the Object Store.
-      description: Request to get Object Store properties of a specific organization and keys.
+          description: Key in the Object Store.
+      description: Request to get Object Store properties of a specific organization and key.
     GetObjectStoreResponse:
       type: object
       properties:
         jobId:
           type: string
-          description: Job ID which can be used for querying state or packaging.
+          description: Id of the job, which you can use to request a download URL.
         url:
           type: string
-          description: The URL to download the object. This can also be null.
+          description: The URL to download the object. This can also be null. To download the object, paste the full URL (including the URL parameters) into a browser.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -3570,7 +3572,7 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response received when fetching Object Store file.
+      description: Response received when fetching an Object Store file.
     GetObjectStorePropertiesResponse:
       type: object
       properties:
@@ -3596,10 +3598,11 @@ components:
         modified:
           type: string
           description: Last time it was modified.
-          format: date
+          format: date-time
         created:
           type: string
           description: Date this project was created.
+          format: date-time
         size:
           type: number
           description: Object Store file size.
@@ -4138,32 +4141,42 @@ components:
           type: string
           examples: 
           - 5cad178b20a1d52567b534553413b691
-          description: Organization ID we'd like to list the Object Store files from.
+          description: Id of the organization to list the Object Store files from.
         path:
           type: string
           examples: 
-          - "/folder1"
-          description: Optional. Path to the Object Store files.
-      description: Request to list Object Store files of a specific organization and path.
+          - /
+          - folder1/models
+          description: Path to a directory in the Object Store.
+      description: Request to list the Object Store files under a specific directory in an organization.
     ListObjectStoreResponse:
       type: object
       properties:
         path:
           type: string
-          description: Path to the files in the Object Store.
+          description: Path to the directory in the Object Store.
           examples: 
           - Mia
+          - forecasting_models/momentum
         objects:
           type: array
-          description: List of objects stored.
+          description: List of directories and files stored in the directory at the given path. If the path contains directories, this list of objects doesn't contain the children of those directories.
           items:
             $ref: '#/components/schemas/ObjectStoreSummary'
+        page:
+          type: integer
+          description: The current page number in the paginated response.
+        totalPages:
+          type: integer
+          description: The total number of pages in the paginated response.
         objectStorageUsed:
           type: integer
           description: Size of all objects stored in bytes.
         objectStorageUsedHuman:
           type: string
           description: Size of all the objects stored in human-readable format.
+          examples:
+          - 2.27 GB
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -4404,6 +4417,7 @@ components:
           description: MIME type.
           examples: 
           - application/json
+          - directory
         folder:
           type: boolean
           description: True if it is a folder, false otherwise.
@@ -6643,10 +6657,6 @@ components:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
       - $ref: '#/components/schemas/UpdateFileContentsRequest'
-    get_object_store:
-      oneOf:
-      - $ref: '#/components/schemas/GetObjectStoreJobIdRequest'
-      - $ref: '#/components/schemas/GetObjectStoreURLRequest'
     inline_response_200_1:
       oneOf:
       - $ref: '#/components/responses/BacktestReport'
