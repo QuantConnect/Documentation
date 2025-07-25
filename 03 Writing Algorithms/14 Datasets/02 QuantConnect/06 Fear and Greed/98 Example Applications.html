@@ -1,0 +1,216 @@
+<p>
+The Fear and Greed dataset quantifies the degree of fear and greed in the US Equity market. Example use cases include the following strategies: 
+</p>
+
+<ul>
+   <li>Accumulate long-term positions when the market is fearful (the index is low).</li>
+   <li>Short risky assets when the market is greedy.</li>
+   <li>Trade <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-call-butterfly'>butterfly Option strategies</a> based on the market volatility indicator.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm buys SPY when the Fear and Greed index is less than 25 (extreme fear) and sells when it's above 75 (extreme greed).</p>
+
+<div class="section-example-container testable">
+<pre><code class="language-python">class FearAndGreedExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2024, 10, 1)
+        self.set_cash(100000)
+
+        # Add the market index to trade.
+        self._equity = self.add_equity('SPY', Resolution.DAILY)
+        # Add the Fear and Greed dataset.
+        self._dataset_symbol = self.add_data(FearGreedIndex, 'FG').symbol
+    
+    def on_data(self, data: Slice) -&gt; None:
+        # Wait until the Fear and Greed dataset has new data.
+        if self._dataset_symbol not in data:
+            return
+        value = data[self._dataset_symbol].value
+        # Buy when the market is fearful.
+        if not self._equity.invested and value < 25:
+            self.set_holdings(self._equity.symbol, 1)
+        # Sell when the market is greedy.
+        elif self._equity.invested and value > 75:
+            self.liquidate()</code></pre>
+<pre><code class="language-cs">public class FearAndGreedExampleAlgorithm : QCAlgorithm
+{
+    private Equity _equity;
+    private Symbol _datasetSymbol;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 10, 1);
+        SetCash(100000);
+
+        // Add the market index to trade.
+        _equity = AddEquity("SPY", Resolution.Daily);
+        // Add the Fear and Greed dataset.
+        _datasetSymbol = AddData&lt;FearGreedIndex&gt;("FG").Symbol;
+    }
+
+    public override void OnData(Slice data)
+    {
+        // Wait until the Fear and Greed dataset has new data
+        if (!data.ContainsKey(_datasetSymbol))
+        {
+            return;
+        }
+        var value = data[_datasetSymbol].Value;
+        // Buy when the market is fearful.
+        if (!_equity.Invested && value < 25)
+        {
+            SetHoldings(_equity.Symbol, 1);
+        }
+        // Sell when the market is greedy.
+        else if (_equity.Invested && value > 75)
+        {
+            Liquidate();
+        }
+    }
+}</code></pre>
+</div>
+<h4>Framework Example</h4>
+<p>The following example algorithm buys SPY when the Fear and Greed index is less than 25 (extreme fear) and sells when it's above 75 (extreme greed).</p>
+
+<div class="section-example-container testable">
+<pre><code class="language-python">class FearAndGreedExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2024, 10, 1)
+        self.set_cash(100000)
+
+        # Trade SPY on a daily basis.
+        self.universe_settings.resolution = Resolution.DAILY
+        symbols = [Symbol.create('SPY', SecurityType.EQUITY, Market.USA)]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))
+        # Add a custom Alpha model that emits insights based on the Fear and Greed dataset.
+        self.add_alpha(FearAndGreedAlphaModel(self))
+        # Set the equal weighted PCM so the algorithm places trades.
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+
+# Define the custom alpha model.
+class FearAndGreedAlphaModel(AlphaModel):
+
+    def __init__(self, algorithm):
+        # Create a list to track the current universe.
+        self._securities = []
+        # Add the Fear and Greed dataset. 
+        self._dataset_symbol = algorithm.add_data(FearGreedIndex, 'FG').symbol
+
+    def update(self, algorithm: QCAlgorithm, data: Slice) -&gt; list[Insight]:
+        # Wait until the Fear and Greed dataset has new data.
+        if self._dataset_symbol not in data:
+            return []
+        # Wait until the Fear and Greed index is extreme.
+        value = data[self._dataset_symbol].value
+        if 25 <= value <= 75:
+            return []
+        insights = []
+        for security in self._securities:
+            # Buy when the market is fearful.
+            if not security.invested and value < 25:
+                direction = InsightDirection.UP
+            # Sell when the market is greedy.
+            elif security.invested and value > 75:
+                direction = InsightDirection.FLAT
+            else:
+                continue
+            insights.append(Insight.price(security.symbol, timedelta(2*365), direction))
+        return insights
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        # When assets enter the universe, save them.
+        for security in changes.added_securities:
+            self._securities.append(security)
+        # When assets leave the universe, remove them.
+        for security in changes.removed_securities:
+            if security in self._securities:
+                self._securities.remove(security)</code></pre>
+<pre><code class="language-cs">public class FearAndGreedExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2024, 10, 1);
+        SetCash(100000);
+
+        // Trade SPY on a daily basis.
+        UniverseSettings.Resolution = Resolution.Daily;
+        var symbols = new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        // Add a custom Alpha model that emits insights based on the Fear and Greed dataset.
+        AddAlpha(new FearAndGreedAlphaModel(this));
+        // Set the equal weighted PCM so the algorithm places trades.
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}
+
+// Define the custom Alpha model.
+public class FearAndGreedAlphaModel : AlphaModel
+{
+    // Create a list to track the current universe.
+    private List&lt;Security&gt; _securities = new List&lt;Security&gt;();
+    private Symbol _datasetSymbol;
+
+    public FearAndGreedAlphaModel(QCAlgorithm algorithm)
+    {
+        // Add the Fear and Greed dataset. 
+        _datasetSymbol = algorithm.AddData&lt;FearGreedIndex&gt;("FG").Symbol;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        // Wait until the Fear and Greed dataset has new data.
+        if (!data.ContainsKey(_datasetSymbol))
+        {
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+        // Wait until the Fear and Greed index is extreme.
+        var value = data[_datasetSymbol].Value;
+        if (value >= 25 && value <= 75)
+        {
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+
+        var insights = new List&lt;Insight&gt;();
+        foreach (var security in _securities)
+        {
+            InsightDirection direction;
+            // Buy when the market is fearful.
+            if (!security.Invested && value < 25)
+            {
+                direction = InsightDirection.Up;
+            }
+            // Sell when the market is greedy.
+            else if (security.Invested && value > 75)
+            {
+                direction = InsightDirection.Flat;
+            }
+            else
+            {
+                continue;
+            }
+            insights.Add(Insight.Price(security.Symbol, TimeSpan.FromDays(2 * 365), direction));
+        }
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        // When assets enter the universe, save them.
+        foreach (var security in changes.AddedSecurities)
+        {
+            _securities.Add(security);
+        }
+        // When assets leave the universe, remove them.
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _securities.Remove(security);
+        }
+    }
+}</code></pre>
+</div>
