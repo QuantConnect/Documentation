@@ -3072,6 +3072,7 @@ components:
             - $ref: '#/components/schemas/TerminalLinkSettings'
             - $ref: '#/components/schemas/TradeStationSettings'
             - $ref: '#/components/schemas/TastytradeSettings'
+            - $ref: '#/components/schemas/AlpacaBrokerageSettings'
         dataProviders: 
           type: object
           description: Dictionary of data provider configurations to be used in the live algorithm. Provide at least one. The order in which you define the providers defines their order of precedence.
@@ -3107,6 +3108,8 @@ components:
               $ref: '#/components/schemas/TradeStationSettings'
             TastytradeBrokerage: 
               $ref: '#/components/schemas/TastytradeSettings'
+            AlpacaBrokerage:
+              $ref: '#/components/schemas/AlpacaDataProviderSettings'
           default: {"QuantConnectBrokerage": {"id": "QuantConnectBrokerage"}}
     QuantConnectDataProviderSettings:
       type: object
@@ -3737,6 +3740,51 @@ components:
           - Intermediate
           - Pro
       description: Settings for using Kraken as the brokerage or a data provider for a live algorithm.
+    AlpacaBrokerageSettings:
+      type: object
+      required:
+       - id
+      properties:
+        id:
+          type: string
+          description: Id of the brokerage.
+          enum:
+          - AlpacaBrokerage
+        alpaca-api-key:
+          type: string
+          description: Your Alpaca API key. Required if you omit the alpaca-access-token.
+        alpaca-api-secret:
+          type: string
+          description: Your Alpaca API secret. Required if you omit the alpaca-access-token.
+        alpaca-access-token:
+          type: string
+          description: Your Alpaca access token for authentication.
+        alpaca-environment:
+          type: string
+          description: The environment to run in. Required if you provide an alpaca-access-token.
+          enum:
+          - live
+          - paper
+      description: Settings for using Alpaca as the brokerage for a live algorithm.
+    AlpacaDataProviderSettings:
+      type: object
+      required:
+       - id
+       - alpaca-api-key
+       - alpaca-api-secret
+      properties:
+        id:
+          type: string
+          description: Id of the data provider.
+          enum:
+          - AlpacaBrokerage
+        alpaca-api-key:
+          type: string
+          description: Your Alpaca API key. 
+        alpaca-api-secret:
+          type: string
+          description: Your Alpaca API secret.
+      description: Settings for using Alpaca as a data provider for a live algorithm.
     PolygonDataProviderSettings:
       type: object
       required:
