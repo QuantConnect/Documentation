@@ -314,9 +314,6 @@ if __name__ == '__main__':
     for model_type, models in zip(['brokerage', 'data provider'], [brokerages, data_providers]):
         for j, model in enumerate(models):
             schemas_to_skip = [
-                # Skip the Alpaca brokerage. The `required` properties in the YAML
-                # aren't exactly correct, since it can be used with auth or not.
-                'AlpacaBrokerageSettings',
                 # Wolverine brokerage is currently under maintance.
                 'WolverineSettings',
                 # Need permission to use RBI brokerage
