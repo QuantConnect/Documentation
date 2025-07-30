@@ -2449,114 +2449,6 @@ components:
           examples: 
           - ""
       description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
-    BinanceSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, Binance.
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret.
-        binance-api-key:
-          type: string
-          description: Your Binance API key.
-        binance-api-url:
-          type: string
-          description: Binance configuration for spot/margin. The value for this property is https://api.binance.com
-        binance-websocket-url:
-          type: string
-          description: Binance configuration for spot/margin. The value for this property is wss://stream.binance.com:9443/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance as a data provider or brokerage.
-    BinanceFuturesUSDMSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, Binance-USDM-Futures.
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret.
-        binance-api-key:
-          type: string
-          description: Your Binance API key.
-        binance-fapi-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is https://fapi.binance.com
-        binance-fwebsocket-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is wss://fstream.binance.com/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance Futures USDM as a data provider or brokerage.
-    BinanceFuturesCOINSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, Binance-COIN-Futures.
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret.
-        binance-api-key:
-          type: string
-          description: Your Binance API key.
-        binance-dapi-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is https://dapi.binance.com
-        binance-dwebsocket-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is wss://dstream.binance.com/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance Futures COIN as a data provider or brokerage.
-    BinanceUSSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage.
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, BinanceUS.
-        binanceus-api-secret:
-          type: string
-          description: Your Binance US API secret.
-        binanceus-api-key:
-          type: string
-          description: Your Binance US API key.
-        binanceus-api-url:
-          type: string
-          description: Binance US configuration for spot/margin. The value for this property is https://api.binance.us
-        binanceus-websocket-url:
-          type: string
-          description: Binance US configuration for spot/margin. The value for this property is wss://stream.binance.us:9443/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance US as a data provider or brokerage.
     BrokerageData:
       type: object
       properties:
@@ -3166,12 +3058,12 @@ components:
         ib-password:
           type: string
           description: Your Interactive Brokers password.
-        ib-financial-advisors-group-filter:
-          type: string
-          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
         ib-weekly-restart-utc-time:
           type: string
           description: Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm restarts at this time and requires 2FA verification. This is required by Interactive Brokers.
+        ib-financial-advisors-group-filter:
+          type: string
+          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
       description: Settings for using Interactive Brokers as the brokerage or a data provider for a live algorithm.
     InteractiveBrokersDataProviderSettings:
       type: object
@@ -3199,9 +3091,9 @@ components:
         ib-weekly-restart-utc-time:
           type: string
           description: Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm restarts at this time and requires 2FA verification. This is required by Interactive Brokers.
-        ib-enable-delayed-streaming-data:
-          type: boolean
-          description: Whether delayed data may be used when your algorithm subscribes to a security you don't have a market data subscription for. Use `false`.
+        ib-financial-advisors-group-filter:
+          type: string
+          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
       description: Settings for using Interactive Brokers as a data provider for a live algorithm.
     TradierBrokerageSettings:
       type: object
@@ -3292,14 +3184,6 @@ components:
         coinbase-api-private-key:
           type: string
           description: Your Coinbase Advanced Trade API private key.
-        coinbase-url:
-          type: string
-          examples:
-          - wss://advanced-trade-ws.coinbase.com
-        coinbase-rest-api:
-          type: string
-          examples:
-          - https://api.coinbase.com
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3324,14 +3208,6 @@ components:
         coinbase-api-private-key:
           type: string
           description: Your Coinbase Advanced Trade API private key.
-        coinbase-url:
-          type: string
-          examples:
-          - wss://advanced-trade-ws.coinbase.com
-        coinbase-rest-api:
-          type: string
-          examples:
-          - https://api.coinbase.com
       description: Settings for using Coinbase Advanced Trade as a data provider for a live algorithm.
     BinanceBrokerageSettings:
       type: object
@@ -3364,16 +3240,6 @@ components:
           enum:
           - live
           - paper
-        binance-api-url:
-          type: string
-          examples:
-          - https://api.binance.com
-          - https://testnet.binance.vision
-        binance-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.com:9443/ws
-          - wss://testnet.binance.vision/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3404,22 +3270,6 @@ components:
         binanceus-api-secret:
           type: string
           description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-        binanceus-api-url:
-          type: string
-          examples:
-          - https://api.binance.us/
-          - https://testnet.binance.vision
-        binanceus-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.us:9443/ws
-          - wss://testnet.binance.vision/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3450,22 +3300,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-        binance-fapi-url:
-          type: string
-          examples:
-          - https://fapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-fwebsocket-url:
-          type: string
-          examples:
-          - wss://fstream.binance.com/ws
-          - wss://stream.binancefuture.com/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3496,22 +3330,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-        binance-dapi-url:
-          type: string
-          examples:
-          - https://dapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-dwebsocket-url:
-          type: string
-          examples:
-          - wss://dstream.binance.com/ws
-          - wss://dstream.binancefuture.com/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3549,16 +3367,6 @@ components:
           enum:
           - live
           - paper
-        binance-api-url:
-          type: string
-          examples:
-          - https://api.binance.com
-          - https://testnet.binance.vision
-        binance-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.com:9443/ws
-          - wss://testnet.binance.vision/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     BinanceUSDataProviderSettings:
       type: object
@@ -3584,16 +3392,6 @@ components:
         binanceus-api-secret:
           type: string
           description: Your Binance API secret
-        binanceus-api-url:
-          type: string
-          examples:
-          - https://api.binance.us/
-          - https://testnet.binance.vision
-        binanceus-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.us:9443/ws
-          - wss://testnet.binance.vision/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     BinanceUSDMFuturesDataProviderSettings:
       type: object
@@ -3619,16 +3417,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-fapi-url:
-          type: string
-          examples:
-          - https://fapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-fwebsocket-url:
-          type: string
-          examples:
-          - wss://fstream.binance.com/ws
-          - wss://stream.binancefuture.com/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     BinanceCOINFuturesDataProviderSettings:
       type: object
@@ -3654,16 +3442,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-dapi-url:
-          type: string
-          examples:
-          - https://dapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-dwebsocket-url:
-          type: string
-          examples:
-          - wss://dstream.binance.com/ws
-          - wss://dstream.binancefuture.com/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     TradingTechnologiesBrokerageSettings:
       type: object
@@ -3744,6 +3522,8 @@ components:
       type: object
       required:
        - id
+       - alpaca-api-key
+       - alpaca-api-secret
       properties:
         id:
           type: string
@@ -3756,15 +3536,6 @@ components:
         alpaca-api-secret:
           type: string
           description: Your Alpaca API secret. Required if you omit the alpaca-access-token.
-        alpaca-access-token:
-          type: string
-          description: Your Alpaca access token for authentication.
-        alpaca-environment:
-          type: string
-          description: The environment to run in. Required if you provide an alpaca-access-token.
-          enum:
-          - live
-          - paper
       description: Settings for using Alpaca as the brokerage for a live algorithm.
     AlpacaDataProviderSettings:
       type: object
@@ -3835,16 +3606,6 @@ components:
           - Pro3
           - Pro4
           - Pro5
-        bybit-api-url:
-          type: string
-          examples:
-          - https://api.bybit.com
-          - https://api-testnet.bybit.com
-        bybit-websocket-url:
-          type: string
-          examples:
-          - wss://stream.bybit.com
-          - wss://stream-testnet.bybit.com
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3886,16 +3647,6 @@ components:
           - Pro3
           - Pro4
           - Pro5
-        bybit-api-url:
-          type: string
-          examples:
-          - https://api.bybit.com
-          - https://api-testnet.bybit.com
-        bybit-websocket-url:
-          type: string
-          examples:
-          - wss://stream.bybit.com
-          - wss://stream-testnet.bybit.com
       description: Settings for using Bybit as a data provider for a live algorithm.
     OandaSettings:
       type: object
@@ -3980,7 +3731,7 @@ components:
           description: The environment to run the algorithm in.
           enum:
           - live
-          - simulator
+          - paper
       description: Settings for using TradeStation as the brokerage or a data provider for a live algorithm.
     TastytradeSettings:
       type: object
