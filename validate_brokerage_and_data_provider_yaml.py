@@ -9,8 +9,8 @@ import requests
 import os
 
 # Inputs:
-USER_ID = os.getenv('QUANTCONNECT_USER_ID')
-API_TOKEN = os.getenv('QUANTCONNECT_API_TOKEN')
+USER_ID = os.env['QUANTCONNECT_USER_ID']
+API_TOKEN = os.env['QUANTCONNECT_API_TOKEN']
 BASE_URL = 'https://www.quantconnect.com/api/v2/'
 YAML_URL = 'https://raw.githubusercontent.com/QuantConnect/Documentation/refs/heads/master/QuantConnect-Platform-2.0.0.yaml'
 DEFAULT_BROKERAGE = {
