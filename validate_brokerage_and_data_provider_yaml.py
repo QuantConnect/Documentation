@@ -6,6 +6,7 @@ from base64 import b64encode
 from hashlib import sha256
 from time import time, sleep
 import requests
+import os
 
 # Inputs:
 USER_ID = os.getenv('QUANTCONNECT_USER_ID')
