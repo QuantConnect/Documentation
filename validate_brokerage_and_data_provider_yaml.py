@@ -61,8 +61,7 @@ def prepare_live_payload():
     # Create a project.
     project_id = post(
         '/projects/create', {'name': 'TEST Project', 'language': 'Py'}
-    )#['projects'][0]['projectId']
-    raise Exception(f"response: {project_id}")
+    )['projects'][0]['projectId']
     # Compile it.
     compile_id = post(
         '/compile/create', {'projectId': project_id}
