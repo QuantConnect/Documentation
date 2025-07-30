@@ -3574,48 +3574,7 @@ components:
           type: string
           description: Your Polygon.io API Key.
       description: Settings for using Polygon as a data provider for a live algorithm.
-    BybitBrokerageSettings:
-      type: object
-      required:
-       - id
-       - bybit-api-key
-       - bybit-api-secret
-       - bybit-vip-level
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BybitBrokerage
-        bybit-api-key:
-          type: string
-          description: Your Bybit API key.
-        bybit-api-secret:
-          type: string
-          description: Your Bybit API secret.
-        bybit-vip-level:
-          type: string
-          description: Your Bybit VIP Level.
-          enum:
-          - VIP0
-          - VIP1
-          - VIP2
-          - VIP3
-          - VIP4
-          - VIP5
-          - SupremeVIP
-          - Pro1
-          - Pro2
-          - Pro3
-          - Pro4
-          - Pro5
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Bybit as the brokerage for a live algorithm.
-    BybitDataProviderSettings:
+    BybitBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -3650,6 +3609,20 @@ components:
           - Pro3
           - Pro4
           - Pro5
+    BybitBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BybitBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using Bybit as the brokerage for a live algorithm.
+    BybitDataProviderSettings:
+      allOf:
+        - $ref: '#/components/schemas/BybitBrokerageAndDataProviderSettings'
       description: Settings for using Bybit as a data provider for a live algorithm.
     OandaSettings:
       type: object
