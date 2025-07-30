@@ -147,6 +147,17 @@ class DataProvider(Brokerage):
 def indents(line):
     return len(line) - len(line.lstrip())
 
+# Define a method to get the schema name.
+# Example: convert this line
+#         - $ref: '#/components/schemas/BybitBrokerageAndDataProviderSettings'
+# into 'BybitBrokerageAndDataProviderSettings'
+def get_schema_name(line):
+    return line.split('/')[-1].rstrip()[:-1]
+
+def inherit_properties(parent_model, child_model):
+    child_model.properties.extend(parent_model.properties)
+    child_model.required_properties.extend(parent_model.required_properties)
+
 # Define a method to get all the brokerage and data providers the 
 # `/live/create` endpoint supports.
 def get_supported_models(yaml):
@@ -188,7 +199,7 @@ def get_supported_models(yaml):
             # Otherwise, record each brokerage that the endpoint 
             # supports.
             elif '$ref' in line:
-                schema_name = line.split('/')[-1].rstrip()[:-1]
+                schema_name = get_schema_name(line)
                 brokerages.append(Brokerage(schema_name))
 
         # When you hit the "dataProviders" property of the 
@@ -209,7 +220,7 @@ def get_supported_models(yaml):
             # Otherwise, record each data provider that the endpoint 
             # supports.
             elif '$ref' in line:
-                schema_name = line.split('/')[-1].rstrip()[:-1]
+                schema_name = get_schema_name(line)
                 data_providers.append(DataProvider(key, schema_name))
 
     return brokerages, data_providers
@@ -217,6 +228,7 @@ def get_supported_models(yaml):
 # Define a method to parse the properties of each brokerage and data 
 # provider.
 def load_schema(model, yaml):
+    parsing_parent_schema = False
     parsing_schema = False
     parsing_required = False
     parsing_properties = False
@@ -224,6 +236,7 @@ def load_schema(model, yaml):
         # When you hit the schema name, start processing it.
         if line.strip() == f'{model.schema_name}:':
             parsing_schema = True
+            schema_indents = indents(line)
             continue
         # If you haven't started processing the schema yet, just 
         # continue to the next line.
@@ -233,8 +246,15 @@ def load_schema(model, yaml):
         # Get the number of leading white space in this line of the 
         # YAML.
         line_indents = indents(line)
+        # When you reach the end of the schema definition, stop.
+        if line_indents <= schema_indents:
+            break
+
         line = line.strip()
 
+        if line == 'allOf:':
+            parsing_parent_schema = True
+            continue
         if line == 'required:':
             parsing_required = True
             continue
@@ -243,6 +263,15 @@ def load_schema(model, yaml):
             parsing_properties = True
             property_indents = line_indents
             continue
+
+        if parsing_parent_schema:
+            if '$ref:' in line:
+                parent_model = Brokerage(get_schema_name(line))
+                load_schema(parent_model, yaml)
+                inherit_properties(parent_model, model)
+            else:
+                parsing_parent_schema = False
+                continue
 
         if parsing_required:
             property_name = line.split(' ')[-1]
