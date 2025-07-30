@@ -275,9 +275,9 @@ def load_schema(model, yaml):
 
 if __name__ == '__main__':
     # Read the YAML file.
-    yaml = QuantBook().download(YAML_PATH).splitlines()
-    #with open(YAML_PATH, 'r') as file:
-    #    yaml = file.readlines()
+    #yaml = QuantBook().download(YAML_PATH).splitlines()
+    with open(YAML_PATH, 'r') as file:
+        yaml = file.readlines()
 
     # Get the brokerage and data providers that the /live/create 
     # endpoint supports.
