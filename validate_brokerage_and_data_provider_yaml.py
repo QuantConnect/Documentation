@@ -11,7 +11,6 @@ import os
 # Inputs:
 USER_ID = os.getenv('QUANTCONNECT_USER_ID')
 API_TOKEN = os.getenv('QUANTCONNECT_API_TOKEN')
-raise Exception(f"{USER_ID} -- {API_TOKEN}")
 BASE_URL = 'https://www.quantconnect.com/api/v2/'
 YAML_URL = 'https://raw.githubusercontent.com/QuantConnect/Documentation/refs/heads/master/QuantConnect-Platform-2.0.0.yaml'
 DEFAULT_BROKERAGE = {
@@ -62,7 +61,8 @@ def prepare_live_payload():
     # Create a project.
     project_id = post(
         '/projects/create', {'name': 'TEST Project', 'language': 'Py'}
-    )['projects'][0]['projectId']
+    )#['projects'][0]['projectId']
+    raise Exception(f"response: {project_id}")
     # Compile it.
     compile_id = post(
         '/compile/create', {'projectId': project_id}
