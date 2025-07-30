@@ -3752,6 +3752,114 @@ components:
           type: string
           description: The TradeStation refresh token.        
       description: Settings for using Tastytrade as the brokerage or a data provider for a live algorithm.
+    CharlesSchwabSettings:
+      type: object
+      required:
+      - id
+      - charles-schwab-account-number
+      properties:
+        id:
+          type: string
+          description: Id of the brokerage or data provider.
+          enum:
+          - CharlesSchwabBrokerage
+        charles-schwab-app-key:
+          type: string
+          description: Your Charles Schwab app key.
+        charles-schwab-secret:
+          type: string
+          description: Your Charles Schwab secret.
+        charles-schwab-account-number:
+          type: string
+          description: Your Charles Schwab account number.
+      description: Settings for using Charles Schwab as a data provider or the brokerage for a live algorithm.
+    TerminalLinkSettings:
+      type: object
+      required:
+      - id
+      - terminal-link-connection-type
+      - terminal-link-server-auth-id
+      - terminal-link-environment
+      - terminal-link-server-host
+      - terminal-link-server-port
+      - terminal-link-emsx-broker
+      - terminal-link-emsx-account
+      - terminal-link-openfigi-api-key
+      properties:
+        id:
+          type: string
+          description: Id of the brokerage.
+          enum:
+          - TerminalLinkBrokerage
+        terminal-link-connection-type:
+          type: string
+          description: Terminal Link Connection Type.
+          enum:
+          - SAPI
+        terminal-link-server-auth-id: 
+          type: string
+          description: Your unique user identifier (UUID). The UUID is a unique integer identifier that's assigned to each Bloomberg Anywhere user. If you don't know your UUID, contact Bloomberg.
+        terminal-link-environment:
+          type: string
+          description: The environment to run in.
+          enum:
+          - Production
+          - Beta 
+        terminal-link-server-host:
+          type: string
+          description: The public IP address of the SAPI AWS server.
+        terminal-link-server-port:
+          type: integer
+          description: The port where SAPI is listening. The default port is 8194.
+        terminal-link-emsx-broker:
+          type: string
+          description: The EMSX broker to use.
+        terminal-link-emsx-account:
+          type: string
+          description: The account to which LEAN should route orders.
+        terminal-link-openfigi-api-key:
+          type: string
+          description: The OpenFIGI API key to use for mapping options.
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using TerminalLink as the brokerage for a live algorithm.
+    RBIBrokerageSettings:
+      type: object
+      required:
+      - id
+      - rbi-on-behalf-of-comp-id
+      - rbi-account
+      properties:
+        id:
+          type: string
+          description: Id of the brokerage.
+          enum:
+          - RBIBrokerage
+        rbi-on-behalf-of-comp-id:
+          type: string
+          description: Value used to identify the trading firm.
+        rbi-account:
+          type: string
+          description: RBI account name.
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using RBI as the brokerage for a live algorithm.
     CreateLiveAlgorithmResponse:
       type: object
       properties:
@@ -5988,35 +6096,6 @@ components:
           type: number
           description: The 1-day VaR for the portfolio, using the Variance-covariance approach. Assumes a 95% confidence level, 1 year lookback period, and that the returns are normally distributed.
       description: Represents a set of statistics calculated from equity and benchmark samples.
-    RBIBrokerageSettings:
-      type: object
-      required:
-      - id
-      - rbi-on-behalf-of-comp-id
-      - rbi-account
-      properties:
-        id:
-          type: string
-          description: Id of the brokerage.
-          enum:
-          - RBIBrokerage
-        rbi-on-behalf-of-comp-id:
-          type: string
-          description: Value used to identify the trading firm.
-        rbi-account:
-          type: string
-          description: RBI account name.
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using RBI as the brokerage for a live algorithm.
     ReadFilesRequest:
       required:
         - projectId
@@ -6661,85 +6740,6 @@ components:
           type: string
           description: The ticker at IPO for this security.
       description: Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.
-    CharlesSchwabSettings:
-      type: object
-      required:
-      - id
-      - charles-schwab-account-number
-      properties:
-        id:
-          type: string
-          description: Id of the brokerage or data provider.
-          enum:
-          - CharlesSchwabBrokerage
-        charles-schwab-app-key:
-          type: string
-          description: Your Charles Schwab app key.
-        charles-schwab-secret:
-          type: string
-          description: Your Charles Schwab secret.
-        charles-schwab-account-number:
-          type: string
-          description: Your Charles Schwab account number.
-      description: Settings for using Charles Schwab as a data provider or the brokerage for a live algorithm.
-    TerminalLinkSettings:
-      type: object
-      required:
-      - id
-      - terminal-link-connection-type
-      - terminal-link-server-auth-id
-      - terminal-link-environment
-      - terminal-link-server-host
-      - terminal-link-server-port
-      - terminal-link-emsx-broker
-      - terminal-link-emsx-account
-      - terminal-link-openfigi-api-key
-      properties:
-        id:
-          type: string
-          description: Id of the brokerage.
-          enum:
-          - TerminalLinkBrokerage
-        terminal-link-connection-type:
-          type: string
-          description: Terminal Link Connection Type.
-          enum:
-          - SAPI
-        terminal-link-server-auth-id: 
-          type: string
-          description: Your unique user identifier (UUID). The UUID is a unique integer identifier that's assigned to each Bloomberg Anywhere user. If you don't know your UUID, contact Bloomberg.
-        terminal-link-environment:
-          type: string
-          description: The environment to run in.
-          enum:
-          - Production
-          - Beta 
-        terminal-link-server-host:
-          type: string
-          description: The public IP address of the SAPI AWS server.
-        terminal-link-server-port:
-          type: integer
-          description: The port where SAPI is listening. The default port is 8194.
-        terminal-link-emsx-broker:
-          type: string
-          description: The EMSX broker to use.
-        terminal-link-emsx-account:
-          type: string
-          description: The account to which LEAN should route orders.
-        terminal-link-openfigi-api-key:
-          type: string
-          description: The OpenFIGI API key to use for mapping options.
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using TerminalLink as the brokerage for a live algorithm.
     Trade:
       type: object
       properties:
