@@ -1666,9 +1666,9 @@ paths:
       - 10 AI Assistance
       - 02 Tools
       - 03 Error Enhancement
-      summary: Shows additional context and suggestions for error messages.
+      summary: Show additional context and suggestions for error messages.
       requestBody:
-        description: Shows additional context and suggestions for error messages.
+        description: Show additional context and suggestions for error messages.
         content:
           application/json:
             schema:
@@ -1697,9 +1697,9 @@ paths:
       - 10 AI Assistance
       - 02 Tools
       - 04 PEP8 Conversion
-      summary: Ensure a Python code follows PEP8 style.
+      summary: Update Python code to follow PEP8 style.
       requestBody:
-        description: Ensure a Python code follows PEP8 style.
+        description: Update Python code to follow PEP8 style.
         content:
           application/json:
             schema:
@@ -1808,16 +1808,37 @@ components:
           items:
             $ref: '#/components/schemas/File'
       description: Request to process files.
+    BacktestInitRequest:
+      type: object
+      required:
+        - language
+        - files
+      properties:
+        language:
+          type: string
+          enum:
+          - C#
+          - Py
+          description: Programming language.
+        files:
+          type: array
+          examples: 
+          - "[{\"name\": \"main.py\", \"content\": \"fileContent\"}]"
+          description: Files to process. One of the files must have the name main.py (when language=Py) or Main.cs (when language=C#).
+          items:
+            $ref: '#/components/schemas/File'
+      description: Request to process files.
     BacktestInitResponse:
       type: object
       properties:
         state:
           type: string
-          examples: 
+          enum: 
           - End
-          description: State of the backtest (e.g. Error, End).
+          - Error
+          description: State of the backtest.
         version:
-          type: string
+          type: number
           examples: 
           - 2.0
           description: Version of the response.
@@ -1828,7 +1849,7 @@ components:
           type: string
           examples: 
           - String
-          description: Type of the payload, e.g. String.
+          description: Type of the payload.
       description: Response to a backtest initialization request.
     CodeCompletionRequest:
       type: object
@@ -1847,7 +1868,8 @@ components:
         sentence:
           type: string
           examples: 
-          - self.add_equity(\"AAPL\"
+          - self.add_eq
+          - AddEq
           description: Sentence to complete.
         responseSizeLimit:
           type: integer
@@ -1860,11 +1882,11 @@ components:
       properties:
         state:
           type: string
-          examples: 
+          enum: 
           - End
           description: State of the code completion.
         version:
-          type: string
+          type: number
           examples: 
           - 2.0
           description: Version of the response.
@@ -1877,7 +1899,7 @@ components:
           type: string
           examples: 
           - StringArray
-          description: Type of the payload, e.g. StringArray.
+          description: Type of the payload.
       description: Response to a code completion request.
     ErrorEnhanceRequest:
       type: object
@@ -1907,7 +1929,7 @@ components:
           - End
           description: State of the code completion.
         version:
-          type: string
+          type: number
           examples: 
           - 2.0
           description: Version of the response.
@@ -1918,7 +1940,7 @@ components:
           type: string
           examples: 
           - String
-          description: Type of the payload, e.g. String.
+          description: Type of the payload.
       description: Response to error enhancement request.
     PEP8ConvertRequest:
       type: object
@@ -1929,7 +1951,7 @@ components:
           type: array
           examples: 
           - "[{\"name\": \"file.py\", \"content\": \"fileContent\"}]"
-          description: Files present in the project in which the algorithm is.
+          description: Files of the project.
           items:
             $ref: '#/components/schemas/File'
       description: Request to convert Python code to PEP8 style.
@@ -1942,31 +1964,32 @@ components:
           - End
           description: State of PEP8 conversion.
         version:
-          type: string
+          type: number
           examples: 
           - 2.0
           description: Version of the response.
         payload:
-          type: dict
+          type: object
           examples: 
           - {"utils.py": "def add(a,b):\n    return a+b\n"}
-          description: PEP8 converted code.
+          description: A dictionary where the key is the file name and the value is the PEP8 converted code of that file.
         payloadType:
           type: string
           examples: 
           - StringDict
-          description: Type of the payload, e.g. StringDict.
+          description: Type of the payload.
       description: Response to a PEP8 conversion request.
     SyntaxCheckResponse:
       type: object
       properties:
         state:
           type: string
-          examples: 
+          enum: 
           - End
+          - Error
           description: State of the syntax check.
         version:
-          type: string
+          type: number
           examples: 
           - 2.0
           description: Version of the response.
@@ -1979,7 +2002,7 @@ components:
           type: string
           examples: 
           - StringArray
-          description: Type of the payload, e.g. StringArray.
+          description: Type of the payload.
       description: Response to a syntax check request.
     SearchRequest:
       type: object
@@ -1997,24 +2020,30 @@ components:
           description: Programming language of the content to search.
         criteria:
           type: array
-          examples: 
-          - "[{\"input\": \"option\", \"type\": \"Docs\", \"count\": 1}]"
           items:
             $ref: '#/components/schemas/SearchCriteria'
           description: Criteria for the search.
       description: Request to search content in QuantConnect.
     SearchCriteria:
       type: object
+      required:
+        - input
+        - type
+        - count
       properties:
         input:
           type: string
           examples: 
           - option
+          - How to create an Alpha model
           description: Input for the search.
         type:
           type: string
-          examples: 
+          enum: 
+          - Stubs
+          - Forum
           - Docs
+          - Examples
           description: Type of the search criteria.
         count:
           type: integer
@@ -2027,11 +2056,12 @@ components:
       properties:
         state:
           type: string
-          examples: 
+          enum: 
           - End
+          - Error
           description: State of the search.
         version:
-          type: string
+          type: number
           examples: 
           - 2.0
           description: Version of the response.
@@ -2044,7 +2074,7 @@ components:
           type: integer
           examples: 
           - 0
-          description: ID of the message.
+          description: Id of the message.
       description: Response to a search request.
     SearchRetrieval:
       type: object
@@ -2052,7 +2082,7 @@ components:
         url:
           type: string
           examples: 
-          - option[Index Options - QuantConnect.com](https://www.quantconnect.com/docs/v2/writing-algorithms/universes/index-options)
+          - "[Index Options - QuantConnect.com](https://www.quantconnect.com/docs/v2/writing-algorithms/universes/index-options)"
           description: Input for the search.
         score:
           type: number
@@ -2066,7 +2096,7 @@ components:
           type: number
           examples: 
           - 2
-          description: Type of the search result.
+          description: Type of the search result. 0=Stubs, 1=Forum, 2=Docs, 3=Examples.
       description: Search criteria.
     AbortOptimizationRequest:
       type: object
@@ -6083,12 +6113,17 @@ components:
         name:
           type: string
           description: Name of a file.
+          examples:
+            - main.py
+            - Main.cs
         content:
           type: string
           description: Contents of the file.
       description: File for a AI.
     Error:
       type: object
+      required:
+        - message
       properties:
         message:
           type: string
