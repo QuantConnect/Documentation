@@ -1,3 +1,7 @@
+# This script scans the YAML file to find all the supported brokerages and data providers.
+# It then tries to deploy an algorithm with each one.
+# Deployments that omit some `required` properties are tested to ensure they fail.
+# Deployments will all `required` properties are tested to ensure they return {'success': True}.
 from base64 import b64encode
 from hashlib import sha256
 from time import time, sleep
