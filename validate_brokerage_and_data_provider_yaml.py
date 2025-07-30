@@ -12,7 +12,7 @@ import os
 USER_ID = os.getenv('QUANTCONNECT_USER_ID')
 API_TOKEN = os.getenv('QUANTCONNECT_API_TOKEN')
 BASE_URL = 'https://www.quantconnect.com/api/v2/'
-YAML_PATH = 'https://raw.githubusercontent.com/QuantConnect/Documentation/refs/heads/master/QuantConnect-Platform-2.0.0.yaml'
+YAML_URL = 'https://raw.githubusercontent.com/QuantConnect/Documentation/refs/heads/master/QuantConnect-Platform-2.0.0.yaml'
 DEFAULT_BROKERAGE = {
     'id': 'QuantConnectBrokerage'
 }
