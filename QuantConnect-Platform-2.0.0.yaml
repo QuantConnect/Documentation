@@ -2479,114 +2479,6 @@ components:
           examples: 
           - ""
       description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
-    BinanceSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, Binance.
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret.
-        binance-api-key:
-          type: string
-          description: Your Binance API key.
-        binance-api-url:
-          type: string
-          description: Binance configuration for spot/margin. The value for this property is https://api.binance.com
-        binance-websocket-url:
-          type: string
-          description: Binance configuration for spot/margin. The value for this property is wss://stream.binance.com:9443/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance as a data provider or brokerage.
-    BinanceFuturesUSDMSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, Binance-USDM-Futures.
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret.
-        binance-api-key:
-          type: string
-          description: Your Binance API key.
-        binance-fapi-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is https://fapi.binance.com
-        binance-fwebsocket-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is wss://fstream.binance.com/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance Futures USDM as a data provider or brokerage.
-    BinanceFuturesCOINSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, Binance-COIN-Futures.
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret.
-        binance-api-key:
-          type: string
-          description: Your Binance API key.
-        binance-dapi-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is https://dapi.binance.com
-        binance-dwebsocket-url:
-          type: string
-          description: Binance Futures configuration for spot/margin. The value for this property is wss://dstream.binance.com/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance Futures COIN as a data provider or brokerage.
-    BinanceUSSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the brokerage, this is, BinanceBrokerage.
-        binance-exchange-name:
-          type: string
-          description: Binance exchange, this is, BinanceUS.
-        binanceus-api-secret:
-          type: string
-          description: Your Binance US API secret.
-        binanceus-api-key:
-          type: string
-          description: Your Binance US API key.
-        binanceus-api-url:
-          type: string
-          description: Binance US configuration for spot/margin. The value for this property is https://api.binance.us
-        binanceus-websocket-url:
-          type: string
-          description: Binance US configuration for spot/margin. The value for this property is wss://stream.binance.us:9443/ws
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance US as a data provider or brokerage.
     BrokerageData:
       type: object
       properties:
@@ -3151,7 +3043,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - QuantConnectBrokerage
       description: Settings for using QuantConnect as a data provider for a live algorithm.
@@ -3162,7 +3054,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - QuantConnectBrokerage
         holdings:
@@ -3187,7 +3079,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - InteractiveBrokersBrokerage
         ib-user-name:
@@ -3199,12 +3091,12 @@ components:
         ib-password:
           type: string
           description: Your Interactive Brokers password.
-        ib-financial-advisors-group-filter:
-          type: string
-          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
         ib-weekly-restart-utc-time:
           type: string
           description: Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm restarts at this time and requires 2FA verification. This is required by Interactive Brokers.
+        ib-financial-advisors-group-filter:
+          type: string
+          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
       description: Settings for using Interactive Brokers as the brokerage or a data provider for a live algorithm.
     InteractiveBrokersDataProviderSettings:
       type: object
@@ -3217,7 +3109,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - InteractiveBrokersBrokerage
         ib-user-name:
@@ -3232,9 +3124,9 @@ components:
         ib-weekly-restart-utc-time:
           type: string
           description: Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm restarts at this time and requires 2FA verification. This is required by Interactive Brokers.
-        ib-enable-delayed-streaming-data:
-          type: boolean
-          description: Whether delayed data may be used when your algorithm subscribes to a security you don't have a market data subscription for. Use `false`.
+        ib-financial-advisors-group-filter:
+          type: string
+          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
       description: Settings for using Interactive Brokers as a data provider for a live algorithm.
     TradierBrokerageSettings:
       type: object
@@ -3246,7 +3138,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - TradierBrokerage
         tradier-account-id:
@@ -3272,7 +3164,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - TradierBrokerage
         tradier-account-id:
@@ -3297,7 +3189,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage or data provider.
+          description: Id of the module.
           enum:
           - BitfinexBrokerage
         bitfinex-api-key:
@@ -3316,7 +3208,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - CoinbaseBrokerage
         coinbase-api-name:
@@ -3325,14 +3217,6 @@ components:
         coinbase-api-private-key:
           type: string
           description: Your Coinbase Advanced Trade API private key.
-        coinbase-url:
-          type: string
-          examples:
-          - wss://advanced-trade-ws.coinbase.com
-        coinbase-rest-api:
-          type: string
-          examples:
-          - https://api.coinbase.com
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3348,7 +3232,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - CoinbaseBrokerage
         coinbase-api-name:
@@ -3357,14 +3241,6 @@ components:
         coinbase-api-private-key:
           type: string
           description: Your Coinbase Advanced Trade API private key.
-        coinbase-url:
-          type: string
-          examples:
-          - wss://advanced-trade-ws.coinbase.com
-        coinbase-rest-api:
-          type: string
-          examples:
-          - https://api.coinbase.com
       description: Settings for using Coinbase Advanced Trade as a data provider for a live algorithm.
     BinanceBrokerageSettings:
       type: object
@@ -3377,7 +3253,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3397,16 +3273,6 @@ components:
           enum:
           - live
           - paper
-        binance-api-url:
-          type: string
-          examples:
-          - https://api.binance.com
-          - https://testnet.binance.vision
-        binance-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.com:9443/ws
-          - wss://testnet.binance.vision/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3423,7 +3289,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3437,22 +3303,6 @@ components:
         binanceus-api-secret:
           type: string
           description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-        binanceus-api-url:
-          type: string
-          examples:
-          - https://api.binance.us/
-          - https://testnet.binance.vision
-        binanceus-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.us:9443/ws
-          - wss://testnet.binance.vision/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3469,7 +3319,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3483,22 +3333,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-        binance-fapi-url:
-          type: string
-          examples:
-          - https://fapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-fwebsocket-url:
-          type: string
-          examples:
-          - wss://fstream.binance.com/ws
-          - wss://stream.binancefuture.com/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3515,7 +3349,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3529,22 +3363,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-        binance-dapi-url:
-          type: string
-          examples:
-          - https://dapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-dwebsocket-url:
-          type: string
-          examples:
-          - wss://dstream.binance.com/ws
-          - wss://dstream.binancefuture.com/ws
         holdings:
           type: array
           description: List of holdings for the brokerage.
@@ -3562,7 +3380,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3582,16 +3400,6 @@ components:
           enum:
           - live
           - paper
-        binance-api-url:
-          type: string
-          examples:
-          - https://api.binance.com
-          - https://testnet.binance.vision
-        binance-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.com:9443/ws
-          - wss://testnet.binance.vision/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     BinanceUSDataProviderSettings:
       type: object
@@ -3603,7 +3411,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3617,16 +3425,6 @@ components:
         binanceus-api-secret:
           type: string
           description: Your Binance API secret
-        binanceus-api-url:
-          type: string
-          examples:
-          - https://api.binance.us/
-          - https://testnet.binance.vision
-        binanceus-websocket-url:
-          type: string
-          examples:
-          - wss://stream.binance.us:9443/ws
-          - wss://testnet.binance.vision/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     BinanceUSDMFuturesDataProviderSettings:
       type: object
@@ -3638,7 +3436,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3652,16 +3450,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-fapi-url:
-          type: string
-          examples:
-          - https://fapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-fwebsocket-url:
-          type: string
-          examples:
-          - wss://fstream.binance.com/ws
-          - wss://stream.binancefuture.com/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     BinanceCOINFuturesDataProviderSettings:
       type: object
@@ -3673,7 +3461,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - BinanceBrokerage
         binance-exchange-name:
@@ -3687,16 +3475,6 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
-        binance-dapi-url:
-          type: string
-          examples:
-          - https://dapi.binance.com
-          - https://testnet.binancefuture.com
-        binance-dwebsocket-url:
-          type: string
-          examples:
-          - wss://dstream.binance.com/ws
-          - wss://dstream.binancefuture.com/ws
       description: Settings for using Binance as a data provider for a live algorithm.
     TradingTechnologiesBrokerageSettings:
       type: object
@@ -3713,7 +3491,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - TradingTechnologiesBrokerage
         tt-user-name:
@@ -3756,7 +3534,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage or data provider.
+          description: Id of the module.
           enum:
           - KrakenBrokerage
         kraken-api-key:
@@ -3777,24 +3555,20 @@ components:
       type: object
       required:
        - id
+       - alpaca-access-token
+       - alpaca-environment
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - AlpacaBrokerage
-        alpaca-api-key:
-          type: string
-          description: Your Alpaca API key. Required if you omit the alpaca-access-token.
-        alpaca-api-secret:
-          type: string
-          description: Your Alpaca API secret. Required if you omit the alpaca-access-token.
         alpaca-access-token:
           type: string
           description: Your Alpaca access token for authentication.
         alpaca-environment:
           type: string
-          description: The environment to run in. Required if you provide an alpaca-access-token.
+          description: The environment to run the algorithm in.
           enum:
           - live
           - paper
@@ -3808,7 +3582,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - AlpacaBrokerage
         alpaca-api-key:
@@ -3826,14 +3600,14 @@ components:
       properties:
         id:
           type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - Polygon
         polygon-api-key:
           type: string
           description: Your Polygon.io API Key.
       description: Settings for using Polygon as a data provider for a live algorithm.
-    BybitBrokerageSettings:
+    BybitBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -3843,58 +3617,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
-          enum:
-          - BybitBrokerage
-        bybit-api-key:
-          type: string
-          description: Your Bybit API key.
-        bybit-api-secret:
-          type: string
-          description: Your Bybit API secret.
-        bybit-vip-level:
-          type: string
-          description: Your Bybit VIP Level.
-          enum:
-          - VIP0
-          - VIP1
-          - VIP2
-          - VIP3
-          - VIP4
-          - VIP5
-          - SupremeVIP
-          - Pro1
-          - Pro2
-          - Pro3
-          - Pro4
-          - Pro5
-        bybit-api-url:
-          type: string
-          examples:
-          - https://api.bybit.com
-          - https://api-testnet.bybit.com
-        bybit-websocket-url:
-          type: string
-          examples:
-          - wss://stream.bybit.com
-          - wss://stream-testnet.bybit.com
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Bybit as the brokerage for a live algorithm.
-    BybitDataProviderSettings:
-      type: object
-      required:
-       - id
-       - bybit-api-key
-       - bybit-api-secret
-       - bybit-vip-level
-      properties:
-        id:
-          type: string
-          description: Id of the data provider.
+          description: Id of the module.
           enum:
           - BybitBrokerage
         bybit-api-key:
@@ -3919,16 +3642,20 @@ components:
           - Pro3
           - Pro4
           - Pro5
-        bybit-api-url:
-          type: string
-          examples:
-          - https://api.bybit.com
-          - https://api-testnet.bybit.com
-        bybit-websocket-url:
-          type: string
-          examples:
-          - wss://stream.bybit.com
-          - wss://stream-testnet.bybit.com
+    BybitBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BybitBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using Bybit as the brokerage for a live algorithm.
+    BybitDataProviderSettings:
+      allOf:
+        - $ref: '#/components/schemas/BybitBrokerageAndDataProviderSettings'
       description: Settings for using Bybit as a data provider for a live algorithm.
     OandaSettings:
       type: object
@@ -3940,7 +3667,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage or data provider.
+          description: Id of the module.
           enum:
           - OandaBrokerage
         oanda-account-id:
@@ -3965,7 +3692,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - WolverineBrokerage
         wolverine-on-behalf-of-comp-id:
@@ -3996,7 +3723,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage and data provider.
+          description: Id of the module.
           enum:
           - TradeStationBrokerage
         trade-station-client-id:
@@ -4013,7 +3740,7 @@ components:
           description: The environment to run the algorithm in.
           enum:
           - live
-          - simulator
+          - paper
       description: Settings for using TradeStation as the brokerage or a data provider for a live algorithm.
     TastytradeSettings:
       type: object
@@ -4024,7 +3751,7 @@ components:
       properties:
         id:
           type: string
-          description: Id of the brokerage.
+          description: Id of the module.
           enum:
           - TastytradeBrokerage
         tastytrade-account-number:
@@ -4034,6 +3761,111 @@ components:
           type: string
           description: The TradeStation refresh token.        
       description: Settings for using Tastytrade as the brokerage or a data provider for a live algorithm.
+    CharlesSchwabSettings:
+      type: object
+      required:
+      - id
+      - charles-schwab-account-number
+      properties:
+        id:
+          type: string
+          description: Id of the module.
+          enum:
+          - CharlesSchwabBrokerage
+        charles-schwab-account-number:
+          type: string
+          description: Your Charles Schwab account number.
+      description: Settings for using Charles Schwab as a data provider or the brokerage for a live algorithm.
+    TerminalLinkSettings:
+      type: object
+      required:
+      - id
+      - terminal-link-connection-type
+      - terminal-link-server-auth-id
+      - terminal-link-environment
+      - terminal-link-server-host
+      - terminal-link-server-port
+      - terminal-link-emsx-broker
+      - terminal-link-emsx-account
+      - terminal-link-openfigi-api-key
+      properties:
+        id:
+          type: string
+          description: Id of the module.
+          enum:
+          - TerminalLinkBrokerage
+        terminal-link-connection-type:
+          type: string
+          description: Terminal Link Connection Type.
+          enum:
+          - SAPI
+        terminal-link-server-auth-id: 
+          type: string
+          description: Your unique user identifier (UUID). The UUID is a unique integer identifier that's assigned to each Bloomberg Anywhere user. If you don't know your UUID, contact Bloomberg.
+        terminal-link-environment:
+          type: string
+          description: The environment to run in.
+          enum:
+          - Production
+          - Beta 
+        terminal-link-server-host:
+          type: string
+          description: The public IP address of the SAPI AWS server.
+        terminal-link-server-port:
+          type: integer
+          description: The port where SAPI is listening. The default port is 8194.
+        terminal-link-emsx-broker:
+          type: string
+          description: The EMSX broker to use.
+        terminal-link-emsx-account:
+          type: string
+          description: The account to which LEAN should route orders.
+        terminal-link-openfigi-api-key:
+          type: string
+          description: The OpenFIGI API key to use for mapping options.
+        terminal-link-emsx-team:
+          type: string
+          description: The EMSX team to use.
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using TerminalLink as the brokerage for a live algorithm.
+    RBIBrokerageSettings:
+      type: object
+      required:
+      - id
+      - rbi-on-behalf-of-comp-id
+      - rbi-account
+      properties:
+        id:
+          type: string
+          description: Id of the module.
+          enum:
+          - RBIBrokerage
+        rbi-on-behalf-of-comp-id:
+          type: string
+          description: Value used to identify the trading firm.
+        rbi-account:
+          type: string
+          description: RBI account name.
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using RBI as the brokerage for a live algorithm.
     CreateLiveAlgorithmResponse:
       type: object
       properties:
@@ -6275,35 +6107,6 @@ components:
           type: number
           description: The 1-day VaR for the portfolio, using the Variance-covariance approach. Assumes a 95% confidence level, 1 year lookback period, and that the returns are normally distributed.
       description: Represents a set of statistics calculated from equity and benchmark samples.
-    RBIBrokerageSettings:
-      type: object
-      required:
-      - id
-      - rbi-on-behalf-of-comp-id
-      - rbi-account
-      properties:
-        id:
-          type: string
-          description: Id of the brokerage.
-          enum:
-          - RBIBrokerage
-        rbi-on-behalf-of-comp-id:
-          type: string
-          description: Value used to identify the trading firm.
-        rbi-account:
-          type: string
-          description: RBI account name.
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using RBI as the brokerage for a live algorithm.
     ReadFilesRequest:
       required:
         - projectId
@@ -6948,85 +6751,6 @@ components:
           type: string
           description: The ticker at IPO for this security.
       description: Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.
-    CharlesSchwabSettings:
-      type: object
-      required:
-      - id
-      - charles-schwab-account-number
-      properties:
-        id:
-          type: string
-          description: Id of the brokerage or data provider.
-          enum:
-          - CharlesSchwabBrokerage
-        charles-schwab-app-key:
-          type: string
-          description: Your Charles Schwab app key.
-        charles-schwab-secret:
-          type: string
-          description: Your Charles Schwab secret.
-        charles-schwab-account-number:
-          type: string
-          description: Your Charles Schwab account number.
-      description: Settings for using Charles Schwab as a data provider or the brokerage for a live algorithm.
-    TerminalLinkSettings:
-      type: object
-      required:
-      - id
-      - terminal-link-connection-type
-      - terminal-link-server-auth-id
-      - terminal-link-environment
-      - terminal-link-server-host
-      - terminal-link-server-port
-      - terminal-link-emsx-broker
-      - terminal-link-emsx-account
-      - terminal-link-openfigi-api-key
-      properties:
-        id:
-          type: string
-          description: Id of the brokerage.
-          enum:
-          - TerminalLinkBrokerage
-        terminal-link-connection-type:
-          type: string
-          description: Terminal Link Connection Type.
-          enum:
-          - SAPI
-        terminal-link-server-auth-id: 
-          type: string
-          description: Your unique user identifier (UUID). The UUID is a unique integer identifier that's assigned to each Bloomberg Anywhere user. If you don't know your UUID, contact Bloomberg.
-        terminal-link-environment:
-          type: string
-          description: The environment to run in.
-          enum:
-          - Production
-          - Beta 
-        terminal-link-server-host:
-          type: string
-          description: The public IP address of the SAPI AWS server.
-        terminal-link-server-port:
-          type: integer
-          description: The port where SAPI is listening. The default port is 8194.
-        terminal-link-emsx-broker:
-          type: string
-          description: The EMSX broker to use.
-        terminal-link-emsx-account:
-          type: string
-          description: The account to which LEAN should route orders.
-        terminal-link-openfigi-api-key:
-          type: string
-          description: The OpenFIGI API key to use for mapping options.
-        cash:
-          type: array
-          description: List of cash amount.
-          items:
-            $ref: '#/components/schemas/CashAmount'
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using TerminalLink as the brokerage for a live algorithm.
     Trade:
       type: object
       properties:
@@ -7243,7 +6967,7 @@ components:
       properties:
         id:
           type: string
-          description: ID of the brokerage, this is, TradierBrokerage
+          description: ID of the module.
         tradier-account-id:
           type: string
           description: Your Tradier account id.
