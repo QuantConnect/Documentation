@@ -9,5 +9,11 @@
             span.textContent = "tastytrade";
         }
     });
+
+    // Update the <title> tag
+    const currentTitle = document.title;
+    if (currentTitle.trim() === "Tastytrade - QuantConnect.com") {
+        document.title = "tastytrade on QuantConnect - QuantConnect.com";
+    }
 });
 </script>
