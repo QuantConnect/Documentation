@@ -8,4 +8,6 @@
     <li>CBOE Streaming Market Indexes (L1 for VIX Index)</li>
 </ul>
 
-<p>To see the latest prices, check the <a rel='nofollow' target='_blank' href='https://www.interactivebrokers.com/en/index.php?f=14193'>Market Data Pricing Overview</a> page on the IB website. IB can take up to 24 hours to process subscription requests. So after you subscribe to data, you need to wait 24 hours before you can use it in your algorithms. When you subscribe to data, IB only assigns your data subscription to one of your accounts. If you want to assign the subscription to a different account, for example, a paper trading account instead of a live trading account, then contact IB.</p>
+<p>To see the latest prices, check the <a rel='nofollow' target='_blank' href='https://www.interactivebrokers.com/en/index.php?f=14193'>Market Data Pricing Overview</a> page on the IB website. IB can take up to 24 hours to process subscription requests. So after you subscribe to data, you need to wait 24 hours before you can use it in your algorithms. When you subscribe to data, IB only assigns your data subscription to one of your accounts. If you want to assign the subscription to a different account, then contact IB.</p>
+
+<? include(DOCS_RESOURCES."/data-feeds/ib-share-data-with-paper-trading.html"); ?>
