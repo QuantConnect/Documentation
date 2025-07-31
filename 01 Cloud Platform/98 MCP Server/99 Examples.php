@@ -3,7 +3,7 @@
 <h4>Example 1: Hello World</h4>
 <p>To test the server and client are working and connected, enter the following prompt into the client application:</p>
 
- <div class="section-example-container">
+ <div class="cli section-example-container">
      <pre>> Create a QuantConnect project.</pre>
 </div>
 <p>The client should call the <code>create_project</code> tool.</p>
