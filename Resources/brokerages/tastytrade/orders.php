@@ -1,6 +1,6 @@
 <h4>Order Types</h4>
 
-<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our <a rel='nofollow' target='_blank' href='https://qnt.co/tastytrade'>Tastytrade</a> integration" : "the <code>TastytradeBrokerageModel</code>" ?> supports:</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our <a rel='nofollow' target='_blank' href='https://qnt.co/tastytrade'>tastytrade</a> integration" : "the <code>TastytradeBrokerageModel</code>" ?> supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>
@@ -57,7 +57,7 @@
 </style>
 
 <h4>Order Properties</h4>
-<p><?=$writingAlgorithms ? "The <code>TastytradeBrokerageModel</code> supports custom order properties." : "We model the Tastytrade API." ?> The following table describes the members of the <code>TastytradeOrderProperties</code> object that you can set to customize order execution.</p>
+<p><?=$writingAlgorithms ? "The <code>TastytradeBrokerageModel</code> supports custom order properties." : "We model the tastytrade API." ?> The following table describes the members of the <code>TastytradeOrderProperties</code> object that you can set to customize order execution.</p>
 
 <table class="table qc-table">
     <thead>
@@ -125,6 +125,6 @@ def on_data(self, slice: Slice) -&gt; None:
 <? } ?>
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>TastytradeBrokerageModel</code> supports" : "We model the Tastytrade API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>TastytradeBrokerageModel</code> supports" : "We model the tastytrade API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
