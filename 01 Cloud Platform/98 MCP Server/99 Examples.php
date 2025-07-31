@@ -9,7 +9,9 @@
 <p>The client should call the <code>create_project</code> tool.</p>
 
 <h4>Example 2: Search QuantConnect, Create Projects, and Fix Errors</h4>
+<p>The following video shows the conversation with Claude Desktop:</p>
 <? DOCS_VIMEO(1106258759); ?>
 
 <h4>Example 3: Brainstorm Ideas, Add Project Descriptions, and Add Collaborators</h4>
+<p>The following video shows the conversation with Claude Desktop:</p>
 <? DOCS_VIMEO(1106259276); ?>
