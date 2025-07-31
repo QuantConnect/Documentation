@@ -1,0 +1,46 @@
+<p>To connect local MCP client applications (like Claude Desktop) to the QC MCP Server, follow these steps:</p>
+
+<ol>
+  <li>Install and open <a href='https://docs.docker.com/desktop/' rel='nofollow' target='_blank'>Docker Desktop</a>.</li>
+
+  <li>In a terminal, pull our MCP server from Docker Hub.</li>
+  <div class="cli section-example-container">
+    <pre>$ docker pull quantconnect/mcp-server</pre>
+  </div>
+
+  <li>Install and open <a href='https://claude.ai/download' rel='nofollow' target='_blank'>Claude Desktop</a>.</li>
+
+  <li>In Claude Desktop, click <span class='button-name'>File > Settings > Developer > Edit Config</span>.</li>
+
+  <li>Edit the <span class='private-file-name'>claude_desktop_config.json</span> file to include the following quantconnect configuration:</li>
+
+   <div class="section-example-container">
+     <pre>{
+  "mcpServers": {
+    "quantconnect": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e", "QUANTCONNECT_USER_ID",
+        "-e", "QUANTCONNECT_API_TOKEN",
+        "--name",
+        "quantconnect-mcp-server",
+        "quantconnect/mcp-server"
+      ],
+      "env": {
+        "QUANTCONNECT_USER_ID": "&lt;your_user_id&gt;",
+        "QUANTCONNECT_API_TOKEN": "&lt;your_api_token&gt;"
+      }
+    }
+  }
+}</pre>
+   </div>
+
+    <p>To get your user Id and API token, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
+
+  <li>Restart Claude Desktop.</li>
+</ol>
+
+<p>To view all the MCP clients and the features they support, see the <a href='https://modelcontextprotocol.io/clients#feature-support-matrix' rel='nofollow' target='_blank'>Feature Support Matrix</a> in the MCP documentation.</p>
