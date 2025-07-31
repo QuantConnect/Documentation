@@ -2751,34 +2751,8 @@ components:
           description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
       description: Settings for using Interactive Brokers as the brokerage or a data provider for a live algorithm.
     InteractiveBrokersDataProviderSettings:
-      type: object
-      required:
-      - id
-      - ib-user-name
-      - ib-account
-      - ib-password
-      - ib-weekly-restart-utc-time
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - InteractiveBrokersBrokerage
-        ib-user-name:
-          type: string
-          description: Your Interactive Brokers username
-        ib-account:
-          type: string
-          description: Your Interactive Brokers account id
-        ib-password:
-          type: string
-          description: Your Interactive Brokers password
-        ib-weekly-restart-utc-time:
-          type: string
-          description: Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm restarts at this time and requires 2FA verification. This is required by Interactive Brokers.
-        ib-financial-advisors-group-filter:
-          type: string
-          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
+      allOf:
+      - $ref: '#/components/schemas/InteractiveBrokersBrokerageSettings'
       description: Settings for using Interactive Brokers as a data provider for a live algorithm.
     TradierBrokerageSettings:
       type: object
@@ -2807,30 +2781,8 @@ components:
           - paper
       description: Settings for using Tradier as the brokerage for a live algorithm.
     TradierDataProviderSettings:
-      type: object
-      required:
-      - id
-      - tradier-account-id
-      - tradier-access-token
-      - tradier-environment
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - TradierBrokerage
-        tradier-account-id:
-          type: string
-          description: Your Tradier account id
-        tradier-access-token:
-          type: string
-          description: Your Tradier access token
-        tradier-environment:
-          type: string
-          description: Whether the developer sandbox should be used. Use `live`.
-          enum:
-          - live
-          - paper
+      allOf:
+      - $ref: '#/components/schemas/TradierBrokerageSettings'
       description: Settings for using Tradier as a data provider for a live algorithm.
     BitfinexSettings:
       type: object
@@ -2851,7 +2803,7 @@ components:
           type: string
           description: Your Bitfinex API secret.
       description: Settings for using Bitfinex as the brokerage or a data provider for a live algorithm.
-    CoinbaseBrokerageSettings:
+    CoinbaseBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -2869,32 +2821,22 @@ components:
         coinbase-api-private-key:
           type: string
           description: Your Coinbase Advanced Trade API private key.
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
+    CoinbaseBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/CoinbaseBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Coinbase Advanced Trade as the brokerage for a live algorithm.
     CoinbaseDataProviderSettings:
-      type: object
-      required:
-      - id
-      - coinbase-api-name
-      - coinbase-api-private-key
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - CoinbaseBrokerage
-        coinbase-api-name:
-          type: string
-          description: Your Coinbase Advanced Trade API name.
-        coinbase-api-private-key:
-          type: string
-          description: Your Coinbase Advanced Trade API private key.
+      allOf:
+      - $ref: '#/components/schemas/CoinbaseBrokerageAndDataProviderSettings'
       description: Settings for using Coinbase Advanced Trade as a data provider for a live algorithm.
-    BinanceBrokerageSettings:
+    BinanceBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -2925,13 +2867,22 @@ components:
           enum:
           - live
           - paper
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
+    BinanceBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceUSBrokerageSettings:
+    BinanceDataProviderSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceBrokerageAndDataProviderSettings'
+      description: Settings for using Binance as a data provider for a live algorithm.
+    BinanceUSBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -2955,136 +2906,28 @@ components:
         binanceus-api-secret:
           type: string
           description: Your Binance API secret
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
+    BinanceUSBrokerageSettings:
+      allOf:
+        - $ref: '#/components/schemas/BinanceUSBrokerageAndDataProviderSettings'
+        - type: object
+          properties:
+            holdings:
+              type: array
+              description: List of holdings for the brokerage.
+              items:
+                $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceUSDMFuturesBrokerageSettings:
-      type: object
-      required:
-       - id
-       - binance-exchange-name
-       - binance-api-key
-       - binance-api-secret
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - Binance-USDM-Futures
-        binance-api-key:
-          type: string
-          description: Your Binance API key
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceCOINFuturesBrokerageSettings:
-      type: object
-      required:
-       - id
-       - binance-exchange-name
-       - binance-api-key
-       - binance-api-secret
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - Binance-COIN-Futures
-        binance-api-key:
-          type: string
-          description: Your Binance API key
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceDataProviderSettings:
-      type: object
-      required:
-      - id
-      - binance-exchange-name
-      - binance-api-key
-      - binance-api-secret
-      - binance-use-testnet
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - Binance
-        binance-api-key:
-          type: string
-          description: Your Binance API key
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-      description: Settings for using Binance as a data provider for a live algorithm.
     BinanceUSDataProviderSettings:
-      type: object
-      required:
-      - id
-      - binance-exchange-name
-      - binanceus-api-key
-      - binanceus-api-secret
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - BinanceUS
-        binanceus-api-key:
-          type: string
-          description: Your Binance API key
-        binanceus-api-secret:
-          type: string
-          description: Your Binance API secret
+      allOf:
+      - $ref: '#/components/schemas/BinanceUSBrokerageAndDataProviderSettings'
       description: Settings for using Binance as a data provider for a live algorithm.
-    BinanceUSDMFuturesDataProviderSettings:
+    BinanceUSDMFuturesBrokerageAndDataProviderSettings:
       type: object
       required:
-      - id
-      - binance-exchange-name
-      - binance-api-key
-      - binance-api-secret
+       - id
+       - binance-exchange-name
+       - binance-api-key
+       - binance-api-secret
       properties:
         id:
           type: string
@@ -3102,14 +2945,28 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
+    BinanceUSDMFuturesBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceUSDMFuturesBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using Binance as the brokerage for a live algorithm.
+    BinanceUSDMFuturesDataProviderSettings:
+      allOf:
+        - $ref: '#/components/schemas/BinanceUSDMFuturesBrokerageAndDataProviderSettings'
       description: Settings for using Binance as a data provider for a live algorithm.
-    BinanceCOINFuturesDataProviderSettings:
+    BinanceCOINFuturesBrokerageAndDataProviderSettings:
       type: object
       required:
-      - id
-      - binance-exchange-name
-      - binance-api-key
-      - binance-api-secret
+       - id
+       - binance-exchange-name
+       - binance-api-key
+       - binance-api-secret
       properties:
         id:
           type: string
@@ -3127,6 +2984,20 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
+    BinanceCOINFuturesBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceCOINFuturesBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using Binance as the brokerage for a live algorithm.
+    BinanceCOINFuturesDataProviderSettings:
+      allOf:
+        - $ref: '#/components/schemas/BinanceCOINFuturesBrokerageAndDataProviderSettings'
       description: Settings for using Binance as a data provider for a live algorithm.
     TradingTechnologiesBrokerageSettings:
       type: object
