@@ -9,7 +9,7 @@ key = "..."
 ### Upload Object Store File
 # Send a POST request to the /object/set endpoint to upload a file
 response = post(f'{BASE_URL}/object/set', headers=get_headers(), 
-                json={"organizationId": ORGANIZATION_ID, "key": key},  # Organization ID and key for the object
+                data={"organizationId": ORGANIZATION_ID, "key": key},  # Organization ID and key for the object
                 files={"objectData": b"Hello, world!"})  # File content as bytes
 # Parse the JSON response into python managable dict
 result = response.json()
