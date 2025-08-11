@@ -3,11 +3,6 @@
 <ol>
   <li>Install and open <a href='https://docs.docker.com/desktop/' rel='nofollow' target='_blank'>Docker Desktop</a>.</li>
 
-  <li>In a terminal, pull our MCP server from Docker Hub.</li>
-  <div class="cli section-example-container">
-    <pre>$ docker pull quantconnect/mcp-server</pre>
-  </div>
-
   <li>Install and open <a href='https://claude.ai/download' rel='nofollow' target='_blank'>Claude Desktop</a>.</li>
 
   <li>In Claude Desktop, click <span class='button-name'>File > Settings > Developer > Edit Config</span>.</li>
@@ -25,6 +20,7 @@
         "--rm",
         "-e", "QUANTCONNECT_USER_ID",
         "-e", "QUANTCONNECT_API_TOKEN",
+        "--platform", "&lt;your_platform&gt;",
         "--name",
         "quantconnect-mcp-server",
         "quantconnect/mcp-server"
@@ -39,8 +35,16 @@
    </div>
 
     <p>To get your user Id and API token, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
+    <p>Our MCP server is multi-platform capable. The options are <code>linux/amd64</code> for Intel/AMD chips and <code>linux/arm64</code> for ARM chips (e.g., Apple's M-series chips).</p>
 
   <li>Restart Claude Desktop.</li>
+    <p>Claude Desktop will automatically pull our MCP server from Docker Hub and connect to it.</p>
 </ol>
 
 <p>To view all the MCP clients and the features they support, see the <a href='https://modelcontextprotocol.io/clients#feature-support-matrix' rel='nofollow' target='_blank'>Feature Support Matrix</a> in the MCP documentation.</p>
+
+<p>To keep the Docker image up-to-date, pull the latest MCP server from Docker Hub in the terminal.</p>
+<div class="cli section-example-container">
+  <pre>$ docker pull quantconnect/mcp-server</pre>
+</div>
+<p>If you have an ARM chip, add the <code>--platform linux/arm64</code> option.</p>
