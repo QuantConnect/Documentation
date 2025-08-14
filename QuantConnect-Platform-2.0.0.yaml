@@ -225,6 +225,30 @@ paths:
                 $ref: '#/components/schemas/DeleteCollaboratorResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+  /projects/collaboration/lock/acquire:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 02 Project Management
+      - 05 Collaboration
+      - 05 Lock Project
+      summary: Lock a project that has collaborators so you can edit it.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LockCollaboratorRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/nodes/read:
     post:
       tags:
@@ -2437,6 +2461,23 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Response received when removing collaborator.
+    LockCollaboratorRequest:
+      type: object
+      required:
+        - projectId
+        - codeSourceId
+      properties:
+        projectId:
+          type: integer
+          examples: 
+          - 23456789
+          description: Id of the project to edit.
+        codeSourceId:
+          type: string
+          examples:
+          - MCP Server
+          description: Name of the environment that's creating the request.
+      description: Lock a project that has collaborators so you can edit it.
     CreateCompileResponse:
       type: object
       properties:
