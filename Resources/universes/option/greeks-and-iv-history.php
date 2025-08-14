@@ -6,17 +6,20 @@
     <li>Create the mirror contract <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var mirrorContractSymbol = Symbol.CreateOption(
-    optionContract.Underlying.Symbol, 
-    <?=$contractNameC?>.ID.Market, 
+    optionContract.Underlying.Symbol, <? if ($hasTarget) {?> <?=$contractNameC?>.ID.Symbol, <? } ?>
+    <?=$contractNameC?>.ID.Market,   
     optionContract.Style, 
     optionContract.Right == OptionRight.Put ? OptionRight.Call : OptionRight.Put,
     optionContract.StrikePrice, 
     optionContract.Expiry
 );</pre>
         <pre class="python">mirror_contract_symbol = Symbol.create_option(
-    option_contract.underlying.symbol, <?=$contractNamePy?>.id.market, option_contract.style, 
+    option_contract.underlying.symbol, <? if ($hasTarget) {?> <?=$contractNamePy?>.id.symbol, <? } ?>
+    <?=$contractNamePy?>.id.market,
+    option_contract.style, 
     OptionRight.Call if option_contract.right == OptionRight.PUT else OptionRight.PUT,
-    option_contract.strike_price, option_contract.expiry
+    option_contract.strike_price,
+    option_contract.expiry
 )</pre>
     </div>
     
