@@ -6,22 +6,20 @@
 public override void Initialize()
 {
     // Remove a scheduled event by keeping a copy of the object on creation.
-    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
     _scheduledEvent = Schedule.On(
-        DateRules.EveryDay(symbol),
-        TimeRules.AfterMarketOpen(symbol, 10),
+        DateRules.EveryDay("SPY"),
+        TimeRules.AfterMarketOpen("SPY", 10),
         TenMinutesAfterOpen
-    )
-};
+    );
+}
 
 // Remove the scheduled event using the object reference in any method
 Schedule.Remove(_scheduledEvent);</pre>
     <pre class="python">def initialize(self):
     # Remove a scheduled event by keeping a copy of the object on creation.
-    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
     self.scheduled_event = self.schedule.on(
-        self.date_rules.every_day(symbol),
-        self.time_rules.after_market_open(symbol, 10),       
+        self.date_rules.every_day('SPY'),
+        self.time_rules.after_market_open('SPY', 10),       
         self._ten_minutes_after_open)
 
 # Remove the scheduled event using the object reference in any method

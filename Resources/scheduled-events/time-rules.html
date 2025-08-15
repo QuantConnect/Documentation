@@ -81,12 +81,11 @@
 </div>
 
 <p>
-    Some time rules require a Symbol. 
-    However, in some cases, you may not have a one. 
-    For example, if you only add an <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>Equity fundamental universe</a> to your <a href='/docs/v2/writing-algorithms/initialization'><span class='python'>initialize</span><span class='csharp'>Initialize</span></a> method, you won't have an asset Symbol to use for the time rule.
+    Some time rules require a Symbol. However, they accept a string representation of the Symbol as well. If your algorithm doesn't <a href='/docs/v2/writing-algorithms/securities/requesting-data#02-Add-Assets'>add the security</a>, it assumes the string refers to a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equity</a> Symbol.
+    For example, if you use the <code class='python'>self.time_rules.before_market_open('ES', 15)</code><code class='csharp'>TimeRules.BeforeMarketOpen("ES", 15)</code> method, it assumes that 'ES' refers to a US Equity.
     To create a Symbol without adding a security to your algorithm, call the <code class='python'>Symbol.create</code><code class='csharp'>QuantConnect.Symbol.Create</code> method.
 </p>
 <div class="section-example-container">
-    <pre class="csharp">var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
-    <pre class="python">symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)</pre>
+    <pre class="csharp">var symbol = QuantConnect.Symbol.Create("ES", SecurityType.Future, Market.CME);</pre>
+    <pre class="python">symbol = Symbol.create('ES', SecurityType.FUTURE, Market.CME)</pre>
 </div>
