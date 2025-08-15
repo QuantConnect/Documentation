@@ -73,7 +73,7 @@
 </style>
 
 <h4>Order Properties</h4>
-<p><?=$writingAlgorithms ? "The <code>EzeBrokerageModel</code> supports custom order properties." : "We model the Eze API." ?> The following table describes the members of the <code>EzeOrderProperties</code> object that you can set to customize order execution.</p>
+<p><?=$writingAlgorithms ? "The <code>EzeBrokerageModel</code> supports custom order properties." : "We model the SS&C Eze API." ?> The following table describes the members of the <code>EzeOrderProperties</code> object that you can set to customize order execution.</p>
 
 <table class="table qc-table">
     <thead>
@@ -100,7 +100,7 @@
         <tr>
             <td><code class="csharp">Route</code><code class="python">route</code></td>
             <td><code class='csharp'>string</code><code class='python'>str</code></td>
-            <td>Sets the route name as shown in Eze EMS.</td>
+            <td>Sets the route name as shown in SS&C Eze EMS.</td>
             <td></td>
         </tr>
         <tr>
@@ -162,6 +162,6 @@ def on_data(self, slice: Slice) -&gt; None:
 <? } ?>
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>EzeBrokerageModel</code> supports" : "We model the Eze API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>EzeBrokerageModel</code> supports" : "We model the SS&C Eze API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
