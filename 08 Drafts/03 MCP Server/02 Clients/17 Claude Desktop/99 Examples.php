@@ -1,7 +1,7 @@
 <p>The following examples demonstrate the MCP server with Claude Desktop.</p>
 
 <h4>Example 1: Hello World</h4>
-<p>To test the server and client are working and connected, enter the following prompt into Claude Code:</p>
+<p>To test the server and client are working and connected, enter the following prompt into Claude Desktop:</p>
 
  <div class="cli section-example-container">
      <pre>> Create a QuantConnect project.</pre>
