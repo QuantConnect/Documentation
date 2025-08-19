@@ -14,4 +14,5 @@
 
 <h4>Example 3: Hybrid Workflow with Local Platform</h4>
 <p>This example uses Claude Code in <a href='/docs/v2/local-platform'>Local Platform</a> to edit the project files, deploy backtests, and deploy the algorithm to paper trading.</p>
-<? DOCS_VIMEO(1111428140); ?>
+<? DOCS_VIMEO(1111417978); ?>
+
