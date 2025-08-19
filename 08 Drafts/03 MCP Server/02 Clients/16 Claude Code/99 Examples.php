@@ -8,10 +8,10 @@
 </div>
 <p>Claude should call the <code>read_account</code> tool.</p>
 
-<h4>Example 2: Hybrid Workflow with Local Platform</h4>
-<p>This example uses Claude Code in <a href='/docs/v2/local-platform'>Local Platform</a> to edit the project files, deploy backtests, and deploy the algorithm to paper trading.</p>
+<h4>Example 2: LLM-Focused Workflow from Powershell</h4>
+<p>This example uses Claude Code in a terminal window to create a new project, edit files, run backtests, and interpret backtest results.</p>
 <? DOCS_VIMEO(1111428140); ?>
 
-<h4>Example 3: LLM-Focused Workflow from Powershell</h4>
-<p>This example uses Claude Code in a terminal window to create a new project, edit files, run backtests, and interpret backtest results.</p>
+<h4>Example 3: Hybrid Workflow with Local Platform</h4>
+<p>This example uses Claude Code in <a href='/docs/v2/local-platform'>Local Platform</a> to edit the project files, deploy backtests, and deploy the algorithm to paper trading.</p>
 <? DOCS_VIMEO(1111428140); ?>
