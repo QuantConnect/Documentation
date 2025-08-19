@@ -6,19 +6,17 @@
     <pre class="csharp">public override void Initialize()
 {
     // Call the BeforeMarketOpen method 10 minutes before open every day SPY is trading. 
-    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
     Schedule.On(
-        DateRules.EveryDay(symbol),
-        TimeRules.BeforeMarketOpen(symbol, 10),
+        DateRules.EveryDay("SPY"),
+        TimeRules.BeforeMarketOpen("SPY", 10),
         BeforeMarketOpen
     );
 }</pre>
     <pre class="python">def initialize(self):
     # Call the _before_market_open method 10 minutes before open every day SPY is trading. 
-    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
     self.schedule.on(
-        self.date_rules.every_day(symbol),
-        self.time_rules.before_market_open(symbol, 10),
+        self.date_rules.every_day('SPY'),
+        self.time_rules.before_market_open('SPY', 10),
         self._before_market_open
     )</pre>
 </div>
@@ -29,19 +27,17 @@
     <pre class="csharp">public override void Initialize()
 {
     // Call the Rebalance method 30 minutes before the end of the SPY trading week.
-    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
     Schedule.On(
-        DateRules.WeekEnd(symbol),
-        TimeRules.BeforeMarketClose(symbol, 30),
+        DateRules.WeekEnd("SPY"),
+        TimeRules.BeforeMarketClose("SPY", 30),
         Rebalance
     );
 }</pre>
     <pre class="python">def initialize(self):
 # Call the _rebalance method 30 minutes before the end of the SPY trading week.
-    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
     self.schedule.on(
-        self.date_rules.week_end(symbol),
-        self.time_rules.before_market_close(symbol, 30),
+        self.date_rules.week_end('SPY'),
+        self.time_rules.before_market_close('SPY', 30),
         self._rebalance
     )</pre>
 </div>
@@ -52,18 +48,16 @@
     <pre class="csharp">public override void Initialize()
 {
     // Every day SPY is trading, call the 'SomeAction' method every 30 minutes.
-    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
     Schedule.On(
-        DateRules.EveryDay(symbol),
+        DateRules.EveryDay("SPY"),
         TimeRules.Every(TimeSpan.FromMinutes(30)),
         SomeAction
     );
 }</pre>
     <pre class="python">def initialize(self):
     # Every day SPY is trading, call the '_some_action' method every 30 minutes.
-    symbol = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
     self.schedule.on(
-        self.date_rules.every_day(symbol),
+        self.date_rules.every_day('SPY'),
         self.time_rules.every(timedelta(minutes=30)),
         self._some_action
     )</pre>

@@ -34,13 +34,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccountResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/create:
     post:
       tags:
@@ -64,13 +58,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectListResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/read:
     post:
       tags:
@@ -94,13 +82,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectListResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/update:
     post:
       tags:
@@ -123,13 +105,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/delete:
     post:
       tags:
@@ -152,13 +128,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/collaboration/create:
     post:
       tags:
@@ -182,13 +152,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateCollaboratorResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/collaboration/read:
     post:
       tags:
@@ -212,13 +176,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReadCollaboratorsResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/collaboration/update:
     post:
       tags:
@@ -242,13 +200,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UpdateCollaboratorResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/collaboration/delete:
     post:
       tags:
@@ -272,13 +224,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeleteCollaboratorResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+  /projects/collaboration/lock/acquire:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 02 Project Management
+      - 05 Collaboration
+      - 05 Lock Project
+      summary: Lock a project so you can edit it. This is necessary when the project has collaborators or when an LLM is editing files on your behalf via our MCP Server.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LockCollaboratorRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/nodes/read:
     post:
       tags:
@@ -302,13 +272,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectNodesResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /projects/nodes/update:
     post:
       tags:
@@ -332,13 +296,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectNodesResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /files/create:
     post:
       tags:
@@ -362,13 +320,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /files/read:
     post:
       tags:
@@ -392,13 +344,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /files/update:
     post:
       tags:
@@ -424,13 +370,7 @@ paths:
                   - $ref: '#/components/schemas/RestResponse'
                   - $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /files/delete:
     post:
       tags:
@@ -454,13 +394,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /compile/create:
     post:
       tags:
@@ -484,13 +418,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateCompileResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /compile/read:
     post:
       tags:
@@ -514,13 +442,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReadCompileResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/create:
     post:
       tags:
@@ -544,13 +466,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BacktestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/read:
     post:
       tags:
@@ -575,13 +491,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BacktestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/list:
     post:
       tags:
@@ -605,13 +515,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BacktestSummaryResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/orders/read:
     post:
       tags:
@@ -636,13 +540,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BacktestOrdersResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/read/report:
     post:
       tags:
@@ -666,13 +564,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_200_1'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/chart/read:
     post:
       tags:
@@ -697,13 +589,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_200_3'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/read/insights:
     post:
       tags:
@@ -728,13 +614,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BacktestInsightsResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/update:
     post:
       tags:
@@ -758,13 +638,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /backtests/delete:
     post:
       tags:
@@ -788,13 +662,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /lean/versions/read:
     post:
       tags:
@@ -833,13 +701,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/inline_response_200_3'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/auth0/authorize:
     post:
       tags:
@@ -855,17 +717,11 @@ paths:
             schema:
               $ref: '#/components/schemas/AuthorizeExternalConnectionRequest'
         required: true
-        responses:
-          "302":
-            description: Live algorithm authorization redirection URL in the header.
-          "401":
-            description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-            headers:
-              www_authenticate:
-                style: simple
-                explode: false
-                schema:
-                  type: string
+      responses:
+        "302":
+          description: Live algorithm authorization redirection URL in the header.
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/auth0/read:
     post:
       tags:
@@ -889,13 +745,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthorizeExternalConnectionResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/create:
     post:
       tags:
@@ -919,13 +769,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateLiveAlgorithmResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/read:
     post:
       tags:
@@ -950,13 +794,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LiveAlgorithmResults'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/list:
     post:
       tags:
@@ -980,13 +818,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LiveAlgorithmListResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/logs/read:
     post:
       tags:
@@ -1011,13 +843,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReadLiveLogsResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/portfolio/read:
     post:
       tags:
@@ -1042,13 +868,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LivePortfolioResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/orders/read:
     post:
       tags:
@@ -1072,16 +892,10 @@ paths:
             application/json:
               schema:
                 oneOf:
-                - $ref: '#/components/responses/LoadingResponse'
+                - $ref: '#/components/schemas/LoadingResponse'
                 - $ref: '#/components/schemas/LiveOrdersResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/insights/read:
     post:
       tags:
@@ -1106,13 +920,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LiveInsightsResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/update/liquidate:
     post:
       tags:
@@ -1137,13 +945,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/update/stop:
     post:
       tags:
@@ -1168,13 +970,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/commands/create:
     post:
       tags:
@@ -1199,13 +995,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /live/commands/broadcast:
     post:
       tags:
@@ -1230,13 +1020,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /optimizations/create:
     post:
       tags:
@@ -1260,13 +1044,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ListOptimizationResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /optimizations/update:
     post:
       tags:
@@ -1289,13 +1067,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /optimizations/read:
     post:
       tags:
@@ -1319,13 +1091,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReadOptimizationResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /optimizations/delete:
     post:
       tags:
@@ -1348,13 +1114,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /optimizations/abort:
     post:
       tags:
@@ -1377,13 +1137,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /optimizations/list:
     post:
       tags:
@@ -1407,13 +1161,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ListOptimizationResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /optimizations/estimate:
     post:
       tags:
@@ -1437,13 +1185,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EstimateOptimizationResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /object/set:
     post:
       tags:
@@ -1467,13 +1209,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /object/get:
     post:
       tags:
@@ -1499,13 +1235,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetObjectStoreResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /object/properties:
     post:
       tags:
@@ -1529,13 +1259,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetObjectStorePropertiesResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /object/delete:
     post:
       tags:
@@ -1559,13 +1283,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /object/list:
     post:
       tags:
@@ -1589,13 +1307,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ListObjectStoreResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /ai/tools/backtest-init:
     post:
       tags:
@@ -1604,9 +1316,9 @@ paths:
       - 10 AI Assistance
       - 02 Tools
       - 01 Backtest Initialization
-      summary: Run a backtest for a few seconds to initialize the algorithm and get inialization errors if any.
+      summary: Run a backtest for a few seconds to initialize the algorithm and get initialization errors if any.
       requestBody:
-        description: Run a backtest for a few seconds to initialize the algorithm and get inialization errors if any.
+        description: Run a backtest for a few seconds to initialize the algorithm and get initialization errors if any.
         content:
           application/json:
             schema:
@@ -1620,13 +1332,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BacktestInitResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /ai/tools/complete:
     post:
       tags:
@@ -1651,13 +1357,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CodeCompletionResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /ai/tools/error-enhance:
     post:
       tags:
@@ -1682,13 +1382,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorEnhanceResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /ai/tools/pep8-convert:
     post:
       tags:
@@ -1713,13 +1407,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PEP8ConvertResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /ai/tools/syntax-check:
     post:
       tags:
@@ -1744,13 +1432,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SyntaxCheckResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
   /ai/tools/search:
     post:
       tags:
@@ -1775,13 +1457,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SearchResponse'
         "401":
-          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
-          headers:
-            www_authenticate:
-              style: simple
-              explode: false
-              schema:
-                type: string
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
 
 
 components:
@@ -2376,6 +2052,7 @@ components:
           - Completed.
           - In Queue...
           - '''Running: _%'''
+          - Runtime Error
         name:
           type: string
           description: Name of the backtest.
@@ -2784,6 +2461,23 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Response received when removing collaborator.
+    LockCollaboratorRequest:
+      type: object
+      required:
+        - projectId
+        - codeSourceId
+      properties:
+        projectId:
+          type: integer
+          examples: 
+          - 23456789
+          description: Id of the project to edit.
+        codeSourceId:
+          type: string
+          examples:
+          - MCP Server
+          description: Name of the environment that's creating the request.
+      description: Lock a project so you can edit it. This is necessary when the project has collaborators or when an LLM is editing files on your behalf via our MCP Server.
     CreateCompileResponse:
       type: object
       properties:
@@ -2791,7 +2485,7 @@ components:
           type: string
           examples: 
           - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
-          description: Compile Id for a sucessful build.
+          description: Compile Id for a successful build.
         state:
           type: string
           description: The current state of the compile job.
@@ -2833,7 +2527,7 @@ components:
           type: string
           examples: 
           - 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8
-          description: Compile Id for a sucessful build.
+          description: Compile Id for a successful build.
         state:
           type: string
           description: The current state of the compile job.
@@ -3099,34 +2793,8 @@ components:
           description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
       description: Settings for using Interactive Brokers as the brokerage or a data provider for a live algorithm.
     InteractiveBrokersDataProviderSettings:
-      type: object
-      required:
-      - id
-      - ib-user-name
-      - ib-account
-      - ib-password
-      - ib-weekly-restart-utc-time
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - InteractiveBrokersBrokerage
-        ib-user-name:
-          type: string
-          description: Your Interactive Brokers username
-        ib-account:
-          type: string
-          description: Your Interactive Brokers account id
-        ib-password:
-          type: string
-          description: Your Interactive Brokers password
-        ib-weekly-restart-utc-time:
-          type: string
-          description: Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm restarts at this time and requires 2FA verification. This is required by Interactive Brokers.
-        ib-financial-advisors-group-filter:
-          type: string
-          description: Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups.
+      allOf:
+      - $ref: '#/components/schemas/InteractiveBrokersBrokerageSettings'
       description: Settings for using Interactive Brokers as a data provider for a live algorithm.
     TradierBrokerageSettings:
       type: object
@@ -3155,30 +2823,8 @@ components:
           - paper
       description: Settings for using Tradier as the brokerage for a live algorithm.
     TradierDataProviderSettings:
-      type: object
-      required:
-      - id
-      - tradier-account-id
-      - tradier-access-token
-      - tradier-environment
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - TradierBrokerage
-        tradier-account-id:
-          type: string
-          description: Your Tradier account id
-        tradier-access-token:
-          type: string
-          description: Your Tradier access token
-        tradier-environment:
-          type: string
-          description: Whether the developer sandbox should be used. Use `live`.
-          enum:
-          - live
-          - paper
+      allOf:
+      - $ref: '#/components/schemas/TradierBrokerageSettings'
       description: Settings for using Tradier as a data provider for a live algorithm.
     BitfinexSettings:
       type: object
@@ -3199,7 +2845,7 @@ components:
           type: string
           description: Your Bitfinex API secret.
       description: Settings for using Bitfinex as the brokerage or a data provider for a live algorithm.
-    CoinbaseBrokerageSettings:
+    CoinbaseBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -3217,32 +2863,22 @@ components:
         coinbase-api-private-key:
           type: string
           description: Your Coinbase Advanced Trade API private key.
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
+    CoinbaseBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/CoinbaseBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Coinbase Advanced Trade as the brokerage for a live algorithm.
     CoinbaseDataProviderSettings:
-      type: object
-      required:
-      - id
-      - coinbase-api-name
-      - coinbase-api-private-key
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - CoinbaseBrokerage
-        coinbase-api-name:
-          type: string
-          description: Your Coinbase Advanced Trade API name.
-        coinbase-api-private-key:
-          type: string
-          description: Your Coinbase Advanced Trade API private key.
+      allOf:
+      - $ref: '#/components/schemas/CoinbaseBrokerageAndDataProviderSettings'
       description: Settings for using Coinbase Advanced Trade as a data provider for a live algorithm.
-    BinanceBrokerageSettings:
+    BinanceBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -3273,13 +2909,22 @@ components:
           enum:
           - live
           - paper
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
+    BinanceBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceUSBrokerageSettings:
+    BinanceDataProviderSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceBrokerageAndDataProviderSettings'
+      description: Settings for using Binance as a data provider for a live algorithm.
+    BinanceUSBrokerageAndDataProviderSettings:
       type: object
       required:
        - id
@@ -3303,136 +2948,28 @@ components:
         binanceus-api-secret:
           type: string
           description: Your Binance API secret
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
+    BinanceUSBrokerageSettings:
+      allOf:
+        - $ref: '#/components/schemas/BinanceUSBrokerageAndDataProviderSettings'
+        - type: object
+          properties:
+            holdings:
+              type: array
+              description: List of holdings for the brokerage.
+              items:
+                $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceUSDMFuturesBrokerageSettings:
-      type: object
-      required:
-       - id
-       - binance-exchange-name
-       - binance-api-key
-       - binance-api-secret
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - Binance-USDM-Futures
-        binance-api-key:
-          type: string
-          description: Your Binance API key
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceCOINFuturesBrokerageSettings:
-      type: object
-      required:
-       - id
-       - binance-exchange-name
-       - binance-api-key
-       - binance-api-secret
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - Binance-COIN-Futures
-        binance-api-key:
-          type: string
-          description: Your Binance API key
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret
-        holdings:
-          type: array
-          description: List of holdings for the brokerage.
-          items:
-            $ref: '#/components/schemas/BrokerageHolding'
-      description: Settings for using Binance as the brokerage for a live algorithm.
-    BinanceDataProviderSettings:
-      type: object
-      required:
-      - id
-      - binance-exchange-name
-      - binance-api-key
-      - binance-api-secret
-      - binance-use-testnet
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - Binance
-        binance-api-key:
-          type: string
-          description: Your Binance API key
-        binance-api-secret:
-          type: string
-          description: Your Binance API secret
-        binance-use-testnet:
-          type: string
-          description: Whether the testnet should be used
-          enum:
-          - live
-          - paper
-      description: Settings for using Binance as a data provider for a live algorithm.
     BinanceUSDataProviderSettings:
-      type: object
-      required:
-      - id
-      - binance-exchange-name
-      - binanceus-api-key
-      - binanceus-api-secret
-      properties:
-        id:
-          type: string
-          description: Id of the module.
-          enum:
-          - BinanceBrokerage
-        binance-exchange-name:
-          type: string
-          description: Binance exchange name.
-          enum:
-          - BinanceUS
-        binanceus-api-key:
-          type: string
-          description: Your Binance API key
-        binanceus-api-secret:
-          type: string
-          description: Your Binance API secret
+      allOf:
+      - $ref: '#/components/schemas/BinanceUSBrokerageAndDataProviderSettings'
       description: Settings for using Binance as a data provider for a live algorithm.
-    BinanceUSDMFuturesDataProviderSettings:
+    BinanceUSDMFuturesBrokerageAndDataProviderSettings:
       type: object
       required:
-      - id
-      - binance-exchange-name
-      - binance-api-key
-      - binance-api-secret
+       - id
+       - binance-exchange-name
+       - binance-api-key
+       - binance-api-secret
       properties:
         id:
           type: string
@@ -3450,14 +2987,28 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
+    BinanceUSDMFuturesBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceUSDMFuturesBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using Binance as the brokerage for a live algorithm.
+    BinanceUSDMFuturesDataProviderSettings:
+      allOf:
+        - $ref: '#/components/schemas/BinanceUSDMFuturesBrokerageAndDataProviderSettings'
       description: Settings for using Binance as a data provider for a live algorithm.
-    BinanceCOINFuturesDataProviderSettings:
+    BinanceCOINFuturesBrokerageAndDataProviderSettings:
       type: object
       required:
-      - id
-      - binance-exchange-name
-      - binance-api-key
-      - binance-api-secret
+       - id
+       - binance-exchange-name
+       - binance-api-key
+       - binance-api-secret
       properties:
         id:
           type: string
@@ -3475,6 +3026,20 @@ components:
         binance-api-secret:
           type: string
           description: Your Binance API secret
+    BinanceCOINFuturesBrokerageSettings:
+      allOf:
+      - $ref: '#/components/schemas/BinanceCOINFuturesBrokerageAndDataProviderSettings'
+      - type: object
+        properties:
+          holdings:
+            type: array
+            description: List of holdings for the brokerage.
+            items:
+              $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using Binance as the brokerage for a live algorithm.
+    BinanceCOINFuturesDataProviderSettings:
+      allOf:
+        - $ref: '#/components/schemas/BinanceCOINFuturesBrokerageAndDataProviderSettings'
       description: Settings for using Binance as a data provider for a live algorithm.
     TradingTechnologiesBrokerageSettings:
       type: object
@@ -4129,6 +3694,11 @@ components:
           # C# research file
           - "{\"cells\": [{\"cell_type\": \"code\", \"execution_count\": 1, \"metadata\": {}, \"outputs\": [], \"source\": [\"// We need to load assemblies at the start in their own cell\\n\", \"#load \\\"../Initialize.csx\\\"\"]}], \"metadata\": {\"kernelspec\": {\"display_name\": \".NET (C#)\", \"language\": \"C#\", \"name\": \"csharp\"}, \"language_info\": {\"file_extension\": \".cs\", \"mimetype\": \"text/x-csharp\", \"name\": \"C#\", \"pygments_lexer\": \"csharp\", \"version\": \"9.0\"}}, \"nbformat\": 4, \"nbformat_minor\": 2}"
           description: The content of the new file.
+        codeSourceId:
+          type: string
+          examples:
+          - MCP Server
+          description: Name of the environment that's creating the request.
       description: Request to add a file to a project.
     DeleteFileRequest:
       type: object
@@ -4147,6 +3717,11 @@ components:
           - file.py
           - File.cs
           description: The name of the file to delete.
+        codeSourceId:
+          type: string
+          examples:
+          - MCP Server
+          description: Name of the environment that's creating the request.
       description: Request to delete a file in a project.
     DeleteProjectRequest:
       type: object
@@ -5730,7 +5305,7 @@ components:
           description: The current order quantity.
           format: float
         time:
-          type: integer
+          type: number
           description: The time of this event in unix timestamp.
         isInTheMoney:
           type: boolean
@@ -6123,6 +5698,11 @@ components:
           - file.py
           - File.cs
           description: The name of the file to read.
+        codeSourceId:
+          type: string
+          examples:
+          - MCP Server
+          description: Name of the environment that's creating the request.
       description: Request to read all files from a project or just one (if the name is provided).
     ReadCompileRequest:
       type: object
@@ -6249,6 +5829,7 @@ components:
       description: Request to read the portfolio state from a live algorithm.
     ReadLiveOrdersRequest:
       required:
+      - start
       - end
       - projectId
       type: object
@@ -6257,12 +5838,12 @@ components:
           type: integer
           examples: 
           - 0
-          description: Starting index of the orders to be fetched. Required if end > 1,000.
+          description: Starting index of the orders to be fetched. 
         end:
           type: integer
           examples: 
           - 100
-          description: Last index of the orders to be fetched. Note that end - start must be less than 1,000.
+          description: Last index of the orders to be fetched. Note that end - start must be <= 1,000.
         projectId:
           type: integer
           examples: 
@@ -6615,11 +6196,14 @@ components:
           type: integer
           description: Index/position of the series on the chart.
         values:
-          type: array
+          oneOf:
+            - type: array
+              items: 
+                type: array
+            - type: array
+              items: 
+                type: object
           description: Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest)
-          items:
-            type: array
-            description: The type of the values depends on the series type.
         seriesType:
           type: integer
           description: Chart type for the series. 0=Line, 1=Scatter, 2=Candle, 3=Bar, 4=Flag, 5=StackedArea, 6=Pie, 7=Treemap, 9=Heatmap, 10=Scatter3d.
@@ -6977,25 +6561,6 @@ components:
           description: The sum of fees for all trades.
           format: float
       description: A set of statistics calculated from a list of closed trades.
-    TradierSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the module.
-        tradier-account-id:
-          type: string
-          description: Your Tradier account id.
-        tradier-access-token:
-          type: string
-          description: Your Tradier access token.
-        tradier-environment:
-          type: string
-          description: Whether the developer sandbox should be used.
-          enum:
-            - live
-            - paper
-      description: Settings for using Tradier as a data provider.
     UpdateBacktestRequest:
       required:
       - backtestId
@@ -7041,6 +6606,11 @@ components:
           examples: 
           - file2.py
           description: The new name for the file.
+        codeSourceId:
+          type: string
+          examples:
+          - MCP Server
+          description: Name of the environment that's creating the request.
       description: Request to update the name of a file.
     UpdateFileContentsRequest:
       type: object
@@ -7078,6 +6648,11 @@ components:
                 }
             }
           description: The new contents of the file.
+        codeSourceId:
+          type: string
+          examples:
+          - MCP Server
+          description: Name of the environment that's creating the request.
       description: Request to update the contents of a file.
     UpdateOptimizationRequest:
       type: object
@@ -7230,8 +6805,8 @@ components:
       - $ref: '#/components/schemas/BacktestReportGeneratingResponse'
     inline_response_200_3:
       oneOf:
-      - $ref: '#/components/responses/LoadingResponse'
-      - $ref: '#/components/responses/ReadChartResponse'
+      - $ref: '#/components/schemas/LoadingResponse'
+      - $ref: '#/components/schemas/ReadChartResponse'
   responses:
     BacktestResponse:
       description: Backtest read response packet.
@@ -7250,7 +6825,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CompileResponse'
+            $ref: '#/components/schemas/CreateCompileResponse'
     LiveAlgorithm:
       description: Live algorithm instance result.
       content:
@@ -7293,7 +6868,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/RestResponse'
-    UnauthorizedError:
+    UnauthorizedErrorResponse:
       description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
       headers:
         www_authenticate:

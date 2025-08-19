@@ -1,6 +1,6 @@
 <p>The <code>TastytradeBrokerageModel</code> sets the buying power model based on the asset class of the security. The following table shows the default buying power model of each asset class:</p>
 
-table class="qc-table table">
+<table class="qc-table table">
     <thead>
         <tr>
             <th>Asset Class</th>

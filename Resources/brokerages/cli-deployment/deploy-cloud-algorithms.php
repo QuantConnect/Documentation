@@ -30,7 +30,8 @@ $brokerages = array(
       "Charles Schwab",
       "Bybit",
       "TradeStation",
-      "Alpaca"
+      "Alpaca",
+      "Tastytrade"
 
 );
 $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
@@ -54,7 +55,8 @@ $dataProviders = array(
     "CoinApi",
     "Bybit",
     "TradeStation",
-    "Alpaca"
+    "Alpaca",
+    "Tastytrade"
 );
 $dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName, $dataProviders) + 1 : -1;
 ?>
@@ -79,6 +81,7 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
 Enter an option: <?=$brokerageNumber?></pre>
 </div>
 
@@ -177,6 +180,7 @@ Select a live data feed:
 17) Bybit
 18) TradeStation
 19) Alpaca
+20) Tastytrade
 To enter multiple options, separate them with comma: <?=$dataProviderNumber?></pre>
             </div>
             </li>
@@ -207,6 +211,7 @@ Select a live data feed:
 17) Bybit
 18) TradeStation
 19) Alpaca
+20) Tastytrade
 To enter multiple options, separate them with comma:</pre>
             </div>
             </li>          
