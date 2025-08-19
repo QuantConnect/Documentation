@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/brokerages/eze/asset-classes.php"); ?>

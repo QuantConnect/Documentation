@@ -1,5 +1,5 @@
 <?
 $availability=true;
-$dataFeedName= "Tastytrade";
+$dataFeedName= "tastytrade";
 include(DOCS_RESOURCES."/data-feeds/universe-selection.php");
 ?>

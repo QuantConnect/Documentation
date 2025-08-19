@@ -4,7 +4,7 @@ $underlyingNameC = "underlyingSymbol";
 
 $contractNamePy = "contract_symbol";
 $underlyingNamePy = "underlying_symbol";
-
+$hasTarget = true;
 $imgLinkPy = "https://cdn.quantconnect.com/i/tu/index-options-greeks-and-iv-history.png";
 include(DOCS_RESOURCES."/universes/option/greeks-and-iv-history.php"); 
 ?>

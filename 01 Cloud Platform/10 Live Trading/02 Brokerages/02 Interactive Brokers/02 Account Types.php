@@ -14,15 +14,7 @@
 <h4>Paper Trading</h4>
 <p>IB supports paper trading. Follow the <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/software/ptgstl/topics/papertrader.htm">Opening a Paper Trading Account</a> page in the IB documentation to set up your paper trading account.</p>
 
-<p>If you want to use <a href="/docs/v2/cloud-platform/datasets/interactive-brokers">IB market data</a> and trade with your paper trading account, follow these steps:</p>
-
-<ol>
-    <li>Log in to the IB Client Portal.</li>
-    <li>In the top-right corner, click the <span class="icon-name">person</span> icon and then click <span class="menu-name">Settings</span>.</li>
-    <li>In the <span class="page-section-name">Account Configuration</span> section, click <span class="page-section-name">Paper Trading Account</span>.</li>
-    <li>Click <span class="button-name">Yes</span>.</li>
-    <li>Click <span class="button-name">Save</span>.</li>
-</ol>
+<? include(DOCS_RESOURCES."/data-feeds/ib-share-data-with-paper-trading.html"); ?>
 
 <p>The IB paper trading environment simulates most aspects of a production Trader Workstation account, but you may encounter some differences due to its construction as a simulator with no execution or clearing abilities.</p>
 
