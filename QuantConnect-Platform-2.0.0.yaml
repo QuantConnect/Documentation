@@ -408,7 +408,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchFileRequest'
+              $ref: '#/components/schemas/Request'
         required: true
       responses:
         "200":
@@ -3787,7 +3787,30 @@ components:
                  }
              }
             
-          description: A patch string in **unified diff format** (as produced by `git diff`). It specifies changes to apply to one or more files in the project.
+          description: |
+            A patch string in **unified diff format** (as produced by `git diff`). It specifies changes to apply to one or more files in the project.
+
+            **Required format:**
+            - Must include `diff --git a/filename b/filename` header
+            - Must include `index` line (can use placeholder hashes like `1234567..abcdefg`)
+            - Must include `--- a/filename` and `+++ b/filename` lines
+            - Must include `@@` hunk headers with line numbers and context counts
+            - Include context lines before and after changes when possible
+            - Use exact line content from the file (whitespace sensitive)
+
+            **CRITICAL: The patch must match the EXACT file content including:**
+            - Exact whitespace (spaces vs tabs)
+            - Exact line endings
+            - Exact indentation
+            - All characters must match precisely
+
+            **Recommended approach:**
+            1. Read the current file content first
+            2. Use 3+ lines of context before and after the change
+            3. Copy exact text from the file for context lines
+            4. Only modify the specific line(s) that need changing
+
+            See examples for the complete structure required.
         codeSourceId:
           type: string
           examples:
