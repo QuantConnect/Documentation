@@ -1,0 +1,49 @@
+<p></p>
+
+<ol>
+  <li>Install and open <a href='https://docs.docker.com/desktop/' rel='nofollow' target='_blank'>Docker Desktop</a>.</li>
+  
+  <li>Install and open <a href='/docs/v2/local-platform/installation'>Local Platform</a>.</li>
+
+  <li>In Local Platform, press <span class='key-combinations'>Ctrl+Shift+P</li> to open the Command Palette, enter <span class='key-combinations'>MCP: Open User Configuration</li>, and then press <span class='key-combinations'>Enter</li>.
+
+  <li>Edit the <span class='private-file-name'>mcp.json</span> file to include the following QuantConnect configuration:</li>    
+  
+    <div class="section-example-container">
+     <pre>{
+  "mcpServers": {
+    "quantconnect": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e", "QUANTCONNECT_USER_ID",
+        "-e", "QUANTCONNECT_API_TOKEN",
+        "-e", "AGENT_NAME",
+        "--platform", "&lt;your_platform&gt;",
+        "--name",
+        "quantconnect-mcp-server",
+        "quantconnect/mcp-server"
+      ],
+      "env": {
+        "QUANTCONNECT_USER_ID": "&lt;your_user_id&gt;",
+        "QUANTCONNECT_API_TOKEN": "&lt;your_api_token&gt;",
+        "AGENT_NAME": "MCP Server"
+      }
+    }
+  }
+}</pre>
+   </div>
+
+    <p>To get your user Id and API token, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
+    <p>Our MCP server is multi-platform capable. The options are <code>linux/amd64</code> for Intel/AMD chips and <code>linux/arm64</code> for ARM chips (for example, Apple's M-series chips).</p>
+    <p>If you simultaneously run multiple agents, set a unique value for the <code>AGENT_NAME</code> environment variable for each agent to keep record of the request source.</p>
+
+  <li>Press <span class='key-combinations'>Ctrl+S</li> to save the <span class='private-file-name'>mcp.json</span> file.</li>
+
+  <li>In the top navigation bar, click <span class='menu-name'>View > Chat</span>.</li>
+
+  <li>At the bottom of the <span class='page-section-name'>Chat</span> panel that opens, click <span class='button-name'>Ask > Agent</span> to switch to Agent mode.</li>
+  <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-platform-switch-from-ask-to-agent-mode-for-mcp.png' alt='Visualization of the steps to switch from ask mode to agent mode in local platform'>
+</ol>
