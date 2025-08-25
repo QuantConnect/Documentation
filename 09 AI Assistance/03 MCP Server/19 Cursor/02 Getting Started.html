@@ -1,0 +1,66 @@
+<p>To connect the Agent in the Cursor IDE to the QC MCP Server, follow these steps:</p>
+
+<ol>
+  <li>Install and open <a href='https://docs.docker.com/desktop/' rel='nofollow' target='_blank'>Docker Desktop</a>.</li>
+  
+  <li>Install and open <a href='https://cursor.com/downloads' rel='nofollow' target='_blank'>Cursor</a>.</li>
+
+  <li>Open the <a href='https://marketplace.visualstudio.com/items?itemName=quantconnect.quantconnect'>QuantConnect extension</a> in the VS Code marketplace and get the latest version number.</li>
+  <p>The Cursor IDE has a lag in updating the VS Code extensions. If you have the latest version number from the VS Code marketplace, in the next step, you can download it directly.</p>
+
+  <li>In a browser, enter <span class='public-file-name'>https://marketplace.visualstudio.com/_apis/public/gallery/publishers/quantconnect/vsextensions/quantconnect/&lt;version_number&gt;/vspackage</span> (for example, <span class='public-file-name'>https://marketplace.visualstudio.com/_apis/public/gallery/publishers/quantconnect/vsextensions/quantconnect/0.1.1946/vspackage</span>) into the URL bar and then press <span class='key-combinations'>Enter</span>.</li>
+  <p>The extension should automatically download.</p>
+  
+  <li>In Cursor, press <span class='key-combinations'>Ctrl+Shift+X</span> to open the Extensions panel.</li>
+
+  <li>Drag-and-drop the <span class='public-file-name'>vsix</span> file you downloaded onto the Extensions panel.</li>
+
+  <li>In the top navigation menu, click <span class='menu-name'>File > Preferences > Cursor Settings</span>.</li>
+
+  <li>On the Cursor Settings page, click <span class='menu-name'>MCP & Integrations</span>.</li>
+
+  <li>On the MCP & Integrations page, click <span class='buttoon-name'>Add Custom MCP</span> or <span class='buttoon-name'>New MCP Server</span>.</li>
+
+  <li>Edit the <span class='private-file-name'>mcp.json</span> file that opens to include the following QuantConnect configuration:</li>    
+  
+    <div class="section-example-container">
+     <pre>{
+  "mcpServers": {
+    "quantconnect": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e", "QUANTCONNECT_USER_ID",
+        "-e", "QUANTCONNECT_API_TOKEN",
+        "-e", "AGENT_NAME",
+        "--platform", "&lt;your_platform&gt;",
+        "quantconnect/mcp-server"
+      ],
+      "env": {
+        "QUANTCONNECT_USER_ID": "&lt;your_user_id&gt;",
+        "QUANTCONNECT_API_TOKEN": "&lt;your_api_token&gt;",
+        "AGENT_NAME": "MCP Server"
+      }
+    }
+  }
+}</pre>
+   </div>
+
+    <p>To get your user Id and API token, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
+    <p>Our MCP server is multi-platform capable. The options are <code>linux/amd64</code> for Intel/AMD chips and <code>linux/arm64</code> for ARM chips (for example, Apple's M-series chips).</p>
+    <p>If you simultaneously run multiple agents, set a unique value for the <code>AGENT_NAME</code> environment variable for each agent to keep record of the request source.</p>
+
+  <li>Press <span class='key-combinations'>Ctrl+S</span> to save the <span class='private-file-name'>mcp.json</span> file.</li>
+
+  <li>In the bottom-left corner of the Cursor IDE, click <span class='button-name'>∞ Agents</span>.</li>
+
+  <li>In the <span class='page-section-name'>Agents</span> panel that opens, click <span class='button-name'>New Chat</span>.</li>
+</ol>
+
+<p>To keep the Docker image up-to-date, in a terminal, pull the latest MCP server from Docker Hub.</p>
+<div class="cli section-example-container">
+  <pre>$ docker pull quantconnect/mcp-server</pre>
+</div>
+<p>If you have an ARM chip, add the <code>--platform linux/arm64</code> option.</p>
