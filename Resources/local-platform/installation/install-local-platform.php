@@ -9,6 +9,7 @@
     <p>It takes about an hour to download the image. While it's downloading, continue to the next step. When you use Local Platform, it automatically pulls the latest LEAN image if your current version is more than a week old.</p>
     <li><a rel="nofollow" target="_blank" href="https://code.visualstudio.com/download">Install Visual Studio Code</a>.</li>
     <li><a rel="nofollow" target="_blank" href="https://marketplace.visualstudio.com/items?itemName=quantconnect.quantconnect">Install Local Platform</a>.</li>
+    <li class="python"><a rel="nofollow" target="_blank" href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">Install Python Language Support</a>.</li>
 </ol>
 
 <p>If you open Visual Studio Code and it asks you to log in to QuantConnect, you successfully installed Local Platform.</p>
