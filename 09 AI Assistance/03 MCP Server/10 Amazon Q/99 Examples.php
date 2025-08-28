@@ -7,3 +7,7 @@
      <pre>> Read my QuantConnect account.</pre>
 </div>
 <p>The agent should call the <code>read_account</code> tool.</p>
+
+<h4>Example 2: Strategy Development and Deployment</h4>
+<p>This example uses Amazon Q in Local Platform to brainstorm new strategy ideas, edit files, run backtests, and deploy to paper trading.</p>
+<? DOCS_VIMEO(1114059222); ?>
