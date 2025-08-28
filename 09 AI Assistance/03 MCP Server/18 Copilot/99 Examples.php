@@ -8,3 +8,6 @@
 </div>
 <p>Copilot should call the <code>read_account</code> tool.</p>
 
+<h4>Example 2: Strategy Development and Deployment</h4>
+<p>This example uses Copilot Chat in Local Platform to brainstorm new strategy ideas, edit files, run backtests, and deploy to paper trading.</p>
+<? DOCS_VIMEO(1114056119); ?>
