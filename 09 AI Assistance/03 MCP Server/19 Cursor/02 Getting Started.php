@@ -11,6 +11,8 @@
   <li>In Cursor, press <span class='key-combinations'>Ctrl+Shift+X</span> to open the <span class='page-section-name'>Extensions</span> panel.</li>
 
   <li>Drag-and-drop the <span class='public-file-name'>vsix</span> file you downloaded onto the <span class='page-section-name'>Extensions</span> panel.</li>
+  <? DOCS_VIMEO(1114060483); ?>
+  
 
   <li>Click one of the following buttons:</li>
   <ul>
