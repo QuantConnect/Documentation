@@ -3,19 +3,19 @@
 $hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
-$typeName = 'MomersionIndicator';
-$helperName = 'MomersionIndicator';
-$pyHelperName = 'momersion_indicator';
+$typeName = 'ChaikinOscillator';
+$helperName = 'ChaikinOscillator';
+$pyHelperName = 'chaikin_oscillator';
 $helperArguments = 'symbol';
 $properties = array();
 $pyProperties = array();
 $otherProperties = array();
 $otherPyProperties = array();
-$updateParameterType = 'time/number pair or an <code>IndicatorDataPoint</code>';
+$updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '';
-$updateParameterValue = 'bar.EndTime, bar.Close';
+$updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'momersion-indicator';
+$constructorBox = 'chaikin-oscillator';
 $isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>
