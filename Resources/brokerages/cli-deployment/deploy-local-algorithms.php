@@ -25,7 +25,8 @@ if ($isBrokerage) {
       "Bybit",
       "TradeStation",
       "Alpaca",
-      "Tastytrade"
+      "Tastytrade",
+      "Eze"
   );
   $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 }
@@ -45,14 +46,14 @@ $dataProviders = array(
     "Charles Schwab",
     "IQFeed",
     "Polygon",
-    "IEX Cloud",
     "CoinApi",
     "ThetaData",
     "Custom data only",
     "Bybit",
     "TradeStation",
     "Alpaca",
-    "Tastytrade"
+    "Tastytrade",
+    "Eze"
 );
 $dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName, $dataProviders) + 1 : -1;
 ?>
@@ -78,6 +79,7 @@ Select a brokerage:
 15) TradeStation
 16) Alpaca
 17) Tastytrade
+18) Eze
 Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 </div>
 </li>
@@ -137,14 +139,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
-22) Tastytrade
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma: 9</pre>
 </div>
 </li>   
@@ -169,14 +171,14 @@ Select a live data feed:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
-22) Tastytrade
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma: <?=$dataProviderNumber?></pre>
             </div>
             </li>
@@ -201,14 +203,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
-22) Tastytrade
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
 </div>
 </li>
@@ -235,4 +237,3 @@ To enter multiple options, separate them with comma:</pre>
     If you already have a live environment configured in your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>, you can skip the interactive wizard by providing the <code>--environment &lt;value&gt;</code> option in step 2.
     The value of this option must be the name of an environment which has <code>live-mode</code> set to <code>true</code>.
 </p>
- 

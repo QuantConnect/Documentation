@@ -1,6 +1,6 @@
 <h4>Order Types</h4>
 
-<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our <a rel='nofollow' target='_blank' href='https://qnt.co/eze'>SS&C Eze</a> integration" : "the <code>EzeBrokerageModel</code>" ?> supports:</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our <a rel='nofollow' target='_blank' href='https://qnt.co/ssc-eze'>SS&C Eze</a> integration" : "the <code>EzeBrokerageModel</code>" ?> supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>

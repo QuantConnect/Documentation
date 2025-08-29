@@ -1,4 +1,4 @@
-<p><?= $writingAlgorithms ? "The <code>EzeBrokerageModel</code>" : "Our <a rel='nofollow' target='_blank' href='https://qnt.co/eze'>SS&C Eze</a> integration" ?> supports the following asset classes:</p>
+<p><?= $writingAlgorithms ? "The <code>EzeBrokerageModel</code>" : "Our <a rel='nofollow' target='_blank' href='https://qnt.co/ssc-eze'>SS&C Eze</a> integration" ?> supports the following asset classes:</p>
 <ul>
     <li><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equities</a></li>
     <li><a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options'>Equity Options</a></li>
