@@ -35,7 +35,7 @@
 # self.add_data(Fred, "USD1WKD156N")</pre>
     </div>
 
-    <li>Define the <a href="/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">GetSource</a> method to point to the path of your dataset file(s).</li>
+    <li>Define the <a href="/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources"><span class='python'>get_source</span><span class='csharp'>GetSource</span></a> method to point to the path of your dataset file(s).</li>
     <p>If your dataset is organized across multiple <span class="public-file-name">CSV</span> files, use the <code>config.Symbol.Value</code> string to build the file path. <code>config.Symbol.Value</code> is the string value of the argument you pass to the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/initialization#08-Add-Data'>AddData</a> method when you subscribe to the dataset. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / dal.csv</span>.</p>
     <li>Define the <code class="csharp">Reader</code><code class="python">reader</code> method to return instances of your dataset class.</li>
     <p>Set <code>Symbol = config.Symbol</code> and set <code class="csharp">EndTime</code><code class="python">end_time</code> to the time that the datapoint first became available for consumption.</p>
