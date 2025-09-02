@@ -2070,7 +2070,7 @@ components:
           enum:
             - Completed.
             - In Queue...
-            - "'Running: _%'"
+            - "Running: _%"
             - Runtime Error
         error:
           type: string
@@ -2131,7 +2131,7 @@ components:
           enum:
             - Completed.
             - In Queue...
-            - "'Running: _%'"
+            - "Running: _%"
             - Runtime Error
         name:
           type: string
@@ -2169,12 +2169,12 @@ components:
         alpha:
           type: number
           description:
-            Algorithm "Alpha" statistic - abnormal returns over the risk
+            Algorithm 'Alpha' statistic - abnormal returns over the risk
             free rate and the relationshio (beta) with the benchmark returns.
         beta:
           type: number
           description:
-            Algorithm "beta" statistic - the covariance between the algorithm
+            Algorithm 'beta' statistic - the covariance between the algorithm
             and benchmark performance, divided by benchmark's variance.
         compoundingAnnualReturn:
           type: number
@@ -2820,9 +2820,6 @@ components:
               $ref: "#/components/schemas/TastytradeSettings"
             AlpacaBrokerage:
               $ref: "#/components/schemas/AlpacaDataProviderSettings"
-          default:
-            QuantConnectBrokerage:
-              id: QuantConnectBrokerage
     QuantConnectDataProviderSettings:
       type: object
       required:
@@ -2833,6 +2830,7 @@ components:
           description: Id of the module.
           enum:
             - QuantConnectBrokerage
+          default: QuantConnectBrokerage
       description: Settings for using QuantConnect as a data provider for a live algorithm.
     QuantConnectBrokerageSettings:
       type: object
@@ -5523,6 +5521,11 @@ components:
     ParameterSet:
       oneOf:
         - type: array
+          items:
+            oneOf:
+              - type: string
+              - type: number
+              - type: integer
         - type: object
           additionalProperties:
             oneOf:
@@ -5848,7 +5851,7 @@ components:
         alpha:
           type: number
           description:
-            Algorithm "Alpha" statistic - abnormal returns over the risk
+            Algorithm 'Alpha' statistic - abnormal returns over the risk
             free rate and the relationshio (beta) with the benchmark returns.
           format: float
         beta:
@@ -6529,12 +6532,12 @@ components:
         Alpha:
           type: string
           description:
-            Algorithm "Alpha" statistic - abnormal returns over the risk
+            Algorithm 'Alpha' statistic - abnormal returns over the risk
             free rate and the relationshio (beta) with the benchmark returns.
         Beta:
           type: string
           description:
-            Algorithm "beta" statistic - the covariance between the algorithm
+            Algorithm 'beta' statistic - the covariance between the algorithm
             and benchmark performance, divided by benchmark's variance.
         Annual Standard Deviation:
           type: string
@@ -7038,7 +7041,7 @@ components:
         - $ref: "#/components/schemas/UpdateFileContentsRequest"
     inline_response_200_1:
       oneOf:
-        - $ref: "#/components/responses/BacktestReport"
+        - $ref: "#/components/schemas/BacktestReport"
         - $ref: "#/components/schemas/BacktestReportGeneratingResponse"
     inline_response_200_3:
       oneOf:
