@@ -610,7 +610,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/inline_response_200_1"
+                oneOf:
+                  - $ref: "#/components/schemas/BacktestReport"
+                  - $ref: "#/components/schemas/BacktestReportGeneratingResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedErrorResponse"
       operationId: readBacktestsReport
@@ -636,7 +638,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/inline_response_200_3"
+                oneOf:
+                  - $ref: "#/components/schemas/LoadingResponse"
+                  - $ref: "#/components/schemas/ReadChartResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedErrorResponse"
       operationId: readBacktestChart
@@ -757,7 +761,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/inline_response_200_3"
+                oneOf:
+                  - $ref: "#/components/schemas/LoadingResponse"
+                  - $ref: "#/components/schemas/ReadChartResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedErrorResponse"
       operationId: readLiveChart
@@ -7039,14 +7045,6 @@ components:
       oneOf:
         - $ref: "#/components/schemas/UpdateFileNameRequest"
         - $ref: "#/components/schemas/UpdateFileContentsRequest"
-    inline_response_200_1:
-      oneOf:
-        - $ref: "#/components/schemas/BacktestReport"
-        - $ref: "#/components/schemas/BacktestReportGeneratingResponse"
-    inline_response_200_3:
-      oneOf:
-        - $ref: "#/components/schemas/LoadingResponse"
-        - $ref: "#/components/schemas/ReadChartResponse"
   responses:
     BacktestResponse:
       description: Backtest read response packet.
