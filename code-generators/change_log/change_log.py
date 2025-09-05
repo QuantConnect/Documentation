@@ -20,6 +20,8 @@ class ChangeLog:
         URL.
         [{'summary': 'some text', 'url': 'hyperlink'}]
         """
+        if github_access_token is None:
+            raise Exception("GH Access Token is missing")
         if openai_model is None:
             raise Exception("Open AI model is missing!")
         if openai_api_key is None:
