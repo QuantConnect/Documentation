@@ -1,6 +1,4 @@
 <?
-$jsonUrl = 'https://s3.us-east-1.amazonaws.com/content.quantconnect.com/documentation/change-log.json';
-$jsonData = file_get_contents($jsonUrl);
-echo htmlspecialchars($jsonData !== false ? $jsonData : 'Failed to fetch JSON');
+echo file_get_contents('https://s3.us-west-1.amazonaws.com/content.quantconnect.com/documentation/change-log.json');
 ?>
-Hello world3
+Hello world5
