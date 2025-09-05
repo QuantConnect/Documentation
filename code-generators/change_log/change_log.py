@@ -103,7 +103,7 @@ class ChangeLog:
 
         # Create the list of changes for the change log using the AI 
         # model.
-        return self._openai.create_prompt(prompt)
+        return self._openai.create_prompt([prompt])
 
     def _add_pr_and_issue_data(self, commit):
         # Get the PR number from the commit message.
