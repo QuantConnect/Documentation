@@ -31,6 +31,8 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/forex.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/fundamental.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/future.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/futures-chain.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/futures-chains.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/gap-side-by-side-white.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/gravestone-doji.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/hammer.html"); ?>
@@ -101,6 +103,7 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/three-stars-in-south.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/three-white-soldiers.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/thrusting.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/tom-demark-sequential.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/trade-bar.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/tristar.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/two-crows.html"); ?>
