@@ -20,12 +20,6 @@ class ChangeLog:
         URL.
         [{'summary': 'some text', 'url': 'hyperlink'}]
         """
-        if github_access_token is None:
-            raise Exception("GH Access Token is missing")
-        if openai_model is None:
-            raise Exception("Open AI model is missing!")
-        if openai_api_key is None:
-            raise Exception("OpenAI API key is missing!")
         self._openai = OpenAI_(openai_api_key, openai_model, system_prompt)
 
     def update(self, lookback_days, output_path):
