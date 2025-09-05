@@ -1,6 +1,6 @@
 <?
 // URL of the JSON file
-$jsonUrl = 'https://s3.us-east-1.amazonaws.com/content.quantconnect.com/change-log.json';
+$jsonUrl = 'https://s3.us-east-1.amazonaws.com/content.quantconnect.com/documentation/change-log.json';
 
 // Fetch JSON data
 $ch = curl_init();
@@ -11,4 +11,4 @@ curl_close($ch);
 
 echo htmlspecialchars($jsonData !== false ? $jsonData : 'Failed to fetch JSON');
 ?>
-Hello world
+Hello world2
