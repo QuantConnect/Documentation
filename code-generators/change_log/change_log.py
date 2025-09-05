@@ -29,7 +29,7 @@ class ChangeLog:
         today = datetime.today().date()
         for i in range(lookback_days, 0, -1):
             date = today - timedelta(days=i)
-            changes_by_date[date] = self._get_daily_changes(date)
+            changes_by_date[date.strftime("%Y-%m-%d")] = self._get_daily_changes(date)
         # Save the daily changes to a JSON file.
         with open(output_path, 'w') as file:
             json.dump(changes_by_date, file, indent=4)
