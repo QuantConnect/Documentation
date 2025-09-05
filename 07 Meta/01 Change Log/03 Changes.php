@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php'; // Include the AWS SDK
+//require 'vendor/autoload.php'; // Include the AWS SDK
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
