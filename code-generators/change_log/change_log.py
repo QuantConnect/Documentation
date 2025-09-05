@@ -1,4 +1,5 @@
 import re
+import json
 from datetime import datetime, timedelta
 
 from qc_docs import QCDocs
@@ -103,7 +104,7 @@ class ChangeLog:
 
         # Create the list of changes for the change log using the AI 
         # model.
-        return self._openai.create_prompt([prompt])
+        return self._openai.create_prompt(json.dumps(prompt))
 
     def _add_pr_and_issue_data(self, commit):
         # Get the PR number from the commit message.
