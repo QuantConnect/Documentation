@@ -8,4 +8,4 @@ if __name__ == '__main__':
         qc_docs_path='.', 
         openai_model=os.getenv('OPENAI_MODEL'),
         openai_api_key=os.getenv('OPENAI_TOKEN'),
-    ).update(30, 'change-log.json')
+    ).update(90, 'change-log.json')
