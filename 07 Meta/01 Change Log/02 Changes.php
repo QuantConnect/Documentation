@@ -1,3 +1,6 @@
+<p>The following sections describe the latest updates to the documentation.</p>
+<div class="highlight">As we continue to update and refactor the documentation on a regular basis, some links in the following sections may no longer work.</div>
+
 <?
 $changesByDate = json_decode(file_get_contents('https://s3.us-east-1.amazonaws.com/cdn.quantconnect.com/docs/i/change-log.json'), true);
 
