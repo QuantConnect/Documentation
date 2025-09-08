@@ -3,7 +3,7 @@ $changesByDate = json_decode(file_get_contents('https://s3.us-east-1.amazonaws.c
 
 foreach ($changesByDate as $date => $changes) {
     $changes = json_decode($changes, true);
-    if (empty($changes))) {
+    if (empty($changes)) {
       continue;
     }
     echo "<h4>$date</h4>";
