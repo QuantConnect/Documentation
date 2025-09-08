@@ -2,7 +2,7 @@
 <div class="highlight">As we continue to update and refactor the documentation on a regular basis, some links in the following sections may no longer work.</div>
 
 <?
-$content = file_get_contents('https://s3.us-east-1.amazonaws.com/cdn.quantconnect.com/docs/i/change-log.json')
+$content = file_get_contents('https://s3.us-east-1.amazonaws.com/cdn.quantconnect.com/docs/i/change-log.json');
 $changesByDate = array_reverse(json_decode($content, true));
 foreach ($changesByDate as $date => $changes) {
     $changes = json_decode($changes, true);
