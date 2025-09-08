@@ -8,7 +8,7 @@ foreach ($changesByDate as $date => $changes) {
     }
     echo "<h4>$date</h4>";
     echo "<ul>";
-    foreach ($change in $changes) {
+    foreach ($changes as $change) {
         $url = $change["url"];
         $summary = $change["summary"];
         echo "<li>[<a href='$url'>Source</a>]: $summary</li>";
