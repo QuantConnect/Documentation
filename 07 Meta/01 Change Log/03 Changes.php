@@ -6,18 +6,14 @@ foreach ($changeByDate as $date => $changes) {
     if (empty($changes))) {
       continue;
     }
-?>
-    <h4><?=$date?></h4>
-    <ul>
-<?
+    echo "<h4>$date</h4>";
+    echo "<ul>";
     foreach ($change in $changes) {
-?>
-      <li><?=$change["summary"]?></li>
-<?
+        $url = $change["url"];
+        $summary = $change["summary"];
+        echo "<li>[<a href='$url'>Source</a>]: $summary</li>";
     }
-?>
-    </ul>
-<? 
-} 
+    echo "</ul>";
+}
 ?>
 
