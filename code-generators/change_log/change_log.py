@@ -18,7 +18,7 @@ class ChangeLog:
         self._qc_docs = QCDocs(qc_docs_path)
         system_prompt = """Summarize this into the most significant \
         changes. Output the result in JSON format, including the summary and \
-        URL.
+        URL. If there are no significant changes, return an emtpy list.
         [{'summary': 'some text', 'url': 'hyperlink'}]
         """
         self._openai = OpenAI_(openai_api_key, openai_model, system_prompt)
