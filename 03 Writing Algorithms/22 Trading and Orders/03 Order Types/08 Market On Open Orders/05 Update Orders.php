@@ -4,7 +4,7 @@ You can update the quantity and tag of MOO orders until the order fills or the b
 
 <div class="section-example-container">
 <pre class="csharp">// Create a new order and save the order ticket
-var ticket = MarketOnOpenOrder("AAPL", 100, "original tag");
+var ticket = MarketOnOpenOrder("AAPL", 100, tag:"original tag");
 
 // Update the order
 var response = ticket.Update(new UpdateOrderFields()
@@ -19,7 +19,7 @@ if (response.IsSuccess)
     Debug("Order updated successfully");
 }</pre>
 <pre class="python"># Create a new order and save the order ticket
-ticket = self.market_on_open_order("AAPL", 100, "original tag")
+ticket = self.market_on_open_order("AAPL", 100, tag="original tag")
 
 # Update the order
 update_settings = UpdateOrderFields()

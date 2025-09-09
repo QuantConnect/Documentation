@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
 <pre class="csharp">// Create a new order and save the order ticket
-var ticket = TrailingStopOrder("SPY", -100, 415, 10, false, tag: "original tag");
+var ticket = TrailingStopOrder("SPY", -100, 415, 10, trailingAsPercentage: false, tag: "original tag");
 
 // Update the order
 var response = ticket.Update(new UpdateOrderFields() { 
@@ -17,7 +17,7 @@ if (response.IsSuccess) {
 }
 </pre>
 <pre class="python"># Create a new order and save the order ticket
-ticket = self.trailing_stop_order("SPY", -100, 415, 10, False, tag="original tag")
+ticket = self.trailing_stop_order("SPY", -100, 415, 10, trailing_as_percentage=False, tag="original tag")
 
 # Update the order
 update_settings = UpdateOrderFields()

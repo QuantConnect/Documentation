@@ -165,7 +165,7 @@
             .Where(security =&gt; security.BB.IsReady &amp;&amp; security.Price != 0 &amp;&amp; security.Price &lt; security.BB.LowerBand.Current.Value);
         // Form an equal-weighted portfolio with the selected assets.
         var weight = 1m / selected.Count();
-        SetHoldings(selected.Select(security =&gt; new PortfolioTarget(security.Symbol, weight)).ToList(), true);
+        SetHoldings(selected.Select(security =&gt; new PortfolioTarget(security.Symbol, weight)).ToList(), liquidateExistingHoldings: true);
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -236,7 +236,7 @@
         ]
         # Form an equal-weighted portfolio with the selected assets.
         weight = 1 / len(selected)
-        self.set_holdings([PortfolioTarget(security.symbol, weight) for security in selected], True)</pre>
+        self.set_holdings([PortfolioTarget(security.symbol, weight) for security in selected], liquidate_existing_holdings=True)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "3002",

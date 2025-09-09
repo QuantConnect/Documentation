@@ -88,13 +88,13 @@ public override void OnData(Slice slice)
 
     if (!slice.Bars.ContainsKey("SPY")) return;
 
-    if (slice.Bars["SPY"].Price >= _entryPrice * 1.10m)
+    if (slice.Bars["SPY"].Price &gt;= _entryPrice * 1.10m)
     {
-        Liquidate("SPY", -1, "take profit");
+        Liquidate("SPY", -1, tag: "take profit");
     }
-    else if (slice.Bars["SPY"].Price <= _entryPrice * 0.95m)
+    else if (slice.Bars["SPY"].Price &lt;= _entryPrice * 0.95m)
     {
-        Liquidate("SPY", -1, "stop loss");
+        Liquidate("SPY", -1, tag: "stop loss");
     }
 }
 </pre>
@@ -105,9 +105,9 @@ public override void OnData(Slice slice)
 
     bar = slice.get("SPY")
     if bar:
-        if bar.price >= self.entry_price * 1.10:
-            self.liquidate("SPY", -1, "take profit")
+        if bar.price &gt;= self.entry_price * 1.10:
+            self.liquidate("SPY", -1, tag="take profit")
 
-        elif bar.price <= self.entry_price * 0.95:
-            self.liquidate("SPY", -1, "stop loss")</pre>
+        elif bar.price &lt;= self.entry_price * 0.95:
+            self.liquidate("SPY", -1, tag="stop loss")</pre>
 </div>

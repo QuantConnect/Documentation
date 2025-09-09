@@ -19,11 +19,11 @@ public class SimpleRebalancingAlgorithm : QCAlgorithm
         var universe = AddUniverse(Universe.DollarVolume.Top(5));
         // 30 minutes after market open, rebalance the portfolio.
         Schedule.On(
-            dateRule,
+            dateRule,\
             TimeRules.AfterMarketOpen(symbol, 30),
             () => SetHoldings(
                 universe.Selected.Select(symbol => new PortfolioTarget(symbol, 1.0m/universe.Selected.Count)).ToList(),
-                true
+                liquidateExistingHoldings: true
             )
         );
     }
@@ -44,7 +44,7 @@ class SimpleRebalancingAlgorithm(QCAlgorithm):
             self.time_rules.after_market_open(symbol, 30),
             lambda: self.set_holdings(
                 [PortfolioTarget(symbol, 1/len(universe.selected)) for symbol in universe.selected], 
-                True
+                liquidate_existing_holdings=True
             )
         )</pre>
 </div>

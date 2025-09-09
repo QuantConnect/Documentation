@@ -87,7 +87,7 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
 
         # Rebalance
         weight = 1 if scores[2] &gt; scores[0] else -0.25
-        self.set_holdings(security.symbol, weight, True)
+        self.set_holdings(security.symbol, weight, liquidate_existing_holdings=True)
         self._last_rebalance_time = self.time
 
     def _aggregate_sentiment_scores(self, sentiment_scores):
@@ -277,7 +277,7 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
 
         # Rebalance.
         weight = 1 if scores[2] &gt; scores[0] else -0.25
-        self.set_holdings(security.symbol, weight, True)
+        self.set_holdings(security.symbol, weight, liquidate_existing_holdings=True)
         self._last_rebalance_time = self.time
 
     def _convert_to_eastern(self, dt):

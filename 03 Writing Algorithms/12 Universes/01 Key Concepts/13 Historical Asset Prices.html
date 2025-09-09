@@ -113,7 +113,7 @@ public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
                 .Range(0, signals.Length)
                 .Select(i => new PortfolioTarget(symbols[i], Convert.ToDecimal(signals[i])))
                 .ToList(),
-            true
+            liquidateExistingHoldings: true
         );
     }
 
@@ -197,7 +197,7 @@ public class MaintainHistoricalDailyUniversePriceDataAlgorithm : QCAlgorithm
         signal_by_symbol /= signal_by_symbol.sum()
 
         # Rebalance the portfolio based on the signals.
-        self.set_holdings([PortfolioTarget(symbol, signal) for symbol, signal in signal_by_symbol.items()], True)</pre>
+        self.set_holdings([PortfolioTarget(symbol, signal) for symbol, signal in signal_by_symbol.items()], liquidateExistingHoldings=True)</pre>
 </div>
 
 <script type="text/x-mathjax-config">

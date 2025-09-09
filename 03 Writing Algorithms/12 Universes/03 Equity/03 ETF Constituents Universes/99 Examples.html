@@ -60,7 +60,7 @@
         // Sell the 100 ETF constituents with the lowest weight due to expected negative excess return.
         targets.AddRange(weightBySymbol.Select(x =&gt; new PortfolioTarget(x.Key, -x.Value)));
         // Place orders to rebalance the portfolio.
-        SetHoldings(targets, true);
+        SetHoldings(targets, liquidateExistingHoldings: true);
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -130,7 +130,7 @@
             [PortfolioTarget(symbol, -weight) for symbol, weight in weight_by_symbol.items()]
         )
         # Place orders to rebalance the portfolio.
-        self.set_holdings(targets, True)
+        self.set_holdings(targets, liquidate_existing_holdings=True)
         </pre>
  <script class="python-result" type="text">
   {
@@ -249,7 +249,7 @@
             return;
         }
         var weight = 1m / symbols.Count();
-        SetHoldings(symbols.Select(symbol =&gt; new PortfolioTarget(symbol, weight)).ToList(), true);
+        SetHoldings(symbols.Select(symbol =&gt; new PortfolioTarget(symbol, weight)).ToList(), liquidateExistingHoldings: true);
     }
 }
 
@@ -351,8 +351,8 @@ class SelectionData
         if not symbols:
             return
         weight = 1 / len(symbols)
-        self.set_holdings([PortfolioTarget(symbol, weight) for symbol in symbols], True)
-    
+        self.set_holdings([PortfolioTarget(symbol, weight) for symbol in symbols], liquidate_existing_holdings=True)
+
 
 # Define a separate class to contain the SMA indicator.
 class SelectionData(object):

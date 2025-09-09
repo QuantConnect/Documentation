@@ -85,14 +85,14 @@ df.to_csv(QuantBook().object_store.get_file_path("portfolio-targets.csv"), index
                 .ToDictionary(d => d.Symbol, d => d.Weight);
             return _weightBySymbol.Keys;
         });
-        // Add a Scheduled Event to rebalance the portfolio.
+        // Add a Scheduled Event to rebalanc\e the portfolio.
         var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         Schedule.On(
             DateRules.EveryDay(spy), 
             TimeRules.AfterMarketOpen(spy, 1), 
             () => SetHoldings(
                 _universe.Selected.Select(symbol => new PortfolioTarget(symbol, _weightBySymbol[symbol])).ToList(), 
-                true
+                liquidateExistingHoldings: true
             )
         );
     }
@@ -150,7 +150,7 @@ public class CustomUniverseData : BaseData
             self.time_rules.after_market_open(spy, 1),
             lambda: self.set_holdings(
                 [PortfolioTarget(symbol, self._weight_by_symbol[symbol]) for symbol in self._universe.selected],
-                True
+                liquidate_existing_holdings=True
             )
         )
     
