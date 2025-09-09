@@ -609,9 +609,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                - $ref: '#/components/responses/BacktestReport'
-                - $ref: '#/components/schemas/BacktestReportGeneratingResponse'
+                $ref: '#/components/schemas/inline_response_200_1'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readBacktestReport
@@ -2206,6 +2204,36 @@ components:
           type: number
           description: The ratio of the number of winning trades to the total number of trades.
       description: Result object class for the List Backtest response from the API.
+    BaseLiveAlgorithmSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: '''Interactive'' / ''FXCM'' / ''Oanda'' / ''Tradier'' /''PaperTrading'''
+          examples: 
+          - "Default"
+        user:
+          type: string
+          description: Username associated with brokerage.
+          examples: 
+          - ""
+        password:
+          type: string
+          description: Password associated with brokerage.
+          examples: 
+          - ""
+        environment:
+          type: string
+          description: Represents the types of environments supported by brokerages for trading.
+          enum:
+            - live
+            - paper
+        account:
+          type: string
+          description: Account of the associated brokerage.
+          examples: 
+          - ""
+      description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
     BrokerageData:
       type: object
       properties:
@@ -2309,6 +2337,17 @@ components:
             $ref: '#/components/schemas/Series'
           description: Series Objects for this Chart.
       description: Single Parent Chart Object for Custom Charting.
+    ChartPoint:
+      type: object
+      properties:
+        x:
+          type: string
+          description: 'Time of this chart point: lower case for javascript encoding simplicty.'
+        y:
+          type: number
+          description: 'Value of this chart point:  lower case for javascript encoding simplicty.'
+          format: float
+      description: Location on a chart containing the X-Y location
     CreateCompileRequest:
       type: object
       required:
@@ -4760,6 +4799,35 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Response when the requested chart or orders are being generated.
+    Market:
+      type: string
+      description: Fungible market of the underlying security.
+      enum:
+      - usa
+      - oanda
+      - fxcm
+      - dukascopy
+      - bitfinex
+      - cmeglobex
+      - nymex
+      - cbot
+      - ice
+      - cboe
+      - nse
+      - comex
+      - cme
+      - sgx
+      - hkfe
+      - coinbase
+      - kraken
+      - bitstamp
+      - okcoin
+      - bithumb
+      - binance
+      - poloniex
+      - coinone
+      - hitbtc
+      - bittrex
     Node:
       type: object
       properties:
@@ -6209,6 +6277,15 @@ components:
           items:
             type: string
       description: Base API response class for the QuantConnect API.
+    Resolution:
+      type: string
+      description: Resolution of data requested.
+      enum:
+      - Tick
+      - Second
+      - Minute
+      - Hour
+      - Daily
     RuntimeStatistics:
       type: object
       properties:
@@ -6252,6 +6329,13 @@ components:
           description: Total transaction volume.
           examples: 
           - '$100.00'
+    ChartResolution:
+      type: string
+      description: Storage format of the charting data
+      enum:
+      - 10minute
+      - minute
+      - second
     Series:
       type: object
       properties:
@@ -6301,6 +6385,18 @@ components:
           - triangle
           - triangle-down
       description: Chart Series Object - Series data and properties for a chart.
+    SetObjectStoreRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          examples: 
+          - 5cad178b20a1d52567b534553413b691
+          description: Organization ID we'd like to upload the file to.
+        key:
+          type: string
+          description: Key to the Object Store file.
+      description: Request to upload a file to an Object Store of a specific organization and key.
     StatisticsResult:
       type: object
       properties:
@@ -6833,6 +6929,10 @@ components:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
       - $ref: '#/components/schemas/UpdateFileContentsRequest'
+    inline_response_200_1:
+      oneOf:
+      - $ref: '#/components/responses/BacktestReport'
+      - $ref: '#/components/schemas/BacktestReportGeneratingResponse'
     inline_response_200_3:
       oneOf:
       - $ref: '#/components/schemas/LoadingResponse'
