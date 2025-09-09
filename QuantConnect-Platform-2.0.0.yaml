@@ -1,8 +1,10 @@
----
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: QuantConnect Platform API v2.0
-  description: QuantConnect Platform API controls creating, updating and deleting projects, files, backtests and live algorithms. Automate the updating and backtesting of your strategies, or build tools to fast track your development.
+  description: >
+    QuantConnect Platform API controls creating, updating and deleting projects, 
+    files, backtests and live algorithms. Automate the updating and backtesting 
+    of your strategies, or build tools to fast track your development.
   termsOfService: https://www.quantconnect.com/terms
   contact:
     name: QuantConnect
@@ -33,6 +35,7 @@ paths:
                 $ref: '#/components/schemas/AccountResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readAccount
   /projects/create:
     post:
       tags:
@@ -57,6 +60,7 @@ paths:
                 $ref: '#/components/schemas/ProjectListResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createProject
   /projects/read:
     post:
       tags:
@@ -81,6 +85,7 @@ paths:
                 $ref: '#/components/schemas/ProjectListResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readProject
   /projects/update:
     post:
       tags:
@@ -104,6 +109,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateProject
   /projects/delete:
     post:
       tags:
@@ -127,6 +133,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteProject
   /projects/collaboration/create:
     post:
       tags:
@@ -151,6 +158,7 @@ paths:
                 $ref: '#/components/schemas/CreateCollaboratorResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createProjectCollaboration
   /projects/collaboration/read:
     post:
       tags:
@@ -175,6 +183,7 @@ paths:
                 $ref: '#/components/schemas/ReadCollaboratorsResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readProjectCollaboration
   /projects/collaboration/update:
     post:
       tags:
@@ -199,6 +208,7 @@ paths:
                 $ref: '#/components/schemas/UpdateCollaboratorResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateProjectCollaboration
   /projects/collaboration/delete:
     post:
       tags:
@@ -223,6 +233,7 @@ paths:
                 $ref: '#/components/schemas/DeleteCollaboratorResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteProjectCollaboration
   /projects/collaboration/lock/acquire:
     post:
       tags:
@@ -247,6 +258,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: acquireProjectCollaborationLock
   /projects/nodes/read:
     post:
       tags:
@@ -271,6 +283,7 @@ paths:
                 $ref: '#/components/schemas/ProjectNodesResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readProjectNodes
   /projects/nodes/update:
     post:
       tags:
@@ -295,6 +308,7 @@ paths:
                 $ref: '#/components/schemas/ProjectNodesResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateProjectNodes
   /files/create:
     post:
       tags:
@@ -319,6 +333,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createFile
   /files/read:
     post:
       tags:
@@ -343,6 +358,7 @@ paths:
                 $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readFile
   /files/update:
     post:
       tags:
@@ -369,6 +385,7 @@ paths:
                 - $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateFile
   /files/delete:
     post:
       tags:
@@ -393,6 +410,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteFile
   /files/patch:
     post:
       tags:
@@ -406,7 +424,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Request'
+              $ref: '#/components/schemas/PatchFileRequest'
         required: true
       responses:
         "200":
@@ -417,6 +435,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: patchFile
   /compile/create:
     post:
       tags:
@@ -441,6 +460,7 @@ paths:
                 $ref: '#/components/schemas/CreateCompileResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createCompile
   /compile/read:
     post:
       tags:
@@ -465,6 +485,7 @@ paths:
                 $ref: '#/components/schemas/ReadCompileResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readCompile
   /backtests/create:
     post:
       tags:
@@ -489,6 +510,7 @@ paths:
                 $ref: '#/components/schemas/BacktestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createBacktest
   /backtests/read:
     post:
       tags:
@@ -514,6 +536,7 @@ paths:
                 $ref: '#/components/schemas/BacktestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readBacktest
   /backtests/list:
     post:
       tags:
@@ -538,6 +561,7 @@ paths:
                 $ref: '#/components/schemas/BacktestSummaryResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listBacktests
   /backtests/orders/read:
     post:
       tags:
@@ -563,6 +587,7 @@ paths:
                 $ref: '#/components/schemas/BacktestOrdersResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readBacktestOrders
   /backtests/read/report:
     post:
       tags:
@@ -584,9 +609,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
+                oneOf:
+                - $ref: '#/components/responses/BacktestReport'
+                - $ref: '#/components/schemas/BacktestReportGeneratingResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readBacktestReport
   /backtests/chart/read:
     post:
       tags:
@@ -612,6 +640,7 @@ paths:
                 $ref: '#/components/schemas/inline_response_200_3'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readBacktestChart
   /backtests/read/insights:
     post:
       tags:
@@ -637,6 +666,7 @@ paths:
                 $ref: '#/components/schemas/BacktestInsightsResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readBacktestInsights
   /backtests/update:
     post:
       tags:
@@ -661,6 +691,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateBacktest
   /backtests/delete:
     post:
       tags:
@@ -685,6 +716,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteBacktest
   /lean/versions/read:
     post:
       tags:
@@ -699,6 +731,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LeanVersionsResponse'
+      operationId: readLeanVersions
   /live/chart/read:
     post:
       tags:
@@ -724,6 +757,7 @@ paths:
                 $ref: '#/components/schemas/inline_response_200_3'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveChart
   /live/auth0/authorize:
     post:
       tags:
@@ -744,6 +778,7 @@ paths:
           description: Live algorithm authorization redirection URL in the header.
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: authorizeLiveAuth0
   /live/auth0/read:
     post:
       tags:
@@ -768,6 +803,7 @@ paths:
                 $ref: '#/components/schemas/AuthorizeExternalConnectionResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveAuth0
   /live/create:
     post:
       tags:
@@ -792,6 +828,7 @@ paths:
                 $ref: '#/components/schemas/CreateLiveAlgorithmResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createLiveAlgorithm
   /live/read:
     post:
       tags:
@@ -817,6 +854,7 @@ paths:
                 $ref: '#/components/schemas/LiveAlgorithmResults'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveAlgorithm
   /live/list:
     post:
       tags:
@@ -841,6 +879,7 @@ paths:
                 $ref: '#/components/schemas/LiveAlgorithmListResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listLiveAlgorithms
   /live/logs/read:
     post:
       tags:
@@ -866,6 +905,7 @@ paths:
                 $ref: '#/components/schemas/ReadLiveLogsResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveAlgorithmLogs
   /live/portfolio/read:
     post:
       tags:
@@ -891,6 +931,7 @@ paths:
                 $ref: '#/components/schemas/LivePortfolioResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveAlgorithmPortfolio
   /live/orders/read:
     post:
       tags:
@@ -918,6 +959,7 @@ paths:
                 - $ref: '#/components/schemas/LiveOrdersResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveAlgorithmOrders
   /live/insights/read:
     post:
       tags:
@@ -943,6 +985,7 @@ paths:
                 $ref: '#/components/schemas/LiveInsightsResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveAlgorithmInsights
   /live/update/liquidate:
     post:
       tags:
@@ -968,6 +1011,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: liquidateLiveAlgorithm
   /live/update/stop:
     post:
       tags:
@@ -993,6 +1037,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: stopLiveAlgorithm
   /live/commands/create:
     post:
       tags:
@@ -1018,6 +1063,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createLiveCommand
   /live/commands/broadcast:
     post:
       tags:
@@ -1043,6 +1089,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: broadcastLiveCommand
   /optimizations/create:
     post:
       tags:
@@ -1067,6 +1114,7 @@ paths:
                 $ref: '#/components/schemas/ListOptimizationResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createOptimization
   /optimizations/update:
     post:
       tags:
@@ -1080,7 +1128,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateOptimizationRequest'
-          required: true
+        required: true
       responses:
         "200":
           description: Base API response class.
@@ -1090,6 +1138,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateOptimization
   /optimizations/read:
     post:
       tags:
@@ -1114,6 +1163,7 @@ paths:
                 $ref: '#/components/schemas/ReadOptimizationResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readOptimization
   /optimizations/delete:
     post:
       tags:
@@ -1127,7 +1177,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeleteOptimizationRequest'
-          required: true
+        required: true
       responses:
         "200":
           description: Base API response class.
@@ -1137,6 +1187,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteOptimization
   /optimizations/abort:
     post:
       tags:
@@ -1150,7 +1201,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AbortOptimizationRequest'
-          required: true
+        required: true
       responses:
         "200":
           description: Base API response class.
@@ -1160,6 +1211,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: abortOptimization
   /optimizations/list:
     post:
       tags:
@@ -1184,6 +1236,7 @@ paths:
                 $ref: '#/components/schemas/ListOptimizationResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listOptimizations
   /optimizations/estimate:
     post:
       tags:
@@ -1208,6 +1261,7 @@ paths:
                 $ref: '#/components/schemas/EstimateOptimizationResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: estimateOptimization
   /object/set:
     post:
       tags:
@@ -1232,6 +1286,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: setObject
   /object/get:
     post:
       tags:
@@ -1258,6 +1313,7 @@ paths:
                 $ref: '#/components/schemas/GetObjectStoreResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: getObject
   /object/properties:
     post:
       tags:
@@ -1282,6 +1338,7 @@ paths:
                 $ref: '#/components/schemas/GetObjectStorePropertiesResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: getObjectProperties
   /object/delete:
     post:
       tags:
@@ -1306,6 +1363,7 @@ paths:
                 $ref: '#/components/schemas/RestResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteObject
   /object/list:
     post:
       tags:
@@ -1330,6 +1388,7 @@ paths:
                 $ref: '#/components/schemas/ListObjectStoreResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listObjects
   /ai/tools/backtest-init:
     post:
       tags:
@@ -1355,6 +1414,7 @@ paths:
                 $ref: '#/components/schemas/BacktestInitResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: backtestInitAITool
   /ai/tools/complete:
     post:
       tags:
@@ -1380,6 +1440,7 @@ paths:
                 $ref: '#/components/schemas/CodeCompletionResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: completeCodeAITool
   /ai/tools/error-enhance:
     post:
       tags:
@@ -1405,6 +1466,7 @@ paths:
                 $ref: '#/components/schemas/ErrorEnhanceResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: errorEnchanceAITool
   /ai/tools/pep8-convert:
     post:
       tags:
@@ -1430,6 +1492,7 @@ paths:
                 $ref: '#/components/schemas/PEP8ConvertResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: pep8ConvertAITool
   /ai/tools/syntax-check:
     post:
       tags:
@@ -1455,6 +1518,7 @@ paths:
                 $ref: '#/components/schemas/SyntaxCheckResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: syntaxCheckAITool
   /ai/tools/search:
     post:
       tags:
@@ -1480,6 +1544,7 @@ paths:
                 $ref: '#/components/schemas/SearchResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: searchAITool
 
 
 components:
@@ -1614,7 +1679,6 @@ components:
           - Py
           description: Programming language for the code completion.
         error:
-          type: object
           $ref: '#/components/schemas/Error'
           description: Error message to enhance.
       description: Request to show additional context and suggestions for error messages.
@@ -1819,7 +1883,6 @@ components:
           type: number
           description: The current account balance.
         card:
-          type: object
           description: The current organizations credit card.
           $ref: '#/components/schemas/Card'
       description: Account information for an organization.
@@ -1866,7 +1929,6 @@ components:
       type: object
       properties:
         backtest:
-          type: object
           description: Details on the result of the backtest.
           $ref: '#/components/schemas/BacktestResult'
         debugging:
@@ -1984,7 +2046,6 @@ components:
           type: integer
           description: Number of tradeable days in the backtest.
         researchGuide:
-          type: object
           $ref: '#/components/schemas/ResearchGuide'
           description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
         backtestStart:
@@ -2037,15 +2098,12 @@ components:
             $ref: '#/components/schemas/AlgorithmPerformance'
           description: Rolling window detailed statistics.
         runtimeStatistics:
-          type: object
           $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
         statistics:
-          type: object
           $ref: '#/components/schemas/StatisticsResult'
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
-          type: object
           $ref: '#/components/schemas/AlgorithmPerformance'
           description: The algorithm performance statistics.
         nodeName:
@@ -2148,36 +2206,6 @@ components:
           type: number
           description: The ratio of the number of winning trades to the total number of trades.
       description: Result object class for the List Backtest response from the API.
-    BaseLiveAlgorithmSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: '''Interactive'' / ''FXCM'' / ''Oanda'' / ''Tradier'' /''PaperTrading'''
-          examples: 
-          - "Default"
-        user:
-          type: string
-          description: Username associated with brokerage.
-          examples: 
-          - ""
-        password:
-          type: string
-          description: Password associated with brokerage.
-          examples: 
-          - ""
-        environment:
-          type: string
-          description: Represents the types of environments supported by brokerages for trading.
-          enum:
-            - live
-            - paper
-        account:
-          type: string
-          description: Account of the associated brokerage.
-          examples: 
-          - ""
-      description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
     BrokerageData:
       type: object
       properties:
@@ -2281,17 +2309,6 @@ components:
             $ref: '#/components/schemas/Series'
           description: Series Objects for this Chart.
       description: Single Parent Chart Object for Custom Charting.
-    ChartPoint:
-      type: object
-      properties:
-        x:
-          type: string
-          description: 'Time of this chart point: lower case for javascript encoding simplicty.'
-        y:
-          type: number
-          description: 'Value of this chart point:  lower case for javascript encoding simplicty.'
-          format: float
-      description: Location on a chart containing the X-Y location
     CreateCompileRequest:
       type: object
       required:
@@ -3478,7 +3495,6 @@ components:
           examples:
           - 24058693
         live:
-          type: object
           description: Summary of the algorithm created.
           $ref: '#/components/schemas/LiveAlgorithm'
         success:
@@ -3649,7 +3665,6 @@ components:
           type: array
           description: Parameters used in this optimization.
           items:
-            type: object
             $ref:  '#/components/schemas/OptimizationParameter'
       description: Response received when launching an optimization job or listing all the optimization jobs of a project.
     CreateProjectRequest:
@@ -4053,7 +4068,6 @@ components:
       type: object
       properties:
         metadata:
-          type: object
           description: Object Store properties.
           $ref: '#/components/schemas/ObjectStoreProperties'
         success:
@@ -4290,7 +4304,6 @@ components:
           type: array
           description: List of LEAN versions with their basic descriptions.
           items:
-            type: object
             $ref: '#/components/schemas/LeanVersion'
         success:
           type: boolean
@@ -4747,35 +4760,6 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Response when the requested chart or orders are being generated.
-    Market:
-      type: string
-      description: Fungible market of the underlying security.
-      enum:
-      - usa
-      - oanda
-      - fxcm
-      - dukascopy
-      - bitfinex
-      - cmeglobex
-      - nymex
-      - cbot
-      - ice
-      - cboe
-      - nse
-      - comex
-      - cme
-      - sgx
-      - hkfe
-      - coinbase
-      - kraken
-      - bitstamp
-      - okcoin
-      - bithumb
-      - binance
-      - poloniex
-      - coinone
-      - hitbtc
-      - bittrex
     Node:
       type: object
       properties:
@@ -4951,7 +4935,6 @@ components:
           description: The target statistic to track.
           $ref: '#/components/schemas/OptimizationTargetStatistic'
         extremum:
-          type: string
           description: Defines the direction of optimization.
           $ref: '#/components/schemas/OptimizationTargetTo'
         targetValue:
@@ -5066,7 +5049,6 @@ components:
           examples: 
           - 4
         criterion:
-          type: object
           description: Optimization statistical target.
           $ref: '#/components/schemas/OptimizationTarget'
         runtimeStatistics:
@@ -5106,7 +5088,6 @@ components:
           type: array
           description: List with grid charts representing the grid layout.
           items:
-            type: object
             $ref: '#/components/schemas/GridChart'
         outOfSampleMaxEndDate:
           type: string
@@ -5145,6 +5126,8 @@ components:
           items:
             type: array
             description: Time and OHLC values.
+            items:
+              type: object
         startDate:
           type: string
           description: The backtest start date.
@@ -5175,7 +5158,6 @@ components:
           items:
             type: string
         symbol:
-          type: object
           description: Symbol of the asset.
           $ref: '#/components/schemas/Symbol'
         limitPrice:
@@ -5278,14 +5260,12 @@ components:
           description: Gets the executed value of this order. If the order has not yet filled, then this will return zero.
           format: float
         orderSubmissionData:
-          type: object
           description: Gets the price data at the time the order was submitted.
           $ref: '#/components/schemas/OrderSubmissionData'
         isMarketable:
           type: boolean
           description: Returns true if the order is a marketable order.
         properties:
-          type: object
           description: Additional properties of the order.
           $ref: '#/components/schemas/OrderProperties'
         events:
@@ -5300,7 +5280,6 @@ components:
           type: boolean
           description: Determines whether the trailingAmount is a percentage or an absolute currency value.
         groupOrderManager:
-          type: object
           description: Manager for the orders in the group if this is a combo order.
           $ref: '#/components/schemas/GroupOrderManager'
         triggerPrice:
@@ -5379,7 +5358,6 @@ components:
           description: Number of shares of the order that was filled in this event.
           format: float
         direction:
-          type: string
           description: Order direction.
           $ref: '#/components/schemas/OrderDirection'
         message:
@@ -5426,6 +5404,7 @@ components:
     ParameterSet:
       oneOf:
         - type: array # an empty list
+          maxItems: 0
         - type: object
           additionalProperties:
             oneOf:
@@ -5664,7 +5643,6 @@ components:
       type: object
       properties:
         nodes:
-          type: object
           $ref: '#/components/schemas/ProjectNodes'
           description: List of project nodes.
         autoSelectNode:
@@ -6169,7 +6147,6 @@ components:
       type: object
       properties:
         chart:
-          type: object
           description: Chart object requested.
           $ref: '#/components/schemas/Chart'
         success:
@@ -6232,15 +6209,6 @@ components:
           items:
             type: string
       description: Base API response class for the QuantConnect API.
-    Resolution:
-      type: string
-      description: Resolution of data requested.
-      enum:
-      - Tick
-      - Second
-      - Minute
-      - Hour
-      - Daily
     RuntimeStatistics:
       type: object
       properties:
@@ -6284,13 +6252,6 @@ components:
           description: Total transaction volume.
           examples: 
           - '$100.00'
-    ChartResolution:
-      type: string
-      description: Storage format of the charting data
-      enum:
-      - 10minute
-      - minute
-      - second
     Series:
       type: object
       properties:
@@ -6340,18 +6301,6 @@ components:
           - triangle
           - triangle-down
       description: Chart Series Object - Series data and properties for a chart.
-    SetObjectStoreRequest:
-      type: object
-      properties:
-        organizationId:
-          type: string
-          examples: 
-          - 5cad178b20a1d52567b534553413b691
-          description: Organization ID we'd like to upload the file to.
-        key:
-          type: string
-          description: Key to the Object Store file.
-      description: Request to upload a file to an Object Store of a specific organization and key.
     StatisticsResult:
       type: object
       properties:
@@ -6821,96 +6770,69 @@ components:
       properties:
         sdescription:
           type: string
-          description:
         bpublic:
           type: integer
-          description:
         itimestamp:
           type: string
-          description:
           format: date-time
         benchmark_basic:
           type: number
-          description:
           format: float
         benchmark_equity_400_minute:
           type: number
-          description:
           format: float
         benchmark_equity_1_second:
           type: number
-          description:
           format: float
         benchmark_cs_indicator:
           type: number
-          description:
           format: float
         benchmark_cs_history:
           type: number
-          description:
           format: float
         benchmark_cs_schedule_events:
           type: number
-          description:
           format: float
         benchmark_py_basic:
           type: number
-          description:
           format: float
         benchmark_py_equity_400_minute:
           type: number
-          description:
           format: float
         benchmark_py_equity_1_second:
           type: number
-          description:
           format: float
         benchmark_py_indicator:
           type: number
-          description:
           format: float
         benchmark_py_history:
           type: number
-          description:
           format: float
         benchmark_py_schedule_events:
           type: number
-          description:
           format: float
         benchmark_py_universe_coarsefine:
           type: number
-          description:
           format: float
         benchmark_cs_universe_coarsefine:
           type: number
-          description:
           format: float
         benchmark_py_universe_stateful:
           type: number
-          description:
           format: float
         benchmark_cs_universe_stateful:
           type: number
-          description:
           format: float
         benchmark_py_universe_stateless:
           type: number
-          description:
           format: float
         benchmark_cs_universe_stateless:
           type: number
-          description:
           format: float
-      additionalProperties:
-        $ref: '#/components/schemas/Version'
     files_update_body:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
       - $ref: '#/components/schemas/UpdateFileContentsRequest'
-    inline_response_200_1:
-      oneOf:
-      - $ref: '#/components/responses/BacktestReport'
-      - $ref: '#/components/schemas/BacktestReportGeneratingResponse'
     inline_response_200_3:
       oneOf:
       - $ref: '#/components/schemas/LoadingResponse'
