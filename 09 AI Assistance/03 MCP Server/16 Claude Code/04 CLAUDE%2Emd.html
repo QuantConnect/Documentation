@@ -1,0 +1,74 @@
+<p>
+  The <span class='private-file-name'>CLAUDE.md</span> file is a special file that you can use tailor how Claude behaves during your conversations.
+  When you run <code>claude</code> to start a new conversation, Claude automatically pulls the <span class='private-file-name'>CLAUDE.md</span> file into context.
+  To find the file, it checks your home directory (<span class='private-file-name'>~ / .claude /</span>) and it checks the current, parent, and child directories of where you run <code>claude</code>.
+  The following <span class='private-file-name'>CLAUDE.md</span> file provides an example of how you might tailor Claude to aid in your QuantConnect workflow.
+  Feel free to edit it to fit your needs.
+</p>
+
+<div class="section-example-container"><pre>
+# CLAUDE.md
+
+## Purpose
+This file defines the conventions and expectations for how Claude should interact with QuantConnect projects.
+
+---
+
+## Development Environment
+- Code should be **Python-first**, but C# examples may be used for reference if necessary.
+- The project Id is in the config file, under `cloud-id`. Don't call the `list_backtests` tool unless it's absolutely needed.
+- External dependencies must be avoided unless they are supported in QuantConnect’s cloud environment. When in doubt, suggest native LEAN methods.
+- When drafting code, prefer modular design. Place custom indicators in an `indicators/` directory.
+- Prioritize classic QC algorithm design over the algorithm framework unless explicitly requested.
+- When creating indicator objects (such as RSI, SMA, etc.), never overwrite the indicator method names (e.g., do not assign to `self.rsi`, `self.sma`, etc.). Instead, use a different variable name, preferably with a leading underscore for non-public instance variables (e.g., `self._rsi = self.rsi(self._symbol, 14)`). This prevents conflicts with the built-in indicator methods and ensures code reliability.
+- After adding or editing code, call the compile tool (`create_compile` and `read_compile`) in the QuantConnect MCP server to get the syntax errors and then FIX ALL COMPILE WARNINGS.
+
+
+---
+
+## Data Handling
+- Use QuantConnect’s **built-in dataset APIs** (Equity, Futures, Options, Crypto, FX).  
+- For alternative datasets, reference [QuantConnect’s Data Library](https://www.quantconnect.com/datasets/) and link to documentation rather than suggesting unsupported APIs.
+
+---
+
+## Research Standards
+- Backtest code should include:
+  - A clear `initialize()` with securities, resolution, and cash set explicitly.
+  - Example parameters (start date, end date, cash) that are realistic for production-scale testing.
+  - At least one comment section explaining the strategy’s core logic.
+- When generating new strategies, provide a **one-paragraph explanation** of the trading idea in plain English before showing code.
+- Prefer **transparent, explainable strategies**. Avoid “black-box” style outputs.
+
+---
+
+## Style Guidelines
+- Code must follow **PEP8** where possible.
+- Use **docstrings** on all public classes and functions.
+- Responses should be in **Markdown**, with code blocks fenced by triple backticks and the language identifier.
+
+---
+
+## Risk Management
+- Always emphasize risk controls in strategy outputs:
+  - Max position sizing rules.
+  - Stop-loss or drawdown limits.
+  - Portfolio exposure constraints.
+- Always use the `live_mode` flag and log the live mode in `initialize`.
+
+---
+
+## Security & Compliance
+- Do not reference or fabricate API keys, credentials, or client secrets.
+- Avoid suggesting integrations with unsupported brokers or data providers.
+- If a user requests something outside QuantConnect’s compliance boundaries (e.g., high-frequency order spoofing, or prohibited datasets), politely decline.
+
+---
+
+## Tone & Communication
+- Keep responses professional, concise, and explanatory.
+- Prioritize **clarity over cleverness**.  
+- Always explain why you made a design choice if multiple options exist.
+</pre></div>
+
+<p>For more information about <span class='private-file-name'>CLAUDE.md</span> files, see <a href='https://www.anthropic.com/engineering/claude-code-best-practices' rel='nofollow' target='_blank'>Claude Code: Best practices for agentic coding</a> on the Anthropic website.</p>
