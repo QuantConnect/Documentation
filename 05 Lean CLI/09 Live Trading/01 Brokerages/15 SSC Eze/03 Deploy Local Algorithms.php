@@ -16,6 +16,7 @@ Enter your trading account (BBCD format): LATEST;TEST;01;ACQUIREDMEDIA
 
 $dataFeedDetails = "";
 $supportsIQFeed = true;
+$supportsCashHoldings = true;
 $requiresSubscription = true;
 $moduleName = "<a rel='nofollow' target='_blank' href='https://qnt.co/ssc-eze'>SS&C Eze</a>";
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");

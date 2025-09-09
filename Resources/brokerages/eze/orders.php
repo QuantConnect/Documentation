@@ -98,21 +98,27 @@
             <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
         <tr>
-            <td><code class="csharp">Route</code><code class="python">route</code></td>
-            <td><code class='csharp'>string</code><code class='python'>str</code></td>
-            <td>Sets the route name as shown in SS&C Eze EMS.</td>
-            <td></td>
-        </tr>
-        <tr>
             <td><code class="csharp">Account</code><code class="python">account</code></td>
             <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>Sets a semi-colon separated list of trade or neutral accounts the user has permission for, e.g., "TAL;TEST;USER1;TRADE" or "TAL;TEST;USER2;NEUTRAL".</td>
             <td></td>
         </tr>
         <tr>
+            <td><code class="csharp">AccountType </code><code class="python">account_type</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>Sets the account type for the order. E.g., <b>"119"</b> for margin orders in Eze EMS.</td>
+            <td></td>
+        </tr>
+        <tr>
             <td><code class="csharp">Notes</code><code class="python">notes</code></td>
             <td><code class='csharp'>string</code><code class='python'>str</code></td>
             <td>Sets the user message or notes.</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Route</code><code class="python">route</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>Sets the route name as shown in SS&C Eze EMS.</td>
             <td></td>
         </tr>
     </tbody>

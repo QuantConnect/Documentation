@@ -1,6 +1,6 @@
 <?
 $brokerageName = "SS&C Eze";
-$cashState = false;
+$cashState = true;
 $holdingsState = false;
 $secondBullet = "";
 $authentication = file_get_contents(DOCS_RESOURCES."/brokerages/eze/deploy-steps.php");
