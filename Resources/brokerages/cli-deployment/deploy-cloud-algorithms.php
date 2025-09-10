@@ -90,7 +90,7 @@ Enter an option: <?=$brokerageNumber?></pre>
     <?=$brokerageDetails?>
 
             <li>Configure your notification settings.</li>
-            <p>You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the <a href='/docs/v2/cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas'>Live Trading Notification Quotas</a>.</p>
+            <p>You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the <a href='/docs/v2/cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas'>Live Trading Notification Quotas</a>.</p>
             <div class='cli section-example-container'>
 <pre>$ lean cloud live deploy "My Project" --push --open
 Do you want to send notifications on order events? [y/N]: y
