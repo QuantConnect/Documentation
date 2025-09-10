@@ -1,7 +1,7 @@
 <p>
   Each project in your organization produces a <span class='new-term'>project workspace</span>.
   The project workspace contains all the data of a single project, including its files, backtest results, optimization results, and live deployment results.
-  The following table shows the total amount of space each organization tier can use for project workspaces:
+  The following table shows the total amount of space each user of an organization can use for all their project workspaces:
 </p>
 
 <? include(DOCS_RESOURCES."/quotas/project-workspaces.html"); ?>
