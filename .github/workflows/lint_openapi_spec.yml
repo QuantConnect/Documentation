@@ -1,0 +1,27 @@
+name: "Lint OpenAPI spec with vacuum"
+
+on:
+  push:
+    paths:
+      - 'QuantConnect-Platform-2.0.0.yaml'
+  pull_request:
+    paths:
+      - 'QuantConnect-Platform-2.0.0.yaml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  vacuum-lint:
+    name: Run OpenAPI linting with vacuum
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run OpenAPI lint with vacuum
+        uses: pb33f/vacuum-action@v2
+        with:
+          openapi_path: "QuantConnect-Platform-2.0.0.yaml"
+          github_token: ${{ secrets.GH_ACCESS_TOKEN }}
