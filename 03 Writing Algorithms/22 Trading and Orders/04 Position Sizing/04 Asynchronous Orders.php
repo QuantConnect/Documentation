@@ -1,7 +1,7 @@
 <? 
 $csharpOrder = 'SetHoldings("IBM", 0.5, asynchronous: true)';
 $pythonOrder = 'self.set_holdings("IBM", 0.5, asynchronous=True)';
-include(DOCS_RESOURCES."/trading-and-orders/place-asynchronous-orders.php"); 
+include(DOCS_RESOURCES."/trading-and-orders/asynchronous-orders.php"); 
 ?>
 
 <p>When you set multiple asset targets, you likely want to send asynchronous orders.</p>
