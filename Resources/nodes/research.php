@@ -9,7 +9,7 @@
 
 <p>
 	Refer to the <a href="/pricing">Pricing</a> page to see the price of each research node model. 
-	You get one free R1-4 research node in your first organization, but the node is replaced when you <a href='/docs/v2/cloud-platform/organizations/resources#14-Add-Nodes'>subscribe to a paid research node</a> in the organization.
+	You get one free R1-4 research node in your first organization, but the node is replaced when you <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>subscribe to a paid research node</a> in the organization.
 </p>
 
 <p>
