@@ -208,7 +208,7 @@
         if bar:
             self._<?=$pyHelperName?>.update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self._symbol, bar.end_time, bar.close)<? } else { ?><?=$updateParameterValue?><? } ?>)
 <? if($hasReference) { ?>
-        bar = slice.bars.get(self._referece)
+        bar = slice.bars.get(self._reference)
         if bar:
             self._<?=$pyHelperName?>.update(<?=$updateParameterValue?>)
 <?} else if($isOptionIndicator) { ?>
