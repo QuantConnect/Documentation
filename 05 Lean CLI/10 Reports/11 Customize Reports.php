@@ -6,3 +6,10 @@ $addCSSFileInstructions = "add a new CSS file to your local machine";
 $crisisEventLink = "/docs/v2/lean-cli/reports#09-Crisis-Events";
 include(DOCS_RESOURCES."/backtesting/results/customize-report.php"); 
 ?>
+
+<h4>Custom Report Example</h4>
+
+<p>
+  To view an example of <span class='public-file-name'>report.html</span> and <span class='public-file-name'>report.css</span> files that customize the backtest reports of a project, see the files in <a href='https://www.quantconnect.cloud/backtest/92562921df687db3fc5f28f48826405c/?theme=darkly' target='_blank'>this project</a>.
+  The HTML and CSS files in the project produce a report that has a red banner at the top.
+</p>
