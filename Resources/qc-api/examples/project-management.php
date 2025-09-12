@@ -73,7 +73,6 @@ if result['success']:
 
 <div class="python section-example-container testable">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
-
 def get_projects_in_directory(key):
     """Get all projects in a specific directory in the organization 
     workspace.
