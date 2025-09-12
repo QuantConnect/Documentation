@@ -12,7 +12,7 @@ include(DOCS_RESOURCES."/backtesting/results/customize-report.php");
 <h4>Custom Report Example</h4>
 
 <p>
-  To view an example of <span class='public-file-name'>report.html</span> and <span class='public-file-name'>report.css</span> files that customize the backtest reports of a project, see the files in <a href='https://www.quantconnect.cloud/backtest/92562921df687db3fc5f28f48826405c/?theme=darkly'>this project</a>.
+  To view an example of <span class='public-file-name'>report.html</span> and <span class='public-file-name'>report.css</span> files that customize the backtest reports of a project, see the files in <a href='https://www.quantconnect.cloud/backtest/92562921df687db3fc5f28f48826405c/?theme=darkly' target='_blank'>this project</a>.
   The HTML and CSS files in the project produce a report that has a red banner at the top.
 </p>
 
