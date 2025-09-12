@@ -14,16 +14,16 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _symbol = AddEquity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.Daily).Symbol;
 <? if($hasReference) { ?>
-        _reference = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
 <?} else if($isOptionIndicator) { ?>
-        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        _option = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_option, Resolution.Daily);
-        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        _mirrorOption = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("optionMirrorSymbol", "_mirrorOption", str_replace("optionSymbol", "_option", $helperArguments)))?>);
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("reference", "_reference", str_replace("optionMirrorSymbol", "_mirrorOption", str_replace("optionSymbol", "_option", $helperArguments))))?>);
     }
 
     public override void OnData(Slice data)
@@ -43,16 +43,16 @@
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.DAILY).symbol
 <? if($hasReference) { ?>
-        self.reference = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.option, Resolution.DAILY)
-        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.mirror_option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("optionMirrorSymbol", "self.mirror_option", str_replace("optionSymbol", "self.option", $helperArguments)))?>)
+        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("reference", "self._reference", str_replace("optionMirrorSymbol", "self.mirror_option", str_replace("optionSymbol", "self.option", $helperArguments))))?>)
 
     def on_data(self, slice: Slice) -> None:
         if self._<?=$pyHelperName?>.is_ready:
@@ -96,30 +96,30 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Hour).Symbol;
+        _symbol = AddEquity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.Hour).Symbol;
 <? if($hasReference) { ?>
-        _reference = AddEquity("QQQ", Resolution.Hour).Symbol;
+        _reference = AddEquity("SPY", Resolution.Hour).Symbol;
 <?} else if($isOptionIndicator) { ?>
-        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        _option = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_option, Resolution.Daily);
-        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        _mirrorOption = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("optionMirrorSymbol", "_mirrorOption", str_replace("optionSymbol", "_option", $helperArguments)))?>, resolution: Resolution.Daily);
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("reference", "_reference", str_replace("optionMirrorSymbol", "_mirrorOption", str_replace("optionSymbol", "_option", $helperArguments))))?>, resolution: Resolution.Daily);
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self._symbol = self.add_equity("SPY", Resolution.HOUR).Symbol
+        self._symbol = self.add_equity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.HOUR).Symbol
 <? if($hasReference) { ?>
-        self.reference = self.add_equity("QQQ", Resolution.HOUR).Symbol
+        self._reference = self.add_equity("SPY", Resolution.HOUR).Symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.option, Resolution.HOUR)
-        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.mirror_option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.HOUR)
 <?}?>
-        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("optionMirrorSymbol", "self.mirror_option", str_replace("optionSymbol", "self.option", $helperArguments)))?>, resolution=Resolution.DAILY)
+        self._<?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("reference", "self._reference", str_replace("optionMirrorSymbol", "self.mirror_option", str_replace("optionSymbol", "self.option", $helperArguments))))?>, resolution=Resolution.DAILY)
 </pre>
 </div>
 <? } ?>
@@ -144,16 +144,16 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _symbol = AddEquity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.Daily).Symbol;
 <? if($hasReference) { ?>
-        _reference = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
 <?} else if($isOptionIndicator) { ?>
-        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        _option = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_option, Resolution.Daily);
-        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        _mirrorOption = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $constructorArguments)))?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", str_replace("reference", "_reference", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $constructorArguments))))?>);
     }
 
     public override void OnData(Slice data)
@@ -192,23 +192,23 @@
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.DAILY).symbol
 <? if($hasReference) { ?>
-        self.reference = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.option, Resolution.DAILY)
-        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.mirror_option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=$pyHelperName?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self._<?=$pyHelperName?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("reference", "self._reference", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments))))?>)
 
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
             self._<?=$pyHelperName?>.update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self._symbol, bar.end_time, bar.close)<? } else { ?><?=$updateParameterValue?><? } ?>)
 <? if($hasReference) { ?>
-        bar = slice.bars.get(self.referece)
+        bar = slice.bars.get(self._referece)
         if bar:
             self._<?=$pyHelperName?>.update(<?=$updateParameterValue?>)
 <?} else if($isOptionIndicator) { ?>
@@ -248,19 +248,19 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _symbol = AddEquity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.Daily).Symbol;
 <? if($hasReference) { ?>
-        _reference = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
 <?} else if($isOptionIndicator) { ?>
-        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        _option = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_option, Resolution.Daily);
-        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        _mirrorOption = QuantConnect.Symbol.CreateOption(_symbol, Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
         AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $constructorArguments)))?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", str_replace("reference", "_reference", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $constructorArguments))))?>);
         RegisterIndicator(_symbol, _<?=strtolower($helperName)?>, Resolution.Daily);
 <? if($hasReference) { ?>
-        RegisterIndicator(reference, _<?=strtolower($helperName)?>, Resolution.Daily);
+        RegisterIndicator(_reference, _<?=strtolower($helperName)?>, Resolution.Daily);
 <?} else if($isOptionIndicator) { ?>
         RegisterIndicator(_option, _<?=strtolower($helperName)?>, Resolution.Daily);
         RegisterIndicator(_mirrorOption, _<?=strtolower($helperName)?>, Resolution.Daily);
@@ -284,19 +284,19 @@
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("<?echo $hasReference ? "QQQ": "SPY";?>", Resolution.DAILY).symbol
 <? if($hasReference) { ?>
-        self.reference = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
 <?} else if($isOptionIndicator) { ?>
-        self.option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
+        self.option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.option, Resolution.DAILY)
-        self.mirror_option = Symbol.create_option("SPY", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
+        self.mirror_option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 450, datetime(2023, 12, 22))
         self.add_option_contract(self.mirror_option, Resolution.DAILY)
 <?}?>
-        self._<?=$pyHelperName?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self._<?=$pyHelperName?> = <?=$typeName?>(<?=str_replace("symbol", "self._symbol", str_replace("reference", "self._reference", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments))))?>)
         self.register_indicator(self._symbol, self._<?=$pyHelperName?>, Resolution.DAILY)
 <? if($hasReference) { ?>
-        self.register_indicator(reference, self._<?=$pyHelperName?>, Resolution.DAILY)
+        self.register_indicator(self._reference, self._<?=$pyHelperName?>, Resolution.DAILY)
 <?} else if($isOptionIndicator) { ?>
         self.register_indicator(self.option, self._<?=$pyHelperName?>, Resolution.DAILY)
         self.register_indicator(self.mirror_option, self._<?=$pyHelperName?>, Resolution.DAILY)
