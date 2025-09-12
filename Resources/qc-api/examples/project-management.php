@@ -1,4 +1,7 @@
-<p>The following example demonstates creating, reading, updating, and deleting a project through the cloud API.</p>
+<p>The following examples demonstrate project management through the QuantConnect API.</p>
+
+<h4>Example 1: CRUD Operations</h4>
+<p>This example demonstates creating, reading, updating, and deleting a project through the cloud API.</p>
 
 <div class="python section-example-container testable">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
@@ -62,4 +65,50 @@ result = response.json()
 if result['success']:
     print("Project Deleted Successfully:")
     print(result)</pre>
+</div>
+
+
+<h4>Example 2: Delete All Projects in a Directory</h4>
+<p>This example deletes all projects under a specific directory in the organization workspace.</p>
+
+<div class="python section-example-container testable">
+    <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
+
+def get_projects_in_directory(key):
+    """Get all projects in a specific directory in the organization 
+    workspace.
+
+    Keyword arguments:
+    key -- path to a directory of projects in the organization workspace
+           (ex: path/to/dir)
+    """
+    # Split the key into path segments.
+    key_segments = [s for s in key.split('/') if s]
+    if not key_segments:
+        print('Invalid key:', key)
+        return
+    # Iterate through all projects
+    response = post(f'{BASE_URL}/projects/read', headers=get_headers())
+    response.raise_for_status()
+    project_ids = []
+    for i, project in enumerate(response.json()['projects']):
+        if all(a == b for a, b in zip(key_segments, project['name'].split('/'))):
+            project_ids.append(project['projectId'])
+    return project_ids
+
+def delete_projects(project_ids):
+    """Delete a set of projects.
+
+    Keyword arguments:
+    project_ids -- list of project Ids.
+    """
+    for id_ in project_ids:
+        response = post(
+            f'{BASE_URL}/projects/delete', 
+            headers=get_headers(), 
+            json={'projectId': id_}
+        )
+        response.raise_for_status()
+
+delete_projects(get_projects_in_directory('/path/to/projects/to/delete'))</pre>
 </div>
