@@ -90,7 +90,8 @@ def get_projects_in_directory(key):
     response = post(f'{BASE_URL}/projects/read', headers=get_headers())
     response.raise_for_status()
     project_ids = []
-    for i, project in enumerate(response.json()['projects']):
+    for project in response.json()['projects']:
+        # Check if the project is in the directory.
         if all(a == b for a, b in zip(key_segments, project['name'].split('/'))):
             project_ids.append(project['projectId'])
     return project_ids
@@ -102,12 +103,11 @@ def delete_projects(project_ids):
     project_ids -- list of project Ids.
     """
     for id_ in project_ids:
-        response = post(
+        post(
             f'{BASE_URL}/projects/delete', 
             headers=get_headers(), 
             json={'projectId': id_}
-        )
-        response.raise_for_status()
+        ).raise_for_status()
 
 delete_projects(get_projects_in_directory('/path/to/projects/to/delete'))</pre>
 </div>
