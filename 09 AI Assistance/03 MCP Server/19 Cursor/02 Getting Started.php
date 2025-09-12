@@ -5,14 +5,11 @@
   
   <li>Install and open <a href='https://cursor.com/downloads' rel='nofollow' target='_blank'>Cursor</a>.</li>
 
-  <li><a href='https://marketplace.visualstudio.com/_apis/public/gallery/publishers/quantconnect/vsextensions/quantconnect/latest/vspackage' rel='nofollow' target='_blank'>Download the QuantConnect extension</a>.</li>
-  <p>The Cursor IDE has a lag in updating the VS Code extensions. Click the preceeding link to download the extension directly from the marketplace. The download should automatically start.</p>
-  
-  <li>In Cursor, press <span class='key-combinations'>Ctrl+Shift+X</span> to open the <span class='page-section-name'>Extensions</span> panel.</li>
+  <li>In the top navigation bar of Cursor, click <span class='menu-name'>View > Extensions</span>.</li>
 
-  <li>Drag-and-drop the <span class='public-file-name'>vsix</span> file you downloaded onto the <span class='page-section-name'>Extensions</span> panel.</li>
-  <? DOCS_VIMEO(1114060483); ?>
-  
+  <li>In the <span class='field-name'>Search Exensions in Marketplace</span> field, enter <span class='key-combinations'>QuantConnect</span>.</li>
+
+  <li>Click <span class='button-name'>Install</span>.</li>
 
   <li>Click one of the following buttons:</li>
   <ul>
