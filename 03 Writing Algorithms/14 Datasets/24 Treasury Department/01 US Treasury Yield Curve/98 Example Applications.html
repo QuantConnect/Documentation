@@ -196,13 +196,13 @@ class USTreasuryAlphaModel(AlphaModel):
         // Custom alpha model that emit insight according to US Treasury data
         AddAlpha(new USTreasuryAlphaModel(this));
         // Use insight weighting PCM to limit the size of investment, reduce the fluctuation of the portfolio value
-        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel((time) =&gt; None));
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel((time) =&gt; null));
     }
 }
 
 public class USTreasuryAlphaModel : AlphaModel
 {
-    private Symbol? _spySymbol = None;
+    private Symbol? _spySymbol = null;
     private Symbol _yieldCurveSymbol;
     private DateTime _lastInversion = DateTime.MinValue;
     
@@ -221,7 +221,7 @@ public class USTreasuryAlphaModel : AlphaModel
         var insights = new List&lt;Insight&gt;();
 
         // Trade only based on updated yield curve data
-        if (!slice.TryGetValue(_yieldCurveSymbol, out var rates) || _spySymbol == None)
+        if (!slice.TryGetValue(_yieldCurveSymbol, out var rates) || _spySymbol == null)
         {
             return insights;
         }
@@ -245,7 +245,7 @@ public class USTreasuryAlphaModel : AlphaModel
         {
             algorithm.Debug($"{slice.Time} - Yield curve inversion! Shorting the market for two years");
             _lastInversion = slice.Time;
-            insights.Add(Insight.Price(_spySymbol, slice.Time + TimeSpan.FromDays(2*365), InsightDirection.Down, None, None, None, 0.5));
+            insights.Add(Insight.Price(_spySymbol, slice.Time + TimeSpan.FromDays(2*365), InsightDirection.Down, null, null, null, 0.5));
         }
         
         return insights;

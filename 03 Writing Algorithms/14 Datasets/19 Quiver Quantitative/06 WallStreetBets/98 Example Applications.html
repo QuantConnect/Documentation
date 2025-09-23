@@ -261,15 +261,15 @@ public class WallStreamBetsAlphaModel : AlphaModel
             var symbolData = kvp.Value;
             
             // Ensure we have security data for the current Slice to avoid stale fill
-            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
+            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != null))
             {
                 continue;
             }
             
-            if (symbolData.targetDirection != None)
+            if (symbolData.targetDirection != null)
             {
                 insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), (InsightDirection)symbolData.targetDirection));
-                symbolData.targetDirection = None;
+                symbolData.targetDirection = null;
             }
         }
         return insights;
@@ -299,7 +299,7 @@ public class SymbolData
 {
     private Symbol _quiverWSBSymbol;
     private QCAlgorithm _algorithm;
-    public InsightDirection? targetDirection = None;
+    public InsightDirection? targetDirection = null;
     
     public SymbolData(QCAlgorithm algorithm, Symbol symbol)
     {

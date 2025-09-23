@@ -55,14 +55,14 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
 {
     private Symbol _underlying;
     private Symbol _optionSymbol;
-    private OptionContract? _contract = None;
+    private OptionContract? _contract = null;
     
     public override void Initialize()
     {
         SetStartDate(2020, 6, 1);
         SetEndDate(2020, 8, 1);
         SetCash(100000);
-        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Asynchronous = true;
         // Requesting data
         _underlying = AddEquity("GOOG").Symbol;
         var option = AddOption("GOOG");
@@ -81,7 +81,7 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
         }
         
         // Select with the lastest option chain data only
-        if (_contract != None &amp;&amp; !Portfolio[_contract.Symbol].Invested &amp;&amp; 
+        if (_contract != null &amp;&amp; !Portfolio[_contract.Symbol].Invested &amp;&amp; 
             slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
         {
             // Select the call contracts with the furthest expiration (week end)
@@ -200,7 +200,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         SetStartDate(2020, 6, 1);
         SetEndDate(2020, 8, 1);
         SetCash(100000);
-        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Asynchronous = true;
         // Requesting data
         SetUniverseSelection(new EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel());
         
@@ -236,8 +236,8 @@ class EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel : OptionU
     
 class ConstantOptionsAlphaModel : AlphaModel
 { 
-    private Symbol? _underlying = None;
-    private OptionContract? _contract = None;
+    private Symbol? _underlying = null;
+    private OptionContract? _contract = null;
     
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
@@ -249,7 +249,7 @@ class ConstantOptionsAlphaModel : AlphaModel
             insights.Add(Insight.Price(_underlying, TimeSpan.FromDays(7), InsightDirection.Flat));
         }
             
-        if (_contract != None &amp;&amp; algorithm.Portfolio[_contract.Symbol].Invested)
+        if (_contract != null &amp;&amp; algorithm.Portfolio[_contract.Symbol].Invested)
         {
             return insights;
         }
