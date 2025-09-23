@@ -3,7 +3,7 @@
 <h4>Example 1: CRUD Operations</h4>
 <p>This example demonstates creating, reading, updating, and deleting a project through the cloud API.</p>
 
-<div class="python section-example-container testable">
+<div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
 # The project ID of the project to manage
@@ -71,7 +71,7 @@ if result['success']:
 <h4>Example 2: Delete All Projects in a Directory</h4>
 <p>This example deletes all projects under a specific directory in the organization workspace.</p>
 
-<div class="python section-example-container testable">
+<div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 def get_projects_in_directory(key):
     """Get all projects in a specific directory in the organization 

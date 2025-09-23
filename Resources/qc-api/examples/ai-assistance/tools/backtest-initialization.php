@@ -1,6 +1,6 @@
 <p>The following example demonstates initializing a backtest for a specific algorithm through the cloud API.</p>
 
-<div class="python section-example-container testable">
+<div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
 ### Initialize Backtest
