@@ -53,7 +53,7 @@ class USEquityDataAlgorithm(QCAlgorithm):
     {
         // Check if the current slice containing AAPL and if we hold any position
         // As we make use of the most updated price data to decide the order size
-        if (slice.ContainsKey(_symbol) &amp;&amp; slice[_symbol] != None &amp;&amp; !Portfolio.Invested)
+        if (slice.ContainsKey(_symbol) &amp;&amp; slice[_symbol] != null &amp;&amp; !Portfolio.Invested)
         {
             SetHoldings(_symbol, 1);
         }
@@ -98,7 +98,7 @@ class USEquityDataAlgorithm(QCAlgorithm):
         AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
         
         // Constant investment signal
-        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7), 0.025, None));
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(7), 0.025, null));
 
         // Invest in all members equally
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());

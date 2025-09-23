@@ -90,7 +90,7 @@ class SECReport8KAlgorithm(QCAlgorithm):
 {
     private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
     private List&lt;Symbol&gt; _longSymbols = new List&lt;Symbol&gt;();
-    private bool _rebalance = False;
+    private bool _rebalance = false;
 
     public override void Initialize()
     {
@@ -129,7 +129,7 @@ class SECReport8KAlgorithm(QCAlgorithm):
             {
                 if (_longSymbols.Contains(underlyingSymbol))
                 {
-                    _rebalance = True;
+                    _rebalance = true;
                     _longSymbols.Remove(underlyingSymbol);
                 }
                 continue;
@@ -141,13 +141,13 @@ class SECReport8KAlgorithm(QCAlgorithm):
             {
                 if (!_longSymbols.Contains(underlyingSymbol))
                 {
-                    _rebalance = True;
+                    _rebalance = true;
                     _longSymbols.Add(underlyingSymbol);
                 }
             }
             else if (_longSymbols.Contains(underlyingSymbol))
             {
-                _rebalance = True;
+                _rebalance = true;
                 _longSymbols.Remove(underlyingSymbol);
             }
         }
@@ -156,7 +156,7 @@ class SECReport8KAlgorithm(QCAlgorithm):
         {
             return;
         }
-        _rebalance = False;
+        _rebalance = false;
 
         // Invest equally to evenly dissipate the capital concentration risk
         var portfolioTargets = new List&lt;PortfolioTarget&gt;();
@@ -282,7 +282,7 @@ class SECReport8KAlphaModel(AlphaModel):
         // Custom alpha model that generates insights from SEC data
         AddAlpha(new SECReport8KAlphaModel());
         // Invest equally to evenly dissipate the capital concentration risk
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; None));
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(time =&gt; null));
     }
 }
 

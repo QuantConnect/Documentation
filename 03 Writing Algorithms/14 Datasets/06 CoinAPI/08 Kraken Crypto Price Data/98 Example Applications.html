@@ -72,7 +72,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         SetStartDate(2020, 6, 1);
         SetEndDate(2021, 6, 1);
         SetCash(100000);
-        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Asynchronous = true;
         // Kraken accepts both Cash and Margin type account, select the one you need for the best reality modeling.
         SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin);
 
@@ -188,7 +188,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         // Add Crypto Universe Selection that select crypto pairs in Kraken exchange
         AddUniverse(CryptoUniverse.Kraken(UniverseSelectionFilter));
     
-        AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None) );
+        AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, null) );
         // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
     }
@@ -233,7 +233,7 @@ foreach (var bar in history)
 IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
 {
     return universeDay
-        .Where(x =&gt; x.VolumeInUsd != None &amp;&amp; x.VolumeInUsd &gt; 10000m)
+        .Where(x =&gt; x.VolumeInUsd != null &amp;&amp; x.VolumeInUsd &gt; 10000m)
         .OrderByDescending(x =&gt; x.VolumeInUsd)
         .Take(5)
         .Select(x =&gt; x.Symbol);

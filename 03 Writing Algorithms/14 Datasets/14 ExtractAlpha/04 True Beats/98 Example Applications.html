@@ -25,7 +25,7 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
         
     def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         # Select the stocks with highest dollar volume due to better informed information from more market activities
-        # Only the ones with fundamental data are supported by True beats data
+        # Only the ones with fundamental data are supported by true beats data
         sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data], 
                                 key=lambda x: x.dollar_volume, reverse=True)
         selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
@@ -34,18 +34,18 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
     def on_data(self, slice: Slice) -&gt; None:
         if self.time &gt; self.time: return
         
-        # Trade only based on the updated True beats data
+        # Trade only based on the updated true beats data
         points = slice.Get(ExtractAlphaTrueBeats)
         if not points: return
         
-        # Extract the True beats data (earning and revenue estimates) as trading signals
-        True_beats = {point.Key: TrueBeat for point in points for TrueBeat in point.Value}
+        # Extract the true beats data (earning and revenue estimates) as trading signals
+        true_beats = {point.Key: trueBeat for point in points for trueBeat in point.Value}
 
         # Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
         # Short the lowest that predicted to bring stock price down
-        sorted_by_True_beat = sorted(True_beats.items(), key=lambda x: x[1].True_beat)
-        long_symbols = [x[0].underlying for x in sorted_by_True_beat[-10:]]
-        short_symbols = [x[0].underlying for x in sorted_by_True_beat[:10]]
+        sorted_by_true_beat = sorted(true_beats.items(), key=lambda x: x[1].true_beat)
+        long_symbols = [x[0].underlying for x in sorted_by_true_beat[-10:]]
+        short_symbols = [x[0].underlying for x in sorted_by_true_beat[:10]]
         
         # Liquidate the ones without a strong earning and revenue that support stock price direction
         for symbol in self.portfolio.Keys:
@@ -63,11 +63,11 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
         
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
-            # Requesting True beats data for trading signal generation
-            extract_alpha_True_beats_symbol = self.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
+            # Requesting true beats data for trading signal generation
+            extract_alpha_true_beats_symbol = self.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
             
             # Historical Data
-            history = self.history(extract_alpha_True_beats_symbol, 10, Resolution.DAILY)
+            history = self.history(extract_alpha_true_beats_symbol, 10, Resolution.DAILY)
             self.log(f"We got {len(history)} items from our history request for {security.symbol} ExtractAlpha True Beats data")
 </pre><pre class="csharp">public class ExtractAlphaTrueBeatsDataAlgorithm : QCAlgorithm
 {
@@ -87,7 +87,7 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
     private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
     {
                     // Select the stocks with highest dollar volume due to better informed information from more market activities
-                    // Only the ones with fundamental data are supported by True beats data
+                    // Only the ones with fundamental data are supported by true beats data
         return (from c in coarse
                 where c.HasFundamentalData
                 orderby c.DollarVolume descending
@@ -98,21 +98,21 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
     {
         if (_time &gt; Time) return;
         
-        // Trade only based on the updated True beats data
+        // Trade only based on the updated true beats data
         var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
         if (points.IsNullOrEmpty()) return;
 
-        // Extract the True beats data (earning and revenue estimates) as trading signals
-        List&lt;ExtractAlphaTrueBeat&gt; TrueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
+        // Extract the true beats data (earning and revenue estimates) as trading signals
+        List&lt;ExtractAlphaTrueBeat&gt; trueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
             points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
         );
 
                     // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
                     // Short the lowest that predicted to bring stock price down
-        var sortedByTrueBeat = from TrueBeat in TrueBeats
-                                where (TrueBeat.TrueBeat != None)
-                                orderby TrueBeat.TrueBeat descending
-                                select TrueBeat.Symbol.Underlying;
+        var sortedByTrueBeat = from trueBeat in trueBeats
+                                where (trueBeat.TrueBeat != null)
+                                orderby trueBeat.TrueBeat descending
+                                select trueBeat.Symbol.Underlying;
 
         var longSymbols = sortedByTrueBeat.Take(10).ToList();
         var shortSymbols = sortedByTrueBeat.TakeLast(10).ToList();
@@ -143,7 +143,7 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
     {
         foreach(var security in changes.AddedSecurities)
         {
-            //  Requesting True beats data for trading signal generation
+            //  Requesting true beats data for trading signal generation
             var extractAlphaTrueBeatsSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
             
             // Historical Data
@@ -169,7 +169,7 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
         self.add_universe(self.my_coarse_filter_function)
         self.universe_settings.resolution = Resolution.MINUTE
         
-        # Custom alpha model to trade based on True beats data signals
+        # Custom alpha model to trade based on true beats data signals
         self.add_alpha(ExtractAlphaTrueBeatsAlphaModel())
         
         # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
@@ -179,7 +179,7 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
         
     def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         # Select the stocks with highest dollar volume due to better informed information from more market activities
-        # Only the ones with fundamental data are supported by True beats data
+        # Only the ones with fundamental data are supported by true beats data
         sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data], 
                                 key=lambda x: x.dollar_volume, reverse=True)
         selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
@@ -194,18 +194,18 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         if self.last_time &gt; algorithm.time: return []
         
-        # Trade only based on the updated True beats data
+        # Trade only based on the updated true beats data
         points = slice.Get(ExtractAlphaTrueBeats)
         if not points: return []
 
-        # Extract the True beats data (earning and revenue estimates) as trading signals
-        True_beats = {point.Key: TrueBeat for point in points for TrueBeat in point.Value}
+        # Extract the true beats data (earning and revenue estimates) as trading signals
+        true_beats = {point.Key: trueBeat for point in points for trueBeat in point.Value}
 
         # Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
         # Short the lowest that predicted to bring stock price down
-        sorted_by_True_beat = sorted(True_beats.items(), key=lambda x: x[1].True_beat)
-        long_symbols = [x[0].underlying for x in sorted_by_True_beat[-10:]]
-        short_symbols = [x[0].underlying for x in sorted_by_True_beat[:10]]
+        sorted_by_true_beat = sorted(true_beats.items(), key=lambda x: x[1].true_beat)
+        long_symbols = [x[0].underlying for x in sorted_by_true_beat[-10:]]
+        short_symbols = [x[0].underlying for x in sorted_by_true_beat[:10]]
         
         insights = []
         for symbol in long_symbols:
@@ -219,11 +219,11 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
         
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
-            # Requesting True beats data for trading signal generation
-            extract_alpha_True_beats_symbol = algorithm.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
+            # Requesting true beats data for trading signal generation
+            extract_alpha_true_beats_symbol = algorithm.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
             
             # Historical Data
-            history = algorithm.history(extract_alpha_True_beats_symbol, 10, Resolution.DAILY)
+            history = algorithm.history(extract_alpha_true_beats_symbol, 10, Resolution.DAILY)
             algorithm.log(f"We got {len(history)} items from our history request for {security.symbol} ExtractAlpha True Beats data")
 </pre>
 <pre class="csharp">public class ExtractAlphaTrueBeatsFrameworkAlgorithm : QCAlgorithm
@@ -237,7 +237,7 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
         AddUniverse(MyCoarseFilterFunction);
         UniverseSettings.Resolution = Resolution.Minute;
 
-            // Custom alpha model to trade based on True beats data signals
+            // Custom alpha model to trade based on true beats data signals
         AddAlpha(new ExtractAlphaTrueBeatsAlphaModel());
 
         // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
@@ -249,7 +249,7 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
     private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
     {
                     // Select the stocks with highest dollar volume due to better informed information from more market activities
-                    // Only the ones with fundamental data are supported by True beats data
+                    // Only the ones with fundamental data are supported by true beats data
         return (from c in coarse
                 where c.HasFundamentalData
                 orderby c.DollarVolume descending
@@ -271,19 +271,19 @@ public class ExtractAlphaTrueBeatsAlphaModel: AlphaModel
     {
         if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
         
-        // Trade only based on the updated True beats data
+        // Trade only based on the updated true beats data
         var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
         if (points.IsNullOrEmpty()) return new List&lt;Insight&gt;();
         
-                    // Extract the True beats data (earning and revenue estimates) as trading signals
-        List&lt;ExtractAlphaTrueBeat&gt; TrueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
+                    // Extract the true beats data (earning and revenue estimates) as trading signals
+        List&lt;ExtractAlphaTrueBeat&gt; trueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
             points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
         );
 
         // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
                     // Short the lowest that predicted to bring stock price down
-        var sortedByTrueBeat = from s in TrueBeats
-                        where (s.TrueBeat != None)
+        var sortedByTrueBeat = from s in trueBeats
+                        where (s.TrueBeat != null)
                         orderby s.TrueBeat descending
                         select s.Symbol.Underlying;
         var longSymbols = sortedByTrueBeat.Take(10).ToList();
@@ -304,7 +304,7 @@ public class ExtractAlphaTrueBeatsAlphaModel: AlphaModel
     {
         foreach(var security in changes.AddedSecurities)
         {
-            // Requesting True beats data for trading signal generation
+            // Requesting true beats data for trading signal generation
             var extractAlphaTrueBeatsSymbol = algorithm.AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
             
             // Historical Data

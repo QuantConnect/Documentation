@@ -61,7 +61,7 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
 {
     private Symbol _symbol;
     private Symbol _datasetSymbol;
-    private decimal? _latestSentimentValue = None;
+    private decimal? _latestSentimentValue = null;
     private int _targetHoldings = 0;
     
     public override void Initialize()
@@ -90,7 +90,7 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
     public void Update(decimal sentiment)
     {
         // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
-        if (_latestSentimentValue != None)
+        if (_latestSentimentValue != null)
         {
             _targetHoldings = sentiment &gt; _latestSentimentValue ? 1 : 0;
         }
@@ -258,14 +258,14 @@ public class BrainSentimentAlphaModel : AlphaModel
             var symbolData = entry.Value;
 
             // Update trade direction based on updated data
-            if (slice.ContainsKey(symbolData.datasetSymbol)  &amp;&amp; slice[symbolData.datasetSymbol] != None)
+            if (slice.ContainsKey(symbolData.datasetSymbol)  &amp;&amp; slice[symbolData.datasetSymbol] != null)
             {
                 var sentiment = slice[symbolData.datasetSymbol].Sentiment;
                 symbolData.Update(sentiment);
             }
             
             // Ensure we have security data in the current slice to avoid stale fill
-            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != None))
+            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != null))
             {
                 continue;
             }
@@ -306,7 +306,7 @@ public class SymbolData
     public Symbol datasetSymbol;
     public InsightDirection targetDirection = InsightDirection.Flat;
     private QCAlgorithm _algorithm;
-    private decimal? _latestSentimentValue = None;
+    private decimal? _latestSentimentValue = null;
 
     public SymbolData(QCAlgorithm algorithm, Symbol symbol)
     {
@@ -340,7 +340,7 @@ public class SymbolData
     public void Update(decimal sentiment)
     {
         // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
-        if (_latestSentimentValue != None)
+        if (_latestSentimentValue != null)
         {
             targetDirection = sentiment &gt; _latestSentimentValue ? InsightDirection.Up : InsightDirection.Flat;
         }

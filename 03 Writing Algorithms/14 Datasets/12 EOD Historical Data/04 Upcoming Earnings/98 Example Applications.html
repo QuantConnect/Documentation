@@ -136,7 +136,7 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
         {
             // Select the option contracts to construct a straddle to trade the volatility.
             var (call, put) = SelectOptionContracts(added.Symbol);
-            if (call == None || put == None)
+            if (call == null || put == null)
             {
                 continue;
             }
@@ -165,7 +165,7 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
         var longExpiries = optionContractList.Where(x =&gt; x.ID.Date &gt;= Time.AddDays(30)).ToList();
         if (longExpiries.Count &lt; 2)
         {
-            return (None, None);
+            return (null, null);
         }
         var expiry = longExpiries.Min(x =&gt; x.ID.Date);
         var filteredContracts = optionContractList.Where(x =&gt; x.ID.Date == expiry).ToList();
@@ -176,7 +176,7 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
         var atmContracts = filteredContracts.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
         if (atmContracts.Count &lt; 2)
         {
-            return (None, None);
+            return (null, null);
         }
 
         var atmCall = atmContracts.Single(x =&gt; x.ID.OptionRight == OptionRight.Call);
@@ -362,7 +362,7 @@ public class UpcomingEarningsAlphaModel : AlphaModel
         {
             // Select the option contracts to construct a straddle to trade the volatility.
             var (call, put) = SelectOptionContracts(algorithm, added.Symbol, algorithm.Time);
-            if (call == None || put == None)
+            if (call == null || put == null)
             {
                 continue;
             }
@@ -383,7 +383,7 @@ public class UpcomingEarningsAlphaModel : AlphaModel
         var longExpiries = optionContractList.Where(x =&gt; x.ID.Date &gt;= time.AddDays(30)).ToList();
         if (longExpiries.Count &lt; 2)
         {
-            return (None, None);
+            return (null, null);
         }
         var expiry = longExpiries.Min(x =&gt; x.ID.Date);
         var filteredContracts = optionContractList.Where(x =&gt; x.ID.Date == expiry).ToList();
@@ -394,7 +394,7 @@ public class UpcomingEarningsAlphaModel : AlphaModel
         var atmContracts = filteredContracts.Where(x =&gt; x.ID.StrikePrice == strike).ToList();
         if (atmContracts.Count &lt; 2)
         {
-            return (None, None);
+            return (null, null);
         }
 
         var atmCall = atmContracts.Single(x =&gt; x.ID.OptionRight == OptionRight.Call);

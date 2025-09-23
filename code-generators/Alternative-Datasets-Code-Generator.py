@@ -4,7 +4,11 @@ from pathlib import Path
 from itertools import groupby
 from shutil import move, rmtree
 from bs4 import BeautifulSoup
-from _code_generation_helpers import get_json_content
+from urllib.request import urlopen
+import json
+
+from _code_generation_helpers import generate_landing_page
+
 
 DATASET = "03 Writing Algorithms/14 Datasets"
 
@@ -66,8 +70,11 @@ def _parse_content(content):
     return content
 
 if __name__ == '__main__':
-    url = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json"
-    docs = sorted(get_json_content(url), key=lambda x: x["vendorName"].strip())
+    url = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json"    
+    docs = sorted(
+        json.loads(urlopen(url).read().decode('utf-8')), 
+        key=lambda x: x["vendorName"].strip()
+    )
 
     docs_by_vendor = {k : sorted(v, key=lambda x: x['name'].strip())
         for k,v in groupby(docs, lambda x: x["vendorName"].strip())}
@@ -104,9 +111,11 @@ if __name__ == '__main__':
     data_tree_attr_pattern = r'data-tree="([^"]*)"'
     
     for i, vendor in enumerate(vendors):
-        vendor_folder = Path(f'{DATASET}/{i+2:02} {vendor}')
+        path = f'{DATASET}/{i+2:02} {vendor}'
+        vendor_folder = Path(path)
         vendor_folder.mkdir(parents=True, exist_ok=True)
         _move(current.pop(vendor, []), vendor_folder)
+        generate_landing_page(0, 0, path, vendor, docs_by_vendor[vendor][0]['about'][1]['content']) 
         datasets = _directory_content(vendor_folder)
         for f, dataset in enumerate(docs_by_vendor.pop(vendor)):
             name = dataset['name'].strip()

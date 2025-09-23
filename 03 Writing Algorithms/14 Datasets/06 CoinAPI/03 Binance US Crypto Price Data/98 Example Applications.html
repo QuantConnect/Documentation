@@ -68,7 +68,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         SetStartDate(2020, 6, 1);
         SetEndDate(2021, 6, 1);
         SetCash(100000);
-        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Asynchronous = true;
         // BinanceUS accepts Cash account type only, AccountType.Margin will result in an exception.
         SetBrokerageModel(BrokerageName.BinanceUS, AccountType.Cash);
 
@@ -173,12 +173,12 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
 
         // Warm up the security with the last known price to avoid conversion error
         SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
-        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Asynchronous = true;
         UniverseSettings.Resolution = Resolution.Minute;
         // Add Crypto Universe Selection that select crypto pairs in BinanceUS exchange
         AddUniverse(CryptoUniverse.BinanceUS(UniverseSelectionFilter));
     
-        AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, None) );
+        AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, null) );
         // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
     }
@@ -223,7 +223,7 @@ foreach (var bar in history)
 IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
 {
     return universeDay
-        .Where(x =&gt; x.VolumeInUsd != None &amp;&amp; x.VolumeInUsd &gt; 10000m)
+        .Where(x =&gt; x.VolumeInUsd != null &amp;&amp; x.VolumeInUsd &gt; 10000m)
         .OrderByDescending(x =&gt; x.VolumeInUsd)
         .Take(5)
         .Select(x =&gt; x.Symbol);

@@ -56,17 +56,17 @@ The US Future Universe dataset enables you to accurately design Futures strategi
         SetStartDate(2013, 12, 20);
         SetEndDate(2014, 2, 20);
         SetCash(1000000);
-        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Asynchronous = true;
 
         // Requesting data on gold and micro-gold contracts.
         // Filter the universe to trade only the contracts expiring within 90 days to ensure liquidity.
         _miniGold = AddFuture(Futures.Metals.Gold);
         _miniGold.SetFilter(0, 90);
-        _contract.Add(_miniGold.Symbol, None);
+        _contract.Add(_miniGold.Symbol, null);
         
         _microGold = AddFuture(Futures.Metals.MicroGold);
         _microGold.SetFilter(0, 90);
-        _contract.Add(_microGold.Symbol, None);
+        _contract.Add(_microGold.Symbol, null);
     }
 
     public override void OnData(Slice slice)
@@ -78,10 +78,10 @@ The US Future Universe dataset enables you to accurately design Futures strategi
                 // Select the contract with the greatest open interest to trade with the most efficiency.
                 var mostLiquidContract = chain.OrderBy(x =&gt; x.OpenInterest).Last();
                 
-                if (_contract[symbol] == None || mostLiquidContract.Symbol != _contract[symbol].Symbol)
+                if (_contract[symbol] == null || mostLiquidContract.Symbol != _contract[symbol].Symbol)
                 {
                     // Liquidate any unmapped contracts.
-                    if (_contract[symbol] != None)
+                    if (_contract[symbol] != null)
                     {
                         Liquidate(_contract[symbol].Symbol);
                     }
@@ -185,7 +185,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         SetStartDate(2013, 12, 20);
         SetEndDate(2014, 2, 20);
         SetCash(1000000);
-        UniverseSettings.Asynchronous = True;
+        UniverseSettings.Asynchronous = true;
         // Set up an universe selection model that selects the front month contract
         SetUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
         SetAlpha(new ConstantFuturesAlphaModel());
