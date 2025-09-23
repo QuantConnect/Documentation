@@ -1,6 +1,6 @@
 <p>The following example demonstates searching content in QuantConnect through the cloud API.</p>
 
-<div class="python section-example-container testable">
+<div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
 ### Search Content

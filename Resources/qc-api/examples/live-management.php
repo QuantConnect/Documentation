@@ -1,6 +1,6 @@
 <p>The following example demonstates creating, reading, updating, and listing live algorithms of a project through the cloud API.</p>
 
-<div class="python section-example-container testable">
+<div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
 ### Create Live Algorithm

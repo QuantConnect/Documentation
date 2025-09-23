@@ -1,6 +1,6 @@
 <p>The following example demonstates how to get additional context and suggestions for error messages through the cloud API.</p>
 
-<div class="python section-example-container testable">
+<div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
 ### Error Enhancement
