@@ -1,0 +1,38 @@
+name: Update Python API Reference
+
+on:
+  schedule:
+    - cron: "0 23 * * 5" # Runs at 23:00 UTC every Friday
+  workflow_dispatch:  # Run on manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Free space
+        run: df -h && rm -rf /opt/hostedtoolcache* && df -h
+
+      - name: Install dependencies (pip)
+        run: |
+          python -m pip install --upgrade pip
+          pip install quantconnect-stubs mkdocs
+
+      - name: Run the Python API Reference Generator
+        run: cd code-generators/python_api_reference && python main.py
+
+      - name: Build site with MkDocs
+        run: mkdocs build --clean
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: us-west-1
+
+      - name: Sync site to S3
+        run: aws s3 sync ./site s3://${{ secrets.AWS_BUCKET }}/python-api-reference --delete
