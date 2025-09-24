@@ -22,9 +22,11 @@ jobs:
           pip install quantconnect-stubs mkdocs
 
       - name: Run the Python API Reference Generator
-        run: cd code-generators/python_api_reference && python main.py
+        working-directory: code-generators/python_api_reference
+        run: python main.py
 
       - name: Build site with MkDocs
+        working-directory: code-generators/python_api_reference
         run: mkdocs build --clean
 
       - name: Configure AWS Credentials
@@ -35,4 +37,5 @@ jobs:
           aws-region: us-west-1
 
       - name: Sync site to S3
+        working-directory: code-generators/python_api_reference
         run: aws s3 sync ./site s3://${{ secrets.AWS_BUCKET }}/python-api-reference --delete
