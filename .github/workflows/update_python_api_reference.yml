@@ -36,6 +36,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
           aws-region: us-west-1
 
-      - name: Sync site to S3
+      - name: Remove old site
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET }}/python-api-reference --recursive
+      
+      - name: Upload fresh site
         working-directory: code-generators/python_api_reference
-        run: aws s3 sync ./site s3://${{ secrets.AWS_BUCKET }}/python-api-reference --delete
+        run: aws s3 cp ./site s3://${{ secrets.AWS_BUCKET }}/python-api-reference --recursive
