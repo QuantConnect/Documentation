@@ -233,6 +233,7 @@ class HuggingFaceFineTunedDemo(QCAlgorithm):
         self.set_end_date(2024, 4, 1)
         self.set_cash(100_000)
 
+        self.settings.daily_precise_end_time = False
         self.settings.min_absolute_portfolio_target_percentage = 0
 
         # Define the universe.
@@ -330,7 +331,7 @@ class HuggingFaceFineTunedDemo(QCAlgorithm):
             if df.shape[0] &lt; 10: # Skip this asset if there is very little data
                 continue
             adjusted_df = df.reset_index()[['time', symbol]]
-            adjusted_df = adjusted_df.rename(columns={str(symbol.id): 'target'})
+            adjusted_df = adjusted_df.rename(columns={symbol: 'target'})
             adjusted_df['time'] = pd.to_datetime(adjusted_df['time'])
             adjusted_df.set_index('time', inplace=True)
             adjusted_df = adjusted_df.resample('D').asfreq()
@@ -420,7 +421,7 @@ class HuggingFaceFineTunedDemo(QCAlgorithm):
             use_eos_token: bool = True,
             lr_scheduler_type: str = "linear",
             warmup_ratio: float = 0.0,
-            dataloader_num_workers: int = 1,
+            dataloader_num_workers: int = 0,
             max_missing_prop: float = 0.9,
             num_samples: int = 20,
             temperature: float = 1.0,
@@ -570,7 +571,7 @@ class HuggingFaceFineTunedDemo(QCAlgorithm):
  <div class="qc-embed-dummy" style="padding-top: 56.25%;">
  </div>
  <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-  <iframe class="qc-embed-backtest" height="100%" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_f8a5822e4a9c7cc3365183bf31e45add.html" style="border: 1px solid #ccc; padding: 0; margin: 0;" width="100%">
+  <iframe class="qc-embed-backtest" height="100%" src="https://www.quantconnect.cloud/backtest/daee41bd4745da1c32578d9dc4c3b2a0/?theme=darkly" style="border: 1px solid #ccc; padding: 0; margin: 0;" width="100%">
   </iframe>
  </div>
 </div>
