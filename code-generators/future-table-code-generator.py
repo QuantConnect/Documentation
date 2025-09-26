@@ -80,6 +80,6 @@ if __name__ == '__main__':
             if not option:
                 continue
             underlying = '' if option == ticker else f' | Underlying: {ticker}'
-            html += f'''<li><b>{x['accessor']}</b>: {x['summary']} ({x['market']}: {option}{underlying})</li>
+            html += f'''<li>{x['accessor']}: {x['summary']} ({x['market']}: {option}{underlying})</li>
     '''
         fp.write(f"<p>The following list shows the available ({len(FUTURE_OPTIONS)}) Futures Options:</p>{html}</ul>")
