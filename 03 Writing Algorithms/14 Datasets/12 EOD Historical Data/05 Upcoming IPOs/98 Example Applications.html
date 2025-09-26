@@ -36,7 +36,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         # Liquidate the new stocks traded today/yesterday to capitalize the first-day hype.
         for removed in changes.removed_securities:
             self.liquidate(removed.symbol)</pre>
-<pre><code class="language-cs">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
+<pre class="csharp">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
 {
     private List&lt;Symbol&gt; _universe = new();
 
@@ -50,7 +50,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         AddUniverse&lt;EODHDUpcomingIPOs&gt;((ipos) =&gt; {
             // Select the stocks that IPO starts today and traded in Nasdaq
             _universe = (from EODHDUpcomingIPOs x in ipos
-                where x.IpoDate &lt;= Time.AddDays(1) && x.Exchange == Exchange.NASDAQ
+                where x.IpoDate &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ
                 select x.Symbol).ToList();
             return _universe;
         });
@@ -72,7 +72,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
             Liquidate(removed.Symbol);
         }
     }
-}</code></pre>
+}</pre>
 </div>
 
 <h4>Example 2: Market Popularity</h4>
@@ -184,7 +184,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         # Select the stocks that IPO starts today and traded in Nasdaq
         return [x.symbol for x in ipos if x.ipo_date and x.ipo_date &lt;= self.time + timedelta(1) and x.exchange == Exchange.NASDAQ]
 </pre>
-<pre><code class="language-cs">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
+<pre class="csharp">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -196,7 +196,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         AddUniverse&lt;EODHDUpcomingIPOs&gt;((ipos) =&gt; {
             // Select the stocks that IPO starts today and traded in Nasdaq
             return (from EODHDUpcomingIPOs x in ipos
-                where x.IpoDate &lt;= Time.AddDays(1) && x.Exchange == Exchange.NASDAQ
+                where x.IpoDate &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ
                 select x.Symbol).ToList();
         });
         
@@ -206,5 +206,5 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         // Equally invest in each new stocks to evenly dissipate the capital risk.
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
     }
-}</code></pre>
+}</pre>
 </div>

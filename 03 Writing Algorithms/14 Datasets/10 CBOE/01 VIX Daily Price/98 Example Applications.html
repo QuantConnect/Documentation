@@ -9,7 +9,7 @@ When the VIX starts moving higher, it is telling you that traders are getting ne
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class CBOEDataAlgorithmAlgorithm(QCAlgorithm):
 
@@ -27,8 +27,8 @@ class CBOEDataAlgorithmAlgorithm(QCAlgorithm):
         
         # Create a 3mo-over-1mo VIX price indicator to estimate the relative short-term volatility
         # Normally 3-mo volatility should be higher due to higher time uncertainty, but if the market preceive a shock within short time, it will invert
-        self.vix_price = self.identity(self.vix, 1, Resolution.DAILY)
-        self.vxv_price = self.identity(self.vxv, 1, Resolution.DAILY)
+        self.vix_sma = self.sma(self.vix, 1, Resolution.DAILY)
+        self.vxv_sma = self.sma(self.vxv, 1, Resolution.DAILY)
         self.ratio = IndicatorExtensions.over(self.vxv_sma, self.vix_sma)
         
         # Plot indicators each time they update using the PlotIndicator function for data visualization
@@ -37,11 +37,11 @@ class CBOEDataAlgorithmAlgorithm(QCAlgorithm):
 
         # Historical data
         history = self.history(CBOE, self.vix, 60, Resolution.DAILY)
-        self.debug(f"We got {len(history.index)} items from our history request");
+        self.debug(f"We got {len(history.index)} items from our history request")
     
     def on_data(self, slice: Slice) -&gt; None:
         # Wait for all indicators to fully initialize
-        if not (self.vix_sma.is_ready and self.vxv_sma.is_ready and self.ratio.is_ready):
+        if not (self.vix_sma.is_ready and self.vxv_sma.is_ready and self.ratio.is_ready and self.securities[self.spy].price):
             return
 
         # Invest in SPY if the market is not in panic, assuming the market is always uptrending
@@ -50,14 +50,14 @@ class CBOEDataAlgorithmAlgorithm(QCAlgorithm):
         # If the short term volatility is high, exit all positions to avoid excessive risk
         elif self.ratio.current.value &lt; 1:
             self.liquidate()
-</pre>
+        # Plot indicators each time they update for data visualization
+        self.plot("SMA", "VIX", self.vix_sma.current.value)
+        self.plot("SMA", "VXV", self.vxv_sma.current.value)
+        self.plot("Ratio", "Value", self.ratio.current.value)</pre>
 <pre class="csharp">public class CBOEDataAlgorithmAlgorithm : QCAlgorithm
 {
-    private Symbol _spy;
-    private Symbol _vix;
-    private Symbol _vxv;
-    private SimpleMovingAverage _smaVIX;
-    private SimpleMovingAverage _smaVXV;
+    private Symbol _spy, _vix, _vxv;
+    private SimpleMovingAverage _smaVIX, _smaVXV;
     private IndicatorBase _ratio;
 
     public override void Initialize()
@@ -87,24 +87,25 @@ class CBOEDataAlgorithmAlgorithm(QCAlgorithm):
     public override void OnData(Slice slice)
     {
         // Wait for all indicators to fully initialize
-        if (_smaVIX.IsReady &amp;&amp; _smaVXV.IsReady &amp;&amp; _ratio.IsReady)
+        if (!(_smaVIX.IsReady &amp;&amp; _smaVXV.IsReady &amp;&amp; _ratio.IsReady &amp;&amp; Securities[_spy].Price &gt; 0))
         {
-            // Invest in SPY if the market is not in panic, assuming the market is always uptrending
-            if (!Portfolio.Invested &amp;&amp; _ratio &gt; 1)
-            {
-                MarketOrder(_spy, 100);
-            }
-            // If the short term volatility is high, exit all positions to avoid excessive risk
-            else if (_ratio &lt; 1)
-            {
-                Liquidate();
-            }
-
-            // Plot indicators each time they update for data visualization
-            Plot("SMA", "VIX", _smaVIX);
-            Plot("SMA", "VXV", _smaVXV);
-            Plot("Ratio", "Value", _ratio.Current.Value);
+            return;
         }
+        // Invest in SPY if the market is not in panic, assuming the market is always uptrending
+        if (!Portfolio.Invested &amp;&amp; _ratio &gt; 1)
+        {
+            MarketOrder(_spy, 100);
+        }
+        // If the short term volatility is high, exit all positions to avoid excessive risk
+        else if (_ratio &lt; 1)
+        {
+            Liquidate();
+        }
+
+        // Plot indicators each time they update for data visualization
+        Plot("SMA", "VIX", _smaVIX);
+        Plot("SMA", "VXV", _smaVXV);
+        Plot("Ratio", "Value", _ratio.Current.Value);
     }
 }</pre></div>
 <h4>Framework Algorithm Design</h4>

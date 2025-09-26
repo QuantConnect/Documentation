@@ -10,7 +10,7 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
 <p>The following example algorithm long a straddle on the stocks with upcoming earnings report within 5 days to trade the volatility. It allows 5 days to build up the volatility and capitalize the positions 1 day after the earnings announcement.</p>
 
 <div class="section-example-container testable">
-<pre><code class="language-python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
+<pre class="python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
     options_by_symbol = {}
 
     def initialize(self) -&gt; None:
@@ -33,7 +33,7 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
         # Assuming 5 days before the earnings report publish is less volatile.
         # We do not want depository due to their low liquidity.
         return [d.symbol for d in earnings
-                if d.report_date <= self.time + timedelta(5)]
+                if d.report_date &lt;= self.time + timedelta(5)]
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
 
@@ -81,12 +81,12 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
         strike = sorted(filtered_contracts, 
             key=lambda x: abs(x.id.strike_price - self.securities[underlying].price))[0].id.strike_price
         atm_contracts = [x for x in filtered_contracts if x.id.strike_price == strike]
-        if len(atm_contracts) < 2:
+        if len(atm_contracts) &lt; 2:
             return None, None
         
         atm_call = next(filter(lambda x: x.id.option_right == OptionRight.CALL, atm_contracts))
         atm_put = next(filter(lambda x: x.id.option_right == OptionRight.PUT, atm_contracts))
-        return atm_call, atm_put</code></pre>
+        return atm_call, atm_put</pre>
 <pre class="csharp">public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
 {
     // A dictionary to save the underlying-call,put pair for position open/close management.
@@ -189,7 +189,7 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
 <p>The following example algorithm long a straddle on the stocks with upcoming earnings report within 5 days to trade the volatility implemented in framework algorithm. It allows 5 days to build up the volatility and capitalize the positions 1 day after the earnings announcement.</p>
 
 <div class="section-example-container testable">
-<pre><code class="language-python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
+<pre class="python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
@@ -217,7 +217,7 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
         # Assuming 5 days before the earnings report publish is less volatile.
         # We do not want depository due to their low liquidity.
         return [d.symbol for d in earnings
-                if d.report_date <= self.time + timedelta(5)]
+                if d.report_date &lt;= self.time + timedelta(5)]
 
 class UpcomingEarningsAlphaModel(AlphaModel):
     options_by_symbol = {}
@@ -226,7 +226,7 @@ class UpcomingEarningsAlphaModel(AlphaModel):
         insights = []
 
         # Iterate the newly added equities to trade their volatility.
-        while len(self.options_by_symbol) > 0:
+        while len(self.options_by_symbol) &gt; 0:
             key = list(self.options_by_symbol.keys())[0]
             # Obtain the selected option contracts to trade and remove the key-value pair to avoid repeat ordering.
             contracts = self.options_by_symbol.pop(key)
@@ -262,8 +262,8 @@ class UpcomingEarningsAlphaModel(AlphaModel):
 
         # Expiry at least 30 days later to have a smaller theta to reduce time decay loss.
         # Yet also be ensure liquidity over the volatility fluctuation hence we take the closet expiry after that.
-        long_expiries = [x for x in option_contract_list if x.id.date >= time + timedelta(30)]
-        if len(long_expiries) < 2:
+        long_expiries = [x for x in option_contract_list if x.id.date &gt;= time + timedelta(30)]
+        if len(long_expiries) &lt; 2:
             return None, None
         expiry = min(x.id.date for x in long_expiries)
         filtered_contracts = [x for x in option_contract_list if x.id.date == expiry]
@@ -272,7 +272,7 @@ class UpcomingEarningsAlphaModel(AlphaModel):
         strike = sorted(filtered_contracts, 
             key=lambda x: abs(x.id.strike_price - algorithm.securities[underlying].price))[0].id.strike_price
         atm_contracts = [x for x in filtered_contracts if x.id.strike_price == strike]
-        if len(atm_contracts) < 2:
+        if len(atm_contracts) &lt; 2:
             return None, None
         
         atm_call = next(filter(lambda x: x.id.option_right == OptionRight.CALL, atm_contracts))
@@ -286,8 +286,8 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         # Only a single contract toi ensure both legs size is equal
         quantity = min([abs(algorithm.calculate_order_quantity(i.symbol, i.direction))
             for i in insights])
-        return [PortfolioTarget(i.symbol, quantity * i.direction) for i in insights]</code></pre>
-<pre><code class="language-cs">public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
+        return [PortfolioTarget(i.symbol, quantity * i.direction) for i in insights]</pre>
+<pre class="csharp">public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -346,7 +346,7 @@ public class UpcomingEarningsAlphaModel : AlphaModel
         // Remove any assigned positions of the underlying.
         foreach (var (symbol, holding) in algorithm.Portfolio)
         {
-            if (holding.Type == SecurityType.Equity && holding.Invested)
+            if (holding.Type == SecurityType.Equity &amp;&amp; holding.Invested)
             {
                 insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Flat));
             }
@@ -418,5 +418,5 @@ public class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
 
         return insights.Select(i =&gt; new PortfolioTarget(i.Symbol, quantity * (decimal)i.Direction));
     }
-}</code></pre>
+}</pre>
 </div>

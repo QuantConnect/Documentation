@@ -152,7 +152,7 @@ class IndexOptionsUniverseAlgorithm(QCAlgorithm):
 <p>The following example algorithm demonstrating a Gamma Scalping strategy through framework algorithm. It filters SPX options with expiration between 30 to 90 days and open interest between 50 and 1000, due to liquidity concern and lower Gamma fluctuation. Assuming a significant upward trend is expecting, it orders a long straddle strategy from the strike price with Delta-neutral and the highest Gamma to earn the highest profit from upward underlying movement.</p>
 
 <div class="section-example-container testable">
-<pre><code class="language-python">from AlgorithmImports import *
+<pre class="python">from AlgorithmImports import *
 
 class IndexOptionsUniverseFrameworkAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
@@ -215,7 +215,7 @@ class OptionDeltaGammaAlphaModel(AlphaModel):
                 # Assuming the market direction is up in most scenario, we try to get the strike providing max overall Gamma
                 # Make sure the aggregated gamma to be positive to bet on large uptrend
                 # So it will earn more when the price really go up higher and higher, but locally immune for small noise
-                filtered = [item for item in delta_gamma_symbols if round(item[0], 2) <= 0.01 and item[1] &gt; 0]
+                filtered = [item for item in delta_gamma_symbols if round(item[0], 2) &lt;= 0.01 and item[1] &gt; 0]
                 if len(filtered) == 0:
                     continue
                 selected = sorted(filtered, key=lambda x: x[1])[0]
@@ -238,8 +238,8 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
             if algorithm.securities[insight.symbol].is_tradable:
                 # Use a whole number target to order the exact number of share for size-matching
                 targets.append(PortfolioTarget(insight.symbol, insight.direction))
-        return targets</code></pre>
-<pre><code class="language-cs">public class IndexOptionsUniverseFrameworkAlgorithm : QCAlgorithm
+        return targets</pre>
+<pre class="csharp">public class IndexOptionsUniverseFrameworkAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -309,8 +309,8 @@ class OptionDeltaGammaAlphaModel : AlphaModel
                 foreach (var strike in strikes)
                 {
                     // Get both call and put for their aggregated delta and gamma
-                    var call = contracts.Single(x =&gt; x.Right == OptionRight.Call && x.Strike == strike);
-                    var put = contracts.Single(x =&gt; x.Right == OptionRight.Put && x.Strike == strike);
+                    var call = contracts.Single(x =&gt; x.Right == OptionRight.Call &amp;&amp; x.Strike == strike);
+                    var put = contracts.Single(x =&gt; x.Right == OptionRight.Put &amp;&amp; x.Strike == strike);
                     deltaGammaSymbols.Add((call.Greeks.Delta + put.Greeks.Delta, call.Greeks.Gamma + put.Greeks.Gamma, call.Symbol, put.Symbol));
                 }
 
@@ -324,7 +324,7 @@ class OptionDeltaGammaAlphaModel : AlphaModel
                 // Assuming the market direction is up in most scenario, we try to get the strike providing max overall Gamma
                 // Make sure the aggregated gamma to be positive to bet on large uptrend
                 // So it will earn more when the price really go up higher and higher, but locally immune for small noise
-                var filtered = deltaGammaSymbols.Where(item =&gt; Math.Round(item.Item1, 2) &lt;= 0.01m && item.Item2 &gt; 0).ToList();
+                var filtered = deltaGammaSymbols.Where(item =&gt; Math.Round(item.Item1, 2) &lt;= 0.01m &amp;&amp; item.Item2 &gt; 0).ToList();
                 if (filtered.Count == 0)
                 {
                     continue;
@@ -361,5 +361,5 @@ class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
         }
         return targets;
     }
-}</code></pre>
+}</pre>
 </div>

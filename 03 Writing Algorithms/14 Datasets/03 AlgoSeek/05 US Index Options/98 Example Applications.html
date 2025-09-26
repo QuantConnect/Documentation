@@ -30,7 +30,7 @@ class IndexOptionsDataAlgorithm(QCAlgorithm):
             chain = slice.option_chains.get(self.option_symbol)
             if chain:
                 expiry = max([c.expiry for c in chain])
-                call_contracts = sorted([c for c in chainif c.expiry == expiry],
+                call_contracts = sorted([c for c in chain if c.expiry == expiry],
                     key=lambda c: c.strike)
                 
                 # Need 2 contracts to form a call spread
@@ -211,10 +211,10 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         if not insights:
             return []
         # Only a single contract toi ensure both legs size is equal
-        quantity = min([abs(algorithm.calculate_order_quantity(i.symbol, i.direction))
+        quantity = min([abs(algorithm.calculate_order_quantity(i.symbol, int(i.direction)))
             for i in insights])
     
-        return [PortfolioTarget(i.symbol, quantity * i.direction)
+        return [PortfolioTarget(i.symbol, quantity * int(i.direction))
             for i in insights]</pre>
 <pre class="csharp">public class IndexOptionsDataAlgorithm : QCAlgorithm
 {
@@ -271,6 +271,7 @@ public class BullCallSpreadAlphaModel : AlphaModel
                 return insights;
             }
             // Bull call spread legs are having the same expiry
+            var expiry = chain.Max(contract =&gt; contract.Expiry);
             var callContracts = chain
                 .Where(contract =&gt; contract.Expiry == expiry)
                 .OrderBy(x =&gt; x.Strike)
@@ -287,10 +288,9 @@ public class BullCallSpreadAlphaModel : AlphaModel
             var shortCall = callContracts.First(contract =&gt; contract.Strike &gt; longCall.Strike);
 
             // Bull call spread consists of long a lower-strike call and short a higher-strike call
-            var expiry = longCall.Expiry.AddDays(1);
             return Insight.Group(
-                Insight.Price(longCall.Symbol, expiry, InsightDirection.Up),
-                Insight.Price(shortCall.Symbol, expiry, InsightDirection.Down));
+                Insight.Price(longCall.Symbol, expiry.AddDays(1), InsightDirection.Up),
+                Insight.Price(shortCall.Symbol, expiry.AddDays(1), InsightDirection.Down));
         }
         return insights;
     }

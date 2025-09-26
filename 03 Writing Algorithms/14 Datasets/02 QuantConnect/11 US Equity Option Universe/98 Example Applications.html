@@ -238,7 +238,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
                 # Use a whole number target to order the exact number of share for size-matching
                 targets.append(PortfolioTarget(insight.symbol, insight.direction))
         return targets</pre>
-<pre><code class="language-cs">public class USEquityOptionsUniverseFrameworkAlgorithm : QCAlgorithm
+<pre class="csharp">public class USEquityOptionsUniverseFrameworkAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -308,8 +308,8 @@ class OptionDeltaGammaAlphaModel : AlphaModel
                 foreach (var strike in strikes)
                 {
                     // Get both call and put for their aggregated delta and gamma
-                    var call = contracts.Single(x =&gt; x.Right == OptionRight.Call && x.Strike == strike);
-                    var put = contracts.Single(x =&gt; x.Right == OptionRight.Put && x.Strike == strike);
+                    var call = contracts.Single(x =&gt; x.Right == OptionRight.Call &amp;&amp; x.Strike == strike);
+                    var put = contracts.Single(x =&gt; x.Right == OptionRight.Put &amp;&amp; x.Strike == strike);
                     deltaGammaSymbols.Add((call.Greeks.Delta + put.Greeks.Delta, call.Greeks.Gamma + put.Greeks.Gamma, call.Symbol, put.Symbol));
                 }
 
@@ -323,7 +323,7 @@ class OptionDeltaGammaAlphaModel : AlphaModel
                 // Assuming the market direction is up in most scenario, we try to get the strike providing max overall Gamma
                 // Make sure the aggregated gamma to be positive to bet on large uptrend
                 // So it will earn more when the price really go up higher and higher, but locally immune for small noise
-                var filtered = deltaGammaSymbols.Where(item =&gt; Math.Round(item.Item1, 2) &lt;= 0.01m && item.Item2 &gt; 0).ToList();
+                var filtered = deltaGammaSymbols.Where(item =&gt; Math.Round(item.Item1, 2) &lt;= 0.01m &amp;&amp; item.Item2 &gt; 0).ToList();
                 if (filtered.Count == 0)
                 {
                     continue;
@@ -360,5 +360,5 @@ class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
         }
         return targets;
     }
-}</code></pre>
+}</pre>
 </div>

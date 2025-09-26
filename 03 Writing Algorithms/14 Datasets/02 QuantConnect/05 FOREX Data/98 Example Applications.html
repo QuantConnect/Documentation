@@ -209,15 +209,12 @@ public class IntestRatesAlphaModel : AlphaModel
         _month = algorithm.Time.Month;
 
         // Long the pair with highest interest rate and sell the pair with the lowest to earn the max monetary inflation difference between the two
-    sorted_rates = sorted(self.rates.items(), key = lambda x: x[1])
-    self.set_holdings(sorted_rates[0][0], -0.5)
-    self.set_holdings(sorted_rates[-1][0], 0.5)
         var sortedRates = (from kvp in _rates orderby kvp.Value ascending select kvp.Key).ToArray();
         
         return Insight.Group(
             Insight.Price(sortedRates[0], Expiry.EndOfMonth, InsightDirection.Up),
             Insight.Price(sortedRates[sortedRates.Length-1], Expiry.EndOfMonth, InsightDirection.Down)
-            );
+        );
     }
 }</pre>
 </div>

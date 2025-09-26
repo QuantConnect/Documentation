@@ -9,7 +9,7 @@ The US Equity Options dataset enables you to accurately design Option strategies
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class USEquityOptionsDataAlgorithm(QCAlgorithm):
 
@@ -29,32 +29,30 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
         self.contract = None
 
     def on_data(self, slice: Slice) -&gt; None:
-        # Close the underlying position if the option contract is exercised
+        # If the Option contract is exercised, close the underlying position.
         if self.portfolio[self.underlying].invested:
             self.liquidate(self.underlying)
-
+        # If the Option contract expires, rollover to the next contract.
+        if self.contract and not self.portfolio[self.contract.symbol].invested:
+            self.contract = None
         # Select with the lastest option chain data only
         chain = slice.option_chains.get(self.option_symbol)
-        if self.contract and not self.portfolio[self.contract.symbol].invested and chain:
+        if not self.contract and chain:
             # Select the call contracts with the furthest expiration (week end)
-            furthest_expiry = sorted(calls, key = lambda x: x.expiry, reverse=True)[0].expiry
-            furthest_expiry_calls = [contract for contract in calls if contract.expiry == furthest_expiry]
-            
+            furthest_expiry = max([c.expiry for c in chain])
+            furthest_expiry_calls = [contract for contract in chain if contract.expiry == furthest_expiry]
             # Get the ATM call for speculate trade with low cost and limited loss
             self.contract = sorted(furthest_expiry_calls, key = lambda x: abs(chain.underlying.price - x.strike))[0]
             self.market_order(self.contract.symbol, 1)
-                
-                
+            
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        
         for security in changes.added_securities:
             # Historical data
             history = self.history(security.symbol, 10, Resolution.MINUTE)
             self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
 <pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
 {
-    private Symbol _underlying;
-    private Symbol _optionSymbol;
+    private Symbol _underlying, _optionSymbol;
     private OptionContract? _contract = null;
     
     public override void Initialize()
@@ -74,24 +72,25 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
 
     public override void OnData(Slice slice)
     {
-        // Close the underlying position if the option contract is exercised
+        // If the Option contract is exercised, close the underlying position.
         if (Portfolio[_underlying].Invested)
         {
             Liquidate(_underlying);
         }
-        
+        // If the Option contract expires, rollover to the next contract.
+        if (_contract != null &amp;&amp; !Portfolio[_contract.Symbol].Invested)
+        {
+            _contract = null;
+        }
         // Select with the lastest option chain data only
-        if (_contract != null &amp;&amp; !Portfolio[_contract.Symbol].Invested &amp;&amp; 
-            slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
+        if (_contract == null &amp;&amp; slice.OptionChains.TryGetValue(_optionSymbol, out var chain))
         {
             // Select the call contracts with the furthest expiration (week end)
-            var furthestExpiry = calls.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
-            var furthestExpiryCalls = calls.Where(x =&gt; x.Expiry == furthestExpiry).ToList();
-            
+            var furthestExpiry = chain.Max(c =&gt; c.Expiry);
+            var furthestExpiryCalls = chain.Where(c =&gt; c.Expiry == furthestExpiry);
             // Get the ATM call for speculate trade with low cost and limited loss
-            var contract = furthestExpiryCalls.OrderByDescending(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).Last();
-            _contract = contract;
-            MarketOrder(contract.Symbol, 1);
+            _contract = furthestExpiryCalls.OrderByDescending(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).Last();
+            MarketOrder(_contract.Symbol, 1);
         }
     }
     

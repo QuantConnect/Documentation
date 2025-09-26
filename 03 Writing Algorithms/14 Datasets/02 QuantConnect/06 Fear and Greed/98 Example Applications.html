@@ -11,7 +11,7 @@ The Fear and Greed dataset quantifies the degree of fear and greed in the US Equ
 <p>The following example algorithm buys SPY when the Fear and Greed index is less than 25 (extreme fear) and sells when it's above 75 (extreme greed).</p>
 
 <div class="section-example-container testable">
-<pre><code class="language-python">class FearAndGreedExampleAlgorithm(QCAlgorithm):
+<pre class="python">class FearAndGreedExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2024, 10, 1)
@@ -28,12 +28,12 @@ The Fear and Greed dataset quantifies the degree of fear and greed in the US Equ
             return
         value = data[self._dataset_symbol].value
         # Buy when the market is fearful.
-        if not self._equity.invested and value < 25:
+        if not self._equity.invested and value &lt; 25:
             self.set_holdings(self._equity.symbol, 1)
         # Sell when the market is greedy.
-        elif self._equity.invested and value > 75:
-            self.liquidate()</code></pre>
-<pre><code class="language-cs">public class FearAndGreedExampleAlgorithm : QCAlgorithm
+        elif self._equity.invested and value &gt; 75:
+            self.liquidate()</pre>
+<pre class="csharp">public class FearAndGreedExampleAlgorithm : QCAlgorithm
 {
     private Equity _equity;
     private Symbol _datasetSymbol;
@@ -59,23 +59,23 @@ The Fear and Greed dataset quantifies the degree of fear and greed in the US Equ
         }
         var value = data[_datasetSymbol].Value;
         // Buy when the market is fearful.
-        if (!_equity.Invested && value < 25)
+        if (!_equity.Invested &amp;&amp; value &lt; 25)
         {
             SetHoldings(_equity.Symbol, 1);
         }
         // Sell when the market is greedy.
-        else if (_equity.Invested && value > 75)
+        else if (_equity.Invested &amp;&amp; value &gt; 75)
         {
             Liquidate();
         }
     }
-}</code></pre>
+}</pre>
 </div>
 <h4>Framework Example</h4>
 <p>The following example algorithm buys SPY when the Fear and Greed index is less than 25 (extreme fear) and sells when it's above 75 (extreme greed).</p>
 
 <div class="section-example-container testable">
-<pre><code class="language-python">class FearAndGreedExampleAlgorithm(QCAlgorithm):
+<pre class="python">class FearAndGreedExampleAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
@@ -107,15 +107,15 @@ class FearAndGreedAlphaModel(AlphaModel):
             return []
         # Wait until the Fear and Greed index is extreme.
         value = data[self._dataset_symbol].value
-        if 25 <= value <= 75:
+        if 25 &lt;= value &lt;= 75:
             return []
         insights = []
         for security in self._securities:
             # Buy when the market is fearful.
-            if not security.invested and value < 25:
+            if not security.invested and value &lt; 25:
                 direction = InsightDirection.UP
             # Sell when the market is greedy.
-            elif security.invested and value > 75:
+            elif security.invested and value &gt; 75:
                 direction = InsightDirection.FLAT
             else:
                 continue
@@ -129,8 +129,8 @@ class FearAndGreedAlphaModel(AlphaModel):
         # When assets leave the universe, remove them.
         for security in changes.removed_securities:
             if security in self._securities:
-                self._securities.remove(security)</code></pre>
-<pre><code class="language-cs">public class FearAndGreedExampleAlgorithm : QCAlgorithm
+                self._securities.remove(security)</pre>
+<pre class="csharp">public class FearAndGreedExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -171,7 +171,7 @@ public class FearAndGreedAlphaModel : AlphaModel
         }
         // Wait until the Fear and Greed index is extreme.
         var value = data[_datasetSymbol].Value;
-        if (value >= 25 && value <= 75)
+        if (value &gt;= 25 &amp;&amp; value &lt;= 75)
         {
             return Enumerable.Empty&lt;Insight&gt;();
         }
@@ -181,12 +181,12 @@ public class FearAndGreedAlphaModel : AlphaModel
         {
             InsightDirection direction;
             // Buy when the market is fearful.
-            if (!security.Invested && value < 25)
+            if (!security.Invested &amp;&amp; value &lt; 25)
             {
                 direction = InsightDirection.Up;
             }
             // Sell when the market is greedy.
-            else if (security.Invested && value > 75)
+            else if (security.Invested &amp;&amp; value &gt; 75)
             {
                 direction = InsightDirection.Flat;
             }
@@ -212,5 +212,5 @@ public class FearAndGreedAlphaModel : AlphaModel
             _securities.Remove(security);
         }
     }
-}</code></pre>
+}</pre>
 </div>

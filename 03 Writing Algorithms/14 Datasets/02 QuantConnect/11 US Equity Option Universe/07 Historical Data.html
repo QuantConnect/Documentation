@@ -26,7 +26,7 @@ var history = History&lt;OptionUniverse&gt;(_optionSymbol, TimeSpan.FromDays(3))
 option = qb.add_option("GOOG")
 history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5), flatten=True)</pre>
 
-<pre><code class="csharp">var qb = new QuantBook();
+<pre class="csharp">var qb = new QuantBook();
 var option = qb.AddOption("GOOG");
 var history = qb.History&lt;OptionUniverse&gt;(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));
 foreach (var chain in history)
@@ -34,13 +34,13 @@ foreach (var chain in history)
     var endTime = chain.EndTime;
     var filteredContracts = chain.Data
         .Select(contract =&gt; contract as OptionUniverse)
-        .Where(contract =&gt; contract.Greeks.Delta > 0.3m);
+        .Where(contract =&gt; contract.Greeks.Delta &gt; 0.3m);
     foreach (var contract in filteredContracts)
     {
         var price = contract.Price;
         var iv = contract.ImpliedVolatility;
     }
-}</code></pre>
+}</pre>
 </div>
 
 <p>For more information about historical Equity Options Universe data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/equity-options/universes">Universes</a>.</p>
