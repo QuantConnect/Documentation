@@ -8,6 +8,9 @@
     <li>CBOE Streaming Market Indexes (L1 for VIX Index)</li>
 </ul>
 
+<p>The IB data provider can stream data for up to 100 assets by default, but IB may let you stream more than 100 assets based on your commissions and equity value. For more information about quotas from IB, see the <a rel='nofollow' target='_blank' href='https://www.interactivebrokers.com/en/pricing/research-news-marketdata.php'>Market Data Pricing Overview</a> page on the IB website. If your algorithm adds more than the your quota, LEAN logs an error message from IB. To increase the quota, purchase a Quote Booster from IB.</p>
+
 <p>To see the latest prices, check the <a rel='nofollow' target='_blank' href='https://www.interactivebrokers.com/en/index.php?f=14193'>Market Data Pricing Overview</a> page on the IB website. IB can take up to 24 hours to process subscription requests. So after you subscribe to data, you need to wait 24 hours before you can use it in your algorithms. When you subscribe to data, IB only assigns your data subscription to one of your accounts. If you want to assign the subscription to a different account, then contact IB.</p>
 
 <? include(DOCS_RESOURCES."/data-feeds/ib-share-data-with-paper-trading.html"); ?>
+
