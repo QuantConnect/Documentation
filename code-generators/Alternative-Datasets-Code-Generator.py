@@ -48,6 +48,16 @@ def _write_metadata_file(folder, vendor, dataset):
     }}
 }}''')
 
+def convert_special_characters(text: str) -> str:
+    # regex with two capture groups: opening tag and inner content
+    pattern = re.compile(r"(<code[^>]*>)(.*?)(</code>)", re.DOTALL)
+    def replacer(match):
+        opening_tag, content, closing_tag = match.groups()
+        # convert <, >, and &&
+        escaped = content.replace(">", "&gt;").replace("<", "&lt;").replace('&&', '&amp;&amp;')
+        return f"{opening_tag}{escaped}{closing_tag}"
+    return pattern.sub(replacer, text)
+
 def _parse_content(content):
     content = content.replace("\/", "/") \
                             .replace("->", "-&gt;") \
@@ -60,6 +70,7 @@ def _parse_content(content):
                             .replace("<b>", "<code>") \
                             .replace("<b class", "<code class") \
                             .replace("</b>", "</code>")
+    content = convert_special_characters(content)
     soup = BeautifulSoup(content, 'html.parser')
     for code_section in soup.find_all("div", class_="section-example-container"):
         for pre_code_section in soup.find_all("pre"):
