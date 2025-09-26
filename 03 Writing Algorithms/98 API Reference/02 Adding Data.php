@@ -16,6 +16,10 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-add-option-contract.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-add-security.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-download.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-future-chain.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-future-chains.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-futures-chain.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-futures-chains.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-get-last-known-prices.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-on-securities-changed.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-option-chain.html"); ?>
@@ -27,7 +31,6 @@
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-security-initializer.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-symbol.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-ticker.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-future-chain-provider.html"); ?>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-security-initializer.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
