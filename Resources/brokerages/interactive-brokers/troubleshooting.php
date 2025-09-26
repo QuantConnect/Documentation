@@ -86,7 +86,7 @@
             <td>
                 Your algorithm uses the <a href='/docs/v2/cloud-platform/datasets/interactive-brokers'>Interactive Brokers Data Provider</a>, but you don't have a subscription to it. 
                 <a href='/docs/v2/cloud-platform/datasets/interactive-brokers#09-Pricing'>Subscribe to the data bundle you need</a>, contact IB, or re-deploy the algorithm with a different data provider. 
-                Try the <a href='/docs/v2/cloud-platform/datasets/quantconnect'>QuantConnect</a> or the <a href='/docs/v2/cloud-platform/datasets/interactive-brokers#07-Hybrid-Data-Provider'>hybrid QuantConnect + Interactive Brokers</a> data providers on QuantConnect Cloud or try a third-party provider.
+                Try the <a href='/docs/v2/cloud-platform/datasets/quantconnect'>QuantConnect</a> or the <a href='/docs/v2/cloud-platform/datasets/interactive-brokers#06-Hybrid-Data-Provider'>hybrid QuantConnect + Interactive Brokers</a> data providers on QuantConnect Cloud or try a third-party provider.
             </td>
         </tr>
         <tr>
