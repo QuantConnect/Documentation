@@ -288,6 +288,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         return targets</pre>
 </div>
 
+<h4>Example 2: Options of an Equity Universe</h4>
 <p>
     The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and an <a href='/docs/v2/writing-algorithms/universes/equity-options'>Equity Options universe</a>.
     It first selects 10 stocks with the lowest PE ratio and then selects their front-month call Option contracts.
@@ -381,7 +382,8 @@ internal class CustomSecurityInitializer : BrokerageModelSecurityInitializer
 	<pre class="python"># Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
 from AlgorithmImports import *
 
-    class ChainedUniverseAlgorithm(QCAlgorithm):
+
+class ChainedUniverseAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2023, 2, 2)
         self.set_cash(100000)
