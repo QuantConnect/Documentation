@@ -255,9 +255,9 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         private decimal _threshold = 0.01m;
         private SimpleMovingAverage _sma;
     
-        public override IEnumerable Update(QCAlgorithm algorithm, Slice slice)
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
         {
-            var insights = new List();
+            var insights = new List&lt;Insight&gt;();
             
             //  Check if contract data available, since all trades are based on that only
             if (_symbol == null || _continuousContract == null)
@@ -329,9 +329,9 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
     
     class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
     {
-        public override IEnumerable CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+        public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
         {
-            var targets = new List();
+            var targets = new List&lt;PortfolioTarget&gt;();
             foreach (var insight in insights)
             {
                 if (algorithm.Securities[insight.Symbol].IsTradable)

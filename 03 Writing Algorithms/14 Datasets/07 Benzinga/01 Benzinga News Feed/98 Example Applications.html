@@ -10,7 +10,6 @@ The Benzinga News Feed enables you to accurately design strategies harnessing re
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
 
 class BenzingaNewsDataAlgorithm(QCAlgorithm):
 
@@ -51,7 +50,9 @@ class BenzingaNewsDataAlgorithm(QCAlgorithm):
         if self.current_holdings != self.target_holdings:
             self.set_holdings(self.aapl, self.target_holdings)
             self.current_holdings = self.target_holdings</pre>
-<pre class="csharp">public class BenzingaNewsDataAlgorithm : QCAlgorithm
+<pre class="csharp">using System.Text.RegularExpressions;
+
+public class BenzingaNewsDataAlgorithm : QCAlgorithm
 {
     private Symbol _aapl;
     private Symbol _benzingaSymbol;
@@ -191,7 +192,9 @@ class SymbolData:
     def dispose(self) -&gt; None:
         # Unsubscribe from Benzinga news feed for this security to release computational resources
         self.algorithm.remove_security(self.benzinga_symbol)</pre>
-<pre class="csharp">public class BenzingaNewsDataAlgorithm : QCAlgorithm
+<pre class="csharp">using System.Text.RegularExpressions;
+
+public class BenzingaNewsDataAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {

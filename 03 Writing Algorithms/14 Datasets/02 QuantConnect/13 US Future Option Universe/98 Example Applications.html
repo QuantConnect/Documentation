@@ -9,7 +9,7 @@ The US Future Options dataset enables you to accurately design Future Option str
 <p>The following example demonstrates a bull call spread Option strategy using universe filtering.</p>
 
 <div class="section-example-container testable">
-<pre><code class="language-python">class FutureOptionAlgorithm(QCAlgorithm):
+<pre class="python">class FutureOptionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2020,1,1)
         # Filter the underlying continuous Futures to narrow the FOP spectrum.
@@ -32,7 +32,7 @@ The US Future Options dataset enables you to accurately design Future Option str
         # Get option chain data for the mapped future only.
         # It requires 2 contracts with different strikes to form a call spread, so we make sure at least 2 contracts are present.
         chain = slice.option_chains.get(symbol)
-        if not chain or len(list(chain)) < 2:
+        if not chain or len(list(chain)) &lt; 2:
             return
             
         # Separate the contracts by strike, as we need to access their strike.
@@ -43,7 +43,7 @@ The US Future Options dataset enables you to accurately design Future Option str
         
         # Use abstraction method to order a bull call spread to avoid manual error.
         option_strategy = OptionStrategies.bull_call_spread(symbol, itm_strike, otm_strike, expiry)
-        self.buy(option_strategy, 1)</code></pre>
+        self.buy(option_strategy, 1)</pre>
 <pre class="csharp">public class FutureOptionAlgorithm : QCAlgorithm
 {
     private Future _underlying;

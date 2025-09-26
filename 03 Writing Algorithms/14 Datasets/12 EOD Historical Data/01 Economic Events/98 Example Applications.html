@@ -32,7 +32,7 @@ The Economic Events dataset provides timely notifications about upcoming economi
                 # Otherwise, it is expected manufacturing ETF prices will drop.
                 else:
                     self.set_holdings(self.equity_symbol, -1)</pre>
-<pre><code class="language-cs">public class EODHDEconomicEventsAlgorithm : QCAlgorithm
+<pre class="csharp">public class EODHDEconomicEventsAlgorithm : QCAlgorithm
 {
     private Symbol _equitySymbol, _datasetSymbol;
 
@@ -54,7 +54,7 @@ The Economic Events dataset provides timely notifications about upcoming economi
             var economicEvent = economicEvents.FirstOrDefault() as EODHDEconomicEvent;         
             // Use the Manufacturing Index to generate trade signals on manufacturing industry vehicles.
             // Make sure previous and estimate are available to estimate the direction of the industry.
-            if (economicEvent.Previous.HasValue && economicEvent.Estimate.HasValue)
+            if (economicEvent.Previous.HasValue &amp;&amp; economicEvent.Estimate.HasValue)
             {
                 //If the estimated PMI is higher than the previous PMI, the manufacturing ETF price is expected to rise.
                 if (economicEvent.Previous.Value &gt; economicEvent.Estimate.Value)
@@ -69,7 +69,7 @@ The Economic Events dataset provides timely notifications about upcoming economi
             }
         }
     }
-}</code></pre>
+}</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
 <p>The following example algorithm trade Industrial sector ETF based on US PMI estimated change direction using algorithm framework. If the estimated PMI of the upcoming announcement is above the previous PMI, buy the Industrial ETF, sell it otherwise.</p>
@@ -108,7 +108,7 @@ class EconomicEventAlphaModel(AlphaModel):
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for added in changes.added_securities:
             self._symbol = added.symbol</pre>
-<pre><code class="language-cs">public class EODHDEconomicEventsAlgorithm : QCAlgorithm
+<pre class="csharp">public class EODHDEconomicEventsAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -131,22 +131,22 @@ public class EconomicEventAlphaModel : AlphaModel
     {
         // Request US PMI economic event data to generate trade signals.
         var ticker = EODHD.Events.UnitedStates.MarkitManufacturingPurchasingManagersIndex;
-        _datasetSymbol = algorithm.AddData<EODHDEconomicEvents>(ticker).Symbol;
+        _datasetSymbol = algorithm.AddData&lt;EODHDEconomicEvents&gt;(ticker).Symbol;
     }
 
-    public override IEnumerable<Insight> Update(QCAlgorithm algorithm, Slice slice)
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
         // Trade based on the updated economic events.
-        if (slice.Get<EODHDEconomicEvents>().TryGetValue(_datasetSymbol, out var economicEvents))
+        if (slice.Get&lt;EODHDEconomicEvents&gt;().TryGetValue(_datasetSymbol, out var economicEvents))
         {
             // Use the US Manufacturing Index to generate trade signals on manufacturing industry vehicles.
             // Make sure previous and estimate are available to estimate the direction of the industry.
             var economicEvent = economicEvents.FirstOrDefault() as EODHDEconomicEvent;
-            if (economicEvent.Previous.HasValue && economicEvent.Estimate.HasValue)
+            if (economicEvent.Previous.HasValue &amp;&amp; economicEvent.Estimate.HasValue)
             {
                 // If the estimated PMI is higher than the previous PMI, the manufacturing ETF price is expected to rise.
                 // Otherwise, it is expected manufacturing ETF prices will drop.
-                var direction = economicEvent.Previous.Value > economicEvent.Estimate.Value
+                var direction = economicEvent.Previous.Value &gt; economicEvent.Estimate.Value
                     ? InsightDirection.Up
                     : InsightDirection.Down;
                 yield return Insight.Price(_symbol, TimeSpan.FromDays(5), direction);
@@ -161,5 +161,5 @@ public class EconomicEventAlphaModel : AlphaModel
             _symbol = added.Symbol;
         }
     }
-}</code></pre>
+}</pre>
 </div>

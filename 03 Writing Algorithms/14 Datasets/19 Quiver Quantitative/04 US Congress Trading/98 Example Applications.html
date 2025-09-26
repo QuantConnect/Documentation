@@ -99,59 +99,61 @@ class QuiverCongressDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class QuiverCongressDataAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2020, 6, 1)
         self.set_cash(100000)
-
-        self.universe_settings.resolution = Resolution.DAILY
         # Filter according to QuiverCongress data
         self.add_universe(QuiverQuantCongressUniverse, "QuiverQuantCongresssUniverse", Resolution.DAILY, self.universe_selection)
-        
         self.add_alpha(CongressAlphaModel())
-        
         self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel(lambda time: None))
-        
         self.add_risk_management(NullRiskManagementModel())
-        
         self.set_execution(ImmediateExecutionModel())
 
     def universe_selection(self, alt_coarse: List[QuiverQuantCongressUniverse]) -&gt; List[Symbol]:
         # Only include the ones with large size buy, since they are estimated to be materially confident to go up
-        return [d.symbol for d in alt_coarse
-                    if d.amount &gt; 200000 and d.transaction == OrderDirection.BUY]
+        return [d.symbol for d in alt_coarse if d.amount &gt; 10_000 and d.transaction == OrderDirection.BUY]
         
 
 class CongressAlphaModel(AlphaModel):
     
     symbol_data_by_symbol = {}
+    insight_by_symbol = {}
 
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        insights = []
-        congress_by_symbol = slice.Get(QuiverCongress)
+        congress_by_symbol = slice.get(QuiverCongress)
+        if congress_by_symbol:
+            self.insight_by_symbol.clear()
+            # Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+            net_quantity_by_symbol = {}
+            for symbol, points in congress_by_symbol.items():
+                symbol = symbol.underlying
+                if symbol not in net_quantity_by_symbol:
+                    net_quantity_by_symbol[symbol] = 0
+                # Voting weight is by order size
+                for point in points:
+                    net_quantity_by_symbol[symbol] += (1 if point.transaction == OrderDirection.BUY else -1) * point.amount
 
-        # Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
-        net_quantity_by_symbol = {}
-        for symbol, points in congress_by_symbol.items():
-            symbol = symbol.underlying
-            if symbol not in net_quantity_by_symbol:
-                net_quantity_by_symbol[symbol] = 0
-            # Voting weight is by order size
-            for point in points:
-                net_quantity_by_symbol[symbol] += (1 if point.transaction == OrderDirection.BUY else -1) * point.amount
-        
-        for symbol, net_quantity in net_quantity_by_symbol.items():
-            # Buy when Congress members have bought, as they may have advance information to be confident to the return direction
-            if net_quantity &gt; 0 and not algorithm.portfolio[symbol].is_long:
-                insights += [Insight.price(symbol, timedelta(7),  InsightDirection.UP, weight=0.5)]
-            # Short sell when Congress members have sold
-            elif net_quantity &lt; 0 and not algorithm.portfolio[symbol].is_short:
-                insights += [Insight.price(symbol, timedelta(7),  InsightDirection.DOWN, weight=0.5)]
-    
-        return insights
+            for symbol, net_quantity in net_quantity_by_symbol.items():
+                # Buy when Congress members have bought, as they may have advance information to be confident to the return direction
+                if net_quantity &gt; 0 and not algorithm.portfolio[symbol].is_long:
+                    direction = InsightDirection.UP
+                # Short sell when Congress members have sold
+                elif net_quantity &lt; 0 and not algorithm.portfolio[symbol].is_short:
+                    direction = InsightDirection.DOWN
+                else:
+                    continue
+                self.insight_by_symbol[symbol] = Insight.price(symbol, timedelta(7), direction, weight=0.5)
+        # To avoid error messages, emit the insights when the algorithm has a price for the asset.
+        return [
+            self.insight_by_symbol.pop(symbol) 
+            for symbol, i in list(self.insight_by_symbol.items()) 
+            if algorithm.securities[symbol].price
+        ]
 
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
@@ -162,8 +164,10 @@ class CongressAlphaModel(AlphaModel):
             symbol_data = self.symbol_data_by_symbol.pop(security.symbol, None)
             if symbol_data:
                 symbol_data.dispose()
-            
+
+
 class SymbolData:
+
     def __init__(self, algorithm: QCAlgorithm, symbol: Symbol):
         self.algorithm = algorithm
         
@@ -172,7 +176,6 @@ class SymbolData:
         
         # Historical data
         history = algorithm.history(self.quiver_congress_symbol, 14, Resolution.DAILY)
-        algorithm.debug(f"We got {len(history)} items from our history request for {symbol} Quiver Congress data")
         
     def dispose(self) -&gt; None:
         # Unsubscribe from Quiver Congress feed for this security to release computational resources
@@ -184,22 +187,17 @@ class SymbolData:
         SetStartDate(2019, 1, 1);
         SetEndDate(2020, 6, 1);
         SetCash(100000);
-        
         // Filter according to QuiverCongress data
         AddUniverse&lt;QuiverQuantCongressUniverse&gt;("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
         {
             // Only include the ones with large size buy, since they are estimated to be materially confident to go up
-            return from d in altCoarse 
-                where d.Amount &gt; 200000 &amp;&amp; d.Transaction == OrderDirection.Buy 
+            return from d in altCoarse.OfType&lt;QuiverCongressDataPoint&gt;() 
+                where d.Amount &gt; 10000 &amp;&amp; d.Transaction == OrderDirection.Buy 
                 select d.Symbol;
         });
-        
         AddAlpha(new CongressAlphaModel());
-        
         SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(time =&gt; null));
-        
         AddRiskManagement(new NullRiskManagementModel());
-        
         SetExecution(new ImmediateExecutionModel());
     }
 }
@@ -207,41 +205,59 @@ class SymbolData:
 public class CongressAlphaModel : AlphaModel
 {
     private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new ();
+    private Dictionary&lt;Symbol, Insight&gt; _insightBySymbol = new ();
 
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
         var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
-        
-        // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
-        var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
-        foreach (var (s, points) in congressBySymbol)
+        if (congressBySymbol.Count &gt; 0)
         {
-            var symbol = s.Underlying;
-            if (!netQuantityBySymbol.ContainsKey(symbol))
+            _insightBySymbol.Clear();
+            // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+            var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+            foreach (var (s, points) in congressBySymbol)
             {
-                netQuantityBySymbol[symbol] = 0m;
-            }
-            // Voting weight is by order size
-            foreach(QuiverCongressDataPoint point in points)
-            {
-                netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
-            }
-        }
-        
-        foreach (var (symbol, netQuantity) in netQuantityBySymbol)
-        {
-            // Buy when Congress members have bought, as they may have advance information to be confident to the return direction
-            if (netQuantity &gt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsLong)
-            {
-                yield return Insight.Price(symbol, TimeSpan.FromDays(7),  InsightDirection.Up, weight: 0.5);
+                var symbol = s.Underlying;
+                if (!netQuantityBySymbol.ContainsKey(symbol))
+                {
+                    netQuantityBySymbol[symbol] = 0m;
+                }
+                // Voting weight is by order size
+                foreach(QuiverCongressDataPoint point in points)
+                {
+                    netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
+                }
             }
             
-            // Short sell when Congress members have sold
-            else if (netQuantity &lt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsShort)
+            foreach (var (symbol, netQuantity) in netQuantityBySymbol)
             {
-                yield return Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Down, weight: 0.5);
+                // Buy when Congress members have bought, as they may have advance information to be confident to the return direction
+                InsightDirection direction;
+                if (netQuantity &gt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsLong)
+                {
+                    direction = InsightDirection.Up;
+                }
+                // Short sell when Congress members have sold
+                else if (netQuantity &lt; 0 &amp;&amp; !algorithm.Portfolio[symbol].IsShort)
+                {
+                    direction = InsightDirection.Down;
+                }
+                else
+                {
+                    continue;
+                }
+                _insightBySymbol[symbol] = Insight.Price(symbol, TimeSpan.FromDays(7), direction, weight: 0.5);
             }
         }
+        return _insightBySymbol.Keys
+            .ToList() // snapshot keys
+            .Where(symbol =&gt; algorithm.Securities[symbol].Price != 0m)
+            .Select(symbol =&gt; {
+                var val = _insightBySymbol[symbol]; // capture value
+                _insightBySymbol.Remove(symbol);    // remove
+                return val;
+            })
+            .ToList();
     }
 
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)

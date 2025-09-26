@@ -7,30 +7,30 @@
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class QuiverLobbyingDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 10, 7)   #Set Start Date
-        self.set_end_date(2022, 10, 11)    #Set End Date
-        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.set_start_date(2021, 10, 7) 
+        self.set_end_date(2022, 10, 11) 
+        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
         # Subscribe to lobbying data for AAPL to generate trade signal
-        self.dataset_symbol = self.add_data(QuiverLobbyings, self.symbol).symbol
+        self._dataset_symbol = self.add_data(QuiverLobbyings, self._symbol).symbol
 
         # history request
-        history = self.history(self.dataset_symbol, 10, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from historical data request of {self.dataset_symbol}.")
+        history = self.history(self._dataset_symbol, 10, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from historical data request of {self._dataset_symbol}.")
 
     def on_data(self, slice: Slice) -&gt; None:
         # Trade only base on lobbying data
-        for lobbyings in slice.Get(QuiverLobbyings).values():
+        for lobbyings in slice.get(QuiverLobbyings).values():
             # Buy if over 50000 lobbying amount, suggesting a favored political prospect and sentiment
             if any([lobbying.amount &gt; 50000 for lobbying in lobbyings]):
-                self.set_holdings(self.symbol, 1)
+                self.set_holdings(self._symbol, 1)
             # Sell if below 10000 lobbying amount, suggesting a less favorable political prospect and sentiment
             elif any([lobbying.amount &lt; 10000 for lobbying in lobbyings]):
-                self.set_holdings(self.symbol, -1)</pre>
+                self.set_holdings(self._symbol, -1)</pre>
 <pre class="csharp">public class QuiverLobbyingAlgorithm : QCAlgorithm
 {
     private Symbol _symbol, _datasetSymbol;

@@ -47,7 +47,7 @@ class USFuturesDataAlgorithm(QCAlgorithm):
             # Historical data
             history = self.history(security.symbol, 10, Resolution.MINUTE)
             self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
-<pre><code class="language-cs">public class USFuturesDataAlgorithm : QCAlgorithm
+<pre class="csharp">public class USFuturesDataAlgorithm : QCAlgorithm
 {
     private Future _gold, _microGold;
     private decimal _goldMulitplier, _microGoldMulitplier;
@@ -74,7 +74,7 @@ class USFuturesDataAlgorithm(QCAlgorithm):
     public override void OnData(Slice slice)
     {
         // Make sure to calculate the order size by the most updated price data of both contracts
-        if (!Portfolio.Invested && slice.Bars.ContainsKey(_gold.Symbol) && slice.Bars.ContainsKey(_microGold.Symbol))
+        if (!Portfolio.Invested &amp;&amp; slice.Bars.ContainsKey(_gold.Symbol) &amp;&amp; slice.Bars.ContainsKey(_microGold.Symbol))
         {
             // Calculate the order size for $500k
             // Get the quotient after dividing the contract multiplier since the order size must be whole number
@@ -95,7 +95,7 @@ class USFuturesDataAlgorithm(QCAlgorithm):
             Debug($"We got {history.Count()} from our history request for {security.Symbol}");
         }
     }
-}</code></pre>
+}</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
 <p>The following example algorithm buys the front-month Mini Gold Futures contract and sells the front-month Micro Gold Futures contract. When the front-month contract changes, the algorithm rebalances the portfolio.</p>
