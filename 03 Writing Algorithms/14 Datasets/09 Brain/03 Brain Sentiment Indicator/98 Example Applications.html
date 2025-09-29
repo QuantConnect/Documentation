@@ -194,7 +194,7 @@ class SymbolData:
         # Historical data
         history = algorithm.history(self.dataset_symbol, 100, Resolution.DAILY)
         algorithm.debug(f"We got {len(history)} items from our history request for {self.dataset_symbol}")
-        if history.empty:
+        if history.empty or 'sentiment' not in history.columns:
             return
         
         # Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
