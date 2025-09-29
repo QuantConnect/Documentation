@@ -29,9 +29,9 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
     
     def on_data(self, slice: Slice) -&gt; None:
         # Equally invest in each member of the universe to evenly dissipate the capital risk.
-        total_count = len(self._universe.members)
-        targets = [PortfolioTarget.percent(self, symbol, 1. / total_count) for symbol in self._universe.members.keys()]
-        self.set_holdings(targets)
+        total_count = len(self._universe.selected)
+        targets = [PortfolioTarget(symbol, 1. / total_count) for symbol in self._universe.selected]
+        self.set_holdings(targets, liquidate_existing_holdings=True)
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for removed in changes.removed_securities:
@@ -63,11 +63,11 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
     public override void OnData(Slice slice)
     {
         // Equally invest in each member of the universe to evenly dissipate the capital risk.
-        var totalCount = _universe.Members.Count;
-        var targets = _universe.Members.Keys
-            .Select(symbol =&gt; (PortfolioTarget)PortfolioTarget.Percent(this, symbol, 1m / totalCount))
+        var totalCount = _universe.Selected.Count;
+        var targets = _universe.Selected
+            .Select(symbol =&gt; new PortfolioTarget(symbol, 1m / totalCount))
             .ToList();
-        SetHoldings(targets);
+        SetHoldings(targets, liquidateExistingHoldings: true);
     }
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
