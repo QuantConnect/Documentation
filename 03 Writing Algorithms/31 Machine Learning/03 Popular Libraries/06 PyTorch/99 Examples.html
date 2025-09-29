@@ -37,8 +37,9 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
             self.training_data.add(trade_bar.close)
 
         # Retrieve already trained model from object store to use immediately.
-        if self.object_store.contains_key("model"):
-            file_name = self.object_store.get_file_path("model")
+        self._model_key = 'pytorch-example-model'
+        if self.live_mode and self.object_store.contains_key(self._model_key):
+            file_name = self.object_store.get_file_path(self._model_key)
             self.model = joblib.load(file_name)
         # Create a MLP model otherwise to predict price movement.
         else:
@@ -110,10 +111,11 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.
-        model_key = "model"
-        file_name = self.object_store.get_file_path(model_key)
+        if not self.live_mode:
+            return
+        file_name = self.object_store.get_file_path(self._model_key)
         joblib.dump(self.model, file_name)
-        self.object_store.save(model_key)
+        self.object_store.save(self._model_key)
 
 class NeuralNetwork(nn.Module):
     # Model Structure
