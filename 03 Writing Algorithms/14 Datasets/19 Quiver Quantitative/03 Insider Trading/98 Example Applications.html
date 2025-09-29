@@ -6,16 +6,16 @@
 <p> In this example, we would 100% long AAPL if there was any insider buying event. Otherwise, we liquidate it.</p>
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class QuiverInsiderTradingAlgorithm(QCAlgorithm):
     
     def initialize(self):
         self.set_start_date(2022, 2, 1)   #Set Start Date
         self.set_end_date(2022, 2, 28)    #Set End Date
-        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
         # Subscribe to insider trade data for AAPL to generate trade signal
-        self.dataset_symbol = self.add_data(QuiverInsiderTrading, self.aapl).symbol
+        self.dataset_symbol = self.add_data(QuiverInsiderTrading, self._symbol).symbol
 
         # history request
         history = self.history(self.dataset_symbol, 10, Resolution.DAILY)
@@ -27,10 +27,10 @@ class QuiverInsiderTradingAlgorithm(QCAlgorithm):
             for insider_trade in insider_trades:
                 # Any buy insider trade will result in buying, assuming insider have confidence in stock price with more informed information and projection
                 if insider_trade.shares &gt; 0:
-                    self.set_holdings(self.symbol, 1)
+                    self.set_holdings(self._symbol, 1)
                 # Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
                 else:
-                    self.liquidate(self.symbol)</pre>
+                    self.liquidate(self._symbol)</pre>
 <pre class="csharp">public class QuiverInsiderTradingAlgorithm : QCAlgorithm
 {
     private Symbol _symbol, _datasetSymbol;
