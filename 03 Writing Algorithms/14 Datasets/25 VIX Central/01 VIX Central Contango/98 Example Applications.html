@@ -19,8 +19,10 @@ class VixCentralContangoAlgorithm (QCAlgorithm):
 
     def on_data(self, slice: Slice) -&gt; None:
         # Trade base on the updated VIX contango data
-        contango_data = slice.Get(VIXCentralContango, self.contango)
-        ratio = contango_data.contango_f2_minus_f1 if contango_data else 0
+        if self.contango not in slice:
+            return
+        contango_data = slice.get(VIXCentralContango, self.contango)
+        ratio = contango_data.contango_f_2_minus_f_1 if contango_data else 0
 
         # Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
         if not self.portfolio.invested and ratio &gt; 0:
