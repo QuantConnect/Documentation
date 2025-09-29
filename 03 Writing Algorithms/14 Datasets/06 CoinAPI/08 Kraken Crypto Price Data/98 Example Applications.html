@@ -142,6 +142,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         self.set_start_date(2020, 6, 1)
         self.set_end_date(2021, 6, 1)
         self.set_cash(100000)
+        self.settings.free_portfolio_value_percentage = 0.05
 
         # Kraken accepts both Cash and Margin type account, select the one you need for the best reality modeling.
         self.set_brokerage_model(BrokerageName.KRAKEN, AccountType.MARGIN)
@@ -149,19 +150,25 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         # Warm up the security with the last known price to avoid conversion error
         self.set_security_initializer(lambda security: security.set_market_price(self.get_last_known_price(security)))
         
-        self.universe_settings.resolution = Resolution.MINUTE
+        # Get the pairs on Kraken that have USD as the quote currency.
+        self._market_pairs = [
+            x.key.symbol 
+            for x in self.symbol_properties_database.get_symbol_properties_list(Market.KRAKEN) 
+            if x.value.quote_currency == self.account_currency
+        ]
         # Add Crypto Universe Selection that select crypto pairs in Kraken exchange
         self.add_universe(CryptoUniverse.kraken(self.universe_selection_filter))
         
-        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(minutes = 20), 0.025, None))
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(hours=4), 0.025, None))
         # Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
     def universe_selection_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
-        # Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return [universe_item.symbol for universe_item in universe_day
-                if universe_item.volume &gt;= 100 
-                and universe_item.volume_in_usd &gt; 10000]
+        # Select pairs where the quote currency is USD.
+        pairs = [c for c in universe_day if c.symbol.value in self._market_pairs]
+        # Filter for materially traded crypto pairs with significant dollar volume, assuming higher capital flow in for higher return.
+        pairs = sorted(pairs, key=lambda c: c.volume_in_usd)[-3:]      
+        return [c.symbol for c in pairs]
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
@@ -170,13 +177,14 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
             self.debug(f"We got {len(history)} items from our history request")</pre>
 <pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    private Symbol _btcusd;
+    private List&lt;string&gt; _marketPairs;
     
     public override void Initialize()
     {
         SetStartDate(2020, 6, 1);
         SetEndDate(2021, 6, 1);
         SetCash(100000);
+        Settings.FreePortfolioValuePercentage = 0.05m;
 
         // Kraken accepts both Cash and Margin type account, select the one you need for the best reality modeling.            
         SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin);
@@ -184,22 +192,27 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         // Warm up the security with the last known price to avoid conversion error
         SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
         
-        UniverseSettings.Resolution = Resolution.Minute;
+        // Get the pairs on Kraken that have USD as the quote currency.
+        _marketPairs = SymbolPropertiesDatabase.GetSymbolPropertiesList(Market.Kraken)
+            .Where(x =&gt; x.Value.QuoteCurrency == AccountCurrency)
+            .Select(x =&gt; x.Key.Symbol)
+            .ToList();
         // Add Crypto Universe Selection that select crypto pairs in Kraken exchange
         AddUniverse(CryptoUniverse.Kraken(UniverseSelectionFilter));
     
-        AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, null) );
+        AddAlpha( new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromHours(4), 0.025, null) );
         // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
     }
 
     private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
     {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return from universeItem in universeDay
-                where universeItem.Volume &gt;= 100m 
-                &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-                select universeItem.Symbol;
+        // Select pairs where the quote currency is USD.
+        return universeDay.Where(c =&gt; _marketPairs.Contains(c.Symbol.Value))
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            .OrderBy(c =&gt; c.VolumeInUsd)
+            .TakeLast(3)
+            .Select(c =&gt; c.Symbol);
     }
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
