@@ -86,12 +86,6 @@ class USTreasuryDataAlgorithm(QCAlgorithm):
             return;
         }
         
-        // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
-        if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
-        {
-            return;
-        }
-        
         // Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
         if (Time - _lastInversion &lt; TimeSpan.FromDays(365))
         {
