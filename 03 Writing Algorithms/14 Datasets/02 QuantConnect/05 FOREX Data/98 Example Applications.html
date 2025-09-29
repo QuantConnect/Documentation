@@ -145,9 +145,6 @@ class IntestRatesAlphaModel(AlphaModel):
 
         # # Long the pair with highest interest rate and sell the pair with the lowest to earn the max monetary inflation difference between the two
         sorted_rates = sorted(self.rates.items(), key = lambda x: x[1])
-        self.set_holdings(sorted_rates[0][0], -0.5)
-        self.set_holdings(sorted_rates[-1][0], 0.5)
-        sorted_rates = sorted(self.rates.items(), key = lambda x: x[1])
         return Insight.group(
             Insight.price(sorted_rates[0][0], Expiry.END_OF_MONTH, InsightDirection.UP),
             Insight.price(sorted_rates[-1][0], Expiry.END_OF_MONTH, InsightDirection.DOWN)
