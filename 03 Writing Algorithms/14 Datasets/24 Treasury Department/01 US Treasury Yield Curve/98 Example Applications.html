@@ -34,10 +34,6 @@ class USTreasuryDataAlgorithm(QCAlgorithm):
             return
         rates = slice[self.yield_curve_symbol]
         
-        # We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
-        if not (rates.ten_year is not None and rates.two_year is not None):
-            return
-        
         # Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
         if (self.time - self.last_inversion &lt; timedelta(days=365)):
             return
@@ -153,10 +149,6 @@ class USTreasuryAlphaModel(AlphaModel):
             return []
         rates = slice[self.yield_curve_symbol]
         
-        # We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
-        if not (rates.ten_year is not None and rates.two_year is not None):
-            return []
-        
         # Only advance if a year has gone by, since the inversion signal indicates longer term market regime that will not revert in a short period
         if (slice.time - self.last_inversion &lt; timedelta(days=365)):
             return []
@@ -216,12 +208,6 @@ public class USTreasuryAlphaModel : AlphaModel
 
         // Trade only based on updated yield curve data
         if (!slice.TryGetValue(_yieldCurveSymbol, out var rates) || _spySymbol == null)
-        {
-            return insights;
-        }
-        
-        // We need the 10-year bond yield rate and 2-year bond yield rate for trade signal generation
-        if (!rates.TenYear.HasValue || !rates.TwoYear.HasValue)
         {
             return insights;
         }
