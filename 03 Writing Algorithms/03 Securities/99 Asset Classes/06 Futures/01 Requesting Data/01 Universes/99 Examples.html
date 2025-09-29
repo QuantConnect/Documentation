@@ -285,8 +285,10 @@
 
     public override void Initialize()
     {
-        // Allow extended market hours trade, which is common for Future since extended market hour is still popular.
-        var future = AddFuture(Futures.Metals.MicroGold, extendedMarketHours: true);
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2024, 1, 1);
+        // Add Gold Futures.
+        var future = AddFuture(Futures.Metals.Gold);
         _future = future.Symbol;
         // Limit the expiration to within 6 months, as the longer the expiration, the higher the price uncertainty.
         future.SetFilter((u) =&gt; u.Expiration(0, 183));
@@ -354,8 +356,10 @@
  </script>
  <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        # Allow extended market hours trade, which is common for Future since extended market hour is still popular.
-        future = self.add_future(Futures.Metals.MICRO_GOLD, extended_market_hours=True)
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2024, 1, 1)
+        # Add Gold Futures.
+        future = self.add_future(Futures.Metals.GOLD)
         self._future = future.symbol
         # Limit the expiration to within 6 months, as the longer the expiration, the higher the price uncertainty.
         future.set_filter(lambda u: u.expiration(0, 183))
