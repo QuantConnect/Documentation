@@ -140,16 +140,13 @@ class RegAnalyticsAlphaModel(AlphaModel):
 
         # Only trade on regulatory news data
         if slice.contains_key(self.regalytics_symbol) and slice[self.regalytics_symbol] is not None:
-            articles = slice[self.regalytics_symbol]
-            title = [article.title.lower() for article in articles]
-
-            # If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
-            # Signal an exit from the market when regulatory articles with negative sentiment are released
-            for phrase in self.negative_sentiment_phrases:
-                if any(phrase in title):
+            for article in slice[self.regalytics_symbol]:
+                title = article.title.lower()
+                # If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+                # Signal an exit from the market when regulatory articles with negative sentiment are released
+                if any(phrase in title for phrase in self.negative_sentiment_phrases):
                     self.target_direction = InsightDirection.FLAT
                     self.last_news_date = slice.time
-        
         
         # Signal an entry if we've waited long enough for the market to digest the negative news
         if self.last_news_date + self.news_affect_duration &lt; slice.time:
@@ -231,9 +228,10 @@ class RegAnalyticsAlphaModel(AlphaModel):
                 var articles = slice[_regalyticsSymbol];
                 foreach (RegalyticsRegulatoryArticle article in articles)
                 {
+                    var title = article.Title.ToLower();
                     // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
                     // Signal an exit from the market when regulatory articles with negative sentiment are released
-                    if (_negativeSentimentPhrases.Any(x =&gt; article.Title.Contains(x)))
+                    if (_negativeSentimentPhrases.Any(x =&gt; title.Contains(x)))
                     {
                         _targetDirection = InsightDirection.Flat;
                         _lastNewsDate = slice.Time;
