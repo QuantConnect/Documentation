@@ -169,6 +169,10 @@ public class ContangoAlphaModel : AlphaModel
         var insights = new List&lt;Insight&gt;();
 
         // Trade base on the updated VIX contango data
+        if (!slice.ContainsKey(_contango))
+        {
+            return insights;
+        }
         var contangoData = slice.Get&lt;VIXCentralContango&gt;(_contango);
         var ratio = contangoData?.Contango_F2_Minus_F1 ?? 0;
 
