@@ -168,7 +168,7 @@ class ConstantOptionsAlphaModel(AlphaModel):
         for kvp in slice.option_chains:
             chain = kvp.Value
             expiry = max(x.expiry for x in chain)
-            self.contract = sorte([x for x in chain if x.expiry == expiry],
+            self.contract = sorted([x for x in chain if x.expiry == expiry],
                                                key=lambda x: abs(x.strike - x.underlying_last_price))[0]
             insights.append(Insight.price(self.contract.symbol, self.contract.expiry + timedelta(days=1), InsightDirection.UP))
         
