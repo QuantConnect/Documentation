@@ -21,8 +21,8 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
         
         # Requesting data -- we aim to obtain a sentiment score from the company filings
         # Combining both fundamental and sentiment factor, as well as past performance and future provision
-        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
-        self.dataset_symbol = self.add_data(BrainCompanyFilingLanguageMetrics10K , self.aapl).symbol
+        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.dataset_symbol = self.add_data(BrainCompanyFilingLanguageMetrics10K , self._symbol).symbol
         
         # Historical data
         history = self.history(self.dataset_symbol, 365, Resolution.DAILY)
@@ -34,7 +34,7 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
         if data.contains_key(self.dataset_symbol):
             sentiment = data[self.dataset_symbol].report_sentiment.sentiment
             # Buy for a positive sentiment score for the positive return projection
-            self.set_holdings(self.symbol, int(sentiment &gt; 0))</pre>
+            self.set_holdings(self._symbol, int(sentiment &gt; 0))</pre>
 <pre class="csharp">public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
