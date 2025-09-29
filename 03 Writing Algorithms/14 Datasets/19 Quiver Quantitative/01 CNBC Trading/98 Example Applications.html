@@ -17,6 +17,12 @@ class QuiverCNBCsAlgorithm(QCAlgorithm):
         self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
         # Subscribe to CNBC data for AAPL to generate trade signal
         self.dataset_symbol = self.add_data(QuiverCNBCs, self.aapl).symbol
+        # Define a mapping from OrderDirection to int.
+        self._int_by_direction = {
+            OrderDirection.BUY: 1,
+            OrderDirection.HOLD: 0,
+            OrderDirection.SELL: -1
+        }
 
         # history request
         history = self.history(self.dataset_symbol, 10, Resolution.DAILY)
@@ -26,13 +32,14 @@ class QuiverCNBCsAlgorithm(QCAlgorithm):
         for cnbcs in slice.Get(QuiverCNBCs).values():
             # Using mean prediction from CNBC analysts to be the trade signal
             # If the average CNBC insight is upward movement, invest AAPL
-            if np.mean([cnbc.direction for cnbc in cnbcs]) &gt; 0:
+            if np.mean([self._int_by_direction[cnbc.direction] for cnbc in cnbcs]) &gt; 0:
                 self.set_holdings(self.aapl, 1)
             else:
                 self.set_holdings(self.aapl, 0)</pre>
 <pre class="csharp">public class QuiverCNBCsAlgorithm : QCAlgorithm
 {
     private Symbol _symbol, _datasetSymbol;
+    private Dictionary&lt;OrderDirection, int&gt; _intByOrderDirection;
 
     public override void Initialize()
     {
@@ -41,6 +48,12 @@ class QuiverCNBCsAlgorithm(QCAlgorithm):
         _symbol = AddEquity("AAPL").Symbol;
         // Subscribe to CNBC data for AAPL to generate trade signal
         _datasetSymbol = AddData&lt;QuiverCNBCs&gt;(_symbol).Symbol;
+        // Define a mapping from OrderDirection to int.
+        _intByOrderDirection = new () {
+            {OrderDirection.Buy, 1},
+            {OrderDirection.Hold, 0},
+            {OrderDirection.Sell, -1}
+        };
 
         // history request
         var history = History&lt;QuiverCNBCs&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
@@ -53,7 +66,7 @@ class QuiverCNBCsAlgorithm(QCAlgorithm):
         {
             // Using mean prediction from CNBC analysts to be the trade signal
             // If the average CNBC insight is upward movement, invest AAPL
-            if (kvp.Value.Average(x =&gt; (int) (x as QuiverCNBC).Direction) &gt; 0)
+            if (kvp.Value.Average(x =&gt; _intByOrderDirection[(x as QuiverCNBC).Direction]) &gt; 0)
             {
                 SetHoldings(_symbol, 1);
             }
