@@ -20,8 +20,9 @@
 
 <h4>Insured Bank Deposit Sweep Program</h4>
 <p>
-    LEAN doesn't support IB accounts in the <a href='https://www.interactivebrokers.com/en/accounts/sweep-program.php' rel='nofollow' target='_blank'>Insured Bank Deposit Sweep Program</a> because when LEAN reads your account balances, it includes cash that's in the FDIC Sweep Account Cash, which isn't tradable. 
+    LEAN doesn't support IB accounts in the Insured Bank Deposit Sweep Program because when LEAN reads your account balances, it includes cash that's in the FDIC Sweep Account Cash, which isn't tradable. 
     For example, if your account has $150K USD of cash, only $100K may be available to trade if $50K is in FDIC Sweep Account Cash.
+    To opt-out the program, see <a href='https://www.ibkrguides.com/clientportal/insured-bank-deposit-sweep-program.htm' rel='nofollow' target='_blank'>Insured Bank Deposit Sweep Program</a>.
 </p>
 
 <h4>Dividend Election</h4>
