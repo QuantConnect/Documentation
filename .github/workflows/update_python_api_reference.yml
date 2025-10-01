@@ -29,27 +29,13 @@ jobs:
         working-directory: code-generators/python_api_reference
         run: mkdocs build --clean
 
-      - name: Zip site
-        working-directory: code-generators/python_api_reference/site
-        run: zip -r -s 45m "$GITHUB_WORKSPACE/Resources/python-api-reference/site.zip" .
-
-      - name: Push ZIP to branch
-        run: |
-          BRANCH=github-action-python-api-reference
-          git config user.name "GitHub Actions"
-          git config user.email "github-actions@github.com"
-
-          # Create branch (or switch if it exists)
-          git checkout -b "$BRANCH" || git checkout "$BRANCH"
-
-          # Add only the zip at the requested path inside the repo
-          git add -f Resources/python-api-reference/site.z*
-
-          # If nothing changed, exit quietly
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-
-          git commit -m "Update python-api-reference.zip"
-          git push --set-upstream origin "$BRANCH" -f
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: us-west-1
+      
+      - name: Upload the site to S3
+        working-directory: code-generators/python_api_reference
+        run: aws s3 cp ./site s3://content.quantconnect.com/docs/v2/lean-engine/class-reference/py/ --recursive --acl bucket-owner-full-control
