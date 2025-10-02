@@ -42,6 +42,10 @@
 
     public override void OnData(Slice slice)
     {
+        if (IsWarmingUp)
+        {
+            return;
+        }
         if (!Portfolio.Invested &amp;&amp; slice.OptionChains.TryGetValue(_option, out var chain))
         {
             // Create a strangle strategy to trade the volatility forecast.
@@ -127,6 +131,8 @@
         self.set_warm_up(400, Resolution.DAILY)
 
     def on_data(self, slice: Slice) -&gt; None:
+        if self.is_warming_up:
+            return
         chain = slice.option_chains.get(self._option)
         if not self.portfolio.invested and chain:
             # Create a strangle strategy to trade the volatility forecast.
