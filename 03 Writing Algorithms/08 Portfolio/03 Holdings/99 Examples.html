@@ -22,6 +22,13 @@
         SetCash("JPY", 1000000);
         SetCash("HKD", 10000);
 
+        // Add a security initializer that seeds the price of each asset with its
+        // last known price. This ensures the holdings we add below will initialize
+        // with a non-zero value.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+
         // Request data for some securities in the account already.
         var spy = AddEquity("SPY").Symbol;
         var aapl = AddEquity("AAPL").Symbol;
@@ -77,6 +84,16 @@
         self.set_cash("EUR", 1000)
         self.set_cash("JPY", 1000000)
         self.set_cash("HKD", 10000)
+
+        # Add a security initializer that seeds the price of each asset with its
+        # last known price. This ensures the holdings we add below will initialize
+        # with a non-zero value.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
 
         # Request data for some securities in the account already.
         spy = self.add_equity("SPY").symbol
