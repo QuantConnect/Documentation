@@ -8,7 +8,7 @@
  Dollar cost averaging (DCA) is where you consistently invest a fixed dollar amount into an asset on a regular basis (for example, monthly), regardless of the asset's price. 
 	It can reduce the volatility in your PnL due to slowly increasing the position size over time. 
 	The following algorithm demonstrates a DCA investment into BTC. 
-	It buys $10,000 USD worth of BTC every midnight for 30 consecutive days.
+	It buys $3,000 USD worth of BTC every midnight for 30 consecutive days.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class CryptoExampleAlgorithm : QCAlgorithm
@@ -30,9 +30,15 @@
         // If you haven't invested for 30 consecutive days yet, continue buying.
         if (slice.Bars.ContainsKey(_symbol) &amp;&amp; _dayCount++ &lt; 30)
         {
-            // Calculate the order size for $10,000 USD using the current price.
-            var size = 10000m / slice.Bars[_symbol].Close;
-            MarketOrder(_symbol, size);
+            // Calculate the order size for $3,000 USD using the current price.
+            var quantity = 3000m / slice.Bars[_symbol].Close;
+	        // Round down to observe the lot size.
+            var lotSize = Securities[_symbol].SymbolProperties.LotSize;
+            quantity = (long)(quantity / lotSize) * lotSize;
+            if (quantity != 0)
+            {
+                MarketOrder(_symbol, quantity);
+            }
         }
     }
 }</pre>
@@ -68,9 +74,10 @@
 }
  </script>
  <pre class="python">class CryptoExampleAlgorithm(QCAlgorithm):
+	 
     def initialize(self) -&gt; None:
         # Set a day count variable for counting the days of the DCA trade.
-        self.day_count = 0
+        self._day_count = 0
         # Set the brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         self.set_brokerage_model(BrokerageName.BITFINEX, AccountType.CASH)
         # For daily DCA purchases, subscribe to daily asset data.
@@ -78,13 +85,16 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         # If you haven't invested for 30 consecutive days yet, continue buying.
-        if self._symbol in slice.bars and self.day_count &lt; 30:
-            # Calculate the order size for $10,000 USD using the current price.
-            size = 10000 / slice.bars[self._symbol].close
-            self.market_order(self._symbol, size)
-    
+        if self._symbol in slice.bars and self._day_count &lt; 30:
             # Increase the day count.
-            self.day_count += 1</pre>
+            self._day_count += 1
+            # Calculate the order size for $3,000 USD using the current price.
+            quantity = 3_000 / slice.bars[self._symbol].close
+            # Round down to observe the lot size.
+            lot_size = self.securities[self._symbol].symbol_properties.lot_size
+            quantity = int(quantity / lot_size) * lot_size
+            if quantity:
+                self.market_order(self._symbol, quantity)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "30",
