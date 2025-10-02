@@ -1,7 +1,10 @@
 <p>The following examples demonstrate common practices for implementing the framework alpha model.</p>
 
 <h4>Example 1: EMA Cross On Liquid Stocks</h4>
-<p>The following algorithm selects the top 500 liquid US stocks traded in popular exchanges using <code>QC500UniverseSelectionModel</code>. Then, emit trade signals based on trade changes using 60-day versus 200-day EMA cross through <code>EmaCrossAlphaModel</code>. Each signal will weight equally.</p>
+<p>
+    The following algorithm selects the top 500 liquid US stocks traded within the SPY ETF, then emits trade signals 60-day versus 200-day EMA cross through the <code>EmaCrossAlphaModel</code>. 
+    The <code>EqualWeightingPortfolioConstructionModel</code> ensures each asset with an insight gets an allocation of equal magnitude.
+</p>
 <div class="section-example-container testable">
     <pre class="csharp">public class FrameworkAlphaModelAlgorithm : QCAlgorithm
 {
@@ -9,9 +12,13 @@
     {
         SetStartDate(2023, 1, 1);
         SetEndDate(2023, 8, 1);
-
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // Add a universe of liquid equities since they have capital to support demand and trends.
-        AddUniverseSelection(new QC500UniverseSelectionModel());
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("SPY"));
         // Using an EMA cross-alpha model to trade medium versus long-term trends.
         AddAlpha(new EmaCrossAlphaModel(60, 200, Resolution.Daily));
         // Equally invested in insights to dissipate capital risk evenly.
@@ -22,9 +29,16 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2023, 8, 1)
-
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+        )
+        )
         # Add a universe of liquid equities since they have capital to support demand and trends.
-        self.add_universe_selection(QC500UniverseSelectionModel())
+        self.universe_settings.resolution = Resolution.DAILY
+        self.add_universe_selection(ETFConstituentsUniverseSelectionModel("SPY"))
         # Using an EMA cross-alpha model to trade on medium versus long-term trends.
         self.add_alpha(EmaCrossAlphaModel(60, 200, Resolution.DAILY))
         # Equally invested in insights to dissipate capital risk evenly.
