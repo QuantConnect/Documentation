@@ -610,21 +610,24 @@
  <a href="/datasets/brain-sentiment-indicator">
   Brain Sentiment Indicator
  </a>
- dataset. We long AAPL if its sentiment is positive.
+ dataset. It simply buys AAPL when the sentiment is positive and liquidates the position when the sentiment is negative.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class HandlingSecuritiesDataAlgorithm : QCAlgorithm
 {
-    private Symbol _dataset7DaySymbol;
+    private Symbol _symbol, _dataset7DaySymbol;
 
     public override void Initialize()
     {
         SetStartDate(2022, 1, 1);
         SetEndDate(2022, 4, 1);
-
+        // Seed the price of AAPL with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // Add the 7-day sentiment data for AAPL.
-        var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-        _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(aapl).Symbol;
+        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(_symbol).Symbol;
     }
 
     public override void OnData(Slice slice)
@@ -639,12 +642,12 @@
             // Invest if the sentiment score is above 0, which indicates positive sentiment.
             if (dataPoint.Sentiment &gt; 0m)
             {
-                MarketOrder(dataPoint.Symbol, 1);
+                MarketOrder(_symbol, 1);
             }
             // Liquidate otherwise.
-            else if (dataPoint.Sentiment &lt; 0m &amp;&amp; Portfolio[dataPoint.Symbol].Invested)
+            else if (dataPoint.Sentiment &lt; 0m &amp;&amp; Portfolio[_symbol].Invested)
             {
-                Liquidate(dataPoint.Symbol);
+                Liquidate(_symbol);
             }
         }
     }
@@ -684,24 +687,30 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2022, 4, 1)
-
+        # Seed the price of AAPL with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # Add the 7-day sentiment data for AAPL.
-        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
-        self.dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, self.aapl).symbol
+        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self._dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, self._symbol).symbol
 
     def on_data(self, slice: Slice) -&gt; None:
         # Check if the current slice contains the 7-day sentiment data.
-        if slice.contains_key(self.dataset_7day_symbol):
-            data_point = slice[self.dataset_7day_symbol]
+        if slice.contains_key(self._dataset_7day_symbol):
+            data_point = slice[self._dataset_7day_symbol]
             # Log the sentiment value.
-            self.log(f"{self.dataset_7day_symbol} sentiment at {slice.time}: {data_point.sentiment}")
+            self.log(f"{self._dataset_7day_symbol} sentiment at {slice.time}: {data_point.sentiment}")
         
             # Invest if the sentiment score is above 0, which indicates positive sentiment.
             if data_point.sentiment &gt; 0:
-                self.market_order(self.aapl, 1)
+                self.market_order(self._symbol, 1)
             # Liquidate otherwise.
-            elif data_point.sentiment &lt; 0 and self.portfolio[self.aapl].invested:
-                self.liquidate(self.aapl)</pre>
+            elif data_point.sentiment &lt; 0 and self.portfolio[self._symbol].invested:
+                self.liquidate(self._symbol)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "0",
