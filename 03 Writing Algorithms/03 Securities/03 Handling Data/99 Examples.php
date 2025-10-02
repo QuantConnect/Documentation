@@ -31,27 +31,23 @@
     public override void OnData(Slice slice)
     {
         // Check if the QuoteBars contain SPY quote data.
-        if (slice.QuoteBars.ContainsKey(_symbol))
+        if (!slice.QuoteBars.ContainsKey(_symbol))
         {
-            var quoteBar = slice.QuoteBars[_symbol];
-            // Calculate the mid price by averaging the bid and ask price.
-            var midPrice = (quoteBar.Bid.Close + quoteBar.Ask.Close) * 0.5m;
-            // Update the SMA indicator with the mid price.
-            _indicator.Update(quoteBar.EndTime, midPrice);
-
-            // Trade SMA cross strategy.
-            if (_indicator.IsReady)
-            {
-                if (_indicator &gt; midPrice)
-                {
-                    SetHoldings(_symbol, -0.5m);
-                }
-                else
-                {
-                    SetHoldings(_symbol, 0.5m);
-                }
-            }
+            return;
         }
+        var quoteBar = slice.QuoteBars[_symbol];
+        // Calculate the mid price by averaging the bid and ask price.
+        var midPrice = (quoteBar.Bid.Close + quoteBar.Ask.Close) * 0.5m;
+        // Update the SMA indicator with the mid price.
+        _indicator.Update(quoteBar.EndTime, midPrice);
+
+        // Wait for the algorithm and indicator to be warmed up.
+        if (IsWarmingUp || !_indicator.IsReady)
+        {
+            return;
+        }
+        // Trade SMA cross strategy.
+        SetHoldings(_symbol, _indicator > midPrice ? -0.5m : 0.5m);
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -97,19 +93,20 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         # Check if the QuoteBars contain SPY quote data.
-        if slice.quote_bars.contains_key(self._symbol):
-            quote_bar = slice.quote_bars[self._symbol]
-            # Calculate the mid price by averaging the bid and ask price.
-            mid_price = (quote_bar.bid.close + quote_bar.ask.close) * 0.5
-            # Update the SMA indicator with the mid price.
-            self._indicator.update(quote_bar.end_time, mid_price)
-        
-            # Trade SMA cross strategy.
-            if self._indicator.is_ready:
-                if self._indicator.current.value &gt; mid_price:
-                    self.set_holdings(self._symbol, -0.5)
-                else:
-                    self.set_holdings(self._symbol, 0.5)</pre>
+        if self._symbol not in slice.quote_bars:
+            return
+        quote_bar = slice.quote_bars[self._symbol]
+        # Calculate the mid price by averaging the bid and ask price.
+        mid_price = (quote_bar.bid.close + quote_bar.ask.close) * 0.5
+        # Update the SMA indicator with the mid price.
+        self._indicator.update(quote_bar.end_time, mid_price)
+    
+        # Wait for the algorithm and indicator to be warmed up.
+        if self.is_warming_up or not self._indicator.is_ready:
+            return
+        # Trade SMA cross strategy.
+        weight = -0.5 if self._indicator.current.value > mid_price else 0.5
+        self.set_holdings(self._symbol, weight)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "1151",
