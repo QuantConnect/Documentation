@@ -320,6 +320,8 @@ class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
         SetEndDate(2022, 1, 1);
         // Request SPY data to trade it.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+        // Add a warm-up period so SPY has a price before the first trade.
+        SetWarmUp(TimeSpan.FromDays(7));
     }
 
     public override void OnWarmupFinished()
@@ -392,6 +394,8 @@ class HypothesisDrivenResearchAlgorithm(QCAlgorithm):
         self.set_end_date(2022, 1, 1)
         # Request SPY data to trade it.
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+        # Add a warm-up period so SPY has a price before the first trade.
+        self.set_warm_up(timedelta(7))
 
     def on_warmup_finished(self) -&gt; None:
         # According to the data, the first cycle is downgoing.
