@@ -30,21 +30,26 @@
 
     public override void OnData(Slice slice)
     {
-        if (slice.Bars.TryGetValue(_spy, out var bar))
+        if (!slice.Bars.TryGetValue(_spy, out var bar))
         {
-            // Update the custom MFI with the updated trade bar to obtain the updated trade signal.
-            _customMfi.Update(bar);
-
-            // Buy if the positive money flow is above the negative, which indicates demand is greater than supply, driving up the price.
-            if (_customMfi &gt; 50)
-            {
-                SetHoldings(_spy, 1);
-            }
-            // Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
-            else
-            {
-                SetHoldings(_spy, -1);
-            }
+            return;
+        }
+        // Update the custom MFI with the updated trade bar to obtain the updated trade signal.
+        _customMfi.Update(bar);
+        // Don't trade until warm-up is done.
+        if (IsWarmingUp)
+        {
+            return;
+        }
+        // Buy if the positive money flow is above the negative, which indicates demand is greater than supply, driving up the price.
+        if (_customMfi &gt; 50)
+        {
+            SetHoldings(_spy, 1);
+        }
+        // Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
+        else
+        {
+            SetHoldings(_spy, -1);
         }
     }
 
@@ -140,16 +145,19 @@ class CustomIndicatorsAlgorithm(QCAlgorithm):
 
     def on_data(self, slice: Slice) -&gt; None:
         bar = slice.bars.get(self.spy)
-        if bar:
-            # Update the custom MFI with the updated trade bar to obtain the updated trade signal.
-            self.custom_mfi.update(bar)
-
-            # Buy if the positive money flow is above negative, indicating demand is greater than supply, driving up the price.
-            if self.custom_mfi.current.value &gt; 50:
-                self.set_holdings(self.spy, 1)
-            # Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
-            else:
-                self.set_holdings(self.spy, -1)
+        if not bar:
+            return
+        # Update the custom MFI with the updated trade bar to obtain the updated trade signal.
+        self.custom_mfi.update(bar)
+        # Don't trade until warm-up is done.
+        if self.is_warming_up:
+            return
+        # Buy if the positive money flow is above negative, indicating demand is greater than supply, driving up the price.
+        if self.custom_mfi.current.value &gt; 50:
+            self.set_holdings(self.spy, 1)
+        # Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
+        else:
+            self.set_holdings(self.spy, -1)
 
 class CustomMoneyFlowIndex(PythonIndicator):
     def __init__(self, period: int) -&gt; None:
