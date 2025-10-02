@@ -35,7 +35,10 @@
     {
         if (!Portfolio.Invested &amp;&amp; _ticket == null)
         {
-            _ticket = LimitOrder(_future.Mapped, 1, Securities[_future.Mapped].Price * 0.995m);
+            var contract = Securities[_future.Mapped];
+            // Set a limit price that repsects the brokerage's precision requirements.
+            var limitPrice = AdjustLimitPrice(contract, contract.Price * 0.995m);
+            _ticket = LimitOrder(contract.Symbol, 1, limitPrice);
         }
 
         // Cancel unfilled orders if they are not filled within 2 minutes to avoid stale fills.
@@ -47,6 +50,14 @@
 
             _ticket = null;
         }
+    }
+    
+    private decimal AdjustLimitPrice(Security security, decimal price, bool roundUp = true)
+    {
+        decimal pip = security.PriceVariationModel.GetMinimumPriceVariation(
+            new GetMinimumPriceVariationParameters(security, price)
+        );
+        return ((int)(price / pip) + (roundUp ? 1 : 0)) * pip;
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -101,7 +112,10 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         if not self.portfolio.invested and not self.ticket:
-            self.ticket = self.limit_order(self._future.mapped, 1, self.securities[self._future.mapped].price * 0.995)
+            contract = self.securities[self._future.mapped]
+            # Set a limit price that repsects the brokerage's precision requirements.
+            limit_price = self._adjust_limit_price(contract, contract.price * 0.995)
+            self.ticket = self.limit_order(contract.symbol, 1, limit_price)
 
         # Cancel unfilled orders if they are not filled within 2 minutes to avoid stale fills.
         # Note that the Time property in the order ticket is in UTC timezone.
@@ -109,7 +123,13 @@
             # You can change to a different time zone and compare the log differences.
             self.ticket.cancel(f"{self.time} :: utc: {self.utc_time} :: Order canceled due to placed over 2 minutes")
 
-            self.ticket = None</pre>
+            self.ticket = None
+ 
+    def _adjust_limit_price(self, security, price, round_up=True):
+        pip = security.price_variation_model.get_minimum_price_variation(
+            GetMinimumPriceVariationParameters(security, price)
+        )
+        return (int(price / pip) + int(round_up)) * pip</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "6138",
