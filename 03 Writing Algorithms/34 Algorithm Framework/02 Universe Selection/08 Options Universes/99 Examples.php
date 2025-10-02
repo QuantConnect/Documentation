@@ -9,6 +9,7 @@
     {
         SetStartDate(2023, 1, 1);
         SetEndDate(2023, 8, 1);
+        SetCash(500000);
         
         // Add a universe that selects the needed option contracts.
         AddUniverseSelection(new AtmOptionHorizontalSpreadUniverseSelectionModel());
@@ -171,6 +172,7 @@ class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self.set_start_date(2023, 1, 1)
         self.set_end_date(2023, 8, 1)
+		self.set_cash(500_000)
 
         # Add a universe that selects the needed option contracts.
         self.add_universe_selection(AtmOptionHorizontalSpreadUniverseSelectionModel())
