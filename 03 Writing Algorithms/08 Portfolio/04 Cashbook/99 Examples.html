@@ -110,19 +110,31 @@
 
     public override void OnData(Slice slice)
     {
-        if (slice.Bars.TryGetValue(_ethbtc, out var bar) &amp;&amp; _ema.IsReady)
+        if (!(slice.Bars.TryGetValue(_ethbtc, out var bar) &amp;&amp; _ema.IsReady))
         {
-            // ETHBTC's current price is higher than EMA, suggesting an uptrend.
-            if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_ethbtc].IsLong)
-            {
-                // Convert to the corresponding quantity of the quote currency.
-                MarketOrder(_ethbtc, Portfolio.CashBook["BTC"].Amount * (1m - _buffer) / bar.Close);
-            }
-            // ETHBTC's current price is below the EMA, suggesting a downtrend.
-            else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_ethbtc].IsShort)
-            {
-                MarketOrder(_ethbtc, -Portfolio.CashBook["ETH"].Amount * (1m - _buffer));
-            }
+            return;
+        }
+        decimal quantity;
+        // ETHBTC's current price is higher than EMA, suggesting an uptrend.
+        if (bar.Close &gt; _ema &amp;&amp; !Portfolio[_ethbtc].IsLong)
+        {
+            // Convert to the corresponding quantity of the quote currency.
+            quantity = Portfolio.CashBook["BTC"].Amount * (1m - _buffer) / bar.Close;
+        }
+        // ETHBTC's current price is below the EMA, suggesting a downtrend.
+        else if (bar.Close &lt; _ema &amp;&amp; !Portfolio[_ethbtc].IsShort)
+        {
+            quantity = -Portfolio.CashBook["ETH"].Amount;
+        }
+        else {
+            return;
+        }
+        // Round down to observe the lot size.
+        var lotSize = Securities[_ethbtc].SymbolProperties.LotSize;
+        quantity = (long)(quantity / lotSize) * lotSize;
+        if (quantity != 0)
+        {
+            MarketOrder(_ethbtc, quantity);
         }
     }
 }</pre>
@@ -181,15 +193,23 @@
 
     def on_data(self, slice: Slice) -&gt; None:
         bar = slice.bars.get(self.ethbtc)
-        if bar and self._ema.is_ready:
-            ema = self._ema.current.value
-            # ETHBTC's current price is higher than EMA, suggesting an uptrend.
-            if bar.close &gt; ema and not self.portfolio[self.ethbtc].is_long:
-                # Convert to the corresponding quantity of the quote currency.
-                self.market_order(self.ethbtc, self.portfolio.cash_book["BTC"].amount * (1 - self.buffer) / bar.close)
-            # ETHBTC's current price is below the EMA, suggesting a downtrend.
-            elif bar.close &lt; ema and not self.portfolio[self.ethbtc].is_short:
-                self.market_order(self.ethbtc, -self.portfolio.cash_book["ETH"].amount)</pre>
+        if not (bar and self._ema.is_ready):
+            return
+        ema = self._ema.current.value
+        # ETHBTC's current price is higher than EMA, suggesting an uptrend.
+        if bar.close &gt; ema and not self.portfolio[self.ethbtc].is_long:
+            # Convert to the corresponding quantity of the quote currency.
+            quantity = self.portfolio.cash_book["BTC"].amount * (1 - self.buffer) / bar.close
+        # ETHBTC's current price is below the EMA, suggesting a downtrend.
+        elif bar.close &lt; ema and not self.portfolio[self.ethbtc].is_short:
+            quantity = -self.portfolio.cash_book["ETH"].amount
+        else:
+            return
+        # Round down to observe the lot size.
+        lot_size = self.securities[self.ethbtc].symbol_properties.lot_size
+        quantity = int(quantity / lot_size) * lot_size
+        if quantity:
+            self.market_order(self.ethbtc, quantity)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "29",
