@@ -17,3 +17,6 @@
 
 <h4>Tick Slice Sizes</h4>
 <p>In backtesting, we collect ticks into slices that span 1 millisecond before injecting them into your algorithm. In live trading, we collect ticks into slices that span up to 70 milliseconds before injecting them into your algorithm. This difference in slice sizes can cause deviations between your algorithm's live and OOS backtest equity curves. To avoid issues, ensure your strategy logic is compatible with both slice sizes.</p>
+
+<h4>Opening and Closing Auctions</h4>
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/opening-and-closing-auctions.html"); ?>
