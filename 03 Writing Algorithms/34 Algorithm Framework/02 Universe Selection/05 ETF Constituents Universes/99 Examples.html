@@ -64,6 +64,10 @@ public class EtfAlphaModel : AlphaModel
             // To avoid trading errors, skip assets that have no price yet.
             if (slice.Bars.ContainsKey(symbol))
             {
+                if (algorithm.Securities[symbol].Price == 0)
+                {
+                    continue;
+                }
                 insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up, weight: weight));
             }
         }
@@ -113,6 +117,8 @@ class EtfAlphaModel(AlphaModel):
             # Get the ETF weight of all the assets currently in the universe.  
             # To avoid trading errors, skip assets that have no price yet.
             if symbol in slice.bars:
+                if not algorithm.securities[symbol].price:
+                    continue
                 insights.append(Insight.price(symbol, timedelta(1), InsightDirection.UP, weight=weight))
 
         self._day = slice.time.day
