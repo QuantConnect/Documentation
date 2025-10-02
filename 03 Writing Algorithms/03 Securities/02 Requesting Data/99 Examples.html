@@ -26,8 +26,12 @@
 {
     public override void Initialize()
     {
-        // Add a universe of the 10 most liquid US Equities.
-        AddUniverse(Universe.DollarVolume.Top(10));
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Add a universe of the 25 most liquid US Equities.
+        AddUniverse(Universe.DollarVolume.Top(25));
     }
 
     public override void OnData(Slice slice)
@@ -41,10 +45,11 @@
             var topFactorTargets = factorData.OrderByDescending(x =&gt; 
                     x.Value.Growth + x.Value.ValueFactor + x.Value.Quality + x.Value.Momentum + x.Value.LowVolatility
                 )
+                .Where(x => Securities[x.Key.Underlying].Price != 0)
                 .Take(10)
                 .Select(x =&gt; new PortfolioTarget(x.Key.Underlying, 0.1m))
                 .ToList();
-            SetHoldings(topFactorTargets);
+            SetHoldings(topFactorTargets, true);
         }
     }
 
@@ -99,18 +104,28 @@
  </script>
  <pre class="python">class RequestSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        # Add a universe of the 10 most liquid US Equities.
-        self.add_universe(self.universe.dollar_volume.top(10))
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        # Add a universe of the 25 most liquid US Equities.
+        self.add_universe(self.universe.dollar_volume.top(25))
 
     def on_data(self, slice: Slice) -&gt; None:
         # Invest by the updated Kavout Factor data.
         factor_data = slice.get(KavoutCompositeFactorBundle)
         if factor_data:
-            sorted_by_factor_score = sorted(factor_data.items(),
+            sorted_by_factor_score = sorted(
+                factor_data.items(),
                 key=lambda x: x[1].growth + x[1].value_factor + x[1].quality + x[1].momentum + x[1].low_volatility,
-                reverse=True)[:10]
+                reverse=True
+            )
+            sorted_by_factor_score = [x for x in sorted_by_factor_score if self.securities[x[0].underlying].price][:10]  
             top_factor_targets = [PortfolioTarget(x[0].underlying, 0.1) for x in sorted_by_factor_score]
-            self.set_holdings(top_factor_targets)
+            self.set_holdings(top_factor_targets, True)
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Iterate securities that entered the universe.
