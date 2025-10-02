@@ -737,3 +737,8 @@
 }
  </script>
 </div>
+
+<?
+$number = 6;
+include(DOCS_RESOURCES."/examples/market-session-as-history.php");
+?>

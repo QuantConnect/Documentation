@@ -19,4 +19,18 @@ if session.is_ready:
     yesterday_close = session[1].close</pre>
 </div>
 
-<p>For more information about rolling windows, see <a href="/docs/v2/writing-algorithms/historical-data/rolling-window">Rolling Window</a>.
+<p>Increase the size of the <code>Session</code> object to store more session data. You can use cached data in the <code class="csharp">session</code><code class="python">Session</code> property instead of requesting <a href="/docs/v2/writing-algorithms/historical-data/history-requests">historical daily data</a>.</p>
+<div class="section-example-container">
+    <pre class="csharp">var equity = AddEquity("SPY");
+// Increase the session lookback to 252 from default (2)
+equity.Session.Size = 252;
+// Get all closing prices in the session history
+var closes = session.OrderBy(x =&gt; x.EndTime).Select(x =&gt; x.Close);
+</pre>
+    <pre class="python">equity = self.add_equity("SPY")
+# Increase the session lookback to 252 from default (2) 
+equity.session.size = 252
+# Get all closing prices in the session history
+closes = [x.close for x in session][::-1]
+</pre>
+</div>

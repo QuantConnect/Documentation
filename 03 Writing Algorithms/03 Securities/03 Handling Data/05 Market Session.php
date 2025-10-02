@@ -1,0 +1,2 @@
+<? echo file_get_contents(DOCS_RESOURCES."/rolling-window/market-session.html") ?>
+<p>For more information about rolling windows, see <a href="/docs/v2/writing-algorithms/historical-data/rolling-window">Rolling Window</a>.

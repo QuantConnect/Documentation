@@ -15,6 +15,11 @@ $number = 3;
 include(DOCS_RESOURCES."/examples/ema-acceleration.php"); 
 ?>
 
+<? 
+$number = 4; 
+include(DOCS_RESOURCES."/examples/market-session-as-history.php"); 
+?>
+
 <h4>Other Examples</h4>
 <p>For more examples, see the following algorithms:</p>
 <? include(DOCS_RESOURCES."/rolling-window/examples.html"); ?>
