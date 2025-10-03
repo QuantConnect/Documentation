@@ -82,6 +82,120 @@
         return True</pre>
 </div>
 
+<h4>Example 2: Parent-Child Communication</h4>
+<b>Parent algorithm</b>
+<p>The parent algorithm is connected to a brokerage. It receives commands from other algorithms and places market orders based on those commands.</p>
+<div class="section-example-container testable">
+    <pre class="csharp">public class ParentAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetCash(100000);
+        
+        // Remove benchmark so doesn't need asset data.
+        SetBenchmark(x =&gt; 1);
+
+        // Seed each asset with it's price to trade right away.
+        var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));
+    }
+
+    public override bool? OnCommand(dynamic payload)
+    {
+        Log($"{Time} - Execute on_command(): {payload}");
+        var equity = AddEquity(payload.ticker);
+
+        if (!string.IsNullOrWhiteSpace(payload.email))
+        {
+            Notify.Email(address: payload.email, subject: $"Order Executed from {payload.source}", message: $"{equity.symbol}, {payload.quantity}, {payload.source}");
+        }
+
+        MarketOrder(equity.symbol, payload.quantity, asynchronous: true, tag: payload.source);
+        return true;
+    }
+}</pre>
+    <pre class="python">class ParentAlgorithm(QCAlgorithm): 
+
+    def initialize(self):
+        self.set_cash(100_000)
+
+        # Remove benchmark so doesn't need asset data.
+        self.set_benchmark(lambda x: 1)
+
+        # Seed each asset with it's price to trade right away.
+        seeder = FuncSecuritySeeder(self.get_last_known_prices)
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))
+
+    def on_command(self, payload):
+        self.log(f'{self.time} - Execute on_command(): {payload}')
+        equity = self.add_equity(payload.ticker)
+
+        if payload.email:
+            self.notify.email(address=payload.email, subject=f"Order Executed from {payload.source}", message=f"{equity.symbol}, {payload.quantity}, {payload.source}")
+        
+        self.market_order(equity.symbol, payload.quantity, asynchronous=True, tag=payload.source)
+        return True</pre>
+</div>
+
+<b>Child algorithm</b>
+<p>The child algorithm is connected to a paper trading account. It contains the trading logic and sends commands to the parent algorithm for execution.</p>
+<div class="section-example-container testable">
+    <pre class="csharp">public class ChildAlgorithm : QCAlgorithm
+{
+    private const string _initials;
+
+    public override void Initialize()
+    {
+        // Set the initials to identify the sender and the cash this algorithm will use.
+        _initials = "C1";
+        SetCash(100000);
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {   
+        // When an order is filled, we send a command to the parent algorithm with the order details.
+        if (orderEvent.Status == OrderStatus.Filled)
+        {
+            Log($"{Time} - Sending command");
+            var response = Send(orderEvent.Symbol.Value, orderEvent.FillQuantity, _initials);
+            Log($"{Time} - Command response {response}");
+        }   
+    }
+
+    private string Send(string ticker, decimal quantity, string name)
+    {
+        if (!LiveMode) return string.Empty;
+    
+        // Set the project ID with the ID of your parent algorithm.
+        ProjectId = 30123456;
+        // Generate the command link with the desired data payload, and execute with download_data.
+        var link = Link(new {ticker, quantity, name});
+        return link.DownloadData();
+    }
+}</pre>
+    <pre class="python">class ChildAlgorithm (QCAlgorithm):
+    def initialize(self):
+        # Set the initials to identify the sender and the cash this algorithm will use.
+        self._initials = 'C1'
+        self.set_cash(10_000)
+
+    def on_order_event(self, order_event: OrderEvent):
+        # When an order is filled, we send a command to the parent algorithm with the order details.
+        if order_event.status == OrderStatus.FILLED:
+            self.log(f'{self.time} - Sending command')
+            response = send(self, order_event.symbol.value, order_event.fill_quantity, self._initials)
+            self.log(f'{self.time} - Command response {response}')
+
+def send(algorithm, ticker, quantity, name):
+    if not algorithm.live_mode:
+        return ''
+    # Set the project ID with the ID of your parent algorithm.
+    algorithm.project_id = 30123456
+    # Generate the command link with the desired data payload, and execute with download_data.
+    link = algorithm.link({'ticker': ticker, 'quantity': quantity, 'name': name})
+    return Extensions.download_data(link)</pre>
+</div>
+
 <h4>Other Examples</h4>
 <p>For more examples, see the following algorithms:</p>
 
