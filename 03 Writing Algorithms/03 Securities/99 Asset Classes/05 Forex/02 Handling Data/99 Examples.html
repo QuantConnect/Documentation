@@ -162,8 +162,8 @@
     
     private void OnUpdated(object sender, IndicatorDataPoint point)
     {
-        // Wait until the indicator is ready.
-        if (!_forex.ema.IsReady)
+        // Wait until the indicator is ready and the Forex pair has a price.
+        if (!_forex.ema.IsReady || _forex.Price == 0)
         {
             return;
         }
@@ -225,8 +225,8 @@
         self.subscription_manager.add_consolidator(self._forex.symbol, consolidator)
     
     def on_updated(self, sender: object, point: IndicatorDataPoint) -&gt; None:
-        # Wait until the indicator is ready.
-        if not self._forex.ema.is_ready:
+        # Wait until the indicator is ready and the Forex pair has a price.
+        if not self._forex.ema.is_ready or not self._forex.price:
             return
         # Rebalance the portfolio. If the current price is below the EMA, long. Otherwise, short.
         self.set_holdings(self._forex.symbol, 0.5 if self._forex.price &lt;= point.value else -0.5)</pre>
