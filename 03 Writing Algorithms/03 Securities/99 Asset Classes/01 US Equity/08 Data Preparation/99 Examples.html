@@ -12,23 +12,29 @@
  that places a
  <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders">
   Market On Open order
- </a>
- , which fill at the official opening auction price.
+ </a>, which fill at the official opening auction price.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class USEquityDataPreparationExampleAlgorithm : QCAlgorithm
 {
+    private Symbol _spy;
+    
     public override void Initialize()
     {
         SetStartDate(2021, 1, 1);
         // Add Equity data.
-        var spy = AddEquity("SPY", extendedMarketHours: true).Symbol;
+        _spy = AddEquity("SPY", extendedMarketHours: true).Symbol;
         // Create a Scheduled Event that rebalances with market on open orders.
-        Schedule.On(
-            DateRules.EveryDay(spy), 
-            TimeRules.BeforeMarketOpen(spy, 30), 
-            () =&gt; MarketOnOpenOrder(spy, CalculateOrderQuantity(spy, 0.1m))
-        );
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.BeforeMarketOpen(_spy, 30), Rebalance);
+    }
+    
+    public void Rebalance()
+    {
+        var quantity = CalculateOrderQuantity(_spy, 0.1m);
+        if (quantity != 0)
+        {
+            MarketOnOpenOrder(_spy, quantity);
+        }
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -67,13 +73,18 @@
     def initialize(self): 
         self.set_start_date(2021, 1, 1)
         # Add Equity data.
-        spy = self.add_equity("SPY", extended_market_hours=True).symbol
+        self._spy = self.add_equity("SPY", extended_market_hours=True).symbol
         # Create a Scheduled Event that rebalances with market on open orders.
         self.schedule.on(
-            self.date_rules.every_day(spy), 
-            self.time_rules.before_market_open(spy, 30), 
-            lambda: self.market_on_open_order(spy, self.calculate_order_quantity(spy, 0.1))
-        )</pre>
+            self.date_rules.every_day(self._spy), 
+            self.time_rules.before_market_open(self._spy, 30), 
+            self._rebalance
+        )
+    
+    def _rebalance(self):
+        quantity = self.calculate_order_quantity(self._spy, 0.1)
+        if quantity:
+            self.market_on_open_order(self._spy, quantity)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "61",
