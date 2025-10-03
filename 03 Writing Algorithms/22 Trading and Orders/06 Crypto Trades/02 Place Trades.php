@@ -59,7 +59,7 @@ def is_valid_order_size(self, crypto, quantity):
 
 <p>The preceding example doesn't take into account order fees. You can add a 0.1% buffer to accommodate it.</p>
 
-<p>The following example demonstrates how to form an equal-weighted Crypto portfolio and stay within the <a href="/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer">cash buffer</a>. <br></p>
+<p>The following example demonstrates how to form an equal-weighted Crypto portfolio and stay within the <a href="/docs/v2/writing-algorithms/trading-and-orders/position-sizing#06-Buying-Power-Buffer">cash buffer</a>. <br></p>
 
 <div class="section-example-container">
 <pre class="csharp">
