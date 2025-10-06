@@ -1,5 +1,8 @@
 <p>The data that your algorithm uses can cause differences between backtesting and live trading performance.</p>
 
+<h4>Data Providers</h4>
+<p>QuantConnect provides high-quality historical data for <a href="/docs/v2/writing-algorithms/securities/asset-classes">all supported asset classes</a>. However, <a href="/docs/v2/cloud-platform/datasets/quantconnect">our live data provider</a> lacks data feeds for equity options, index options, and futures options. If your algorithm trades these asset classes, you must rely on brokerage or third-party data feeds.</p>
+
 <h4>Look-Ahead Bias</h4>
 <p>The <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Time Frontier</a> minimizes the risk of look-ahead bias in backtests, but it does not completely eliminate the risk of look-ahead bias. For instance, if you use a <a href="/docs/v2/writing-algorithms/importing-data/key-concepts">custom dataset</a> that contains look-ahead bias, your algorithm's live and backtest equity curves may deviate. To avoid look-ahead bias with custom datasets, set a <code class="csharp">Period</code><code class="python">period</code> on your custom data points so that your algorithm receives the data points after the <code class="csharp">Time + Period</code><code class="python">time + period</code>.</p>
 
