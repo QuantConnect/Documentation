@@ -1,0 +1,46 @@
+<p>To export signals to vBase from your algorithm, during <a href="/docs/v2/writing-algorithms/initialization">initialization</a>, add a vBase signal export provider.</p>
+
+<div class="section-example-container">
+<pre class="csharp">SignalExport.AddSignalExportProvider(new VBaseSignalExport(apiKey, collectionName, storeStampedFile = true, idempotent = false));
+</pre>
+<pre class="python">self.signal_export.add_signal_export_provider(VBaseSignalExport(api_key, collection_name, store_stamped_file=True, idempotent=False))
+</pre>
+</div>
+
+<p>The <code>VBaseSignalExport</code> constructor accepts the following arguments:</p>
+
+
+<table class='qc-table table vertical-table'>
+    <tbody>
+        <tr>
+            <td>
+                <h4>Argument: <span><code class="csharp">apiKey</code><code class="python">api_key</code></span></h4>
+                <p class='property-description'>Your vBase API key. You can find it in your profile <a href="https://app.vbase.com/profile#account_settings" rel="nofollow" target="_blank">Account Settings</a> tab.</p>
+                <p>Data Type: <span><code class="csharp">string</code><code class="python">str</code></span></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h4>Argument: <span><code class="csharp">collectionName</code><code class="python">collection_name</code></span></h4>
+                <p class='property-description'>The name of the vBase <a href="https://docs.vbase.com/web-tools/how-to-use-vbase-stamper#why-use-collections" rel="nofollow" target="_blank">collection</a> to which the signals will be sent. You can create and manage collections in the vBase app <a href="https://app.vbase.com/profile#collections" rel="nofollow" target="_blank">Collections</a> tab. Think of a collection like a strategy or dataset name.</p>
+                <p>Data Type: <span><code class="csharp">string</code><code class="python">str</code></span></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h4>Argument: <span><code class="csharp">storeStampedFile</code><code class="python">store_stamped_file</code></span></h4>
+                <p class='property-description'>Whether to store a stamped copy of the signal in vBase. <b>Important</b> if this is marked "no", then you will be responsible for maintaining an exact copy of your stamped data. Losing or accidentally modifying stamped outputs will prevent your work from being verifiable.</p>
+                <p>Data Type: <span><code>bool</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>True</code><code class='csharp'>true</code></span></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h4>Argument: <span><code class="csharp">idempotent</code><code class="python">idempotent</code></span></h4>
+                <p class='property-description'>Whether to make the signal export idempotent. If true, sending the same signal multiple times will only create one record in vBase.</p>
+                <p>Data Type: <span><code>bool</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>False</code><code class='csharp'>false</code></span></p>
+            </td>
+        </tr>
+</tbody>
+</table>
+
+<p>You can add multiple signal export providers to a single algorithm.</p>
