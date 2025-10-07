@@ -15,6 +15,8 @@
     
     public override void Initialize()
     {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2019, 1, 1);
         // Seed the security price to ensure the retrieval of the ATM calls at the initial filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Set the data normalization mode as raw for option strike-price comparability.
@@ -30,15 +32,13 @@
     
     private void RefreshOptionList()
     {
-        // Get all tradable option contracts for AAPL at the current time for filtering.
-        var contractSymbols = OptionChain(_aapl);
         // Select the calls expires within 30 days and within $5 strike from ATM as leg of the covered call.
         // $5 buffer is given on selecting the ATM call due to price movement.
-        _options = contractSymbols
-            .Where(symbol =&gt; 
-                symbol.ID.Date &lt; Time.AddDays(30) &amp;&amp; 
-                symbol.ID.OptionRight == OptionRight.Call &amp;&amp; 
-                Math.Abs(symbol.ID.StrikePrice - Securities[_aapl].Price) &lt;= 5
+        _options = OptionChain(_aapl)
+            .Where(x =&gt; 
+                x.Expiry &lt; Time.AddDays(30) &amp;&amp; 
+                x.Right == OptionRight.Call &amp;&amp; 
+                Math.Abs(x.Strike - Securities[_aapl].Price) &lt;= 5
             )
             .Select(symbol =&gt; AddOptionContract(symbol).Symbol)
             .ToList();
@@ -138,7 +138,7 @@
     def on_data(self, slice: Slice) -&gt; None:
         if not self.portfolio.invested and self.aapl in slice.bars and not self._chain.empty:
             # To form a covered call, get the contract closest to ATM and expiry.
-            self._chain['abs_moneyness'] = abs(self._chain.strike - self._chain.underlyinglastprice)
+            self._chain['abs_moneyness'] = abs(self._chain.strike - slice.bars[self.aapl].price)
             expiry = self._chain.expiry.min()
             contract = self._chain[self._chain.expiry == expiry].sort_values('abs_moneyness').index[0]
                 
@@ -198,7 +198,7 @@
  <pre class="csharp">public class EquityOptionExampleAlgorithm : QCAlgorithm
 {
     private Symbol _spy;
-    private List&lt;Symbol&gt; _options = new();
+    private List&lt;Leg&gt; _legs = [];
     
     public override void Initialize()
     {
@@ -208,56 +208,54 @@
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
     
         // Filter an updated option list at market open everyday by a scheduled event.
-        Schedule.On(
-            DateRules.EveryDay(_spy),
-            TimeRules.At(9, 0),
-            RefreshOptionList
-        );
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.BeforeMarketOpen(_spy, 10), RefreshOptionList);
     
         // Use a scheduled event to close all positions before market close.
-        Schedule.On(
-            DateRules.EveryDay(_spy),
-            TimeRules.BeforeMarketClose(_spy, 1),
-            ExitPositions
-        );
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.BeforeMarketClose(_spy, 1), ExitPositions);
     }
     
     private void RefreshOptionList()
     {
         // Get all tradable option contracts for SPY at the current time for filtering.
-        var contractSymbols = OptionChain(_spy);
-        // Select the 0-DTE puts by setting expiry within 1 day.
-        var filteredSymbols = contractSymbols
-            .Where(symbol =&gt; symbol.ID.Date &lt; Time.AddDays(1) &amp;&amp; symbol.ID.OptionRight == OptionRight.Put)
+        var filteredContracts = OptionChain(_spy)
+            // Select the 0-DTE puts by setting expiry within 1 day.
+            .Where(x =&gt; x.Expiry &lt; Time.AddDays(1) &amp;&amp; x.Right == OptionRight.Put)
             .ToList();
+    
         // Ensure at least 2 contracts available to form a put spread.
-        if (filteredSymbols.Count &lt; 2)
+        if (filteredContracts.Count &lt; 2)
         {
-            _options = new();
+            _legs = [];
             return;
         }
         // To form a put spread, select and subscribe to put contracts $5 above and below from the current underlying price.
-        var itmPut = filteredSymbols.MinBy(symbol =&gt; Math.Abs(symbol.ID.StrikePrice - Securities[_spy].Price - 5));
-        var otmPut = filteredSymbols.MinBy(symbol =&gt; Math.Abs(symbol.ID.StrikePrice - Securities[_spy].Price + 5));
-        _options = new List&lt;Symbol&gt; { AddOptionContract(itmPut).Symbol, AddOptionContract(otmPut).Symbol };
+        var underlyingPrice = Securities[_spy].Price;
+        var itmPut = filteredContracts.MinBy(x =&gt; Math.Abs(x.Strike - underlyingPrice - 5));
+        var otmPut = filteredContracts.MinBy(x =&gt; Math.Abs(x.Strike - underlyingPrice + 5));
+        Leg getLeg(OptionContract contract, int quantity)
+        {
+            AddOptionContract(contract.Symbol);
+            return Leg.Create(contract.Symbol, quantity);
+        }
+        _legs = [ getLeg(itmPut, -1), getLeg(otmPut, 1) ];
     }
     
     public override void OnData(Slice slice)
     {
         // To avoid over-trading, limit the position opening to before 3pm.
         // To ensure the put spread formed correctly, make sure at least 2 contracts selected.
-        if (!Portfolio.Invested &amp;&amp; Time.Hour &lt; 15 &amp;&amp;  _options.Count == 2)
+        if (!Portfolio.Invested &amp;&amp; Time.Hour &lt; 15 &amp;&amp; _legs.Count == 2)
         {
             // A bull put spread involves buying a lower-strike put and selling a high-strike put
-            MarketOrder(_options.MaxBy(x =&gt; x.ID.StrikePrice), -1);
-            MarketOrder(_options.MinBy(x =&gt; x.ID.StrikePrice), 1);
+            _legs.ForEach(leg =&gt; MarketOrder(leg.Symbol, leg.Quantity));
         }
     }
     
     private void ExitPositions()
     {
-        // Exit all positions before market close to avoid option assignment and overnight risk.
-        Liquidate();
+        // Exit all positions by removing the contract before market close to avoid option assignment and overnight risk.
+        _legs.ForEach(leg =&gt; RemoveOptionContract(leg.Symbol, "Exit position"));
+        _legs.Clear();
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -293,54 +291,50 @@
  </script>
  <pre class="python">class EquityOptionExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.options = []
+        self.set_start_date(2024, 9, 1)
+        self.legs = []
         # Seed the underlying security price to ensure accurate filtering for puts of $5 above/below current market price.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         # Set the data normalization mode as raw for option strike-price comparability.
         self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
         
         # Filter an updated option list at market open everyday by a scheduled event.
-        self.schedule.on(
-            self.date_rules.every_day(self.spy),
-            self.time_rules.at(9, 0),
-            self.refresh_option_list
-        )
+        self.schedule.on(self.date_rules.every_day(self.spy), self.time_rules.before_market_open(self.spy, 10), self.refresh_option_list)
     
         # Use a scheduled event to close all positions before market close.
-        self.schedule.on(
-            self.date_rules.every_day(self.spy),
-            self.time_rules.before_market_close(self.spy, 1),
-            self.exit_position
-        )
+        self.schedule.on(self.date_rules.every_day(self.spy), self.time_rules.before_market_close(self.spy, 1), self.exit_position)
     
     def refresh_option_list(self) -&gt; None:
         # Get all tradable option contracts for SPY at the current time for filtering.
-        contract_symbols = self.option_chain(self.spy)
+        contracts = self.option_chain(self.spy)
         # Select the 0-DTE puts by setting expiry within 1 day.
-        filtered_symbols = [symbol for symbol in contract_symbols
-            if symbol.id.date &lt; self.time + timedelta(1) and symbol.id.option_right == OptionRight.PUT]
+        filtered_contracts = [x for x in contracts
+            if x.expiry &lt; self.time + timedelta(1) and x.right == OptionRight.PUT]
         # Ensure at least 2 contracts available to form a put spread.
-        if len(filtered_symbols) &lt; 2:
-            self.options = []
+        if len(filtered_contracts) &lt; 2:
+            self.legs = []
             return
             
         # To form a put spread, select and subscribe to put contracts $5 above and below from the current underlying price.
-        itm_put = sorted(filtered_symbols, key=lambda symbol: abs(symbol.id.strike_price - self.securities[self.spy].price - 5))[0]
-        otm_put = sorted(filtered_symbols, key=lambda symbol: abs(symbol.id.strike_price - self.securities[self.spy].price + 5))[0]
-        self.options = [self.add_option_contract(itm_put).symbol, self.add_option_contract(otm_put).symbol]
+        underlying_price = self.securities[self.spy].price
+        itm_put = sorted(filtered_contracts, key=lambda x: abs(x.strike - underlying_price - 5))[0]
+        otm_put = sorted(filtered_contracts, key=lambda x: abs(x.strike - underlying_price + 5))[0]
+        def get_leg(contract, quantity):
+            self.add_option_contract(contract.symbol)
+            return Leg.create(contract.symbol, quantity)
+        self.legs = [get_leg(itm_put, -1), get_leg(otm_put, 1)]
     
     def on_data(self, slice: Slice) -&gt; None:
         # To avoid over-trading, limit the position opening to before 3pm.
         # To ensure the put spread formed correctly, make sure at least 2 contracts selected.
-        if not self.portfolio.invested and self.time.hour &lt; 15 and len(self.options) == 2:
+        if not self.portfolio.invested and self.time.hour &lt; 15 and len(self.legs) == 2:
             # A bull put spread involves buying a lower-strike put and selling a high-strike put
-            sorted_by_strike = sorted(self.options, key=lambda x: x.id.strike_price)
-            self.market_order(sorted_by_strike[-1], -1)
-            self.market_order(sorted_by_strike[0], 1)
-    
+            [self.market_order(leg.symbol, leg.quantity) for leg in self.legs]
+
     def exit_position(self) -&gt; None:
-        # Exit all positions before market close to avoid option assignment and overnight risk.
-        self.liquidate()</pre>
+        # Exit all positions by removing the contract before market close to avoid option assignment and overnight risk.
+        [self.remove_option_contract(leg.symbol, f'Exit position') for leg in self.legs]
+        self.legs = []</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "6468",
