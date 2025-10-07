@@ -4,6 +4,6 @@
   For example, if you set QC as the first provider and <?=$brokerageName?> as the second provider, Lean only uses the <?=$brokerageName?> data provider for securities that aren't available from the QC data provider.
   This configuration makes it possible to use our data provider for Equity universe selection and then place Options trades on the securities in the universe.
   <? if ($brokerageName == "IB") { ?>
-    If you use a third-party data provider, the assets that you subscribe to don't contribute to the <a href='/docs/v2/cloud-platform/datasets/interactive-brokers#03-Universe-Selection'>IB data limit</a>.
+    If you use a third-party data provider, the assets that you subscribe to don't contribute to the <a rel="nofollow" target="_blank" href="https://interactivebrokers.github.io/tws-api/historical_limitations.html">IB data limit</a>.
   <?}?>
 </p>

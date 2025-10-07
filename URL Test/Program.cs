@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace UrlCheck
 {
@@ -175,6 +174,7 @@ namespace UrlCheck
                                     {
                                         var subPaths = dir.Split(Path.DirectorySeparatorChar)
                                             .Where(x => int.TryParse(x.AsSpan(0, 1), out _));
+                                        if (subPaths.IsNullOrEmpty()) return false;
                                         var nonNumberedPath = string.Join(Path.DirectorySeparatorChar,
                                             subPaths.SkipLast(1).Select(x => x[x.IndexOf(' ')..].Trim()));
                                         var sectionPath = subPaths.Last().Split('.').First();
@@ -216,9 +216,9 @@ namespace UrlCheck
                     Log.Error(e, $":\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                 }
 
-                if (i % 100 == 0)
+                if (i % (count / 40) == 0)   // ~2.5% step
                 {
-                    Log.Trace($"\tDone {i}/{count} ({Convert.ToDouble(i) / count:P2})");
+                    Log.Trace($"\tDone {i}/{count} ({Convert.ToDouble(i) / count:P1})");
                 }
 
                 Interlocked.Increment(ref i);
@@ -242,7 +242,7 @@ namespace UrlCheck
             {
                 try
                 {
-                    if (!Directory.Exists($"../Resources/{subPath}") && !File.Exists($"../Resources/{subPath}"))
+                    if (!Directory.Exists($"{path}/Resources/{subPath}") && !File.Exists($"{path}/Resources/{subPath}"))
                     {
                         Log.Error($"Non-existing resource page:\n\t\"Resources/{subPath}\"\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                         errorFlag = true;
@@ -273,7 +273,7 @@ namespace UrlCheck
 
             // Parse documentation-map.json urls.
             var mapJson = "documentation-map.json";
-            var jsonString = File.ReadAllText($"../{mapJson}");
+            var jsonString = File.ReadAllText($"{path}/{mapJson}");
             var jsonDocument = JsonDocument.Parse(jsonString);
             foreach (var property in jsonDocument.RootElement.EnumerateObject())
             {
@@ -542,7 +542,7 @@ namespace UrlCheck
             // Exclude single-page docs since it is generated from basic docs
             return !x.Contains(".git") && !x.Contains(".vs") && !x.Contains("single-page") && !x.Contains("08 Drafts") &&
                 !x.Contains("Resources/qcalgorithm-api/") && !x.Contains("Resources/indicators/") &&
-                !x.EndsWith("Documentation Updates.html");
+                !x.EndsWith("Documentation Updates.html") && !x.Contains("90 QuantConnect Home");
         }
 
         private static string pathToLink(string x, int count = 0)
