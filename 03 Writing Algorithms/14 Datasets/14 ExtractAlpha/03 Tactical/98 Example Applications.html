@@ -10,78 +10,74 @@ The Tactical dataset enables you to gain insight into short-term stock dynamics 
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 10, 10)
-        self.set_end_date(2023, 10, 10)
-        self.set_cash(100000)
-        # A variable to control the time of rebalance
-        self.last_time = datetime.min
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100_000)
+        self.add_universe(self._select_assets)
         
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-        
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def _select_assets(self, coarse: List[Fundamental]) -&gt; List[Symbol]:
         # Select non-penny stocks with highest dollar volume due to better informed information from more market activities
         # Only the ones with fundamental data are supported by tactical data
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data and x.price &gt; 4], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
-        return selected
+        sorted_by_dollar_volume = sorted(
+            [x for x in coarse if x.has_fundamental_data and x.price &gt; 4], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-100:]]
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.last_time &gt; self.time: return
-    
-        # Trade only based on the updated tactical data
-        points = slice.Get(ExtractAlphaTacticalModel)
+        # Get the current data from the tactical dataset.
+        points = slice.get(ExtractAlphaTacticalModel)
+        ## Demonstrate how to iterate through the data and access its members:
+        #for dataset_symbol, model in points.items():
+        #    self.quit(
+        #        f"{self.time} -- "
+        #        f"Asset Symbol: {dataset_symbol.underlying}; " 
+        #        f"Score: {model.score} "
+        #    )
+
+        # Remove assets that have no price.
+        points = [x for x in points.items() if self.securities[x[0].underlying].price]
+        # Only rebalance when there are new tactical factors.
+        if not points:
+            return
 
         # Long the ones with the highest return estimates riding from tactical strategies
         # Short the lowest that predicted stock price goes down
-        sorted_by_score = sorted([x for x in points.items() if x[1].score], key=lambda x: x[1].score)
+        sorted_by_score = sorted(points, key=lambda x: x[1].score)
         long_symbols = [x[0].underlying for x in sorted_by_score[-10:]]
         short_symbols = [x[0].underlying for x in sorted_by_score[:10]]
-        
-        # Liquidate the ones without a strong tactical support
-        for symbol in [x.symbol for x in self.portfolio.Values if x.invested]:
-            if symbol not in long_symbols + short_symbols:
-                self.liquidate(symbol)
-        
-        # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         long_targets = [PortfolioTarget(symbol, 0.05) for symbol in long_symbols]
         short_targets = [PortfolioTarget(symbol, -0.05) for symbol in short_symbols]
-        self.set_holdings(long_targets + short_targets)
-        
-        self.last_time = Expiry.END_OF_DAY(self.time)
+        self.set_holdings(long_targets + short_targets, True)
         
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting tactical data for trading signal generation
-            extract_alpha_tactical_model_symbol = self.add_data(ExtractAlphaTacticalModel, security.symbol).symbol
-
+            security.tactical_model = self.add_data(
+                ExtractAlphaTacticalModel, security.symbol
+            ).symbol
             # Historical Data
-            history = self.history(extract_alpha_tactical_model_symbol, 60, Resolution.DAILY)
-            self.debug(f"We got {len(history)} items from our history request")
-        
-</pre>
+            history = self.history(security.tactical_model, 2, Resolution.DAILY)
+        for security in changes.removed_securities:
+            # Remove the tactical model data for this asset when it leaves the universe.
+            self.remove_security(security.tactical_model)
+        </pre>
 <pre class="csharp">public class ExtractAlphaTacticalModelAlgorithm : QCAlgorithm
-{
-    // A variable to control the time of rebalance
-    private DateTime _time = DateTime.MinValue;
-    
+{    
     public override void Initialize()
     {
-        SetStartDate(2021, 10, 10);
-        SetEndDate(2023, 10, 10);
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
+        AddUniverse(SelectAssets);
     }
     
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; coarse)
     {
         // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
         // Only the ones with fundamental data are supported by tactical data
@@ -93,52 +89,56 @@ class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
     
     public override void OnData(Slice slice)
     {
-        if (_time &gt; Time) return;
-        
-        // Trade only based on the updated tactical data
-        var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;();
+        // Get the current data from the tactical model.
+        var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;()
+            // Drop factors for assets that have no price.
+            .Where(kvp =&gt; Securities[kvp.Key.Underlying].Price != 0);
+        //// Demonstrate how to iterate through the data and access its members:
+        //foreach(var kvp in points)
+        //{
+        //    var datasetSymbol = kvp.Key;
+        //    var model = kvp.Value;
+        //    Quit(
+        //        $"{Time} -- " +
+        //        $"Asset Symbol: {datasetSymbol.Underlying}; " +
+        //        $"Score: {model.Score}"
+        //    );
+        //}
+
+        // Only rebalance when there are new tactical factors.
+        if (points.Count() == 0)
+        {
+            return;
+        }
 
         // Long the ones with the highest return estimates riding from tactical strategies
         // Short the lowest that predicted stock price goes down
-        var sortedByScore = from s in points.Values
-                        where (s.Score != null)
-                        orderby s.Score descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByScore.Take(10).ToList();
-        var shortSymbols = sortedByScore.TakeLast(10).ToList();
-
-        // Liquidate the ones without a strong tactical support
-        foreach (var kvp in Portfolio)
-        {
-            var symbol = kvp.Key;
-            if (kvp.Value.Invested &amp;&amp; 
-            !longSymbols.Contains(symbol) &amp;&amp; 
-            !shortSymbols.Contains(symbol))
-            {
-                Liquidate(symbol);
-            }
-        }
+        var sortedByScore =  points.OrderBy(kvp =&gt; kvp.Value.Score)
+            .Select(kvp =&gt; kvp.Key.Underlying);
+        var longSymbols = sortedByScore.TakeLast(10);
+        var shortSymbols = sortedByScore.Take(10);
 
         // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         var targets = new List&lt;PortfolioTarget&gt;();
         targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
         targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
         
-        SetHoldings(targets);
-        
-        _time = Expiry.EndOfDay(Time);
+        SetHoldings(targets, true);
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach(dynamic security in changes.AddedSecurities)
         {
             // Requesting tactical data for trading signal generation
-            var extractAlphaTacticalModelSymbol = AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
-            
+            security.TacticalModel = AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
             // Historical Data
-            var history = History(new[]{extractAlphaTacticalModelSymbol}, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            var history = History(security.TacticalModel, 2, Resolution.Daily);
+        }
+        foreach (dynamic security in changes.RemovedSecurities)
+        { 
+            // Remove the tactical data for this asset when it leaves the universe.
+            RemoveSecurity(security.TacticalModel);
         }
     }
 }</pre>
@@ -148,146 +148,150 @@ class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
 
-class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
+
+class ExtractAlphaTacticalModelFrameworkAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 10, 10)
-        self.set_end_date(2023, 10, 10)
-        self.set_cash(100000)
-        
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-        
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2021, 6, 1)
+        self.set_cash(100_000)
+        self.add_universe_selection(LiquidEquitiesUniverseSelectionModel())
         # Custom alpha model to generate trading signal based on tactical data
         self.add_alpha(ExtractAlphaTacticalModelAlphaModel())
-
         # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
-        
         self.set_execution(ImmediateExecutionModel())
         
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+
+class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
+
+    def select(self, algorithm: QCAlgorithm, fundamentals: list[Fundamental]) -&gt; list[Symbol]:
         # Select non-penny stocks with highest dollar volume due to better informed information from more market activities
         # Only the ones with fundamental data are supported by tactical data
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data and x.price &gt; 4], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
-        return selected
+        sorted_by_dollar_volume = sorted(
+            [x for x in fundamentals if x.has_fundamental_data and x.price &gt; 4], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-100:]]
         
+
 class ExtractAlphaTacticalModelAlphaModel(AlphaModel):
-    
-    def __init__(self) -&gt; None:
-        # A variable to control the time of rebalance
-        self.day = -1
         
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        if self.day == algorithm.time.day: return []
-        self.day = algorithm.time.day
-        
-        # Trade only based on the updated tactical data
-        points = slice.Get(ExtractAlphaTacticalModel)
+        # Get the current data from the tactical dataset.
+        points = slice.get(ExtractAlphaTacticalModel)
+        ## Demonstrate how to iterate through the data and access its members:
+        #for dataset_symbol, model in points.items():
+        #    algorithm.quit(
+        #        f"{algorithm.time} -- "
+        #        f"Asset Symbol: {dataset_symbol.underlying}; " 
+        #        f"Score: {model.score} "
+        #    )
+
+        # Remove assets that have no price or score.
+        points = [x for x in points.items() if algorithm.securities[x[0].underlying].price]
 
         # Long the ones with the highest return estimates riding from tactical strategies
         # Short the lowest that predicted stock price goes down
-        sorted_by_score = sorted([x for x in points.items() if x[1].score], key=lambda x: x[1].score)
-        long_symbols = [x[0].underlying for x in sorted_by_score[-10:]]
-        short_symbols = [x[0].underlying for x in sorted_by_score[:10]]
-        
-        insights = []
-        for symbol in long_symbols:
-            insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.UP))
-        for symbol in short_symbols:
-            insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.DOWN))
-        
-        return insights
+        sorted_by_score = sorted(points, key=lambda x: x[1].score)
+        insight_directions = (
+            [(x, InsightDirection.DOWN) for x in sorted_by_score[:10]] +
+            [(x, InsightDirection.UP) for x in sorted_by_score[-10:]]
+        )
+        return [
+            Insight.price(x[0].underlying, Expiry.END_OF_DAY, direction)
+            for x, direction in insight_directions
+        ]
         
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting tactical data for trading signal generation
-            extract_alpha_tactical_model_symbol = algorithm.add_data(ExtractAlphaTacticalModel, security.symbol).symbol
-            
+            security.tactical_model = algorithm.add_data(
+                ExtractAlphaTacticalModel, security.symbol
+            ).symbol
             # Historical Data
-            history = algorithm.history(extract_alpha_tactical_model_symbol, 60, Resolution.DAILY)
-            algorithm.debug(f"We got {len(history)} items from our history request")
+            history = algorithm.history(security.tactical_model, 2, Resolution.DAILY)
+        for security in changes.removed_securities:
+            # Remove the tactical model data for this asset when it leaves the universe.
+            algorithm.remove_security(security.tactical_model)
 </pre>
-<pre class="csharp">public class ExtractAlphaTacticalModelAlgorithm : QCAlgorithm
+<pre class="csharp">public class ExtractAlphaTacticalModelFrameworkAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        SetStartDate(2021, 10, 10);
-        SetEndDate(2023, 10, 10);
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2021, 6, 1);
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
-        
-                    // Custom alpha model to generate trading signal based on tactical data
+        AddUniverseSelection(new LiquidEquitiesUniverseSelectionModel());
+        // Custom alpha model to generate trading signal based on tactical data
         AddAlpha(new ExtractAlphaTacticalModelAlphaModel());
-
         // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        
         SetExecution(new ImmediateExecutionModel());
     }
-    
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+}
+
+public class LiquidEquitiesUniverseSelectionModel : FundamentalUniverseSelectionModel
+{
+    public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-                    // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
-                    // Only the ones with fundamental data are supported by tactical data
-        return (from c in coarse
-                where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(100);
+        // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
+        // Only the ones with fundamental data are supported by tactical data
+        return (from f in fundamentals
+                where f.HasFundamentalData &amp;&amp; f.Price &gt; 4
+                orderby f.DollarVolume descending
+                select f.Symbol).Take(100);
     }
 }
 
 public class ExtractAlphaTacticalModelAlphaModel: AlphaModel
-{
-            // A variable to control the time of rebalance
-    public DateTime _time;
-    
-    public ExtractAlphaTacticalModelAlphaModel()
-    {
-        _time = DateTime.MinValue;
-    }
-    
+{    
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-    {
-        if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-        
-        // Trade only based on the updated tactical data
-        var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;();
+    {        
+        // Get the current data from the tactical model.
+        var points = slice.Get&lt;ExtractAlphaTacticalModel&gt;()
+            // Drop factors for assets that have no price or score.
+            .Where(kvp =&gt; algorithm.Securities[kvp.Key.Underlying].Price != 0);
+        //// Demonstrate how to iterate through the data and access its members:
+        //foreach(var kvp in points)
+        //{
+        //    var datasetSymbol = kvp.Key;
+        //    var model = kvp.Value;
+        //    algorithm.Quit(
+        //        $"{algorithm.Time} -- " +
+        //        $"Asset Symbol: {datasetSymbol.Underlying}; " +
+        //        $"Score: {model.Score}"
+        //    );
+        //}
 
-                    // Long the ones with the highest return estimates riding from tactical strategies
-                    // Short the lowest that predicted stock price goes down
-        var sortedByScore = from s in points.Values
-                        where (s.Score != null)
-                        orderby s.Score descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByScore.Take(10).ToList();
-        var shortSymbols = sortedByScore.TakeLast(10).ToList();
+        // Long the ones with the highest return estimates riding from tactical strategies
+        // Short the lowest that predicted stock price goes down
+        var sortedByScore =  points.OrderBy(kvp =&gt; kvp.Value.Score)
+            .Select(kvp =&gt; kvp.Key.Underlying);
+        var longSymbols = sortedByScore.TakeLast(10);
+        var shortSymbols = sortedByScore.Take(10);
         
         var insights = new List&lt;Insight&gt;();
         insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
         insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-        
-        _time = Expiry.EndOfDay(algorithm.Time);
-        
         return insights;
     }
     
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach(dynamic security in changes.AddedSecurities)
         {
             // Requesting tactical data for trading signal generation
-            var extractAlphaTacticalModelSymbol = algorithm.AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
-    
+            security.TacticalModel = algorithm.AddData&lt;ExtractAlphaTacticalModel&gt;(security.Symbol).Symbol;
             // Historical Data
-            var history = algorithm.History(new[]{extractAlphaTacticalModelSymbol}, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
+            var history = algorithm.History(security.TacticalModel, 2, Resolution.Daily);
+        }
+        foreach (dynamic security in changes.RemovedSecurities)
+        { 
+            // Remove the tactical model data for this asset when it leaves the universe.
+            algorithm.RemoveSecurity(security.TacticalModel);
         }
     }
 }</pre>

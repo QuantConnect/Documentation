@@ -9,7 +9,7 @@ The Composite Factor Bundle dataset enables you to access the performance of 5 d
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
 
@@ -17,130 +17,133 @@ class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2020, 6, 1)
         self.set_cash(100000)
-        # A variable that control the time of rebalancing
-        self.last_time = datetime.min
+        self.add_universe(self._select_assets)
         
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-        
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def _select_assets(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
         # Filter for the highly traded stocks for more informed data from frequent market activities, which may translate to more accurate prediction
         # Factors scores are only available for the ones with fundamentals
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
-        return selected
+        sorted_by_dollar_volume = sorted(
+            [x for x in fundamentals if x.has_fundamental_data], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-100:]]
 
-    def on_data(self, slice: Slice) -&gt; None:
-        if self.last_time &gt; self.time: return
-    
-        # Trade only on the factor score data
-        points = slice.Get(KavoutCompositeFactorBundle)
+    def on_data(self, slice: Slice) -&gt; None:    
+        # Get the current data from the Kavout dataset.
+        points = slice.get(KavoutCompositeFactorBundle)
+        ## Demonstrate how to iterate through the data and access its members:
+        #for dataset_symbol, factors in points.items():
+        #    self.quit(
+        #        f"{self.time} -- "
+        #        f"Asset Symbol: {dataset_symbol.underlying}; " 
+        #        f"Growth factor: {factors.growth} "
+        #    )
+
+        # Drop factors for assets that have no price.
+        points = [x for x in points.items() if self.securities[x[0].underlying].price]
+        # Only rebalance when there are new Kavout factors.
+        if not points:
+            return
 
         # Long the stocks with highest factor scores, which indicate higher return from various factors
         # Short the ones with lowest factor scores for lower return estimates
-        sorted_by_score = sorted(points.items(), key=self.total_score)
+        sorted_by_score = sorted(points, key=self._total_score)
         long_symbols = [x[0].underlying for x in sorted_by_score[-10:]]
         short_symbols = [x[0].underlying for x in sorted_by_score[:10]]
-        
-        # Liquidate the stocks with less significant return estimation for better PnL
-        for symbol in [x.symbol for x in self.portfolio.Values if x.invested]:
-            if symbol not in long_symbols + short_symbols:
-                self.liquidate(symbol)
         
         # Invest in equal-size and dollar-neutral to evenly dissipate individual capital risk, avoid non-systematic risk, and better margin
         long_targets = [PortfolioTarget(symbol, 0.05) for symbol in long_symbols]
         short_targets = [PortfolioTarget(symbol, -0.05) for symbol in short_symbols]
-        self.set_holdings(long_targets + short_targets)
-        
-        self.last_time = Expiry.END_OF_DAY(self.time)
+        self.set_holdings(long_targets + short_targets, True)
         
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting factor bundle data for trade signal generation
-            kavout_composite_factor_bundle_symbol= self.add_data(KavoutCompositeFactorBundle, security.symbol).symbol
-            
+            security.kavout_symbol = self.add_data(KavoutCompositeFactorBundle, security.symbol).symbol
             # Historical Data
-            history = self.history(kavout_composite_factor_bundle_symbol, 2, Resolution.DAILY)
-            self.debug(f"We got {len(history)} items from our history request")
+            history = self.history(security.kavout_symbol, 2, Resolution.DAILY)
+        for security in changes.removed_securities:
+            # Remove the factor bundle data for this asset when it leaves the universe.
+            self.remove_security(security.kavout_symbol)
             
-    def total_score(self, value: Tuple[Symbol, KavoutCompositeFactorBundle]) -&gt; float:
+    def _total_score(self, value) -&gt; float:
         # Return the total score to integrate overall likelihood to outcompete, take equal weighting for each factor
         value = value[1]
         return value.growth + value.low_volatility + value.momentum + value.quality + value.value_factor
 </pre>
 <pre class="csharp">public class KavoutCompositeFactorBundleAlgorithm : QCAlgorithm
 {
-　　　　  // A variable that control the time of rebalancing
-    private DateTime _time = DateTime.MinValue;
-    
     public override void Initialize()
     {
-        SetStartDate(2003, 1, 10);
-        SetEndDate(2003, 1, 15);
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
+        AddUniverse(SelectAssets);
     }
     
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-                    // Filter for the highly traded stocks for more informed data from frequent market activities, which may translate to more accurate prediction
-                    // Factors scores are only available for the ones with fundamentals
-        return (from c in coarse
-                where c.HasFundamentalData
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(100);
+        // Filter for the highly traded stocks for more informed data from frequent market activities, which may translate to more accurate prediction
+        // Factors scores are only available for the ones with fundamentals
+        return (from f in fundamentals
+                where f.HasFundamentalData
+                orderby f.DollarVolume descending
+                select f.Symbol).Take(100);
     }
     
     public override void OnData(Slice slice)
     {
-        if (_time &gt; Time) return;
-        
-        // Trade only on the factor score data
-        var points = slice.Get&lt;KavoutCompositeFactorBundle&gt;();
+        // Get the current data from the Kavout dataset. 
+        var points = slice.Get&lt;KavoutCompositeFactorBundle&gt;()
+            // Drop factors for assets that have no price.
+            .Where(kvp =&gt; Securities[kvp.Key.Underlying].Price != 0);
+        //// Demonstrate how to iterate through the data and access its members:
+        //foreach(var kvp in points)
+        //{
+        //    var datasetSymbol = kvp.Key;
+        //    var factors = kvp.Value;
+        //    Quit(
+        //        $"{Time} -- " +
+        //        $"Asset Symbol: {datasetSymbol.Underlying}; " +
+        //        $"Growth factor: {factors.Growth}"
+        //    );
+        //}
+
+        // Only rebalance when there are new Kavout factors.
+        if (points.Count() == 0)
+        {
+            return;
+        }
 
         // Long the stocks with highest factor scores, which indicate higher return from various factors
-                    // Short the ones with lowest factor scores for lower return estimates
-        var sortedByScore = from s in points.Values
-                        orderby TotalScore(s) descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByScore.Take(10).ToList();
-        var shortSymbols = sortedByScore.TakeLast(10).ToList();
-
-        // Liquidate the stocks with less significant return estimation for better PnL
-        foreach (var kvp in Portfolio)
-        {
-            var symbol = kvp.Key;
-            if (kvp.Value.Invested &amp;&amp; 
-            !longSymbols.Contains(symbol) &amp;&amp; 
-            !shortSymbols.Contains(symbol))
-            {
-                Liquidate(symbol);
-            }
-        }
+        // Short the ones with lowest factor scores for lower return estimates
+        var sortedByScore = points.OrderBy(kvp =&gt; TotalScore(kvp.Value))
+            .Select(kvp =&gt; kvp.Key.Underlying);
+        var longSymbols = sortedByScore.TakeLast(10);
+        var shortSymbols = sortedByScore.Take(10);
 
         // Invest in equal-size and dollar-neutral to evenly dissipate individual capital risk, avoid non-systematic risk, and better margin
         var targets = new List&lt;PortfolioTarget&gt;();
         targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
         targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
         
-        SetHoldings(targets);
-        
-        _time = Expiry.EndOfDay(Time);
+        SetHoldings(targets, true);
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach(dynamic security in changes.AddedSecurities)
         {
             // Requesting factor bundle data for trade signal generation
-            var kavoutCompositeFactorBundleSymbol = AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol).Symbol;
+            security.kavoutSymbol = AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol).Symbol;
             
             // Historical Data
-            var history = History(new[]{kavoutCompositeFactorBundleSymbol}, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            var history = History(security.kavoutSymbol, 60, Resolution.Daily);
+        }
+        foreach (dynamic security in changes.RemovedSecurities)
+        { 
+            // Remove the factor bundle data for this asset when it leaves the universe.
+            RemoveSecurity(security.kavoutSymbol);
         }
     }
     
@@ -155,7 +158,8 @@ class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
 <p>The following example algorithm creates a dynamic universe of the 100 most liquid US Equities. Each day, it then forms a equal-weighted dollar-neutral portfolio of the 10 companies most likely to outperform and the 10 companies most likely to underperform.</p>
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
+
 
 class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
 
@@ -163,44 +167,48 @@ class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2020, 6, 1)
         self.set_cash(100000)
-        
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-        
+        self.add_universe_selection(LiquidEquitiesUniverseSelectionModel())
         # Custom alpha model to emit insights based on factor bundle data
         self.add_alpha(KavoutCompositeFactorBundleAlphaModel())
-
         # Invest in equal-size and dollar-neutral to evenly dissipate individual capital risk, avoid non-systematic risk, and better margin
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
-        
         self.set_execution(ImmediateExecutionModel())
         
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+
+class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
+
+    def select(self, algorithm: QCAlgorithm, fundamentals: list[Fundamental]) -&gt; list[Symbol]:
         # Filter for the highly traded stocks for more informed data from frequent market activities, which may translate to more accurate prediction
         # Factors scores are only available for the ones with fundamentals
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
-        return selected
-        
+        sorted_by_dollar_volume = sorted(
+            [x for x in fundamentals if x.has_fundamental_data], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-100:]]
+
+
 class KavoutCompositeFactorBundleAlphaModel(AlphaModel):
-    
-    def __init__(self) -&gt; None:
-        # A variable that control the time of rebalancing
-        self.last_time = datetime.min
         
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        if self.last_time &gt; algorithm.time: return []
-        
-        # Trade only on the factor score data
-        points = slice.Get(KavoutCompositeFactorBundle)
-        for kvp in points:
-            algorithm.log(f"Symbol: {kvp.Key} - Growth:{kvp.Value.growth} - Low Volatility: {kvp.Value.low_volatility} - Momentum: {kvp.Value.momentum}"
-                        f" - Quality: {kvp.Value.quality} - Value Factor: {kvp.Value.value_factor}")
-        
+        # Get the current data from the Kavout dataset.
+        points = slice.get(KavoutCompositeFactorBundle)
+        ## Demonstrate how to iterate through the data and access its members:
+        #for dataset_symbol, factors in points.items():
+        #    algorithm.quit(
+        #        f"{algorithm.time} -- "
+        #        f"Asset Symbol: {dataset_symbol.underlying}; " 
+        #        f"Growth factor: {factors.growth} "
+        #    )
+
+        # Drop factors for assets that have no price.
+        points = [x for x in points.items() if algorithm.securities[x[0].underlying].price]
+        # Only rebalance when there are new Kavout factors.
+        if not points:
+            return []
+
         # Long the stocks with highest factor scores, which indicate higher return from various factors
         # Short the ones with lowest factor scores for lower return estimates
-        sorted_by_score = sorted(points.items(), key=self.total_score)
+        sorted_by_score = sorted(points, key=self._total_score)
         long_symbols = [x[0].underlying for x in sorted_by_score[-10:]]
         short_symbols = [x[0].underlying for x in sorted_by_score[:10]]
         
@@ -209,105 +217,104 @@ class KavoutCompositeFactorBundleAlphaModel(AlphaModel):
             insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.UP))
         for symbol in short_symbols:
             insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.DOWN))
-        
-        self.last_time = Expiry.END_OF_DAY(algorithm.time)
-        
         return insights
         
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting factor bundle data for trade signal generation
-            kavout_composite_factor_bundle_symbol = algorithm.add_data(KavoutCompositeFactorBundle, security.symbol).symbol
-            
+            security.kavout_symbol = algorithm.add_data(KavoutCompositeFactorBundle, security.symbol).symbol
             # Historical Data
-            history = algorithm.history(kavout_composite_factor_bundle_symbol, 2, Resolution.DAILY)
-            algorithm.debug(f"We got {len(history)} items from our history request")
+            history = algorithm.history(security.kavout_symbol, 10, Resolution.DAILY)
+        for security in changes.removed_securities:
+            # Remove the factor bundle data for this asset when it leaves the universe.
+            algorithm.remove_security(security.kavout_symbol)
             
-    def total_score(self, value: Tuple[Symbol, KavoutCompositeFactorBundle]) -&gt; float:
+    def _total_score(self, value) -&gt; float:
         # Return the total score to integrate overall likelihood to outcompete, take equal weighting for each factor
         value = value[1]
-        return value.growth + value.low_volatility + value.momentum + value.quality + value.value_factor
-</pre>
+        return value.growth + value.low_volatility + value.momentum + value.quality + value.value_factor</pre>
 <pre class="csharp">public class KavoutCompositeFactorBundleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        SetStartDate(2003, 1, 10);
-        SetEndDate(2003, 1, 15);
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
-
+        AddUniverseSelection(new LiquidEquitiesUniverseSelectionModel());
         // Custom alpha model to emit insights based on factor bundle data
         AddAlpha(new KavoutCompositeFactorBundleAlphaModel());
-
         // Invest in equal-size and dollar-neutral to evenly dissipate individual capital risk, avoid non-systematic risk, and better margin
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        
         SetExecution(new ImmediateExecutionModel());
     }
-    
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+}
+
+public class LiquidEquitiesUniverseSelectionModel : FundamentalUniverseSelectionModel
+{
+    public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-                    // Filter for the highly traded stocks for more informed data from frequent market activities, which may translate to more accurate prediction
-                    // Factors scores are only available for the ones with fundamentals
-        return (from c in coarse
-                where c.HasFundamentalData
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(100);
+        // Filter for the highly traded stocks for more informed data from frequent market activities, which may translate to more accurate prediction
+        // Factors scores are only available for the ones with fundamentals
+        return (from f in fundamentals
+                where f.HasFundamentalData
+                orderby f.DollarVolume descending
+                select f.Symbol).Take(100);
     }
 }
 
 public class KavoutCompositeFactorBundleAlphaModel: AlphaModel
-{
-            // A variable that control the time of rebalancing
-    public DateTime _time;
-    
-    public KavoutCompositeFactorBundleAlphaModel()
-    {
-        _time = DateTime.MinValue;
-    }
-    
+{    
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
-    {
-        if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-        
-        // Trade only on the factor score data
-        var points = slice.Get&lt;KavoutCompositeFactorBundle&gt;();
-        foreach(var kvp in points)
+    {        
+        // Get the current data from the Kavout dataset. 
+        var points = slice.Get&lt;KavoutCompositeFactorBundle&gt;()
+            // Drop factors for assets that have no price.
+            .Where(kvp =&gt; algorithm.Securities[kvp.Key.Underlying].Price != 0);
+        //// Demonstrate how to iterate through the data and access its members:
+        //foreach(var kvp in points)
+        //{
+        //    var datasetSymbol = kvp.Key;
+        //    var factors = kvp.Value;
+        //    algorithm.Quit(
+        //        $"{algorithm.Time} -- " +
+        //        $"Asset Symbol: {datasetSymbol.Underlying}; " +
+        //        $"Growth factor: {factors.Growth}"
+        //    );
+        //}
+
+        // Only rebalance when there are new Kavout factors.
+        if (points.Count() == 0)
         {
-            algorithm.Log(@"Symbol: {kvp.Key} - Growth:{kvp.Value.Growth} - Low Volatility: {kvp.Value.LowVolatility} - Momentum: {kvp.Value.Momentum}
-                - Quality: {kvp.Value.Quality} - Value Factor: {kvp.Value.ValueFactor}");
+            return new List&lt;Insight&gt;();
         }
 
         // Long the stocks with highest factor scores, which indicate higher return from various factors
-                    // Short the ones with lowest factor scores for lower return estimates
-        var sortedByScore = from s in points.Values
-                        orderby TotalScore(s) descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByScore.Take(10).ToList();
-        var shortSymbols = sortedByScore.TakeLast(10).ToList();
+        // Short the ones with lowest factor scores for lower return estimates
+        var sortedByScore = points.OrderBy(kvp =&gt; TotalScore(kvp.Value))
+            .Select(kvp =&gt; kvp.Key.Underlying);
+        var longSymbols = sortedByScore.TakeLast(10);
+        var shortSymbols = sortedByScore.Take(10);
         
         var insights = new List&lt;Insight&gt;();
         insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
         insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-        
-        _time = Expiry.EndOfDay(algorithm.Time);
         
         return insights;
     }
     
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach(dynamic security in changes.AddedSecurities)
         {
             // Requesting factor bundle data for trade signal generation
-            var kavoutCompositeFactorBundleSymbol = algorithm.AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol).Symbol;
-            
+            security.kavoutSymbol = algorithm.AddData&lt;KavoutCompositeFactorBundle&gt;(security.Symbol).Symbol;
             // Historical Data
-            var history = algorithm.History(new[]{kavoutCompositeFactorBundleSymbol}, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
+            var history = algorithm.History(security.kavoutSymbol, 10, Resolution.Daily);
+        }
+        foreach (dynamic security in changes.RemovedSecurities)
+        { 
+            // Remove the factor bundle data for this asset when it leaves the universe.
+            algorithm.RemoveSecurity(security.kavoutSymbol);
         }
     }
     
