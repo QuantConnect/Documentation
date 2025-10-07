@@ -35,7 +35,7 @@
 
     public override void OnData(Slice slice)
     {
-        if (_bbands.IsReady &amp; slice.Bars.TryGetValue(_spy, out var bar))
+        if (!IsWarmingUp &amp;&amp; _bbands.IsReady &amp;&amp; slice.Bars.TryGetValue(_spy, out var bar))
         {
             // Trade the mean reversal by short-selling SPY if the current price exceeds the upper threshold.
             if (bar.Close &gt; _bbands.UpperBand &amp;&amp; !Portfolio[_spy].IsShort)
@@ -108,7 +108,7 @@
         self.set_warm_up(20)
 
     def on_data(self, slice: Slice) -&gt; None:
-        bar = slice.bars.get(self._spy)
+        bar = slice.bars.get(self._spy) if not self.is_warming_up else None
         if self._bbands.is_ready and bar:
             upper_band = self._bbands.upper_band.current.value
             middle_band = self._bbands.middle_band.current.value

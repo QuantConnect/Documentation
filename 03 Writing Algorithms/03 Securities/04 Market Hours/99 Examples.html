@@ -11,16 +11,15 @@
         
     public override void Initialize()
     {
-        // Daily data
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 27);
         _spy = AddEquity("SPY", Resolution.Hour);
     }
 
     public override void OnData(Slice slice)
     {
-        if (!slice.Bars.ContainsKey(_spy.Symbol)) return;
-
         // Check if the previous day is holiday
-        if (_spy.Exchange.Hours.Holidays.Contains(slice.Bars[_spy.Symbol].Time.AddDays(-1)))
+        if (_spy.Exchange.Hours.Holidays.Contains(Time.Date.AddDays(-1)))
         {
             // Buy if it is a holiday a day before
             SetHoldings(_spy.Symbol, 1);
@@ -65,15 +64,14 @@
  </script>
  <pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        # Daily data
+        self.set_start_date(2024, 1, 1); 
+        self.set_end_date(2024, 12, 27)
         self.spy = self.add_equity("SPY", Resolution.HOUR)
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.spy.symbol not in slice.bars:
-            return
-        
         # Check if the previous day is holiday
-        if slice.bars[self.spy.symbol].time - timedelta(1) not in self.spy.exchange.hours.holidays:
+        previous_day = self.time.replace(hour=0, minute=0) - timedelta(1)
+        if previous_day in self.spy.exchange.hours.holidays:
             # Buy if it is a holiday a day before
             self.set_holdings(self.spy.symbol, 1)
         elif self.portfolio[self.spy.symbol].invested:
