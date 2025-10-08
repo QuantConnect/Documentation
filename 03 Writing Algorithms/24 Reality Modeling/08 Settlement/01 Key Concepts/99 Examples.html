@@ -5,7 +5,11 @@
  Example 1: 2-day Settlement
 </h4>
 <p>
- The following algorithm simulates <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a> cash account. According to IB's website, cash positions will be settled in 48 hours. Thus, we can implement
+ The following algorithm simulates
+ <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+  Interactive Brokers
+ </a>
+ cash account. According to IB's website, cash positions will be settled in 48 hours. Thus, we can implement
  <code>
   DelayedSettlementModel
  </code>
@@ -33,10 +37,10 @@
     public override void OnData(Slice slice)
     {
         // Trade based on updated data.
-        if (slice.Bars.TryGetValue(_spy, out var bar) &amp;&amp; !Portfolio.Invested)
+        if (slice.QuoteBars.TryGetValue(_spy, out var bar) &amp;&amp; !Portfolio.Invested)
         {
             // Order based on the current available cash.
-            var quantity = Math.Floor((Portfolio.Cash - Portfolio.UnsettledCash) / bar.Close);
+            var quantity = Math.Floor((Portfolio.Cash - Portfolio.UnsettledCash) / bar.Ask.Close);
             if (quantity &gt; 0)
             {
                 MarketOrder(_spy, quantity);
@@ -115,10 +119,10 @@ class SettlementModelAlgorithm(QCAlgorithm):
 
     def on_data(self, slice: Slice) -&gt; None:
         # Trade based on updated data.
-        bar = slice.bars.get(self.spy)
+        bar = slice.quote_bars.get(self.spy)
         if bar and not self.portfolio.invested:
             # Order based on the current available cash.
-            quantity = (self.portfolio.cash - self.portfolio.unsettled_cash) // bar.close
+            quantity = (self.portfolio.cash - self.portfolio.unsettled_cash) //  bar.ask.close
             if quantity &gt; 0:
                 self.market_order(self.spy, quantity)
         
