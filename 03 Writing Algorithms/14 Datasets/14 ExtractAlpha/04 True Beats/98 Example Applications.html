@@ -6,88 +6,119 @@ The True Beats dataset enables you to predict EPS and revenue of US-listed Equit
 <li>Calculate expected return by valuation models based on EPS or revenue predictions (e.g. Black-Litterman)</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm creates a dynamic universe of the 100 most liquid US Equities. Each day, it then forms an equal-weighted dollar-neutral portfolio of the 10 best and 10 worst surprising companies on their financials.</p>
+<p>The following example algorithm creates a dynamic universe of the 100 most liquid US Equities. Each day, it then forms an equal-weighted dollar-neutral portfolio of the 10 best and 10 worst companies based on their predicted earnings per share.</p>
 
 <div class="section-example-container testable"><pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
+
+    _true_beats = None
 
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2020, 1, 1)
-        self.set_cash(100000)
-        # A variable to control the time of rebalancing
-        self.last_time = datetime.min
+        self.set_cash(100_000)
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        # Add a universe that runs at the start of each month.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        date_rule = self.date_rules.month_start(spy)
+        self.universe_settings.schedule.on(date_rule)
+        self.add_universe(self._select_assets)
+        # Add a Scheduled Event to rebalance the portfolio at the start of each month.
+        self.schedule.on(date_rule, self.time_rules.before_market_close(spy, 30), self._rebalance)
         
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-        
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def _select_assets(self, coarse: List[Fundamental]) -&gt; List[Symbol]:
         # Select the stocks with highest dollar volume due to better informed information from more market activities
         # Only the ones with fundamental data are supported by true beats data
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
-        return selected
+        sorted_by_dollar_volume = sorted(
+            [x for x in coarse if x.has_fundamental_data], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-100:]]
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.time &gt; self.time: return
-        
-        # Trade only based on the updated true beats data
-        points = slice.Get(ExtractAlphaTrueBeats)
-        if not points: return
-        
-        # Extract the true beats data (earning and revenue estimates) as trading signals
-        true_beats = {point.Key: trueBeat for point in points for trueBeat in point.Value}
+        # Get the current data from the true beats dataset.
+        points = slice.get(ExtractAlphaTrueBeats)
+        ## Demonstrate how to iterate through the data and access its members:
+        #for dataset_symbol, true_beats in points.items():
+        #    for true_beat in true_beats:
+        #        self.quit(
+        #            f"{self.time} -- "
+        #            f"Asset Symbol: {dataset_symbol.underlying}; " 
+        #            f"Fiscal Year: {true_beat.fiscal_period.fiscal_year} "
+        #            f"Fiscal Quarter: {true_beat.fiscal_period.fiscal_quarter} "
+        #            f"True Beat: {true_beat.true_beat} "
+        #        )
+        if points: 
+            self._true_beats = points
+    
+    def _rebalance(self):
+        eps_prediction_by_symbol = {}
+        for dataset_symbol, true_beats in self._true_beats.items():
+            # Select the subset of TrueBeat objects that have the EPS earnings metric, 
+            # a value for the fiscal year, and a value for the fiscal quarter.
+            true_beats = [
+                tb for tb in true_beats 
+                if (tb.earnings_metric == ExtractAlphaTrueBeatEarningsMetric.EPS and
+                    tb.fiscal_period.fiscal_quarter)
+            ]
+            if not true_beats:
+                continue
+            # Select the TrueBeat object of the closest fiscal quarter.
+            eps_prediction_by_symbol[dataset_symbol.underlying] = sorted(
+                true_beats, 
+                key=lambda tb: (tb.fiscal_period.fiscal_year, tb.fiscal_period.fiscal_quarter)
+            )[0].true_beat
 
         # Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
         # Short the lowest that predicted to bring stock price down
-        sorted_by_true_beat = sorted(true_beats.items(), key=lambda x: x[1].true_beat)
-        long_symbols = [x[0].underlying for x in sorted_by_true_beat[-10:]]
-        short_symbols = [x[0].underlying for x in sorted_by_true_beat[:10]]
-        
-        # Liquidate the ones without a strong earning and revenue that support stock price direction
-        for symbol in self.portfolio.Keys:
-            if self.portfolio[symbol].invested \
-                and symbol not in long_symbols \
-                and symbol not in short_symbols:
-                self.liquidate(symbol)
-        
         # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-        long_targets = [PortfolioTarget(symbol, 0.05) for symbol in long_symbols]
-        short_targets = [PortfolioTarget(symbol, -0.05) for symbol in short_symbols]
-        self.set_holdings(long_targets + short_targets)
-        
-        self.last_time = Expiry.END_OF_DAY(self.time)
+        sorted_by_eps_prediction = sorted(eps_prediction_by_symbol.items(), key=lambda kvp: kvp[1])
+        long_targets = [PortfolioTarget(symbol, 0.05) for symbol, _ in sorted_by_eps_prediction[-10:]]
+        short_targets = [PortfolioTarget(symbol, -0.05) for symbol, _ in sorted_by_eps_prediction[:10]]
+        self.set_holdings(long_targets + short_targets, True)
         
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting true beats data for trading signal generation
-            extract_alpha_true_beats_symbol = self.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
-            
+            security.true_beats = self.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
             # Historical Data
-            history = self.history(extract_alpha_true_beats_symbol, 10, Resolution.DAILY)
-            self.log(f"We got {len(history)} items from our history request for {security.symbol} ExtractAlpha True Beats data")
-</pre><pre class="csharp">public class ExtractAlphaTrueBeatsDataAlgorithm : QCAlgorithm
+            history = self.history(security.true_beats, 10, Resolution.DAILY, flatten=True)
+        for security in changes.removed_securities:
+            # Remove the true beats data for this asset when it leaves the universe.
+            self.remove_security(security.true_beats)</pre><pre class="csharp">public class ExtractAlphaTrueBeatsDataAlgorithm : QCAlgorithm
 {
-            // A variable to control the time of rebalancing
-    private DateTime _time = DateTime.MinValue;
+    private DataDictionary&lt;ExtractAlphaTrueBeats&gt; _trueBeats;
     
     public override void Initialize()
     {
-        SetStartDate(2021, 1, 1);
-        SetEndDate(2021, 7, 1);
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 1, 1);
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Add a universe that runs at the start of each month.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        var dateRule = DateRules.MonthStart(spy);
+        UniverseSettings.Schedule.On(dateRule);
+        AddUniverse(SelectAssets);
+        // Add a Scheduled Event to rebalance the portfolio at the start of each month.
+        Schedule.On(dateRule, TimeRules.BeforeMarketClose(spy, 30), Rebalance);
     }
     
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; coarse)
     {
-                    // Select the stocks with highest dollar volume due to better informed information from more market activities
-                    // Only the ones with fundamental data are supported by true beats data
+        // Select the stocks with highest dollar volume due to better informed information from more market activities
+        // Only the ones with fundamental data are supported by true beats data
         return (from c in coarse
                 where c.HasFundamentalData
                 orderby c.DollarVolume descending
@@ -95,221 +126,282 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
     }
     
     public override void OnData(Slice slice)
-    {
-        if (_time &gt; Time) return;
-        
-        // Trade only based on the updated true beats data
+    {        
+        // Get the current data from the true beats dataset.
         var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
-        if (points.IsNullOrEmpty()) return;
-
-        // Extract the true beats data (earning and revenue estimates) as trading signals
-        List&lt;ExtractAlphaTrueBeat&gt; trueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
-            points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
-        );
-
-                    // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
-                    // Short the lowest that predicted to bring stock price down
-        var sortedByTrueBeat = from trueBeat in trueBeats
-                                where (trueBeat.TrueBeat != null)
-                                orderby trueBeat.TrueBeat descending
-                                select trueBeat.Symbol.Underlying;
-
-        var longSymbols = sortedByTrueBeat.Take(10).ToList();
-        var shortSymbols = sortedByTrueBeat.TakeLast(10).ToList();
-
-        // Liquidate the ones without a strong earning and revenue that support stock price direction
-        foreach (var kvp in Portfolio)
+        if (!points.IsNullOrEmpty())
         {
-            var symbol = kvp.Key;
-            if (kvp.Value.Invested &amp;&amp; 
-            !longSymbols.Contains(symbol) &amp;&amp; 
-            !shortSymbols.Contains(symbol))
-            {
-                Liquidate(symbol);
-            }
+            _trueBeats = points;
+        }
+    }
+
+    public void Rebalance()
+    {
+        var epsPredictionBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+        foreach (var kvp in _trueBeats)
+        {
+            var datasetSymbol = kvp.Key;
+            // Select the subset of TrueBeat objects that have the EPS earnings metric, 
+            // a value for the fiscal year, and a value for the fiscal quarter.
+            var trueBeats = kvp.Value
+                .Select(tb =&gt; (ExtractAlphaTrueBeat)tb)
+                .Where(tb =&gt;
+                    tb.EarningsMetric == ExtractAlphaTrueBeatEarningsMetric.EPS &amp;&amp;
+                    tb.FiscalPeriod.FiscalQuarter != null
+                )
+                .OrderBy(tb =&gt; tb.FiscalPeriod.FiscalYear)
+                .ThenBy(tb =&gt; tb.FiscalPeriod.FiscalQuarter)
+                .ToList();
+            if (trueBeats.Count == 0) 
+                continue;
+            // Select the TrueBeat object of the closest fiscal quarter.
+            epsPredictionBySymbol[datasetSymbol.Underlying] = trueBeats.First().TrueBeat;
         }
 
+        // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
+        // Short the lowest that predicted to bring stock price down
         // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-        var targets = new List&lt;PortfolioTarget&gt;();
-        targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
-        targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
-        
-        SetHoldings(targets);
-        
-        _time = Expiry.EndOfDay(Time);
+        var sortedByEpsPrediction = epsPredictionBySymbol.OrderBy(kvp =&gt; kvp.Value).ToList();
+        var shortTargets = sortedByEpsPrediction.Take(10).Select(kvp =&gt; new PortfolioTarget(kvp.Key, -0.05m));
+        var longTargets = sortedByEpsPrediction.TakeLast(10).Select(kvp =&gt; new PortfolioTarget(kvp.Key, 0.05m));
+        SetHoldings(longTargets.Concat(shortTargets).ToList(), true);
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach(dynamic security in changes.AddedSecurities)
         {
-            //  Requesting true beats data for trading signal generation
-            var extractAlphaTrueBeatsSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
-            
+            // Requesting true beats data for trading signal generation
+            security.TrueBeats = AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
             // Historical Data
-            var history = History(new[]{extractAlphaTrueBeatsSymbol}, 10, Resolution.Daily);
-            Log($"We got {history.Count()} items from our history request for {security.Symbol} ExtractAlpha True Beats data");
+            var history = History(security.TrueBeats, 10, Resolution.Daily);
+        }
+        foreach (dynamic security in changes.RemovedSecurities)
+        {
+            // Remove the true beats data for this asset when it leaves the universe.
+            RemoveSecurity(security.TrueBeats);
         }
     }
 }</pre></div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm creates a dynamic universe of the 100 most liquid US Equities. Each day, it then forms an equal-weighted dollar-neutral portfolio of the 10 best and 10 worst surprising companies on their financials.</p>
+<p>The following example algorithm creates a dynamic universe of the 100 most liquid US Equities. Each day, it then forms an equal-weighted dollar-neutral portfolio of the 10 best and 10 worst companies based on their predicted earnings per share.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
+
 
 class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2020, 1, 1)
-        self.set_cash(100000)
-        
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-        
+        self.set_cash(100_000)
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        # Add a universe that runs at the start of each month.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        date_rule = self.date_rules.month_start(spy)
+        self.universe_settings.schedule.on(date_rule)
+        self.add_universe_selection(LiquidEquitiesUniverseSelectionModel())
         # Custom alpha model to trade based on true beats data signals
         self.add_alpha(ExtractAlphaTrueBeatsAlphaModel())
-        
         # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
-        
         self.set_execution(ImmediateExecutionModel())
         
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        # Select the stocks with highest dollar volume due to better informed information from more market activities
-        # Only the ones with fundamental data are supported by true beats data
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:100]]
-        return selected
         
+class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
+
+    def select(self, algorithm: QCAlgorithm, fundamentals: list[Fundamental]) -&gt; list[Symbol]:
+        # Select non-penny stocks with highest dollar volume due to better informed information from more market activities
+        # Only the ones with fundamental data are supported by true beats data
+        sorted_by_dollar_volume = sorted(
+            [x for x in fundamentals if x.has_fundamental_data], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-100:]]
+
+
 class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
     
-    def __init__(self) -&gt; None:
-        # A variable to control the time of rebalancing
-        self.last_time = datetime.min
+    _month = -1
+    _insights = []
         
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        if self.last_time &gt; algorithm.time: return []
-        
+        # Rebalance at the start of each month.
+        if self._month == algorithm.time.month: 
+            return []
         # Trade only based on the updated true beats data
-        points = slice.Get(ExtractAlphaTrueBeats)
-        if not points: return []
+        points = slice.get(ExtractAlphaTrueBeats)
+        ## Demonstrate how to iterate through the data and access its members:
+        #for dataset_symbol, true_beats in points.items():
+        #    for true_beat in true_beats:
+        #        algorithm.quit(
+        #            f"{algorithm.time} -- "
+        #            f"Asset Symbol: {dataset_symbol.underlying}; " 
+        #            f"Fiscal Year: {true_beat.fiscal_period.fiscal_year} "
+        #            f"Fiscal Quarter: {true_beat.fiscal_period.fiscal_quarter} "
+        #            f"True Beat: {true_beat.true_beat} "
+        #        )
+        if not points: 
+            return []
+        self._month = algorithm.time.month
 
-        # Extract the true beats data (earning and revenue estimates) as trading signals
-        true_beats = {point.Key: trueBeat for point in points for trueBeat in point.Value}
-
+        # Get the EPS prediction of each asset.
+        eps_prediction_by_symbol = {}
+        for dataset_symbol, true_beats in points.items():
+            # Select the subset of TrueBeat objects that have the EPS earnings metric, 
+            # a value for the fiscal year, and a value for the fiscal quarter.
+            true_beats = [
+                tb for tb in true_beats 
+                if (tb.earnings_metric == ExtractAlphaTrueBeatEarningsMetric.EPS and
+                    tb.fiscal_period.fiscal_quarter)
+            ]
+            if not true_beats:
+                continue
+            # Select the TrueBeat object of the closest fiscal quarter.
+            eps_prediction_by_symbol[dataset_symbol.underlying] = sorted(
+                true_beats, 
+                key=lambda tb: (tb.fiscal_period.fiscal_year, tb.fiscal_period.fiscal_quarter)
+            )[0].true_beat
+        
+        # Cancel the previous insights.
+        algorithm.insights.cancel(self._insights)
+        # Emit the new insights.
         # Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
         # Short the lowest that predicted to bring stock price down
-        sorted_by_true_beat = sorted(true_beats.items(), key=lambda x: x[1].true_beat)
-        long_symbols = [x[0].underlying for x in sorted_by_true_beat[-10:]]
-        short_symbols = [x[0].underlying for x in sorted_by_true_beat[:10]]
-        
-        insights = []
-        for symbol in long_symbols:
-            insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.UP))
-        for symbol in short_symbols:
-            insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.DOWN))
-        
-        self.last_time = Expiry.END_OF_DAY(algorithm.time)
-        
-        return insights
+        # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+        self._insights = []
+        sorted_by_eps_prediction = sorted(eps_prediction_by_symbol.items(), key=lambda kvp: kvp[1])
+        for symbol, _ in sorted_by_eps_prediction[-10:]:
+            self._insights.append(Insight.price(symbol, timedelta(35), InsightDirection.UP))
+        for symbol, _ in sorted_by_eps_prediction[:10]:
+            self._insights.append(Insight.price(symbol, timedelta(35), InsightDirection.DOWN))
+        return self._insights
         
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting true beats data for trading signal generation
-            extract_alpha_true_beats_symbol = algorithm.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
-            
+            security.true_beats = algorithm.add_data(ExtractAlphaTrueBeats, security.symbol).symbol
             # Historical Data
-            history = algorithm.history(extract_alpha_true_beats_symbol, 10, Resolution.DAILY)
-            algorithm.log(f"We got {len(history)} items from our history request for {security.symbol} ExtractAlpha True Beats data")
+            history = algorithm.history(security.true_beats, 10, Resolution.DAILY, flatten=True)
+        for security in changes.removed_securities:
+            # Remove the true beats data for this asset when it leaves the universe.
+            algorithm.remove_security(security.true_beats)
+
 </pre>
-<pre class="csharp">public class ExtractAlphaTrueBeatsFrameworkAlgorithm : QCAlgorithm
-{
+<pre class="csharp">public class ExtractAlphaTrueBeatsDataAlgorithm : QCAlgorithm
+{    
     public override void Initialize()
     {
-        SetStartDate(2021, 1, 1);
-        SetEndDate(2021, 7, 1);
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 1, 1);
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
-
-            // Custom alpha model to trade based on true beats data signals
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Add a universe that runs at the start of each month.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        var dateRule = DateRules.MonthStart(spy);
+        UniverseSettings.Schedule.On(dateRule);
+        AddUniverseSelection(new LiquidEquitiesUniverseSelectionModel());
+        // Custom alpha model to trade based on true beats data signals
         AddAlpha(new ExtractAlphaTrueBeatsAlphaModel());
-
         // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        
         SetExecution(new ImmediateExecutionModel());
     }
-    
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+}
+
+public class LiquidEquitiesUniverseSelectionModel : FundamentalUniverseSelectionModel
+{
+    public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-                    // Select the stocks with highest dollar volume due to better informed information from more market activities
-                    // Only the ones with fundamental data are supported by true beats data
-        return (from c in coarse
-                where c.HasFundamentalData
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(100);
+        // Select non-penny stocks with highest dollar volume due to better informed information from more market activities
+        // Only the ones with fundamental data are supported by true beats data
+        return (from f in fundamentals
+                where f.HasFundamentalData
+                orderby f.DollarVolume descending
+                select f.Symbol).Take(100);
     }
 }
 
 public class ExtractAlphaTrueBeatsAlphaModel: AlphaModel
 {
-            // A variable to control the time of rebalancing
-    private DateTime _time;
-    
-    public ExtractAlphaTrueBeatsAlphaModel()
-    {
-        _time = DateTime.MinValue;
-    }
+    private int _month = -1;
+    private List&lt;Insight&gt; _insights = new();
     
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-        
+        // Rebalance at the start of each month.
+        if (_month == algorithm.Time.Month)
+        {
+            return new List&lt;Insight&gt;();
+        }
         // Trade only based on the updated true beats data
         var points = slice.Get&lt;ExtractAlphaTrueBeats&gt;();
-        if (points.IsNullOrEmpty()) return new List&lt;Insight&gt;();
-        
-                    // Extract the true beats data (earning and revenue estimates) as trading signals
-        List&lt;ExtractAlphaTrueBeat&gt; trueBeats = new List&lt;ExtractAlphaTrueBeat&gt;(
-            points.SelectMany(point =&gt; point.Value.Select(x =&gt; (ExtractAlphaTrueBeat)x))
-        );
+        if (points.IsNullOrEmpty())
+        {
+            return new List&lt;Insight&gt;();
+        }
+        _month = algorithm.Time.Month;
 
+        // Get the EPS prediction of each asset.
+        var epsPredictionBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+        foreach (var kvp in points)
+        {
+            var datasetSymbol = kvp.Key;
+            // Select the subset of TrueBeat objects that have the EPS earnings metric, 
+            // a value for the fiscal year, and a value for the fiscal quarter.
+            var trueBeats = kvp.Value
+                .Select(tb =&gt; (ExtractAlphaTrueBeat)tb)
+                .Where(tb =&gt;
+                    tb.EarningsMetric == ExtractAlphaTrueBeatEarningsMetric.EPS &amp;&amp;
+                    tb.FiscalPeriod.FiscalQuarter != null
+                )
+                .OrderBy(tb =&gt; tb.FiscalPeriod.FiscalYear)
+                .ThenBy(tb =&gt; tb.FiscalPeriod.FiscalQuarter)
+                .ToList();
+            if (trueBeats.Count == 0) 
+                continue;
+            // Select the TrueBeat object of the closest fiscal quarter.
+            epsPredictionBySymbol[datasetSymbol.Underlying] = trueBeats.First().TrueBeat;
+        }
+
+        // Cancel the previous insights.
+        algorithm.Insights.Cancel(_insights);
+
+        // Emit the new insights.
         // Long the ones with the highest earning and revenue estimates due to fundamental factor may bring stock price up
-                    // Short the lowest that predicted to bring stock price down
-        var sortedByTrueBeat = from s in trueBeats
-                        where (s.TrueBeat != null)
-                        orderby s.TrueBeat descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByTrueBeat.Take(10).ToList();
-        var shortSymbols = sortedByTrueBeat.TakeLast(10).ToList();
-        
-        var insights = new List&lt;Insight&gt;();
-        insights.AddRange(longSymbols.Select(symbol =&gt; 
-            new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
-        insights.AddRange(shortSymbols.Select(symbol =&gt; 
-            new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-        
-        _time = Expiry.EndOfDay(algorithm.Time);
-        
-        return insights;
+        // Short the lowest that predicted to bring stock price down
+        // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
+        _insights.Clear();
+        var sortedByEpsPrediction = epsPredictionBySymbol.OrderBy(kvp =&gt; kvp.Value).ToList();
+        _insights.AddRange(sortedByEpsPrediction.TakeLast(10).Select(kvp =&gt; Insight.Price(kvp.Key, TimeSpan.FromDays(35), InsightDirection.Up)));
+        _insights.AddRange(sortedByEpsPrediction.Take(10).Select(kvp =&gt; Insight.Price(kvp.Key, TimeSpan.FromDays(35), InsightDirection.Down)));
+        return _insights;
     }
     
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach(dynamic security in changes.AddedSecurities)
         {
             // Requesting true beats data for trading signal generation
-            var extractAlphaTrueBeatsSymbol = algorithm.AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
-            
+            security.TrueBeats = algorithm.AddData&lt;ExtractAlphaTrueBeats&gt;(security.Symbol).Symbol;
             // Historical Data
-            var history = algorithm.History(new[]{extractAlphaTrueBeatsSymbol}, 10, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
+            var history = algorithm.History(security.TrueBeats, 10, Resolution.Daily);
+        }
+        foreach (dynamic security in changes.RemovedSecurities)
+        {
+            // Remove the true beats data for this asset when it leaves the universe.
+            algorithm.RemoveSecurity(security.TrueBeats);
         }
     }
 }</pre>
