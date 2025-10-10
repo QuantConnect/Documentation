@@ -1,23 +1,30 @@
-<p>The following examples demonstrate usage of the FinBERT model.</p>
-
-<h4>Example 1: 10-day Sentiment Score</h4>
 <p>
-  The following algorithm selects a volatile asset at the beginning of each month. 
-  It gets the <a href='/datasets/tiingo-news-feed'>Tiingo News</a> articles that were released for the asset over the previous 10 days and then feeds them into the pre-trained FinBERT model.
+ The following examples demonstrate usage of the FinBERT model.
+</p>
+<h4>
+ Example 1: 10-day Sentiment Score
+</h4>
+<p>
+ The following algorithm selects a volatile asset at the beginning of each month. 
+  It gets the
+ <a href="/datasets/tiingo-news-feed">
+  Tiingo News
+ </a>
+ articles that were released for the asset over the previous 10 days and then feeds them into the pre-trained FinBERT model.
   It then aggregates the sentiment scores of all the news releases.
   If the aggregated sentiment score is positive, it enters a long position for the month.
   If it's negative, it enters a short position for the month.
 </p>
 <div class="section-example-container testable">
-  <pre class="python">import tensorflow as tf
+ <pre class="python">import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer, set_seed
 from pathlib import Path
 
 class FinbertBaseModelAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2022, 2, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
 
         spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
@@ -108,21 +115,24 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
         return aggregated_scores</pre>
 </div>
 <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-    <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-    <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-        <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_530ea2124049753b4c81fb70a0ca2de3.html"></iframe>
-    </div>
+ <div class="qc-embed-dummy" style="padding-top: 56.25%;">
+ </div>
+ <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+  <iframe class="qc-embed-backtest" height="100%" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_530ea2124049753b4c81fb70a0ca2de3.html" style="border: 1px solid #ccc; padding: 0; margin: 0;" width="100%">
+  </iframe>
+ </div>
 </div>
-
-<h4>Example 2: 30-day Sentiment Score With Fine Tuning</h4>
+<h4>
+ Example 2: 30-day Sentiment Score With Fine Tuning
+</h4>
 <p>
-  The following algorithm selects a volatile asset at the beginning of each month. 
+ The following algorithm selects a volatile asset at the beginning of each month. 
   It gets the Tiingo News articles that were released for the asset over the previous 30 days to generate the training set.
   The label is the market return that occurs from the current news release to the next news release.
   The algorithm then fine-tunes the model, calculates the sentiment, and rebalances the portfolio.
 </p>
 <div class="section-example-container testable">
-  <pre class="python">import tensorflow as tf
+ <pre class="python">import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer, set_seed
 from pathlib import Path
 from datasets import Dataset
@@ -132,8 +142,8 @@ import torch
 class FinbertBaseModelAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2022, 2, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
 
         spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
@@ -200,7 +210,7 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
             release_time = self._convert_to_eastern(news_history.index[i])
             next_release_time = self._convert_to_eastern(news_history.index[i+1])
             reaction_period = asset_history[
-                (asset_history.index &gt; release_time) &
+                (asset_history.index &gt; release_time) &amp;
                 (asset_history.index &lt; next_release_time + timedelta(seconds=1))
             ]
             if reaction_period.empty:
@@ -301,10 +311,13 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
         return aggregated_scores</pre>
 </div>
 <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-    <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-    <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-        <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_68a7bf0fa1c605b266e8058d6cf07ada.html"></iframe>
-    </div>
+ <div class="qc-embed-dummy" style="padding-top: 56.25%;">
+ </div>
+ <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+  <iframe class="qc-embed-backtest" height="100%" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_68a7bf0fa1c605b266e8058d6cf07ada.html" style="border: 1px solid #ccc; padding: 0; margin: 0;" width="100%">
+  </iframe>
+ </div>
 </div>
-
-<p>These algorithms require a GPU node.</p>
+<p>
+ These algorithms require a GPU node.
+</p>

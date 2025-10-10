@@ -11,6 +11,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2014, 12, 20)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol objects of some assets.
         symbols = [self.add_equity(ticker).symbol for ticker in ['SPY', 'QQQ']]
         # Get 3 days of daily data for the assets.

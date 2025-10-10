@@ -8,6 +8,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of the Option contract.
         var underlying = <?=$underlyingSymbolC?>;
         var symbol = OptionChain(underlying).OrderBy(c => c.OpenInterest).Last().Symbol;
@@ -21,6 +22,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of the Option contract.
         underlying = <?=$underlyingSymbolPy?>
 
@@ -71,6 +73,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of the underlying asset.
         var underlying = <?=$underlyingSymbolC?>;
         // Get the Option contract Symbol.
@@ -93,6 +96,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of the underlying asset.
         underlying = <?=$underlyingSymbolPy?>
 

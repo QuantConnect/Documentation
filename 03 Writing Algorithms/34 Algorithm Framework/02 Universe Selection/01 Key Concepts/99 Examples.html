@@ -1,14 +1,19 @@
-<p>The following examples demonstrate some common practices for implementing the universe selection model.</p>
-
-<h4>Example 1: Liquid Universe Selection Model</h4>
-<p>The following algorithm selects a universe of the top 20 liquid equity through the framework universe selection model. Then, buying and holding these popular equities equally to bet on their high demand will drive up the price.</p>
+<p>
+ The following examples demonstrate some common practices for implementing the universe selection model.
+</p>
+<h4>
+ Example 1: Liquid Universe Selection Model
+</h4>
+<p>
+ The following algorithm selects a universe of the top 20 liquid equity through the framework universe selection model. Then, buying and holding these popular equities equally to bet on their high demand will drive up the price.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class FrameworkUniverseSelectionAlgorithm : QCAlgorithm
+ <pre class="csharp">public class FrameworkUniverseSelectionAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        SetStartDate(2019, 1, 1);
-        SetEndDate(2024, 12, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
         
         // Rebalance weekly to allow time to capitalize on the trend
@@ -32,10 +37,10 @@
             .Select(x =&gt; x.Symbol);
     }
 }</pre>
-    <pre class="python">class FrameworkUniverseSelectionAlgorithm(QCAlgorithm):
+ <pre class="python">class FrameworkUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2019, 1, 1)
-        self.set_end_date(2024, 12, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
     
         # Rebalance weekly to allow time to capitalize on the trend
@@ -55,16 +60,19 @@
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)
         return [x.symbol for x in sorted_by_dollar_volume[:20]]</pre>
 </div>
-
-<h4>Example 2: Multiple Universe Selection Models</h4>
-<p>The following algorithm implements two framework universe selection models to manually select the most liquid market ETFs and those with EMA crossing events to trade on trend changes. Then, buy and hold these equities equally to bet on the insights and dissipate the capital risk.</p>
+<h4>
+ Example 2: Multiple Universe Selection Models
+</h4>
+<p>
+ The following algorithm implements two framework universe selection models to manually select the most liquid market ETFs and those with EMA crossing events to trade on trend changes. Then, buy and hold these equities equally to bet on the insights and dissipate the capital risk.
+</p>
 <div class="section-example-container testable">
-    <pre class="csharp">public class FrameworkUniverseSelectionAlgorithm : QCAlgorithm
+ <pre class="csharp">public class FrameworkUniverseSelectionAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        SetStartDate(2019, 1, 1);
-        SetEndDate(2024, 12, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
         
         // Rebalance weekly to allow time to capitalize on the trend
@@ -86,10 +94,10 @@
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
     }
 }</pre>
-    <pre class="python">class FrameworkUniverseSelectionAlgorithm(QCAlgorithm):
+ <pre class="python">class FrameworkUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2019, 1, 1)
-        self.set_end_date(2024, 12, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
     
         # Rebalance weekly to allow time to capitalize on the trend
@@ -110,10 +118,50 @@
         # Evenly dissipate the capital risk among selected stocks.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
 </div>
-
-<h4>Other Examples</h4>
-<p>For more examples, see the following algorithms:</p>
-
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
 <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div><a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateFrameworkAlgorithm.py" target="_BLANK">Manual Selection - BasicTemplateFrameworkAlgorithm.py  <span class="badge-python pull-right">Python</span></a><a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/QC500UniverseSelectionModel.py" target="_BLANK">Fundamental Selection - QC500UniverseSelectionModel.py  <span class="badge-python pull-right">Python</span></a><a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledUniverseSelectionModelRegressionAlgorithm.py" target="_BLANK">Scheduled Selection - ScheduledUniverseSelectionModelRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span></a><a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateFrameworkAlgorithm.cs" target="_BLANK">Manual Selection - BasicTemplateFrameworkAlgorithm.cs  <span class="badge-csharp pull-right">C#</span></a><a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/QC500UniverseSelectionModel.cs" target="_BLANK">Fundamental Selection - QC500UniverseSelectionModel.cs  <span class="badge-python pull-right">C#</span></a><a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ScheduledUniverseSelectionModelRegressionAlgorithm.cs" target="_BLANK">Scheduled Selection - ScheduledUniverseSelectionModelRegressionAlgorithm.cs  <span class="badge-csharp pull-right">C#</span></a>
+ <div class="example-legend">
+  Demonstration Algorithms
+ </div>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateFrameworkAlgorithm.py" target="_BLANK">
+  Manual Selection - BasicTemplateFrameworkAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/QC500UniverseSelectionModel.py" target="_BLANK">
+  Fundamental Selection - QC500UniverseSelectionModel.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledUniverseSelectionModelRegressionAlgorithm.py" target="_BLANK">
+  Scheduled Selection - ScheduledUniverseSelectionModelRegressionAlgorithm.py
+  <span class="badge-python pull-right">
+   Python
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateFrameworkAlgorithm.cs" target="_BLANK">
+  Manual Selection - BasicTemplateFrameworkAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/QC500UniverseSelectionModel.cs" target="_BLANK">
+  Fundamental Selection - QC500UniverseSelectionModel.cs
+  <span class="badge-python pull-right">
+   C#
+  </span>
+ </a>
+ <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ScheduledUniverseSelectionModelRegressionAlgorithm.cs" target="_BLANK">
+  Scheduled Selection - ScheduledUniverseSelectionModelRegressionAlgorithm.cs
+  <span class="badge-csharp pull-right">
+   C#
+  </span>
+ </a>
 </div>

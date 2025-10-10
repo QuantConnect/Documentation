@@ -7,8 +7,8 @@
 {
     public override void Initialize()
     {
-        SetStartDate(2023, 1, 1);
-        SetEndDate(2023, 8, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(500000);
         
         // Add a universe that selects the needed option contracts.
@@ -170,8 +170,8 @@
 
 class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self.set_start_date(2023, 1, 1)
-        self.set_end_date(2023, 8, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
 		self.set_cash(500_000)
 
         # Add a universe that selects the needed option contracts.
@@ -308,7 +308,8 @@ public class ETFUniverseOptions : QCAlgorithm
     private int _day;
     public override void Initialize()
     {
-        SetStartDate(2023, 2, 2);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
         UniverseSettings.Asynchronous = true;
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
@@ -387,7 +388,8 @@ from AlgorithmImports import *
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
     def initialize(self):
-        self.set_start_date(2023, 2, 2)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW

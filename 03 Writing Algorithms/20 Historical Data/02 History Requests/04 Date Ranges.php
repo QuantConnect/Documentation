@@ -9,6 +9,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 1);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of an asset.
         var symbol = AddEquity("SPY").Symbol;
         // Get the daily-resolution TradeBar data of the asset during 2020.
@@ -19,6 +20,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 1)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of an asset.
         symbol = self.add_equity('SPY').symbol
         # Get the daily-resolution TradeBar data of the asset during 2020.

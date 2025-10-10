@@ -17,6 +17,7 @@ $datasetClass = "QuiverWallStreetBets";
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of an asset.
         var symbol = AddEquity("GME").Symbol;
         // Add the alternative dataset and save a reference to its Symbol.
@@ -35,6 +36,7 @@ $datasetClass = "QuiverWallStreetBets";
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of an asset.
         symbol = self.add_equity('GME').symbol
         # Add the alternative dataset and save a reference to its Symbol.
@@ -149,12 +151,13 @@ for data_point in history:
 {
     public override void Initialize()
     {
-        SetStartDate(2024, 1, 3);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024.
         var symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
         var datasetSymbol = AddData&lt;ExtractAlphaTrueBeats&gt;(symbol).Symbol;
         var history = History&lt;ExtractAlphaTrueBeats&gt;(
-            datasetSymbol, new DateTime(2024, 1, 2), new DateTime(2024, 1, 3), Resolution.Daily
+            datasetSymbol, new DateTime(2024, 9, 1), new DateTime(2024, 12, 31), Resolution.Daily
         );
         // Iterate through each day of history.
         foreach (var trueBeats in history)
@@ -170,7 +173,8 @@ for data_point in history:
     <pre class="python">class USEquityTrueBeatsHistoryAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
-        self.set_start_date(2024, 1, 3)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Get the ExtractAlphaTrueBeats data for AAPL on 01/02/2024 organized in a flat DataFrame.
         aapl = self.add_equity("AAPL", Resolution.DAILY)
         aapl.true_beats = self.add_data(ExtractAlphaTrueBeats, aapl.symbol).symbol

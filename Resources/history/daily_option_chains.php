@@ -15,6 +15,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 23);
+        SetEndDate(2024, 12, 31);
         // Add an <?=$underlyingAssetClass?> Option universe.
         var option = <?=$optionC?>;
         // Get the trailing 5 daily Option chains.
@@ -32,6 +33,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 23)
+        self.set_end_date(2024, 12, 31)
         # Add an <?=$underlyingAssetClass?> Option universe.
         option = <?=$optionPy?>
 

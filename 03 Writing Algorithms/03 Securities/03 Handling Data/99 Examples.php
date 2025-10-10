@@ -20,8 +20,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2022, 1, 1);
-        SetEndDate(2022, 5, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         _symbol = AddEquity("SPY").Symbol;
         
@@ -83,8 +83,8 @@
  </script>
  <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2022, 5, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31))
 
         self._symbol = self.add_equity("SPY").symbol
         self._indicator = SimpleMovingAverage(250)
@@ -156,8 +156,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2019, 1, 1);
-        SetEndDate(2019, 1, 5);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         _symbol = AddEquity("SPY", Resolution.Tick).Symbol;
     }
 
@@ -239,8 +239,8 @@
     _hour = -1
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2019, 1, 1)
-        self.set_end_date(2019, 1, 5)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self._symbol = self.add_equity("SPY", Resolution.TICK).symbol
 
     def on_data(self, slice: Slice) -&gt; None:
@@ -318,8 +318,8 @@
 {
     public override void Initialize()
     {
-        SetStartDate(2021, 1, 1);
-        SetEndDate(2022, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         // Request data for a selected list of equities for trading.
         foreach (var ticker in new[] { "AAPL", "MSFT", "TSLA", "GOOG", "AMZN" })
@@ -391,8 +391,8 @@
  </script>
  <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 1, 1)
-        self.set_end_date(2022, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
 
         # Request data for a selected list of equities for trading.
         for ticker in ["AAPL", "MSFT", "TSLA", "GOOG", "AMZN"]:
@@ -468,8 +468,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2020, 1, 1);
-        SetEndDate(2020, 4, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         // Add an SPY Option universe.
         var option = AddOption("SPY");
@@ -539,8 +539,8 @@
  </script>
  <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2020, 1, 1)
-        self.set_end_date(2020, 4, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
 
         # Add an SPY Option universe.
         option = self.add_option("SPY")
@@ -619,8 +619,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2022, 1, 1);
-        SetEndDate(2022, 4, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Seed the price of AAPL with its last known price to avoid trading errors.
         SetSecurityInitializer(
             new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
@@ -685,8 +685,8 @@
  </script>
  <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2022, 4, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Seed the price of AAPL with its last known price to avoid trading errors.
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(

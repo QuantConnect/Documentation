@@ -66,8 +66,8 @@ from System.Collections.Generic import List</pre>
     {
         UniverseSettings.Resolution = Resolution.Daily;
 
-        SetStartDate(2023, 4, 1);
-        SetEndDate(2023, 4, 11);
+        SetStartDate(2024, 9, 1); 
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
 
         _insightsKey = $"{ProjectId}/{_insightsKey}";
@@ -103,8 +103,8 @@ from System.Collections.Generic import List</pre>
     def initialize(self) -&gt; None:
         self.universe_settings.resolution = Resolution.DAILY
 
-        self.set_start_date(2023,4,1)
-        self.set_end_date(2023,4,11)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
 
         self.insights_key = f"{self.project_id}/insights"

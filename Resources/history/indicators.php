@@ -8,6 +8,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of a security.
         var symbol = <?=$symbolC?>;
         // Get the 21-day SMA values of the security for the last 5 trading days. 
@@ -20,6 +21,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of a security.
         symbol = <?=$symbolPy?>
 
@@ -85,6 +87,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Add the target and reference securities.
         var targetSymbol = <?=$targetSymbolC?>;
         var referenceSymbol = <?=$symbolC?>;
@@ -100,6 +103,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Add the target and reference securities.
         target_symbol = <?=$targetSymbolPy?>
 

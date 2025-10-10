@@ -3,7 +3,8 @@
 {       
     public override void Initialize()
     {
-        SetStartDate(2020, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         var option = <?=$addOptionC?>
 
         var history = History&lt;OptionUniverse&gt;(option.Symbol, 5);
@@ -24,7 +25,8 @@
     <pre class="python">class OptionHistoryAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.set_start_date(2020, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         option = <?=$addOptionPy?>
 
         # DataFrame example:
@@ -48,7 +50,8 @@ public class OptionHistoryAlgorithm : QCAlgorithm
 {       
     public override void Initialize()
     {
-        SetStartDate(2020, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Subscribe to the underlying Futures contracts.
         var future = AddFuture(
             Futures.Indices.SP500EMini,

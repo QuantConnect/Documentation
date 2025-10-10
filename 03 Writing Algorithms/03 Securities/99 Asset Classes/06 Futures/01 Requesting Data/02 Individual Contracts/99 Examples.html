@@ -19,8 +19,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2022, 1, 1);
-        SetEndDate(2023, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         // Request the future underlying data for ATM strike selection.
         _future = AddFuture(
@@ -49,7 +49,7 @@
         // Get all the contracts that are currently tradable.
         var chain = FuturesChain(_future);
         // Select the front-month contract due to liquidity, with a 2-day buffer to avoid volatility.
-        var contracts = chain.Where(contract => contract.Expiry >= Time.AddDays(2));
+        var contracts = chain.Where(contract =&gt; contract.Expiry &gt;= Time.AddDays(2));
         if (contracts.Count() == 0)
         {
             return;
@@ -78,39 +78,40 @@
 }</pre>
  <script class="csharp-result" type="text">
   {
-    "Total Orders": "1811",
-    "Average Win": "1.18%",
-    "Average Loss": "-1.32%",
-    "Compounding Annual Return": "-20.991%",
-    "Drawdown": "84.600%",
-    "Expectancy": "0.000",
+    "Total Orders": "56",
+    "Average Win": "2.35%",
+    "Average Loss": "-8.45%",
+    "Compounding Annual Return": "-37.716%",
+    "Drawdown": "56.800%",
+    "Expectancy": "-0.042",
     "Start Equity": "100000",
-    "End Equity": "78958.25",
-    "Net Profit": "-21.042%",
-    "Sharpe Ratio": "1.17",
-    "Sortino Ratio": "1.688",
-    "Probabilistic Sharpe Ratio": "34.366%",
-    "Loss Rate": "47%",
-    "Win Rate": "53%",
-    "Profit-Loss Ratio": "0.89",
-    "Alpha": "0.953",
-    "Beta": "-6.814",
-    "Annual Standard Deviation": "1.573",
-    "Annual Variance": "2.476",
-    "Information Ratio": "1.125",
-    "Tracking Error": "1.751",
-    "Treynor Ratio": "-0.27",
-    "Total Fees": "$3960.30",
-    "Estimated Strategy Capacity": "$170000000.00",
-    "Lowest Capacity Asset": "ES Y4D62XFM9IPT",
-    "Portfolio Turnover": "693.74%",
-    "OrderListHash": "b67de81e5488f3e580ae4c742fdbe8b1"
+    "End Equity": "85358.5",
+    "Net Profit": "-14.642%",
+    "Sharpe Ratio": "-0.135",
+    "Sortino Ratio": "-0.221",
+    "Probabilistic Sharpe Ratio": "23.202%",
+    "Loss Rate": "25%",
+    "Win Rate": "75%",
+    "Profit-Loss Ratio": "0.28",
+    "Alpha": "0.2",
+    "Beta": "-6.048",
+    "Annual Standard Deviation": "0.77",
+    "Annual Variance": "0.593",
+    "Information Ratio": "-0.18",
+    "Tracking Error": "0.86",
+    "Treynor Ratio": "0.017",
+    "Total Fees": "$124.70",
+    "Estimated Strategy Capacity": "$370000000.00",
+    "Lowest Capacity Asset": "ES YOGVNNAOI1OH",
+    "Portfolio Turnover": "145.30%",
+    "Drawdown Recovery": "1",
+    "OrderListHash": "d400047c01685397148dd1f546aeed85"
 }
  </script>
  <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2023, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
 
         # Request the future underlying data for ATM strike selection.
         self._future = self.add_future(
@@ -137,7 +138,7 @@
         # Get all the contracts that are currently tradable.
         chain = self.futures_chain(self._future)
         # Select the front-month contract due to liquidity, with a 2-day buffer to avoid volatility.
-        contracts = [c for c in chain if c.expiry >= self.time + timedelta(2)]
+        contracts = [c for c in chain if c.expiry &gt;= self.time + timedelta(2)]
         if not contracts:
             return
         contract = contracts[0].symbol
@@ -155,33 +156,34 @@
                 self.set_holdings(self._contract_symbol, -0.5)</pre>
  <script class="python-result" type="text">
   {
-    "Total Orders": "1811",
-    "Average Win": "1.18%",
-    "Average Loss": "-1.32%",
-    "Compounding Annual Return": "-20.991%",
-    "Drawdown": "84.600%",
-    "Expectancy": "0.000",
+    "Total Orders": "56",
+    "Average Win": "2.35%",
+    "Average Loss": "-8.45%",
+    "Compounding Annual Return": "-37.716%",
+    "Drawdown": "56.800%",
+    "Expectancy": "-0.042",
     "Start Equity": "100000",
-    "End Equity": "78958.25",
-    "Net Profit": "-21.042%",
-    "Sharpe Ratio": "1.17",
-    "Sortino Ratio": "1.688",
-    "Probabilistic Sharpe Ratio": "34.366%",
-    "Loss Rate": "47%",
-    "Win Rate": "53%",
-    "Profit-Loss Ratio": "0.89",
-    "Alpha": "0.953",
-    "Beta": "-6.814",
-    "Annual Standard Deviation": "1.573",
-    "Annual Variance": "2.476",
-    "Information Ratio": "1.125",
-    "Tracking Error": "1.751",
-    "Treynor Ratio": "-0.27",
-    "Total Fees": "$3960.30",
-    "Estimated Strategy Capacity": "$170000000.00",
-    "Lowest Capacity Asset": "ES Y4D62XFM9IPT",
-    "Portfolio Turnover": "693.74%",
-    "OrderListHash": "b4c6cc7388362bccada1c0c510bef203"
+    "End Equity": "85358.5",
+    "Net Profit": "-14.642%",
+    "Sharpe Ratio": "-0.135",
+    "Sortino Ratio": "-0.221",
+    "Probabilistic Sharpe Ratio": "23.202%",
+    "Loss Rate": "25%",
+    "Win Rate": "75%",
+    "Profit-Loss Ratio": "0.28",
+    "Alpha": "0.2",
+    "Beta": "-6.048",
+    "Annual Standard Deviation": "0.77",
+    "Annual Variance": "0.593",
+    "Information Ratio": "-0.18",
+    "Tracking Error": "0.86",
+    "Treynor Ratio": "0.017",
+    "Total Fees": "$124.70",
+    "Estimated Strategy Capacity": "$370000000.00",
+    "Lowest Capacity Asset": "ES YOGVNNAOI1OH",
+    "Portfolio Turnover": "145.30%",
+    "Drawdown Recovery": "1",
+    "OrderListHash": "d400047c01685397148dd1f546aeed85"
 }
  </script>
 </div>

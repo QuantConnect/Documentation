@@ -10,8 +10,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2024, 1, 1);
-        SetEndDate(2024, 2, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Subscribe to the underlying asset.
         <?=$underlyingSubscriptionC?>
 
@@ -127,8 +127,8 @@
     <pre class="python">class Manual<?=$typeName?>IndicatorAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 1, 1)
-        self.set_end_date(2024, 2, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Subscribe to the underlying asset.
         <?=$underlyingSubscriptionPy?>
         # Set up the dividend yield provider for the underlying.

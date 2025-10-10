@@ -17,6 +17,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equity-alter
     public override void Initialize()
     {
         SetStartDate(2024, 12, 23);
+        SetEndDate(2024, 12, 31);
         // Add a universe of US Equities based on an alternative dataset.
         var universe = AddUniverse&lt;BrainStockRankingUniverse&gt;();
         // Get 5 days of history for the universe.
@@ -37,7 +38,8 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/universe-dataframe-us-equity-alter
     <pre class="python">class AltDataUniverseHistoryAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
-        self.set_start_date(2024, 12, 23)    
+        self.set_start_date(2024, 12, 23)
+        self.set_end_date(2024, 12, 31)
         # Add a universe of US Equities based on an alternative dataset.
         universe = self.add_universe(BrainStockRankingUniverse)
         # Get 5 days of history for the universe.

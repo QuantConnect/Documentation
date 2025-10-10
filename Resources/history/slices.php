@@ -10,6 +10,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 1);
+        SetEndDate(2024, 12, 31);
         // Add some securities and datasets.
         <?=$symbolC?>
 
@@ -46,6 +47,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 1)
+        self.set_end_date(2024, 12, 31)
         # Add some securities and datasets.
         <?=$symbolPy?>
 

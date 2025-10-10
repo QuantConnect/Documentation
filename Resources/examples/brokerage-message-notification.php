@@ -7,8 +7,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2022, 1, 1);
-        SetEndDate(2022, 1, 5);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 9, 5);
         // Simulate Tradier brokerage, which does not support the market-on-open orders.
         SetBrokerageModel(BrokerageName.TradierBrokerage, AccountType.Cash);
 
@@ -40,8 +40,8 @@
 }</pre>
     <pre class="python">class OrderErrorsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2022, 1, 5)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Simulate Tradier brokerage, which does not support the market-on-open orders.
         self.set_brokerage_model(BrokerageName.TRADIER_BROKERAGE, AccountType.CASH)
 

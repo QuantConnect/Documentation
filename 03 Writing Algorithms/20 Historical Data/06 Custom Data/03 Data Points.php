@@ -28,7 +28,8 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-dataframe-history.p
     <pre class="python">class CustomSecurityHistoryAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
-        self.set_start_date(2014, 7, 10)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Add a custom dataset and save a reference to it's Symbol.
         dataset_symbol = self.add_data(MyCustomDataType, "MyCustomDataType", Resolution.DAILY).symbol
         # Get the trailing 5 days of MyCustomDataType data in DataFrame format.

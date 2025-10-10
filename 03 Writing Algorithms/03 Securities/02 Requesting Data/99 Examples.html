@@ -26,6 +26,8 @@
 {
     public override void Initialize()
     {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Seed the price of each asset with its last known price to avoid trading errors.
         SetSecurityInitializer(
             new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
@@ -45,7 +47,7 @@
             var topFactorTargets = factorData.OrderByDescending(x =&gt; 
                     x.Value.Growth + x.Value.ValueFactor + x.Value.Quality + x.Value.Momentum + x.Value.LowVolatility
                 )
-                .Where(x => Securities[x.Key.Underlying].Price != 0)
+                .Where(x =&gt; Securities[x.Key.Underlying].Price != 0)
                 .Take(10)
                 .Select(x =&gt; new PortfolioTarget(x.Key.Underlying, 0.1m))
                 .ToList();
@@ -73,37 +75,40 @@
 }</pre>
  <script class="csharp-result" type="text">
   {
-    "Total Orders": "2797",
-    "Average Win": "-422.47%",
-    "Average Loss": "4.07%",
-    "Compounding Annual Return": "17.870%",
-    "Drawdown": "90.200%",
-    "Expectancy": "-58.365",
+    "Total Orders": "405",
+    "Average Win": "0.22%",
+    "Average Loss": "-0.36%",
+    "Compounding Annual Return": "69.016%",
+    "Drawdown": "5.900%",
+    "Expectancy": "0.156",
     "Start Equity": "100000",
-    "End Equity": "8605276.95",
-    "Net Profit": "8505.277%",
-    "Sharpe Ratio": "0.479",
-    "Sortino Ratio": "0.474",
-    "Probabilistic Sharpe Ratio": "0.073%",
-    "Loss Rate": "44%",
-    "Win Rate": "56%",
-    "Profit-Loss Ratio": "-103.72",
-    "Alpha": "0.091",
-    "Beta": "1.709",
-    "Annual Standard Deviation": "0.372",
-    "Annual Variance": "0.138",
-    "Information Ratio": "0.456",
-    "Tracking Error": "0.278",
-    "Treynor Ratio": "0.104",
-    "Total Fees": "$10266.07",
-    "Estimated Strategy Capacity": "$20000000.00",
-    "Lowest Capacity Asset": "TSLA UNU3P8Y3WFAD",
-    "Portfolio Turnover": "0.36%",
-    "OrderListHash": "428e8c5a12b919117b39dca936136c2b"
+    "End Equity": "119181.80",
+    "Net Profit": "19.182%",
+    "Sharpe Ratio": "2.103",
+    "Sortino Ratio": "2.553",
+    "Probabilistic Sharpe Ratio": "74.294%",
+    "Loss Rate": "29%",
+    "Win Rate": "71%",
+    "Profit-Loss Ratio": "0.62",
+    "Alpha": "0.345",
+    "Beta": "1.364",
+    "Annual Standard Deviation": "0.197",
+    "Annual Variance": "0.039",
+    "Information Ratio": "2.62",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "0.304",
+    "Total Fees": "$422.47",
+    "Estimated Strategy Capacity": "$28000000.00",
+    "Lowest Capacity Asset": "V U12VRGLO8PR9",
+    "Portfolio Turnover": "15.39%",
+    "Drawdown Recovery": "19",
+    "OrderListHash": "1dd0e6c3e9625b5ebfb888d69dee281b"
 }
  </script>
  <pre class="python">class RequestSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Seed the price of each asset with its last known price to avoid trading errors.
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(
@@ -140,33 +145,34 @@
             self.remove_security(security.alt_data_symbol)</pre>
  <script class="python-result" type="text">
   {
-    "Total Orders": "2797",
-    "Average Win": "-422.47%",
-    "Average Loss": "4.07%",
-    "Compounding Annual Return": "17.870%",
-    "Drawdown": "90.200%",
-    "Expectancy": "-58.365",
+    "Total Orders": "405",
+    "Average Win": "0.22%",
+    "Average Loss": "-0.36%",
+    "Compounding Annual Return": "69.016%",
+    "Drawdown": "5.900%",
+    "Expectancy": "0.156",
     "Start Equity": "100000",
-    "End Equity": "8605276.95",
-    "Net Profit": "8505.277%",
-    "Sharpe Ratio": "0.479",
-    "Sortino Ratio": "0.474",
-    "Probabilistic Sharpe Ratio": "0.073%",
-    "Loss Rate": "44%",
-    "Win Rate": "56%",
-    "Profit-Loss Ratio": "-103.72",
-    "Alpha": "0.091",
-    "Beta": "1.709",
-    "Annual Standard Deviation": "0.372",
-    "Annual Variance": "0.138",
-    "Information Ratio": "0.456",
-    "Tracking Error": "0.278",
-    "Treynor Ratio": "0.104",
-    "Total Fees": "$10266.07",
-    "Estimated Strategy Capacity": "$20000000.00",
-    "Lowest Capacity Asset": "TSLA UNU3P8Y3WFAD",
-    "Portfolio Turnover": "0.36%",
-    "OrderListHash": "d03b923cb69e9dfcfe2df7dc768809f7"
+    "End Equity": "119181.80",
+    "Net Profit": "19.182%",
+    "Sharpe Ratio": "2.103",
+    "Sortino Ratio": "2.553",
+    "Probabilistic Sharpe Ratio": "74.294%",
+    "Loss Rate": "29%",
+    "Win Rate": "71%",
+    "Profit-Loss Ratio": "0.62",
+    "Alpha": "0.345",
+    "Beta": "1.364",
+    "Annual Standard Deviation": "0.197",
+    "Annual Variance": "0.039",
+    "Information Ratio": "2.62",
+    "Tracking Error": "0.139",
+    "Treynor Ratio": "0.304",
+    "Total Fees": "$422.47",
+    "Estimated Strategy Capacity": "$28000000.00",
+    "Lowest Capacity Asset": "V U12VRGLO8PR9",
+    "Portfolio Turnover": "15.39%",
+    "Drawdown Recovery": "19",
+    "OrderListHash": "1dd0e6c3e9625b5ebfb888d69dee281b"
 }
  </script>
 </div>
@@ -188,8 +194,8 @@ public class LinkedCustomDataExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        SetStartDate(2011, 9, 13);
-        SetEndDate(2021, 6, 20);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Add Bitcoin and the custom dataset.
         dynamic btc = AddCrypto("BTCUSD");
         btc.dataSymbol = AddData&lt;Bitstamp&gt;(btc.Symbol.Value, Resolution.Daily).Symbol;
@@ -269,7 +275,7 @@ public class Bitstamp : BaseData
     "Compounding Annual Return": "0%",
     "Drawdown": "0%",
     "Expectancy": "0",
-    "Start Equity": "100000",
+    "Start Equity": "100000.00",
     "End Equity": "100000",
     "Net Profit": "0%",
     "Sharpe Ratio": "0",
@@ -282,13 +288,14 @@ public class Bitstamp : BaseData
     "Beta": "0",
     "Annual Standard Deviation": "0",
     "Annual Variance": "0",
-    "Information Ratio": "-0.857",
-    "Tracking Error": "0.139",
+    "Information Ratio": "-0.991",
+    "Tracking Error": "0.106",
     "Treynor Ratio": "0",
     "Total Fees": "$0.00",
     "Estimated Strategy Capacity": "$0",
     "Lowest Capacity Asset": "",
     "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
     "OrderListHash": ""
 }
  </script>
@@ -296,8 +303,8 @@ public class Bitstamp : BaseData
 class LinkedCustomDataExampleAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.set_start_date(2011, 9, 13)
-        self.set_end_date(2021, 6, 20)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Add Bitcoin and the custom dataset.
         btc = self.add_crypto('BTCUSD')
         btc.data_symbol = self.add_data(Bitstamp, btc.symbol.value, Resolution.DAILY).symbol
@@ -353,7 +360,7 @@ class Bitstamp(PythonData):
     "Compounding Annual Return": "0%",
     "Drawdown": "0%",
     "Expectancy": "0",
-    "Start Equity": "100000",
+    "Start Equity": "100000.00",
     "End Equity": "100000",
     "Net Profit": "0%",
     "Sharpe Ratio": "0",
@@ -366,13 +373,14 @@ class Bitstamp(PythonData):
     "Beta": "0",
     "Annual Standard Deviation": "0",
     "Annual Variance": "0",
-    "Information Ratio": "-0.857",
-    "Tracking Error": "0.139",
+    "Information Ratio": "-0.991",
+    "Tracking Error": "0.106",
     "Treynor Ratio": "0",
     "Total Fees": "$0.00",
     "Estimated Strategy Capacity": "$0",
     "Lowest Capacity Asset": "",
     "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
     "OrderListHash": ""
 }
  </script>

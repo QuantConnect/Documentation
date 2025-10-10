@@ -21,7 +21,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 
     <li><a href='/docs/v2/research-environment/initialization#02-Set-Dates'>Set the start date</a> to a date in the past that you want to use as the analysis date.</li>
     <div class="section-example-container">
-        <pre class="csharp">qb.SetStartDate(2024, 1, 1);</pre>
+        <pre class="csharp">qb.SetStartDate(2024, 9, 1);</pre>
         <pre class="python">qb.set_start_date(2024, 1, 1)</pre>
     </div>
     <p>The method that you call in the next step returns data on all the contracts that were tradable on this date.</p>

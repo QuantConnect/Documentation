@@ -25,8 +25,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2023, 1, 1);
-        SetEndDate(2024, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
         // Subscribe to the option chain.
         _option = AddIndexOption("SPX", "SPXW");
@@ -85,8 +85,8 @@
  <pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2023,1,1)
-        self.set_end_date(2024,1,1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
         # Subscribe to the option chain.
         self._option = self.add_index_option("SPX", "SPXW")

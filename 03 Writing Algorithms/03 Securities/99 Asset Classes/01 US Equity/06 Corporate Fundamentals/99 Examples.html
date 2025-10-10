@@ -18,6 +18,8 @@
 
     public override void Initialize()
     {
+        SetStartDate(2024,1,1);
+        SetEndDate(2024,12,31);
         // Add Equity data.
         _aapl = AddEquity("AAPL");
     }
@@ -46,38 +48,41 @@
 }</pre>
  <script class="csharp-result" type="text">
   {
-    "Total Orders": "162",
-    "Average Win": "3.62%",
-    "Average Loss": "-3.84%",
-    "Compounding Annual Return": "0.835%",
-    "Drawdown": "42.200%",
-    "Expectancy": "0.102",
+    "Total Orders": "6",
+    "Average Win": "4.57%",
+    "Average Loss": "-2.12%",
+    "Compounding Annual Return": "0.160%",
+    "Drawdown": "11.300%",
+    "Expectancy": "0.052",
     "Start Equity": "100000",
-    "End Equity": "125286.19",
-    "Net Profit": "25.286%",
-    "Sharpe Ratio": "-0.203",
-    "Sortino Ratio": "-0.063",
-    "Probabilistic Sharpe Ratio": "0.000%",
-    "Loss Rate": "43%",
-    "Win Rate": "57%",
-    "Profit-Loss Ratio": "0.94",
-    "Alpha": "-0.017",
-    "Beta": "0.056",
-    "Annual Standard Deviation": "0.07",
-    "Annual Variance": "0.005",
-    "Information Ratio": "-0.396",
-    "Tracking Error": "0.165",
-    "Treynor Ratio": "-0.255",
-    "Total Fees": "$35118.97",
-    "Estimated Strategy Capacity": "$88000000.00",
+    "End Equity": "100160.46",
+    "Net Profit": "0.160%",
+    "Sharpe Ratio": "-0.952",
+    "Sortino Ratio": "-0.21",
+    "Probabilistic Sharpe Ratio": "12.812%",
+    "Loss Rate": "67%",
+    "Win Rate": "33%",
+    "Profit-Loss Ratio": "2.16",
+    "Alpha": "-0.065",
+    "Beta": "0.111",
+    "Annual Standard Deviation": "0.055",
+    "Annual Variance": "0.003",
+    "Information Ratio": "-1.578",
+    "Tracking Error": "0.107",
+    "Treynor Ratio": "-0.474",
+    "Total Fees": "$15.95",
+    "Estimated Strategy Capacity": "$90000000.00",
     "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
     "Portfolio Turnover": "1.63%",
-    "OrderListHash": "da209c09ad5e548e253985fbf3b11af2"
+    "Drawdown Recovery": "2",
+    "OrderListHash": "3159f578c6745d6e8f8bef912e3ca59f"
 }
  </script>
  <pre class="python">class USEquityCorporateFundamentalsExampleAlgorithm(QCAlgorithm):
         
     def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Add Equity data.
         self._aapl = self.add_equity("AAPL")
         # Add a member to track the last financial statement filing date.
@@ -100,33 +105,34 @@
         self._last_filing_date = last_filing_date</pre>
  <script class="python-result" type="text">
   {
-    "Total Orders": "162",
-    "Average Win": "3.62%",
-    "Average Loss": "-3.84%",
-    "Compounding Annual Return": "0.835%",
-    "Drawdown": "42.200%",
-    "Expectancy": "0.102",
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
     "Start Equity": "100000",
-    "End Equity": "125286.19",
-    "Net Profit": "25.286%",
-    "Sharpe Ratio": "-0.203",
-    "Sortino Ratio": "-0.063",
-    "Probabilistic Sharpe Ratio": "0.000%",
-    "Loss Rate": "43%",
-    "Win Rate": "57%",
-    "Profit-Loss Ratio": "0.94",
-    "Alpha": "-0.017",
-    "Beta": "0.056",
-    "Annual Standard Deviation": "0.07",
-    "Annual Variance": "0.005",
-    "Information Ratio": "-0.396",
-    "Tracking Error": "0.165",
-    "Treynor Ratio": "-0.255",
-    "Total Fees": "$35118.97",
-    "Estimated Strategy Capacity": "$88000000.00",
-    "Lowest Capacity Asset": "AAPL R735QTJ8XC9X",
-    "Portfolio Turnover": "1.63%",
-    "OrderListHash": "32c863c86bac44f21ea2f8e75d37cbab"
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.991",
+    "Tracking Error": "0.106",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
+    "OrderListHash": ""
 }
  </script>
 </div>
@@ -144,11 +150,12 @@
     
     public override void Initialize()
     {
+        SetStartDate(2024,1,1);
+        SetEndDate(2024,12,31);
         SetCash(10_000_000);
         // Define the universe settings.
-        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         UniverseSettings.Resolution = Resolution.Daily;
-        UniverseSettings.Schedule.On(DateRules.MonthStart(spy));
+        UniverseSettings.Schedule.On(DateRules.MonthStart("SPY"));
         // Add a universe of the 500 largest Equities.
         _universe = AddUniverse(coarse =&gt; coarse
             .OrderByDescending(x =&gt; x.MarketCap)
@@ -156,7 +163,7 @@
             .Select(x =&gt; x.Symbol)
         );
         // Create a Scheduled Event to rebalance the portfolio each month.
-        Schedule.On(DateRules.MonthStart(spy, 1), TimeRules.Midnight, Rebalance);
+        Schedule.On(DateRules.MonthStart("SPY", 1), TimeRules.Midnight, Rebalance);
     }
 
     private void Rebalance()
@@ -198,43 +205,45 @@
 }</pre>
  <script class="csharp-result" type="text">
   {
-    "Total Orders": "3377",
-    "Average Win": "0.16%",
-    "Average Loss": "-0.08%",
-    "Compounding Annual Return": "6.806%",
-    "Drawdown": "32.500%",
-    "Expectancy": "0.953",
+    "Total Orders": "222",
+    "Average Win": "0.12%",
+    "Average Loss": "-0.05%",
+    "Compounding Annual Return": "7.401%",
+    "Drawdown": "4.600%",
+    "Expectancy": "0.552",
     "Start Equity": "10000000",
-    "End Equity": "59536480.98",
-    "Net Profit": "495.365%",
-    "Sharpe Ratio": "0.329",
-    "Sortino Ratio": "0.341",
-    "Probabilistic Sharpe Ratio": "0.470%",
-    "Loss Rate": "38%",
-    "Win Rate": "62%",
-    "Profit-Loss Ratio": "2.15",
-    "Alpha": "0.003",
-    "Beta": "0.482",
-    "Annual Standard Deviation": "0.085",
-    "Annual Variance": "0.007",
-    "Information Ratio": "-0.26",
-    "Tracking Error": "0.09",
-    "Treynor Ratio": "0.058",
-    "Total Fees": "$75443.88",
-    "Estimated Strategy Capacity": "$35000000.00",
-    "Lowest Capacity Asset": "TSN R735QTJ8XC9X",
-    "Portfolio Turnover": "0.09%",
-    "OrderListHash": "e3fc3dc67476d8844db2dc680a5c23b5"
+    "End Equity": "10741493.94",
+    "Net Profit": "7.415%",
+    "Sharpe Ratio": "-0.066",
+    "Sortino Ratio": "-0.075",
+    "Probabilistic Sharpe Ratio": "52.505%",
+    "Loss Rate": "53%",
+    "Win Rate": "47%",
+    "Profit-Loss Ratio": "2.30",
+    "Alpha": "-0.038",
+    "Beta": "0.298",
+    "Annual Standard Deviation": "0.048",
+    "Annual Variance": "0.002",
+    "Information Ratio": "-1.468",
+    "Tracking Error": "0.082",
+    "Treynor Ratio": "-0.011",
+    "Total Fees": "$637.83",
+    "Estimated Strategy Capacity": "$1400000.00",
+    "Lowest Capacity Asset": "MKCV SAZQZ88IK3FP",
+    "Portfolio Turnover": "0.19%",
+    "Drawdown Recovery": "57",
+    "OrderListHash": "379efa620561de81dc1aa7bdeaf30e80"
 }
  </script>
  <pre class="python">class USEquityCorporateFundamentalsExampleAlgorithm(QCAlgorithm):
         
     def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(10_000_000)
         # Define the universe settings.
-        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
         self.universe_settings.resolution = Resolution.DAILY
-        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self.universe_settings.schedule.on(self.date_rules.month_start('SPY'))
         # Add a universe of the 500 largest Equities.
         self._universe = self.add_universe(
             lambda fundamental: [
@@ -242,7 +251,7 @@
             ]
         )
         # Create a Scheduled Event to rebalance the portfolio each month.
-        self.schedule.on(self.date_rules.month_start(spy, 1), self.time_rules.midnight, self._rebalance)
+        self.schedule.on(self.date_rules.month_start('SPY', 1), self.time_rules.midnight, self._rebalance)
 
     def _rebalance(self) -&gt; None:
         # Wait until there are asset in the universe.
@@ -271,33 +280,34 @@
         self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
  <script class="python-result" type="text">
   {
-    "Total Orders": "3377",
-    "Average Win": "0.16%",
-    "Average Loss": "-0.08%",
-    "Compounding Annual Return": "6.806%",
-    "Drawdown": "32.500%",
-    "Expectancy": "0.953",
+    "Total Orders": "181",
+    "Average Win": "0.12%",
+    "Average Loss": "-0.02%",
+    "Compounding Annual Return": "2.245%",
+    "Drawdown": "4.500%",
+    "Expectancy": "2.844",
     "Start Equity": "10000000",
-    "End Equity": "59536480.98",
-    "Net Profit": "495.365%",
-    "Sharpe Ratio": "0.329",
-    "Sortino Ratio": "0.341",
-    "Probabilistic Sharpe Ratio": "0.470%",
-    "Loss Rate": "38%",
-    "Win Rate": "62%",
-    "Profit-Loss Ratio": "2.15",
-    "Alpha": "0.003",
-    "Beta": "0.482",
-    "Annual Standard Deviation": "0.085",
-    "Annual Variance": "0.007",
-    "Information Ratio": "-0.26",
-    "Tracking Error": "0.09",
-    "Treynor Ratio": "0.058",
-    "Total Fees": "$75443.88",
-    "Estimated Strategy Capacity": "$35000000.00",
-    "Lowest Capacity Asset": "TSN R735QTJ8XC9X",
-    "Portfolio Turnover": "0.09%",
-    "OrderListHash": "5e8c03ae21653849aeb814e6d5607007"
+    "End Equity": "10074306.06",
+    "Net Profit": "0.743%",
+    "Sharpe Ratio": "-0.87",
+    "Sortino Ratio": "-0.957",
+    "Probabilistic Sharpe Ratio": "33.415%",
+    "Loss Rate": "44%",
+    "Win Rate": "56%",
+    "Profit-Loss Ratio": "5.92",
+    "Alpha": "-0.052",
+    "Beta": "0.263",
+    "Annual Standard Deviation": "0.044",
+    "Annual Variance": "0.002",
+    "Information Ratio": "-1.039",
+    "Tracking Error": "0.086",
+    "Treynor Ratio": "-0.146",
+    "Total Fees": "$496.26",
+    "Estimated Strategy Capacity": "$1900000.00",
+    "Lowest Capacity Asset": "MKCV SAZQZ88IK3FP",
+    "Portfolio Turnover": "0.48%",
+    "Drawdown Recovery": "18",
+    "OrderListHash": "4cad2696a8ff8208439d3de6b5587270"
 }
  </script>
 </div>

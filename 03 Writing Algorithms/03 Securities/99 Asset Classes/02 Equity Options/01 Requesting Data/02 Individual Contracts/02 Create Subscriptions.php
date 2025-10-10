@@ -6,7 +6,8 @@
     private Symbol _underlying, _contractSymbol;
     public override void Initialize()
     {
-        SetStartDate(2024, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         _underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
     }
 
@@ -34,7 +35,8 @@
     <pre class="python">class BasicOptionAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.set_start_date(2024, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self._underlying = self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW).symbol
         self._contract_symbol = None
 

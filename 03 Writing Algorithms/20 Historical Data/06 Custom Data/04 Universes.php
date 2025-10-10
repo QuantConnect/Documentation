@@ -36,7 +36,8 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-universe-dataframe-
     <pre class="python">class CustomDataUniverseHistoryAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
-        self.set_start_date(2017, 7, 9)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Add a universe from a custom data source and save a reference to it.
         universe = self.add_universe(
             StockDataSource, "my-stock-data-source", Resolution.DAILY, lambda data: [x.symbol for x in data]

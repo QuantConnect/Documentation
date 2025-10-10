@@ -13,6 +13,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of an asset.
         var symbol = AddEquity("BTCUSD").Symbol;
         // Add the alternative dataset and save a reference to its Symbol.
@@ -31,6 +32,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of an asset.
         symbol = self.add_crypto('BTCUSD').symbol
         # Add the alternative dataset and save a reference to its Symbol.

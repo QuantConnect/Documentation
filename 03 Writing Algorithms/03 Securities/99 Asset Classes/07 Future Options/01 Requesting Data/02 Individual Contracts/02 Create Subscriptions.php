@@ -7,7 +7,8 @@
     private Symbol _contractSymbol;
     public override void Initialize()
     {
-        SetStartDate(2020,1,1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         _future = AddFuture(Futures.Indices.SP500EMini,
             extendedMarketHours: true,
             dataMappingMode: DataMappingMode.OpenInterest,
@@ -53,7 +54,8 @@
 }</pre>
     <pre class="python">class BasicFutureOptionAlgorithm(QCAlgorithm):
     def initialize(self):
-        self.set_start_date(2020, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self._future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
             extended_market_hours=True,

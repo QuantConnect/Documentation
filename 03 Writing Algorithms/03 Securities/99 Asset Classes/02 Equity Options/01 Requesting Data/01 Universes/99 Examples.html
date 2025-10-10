@@ -19,6 +19,8 @@
 {
     public override void Initialize()
     {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         var option = AddOption("SPY");
         // Filter for 0-DTE contracts within +/-10 strike range.
         // They have the highest volatility but low premium, providing sufficient liquidity and higher profit margin.
@@ -46,22 +48,57 @@
     "Beta": "0",
     "Annual Standard Deviation": "0",
     "Annual Variance": "0",
-    "Information Ratio": "-0.421",
-    "Tracking Error": "0.132",
+    "Information Ratio": "-0.433",
+    "Tracking Error": "0.134",
     "Treynor Ratio": "0",
     "Total Fees": "$0.00",
     "Estimated Strategy Capacity": "$0",
     "Lowest Capacity Asset": "",
     "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
     "OrderListHash": ""
 }
  </script>
  <pre class="python">class EquityOptionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         option = self.add_option("SPY")
         # Filter for 0-DTE contracts within +/-10 strike range.
         # They have the highest volatility but low premium, providing sufficient liquidity and higher profit margin.
         option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-10, 10))</pre>
+ <script class="python-result" type="text">
+  {
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "100000",
+    "End Equity": "100000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
+    "Annual Variance": "0",
+    "Information Ratio": "-0.433",
+    "Tracking Error": "0.134",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
+    "OrderListHash": ""
+}
+ </script>
 </div>
 <h4>
  Example 2: Straddle
@@ -84,6 +121,8 @@
 
     public override void Initialize()
     {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         var option = AddOption("SPY");
         _symbol = option.Symbol;
         // Using Staddle() method, it will only return the best-matched ATM call and put contracts expiring after 30 days.
@@ -111,8 +150,42 @@
         }
     }
 }</pre>
+ <script class="csharp-result" type="text">
+  {
+    "Total Orders": "4",
+    "Average Win": "0%",
+    "Average Loss": "-0.24%",
+    "Compounding Annual Return": "1.731%",
+    "Drawdown": "9.200%",
+    "Expectancy": "-0.5",
+    "Start Equity": "100000",
+    "End Equity": "161114",
+    "Net Profit": "61.114%",
+    "Sharpe Ratio": "-0.386",
+    "Sortino Ratio": "-0.314",
+    "Probabilistic Sharpe Ratio": "0.021%",
+    "Loss Rate": "50%",
+    "Win Rate": "50%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "-0.017",
+    "Beta": "0.188",
+    "Annual Standard Deviation": "0.028",
+    "Annual Variance": "0.001",
+    "Information Ratio": "-0.417",
+    "Tracking Error": "0.109",
+    "Treynor Ratio": "-0.057",
+    "Total Fees": "$2.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
+    "Portfolio Turnover": "0.00%",
+    "Drawdown Recovery": "1801",
+    "OrderListHash": "acda83b8933c75bb5d1f3917ed83ca5f"
+}
+ </script>
  <pre class="python">class EquityOptionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         option = self.add_option("SPY")
         self._symbol = option.symbol
         # Using straddle() method, it will only return the best-matched ATM call and put contracts expiring after 30 days.
@@ -135,30 +208,31 @@
     "Total Orders": "4",
     "Average Win": "0%",
     "Average Loss": "-0.24%",
-    "Compounding Annual Return": "1.600%",
+    "Compounding Annual Return": "1.731%",
     "Drawdown": "9.200%",
     "Expectancy": "-0.5",
     "Start Equity": "100000",
-    "End Equity": "153725",
-    "Net Profit": "53.725%",
-    "Sharpe Ratio": "-0.414",
-    "Sortino Ratio": "-0.336",
-    "Probabilistic Sharpe Ratio": "0.023%",
+    "End Equity": "161114",
+    "Net Profit": "61.114%",
+    "Sharpe Ratio": "-0.386",
+    "Sortino Ratio": "-0.314",
+    "Probabilistic Sharpe Ratio": "0.021%",
     "Loss Rate": "50%",
     "Win Rate": "50%",
     "Profit-Loss Ratio": "0",
     "Alpha": "-0.017",
-    "Beta": "0.18",
-    "Annual Standard Deviation": "0.026",
+    "Beta": "0.188",
+    "Annual Standard Deviation": "0.028",
     "Annual Variance": "0.001",
-    "Information Ratio": "-0.407",
+    "Information Ratio": "-0.417",
     "Tracking Error": "0.109",
-    "Treynor Ratio": "-0.06",
+    "Treynor Ratio": "-0.057",
     "Total Fees": "$2.00",
     "Estimated Strategy Capacity": "$0",
     "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
     "Portfolio Turnover": "0.00%",
-    "OrderListHash": "516e66736cf8262397a0ba73e4db98ca"
+    "Drawdown Recovery": "1801",
+    "OrderListHash": "acda83b8933c75bb5d1f3917ed83ca5f"
 }
  </script>
 </div>
@@ -175,6 +249,8 @@
         
     public override void Initialize()
     {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         // Subscribe to underlying data for ATM calculation using the update underlying price.
@@ -240,18 +316,21 @@
     "Beta": "0",
     "Annual Standard Deviation": "0",
     "Annual Variance": "0",
-    "Information Ratio": "-0.421",
-    "Tracking Error": "0.132",
+    "Information Ratio": "-0.433",
+    "Tracking Error": "0.134",
     "Treynor Ratio": "0",
     "Total Fees": "$0.00",
     "Estimated Strategy Capacity": "$0",
     "Lowest Capacity Asset": "",
     "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
     "OrderListHash": ""
 }
  </script>
  <pre class="python">class EquityOptionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Seed the price with last known price to ensure the underlying price data is available on initial option contract filtering.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         self.underlying = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
@@ -311,13 +390,14 @@
     "Beta": "0",
     "Annual Standard Deviation": "0",
     "Annual Variance": "0",
-    "Information Ratio": "-0.421",
-    "Tracking Error": "0.132",
+    "Information Ratio": "-0.433",
+    "Tracking Error": "0.134",
     "Treynor Ratio": "0",
     "Total Fees": "$0.00",
     "Estimated Strategy Capacity": "$0",
     "Lowest Capacity Asset": "",
     "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
     "OrderListHash": ""
 }
  </script>

@@ -20,6 +20,7 @@ $dataType = "Split";
     public override void Initialize()
     {
         SetStartDate(2024, 12, 1);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of an asset.
         var symbol = AddEquity("AAPL").Symbol;
         // Get the splits that occured for the stock over the last 5 years. 
@@ -32,6 +33,7 @@ $dataType = "Split";
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 1)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of an asset.
         symbol = self.add_equity('AAPL').symbol
         # Get the splits that occured for the stock over the last 5 years in DataFrame format. 

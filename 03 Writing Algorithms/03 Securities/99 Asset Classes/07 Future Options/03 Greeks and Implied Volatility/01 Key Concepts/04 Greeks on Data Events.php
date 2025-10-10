@@ -10,7 +10,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2024, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetSecurityInitializer(
             new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
         );
@@ -52,7 +53,8 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     <pre class="python">class BasicFutureOptionAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.set_start_date(2020, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_security_initializer(
             MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
         )

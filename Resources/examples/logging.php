@@ -8,8 +8,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2024, 8, 12);
-        SetEndDate(2024, 9, 1);
+        SetStartDate(2024, 9, 12);
+        SetEndDate(2024, 10, 1);
         SetCash(1000000);
 
         // Request SPY data to trade.
@@ -57,8 +57,8 @@
 }</pre>
     <pre class="python">class LoggingAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 8, 12)
-        self.set_end_date(2024, 9, 1)
+        self.set_start_date(2024, 9, 12)
+        self.set_end_date(2024, 10, 1)
         self.set_cash(1000000)
 
         # Request SPY data to trade.

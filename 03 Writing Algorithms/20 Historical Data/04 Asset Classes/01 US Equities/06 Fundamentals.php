@@ -13,6 +13,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 27);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of an asset.
         var symbol = AddEquity("AAPL").Symbol;
         // Get the 3 trailing daily Fundamental objects of the asset. 
@@ -29,6 +30,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 27)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of an asset.
         symbol = self.add_equity('AAPL').symbol
         # Get the 3 trailing daily Fundamental objects of the asset in DataFrame format. 

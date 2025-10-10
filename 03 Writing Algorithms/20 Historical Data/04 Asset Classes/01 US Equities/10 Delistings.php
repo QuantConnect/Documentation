@@ -20,6 +20,7 @@ $dataType = "Delisting";
     public override void Initialize()
     {
         SetStartDate(2024, 12, 1);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of an asset.
         var symbol = AddEquity("BBBY").Symbol;
         // Get the deslistings of the asset over the last 10 years. 
@@ -34,6 +35,7 @@ $dataType = "Delisting";
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 1)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of an asset.
         symbol = self.add_equity('BBBY').symbol
         # Get the deslistings of the asset over the last 10 years in DataFrame format.

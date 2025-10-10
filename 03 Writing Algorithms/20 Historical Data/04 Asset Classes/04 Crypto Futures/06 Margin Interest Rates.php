@@ -13,6 +13,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of a security.
         var symbol = AddCryptoFuture("BTCUSD").Symbol;
         // Get the MarginInterestRate objects of the security over the last 2 trading days. 
@@ -29,6 +30,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of a security.
         symbol = self.add_crypto_future('BTCUSD').symbol
         # Get the MarginInterestRate data of the security over the last 2 trading days in DataFrame format. 

@@ -14,6 +14,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Add a FOP universe.
         var future = AddFuture(Futures.Indices.SP500EMini);
         future.SetFilter(universe => universe.FrontMonth());
@@ -43,6 +44,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Add a FOP universe.
         future = self.add_future(Futures.Indices.SP_500_E_MINI)
         future.set_filter(lambda universe: universe.front_month())

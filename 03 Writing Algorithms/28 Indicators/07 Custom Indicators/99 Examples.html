@@ -15,8 +15,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2022, 1, 1);
-        SetEndDate(2022, 6, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         // Request daily SPY data to feed the indicators to generate trade signals and trade.
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
@@ -124,15 +124,16 @@
     "Estimated Strategy Capacity": "$8900000.00",
     "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
     "Portfolio Turnover": "13.12%",
-    "OrderListHash": "3f16c31dffff17c3710a6de33068366c"
+    "Drawdown Recovery": "74",
+    "OrderListHash": "9689c2868698f8df0bab6ee6de1820e7"
 }
  </script>
  <pre class="python">from collections import deque 
 
 class CustomIndicatorsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2022, 1, 1)
-        self.set_end_date(2022, 6, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
 
         # Request daily SPY data to feed the indicators to generate trade signals and trade.
         self.spy = self.add_equity("SPY").symbol
@@ -196,33 +197,34 @@ class CustomMoneyFlowIndex(PythonIndicator):
         return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
  <script class="python-result" type="text">
   {
-    "Total Orders": "4382",
+    "Total Orders": "4433",
     "Average Win": "0.01%",
     "Average Loss": "-0.01%",
-    "Compounding Annual Return": "22.605%",
+    "Compounding Annual Return": "22.531%",
     "Drawdown": "12.300%",
-    "Expectancy": "0.611",
+    "Expectancy": "0.602",
     "Start Equity": "100000",
-    "End Equity": "108834.65",
-    "Net Profit": "8.835%",
-    "Sharpe Ratio": "0.848",
-    "Sortino Ratio": "1.29",
-    "Probabilistic Sharpe Ratio": "43.922%",
-    "Loss Rate": "32%",
-    "Win Rate": "68%",
-    "Profit-Loss Ratio": "1.35",
+    "End Equity": "108807.22",
+    "Net Profit": "8.807%",
+    "Sharpe Ratio": "0.846",
+    "Sortino Ratio": "1.285",
+    "Probabilistic Sharpe Ratio": "43.865%",
+    "Loss Rate": "31%",
+    "Win Rate": "69%",
+    "Profit-Loss Ratio": "1.33",
     "Alpha": "-0.033",
-    "Beta": "-0.998",
+    "Beta": "-0.997",
     "Annual Standard Deviation": "0.201",
     "Annual Variance": "0.04",
-    "Information Ratio": "0.931",
-    "Tracking Error": "0.402",
-    "Treynor Ratio": "-0.171",
-    "Total Fees": "$4381.09",
-    "Estimated Strategy Capacity": "$9000000.00",
+    "Information Ratio": "0.93",
+    "Tracking Error": "0.401",
+    "Treynor Ratio": "-0.17",
+    "Total Fees": "$4432.10",
+    "Estimated Strategy Capacity": "$8800000.00",
     "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
-    "Portfolio Turnover": "13.05%",
-    "OrderListHash": "d3aa41cbd656a4802f13f5f2b9aed723"
+    "Portfolio Turnover": "13.12%",
+    "Drawdown Recovery": "74",
+    "OrderListHash": "fbcb7c55599f5a2f92ac63c927131899"
 }
  </script>
 </div>
@@ -242,8 +244,8 @@ public class CombiningIndicatorsAlgorithm : QCAlgorithm
 
     public override void Initialize()
     {
-        SetStartDate(2019, 1, 1);
-        SetEndDate(2023, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         // Request 2 classes of Google stock data to feed the indicators and generate trade signals.
         var goog1 = AddEquity("GOOGL").Symbol;
@@ -438,15 +440,15 @@ public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicator
     "Total Orders": "54",
     "Average Win": "3.27%",
     "Average Loss": "-3.33%",
-    "Compounding Annual Return": "0.792%",
+    "Compounding Annual Return": "0.789%",
     "Drawdown": "1.700%",
     "Expectancy": "0.061",
     "Start Equity": "100000",
-    "End Equity": "103207.14",
-    "Net Profit": "3.207%",
-    "Sharpe Ratio": "-0.587",
-    "Sortino Ratio": "-0.645",
-    "Probabilistic Sharpe Ratio": "5.782%",
+    "End Equity": "103192.43",
+    "Net Profit": "3.192%",
+    "Sharpe Ratio": "-0.589",
+    "Sortino Ratio": "-0.647",
+    "Probabilistic Sharpe Ratio": "5.743%",
     "Loss Rate": "46%",
     "Win Rate": "54%",
     "Profit-Loss Ratio": "0.98",
@@ -456,12 +458,13 @@ public class Cointegration : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicator
     "Annual Variance": "0",
     "Information Ratio": "-0.544",
     "Tracking Error": "0.188",
-    "Treynor Ratio": "3.011",
-    "Total Fees": "$179.02",
+    "Treynor Ratio": "3.027",
+    "Total Fees": "$179.60",
     "Estimated Strategy Capacity": "$45000000.00",
     "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
     "Portfolio Turnover": "1.92%",
-    "OrderListHash": "91200ec21a976889b2ee6283ae59b314"
+    "Drawdown Recovery": "388",
+    "OrderListHash": "a2d01961ee6a5145f0cf1c4cb4367bf1"
 }
  </script>
  <pre class="python">from sklearn.linear_model import LinearRegression
@@ -469,8 +472,8 @@ from statsmodels.tsa.stattools import adfuller
 
 class CustomIndicatorsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2019, 1, 1)
-        self.set_end_date(2023, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
 
         # Request 2 classes of Google stock data to feed the indicators to generate trade signals and trade.
         goog1 = self.add_equity("GOOGL").symbol
@@ -581,17 +584,17 @@ class Cointegration(PythonIndicator):
  <script class="python-result" type="text">
   {
     "Total Orders": "14",
-    "Average Win": "7.49%",
+    "Average Win": "7.50%",
     "Average Loss": "-6.32%",
     "Compounding Annual Return": "0.613%",
     "Drawdown": "1.500%",
     "Expectancy": "0.093",
     "Start Equity": "100000",
-    "End Equity": "102475.09",
-    "Net Profit": "2.475%",
+    "End Equity": "102473.87",
+    "Net Profit": "2.474%",
     "Sharpe Ratio": "-0.74",
     "Sortino Ratio": "-0.811",
-    "Probabilistic Sharpe Ratio": "3.889%",
+    "Probabilistic Sharpe Ratio": "3.879%",
     "Loss Rate": "50%",
     "Win Rate": "50%",
     "Profit-Loss Ratio": "1.19",
@@ -601,12 +604,13 @@ class Cointegration(PythonIndicator):
     "Annual Variance": "0",
     "Information Ratio": "-0.55",
     "Tracking Error": "0.189",
-    "Treynor Ratio": "1.752",
-    "Total Fees": "$37.99",
+    "Treynor Ratio": "1.76",
+    "Total Fees": "$38.13",
     "Estimated Strategy Capacity": "$45000000.00",
     "Lowest Capacity Asset": "GOOCV VP83T1ZUHROL",
     "Portfolio Turnover": "0.55%",
-    "OrderListHash": "8699fce9543a66b76b8a83d51f99aecf"
+    "Drawdown Recovery": "243",
+    "OrderListHash": "8cc2e474e0980b3e0dc2820f3b8d733a"
 }
  </script>
 </div>

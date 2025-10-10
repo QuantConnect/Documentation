@@ -10,8 +10,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2024, 2, 1);
-        SetEndDate(2024, 4, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         // Request CARZ data to feed indicator and trade.
         var equity = AddEquity("CARZ");
@@ -97,8 +97,8 @@
 }</pre>
     <pre class="python">class OrderEventsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 2, 1)
-        self.set_end_date(2024, 4, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
 
         # Request CARZ data to feed indicator and trade.
         equity = self.add_equity("CARZ")

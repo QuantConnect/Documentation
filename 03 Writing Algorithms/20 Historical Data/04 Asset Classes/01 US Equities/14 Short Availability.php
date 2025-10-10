@@ -6,6 +6,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Add an asset and save a reference to the Equity object.
         var security = AddEquity("SPY");
         // Overwrite the default shortable provider to one that provides data.
@@ -22,6 +23,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Add an asset and save a reference to its Equity object.
         security = self.add_equity('SPY')
         # Overwrite the default shortable provider to one that provides data.

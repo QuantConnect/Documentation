@@ -5,8 +5,8 @@
 {
     public override void Initialize()
     {
-        SetStartDate(2021, 1, 1);
-        SetEndDate(2021, 2, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         
         // To avoid over-updating the universe, which causes insufficient time to earn the trend, update the universe weekly.
         UniverseSettings.Schedule.On(DateRules.WeekStart());
@@ -68,8 +68,8 @@
 }</pre>
     <pre class="python">class UniverseSettingsAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 1, 1)
-        self.set_end_date(2021, 2, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         
         # To avoid over-updating the universe, which causes insufficient time to earn the trend, update the universe weekly.
         self.universe_settings.schedule.on(self.date_rules.week_start())

@@ -16,8 +16,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2022, 5, 1);
-        SetEndDate(2024, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Seed the last price to set the initial price of the BTCUSDT holdings.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         
@@ -40,19 +40,19 @@
     public override void OnData(Slice slice)
     {
         // Wait for the Slice to contain QuoteBar objects for both assets.
-        if (!(slice.QuoteBars.ContainsKey(_spot.Symbol) && slice.QuoteBars.ContainsKey(_future.Symbol)))
+        if (!(slice.QuoteBars.ContainsKey(_spot.Symbol) &amp;&amp; slice.QuoteBars.ContainsKey(_future.Symbol)))
         {
             return;
         }
         // If the spot price is higher than the future price more than the threshold,
         // Do arbitration by selling the spot BTC and buying the future.
-        if (_spot.Price >= _future.Price * (1m + _threshold) && !_future.Holdings.IsLong)
+        if (_spot.Price &gt;= _future.Price * (1m + _threshold) &amp;&amp; !_future.Holdings.IsLong)
         {
             Sell(_spot.Symbol, _tradeQuantity);
         }
         // If the future price is higher than the spot price more than the threshold,
         // Do arbitration by buying the spot BTC and selling the future.
-        if (_future.Price >= _spot.Price * (1m + _threshold) && _future.Holdings.IsLong)
+        if (_future.Price &gt;= _spot.Price * (1m + _threshold) &amp;&amp; _future.Holdings.IsLong)
         {
             Sell(_future.Symbol, _tradeQuantity);
         }
@@ -61,7 +61,7 @@
     public override void OnOrderEvent(OrderEvent orderEvent)
     {
         // Order the buy-side of the arb only when the BTC is sold and USDT is obtained.
-        if (!(orderEvent.Quantity < 0 && orderEvent.Status == OrderStatus.Filled))
+        if (!(orderEvent.Quantity &lt; 0 &amp;&amp; orderEvent.Status == OrderStatus.Filled))
         {
             return;
         }
@@ -71,7 +71,7 @@
             new InitialMarginParameters(security, _tradeQuantity)
         ).Value;
         // Check if USDT cash is sufficient to open the position.
-        if (Portfolio.CashBook["USDT"].Amount >= margin)
+        if (Portfolio.CashBook["USDT"].Amount &gt;= margin)
         {
             Buy(security.Symbol, _tradeQuantity);
         }
@@ -79,42 +79,43 @@
 }</pre>
  <script class="csharp-result" type="text">
   {
-    "Total Orders": "234",
-    "Average Win": "1.42%",
-    "Average Loss": "-1.63%",
-    "Compounding Annual Return": "12.131%",
-    "Drawdown": "7.400%",
-    "Expectancy": "0.067",
-    "Start Equity": "100000.00",
-    "End Equity": "121128.92",
-    "Net Profit": "21.129%",
-    "Sharpe Ratio": "1.177",
-    "Sortino Ratio": "1.728",
-    "Probabilistic Sharpe Ratio": "87.396%",
-    "Loss Rate": "43%",
-    "Win Rate": "57%",
-    "Profit-Loss Ratio": "0.87",
-    "Alpha": "0.081",
-    "Beta": "0.009",
-    "Annual Standard Deviation": "0.07",
-    "Annual Variance": "0.005",
-    "Information Ratio": "-0.259",
-    "Tracking Error": "0.529",
-    "Treynor Ratio": "9.381",
+    "Total Orders": "6",
+    "Average Win": "14.93%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "318.114%",
+    "Drawdown": "14.300%",
+    "Expectancy": "0",
+    "Start Equity": "117050.98",
+    "End Equity": "188847.60",
+    "Net Profit": "61.338%",
+    "Sharpe Ratio": "8.258",
+    "Sortino Ratio": "15.675",
+    "Probabilistic Sharpe Ratio": "93.026%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.134",
+    "Beta": "0.999",
+    "Annual Standard Deviation": "0.465",
+    "Annual Variance": "0.217",
+    "Information Ratio": "10.616",
+    "Tracking Error": "0.012",
+    "Treynor Ratio": "3.846",
     "Total Fees": "\u20ae0.00",
-    "Estimated Strategy Capacity": "\u20ae250000.00",
+    "Estimated Strategy Capacity": "\u20ae0",
     "Lowest Capacity Asset": "BTCUSDT 2V3",
-    "Portfolio Turnover": "9.62%",
-    "OrderListHash": "692a4c0cb49be2067406522c8cfec4f8"
+    "Portfolio Turnover": "2.45%",
+    "Drawdown Recovery": "17",
+    "OrderListHash": "f7464af570f8299bd92d7cee0d1eb679"
 }
  </script>
  <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
 
     _threshold = 0.005
 
-    def initialize(self) -> None:
-        self.set_start_date(2022, 5, 1)
-        self.set_end_date(2024, 1, 1)
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Seed the last price to set the initial price of the BTCUSDT holdings.
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(
@@ -138,22 +139,22 @@
         self._spot.holdings.set_holdings(average_price=self._spot.price, quantity=spot_balance)
         self._trade_quantity = spot_balance/2
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Wait for the Slice to contain QuoteBar objects for both assets.
         if not(self._spot.symbol in slice.quote_bars and self._future.symbol in slice.quote_bars):
             return
         # If the spot price is higher than the future price more than the threshold,
         # Do arbitration by selling the spot BTC and buying the future.
-        if self._spot.price >= self._future.price * (1 + self._threshold) and not self._future.holdings.is_long:
+        if self._spot.price &gt;= self._future.price * (1 + self._threshold) and not self._future.holdings.is_long:
             self.sell(self._spot.symbol, self._trade_quantity)
         # If the future price is higher than the spot price more than the threshold,
         # Do arbitration by buying the spot BTC and selling the future.
-        if self._future.price >= self._spot.price * (1 + self._threshold) and self._future.holdings.is_long:
+        if self._future.price &gt;= self._spot.price * (1 + self._threshold) and self._future.holdings.is_long:
             self.sell(self._future.symbol, self._trade_quantity)
 
-    def on_order_event(self, order_event: OrderEvent) -> None:
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
         # Order the buy-side of the arb only when the BTC is sold and USDT is obtained.
-        if not(order_event.quantity < 0 and order_event.status == OrderStatus.FILLED):
+        if not(order_event.quantity &lt; 0 and order_event.status == OrderStatus.FILLED):
             return
         security = self._future if order_event.symbol == self._spot.symbol else self._spot
         # Calculate the initial margin needed, we need to sell the same amount of BTC to obtain sufficient USDT for trade.
@@ -161,37 +162,38 @@
             InitialMarginParameters(security, self._trade_quantity)
         ).value
         # Check if USDT cash is sufficient to open the position.
-        if self.portfolio.cash_book["USDT"].amount >= margin:
+        if self.portfolio.cash_book["USDT"].amount &gt;= margin:
             self.buy(security.symbol, self._trade_quantity)</pre>
  <script class="python-result" type="text">
   {
-    "Total Orders": "234",
-    "Average Win": "1.42%",
-    "Average Loss": "-1.63%",
-    "Compounding Annual Return": "12.131%",
-    "Drawdown": "7.400%",
-    "Expectancy": "0.067",
-    "Start Equity": "100000.00",
-    "End Equity": "121128.92",
-    "Net Profit": "21.129%",
-    "Sharpe Ratio": "1.177",
-    "Sortino Ratio": "1.728",
-    "Probabilistic Sharpe Ratio": "87.396%",
-    "Loss Rate": "43%",
-    "Win Rate": "57%",
-    "Profit-Loss Ratio": "0.87",
-    "Alpha": "0.081",
-    "Beta": "0.009",
-    "Annual Standard Deviation": "0.07",
-    "Annual Variance": "0.005",
-    "Information Ratio": "-0.259",
-    "Tracking Error": "0.529",
-    "Treynor Ratio": "9.381",
+    "Total Orders": "6",
+    "Average Win": "14.93%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "318.114%",
+    "Drawdown": "14.300%",
+    "Expectancy": "0",
+    "Start Equity": "117050.98",
+    "End Equity": "188847.60",
+    "Net Profit": "61.338%",
+    "Sharpe Ratio": "8.258",
+    "Sortino Ratio": "15.675",
+    "Probabilistic Sharpe Ratio": "93.026%",
+    "Loss Rate": "0%",
+    "Win Rate": "100%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0.134",
+    "Beta": "0.999",
+    "Annual Standard Deviation": "0.465",
+    "Annual Variance": "0.217",
+    "Information Ratio": "10.616",
+    "Tracking Error": "0.012",
+    "Treynor Ratio": "3.846",
     "Total Fees": "\u20ae0.00",
-    "Estimated Strategy Capacity": "\u20ae250000.00",
+    "Estimated Strategy Capacity": "\u20ae0",
     "Lowest Capacity Asset": "BTCUSDT 2V3",
-    "Portfolio Turnover": "9.62%",
-    "OrderListHash": "fc9c684314dfe918da8ad57c9c426dcf"
+    "Portfolio Turnover": "2.45%",
+    "Drawdown Recovery": "17",
+    "OrderListHash": "f7464af570f8299bd92d7cee0d1eb679"
 }
  </script>
 </div>
@@ -210,8 +212,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2021, 1, 1);
-        SetEndDate(2024, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         // Set cash to sell Futures.
         SetCash(10000000);
         // Seed the last price to set the initial price of the BTCUSD holdings.
@@ -220,6 +222,7 @@
         // Request BTCUSD spot and future data to trade their price discrepancies.
         _btcusd = AddCrypto("BTCUSD", Resolution.Minute, market: Market.Coinbase).Symbol;
         _btcFuture = AddFuture(Futures.Currencies.BTC, Resolution.Minute, dataMappingMode: DataMappingMode.OpenInterest);
+        _btcFuture.SetFilter(0, 62);
     }
 
     public override void OnData(Slice slice)
@@ -260,7 +263,7 @@
             var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -&gt; {newSymbol}";
             var quantity = Portfolio[oldSymbol].Quantity;
             // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-            Liquidate(oldSymbol, tag: tag);
+            Liquidate(symbol: oldSymbol, tag: tag);
             if (quantity != 0)
             {
                 MarketOrder(newSymbol, quantity, tag: tag);
@@ -270,41 +273,42 @@
 }</pre>
  <script class="csharp-result" type="text">
   {
-    "Total Orders": "43",
-    "Average Win": "0.46%",
-    "Average Loss": "-0.30%",
-    "Compounding Annual Return": "1.100%",
-    "Drawdown": "0.900%",
-    "Expectancy": "0.338",
-    "Start Equity": "10000000",
-    "End Equity": "10333823.96",
-    "Net Profit": "3.338%",
-    "Sharpe Ratio": "-1.263",
-    "Sortino Ratio": "-2.288",
-    "Probabilistic Sharpe Ratio": "13.717%",
-    "Loss Rate": "48%",
-    "Win Rate": "52%",
-    "Profit-Loss Ratio": "1.55",
-    "Alpha": "-0.017",
-    "Beta": "0.003",
-    "Annual Standard Deviation": "0.013",
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "10000000.00",
+    "End Equity": "10000000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
     "Annual Variance": "0",
-    "Information Ratio": "-0.489",
-    "Tracking Error": "0.146",
-    "Treynor Ratio": "-5.13",
-    "Total Fees": "$418.76",
-    "Estimated Strategy Capacity": "$4000000.00",
-    "Lowest Capacity Asset": "BTCUSD 2XR",
-    "Portfolio Turnover": "0.08%",
-    "OrderListHash": "1f78726ff72e53a43d623215e03e39d7"
+    "Information Ratio": "-0.987",
+    "Tracking Error": "0.106",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
+    "OrderListHash": ""
 }
  </script>
  <pre class="python">class MultiAssetModelingAlgorithm(QCAlgorithm):
     threshold = 0.005
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 1, 1)
-        self.set_end_date(2024, 1, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         # Set cash to sell Futures.
         self.set_cash(10000000)
         # Seed the last price to set the initial price of the BTCUSD holdings.
@@ -313,6 +317,7 @@
         # Request BTCUSD spot and future data to trade their price discrepancies.
         self.btcusd = self.add_crypto("BTCUSD", Resolution.MINUTE, market=Market.COINBASE).symbol
         self.btc_future = self.add_future(Futures.Currencies.BTC, Resolution.MINUTE, data_mapping_mode=DataMappingMode.OPEN_INTEREST)
+        self.btc_future.set_filter(0, 62)
 
     def on_data(self, slice: Slice) -&gt; None:
         mapped_future = self.btc_future.mapped
@@ -345,38 +350,39 @@
             tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -&gt; {new_symbol}"
             quantity = self.portfolio[old_symbol].quantity
             # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-            self.liquidate(old_symbol, tag = tag)
+            self.liquidate(symbol = old_symbol, tag = tag)
             if quantity != 0:
                 self.market_order(new_symbol, quantity, tag = tag)</pre>
  <script class="python-result" type="text">
   {
-    "Total Orders": "603",
-    "Average Win": "0.07%",
-    "Average Loss": "-0.07%",
-    "Compounding Annual Return": "1.286%",
-    "Drawdown": "0.600%",
-    "Expectancy": "0.183",
-    "Start Equity": "10000000",
-    "End Equity": "10391163.50",
-    "Net Profit": "3.912%",
-    "Sharpe Ratio": "-1.385",
-    "Sortino Ratio": "-2.353",
-    "Probabilistic Sharpe Ratio": "23.580%",
-    "Loss Rate": "40%",
-    "Win Rate": "60%",
-    "Profit-Loss Ratio": "0.97",
-    "Alpha": "-0.015",
-    "Beta": "-0",
-    "Annual Standard Deviation": "0.011",
+    "Total Orders": "0",
+    "Average Win": "0%",
+    "Average Loss": "0%",
+    "Compounding Annual Return": "0%",
+    "Drawdown": "0%",
+    "Expectancy": "0",
+    "Start Equity": "10000000.00",
+    "End Equity": "10000000",
+    "Net Profit": "0%",
+    "Sharpe Ratio": "0",
+    "Sortino Ratio": "0",
+    "Probabilistic Sharpe Ratio": "0%",
+    "Loss Rate": "0%",
+    "Win Rate": "0%",
+    "Profit-Loss Ratio": "0",
+    "Alpha": "0",
+    "Beta": "0",
+    "Annual Standard Deviation": "0",
     "Annual Variance": "0",
-    "Information Ratio": "-0.479",
-    "Tracking Error": "0.146",
-    "Treynor Ratio": "47.296",
-    "Total Fees": "$3361.10",
-    "Estimated Strategy Capacity": "$370000.00",
-    "Lowest Capacity Asset": "BTC YEPD29PF6PDT",
-    "Portfolio Turnover": "0.88%",
-    "OrderListHash": "9547c8805d72387458a739e1da1a8478"
+    "Information Ratio": "-0.987",
+    "Tracking Error": "0.106",
+    "Treynor Ratio": "0",
+    "Total Fees": "$0.00",
+    "Estimated Strategy Capacity": "$0",
+    "Lowest Capacity Asset": "",
+    "Portfolio Turnover": "0%",
+    "Drawdown Recovery": "0",
+    "OrderListHash": ""
 }
  </script>
 </div>

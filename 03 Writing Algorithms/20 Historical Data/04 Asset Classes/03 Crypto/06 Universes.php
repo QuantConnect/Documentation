@@ -16,6 +16,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 23);
+        SetEndDate(2024, 12, 31);
         // Add a universe of Cryptocurrencies on Coinbase.
         var universe = AddUniverse(CryptoUniverse.Coinbase());
         // Get 5 days of history for the universe.
@@ -32,6 +33,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 23)
+        self.set_end_date(2024, 12, 31)
         # Add a universe of Cryptocurrencies on Coinbase.
         universe = self.add_universe(CryptoUniverse.coinbase())
         # Get 5 days of history for the universe.

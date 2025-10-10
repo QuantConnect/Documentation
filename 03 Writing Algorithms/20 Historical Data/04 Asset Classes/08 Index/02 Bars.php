@@ -13,6 +13,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 19);
+        SetEndDate(2024, 12, 31);
         // Get the Symbol of an Index.
         var symbol = AddIndex("SPX").Symbol;
         // Get the 5 trailing daily bars of the Index. 
@@ -29,6 +30,7 @@
 
     def initialize(self) -> None:
         self.set_start_date(2024, 12, 19)
+        self.set_end_date(2024, 12, 31)
         # Get the Symbol of an Index.
         symbol = self.add_index('SPX').symbol
         # Get the 5 trailing daily bars of the Index in DataFrame format. 

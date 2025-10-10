@@ -13,8 +13,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2021, 1, 1);
-        SetEndDate(2022, 1, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
 
         // Add SPY data for trading.
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
@@ -58,8 +58,8 @@
 }</pre>
     <pre class="python">class RollingWindowAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2021, 8, 1)
-        self.set_end_date(2022, 11, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         
         # Add SPY data for trading.
         self.spy = self.add_equity("SPY", Resolution.MINUTE).symbol

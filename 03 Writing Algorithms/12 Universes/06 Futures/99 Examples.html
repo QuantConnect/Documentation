@@ -1,11 +1,14 @@
 <p>
  The following examples demonstrate some common Futures universes.
 </p>
-
-<h4>Example 1: Contracts Expiring On Quarter End</h4>
-<p>To reduce the need for rolling over, you can filter Future contracts that expire only on quarter ends to save transaction costs. The following example trades a simple EMA cross strategy on SP500 EMini Future contracts that expire on quarter ends.</p>
+<h4>
+ Example 1: Contracts Expiring On Quarter End
+</h4>
+<p>
+ To reduce the need for rolling over, you can filter Future contracts that expire only on quarter ends to save transaction costs. The following example trades a simple EMA cross strategy on SP500 EMini Future contracts that expire on quarter ends.
+</p>
 <div class="section-example-container">
-	<pre class="csharp">public class QuarterlyFuturesAlgorithm : QCAlgorithm
+ <pre class="csharp">public class QuarterlyFuturesAlgorithm : QCAlgorithm
 {
     private Future _future;
     private ExponentialMovingAverage _ema;
@@ -14,8 +17,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2024, 3, 1);
-        SetEndDate(2024, 5, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(10000000);
 
         // Request ES Future data for trading. We only use the continuous contract for indicator values.
@@ -58,11 +61,11 @@
         }
     }
 }</pre>
-	<pre class="python">class QuarterlyFuturesAlgorithm(QCAlgorithm):
+ <pre class="python">class QuarterlyFuturesAlgorithm(QCAlgorithm):
     
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 3, 1)
-        self.set_end_date(2024, 5, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(10000000)
         
         # Request ES Future data for trading.
@@ -114,8 +117,8 @@
 
     public override void Initialize()
     {
-        SetStartDate(2024, 6, 1);
-        SetEndDate(2024, 7, 1);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(100000000);
 
         // Request ES Future data for trading. The continuous contract data is only used for indicator values.
@@ -160,11 +163,11 @@
         }
     }
 }</pre>
-	<pre class="python">class WeeklyFuturesAlgorithm(QCAlgorithm):
+ <pre class="python">class WeeklyFuturesAlgorithm(QCAlgorithm):
     
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 6, 1)
-        self.set_end_date(2024, 7, 1)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100000000)
         
         # Request ES Future data for trading. The continuous contract data is only used for indicator values.
@@ -191,9 +194,9 @@
 
             # Trade a mean-reversal strategy based on Bollinger Band signal.
             quantity = self.portfolio[self.future.symbol].quantity
-            if contract.last_price &gt; self._bb.upper_band.current.value and quantity >= 0:
+            if contract.last_price &gt; self._bb.upper_band.current.value and quantity &gt;= 0:
                 self.market_order(contract.symbol, -1-quantity)
-            elif contract.last_price &lt; self._bb.lower_band.current.value and quantity <= 0:
+            elif contract.last_price &lt; self._bb.lower_band.current.value and quantity &lt;= 0:
                 self.market_order(contract.symbol, 1-quantity)
             elif (self.portfolio[self.future.symbol].is_short and contract.last_price &lt; self._bb.middle_band.current.value)\
             or (self.portfolio[self.future.symbol].is_long and contract.last_price &gt; self._bb.middle_band.current.value):

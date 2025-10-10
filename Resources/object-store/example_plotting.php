@@ -135,8 +135,9 @@ var result = HTML(GenericChart.toChartHTML(chart));</pre>
 
     public override void Initialize()
     {
-        SetStartDate(2023, 1, 1);   //Set Start Date
-        SetCash(100000);            //Set Strategy Cash
+        SetStartDate(2024, 9, 1); 
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
         
         AddEquity("SPY", Resolution.Minute);
         // Create SMA indicator for referencing.
@@ -157,8 +158,9 @@ var result = HTML(GenericChart.toChartHTML(chart));</pre>
 }</pre>
     <pre class="python">class ObjectStoreChartingAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2023, 1, 1)  # Set Start Date
-        self.set_cash(100000)           # Set Strategy Cash
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
         self.add_equity("SPY", Resolution.MINUTE)
         
         self.content = ''

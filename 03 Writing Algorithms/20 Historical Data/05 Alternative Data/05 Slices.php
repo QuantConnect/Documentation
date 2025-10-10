@@ -9,6 +9,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 12, 23);
+        SetEndDate(2024, 12, 31);
         // Add an alternative dataset.
         var symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Bitfinex).Symbol;
         var datasetSymbol = AddData&lt;BitcoinMetadata&gt;(symbol).Symbol;
@@ -50,7 +51,8 @@ foreach (var slice in history)
       <pre class="python">class SliceHistoryAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
-        self.set_start_date(2024, 12, 23)  
+        self.set_start_date(2024, 12, 23)
+        self.set_end_date(2024, 12, 31)
         # Add an asset and an alternative dataset.
         symbol = self.add_crypto('BTCUSD', Resolution.DAILY, Market.BITFINEX).symbol
         dataset_symbol = self.add_data(BitcoinMetadata, symbol).symbol

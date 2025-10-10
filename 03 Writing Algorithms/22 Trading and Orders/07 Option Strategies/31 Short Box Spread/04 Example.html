@@ -52,8 +52,8 @@ $$
 
     public override void Initialize()
     {
-        SetStartDate(2017, 4, 1);
-        SetEndDate(2017, 4, 30);
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
 
         UniverseSettings.Asynchronous = true;
@@ -95,15 +95,15 @@ $$
 }</pre>
     <pre class="python">class ProtectiveCollarOptionStrategy(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.SetStartDate(2017, 4, 1)
-        self.SetEndDate(2017, 4, 30)
-        self.SetCash(100000)
+        self.set_start_date(2024, 9, 1);
+        self.set_end_date(2024, 12, 31);
+        self.set_cash(100000)
 
-        self.UniverseSettings.Asynchronous = True
-        self.equity_symbol = self.AddEquity("GOOG").Symbol
+        self.universe_settings.asynchronous = True
+        self.equity_symbol = self.add_equity("GOOG").symbol
 
-        option = self.AddOption("GOOG", Resolution.Minute)
-        self.option_symbol = option.Symbol
+        option = self.add_option("GOOG", Resolution.Minute)
+        self.option_symbol = option.symbol
         option.set_filter(lambda universe: universe.include_weeklys().box_spread(30, 5))
 
         self.invest_ever = False
@@ -130,5 +130,5 @@ $$
 
     def on_end_of_day(self, symbol: Symbol) -&gt; None:
         if symbol == self.equity_symbol:
-            self.Log(f"{self.time}::{symbol}::{self.securities[symbol].price}")</pre>
+            self.log(f"{self.time}::{symbol}::{self.securities[symbol].price}")</pre>
 </div>
