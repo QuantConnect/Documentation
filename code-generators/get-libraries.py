@@ -13,7 +13,7 @@ def __process_pip_line(line):
     return '=='.join(line.split('-')[:2]).replace('_','-') + '\n'
 
 def __create_python_libraries_file():
-    cmd = 'docker run --entrypoint bash quantconnect/lean:latest -c "pip3 freeze"'
+    cmd = 'docker run --entrypoint bash quantconnect/research:latest -c "pip3 freeze"'
     lines = [__process_pip_line(line) for line in popen(cmd).readlines()]
     with open(RESOURCE / 'default-python.txt', mode='w', encoding='utf-8') as fp:
         fp.write(''.join([l for l in lines if l]))
@@ -63,37 +63,38 @@ if __name__ == '__main__':
     <PackageReference Include="Accord.MachineLearning.GPL" Version="3.6.0" />
     <PackageReference Include="Accord.Math" Version="3.6.0" />
     <PackageReference Include="Accord.Statistics" Version="3.6.0" />
+    <PackageReference Include="Castle.Core" Version="5.2.1" />
     <PackageReference Include="csnumerics" Version="1.0.2" />
     <PackageReference Include="Deedle" Version="2.1.0" />
     <PackageReference Include="DynamicInterop" Version="0.9.1" />
-    <PackageReference Include="Google.OrTools" Version="9.11.4210" />
+    <PackageReference Include="Google.OrTools" Version="9.12.4544" />
     <PackageReference Include="MathNet.Filtering" Version="0.7.0" />
     <PackageReference Include="MathNet.Filtering.Kalman" Version="0.7.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
-    <PackageReference Include="Microsoft.Data.Analysis" Version="0.22.0" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="4.0.0" />
-    <PackageReference Include="Microsoft.ML.DataView" Version="4.0.0" />
-    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.22.0" />
-    <PackageReference Include="Microsoft.ML.FastTree" Version="4.0.0" />
-    <PackageReference Include="Microsoft.ML.LightGbm" Version="4.0.0" />
-    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="4.0.0" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="4.0.0" />
-    <PackageReference Include="Microsoft.ML.TimeSeries" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Data.Analysis" Version="0.22.2" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="4.0.2" />
+    <PackageReference Include="Microsoft.ML.DataView" Version="4.0.2" />
+    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.22.2" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="4.0.2" />
+    <PackageReference Include="Microsoft.ML.LightGbm" Version="4.0.2" />
+    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="4.0.2" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.23.1" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="4.0.2" />
+    <PackageReference Include="Microsoft.ML.TimeSeries" Version="4.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NodaTime" Version="3.0.5" />
-    <PackageReference Include="OpenAI" Version="2.1.0" />
+    <PackageReference Include="OpenAI" Version="2.5.0" />
     <PackageReference Include="QLNet" Version="1.13.1" />
     <PackageReference Include="R.NET" Version="1.9.0" />
-    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.42" />
-    <PackageReference Include="QuantConnect.PredictNowNET" Version="1.0.2" />
+    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.48" />
+    <PackageReference Include="QuantConnect.PredictNowNET" Version="1.0.4" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="Catalyst" Version="1.0.54164" />
     <PackageReference Include="Catalyst.Models.English" Version="1.0.30952" />
     <PackageReference Include="CNTK.CPUOnly" Version="2.8.0-rc0.dev20200201" />
-    <PackageReference Include="LibTopoART" Version="0.98.0" />
-    <PackageReference Include="Microsoft.ML" Version="4.0.0" />
+    <PackageReference Include="LibTopoART" Version="0.98.1" />
+    <PackageReference Include="Microsoft.ML" Version="4.0.2" />
     <PackageReference Include="NumSharp" Version="0.30.0" />
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
     <PackageReference Include="SciSharp.TensorFlow.Redist-Linux-GPU" Version="2.11.1" />
@@ -114,11 +115,7 @@ if __name__ == '__main__':
     <PackageReference Include="SharpNeatLib" Version="2.4.4" />
     <PackageReference Include="TensorFlow.Keras" Version="0.15.0" />
     <PackageReference Include="TensorFlow.NET" Version="0.150.0" />
-    <PackageReference Include="Plotly.NET" Version="5.1.0" />
-    <PackageReference Include="Plotly.NET.CSharp" Version="0.13.0" />
-    <PackageReference Include="Plotly.NET.Interactive" Version="5.0.0" />
-    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.41" />
-    <PackageReference Include="NodaTime" Version="3.0.5" />'''
+    <PackageReference Include="TorchSharp" Version="0.105.1" />'''
 
     cloud_added = {}
     for line in package_reference.split('\n'):
