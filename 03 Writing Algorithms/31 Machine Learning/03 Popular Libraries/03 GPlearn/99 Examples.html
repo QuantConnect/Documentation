@@ -25,13 +25,13 @@ class GPlearnExampleAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Request SPY data for model training, prediction and trading.
-        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         
         # 2-year data to train the model.
         training_length = 252*2
         self.training_data = RollingWindow(training_length)
         # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
+        history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
         for trade_bar in history:
             self.training_data.add(trade_bar.close)
 
@@ -58,7 +58,7 @@ class GPlearnExampleAlgorithm(QCAlgorithm):
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
         
-    def get_features_and_labels(self, n_steps=5) -&gt; None:
+    def get_features_and_labels(self, n_steps=5) -&gt; tuple[list, list]:
         # Train and predict the return data, which is more normalized and stationary.
         training_df = list(self.training_data)[::-1]
         daily_pct_change = ((np.roll(training_df, -1) - training_df) / training_df)[:-1]
@@ -99,10 +99,10 @@ class GPlearnExampleAlgorithm(QCAlgorithm):
 
         # If the predicted direction is going upward, buy SPY.
         if prediction &gt; 0:
-            self.set_holdings(self.symbol, 1)
+            self.set_holdings(self._symbol, 1)
         # If the predicted direction is going downward, sell SPY.
         elif prediction &lt; 0:            
-            self.set_holdings(self.symbol, -1)
+            self.set_holdings(self._symbol, -1)
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.
