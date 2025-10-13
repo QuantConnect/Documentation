@@ -5,48 +5,45 @@
  Example 1: Tick Signal Daily Security Bar
 </h4>
 <p>
- This example shows using a tick/pointwise signal from
- <a href="/datasets/smart-insider-corporate-buybacks">
-  Smart Insider Intention
- </a>
- dataset to buy AAPL in daily resolution. You can count down the holding trade days per each AAPL trade bar received to liquidate the position after 2 trading days.
+ This example shows using a tick/pointwise signal from the <a href="/datasets/smart-insider-corporate-buybacks">Smart Insider Intention</a> dataset while trading Starbuck's stock with daily bars. 
+ To liquidate the position after two trading days, you can count the number of <code>TradeBar</code> objects you get in the <code class='csharp'>OnData</code><code class='python'>on_data</code> method.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class PeriodTimeModelingAlgorithm : QCAlgorithm
 {
-    private Symbol _aapl;
+    private Equity _equity;
     private Symbol _smartInsiderIntention;
-    // For counting down the holding days per opening position.
+    // Add a member to track the number of days until the position
+    // should be liquidated.
     private int _holdDays = 0;
 
     public override void Initialize()
     {
-        SSetStartDate(2024, 9, 1);
+        SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-
-        // Subscribe in daily resolution can aids with counting down.
-        // We order with market on open order and will hold position for full day, so daily resolution is sufficient.
-        _aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-            
-        // Requesting insider trade intention as sentiment trading signal.
-        _smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
+        // Add an Equity asset. We will enter with a market on open order
+        // and hold for 2 full days, so daily resolution is sufficient.
+        _equity = AddEquity("SBUX", Resolution.Daily);
+        // Add insider trade intention as the sentiment trading signal.
+        _smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_equity.Symbol).Symbol;
     }
     
     public override void OnData(Slice slice)
     {
-        // Buy Apple whenever we receive a buyback intention or transaction notification due to volatility.
+        // Buy Starbuck's stock whenever we receive a buyback intention 
+        // or transaction notification due to volatility.
         if (slice.ContainsKey(_smartInsiderIntention))
         {
-            // Hold the position for 2 days to fully digest the insider intention sentiment.
-            MarketOnOpenOrder(_aapl, 100);
+            SetHoldings(_equity.Symbol, 1);
+            // Hold the position for 2 days to fully digest the insider 
+            // intention sentiment.
             _holdDays = 2;
         }
-
         // Count down the holding day per each daily trade bar received.
-        if (Portfolio[_aapl].Invested &amp;&amp; slice.Bars.ContainsKey(_aapl) &amp;&amp; _holdDays-- &lt;= 0)
+        if (_equity.Holdings.Invested && slice.Bars.ContainsKey(_equity.Symbol) && _holdDays-- <= 0)
         {
-            // Liquidate the position if 2 days were fully counted down.
-            Liquidate(_aapl);
+            // LLiquidate the position if 2 days were fully counted.
+            Liquidate(_equity.Symbol);
         }
     }
 }</pre>
@@ -82,34 +79,35 @@
 }
  </script>
  <pre class="python">class PeriodTimeModelingAlgorithm(QCAlgorithm):
-    def initialize(self) :
+    
+    def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        
-        # Subscribe in daily resolution can aids with counting down.
-        # We order with market on open order and will hold position for full day, so daily resolution is sufficient.
-        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
-
-        # Requesting insider trade intention as sentiment trading signal.
-        self.smart_insider_intention = self.add_data(SmartInsiderIntention, self.aapl).symbol
-
-        # For counting down the holding days per opening position.
-        self.hold_days = 0
+        # Add an Equity asset. We will enter with a market on open order
+        # and hold for 2 full days, so daily resolution is sufficient.
+        self._equity = self.add_equity("SBUX", Resolution.DAILY)
+        # Add insider trade intention as the sentiment trading signal.
+        self._smart_insider_intention = self.add_data(
+            SmartInsiderIntention, self._equity.symbol
+        )
+        # Add a member to track the number of days until the position
+        # should be liquidated.
+        self._hold_days = 0
 
     def on_data(self, slice: Slice):
-        # Buy Apple whenever we receive a buyback intention or transaction notification due to volatility.
-        if self.smart_insider_intention in slice:
-            # Hold the position for 2 days to fully digest the insider intention sentiment.
-            self.market_on_open_order(self.aapl, 100)
-            self.hold_days = 2
-
+        # Buy Starbuck's stock whenever we receive a buyback intention 
+        # or transaction notification due to volatility.
+        if self._smart_insider_intention.symbol in slice:
+            self.set_holdings(self._equity.symbol, 1)
+            # Hold the position for 2 days to fully digest the insider 
+            # intention sentiment.
+            self._hold_days = 2
         # Count down the holding day per each daily trade bar received.
-        if self.portfolio[self.aapl].invested and self.aapl in slice.bars:
-            self.hold_days -= 1
-
-            # Liquidate the position if 2 days were fully counted down.
-            if self.hold_days &lt;= 0:
-                self.liquidate(self.aapl)</pre>
+        if self._equity.holdings.invested and self._equity.symbol in slice.bars:
+            self._hold_days -= 1
+            # Liquidate the position if 2 days were fully counted.
+            if self._hold_days <= 0:
+                self.liquidate(self._equity.symbol)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "0",
