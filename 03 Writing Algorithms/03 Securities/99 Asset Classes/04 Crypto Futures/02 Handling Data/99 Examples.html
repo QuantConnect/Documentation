@@ -191,67 +191,86 @@
  Example 2: Future-Spot Arbitrage
 </h4>
 <p>
- Long-short arbitrage involves simultaneously trading BTCUSDT in the spot market and BTCUSDT Futures with the same size. 
+    Long-short arbitrage involves simultaneously trading BTCUSDT in the spot market and BTCUSDT Futures with the same size but in the opposite direction. 
     The following algorithm monitors the spread between these markets.
-    If the spot price exceeds the front-month Future price by a threshold, it shorts the spot market and buys the Future contract (and vice vera for the other way around), assuming their discrepancies will be wiped out within a short period due to market efficiency. 
+    If the spot price exceeds the Future price by a threshold, it shorts the spot market and buys the Future contract (and vice vera for the other way around), assuming their discrepancies will be wiped out within a short period due to market efficiency. 
     It closes the positions after the spread inverts.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">public class CryptoFutureAlgorithm : QCAlgorithm
+ <pre class="csharp">public class CryptoFutureArbitrageAlgorithm : QCAlgorithm
 {
-    private Symbol _spot;
-    private Symbol _future;
+    private Crypto _spot;
+    private CryptoFuture _future;
     private decimal _multiplier;
+    private decimal _threshold = 1.005m;  // 0.5%
     
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        // Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        // Set brokerage and account type to match your brokerage 
+        // environment for accurate fee and margin behavior.
         SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
         // In the Binance brokerage, you can't trade with USD.
-        // Set the account currency as USDT and add the starting cash.
+        // Set the account currency to USDT and add the starting cash.
         SetAccountCurrency("USDT", 50000000);
         // Add the BTCUSDT spot and Futures markets.
-        var future = AddCryptoFuture("BTCUSDT", market: Market.Binance);
-        _multiplier = future.SymbolProperties.ContractMultiplier;
-        _future = future.Symbol;
-        _spot = AddCrypto("BTCUSDT", market: Market.Binance).Symbol;
+        _spot = AddCrypto("BTCUSDT", fillForward: false, market: Market.Binance);
+        _future = AddCryptoFuture("BTCUSDT", fillForward: false, market: Market.Binance);
+        _multiplier = _future.SymbolProperties.ContractMultiplier;
     }
     
     public override void OnData(Slice slice)
     {
-        // Get the price of each market.
-        if (!(slice.Bars.ContainsKey(_spot) &amp;&amp; slice.Bars.ContainsKey(_future)))
+        // Wait for there to be a TradeBar for each asset, so we know
+        // the prices are up-to-date.
+        foreach (var security in new List&lt;Security&gt;() {_spot, _future})
+            if (!slice.Bars.ContainsKey(security.Symbol)) return;
+        var spot = _spot.Price;
+        var future = _future.Price;
+        // Buy low sell high: If one's price is above another by the 
+        // set threshold, sell it and buy the other security. The 
+        // threshold ensures there is enough profit potential to overcome
+        // the fees and slippage. Make sure to equalize the actual order
+        // size with the contract multiplier.
+        if (spot >= future * _threshold)
         {
-            return;
+            Enter(-1, 1);
         }
-        var spotPrice = slice.Bars[_spot].Price;
-        var futurePrice = slice.Bars[_future].Price;
-    
-        // To provide sufficient profit margin to overcome fee and slippage, a threshold of 2% is set.
-        // The threshold ensures there is enough profit potential to overcome the fees and slippage.
-        // Make sure to equalize the actual order size with the contract multiplier.
-        if (spotPrice &gt;= futurePrice * 1.02m)
+        else if (future >= spot * _threshold)
         {
-            var quantity = CalculateOrderQuantity(_future, 0.5m);
-            if (quantity == 0) return;
-            MarketOrder(_spot, -quantity * _multiplier);
-            MarketOrder(_future, quantity);
+            Enter(1, -1);
         }
-        else if (spotPrice * 1.02m &lt;= futurePrice)
+        // When the mispricing converges, close both positions to earn 
+        // the spread.
+        else if (_spot.Invested)
         {
-            var quantity = CalculateOrderQuantity(_future, 0.5m);
-            if (quantity == 0) return;
-            MarketOrder(_spot, quantity * _multiplier);
-            MarketOrder(_future, -quantity);
+            // Scan for an exit.
+            if ((_spot.Holdings.IsShort && spot < future) || 
+                (_spot.Holdings.IsLong && spot > future))
+            {
+                // Liquidate the spot position.
+                var quantity = Math.Min(_spot.Holdings.Quantity, _spot.BaseCurrency.Amount);
+                if (quantity < 0m)
+                {
+                    quantity /= (1 - 0.001m);  // To cover the taker fees.
+                }
+                var lotSize = _spot.SymbolProperties.LotSize;
+                MarketOrder(_spot.Symbol, -Math.Round(quantity / lotSize) * lotSize, tag: "Liquidate Spot");
+                // Liquidate the Future position.
+                Liquidate(_future.Symbol, tag: "Liquidate Future");
+            }
         }
-        // When the mispricing converges, close both positions to earn the spread.
-        else if ((Math.Round(Portfolio[_spot].Quantity, 2) &lt; 0 &amp;&amp; spotPrice &lt; futurePrice)
-            || (Math.Round(Portfolio[_spot].Quantity, 2) &gt; 0 &amp;&amp; spotPrice &gt; futurePrice))
-        {
-            Liquidate();
-        }
+    }
+
+    private void Enter(int spotSign, int futureSign)
+    {
+        var quantity = CalculateOrderQuantity(_future.Symbol, 0.5d);
+        if (quantity == 0) return;
+        // Enter the spot position.
+        MarketOrder(_spot.Symbol, spotSign * quantity * _multiplier, tag: "Spot");
+        // Enter the Future position.
+        MarketOrder(_future.Symbol, futureSign * quantity, tag: "Future");
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -286,46 +305,76 @@
     "OrderListHash": ""
 }
  </script>
- <pre class="python">class CryptoFutureAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
+ <pre class="python">class CryptoFutureArbitrageAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-
-        # Set brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
+        # Set brokerage and account type to match your brokerage 
+        # environment for accurate fee and margin behavior.
         self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
         # In the Binance brokerage, you can't trade with USD.
-        # Set the account currency as USDT and add the starting cash.
-        self.set_account_currency("USDT", 50000000)
+        # Set the account currency to USDT and add the starting cash.
+        self.set_account_currency("USDT", 50_000_000)
         # Add the BTCUSDT spot and Futures markets.
-        future = self.add_crypto_future("BTCUSDT", market=Market.BINANCE)
-        self.multiplier = future.symbol_properties.contract_multiplier
-        self._future = future.symbol
-        self._spot = self.add_crypto("BTCUSDT", market=Market.BINANCE).symbol
+        self._spot = self.add_crypto(
+            "BTCUSDT", fill_forward=False, market=Market.BINANCE
+        )
+        self._future = self.add_crypto_future(
+            "BTCUSDT", fill_forward=False, market=Market.BINANCE
+        )
+        self._multiplier = self._future.symbol_properties.contract_multiplier
+        self._threshold = 1.005  # 0.5%
     
-    def on_data(self, slice: Slice) -&gt; None:
-        # Get the price of each market.
-        if not (self._spot in slice.bars and self._future in slice.bars):
+    def on_data(self, slice: Slice) -> None:
+        # Wait for there to be a TradeBar for each asset, so we know
+        # the prices are up-to-date.
+        for security in [self._spot, self._future]:
+            if security.symbol not in slice.bars:
+                return
+        spot = self._spot.price
+        future = self._future.price
+        # Buy low sell high: If one's price is above another by the 
+        # set threshold, sell it and buy the other security. The 
+        # threshold ensures there is enough profit potential to overcome
+        # the fees and slippage. Make sure to equalize the actual order
+        # size with the contract multiplier.
+        if spot >= future * self._threshold:
+            self._enter(-1, 1)
+        elif future >= spot * self._threshold:
+            self._enter(1, -1)
+        # When the mispricing converges, close both positions to earn 
+        # the spread.
+        elif self._spot.invested:
+            # Scan for an exit.
+            if ((self._spot.holdings.is_short and spot < future) or
+                (self._spot.holdings.is_long and spot > future)):
+                # Liquidate the spot position.
+                quantity = min(
+                    self._spot.holdings.quantity, 
+                    self._spot.base_currency.amount
+                )
+                if quantity < 0:
+                    quantity /= (1 - 0.001)  # To cover the taker fees.
+                lot_size = self._spot.symbol_properties.lot_size
+                self.market_order(
+                    self._spot.symbol, 
+                    -round(quantity / lot_size) * lot_size, 
+                    tag='Liquidate Spot'
+                )
+                # Liquidate the Future position.
+                self.liquidate(self._future.symbol, tag='Liquidate Future')
+    
+    def _enter(self, spot_sign, future_sign):
+        quantity = self.calculate_order_quantity(self._future.symbol, 0.5)
+        if not quantity: 
             return
-        spot_price = slice.bars[self._spot].price
-        future_price = slice.bars[self._future].price
-        
-        # Buy low sell high: if one's price is above another by the set threshold, sell it and buy the other security.
-        # The threshold ensures there is enough profit potential to overcome the fees and slippage.
-        # Make sure to equalize the actual order size with the contract multiplier.
-        if spot_price &gt;= future_price * 1.02:
-            quantity = self.calculate_order_quantity(self._future, 0.5)
-            if quantity == 0: return
-            self.market_order(self._spot, -quantity * self.multiplier)
-            self.market_order(self._future, quantity)
-        elif spot_price * 1.02 &lt;= future_price:
-            quantity = self.calculate_order_quantity(self._future, 0.5)
-            if quantity == 0: return
-            self.market_order(self._spot, quantity * self.multiplier)
-            self.market_order(self._future, -quantity)
-        # When the mispricing converges, close both positions to earn the spread.
-        elif (self.portfolio[self._spot].quantity, 2) &lt; 0 and spot_price &lt; future_price) or
-            (round(self.portfolio[self._spot].quantity, 2) &gt; 0 and spot_price &gt; future_price)):
-            self.liquidate()</pre>
+        # Enter the spot position.
+        spot_quantity = spot_sign * quantity * self._multiplier
+        self.market_order(self._spot.symbol, spot_quantity, tag='Spot')
+        # Enter the Future position.
+        self.market_order(self._future, future_sign * quantity, tag='Future')
+</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "28",
