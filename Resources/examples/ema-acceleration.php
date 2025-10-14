@@ -23,36 +23,29 @@
         _ema = EMA(_spy, 20, Resolution.Daily);
         // Extend the size of the EMA's internal rolling window so we can access its historical values.
         _ema.Window.Size = 3;
+        // Warm-up the indicator and its internal rolling window
+        IndicatorHistory(_ema, _spy, _ema.Window.Size);
 
         // Schedule an event to rebalance SPY position at daily market open.
-        Schedule.On(
-            DateRules.EveryDay(_spy),
-            TimeRules.AfterMarketOpen(_spy, 0),
-            Rebalance
-        );
-
-        SetWarmUp(23, Resolution.Daily);
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.AfterMarketOpen(_spy, 0), Rebalance);
     }
     
     private void Rebalance()
     {
-        if (_ema.Window.IsReady)
+        // Buy if the current EMA is increasing with acceleration, indicating a strong uptrend.
+        if (_ema.Window[1] &lt; _ema &amp;&amp; _ema.Window[0] - _ema.Window[1] &gt; _ema.Window[1] - _ema.Window[2])
         {
-            // Buy if the current EMA is increasing with acceleration, indicating a strong uptrend.
-            if (_ema.Window[1] &lt; _ema &amp;&amp; _ema.Window[0] - _ema.Window[1] &gt; _ema.Window[1] - _ema.Window[2])
-            {
-                SetHoldings(_spy, 0.5m);
-            }
-            // Short if the current EMA is decreasing with acceleration, indicating a strong downtrend.
-            else if (_ema.Window[1] &gt; _ema &amp;&amp; _ema.Window[0] - _ema.Window[1] &lt; _ema.Window[1] - _ema.Window[2])
-            {
-                SetHoldings(_spy, -0.5m);
-            }
-            // Liquidate if no strong trend indicated.
-            else if (Portfolio.Invested)
-            {
-                Liquidate(_spy);
-            }
+            SetHoldings(_spy, 0.5m);
+        }
+        // Short if the current EMA is decreasing with acceleration, indicating a strong downtrend.
+        else if (_ema.Window[1] &gt; _ema &amp;&amp; _ema.Window[0] - _ema.Window[1] &lt; _ema.Window[1] - _ema.Window[2])
+        {
+            SetHoldings(_spy, -0.5m);
+        }
+        // Liquidate if no strong trend indicated.
+        else if (Portfolio.Invested)
+        {
+            Liquidate(_spy);
         }
     }
 }</pre>
@@ -68,27 +61,22 @@
         self._ema = self.ema(self.spy, 20, Resolution.DAILY)
         # Extend the size of the EMA's internal rolling window so we can access its historical values.
         self._ema.window.size = 3
+        # Warm-up the indicator and its internal rolling window
+        self.indicator_history(self._ema, self.spy, self._ema.window.size)
 
         # Schedule an event to rebalance SPY position at daily market open.
-        self.schedule.on(
-            self.date_rules.every_day(self.spy),
-            self.time_rules.after_market_open(self.spy, 0),
-            self.rebalance
-        )
-
-        self.set_warm_up(23, Resolution.DAILY)
+        self.schedule.on(self.date_rules.every_day(self.spy), self.time_rules.after_market_open(self.spy, 0), self.rebalance)
 
     def rebalance(self) -&gt; None:
-        if self._ema.window.is_ready:
-            # Buy if the current EMA is increasing with acceleration, indicating strong uptrend.
-            if (self._ema.window[1].value &lt; self._ema.current.value and
-                self._ema.window[0].value - self._ema.window[1].value &gt; self._ema.window[1].value - self._ema.window[2].value):
-                self.set_holdings(self.spy, 0.5)
-            # Short if the current EMA is decreasing with acceleration, indicating strong downtrend.
-            elif (self._ema.window[1].value &gt; self._ema.current.value and 
-                self._ema.window[0].value - self._ema.window[1].value &lt; self._ema.window[1].value - self._ema.window[2].value):
-                self.set_holdings(self.spy, -0.5)
-            # Liquidate if no strong trend indicated.
-            elif self.portfolio.invested:
-                self.liquidate(self.spy)</pre>
+        # Buy if the current EMA is increasing with acceleration, indicating strong uptrend.
+        if (self._ema.window[1].value &lt; self._ema.current.value and
+            self._ema.window[0].value - self._ema.window[1].value &gt; self._ema.window[1].value - self._ema.window[2].value):
+            self.set_holdings(self.spy, 0.5)
+        # Short if the current EMA is decreasing with acceleration, indicating strong downtrend.
+        elif (self._ema.window[1].value &gt; self._ema.current.value and 
+            self._ema.window[0].value - self._ema.window[1].value &lt; self._ema.window[1].value - self._ema.window[2].value):
+            self.set_holdings(self.spy, -0.5)
+        # Liquidate if no strong trend indicated.
+        elif self.portfolio.invested:
+            self.liquidate(self.spy)</pre>
 </div>

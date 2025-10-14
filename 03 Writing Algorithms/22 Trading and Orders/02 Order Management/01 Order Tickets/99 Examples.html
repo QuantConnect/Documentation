@@ -189,6 +189,8 @@
     private int _day = -1;
     // A variable to hold the price of the high price in the lifetime of the open position for updating the stop loss price.
     private decimal _highPrice = 0m;
+    // Update the stop loss when new high is 1% higher
+    private decimal _updateStep = 1.01m;
 
     public override void Initialize()
     {
@@ -200,36 +202,25 @@
 
     public override void OnData(Slice slice)
     {
-        if (slice.Bars.TryGetValue(_symbol, out var bar))
-        {
-            // Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
-            if (!Portfolio.Invested &amp;&amp; _day != slice.Time.Day)
-            {
-                MarketOrder(_symbol, 1);
-                // Update the day variable to avoid repeat ordering.
-                _day = slice.Time.Day;
-            }
-
-            // Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
-            // Trailing stop price will only need to be updated when the market price is higher than the current price.
-            if (_ticket != null &amp;&amp; bar.High &gt; _highPrice &amp;&amp;
-            new OrderStatus[] { OrderStatus.Submitted, OrderStatus.PartiallyFilled }.Contains(_ticket.Status))
-                _ticket.Cancel();
-                _ticket = StopMarketOrder(_symbol, -Portfolio[_symbol].Quantity, bar.High*0.9m);
-                _highPrice = bar.High;
-        }
+        if (!slice.Bars.TryGetValue(_symbol, out var bar)) return;
         
-    }
-
-    public override void OnOrderEvent(OrderEvent orderEvent)
-    {
-        // Make sure to order the stop loss order on the filled market order only.
-        if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.FillQuantity &gt; 0)
+        // Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
+        if (!Portfolio.Invested && _day != Time.Day)
         {
+            MarketOrder(_symbol, 1);
             // Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
-            _ticket = StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.9m);
-            // Save the price to check if the stop loss price should be increased.
-            _highPrice = orderEvent.FillPrice;
+            _ticket = StopMarketOrder(_symbol, -1, bar.Close*0.9m);      
+            // Update the day variable to avoid repeat ordering.
+            _day = Time.Day;
+        }
+
+        // Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
+        // Trailing stop price will only need to be updated when the market price is higher than the current price.
+        if (_ticket != null &&_ticket.Status.IsOpen() && bar.High &gt; _highPrice)
+        {
+            _ticket.Cancel();
+            _ticket = StopMarketOrder(_symbol, -Portfolio[_symbol].Quantity, bar.High*0.9m);
+            _highPrice = bar.High * _updateStep;
         }
     }
 }</pre>
@@ -245,31 +236,27 @@
         self._day = -1
         # A variable to hold the price of the high price in the lifetime of the open position for updating the stop loss price.
         self.high_price = 0
+        # Update the stop loss when new high is 1% higher
+        self.update_step = 1.01
         
     def on_data(self, slice: Slice) -&gt; None:
         bar = slice.bars.get(self._symbol)
-        if bar:
-            # Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
-            if not self.portfolio.Invested and self._day != slice.time.day:
-                self.market_order(self._symbol, 1)
-                # Update the day variable to avoid repeat ordering.
-                self._day = slice.time.day
-
-            # Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
-            # Trailing stop price will only need to be updated when the market price is higher than the current price.
-            if self._ticket and self._ticket.status in [OrderStatus.SUBMITTED, OrderStatus.PARTIALLY_FILLED]\
-            and bar.high &gt; self.high_price:
-                self._ticket.cancel()
-                self._ticket = self.stop_market_order(self._symbol, -self.portfolio[self._symbol].quantity, bar.high*0.9)
-                self.high_price = bar.high
-
-    def on_order_event(self, order_event: OrderEvent) -&gt; None:
-        # Make sure to order the stop loss order on the filled market order only.
-        if order_event.status == OrderStatus.FILLED and order_event.fill_quantity &gt; 0:
+        if not bar: return
+        # Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
+        if not self.portfolio.invested and self._day != self.time.day:
+            self.market_order(self._symbol, 1)
             # Place a 10% stop loss order to avoid large loss. Save the order ticket for tracking its status later.
-            self._ticket = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.9)
-            # Save the price to check if the stop loss price should be increased.
-            self.high_price = order_event.fill_price</pre>
+            self._ticket = self.stop_market_order(self._symbol, -1, bar.close*0.9)
+            self.high_price = bar.high * self.update_step
+            # Update the day variable to avoid repeat ordering.
+            self._day = self.time.day
+
+        # Update the trailing stop order. Since order updating is not supported in crypto exchanges, we cancel and reorder.
+        # Trailing stop price will only need to be updated when the market price is higher than the current price.
+        if self._ticket and self._ticket.status in [OrderStatus.SUBMITTED, OrderStatus.PARTIALLY_FILLED] and bar.high &gt; self.high_price:
+            self._ticket.cancel()
+            self._ticket = self.stop_market_order(self._symbol, -self.portfolio[self._symbol].quantity, bar.high*0.9)
+            self.high_price = bar.high * self.update_step</pre>
 </div>
 <h4>
  Other Examples

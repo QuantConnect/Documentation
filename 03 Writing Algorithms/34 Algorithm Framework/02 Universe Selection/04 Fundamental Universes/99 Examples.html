@@ -197,7 +197,7 @@ public class FrameworkFrameworkUniverseSelectionAlgorithm : QCAlgorithm
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetCash(100000);
+        SetCash(1000000);
         
         // Add a fundamental universe with custom selection rules for filtering.
         AddUniverseSelection(new VolumeSMAUniverseSelectionModel(10));
@@ -266,13 +266,11 @@ public class VolumeSMAUniverseSelectionModel : FundamentalUniverseSelectionModel
         }
     }
 }</pre>
-    <pre class="python">from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
-      
-class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
+    <pre class="python">class FrameworkFundamentalUniverseSelectionAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
+        self.set_cash(1_000_000)
 
         # Add a universe with custom selection rules for filtering.
         self.add_universe_selection(VolumeSMAUniverseSelectionModel(10))
@@ -289,15 +287,20 @@ class VolumeSMAUniverseSelectionModel(FundamentalUniverseSelectionModel):
     def __init__(self, period: int) -&gt; None:
         self.period = period
 
+    def create_universes(self, algorithm: QCAlgorithm) -&gt; list[Universe]:
+        return [FundamentalUniverseFactory(Market.USA, algorithm.universe_settings, 
+            lambda fundamental: self.select(algorithm, fundamental))]
+
     def select(self, algorithm: QCAlgorithm, fundamental: list[Fundamental]) -&gt; list[Symbol]:
         # Create/Update the volume SMA indicator of each stock.
+        selected = []
         for f in fundamental:
-            if f.symbol not in self._selection_data_by_symbol:
-                self._selection_data_by_symbol[f.symbol] = self.SelectionData(algorithm, f.symbol, self.period)
-            self._selection_data_by_symbol[f.symbol].update(f.end_time, f.adjusted_price, f.dollar_volume)
-
-        # Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
-        selected = [sd for sd in self._selection_data_by_symbol.values() if sd.volume_ratio &gt; 1]
+            selection_data = self._selection_data_by_symbol.get(f.symbol, self.SelectionData(algorithm, f.symbol, self.period))
+            is_ready = selection_data.update(f.end_time, f.adjusted_price, f.dollar_volume)     
+            # Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
+            if is_ready and selection_data.volume_ratio &gt; 1:
+                selected.append(selection_data)
+            self._selection_data_by_symbol[f.symbol] = selection_data
             
         # Select the 10 Equities with the highest relative volume since they have the highest capacity
         # for scalp-trading or intra-day movement.
@@ -314,14 +317,13 @@ class VolumeSMAUniverseSelectionModel(FundamentalUniverseSelectionModel):
             # Warm up the volume SMA indicator.
             algorithm.warm_up_indicator(symbol, self._sma, Resolution.DAILY, lambda data: data.volume)
 
-        def update(self, time: datetime, price: float, volume: float) -&gt; None:
+        def update(self, time: datetime, price: float, volume: float) -&gt; bool:
             # Update the SMA with today's data and calculate the relative volume position for filtering.
-            ready = self._sma.update(time, volume)
+            if not self._sma.update(time, volume):
+                return False
             sma = self._sma.current.value
-            if ready and sma &gt; 0:
-                self.volume_ratio = volume / sma
-                return ready
-            return False</pre>
+            self.volume_ratio = volume / sma if sma &gt; 0 else 0
+            return True</pre>
 </div>
 
 
