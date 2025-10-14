@@ -82,9 +82,10 @@
 }
  </script>
  <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+  
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 12, 31))
+        self.set_end_date(2024, 12, 31)
 
         self._symbol = self.add_equity("SPY").symbol
         self._indicator = SimpleMovingAverage(250)
