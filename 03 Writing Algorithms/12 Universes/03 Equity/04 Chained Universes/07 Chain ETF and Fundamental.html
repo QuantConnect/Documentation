@@ -17,6 +17,8 @@
 <div class="section-example-container testable">
  <pre class="csharp">public class ChainedUniverseAlgorithm : QCAlgorithm
 {
+    private Universe _universe;
+    
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
@@ -24,7 +26,7 @@
         SetCash(100000);
         UniverseSettings.Asynchronous = true;
         // Select QQQ constituents first, then by fundamental data.
-        AddUniverse(Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter), FundamentalSelection);
+        _universe = AddUniverse(Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter), FundamentalSelection);
     }
 
     private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
@@ -45,22 +47,24 @@
 
     public override void OnData(Slice data)
     {
-        foreach (var symbol in data.Keys)
+        foreach (var symbol in _universe.Selected)
         {
-            Debug($"{symbol} PE Ratio: {Securities[symbol].Fundamentals.ValuationRatios.PERatio}");
+            var peRatio = Securities[symbol].Fundamentals.ValuationRatios.PERatio;
         }
     }
 }</pre>
  <pre class="python">from AlgorithmImports import * 
 
+
 class ChainedUniverseAlgorithm(QCAlgorithm):
+    
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
         # Select QQQ constituents first, then by fundamental data.
-        self.add_universe(
+        self._universe = self.add_universe(
             self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter), 
             self._fundamental_selection
         )
@@ -76,8 +80,8 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
     def on_data(self, data):
-        for symbol in data.keys():
-            self.debug(f"{symbol} PE Ratio: {self.securities[symbol].fundamentals.valuation_ratios.pe_ratio}")</pre>
+        for symbol in self._universe.selected:
+            pe_ratio = self.securities[symbol].fundamentals.valuation_ratios.pe_ratio</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "0",
