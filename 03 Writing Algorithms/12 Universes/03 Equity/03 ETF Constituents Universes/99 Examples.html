@@ -21,10 +21,14 @@
         SetEndDate(2024, 12, 31);
         SetCash(10000000);
         Settings.MinimumOrderMarginPortfolioPercentage = 0m;
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // To avoid over-trading and high transaction costs, refilter and rebalance weekly.
         UniverseSettings.Schedule.On(DateRules.WeekEnd());
         // Add the SPY ETF.
-        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        _spy = AddEquity("SPY").Symbol;
         // Add a universe of the SPY constituents.
         _universe = AddUniverse(Universe.ETF(_spy, universeFilterFunc: SelectAssets));
         // Create a Scheduled Event to rebalance the portfolio.
@@ -102,10 +106,17 @@
         self.set_end_date(2024, 12, 31)
         self.set_cash(10_000_000)
         self.settings.minimum_order_margin_portfolio_percentage = 0
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # To avoid over-trading and high transaction costs, refilter and rebalance weekly.
         self.universe_settings.schedule.on(self.date_rules.week_end())
         # Add the SPY ETF.
-        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._spy = self.add_equity("SPY").symbol
         # Add a universe of the SPY constituents.
         self._universe = self.add_universe(self.universe.etf(self._spy, universe_filter_func=self._select_assets))
         # Create a Scheduled Event to rebalance the portfolio.
