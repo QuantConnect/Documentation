@@ -7,7 +7,9 @@ import joblib
 
 class ScikitLearnExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2022, 7, 4)
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        
         self.set_cash(100000)
         # Request SPY data for model training, prediction and trading.
         self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol

@@ -7,6 +7,9 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         var equity = AddEquity("SPY");
 
         // Increase the session lookback to 252 from default (2) 
