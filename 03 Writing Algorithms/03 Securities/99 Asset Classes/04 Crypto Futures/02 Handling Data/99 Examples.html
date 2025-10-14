@@ -233,33 +233,34 @@
         // threshold ensures there is enough profit potential to overcome
         // the fees and slippage. Make sure to equalize the actual order
         // size with the contract multiplier.
-        if (spot >= future * _threshold)
+        if (!_spot.Invested)
         {
-            Enter(-1, 1);
-        }
-        else if (future >= spot * _threshold)
-        {
-            Enter(1, -1);
+            if (spot >= future * _threshold)
+            {
+                Enter(-1, 1);
+            }
+            else if (future >= spot * _threshold)
+            {
+                Enter(1, -1);
+            }
+            return;
         }
         // When the mispricing converges, close both positions to earn 
         // the spread.
-        else if (_spot.Invested)
+        if ((_spot.Holdings.IsShort && spot < future) || 
+            (_spot.Holdings.IsLong && spot > future))
         {
-            // Scan for an exit.
-            if ((_spot.Holdings.IsShort && spot < future) || 
-                (_spot.Holdings.IsLong && spot > future))
+            // Liquidate the spot position.
+            var quantity = Math.Min(_spot.Holdings.Quantity, _spot.BaseCurrency.Amount);
+            if (quantity < 0m)
             {
-                // Liquidate the spot position.
-                var quantity = Math.Min(_spot.Holdings.Quantity, _spot.BaseCurrency.Amount);
-                if (quantity < 0m)
-                {
-                    quantity /= (1 - 0.001m);  // To cover the taker fees.
-                }
-                var lotSize = _spot.SymbolProperties.LotSize;
-                MarketOrder(_spot.Symbol, -Math.Round(quantity / lotSize) * lotSize, tag: "Liquidate Spot");
-                // Liquidate the Future position.
-                Liquidate(_future.Symbol, tag: "Liquidate Future");
+                quantity /= (1 - 0.001m);  // To cover the taker fees.
             }
+            var lotSize = _spot.SymbolProperties.LotSize;
+            quantity = -Math.Round(quantity / lotSize) * lotSize;
+            MarketOrder(_spot.Symbol, quantity, tag: "Liquidate Spot");
+            // Liquidate the Future position.
+            Liquidate(_future.Symbol, tag: "Liquidate Future");
         }
     }
 
@@ -339,31 +340,28 @@
         # threshold ensures there is enough profit potential to overcome
         # the fees and slippage. Make sure to equalize the actual order
         # size with the contract multiplier.
-        if spot >= future * self._threshold:
-            self._enter(-1, 1)
-        elif future >= spot * self._threshold:
-            self._enter(1, -1)
+        if not self._spot.invested:
+            if spot >= future * self._threshold:
+                self._enter(-1, 1)
+            elif future >= spot * self._threshold:
+                self._enter(1, -1)
+            return
         # When the mispricing converges, close both positions to earn 
         # the spread.
-        elif self._spot.invested:
-            # Scan for an exit.
-            if ((self._spot.holdings.is_short and spot < future) or
-                (self._spot.holdings.is_long and spot > future)):
-                # Liquidate the spot position.
-                quantity = min(
-                    self._spot.holdings.quantity, 
-                    self._spot.base_currency.amount
-                )
-                if quantity < 0:
-                    quantity /= (1 - 0.001)  # To cover the taker fees.
-                lot_size = self._spot.symbol_properties.lot_size
-                self.market_order(
-                    self._spot.symbol, 
-                    -round(quantity / lot_size) * lot_size, 
-                    tag='Liquidate Spot'
-                )
-                # Liquidate the Future position.
-                self.liquidate(self._future.symbol, tag='Liquidate Future')
+        if ((self._spot.holdings.is_short and spot < future) or
+            (self._spot.holdings.is_long and spot > future)):
+            # Liquidate the spot position.
+            quantity = min(
+                self._spot.holdings.quantity, 
+                self._spot.base_currency.amount
+            )
+            if quantity < 0:
+                quantity /= (1 - 0.001)  # To cover the taker fees.
+            lot_size = self._spot.symbol_properties.lot_size
+            quantity = -round(quantity / lot_size) * lot_size
+            self.market_order(self._spot.symbol, quantity, tag='Liquidate Spot')
+            # Liquidate the Future position.
+            self.liquidate(self._future.symbol, tag='Liquidate Future')
     
     def _enter(self, spot_sign, future_sign):
         quantity = self.calculate_order_quantity(self._future.symbol, 0.5)
