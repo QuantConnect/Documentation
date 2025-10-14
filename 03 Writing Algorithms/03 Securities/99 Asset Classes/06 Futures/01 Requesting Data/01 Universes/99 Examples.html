@@ -131,65 +131,74 @@
 }
  </script>
 </div>
-<h4>
- Example 2: Continuous Future Indicator
-</h4>
+<h4>Example 2: Continuous Future Indicator</h4>
 <p>
- One of the major applications of
- <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">
-  Continuous Future
- </a>
- is to obtain smooth price series to feed into indicators. This can ensure the indicator gets the correct price data that is comparable to the current mapped Future contract. In this example, we demonstrate a 252-day
- <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">
-  Exponential Moving Average indicator
- </a>
- update using continuous ES contract data.
+ One of the major applications of <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">Continuous Futures</a> is to obtain a smooth price series to feed into indicators. 
+ This technique ensures the indicator gets the price data that is comparable to the current contract in the continuous contract series.
+ This example demonstrates a <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a> crossover strategy based on the continuous ES contract data.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
+ <pre class="csharp">public class FutureEMACrossAlgorithm : QCAlgorithm
 {
     private Future _future;
+    private decimal _threshold = 0.01m;  // 1% above/below the EMA.
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        // Use backward ratio normalization for continuous contract to feed smooth, comparable price series to the indicator.
-        _future = AddFuture(Futures.Indices.SP500EMini,
-            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-            extendedMarketHours: true);
-        // We only want to hold position of the front month contract.
-        _future.SetFilter(u =&gt; u.FrontMonth());
+        SetCash(1000000);
+        // Seed the price of each asset with its last known price to 
+        // avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(
+                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
+            )
+        );
+        // Use backward ratio normalization for the continuous contract 
+        // so the indicator receives a smooth price series.
+        _future = AddFuture(
+            Futures.Indices.SP500EMini,
+            dataNormalizationMode: DataNormalizationMode.BackwardsRatio
+        );
+        // Only add the front-month contract.
+        _future.SetFilter(u => u.FrontMonth());
         // Create a 252-day EMA indicator as a trend estimator.
         ((dynamic)_future).ema = EMA(_future.Symbol, 252, Resolution.Daily);
-        // Warm up the EMA indicator to make it readily available.
+        // Warm up the EMA indicator to so we can trade right away.
         WarmUpIndicator(_future.Symbol, _future.Get&lt;ExponentialMovingAverage&gt;("ema"));
     }
     
     public override void OnData(Slice slice)
     {
-        // Ensure the TradeBar data is available for the Future. Only use updated price data to update the indicator and make trading decision.
-        if (slice.Bars.TryGetValue(_future.Symbol, out var bar))
+        // Ensure the TradeBar data is available for the Future before
+        // placing trades.
+        if (!slice.Bars.TryGetValue(_future.Symbol, out var bar))
         {
-            // Buy the mapped contract if the trend is estimated to go up (price above EMA).
-            if (_future.Get&lt;ExponentialMovingAverage&gt;("ema") &gt;= bar.Close)
-            {
-                SetHoldings(_future.Mapped, 0.1m);
-            }
-            // Short the mapped contract if the trend is estimated to go down (price below EMA).
-            else
-            {
-                SetHoldings(_future.Mapped, -0.1m);
-            }
-         }
+            return;
+        }
+        // Buy the mapped contract if the trend is estimated to go up 
+        // (price above the EMA).
+        var ema = _future.Get&lt;ExponentialMovingAverage&gt;("ema");
+        if (bar.Close >= ema * (1 + _threshold))
+        {
+            SetHoldings(_future.Mapped, 0.1m);
+        }
+        // Short the mapped contract if the trend is estimated to go down
+        // (price below the EMA).
+        else if (bar.Close <= ema * (1 - _threshold))
+        {
+            SetHoldings(_future.Mapped, -0.1m);
+        }
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        // Liquidate if expired (or not being the front month contract anymore) and exit universe.
-        foreach (var removed in changes.RemovedSecurities)
+        // Liquidate the contract when it is no longer the front-month
+        // contract (expired).
+        foreach (var contract in changes.RemovedSecurities)
         {
-            Liquidate(removed.Symbol);
+            Liquidate(contract.Symbol);
         }
     }
 }</pre>
@@ -224,36 +233,55 @@
     "OrderListHash": "b05e31a66bee71fce81dcd3257ae4d4a"
 }
  </script>
- <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
+ <pre class="python">class FutureEMACrossAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        # Use backward ratio normalization for continuous contract to feed smooth, comparable price series to the indicator.
-        self._future = self.add_future(Futures.Indices.SP_500_E_MINI,
+        self.set_cash(1_000_000)
+        # Seed the price of each asset with its last known price to 
+        # avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        # Define a threshold for the EMA crossover.
+        self._threshold = 0.01  # 1% above/below the EMA.
+        # Use backward ratio normalization for the continuous contract 
+        # so the indicator receives a smooth price series.
+        self._future = self.add_future(
+            Futures.Indices.SP_500_E_MINI,
             data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-            extended_market_hours=True)
-        # We only want to hold position of the front month contract.
+        )
+        # Only add the front-month contract.
         self._future.set_filter(lambda u: u.front_month())
         # Create a 252-day EMA indicator as a trend estimator.
         self._future.ema = self.ema(self._future.symbol, 252, Resolution.DAILY)
-        # Warm up the EMA indicator to make it readily available.
+        # Warm up the EMA indicator to so we can trade right away.
         self.warm_up_indicator(self._future.symbol, self._future.ema)
     
-    def on_data(self, slice: Slice) -&gt; None:
-        # Ensure the TradeBar data is available for the Future. Only use updated price data to update the indicator and make trading decision.
+    def on_data(self, slice: Slice) -> None:
+        # Ensure the TradeBar data is available for the Future before
+        # placing trades.
         bar = slice.bars.get(self._future.symbol)
-        if bar:
-            # Buy the mapped contract if the trend is estimated to go up (price above EMA).
-            if self._future.ema.current.value &gt;= bar.close:
-                self.set_holdings(self._future.mapped, 0.1)
-            # Short the mapped contract if the trend is estimated to go down (price below EMA).
-            else:
-                self.set_holdings(self._future.mapped, -0.1)
+        if not bar:
+            return
+        # Buy the mapped contract if the trend is estimated to go up 
+        # (price above the EMA).
+        if bar.close >= self._future.ema.current.value * (1+self._threshold):
+            self.set_holdings(self._future.mapped, 0.1)
+        # Short the mapped contract if the trend is estimated to go down
+        # (price below the EMA).
+        elif bar.close <= self._future.ema.current.value * (1-self._threshold):
+            self.set_holdings(self._future.mapped, -0.1)
     
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate if expired (or not being the front month contract anymore) and exit universe.
-        for removed in changes.removed_securities:
-            self.liquidate(removed.symbol)</pre>
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        # Liquidate the contract when it is no longer the front-month
+        # contract (expired).
+        for contract in changes.removed_securities:
+            self.liquidate(contract.symbol)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "2117",
