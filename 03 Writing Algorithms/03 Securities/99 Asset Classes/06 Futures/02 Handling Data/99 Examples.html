@@ -7,11 +7,7 @@
 <p>
  Spot Future is referred to as the continuous Future contract, which is usually mapped by the front month contract or the contract with the most open interest. 
     When a contract expires or is very close to expiring, traders usually rollover from the current contract to the next contract to avoid price settlement and remain invested. 
-    The following algorithm demonstrates rolling over with
- <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">
-  limit orders
- </a>
- .
+    The following algorithm demonstrates rolling over with <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">limit orders</a>.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
@@ -186,80 +182,93 @@
 }
  </script>
 </div>
-<!-- Waiting on https://github.com/QuantConnect/Lean/issues/8386
-Replace with these algorithms: https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_1e88381805fbc901c39edd6e54229dd7.html
-
 
 <h4>Example 2: Micro Gold vs Gold</h4>
-<p>The following example will demonstrate how to use <code class="csharp">SymbolPropertiesDatabase</code><code class="python">self.symbol_properties_database</code> to obtain the contract multipliers of both Micro Gold and Gold Future contracts. By means of that, it then invests $500k nominal value for each contract.</p>
-<div class="section-example-container">
-    <pre class="csharp">public class FutureExampleAlgorithm : QCAlgorithm
+<p>
+ The following example demonstrates how to use <code class="csharp">SymbolPropertiesDatabase</code><code class="python">self.symbol_properties_database</code> to obtain the contract multipliers of both Micro Gold and Gold Future contracts. 
+ The algorithm uses it to invest $500k of nominal value into each contract.
+</p>
+<div class="section-example-container testable">
+    <pre class="csharp">public class FutureNominalBuysAlgorithm : QCAlgorithm
 {
-    private Future _gold, _microGold;
-    private decimal _goldMulitplier, _microGoldMulitplier;
-    
+    private List&lt;Future&gt; _futures = new();
+
     public override void Initialize()
     {
-        SetCash(1000000);
-        // Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts.
-        _gold = AddFuture(Futures.Metals.Gold,
-            extendedMarketHours: true,
-            dataMappingMode: DataMappingMode.OpenInterest,
-            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-            contractDepthOffset: 0);
-        _microGold = AddFuture(Futures.Metals.MicroGold,
-            extendedMarketHours: true,
-            dataMappingMode: DataMappingMode.OpenInterest,
-            dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
-            contractDepthOffset: 0);
-        // The contract multiplier is cached in the Security SymbolProperties property from the symbol properties database.
-        _goldMulitplier = _gold.SymbolProperties.ContractMultiplier;
-        _microGoldMulitplier = _microGold.SymbolProperties.ContractMultiplier;
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(1_000_000);
+        // Set the continuous contract mapping criteria for both Futures 
+        // since we want to trade the most liquid contracts.
+        foreach (var ticker in new[] { Futures.Metals.Gold, Futures.Metals.MicroGold })
+        {
+            var future = AddFuture(
+                ticker,
+                extendedMarketHours: true,
+                dataMappingMode: DataMappingMode.OpenInterest,
+                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+                contractDepthOffset: 0
+            );
+            future.SetFilter(0, 180);
+            _futures.Add(future);
+        }
     }
-    
+
     public override void OnData(Slice slice)
     {
-        // Make sure to calculate the order size by the most updated price data of both contracts.
-        if (!Portfolio.Invested && slice.Bars.ContainsKey(_gold.Symbol) && slice.Bars.ContainsKey(_microGold.Symbol))
+        // Wait until we aren't invested and we have bars for all Futures.
+        if (!Portfolio.Invested && _futures.All(f => slice.Bars.ContainsKey(f.Symbol)))
         {
-            // Calculate the order size for $500k.
-            // Get the quotient after dividing the contract multiplier since the order size must be whole number.
-            var goldQuantity = Math.Floor(500000m / slice.Bars[_gold.Symbol].Close / _goldMulitplier);
-            var microGoldQuantity = Math.Floor(500000m / slice.Bars[_microGold.Symbol].Close / _microGoldMulitplier);
-    
-            MarketOrder(_gold.Mapped, goldQuantity);
-            MarketOrder(_microGold.Mapped, microGoldQuantity);
+            foreach (var future in _futures)
+            {
+                // Calculate the order size for $500k. Get the quotient 
+                // after dividing by the contract multiplier  since the 
+                // order size must be whole number.
+                var quantity = (int)Math.Floor(
+                    500_000m / (future.Price * future.SymbolProperties.ContractMultiplier)
+                );
+                if (quantity == 0) {
+                    continue;
+                }
+                MarketOrder(future.Mapped, quantity);
+            }
         }
     }
 }</pre>
-    <pre class="python">class FutureExampleAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        self.set_cash(1000000)
-        # Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts.
-        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
-        self.gold = self.add_future(Futures.Metals.GOLD,
-            extended_market_hours=True,
-            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
-            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-            contract_depth_offset=0)
-        self.micro_gold = self.add_future(Futures.Metals.MICRO_GOLD,
-            extended_market_hours=True,
-            data_mapping_mode=DataMappingMode.OPEN_INTEREST,
-            data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
-            contract_depth_offset=0)
-        # The contract multiplier is cached in the Security symbol_properties property from the symbol properties database.
-        self.gold_multiplier = self.gold.symbol_properties.contract_multiplier
-        self.micro_gold_multiplier = self.micro_gold.symbol_properties.contract_multiplier
-        
-    def on_data(self, slice: Slice) -&gt; None:
-        # Make sure to calculate the order size by the most updated price data of both contracts.
-        if not self.portfolio.invested and self.gold.symbol in slice.bars and self.micro_gold.symbol in slice.bars:
-            # Calculate the order size for $500k.
-            # Get the quotient after dividing the contract multiplier since the order size must be whole number.
-            gold_quantity = 500000 / slice.bars[self.gold.symbol].close // self.gold_multiplier
-            micro_gold_quantity = 500000 / slice.bars[self.micro_gold.symbol].close // self.micro_gold_multiplier
-    
-            self.market_order(self.gold.mapped, gold_quantity)
-            self.market_order(self.micro_gold.mapped, micro_gold_quantity)</pre>
+    <pre class="python">class FutureNominalBuysAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(1_000_000)
+        # Set the continuous contract mapping criteria for both Futures 
+        # since we want to trade the most liquid contracts.
+        self._futures = []
+        for ticker in [Futures.Metals.GOLD, Futures.Metals.MICRO_GOLD]:
+            future = self.add_future(
+                ticker,
+                extended_market_hours=True,
+                data_mapping_mode=DataMappingMode.OPEN_INTEREST,
+                data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
+                contract_depth_offset=0
+            )
+            future.set_filter(0, 180)
+            self._futures.append(future)
+
+    def on_data(self, slice: Slice) -> None:
+        # Wait until we aren't invested and we have bars for all Futures.
+        if (not self.portfolio.invested and 
+            all(future.symbol in slice.bars for future in self._futures)):
+            for future in self._futures:
+                # Calculate the order size for $500k. Get the quotient 
+                # after dividing by the contract multiplier since the 
+                # order size must be whole number.
+                quantity = (
+                    500_000 
+                    / future.price 
+                    // future.symbol_properties.contract_multiplier
+                )
+                if not quantity:
+                    continue
+                self.market_order(future.mapped, quantity)</pre>
 </div>
--->
