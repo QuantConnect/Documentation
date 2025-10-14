@@ -10,6 +10,7 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+        SetCash(500000);
         // Seed the price of each asset with its last known price to avoid trading errors.
         SetSecurityInitializer(
             new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
@@ -95,6 +96,7 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
+        self.set_cash(500_000)
         # Seed the price of each asset with its last known price to avoid trading errors.
         self.set_security_initializer(
             BrokerageModelSecurityInitializer(
