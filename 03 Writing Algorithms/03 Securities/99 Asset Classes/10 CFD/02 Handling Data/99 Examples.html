@@ -217,13 +217,13 @@
             self.schedule.on(
                 self.date_rules.every_day(symbol),
                 self.time_rules.after_market_open(symbol, 1),
-                lambda: self.set_holdings(symbol, 0.3)
+                lambda symbol=symbol: self.set_holdings(symbol, 0.3)
             )
             # Liquidate before market close.
             self.schedule.on(
                 self.date_rules.every_day(symbol),
                 self.time_rules.before_market_close(symbol, 1),
-                lambda: self.liquidate(symbol)
+                lambda symbol=symbol: self.liquidate(symbol)
             )
 </pre>
  <script class="python-result" type="text">
