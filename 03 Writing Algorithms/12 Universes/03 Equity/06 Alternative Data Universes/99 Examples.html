@@ -405,47 +405,66 @@
 }
  </script>
  <pre class="python">class SmartInsiderIntentionUniverseAlgorithm(QCAlgorithm):
-    _buyback_size = {}
 
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
-
-        # Allow a week to capitalize the sentiment.
-        self.schedule.on(
-            self.date_rules.week_start(),
-            self.time_rules.at(9, 30),
-            self.rebalance
+        # Seed the price of each asset with its last known price to 
+        # avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
         )
+        # Add a universe that selects assets at the start of each week.
+        # The universe should select Equities that have announced a 
+        # material buyback plan, since they have confidence in their 
+        # future prospect and the reduction in supply can drive their 
+        # price up.
         self.universe_settings.schedule.on(self.date_rules.week_start())
-        # Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
-        self.add_universe(SmartInsiderIntentionUniverse, self.intention_selection)
+        self.add_universe(SmartInsiderIntentionUniverse, self._select_assets)
+        # Add a Scheduled Event to rebalance the portfolio at the start
+        # of each week. The weekly schedule allows time to capitalize 
+        # the market swings from the positive sentiment.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.schedule.on(
+            self.date_rules.week_start(spy),
+            self.time_rules.after_market_open(spy, 1),
+            self._rebalance
+        )
     
-    def intention_selection(self, alt_coarse: list[SmartInsiderIntentionUniverse]) -&gt; list[Symbol]:
+    def _select_assets(
+            self, 
+            alt_coarse: list[SmartInsiderIntentionUniverse]) -> list[Symbol]:
+        self._buyback_size = {}
         selected = []
-        
         for d in alt_coarse:
-            # A material buyback percentage size to have better confidence in its prospect.
-            if d.amount_value and d.amount_value &gt; 5000000:
-                # Update buyback size dictionary for sizing.
+            # Select assets that have a material buyback size to have 
+            # strong confidence.
+            if d.amount_value and d.amount_value > 10_000_000:
+                # Record the buyback size in the dictionary.
                 self._buyback_size[d.symbol] = d.amount_value
                 selected.append(d.symbol)
-
         return selected
 
-    def rebalance(self) -&gt; None:
-        # Get the size of all buyback size to normalize the weightings.
+    def _rebalance(self) -> None:
+        # Get the sum of all buyback size so we can scale the portfolio
+        # weights based on the buyback size.
         buyback_sum = sum(self._buyback_size.values())
-        # Equally invest in insider buying companies to evenly dissipate the capital risk.
-        self.set_holdings([PortfolioTarget(symbol, size / buyback_sum) for symbol, size in self._buyback_size.items()])
+        # Place the trades to rebalance the portfolio.
+        self.set_holdings(
+            [
+                PortfolioTarget(symbol, size / buyback_sum) 
+                for symbol, size in self._buyback_size.items()
+            ]
+        )
         
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate and remove from universe for the ones not being recently-purchase by insiders.
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        # Liquidate assets when they leave the universe.
         for removed in changes.removed_securities:
             self.liquidate(removed.symbol)
-            if removed.symbol in self._buyback_size:
-                self._buyback_size.pop(removed.symbol)</pre>
+            self._buyback_size.pop(removed.symbol, None)</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "54",
