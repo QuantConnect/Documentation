@@ -44,11 +44,14 @@
 
     public override void OnData(Slice data)
     {
-        foreach (var (symbol, chain) in data.OptionChains)
+        // Iterate through each Option chain.
+        foreach (var (canonicalSymbol, chain) in data.OptionChains)
         {
+            var equitySymbol = canonicalSymbol.Underlying;
             foreach (var contract in chain)
             {
-                Debug($"Found {contract.Symbol} option contract for {symbol}");
+                var contractSymbol = contract.Symbol;
+                var price = contract.LastPrice;
             }
         }
     }
@@ -86,7 +89,9 @@
  </script>
  <pre class="python">from AlgorithmImports import *
 
+  
 class ChainedUniverseAlgorithm(QCAlgorithm):
+  
     def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -111,9 +116,12 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         return option_filter_universe.strikes(0, 2).front_month().calls_only()
         
     def on_data(self, data: Slice) -&gt; None:
-        for symbol, chain in data.option_chains.items():
+        # Iterate through each Option chain.
+        for canonical_symbol, chain in data.option_chains.items():
+            equity_symbol = canonical_symbol.underlying
             for contract in chain:
-                self.debug(f"Found {contract.symbol} option contract for {symbol}")</pre>
+                contract_symbol = contract.symbol
+                price = contract.last_price</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "0",
