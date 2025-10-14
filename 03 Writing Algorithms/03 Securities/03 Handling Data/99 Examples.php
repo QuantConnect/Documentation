@@ -147,57 +147,51 @@
  The following algorithm calculates the bid and ask sizes of the latest SPY quote ticks. Then, buy SPY if bid size is greater than ask size, indicating supply is greater than demand. Else, sell if bid size is smaller than ask size, indicating supply is smaller than supply.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">public class HandlingSecuritiesDataAlgorithm : QCAlgorithm
+ <pre class="csharp">public class BidAskSizeTickAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
     // Set up variables to save the bid and ask sizes.
-    private decimal _bidSize = 0m;
-    private decimal _askSize = 0m;
+    private decimal _bidSize = 0m, _askSize = 0m;
     private int _hour = -1;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31);
+        SetEndDate(2024, 9, 10);
+        // Seed the price of each asset with its last known price to 
+        // avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(
+                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
+            )
+        );
         _symbol = AddEquity("SPY", Resolution.Tick).Symbol;
     }
 
     public override void OnData(Slice slice)
     {
         // Check if the Ticks object contain SPY tick data.
-        if (slice.Ticks.ContainsKey(_symbol))
-        {
-            var ticks = slice.Ticks[_symbol];
-            
-            // Iterate all related ticks to calculate the bid and ask sizes.
-            // Make sure the tick data is a quote instead of a trade.
-            foreach (var tick in ticks.Where(tick =&gt; tick.TickType == TickType.Quote))
+        if (slice.Ticks.TryGetValue(_symbol, out var ticks))
+        {            
+            // Iterate all the ticks to calculate the bid and ask sizes.
+            foreach (var tick in ticks.Where(tick => tick.TickType == TickType.Quote))
             {
                 // Update the bid or ask size.
                 _bidSize += tick.BidSize;
                 _askSize += tick.AskSize;
             }
         }
-
-        // Invest according to aggregated hour bid ask sizes.
+        // Trade at the top of each hour.
         if (slice.Time.Hour != _hour)
         {
             // Invest based on supply-demand relationship from all ticks.
-            // If bid size is above ask size, meaning supply is greater than demand, which drives the price up.
-            if (_bidSize &gt; _askSize)
-            {
-                SetHoldings(_symbol, 0.5m);
-            }
-            // Else, meaning supply is lower than demand, which drives the price down.
-            else
-            {
-                SetHoldings(_symbol, -0.5m);
-            }
-
+            // If bid size is above ask size, supply is greater than 
+            // demand, which drives the price up. Otherwise, supply is 
+            // lower than demand, which drives the price down.
+            SetHoldings(_symbol, _bidSize > _askSize ? 0.5m : -0.5m);
             // Reset the bid and ask size variables.
             _bidSize = 0;
             _askSize = 0;
-
             _hour = slice.Time.Hour;
         }
     }
@@ -233,44 +227,48 @@
     "OrderListHash": "4161f34e9bc822b91229b5f1db068e2c"
 }
  </script>
- <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+ <pre class="python">class BidAskSizeTickAlgorithm(QCAlgorithm):
     # Set up variables to save the bid and ask sizes.
     _bid_size = 0
     _ask_size = 0
     _hour = -1
 
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 12, 31)
-        self._symbol = self.add_equity("SPY", Resolution.TICK).symbol
+        self.set_end_date(2024, 9, 10)
+        # Seed the price of each asset with its last known price to 
+        # avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        self._symbol = self.add_equity('SPY', Resolution.TICK).symbol
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Check if the Ticks object contain SPY tick data.
-        if slice.ticks.contains_key(self._symbol):
-            ticks = slice.ticks[self._symbol]
-
-            # Iterate all related ticks to calculate the bid and ask sizes.
+    def on_data(self, slice: Slice) -> None:
+        # Check if the Slice contain SPY tick data.
+        ticks = slice.ticks.get(self._symbol)
+        if ticks:
+            # Iterate all the ticks to calculate the bid and ask sizes.
             for tick in ticks:
                 # Make sure the tick data is a quote instead of a trade.
                 if tick.tick_type == TickType.QUOTE:
-                    # Update the bid or ask size.
+                    # Update the bid and ask sizes.
                     self._bid_size += tick.bid_size
                     self._ask_size += tick.ask_size
-            
-        # Invest according to aggregated hour bid ask sizes.
+        # Trade at the top of each hour.
         if slice.time.hour != self._hour:
             # Invest based on supply-demand relationship from all ticks.
-            # If bid size is above ask size, meaning supply is greater than demand, which drives the price up.
-            if self._bid_size &gt; self._ask_size:
-                self.set_holdings(self._symbol, 0.5)
-            # Else, meaning supply is lower than demand, which drives the price down.
-            else:
-                self.set_holdings(self._symbol, -0.5)
-            
+            # If bid size is above ask size, supply is greater than 
+            # demand, which drives the price up. Otherwise, supply is 
+            # lower than demand, which drives the price down.
+            self.set_holdings(
+                self._symbol, 0.5 if self._bid_size > self._ask_size else -0.5
+            )
             # Reset the bid and ask size variables.
             self._bid_size = 0
             self._ask_size = 0
-        
             self._hour = slice.time.hour</pre>
  <script class="python-result" type="text">
   {
