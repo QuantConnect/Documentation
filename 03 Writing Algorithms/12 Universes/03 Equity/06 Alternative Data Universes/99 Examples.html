@@ -162,48 +162,64 @@
   Insider Trading
  </a>
  to create a universe of US Equities that insiders have recently purchased.
-        It then invest invest equally into the companies with positive insider trades, which may provide extra confidence in their expected return, and hold for 3 months.
+        It then invests equally into the companies with positive insider trades, which may provide extra confidence in their expected return, and hold for 3 months.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class InsiderTradingUniverseAlgorithm : QCAlgorithm
 {
-    private List&lt;Symbol&gt; _universe = new();
+    private Universe _universe;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-
-        // Keep each security in the universe for a minimum of 30 days to digest the insiders purchase sentiment.
+        // Seed the price of each asset with its last known price to 
+        // avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        // Keep each security in the universe for a minimum of 30 days to 
+        // digest the insiders purchase sentiment.
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.FromDays(30);
-        // Using QuiverInsiderTrading dataset for insider trade detection and filtering.
-        AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altData =&gt;
-        {
-            // Select assets that insiders have the most purchase, which may provide extra confidence in their expected return.
-            return (from d in altData.OfType&lt;QuiverInsiderTradingUniverse&gt;()
-                   where d.Shares.HasValue &amp;&amp; d.Shares.Value &gt; 0m
-                   orderby d.Shares.Value descending
-                   select d.Symbol).Take(10);
-        });
+        // Add the QuiverInsiderTrading dataset for insider trade 
+        // detection and filtering.
+        _universe = AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(SelectAssets);
+        // Add a Scheduled Event to rebalance the portfolio each day.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        Schedule.On(DateRules.EveryDay(spy), TimeRules.AfterMarketOpen(spy, 1), Rebalance);
     }
 
-    public override void OnData(Slice slice)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;BaseData&gt; altData)
     {
-        // Equally invest in insider buying companies to evenly dissipate the capital risk.
-        SetHoldings(_universe.Select(x =&gt; new PortfolioTarget(x, 1m / _universe.Count)).ToList());
-    }
-    
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        // Update universe to trade.
-        _universe.AddRange(changes.AddedSecurities.Select(x =&gt; x.Symbol).ToList());
-
-        // Liquidate and remove from universe for the ones not being recently-purchase by insiders.
-        foreach (var removed in changes.RemovedSecurities)
+        // Calculate the net dollar volume of insider trades for each
+        // asset.
+        var dollarVolumeBySymbol = new Dictionary&lt;Symbol, decimal?&gt;();
+        foreach (QuiverInsiderTradingUniverse data in altData)
         {
-            Liquidate(removed.Symbol);
-            _universe.Remove(removed.Symbol);
+            if (data.PricePerShare == 0m || data.PricePerShare == null)
+            {
+                continue;
+            }
+            if (!dollarVolumeBySymbol.ContainsKey(data.Symbol))
+            {
+                dollarVolumeBySymbol[data.Symbol] = 0;
+            }
+            dollarVolumeBySymbol[data.Symbol] += data.Shares * data.PricePerShare;
         }
+        // Select the 10 assets with the largest dollar volume of insider
+        // trades.
+        return dollarVolumeBySymbol
+            .OrderByDescending(kvp => kvp.Value)
+            .Take(10)
+            .Select(kvp => kvp.Key);
+    }
+
+    public void Rebalance()
+    {
+        // Equally invest in insider buying companies to evenly  
+        // dissipate the capital risk.
+        var symbols = _universe.Selected.Where(symbol => Securities[symbol].Price != 0);
+        SetHoldings(symbols.Select(s => new PortfolioTarget(s, 1m / symbols.Count())).ToList(), true);
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -237,38 +253,66 @@
     "OrderListHash": "5314f88bf32a8c40fce2f3725fc93381"
 }
  </script>
- <pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
-    _universe = []
+ <pre class="python">from AlgorithmImports import *
 
-    def initialize(self) -&gt; None:
+  
+class InsiderTradingUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-
-        # Keep each security in the universe for a minimum of 30 days to digest the insiders purchase sentiment.
+        # Seed the price of each asset with its last known price to 
+        # avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        # Keep each security in the universe for a minimum of 30 days to 
+        # digest the insiders purchase sentiment.
         self.universe_settings.minimum_time_in_universe = timedelta(30)
-        # Using QuiverInsiderTrading dataset for insider trade detection and filtering.
-        self.add_universe(QuiverInsiderTradingUniverse, self.selection)
+        # Add the QuiverInsiderTrading dataset for insider trade 
+        # detection and filtering.
+        self._universe = self.add_universe(
+            QuiverInsiderTradingUniverse, self._select_assets
+        )
+        # Add a Scheduled Event to rebalance the portfolio each day.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.schedule.on(
+            self.date_rules.every_day(spy), 
+            self.time_rules.after_market_open(spy, 1), 
+            self._rebalance
+        )        
 
-    def selection(self, alt_data: list[QuiverInsiderTradingUniverse]) -&gt; None:
-        # Select assets that insiders have the most purchase, which may provide extra confidence in their expected return.
-        filtered = sorted([x for x in alt_data if x.shares and x.shares &gt; 0],
-                        key=lambda x: x.shares,
-                        reverse=True)[:10]
-        return [x.symbol for x in filtered]
-        
-    def on_data(self, slice: Slice) -&gt; None:
-        # Equally invest in insider buying companies to evenly dissipate the capital risk.
-        self.set_holdings([PortfolioTarget(x, 1. / len(self._universe)) for x in self._universe])
+    def _select_assets(
+            self, alt_data: list[QuiverInsiderTradingUniverse]) -> list[Symbol]:
+        # Calculate the net dollar volume of insider trades for each
+        # asset.
+        dollar_volume_by_symbol = {}
+        for data in alt_data:
+            symbol = data.symbol
+            if not data.price_per_share:
+                continue
+            if symbol not in dollar_volume_by_symbol:
+                dollar_volume_by_symbol[symbol] = 0
+            dollar_volume_by_symbol[symbol] += data.shares * data.price_per_share
+        # Select the 10 assets with the largest dollar volume of insider
+        # trades.
+        return [
+            symbol for symbol, _ in sorted(
+                dollar_volume_by_symbol.items(), key=lambda kvp: kvp[1]
+            )[-10:]
+        ]
 
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Update universe to trade.
-        self._universe.extend([x.symbol for x in changes.added_securities])
-
-        # Liquidate and remove from universe for the ones not being recently-purchase by insiders.
-        for removed in changes.removed_securities:
-            self.liquidate(removed.symbol)
-            if removed.symbol in self._universe:
-                self._universe.remove(removed.symbol)</pre>
+    def _rebalance(self):
+        # Equally invest in insider buying companies to evenly  
+        # dissipate the capital risk.
+        symbols = [s for s in self._universe.selected if self.securities[s].price]
+        self.set_holdings(
+            [PortfolioTarget(symbol, 1/len(symbols)) for symbol in symbols],
+            True
+        )</pre>
 </div>
 <h4>
  Example 3: Share Buyback Universe
