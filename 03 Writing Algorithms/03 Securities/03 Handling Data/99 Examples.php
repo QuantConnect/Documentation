@@ -144,7 +144,9 @@
  Example 2: Get Tick Data
 </h4>
 <p>
- The following algorithm calculates the bid and ask sizes of the latest SPY quote ticks. Then, buy SPY if bid size is greater than ask size, indicating supply is greater than demand. Else, sell if bid size is smaller than ask size, indicating supply is smaller than supply.
+ The following algorithm calculates the bid and ask sizes of the latest SPY quote ticks and then trades at the top of each hour. 
+ During each rebalance, it buys SPY if bid size is greater than ask size since supply is greater than demand in this case. 
+ If bid size is smaller than ask size, it sells SPY since demand is greater than supply in this case.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class BidAskSizeTickAlgorithm : QCAlgorithm
