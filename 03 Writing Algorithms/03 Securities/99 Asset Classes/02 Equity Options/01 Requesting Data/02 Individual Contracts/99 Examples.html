@@ -533,7 +533,12 @@
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(1000000000);
-
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(
+                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
+            )
+        );
         // Set the data normalization mode as raw for option strike-price comparability.
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
     }
@@ -613,7 +618,13 @@
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(1000000000)
-        
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # Set the data normalization mode as raw for option strike-price comparability.
         self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
         # Set OTM threshold for wheel strategy profit margin.
@@ -681,11 +692,7 @@
  </script>
 </div>
 <p>
- For more details, refer to the
- <a href="https://www.quantconnect.com/research/17871/automating-the-wheel-strategy/p1">
-  Wheel Strategy research post
- </a>
- .
+ For more details, refer to the<a href="https://www.quantconnect.com/research/17871/automating-the-wheel-strategy/p1">Wheel Strategy research post</a>.
 </p>
 <h4>
  Example 5: Scan and Update Option Chain Every 5 Minutes
