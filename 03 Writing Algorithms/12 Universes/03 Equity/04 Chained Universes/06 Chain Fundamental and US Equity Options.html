@@ -47,12 +47,14 @@
 
     public override void OnData(Slice data)
     {
-        // Iterate each option chain to assert the contracts being selected.
-        foreach (var (symbol, chain) in data.OptionChains)
+        // Iterate through each Option chain.
+        foreach (var (canonicalSymbol, chain) in data.OptionChains)
         {
+            var equitySymbol = canonicalSymbol.Underlying;
             foreach (var contract in chain)
             {
-                Debug($"Found {contract.Symbol} option contract for {symbol}");
+                var contractSymbol = contract.Symbol;
+                var price = contract.LastPrice;
             }
         }
     }
@@ -91,34 +93,36 @@
  <pre class="python">from AlgorithmImports import *
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
+    
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         self.universe_settings.asynchronous = True
         # Need to set data normalization mode to raw for options to compare the strike price fairly.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-
         # Filter for equities with fundamental data first.
         universe = self.add_universe(self._fundamental_function)
         # Based on the filtered equities, request an option universe with them as underlying.
         self.add_universe_options(universe, self._option_filter_function)
 
-    def _fundamental_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+    def _fundamental_function(self, fundamental: list[Fundamental]) -> list[Symbol]:
         # Filter for equities with the lowest PE Ratio first.
         filtered = [f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio)]
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def _option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+    def _option_filter_function(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
         # Select the front month ATM calls.
         return option_filter_universe.strikes(0, 2).front_month().calls_only()
         
-    def on_data(self, data: Slice) -&gt; None:
-        # Iterate each option chain to assert the contracts being selected.
-        for symbol, chain in data.option_chains.items():
+    def on_data(self, data: Slice) -> None:
+        # Iterate through each Option chain.
+        for canonical_symbol, chain in data.option_chains.items():
+            equity_symbol = canonical_symbol.underlying
             for contract in chain:
-                self.debug(f"Found {contract.symbol} option contract for {symbol}")</pre>
+                contract_symbol = contract.symbol
+                price = contract.last_price</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "0",
