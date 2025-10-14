@@ -10,6 +10,10 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // Subscribe to the underlying asset.
         <?=$underlyingSubscriptionC?>
     
@@ -91,6 +95,13 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # Subscribe to the underlying asset.
         <?=$underlyingSubscriptionPy?>
 
@@ -100,7 +111,6 @@
             self.time_rules.at(9, 0),
             self._update_contracts_and_greeks
         )
-        
         self._options = None
 
     def _update_contracts_and_greeks(self) -&gt; None:
