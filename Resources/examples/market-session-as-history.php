@@ -5,6 +5,8 @@
 {
     public override void Initialize()
     {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
         var equity = AddEquity("SPY");
 
         // Increase the session lookback to 252 from default (2) 
@@ -38,6 +40,8 @@
 }</pre>
     <pre class="python">class MarketSessionAsDailyHistory(QCAlgorithm):
     def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
         equity = self.add_equity("SPY")
 
         # Increase the session lookback to 252 from default (2) 
