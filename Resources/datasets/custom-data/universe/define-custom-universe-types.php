@@ -62,13 +62,8 @@ class MyCustomUniverseDataClass(PythonData):
 <div class="section-example-container">
 <pre class="csharp">public class MyCustomUniverseDataClass : BaseData 
 {
-    [JsonProperty(PropertyName = "Attr1")]
     public int CustomAttribute1 { get; set; }
-
-    [JsonProperty(PropertyName = "Ticker")]
     public string Ticker { get; set; }
-    
-    [JsonProperty(PropertyName = "date")]
     public DateTime Date { get; set; }
 
     public override DateTime EndTime 
