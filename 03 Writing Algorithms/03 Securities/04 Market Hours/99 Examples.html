@@ -1,3 +1,5 @@
+<p>The follow examples demonstrate some common practices for trading with market hours data.</p>
+
 <h4>
  Example 1: Only Within 1 Hour Of Market Open And Close
 </h4>
@@ -124,37 +126,35 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        // Enable extended market hours feed
+        // Add SPY data with extended market hours.
         _spy = AddEquity("SPY", extendedMarketHours: true);
     }
 
     public override void OnData(Slice slice)
     {
         if (!slice.QuoteBars.ContainsKey(_spy.Symbol)) return;
-
-        var exchangeHours = _spy.Exchange.Hours;
-        // Check it is extended market hours before market open and no position/open order
-        if (IsBeforeMarketOpenExtendedHours(exchangeHours, slice.Time)
-            &amp;&amp; !Portfolio[_spy.Symbol].Invested
-            &amp;&amp; Transactions.GetOpenOrderTickets(_spy.Symbol).Count() == 0)
+        // During pre-market hours, place an unmarketable limit order.
+        if (!_spy.Invested &&
+            IsBeforeMarketOpenExtendedHours(slice.Time) &&
+            Transactions.GetOpenOrderTickets(_spy.Symbol).Count() == 0)
         {
-            // Short sell at a higher quote
-            LimitOrder(_spy.Symbol, -10, slice.QuoteBars[_spy.Symbol].Bid.Close * 1.005m);
+            LimitOrder(_spy.Symbol, -10, _spy.BidPrice * 1.005m);
         }
         // Check if the normal market is opening and any position
-        else if (exchangeHours.IsOpen(slice.Time, extendedMarketHours: false) &amp;&amp; Portfolio[_spy.Symbol].Invested)
+        else if (_spy.Invested && _spy.Exchange.Hours.IsOpen(slice.Time, false))
         {
-            // Close the short position
             Liquidate(_spy.Symbol);
         }
     }
 
-    private bool IsBeforeMarketOpenExtendedHours(SecurityExchangeHours exchangeHours, DateTime time)
+    private bool IsBeforeMarketOpenExtendedHours(DateTime time)
     {
-        // Check if it is extended market hours before market open 
-        // Check by if the extended market is open and if the next non-extended market open is on the same day
-        return exchangeHours.IsOpen(time, extendedMarketHours: true)
-            &amp;&amp; exchangeHours.GetNextMarketOpen(time, extendedMarketHours: false).Day == time.Day;
+        return (
+            // It's currently extended market hours.
+            _spy.Exchange.Hours.IsOpen(time, true) &&
+            // The next market open for regular trading hours is today.
+            _spy.Exchange.Hours.GetNextMarketOpen(time, false).Day == time.Day
+        );
     }
 }</pre>
  <script class="csharp-result" type="text">
@@ -189,33 +189,36 @@
 }
  </script>
  <pre class="python">class MarketHourExampleAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
+
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        # Enable extended market hours feed
-        self.spy = self.add_equity("SPY", extended_market_hours=True)
+        # Add SPY data with extended market hours.
+        self._spy = self.add_equity("SPY", extended_market_hours=True)
 
-    def on_data(self, slice: Slice) -&gt; None:
-        if self.spy.symbol not in slice.quote_bars:
+    def on_data(self, slice: Slice) -> None:
+        if self._spy.symbol not in slice.quote_bars:
             return
+        # During pre-market hours, place an unmarketable limit order.
+        if (not self._spy.invested and
+            self._is_before_market_open_extended_hours(slice.time) and
+            not list(self.transactions.get_open_order_tickets(self._spy.symbol))):
+            self.limit_order(self._spy.symbol, -10, self._spy.bid_price * 1.005)
+        # If we hold a position during regular trading hours, liquidate
+        # it.
+        elif (self._spy.invested and
+            self._spy.exchange.hours.is_open(slice.time, False)):
+            self.liquidate(self._spy.symbol)
         
-        exchange_hours = self.spy.exchange.hours
-        # Check it is extended market hours before market open and no position/open order
-        if self.is_before_market_open_extended_hours(exchange_hours, slice.time) \
-            and not self.portfolio[self.spy.symbol].invested \
-            and not self.transactions.get_open_order_tickets(self.spy.symbol):
-            # Short sell at a higher quote
-            self.limit_order(self.spy.symbol, -10, slice.quote_bars[self.spy.symbol].bid.close * 1.005)
-        # Check if the normal market is opening and any position
-        elif self.portfolio[self.spy.symbol].invested and self.portfolio[self.spy.symbol].invested:
-            # Liquidate otherwise if any open position
-            self.liquidate(self.spy.symbol)
-        
-    def is_before_market_open_extended_hours(self, exchange_hours: SecurityExchangeHours, time: datetime) -&gt; bool:
-        # Check if it is extended market hours before market open 
-        # Check by if the extended market is open and if the next non-extended market open is on the same day
-        return exchange_hours.is_open(time, extended_market_hours=True)\
-            and exchange_hours.get_next_market_open(time, extended_market_hours=False).day == time.day</pre>
+    def _is_before_market_open_extended_hours(self, time: datetime) -> bool:
+        return (
+            # It's currently extended market hours.
+            self._spy.exchange.hours.is_open(time, True) and
+            # The next market open for regular trading hours is today.
+            self._spy.exchange.hours.get_next_market_open(
+                time, False
+            ).day == time.day
+        )</pre>
  <script class="python-result" type="text">
   {
     "Total Orders": "0",
