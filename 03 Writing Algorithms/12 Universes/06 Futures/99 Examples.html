@@ -119,88 +119,106 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetCash(100000000);
-
-        // Request ES Future data for trading. The continuous contract data is only used for indicator values.
+        // Add ES Futures for trading. The continuous contract data is 
+        // only used for indicator values.
         _future = AddFuture(
             Futures.Indices.SP500EMini,
             extendedMarketHours: true,
             dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
             dataMappingMode: DataMappingMode.OpenInterest
         );
-        // Select the contracts expiring within a week since they have the highest liquidity.
-        _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.Expiration(0, 7));
-
-        // Create a BollingerBand indicator to identify extreme prices for trade signal generation.
+        // Select the contract expiring within a week since they have 
+        // the highest liquidity.
+        _future.SetFilter(futureFilterUniverse => futureFilterUniverse.Expiration(0, 7));
+        // Create a Bollinger Band indicator to identify extreme prices 
+        // for trade signal generation.
         _bb = BB(_future.Symbol, 60, 2);
-        // Warm up the indicator for immediate readiness.
-        WarmUpIndicator(_future.Symbol, _bb, Resolution.Minute);
+        // Warm up the indicator for so we can trade right away.
+        WarmUpIndicator(_future.Symbol, _bb);
     }
 
     public override void OnData(Slice slice)
     {
-        // Trade based on updated data.
-        if (slice.FutureChains.TryGetValue(_future.Symbol, out var chain))
+        // Get the current Futures chain, if there is one.
+        if (!slice.FutureChains.TryGetValue(_future.Symbol, out var chain))
         {
-            // Select the contract with the nearest expiry.
-            var contract = chain.MinBy(x =&gt; x.Expiry);
-
-            // Trade a mean-reversal strategy based on Bollinger Band signal.
-            var quantity = Portfolio[_future.Symbol].Quantity;
-            if (contract.LastPrice &gt; _bb.UpperBand &amp;&amp; quantity &gt;= 0)
-            {
-                MarketOrder(contract.Symbol, -1-quantity);
-            }
-            else if (contract.LastPrice &lt; _bb.LowerBand &amp;&amp; quantity &lt;= 0)
-            {
-                MarketOrder(contract.Symbol, 1-quantity);
-            }
-            else if ((Portfolio[_future.Symbol].IsLong &amp;&amp; contract.LastPrice &gt; _bb.MiddleBand) ||
-            (Portfolio[_future.Symbol].IsShort &amp;&amp; contract.LastPrice &lt; _bb.MiddleBand))
-            {
-                Liquidate(contract.Symbol);
-            }
+            return;
         }
+        // Select the contract with the nearest expiry.
+        var contract = chain.MinBy(x => x.Expiry);
+        // Trade a mean-reversal strategy based on Bollinger Band signal.
+        var holding = Portfolio[contract.Symbol];
+        var price = contract.LastPrice;
+        int targetQuantity;
+        // Case 1: Short
+        if (!holding.IsShort && price > _bb.UpperBand)
+        {
+            targetQuantity = -1;
+        }
+        // Case 2: Long
+        else if (!holding.IsLong && price < _bb.LowerBand)
+        {
+            targetQuantity = 1;
+        }
+        // Case 3: Exit
+        else if ((holding.IsShort && price &lt; _bb.MiddleBand) || (holding.IsLong && price &gt; _bb.MiddleBand))
+        {
+            targetQuantity = 0;
+        }
+        // Case 4: Hold
+        else 
+        {
+            return;
+        }
+        MarketOrder(contract.Symbol, targetQuantity - holding.Quantity);
     }
 }</pre>
  <pre class="python">class WeeklyFuturesAlgorithm(QCAlgorithm):
     
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000000)
-        
-        # Request ES Future data for trading. The continuous contract data is only used for indicator values.
-        self.future = self.add_future(
+        # Add ES Futures for trading. The continuous contract data is 
+        # only used for indicator values.
+        self._future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
             extended_market_hours=True,
             data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST
         )
-        # Select the contracts expiring within a week since they have the highest liquidity.
-        self.future.set_filter(lambda future_filter_universe: future_filter_universe.expiration(0, 7))
+        # Select the contract expiring within a week since they have 
+        # the highest liquidity.
+        self._future.set_filter(lambda universe: universe.expiration(0, 7))
+        # Create a Bollinger Band indicator to identify extreme prices 
+        # for trade signal generation.
+        self._bb = self.bb(self._future.symbol, 60, 2)
+        # Warm up the indicator for so we can trade right away.
+        self.warm_up_indicator(self._future.symbol, self._bb)
 
-        # Create a BollingerBand indicator to identify extreme prices for trade signal generation.
-        self._bb = self.bb(self.future.symbol, 60, 2)
-        # Warm up the indicator for immediate readiness.
-        self.warm_up_indicator(self.future.symbol, self._bb, Resolution.MINUTE)
-
-    def on_data(self, slice: Slice) -&gt; None:
-        # Trade based on updated data.
-        chain = slice.future_chains.get(self.future.symbol)
-        if chain:
-            # Select the contract with the nearest expiry.
-            contract = min(chain, key=lambda x: x.expiry)
-
-            # Trade a mean-reversal strategy based on Bollinger Band signal.
-            quantity = self.portfolio[self.future.symbol].quantity
-            if contract.last_price &gt; self._bb.upper_band.current.value and quantity &gt;= 0:
-                self.market_order(contract.symbol, -1-quantity)
-            elif contract.last_price &lt; self._bb.lower_band.current.value and quantity &lt;= 0:
-                self.market_order(contract.symbol, 1-quantity)
-            elif (self.portfolio[self.future.symbol].is_short and contract.last_price &lt; self._bb.middle_band.current.value)\
-            or (self.portfolio[self.future.symbol].is_long and contract.last_price &gt; self._bb.middle_band.current.value):
-                self.liquidate(contract.symbol)</pre>
+    def on_data(self, slice: Slice) -> None:
+        # Get the current Futures chain, if there is one.
+        chain = slice.future_chains.get(self._future.symbol)
+        if not chain:
+            return
+        # Select the contract with the nearest expiry.
+        contract = min(chain, key=lambda x: x.expiry)
+        # Trade a mean-reversal strategy based on Bollinger Band signal.
+        holding = self.portfolio[contract.symbol]
+        price = contract.last_price
+        # Case 1: Short
+        if not holding.is_short and price > self._bb.upper_band.current.value:
+            target_quantity = -1
+        # Case 2: Long
+        elif not holding.is_long and price < self._bb.lower_band.current.value:
+            target_quantity = 1
+        # Case 3: Exit
+        elif ((holding.is_short and price < self._bb.middle_band.current.value) or
+            (holding.is_long and price > self._bb.middle_band.current.value)):
+            target_quantity = 0
+        # Case 4: Hold
+        else:
+            return
+        self.market_order(contract.symbol, target_quantity - holding.quantity)</pre>
 </div>
 <h4>
  Other Examples
