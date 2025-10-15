@@ -1,3 +1,18 @@
-<p>In live trading, your brokerage charges an interest fee when you borrow shares to short a security. In backtesting, we don't currently simulate short interest fees. You can evaluate the borrowing cost with the <code class="csharp">FeeRate</code><code class="python">fee_rate</code> and <code class="csharp">RebateRate</code><code class="python">rebate_rate</code> methods.</p>
+<p>In live trading, your brokerage charges an interest fee when you borrow shares to short a security. In backtesting, use the <a href='/docs/v2/writing-algorithms/reality-modeling/margin-interest-rate/supported-models#03-Short-Equity-Model'>ShortMarginInterestRateModel</a>.</p>
 
 <p>To get valid borrowing rates, use the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/supported-providers#05-Interactive-Brokers-Provider'>InteractiveBrokersShortableProvider</a>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    var security = AddEquity("SPY");
+    // For US Equity, use the ShortMarginInterestRateModel with IB data
+    security.SetShortableProvider(new InteractiveBrokersShortableProvider());
+    security.MarginInterestRateModel = new ShortMarginInterestRateModel();
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    security = self.add_equity("SPY")
+    # For US Equity, use the ShortMarginInterestRateModel with IB data
+    security.set_shortable_provider(InteractiveBrokersShortableProvider())
+    security.margin_interest_rate_model = ShortMarginInterestRateModel()</pre>
+</div>
