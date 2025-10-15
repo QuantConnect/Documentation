@@ -28,7 +28,6 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-
         // Add SPY Options data for trading.
         _option = AddOption("SPY");
         // Filter for the 2 ATM contracts that expire in 7 days to form a straddle.
@@ -45,7 +44,7 @@
             var expiry = chain.Min(x =&gt; x.Expiry);
             // Open the straddle position.
             var optionStrategy = OptionStrategies.ShortStraddle(_option.Symbol, strike, expiry);
-            Buy(optionStrategy, 2);
+            Buy(optionStrategy, 1);
         }
     }
 
@@ -95,7 +94,6 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-    
         # Add SPY Options data for trading.
         self._option = self.add_option("SPY")
         # Filter for the 2 ATM contracts that expire in 7 days to form a straddle.
@@ -111,7 +109,7 @@
             expiry = list(chain)[0].expiry
             # Open the straddle position.
             option_strategy = OptionStrategies.short_straddle(self._option.symbol, strike, expiry)
-            self.buy(option_strategy, 2)
+            self.buy(option_strategy, 1)
 
     def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
         # Liquidate the assigned SPY position.
