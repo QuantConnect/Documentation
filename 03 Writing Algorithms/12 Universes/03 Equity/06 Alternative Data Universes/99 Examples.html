@@ -365,6 +365,8 @@
 
     private void Rebalance()
     {
+        // Ignore illiquid assets that have no price yet.
+        _buybackSize = _buybackSize.Where(kvp => Securities[kvp.Key].Price != 0);
         // Get the sum of all buyback size so we can scale the portfolio
         // weights based on the buyback size.
         var buybackSum = _buybackSize.Sum(x => x.Value);
@@ -458,6 +460,12 @@
         return selected
 
     def _rebalance(self) -> None:
+        # Ignore illiquid assets that have no price yet.
+        self._buyback_size = {
+            symbol: amount
+            for symbol, amount in self._buyback_size.items()
+            if self.securities[symbol].price
+        }
         # Get the sum of all buyback size so we can scale the portfolio
         # weights based on the buyback size.
         buyback_sum = sum(self._buyback_size.values())
