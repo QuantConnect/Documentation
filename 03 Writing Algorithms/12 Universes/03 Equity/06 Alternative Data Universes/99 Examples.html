@@ -324,48 +324,57 @@
 <div class="section-example-container testable">
  <pre class="csharp">public class SmartInsiderIntentionUniverseAlgorithm : QCAlgorithm
 {
-    // A dictionary to hold the updated buyback size for position sizing.
+    // A dictionary to hold the buyback size for position sizing.
     public Dictionary&lt;Symbol, decimal&gt; _buybackSize = new();
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+        // Seed the price of each asset with its last known price to 
+        // avoid trading errors.
         SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+            new BrokerageModelSecurityInitializer(
+                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
+            )
         );
-
-        // Allow a week to capitalize the sentiment.
-        Schedule.On(
-            DateRules.WeekStart(),
-            TimeRules.At(9, 30),
-            Rebalance
-        );
+        // Add a universe that selects assets at the start of each week.
+        // The universe should select Equities that have announced a 
+        // material buyback plan, since they have confidence in their 
+        // future prospect and the reduction in supply can drive their 
+        // price up.
         UniverseSettings.Schedule.On(DateRules.WeekStart());
-        // Filter for any coporate announced a material buyback plan, since they have confidence in their future prospect and the reduction in supply can drive their price up.
-        AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(
-            altData =&gt; altData.OfType&lt;SmartInsiderIntentionUniverse&gt;()
-                // A material buyback size to have better confidence in its prospect.
-                .Where(d =&gt; d.AmountValue.HasValue &amp;&amp; d.AmountValue.Value &gt;= 5000000m)
-                .Select(d =&gt; {
-                    // Update buyback size dictionary for sizing.
+        AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(altData => {
+            _buybackSize.Clear();
+            return altData.OfType&lt;SmartInsiderIntentionUniverse&gt;()
+                // Select assets that have a material buyback size to have 
+                // strong confidence.
+                .Where(d => d.AmountValue.HasValue && d.AmountValue.Value > 10000000m)
+                .Select(d => {
+                    // Record the buyback size in the dictionary.
                     _buybackSize[d.Symbol] = d.AmountValue.Value;
                     return d.Symbol;
-                })
-        );
+                });
+        });
+        // Add a Scheduled Event to rebalance the portfolio at the start
+        // of each week. The weekly schedule allows time to capitalize 
+        // the market swings from the positive sentiment.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        Schedule.On(DateRules.WeekStart(spy), TimeRules.AfterMarketOpen(spy, 1), Rebalance);
     }
 
     private void Rebalance()
     {
-        // Get the size of all buyback size to normalize the weightings.
-        var buybackSum = _buybackSize.Sum(x =&gt; x.Value);
-        // Equally invest in insider buying companies to evenly dissipate the capital risk.
-        SetHoldings(_buybackSize.Select(x =&gt; new PortfolioTarget(x.Key, x.Value / buybackSum)).ToList());
+        // Get the sum of all buyback size so we can scale the portfolio
+        // weights based on the buyback size.
+        var buybackSum = _buybackSize.Sum(x => x.Value);
+        // Place the trades to rebalance the portfolio.
+        SetHoldings(_buybackSize.Select(x => new PortfolioTarget(x.Key, x.Value / buybackSum)).ToList());
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        // Liquidate and remove from universe for the ones not being recently-purchase by insiders.
+        // Liquidate assets when they leave the universe.
         foreach (var removed in changes.RemovedSecurities)
         {
             _buybackSize.Remove(removed.Symbol);
