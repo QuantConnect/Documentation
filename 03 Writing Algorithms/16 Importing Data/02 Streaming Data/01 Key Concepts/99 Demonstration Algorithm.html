@@ -10,50 +10,31 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
 
     public override void Initialize()
     {
-        SetStartDate(2012, 9, 13);
-        SetEndDate(2021, 6, 20);
-
+        SetStartDate(2020, 9, 1);
+        SetEndDate(2020, 12, 31);
+        // Define the symbol and "type" of our custom data.
         _customDataSymbol = AddData&lt;Bitstamp&gt;("BTC", Resolution.Daily).Symbol;
-
+        // Get some historical data.
         var history = History&lt;Bitstamp&gt;(_customDataSymbol, 200, Resolution.Daily);
-        Debug($"We got {history.Count()} items from historical data request of {_customDataSymbol}.");
     }
 
+    // Get the data of the current day.
     public void OnData(Bitstamp data)
     {
-        Log($"{data.EndTime}: Close: {data.Close}");
         Plot(_customDataSymbol, "Price", data.Close);
     }
 
     public class Bitstamp : BaseData
     {
-        [JsonProperty("timestamp")]
         public int Timestamp = 0;
-        [JsonProperty("open")]
-        public decimal Open = 0;
-        [JsonProperty("high")]
-        public decimal High = 0;
-        [JsonProperty("low")]
-        public decimal Low = 0;
-        [JsonProperty("last")]
-        public decimal Close = 0;
-        [JsonProperty("bid")]
-        public decimal Bid = 0;
-        [JsonProperty("ask")]
-        public decimal Ask = 0;
-        [JsonProperty("vwap")]
-        public decimal WeightedPrice = 0;
-        [JsonProperty("volume")]
-        public decimal VolumeBTC = 0;
-        public decimal VolumeUSD = 0;
-
+        public decimal Open = 0, High = 0, Low = 0, Close = 0, Bid = 0, Ask = 0, WeightedPrice = 0, VolumeBTC = 0, VolumeUSD = 0;
+        
         public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
         {
             if (isLiveMode)
             {
                 return new SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.Rest);
             }
-
             var source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv";
             return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
         }
@@ -64,9 +45,8 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
             {
                 return null;
             }
-
             var coin = new Bitstamp() {Symbol = config.Symbol};
-
+            // In live trading, parse the JSON file.
             if (isLiveMode)
             {
                 //Example Line Format:
@@ -78,6 +58,7 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
                 return coin;
             }
 
+            // In backtests, parse the CSV file.
             //Example Line Format:
             //Date      Open   High    Low     Close   Volume (BTC)    Volume (Currency)   Weighted Price
             //2011-09-13 5.8    6.0     5.65    5.97    58.37138238,    346.0973893944      5.929230648356
@@ -85,22 +66,21 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
             {
                 return null;
             }
-
             var data = line.Split(',');
-            coin.Value = data[4].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            // If value is zero, return null.
+            coin.Value = data[4].IfNotNullOrEmpty(s => decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
             if (coin.Value == 0)
             {
                 return null;
             }
-
             coin.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
             coin.EndTime = coin.Time.AddDays(1);
-            coin.Open = data[1].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-            coin.High = data[2].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-            coin.Low = data[3].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-            coin.VolumeBTC = data[5].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-            coin.VolumeUSD = data[6].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-            coin.WeightedPrice = data[7].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            coin.Open = data[1].IfNotNullOrEmpty(s => decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            coin.High = data[2].IfNotNullOrEmpty(s => decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            coin.Low = data[3].IfNotNullOrEmpty(s => decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            coin.VolumeBTC = data[5].IfNotNullOrEmpty(s => decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            coin.VolumeUSD = data[6].IfNotNullOrEmpty(s => decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+            coin.WeightedPrice = data[7].IfNotNullOrEmpty(s => decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
             coin.Close = coin.Value;
             return coin;
         }
@@ -140,23 +120,21 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
  <pre class="python">class CustomDataBitstampAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self.set_start_date(2012, 9, 13)
-        self.set_end_date(2021, 6, 20)
+        self.set_start_date(2020, 9, 1)
+        self.set_end_date(2020, 12, 31)
         self.set_cash(100000)
-
         # Define the symbol and "type" of our generic data:
         self._custom_data_symbol = self.add_data(Bitstamp, "BTC").symbol
-
-        history = self.history(Bitstamp, self._custom_data_symbol, 200, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from historical data request of {self._custom_data_symbol}.")
-
+        # Get some historical data.
+        history = self.history(
+            Bitstamp, self._custom_data_symbol, 200, Resolution.DAILY
+        )
 
     def on_data(self, slice):
-        if self._custom_data_symbol not in slice:
+        # Get the data of the current day.
+        data = slice.get(self._custom_data_symbol)
+        if not data:
             return
-
-        data = slice[self._custom_data_symbol]
-        self.log(f'{data.end_time}: Close: {data.close}')
         self.plot(self._custom_data_symbol, 'Price', data.close)
 
 
@@ -164,30 +142,32 @@ class Bitstamp(PythonData):
 
     def get_source(self, config, date, is_live_mode):
         if is_live_mode:
-            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
-
-        source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
+            return SubscriptionDataSource(
+                'https://www.bitstamp.net/api/ticker/', 
+                SubscriptionTransportMedium.REST
+            )
+        return SubscriptionDataSource(
+            "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv", 
+            SubscriptionTransportMedium.REMOTE_FILE
+        )
 
     def reader(self, config, line, date, is_live_mode):
-
         if not line.strip():
             return None
-
         coin = Bitstamp()
         coin.symbol = config.symbol
-
+        # In live trading, parse the JSON file.
         if is_live_mode:
             # Example Line Format:
             # {"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}
             live_btc = json.loads(line)
-
             # If value is zero, return None
             coin.value = float(live_btc["last"])
             if coin.value == 0:
                 return None
-
-            coin.end_time =  Extensions.convert_from_utc(datetime.utcnow(), config.exchange_time_zone)
+            coin.end_time =  Extensions.convert_from_utc(
+                datetime.utcnow(), config.exchange_time_zone
+            )
             coin.time = coin.end_time - timedelta(1)
             coin["Open"] = float(live_btc["open"])
             coin["High"] = float(live_btc["high"])
@@ -199,19 +179,17 @@ class Bitstamp(PythonData):
             coin["WeightedPrice"] = float(live_btc["vwap"])
             return coin
 
+        # In backtests, parse the CSV file.
         # Example Line Format:
         # Date      Open   High    Low     Close   Volume (BTC)    Volume (Currency)   Weighted Price
         # 2011-09-13 5.8    6.0     5.65    5.97    58.37138238,    346.0973893944      5.929230648356
         if not line[0].isdigit():
             return None
-
         data = line.split(',')
-
         # If value is zero, return None
         coin.value = float(data[4])
         if coin.value == 0:
             return None
-
         coin.time = datetime.strptime(data[0], "%Y-%m-%d")
         coin.end_time = coin.time + timedelta(1)
         coin["Open"] = float(data[1])
