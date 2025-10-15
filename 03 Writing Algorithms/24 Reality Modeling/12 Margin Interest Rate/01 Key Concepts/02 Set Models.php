@@ -20,7 +20,8 @@
 $overwriteCodePy = "security.set_shortable_provider(InteractiveBrokersShortableProvider())
         security.margin_interest_rate_model = ShortMarginInterestRateModel()";
 $overwriteCodeC = "security.SetShortableProvider(new InteractiveBrokersShortableProvider());
-        security.MarginInterestRateModel = new ShortMarginInterestRateModel();";
+        security.MarginInterestRateModel = new ShortMarginInterestRateModel();
+    ";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
