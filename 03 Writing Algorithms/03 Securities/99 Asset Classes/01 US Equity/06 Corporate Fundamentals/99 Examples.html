@@ -6,12 +6,12 @@
 </h4>
 <p>
  The following algorithm is based on the hypothesis that investors overreact to new financial report releases.
-	It buys AAPL stock on every new 10Q or 8K filing and then liquidates the position after seven days.
+	It buys TSLA stock on every new 10Q or 8K filing and then liquidates the position after seven days.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class USEquityCorporateFundamentalsExampleAlgorithm : QCAlgorithm
 {
-    private Equity _aapl;
+    private Equity _equity;
     // Add a member to track the last financial statement filing date.
     private DateTime? _lastFilingDate = null;
     private DateTime _exitTime;
@@ -21,23 +21,23 @@
         SetStartDate(2024,1,1);
         SetEndDate(2024,12,31);
         // Add Equity data.
-        _aapl = AddEquity("AAPL");
+        _equity = AddEquity("TSLA");
     }
 
     public override void OnData(Slice slice)
     {
         // Get the most recent filing date.
-        var lastFilingDate = _aapl.Fundamentals.FinancialStatements.FileDate.Value;
+        var lastFilingDate = _equity.Fundamentals.FinancialStatements.FileDate.Value;
 
-        // When new financial statements are released, buy AAPL.
+        // When new financial statements are released, buy TSLA.
         if (_lastFilingDate.HasValue &amp;&amp; lastFilingDate != _lastFilingDate.Value)
         {
-            SetHoldings(_aapl.Symbol, 1);
+            SetHoldings(_equity.Symbol, 1);
             _exitTime = Time.AddDays(7);
         }
 
         // Liquidate the position after 1 week.
-        if (_aapl.Holdings.Invested &amp;&amp; Time &gt;= _exitTime)
+        if (_equity.Holdings.Invested &amp;&amp; Time &gt;= _exitTime)
         {
             Liquidate();
         }
@@ -84,21 +84,21 @@
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # Add Equity data.
-        self._aapl = self.add_equity("AAPL")
+        self._equity = self.add_equity("TSLA")
         # Add a member to track the last financial statement filing date.
         self._last_filing_date = None
 
     def on_data(self, slice: Slice) -&gt; None:
         # Get the most recent filing date.
-        last_filing_date = self._aapl.fundamentals.financial_statements.file_date.value
+        last_filing_date = self._equity.fundamentals.financial_statements.file_date.value
         
-        # When new financial statements are released, buy AAPL.
+        # When new financial statements are released, buy TSLA.
         if self._last_filing_date and last_filing_date != self._last_filing_date:
-            self.set_holdings(self._aapl.symbol, 1)
+            self.set_holdings(self._equity.symbol, 1)
             self._exit_time = self.time + timedelta(7)
 
         # Liquidate the position after 1 week.
-        if self._aapl.holdings.invested and self.time &gt;= self._exit_time:
+        if self._equity.holdings.invested and self.time &gt;= self._exit_time:
             self.liquidate()
         
         # Update the last filing date to identify future changes.
