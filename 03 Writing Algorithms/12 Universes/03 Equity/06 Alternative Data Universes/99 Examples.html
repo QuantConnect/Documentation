@@ -366,7 +366,7 @@
     private void Rebalance()
     {
         // Ignore illiquid assets that have no price yet.
-        _buybackSize = _buybackSize.Where(kvp => Securities[kvp.Key].Price != 0);
+        _buybackSize = _buybackSize.Where(kvp => Securities[kvp.Key].Price != 0).ToDictionary();
         // Get the sum of all buyback size so we can scale the portfolio
         // weights based on the buyback size.
         var buybackSum = _buybackSize.Sum(x => x.Value);
