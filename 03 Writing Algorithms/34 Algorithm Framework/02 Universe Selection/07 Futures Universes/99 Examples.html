@@ -50,25 +50,24 @@
         protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
         {
             // Defines the futures chain universe filter to select only the front-month contracts at market open.
-            return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+            return filter.FrontMonth();
         }
 
         private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
         {
-            return new List&lt;Symbol&gt;()
-            {
+            return [
                 QuantConnect.Symbol.Create(Futures.Indices.VIX, SecurityType.Future, Market.CFE),
                 QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
                 QuantConnect.Symbol.Create(Futures.Indices.NASDAQ100EMini, SecurityType.Future, Market.CME),
                 QuantConnect.Symbol.Create(Futures.Indices.Dow30EMini, SecurityType.Future, Market.CBOT),
-                QuantConnect.Symbol.Create(Futures.Energies.Gasoline, SecurityType.Future, Market.NYMEX),
-                QuantConnect.Symbol.Create(Futures.Energies.HeatingOil, SecurityType.Future, Market.NYMEX),
-                QuantConnect.Symbol.Create(Futures.Energies.NaturalGas, SecurityType.Future, Market.NYMEX),
+                QuantConnect.Symbol.Create(Futures.Energy.Gasoline, SecurityType.Future, Market.NYMEX),
+                QuantConnect.Symbol.Create(Futures.Energy.HeatingOil, SecurityType.Future, Market.NYMEX),
+                QuantConnect.Symbol.Create(Futures.Energy.NaturalGas, SecurityType.Future, Market.NYMEX),
                 QuantConnect.Symbol.Create(Futures.Grains.Corn, SecurityType.Future, Market.CBOT),
                 QuantConnect.Symbol.Create(Futures.Grains.Oats, SecurityType.Future, Market.CBOT),
                 QuantConnect.Symbol.Create(Futures.Grains.Soybeans, SecurityType.Future, Market.CBOT),
                 QuantConnect.Symbol.Create(Futures.Grains.Wheat, SecurityType.Future, Market.CBOT),
-            };
+            ];
         }
     }
 }</pre>
@@ -99,8 +98,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
 
     def filter(self, filter: FutureFilterUniverse) -&gt; FutureFilterUniverse:
         # Defines the futures chain universe filter to select only the front-month contracts at market open.
-        return (filter.front_month()
-                      .only_apply_filter_at_market_open())
+        return filter.front_month()
 
     def select_future_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
         return [
@@ -108,9 +106,9 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
             Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
             Symbol.create(Futures.Indices.NASDAQ_100_E_MINI, SecurityType.FUTURE, Market.CME),
             Symbol.create(Futures.Indices.DOW_30_E_MINI, SecurityType.FUTURE, Market.CBOT),
-            Symbol.create(Futures.Energies.GASOLINE, SecurityType.FUTURE, Market.NYMEX),
-            Symbol.create(Futures.Energies.HEATING_OIL, SecurityType.FUTURE, Market.NYMEX),
-            Symbol.create(Futures.Energies.NATURAL_GAS, SecurityType.FUTURE, Market.NYMEX),
+            Symbol.create(Futures.Energy.GASOLINE, SecurityType.FUTURE, Market.NYMEX),
+            Symbol.create(Futures.Energy.HEATING_OIL, SecurityType.FUTURE, Market.NYMEX),
+            Symbol.create(Futures.Energy.NATURAL_GAS, SecurityType.FUTURE, Market.NYMEX),
             Symbol.create(Futures.Grains.CORN, SecurityType.FUTURE, Market.CBOT),
             Symbol.create(Futures.Grains.OATS, SecurityType.FUTURE, Market.CBOT),
             Symbol.create(Futures.Grains.SOYBEANS, SecurityType.FUTURE, Market.CBOT),
@@ -190,7 +188,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
         protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
         {
             // Defines the futures chain universe filter to select only the front-month contracts at market open.
-            return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+            return filter.FrontMonth();
         }
 
         private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
@@ -198,13 +196,10 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
             // We hold Natural Gas from summer to winter since it is in an upward cycle.
             if (utcTime.Month &gt;= 4 &amp;&amp; utcTime.Month &lt;= 11)
             {
-                return new List&lt;Symbol&gt;()
-                {
-                    QuantConnect.Symbol.Create(Futures.Energies.NaturalGas, SecurityType.Future, Market.NYMEX)
-                };
+                return [ QuantConnect.Symbol.Create(Futures.Energy.NaturalGas, SecurityType.Future, Market.NYMEX) ];
             }
             // We do not hold any contracts during the time of the downward cycle.
-            return new List&lt;Symbol&gt;();
+            return [];
         }
     }
 
@@ -253,15 +248,13 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
         super().__init__(timedelta(rebalance_period), self.select_future_chain_symbols)
 
     def filter(self, filter: FutureFilterUniverse) -&gt; FutureFilterUniverse:
-        # Defines the futures chain universe filter to select only the front-month contracts at market open.
-        return (filter.front_month().only_apply_filter_at_market_open())
+        # Defines the futures chain universe filter to select only the front-month contracts.
+        return filter.front_month()
 
     def select_future_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
         # We hold Natural Gas from summer to winter since it is in an upward cycle.
         if 4 &lt;= utc_time.month &lt;= 11:
-            return [
-                Symbol.create(Futures.Energies.NATURAL_GAS, SecurityType.FUTURE, Market.NYMEX)
-            ]
+            return [ Symbol.create(Futures.Energy.NATURAL_GAS, SecurityType.FUTURE, Market.NYMEX) ]
         # We do not hold any contracts during the time of the downward cycle.
         return []
 

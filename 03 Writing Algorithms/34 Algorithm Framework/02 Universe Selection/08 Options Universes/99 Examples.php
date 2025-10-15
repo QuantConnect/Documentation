@@ -168,11 +168,11 @@
 }</pre>
     <pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel
 
-class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
-    def initialize(self) -> None:
+    class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-		self.set_cash(500_000)
+        self.set_cash(500_000)
 
         # Add a universe that selects the needed option contracts.
         self.add_universe_selection(AtmOptionHorizontalSpreadUniverseSelectionModel())
@@ -180,18 +180,18 @@ class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
         self.add_alpha(JellyRollAlphaModel(self))
         # Invest in the same number of contracts per leg in the Jelly Roll.
         self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
-        
+
 class AtmOptionHorizontalSpreadUniverseSelectionModel(OptionUniverseSelectionModel):
     # 30d update with the SelectOptionChainSymbols function since the filter returns at least 30d expiry options.
-    def __init__(self) -> None:
+    def __init__(self) -&gt; None:
         super().__init__(timedelta(30), self.selection_option_chain_symbols)
 
-    def selection_option_chain_symbols(self, utc_time: datetime) -> list[Symbol]:
+    def selection_option_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
         # We will focus only on SPX options since they have a relatively stable dividend yield, which we assume will remain the same over time.
         # Also, assignment handling is not required since it is cash-settled.
         return [Symbol.create("SPX", SecurityType.INDEX_OPTION, Market.USA)]
 
-    def filter(self, filter: OptionFilterUniverse) -> OptionFilterUniverse:
+    def filter(self, filter: OptionFilterUniverse) -&gt; OptionFilterUniverse:
         # Jelly Roll is one of the best strategies for trading interest rates using options.
         # It is market-neutral but sensitive to interest rate and dividend yield changes.
         # We target to trade the market speculation between 30d and 90d options interest rate.
@@ -202,7 +202,7 @@ class JellyRollAlphaModel(AlphaModel):
     # Use a 365d SMA indicator of daily interest rate to estimate if the interest rate cycle is upward or downward.
     _sma = SimpleMovingAverage(365)
 
-    def __init__(self, algorithm: QCAlgorithm) -> None:
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
         self._algorithm = algorithm
 
         # Warm up the SMA indicator.
@@ -212,7 +212,7 @@ class JellyRollAlphaModel(AlphaModel):
         while dt &lt;= current:
             rate = provider.get_interest_rate(dt)
             self._sma.update(dt, rate)
-            self._was_rising = rate > self._sma.current.value
+            self._was_rising = rate &gt; self._sma.current.value
             dt += timedelta(1)
         
         # Set a schedule to update the interest rate trend indicator every day.
@@ -222,13 +222,13 @@ class JellyRollAlphaModel(AlphaModel):
             self.update_interest_rate
         )
 
-    def update_interest_rate(self) -> None:
+    def update_interest_rate(self) -&gt; None:
         # Update interest rate to the SMA indicator to estimate its trend.
         rate = self._algorithm.risk_free_interest_rate_model.get_interest_rate(self._algorithm.time)
         self._sma.update(self._algorithm.time, rate)
-        self._was_rising = rate > self._sma.current.value
+        self._was_rising = rate &gt; self._sma.current.value
 
-    def update(self, algorithm: QCAlgorithm, slice: Slice) -> list[Insight]:
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; list[Insight]:
         insights = []
 
         # Hold one position group at a time.
@@ -247,7 +247,7 @@ class JellyRollAlphaModel(AlphaModel):
         # Emit insight of the Jelly Roll constituents, with directions depending on the interest rate trend given by SMA.
         rate = algorithm.risk_free_interest_rate_model.get_interest_rate(algorithm.time)
         # During the rising interest rate cycle, order a long Jelly Roll.
-        if rate > self._sma.current.value:
+        if rate &gt; self._sma.current.value:
             insights.extend([
                 Insight.price(near_call.symbol, timedelta(30), InsightDirection.DOWN),
                 Insight.price(far_call.symbol, timedelta(30), InsightDirection.UP),
@@ -281,7 +281,7 @@ class JellyRollAlphaModel(AlphaModel):
         return insights
 
 class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
-    def create_targets(self, algorithm: QCAlgorithm, insights: list[Insight]) -> list[PortfolioTarget]:
+    def create_targets(self, algorithm: QCAlgorithm, insights: list[Insight]) -&gt; list[PortfolioTarget]:
         targets = []
         for insight in insights:
             if algorithm.securities[insight.symbol].is_tradable:
