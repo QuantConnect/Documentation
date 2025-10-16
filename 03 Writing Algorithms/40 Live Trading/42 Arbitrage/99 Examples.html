@@ -9,6 +9,7 @@
 {
     private Symbol _btc;
     private ExponentialMovingAverage _ema;
+    private decimal _threshold = 0.005m;
 
     public override void Initialize()
     {
@@ -21,9 +22,9 @@
         // Request BTCUSDT data to trade.
         _btc = AddCrypto("BTCUSDT").Symbol;
         // Create an EMA indicator to generate trade signals.
-        _ema = EMA(_btc, 22, Resolution.Minute);
+        _ema = EMA(_btc, 22);
         // Warm-up indicator for immediate readiness.
-        WarmUpIndicator(_btc, _ema, Resolution.Minute);
+        WarmUpIndicator(_btc, _ema);
         // Trade when the EMA is updated.
         _ema.Updated += Trade;
     }
@@ -36,17 +37,13 @@
                 
         // Trend-following strategy using price and EMA.
         // If the price is above EMA, BTC is in an uptrend, and we buy it.
-        if (!holdings.IsLong && price > ema)
+        if (!holdings.IsLong && price > ema * (1m+_threshold))
         {
             SetHoldings(_btc, 1);
         }
-        if (!holdings.IsShort && price < ema)
+        else if (!holdings.IsShort && price < ema * (1m-_threshold))
         {
             SetHoldings(_btc, -1);
-        }
-        if (!holdings.Invested)
-        {
-            SetHoldings(_btc, 1);
         }
     }
 
@@ -77,11 +74,13 @@
         # Request BTCUSDT data to trade.
         self._btc = self.add_crypto("BTCUSDT").symbol
         # Create an EMA indicator to generate trade signals.
-        self._ema = self.ema(self._btc, 22, Resolution.MINUTE)
+        self._ema = self.ema(self._btc, 22)
         # Warm-up indicator for immediate readiness.
-        self.warm_up_indicator(self._btc, self._ema, Resolution.MINUTE)
+        self.warm_up_indicator(self._btc, self._ema)
         # Trade when the EMA is updated.
         self._ema.updated += self.trade
+        # Set a threshold value for the EMA cross.
+        self._threshold = 0.005
 
     def trade(self, _, current: IndicatorDataPoint) -&gt; None:
         ema = current.value
@@ -90,12 +89,10 @@
         
         # Trend-following strategy using price and EMA.
         # If the price is above EMA, SPY is in an uptrend, and we buy it.
-        if not holdings.is_long and price &gt; ema:
+        if not holdings.is_long and price > ema * (1+self._threshold):
             self.set_holdings(self._btc, 1)
-        if not holdings.is_short and price &lt; ema:
+        elif not holdings.is_short and price < ema * (1-self._threshold):
             self.set_holdings(self._btc, -1)
-        if not holdings.invested:
-            self.set_holdings(self._btc, 1)
 
     def on_command(self, data: DynamicData) -&gt; Optional[bool]:
         # The algorithm will log the command data from the secondary algorithm.
@@ -142,7 +139,7 @@
     public override void OnOrderEvent(OrderEvent orderEvent)
     {
         // If an order is filled, we call the BroadcastCommand method to send a command to all live deployments.
-        // You can add the project ID to the command data to identigy the sender.
+        // You can add the project ID to the command data to identify the sender.
         if (!LiveMode || orderEvent.Status != OrderStatus.Filled) return;
         var broadcastResult = BroadcastCommand(new { Sender = ProjectId, Ticker = $"{orderEvent.Symbol.Value}", Portfolio[orderEvent.Symbol].Quantity });
     }
@@ -169,7 +166,7 @@
 
     def on_order_event(self, order_event: OrderEvent) -&gt; None:
         # If an order is filled, we call the broadcast_command method to send a command to all live deployments.
-        # You can add the project ID to the command data to identigy the sender.
+        # You can add the project ID to the command data to identify the sender.
         if not self.live_mode or order_event.status != OrderStatus.FILLED:
             return
         broadcast_result = self.broadcast_command({"sender": self.project_id, "ticker": f"{order_event.symbol.value}", "quantity": self.portfolio[order_event.symbol].quantity})</pre>
