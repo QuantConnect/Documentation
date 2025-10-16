@@ -168,7 +168,9 @@
 }</pre>
     <pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel
 
-    class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
+
+class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -180,6 +182,7 @@
         self.add_alpha(JellyRollAlphaModel(self))
         # Invest in the same number of contracts per leg in the Jelly Roll.
         self.set_portfolio_construction(SingleSharePortfolioConstructionModel())
+
 
 class AtmOptionHorizontalSpreadUniverseSelectionModel(OptionUniverseSelectionModel):
     # 30d update with the SelectOptionChainSymbols function since the filter returns at least 30d expiry options.
@@ -196,6 +199,7 @@ class AtmOptionHorizontalSpreadUniverseSelectionModel(OptionUniverseSelectionMod
         # It is market-neutral but sensitive to interest rate and dividend yield changes.
         # We target to trade the market speculation between 30d and 90d options interest rate.
         return filter.jelly_roll(0, 30, 90)
+
 
 class JellyRollAlphaModel(AlphaModel):
     _symbol = Symbol.create("SPX", SecurityType.INDEX_OPTION, Market.USA)
