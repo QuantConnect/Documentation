@@ -7,6 +7,7 @@ $dataFeedName = "";
 $isBrokerage = true;
 
 ob_start();
+$isLocalDeployment = true;
 $extraText = "Enter a time on Sunday to receive the notification.";
 include(DOCS_RESOURCES."/brokerages/interactive-brokers/weekly-restarts.php");
 $weeklyRestartText = ob_get_clean();

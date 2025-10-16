@@ -1,1 +1,7 @@
-<p>You'll receive a notification on your IB Key device every Sunday to re-authenticate the connection between IB and your live algorithm. <?=$extraText?> If you don't re-authenticate before the timeout period, your algorithm quits executing. Ensure your IB Key device has sufficient battery for the time you expect to receive the notification. If you don't receive a notification, see <a rel='nofollow' target='_blank' href='https://ibkr.info/article/3234'>I am not receiving IBKR Mobile notifications</a> on the IB website.</p>
+<p>You'll receive a notification on your IB Key device every Sunday to re-authenticate the connection between IB and your live algorithm. <?=$extraText?> Ensure your IB Key device has sufficient battery for the time you expect to receive the notification.</p>
+<? if (isset($isLocalDeployment) && $isLocalDeployment) {?>
+<p>If you don't re-authenticate before the timeout period, your algorithm quits executing. </p>
+<? } else { ?>
+<p>If you don't re-authenticate before the timeout period, you will receive an email from QuantConnect with two options: <span class="button-name">Connect</span> and <span class="button-name">Stop</span>. Click <span class="button-name">Connect</span> to restart the authentication process and receive a notification on your IB Key device. Click <span class="button-name">Stop</span> to stop the deployment. If you don't take action, your algorithm quits executing before the market opens for the assets in your portfolio. For example, 9:30 AM EST if your algorithm trades US Equities.</p>
+<? } ?>
+<p>If you don't receive a notification, see <a rel='nofollow' target='_blank' href='https://ibkr.info/article/3234'>I am not receiving IBKR Mobile notifications</a> on the IB website.</p>

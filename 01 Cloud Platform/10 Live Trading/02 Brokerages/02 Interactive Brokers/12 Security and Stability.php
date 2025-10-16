@@ -11,9 +11,3 @@ include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
 
 <h4>SMS 2FA</h4>
 <p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS or the Online Security Code Card. Use the <a rel="nofollow" target="_blank" href="https://ibkrguides.com/securelogin/sls/ibkrmobile.htm">IB Key Security via IBKR Mobile</a> instead.</p>
-
-<h4>System Resets</h4>
-<?
-$extraText = "When you <a href='/docs/v2/cloud-platform/live-trading/brokerages/interactive-brokers#16-Deploy-Live-Algorithms'>deploy your algorithm</a>, you can select a time on Sunday to receive the notification.";
-include(DOCS_RESOURCES."/brokerages/interactive-brokers/weekly-restarts.php");
-?>
