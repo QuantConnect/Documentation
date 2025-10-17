@@ -20,11 +20,9 @@
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">using QuantConnect.Data.Shortable;
-		
 public class USEquityShortingExampleAlgorithm : QCAlgorithm
 {
-    private Dictionary&lt;Symbol, RateOfChange&gt; _rocBySymbol = new();
-    private Dictionary&lt;BollingerBands, Security&gt; _securityByBB = new();
+    private Dictionary&lt;Symbol, RateOfChange&gt; _rocBySymbol = [];
 
     public override void Initialize()
     {
@@ -43,17 +41,13 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
         foreach (var f in fundamentals)
         {
             // Create a RateOfChange indicator for each asset.
-            if (!_rocBySymbol.ContainsKey(f.Symbol))
+            if (!_rocBySymbol.TryGetValue(f.Symbol, out var roc))
             {
-                _rocBySymbol[f.Symbol] = new RateOfChange(1);
+                _rocBySymbol[f.Symbol] = roc = new RateOfChange(1);
             }
             // Update the indicator and ensure it's ready.
-            if (!_rocBySymbol[f.Symbol].Update(f.EndTime, f.Price))
-            {
-                continue;
-            }
             // Filter out assets above $5M market cap or $1 share price.
-            if (f.MarketCap &gt; 5e6 || f.Price &gt; 1)
+            if (!roc.Update(f.EndTime, f.Price) || f.MarketCap &gt; 5e6 || f.Price &gt; 1)
             {
                 continue;
             }
@@ -73,7 +67,6 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
             security.SetShortableProvider(new InteractiveBrokersShortableProvider());
             // Create a BollingerBand indicator for this asset.
             var bb = BB(security.Symbol, 20, 2, resolution: Resolution.Hour);
-            _securityByBB[bb] = security;
             // Attach an event handler to the indicator to track its updates.
             bb.Updated += OnBBUpdated;
             (security as dynamic).Bbands = bb;
@@ -82,44 +75,37 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
         // Liquidate and remove the indicator updates for assets that leave the universe.
         foreach (var security in changes.RemovedSecurities)
         {
-            var bb = (security as dynamic).Bbands;
-            DeregisterIndicator(bb);
-            _securityByBB.Remove(bb);
+            DeregisterIndicator((security as dynamic).Bbands);
             Liquidate(security.Symbol);
         }
     }
 
-    private void OnBBUpdated(object indicator, IndicatorDataPoint _)
+    private void OnBBUpdated(object indicator, IndicatorDataPoint _security_by_bb)
     {
-        var bb = (indicator as BollingerBands);
+        var bb = indicator as BollingerBands;
         // When the indicator updates, ensure it's ready.
         if (!bb.IsReady)
         {
             return;
         }
-        var security = _securityByBB[bb];
+        var security = Securities[bb.Current.Symbol];
         // Short the asset if the price is above the upper band.
-        if (!security.Holdings.Invested &amp;&amp; security.Price &gt; bb.UpperBand.Current.Value)
+        if (!security.Invested &amp;&amp; security.Price &gt; bb.UpperBand.Current.Value)
         {
             // Get the number of shares avaiable for shorting.
-            var shortableQuantity = security.ShortableProvider.ShortableQuantity(security.Symbol, Time);
-            if (shortableQuantity == null)
-            {
-                return;
-            }
+            var shortableQuantity = security.ShortableProvider.ShortableQuantity(security.Symbol, Time) ?? 0m;
             // Calculate the target quantity.
-            var quantity = Math.Max(CalculateOrderQuantity(security.Symbol, -0.1m), -(int)shortableQuantity);
-            if (quantity != 0)
-            {
-                // Short the asset.
-                MarketOrder(security.Symbol, quantity);
-                // Place a take-profit order 10% below the current price.
-                LimitOrder(security.Symbol, -quantity, 0.9m * security.BidPrice);
-            }
+            var quantity = Math.Max(CalculateOrderQuantity(security.Symbol, -0.1m), -shortableQuantity);
+            if (quantity == 0) return;
+            
+            // Short the asset.
+            MarketOrder(security.Symbol, quantity);
+            // Place a take-profit order 10% below the current price.
+            LimitOrder(security.Symbol, -quantity, 0.9m * security.BidPrice);
         }
         // If the limit order isn't hit before the price drops below the middle band, 
         // exit the position and cancel the limit order.
-        else if (security.Holdings.Invested &amp;&amp; security.Price &lt; bb.MiddleBand.Current.Value)
+        else if (security.Invested &amp;&amp; security.Price &lt; bb.MiddleBand.Current.Value)
         {
             Liquidate(security.Symbol);
         }
@@ -160,7 +146,6 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
  <pre class="python">class USEquityShortingExampleAlgorithm(QCAlgorithm):
     
     _roc_by_symbol = {}
-    _security_by_bb = {}
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
@@ -175,13 +160,10 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
         penny_stocks = []
         for f in fundamentals:
             # Create a RateOfChange indicator for each asset.
-            if f.symbol not in self._roc_by_symbol:
-                self._roc_by_symbol[f.symbol] = RateOfChange(1)
-            # Update the indicator and ensure it's ready.
-            if not self._roc_by_symbol[f.symbol].update(f.end_time, f.price):
-                continue
+            self._roc_by_symbol[f.symbol] = self._roc_by_symbol.get(f.symbol, RateOfChange(1))
+            # Update the indicator an ensure it's ready. 
             # Filter out assets above $5M market cap or $1 share price.
-            if f.market_cap &gt; 5e6 or f.price &gt; 1:
+            if not self._roc_by_symbol[f.symbol].update(f.end_time, f.price) or f.market_cap &gt; 5e6 or f.price &gt; 1:
                 continue
             penny_stocks.append(f.symbol)
 
@@ -195,34 +177,30 @@ public class USEquityShortingExampleAlgorithm : QCAlgorithm
             security.set_shortable_provider(InteractiveBrokersShortableProvider())
             # Create a BollingerBand indicator for this asset.
             security.bbands = self.bb(security.symbol, 20, 2, resolution=Resolution.HOUR)
-            self._security_by_bb[security.bbands] = security
             # Attach an event handler to the indicator to track its updates.
             security.bbands.updated += self.on_bb_updated
         
         # Liquidate and remove the indicator updates for assets that leave the universe.
         for security in changes.removed_securities:
             self.deregister_indicator(security.bbands)
-            self._security_by_bb.pop(security.bbands, None)
             self.liquidate(security.symbol)
 
     def on_bb_updated(self, bb: object, _: IndicatorDataPoint) -&gt; None:
         # When the indicator updates, ensure it's ready.
         if not bb.is_ready:
             return
-        security = self._security_by_bb[bb]
+        security = self.securities[bb.current.symbol]
         # Short the asset if the price is above the upper band.
         if not security.holdings.invested and security.price &gt; bb.upper_band.current.value:
             # Get the number of shares avaiable for shorting.
             shortable_quantity = security.shortable_provider.shortable_quantity(security.symbol, self.time)
-            if not shortable_quantity:
-                return
             # Calculate the target quantity.
-            quantity = max(self.calculate_order_quantity(security.symbol, -0.1), -shortable_quantity)
-            if quantity: 
-                # Short the asset.
-                self.market_order(security.symbol, quantity)
-                # Place a take-profit order 10% below the current price.
-                self.limit_order(security.symbol, -quantity, 0.9 * security.bid_price)
+            quantity = max(self.calculate_order_quantity(security.symbol, -0.1), -shortable_quantity if shortable_quantity else 0)
+            if quantity == 0: return 
+            # Short the asset.
+            self.market_order(security.symbol, quantity)
+            # Place a take-profit order 10% below the current price.
+            self.limit_order(security.symbol, -quantity, 0.9 * security.bid_price)
         # If the limit order isn't hit before the price drops below the middle band, 
         # exit the position and cancel the limit order.
         elif security.holdings.invested and security.price &lt; bb.middle_band.current.value:
