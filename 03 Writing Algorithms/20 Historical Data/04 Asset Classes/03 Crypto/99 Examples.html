@@ -2,39 +2,35 @@
 
 <h4>Example 1: Risk-Parity Crypto Pairs Portfolio</h4>
 <p>The following algorithm constructs a monthly rebalance risk-parity portfolio using the top 10 liquid Crypto pairs in the BitFinex market. A risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown. The position sizing can be optimized by 1-year historical daily return of the universe members.</p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class CryptoHistoricalDataAlgorithm : QCAlgorithm
 {
     private Universe _universe;
-    private IPortfolioOptimizer _optimizer;
+    // Instantiate the optimizer to perform risk-parity optimization.
+    // Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown.
+    private readonly RiskParityPortfolioOptimizer _optimizer = new(0, 1);
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         
+        // Seed the last price to set the initial price of the BTCUSDT holdings.
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        
         // Monthly renewal of the top 10 liquid universe to trade popular crypto pairs.
         UniverseSettings.Schedule.On(DateRules.MonthStart());
         _universe = AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Bitfinex, UniverseSettings, Selection));
 
-        // Instantiate the optimizer to perform risk-parity optimization.
-        // Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown.
-        _optimizer = new RiskParityPortfolioOptimizer(0, 1);
-
         // Set a scheduled event to rebalance the portfolio at the start of every month.
-        Schedule.On(
-            DateRules.MonthStart(),
-            TimeRules.At(9, 31),
-            Rebalance
-        );
+        Schedule.On(DateRules.MonthStart(), TimeRules.At(9, 31), Rebalance);
     }
 
     private IEnumerable&lt;Symbol&gt; Selection(IEnumerable&lt;CryptoUniverse&gt; data)
     {
         // Filter out the crypto pair with a price below $10 to avoid excessive volatility.
-        // Select the top 10 dollar volume crypto pairs.
         return (from datum in data
-               where datum.Price &lt;= 10 &amp;&amp; datum.VolumeInUsd.HasValue
+               where datum.VolumeInUsd.HasValue
                orderby datum.VolumeInUsd.Value descending
                select datum.Symbol).Take(10);
     }
@@ -54,24 +50,28 @@
 
         // Rebalance the portfolio according to the optimized weights.
         var targets = Enumerable.Range(0, weights.Length)
-            .Select(i =&gt; new PortfolioTarget(symbols[i], Convert.ToDecimal(weights[i])))
+            .Select(i =&gt; 
+            {
+                var weight = Math.Abs(weights[i]) &gt; 0.01 ? Convert.ToDecimal(weights[i]) : 0m;
+                return new PortfolioTarget(symbols[i], weight);
+            })
             .ToList();
         SetHoldings(targets, liquidateExistingHoldings: true);
     }
 
-    private double[,] GetReturns(List&lt;DataDictionary&lt;TradeBar&gt;&gt; history, List&lt;Symbol&gt; symbols)
+    private static double[,] GetReturns(List&lt;DataDictionary&lt;TradeBar&gt;&gt; history, List&lt;Symbol&gt; symbols)
     {
         // Create a 2d array of historical daily returns from historical price data.
         var returns = new double[history.Count, symbols.Count];
         for (int j = 0; j &lt; symbols.Count; j++)
         {
-            var lastPrice = 0m;
+            var lastPrice = 0.0;
             for (int i = 0; i &lt; history.Count; i++)
             {
-                var current = history[i][symbols[j]].Close;
+                var current = (double) history[i][symbols[j]].Close;
                 if (i &gt; 0)
                 {
-                    returns[i, j] = (double)((current - lastPrice) / lastPrice);
+                    returns[i, j] = current / lastPrice - 1;
                 }
                 lastPrice = current;
             }
@@ -82,17 +82,21 @@
     <pre class="python">from Portfolio.RiskParityPortfolioOptimizer import RiskParityPortfolioOptimizer
 
 class CryptoHistoricalDataAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt;None:
+
+    # Instantiate the optimizer to perform risk-parity optimization.
+    # Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown.
+    _optimizer = RiskParityPortfolioOptimizer(0.0, 1.0)
+
+    def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         
+        # Seed the last price to set the initial price of the BTCUSDT holdings.
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+
         # Monthly renewal of the top 10 liquid universe to trade popular crypto pairs.
         self.universe_settings.schedule.on(self.date_rules.month_start())
         self._universe = self.add_universe(CryptoCoarseFundamentalUniverse(Market.BITFINEX, self.universe_settings, self.selection))
-
-        # Instantiate the optimizer to perform risk-parity optimization.
-        # Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown.
-        self._optimizer = RiskParityPortfolioOptimizer(0.0, 1.0)
 
         # Set a scheduled event to rebalance the portfolio at the start of every month.
         self.schedule.on(
@@ -101,14 +105,14 @@ class CryptoHistoricalDataAlgorithm(QCAlgorithm):
             self.rebalance
         )
 
-    def selection(self, data: List[CryptoUniverse]) -&gt;List[Symbol]:
+    def selection(self, data: List[CryptoUniverse]) -> list[Symbol]:
         # Filter out the crypto pair with a price below $10 to avoid excessive volatility.
-        filtered = [datum for datum in data if datum.price &lt;= 10 and datum.volume_in_usd]
+        filtered = [datum for datum in data if datum.volume_in_usd]
         # Select the top 10 dollar volume crypto pairs.
         sorted_by_volume_in_usd = sorted(filtered, key=lambda datum: datum.volume_in_usd, reverse=True)[:10]
         return [datum.symbol for datum in sorted_by_volume_in_usd]
 
-    def rebalance(self) -&gt;None:
+    def rebalance(self) -&gt; None:
         # Historical data request to get 1-year data for optimization.
         symbols = self._universe.selected
         history = self.history(symbols, 253, Resolution.DAILY).close.unstack(0).dropna()
@@ -119,6 +123,6 @@ class CryptoHistoricalDataAlgorithm(QCAlgorithm):
         weights = self._optimizer.optimize(returns)
 
         # Rebalance the portfolio according to the optimized weights.
-        targets = [PortfolioTarget(symbol, size) for symbol, size in zip(symbols, weights)]
+        targets = [PortfolioTarget(symbol, size if abs(size) > 0.01 else 0) for symbol, size in zip(symbols, weights)]
         self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
 </div>

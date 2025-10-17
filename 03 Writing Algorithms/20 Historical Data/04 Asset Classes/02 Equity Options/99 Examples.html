@@ -2,7 +2,7 @@
 
 <h4>Example 1: Trend Following on 0DTE Option Contract</h4>
 <p>This algorithm strategically trades 0DTE SPY options by analyzing bid and ask volumes shortly after the market opens. Using scheduled events, it effectively executes trades based on historical quote data, optimizing decision-making. The algorithm aims for timely entries and exits, ensuring efficient capital management and quick adaptability in volatile markets.</p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class ZeroDTEOptionsTradingAlgorithm : QCAlgorithm
 {
     private Symbol _option;
@@ -32,7 +32,7 @@
             foreach (var option in optionChain)
             {
                 // Request historical quote data for signal generation.
-                var history = History&lt;QuoteBar&gt;(_option, 15, Resolution.Minute);
+                var history = History&lt;QuoteBar&gt;(option.Symbol, 15, Resolution.MINUTE);
                 // Calculate the total bid and ask for dollar volume to determine the capital directional force.
                 var totalBidVolume = 0m;
                 var totalAskVolume = 0m;
