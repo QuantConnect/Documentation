@@ -10,7 +10,7 @@ The US Equity Coarse Universe dataset enables you to accurately design a univers
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
 
@@ -21,38 +21,40 @@ class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        # Set Asynchronous to True to improve speed performance
+        # Set Asynchronous to True to improve speed performance.
         self.universe_settings.asynchronous = True
-        # Requesting data
-        self.add_universe(self.fundamental_selection_function)
+        # Add a universe of US Equities.
+        universe = self.add_universe(self._select_assets)
+        # Get historical data for the universe.
+        history = self.history(universe, 30, Resolution.DAILY, flatten=True)
 
-    def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        # Select the top traded stocks, since they are the most popular with high capital flow
-        sortedByDollarVolume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)
-        return [ x.symbol for x in sortedByDollarVolume[:self._number_of_symbols] ]
+    def _select_assets(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Select the top traded stocks, since they are the most popular 
+        # with high capital flow.
+        return [ 
+            x.symbol for x in sorted(
+                fundamental, key=lambda x: x.dollar_volume
+            )[-self._number_of_symbols:] 
+        ]
 
     def on_data(self, slice: Slice) -&gt; None:
-        # if we have no changes, do nothing
-        if self._changes is None: return
-
-        # liquidate removed securities, since they are not the most popular stocks
+        # If we have no changes, do nothing.
+        if not slice.bars or self._changes is None: 
+            return
+        # Liquidate removed securities, since they are not the most 
+        # popular stocks.
         for security in self._changes.removed_securities:
             if security.invested:
                 self.liquidate(security.symbol)
-
-        # we want 1/N allocation in each security in our universe to evenly dissipate risk
+        # We want 1/N allocation for each security in our universe to
+        # evenly dissipate risk.
         for security in self._changes.added_securities:
             self.set_holdings(security.symbol, 1 / self._number_of_symbols)
-
         self._changes = None
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         self._changes = changes
-        
-        for security in changes.added_securities:
-            # Historical data
-            history = self.history(security.symbol, 7, Resolution.DAILY)
-            self.debug(f"We got {len(history)} from our history request for {security.symbol}") </pre>
+</pre>
 <pre class="csharp">public class USEquityCoarseUniverseConstituentsDataAlgorithm : QCAlgorithm
 {
     private int _numberOfSymbols = 3;
@@ -67,22 +69,36 @@ class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
         // Set Asynchronous to true to improve speed performance 
         UniverseSettings.Asynchronous = true;
         // Requesting data
-        AddUniverse(FundamentalSelectionFunction);
+        var universe = AddUniverse(SelectAssets);
+        // Get historical data for the universe.
+        var history = History(universe, 30, Resolution.Daily);
+        foreach (var fundamentals in history)
+        {
+            // Iterate through each asset in the universe on this day 
+            // and access its data point attributes.
+            foreach (Fundamental f in fundamentals)
+            {
+                var symbol = f.Symbol;
+                var t = f.EndTime;
+                var dollarVolume = f.DollarVolume;
+            }
+        }
     }
 
-    public IEnumerable&lt;Symbol&gt; FundamentalSelectionFunction(IEnumerable&lt;Fundamental&gt; fundamental)
+    public IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamental)
     {
-        // Select the top traded stocks, since they are the most popular with high capital flow
+        // Select the top traded stocks, since they are the most popular 
+        // with high capital flow.
         return fundamental.OrderByDescending(x =&gt; x.DollarVolume)
             .Take(_numberOfSymbols).Select(x =&gt; x.Symbol);
     }
 
     public override void OnData(Slice slice)
     {
-        // if we have no changes, do nothing
-        if (_changes == SecurityChanges.None) return;
-
-        // liquidate removed securities, since they are not the most popular stocks
+        // If we have no changes, do nothing.
+        if (slice.Bars.Count == 0 || _changes == SecurityChanges.None) return;
+        // Liquidate removed securities, since they are not the most 
+        // popular stocks.
         foreach (var security in _changes.RemovedSecurities)
         {
             if (security.Invested)
@@ -90,27 +106,18 @@ class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
                 Liquidate(security.Symbol);
             }
         }
-
-        // we want 1/N allocation in each security in our universe to evenly dissipate risk
+        // We want 1/N allocation for each security in our universe to
+        // evenly dissipate risk.
         foreach (var security in _changes.AddedSecurities)
         {
             SetHoldings(security.Symbol, 1m / _numberOfSymbols);
         }
-
         _changes = SecurityChanges.None;
     }
     
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
         _changes = changes;
-
-
-        foreach (var security in changes.AddedSecurities)
-        {
-            // Historical data
-            var history = History(security.Symbol, 7, Resolution.Daily);
-            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-        }
     }
 }</pre>
 </div>
@@ -119,7 +126,7 @@ class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class USEquityCoarseUniverseConstituentsDataAlgorithm(QCAlgorithm):
 

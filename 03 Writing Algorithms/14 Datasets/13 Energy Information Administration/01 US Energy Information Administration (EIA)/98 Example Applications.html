@@ -10,6 +10,7 @@
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
+
 class USEnergyDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -17,8 +18,8 @@ class USEnergyDataAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         
-        # Requesting data
-        self.axas = self.add_equity("AXAS", Resolution.DAILY).symbol
+        # Requesting data, we trade Exxon Mobil Corp (XOM) as the proxy of petroleum investment
+        self._xom = self.add_equity("XOM", Resolution.DAILY).symbol
         us_energy_symbol = self.add_data(USEnergy, USEnergy.Petroleum.UnitedStates.WEEKLY_NET_IMPORTS_OF_TOTAL_PETROLEUM_PRODUCTS).symbol
 
         # Historical data
@@ -34,14 +35,15 @@ class USEnergyDataAlgorithm(QCAlgorithm):
         if not points:
             return
         current_value = points[-1].value
+        self.plot('Net Imports', 'Petroleum', current_value)
         
         # Buy when net imports of petroleum products are increasing
         if current_value &gt; self.previous_value:
-            self.set_holdings(self.axas, 1)
+            self.set_holdings(self._xom, 1)
         
         # Short sell when net imports of petroleum products are decreasing
         elif current_value &lt; self.previous_value:
-            self.set_holdings(self.axas, -1)
+            self.set_holdings(self._xom, -1)
         
         self.previous_value = current_value</pre>
 <pre class="csharp">public class USEnergyDataAlgorithm : QCAlgorithm
@@ -55,8 +57,8 @@ class USEnergyDataAlgorithm(QCAlgorithm):
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         
-        // Requesting data, we trade Abraxas Petroleum Corporation (AXAS) as the proxy of petroleum investment
-        tradableSymbol = AddEquity("AXAS", Resolution.Daily).Symbol;
+        // Requesting data, we trade Exxon Mobil Corp (XOM) as the proxy of petroleum investment
+        tradableSymbol = AddEquity("XOM", Resolution.Daily).Symbol;
         // Request US weekly net import petroleum products data for trade signal generation
         var USEnergySymbol = AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;
 
@@ -82,6 +84,7 @@ class USEnergyDataAlgorithm(QCAlgorithm):
         {
             return;
         }
+        Plot("Net Imports", "Petroleum", (double)currentValue);
         
         // Buy when net imports of petroleum products are increasing, assuming the demand increases that bring up the petroleum price
         // Hence the inventory and revenue of the proxy increase, supporting the stock price goes up
@@ -106,6 +109,7 @@ class USEnergyDataAlgorithm(QCAlgorithm):
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
+
 class USEnergyDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -114,13 +118,14 @@ class USEnergyDataAlgorithm(QCAlgorithm):
         self.set_cash(100000)
         
         self.universe_settings.resolution = Resolution.DAILY
-        # We only trade Abraxas Petroleum Corporation (AXAS) as the proxy of petroleum investment
-        symbols = [Symbol.create("AXAS", SecurityType.EQUITY, Market.USA)]
+        # We only trade Exxon Mobil Corp (XOM) as the proxy of petroleum investment
+        symbols = [Symbol.create("XOM", SecurityType.EQUITY, Market.USA)]
         self.add_universe_selection(ManualUniverseSelectionModel(symbols))   
         # A custom alpha model that emit trade insights based on US Energy data
         self.add_alpha(USEnergyAlphaModel(self))
         # Equally invest to dissipate non-systematic capital concentration risk on individual stock
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
 
 class USEnergyAlphaModel(AlphaModel):
     
@@ -170,8 +175,8 @@ class USEnergyAlphaModel(AlphaModel):
         SetCash(100000);
         
         UniverseSettings.Resolution = Resolution.Daily;
-        // We only trade Abraxas Petroleum Corporation (AXAS) as the proxy of petroleum investment
-        var symbols = new[] {QuantConnect.Symbol.Create("AXAS", SecurityType.Equity, Market.USA)};
+        // We only trade Exxon Mobil Corp (XOM) as the proxy of petroleum investment
+        var symbols = new[] {QuantConnect.Symbol.Create("XOM", SecurityType.Equity, Market.USA)};
         AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
         // A custom alpha model that emit trade insights based on US Energy data
         AddAlpha(new USEnergyAlphaModel(this));

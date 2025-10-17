@@ -11,26 +11,34 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
 <p>The following example algorithm holds new stocks for its IPO day to capitalize its hype.</p>
 
 <div class="section-example-container testable">
-<pre class="python">class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
-    _universe = []
+<pre class="python">from AlgorithmImports import *
+
+
+class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-
         # Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
-        self.add_universe(EODHDUpcomingIPOs, self.selection)
+        self._universe = self.add_universe(EODHDUpcomingIPOs, self.selection)
 
     def selection(self, ipos: List[EODHDUpcomingIPOs]) -&gt; List[Symbol]:
         # Select the stocks that IPO starts today and traded in Nasdaq
-        self._universe = [x.symbol for x in ipos if x.ipo_date and x.ipo_date &lt;= self.time + timedelta(1) and x.exchange == Exchange.NASDAQ]
-        return self._universe
+        return [
+            x.symbol for x in ipos 
+            if (x.ipo_date and 
+                x.ipo_date &lt;= self.time + timedelta(1) and 
+                x.exchange == Exchange.NASDAQ)
+        ]
 
     def on_data(self, slice: Slice) -&gt; None:
         # Invest in new stocks and trade on their first day for their hype.
         # Equally invest in each new stocks to evenly dissipate the capital risk.
-        self.set_holdings([PortfolioTarget(x, 0.5 / len(self._universe)) for x in self._universe])
+        for symbol in self._universe.selected:
+            security = self.securities[symbol]
+            if not security.holdings.invested and security.price:
+                self.set_holdings(symbol, 0.1/len(self._universe.selected))
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         # Liquidate the new stocks traded today/yesterday to capitalize the first-day hype.
@@ -38,7 +46,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
             self.liquidate(removed.symbol)</pre>
 <pre class="csharp">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
 {
-    private List&lt;Symbol&gt; _universe = new();
+    private Universe _universe;
 
     public override void Initialize()
     {
@@ -47,21 +55,25 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         SetCash(100000);
         
         // Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
-        AddUniverse&lt;EODHDUpcomingIPOs&gt;((ipos) =&gt; {
-            // Select the stocks that IPO starts today and traded in Nasdaq
-            _universe = (from EODHDUpcomingIPOs x in ipos
-                where x.IpoDate &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ
-                select x.Symbol).ToList();
-            return _universe;
-        });
+        _universe = AddUniverse&lt;EODHDUpcomingIPOs&gt;(ipos =&gt; 
+            ipos.Select(x =&gt; x as EODHDUpcomingIPOs)
+                .Where(x =&gt; x.IpoDate &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ)
+                .Select(x =&gt; x.Symbol)
+        );
     }
 
     public override void OnData(Slice slice)
     {
         // Invest in new stocks and trade on their first day for their hype.
         // Equally invest in each new stocks to evenly dissipate the capital risk.
-        var count = _universe.Count;
-        SetHoldings(_universe.Select(x =&gt; new PortfolioTarget(x, 0.5m / count)).ToList());
+        foreach (var symbol in _universe.Selected)
+        {
+            var security = Securities[symbol];
+            if (!security.Holdings.Invested &amp;&amp; security.Price != 0)
+            {
+                SetHoldings(symbol, 0.1m/_universe.Selected.Count);
+            }
+        }
     }
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -79,7 +91,10 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
 <p>The following example algorithm buy QQQ if the number of IPO in Nasdaq is in increasing trend, sell otherwise.</p>
 
 <div class="section-example-container testable">
-<pre class="python">class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
+<pre class="python">from AlgorithmImports import *
+
+
+class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
     
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
@@ -104,7 +119,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         return Universe.UNCHANGED
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self._ema.is_ready:
+        if not self.is_warming_up and self._ema.is_ready:
             # If the EMA is decreasing, we estimate the market popularity is decreasing, so we sell QQQ.
             if self._ema.previous.value &gt; self._ema.current.value:
                 self.set_holdings(self.qqq, -1)
@@ -144,7 +159,7 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
 
     public override void OnData(Slice slice)
     {
-        if (_ema.IsReady)
+        if (!IsWarmingUp &amp;&amp; _ema.IsReady)
         {
             // If the EMA is decreasing, we estimate the market popularity is decreasing, so we sell QQQ.
             if (_ema.Previous &gt; _ema)
@@ -164,7 +179,10 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
 <p>The following example algorithm holds new stocks for its IPO day to capitalize its hype using framework algorithm.</p>
 
 <div class="section-example-container testable">
-<pre class="python">class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
+<pre class="python">from AlgorithmImports import *
+
+
+class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
     
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
@@ -175,15 +193,19 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         self.add_universe(EODHDUpcomingIPOs, self.selection)
 
         # Invest in new stocks and trade on their first day for their hype.
-        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
+        self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1), None, None, 0.01))
 
         # Equally invest in each new stocks to evenly dissipate the capital risk.
-        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_DAY))
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel(Expiry.END_OF_DAY))
 
     def selection(self, ipos: List[EODHDUpcomingIPOs]) -&gt; List[Symbol]:
         # Select the stocks that IPO starts today and traded in Nasdaq
-        return [x.symbol for x in ipos if x.ipo_date and x.ipo_date &lt;= self.time + timedelta(1) and x.exchange == Exchange.NASDAQ]
-</pre>
+        return [
+            x.symbol for x in ipos 
+            if (x.ipo_date and 
+                x.ipo_date &lt;= self.time + timedelta(1) and 
+                x.exchange == Exchange.NASDAQ)
+        ]</pre>
 <pre class="csharp">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -193,18 +215,17 @@ The Upcoming IPOs dataset provides timely notifications about upcoming IPOs star
         SetCash(100000);
         
         // Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
-        AddUniverse&lt;EODHDUpcomingIPOs&gt;((ipos) =&gt; {
-            // Select the stocks that IPO starts today and traded in Nasdaq
-            return (from EODHDUpcomingIPOs x in ipos
-                where x.IpoDate &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ
-                select x.Symbol).ToList();
-        });
+        AddUniverse&lt;EODHDUpcomingIPOs&gt;(ipos =&gt; 
+            ipos.Select(x =&gt; x as EODHDUpcomingIPOs)
+                .Where(x =&gt; x.IpoDate &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ)
+                .Select(x =&gt; x.Symbol)
+        );
         
         // Invest in new stocks and trade on their first day for their hype.
-        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1)));
+        AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(1), null, null, 0.01d));
 
         // Equally invest in each new stocks to evenly dissipate the capital risk.
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel(Expiry.EndOfDay));
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(Expiry.EndOfDay));
     }
 }</pre>
 </div>

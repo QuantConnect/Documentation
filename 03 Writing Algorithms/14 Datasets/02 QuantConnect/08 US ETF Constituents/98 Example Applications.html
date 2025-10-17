@@ -8,7 +8,7 @@
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class ETFConstituentUniverseAlgorithm(QCAlgorithm):
 
@@ -16,145 +16,107 @@ class ETFConstituentUniverseAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        self.universe_settings.asynchronous = True
-        self.universe_settings.resolution = Resolution.MINUTE
-        
-        self.spy = self.add_equity("SPY").symbol
-        # Add universe selection on SPY's constituents to select only from large cap stocks
-        # Save the universe to access its members for historical data call
-        self._universe = self.add_universe(self.universe.etf(self.spy, self.universe_settings, self.etf_constituents_filter))
-        
-        # Historical Universe data, so you can work on the selection longitudinally
-        history = self.history(self._universe, 30, Resolution.DAILY)
-        for (universe_symbol, time), constituents in history.items():
-            for constituent in constituents:
-                self.debug(f'{constituent.symbol}: {constituent.weight}')
-
-        self.weight_by_symbol = {}
-        
-        # Rebalance daily using scheduled event since selection is on daily basis
+        # Add the SPY to trade.
+        self._spy = self.add_equity("SPY").symbol
+        # Add an ETF constituents universe that selects the large caps 
+        # in SPY. Save the universe object so you can get history
+        # for the universe.
+        universe = self.add_universe(
+            self.universe.etf(
+                self._spy, 
+                universe_filter_func=self._select_assets
+            )
+        )
+        # Get historical universe data.
+        history = self.history(universe, 30, Resolution.DAILY, flatten=True)
+        # Show an example of wrangling the historical data.
+        etf_weights = history.weight.unstack(1)  
+        # Create a dictionary to store the ETF weights each day.
+        self._weight_by_symbol = {}
+        # Add a Scheduled Event to rebalance the portfolio each day.
         self.schedule.on(
-            self.date_rules.every_day(self.spy),
-            self.time_rules.after_market_open(self.spy, 1),
-            self.rebalance)
+            self.date_rules.every_day(self._spy),
+            self.time_rules.after_market_open(self._spy, 1),
+            self._rebalance
+        )
 
-    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
-        # The top 10 weighted securities are considered better active selections
-        # Save the weights for position sizing
-        selected = sorted([c for c in constituents if c.weight],
-            key=lambda c: c.weight, reverse=True)[:10]
-        self.weight_by_symbol = {c.symbol: c.weight for c in selected}
-        
-        return list(self.weight_by_symbol.keys())
+    def _select_assets(
+            self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Select the 10 largest stocks in the SPY.
+        selected = sorted(
+            [c for c in constituents if c.weight], 
+            key=lambda c: c.weight
+        )[-10:]
+        # Save the weights for position sizing.
+        self._weight_by_symbol = {c.symbol: c.weight for c in selected}
+        # Return the selected assets.
+        return list(self._weight_by_symbol.keys())
 
-    def rebalance(self) -&gt; None:
-        spy_weight = sum(self.weight_by_symbol.values())
-
-        # Liquidate the ones not in top 10 weights
-        if spy_weight &gt; 0:
-            for symbol in self.portfolio.Keys:
-                if symbol not in self.weight_by_symbol:
-                    self.liquidate(symbol)
-
-            # Create a long-short portfolio to earn excess return of the top 10 weighted stocks from SPY
-            for symbol, weight in self.weight_by_symbol.items():
-                self.set_holdings(symbol, 0.5 * weight / spy_weight)
-            self.set_holdings(self.spy, -0.5)
-
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate the ones not in top 10 weights
-        for security in changes.removed_securities:
-            if security.invested:
-                self.liquidate(security.symbol, 'Removed From Universe')
-
-        for security in changes.added_securities:
-            # Historical data
-            history = self.history(security.symbol, 7, Resolution.DAILY)
-            self.debug(f'We got {len(history)} from our history request for {security.symbol}')</pre>
+    def _rebalance(self) -&gt; None:
+        # Create a long-short portfolio to earn the excess return of the 
+        # top 10 weighted stocks from SPY.
+        spy_weight = sum(self._weight_by_symbol.values())
+        targets = [PortfolioTarget(self._spy, -0.5)]
+        for symbol, weight in self._weight_by_symbol.items():
+            targets.append(PortfolioTarget(symbol, 0.5*weight/spy_weight))
+        # Liquidate the stocks that aren't in top 10.
+        self.set_holdings(targets, True)
+</pre>
 <pre class="csharp">public class ETFConstituentUniverseAlgorithm : QCAlgorithm
 { 
     private Symbol _spy;
-    private Universe _universe;
-    private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+    // Create a dictionary to store the ETF weights each day.
+    private Dictionary&lt;Symbol, decimal&gt; _weightBySymbol = new();
     
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        UniverseSettings.Asynchronous = true;
-        UniverseSettings.Resolution = Resolution.Minute;
-
-        // Add universe selection on SPY's constituents to select only from large cap stocks
-        // Save the universe to access its members for historical data call
+        // Add the SPY to trade.
         _spy = AddEquity("SPY").Symbol;
-        _universe = AddUniverse(Universe.ETF(_spy, UniverseSettings, ETFConstituentsFilter));
-        
-        // Historical Universe data, so you can work on the selection longitudinally
-        var history = History(_universe, 30, Resolution.Daily);
+        // Add an ETF constituents universe that selects the large caps 
+        // in SPY. Save the universe object so you can get history
+        // for the universe.
+        var universe = AddUniverse(Universe.ETF(_spy, universeFilterFunc: SelectAssets));
+        // Get historical universe data.
+        var history = History(universe, 30, Resolution.Daily);
+        // Show an example of iterating through the historical data.
         foreach (var constituents in history)
         {
+            var t = constituents.EndTime;
             foreach (ETFConstituentUniverse constituent in constituents)
             {
-                Debug($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
+                var symbol = constituent.Symbol;
+                var weight = constituent.Weight;
             }
         }
-
-        // Rebalance daily using scheduled event since selection is on daily basis
-        Schedule.On(
-            DateRules.EveryDay(_spy),
-            TimeRules.AfterMarketOpen(_spy, 1),
-            Rebalance);
+        // Add a Scheduled Event to rebalance the portfolio each day.
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.AfterMarketOpen(_spy, 1), Rebalance);
     }
     
-    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
     {
-        // The top 10 weighted securities are considered better active selections
-        // Save the weights for position sizing
+        // Select the 10 largest stocks in the SPY. 
         _weightBySymbol = constituents.OrderByDescending(c =&gt; c.Weight).Take(10)
+            // Save the weights for position sizing.
             .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight ?? 0m);
-
+        // Return the selected assets.
         return _weightBySymbol.Keys;
     }
     
     private void Rebalance()
     {
+        // Create a long-short portfolio to earn the excess return of the 
+        // top 10 weighted stocks from SPY.
         var spyWeight = _weightBySymbol.Values.Sum();
-
-        // Liquidate the ones not in top 10 weights
-        if (spyWeight &gt; 0)
+        var targets = new List&lt;PortfolioTarget&gt;() { new PortfolioTarget(_spy, -0.5m) };
+        foreach (var kvp in _weightBySymbol)
         {
-            foreach(var symbol in Portfolio.Keys)
-            {
-                if (!_weightBySymbol.ContainsKey(symbol))
-                {
-                    Liquidate(symbol);
-                }
-            }
-
-        // Create a long-short portfolio to earn excess return of the top 10 weighted stocks from SPY
-        foreach(var kvp in _weightBySymbol)
-        {
-            SetHoldings(kvp.Key, 0.5m * kvp.Value / spyWeight);
+            targets.Add(new PortfolioTarget(kvp.Key, 0.5m * kvp.Value / spyWeight));
         }
-        SetHoldings(_spy, -0.5m);
-        }
-    }
-    
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        // Liquidate the ones not in top 10 weights
-        foreach (var security in changes.RemovedSecurities.Where(x =&gt; x.Invested))
-        {
-                Liquidate(security.Symbol, "Removed From Universe");
-        }
-
-        foreach (var security in changes.AddedSecurities)
-        {
-            // Historical data
-            var history = History(security.Symbol, 7, Resolution.Daily);
-            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-        }
+        // Liquidate the stocks that aren't in top 10.
+        SetHoldings(targets, true);
     }
 }</pre>
 </div>
@@ -163,7 +125,7 @@ class ETFConstituentUniverseAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class ETFConstituentUniverseFrameworkAlgorithm(QCAlgorithm):
 

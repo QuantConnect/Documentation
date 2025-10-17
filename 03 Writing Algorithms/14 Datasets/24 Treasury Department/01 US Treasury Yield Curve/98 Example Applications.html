@@ -8,10 +8,12 @@
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class USTreasuryDataAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
+
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
@@ -113,9 +115,10 @@ class USTreasuryDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class USTreasuryDataAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -130,6 +133,7 @@ class USTreasuryDataAlgorithm(QCAlgorithm):
         # Use insight weighting PCM to limit the size of investment, reduce the fluctuation of the portfolio value
         self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel(lambda time: None))
         
+
 class USTreasuryAlphaModel(AlphaModel):
 
     spy_symbol = None
@@ -162,7 +166,6 @@ class USTreasuryAlphaModel(AlphaModel):
             return [Insight.price(self.spy_symbol, slice.time + timedelta(days=2*365), InsightDirection.DOWN, None, None, None, 0.5)]
         return []
         
-
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             self.spy_symbol = security.symbol

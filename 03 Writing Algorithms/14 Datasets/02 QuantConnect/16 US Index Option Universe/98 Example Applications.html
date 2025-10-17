@@ -200,11 +200,11 @@ class OptionDeltaGammaAlphaModel(AlphaModel):
 
                 # Calculate delta and gamma per strike price group for later filtering, ensure both call and put available for option strategy
                 delta_gamma_symbols = []
-                strikes = set(x.strikes for x in contracts if len([y for y in contracts if y.strike == x.strike]) == 2)
+                strikes = set(x.strike for x in contracts if len([y for y in contracts if y.strike == x.strike]) == 2)
                 for strike in strikes:
                     # Get both call and put for their aggregated delta and gamma
-                    call = next(filter(lambda x: x.right == OptionRight.CALL and x.strike == strike), contracts)
-                    put = next(filter(lambda x: x.right == OptionRight.PUT and x.strike == strike), contracts)
+                    call = next(filter(lambda x: x.right == OptionRight.CALL and x.strike == strike, contracts))
+                    put = next(filter(lambda x: x.right == OptionRight.PUT and x.strike == strike, contracts))
                     delta_gamma_symbols.append((call.greeks.delta + put.greeks.delta, call.greeks.gamma + put.greeks.gamma, call.symbol, put.symbol))
                 
                 if len(delta_gamma_symbols) == 0:
@@ -244,7 +244,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 3, 31);
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
         // Asynchronous can use computational resources efficiently
         UniverseSettings.Asynchronous = true;

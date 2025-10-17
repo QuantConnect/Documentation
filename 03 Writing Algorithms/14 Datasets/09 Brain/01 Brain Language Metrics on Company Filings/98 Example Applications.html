@@ -11,14 +11,21 @@ The Brain Language Metrics on Company Filings dataset enables you to test strate
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
+
     def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000) 
-        
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # Requesting data -- we aim to obtain a sentiment score from the company filings
         # Combining both fundamental and sentiment factor, as well as past performance and future provision
         self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
@@ -27,7 +34,6 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
         # Historical data
         history = self.history(self.dataset_symbol, 365, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from our history request for {self.dataset_symbol}")
-        
         
     def on_data(self, data):
         # Trade base on the updated report sentiment
@@ -45,7 +51,10 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // Requesting data -- we aim to obtain a sentiment score from the company filings
         // Combining both fundamental and sentiment factor, as well as past performance and future provision
         _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
@@ -73,14 +82,22 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000) 
-        
+        self.settings.free_portfolio_value_percentage = 0.1
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         self.universe_settings.resolution = Resolution.DAILY
         # Filter based on company filing data
         self.add_universe(BrainCompanyFilingLanguageMetricsUniverse10K, self.universe_selection)
@@ -100,17 +117,25 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
                 if d.report_sentiment.sentiment is not None and d.report_sentiment.sentiment &gt; 0]
         
 class BrainCompanyFilingNLPAlphaModel(AlphaModel):
+
+    _securities = []
     
     def update(self, algorithm: QCAlgorithm, slice: Slice):
-        insights = []
-
         # Signal to invest in the selected universe, which are expected to have a positive return due to positive fundamentals and future prospect
-        for symbol in algorithm.active_securities.keys:
-            if not slice.contains_key(symbol):
-                continue
-            insights.append(Insight.price(symbol, timedelta(days=1), InsightDirection.UP))
-        
-        return insights</pre>
+        return [
+            Insight.price(security.symbol, timedelta(days=1), InsightDirection.UP)
+            for security in self._securities
+            if security.price and security.is_tradable
+        ]
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            self._securities.append(security)
+        for security in changes.removed_securities:
+            if security in self._securities:
+                self._securities.remove(security)
+
+</pre>
 <pre class="csharp">public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -118,6 +143,11 @@ class BrainCompanyFilingNLPAlphaModel(AlphaModel):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        Settings.FreePortfolioValuePercentage = 0.1m;
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         
         // Filter based on company filing data
         UniverseSettings.Resolution = Resolution.Daily;
@@ -142,20 +172,28 @@ class BrainCompanyFilingNLPAlphaModel(AlphaModel):
     
 public class BrainCompanyFilingNLPAlphaModel : AlphaModel
 {
+    private List&lt;Security&gt; _securities = new();
+
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        var insights = new List&lt;Insight&gt;();
-        
         // Signal to invest in the selected universe, which are expected to have a positive return due to positive fundamentals and future prospect
-        foreach (var symbol in algorithm.ActiveSecurities.Keys)
-        {
-            if (!slice.ContainsKey(symbol))
-            {
-                continue;
-            }
-            insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up));
+        return _securities
+            .Where(security =&gt; security.Price != 0 &amp;&amp; security.IsTradable)
+            .Select(security =&gt; Insight.Price(security.Symbol, TimeSpan.FromDays(1), InsightDirection.Up));
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes) {
+        foreach (var security in changes.AddedSecurities)
+        {               
+            _securities.Add(security);
         }
-        return insights;
+        foreach (var security in changes.RemovedSecurities)
+        {
+            if (_securities.Contains(security))
+            {
+                _securities.Remove(security);
+            }
+        }
     }
 }</pre>
 </div>

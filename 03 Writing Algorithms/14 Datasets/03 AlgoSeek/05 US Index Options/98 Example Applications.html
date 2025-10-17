@@ -42,9 +42,11 @@ class IndexOptionsDataAlgorithm(QCAlgorithm):
                 
                 # Use all the buying power, but need to ensure the order size of the long and short call are the same
                 quantity = min([
-                    abs(self.calculate_order_quantity(shortCall.symbol, -0.5)),
-                    abs(self.calculate_order_quantity(longCall.symbol, 0.5))])
-                
+                    abs(self.calculate_order_quantity(shortCall.symbol, -1)),
+                    abs(self.calculate_order_quantity(longCall.symbol, 1))])
+                if not quantity:
+                    return
+
                 # Bull call spread consists of long a lower-strike call and short a higher-strike call
                 self.market_order(shortCall.symbol, -quantity)
                 self.market_order(longCall.symbol, quantity)
@@ -58,9 +60,8 @@ class IndexOptionsDataAlgorithm(QCAlgorithm):
         for security in changes.added_securities:
             if security.type == SecurityType.INDEX_OPTION:
                 # Historical data
-                history = self.history(security.symbol, 10, Resolution.MINUTE)
-                self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
-<pre class="csharp">public class VixBullSpreadAlgorithm : QCAlgorithm
+                history = self.history(security.symbol, 10, Resolution.MINUTE)</pre>
+<pre class="csharp">public class IndexOptionsDataAlgorithm : QCAlgorithm
 {
     private Symbol _optionSymbol;
 
@@ -105,6 +106,7 @@ class IndexOptionsDataAlgorithm(QCAlgorithm):
                     CalculateOrderQuantity(shortCall.Symbol, -1m),
                     CalculateOrderQuantity(longCall.Symbol, 1m) }
                     .Min(x=&gt; Math.Abs(x));
+                if (quantity == 0) return;
 
                 // Bull call spread consists of long a lower-strike call and short a higher-strike call
                 MarketOrder(shortCall.Symbol, -quantity);
@@ -127,7 +129,6 @@ class IndexOptionsDataAlgorithm(QCAlgorithm):
             {
                 // Historical data
                 var history = History(security.Symbol, 10, Resolution.Minute);
-                Debug($"We got {history.Count()} from our history request for {security.Symbol}");
             }
         }
     }
@@ -202,7 +203,6 @@ class BullCallSpreadAlphaModel(AlphaModel):
             if security.type == SecurityType.INDEX_OPTION:
                 # Historical data
                 history = algorithm.history(security.symbol, 10, Resolution.MINUTE)
-                algorithm.debug(f"We got {len(history)} from our history request for {security.symbol}")
 
 
 class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):

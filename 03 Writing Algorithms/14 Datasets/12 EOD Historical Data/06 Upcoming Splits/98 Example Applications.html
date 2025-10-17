@@ -10,16 +10,32 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
 <p>The following example algorithm holds each equity in equal size with upcoming splits within 7 days. It selects stocks that split up to more shares with lower price and tries to capitalize the higher demand of the more afforable stocks.</p>
 
 <div class="section-example-container testable">
-<pre class="python">class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
+<pre class="python">from AlgorithmImports import *
+
+
+class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
+    
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-
-        # Trade on daily basis based on daily upcoming splits signals.
-        self.universe_settings.resolution = Resolution.DAILY
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # Universe consists of equities with upcoming splits events.
         self._universe = self.add_universe(EODHDUpcomingSplits, self.selection)
+        # Add a Scheduled Event to rebalance the portfolio every morning
+        # based on upcoming splits signals.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.schedule.on(
+            self.date_rules.every_day(spy), 
+            self.time_rules.after_market_open(spy, 1), 
+            self._rebalance
+        )
     
     def selection(self, splits: List[EODHDUpcomingSplits]) -&gt; List[Symbol]:
         # Split (more shares with lower price) will make the stock more affordable and drive up the demand.
@@ -27,16 +43,14 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
         # Note that spliting up the stock means the split factor &gt; 1.
         return [x.symbol for x in splits if x.split_factor &gt; 1]
     
-    def on_data(self, slice: Slice) -&gt; None:
+    def _rebalance(self) -&gt; None:
         # Equally invest in each member of the universe to evenly dissipate the capital risk.
-        total_count = len(self._universe.selected)
-        targets = [PortfolioTarget(symbol, 1. / total_count) for symbol in self._universe.selected]
+        symbols = [s for s in self._universe.selected if self.securities[s].price]
+        total_count = len(symbols)
+        targets = [PortfolioTarget(symbol, 1. / total_count) for symbol in symbols]
         self.set_holdings(targets, liquidate_existing_holdings=True)
 
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        for removed in changes.removed_securities:
-            # Liquidate the ones exit the universe (already split) to capitalize the microeconomic demand.
-            self.liquidate(removed.symbol)</pre>
+</pre>
 <pre class="csharp">public class UpcomingSplitsExampleAlgorithm : QCAlgorithm
 {
     private Universe _universe;
@@ -46,9 +60,12 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-
-        // Trade on daily basis based on daily upcoming earnings signals.
-        UniverseSettings.Resolution = Resolution.Daily;
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(
+                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
+            )
+        );
         // Universe consists of equities with upcoming earnings events.
         _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
             return splits
@@ -58,25 +75,21 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
                 .Where(datum =&gt; (datum as EODHDUpcomingSplits).SplitFactor &gt; 1)
                 .Select(datum =&gt; datum.Symbol);
         });
+        // Add a Scheduled Event to rebalance the portfolio every morning
+        // based on upcoming splits signals.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        Schedule.On(DateRules.EveryDay(spy), TimeRules.AfterMarketOpen(spy, 1), Rebalance);
     }
 
-    public override void OnData(Slice slice)
+    public void Rebalance()
     {
         // Equally invest in each member of the universe to evenly dissipate the capital risk.
-        var totalCount = _universe.Selected.Count;
-        var targets = _universe.Selected
+        var symbols = _universe.Selected.Where(s =&gt; Securities[s].Price != 0);
+        var totalCount = symbols.Count();
+        var targets = symbols
             .Select(symbol =&gt; new PortfolioTarget(symbol, 1m / totalCount))
             .ToList();
         SetHoldings(targets, liquidateExistingHoldings: true);
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach (var removed in changes.RemovedSecurities)
-        {
-            // Liquidate the ones exit the universe (already split) to capitalize the microeconomic demand.
-            Liquidate(removed.Symbol);
-        }
     }
 }</pre>
 </div>
@@ -84,7 +97,10 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
 <p>The following example algorithm holds each equity in equal size with upcoming splits within 7 days using algorithm framework. It selects stocks that split up to more shares with lower price and tries to capitalize the higher demand of the more afforable stocks.</p>
 
 <div class="section-example-container testable">
-<pre class="python">class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
+<pre class="python">from AlgorithmImports import *
+
+
+class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)

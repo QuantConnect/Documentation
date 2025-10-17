@@ -11,7 +11,7 @@ The Brain Sentiment Indicator dataset enables you to incorporate sentiment from 
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class BrainSentimentDataAlgorithm(QCAlgorithm):
     
@@ -108,7 +108,7 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
 
         // Ensure we have security data in the current slice to avoid stale fill
         // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
-        if (slice.Bar.ContainsKey(_symbol) &amp;&amp; _targetHoldings == 1 != Portfolio.Invested)
+        if (slice.Bars.ContainsKey(_symbol) &amp;&amp; _targetHoldings == 1 != Portfolio.Invested)
         {
             SetHoldings(_symbol, _targetHoldings);
         }
@@ -120,7 +120,7 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class BrainSentimentDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
@@ -193,7 +193,6 @@ class SymbolData:
         
         # Historical data
         history = algorithm.history(self.dataset_symbol, 100, Resolution.DAILY)
-        algorithm.debug(f"We got {len(history)} items from our history request for {self.dataset_symbol}")
         if history.empty or 'sentiment' not in history.columns:
             return
         
@@ -317,7 +316,6 @@ public class SymbolData
         
         // Historical data
         var history = algorithm.History&lt;BrainSentimentIndicator30Day&gt;(datasetSymbol, 100, Resolution.Daily);
-        algorithm.Debug($"We got {history.Count()} items from our history request for {symbol}");
         if (history.Count() == 0)
         {
             return;

@@ -10,7 +10,11 @@ The Macroeconomic Indicators dataset provides data on global macro indicators, a
 <p>The following example algorithm holds long position of SPY if the US GDP is in positive growth, while holds short position if it is the opposite case.</p>
 
 <div class="section-example-container testable">
-<pre class="python">class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
+<pre class="python">from AlgorithmImports import *
+
+
+class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
+
     def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -51,8 +55,12 @@ The Macroeconomic Indicators dataset provides data on global macro indicators, a
 <p>The following example algorithm holds the long position of SPY if the US GDP is in positive growth while holding a short position if it is the opposite case. It is implemented in the framework algorithm.</p>
 
 <div class="section-example-container testable">
-<pre class="python">class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
+<pre class="python">from AlgorithmImports import *
+
+
+class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
+ 
+   def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # Use market ETF as a vehicle to trade.
@@ -63,7 +71,9 @@ The Macroeconomic Indicators dataset provides data on global macro indicators, a
         # Equal weighting position sizing to dissipate capital risk evenly.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_MONTH))
 
+
 class MacroIndicatorAlphaModel(AlphaModel):
+
     def __init__(self, algorithm: QCAlgorithm) -&gt; None:
         # Request US GDP growth indicator data to generate trade signal.
         ticker = EODHD.MacroIndicators.UnitedStates.GDP_GROWTH_ANNUAL

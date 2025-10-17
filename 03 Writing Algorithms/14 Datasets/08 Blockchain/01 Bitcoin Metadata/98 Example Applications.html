@@ -9,7 +9,7 @@ The Bitcoin Metadata dataset enables you to incorporate metadata from the Bitcoi
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class BlockchainBitcoinMetadataAlgorithm(QCAlgorithm):
     
@@ -19,7 +19,7 @@ class BlockchainBitcoinMetadataAlgorithm(QCAlgorithm):
         self.set_cash(100000)
 
         # Request BTCUSD as the trading vehicle on Bitcoin Metadata
-        self.btcusd = self.add_crypto("BTCUSD", Resolution.MINUTE).symbol
+        self.btcusd = self.add_crypto("BTCUSD", Resolution.MINUTE, Market.BITFINEX).symbol
         # Request Bitcoin Metadata for trade signal generation
         self.bitcoin_metadata_symbol = self.add_data(BitcoinMetadata, self.btcusd).symbol
 
@@ -34,7 +34,7 @@ class BlockchainBitcoinMetadataAlgorithm(QCAlgorithm):
         # Trade only based on updated Bitcoin Metadata
         data = slice.get(BitcoinMetadata)
         
-        if self.bitcoin_metadata_symbol in data and data[self.bitcoin_metadata_symbol] != None:
+        if self.bitcoin_metadata_symbol in data and data[self.bitcoin_metadata_symbol] != None and data[self.bitcoin_metadata_symbol].hash_rate:
             # Calculate the supply-demand ratio to estimate the microeconomy structure of Bitcoin for scalp-trading
             # Transaction number as demand, hash production rate as supply
             current_demand_supply = data[self.bitcoin_metadata_symbol].numberof_transactions / data[self.bitcoin_metadata_symbol].hash_rate
@@ -49,8 +49,7 @@ class BlockchainBitcoinMetadataAlgorithm(QCAlgorithm):
 </pre>
 <pre class="csharp">public class BlockchainBitcoinMetadataAlgorithm : QCAlgorithm
 {
-    private Symbol _bitcoinMetadataSymbol;
-    private Symbol _btcSymbol;
+    private Symbol _bitcoinMetadataSymbol, _btcSymbol;
     // Cache the last supply-demand ratio for comparison
     private decimal? _lastDemandSupply = null;
 
@@ -78,6 +77,10 @@ class BlockchainBitcoinMetadataAlgorithm(QCAlgorithm):
         {
             // Calculate the supply-demand ratio to estimate the microeconomy structure of Bitcoin for scalp-trading
             // Transaction number as demand, hash production rate as supply
+            if (data[_bitcoinMetadataSymbol].HashRate == 0)
+            {
+                return;
+            }
             var currentDemandSupply = data[_bitcoinMetadataSymbol].NumberofTransactions / data[_bitcoinMetadataSymbol].HashRate;
 
             // Comparing the average transaction-to-hash-rate ratio changes, buy Bitcoin if demand is higher than supply, sell vice versa
@@ -100,7 +103,7 @@ class BlockchainBitcoinMetadataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class BlockchainBitcoinMetadataFrameworkAlgorithm(QCAlgorithm):
     
@@ -119,6 +122,7 @@ class BlockchainBitcoinMetadataFrameworkAlgorithm(QCAlgorithm):
         # Equally invest to evenly dissipate the capital concentration risk from non-sysmtematic risky events
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         
+
 class BlockchainBitcoinMetadataAlphaModel(AlphaModel):
     
     def __init__(self) -&gt; None:
@@ -133,7 +137,7 @@ class BlockchainBitcoinMetadataAlphaModel(AlphaModel):
         data = slice.Get(BitcoinMetadata)
         
         for symbol, bitcoin_metadata_symbol in self.bitcoin_metadata_symbol_by_symbol.items():
-            if data.contains_key(bitcoin_metadata_symbol) and data[bitcoin_metadata_symbol] != None: 
+            if data.contains_key(bitcoin_metadata_symbol) and data[bitcoin_metadata_symbol] != None and data[bitcoin_metadata_symbol].hash_rate: 
                 # Calculate the supply-demand ratio to estimate the microeconomy structure of the crypto pair for scalp-trading
                 # Transaction number as demand, hash production rate as supply
                 current_demand_supply = data[bitcoin_metadata_symbol].numberof_transactions / data[bitcoin_metadata_symbol].hash_rate
@@ -156,8 +160,7 @@ class BlockchainBitcoinMetadataAlphaModel(AlphaModel):
             self.bitcoin_metadata_symbol_by_symbol[symbol] = bitcoin_metadata_symbol
 
             # Historical data
-            history = algorithm.history(BitcoinMetadata, bitcoin_metadata_symbol, 60, Resolution.DAILY)
-            algorithm.debug(f"We got {len(history)} items from our history request for {symbol} Blockchain Bitcoin Metadata")</pre>
+            history = algorithm.history(BitcoinMetadata, bitcoin_metadata_symbol, 60, Resolution.DAILY)</pre>
 <pre class="csharp">public class BlockchainBitcoinMetadataFrameworkAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -201,6 +204,7 @@ public class BlockchainBitcoinMetadataAlphaModel: AlphaModel
 
                 // Calculate the supply-demand ratio to estimate the microeconomy structure of the crypto pair for scalp-trading
                 // Transaction number as demand, hash production rate as supply
+                if (data[bitcoinMetadataSymbol].HashRate == 0) continue;
                 var currentDemandSupply = data[bitcoinMetadataSymbol].NumberofTransactions / data[bitcoinMetadataSymbol].HashRate;
 
                 // Comparing the average transaction-to-hash-rate ratio changes, buy coin if demand is higher than supply
@@ -228,7 +232,6 @@ public class BlockchainBitcoinMetadataAlphaModel: AlphaModel
 
             // Historical data
             var history = algorithm.History(new[]{bitcoinMetadataSymbol}, 60, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Blockchain Bitcoin Metadata");
         }
     }
 }</pre>

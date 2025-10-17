@@ -11,7 +11,7 @@ The US Fundamentals dataset enables you to design strategies harnessing fundamen
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class MorningStarDataAlgorithm(QCAlgorithm):
 
@@ -19,7 +19,13 @@ class MorningStarDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000) 
-        
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         self.universe_settings.resolution = Resolution.DAILY
         self.universe_size = 10
         # Add universe selection to filter with fundamental data
@@ -38,7 +44,7 @@ class MorningStarDataAlgorithm(QCAlgorithm):
 
     def on_data(self, slice: Slice) -&gt; None:
         # if we have no changes, do nothing
-        if self._changes is None: return
+        if self._changes is None or not slice.bars: return
 
         # liquidate removed securities, as not being the most popular stocks anymore
         for security in self._changes.removed_securities:
@@ -51,14 +57,9 @@ class MorningStarDataAlgorithm(QCAlgorithm):
 
         self._changes = None
            
-           
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         self._changes = changes
-        
-        for security in changes.added_securities:
-            # Historical data
-            history = self.history(security.symbol, 7, Resolution.DAILY)
-            self.debug(f"We got {len(history)} from our history request for {security.symbol}")</pre>
+</pre>
 <pre class="csharp">public class MorningStarDataAlgorithm : QCAlgorithm
 {
     private int _universeSize = 10;
@@ -69,10 +70,13 @@ class MorningStarDataAlgorithm(QCAlgorithm):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // Requesting data
         UniverseSettings.Resolution = Resolution.Daily;
-        # Add universe selection to filter with fundamental data
+        // Add universe selection to filter with fundamental data
         AddUniverse(FundamentalSelectionFunction);
     }
 
@@ -94,7 +98,7 @@ class MorningStarDataAlgorithm(QCAlgorithm):
     public override void OnData(Slice slice)
     {
         // if we have no changes, do nothing
-        if (_changes == SecurityChanges.None) return;
+        if (_changes == SecurityChanges.None || slice.Bars.Count == 0) return;
 
         // liquidate removed securities, as not being the most popular stocks anymore
         foreach (var security in _changes.RemovedSecurities)
@@ -117,14 +121,6 @@ class MorningStarDataAlgorithm(QCAlgorithm):
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
         _changes = changes;
-
-
-        foreach (var security in changes.AddedSecurities)
-        {
-            // Historical data
-            var history = History(security.Symbol, 7, Resolution.Daily);
-            Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-        }
     }
 }</pre>
 </div>

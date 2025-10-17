@@ -40,7 +40,7 @@ class ShortAvailabilityDataAlgorithm(QCAlgorithm):
 
         # Test whether we can short the desired quantity
         quantity = self.calculate_order_quantity(symbol, -1)
-        if self.shortable(symbol, quantity):
+        if quantity and self.shortable(symbol, quantity):
             self.market_order(symbol, quantity)
 
     def on_margin_call_warning(self) -&gt; None:
@@ -87,7 +87,7 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
         // Test whether we can short the desired quantity
         var quantity = CalculateOrderQuantity(symbol, -1m);
-        if (Shortable(symbol, quantity))
+        if (quantity != 0 &amp;&amp; Shortable(symbol, quantity))
         {
             MarketOrder(symbol, quantity);
         }
@@ -116,11 +116,12 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 <p>The following example algorithm shorts GameStop every day there are shares available to short. If the algorithm receives a margin call, it liquidates the position and start again on the next day.</p>
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class ShortAvailabilityDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
+        
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(1000)

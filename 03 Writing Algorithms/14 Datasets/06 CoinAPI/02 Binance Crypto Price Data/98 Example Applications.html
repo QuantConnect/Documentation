@@ -10,8 +10,7 @@ The Binance Crypto Price dataset enables you to accurately design strategies for
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
-from QuantConnect.Data.UniverseSelection import *
+
 
 class CoinAPIDataAlgorithm(QCAlgorithm):
 
@@ -133,63 +132,74 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
-from QuantConnect.Data.UniverseSelection import *
+
 
 class CoinAPIDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
+        # Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+        self.set_account_currency("USDT", 100000)
+        self.settings.free_portfolio_value_percentage = 0.05
 
-        # Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
-        self.set_cash("BUSD", 100000)
         # Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
         self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
 
         # Warm up the security with the last known price to avoid conversion error
-        self.set_security_initializer(lambda security: security.set_market_price(self.get_last_known_price(security)))
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_price)))
         self.universe_settings.asynchronous = True
         self.universe_settings.resolution = Resolution.MINUTE
         # Add Crypto Universe Selection that select crypto pairs in Binance exchange
         self.add_universe(CryptoUniverse.binance(self.universe_selection_filter))
+        # Get the pairs on Binance that have USDT as the quote currency.
+        self._market_pairs = [
+            x.key.symbol 
+            for x in self.symbol_properties_database.get_symbol_properties_list(Market.BINANCE) 
+            if x.value.quote_currency == self.account_currency
+        ]
         
         self.add_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(minutes = 20), 0.025, None))
         # Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
     def universe_selection_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
-        # Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return [universe_item.symbol for universe_item in universe_day
-                if universe_item.volume &gt;= 100 
-                and universe_item.volume_in_usd &gt; 10000]
+        # Select pairs where the quote currency is USDT.
+        pairs = [c for c in universe_day if c.symbol.value in self._market_pairs]
+        # Filter for materially traded crypto pairs with significant dollar volume, assuming higher capital flow in for higher return.
+        pairs = sorted(pairs, key=lambda c: c.volume_in_usd)[-3:]      
+        return [c.symbol for c in pairs]
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Historical data
-            history = self.history(security.symbol, 30, Resolution.DAILY)
-            self.debug(f"We got {len(history)} items from our history request")</pre>
+            history = self.history(security.symbol, 30, Resolution.DAILY)</pre>
 <pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    private Symbol _btcbusd;
-    
+    private List&lt;string&gt; _marketPairs;
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+        Settings.FreePortfolioValuePercentage = 0.05m;
 
-        // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
-        SetCash("BUSD", 100000);
+        // Set Account Currency to Tether, since USD and USDT will not auto-convert and USD cannot be used to trade
+        SetAccountCurrency("USDT", 100000);
         // Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
         SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
 
         // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
         UniverseSettings.Asynchronous = true;
         UniverseSettings.Resolution = Resolution.Minute;
         // Add Crypto Universe Selection that select crypto pairs in Binance exchange
         AddUniverse(CryptoUniverse.Binance(UniverseSelectionFilter));
-    
+        // Get the pairs on Binance that have USDT as the quote currency.
+        _marketPairs = SymbolPropertiesDatabase.GetSymbolPropertiesList(Market.Binance)
+            .Where(x =&gt; x.Value.QuoteCurrency == AccountCurrency)
+            .Select(x =&gt; x.Key.Symbol)
+            .ToList();
+
         AddAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromMinutes(20), 0.025, null));
         // Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
@@ -197,11 +207,12 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
 
     private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
     {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
-        return from universeItem in universeDay
-                where universeItem.Volume &gt;= 100m 
-                &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
-                select universeItem.Symbol;
+        // Select pairs where the quote currency is USDT.
+        return universeDay.Where(c =&gt; _marketPairs.Contains(c.Symbol.Value))
+            // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+            .OrderBy(c =&gt; c.VolumeInUsd)
+            .TakeLast(3)
+            .Select(c =&gt; c.Symbol);
     }
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -210,7 +221,6 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         {
             // Historical data
             var history = History(security.Symbol, 30, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
         }
     }
 }</pre>

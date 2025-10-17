@@ -10,7 +10,7 @@ This regulatory dataset enables you to accurately design strategies while mitiga
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
+
 
 class RegalyticsDataAlgorithm(QCAlgorithm): 
     # Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
@@ -92,8 +92,7 @@ class RegalyticsDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from QuantConnect.DataSource import *
-from QuantConnect.Data.UniverseSelection import *
+
 
 class RegalyticsDataAlgorithm(QCAlgorithm):
     
@@ -134,7 +133,6 @@ class RegAnalyticsAlphaModel(AlphaModel):
         history = algorithm.history(self.regalytics_symbol, 14, Resolution.DAILY)
         algorithm.debug(f"We got {len(history)} from our history request")
 
-
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         insights = []
 
@@ -163,7 +161,6 @@ class RegAnalyticsAlphaModel(AlphaModel):
                 insights += [Insight.price(symbol, self.news_affect_duration, InsightDirection.FLAT)]
         
         return insights
-        
         
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:

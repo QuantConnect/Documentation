@@ -4,8 +4,7 @@
 <pre class="python">class InsiderTradingUniverseAlgorithm(QCAlgorithm):
     
     def initialize(self):
-        self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 12, 31)
+        self.set_start_date(2023, 1, 1)
         self._universe = self.add_universe(QuiverInsiderTradingUniverse, self._select_assets)
 
     def _select_assets(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
@@ -26,8 +25,7 @@
 
     public override void Initialize()
     {
-        SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31);
+        SetStartDate(2023, 1, 1);
         _universe = AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(SelectAssets);
     }
 
@@ -36,7 +34,7 @@
         var dollarVolumeBySymbol = new Dictionary&lt;Symbol, decimal?&gt;();
         foreach (QuiverInsiderTradingUniverse data in altCoarse)
         {
-            if (data.PricePerShare == 0m)
+            if (data.PricePerShare == 0m || data.PricePerShare == null)
             {
                 continue;
             }

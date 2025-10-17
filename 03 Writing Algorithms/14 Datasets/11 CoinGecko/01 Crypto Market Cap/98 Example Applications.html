@@ -12,6 +12,7 @@ The CoinGecko Crypto Market Cap dataset provides information on the size of the 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
+
 class CoinGeckoAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -39,15 +40,14 @@ class CoinGeckoAlgorithm(QCAlgorithm):
                 self.set_holdings(self.crypto_symbol, 1)
             # Sell otherwise, since the capital is flowing out and the demand of BTC lowered
             else:
-                self.set_holdings(self.crypto_symbol, -1)
+                self.set_holdings(self.crypto_symbol, -0.5)
 
     def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
         if orderEvent.status == OrderStatus.FILLED:
-            self.debug(f'Purchased Stock: {orderEvent.symbol}')</pre>
+            self.debug(f'Purchased Crypto: {orderEvent.symbol}')</pre>
 <pre class="csharp">public class CoinGeckoAlgorithm : QCAlgorithm
 {
-    private Symbol _cryptoSymbol;
-    private Symbol _customDataSymbol;
+    private Symbol _cryptoSymbol, _customDataSymbol;
     private RollingWindow&lt;CoinGecko&gt; _window;
 
     public override void Initialize()
@@ -84,7 +84,7 @@ class CoinGeckoAlgorithm(QCAlgorithm):
             // Sell otherwise, since the capital is flowing out and the demand of BTC lowered
             else
             {
-                SetHoldings(_cryptoSymbol, -1);
+                SetHoldings(_cryptoSymbol, -0.5m);
             }
         }
     }
@@ -93,7 +93,7 @@ class CoinGeckoAlgorithm(QCAlgorithm):
     {
         if (orderEvent.Status.IsFill())
         {
-            Debug($"Purchased Stock: {orderEvent.Symbol}");
+            Debug($"Purchased Crypto: {orderEvent.Symbol}");
         }
     }
 }</pre>
@@ -103,6 +103,7 @@ class CoinGeckoAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
+
 
 class CoinGeckoAlgorithm(QCAlgorithm):
 
@@ -121,7 +122,8 @@ class CoinGeckoAlgorithm(QCAlgorithm):
         # Custom alpha model that emit insights based on updated market cap data
         self.add_alpha(CoinGeckoAlphaModel(symbol_dict, window))
         # Equal invest to evenly dissipate capital concentration risk from non-systematic individual risky event
-        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+
 
 class CoinGeckoAlphaModel(AlphaModel):
 
@@ -148,11 +150,11 @@ class CoinGeckoAlphaModel(AlphaModel):
 
             # Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
             if window[0].market_cap &gt; window[1].market_cap:
-                insight = Insight.price(crypto_symbol, timedelta(1), InsightDirection.UP)
+                insight = Insight.price(crypto_symbol, timedelta(1), InsightDirection.UP, weight=1)
                 insights.append(insight)
             # Sell otherwise, since the capital is flowing out and the demand of BTC lowered
             else:
-                insight = Insight.price(crypto_symbol, timedelta(1), InsightDirection.DOWN)
+                insight = Insight.price(crypto_symbol, timedelta(1), InsightDirection.DOWN, weight=0.25)
                 insights.append(insight)
         
         return insights</pre>
@@ -212,13 +214,13 @@ public class CoinGeckoAlphaModel : AlphaModel
             // Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
             if (window[0].MarketCap &gt; window[1].MarketCap)
             {
-                var insight = new Insight(cryptoSymbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Up);
+                var insight = Insight.Price(cryptoSymbol, TimeSpan.FromDays(1), InsightDirection.Up, weight: 1d);
                 insights.Add(insight);
             }
             // Sell otherwise, since the capital is flowing out and the demand of BTC lowered
             else
             {
-                var insight = new Insight(cryptoSymbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Down);
+                var insight = Insight.Price(cryptoSymbol, TimeSpan.FromDays(1), InsightDirection.Down, weight: 0.25d);
                 insights.Add(insight);
             }
         }
