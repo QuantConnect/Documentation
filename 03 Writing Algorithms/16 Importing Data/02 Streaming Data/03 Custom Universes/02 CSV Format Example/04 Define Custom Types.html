@@ -1,73 +1,64 @@
 <p>To define a custom data type, inherit the <code class="csharp">BaseData</code><code class="python">PythonData</code> class and override the <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources">GetSource</a> and <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#05-Parse-Custom-Data">Reader</a> methods.</p>
 
-
 <div class="section-example-container">
     <pre class="csharp">public class StockDataSource : BaseData
 {
-    public List&lt;string&gt; Symbols { get; set; } = new();
+    public List&lt;Symbol&gt; Symbols { get; set; } = [];
     public override DateTime EndTime =&gt; Time.AddDays(1);
+    public string Line { get; set; }
 
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config,
-        DateTime date,
-        bool isLiveMode)
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
         if (!isLiveMode)
         {
-            return new SubscriptionDataSource("&lt;CustomUniverseKey&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
+            return new SubscriptionDataSource("csv-universe-example.csv", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv);
         }
         return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-universe-example.csv", SubscriptionTransportMedium.RemoteFile, FileFormat.Csv);
     }
 
-    public override BaseData Reader(
-        SubscriptionDataConfig config,
-        string line,
-        DateTime date,
-        bool isLiveMode)
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
     {
-        var stocks = new StockDataSource();
+        var csv = line.Split(',');
+        var stocks = new StockDataSource { Symbol = config.Symbol, Line = line };
 
         try
         {
-            var csv = line.Split(',');
-            stocks.Time = DateTime.ParseExact(csv[0], "yyyyMMdd", null);
-            stocks.Symbols.AddRange(csv.Skip(1));
-        }
-        catch { return null; }
+            stocks.Time = isLiveMode
+                ? DateTime.UtcNow.ConvertFromUtc(config.DataTimeZone) 
+                : DateTime.ParseExact(csv[0], "yyyyMMdd", null);
 
+            stocks.Symbols.AddRange(csv.Skip(1).Select(ticker =&gt; 
+            {
+                // The tickers are point-in-time. We generate its security identifier for a given date
+                // Then we create a Symbol where the Value is the ticker
+                var sid = SecurityIdentifier.GenerateEquity(ticker, Market.USA, mappingResolveDate: stocks.Time);
+                return new Symbol(sid, ticker);
+            }));
+        }
+        catch { }
         return stocks;
-    }
 }</pre>
 <pre class="python">class StockDataSource(PythonData):
-
-    def get_source(self,
-         config: SubscriptionDataConfig,
-         date: datetime,
-         is_live: bool) -&gt; SubscriptionDataSource:
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live: bool) -&gt; SubscriptionDataSource:
         if not is_live:
-            return SubscriptionDataSource("&lt;custom_universe_key&gt;", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
+            return SubscriptionDataSource("csv-universe-example.csv", SubscriptionTransportMedium.OBJECT_STORE, FileFormat.CSV)
         return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/csv-universe-example.csv", SubscriptionTransportMedium.REMOTE_FILE, FileFormat.CSV)
 
-    def reader(self,
-         config: SubscriptionDataConfig,
-         line: str,
-         date: datetime,
-         is_live: bool) -&gt; BaseData:
-
-        if not (line.strip() and line[0].isdigit()): return None
-        
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live: bool) -&gt; BaseData:
+        csv = line.split(',')
         stocks = StockDataSource()
         stocks.symbol = config.symbol
-
+        stocks.line = line
         try:
-            csv = line.split(',')
-            stocks.time = datetime.strptime(csv[0], "%Y%m%d")
-            stocks.end_time = stocks.time + timedelta(days=1)
-            stocks["Symbols"] = csv[1:]
-
-        except ValueError:
-            # Do nothing
-            return None
-
+            stocks.time = Extensions.convert_from_utc(datetime.utcnow(), config.data_time_zone) \
+                if is_live else datetime.strptime(csv[0], "%Y%m%d")
+            def point_in_time(ticker):
+                # The tickers are point-in-time. We generate its security identifier for a given date
+                # Then we create a Symbol where the value is the ticker
+                sid = SecurityIdentifier.generate_equity(ticker, Market.USA, mapping_resolve_date=stocks.time)
+                return Symbol(sid, ticker)
+            stocks.symbols = [point_in_time (ticker) for ticker in csv[1:]]
+        except:
+            pass
         return stocks</pre>
 </div>

@@ -3,20 +3,18 @@
 <div class="section-example-container">
 <pre class="csharp">public class MyCustomUniverseAlgorithm : QCAlgorithm
 {
-	private IEnumerable&lt;Symbol&gt; SelectorFunction(IEnumerable&lt;MyCustomUniverseDataClass&gt; data)
+	private IEnumerable&lt;Symbol&gt; SelectorFunction(IEnumerable&lt;BaseData&gt; data)
 	{
-        return (from singleStockData in data
+        return (from singleStockData in data.OfType&lt;MyCustomUniverseDataClass&gt;()
                where singleStockData.CustomAttribute1 &gt; 0
                orderby singleStockData.CustomAttribute2 descending
                select singleStockData.Symbol).Take(5);
     }
-}
-</pre>
+}</pre>
 <pre class="python">class MyCustomUniverseAlgorithm(QCAlgorithm):
 	def _selector_function(self, data: list[MyCustomUniverseDataClass]) -&gt; list[Symbol]:
     	sorted_data = sorted([ x for x in data if x["CustomAttribute1"] &gt; 0 ],
                          	key=lambda x: x["CustomAttribute2"],
                          	reverse=True)
-    	return [x.symbol for x in sorted_data[:5]]
-</pre>
+    	return [x.symbol for x in sorted_data[:5]]</pre>
 </div>

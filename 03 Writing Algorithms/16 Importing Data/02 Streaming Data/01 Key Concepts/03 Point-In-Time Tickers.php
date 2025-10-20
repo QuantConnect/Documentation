@@ -1,0 +1,3 @@
+<? echo file_get_contents(DOCS_RESOURCES."/securities/corporate-actions/point-in-time-tickers.html"); ?>
+
+<p>For examples of point-in-time tickers in custom data types, refer to the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-universes/csv-format-example#04-Define-Custom-Types'>CSV Format Example</a> and <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-universes/json-format-example#04-Define-Custom-Types'>JSON Format Example</a>.</p>

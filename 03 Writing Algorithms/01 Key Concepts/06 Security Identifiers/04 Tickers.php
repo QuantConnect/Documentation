@@ -1,0 +1,1 @@
+<? echo file_get_contents(DOCS_RESOURCES."/securities/corporate-actions/point-in-time-tickers.html"); ?>
