@@ -16,7 +16,13 @@ class SECReport8KAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         self.universe_settings.resolution = Resolution.DAILY
         self.add_universe(self.coarse_selector)
         self.dataset_symbol_by_symbol = {}
@@ -97,7 +103,10 @@ class SECReport8KAlgorithm(QCAlgorithm):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         UniverseSettings.Resolution = Resolution.Daily;
         AddUniverse(CoarseSelector);
 
@@ -212,7 +221,13 @@ class SECReport8KAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         self.universe_settings.resolution = Resolution.DAILY
         # Filter for the most liquid stocks for trading due to high market activities for effecient pricing from fundamental factor
         self.add_universe_selection(MostLiquidFundamentalUniverseSelectionModel(self.universe_settings))
@@ -275,7 +290,10 @@ class SECReport8KAlphaModel(AlphaModel):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         UniverseSettings.Resolution = Resolution.Daily;
         // Filter for the most liquid stocks for trading due to high market activities for effecient pricing from fundamental factor
         AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel(UniverseSettings));

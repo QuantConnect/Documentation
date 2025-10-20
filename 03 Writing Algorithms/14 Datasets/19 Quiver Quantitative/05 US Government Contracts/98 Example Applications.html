@@ -80,8 +80,13 @@ class QuiverGovernmentContractDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        
-        self.universe_settings.resolution = Resolution.MINUTE
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # Filter universe using government contract data
         self.add_universe(QuiverGovernmentContractUniverse, self.universe_selection)
 
@@ -116,10 +121,7 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
         self.dataset_symbol_by_symbol = {}
         
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        try:
-            if self.last_time &gt; algorithm.time: return []
-        except:
-            self.Log("")
+        if self.last_time &gt; algorithm.time: return []
         
         # Trade signal only based on government contract data
         data_points = slice.Get(QuiverGovernmentContract)
@@ -129,6 +131,8 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
         gov_contracts = {}
         # To aggregate all data per symbol for analysis
         for data_point in data_points:
+            if not algorithm.securities[data_point.key.underlying].price:
+                continue
             if data_point.Key not in gov_contracts:
                 gov_contracts[data_point.Key] = 0
 
@@ -157,10 +161,8 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
             symbol = security.symbol
             dataset_symbol = algorithm.add_data(QuiverGovernmentContract, symbol).symbol
             self.dataset_symbol_by_symbol[symbol] = dataset_symbol
-            
             # Historical Data
             history = algorithm.history(dataset_symbol, 10, Resolution.DAILY)
-            algorithm.debug(f"We got {len(history)} items from our history request on {dataset_symbol}.")
 
         for security in changes.removed_securities:
             dataset_symbol = self.dataset_symbol_by_symbol.pop(security.symbol, None)
@@ -174,8 +176,10 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        UniverseSettings.Resolution = Resolution.Minute;
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         // Filter universe using government contract data
         AddUniverse&lt;QuiverGovernmentContractUniverse&gt;(data =&gt;
         {
@@ -230,7 +234,9 @@ public class QuiverGovernmentContractAlphaModel: AlphaModel
         if (dataPoints.IsNullOrEmpty()) return new List&lt;Insight&gt;();
 
         // To aggregate all data per symbol for analysis
-        var govContracts = dataPoints.ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.Sum(x =&gt; ((QuiverGovernmentContract)x).Amount));
+        var govContracts = dataPoints
+            .Where(kvp =&gt; algorithm.Securities[kvp.Key.Underlying].Price != 0)
+            .ToDictionary(kvp =&gt; kvp.Key, kvp =&gt; kvp.Value.Sum(x =&gt; ((QuiverGovernmentContract)x).Amount));
         
         // Long the top 10 highest government contract amount, predicting a higher expected income and return
         // Short the lowest 10 government contract amount, predicting a lower expected income and return
@@ -259,10 +265,8 @@ public class QuiverGovernmentContractAlphaModel: AlphaModel
             var symbol = security.Symbol;
             var datasetSymbol = algorithm.AddData&lt;QuiverGovernmentContract&gt;(symbol).Symbol;
             _datasetSymbolBySymbol.Add(symbol, datasetSymbol);
-
             // History request
             var history = algorithm.History&lt;QuiverGovernmentContract&gt;(datasetSymbol, 10, Resolution.Daily);
-            algorithm.Debug($"We get {history.Count()} items in historical data of {datasetSymbol}");
         }
         
         foreach (var security in changes.RemovedSecurities)

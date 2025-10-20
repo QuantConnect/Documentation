@@ -14,15 +14,22 @@ This regulatory dataset enables you to accurately design strategies while mitiga
 
 class RegalyticsDataAlgorithm(QCAlgorithm): 
     # Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
-    negative_sentiment_phrases = ["emergency rule", "proposed rule change", "development of rulemaking"]
+    _negative_sentiment_phrases = [
+        "emergency rule", "proposed rule change", "development of rulemaking"
+    ]
     
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        
-        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
-            
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        self.spy = self.add_equity("SPY", extended_market_hours=True).symbol
         # Requesting data to receive updated regulatory news for timely short selling
         self.regalytics_symbol = self.add_data(RegalyticsRegulatoryArticles, "REG").symbol
             
@@ -32,15 +39,22 @@ class RegalyticsDataAlgorithm(QCAlgorithm):
 
     def on_data(self, slice: Slice) -&gt; None:
         # Only trade on regulatory news data
-        data = slice.Get(RegalyticsRegulatoryArticles)
-        if data:
-            for articles in data.values():
-                self.log(articles.to_string())
-                # If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
-                if any([p in article.title.lower() for p in self.negative_sentiment_phrases for article in articles]):
-                    self.set_holdings(self.spy, -1)
-                else:
-                    self.set_holdings(self.spy, 1)</pre>
+        data = slice.get(RegalyticsRegulatoryArticles)
+        if not data:
+            return
+        # If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+        detected_negativity = False
+        for articles in data.values():
+            if detected_negativity:
+                break
+            detected_negativity = any(
+                [p in article.title.lower() for p in self._negative_sentiment_phrases for article in articles]
+            )
+        self.transactions.cancel_open_orders()
+        quantity = self.calculate_order_quantity(self.spy, -1 if detected_negativity else 1)
+        if quantity:
+            self.market_order(self.spy, quantity)
+</pre>
 <pre class="csharp">public class RegalyticsDataAlgorithm : QCAlgorithm
 {
     // Pre-defined list of negative sentiment phrases as indicator for short selling, since these words will decrease confident in equity performance
@@ -52,8 +66,11 @@ class RegalyticsDataAlgorithm(QCAlgorithm):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
+        _symbol = AddEquity("SPY", extendedMarketHours: true).Symbol;
         
         // Requesting data to receive updated regulatory news for timely short selling
         _regalyticsSymbol = AddData&lt;RegalyticsRegulatoryArticles&gt;("REG").Symbol;
@@ -67,23 +84,22 @@ class RegalyticsDataAlgorithm(QCAlgorithm):
     {
         // Only trade on regulatory news data
         var data = slice.Get&lt;RegalyticsRegulatoryArticles&gt;();
-        if (!data.IsNullOrEmpty())
+        if (data.IsNullOrEmpty())
         {
-            foreach (var articles in data.Values)
-            {
-                Log($"{Time} {articles.ToString()}");
-                // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
-                if (_negativeSentimentPhrases.Any(p =&gt; articles.Any(x =&gt; 
-                    ((RegalyticsRegulatoryArticle) x).Title.ToLower().Contains(p))))
-                {
-                    SetHoldings(_symbol, -1);
-                }
-                else
-                {
-                    SetHoldings(_symbol, 1);
-                }
-            }
+            return;
         }
+        // If any of the negative phrases appeared in regulatory news, we expect a market drop for the day
+        var detectedNegativity = false;
+        foreach (var articles in data.Values)
+        {
+            if (detectedNegativity) break;      
+            detectedNegativity = _negativeSentimentPhrases
+                .Any(p =&gt; articles.Any(x =&gt; ((RegalyticsRegulatoryArticle) x).Title.ToLower().Contains(p)));
+        }
+        Transactions.CancelOpenOrders();
+        var quantity = CalculateOrderQuantity(_symbol, detectedNegativity ? -1d : 1d);
+        if (quantity == 0) return;
+        MarketOrder(_symbol, quantity);
     }
 }</pre>
 </div>

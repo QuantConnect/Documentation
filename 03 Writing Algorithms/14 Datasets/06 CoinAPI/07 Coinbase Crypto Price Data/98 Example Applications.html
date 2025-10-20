@@ -17,113 +17,116 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
         self.universe_settings.asynchronous = True
-        # Coinbase accepts Cash account type only, AccountType.MARGIN will result in an exception.
+        self.set_cash(100_000)
+        # Coinbase accepts Cash account type only. AccountType.MARGIN
+        # results in an exception.
         self.set_brokerage_model(BrokerageName.COINBASE, AccountType.CASH)
-
-        # Warm up the security with the last known price to avoid conversion error
-        self.set_security_initializer(lambda security: security.set_market_price(self.get_last_known_price(security)))
-
-        # Requesting data, we only trade on BTCUSD in Coinbase exchange
-        crypto = self.add_crypto("BTCUSD", Resolution.MINUTE, Market.COINBASE)
-        self.btcusd = crypto.symbol
-        self.minimum_order_size = crypto.symbol_properties.minimum_order_size
-        self.threshold = 0.5
-        
+        # Add BTCUSD data.
+        self._btc = self.add_crypto("BTCUSD", Resolution.MINUTE, Market.COINBASE)
         # Historical data
-        history = self.history(self.btcusd, 30, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from our history request")
-
-        # Add Crypto Universe Selection that select crypto pairs in Coinbase exchange
-        self._universe = self.add_universe(CryptoUniverse.coinbase(self.universe_selection_filter))
-
+        history = self.history(self._btc.symbol, 30, Resolution.DAILY)
+        # Add a Crypto universe that selects Crypto pairs on Coinbase.
+        universe = self.add_universe(CryptoUniverse.coinbase(self._select_assets))
         # Historical Universe data
-        universe_history = self.history(self._universe, 30, Resolution.DAILY)
-        self.debug(f"We got {len(universe_history)} items from our universe history request")
-        for (univere_symbool, time), universe_day in universe_history.items():
+        universe_history = self.history(universe, 30, Resolution.DAILY)
+        for (universe_symbol, time), universe_day in universe_history.items():
             for universe_item in universe_day:
-                self.debug(f"{universe_item.symbol} price at {universe_item.end_time}: {universe_item.close}")
+                symbol = universe_item.symbol
+                price = universe_item.close
 
-    def universe_selection_filter(self, universe_day):
-        # Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+    def _select_assets(self, universe_day):
+        # Filter for materially traded Crypto pairs with significant 
+        # size and dollar volume, assuming higher capital flow in for 
+        # higher return.
         return [universe_item.symbol for universe_item in universe_day
                 if universe_item.volume &gt;= 100 
-                and universe_item.volume_in_usd &gt; 10000]
+                and universe_item.volume_in_usd &gt; 10_000_000]
 
     def on_data(self, slice: Slice) -&gt; None:
-        # Speculate-invest all available free cash on BTCUSD, obeying the order quantity restriction to avoid invalid order
-        if self.portfolio.cash_book['BTC'].amount == 0:
-            free_cash = self.portfolio.cash_book['USD'].amount * (1-self.settings.free_portfolio_value_percentage)
-            quantity = self.threshold*free_cash / slice[self.btcusd].price
-            quantity -= quantity % self.minimum_order_size
-            if quantity &gt; 0:
-                self.market_order(self.btcusd, quantity)</pre>
+        # Speculate-invest all available free cash on BTCUSD, repecting 
+        # the order quantity restrictions to avoid invalid orders.
+        if self.portfolio.cash_book['BTC'].amount != 0:
+            return
+        # Define a buffer so that we can scale down the order size,
+        # avoiding trading errors.
+        buffer = max(
+            CoinbaseFeeModel.TAKER_ADVANCED_1, 
+            self.settings.free_portfolio_value_percentage
+        )
+        quantity = (
+            self.portfolio.cash_book['USD'].amount
+            / self._btc.ask_price
+            * (1-buffer)
+        )
+        # Check if the quantity exceeds the minimum order size. On 
+        # Coinbase, the minimum order size is measured in the base 
+        # currency (BTC in this case).
+        if abs(quantity) &lt; self._btc.symbol_properties.minimum_order_size:
+            return
+        self.market_order(self._btc, quantity)</pre>
 <pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    private Symbol _btcusd;
-    private Universe _universe;
-    private decimal? _minimumOrderSize;
-    private decimal? _threshold = 0.5m;
+    private Crypto _btc;
     
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetCash(100000);
         UniverseSettings.Asynchronous = true;
-        // Coinbase accepts Cash account type only, AccountType.Margin will result in an exception.
+        SetCash(100000);
+        // Coinbase accepts Cash account type only. AccountType.Margin
+        // results in an exception.
         SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
-
-        // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
-        
-        // Requesting data, we only trade on BTCUSD in Coinbase exchange
-        var crypto = AddCrypto("BTCUSD", Resolution.Minute, Market.Coinbase);
-        _btcusd = crypto.Symbol;
-        _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
-            
-            // Historical data
-        var history = History(_btcusd, 30, Resolution.Daily);
-        Debug($"We got {history.Count()} items from our history request");
-
-        // Add Crypto Universe Selection that select crypto pairs in Coinbase exchange
-        _universe = AddUniverse(CryptoUniverse.Coinbase(UniverseSelectionFilter));
-
+        // Add BTCUSD data.
+        _btc = AddCrypto("BTCUSD", Resolution.Minute, Market.Coinbase);   
+        // Historical data
+        var history = History(_btc.Symbol, 30, Resolution.Daily);
+        // Add a Crypto universe that selects trading pairs on Coinbase.
+        var universe = AddUniverse(CryptoUniverse.Coinbase(SelectAssets));
         // Historical Universe data
-        var universeHistory = History(_universe, 30, Resolution.Daily);
-        Debug($"We got {universeHistory.Count()} items from our history request");
+        var universeHistory = History(universe, 30, Resolution.Daily);
         foreach (var universeDay in universeHistory)
         {
             foreach (CryptoUniverse universeItem in universeDay)
             {
-                Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
+                var symbol = universeItem.Symbol;
+                var price = universeItem.Close;
             }
         }
     }
 
-    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;CryptoUniverse&gt; universeDay)
     {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+        // Filter for materially traded Crypto pairs with significant 
+        // size and dollar volume, assuming higher capital flow in for 
+        // higher return.
         return from universeItem in universeDay
                 where universeItem.Volume &gt;= 100m 
-                &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                &amp;&amp; universeItem.VolumeInUsd &gt; 10000000m
                 select universeItem.Symbol;
     }
 
     public override void OnData(Slice slice)
     {
-        // Speculate-invest all available free cash on BTCUSD, obeying the order quantity restriction to avoid invalid order
-        if (Portfolio.CashBook["BTC"].Amount == 0)
+        // Speculate-invest all available free cash on BTCUSD, repecting 
+        // the order quantity restrictions to avoid invalid orders.
+        if (Portfolio.CashBook["BTC"].Amount != 0)
         {
-            var freeCash = Portfolio.CashBook["USD"].Amount * (1-Settings.FreePortfolioValuePercentage);
-            var quantity = _threshold*freeCash / slice[_btcusd].Price;
-            quantity -= quantity % _minimumOrderSize;
-            if (quantity &gt; 0m)
-            {
-                MarketOrder(_btcusd, quantity);
-            }
+            return;
         }
+        // Define a buffer so that we can scale down the order size,
+        // avoiding trading errors.
+        var buffer = Math.Max(CoinbaseFeeModel.TakerAdvanced1, Settings.FreePortfolioValuePercentage);
+        var quantity = Portfolio.CashBook["USD"].Amount / _btc.AskPrice * (1-buffer);
+        // Check if the quantity exceeds the minimum order size. On 
+        // Coinbase, the minimum order size is measured in the base 
+        // currency (BTC in this case).
+        if (Math.Abs(quantity) &lt; _btc.SymbolProperties.MinimumOrderSize)
+        {
+            return;
+        }
+        MarketOrder(_btc, quantity);
     }
 }</pre>
 </div>

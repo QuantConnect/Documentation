@@ -6,7 +6,7 @@ The Estimize dataset enables you to estimate the financial data of a company mor
 <li>Using industry-specific KPIs to predict the returns of individual sectors</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm creates a dynamic universe of the 500 most liquid US Equities. Each month, the algorithm forms an equal-weighted dollar-neutral portfolio with the 10 companies with the highest EPS estimate and the 10 companies with the lowest EPS estimate.</p>
+<p>The following example algorithm creates a dynamic universe of the 250 most liquid US Equities. Each morning, the algorithm forms an equal-weighted with the companies that have a new EPS estimate.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -18,153 +18,153 @@ class ExtractAlphaEstimizeAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
+        # Add a dictionary to hold the latest Consensus data since this dataset is sparse.
+        self._consensus_by_symbol = {}
+        # Add a universe of liquid US Equities.
+        self.add_universe(self._select_assets)
+        # Add a Scheduled Event to rebalance the portfolio each day.
+        spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self.schedule.on(
+            self.date_rules.every_day(spy), 
+            self.time_rules.after_market_open(spy, 1), 
+            self._rebalance
+        )
         
-        # A variable to control the next rebalance time
-        self.last_time = datetime.min
-        
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-        
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        # Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data and x.price &gt; 4], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:500]]
-        return selected
+    def _select_assets(self, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
+        # Select the non-penny stocks with the highest dollar volume, 
+        # since they have more stable price (lower risk) and more 
+        # informed insights from high market activities
+        sorted_by_dollar_volume = sorted(
+            [x for x in fundamentals if x.has_fundamental_data and x.price &gt; 4], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-250:]]
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.last_time &gt; self.time: return
-    
-        # Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
-        consensus = slice.Get(EstimizeConsensus)
-        estimate = slice.Get(EstimizeEstimate)
-        release = slice.Get(EstimizeRelease)
-        
-        if not estimate: return
-        
-        # Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
-        sorted_by_eps_estimate = sorted([x for x in estimate.items() if x[1].eps], key=lambda x: x[1].eps)
-        long_symbols = [x[0].underlying for x in sorted_by_eps_estimate[-10:]]
-        short_symbols = [x[0].underlying for x in sorted_by_eps_estimate[:10]]
-        
-        # Liquidate the ones that fall out of the earning extremes
-        for symbol in [x.symbol for x in self.portfolio.Values if x.invested]:
-            if symbol not in long_symbols + short_symbols:
-                self.liquidate(symbol)
-        
-        # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-        long_targets = [PortfolioTarget(symbol, 0.05) for symbol in long_symbols]
-        short_targets = [PortfolioTarget(symbol, -0.05) for symbol in short_symbols]
-        self.set_holdings(long_targets + short_targets)
+        # Record the latest Consensus data.
+        consensus = slice.get(EstimizeConsensus)
+        if not consensus: 
+            return
+        for dataset_symbol, value in consensus.items():
+            self._consensus_by_symbol[dataset_symbol.underlying] = value
 
-        # Update the rebalance time to next month start
-        self.last_time = Expiry.END_OF_MONTH(self.time)
+    def _rebalance(self):
+        if not self._consensus_by_symbol:
+            return
+        # If there has been new Consensus data released since the previous
+        # market open, form an equal-weighted portfolio of all the assets
+        # that have new Consensus data.
+        symbols = [
+            symbol for symbol in self._consensus_by_symbol.keys()
+            if self.securities[symbol].price
+        ]
+        targets = [PortfolioTarget(symbol, 1/len(symbols)) for symbol in symbols]
+        self.set_holdings(targets, True)
+        self._consensus_by_symbol.clear()
         
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting data for trading signal generation
-            estimize_consensus_symbol = self.add_data(EstimizeConsensus, security.symbol).symbol
-            estimize_estimate_symbol = self.add_data(EstimizeEstimate, security.symbol).symbol
-            estimize_release_symbol = self.add_data(EstimizeRelease, security.symbol).symbol
+            security.consensus = self.add_data(EstimizeConsensus, security.symbol).symbol
+            # Historical data
+            history = self.history(security.consensus, 100, Resolution.DAILY)
+        for security in changes.removed_securities:
+            # Remove the Consensus data for this asset when it leaves the universe.
+            self.remove_security(security.consensus)
 
-            # Historical Data
-            history = self.history([estimize_consensus_symbol,
-                                    estimize_estimate_symbol,
-                                    estimize_release_symbol
-                                    ], 10, Resolution.DAILY)
-            self.debug(f"We got {len(history)} items from our history request")
 </pre>
 <pre class="csharp">public class ExtractAlphaEstimizeAlgorithm : QCAlgorithm
 {
-    // A variable to control the next rebalance time
-    private DateTime _time = DateTime.MinValue;
-    
+    // Add a dictionary to hold the latest Consensus data since this dataset is sparse.
+    private Dictionary&lt;Symbol, EstimizeConsensus&gt; _consensusBySymbol = new();
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
+        // Seed securities with their last known prices to avoid stale-price trade errors
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(
+            BrokerageModel,
+            new FuncSecuritySeeder(GetLastKnownPrices)
+        ));
+        // Add a universe of liquid US Equities.
+        AddUniverse(SelectAssets);
+        // Add a Scheduled Event to rebalance the portfolio each day.
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        Schedule.On(
+            DateRules.EveryDay(spy),
+            TimeRules.AfterMarketOpen(spy, 1),
+            Rebalance
+        );
     }
-    
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-        // Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
-        return (from c in coarse
-                where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(500);
+        // Select the non-penny stocks with the highest dollar volume, 
+        // since they have more stable price (lower risk) and more 
+        // informed insights from high market activities
+        return fundamentals
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 4)
+            .OrderBy(x =&gt; x.DollarVolume)
+            .TakeLast(250)
+            .Select(x =&gt; x.Symbol);
     }
-    
+
     public override void OnData(Slice slice)
     {
-        if (_time &gt; Time) return;
-        
-        // Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
+        // Record the latest Consensus data.
         var consensus = slice.Get&lt;EstimizeConsensus&gt;();
-        var estimate = slice.Get&lt;EstimizeEstimate&gt;();
-        var release = slice.Get&lt;EstimizeRelease&gt;();
-        
-        if (estimate.IsNullOrEmpty()) return;
-
-        // Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
-        var sortedByEpsEstimate = from value in estimate.Values
-                        where (value.Eps != null)
-                        orderby value.Eps descending
-                        select value.Symbol.Underlying;
-        var longSymbols = sortedByEpsEstimate.Take(10).ToList();
-        var shortSymbols = sortedByEpsEstimate.TakeLast(10).ToList();
-        
-        // Liquidate the ones that fall out of the earning extremes
-        foreach (var kvp in Portfolio)
+        if (consensus.IsNullOrEmpty()) return;
+        foreach (var kvp in consensus)
         {
-            var symbol = kvp.Key;
-            if (kvp.Value.Invested &amp;&amp; 
-            !longSymbols.Contains(symbol) &amp;&amp; 
-            !shortSymbols.Contains(symbol))
-            {
-                Liquidate(symbol);
-            }
+            _consensusBySymbol[kvp.Key.Underlying] = kvp.Value;
         }
-        
-        // Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
-        var targets = new List&lt;PortfolioTarget&gt;();
-        targets.AddRange(longSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, 0.05m)));
-        targets.AddRange(shortSymbols.Select(symbol =&gt; new PortfolioTarget(symbol, -0.05m)));
-        
-        SetHoldings(targets);
-
-        // Update the rebalance time to next month start
-        _time = Expiry.EndOfMonth(Time);
     }
-    
+
+    private void Rebalance()
+    {
+        if (_consensusBySymbol.Count == 0) return;
+        // If there has been new Consensus data released since the previous
+        // market open, form an equal-weighted portfolio of all the assets
+        // that have new Consensus data.
+        var symbols = _consensusBySymbol.Keys.Where(symbol =&gt; Securities[symbol].Price &gt; 0);
+        var targets = symbols.Select(symbol =&gt; new PortfolioTarget(symbol, 1m/symbols.Count()));
+        SetHoldings(targets.ToList(), true);
+        _consensusBySymbol.Clear();
+    }
+
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach (dynamic security in changes.AddedSecurities)
         {
             // Requesting data for trading signal generation
-            var consensusSymbol = AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
-            var estimateSymbol = AddData&lt;EstimizeEstimate&gt;(security.Symbol).Symbol;
-            var releaseSymbol = AddData&lt;EstimizeRelease&gt;(security.Symbol).Symbol;
-            
-            // Historical Data
-            var history = History(new[]{
-                consensusSymbol,
-                estimateSymbol,
-                releaseSymbol
-            }, 10, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
+            security.Consensus = AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
+            // Historical data
+            var history = History&lt;EstimizeConsensus&gt;(security.Consensus, 100, Resolution.Daily);
+        }
+
+        foreach (dynamic security in changes.RemovedSecurities)
+        {
+            // Remove the Consensus data for this asset when it leaves the universe.
+            RemoveSecurity(security.Consensus);
         }
     }
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm creates a dynamic universe of the 500 most liquid US Equities. Each month, the algorithm forms an equal-weighted dollar-neutral portfolio with the 10 companies with the highest EPS estimate and the 10 companies with the lowest EPS estimate.</p>
+<p>The following example algorithm creates a dynamic universe of the 250 most liquid US Equities. Each morning, the algorithm emits insights for the companies that have a new EPS estimate.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
+from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
 
 
 class ExtractAlphaEstimizeFrameworkAlgorithm(QCAlgorithm):
@@ -173,157 +173,145 @@ class ExtractAlphaEstimizeFrameworkAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        
-        self.add_universe(self.my_coarse_filter_function)
-        self.universe_settings.resolution = Resolution.MINUTE
-
+        self.add_universe_selection(LiquidEquitiesUniverseSelectionModel())
         # Custom alpha model that emit signal according to Estimize data
         self.add_alpha(ExtractAlphaEstimizeAlphaModel())
-        
         # Invest equally to evenly dissipate capital concentration risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
-        
         self.set_execution(ImmediateExecutionModel())
-        
-    def my_coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        # Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
-        sorted_by_dollar_volume = sorted([x for x in coarse if x.has_fundamental_data and x.price &gt; 4], 
-                                key=lambda x: x.dollar_volume, reverse=True)
-        selected = [x.symbol for x in sorted_by_dollar_volume[:500]]
-        return selected
-        
+                
+
+class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
+
+    def select(self, algorithm: QCAlgorithm, fundamentals: list[Fundamental]) -&gt; list[Symbol]:
+        # Select the non-penny stocks with the highest dollar volume, 
+        # since they have more stable price (lower risk) and more 
+        # informed insights from high market activities
+        sorted_by_dollar_volume = sorted(
+            [x for x in fundamentals if x.has_fundamental_data and x.price &gt; 4], 
+            key=lambda x: x.dollar_volume
+        )
+        return [x.symbol for x in sorted_by_dollar_volume[-250:]]
+
+
 class ExtractAlphaEstimizeAlphaModel(AlphaModel):
     
-    def __init__(self) -&gt; None:
-        # A variable to control the next rebalance time
-        self.time = datetime.min
+    # Add a dictionary to hold the latest Consensus data since this dataset is sparse.
+    _consensus_by_symbol = {}
+    _day = -1
         
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        if self.time &gt; algorithm.time: return []
-        
-        # Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
-        consensus = slice.Get(EstimizeConsensus)
-        estimate = slice.Get(EstimizeEstimate)
-        release = slice.Get(EstimizeRelease)
-        
-        if not estimate: return []
-
-        # Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
-        sorted_by_eps_estimate = sorted([x for x in estimate.items() if x[1].eps], key=lambda x: x[1].eps)
-        long_symbols = [x[0].underlying for x in sorted_by_eps_estimate[-10:]]
-        short_symbols = [x[0].underlying for x in sorted_by_eps_estimate[:10]]
-        
-        insights = []
-        for symbol in long_symbols:
-            insights.append(Insight.price(symbol, Expiry.END_OF_MONTH, InsightDirection.UP))
-        for symbol in short_symbols:
-            insights.append(Insight.price(symbol, Expiry.END_OF_MONTH, InsightDirection.DOWN))
-
-        # Update the rebalance time to next month start
-        self.time = Expiry.END_OF_MONTH(algorithm.time)
-        
-        return insights
+        # Record the latest Consensus data.
+        consensus = slice.get(EstimizeConsensus)
+        if consensus: 
+            for dataset_symbol, value in consensus.items():
+                self._consensus_by_symbol[dataset_symbol.underlying] = value
+        # Wait for the market open to rebalance
+        if self._day == algorithm.time.day or not slice.bars:
+            return []
+        self._day = algorithm.time.day
+        # If there has been new Consensus data released since the previous
+        # market open, emit insights for all the assets that have new Consensus data.
+        if not self._consensus_by_symbol:
+            return []
+        symbols = [
+            symbol for symbol in self._consensus_by_symbol.keys()
+            if algorithm.securities[symbol].price
+        ]
+        self._consensus_by_symbol.clear()
+        return [Insight.price(symbol, timedelta(30), InsightDirection.UP) for symbol in symbols]
         
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting data for trading signal generation
-            estimize_consensus_symbol = algorithm.add_data(EstimizeConsensus, security.symbol).symbol
-            estimize_estimate_symbol = algorithm.add_data(EstimizeEstimate, security.symbol).symbol
-            estimize_release_symbol = algorithm.add_data(EstimizeRelease, security.symbol).symbol
-            
-            # Historical Data
-            history = algorithm.history([estimize_consensus_symbol,
-                                         estimize_estimate_symbol,
-                                         estimize_release_symbol
-                                        ], 10, Resolution.DAILY)
-            algorithm.debug(f"We got {len(history)} items from our history request")
+            security.consensus = algorithm.add_data(EstimizeConsensus, security.symbol).symbol
+            # Historical data
+            history = algorithm.history(security.consensus, 100, Resolution.DAILY)
+        for security in changes.removed_securities:
+            # Remove the Consensus data for this asset when it leaves the universe.
+            algorithm.remove_security(security.consensus)
 </pre>
-<pre class="csharp">public class ExtractAlphaEstimizeAlgorithm : QCAlgorithm
+<pre class="csharp">public class ExtractAlphaEstimizeFrameworkAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-
         SetCash(100000);
-        
-        AddUniverse(MyCoarseFilterFunction);
-        UniverseSettings.Resolution = Resolution.Minute;
-
+        AddUniverseSelection(new LiquidEquitiesUniverseSelectionModel());
         // Custom alpha model that emit signal according to Estimize data
         AddAlpha(new ExtractAlphaEstimizeAlphaModel());
-
         // Invest equally to evenly dissipate capital concentration risk
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        
         SetExecution(new ImmediateExecutionModel());
     }
-    
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+}
+
+public class LiquidEquitiesUniverseSelectionModel : FundamentalUniverseSelectionModel
+{
+    public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-        // Select the non-penny stocks with the highest dollar volume, since they have more stable price (lower risk) and more informed insights from high market activities
-        return (from c in coarse
-                where c.HasFundamentalData &amp;&amp; c.Price &gt; 4
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(500);
+        // Select the non-penny stocks with the highest dollar volume, 
+        // since they have more stable price (lower risk) and more 
+        // informed insights from high market activities
+        return fundamentals
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 4)
+            .OrderBy(x =&gt; x.DollarVolume)
+            .TakeLast(250)
+            .Select(x =&gt; x.Symbol);
     }
 }
 
 public class ExtractAlphaEstimizeAlphaModel: AlphaModel
 {
-    // A variable to control the next rebalance time
-    public DateTime _time;
-    
-    public ExtractAlphaEstimizeAlphaModel()
-    {
-        _time = DateTime.MinValue;
-    }
+    // Add a dictionary to hold the latest Consensus data since this dataset is sparse.
+    private Dictionary&lt;Symbol, EstimizeConsensus&gt; _consensusBySymbol = new();
+    private int _day = -1;
     
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        if (_time &gt; algorithm.Time) return new List&lt;Insight&gt;();
-        
-        // Accessing Estimize data to collect the crowd-sourced insighrt as trading signals
-        var consensus = slice.Get&lt;EstimizeConsensus&gt;();
-        var estimate = slice.Get&lt;EstimizeEstimate&gt;();
-        var release = slice.Get&lt;EstimizeRelease&gt;();
-        
-        if (estimate.IsNullOrEmpty()) return new List&lt;Insight&gt;();
-        
-        // Long the ones with highest earning estimates and short the ones with lowest earning estimates, assuming the fundamental factor significance
-        var sortedByEpsEstimate = from s in estimate.Values
-                        where (s.Eps != null)
-                        orderby s.Eps descending
-                        select s.Symbol.Underlying;
-        var longSymbols = sortedByEpsEstimate.Take(10).ToList();
-        var shortSymbols = sortedByEpsEstimate.TakeLast(10).ToList();
-        
         var insights = new List&lt;Insight&gt;();
-        insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Up)));
-        insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfMonth, InsightType.Price, InsightDirection.Down)));
-
-        // Update the rebalance time to next month start
-        _time = Expiry.EndOfMonth(algorithm.Time);
-        
+        // Record the latest Consensus data.
+        var consensus = slice.Get&lt;EstimizeConsensus&gt;();
+        if (!consensus.IsNullOrEmpty()) 
+        {
+            foreach (var kvp in consensus)
+            {
+                _consensusBySymbol[kvp.Key.Underlying] = kvp.Value;
+            }
+        }
+        // Wait for the market open to rebalance
+        if (_day == algorithm.Time.Day || slice.Bars.Count == 0)
+        {
+            return insights;
+        }
+        _day = algorithm.Time.Day;
+        // If there has been new Consensus data released since the previous
+        // market open, emit insights for all the assets that have new Consensus data.
+        if (_consensusBySymbol.Count == 0)
+        {
+            return insights;
+        }
+        var symbols = _consensusBySymbol.Keys.Where(symbol =&gt; algorithm.Securities[symbol].Price != 0);
+        insights.AddRange(symbols.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(30), InsightDirection.Up)).ToList());
+        _consensusBySymbol.Clear();
         return insights;
     }
     
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
-        foreach(var security in changes.AddedSecurities)
+        foreach (dynamic security in changes.AddedSecurities)
         {
             // Requesting data for trading signal generation
-            var consensusSymbol = algorithm.AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
-            var estimateSymbol = algorithm.AddData&lt;EstimizeEstimate&gt;(security.Symbol).Symbol;
-            var releaseSymbol = algorithm.AddData&lt;EstimizeRelease&gt;(security.Symbol).Symbol;
-            
-            // Historical Data
-            var history = algorithm.History(new[]{
-                consensusSymbol,
-                estimateSymbol,
-                releaseSymbol
-            }, 10, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} items from our history request");
+            security.Consensus = algorithm.AddData&lt;EstimizeConsensus&gt;(security.Symbol).Symbol;
+            // Historical data
+            var history = algorithm.History&lt;EstimizeConsensus&gt;(security.Consensus, 100, Resolution.Daily);
+        }
+
+        foreach (dynamic security in changes.RemovedSecurities)
+        {
+            // Remove the Consensus data for this asset when it leaves the universe.
+            algorithm.RemoveSecurity(security.Consensus);
         }
     }
 }</pre>

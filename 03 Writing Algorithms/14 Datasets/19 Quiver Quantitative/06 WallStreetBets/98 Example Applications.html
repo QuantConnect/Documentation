@@ -15,7 +15,13 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-
+        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         self.universe_settings.resolution = Resolution.DAILY
         # Filter using wall street bet insights
         self._universe = self.add_universe(QuiverWallStreetBetsUniverse, self.universe_selection)
@@ -24,13 +30,16 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         points = slice.Get(QuiverWallStreetBets)
         for point in points.Values:
             symbol = point.symbol.underlying
-            
+            security = self.securities[symbol]
+            if not security.is_tradable:
+                continue
+
             # Buy if the stock was mentioned more than 5 times in the WallStreetBets daily discussion, which translate into high popularity of rise
-            if point.mentions &gt; 5 and not self.portfolio[symbol].is_long:
+            if point.mentions &gt; 5 and not security.holdings.is_long:
                 self.market_order(symbol, 1)
                 
             # Otherwise, short sell
-            elif point.mentions &lt;= 5 and not self.portfolio[symbol].is_short:
+            elif point.mentions &lt;= 5 and not security.holdings.is_short:
                 self.market_order(symbol, -1)
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
@@ -40,12 +49,8 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
 
             # Historical data
             history = self.history(QuiverWallStreetBets, quiver_wsb_symbol, 60, Resolution.DAILY)
-            self.debug(f"We got {len(history)} items from our history request")
 
-    def universe_selection(self, alt_coarse: List[QuiverWallStreetBetsUniverse]) -&gt; List[Symbol]:
-        for datum in alt_coarse:
-            self.log(f"{datum.symbol},{datum.mentions},{datum.rank},{datum.sentiment}")
-        
+    def universe_selection(self, alt_coarse: List[QuiverWallStreetBetsUniverse]) -&gt; List[Symbol]:       
         # Select the ones with popularity (mentions) of better-than-others performance (rank)
         return [d.symbol for d in alt_coarse \
                     if d.mentions &gt; 10 \
@@ -58,16 +63,14 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-
+        // Seed the price of each asset with its last known price to avoid trading errors.
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
+        );
         UniverseSettings.Resolution = Resolution.Daily;
         // Filter using wall street bet insights
         _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;
         {
-            foreach (var datum in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;())
-            {
-                Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
-            }
-
             // Select the ones with popularity (mentions) of better-than-others performance (rank)
             return from d in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;()
                     where d.Mentions &gt; 10 &amp;&amp; d.Rank &lt; 100
@@ -81,14 +84,19 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         foreach (var point in points.Values)
         {
             var symbol = point.Symbol.Underlying;
+            var security = Securities[symbol];
+            if (!security.IsTradable)
+            {
+                continue;
+            }
             
             // Buy if the stock was mentioned more than 5 times in the WallStreetBets daily discussion, which translate into high popularity of rise
-            if (point.Mentions &gt; 5 &amp;&amp; !Portfolio[symbol].IsLong)
+            if (point.Mentions &gt; 5 &amp;&amp; !security.Holdings.IsLong)
             {
                 MarketOrder(symbol, 1);
             }
             // Otherwise, short sell
-            else if (point.Mentions &lt;= 5 &amp;&amp; !Portfolio[symbol].IsShort)
+            else if (point.Mentions &lt;= 5 &amp;&amp; !security.Holdings.IsShort)
             {
                 MarketOrder(symbol, -1);
             }
@@ -101,10 +109,8 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         {
             // Requesting wall street bet data to obtain the trader's insights
             var quiverWSBSymbol = AddData&lt;QuiverWallStreetBets&gt;(added.Symbol).Symbol;
-
             // Historical data
             var history = History&lt;QuiverWallStreetBets&gt;(quiverWSBSymbol, 60, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request");
         }
     }
 }</pre>
@@ -134,13 +140,10 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         
         self.set_execution(ImmediateExecutionModel())
 
-    def universe_selection(self, alt_coarse: List[QuiverWallStreetBetsUniverse]) -&gt; List[Symbol]:
-        for datum in alt_coarse:
-            self.log(f"{datum.symbol},{datum.mentions},{datum.rank},{datum.sentiment}")
-        
+    def universe_selection(self, alt_coarse: List[QuiverWallStreetBetsUniverse]) -&gt; List[Symbol]:        
         # Select the ones with popularity (mentions) of better-than-others performance (rank)
         return [d.symbol for d in alt_coarse
-                    if d.mentions &gt; 10                     and d.rank &lt; 100]
+                    if d.mentions &gt; 10 and d.rank &lt; 100]
 
 class WallStreamBetsAlphaModel(AlphaModel):
     
@@ -193,7 +196,6 @@ class SymbolData:
         
         # Historical data
         history = algorithm.history(self.quiver_wsb_symbol, 60, Resolution.DAILY)
-        algorithm.debug(f"We got {len(history)} items from our history request for {symbol} Quiver WallStreetBets data")
         
     def dispose(self) -&gt; None:
         # Unsubscribe from the Quiver WallStreetBets feed for this security to release computationa resources
@@ -211,14 +213,9 @@ class SymbolData:
         // Filter using wall street bet insights
         _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;
         {
-            foreach (var datum in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;())
-            {
-                Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
-            }
-
             // Select the ones with popularity (mentions) of better-than-others performance (rank)
             return from d in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;()
-                    where d.Mentions &gt; 10 &amp;&amp; d.Rank &gt; 10
+                    where d.Mentions &gt; 10 &amp;&amp; d.Rank &lt; 100
                     select d.Symbol;
         });
 
@@ -310,7 +307,6 @@ public class SymbolData
         
         // Historical data
         var history = algorithm.History&lt;QuiverWallStreetBets&gt;(_quiverWSBSymbol, 60, Resolution.Daily);
-        algorithm.Debug($"We got {history.Count()} items from our history request for {symbol} Quiver WallStreetBets data");
     }
     
     public void dispose()

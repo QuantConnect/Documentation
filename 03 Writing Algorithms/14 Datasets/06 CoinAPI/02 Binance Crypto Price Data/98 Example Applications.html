@@ -9,7 +9,7 @@ The Binance Crypto Price dataset enables you to accurately design strategies for
 <p>The following example algorithm buys and holds Bitcoin through the Binance exchange:</p>
 
 <div class="section-example-container testable">
-<pre class="python">from AlgorithmImports import *
+<pre><code class="language-python">from AlgorithmImports import *
 
 
 class CoinAPIDataAlgorithm(QCAlgorithm):
@@ -17,115 +17,129 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        # Set Account Currency to BUSD, since USD-BUSD will not auto-convert and USD cannot be used to trade
-        self.set_cash("BUSD", 100000)
+        # Set the account currency to USDT, since you can't trade with 
+        # USD and the algorithm doesn't automatically convert USD & USDT
+        # holdings.
+        self.set_account_currency("USDT", 100000)
         self.universe_settings.asynchronous = True
-        # Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        # Binance accepts both Cash and Margin account types. Select the
+        # one you need for the best reality modeling.
         self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
-
-        # Warm up the security with the last known price to avoid conversion error
-        self.set_security_initializer(lambda security: security.set_market_price(self.get_last_known_price(security)))
-        
-        # Requesting data, we only trade on BTCBUSD in Binance exchange
-        crypto = self.add_crypto("BTCBUSD", Resolution.MINUTE, Market.BINANCE)
-        self.btcbusd = crypto.symbol
-        self.minimum_order_size = crypto.symbol_properties.minimum_order_size
-        
+        # Add BTCUSDT data.
+        self._btc = self.add_crypto("BTCUSDT", Resolution.MINUTE, Market.BINANCE)
         # Historical data
-        history = self.history(self.btcbusd, 30, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from our history request")
-
-        # Add Crypto Universe Selection that select crypto pairs in Binance exchange
-        self._universe = self.add_universe(CryptoUniverse.binance(self.universe_selection_filter))
-
+        history = self.history(self._btc.symbol, 30, Resolution.DAILY)
+        # Add a Crypto universe that selects trading pairs on Binance.
+        universe = self.add_universe(CryptoUniverse.binance(self._select_assets))
         # Historical Universe data
-        universe_history = self.history(self._universe, 30, Resolution.DAILY)
-        self.debug(f"We got {len(universe_history)} items from our universe history request")
-        for (univere_symbol, time), universe_day in universe_history.items():
+        universe_history = self.history(universe, 30, Resolution.DAILY)
+        for (universe_symbol, time), universe_day in universe_history.items():
             for universe_item in universe_day:
-                self.debug(f"{universe_item.symbol} price at {universe_item.end_time}: {universe_item.close}")
+                symbol = universe_item.symbol
+                price = universe_item.close
 
-    def universe_selection_filter(self, universe_day):
-        # Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+    def _select_assets(self, universe_day):
+        # Filter for materially traded Crypto pairs with significant 
+        # size and dollar volume, assuming higher capital flow in for 
+        # higher return.
         return [universe_item.symbol for universe_item in universe_day
                 if universe_item.volume &gt;= 100 
-                and universe_item.volume_in_usd &gt; 10000]
+                and universe_item.volume_in_usd &gt; 10_000_000]
 
     def on_data(self, slice: Slice) -&gt; None:
-        # Speculate-invest all available free cash on BTCBUSD, obeying the order quantity restriction to avoid invalid order
-        if self.portfolio.cash_book['BTC'].amount == 0:
-            free_cash = self.portfolio.cash_book['BUSD'].amount * (1-self.settings.free_portfolio_value_percentage)
-            quantity = free_cash / slice[self.btcbusd].price
-            quantity -= quantity % self.minimum_order_size
-            if quantity &gt; 0:
-                self.market_order(self.btcbusd, quantity)</pre>
-<pre class="csharp">public class CoinAPIDataAlgorithm : QCAlgorithm
+        # Speculate-invest all available free cash on BTCUSDT, repecting 
+        # the order quantity restrictions to avoid invalid orders.
+        if self.portfolio.cash_book['BTC'].amount != 0:
+            return
+        # Define a buffer so that we can scale down the order size,
+        # avoiding trading errors.
+        buffer = max(
+            BinanceFeeModel.TAKER_TIER_1_FEE, 
+            self.settings.free_portfolio_value_percentage
+        )
+        quantity = (
+            self.portfolio.cash_book['USDT'].amount
+            / self._btc.ask_price
+            * (1-buffer)
+        )
+        # Check if the quantity exceeds the minimum order size. On 
+        # Binance, the minimum order size is measured in the quote
+        # currency (USDT in this case).
+        minimum_order_size = (
+            self._btc.symbol_properties.minimum_order_size 
+            / self._btc.ask_price
+        )
+        if abs(quantity) &lt; minimum_order_size:
+            return
+        self.market_order(self._btc, quantity)</code></pre>
+<pre><code class="language-cs">public class CoinAPIDataAlgorithm : QCAlgorithm
 {
-    private Symbol _btcbusd;
-    private Universe _universe;
-    private decimal? _minimumOrderSize;
+    private Crypto _btc;
     
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        // Set Account Currency to BUSD, since USD-BUSD will not auto-convert and USD cannot be used to trade
-        SetCash("BUSD", 100000);
+        // Set the account currency to USDT, since you can't trade with 
+        // USD and the algorithm doesn't automatically convert USD & USDT
+        // holdings.
+        SetAccountCurrency("USDT", 100000);
         UniverseSettings.Asynchronous = true;
-        // Binance accepts both Cash and Margin account types, select the one you need for the best reality modeling.
+        // Binance accepts both Cash and Margin account types. Select the
+        // one you need for the best reality modeling.
         SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
-
-        // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
-        
-        // Requesting data, we only trade on BTCBUSD in Binance exchange
-        var crypto = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance);
-        _btcbusd = crypto.Symbol;
-        _minimumOrderSize = crypto.SymbolProperties.MinimumOrderSize;
-    
-            // Historical data
-        var history = History(_btcbusd, 30, Resolution.Daily);
-        Debug($"We got {history.Count()} items from our history request");
-
-        // Add Crypto Universe Selection that select crypto pairs in Binance exchange
-        _universe = AddUniverse(CryptoUniverse.Binance(UniverseSelectionFilter));
-
+        // Add BTCUSDT data.
+        _btc = AddCrypto("BTCUSDT", Resolution.Minute, Market.Binance);   
+        // Historical data
+        var history = History(_btc.Symbol, 30, Resolution.Daily);
+        // Add a Crypto universe that selects trading pairs on Binance.
+        var universe = AddUniverse(CryptoUniverse.Binance(SelectAssets));
         // Historical Universe data
-        var universeHistory = History(_universe, 30, Resolution.Daily);
-        Debug($"We got {universeHistory.Count()} items from our history request");
+        var universeHistory = History(universe, 30, Resolution.Daily);
         foreach (var universeDay in universeHistory)
         {
             foreach (CryptoUniverse universeItem in universeDay)
             {
-                Debug($"{universeItem.Symbol} price at {universeItem.EndTime}: {universeItem.Close}");
+                var symbol = universeItem.Symbol;
+                var price = universeItem.Close;
             }
         }
     }
 
-    private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;CryptoUniverse&gt; universeDay)
     {
-        // Filter for materially traded crypto pairs with significant size and dollar volume, assuming higher capital flow in for higher return
+        // Filter for materially traded Crypto pairs with significant 
+        // size and dollar volume, assuming higher capital flow in for 
+        // higher return.
         return from universeItem in universeDay
                 where universeItem.Volume &gt;= 100m 
-                &amp;&amp; universeItem.VolumeInUsd &gt; 10000m
+                &amp;&amp; universeItem.VolumeInUsd &gt; 10000000m
                 select universeItem.Symbol;
     }
 
     public override void OnData(Slice slice)
     {
-        // Speculate-invest all available free cash on BTCBUSD, obeying the order quantity restriction to avoid invalid order
-        if (Portfolio.CashBook["BTC"].Amount == 0)
+        // Speculate-invest all available free cash on BTCUSDT, repecting 
+        // the order quantity restrictions to avoid invalid orders.
+        if (Portfolio.CashBook["BTC"].Amount != 0)
         {
-            var freeCash = Portfolio.CashBook["USD"].Amount * (1-Settings.FreePortfolioValuePercentage);
-            var quantity = freeCash / slice[_btcbusd].Price;
-            quantity -= quantity % _minimumOrderSize;
-            if (quantity &gt; 0m)
-            {
-                MarketOrder(_btcbusd, quantity);
-            }
+            return;
         }
+        // Define a buffer so that we can scale down the order size,
+        // avoiding trading errors.
+        var buffer = Math.Max(BinanceFeeModel.TakerTier1Fee, Settings.FreePortfolioValuePercentage);
+        var quantity = Portfolio.CashBook["USDT"].Amount / _btc.AskPrice * (1-buffer);
+        // Check if the quantity exceeds the minimum order size. On 
+        // Binance, the minimum order size is measured in the quote 
+        // currency (USDT in this case).
+        var minimumOrderSize = _btc.SymbolProperties.MinimumOrderSize / _btc.AskPrice;
+        if (Math.Abs(quantity) &lt; minimumOrderSize)
+        {
+            return;
+        }
+        MarketOrder(_btc, quantity);
     }
-}</pre>
+}</code></pre>
 </div>
 <h4>Framework Algorithm Example</h4>
 <p>The following example algorithm creates a dynamic universe of Crypto pairs on the Binance exchange and then forms a equal-weighted portfolio of all the pairs in the universe:</p>

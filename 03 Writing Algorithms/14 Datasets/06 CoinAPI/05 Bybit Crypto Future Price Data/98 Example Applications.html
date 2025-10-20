@@ -29,14 +29,8 @@ class BybitCryptoFutureDataAlgorithm(QCAlgorithm):
 
         # Historical data
         history = self.history(self.btcusdt, 10, Resolution.DAILY)
-        self.debug(f"We got {len(history)} from our history request for {self.btcusdt}")
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
-        if self.btcusdt in slice.margin_interest_rates:
-            interest_rate = slice.margin_interest_rates[self.btcusdt].interest_rate
-            self.log(f"{self.btcusdt} close at {slice.time}: {interest_rate}")      
-  
+    def on_data(self, slice: Slice) -&gt; None:  
         # Trade only based on updated price data
         if not slice.bars.contains_key(self.btcusdt) or not slice.quote_bars.contains_key(self.btcusdt):
             return
@@ -69,20 +63,12 @@ class BybitCryptoFutureDataAlgorithm(QCAlgorithm):
 
         // Historical data
         var history = History(_symbol, 10, Resolution.Daily);
-        Debug($"We got {history.Count()} from our history request for {_symbol}");
     }
 
     public override void OnData(Slice slice)
     {
-        // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
-        if (slice.MarginInterestRates.ContainsKey(_symbol))
-        {
-            var interestRate = slice.MarginInterestRates[_symbol].InterestRate;
-            Log($"{_symbol} price at {slice.Time}: {interestRate}");
-        }
-
         // Trade only based on updated price data
-        if (!slice.QuoteBars.TryGet(_symbol, out var quote) || !slice.Bars.ContainsKey(_symbol))
+        if (!slice.QuoteBars.TryGetValue(_symbol, out var quote) || !slice.Bars.ContainsKey(_symbol))
         {
             return;
         }
@@ -137,11 +123,6 @@ class CryptoFutureAlphaModel(AlphaModel):
         insights = []
 
         for symbol in self.symbols:
-            # Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
-            if symbol in slice.margin_interest_rates:
-                interest_rate = slice.margin_interest_rates[symbol].interest_rate
-                algorithm.log(f"{symbol} close at {slice.time}: {interest_rate}")      
-
             # Trade only based on updated price data
             if not slice.bars.contains_key(symbol) or not slice.quote_bars.contains_key(symbol):
                 continue
@@ -163,7 +144,6 @@ class CryptoFutureAlphaModel(AlphaModel):
 
             # Historical data
             history = algorithm.history(symbol, 10, Resolution.DAILY)
-            algorithm.debug(f"We got {len(history)} from our history request for {symbol}")
 
         for security in changes.removed_securities:
             symbol = security.symbol
@@ -207,15 +187,8 @@ public class CryptoFutureAlphaModel : AlphaModel
 
         foreach (var symbol in _symbols)
         {
-            // Note that you may want to access the margin interest of the crypto future to calculate if it would impact a trade's PnL
-            if (slice.MarginInterestRates.ContainsKey(symbol))
-            {
-                var interestRate = slice.MarginInterestRates[symbol].InterestRate;
-                algorithm.Log($"{symbol} price at {slice.Time}: {interestRate}");
-            }
-
             // Trade only based on updated price data
-            if (!slice.Bars.ContainsKey(symbol) || !slice.QuoteBars.TryGet(symbol, out var qoute))
+            if (!slice.Bars.ContainsKey(symbol) || !slice.QuoteBars.TryGetValue(symbol, out var quote))
             {
                 continue;
             }
@@ -248,7 +221,6 @@ public class CryptoFutureAlphaModel : AlphaModel
 
             // Historical data
             var history = algorithm.History(symbol, 10, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
         }
 
         foreach (var security in changes.RemovedSecurities)

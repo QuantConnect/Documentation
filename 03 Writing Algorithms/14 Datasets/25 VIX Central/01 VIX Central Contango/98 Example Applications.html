@@ -26,15 +26,14 @@ class VixCentralContangoAlgorithm (QCAlgorithm):
 
         # Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
         if not self.portfolio.invested and ratio &gt; 0:
-            self.market_order(self.spy, 100)
+            self.set_holdings(self.spy, 1)
         # Liqudiate otherwise to avoid excessive market volatility
         elif ratio &lt; 0:
             self.liquidate()
 </pre>
 <pre class="csharp">public class VixCentralContangoAlgorithm : QCAlgorithm
 {
-    private Symbol _spy;
-    private Symbol _contango;
+    private Symbol _spy, _contango;
 
     public override void Initialize()
     {
@@ -60,12 +59,12 @@ class VixCentralContangoAlgorithm (QCAlgorithm):
         // Bet the market will go up if F2 - F1 price percentage change is positive, meaning the near-term market volatility is expected to be low
         if (!Portfolio.Invested &amp;&amp; ratio &gt; 0)
         {
-            MarketOrder(_spy, 100);
+            SetHoldings(_spy, 1);
         }
         // Liqudiate otherwise to avoid excessive market volatility
         else if(ratio &lt; 0)
         {
-                Liquidate();
+            Liquidate();
         }
     }
 }</pre></div>
