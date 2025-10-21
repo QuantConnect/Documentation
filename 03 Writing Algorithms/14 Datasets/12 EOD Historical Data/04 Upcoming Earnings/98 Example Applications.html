@@ -10,14 +10,11 @@ The Upcoming Earnings dataset provides timely notifications about earnings annou
 <p>The following example algorithm long a straddle on the stocks with upcoming earnings report within 5 days to trade the volatility. It allows 5 days to build up the volatility and capitalize the positions 1 day after the earnings announcement.</p>
 
 <div class="section-example-container testable">
-<pre class="python">from AlgorithmImports import *
-
-
-class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
+<pre class="python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
     options_by_symbol = {}
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 9, 1)
+        self.set_start_date(2024, 12, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
 
@@ -35,8 +32,13 @@ class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
         # We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
         # Assuming 5 days before the earnings report publish is less volatile.
         # We do not want depository due to their low liquidity.
-        return [d.symbol for d in earnings
-                if d.report_date &lt;= self.time + timedelta(5)]
+        for i in range(5, 0, -1):
+            target_date = self.time + timedelta(i)
+            symbols = set(d.symbol for d in earnings if d.report_date == target_date)
+            if symbols:
+                self.plot('Universe', 'Count', len(symbols))
+                return list(symbols)
+        return []
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
 
@@ -93,11 +95,11 @@ class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
 <pre class="csharp">public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
 {
     // A dictionary to save the underlying-call,put pair for position open/close management.
-    private Dictionary&lt;Symbol, (Symbol Call, Symbol Put)&gt; _optionsBySymbol = new();
+    private Dictionary&lt;Symbol, (Symbol Call, Symbol Put)&gt; _optionsBySymbol = [];
 
     public override void Initialize()
     {
-        SetStartDate(2024, 9, 1);
+        SetStartDate(2024, 12, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
 
@@ -110,12 +112,20 @@ class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
         // Universe consists of equities with upcoming earnings events.
         AddUniverse&lt;EODHDUpcomingEarnings&gt;((earnings) =&gt; {
-            return earnings
-                // We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
-                // Assuming 5 days before the earnings report publish is less volatile.
-                // We do not want depository due to their low liquidity.
-                .Where(datum =&gt; (datum as EODHDUpcomingEarnings).ReportDate &lt;= Time.AddDays(5))
-                .Select(datum =&gt; datum.Symbol);
+            foreach(var i in Enumerable.Range(1,5).Reverse())
+            {
+                var targetDate = Time.AddDays(i);
+                var symbols = earnings
+                    // We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
+                    // Assuming 5 days before the earnings report publish is less volatile.
+                    // We do not want depository due to their low liquidity.
+                    .Where(datum =&gt; (datum as EODHDUpcomingEarnings).ReportDate == targetDate)
+                    .ToHashSet(datum =&gt; datum.Symbol);
+                if (symbols.IsNullOrEmpty()) continue;
+                Plot("Universe", "Count", symbols.Count);
+                return symbols;
+            }
+            return [];
         });
     }
 
@@ -192,15 +202,12 @@ class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
 <p>The following example algorithm long a straddle on the stocks with upcoming earnings report within 5 days to trade the volatility implemented in framework algorithm. It allows 5 days to build up the volatility and capitalize the positions 1 day after the earnings announcement.</p>
 
 <div class="section-example-container testable">
-<pre class="python">from AlgorithmImports import *
-
-
-class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
+<pre class="python">class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 9, 1)
+        self.set_start_date(2024, 12, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
+        self.set_cash(1000000)
 
         # Seed the last price as price since we need to use the underlying price for option contract filtering when it join the universe.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
@@ -222,8 +229,13 @@ class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
         # We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
         # Assuming 5 days before the earnings report publish is less volatile.
         # We do not want depository due to their low liquidity.
-        return [d.symbol for d in earnings
-                if d.report_date &lt;= self.time + timedelta(5)]
+        for i in range(5, 0, -1):
+            target_date = self.time + timedelta(i)
+            symbols = set(d.symbol for d in earnings if d.report_date == target_date)
+            if symbols:
+                self.plot('Universe', 'Count', len(symbols))
+                return list(symbols)
+        return []
 
 class UpcomingEarningsAlphaModel(AlphaModel):
     options_by_symbol = {}
@@ -289,17 +301,17 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
     def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
         if not insights:
             return []
-        # Only a single contract toi ensure both legs size is equal
-        quantity = min([abs(algorithm.calculate_order_quantity(i.symbol, i.direction))
-            for i in insights])
-        return [PortfolioTarget(i.symbol, quantity * i.direction) for i in insights]</pre>
+        # Only a single contract to ensure both legs size is equal
+        quantity = min([abs(algorithm.calculate_order_quantity(i.symbol, int(i.direction)))
+            for i in insights]) / 100
+        return [PortfolioTarget(i.symbol, int(i.direction)) for i in insights]</pre>
 <pre class="csharp">public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        SetStartDate(2024, 9, 1);
+        SetStartDate(2024, 12, 1);
         SetEndDate(2024, 12, 31);
-        SetCash(100000);
+        SetCash(1000000);
 
         // Seed the last price as price since we need to use the underlying price for option contract filtering when it join the universe.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
@@ -310,12 +322,20 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
         // Universe consists of equities with upcoming earnings events.
         AddUniverse&lt;EODHDUpcomingEarnings&gt;((earnings) =&gt; {
-            return earnings
-                // We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
-                // Assuming 5 days before the earnings report publish is less volatile.
-                // We do not want depository due to their low liquidity.
-                .Where(datum =&gt; (datum as EODHDUpcomingEarnings).ReportDate &lt;= Time.AddDays(5))
-                .Select(datum =&gt; datum.Symbol);
+            foreach(var i in Enumerable.Range(1,5).Reverse())
+            {
+                var targetDate = Time.AddDays(i);
+                var symbols = earnings
+                    // We do not want to lock our fund too early, so filter for stocks is in lower volatility but will go up.
+                    // Assuming 5 days before the earnings report publish is less volatile.
+                    // We do not want depository due to their low liquidity.
+                    .Where(datum =&gt; (datum as EODHDUpcomingEarnings).ReportDate == targetDate)
+                    .ToHashSet(datum =&gt; datum.Symbol);
+                if (symbols.IsNullOrEmpty()) continue;
+                Plot("Universe", "Count", symbols.Count);
+                return symbols;
+            }
+            return [];
         });
 
         // A custom alpha model that emit signal based on upcoming earnings events.
@@ -329,7 +349,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
 public class UpcomingEarningsAlphaModel : AlphaModel
 {
     // A dictionary to save the underlying-call,put pair for position open/close management.
-    private Dictionary&lt;Symbol, (Symbol Call, Symbol Put)&gt; _optionsBySymbol = new();
+    private Dictionary&lt;Symbol, (Symbol Call, Symbol Put)&gt; _optionsBySymbol = [];
 
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithmFrameworkBridge algorithm, Slice data)
     {
@@ -343,10 +363,10 @@ public class UpcomingEarningsAlphaModel : AlphaModel
             _optionsBySymbol.Remove(key, out var contracts);
             // Long straddle (long the ATM call and put contracts) for 7 days to trade the volatility.
             // Assuming the volatility will go up due to earning announcement and reach highest volatility at 2-3 days after the report.
-            insights.AddRange(new Insight[]{
+            insights.AddRange([
                 Insight.Price(contracts.Call, TimeSpan.FromDays(7), InsightDirection.Up),
                 Insight.Price(contracts.Put, TimeSpan.FromDays(7), InsightDirection.Up)
-            });
+            ]);
         }
 
         // Remove any assigned positions of the underlying.
@@ -413,16 +433,14 @@ public class SingleSharePortfolioConstructionModel : PortfolioConstructionModel
 {
     public override IEnumerable&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
     {
-        if (insights.Count() == 0)
+        if (insights.Length == 0)
         {
-            return Enumerable.Empty&lt;PortfolioTarget&gt;();
+            return [];
         }
         // Only a single contract to ensure both legs size is equal.
-        var quantity = insights
-            .Select(i =&gt; Math.Abs(algorithm.CalculateOrderQuantity(i.Symbol, (decimal)i.Direction)))
-            .Min();
+        var quantity = insights.Min(i =&gt; Math.Abs(algorithm.CalculateOrderQuantity(i.Symbol, (decimal)i.Direction))) / 100;
 
-        return insights.Select(i =&gt; new PortfolioTarget(i.Symbol, quantity * (decimal)i.Direction));
+        return insights.Select(i =&gt; new PortfolioTarget(i.Symbol, quantity * (int)i.Direction));
     }
 }</pre>
 </div>
