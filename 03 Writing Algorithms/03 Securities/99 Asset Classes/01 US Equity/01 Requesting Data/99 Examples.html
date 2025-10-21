@@ -123,17 +123,24 @@ MSFT,0.92,0.96,0.98,1.01,0.98</pre>
 	If the mean score is greater than 1, it allocates 20% of the portfolio to the asset. 
 	Otherwise, it allocates -20% to the asset.
 </p>
-<div class="section-example-container">
+<div class="section-example-container testable">
  <pre class="csharp">public class USEquityDemoAlgorithm : QCAlgorithm
 {
+    private readonly Dictionary&lt;string, decimal&gt; _signalByTicker = [];
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+        
+        var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
+        AddSecurityInitializer(x =&gt; seeder.SeedSecurity(x));
+
         // Add the US Equities.
-        foreach (var ticker in new[] { "AAPL", "AMZN", "GOOG", "META", "MSFT" })
+        foreach (var ticker in "AAPL,AMZN,GOOG,META,MSFT".Split(","))
         {
             AddEquity(ticker, Resolution.Daily);
+            _signalByTicker.Add(ticker, 1);
         }
         // Set up a Scheduled Event to download the data file and place orders.
         Schedule.On(DateRules.MonthStart(), TimeRules.Midnight, DownloadDataAndPlaceOrders);
@@ -142,23 +149,21 @@ MSFT,0.92,0.96,0.98,1.01,0.98</pre>
     private void DownloadDataAndPlaceOrders()
     {
         // Download the file from DropBox.
-        var file = Download("&lt;DropBoxUrl&gt;&amp;dl=1");
+        var fileContent = Download("&lt;DropBoxUrl&gt;&dl=1");
 
-        // Convert the text file into trading signals.
-        var signalByTicker = new Dictionary&lt;string, decimal&gt;();
-        foreach (var line in file.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Skip(1))
+        // Convert the file content into trading signals.
+        foreach (var line in fileContent.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries).Skip(1))
         {
             var values = line.Split(',');
-            signalByTicker[values[0]] = values.Skip(1).Select(decimal.Parse).ToArray().Average();
+            _signalByTicker[values[0]] = values.Skip(1).Select(decimal.Parse).ToArray().Average();
         }
 
         // Place orders according to the signals.
-        var targets = signalByTicker.Select(kvp =&gt; new PortfolioTarget(kvp.Key, kvp.Value &gt;= 1m ? 0.2m : -0.2m));
-        SetHoldings(targets.ToList(), true);
+        var targets = _signalByTicker.Select(kvp =&gt; new PortfolioTarget(kvp.Key, kvp.Value &gt;= 1m ? 0.2m : -0.2m));
+        SetHoldings([.. targets], true);
     }
 }</pre>
  <pre class="python">from io import StringIO
-
 
 class USEquityDemoAlgorithm(QCAlgorithm):
         
@@ -166,28 +171,27 @@ class USEquityDemoAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
 
+        seeder = FuncSecuritySeeder(self.get_last_known_prices)
+        self.add_security_initializer(lambda x: seeder.seed_security(x))
+
         # Add the US Equities.
-        for ticker in ["AAPL", "AMZN", "GOOG", "META", "MSFT"]:
-            self.add_equity(ticker, Resolution.DAILY)
-        
+        self.signal_by_ticker = {self.add_equity(ticker, Resolution.DAILY).symbol: 1
+            for ticker in "AAPL,AMZN,GOOG,META,MSFT".split(',')}
+
         # Set up a Scheduled Event to download the data file and place orders.
-        self.schedule.on(
-            self.date_rules.month_start(),
-            self.time_rules.midnight,
-            self._download_data_and_place_orders
-        )
+        self.schedule.on(self.date_rules.month_start(), self.time_rules.midnight, self._download_data_and_place_orders)
 
     def _download_data_and_place_orders(self):
         # Download the file from DropBox.
-        file = self.download("&lt;DropBoxUrl&gt;&amp;dl=1")
-
-        # Convert the text file into trading signals.
-        signals = pd.read_csv(StringIO(file), index_col=0).mean(axis=1)
+        file_content = self.download("&lt;DropBoxUrl&gt;&dl=1")
+        if file_content:
+            # Convert the file content into trading signals.
+            self.signal_by_ticker = pd.read_csv(StringIO(file_content), index_col=0).mean(axis=1)
 
         # Place orders according to the signals.
         targets = [
-            PortfolioTarget(ticker, 0.2 if signal &gt;= 1 else -0.2)
-            for ticker, signal in signals.items()
+            PortfolioTarget(symbol, 0.2 if signal &gt;= 1 else -0.2)
+            for symbol, signal in self.signal_by_ticker.items()
         ]
         self.set_holdings(targets, True)</pre>
 </div>
