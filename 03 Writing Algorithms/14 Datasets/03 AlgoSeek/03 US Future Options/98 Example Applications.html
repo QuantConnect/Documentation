@@ -109,6 +109,8 @@ class FutureOptionExampleAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
+from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel
+
 
 class USFuturesDataAlgorithm(QCAlgorithm):
 
@@ -116,10 +118,8 @@ class USFuturesDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        # Asynchronous to save computation resources
-        self.universe_settings.asynchronous = True
         # Override an option universe selection model to select the FOPs
-        self.set_universe_selection(GoldFOPUniverseSelectionModel())
+        self.set_universe_selection(GoldFOPUniverseSelectionModel(self))
         # Handle the FOP trading logic in an alpha model
         self.add_alpha(ConstantFutureOptionsAlphaModel())
         # To order a single contract per insight, use a custom portfolio construction model
@@ -129,21 +129,22 @@ class USFuturesDataAlgorithm(QCAlgorithm):
 class GoldFOPUniverseSelectionModel(OptionUniverseSelectionModel):
 
     # Daily renewed universe since option contract list is updated on a daily basis
-    def __init__(self,) -&gt; None:
+    def __init__(self, algorithm) -&gt; None:
+        self._algorithm = algorithm
         super().__init__(timedelta(1), self.select_fop_symbols)
 
-    def select_fop_symbols(self, algorithm: QCAlgorithm, utcTime: datetime) -&gt; List[Symbol]:
+    def select_fop_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
         #  Create the underlying symbol to get the FOP contracts later
         future_symbol = Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
         # Get all gold FOP contracts of the front month gold contract expiring within 3 months, since their liquidity is the highest
-        future_contract_list = algorithm.future_chain_provider.get_future_contract_list(future_symbol, algorithm.time)
+        future_contract_list = self._algorithm.future_chain_provider.get_future_contract_list(future_symbol, self._algorithm.time)
         return [Symbol.create_canonical_option(x) for x in future_contract_list 
-                    if x.id.date &lt;= algorithm.time + timedelta(90)]
+                    if x.id.date &lt;= self._algorithm.time + timedelta(90)]
 
     def filter(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
         # Filter for the ATM calls that expires latest (same expiry as the underlying)
         # +/-5 strike range buffer for price movement
-        return option_filter_universe.back_month().strikes(-5, +5).calls_only();
+        return option_filter_universe.back_month().strikes(-5, +5).calls_only()
 
 
 class ConstantFutureOptionsAlphaModel(AlphaModel):
@@ -162,7 +163,7 @@ class ConstantFutureOptionsAlphaModel(AlphaModel):
                 del self.option_contract_by_future_underlying_contract[underlying_future_contract]
 
             # Do not repeatly invest in the same underlying's FOP
-            chain = [contract for contract in kvp.Value if algorithm.securities[contract.symbol].is_tradable)]
+            chain = [contract for contract in kvp.Value if algorithm.securities[contract.symbol].is_tradable]
             if not chain or underlying_future_contract in self.option_contract_by_future_underlying_contract:
                 continue
             
@@ -190,8 +191,6 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        // Asynchronous to save computation resources
-        UniverseSettings.Asynchronous = true;
         // Override an option universe selection model to select the FOPs
         AddUniverseSelection(new GoldFOPUniverseSelectionModel(this));
         // Handle the FOP trading logic in an alpha model

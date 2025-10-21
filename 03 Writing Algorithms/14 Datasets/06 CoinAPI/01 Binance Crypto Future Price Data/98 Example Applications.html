@@ -81,10 +81,10 @@ class BinanceCryptoFutureDataAlgorithm(QCAlgorithm):
 }</code></pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm hold a 50% long BTCUSDT Future portfolio if the last day's close price was close to ask close price than bid close price, while hold short of that in opposite, through the Binance exchange using the <a href="/docs/v2/writing-algorithms/algorithm-framework/overview">algorithm framework</a> implementation:</p>
+<p>The following example algorithm hold a long BTCUSDT Future portfolio if the last day's close price was close to ask close price than bid close price, while hold short of that in opposite, through the Binance exchange using the <a href="/docs/v2/writing-algorithms/algorithm-framework/overview">algorithm framework</a> implementation:</p>
 
 <div class="section-example-container testable">
-<pre class="python">from AlgorithmImports import *
+<pre><code class="language-python">from AlgorithmImports import *
 
 
 class BinanceCryptoFutureDataAlgorithm(QCAlgorithm):
@@ -92,19 +92,21 @@ class BinanceCryptoFutureDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        # Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
+        # Set the account currency to USDT, since you can't trade with 
+        # USD and the algorithm doesn't automatically convert USD & USDT
+        # holdings.
         self.set_account_currency("USDT", 100000)
         # Binance Futures Exchange accepts both Cash and Margin account types, select the one you need for the best reality modeling.
         self.set_brokerage_model(BrokerageName.BINANCE_FUTURES, AccountType.MARGIN)
         self.universe_settings.resolution = Resolution.DAILY
         self.universe_settings.leverage = 2
-        # We only trade on BTCBUSD Future in Binance Future exchange
+        # We only trade on BTCUSDT Future in Binance Future exchange
         symbols = Symbol.create("BTCUSDT", SecurityType.CRYPTO_FUTURE, Market.BINANCE)
         self.add_universe_selection(ManualUniverseSelectionModel(symbols))
         # Custom alpha model to emit insights based on the Crypto Future price data
         self.add_alpha(CryptoFutureAlphaModel())
         # Equally invest to evenly dissipate the capital concentration risk of inidividual crypto pair
-        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         self.set_execution(ImmediateExecutionModel())
 
 class CryptoFutureAlphaModel(AlphaModel):
@@ -126,11 +128,9 @@ class CryptoFutureAlphaModel(AlphaModel):
             # Scalp-trade the bid-ask spread based on the supply-demand strength
             if price - quote.bid.close &gt; quote.ask.close - price:
                 direction = InsightDirection.DOWN
-                weight = -0.25
             else:
                 direction = InsightDirection.UP
-                weight = 0.5
-            insights.append(Insight.price(symbol, timedelta(1), direction, None, None, None, weight))
+            insights.append(Insight.price(symbol, timedelta(1), direction))
             
         return insights
 
@@ -146,8 +146,8 @@ class CryptoFutureAlphaModel(AlphaModel):
             symbol = security.symbol
             if symbol in self.symbols:
                 self.symbols.remove(symbol)
-</pre>
-<pre class="csharp">public class BinanceCryptoFutureDataAlgorithm : QCAlgorithm
+</code></pre>
+<pre><code class="language-cs">public class BinanceCryptoFutureDataAlgorithm : QCAlgorithm
 {
     public Symbol _symbol;
 
@@ -155,16 +155,17 @@ class CryptoFutureAlphaModel(AlphaModel):
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        // Set Account Currency to Binance Stable Coin, since USD-BUSD will not auto-convert and USD cannot be used to trade
-        SetCash("BUSD", 100000);
+        // Set the account currency to USDT, since you can't trade with 
+        // USD and the algorithm doesn't automatically convert USD & USDT
+        // holdings.
+        SetAccountCurrency("USDT", 100000);
         // Binance Futures Exchange accepts both Cash and Margin account types, select the one you need for the best reality modeling.
         SetBrokerageModel(BrokerageName.BinanceFutures, AccountType.Margin);
-
         UniverseSettings.Resolution = Resolution.Daily;
         UniverseSettings.Leverage = 2;
-        // We only trade on BTCBUSD Future in Binance Future exchange
-        var symbols = new List{
-            QuantConnect.Symbol.Create("BTCBUSD", SecurityType.CryptoFuture, Market.Binance)
+        // We only trade on BTCUSDT Future in Binance Future exchange
+        var symbols = new List&lt;Symbol&gt; {
+            QuantConnect.Symbol.Create("BTCUSDT", SecurityType.CryptoFuture, Market.Binance)
         };
         AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
         // Custom alpha model to emit insights based on the Crypto Future price data
@@ -177,36 +178,33 @@ class CryptoFutureAlphaModel(AlphaModel):
 
 public class CryptoFutureAlphaModel : AlphaModel
 {
-    private List _symbols = new();
+    private List&lt;Symbol&gt; _symbols = new();
 
-    public override List Update(QCAlgorithm algorithm, Slice slice)
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
-        var insights = new List();
+        var insights = new List&lt;Insight&gt;();
 
         foreach (var symbol in _symbols)
         {
             // Trade only based on updated price data
-            if (!slice.Bars.ContainsKey(symbol) || !slice.QuoteBars.TryGet(symbol, out var quote))
+            if (!slice.Bars.ContainsKey(symbol) || !slice.QuoteBars.TryGetValue(symbol, out var quote))
             {
                 continue;
             }
             var price = slice.Bars[symbol].Price;
             
             // Scalp-trade the bid-ask spread based on the supply-demand strength
+            InsightDirection direction;
             if (price - quote.Bid.Close &gt; quote.Ask.Close - price)
             {
-                insights.Add(
-                    Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Down)
-                );
+                direction = InsightDirection.Down;
             }
             else
             {
-                insights.Add(
-                    Insight.Price(symbol, TimeSpan.FromDays(1), InsightDirection.Up)
-                );
+                direction = InsightDirection.Up;
             }
+            insights.Add(Insight.Price(symbol, TimeSpan.FromDays(1), direction));
         }
-        
         return insights;
     }
 
@@ -219,7 +217,6 @@ public class CryptoFutureAlphaModel : AlphaModel
 
             // Historical data
             var history = algorithm.History(symbol, 10, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} from our history request for {symbol}");
         }
 
         foreach (var security in changes.RemovedSecurities)
@@ -227,5 +224,5 @@ public class CryptoFutureAlphaModel : AlphaModel
             _symbols.Remove(security.Symbol);
         }
     }
-}</pre>
+}</code></pre>
 </div>
