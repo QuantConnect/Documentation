@@ -124,10 +124,7 @@ class ETFConstituentUniverseAlgorithm(QCAlgorithm):
 <p>The following example algorithm creates a dynamic universe of the 10 largest US Equities in the SPY ETF. Each day, the algorithm forms a dollar-neutral and market-neutral portfolio by buying the 10 ETF constituents and shorting the SPY ETF.</p>
 
 <div class="section-example-container testable">
-<pre class="python">from AlgorithmImports import *
-
-
-class ETFConstituentUniverseFrameworkAlgorithm(QCAlgorithm):
+<pre class="python">class ETFConstituentUniverseFrameworkAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
@@ -195,18 +192,11 @@ class ETFConstituentsAlphaModel(AlphaModel):
 
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         # Liquidate the ones not in top 10 weights
-        for security in changes.removed_securities:
-            if security.invested:
-                algorithm.liquidate(security.symbol, 'Removed From Universe')
-
-        for security in changes.added_securities:
-            # Historical data
-                history = algorithm.history(security.symbol, 7, Resolution.DAILY)
-                algorithm.debug(f'We got {len(history)} from our history request for {security.symbol}')
-</pre>
+        symbols = [x.symbol for x in changes.removed_securities if x.invested]
+        algorithm.liquidate(symbols, tag='Removed From Universe')</pre>
 <pre class="csharp">public class ETFConstituentUniverseFrameworkAlgorithm : QCAlgorithm
 { 
-    public Dictionary&lt;Symbol, decimal&gt; WeightBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+    public Dictionary&lt;Symbol, decimal&gt; WeightBySymbol = [];
     
     public override void Initialize()
     {
@@ -223,12 +213,13 @@ class ETFConstituentsAlphaModel(AlphaModel):
         
         // Add alpha model that set normalized weight as investment insight
         AddAlpha(new ETFConstituentsAlphaModel(this, spy));
-        
+
         // Set up portfolio construction model that invest by the insight weights
-        var pcm = new InsightWeightingPortfolioConstructionModel();
-        // Avoid excessive rebalance on insight changes
-        pcm.RebalanceOnInsightChanges = false;
-        SetPortfolioConstruction(pcm);
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel
+        {
+            // Avoid excessive rebalance on insight changes
+            RebalanceOnInsightChanges = false
+        });
         
         AddRiskManagement(new NullRiskManagementModel());
         
@@ -239,8 +230,8 @@ class ETFConstituentsAlphaModel(AlphaModel):
     {
         // The top 10 weighted securities are considered better active selections
         // Save the weights for position sizing
-        WeightBySymbol = constituents.OrderByDescending(c =&gt; c.Weight).Take(10)
-            .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight ?? 0m);
+        WeightBySymbol = constituents.Where(c=&gt; c.Weight.HasValue).OrderByDescending(c =&gt; c.Weight).Take(10)
+            .ToDictionary(c =&gt; c.Symbol, c =&gt; c.Weight.Value);
 
         return WeightBySymbol.Keys;
     }
@@ -250,9 +241,9 @@ public class ETFConstituentsAlphaModel : AlphaModel
 {
     private int _day = -1;
     private Symbol _etf;
-    private ETFConstituentsDataFrameworkAlgorithm _algorithm;
+    private ETFConstituentUniverseFrameworkAlgorithm _algorithm;
     
-    public ETFConstituentsAlphaModel(ETFConstituentsDataFrameworkAlgorithm algorithm, Symbol etf)
+    public ETFConstituentsAlphaModel(ETFConstituentUniverseFrameworkAlgorithm algorithm, Symbol etf)
     {
         _etf = etf;
         _algorithm = algorithm;
@@ -263,7 +254,7 @@ public class ETFConstituentsAlphaModel : AlphaModel
         // Rebalance daily since selection is on daily basis
         if (_day == algorithm.Time.Day)
         {
-            return Enumerable.Empty&lt;Insight&gt;();
+            return [];
         }
         
         _day = algorithm.Time.Day;
@@ -276,9 +267,9 @@ public class ETFConstituentsAlphaModel : AlphaModel
         {
             // Invest half the portfolio by normalized weights of the top 10 constituents
             foreach(var kvp in _algorithm.WeightBySymbol)
-        {
-            insights.Add(Insight.Price(kvp.Key, Expiry.EndOfDay, InsightDirection.Up, weight: (double)kvp.Value/etfWeight * 0.5));
-        }
+            {
+                insights.Add(Insight.Price(kvp.Key, Expiry.EndOfDay, InsightDirection.Up, weight: (double)kvp.Value/etfWeight * 0.5));
+            }
 
             // Short the other half with SPY, looking to profit from the active selection
             insights.Add(Insight.Price(_etf, Expiry.EndOfDay, InsightDirection.Down, weight: 0.5));
@@ -290,17 +281,8 @@ public class ETFConstituentsAlphaModel : AlphaModel
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
         // Liquidate the ones not in top 10 weights
-        foreach (var security in changes.RemovedSecurities.Where(x =&gt; x.Invested))
-        {
-            algorithm.Liquidate(security.Symbol, "Removed From Universe");
-        }
-
-        foreach (var security in changes.AddedSecurities)
-        {
-            // Historical data
-            var history = algorithm.History(security.Symbol, 7, Resolution.Daily);
-            algorithm.Debug($"We got {history.Count()} from our history request for {security.Symbol}");
-        }
+        var symbols = changes.RemovedSecurities.Where(x =&gt; x.Invested).Select(x =&gt; x.Symbol);
+        algorithm.Liquidate(symbols, tag: "Removed From Universe");
     }
 }</pre>
 </div>

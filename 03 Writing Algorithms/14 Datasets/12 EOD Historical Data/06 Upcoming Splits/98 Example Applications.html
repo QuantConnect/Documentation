@@ -97,10 +97,7 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
 <p>The following example algorithm holds each equity in equal size with upcoming splits within 7 days using algorithm framework. It selects stocks that split up to more shares with lower price and tries to capitalize the higher demand of the more afforable stocks.</p>
 
 <div class="section-example-container testable">
-<pre class="python">from AlgorithmImports import *
-
-
-class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
+<pre class="python">class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -110,7 +107,7 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
         # Trade on daily basis based on daily upcoming splits signals.
         self.universe_settings.resolution = Resolution.DAILY
         # Universe consists of equities with upcoming splits events.
-        self._universe = self.add_universe(EODHDUpcomingSplits, self.selection)
+        self.add_universe(EODHDUpcomingSplits, self.selection)
 
         # Constant alpha model to emit insights for the stocks with split up event within a week, estimating their demand and price will go up.
         # Signal stays for 2 days to fully digest the driven up demands.
@@ -119,15 +116,17 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
         # Equal weighting for each signal to evenly dissipate the capital risk.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(Expiry.END_OF_DAY))
     
-    def selection(self, splits: List[EODHDUpcomingSplits]) -&gt; List[Symbol]:
+    def selection(self, splits: List[EODHDUpcomingSplits]) -&gt; list[Symbol]:
         # Split (more shares with lower price) will make the stock more affordable and drive up the demand.
-        # Hence, include all stocks that will have a split within the next 7 days.
+        # Hence, include the stocks with the lowest split factor that will have a split within the next 7 days.
         # Note that spliting up the stock means the split factor &gt; 1.
-        return [x.symbol for x in splits if x.split_factor &gt; 1]</pre>
+        count = 5
+        splits = [x for x in splits if x.split_factor &gt; 1]
+        if len(splits) &gt; count:
+            splits = sorted([x for x in splits if x.split_factor &gt; 1], key=lambda x: x.split_factor)[:count]
+        return [x.symbol for x in splits]</pre>
 <pre class="csharp">public class UpcomingSplitsExampleAlgorithm : QCAlgorithm
 {
-    private Universe _universe;
-
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
@@ -138,13 +137,14 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
         // Trade on daily basis based on daily upcoming splits signals.
         UniverseSettings.Resolution = Resolution.Daily;
         // Universe consists of equities with upcoming splits events.
-        _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
-            return splits
+        AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
+            return splits.OfType&lt;EODHDUpcomingSplits&gt;()
                 // Split (more shares with lower price) will make the stock more affordable and drive up the demand.
                 // Hence, include all stocks that will have a split within the next 7 days.
                 // Note that spliting up the stock means the split factor &gt; 1.
-                .Where(datum =&gt; (datum as EODHDUpcomingSplits).SplitFactor &gt; 1)
-                .Select(datum =&gt; datum.Symbol);
+                .Where(datum =&gt; datum.SplitFactor &gt; 1)
+                .OrderBy(datum =&gt; datum.SplitFactor)
+                .Take(5).Select(datum =&gt; datum.Symbol);
         });
 
         // Constant alpha model to emit insights for the stocks with split up event within a week, estimating their demand and price will go up.
