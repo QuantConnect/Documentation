@@ -9,10 +9,10 @@ from sklearn.preprocessing import MinMaxScaler
 
 class CopulaOptionTradingAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 9, 1)
+        self.set_start_date(2024, 12, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000000)
-        self.set_security_initializer(self.custom_security_initializer)
+        self.add_security_initializer(self.custom_security_initializer)
 
         # Request spx and ndx data for option pricing and selection.
         self.spx = self.add_index("SPX", Resolution.DAILY).symbol
@@ -24,18 +24,13 @@ class CopulaOptionTradingAlgorithm(QCAlgorithm):
         self.n_samples = self.get_parameter("n_samples", 1000)
         self.copula_trader = CopulaTrader(self, self.spx, self.ndx, alpha, misprice_threshold)
 
-        # Create a rolling window to save the spx and ndx price for fitting the copula on their relationship.
-        # We use the recent 1 year to fit the model.
-        self.windows = {self.spx: RollingWindow(252), self.ndx: RollingWindow(252)}
-        # Set a daily consolidator to update the rolling windows automatically.
-        self.consolidate(self.spx, Resolution.DAILY, lambda bar: self.windows[bar.symbol].add(bar.close))
-        self.consolidate(self.ndx, Resolution.DAILY, lambda bar: self.windows[bar.symbol].add(bar.close))
-        # Warm up the rolling windows with historical data for its immediate use.
-        for bar in self.history[TradeBar](self.spx, 252, Resolution.DAILY):
-            self.windows[self.spx].add(bar.close)
-        for bar in self.history[TradeBar](self.ndx, 252, Resolution.DAILY):
-            self.windows[self.ndx].add(bar.close)
+        # Set warm-up period to have enough historical data for fitting the copula.
+        lookback = 252
+        self.securities[self.spx].session.size = lookback
+        self.securities[self.ndx].session.size = lookback
+        self.set_warm_up(lookback, Resolution.DAILY)
 
+    def on_warmup_finished(self):
         # Fit the copula model for initial usage.
         self.train(self.fit_copula)
         # Recalibrate the copula on every month to keep its accuracy updated.
@@ -57,9 +52,9 @@ class CopulaOptionTradingAlgorithm(QCAlgorithm):
 
     def fit_copula(self) -&gt; None:
         # Obtain the historical price series of the spx and ndx for fitting the copula.
-        # Note that we need to invert the rolling window series.
-        spx_prices = np.array(list(self.windows[self.spx]))[::-1]
-        ndx_prices = np.array(list(self.windows[self.ndx]))[::-1]
+        # Note that we need to invert the session series.
+        spx_prices = np.array([x.close for x in self.securities[self.spx].session][::-1])
+        ndx_prices = np.array([x.close for x in self.securities[self.ndx].session][::-1])
         # Fit the copula.
         self.copula_trader.fit_bivariate_copula(spx_prices, ndx_prices)
 
@@ -129,15 +124,12 @@ class CopulaTrader:
         
     def _data_preparation(self, security1_prices: np.ndarray, security2_prices: np.ndarray) -&gt; np.ndarray:
         # Calculate log price difference for fitting copulas, since the series has more stationary domain for prediction.
-        security1_log_price = np.log(security1_prices)
-        security2_log_price = np.log(security2_prices)
-        security1_log_diff = np.diff(security1_log_price)
-        security2_log_diff = np.diff(security2_log_price)
+        security1_log_diff = np.diff(np.log(security1_prices))[:-1]
+        security2_log_diff = np.diff(np.log(security2_prices))[:-1]
         # Scale to [0, 1] to fit the model.
         scaled_security1_data = self.security1_scaler.fit_transform(security1_log_diff.reshape(-1, 1))
         scaled_security2_data = self.security2_scaler.fit_transform(security2_log_diff.reshape(-1, 1))
-        data = np.column_stack((scaled_security1_data, scaled_security2_data))
-        return data
+        return np.column_stack((scaled_security1_data, scaled_security2_data))
         
     def _fit_bivariate_copula(self, data: np.ndarray) -&gt; None:
         # Select the best-fitted bivariate copula by log-likelihood.

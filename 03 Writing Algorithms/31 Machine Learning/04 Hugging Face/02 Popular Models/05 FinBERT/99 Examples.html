@@ -15,7 +15,8 @@
   If the aggregated sentiment score is positive, it enters a long position for the month.
   If it's negative, it enters a short position for the month.
 </p>
-<div class="section-example-container testable">
+<!-- Excluding the `testable` class because this algorithm requires a GPU node. -->
+<div class="section-example-container">
  <pre class="python">import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer, set_seed
 from pathlib import Path
@@ -27,9 +28,8 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
 
-        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
         self.universe_settings.resolution = Resolution.DAILY
-        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self.universe_settings.schedule.on(self.date_rules.month_start("SPY"))
         self._universe = self.add_universe(
             lambda fundamental: [
                 self.history(
@@ -47,16 +47,11 @@ class FinbertBaseModelAlgorithm(QCAlgorithm):
         self._model = TFBertForSequenceClassification.from_pretrained(model_path, local_files_only=True)
 
         self._last_rebalance_time = datetime.min
-        self.schedule.on(
-            self.date_rules.month_start(spy, 1),
-            self.time_rules.midnight,
-            self._trade
-        )
-
-        self.set_warm_up(timedelta(30))
+        self.set_warm_up(30, Resolution.DAILY)
 
     def on_warmup_finished(self):
         self._trade()
+        self.schedule.on(self.date_rules.month_start("SPY", 1), self.time_rules.midnight, self._trade)
 
     def on_securities_changed(self, changes):
         for security in changes.removed_securities:
