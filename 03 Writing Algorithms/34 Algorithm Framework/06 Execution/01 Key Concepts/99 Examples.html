@@ -2,7 +2,7 @@
 
 <h4>Example 1: Iceberg Execution</h4>
 <p>The following algorithm simulates an account with large capital that equally holds the most liquid stocks. To hide the footprint and avoid a large market impact that might erode the profit margin, we can set up an iceberg execution system, submitting only 10% of the volume of the bid/ask side order book to the order direction.</p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -120,7 +120,7 @@ class IcebergExecutionModel(ExecutionModel):
 
 <h4>Example 2: Stop Loss Order</h4>
 <p>The following algorithm uses a custom execution model to add stop loss orders for the base order to control downside risk. To do so, we ordered a stop-loss order of the same size but in the opposite direction of the base order. We also handled the cancellation of the respective insight to avoid repeated ordering if the stop-loss order was being filled.</p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -253,7 +253,7 @@ class StopLossExecutionModel(ExecutionModel):
 
 <h4>Example 3: More Favorable Than Signal Time</h4>
 <p>Some algorithms are signaling based on daily close data. However, their orders often emit when the next market opens, making the filling price slip. To avoid this slippage negatively impacting your expectations, we can construct a custom execution model to place orders only when the price is more favorable than the last close price. Although we did not set a time limit in this example, you may consider doing so.</p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class FrameworkExecutionModelAlgorithm : QCAlgorithm
 {
     public override void Initialize()

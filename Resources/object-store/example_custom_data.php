@@ -150,7 +150,7 @@
 
 <p>The following algorithm provides a full example of a sourcing custom data from the Object Store:</p>
 
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class CustomDataBitstampAlgorithm : QCAlgorithm
 {
     private Symbol _customDataSymbol;

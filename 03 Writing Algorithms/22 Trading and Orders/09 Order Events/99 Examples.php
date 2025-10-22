@@ -2,7 +2,7 @@
 
 <h4>Example 1: Illiquid Stock Partial Fill</h4>
 <p>The following algorithm trades EMA cross on CARZ, an illiquid ETF. To realistically simulate the fill behavior, we set a fill model to partially fill the orders with at most 50% of the previous bar's volume per fill. We cancel the remaining open order after the partial fill since we only trade on the updated information.</p>
-<div class="section-example-container">
+<div class="section-example-container testable">
     <pre class="csharp">public class OrderEventsAlgorithm : QCAlgorithm
 {
     private Symbol _carz;
