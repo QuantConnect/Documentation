@@ -150,6 +150,18 @@ self._contract_symbol = chain[
 ].sort_values('strike').index[0]</pre>
 </div>
 
+<p>Alternatively, you can create a Future Option contract <code>Symbol</code> object directly parsing its OSI ticker using the <code class="csharp">SymbolRepresentation.ParseOptionTickerOSI</code><code class="python">SymbolRepresentation.parse_option_ticker_osi</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Create the contract Symbol for the Sept 2024 E-mini S&P 500 Call 7900 20 Sept 2024.
+_contractSymbol = SymbolRepresentation.ParseOptionTickerOSI("ESU24 240920C07900000", SecurityType.FutureOption, OptionStyle.American, Market.CME);
+// Create the contract Symbol using the 1-digit year format.
+_contractSymbol = SymbolRepresentation.ParseOptionTickerOSI("ESU4 240920C07900000", SecurityType.FutureOption, OptionStyle.American, Market.CME);</pre>
+    <pre class="python"># Create the contract Symbol for the Sept 2024 E-mini S&P 500 Call 7900 20 Sept 2024.
+self._contract_symbol = SymbolRepresentation.parse_option_ticker_osi('ESU24 240920C07900000', SecurityType.FUTURE_OPTION, OptionStyle.AMERICAN, Market.CME)
+# Create the contract Symbol using the 1-digit year format.
+self._contract_symbol = SymbolRepresentation.parse_option_ticker_osi('ESU4 240920C07900000', SecurityType.FUTURE_OPTION, OptionStyle.AMERICAN, Market.CME)</pre>
+</div>
+
 <h4>Subscribe to Contracts</h4>
 
 <p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>  method. Save a reference to the contract <code class="csharp">Symbol</code><code class="python">symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. This method returns an <code>Option</code> object. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a>.</p>

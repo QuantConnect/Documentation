@@ -126,6 +126,14 @@ self._contract_symbol = chain[
 ].sort_values('openinterest').index[-1]</pre>
 </div>
 
+<p>Alternatively, you can create a Index Option contract <code>Symbol</code> object directly parsing its OSI ticker using the <code class="csharp">SymbolRepresentation.ParseOptionTickerOSI</code><code class="python">SymbolRepresentation.parse_option_ticker_osi</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Create the contract Symbol for the SPX Call 5650 3 Sept 2024.
+_contractSymbol = SymbolRepresentation.ParseOptionTickerOSI("SPXW 240903C05650000", SecurityType.IndexOption, OptionStyle.European, Market.USA);</pre>
+    <pre class="python"># Create the contract Symbol for the SPX Call 5650 3 Sept 2024.
+self._contract_symbol = SymbolRepresentation.parse_option_ticker_osi('SPXW 240903C05650000', SecurityType.INDEX_OPTION, OptionStyle.EUROPEAN, Market.USA)</pre>
+</div>
+
 <h4>Subscribe to Contracts</h4>
 <p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a>.</p>
 

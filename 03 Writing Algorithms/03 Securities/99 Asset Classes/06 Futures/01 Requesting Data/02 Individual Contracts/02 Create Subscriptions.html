@@ -50,6 +50,22 @@ _contractSymbol = FuturesChain(_continuous).First().Symbol;</pre>
 self._contract_symbol = list(self.futures_chain(self._continuous))[0].symbol</pre>
 </div>
 
+<p>Alternatively, you can create a Future contract <code>Symbol</code> object directly parsing its ticker using the <code class="csharp">SymbolRepresentation.ParseFutureSymbol</code><code class="python">SymbolRepresentation.parse_future_symbol</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Create the contract Symbol for the December 2025 E-mini S&P 500 Future.
+_contractSymbol = SymbolRepresentation.ParseFutureSymbol("ESZ25");
+// Create the contract Symbol using the 1-digit year format.
+_contractSymbol = SymbolRepresentation.ParseFutureSymbol("ESZ5");
+// To avoid ambiguity, specify the 4-digit year.
+_contractSymbol = SymbolRepresentation.ParseFutureSymbol("ESZ5", 2015);</pre>
+    <pre class="python"># Create the contract Symbol for the December 2025 E-mini S&P 500 Future.
+self._contract_symbol = SymbolRepresentation.parse_future_symbol('ESZ25')
+# Create the contract Symbol using the 1-digit year format.
+self._contract_symbol = SymbolRepresentation.parse_future_symbol('ESZ5')
+# To avoid ambiguity, specify the 4-digit year.
+self._contract_symbol = SymbolRepresentation.parse_future_symbol('ESZ5', 2015)</pre>
+</div>
+
 <h4>Subscribe to Contracts</h4>
 
 <p>To create an Future contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code> method. Save a reference to the contract <code class="csharp">Symbol</code><code class="python">symbol</code> so you can easily access the Future contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FutureChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. This method returns an <code>Future</code> object.</p>
