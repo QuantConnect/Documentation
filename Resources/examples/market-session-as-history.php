@@ -12,7 +12,7 @@
         SetEndDate(2024, 12, 31);
         var equity = AddEquity("SPY");
 
-        // Increase the session lookback to 252 from default (2) 
+        // Increase the session lookback to 252 from default (0) 
         // since our strategy break out the 252-day max of closing prices
         equity.Session.Size = 252;
         // Warm up with daily data for speed
@@ -47,7 +47,7 @@
         self.set_end_date(2024, 12, 31)
         equity = self.add_equity("SPY")
 
-        # Increase the session lookback to 252 from default (2) 
+        # Increase the session lookback to 252 from default (0)
         # since our strategy break out the 252-day max of closing prices
         equity.session.size = 252
         # Warm up with daily data for speed

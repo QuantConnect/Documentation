@@ -1,7 +1,8 @@
-<p>The <code class="csharp">session</code><code class="python">Session</code> property of a <code>Security</code> object contains the open, high, low, close, volume, and open interest of trading sessions. The <code>Session</code> object is a <code>RollingWindow</code> object with size of two, so the previous session data is at index 1.</p>
+<p>The <code class="csharp">session</code><code class="python">Session</code> property of a <code>Security</code> object contains the open, high, low, close, volume, and open interest of trading sessions. The <code>Session</code> object is a <code>RollingWindow</code> object with size of zero by default. To enable market session tracking, set the size of the <code>Session</code> object to 2, so the previous session data is at index 1.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var session = Securities[_symbol].Session;
+session.Size = 2;
 var todayOpen = session.Open;
 var todayHigh = session.High;
 var todayLow = session.Low;
@@ -11,6 +12,7 @@ if (session.IsReady)
     var yesterdayClose = session[1].Close;
 }</pre>
     <pre class="python">session = self.securities[self._symbol].session
+session.size = 2
 today_open = session.open
 today_high = session.high
 today_low = session.low
@@ -22,13 +24,13 @@ if session.is_ready:
 <p>Increase the size of the <code>Session</code> object to store more session data. You can use cached data in the <code class="csharp">session</code><code class="python">Session</code> property instead of requesting <a href="/docs/v2/writing-algorithms/historical-data/history-requests">historical daily data</a>.</p>
 <div class="section-example-container">
     <pre class="csharp">var equity = AddEquity("SPY");
-// Increase the session lookback to 252 from default (2)
+// Increase the session lookback to 252 from default (0)
 equity.Session.Size = 252;
 // Get all closing prices in the session history
 var closes = session.OrderBy(x =&gt; x.EndTime).Select(x =&gt; x.Close);
 </pre>
     <pre class="python">equity = self.add_equity("SPY")
-# Increase the session lookback to 252 from default (2) 
+# Increase the session lookback to 252 from default (0)
 equity.session.size = 252
 # Get all closing prices in the session history
 closes = [x.close for x in session][::-1]
