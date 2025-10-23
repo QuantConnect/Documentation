@@ -9,7 +9,7 @@ spy = self.add_equity("SPY")
 spy.set_data_filter(SecurityDataFilter())</pre>
 </div>
 
-<p>You can also set the data filter model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
+<p>You can also set the data filter model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">AddSecurityInitializer</code><code class="python">add_security_initializer</code> before you create the subscriptions.</p>
 
 <?php
 $overwriteCodePy = "security.set_data_filter(SecurityDataFilter())";

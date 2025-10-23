@@ -14,7 +14,7 @@
     security.set_shortable_provider(LocalDiskShortableProvider("axos"))</pre>
 </div>
 
-<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
+<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">AddSecurityInitializer</code><code class="python">add_security_initializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
 <pre class="csharp" style="">public override void Initialize()
@@ -41,7 +41,7 @@ def custom_security_initializer(self, security: Security) -&gt; None:
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
-<p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
+<p>To extend upon the default security initializer instead of overwriting it, call <code class="csharp">AddSecurityInitializer</code><code class="python">add_security_initializer</code> before you create the subscriptions before you create the subscriptions.</p>
 
 <?php
 $overwriteCodePy = "security.set_shortable_provider(LocalDiskShortableProvider(\"axos\"))";

@@ -42,7 +42,7 @@ self.set_security_initializer(lambda security: seeder.seed_security(security))</
 
 <? include(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
-<p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
+<p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default security initializer instead of overwriting it, call <code class="csharp">AddSecurityInitializer</code><code class="python">add_security_initializer</code> before you create the subscriptions.</p>
 
 <?
 $overwriteCodePy = "security.set_fee_model(ConstantFeeModel(0, \"USD\"))";
