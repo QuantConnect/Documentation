@@ -26,8 +26,13 @@
             <td>true</td>
         </tr>
         <tr>
+            <td nowrap><code>initialization-timeout</code></td>
+            <td>The maximum amount of time, in seconds, the algorithm can spend in the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/initialization'>initialization</a> phase.</td>
+            <td>300</td>
+        </tr>
+        <tr>
             <td nowrap><code>algorithm-manager-time-loop-maximum</code></td>
-            <td>The maximum amount of time the algorithm can spend in a single <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time loop</a>.</td>
+            <td>The maximum amount of time, in minutes, the algorithm can spend in a single <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time loop</a>.</td>
             <td>20</td>
         </tr>
         <tr>
