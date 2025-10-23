@@ -7,7 +7,7 @@
     <li>Click <span class='button-name'>Add Library</span> (e.g. <span class='public-directory-name'>Calculators</span>).</li>
     <p>The library files are added to your project. To view the files, in the right navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg'> <span class='icon-name'>Explorer</span> icon.</p>
     <li>Import the library into your project to use the library.</li>
-    <div class='section-example-container'>
+    <div class='section-example-container skip-test'>
     <pre class='csharp'>using Calculators;
 
 public class AddLibraryAlgorithm : QCAlgorithm
