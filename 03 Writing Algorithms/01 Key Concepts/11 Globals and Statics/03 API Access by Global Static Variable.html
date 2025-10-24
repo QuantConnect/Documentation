@@ -46,12 +46,10 @@ public class MyCustomDataType : BaseData
     }
 }</pre>
     <pre class="python">class MyAlgorithmInstance(QCAlgorithm):
-
     def initialize(self) -&gt; None:
-        self.set_cash(100000)
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        
+
         # Instantiate a custom type as a global variable in the QCAlgorithm instance.
         # Assign self to Static Cape Variable.
         Cape.algorithm = self
@@ -63,21 +61,24 @@ public class MyCustomDataType : BaseData
         if not cape:
             return
         self.plot("CAPE", "Value", cape.value)
-    
+
 class Cape(PythonData):  
-    def get_source(self, config: SubscriptionDataConfig, date:datetime, isLiveMode: bool) -&gt; SubscriptionDataSource: 
+    def get_source(self, config: SubscriptionDataConfig, date:datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
         Cape.algorithm.debug("Test Static: GetSource")
-        return SubscriptionDataSource("https://www.dropbox.com/scl/fi/mqbnfb7ll88nne7b8ymy7/CAPE.csv?rlkey=mnu0ax1d8lcj3gzkdw79z0pm8&dl=1", SubscriptionTransportMedium.REMOTE_FILE)
-        
-    def reader(self, config: SubscriptionDataConfig, line: str, date:datetime, isLiveMode: bool) -&gt; BaseData | None:
-        data = line.split(',') 
-        index.symbol = config.symbol    
+        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/CAPE.csv", SubscriptionTransportMedium.REMOTE_FILE)
+
+    def reader(self, config: SubscriptionDataConfig, line: str, date:datetime, isLiveMode: bool) -&gt; BaseData:
         index = Cape()
-        try: 
+        index.symbol = config.symbol
+        data = [x.strip() for x in line.split(',')]
+        if len(data) &lt; 12 or line.startswith('Date'):
+            return index
+
+        try:
             # Construct the custom data type with input data entry.
-            index.time = datetime.strptime(data[0], "%Y-%m") 
-            index.value = float(data[10])
-        except ValueError: 
+            index.value = float(data[12])
+            index.time = datetime.strptime(data[0], "%Y.%m")
+        except ValueError:
             Cape.algorithm.debug("Test Static 2: ValueError")
         return index</pre>
 </div>
