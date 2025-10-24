@@ -6,7 +6,7 @@
 <div class="subsection-content">
 <div class="code-snippet"><code>add(<span class="object-type">key, value</span>)</code></div>
 <div class="subsection-content">
-<p>Adds an item to the ICollection.</p>
+<p>Adds the specified symbol and chain to the dictionary, converting to canonical if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -39,7 +39,7 @@
 
 <div class="code-snippet"><code>contains(<span class="object-type">item</span>)</code></div>
 <div class="subsection-content">
-<p>Determines whether the ICollection contains a specific value.</p>
+<p>Checks if an <a href="#OptionChain">OptionChain</a> exists for the given symbol. Converts to the canonical option symbol first if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -53,7 +53,7 @@
 
 <div class="code-snippet"><code>contains_key(<span class="object-type">key</span>)</code></div>
 <div class="subsection-content">
-<p>Determines whether the IDictionary contains an element with the specified key.</p>
+<p>Checks if an <a href="#OptionChain">OptionChain</a> exists for the given symbol. Converts to the canonical option symbol first if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -106,13 +106,13 @@
 <p class="subsection-content">PyDict</p>
 </div>
 
-<div class="code-snippet"><code>get(<span class="object-type">symbol, value</span>)</code></div>
+<div class="code-snippet"><code>get(<span class="object-type">key, value</span>)</code></div>
 <div class="subsection-content">
-<p>Returns the value for the specified Symbol if Symbol is in dictionary.</p>
+<p>Returns the value for the specified key if key is in dictionary.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
-    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    <span class="arg-name">key</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
     </li>
     <li>
     <span class="arg-name">value</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#OptionChain">OptionChain</a></span>)
@@ -126,6 +126,15 @@
 <div class="code-snippet"><code>get_enumerator()</code></div>
 <div class="subsection-content">
 <p>Returns an enumerator that iterates through the collection.</p>
+
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Dict[Symbol, OptionChain]</p>
+</div>
+
+<div class="code-snippet"><code>get_items()</code></div>
+<div class="subsection-content">
+<p>Gets all the items in the dictionary</p>
 
 
 <div class="subsection-header">Return type:</div>
@@ -148,7 +157,7 @@
 
 <div class="code-snippet"><code>items()</code></div>
 <div class="subsection-content">
-<p>Returns a view object that displays a list of dictionary's (Symbol, value) tuple pairs.</p>
+<p>Returns a view object that displays a list of dictionary's (key, value) tuple pairs.</p>
 
 
 <div class="subsection-header">Return type:</div>
@@ -157,20 +166,20 @@
 
 <div class="code-snippet"><code>keys()</code></div>
 <div class="subsection-content">
-<p>Returns a view object that displays a list of all the Symbol objects in the dictionary</p>
+<p>Returns a view object that displays a list of all the key objects in the dictionary</p>
 
 
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">PyList</p>
 </div>
 
-<div class="code-snippet"><code>pop(<span class="object-type">symbol, default_value</span>)</code></div>
+<div class="code-snippet"><code>pop(<span class="object-type">key, default_value</span>)</code></div>
 <div class="subsection-content">
-<p>Returns and removes an arbitrary element (Symbol, value) pair from the dictionary.</p>
+<p>Returns and removes an arbitrary element (key, value) pair from the dictionary.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
-    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    <span class="arg-name">key</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
     </li>
     <li>
     <span class="arg-name">default_value</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#OptionChain">OptionChain</a></span>)
@@ -183,29 +192,16 @@
 
 <div class="code-snippet"><code>popitem()</code></div>
 <div class="subsection-content">
-<p>Returns and removes an arbitrary element (Symbol, value) pair from the dictionary.</p>
+<p>Returns and removes an arbitrary element (key, value) pair from the dictionary.</p>
 
 
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">PyTuple</p>
 </div>
 
-<div class="code-snippet"><code>remove(<span class="object-type">item</span>)</code></div>
-<div class="subsection-content">
-<p>Removes the first occurrence of a specific object from the ICollection.</p>
-<div class="subsection-header">Parameters:</div>
-<ul class="subsection-content">
-    <li>
-    <span class="arg-name">item</span> (<span class="object-type">Dict[Symbol, OptionChain]</span>)
-    </li>
-</ul>
-
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">bool</p>
-</div>
 <div class="code-snippet"><code>remove(<span class="object-type">key</span>)</code></div>
 <div class="subsection-content">
-<p>Removes the first occurrence of a specific object from the ICollection.</p>
+<p>Removes the element with the specified key, converting to canonical if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -216,14 +212,27 @@
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">bool</p>
 </div>
-
-<div class="code-snippet"><code>setdefault(<span class="object-type">symbol, default_value</span>)</code></div>
+<div class="code-snippet"><code>remove(<span class="object-type">item</span>)</code></div>
 <div class="subsection-content">
-<p>Returns the value of a Symbol (if the Symbol is in dictionary). If not, it inserts Symbol with a value to the dictionary.</p>
+<p>Removes the element with the specified key, converting to canonical if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
-    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    <span class="arg-name">item</span> (<span class="object-type">Dict[Symbol, OptionChain]</span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">bool</p>
+</div>
+
+<div class="code-snippet"><code>setdefault(<span class="object-type">key, default_value</span>)</code></div>
+<div class="subsection-content">
+<p>Returns the value of a key (if the key is in dictionary). If not, it inserts key with a value to the dictionary.</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">key</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
     </li>
     <li>
     <span class="arg-name">default_value</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#OptionChain">OptionChain</a></span>)
@@ -236,7 +245,7 @@
 
 <div class="code-snippet"><code>try_get_value(<span class="object-type">key, value</span>)</code></div>
 <div class="subsection-content">
-<p>Gets the value associated with the specified key.</p>
+<p>Tries to get the <a href="#OptionChain">OptionChain</a> for the given symbol. Converts to the canonical option symbol if needed before attempting retrieval.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -253,7 +262,7 @@
 
 <div class="code-snippet"><code>update(<span class="object-type">other</span>)</code></div>
 <div class="subsection-content">
-<p>Updates the dictionary with the elements from the another dictionary object or from an iterable of Symbol/value pairs. The update() method adds element(s) to the dictionary if the Symbol is not in the dictionary.If the Symbol is in the dictionary, it updates the Symbol with the new value.</p>
+<p>Updates the dictionary with the elements from the another dictionary object or from an iterable of key/value pairs. The update() method adds element(s) to the dictionary if the key is not in the dictionary.If the key is in the dictionary, it updates the key with the new value.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -306,10 +315,10 @@
 
 <div class="code-snippet"><span class="object-type">property</span> <code>item</code></div>
 <div class="subsection-content">
-<p>Gets or sets the OptionChain with the specified ticker.</p>
+<p>Gets or sets the <a href="#OptionChain">OptionChain</a> for the symbol, converting to canonical if needed.</p>
 
 <div class="subsection-header">Returns:</div>
-<p class="subsection-content">Gets or sets the OptionChain with the specified ticker.</p>
+<p class="subsection-content">Gets or sets the <a href="#OptionChain">OptionChain</a> for the symbol, converting to canonical if needed.</p>
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">OptionChain</p>
 </div>
@@ -354,7 +363,7 @@
 <div class="subsection-content">
 <div class="code-snippet"><code>Add(<span class="object-type">key, value</span>)</code></div>
 <div class="subsection-content">
-<p>Adds an item to the ICollection.</p>
+<p>Adds the specified symbol and chain to the dictionary, converting to canonical if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -387,7 +396,7 @@
 
 <div class="code-snippet"><code>Contains(<span class="object-type">item</span>)</code></div>
 <div class="subsection-content">
-<p>Determines whether the ICollection contains a specific value.</p>
+<p>Checks if an <a href="#OptionChain">OptionChain</a> exists for the given symbol. Converts to the canonical option symbol first if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -401,7 +410,7 @@
 
 <div class="code-snippet"><code>ContainsKey(<span class="object-type">key</span>)</code></div>
 <div class="subsection-content">
-<p>Determines whether the IDictionary contains an element with the specified key.</p>
+<p>Checks if an <a href="#OptionChain">OptionChain</a> exists for the given symbol. Converts to the canonical option symbol first if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -437,6 +446,15 @@
 <p class="subsection-content">KeyValuePair[Symbol, OptionChain]</p>
 </div>
 
+<div class="code-snippet"><code>GetItems()</code></div>
+<div class="subsection-content">
+<p>Gets all the items in the dictionary</p>
+
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">KeyValuePair[Symbol, OptionChain]</p>
+</div>
+
 <div class="code-snippet"><code>GetValue(<span class="object-type">key</span>)</code></div>
 <div class="subsection-content">
 <p>Gets the value associated with the specified key.</p>
@@ -451,22 +469,9 @@
 <p class="subsection-content"><a href="/docs/v2/writing-algorithms/api-reference#OptionChain">OptionChain</a></p>
 </div>
 
-<div class="code-snippet"><code>Remove(<span class="object-type">item</span>)</code></div>
-<div class="subsection-content">
-<p>Removes the first occurrence of a specific object from the ICollection.</p>
-<div class="subsection-header">Parameters:</div>
-<ul class="subsection-content">
-    <li>
-    <span class="arg-name">item</span> (<span class="object-type">KeyValuePair&lt;Symbol, OptionChain&gt;</span>)
-    </li>
-</ul>
-
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">Boolean</p>
-</div>
 <div class="code-snippet"><code>Remove(<span class="object-type">key</span>)</code></div>
 <div class="subsection-content">
-<p>Removes the first occurrence of a specific object from the ICollection.</p>
+<p>Removes the element with the specified key, converting to canonical if needed.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -477,10 +482,23 @@
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">Boolean</p>
 </div>
+<div class="code-snippet"><code>Remove(<span class="object-type">item</span>)</code></div>
+<div class="subsection-content">
+<p>Removes the element with the specified key, converting to canonical if needed.</p>
+<div class="subsection-header">Parameters:</div>
+<ul class="subsection-content">
+    <li>
+    <span class="arg-name">item</span> (<span class="object-type">KeyValuePair&lt;Symbol, OptionChain&gt;</span>)
+    </li>
+</ul>
+
+<div class="subsection-header">Return type:</div>
+<p class="subsection-content">Boolean</p>
+</div>
 
 <div class="code-snippet"><code>TryGetValue(<span class="object-type">key, value</span>)</code></div>
 <div class="subsection-content">
-<p>Gets the value associated with the specified key.</p>
+<p>Tries to get the <a href="#OptionChain">OptionChain</a> for the given symbol. Converts to the canonical option symbol if needed before attempting retrieval.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -528,13 +546,13 @@
 <p class="subsection-content">PyDict</p>
 </div>
 
-<div class="code-snippet"><code>get(<span class="object-type">symbol, value</span>)</code></div>
+<div class="code-snippet"><code>get(<span class="object-type">key, value</span>)</code></div>
 <div class="subsection-content">
-<p>Returns the value for the specified Symbol if Symbol is in dictionary.</p>
+<p>Returns the value for the specified key if key is in dictionary.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
-    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    <span class="arg-name">key</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
     </li>
     <li>
     <span class="arg-name">value</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#OptionChain">OptionChain</a></span>)
@@ -547,7 +565,7 @@
 
 <div class="code-snippet"><code>items()</code></div>
 <div class="subsection-content">
-<p>Returns a view object that displays a list of dictionary's (Symbol, value) tuple pairs.</p>
+<p>Returns a view object that displays a list of dictionary's (key, value) tuple pairs.</p>
 
 
 <div class="subsection-header">Return type:</div>
@@ -556,20 +574,20 @@
 
 <div class="code-snippet"><code>keys()</code></div>
 <div class="subsection-content">
-<p>Returns a view object that displays a list of all the Symbol objects in the dictionary</p>
+<p>Returns a view object that displays a list of all the key objects in the dictionary</p>
 
 
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">PyList</p>
 </div>
 
-<div class="code-snippet"><code>pop(<span class="object-type">symbol, default_value</span>)</code></div>
+<div class="code-snippet"><code>pop(<span class="object-type">key, default_value</span>)</code></div>
 <div class="subsection-content">
-<p>Returns and removes an arbitrary element (Symbol, value) pair from the dictionary.</p>
+<p>Returns and removes an arbitrary element (key, value) pair from the dictionary.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
-    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    <span class="arg-name">key</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
     </li>
     <li>
     <span class="arg-name">default_value</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#OptionChain">OptionChain</a></span>)
@@ -582,20 +600,20 @@
 
 <div class="code-snippet"><code>popitem()</code></div>
 <div class="subsection-content">
-<p>Returns and removes an arbitrary element (Symbol, value) pair from the dictionary.</p>
+<p>Returns and removes an arbitrary element (key, value) pair from the dictionary.</p>
 
 
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">PyTuple</p>
 </div>
 
-<div class="code-snippet"><code>setdefault(<span class="object-type">symbol, default_value</span>)</code></div>
+<div class="code-snippet"><code>setdefault(<span class="object-type">key, default_value</span>)</code></div>
 <div class="subsection-content">
-<p>Returns the value of a Symbol (if the Symbol is in dictionary). If not, it inserts Symbol with a value to the dictionary.</p>
+<p>Returns the value of a key (if the key is in dictionary). If not, it inserts key with a value to the dictionary.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
-    <span class="arg-name">symbol</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
+    <span class="arg-name">key</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#Symbol">Symbol</a></span>)
     </li>
     <li>
     <span class="arg-name">default_value</span> (<span class="object-type"><a href="/docs/v2/writing-algorithms/api-reference#OptionChain">OptionChain</a></span>)
@@ -608,7 +626,7 @@
 
 <div class="code-snippet"><code>update(<span class="object-type">other</span>)</code></div>
 <div class="subsection-content">
-<p>Updates the dictionary with the elements from the another dictionary object or from an iterable of Symbol/value pairs. The update() method adds element(s) to the dictionary if the Symbol is not in the dictionary.If the Symbol is in the dictionary, it updates the Symbol with the new value.</p>
+<p>Updates the dictionary with the elements from the another dictionary object or from an iterable of key/value pairs. The update() method adds element(s) to the dictionary if the key is not in the dictionary.If the key is in the dictionary, it updates the key with the new value.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -691,20 +709,10 @@
 
 <div class="code-snippet"><span class="object-type">property</span> <code>[QuantConnect.Symbol]</code></div>
 <div class="subsection-content">
-<p>Gets or sets the OptionChain with the specified Symbol.</p>
+<p>Gets or sets the <a href="#OptionChain">OptionChain</a> for the symbol, converting to canonical if needed.</p>
 
 <div class="subsection-header">Returns:</div>
-<p class="subsection-content">Gets or sets the OptionChain with the specified Symbol.</p>
-<div class="subsection-header">Return type:</div>
-<p class="subsection-content">OptionChain</p>
-</div>
-
-<div class="code-snippet"><span class="object-type">property</span> <code>[System.String]</code></div>
-<div class="subsection-content">
-<p>Gets or sets the OptionChain with the specified ticker.</p>
-
-<div class="subsection-header">Returns:</div>
-<p class="subsection-content">Gets or sets the OptionChain with the specified ticker.</p>
+<p class="subsection-content">Gets or sets the <a href="#OptionChain">OptionChain</a> for the symbol, converting to canonical if needed.</p>
 <div class="subsection-header">Return type:</div>
 <p class="subsection-content">OptionChain</p>
 </div>

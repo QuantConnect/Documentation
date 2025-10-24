@@ -1,7 +1,7 @@
 <div class="python">
-<div class="code-snippet"><code>pphl(<span class="object-type">symbol, length_high, length_low, last_stored_values=100, resolution=None, selector=None</span>)</code><a class="code-source" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/QCAlgorithm.Indicators.cs#L1621">[source]</a></div>
+<div class="code-snippet"><code>pphl(<span class="object-type">symbol, length_high, length_low, last_stored_values, strict=True, resolution, selector=None</span>)</code><a class="code-source" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/QCAlgorithm.Indicators.cs#L1740">[source]</a></div>
 <div class="subsection-content">
-<p>Creates a new PivotPointsHighLow indicator</p>
+<p>Creates a new PivotPointsHighLow indicator which will compute the high and low pivot points based on the configurable surrounding bars count.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -14,10 +14,13 @@
     <span class="arg-name">length_low</span> (<span class="object-type">int</span>) &mdash; The number of surrounding bars whose low values should be more than the current bar's for the bar low to be marked as low pivot point
     </li>
     <li>
-    <span class="arg-name">last_stored_values</span> (<span class="object-type">int, optional</span>) &mdash; The number of last stored indicator values
+    <span class="arg-name">last_stored_values</span> (<span class="object-type">int</span>) &mdash; The number of last stored indicator values
     </li>
     <li>
-    <span class="arg-name">resolution</span> (<span class="object-type">Resolution, optional</span>) &mdash; The resolution
+    <span class="arg-name">strict</span> (<span class="object-type">bool, optional</span>) &mdash; When true (default), uses strict inequalities (greater than and less than). When false, uses relaxed inequalities (greater than or equal and less than or equal) allowing equal values to be detected as pivot points.
+    </li>
+    <li>
+    <span class="arg-name">resolution</span> (<span class="object-type">Optional[Resolution]</span>) &mdash; The resolution
     </li>
     <li>
     <span class="arg-name">selector</span> (<span class="object-type">Callable[IBaseData, IBaseDataBar], optional</span>) &mdash; Selects a value from the BaseData to send into the indicator, if null defaults to casting the input value to a TradeBar
@@ -30,9 +33,9 @@
 </div>
 </div>
 <div class="csharp">
-<div class="code-snippet"><code>PPHL(<span class="object-type">symbol, lengthHigh, lengthLow, lastStoredValues=100, resolution=None, selector=None</span>)</code><a class="code-source" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/QCAlgorithm.Indicators.cs#L1621">[source]</a></div>
+<div class="code-snippet"><code>PPHL(<span class="object-type">symbol, lengthHigh, lengthLow, lastStoredValues, strict=True, resolution, selector=None</span>)</code><a class="code-source" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/QCAlgorithm.Indicators.cs#L1740">[source]</a></div>
 <div class="subsection-content">
-<p>Creates a new PivotPointsHighLow indicator</p>
+<p>Creates a new PivotPointsHighLow indicator which will compute the high and low pivot points based on the configurable surrounding bars count.</p>
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
@@ -45,10 +48,13 @@
     <span class="arg-name">lengthLow</span> (<span class="object-type">Int32</span>) &mdash; The number of surrounding bars whose low values should be more than the current bar's for the bar low to be marked as low pivot point
     </li>
     <li>
-    <span class="arg-name">lastStoredValues</span> (<span class="object-type">Int32, optional</span>) &mdash; The number of last stored indicator values
+    <span class="arg-name">lastStoredValues</span> (<span class="object-type">Int32</span>) &mdash; The number of last stored indicator values
     </li>
     <li>
-    <span class="arg-name">resolution</span> (<span class="object-type">Resolution, optional</span>) &mdash; The resolution
+    <span class="arg-name">strict</span> (<span class="object-type">bool, optional</span>) &mdash; When true (default), uses strict inequalities (greater than and less than). When false, uses relaxed inequalities (greater than or equal and less than or equal) allowing equal values to be detected as pivot points.
+    </li>
+    <li>
+    <span class="arg-name">resolution</span> (<span class="object-type">Nullable[Resolution]</span>) &mdash; The resolution
     </li>
     <li>
     <span class="arg-name">selector</span> (<span class="object-type">Func&lt;IBaseData, IBaseDataBar&gt;, optional</span>) &mdash; Selects a value from the BaseData to send into the indicator, if null defaults to casting the input value to a TradeBar
