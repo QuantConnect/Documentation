@@ -1,6 +1,6 @@
 <p>The universe selector function receives a list of your custom objects and must return a list of <code>Symbol</code> objects. In the selector function definition, you can use any of the properties of your custom data type. The <code>Symbol</code> objects that you return from the selector function set the constituents of the universe.</p>
 
-<div class="section-example-container">
+<div class="section-example-container skip-test">
 <pre class="csharp">public class MyCustomUniverseAlgorithm : QCAlgorithm
 {
 	private IEnumerable&lt;Symbol&gt; SelectorFunction(IEnumerable&lt;BaseData&gt; data)

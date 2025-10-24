@@ -1,6 +1,6 @@
 <p>As your data reader reads your custom data file, LEAN adds the data points in the <code>Slice</code> it passes to your algorithm's <code class="csharp">OnData</code><code class="python">on_data</code> method. To collect the custom data, use the <code class="csharp">Symbol</code><code class="python">symbol</code> or name of your custom data subscription. You can access the <code class="csharp">Value</code><code class="python">value</code> and custom properties of your custom data class from the <code>Slice</code>. To access the custom properties, <span class='csharp'>use the custom attribute</span><span class='python'>pass the property name to the <code class="csharp">GetProperty</code><code class="python">get_property</code> method</span>.</p>
 <? if ($keyConceptsPage) { ?>
-<div class='section-example-container'>
+<div class='section-example-container skip-test'>
 <pre class='csharp'>public class MyAlgorithm : QCAlgorithm
 {
     public override void OnData(Slice slice)
@@ -20,7 +20,7 @@
         var property1 = slice.Property1;
     }
 }</pre>
-<pre class='python'>class MyAlgorithm(QCAlgorithm):
+<pre class='python skip-test'>class MyAlgorithm(QCAlgorithm):
     def on_data(self, slice: Slice) -&gt; None:
         if slice.contains_key(self._symbol):
             custom_data = slice[self._symbol]
@@ -28,7 +28,7 @@
             property1 = custom_data.property1</pre>
 </div>
 <? } else { ?>
-<div class='section-example-container'>
+<div class='section-example-container skip-test'>
 <pre class='csharp'>public class MyAlgorithm : QCAlgorithm
 {
     public override void OnData(Slice slice)
