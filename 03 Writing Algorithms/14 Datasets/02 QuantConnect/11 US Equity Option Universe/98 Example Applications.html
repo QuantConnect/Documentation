@@ -152,6 +152,8 @@ class USEquityOptionsUniverseAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
+from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
+
 
 class USEquityOptionsUniverseFrameworkAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
@@ -217,7 +219,7 @@ class OptionDeltaGammaAlphaModel(AlphaModel):
                 filtered = [item for item in delta_gamma_symbols if round(item[0], 2) &lt;= 0.01 and item[1] &gt; 0]
                 if len(filtered) == 0:
                     continue
-                selected = sorted(filtered, key=lambda x: x[1])[0]
+                selected = sorted(filtered, key=lambda x: x[1], reverse=True)[0]
 
                 # Provide trade signal and roll the day count to let the position stay for the whole day
                 selected_call = selected[2]
