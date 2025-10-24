@@ -25,9 +25,8 @@ $overwriteCodePy = "if security.type == SecurityType.OPTION: # Option type
             security.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()";
 $overwriteCodeC = "if (security.Type == SecurityType.Option) // Option type
         {
-            security.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
+            (security as Option).PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
         }";
 $comment = "the price model";
-$saveAlgorithm = false;
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>

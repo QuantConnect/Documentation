@@ -19,7 +19,7 @@ public class SimpleRebalancingAlgorithm : QCAlgorithm
         var universe = AddUniverse(Universe.DollarVolume.Top(5));
         // 30 minutes after market open, rebalance the portfolio.
         Schedule.On(
-            dateRule,\
+            dateRule,
             TimeRules.AfterMarketOpen(symbol, 30),
             () => SetHoldings(
                 universe.Selected.Select(symbol => new PortfolioTarget(symbol, 1.0m/universe.Selected.Count)).ToList(),

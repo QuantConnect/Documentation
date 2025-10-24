@@ -18,14 +18,14 @@
         SetStartDate(2024, 12, 23);
         SetEndDate(2024, 12, 31);
         // Add a universe of Cryptocurrencies on Coinbase.
-        var universe = AddUniverse(CryptoUniverse.Coinbase());
+        var universe = AddUniverse(CryptoUniverse.Coinbase(constituents => constituents.Select(c => c.Symbol)));
         // Get 5 days of history for the universe.
         var history = History(universe, TimeSpan.FromDays(5));
         // Iterate through each day of the universe history.
         foreach (var constituents in history)
         {
-            // Select the 2 assets with the smallest weights in the ETF on this day.
-            var dailyLargest = constituents.Select(c => c as ETFConstituentData).OrderByDescending(c => c.Weight).Take(2);
+            // Select the 2 assets with the largest dollar volume on this day.
+            var dailyLargest = constituents.Select(c => c as CryptoUniverse).OrderByDescending(c => c.VolumeInUsd).Take(2);
         }
     }
 }</pre>
@@ -35,7 +35,11 @@
         self.set_start_date(2024, 12, 23)
         self.set_end_date(2024, 12, 31)
         # Add a universe of Cryptocurrencies on Coinbase.
-        universe = self.add_universe(CryptoUniverse.coinbase())
+        universe = self.add_universe(
+            CryptoUniverse.coinbase(
+                lambda constitutents: [c.symbol for c in constitutents]
+            )
+        )
         # Get 5 days of history for the universe.
         history = self.history(universe, timedelta(5), flatten=True)</pre>
 </div>

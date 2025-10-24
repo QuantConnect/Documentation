@@ -27,7 +27,7 @@ $dataType = "Delisting";
         var history = History&lt;Delisting&gt;(symbol, TimeSpan.FromDays(10*365));
         // Get the dates of the delist warnings.
         var delistWarningDates = history
-            .Where(delisting => delisting.Type == DelistingType.WARNING)
+            .Where(delisting => delisting.Type == DelistingType.Warning)
             .Select(delisting => delisting.EndTime);
     }
 }</pre>
