@@ -13,7 +13,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-universe-dataframe-
   For an example definition of a custom data universe class, see the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-universes/csv-format-example'>CSV Format Example</a>.
 </p>
 
-<div class="section-example-container">
+<div class="section-example-container skip-test">
     <pre class="csharp">public class CustomDataUniverseHistoryAlgorithm : QCAlgorithm
 {
     public override void Initialize()

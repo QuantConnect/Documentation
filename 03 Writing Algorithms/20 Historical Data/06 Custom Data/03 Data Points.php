@@ -13,7 +13,7 @@ $imgLink = "https://cdn.quantconnect.com/i/tu/custom-dataset-dataframe-history.p
   For an example definition of a custom data class, see the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/csv-format-example'>CSV Format Example</a>.
 </p>
 
-<div class="section-example-container">
+<div class="section-example-container skip-test">
     <pre class="csharp">public class CustomSecurityHistoryAlgorithm : QCAlgorithm
 {
     public override void Initialize()
