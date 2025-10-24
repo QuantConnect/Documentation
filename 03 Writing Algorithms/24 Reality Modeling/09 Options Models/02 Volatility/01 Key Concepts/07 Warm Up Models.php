@@ -29,18 +29,17 @@ def on_data(self, slice: Slice) -&gt; None:
 
 $overwriteCodePy = "if security.type == SecurityType.EQUITY:  # Underlying asset type
             security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)
-            trade_bars = self._algorithm.history[TradeBar](security.symbol, 30, Resolution.DAILY)
+            trade_bars = self.history[TradeBar](security.symbol, 30, Resolution.DAILY)
             for trade_bar in trade_bars:
                 security.volatility_model.update(security, trade_bar)";
 $overwriteCodeC = "if (security.Type == SecurityType.Equity) // Underlying asset type
         {
             security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-            foreach (var tradeBar in _algorithm.History(security.Symbol, 30, Resolution.Daily))
+            foreach (var tradeBar in History(security.Symbol, 30, Resolution.Daily))
             {
                 security.VolatilityModel.Update(security, tradeBar);
             }
         }";
 $comment = "and warm up the volatility model";
-$saveAlgorithm = true;
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>

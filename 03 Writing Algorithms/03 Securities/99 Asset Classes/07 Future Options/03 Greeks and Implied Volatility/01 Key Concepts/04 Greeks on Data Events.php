@@ -82,7 +82,7 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
     def initialize(self, security: Security) -> None:
         super().initialize(security)
         if security.type == SecurityType.FUTURE_OPTION:
-            security.price_model = OptionPriceModels.CrankNicolsonFD()</pre>
+            security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
 <p>To view all the models LEAN supports, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#06-Supported-Models'>Supported Models</a>.</p>

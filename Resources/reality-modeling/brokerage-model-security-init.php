@@ -13,6 +13,7 @@ public class AddSecurityInitializerExampleAlgorithm : QCAlgorithm
         // Overwrite <?=$comment ?? "some of the reality models"?>
 
         <?=$overwriteCodeC?>
+
     }
 }</pre>
 <pre class='python'>class AddSecurityInitializerExampleAlgorithm(QCAlgorithm):
