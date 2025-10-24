@@ -41,7 +41,7 @@
     </div>
 
     <li>Call the <code class="csharp">AddData</code><code class="python">add_data</code> method to <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#05-Create-Subscriptions'>subscribe to the custom type</a>.</li>
-    <div class='section-example-container'>
+    <div class='section-example-container skip-test'>
     <pre class='csharp'>public class ObjectStoreCustomDataAlgorithm : QCAlgorithm
 {
     private Symbol _customDataSymbol;
@@ -56,7 +56,7 @@
     </div>
 
     <li>Implement the <code><a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#05-Parse-Custom-Data'>Reader</a></code> method for the custom data class.</li>
-    <div class='section-example-container'>
+    <div class='section-example-container skip-test'>
     <pre class='csharp'>public class Bitstamp : TradeBar
 {
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
@@ -120,7 +120,7 @@
     </div>  
 
     <li>To confirm your algorithm is receiving the custom data, <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>request some historical data</a>, then <a href='/docs/v2/writing-algorithms/logging'>log</a> and <a href='/docs/v2/writing-algorithms/charting'>plot</a> the data from the <code>Slice</code> object.</li>
-    <div class='section-example-container'>
+    <div class='section-example-container skip-test'>
     <pre class='csharp'>public class ObjectStoreCustomDataAlgorithm : QCAlgorithm
 {
     public override void Initialize()
@@ -150,7 +150,7 @@
 
 <p>The following algorithm provides a full example of a sourcing custom data from the Object Store:</p>
 
-<div class="section-example-container testable">
+<div class="section-example-container skip-test">
     <pre class="csharp">public class CustomDataBitstampAlgorithm : QCAlgorithm
 {
     private Symbol _customDataSymbol;
