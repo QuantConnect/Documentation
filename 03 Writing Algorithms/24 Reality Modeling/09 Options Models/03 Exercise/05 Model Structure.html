@@ -2,9 +2,7 @@
 <p class="python">Option exercise models should extend the <code>DefaultExerciseModel</code> class. Extensions of the <code>DefaultExerciseModel</code> must implement the <code class="csharp">OptionExercise</code><code class="python">option_exercise</code> method, which receives <code>Option</code> and <code>OptionExerciseOrder</code> objects and then returns a list of <code>OrderEvent</code> objects that contain the order fill information.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">using QuantConnect.Orders.OptionExercise;
-
-public class CustomOptionExerciseModelExampleAlgorithm : QCAlgorithm
+    <pre class="csharp">public class CustomOptionExerciseModelExampleAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
@@ -17,7 +15,7 @@ public class CustomOptionExerciseModelExampleAlgorithm : QCAlgorithm
 // Define the custom Option exercise model outside of the algorithm
 public class MyOptionExerciseModel : IOptionExerciseModel
 {
-    public override IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
+    public IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
     {
         var inTheMoney = option.IsAutoExercised(option.Underlying.Close);
         var isAssignment = inTheMoney &amp;&amp; option.Holdings.IsShort;
