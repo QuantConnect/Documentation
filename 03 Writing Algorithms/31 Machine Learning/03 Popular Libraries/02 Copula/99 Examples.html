@@ -189,8 +189,8 @@ class CopulaTrader:
         
         return p
 
-    def scan_option_mispricing_combinations(self, security1_options: list[OptionContract], security2_options: list[OptionContract], current_security1_price: float, current_security2_price: float,
-        current: datetime, n_samples: int = 1000) -&gt; list[tuple[OptionContract, OptionContract, float, float]]:
+    def scan_option_mispricing_combinations(self, security1_options: List[OptionContract], security2_options: List[OptionContract], current_security1_price: float, current_security2_price: float,
+        current: datetime, n_samples: int = 1000) -&gt; List[tuple[OptionContract, OptionContract, float, float]]:
         # Get the simluated price series till the expiry. Note that you should use single expiry for all contracts for easier handling and stable theta.
         future_prices, dtm = self._get_simulated_paths(current_security1_price, current_security2_price, security1_options[0].expiry, current, n_samples)
         
@@ -268,7 +268,7 @@ class CopulaTrader:
         # Calculate the ratio of paths that the point has ever been reached.
         return count / data.shape[1]
 
-    def trade_options(self, mispriced_pairs: list[tuple[OptionContract, OptionContract, float, float]], fund: float, contract_multiplier: int = 100) -&gt; dict[OptionContract, int]:
+    def trade_options(self, mispriced_pairs: List[tuple[OptionContract, OptionContract, float, float]], fund: float, contract_multiplier: int = 100) -&gt; dict[OptionContract, int]:
         orders = {}
         total_pct = 0
 

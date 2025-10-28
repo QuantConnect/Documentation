@@ -98,7 +98,7 @@
         # Create a Scheduled Event to rebalance the portfolio at the start of each month.
         self.schedule.on(self.date_rules.month_start(spy), self.time_rules.at(9, 45), self._rebalance)
     
-    def _select_assets(self, alt_data: list[BrainSentimentIndicatorUniverse]) -&gt; list[Symbol]:
+    def _select_assets(self, alt_data: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
         # Select the assets with recent mentions and a sentiment score.
         alt_data = [x for x in alt_data if x.total_article_mentions_30_days and x.sentiment_30_days]
         # Select the 10 assets with the greatest sentiment score.
@@ -283,7 +283,7 @@
         )        
 
     def _select_assets(
-            self, alt_data: list[QuiverInsiderTradingUniverse]) -> list[Symbol]:
+            self, alt_data: List[QuiverInsiderTradingUniverse]) -> List[Symbol]:
         # Calculate the net dollar volume of insider trades for each
         # asset.
         dollar_volume_by_symbol = {}
@@ -447,7 +447,7 @@
     
     def _select_assets(
             self, 
-            alt_coarse: list[SmartInsiderIntentionUniverse]) -> list[Symbol]:
+            alt_coarse: List[SmartInsiderIntentionUniverse]) -> List[Symbol]:
         self._buyback_size = {}
         selected = []
         for d in alt_coarse:

@@ -138,7 +138,7 @@ public class SelectionData
         # Evenly dissipate the capital risk among selected cryptos.
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
 
-    def _select_assets(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+    def _select_assets(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         for f in fundamental:
             # Create/Update the EMA indicators of each stock.
             if f.symbol not in self._selection_data_by_symbol:
@@ -287,11 +287,11 @@ class VolumeSMAUniverseSelectionModel(FundamentalUniverseSelectionModel):
     def __init__(self, period: int) -&gt; None:
         self.period = period
 
-    def create_universes(self, algorithm: QCAlgorithm) -&gt; list[Universe]:
+    def create_universes(self, algorithm: QCAlgorithm) -&gt; List[Universe]:
         return [FundamentalUniverseFactory(Market.USA, algorithm.universe_settings, 
             lambda fundamental: self.select(algorithm, fundamental))]
 
-    def select(self, algorithm: QCAlgorithm, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+    def select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         # Create/Update the volume SMA indicator of each stock.
         selected = []
         for f in fundamental:
@@ -435,7 +435,7 @@ class EmaUniverseSelectionModel(FundamentalUniverseSelectionModel):
         super().__init__()
         self.selection_number = selection_number
 
-    def select(self, algorithm: QCAlgorithm, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+    def select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         # We are going to use a dictionary to refer to the object that will keep the moving averages
         for f in fundamental:
             if f.symbol not in self.averages:
