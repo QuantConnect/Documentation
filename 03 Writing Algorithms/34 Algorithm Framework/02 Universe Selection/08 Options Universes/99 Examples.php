@@ -189,7 +189,7 @@ class AtmOptionHorizontalSpreadUniverseSelectionModel(OptionUniverseSelectionMod
     def __init__(self) -&gt; None:
         super().__init__(timedelta(30), self.selection_option_chain_symbols)
 
-    def selection_option_chain_symbols(self, utc_time: datetime) -&gt; list[Symbol]:
+    def selection_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
         # We will focus only on SPX options since they have a relatively stable dividend yield, which we assume will remain the same over time.
         # Also, assignment handling is not required since it is cash-settled.
         return [Symbol.create("SPX", SecurityType.INDEX_OPTION, Market.USA)]
@@ -232,7 +232,7 @@ class JellyRollAlphaModel(AlphaModel):
         self._sma.update(self._algorithm.time, rate)
         self._was_rising = rate &gt; self._sma.current.value
 
-    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; list[Insight]:
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         insights = []
 
         # Hold one position group at a time.
@@ -285,7 +285,7 @@ class JellyRollAlphaModel(AlphaModel):
         return insights
 
 class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
-    def create_targets(self, algorithm: QCAlgorithm, insights: list[Insight]) -&gt; list[PortfolioTarget]:
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
         targets = []
         for insight in insights:
             if algorithm.securities[insight.symbol].is_tradable:
@@ -403,7 +403,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.add_universe_options(universe, self.option_filter_function)
         self.day = 0
 
-    def fundamental_function(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+    def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         filtered = (f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio))
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
