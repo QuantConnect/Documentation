@@ -1,6 +1,6 @@
 <p>A coarse universe enables you pick a set of stocks based on their trading volume, price, or whether they have fundamental data. To add a coarse universe, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, pass a filter function to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method. The coarse filter function receives a list of <code>CoarseFundamental</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the universe and LEAN automatically creates subscriptions for them. Don't call <code class="csharp">AddEquity</code><code class="python">add_equity</code> in the filter function.</p>
 
-<div class="section-example-container">
+<div class="section-example-container skip-test">
 <pre class="csharp">public class MyCoarseUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
