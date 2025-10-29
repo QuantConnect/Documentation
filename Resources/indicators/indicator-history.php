@@ -53,7 +53,7 @@
         self._mirror_option = Symbol.create_option(self._symbol, Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 225, datetime(2024, 7, 12))
         self.add_option_contract(self._mirror_option, Resolution.DAILY)
 <?}?>
-        <?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("reference", "self._reference", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments))))?>)
+        <?=$pyHelperName?> = self.<?=str_replace("CandlestickPatterns", "candlestick_patterns", $helperPrefix)?><?=$pyHelperName?>(<?=str_replace("symbol", "self._symbol", str_replace("reference", "self._reference", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", str_replace("MovingAverageType.Simple", "MovingAverageType.SIMPLE", str_replace("MovingAverageType.Exponential", "MovingAverageType.EXPONENTIAL", str_replace("MovingAverageType.Wilders", "MovingAverageType.WILDERS", $helperArguments)))))))?>)
 <? if($hasReference) { ?>
         count_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._reference], 100, Resolution.MINUTE)
         timedelta_indicator_history = self.indicator_history(<?=$pyHelperName?>, [self._symbol, self._reference], timedelta(days=10), Resolution.MINUTE)
