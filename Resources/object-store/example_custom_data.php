@@ -19,7 +19,7 @@
     </div>
 
     <li>Create an algorithm that <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>downloads data from an external source</a> and <a href='/docs/v2/writing-algorithms/object-store#04-Save-Data'>saves it to the Object Store</a>.</li>
-    <div class='section-example-container'>
+    <div class='section-example-container skip-test'>
     <pre class='csharp'>public class ObjectStoreCustomDataAlgorithm : QCAlgorithm
 {
     public override void Initialize()
