@@ -1,13 +1,149 @@
 <p>
- The following examples demonstrate common practices for implementing a customized fill model.
+ The following examples demonstrate common practices for implementing a custom fill model.
 </p>
+
+
 <h4>
- Example 1: Volume Share Fill
+ Example 1: Default Model Wrapper
+</h4>
+<p>
+ The following algorithm defines a subclass of the default <code>FillModel</code> and overrides its built-in members so you can easily customize the parts you need.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomFillModelAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        
+        var security = AddEquity("SPY", Resolution.Daily);
+        security.SetFillModel(new MyFillModel());
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+}
+
+public class MyFillModel : FillModel {
+
+    public override OrderEvent MarketFill(Security asset, MarketOrder order) {
+        return base.MarketFill(asset, order);
+    }
+
+    public override OrderEvent LimitFill(Security asset, LimitOrder order) {
+        return base.LimitFill(asset, order);
+    }
+
+    public override OrderEvent LimitIfTouchedFill(Security asset, LimitIfTouchedOrder order) {
+        return base.LimitIfTouchedFill(asset, order);
+    }
+
+    public override OrderEvent StopMarketFill(Security asset, StopMarketOrder order) {
+        return base.StopMarketFill(asset, order);
+    }
+
+    public override OrderEvent StopLimitFill(Security asset, StopLimitOrder order) {
+        return base.StopLimitFill(asset, order);
+    }
+
+    public override OrderEvent TrailingStopFill(Security asset, TrailingStopOrder order) {
+        return TrailingStopFill(asset, order);
+    }
+
+    public override OrderEvent MarketOnOpenFill(Security asset, MarketOnOpenOrder order) {
+        return base.MarketOnOpenFill(asset, order);
+    }
+
+    public override OrderEvent MarketOnCloseFill(Security asset, MarketOnCloseOrder order) {
+        return base.MarketOnCloseFill(asset, order);
+    }
+
+    public override List&lt;OrderEvent&gt; ComboMarketFill(Order order, FillModelParameters parameters) {
+        return base.ComboMarketFill(order, parameters);
+    }
+
+    public override List&lt;OrderEvent&gt; ComboLimitFill(Order order, FillModelParameters parameters) {
+        return base.ComboLimitFill(order, parameters);
+    }
+
+    public override List&lt;OrderEvent&gt; ComboLegLimitFill(Order order, FillModelParameters parameters) {
+        return base.ComboLegLimitFill(order, parameters);
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomFillModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        security = self.add_equity('SPY', Resolution.DAILY)
+        security.set_fill_model(MyFillModel())
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MyFillModel(FillModel):
+
+    def market_fill(self, asset: Security, order: MarketOrder) -> OrderEvent:
+        return super().market_fill(asset, order)
+
+    def limit_fill(self, asset: Security, order: LimitOrder) -> OrderEvent:
+        return super().limit_fill(asset, order)
+
+    def limit_if_touched_fill(self, asset: Security, order: LimitIfTouchedOrder) -> OrderEvent:
+        return super().limit_if_touched_fill(asset, order)
+
+    def stop_market_fill(self, asset: Security, order: StopMarketOrder) -> OrderEvent:
+        return super().stop_market_fill(asset, order)
+
+    def stop_limit_fill(self, asset: Security, order: StopLimitOrder) -> OrderEvent:
+        return super().stop_limit_fill(asset, order)
+
+    def trailing_stop_fill(self, asset: Security, order: TrailingStopOrder) -> OrderEvent:
+        return super().trailing_stop_fill(asset, order)
+
+    def market_on_open_fill(self, asset: Security, order: MarketOnOpenOrder) -> OrderEvent:
+        return super().market_on_open_fill(asset, order)
+
+    def market_on_close_fill(self, asset: Security, order: MarketOnCloseOrder) -> OrderEvent:
+        return super().market_on_close_fill(asset, order)
+
+    def combo_market_fill(self, order: Order, parameters: FillModelParameters) -> List[OrderEvent]:
+        return super().combo_market_fill(order, parameters)
+    
+    def combo_limit_fill(self, order: Order, parameters: FillModelParameters) -> List[OrderEvent]:
+        return super().combo_limit_fill(order, parameters)
+    
+    def combo_leg_limit_fill(self, order: Order, parameters: FillModelParameters) -> List[OrderEvent]:
+        return super().combo_leg_limit_fill(order, parameters)</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
+<h4>
+ Example 2: Volume Share Fill
 </h4>
 <p>
  The following algorithm longs the top 10 liquid constituents and short the bottom 10 liquid constituents of QQQ. To realistically fill the less liquid stocks, we implement a fill model that only fills with at most 30% of the previous second bar.
 </p>
-<div class="section-example-container testable testable">
+<div class="section-example-container testable">
  <pre class="csharp">public class VolumeShareSlippageModelAlgorithm : QCAlgorithm
 {
     private List&lt;Symbol&gt; _longs = new();
