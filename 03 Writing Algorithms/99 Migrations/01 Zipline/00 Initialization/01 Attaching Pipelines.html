@@ -22,18 +22,19 @@
 </p>
 <div class="section-example-container">
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2020, 1, 1)
-        self.SetEndDate(2020, 2, 1)
 
-        self.UniverseSettings.Resolution = Resolution.Minute
-        self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 2, 1)
 
-    def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        return [i.Symbol for i in coarse if i.DollarVolume > 500000 and i.HasFundamentalData]
+        self.universe_settings.resolution = Resolution.MINUTE
+        self.add_universe(self._coarse_selection_function, self._fine_selection_function)
 
-    def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
-        return [i.Symbol for i in fine if i.EarningReports.BasicEPS.OneMonth > 0]</pre>
+    def _coarse_selection_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        return [i.symbol for i in coarse if i.dollar_volume > 500000 and i.has_fundamental_data]
+
+    def _fine_selection_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+        return [i.symbol for i in fine if i.earning_reports.basic_eps.one_month > 0]</pre>
 </div>
 <p>
     You can configure universe settings by modifying the existing <code>UniverseSettings</code> attribute of the algorithm.
