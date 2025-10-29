@@ -39,8 +39,8 @@ class MyOptionAssignmentModel(NullOptionAssignmentModel):
     def get_assignment(self, parameters: OptionAssignmentParameters) -> OptionAssignmentResult:
         option = parameters.option
         # Check if the contract is ITM
-        if option.right == OptionRight.CALL and option.underlying.price > option.strike_price
-            or option.right == OptionRight.PUT and option.underlying.price < option.strike_price:
+        if (option.right == OptionRight.CALL and option.underlying.price > option.strike_price or
+            option.right == OptionRight.PUT and option.underlying.price < option.strike_price):
             return OptionAssignmentResult(option.holdings.absolute_quantity, "MyTag")
         return OptionAssignmentResult.NULL</pre>
 </div>
