@@ -50,7 +50,9 @@ from System.Collections.Generic import List</pre>
     Insights.AddRange(insights);
 }</pre>
     <pre class='python'>if self.object_store.contains_key(self.insight_key):
-    insights = self.object_store.read_json[list[Insight]](self.insight_key)
+    insights = JsonConvert.DeserializeObject[List[Insight]](
+        self.object_store.read(self.insights_key)
+    )
     self.insights.add_range(insights)</pre>
     </div>
 </ol>
