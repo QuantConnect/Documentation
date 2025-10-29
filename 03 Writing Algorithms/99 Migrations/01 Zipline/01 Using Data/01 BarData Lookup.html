@@ -115,28 +115,14 @@ class MyDataAlgorithm(QCAlgorithm):
         # Check to make sure we have AAPL data first, since there might not have
         # been any quote updates since the previous for AAPL (this is in case you trade
         # a low liquidity asset. The data can potentially be missing for a point-in-time).
-        if self.aapl_symbol in data.quote_bars:
+        if self.aapl_symbol in slice.quote_bars:
             aapl_current_quote = slice.quote_bars[self.aapl_symbol]
             if aapl_current_quote.bid is not None:
-                Log(f"{} :: QUOTE :: {} - Bid O: {} Bid H: {} Bid L: {} Bid C: {} Bid size: {}".format(
-                    str(self.time),
-                    str(self.aapl_symbol)
-                    str(aapl_current_quote.bid.open),
-                    str(aapl_current_quote.bid.high),
-                    str(aapl_current_quote.bid.low),
-                    str(aapl_current_quote.bid.close),
-                    str(aapl_current_quote.last_bid_size)
-                ))
+                bid = aapl_current_quote.bid
+                self.log(f"{self.time} :: QUOTE :: {self.aapl_symbol} - Bid O: {bid.open} Bid H: {bid.high} Bid L: {bid.low} Bid C: {bid.close} Bid size: {aapl_current_quote.last_bid_size}")
 
             if aapl_current_quote.ask is not None:
-                Log(f"{} :: QUOTE :: {} - Ask O: {} Ask H: {} Ask L: {} Ask C: {} Ask size: {}".format(
-                    str(self.time),
-                    str(self.aapl_symbol),
-                    str(aapl_current_quote.ask.open),
-                    str(aapl_current_quote.ask.high),
-                    str(aapl_current_quote.ask.low),
-                    str(aapl_current_quote.ask.close),
-                    str(aapl_current_quote.last_ask_size)
-                ))
+                ask = aapl_current_quote.ask
+                self.log(f"{self.time} :: QUOTE :: {self.aapl_symbol} - Ask O: {ask.open} Ask H: {ask.high} Ask L: {ask.low} Ask C: {ask.close} Ask size: {aapl_current_quote.last_ask_size}")
     </pre>
 </div> 
