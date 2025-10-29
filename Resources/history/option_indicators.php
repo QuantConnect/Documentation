@@ -105,7 +105,7 @@ history = self.indicator_history(indicator, symbol, timedelta(30), selector=Fiel
         # Get the Symbol of the mirror contract.
         mirror = Symbol.create_option(
             underlying, option.id.market, option.id.option_style, 
-            OptionRight.Call if option.id.option_right == OptionRight.PUT else OptionRight.PUT,
+            OptionRight.CALL if option.id.option_right == OptionRight.PUT else OptionRight.PUT,
             option.id.strike_price, option.id.date
         )
         # Create the indicator.
