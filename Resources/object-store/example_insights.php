@@ -99,7 +99,12 @@ from System.Collections.Generic import List</pre>
         ObjectStore.SaveJson(_insightsKey, insights);
     }
 }</pre>
-    <pre class="python">class ObjectStoreInsightsAlgorithm(QCAlgorithm):
+    <pre class="python">from Newtonsoft.Json import JsonConvert
+from System.Collections.Generic import List
+
+
+class ObjectStoreInsightsAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
         self.universe_settings.resolution = Resolution.DAILY
 
@@ -112,7 +117,9 @@ from System.Collections.Generic import List</pre>
         # Read the file with the insights
         if self.object_store.contains_key(self.insights_key):
             # Load cached JSON key value pair from object store, then add to algorithm insights.
-            insights = self.object_store.read_json[list[Insight]](self.insights_key)
+            insights = JsonConvert.DeserializeObject[List[Insight]](
+                self.object_store.read(self.insights_key)
+            )
             self.log(f"Read {len(insights)} insight(s) from the Object Store")
             self.insights.add_range(insights)
 
