@@ -54,18 +54,19 @@ run_pipeline(pipe, '2020-01-01', '2020-10-20')</pre>
     <pre class="python">from datetime import datetime, timedelta
 
 class MyPipelineAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2020, 1, 1)
-        self.SetEndDate(2020, 10, 20)
 
-        self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 10, 20)
 
-    def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        self.add_universe(self._coarse_selection_function, self._fine_selection_function)
+
+    def _coarse_selection_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         # Allows all Symbols through, no filtering applied
-        dollar_volume_filter_symbols = [coarse_data.Symbol for coarse_data in coarse if coarse_data.DollarVolume > 50000000]
+        dollar_volume_filter_symbols = [coarse_data.symbol for coarse_data in coarse if coarse_data.dollar_volume > 50000000]
 
         # Make a history call to calculate the 30 day rolling returns
-        df = self.History(dollar_volume_filter_symbols, self.Time - timedelta(days=60), self.Time, Resolution.Daily)
+        df = self.history(dollar_volume_filter_symbols, self.time - timedelta(days=60), self.time, Resolution.DAILY)
 
         # Compute the rolling 30 day returns
         df = df['close'].groupby(level=0).filter(lambda x: len(x) >= 30).groupby(level=0).apply(lambda x: (x.iloc[-1] - x.iloc[-30]) / x.iloc[-30])
@@ -76,9 +77,9 @@ class MyPipelineAlgorithm(QCAlgorithm):
         # Filters out any Symbol that is not in the DataFrame
         return [s for s in dollar_volume_filter_symbols if str(s) in dataframe_screen]
 
-    def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    def _fine_selection_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
         # We receive the filtered symbols from before, and we filter by EPS > 0 in this step
-       return [s.Symbol for s in fine if s.EarningReports.BasicEPS.ThreeMonths > 0]</pre>
+       return [s.Symbol for s in fine if s.earning_reports.basic_eps.three_months > 0]</pre>
 </div>
 <p>
     This class definition is now roughly equivalent to the following <code>CustomFactor</code> and Pipeline call in Quantopian, excluding the EPS filtering.
