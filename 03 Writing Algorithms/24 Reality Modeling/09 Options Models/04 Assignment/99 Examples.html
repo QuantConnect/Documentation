@@ -333,6 +333,123 @@
 }
  </script>
 </div>
+
+
+<h4>
+ Example 3: Assign ITM Contracts
+</h4>
+<p>
+ The following algorithm assigns all in-the-money contracts at the top of each hour.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomOptionAssignmentAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        AddSecurityInitializer(InitializeSecurity);
+        var option = AddOption("GOOG");
+        option.SetFilter(universe => universe.CallsOnly().Strikes(-65, 0).Expiration(0, 30));
+    }
+
+    private void InitializeSecurity(Security security)
+    {
+        // Overwrite the assignment model.
+        if (security.Type == SecurityType.Option) // Option type
+        {
+            (security as Option).SetOptionAssignmentModel(new MyOptionAssignmentModel());
+        }
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (Portfolio.Invested) return;
+
+        foreach (var kvp in data.OptionChains)
+        {
+            var chain = kvp.Value;
+            var minExpiry = chain.Select(x => x.Expiry).Min();
+            var contracts = chain.Where(x => x.Expiry == minExpiry).OrderBy(x => x.Strike).ToList();
+
+            if (contracts.Any())
+            {
+                MarketOrder(contracts[0].Symbol, -1);
+            }
+        }
+    }
+}
+
+public class MyOptionAssignmentModel : IOptionAssignmentModel
+{
+    public OptionAssignmentResult GetAssignment(OptionAssignmentParameters parameters)
+    {
+        var option = parameters.Option;
+        // Check if the contract is ITM
+        if ((option.Right == OptionRight.Call && option.Underlying.Price > option.StrikePrice) ||
+            (option.Right == OptionRight.Put && option.Underlying.Price < option.StrikePrice))
+        {
+            return new OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "MyTag");
+        }
+
+        return OptionAssignmentResult.Null;
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomOptionAssignmentAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        self.add_security_initializer(self._initialize_security)
+
+        option = self.add_option('GOOG')
+        option.set_filter(
+            lambda option_filter_universe: option_filter_universe.calls_only().strikes(-65, 0).expiration(0, 30)
+        )
+
+    def _initialize_security(self, security: Security) -> None:
+        # Overwrite the assignment model.
+        if security.Type == SecurityType.OPTION: # Option type
+            security.set_option_assignment_model(MyOptionAssignmentModel())
+
+    def on_data(self, data) -> None:
+        if self.portfolio.invested:
+            return
+
+        for canonical_symbol, chain in data.option_chains.items():
+            min_expiry = min([contract.expiry for contract in chain])
+            contracts = sorted(
+                [contract for contract in chain if contract.expiry == min_expiry],
+                key=lambda contract: contract.strike
+            )
+            if contracts:
+                self.market_order(contracts[0].symbol, -1)
+
+
+class MyOptionAssignmentModel(NullOptionAssignmentModel):
+
+    def get_assignment(self, parameters: OptionAssignmentParameters) -> OptionAssignmentResult:
+        option = parameters.option
+        # Check if the contract is ITM.
+        if (option.Right == OptionRight.CALL and option.Underlying.Price > option.StrikePrice or
+            option.Right == OptionRight.PUT and option.Underlying.Price < option.StrikePrice):
+            return OptionAssignmentResult(option.holdings.absolute_quantity, "MyTag")
+        return OptionAssignmentResult.NULL
+</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
 <h4>
  Other Examples
 </h4>

@@ -1,0 +1,110 @@
+<p>
+ The following examples demonstrate common practices for implementing a custom dividend yield model.
+</p>
+<h4>
+ Example 1: Fixed Yield
+</h4>
+<p>
+ The following algorithm implements a custom dividend yield model with a fixed yield of 2%.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomDividendYieldModelAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private Dictionary&lt;Symbol, Delta&gt; _deltas = new();
+    private Dictionary&lt;Symbol, MyDividendYieldModel&gt; _dividendYieldModel = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        
+        var option = AddOption("MSFT");
+        option.SetFilter(0,1,0,31);
+        _symbol = option.Symbol;
+        _dividendYieldModel[_symbol.Underlying] = new MyDividendYieldModel();
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!data.OptionChains.TryGetValue(_symbol, out var chain)) return;
+        var expiry = chain.Min(x => x.Expiry);
+        chain
+            .Where(x => x.Expiry == expiry && x.Right == OptionRight.Call && !_deltas.ContainsKey(x.Symbol))
+            .Select(x => x.Symbol)
+            .DoForEach(x => _deltas[x] = CreateDeltaIndicator(x));
+    }
+
+    private Delta CreateDeltaIndicator(Symbol symbol)
+    {
+        var dividendYieldModel = _dividendYieldModel[symbol.Underlying];
+        var delta = new Delta(symbol.Value, symbol, RiskFreeInterestRateModel, dividendYieldModel);
+        RegisterIndicator(symbol, delta, Resolution.Minute);
+        RegisterIndicator(symbol.Underlying, delta, Resolution.Minute);
+        return delta;
+    }
+
+    public override void OnEndOfDay(Symbol symbol)
+    {
+        if (_deltas.TryGetValue(symbol, out var delta))
+        {
+            Plot("Delta", symbol.Value, delta.Current.Value);
+        }
+    }
+}
+
+public class MyDividendYieldModel : IDividendYieldModel 
+{
+    public decimal GetDividendYield(DateTime date)
+    {
+        return 0.02m;
+    }
+}</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomDividendYieldModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+               
+        option = self.add_option('MSFT')
+        option.set_filter(0, 1, 0, 31)
+        self._symbol = option.symbol
+        self._deltas = {}
+        self._dividend_yield_model = {self._symbol.underlying : MyDividendYieldModel()}
+
+    def on_data(self, data: Slice) -> None:
+        chain = data.option_chains.get(self._symbol)
+        if not chain:
+            return
+        expiry = min([x.expiry for x in chain])
+        symbols = [x.symbol for x in chain if x.expiry == expiry and x.right == OptionRight.CALL and x.symbol not in self._deltas]
+        for symbol in symbols:
+            self._deltas[symbol] = self._deltas.get(symbol, self._create_delta_indicator(symbol))
+
+    def _create_delta_indicator(self, symbol: Symbol) -> Delta:
+        dividend_yield_model = self._dividend_yield_model.get(symbol.underlying)
+        delta = Delta(symbol.value, symbol, self.risk_free_interest_rate_model, dividend_yield_model)
+        self.register_indicator(symbol, delta)
+        self.register_indicator(symbol.underlying, delta)
+        return delta
+
+    def on_end_of_day(self, symbol) -> None:
+        delta = self._deltas.get(symbol)
+        if delta:
+            self.plot('Delta', symbol.value, delta.current.value)
+
+
+class MyDividendYieldModel:
+
+    def get_dividend_yield(self, date: datetime | date) -> float:
+        return 0.02</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>

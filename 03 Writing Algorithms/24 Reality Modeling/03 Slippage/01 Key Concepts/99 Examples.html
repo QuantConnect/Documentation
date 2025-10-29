@@ -1,8 +1,75 @@
 <p>
  The following examples demonstrate some common practices for implementing a custom slippage model.
 </p>
+
 <h4>
- Example 1: Volume Ratio Capped Slippage Model
+ Example 1: Logarithmic Scaling
+</h4>
+<p>
+ The following algorithm defines a custom slippage model where the slippage increases logarithmically with order size, scaled by 0.01% of the asset price, modeling realistic market impact where larger orders have diminishing marginal price impact.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomSlippageModelAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        
+        var security = AddEquity("SPY", Resolution.Daily);
+        security.SetSlippageModel(new MySlippageModel());
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+}
+
+public class MySlippageModel : ISlippageModel 
+{
+    public decimal GetSlippageApproximation(Security asset, Order order) 
+    {
+        return asset.Price*0.0001m*(decimal) Math.Log10(2*(double) order.AbsoluteQuantity);
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomSlippageModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        security = self.add_equity('SPY', Resolution.DAILY)
+        security.set_slippage_model(MySlippageModel())
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MySlippageModel:
+
+    def get_slippage_approximation(self, asset: Security, order: Order) -> float:
+        return asset.price * 0.0001 * np.log10(2*float(order.absolute_quantity))
+</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
+<h4>
+ Example 2: Volume Ratio Capped Slippage Model
 </h4>
 <p>
  The following algorithm trades the microeconomic demand popularity gap between the top 10 and bottom 10 liquid constituents of QQQ. A custom slippage model simulates the slippage on less liquid stock fills. The slippage percent is set to be 2% multiplied by the ratio of the order quantity to the previous minute bar's volume, maximized at 2%.

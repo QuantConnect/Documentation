@@ -1,0 +1,65 @@
+<p>
+ The following examples demonstrate common practices for implementing a custom risk free interest rate model.
+</p>
+<h4>
+ Example 1: Fixed Rate
+</h4>
+<p>
+ The following algorithm implements a custom risk free interest rate model with a fixed rate of 2%.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomFillModelAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        
+        SetRiskFreeInterestRateModel(new MyRiskFreeInterestRateModel());
+        AddEquity("SPY", Resolution.Daily);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+}
+
+public class MyRiskFreeInterestRateModel : IRiskFreeInterestRateModel 
+{
+    public decimal GetInterestRate(DateTime date) 
+    {
+        return 0.02m;
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomFillModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.set_risk_free_interest_rate_model(MyRiskFreeInterestRateModel())
+        self.add_equity('SPY', Resolution.DAILY)
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MyRiskFreeInterestRateModel:
+
+    def get_interest_rate(self, date: datetime | date) -> float:
+        return 0.02</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>

@@ -171,3 +171,120 @@ class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
 }
  </script>
 </div>
+
+
+<h4>
+ Example 2: No Unsettled Cash
+</h4>
+<p>
+ The following algorithm implements a custom settlement model that states there is always $0 of unsettled cash.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomSettlementModelAlgorithm : QCAlgorithm
+{
+    private bool _traded;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        var security = AddEquity("SPY");
+        security.SetSettlementModel(new MySettlementModel());
+
+        Schedule.On(
+            DateRules.EveryDay("SPY"),
+            TimeRules.Every(TimeSpan.FromMinutes(30)),
+            plotCash
+        );
+
+        _traded = false;
+    }
+
+    private void plotCash()
+    {
+        Plot("Settled Cash", "USD", Portfolio.CashBook["USD"].Amount);
+        Plot("Unsettled Cash", "USD", Portfolio.UnsettledCashBook["USD"].Amount);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (_traded)
+            return;
+
+        MarketOrder("SPY", 1);
+        MarketOrder("SPY", -1);
+        _traded = true;
+    }
+}
+
+public class MySettlementModel : ISettlementModel
+{
+    public void ApplyFunds(ApplyFundsSettlementModelParameters applyFundsParameters)
+    {
+        var currency = applyFundsParameters.CashAmount.Currency;
+        var amount = applyFundsParameters.CashAmount.Amount;
+        applyFundsParameters.Portfolio.CashBook[currency].AddAmount(amount);
+    }
+
+    public void Scan(ScanSettlementModelParameters settlementParameters)
+    {
+    }
+    
+    public CashAmount GetUnsettledCash()
+    {
+        return new CashAmount(0, "USD");
+    }
+}</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomSettlementModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        
+        security = self.add_equity('SPY')
+        security.set_settlement_model(MySettlementModel())
+
+        self.schedule.on(
+            self.date_rules.every_day('SPY'),
+            self.time_rules.every(timedelta(minutes=30)),
+            self._plot_cash
+        )
+
+        self._traded = False
+
+    def _plot_cash(self):
+        self.Plot("Settled Cash", "USD", self.Portfolio.CashBook["USD"].Amount)
+        self.Plot("Unsettled Cash", "USD", self.Portfolio.UnsettledCashBook["USD"].Amount)
+
+    def on_data(self, data: Slice) -> None:
+        if self._traded:
+            return
+
+        self.market_order('SPY', 1)
+        self.market_order('SPY', -1)
+        self._traded = True
+
+
+class MySettlementModel:
+    
+    def apply_funds(self, apply_funds_parameters: ApplyFundsSettlementModelParameters) -> None:
+        currency = apply_funds_parameters.cash_amount.currency
+        amount = apply_funds_parameters.cash_amount.amount
+        apply_funds_parameters.portfolio.cash_book[currency].add_amount(amount)
+
+    def scan(self, settlement_parameters: ScanSettlementModelParameters) -> None:
+        pass
+
+    def get_unsettled_cash(self) -> CashAmount:
+        return CashAmount(0, 'USD')</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>

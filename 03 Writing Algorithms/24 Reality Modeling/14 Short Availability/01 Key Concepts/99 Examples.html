@@ -1,8 +1,102 @@
 <p>
  The following examples demonstrate common practices for using a shortable provider.
 </p>
+
+
 <h4>
- Example 1: Sizing By Shortable Quantity
+ Example 1: Fixed Rates
+</h4>
+<p>
+ The following algorithm defines a custom short availability model with fixed values for the fee rate, rebate rate, and shortable quantity.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomShortableProviderAlgorithm : QCAlgorithm
+{
+    private Equity _security;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        
+        _security = AddEquity("QQQ", Resolution.Daily);
+        _security.SetShortableProvider(new MyShortableProvider());
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (Portfolio.Invested) return;
+        var shortableQuantity = _security.ShortableProvider.ShortableQuantity(_security.Symbol, Time);
+        if (shortableQuantity == null) return;
+        var feeRate = _security.ShortableProvider.FeeRate(_security.Symbol, Time);
+        var rebateRate = _security.ShortableProvider.RebateRate(_security.Symbol, Time);
+        SetHoldings(_security.Symbol, -0.05m, tag: $"Borrow fee rate {feeRate}. Borrow rebate rate {rebateRate}");
+    }
+}
+
+class MyShortableProvider : IShortableProvider
+{
+    public decimal FeeRate(Symbol symbol, DateTime localTime)
+    {
+        return 0.0025m;
+    }
+
+    public decimal RebateRate(Symbol symbol, DateTime localTime)
+    {
+        return 0.0507m;
+    }
+
+    public long? ShortableQuantity(Symbol symbol, DateTime localTime)
+    {
+        return 10000;
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomShortableProviderAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        self._security = self.add_equity("QQQ", Resolution.DAILY)
+        self._security.set_shortable_provider(MyShortableProvider())
+
+    def on_data(self, data: Slice) -> None:
+        if self.portfolio.invested:
+            return
+        shortable_quantity = self._security.shortable_provider.shortable_quantity(self._security.symbol, self.Time)
+        if not shortable_quantity:
+            return
+        fee_rate = self._security.shortable_provider.fee_rate(self._security.symbol, self.time)
+        rebate_rate = self._security.shortable_provider.rebate_rate(self._security.symbol, self.time)
+        self.set_holdings(self._security.symbol, -0.05, tag=f'Borrow fee rate {fee_rate}. Borrow rebate rate {rebate_rate}')
+
+
+class MyShortableProvider(NullShortableProvider):
+
+    def fee_rate(self, symbol: Symbol, local_time: datetime) -> float:
+        return 0.0025
+
+    def rebate_rate(self, symbol: Symbol, local_time: datetime) -> float:
+        return 0.0507
+    
+    def shortable_quantity(self, symbol: Symbol, local_time: datetime) -> float:
+        return 10000
+</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
+<h4>
+ Example 2: Sizing By Shortable Quantity
 </h4>
 <p>
  The following algorithm trades arbitrage of class A and class C price divergence of Google stocks using cointegration analysis. However, the position sizing may be limited by the available quantity to be shorted by the brokerage, breaking the paired trade. Thus, we need to make use of the
