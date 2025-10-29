@@ -60,17 +60,17 @@ class StockDataSource(PythonData):
         )
 
     def reader(self,config: SubscriptionDataConfig, line: str, date: datetime, is_live: bool) -> BaseData:
-        if not (line.strip() and line[0].isdigit()): 
-            return None
         stocks = StockDataSource()
         stocks.symbol = config.symbol
+        if not (line.strip() and line[0].isdigit()): 
+            return stocks
+        csv = line.split(',')
         try:
-            csv = line.split(',')
             stocks.time = datetime.strptime(csv[0], "%Y%m%d")
             stocks.end_time = stocks.time + timedelta(days=1)
             stocks["Symbols"] = csv[1:]
         except ValueError:
-            return None
+            StockDataSource.algorithm.log(f'{date}: ValueError')
         return stocks
 
 
@@ -79,6 +79,8 @@ class CustomDataUniverseHistoryAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
+        # Attach the algorithm instance to the custom data class to enable logging.
+        StockDataSource.algorithm = self
         # Add a custom data universe.
         universe = self.add_universe(StockDataSource)
         # Get the universe history.
