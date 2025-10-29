@@ -1,5 +1,5 @@
 <p>
- The following examples demonstrate some common practices for implementing a custom option exercise model.
+ The following examples demonstrate some common practices for implementing a custom Option exercise model.
 </p>
 <h4>
  Example 1: Cash Settlement
@@ -210,6 +210,209 @@ class MyOptionExerciseModel(DefaultExerciseModel):
 }
  </script>
 </div>
+
+
+<h4>
+ Example 2: Default Model Implementation
+</h4>
+<p>
+ The following algorithm implements the <code>DefaultExerciseModel</code> so you can easily customize the parts you need.
+</p>
+
+<div class="section-example-container testable testable">
+ <pre class="csharp">public class CustomExerciseModelAlgorithm : QCAlgorithm
+{
+    private Symbol _optionSymbol;
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        SetSecurityInitializer(new MySecurityInitializer(this));
+        var option = AddOption("SPY");
+        _optionSymbol = option.Symbol;
+    }
+
+    /// OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
+    /// Slice object keyed by symbol containing the stock data
+    public override void OnData(Slice data)
+    {
+        if (Portfolio.Invested)
+        {
+            return;
+        }
+        if (data.OptionChains.TryGetValue(_optionSymbol, out var chain))
+        {
+            var contract = chain
+                .Where(x => x.Right == OptionRight.Call)
+                .OrderBy(x => x.Strike)
+                .FirstOrDefault();
+
+            MarketOrder(contract.Symbol, 1);
+            ExerciseOption(contract.Symbol, 1);
+            Quit();
+        }
+    }
+}
+
+public class MySecurityInitializer : BrokerageModelSecurityInitializer
+{
+    private readonly QCAlgorithm _algorithm;
+    public MySecurityInitializer(QCAlgorithm algorithm)
+        : base(algorithm.BrokerageModel, new FuncSecuritySeeder(algorithm.GetLastKnownPrices))
+    {
+        _algorithm = algorithm;
+    }
+
+    public override void Initialize(Security security)
+    {
+        base.Initialize(security);
+
+        if (security.Type == SecurityType.Option)
+        {
+            (security as Option).SetOptionExerciseModel(new MyOptionExerciseModel(_algorithm));
+        }
+    }
+}
+
+public class MyOptionExerciseModel : IOptionExerciseModel
+{
+    private readonly QCAlgorithm _algorithm;
+    public MyOptionExerciseModel(QCAlgorithm algorithm) => _algorithm = algorithm;
+
+    public IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
+    {
+        var underlying = option.Underlying;
+        var utcTime = option.LocalTime.ConvertToUtc(option.Exchange.TimeZone);
+
+        var inTheMoney = option.IsAutoExercised(underlying.Close);
+        var isAssignment = inTheMoney && option.Holdings.IsShort;
+
+        yield return new OrderEvent(
+            order.Id,
+            option.Symbol,
+            utcTime,
+            OrderStatus.Filled,
+            GetOrderDirection(order.Quantity),
+            0.0m,
+            order.Quantity,
+            OrderFee.Zero,
+            Messages.DefaultExerciseModel.ContractHoldingsAdjustmentFillTag(inTheMoney, isAssignment, option)
+        )
+        {
+            IsAssignment = isAssignment,
+            IsInTheMoney = inTheMoney
+        };
+
+        if (inTheMoney && option.ExerciseSettlement == SettlementType.PhysicalDelivery)
+        {
+            var exerciseQuantity = option.GetExerciseQuantity(order.Quantity);
+
+            yield return new OrderEvent(
+                order.Id,
+                underlying.Symbol,
+                utcTime,
+                OrderStatus.Filled,
+                GetOrderDirection(exerciseQuantity),
+                option.StrikePrice,
+                exerciseQuantity,
+                OrderFee.Zero,
+                isAssignment ? Messages.DefaultExerciseModel.OptionAssignment : Messages.DefaultExerciseModel.OptionExercise
+            ) { IsInTheMoney = true };
+        }
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomExerciseModelAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.set_security_initializer(MySecurityInitializer(self))   
+        option = self.add_option("SPY")
+        self.option_symbol = option.symbol
+
+    def on_data(self, data: Slice):
+        if self.portfolio.invested:
+            return
+        chain = data.option_chains.get(self.option_symbol)
+        if chain:
+            contract = sorted([x for x in chain if x.right == OptionRight.CALL],
+                key=lambda x: x.strike)[0]
+            self.market_order(contract.symbol, 1)
+            self.exercise_option(contract.symbol, 1)
+            self.quit()
+
+
+class MySecurityInitializer(BrokerageModelSecurityInitializer):
+
+    def __init__(self, algorithm) -> None:
+        super().__init__(algorithm.brokerage_model, FuncSecuritySeeder(algorithm.get_last_known_prices))
+        self.algorithm = algorithm
+
+    def initialize(self, security: Security) -> None:
+        super().initialize(security)
+        if security.type == SecurityType.OPTION:
+            security.set_option_exercise_model(MyOptionExerciseModel(self.algorithm))
+
+
+class MyOptionExerciseModel(DefaultExerciseModel):
+
+    def __init__(self, algorithm):
+        self.algorithm = algorithm
+
+    def option_exercise(self, option: Option, order: OptionExerciseOrder) -> List[OrderEvent]:
+        order_events = []
+
+        underlying = option.underlying
+        utc_time = Extensions.convert_to_utc(option.local_time, option.exchange.time_zone)
+
+        in_the_money = option.is_auto_exercised(underlying.close)
+        is_assignment = in_the_money and option.holdings.is_short
+        messages = Messages.DefaultExerciseModel
+
+        order_event = OrderEvent(
+            order.id,
+            option.symbol,
+            utc_time,
+            OrderStatus.FILLED,
+            Extensions.get_order_direction(order.quantity),
+            0,
+            order.quantity,
+            OrderFee.ZERO,
+            messages.contract_holdings_adjustment_fill_tag(in_the_money, is_assignment, option)
+        )
+        order_event.is_assignment = is_assignment
+        order_event.is_in_the_money = in_the_money
+        order_events.append(order_event)
+
+        if in_the_money and option.exercise_settlement == SettlementType.PHYSICAL_DELIVERY:
+            exercise_quantity = option.get_exercise_quantity(order.quantity);
+            order_event =  OrderEvent(
+                order.id,
+                underlying.symbol,
+                utc_time,
+                OrderStatus.FILLED,
+                Extensions.get_order_direction(exercise_quantity),
+                option.strike_price,
+                exercise_quantity,
+                OrderFee.ZERO,
+                messages.option_assignment if is_assignment else messages.option_exercise
+            )
+            order_event.is_in_the_money = True
+            order_events.append(order_event)
+
+        return order_events</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
 <h4>
  Other Examples
 </h4>

@@ -206,6 +206,186 @@ class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
 }
  </script>
 </div>
+
+
+<h4>
+ Example 2: Default Model Wrapper
+</h4>
+<p>
+ The following algorithm defines a subclass of the default <code>BuyingPowerModel</code> and overrides its built-in members so you can easily customize the parts you need.
+</p>
+
+<div class="section-example-container testable testable">
+ <pre class="csharp">public class CustomBuyingPowerModelAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        var security = AddEquity("SPY", Resolution.Daily);
+        security.SetBuyingPowerModel(new MyBuyingPowerModel());
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+}
+
+class MyBuyingPowerModel : BuyingPowerModel
+{
+    public MyBuyingPowerModel(
+        decimal leverage = 2m,
+        decimal requiredFreeBuyingPowerPercent = 0m)
+        : base(leverage, requiredFreeBuyingPowerPercent)
+    {
+    }
+
+    public override decimal GetLeverage(Security security)
+    {
+    return base.GetLeverage(security);
+    }
+
+    public override void SetLeverage(Security security, decimal leverage)
+    {
+        base.SetLeverage(security, leverage);
+    }
+
+    public override InitialMargin GetInitialMarginRequiredForOrder(
+        InitialMarginRequiredForOrderParameters parameters)
+    {
+        return base.GetInitialMarginRequiredForOrder(parameters);
+    }
+
+    public override MaintenanceMargin GetMaintenanceMargin(
+        MaintenanceMarginParameters parameters)
+    {
+        return base.GetMaintenanceMargin(parameters);
+    }
+
+    protected override decimal GetMarginRemaining(
+        SecurityPortfolioManager portfolio,
+        Security security,
+        OrderDirection direction)
+    {
+        return base.GetMarginRemaining(portfolio, security, direction);
+    }
+
+    public override InitialMargin GetInitialMarginRequirement(
+        InitialMarginParameters parameters)
+    {
+        return base.GetInitialMarginRequirement(parameters);
+    }
+
+    public override HasSufficientBuyingPowerForOrderResult HasSufficientBuyingPowerForOrder(HasSufficientBuyingPowerForOrderParameters parameters)
+    {
+        return base.HasSufficientBuyingPowerForOrder(parameters);
+    }
+
+    public override GetMaximumOrderQuantityResult GetMaximumOrderQuantityForDeltaBuyingPower(GetMaximumOrderQuantityForDeltaBuyingPowerParameters parameters)
+    {
+        return base.GetMaximumOrderQuantityForDeltaBuyingPower(parameters);
+    }
+
+    public override GetMaximumOrderQuantityResult GetMaximumOrderQuantityForTargetBuyingPower(GetMaximumOrderQuantityForTargetBuyingPowerParameters parameters)
+    {
+        return base.GetMaximumOrderQuantityForTargetBuyingPower(parameters);
+    }
+
+    public override ReservedBuyingPowerForPosition GetReservedBuyingPowerForPosition(
+        ReservedBuyingPowerForPositionParameters parameters)
+    {
+        return base.GetReservedBuyingPowerForPosition(parameters);
+    }
+
+    public override BuyingPower GetBuyingPower(BuyingPowerParameters parameters)
+    {
+        return base.GetBuyingPower(parameters);
+    }
+}</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomBuyingPowerModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        security = self.add_equity('SPY', Resolution.DAILY)
+        security.set_buying_power_model(MyBuyingPowerModel())
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MyBuyingPowerModel(BuyingPowerModel):
+
+    def __init__(self, 
+         leverage: float = 2, 
+         required_free_buying_power_percent: float = 0):
+        super().__init__(leverage, required_free_buying_power_percent)
+
+    def get_leverage(self, security: Security) -> float: 
+        return super().get_leverage(security)
+
+    def set_leverage(self, security: Security, leverage: float) -> None: 
+        super().set_leverage(security, leverage)
+
+    def get_initial_margin_required_for_order(self,
+         parameters: InitialMarginRequiredForOrderParameters) -> InitialMargin:
+        return super().get_initial_margin_required_for_order(parameters)
+
+    def get_maintenance_margin(self,
+         parameters: MaintenanceMarginParameters) -> MaintenanceMargin: 
+        return super().get_maintenance_margin(parameters)
+
+    def get_margin_remaining(self,
+         portfolio: SecurityPortfolioManager,
+         security: Security,
+         direction: OrderDirection) -> float: 
+        return super().get_margin_remaining(portfolio, security, direction)
+
+    def get_initial_margin_requirement(self,
+         parameters: InitialMarginParameters) -> InitialMargin:
+        return super().get_initial_margin_requirement(parameters)
+
+    def has_sufficient_buying_power_for_order(self, 
+         parameters: HasSufficientBuyingPowerForOrderParameters
+        ) -> HasSufficientBuyingPowerForOrderResult: 
+        return super().has_sufficient_buying_power_for_order(parameters)
+
+    def get_maximum_order_quantity_for_delta_buying_power(self, 
+         parameters: GetMaximumOrderQuantityForDeltaBuyingPowerParameters
+        ) -> GetMaximumOrderQuantityResult:
+        return super().get_maximum_order_quantity_for_delta_buying_power(parameters)
+
+    def get_maximum_order_quantity_for_target_buying_power(self, 
+         parameters: GetMaximumOrderQuantityForTargetBuyingPowerParameters
+        ) -> GetMaximumOrderQuantityResult:
+        return super().get_maximum_order_quantity_for_target_buying_power(parameters)
+
+    def get_reserved_buying_power_for_position(self, 
+         parameters: ReservedBuyingPowerForPositionParameters
+        ) -> ReservedBuyingPowerForPosition:
+        return super().get_reserved_buying_power_for_position(parameters)
+
+    def get_buying_power(self,
+         parameters: BuyingPowerParameters) -> BuyingPower:
+        return super().get_buying_power(parameters)</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
 <h4>
  Other Examples
 </h4>

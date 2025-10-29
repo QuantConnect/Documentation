@@ -1,4 +1,201 @@
-  <div class="example-fieldset">
+<p>
+ The following examples demonstrate common practices for implementing a custom brokerage model.
+</p>
+<h4>
+ Example 1: Default Model Wrapper
+</h4>
+<p>
+ The following algorithm defines a subclass of the <code>DefaultBrokerageModel</code> and overrides the built-in members so you can easily customize the parts you need.
+</p>
+
+<div class="section-example-container testable testable">
+ <pre class="csharp">public class CustomBrokerageModelAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        SetBrokerageModel(new MyBrokerageModel());
+        AddEquity("SPY", Resolution.Daily);
+    }
+
+    /// OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
+    /// Slice object keyed by symbol containing the stock data
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+
+}
+
+class MyBrokerageModel : DefaultBrokerageModel
+{
+    public override decimal RequiredFreeBuyingPowerPercent { get; }
+
+    public new IReadOnlyDictionary&lt;SecurityType, string&gt; DefaultMarkets  = new Dictionary&lt;SecurityType, string&gt;
+    {
+        {SecurityType.Equity, Market.USA}
+    }.ToReadOnlyDictionary();
+
+    public MyBrokerageModel(AccountType accountType = AccountType.Margin)
+        : base(accountType)
+    {
+        
+    }
+
+    public override bool CanSubmitOrder(Security security, Order order,
+        out BrokerageMessageEvent message)
+    {
+        return base.CanSubmitOrder(security, order, out message);
+    }
+
+    public override bool CanUpdateOrder(Security security, Order order,
+        UpdateOrderRequest request, out BrokerageMessageEvent message)
+    {
+        return base.CanUpdateOrder(security, order, request, out message);
+    }
+
+    public override bool CanExecuteOrder(Security security, Order order)
+    {
+        return base.CanExecuteOrder(security, order);
+    }
+
+    public override void ApplySplit(List&lt;OrderTicket&gt; tickets, Split split)
+    {
+        base.ApplySplit(tickets, split);
+    }
+
+    public override decimal GetLeverage(Security security)
+    {
+        return base.GetLeverage(security);
+    }
+
+    public override IBenchmark GetBenchmark(SecurityManager securities)
+    {
+        return base.GetBenchmark(securities);
+    }
+
+    public override IFillModel GetFillModel(Security security)
+    {
+        return base.GetFillModel(security);
+    }
+
+    public override IFeeModel GetFeeModel(Security security)
+    {
+        return base.GetFeeModel(security);
+    }
+
+    public override ISlippageModel GetSlippageModel(Security security)
+    {
+        return base.GetSlippageModel(security);
+    }
+
+    public override ISettlementModel GetSettlementModel(Security security)
+    {
+        return base.GetSettlementModel(security);
+    }
+
+    public override IBuyingPowerModel GetBuyingPowerModel(Security security)
+    {
+        return base.GetBuyingPowerModel(security);
+    }
+
+    public override IMarginInterestRateModel GetMarginInterestRateModel(Security security)
+    {
+        return base.GetMarginInterestRateModel(security);
+    }
+
+    public override IShortableProvider GetShortableProvider(Security security)
+    {
+        return base.GetShortableProvider(security);
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomBrokerageModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.set_brokerage_model(MyBrokerageModel())
+        self.add_equity('SPY', Resolution.DAILY)
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MyBrokerageModel(DefaultBrokerageModel):
+    default_markets = {SecurityType.EQUITY: Market.USA}
+    required_free_buying_power_percent = 0
+
+    def __init__(self, account_type: AccountType = AccountType.MARGIN):
+        self.account_type = account_type
+    
+    def can_submit_order(self, security: Security, order: Order,
+         message: BrokerageMessageEvent) -> bool:
+        return super().can_submit_order(security, order, message)
+
+    def can_update_order(self, security: Security, order: Order,
+         request: UpdateOrderRequest, message: BrokerageMessageEvent) -> bool:
+        return super().can_update_order(security, order, request, message)
+
+    def can_execute_order(self, security: Security, order: Order) -> bool:
+        return super().can_execute_order(security, order)
+
+    def apply_split(self, tickets: List[OrderTicket], split: Split) -> None:
+        super().apply_split(tickets, split)
+
+    def get_leverage(self, security: Security) -> float:
+        return super().get_leverage(security)
+
+    def get_benchmark(self, securities: SecurityManager) -> IBenchmark:
+        return super().get_benchmark(securities)
+
+    def get_fill_model(self, security: Security) -> IFillModel:
+        return super().get_fill_model(security)
+
+    def get_fee_model(self, security: Security) -> IFeeModel:
+        return super().get_fee_model(security)
+
+    def get_slippage_model(self, security: Security) -> ISlippageModel:
+        return super().get_slippage_model(security)
+
+    def get_settlement_model(self, security: Security) -> ISettlementModel:
+        return super().get_settlement_model(security)
+
+    def get_buying_power_model(self, security: Security) -> IBuyingPowerModel:
+        return super().get_buying_power_model(security)
+
+    def get_margin_interest_rate_model(self, security: Security) -> IMarginInterestRateModel:
+        return super().get_margin_interest_rate_model(security)
+
+    def get_shortable_provider(self, security: Security) -> IShortableProvider:
+        return super().get_shortable_provider(security)</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
+
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+
+
+<div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
    
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BrokerageModelAlgorithm.py" target="_BLANK">

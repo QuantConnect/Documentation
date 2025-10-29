@@ -1,4 +1,78 @@
-  <div class="example-fieldset">
+<p>
+ The following examples demonstrate common practices for implementing a custom fee model.
+</p>
+<h4>
+ Example 1: Fixed Fees
+</h4>
+<p>
+ The following algorithm incurs a $0.50 fee for each order.
+</p>
+
+<div class="section-example-container testable testable">
+ <pre class="csharp">public class CustomFeeModelAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        var security = AddEquity("SPY", Resolution.Daily);
+        security.SetFeeModel(new MyFeeModel());
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+}
+
+public class MyFeeModel : FeeModel 
+{
+    public override OrderFee GetOrderFee(OrderFeeParameters parameters) 
+    {
+        return new OrderFee(new CashAmount(0.5m, "USD"));
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomFeeModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        security = self.add_equity('SPY', Resolution.DAILY)
+        security.set_fee_model(MyFeeModel())
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MyFeeModel(FeeModel):
+
+    def get_order_fee(self, parameters: OrderFeeParameters) -> OrderFee:
+        return OrderFee(CashAmount(0.5, 'USD'))</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+
+<div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
    
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py" target="_BLANK">

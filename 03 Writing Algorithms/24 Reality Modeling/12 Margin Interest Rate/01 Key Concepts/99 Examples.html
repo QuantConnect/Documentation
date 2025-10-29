@@ -206,3 +206,73 @@ class MyMarginInterestRateModel:
 }
  </script>
 </div>
+
+
+<h4>
+ Example 2: Fixed Dollar Rate
+</h4>
+<p>
+ The following algorithm defines custom margin interest rate model that reduces your cash by $1 at the top of each hour.
+</p>
+
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomFillModelAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        
+        var security = AddEquity("SPY", Resolution.Daily);
+        security.SetMarginInterestRateModel(new MyMarginInterestRateModel());
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+}
+
+public class MyMarginInterestRateModel : IMarginInterestRateModel 
+{
+    public void ApplyMarginInterestRate(MarginInterestRateParameters marginInterestRateParameters) 
+    {
+        var holdings = marginInterestRateParameters.Security.Holdings;
+        var positionValue = holdings.GetQuantityValue(holdings.Quantity);
+        positionValue.Cash.AddAmount(-1);
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomFillModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        security = self.add_equity('SPY', Resolution.DAILY)
+        security.set_margin_interest_rate_model(MyMarginInterestRateModel())
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MyMarginInterestRateModel:
+
+    def apply_margin_interest_rate(self, margin_interest_rate_parameters: MarginInterestRateParameters) -> None:
+        holdings = margin_interest_rate_parameters.security.holdings
+        position_value = holdings.get_quantity_value(holdings.quantity)
+        position_value.cash.add_amount(-1)</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>

@@ -1,4 +1,115 @@
-  <div class="example-fieldset">
+<p>
+ The following examples demonstrate common practices for implementing a custom volatility model.
+</p>
+<h4>
+ Example 1: Default Model Wrapper
+</h4>
+<p>
+ The following algorithm defines a subclass of the <code>BaseVolatilityModel</code> and overrides its built-in members so you can easily customize the parts you need.
+</p>
+
+<div class="section-example-container testable testable">
+ <pre class="csharp">public class CustomVolatilityModelAlgorithm : QCAlgorithm
+{
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        var security = AddEquity("SPY", Resolution.Daily);
+        security.VolatilityModel = new MyVolatilityModel();
+    }
+
+    /// OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
+    /// Slice object keyed by symbol containing the stock data
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            SetHoldings("SPY", 1);
+        }
+    }
+
+}
+
+public class MyVolatilityModel : BaseVolatilityModel
+{
+    public override decimal Volatility { get; }
+
+    public override void SetSubscriptionDataConfigProvider(
+        ISubscriptionDataConfigProvider subscriptionDataConfigProvider)
+    {
+        SubscriptionDataConfigProvider = subscriptionDataConfigProvider;
+    }
+
+    public override void Update(Security security, BaseData data)
+    {
+    }
+
+    public override IEnumerable&lt;HistoryRequest&gt; GetHistoryRequirements(
+        Security security,
+        DateTime utcTime)
+    {
+        return base.GetHistoryRequirements(security, utcTime);
+    }
+
+    public new IEnumerable&lt;HistoryRequest&gt; GetHistoryRequirements(
+        Security security, 
+        DateTime utcTime,
+        Resolution? resolution,
+        int barCount)
+    {
+        return base.GetHistoryRequirements(security, utcTime, resolution, barCount);
+    }
+}
+</pre>
+ <script class="csharp-result" type="text">
+  {}
+ </script>
+ <pre class="python">class CustomVolatilityModelAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        security = self.add_equity('SPY', Resolution.DAILY)
+        underlying_security.volatility_model = MyVolatilityModel()
+
+    def on_data(self, data: Slice) -> None:
+        if not self.portfolio.invested:
+            self.set_holdings('SPY', 1)
+
+
+class MyVolatilityModel(BaseVolatilityModel):
+    volatility: float = 0
+
+    def set_subscription_data_config_provider(self,
+        subscription_data_config_provider: ISubscriptionDataConfigProvider) -> None:
+        super().set_subscription_data_config_provider(subscription_data_config_provider)
+
+    def update(self, security: Security, data: BaseData) -> None:
+        pass
+
+    def get_history_requirements(self,
+         security: Security,
+         utc_time: datetime,
+         resolution: resolution = None,
+         bar_count: int = None) -> List[HistoryRequest]:
+        return super().get_history_requirements(security, utc_time, resolution, bar_count)</pre>
+ <script class="python-result" type="text">
+  {}
+ </script>
+</div>
+
+
+<h4>
+ Other Examples
+</h4>
+<p>
+ For more examples, see the following algorithms:
+</p>
+<div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
    
     <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomVolatilityModelAlgorithm.py" target="_BLANK">
