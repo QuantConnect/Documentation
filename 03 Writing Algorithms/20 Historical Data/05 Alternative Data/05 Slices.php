@@ -33,7 +33,7 @@
 </p>
 
 <div class="section-example-container">
-      <pre class="csharp">// Get the latest 3 data points of all the securities/datasets in the <?=$writingEnvironment ? "algorithm" : "notebook" ?>, packaged into Slice objects.
+      <pre class="csharp">// Get the latest 3 data points of all the securities/datasets in the <?=$writingAlgorithms ? "algorithm" : "notebook" ?>, packaged into Slice objects.
 var history = History(3);
 // Iterate through each Slice and get the synchronized data points at each moment in time.
 foreach (var slice in history)
