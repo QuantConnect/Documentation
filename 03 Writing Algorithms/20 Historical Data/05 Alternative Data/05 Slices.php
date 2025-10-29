@@ -25,11 +25,11 @@
 }</pre>
 </div>
 
-<p class='csharp'>If you don't pass any <code>Symbol</code> objects, it returns data for all the data subscriptions in your <?=$writingEnvironment ? "algorithm" : "notebook" ?>, so the result may include more than just alternative data.</p>
+<p class='csharp'>If you don't pass any <code>Symbol</code> objects, it returns data for all the data subscriptions in your <?=$writingAlgorithms ? "algorithm" : "notebook" ?>, so the result may include more than just alternative data.</p>
 
 <p class='python'>
   To request <code>Slice</code> objects of historical data, call the <code>history</code> method without providing any <code>Symbol</code> objects.
-  It returns data for all the data subscriptions in your <?=$writingEnvironment ? "algorithm" : "notebook" ?>, so the result may include more than just alternative data.
+  It returns data for all the data subscriptions in your <?=$writingAlgorithms ? "algorithm" : "notebook" ?>, so the result may include more than just alternative data.
 </p>
 
 <div class="section-example-container">
@@ -56,7 +56,7 @@ foreach (var slice in history)
         # Add an asset and an alternative dataset.
         symbol = self.add_crypto('BTCUSD', Resolution.DAILY, Market.BITFINEX).symbol
         dataset_symbol = self.add_data(BitcoinMetadata, symbol).symbol
-        # Get the latest 3 data points of all the securities/datasets in the <?=$writingEnvironment ? "algorithm" : "notebook" ?>, packaged into Slice objects.
+        # Get the latest 3 data points of all the securities/datasets in the <?=$writingAlgorithms ? "algorithm" : "notebook" ?>, packaged into Slice objects.
         history = self.history(3)
         # Iterate through each Slice and get the synchronized data points at each moment in time.
         for slice_ in history:
