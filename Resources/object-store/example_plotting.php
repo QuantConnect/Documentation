@@ -18,21 +18,21 @@
     def initialize(self):
         self.add_equity("SPY")
     
-        self.content = ''
+        self._content = ''
         self._sma = self.sma("SPY", 22)</pre>
     </div>
 
-    <p>The algorithm will save <code class='csharp'>_content</code><code class='python'>self.content</code> to the Object Store.</p>
+    <p>The algorithm will save <code class='csharp'>_content</code><code class='python'>self._content</code> to the Object Store.</p>
 
-    <li>Save the indicator data as <code>string</code> in <code class='csharp'>_content</code><code class='python'>self.content</code>.</li>
+    <li>Save the indicator data as <code>string</code> in <code class='csharp'>_content</code><code class='python'>self._content</code>.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice data)
 {
     _content += $"{_sma.Current.EndTime},{_sma}\n";
 }</pre>
     <pre class='python'>def on_data(self, data: Slice):
-    self.plot('SMA', 'Value', self.sma.current.value)
-    self.content += f'{self.sma.current.end_time},{self.sma.current.value}\n'</pre>
+    self.plot('SMA', 'Value', self._sma.current.value)
+    self._content += f'{self._sma.current.end_time},{self._sma.current.value}\n'</pre>
     </div>
     
     <li>In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>OnEndOfAlgorithm</a> method, save the indicator data to the Object Store.</li>
@@ -42,7 +42,7 @@
     ObjectStore.Save("sma_values_csharp", _content);
 }</pre>
     <pre class='python'>def on_end_of_algorithm(self):
-    self.object_store.save('sma_values_python', self.content)</pre>
+    self.object_store.save('sma_values_python', self._content)</pre>
     </div>
     
     <li><a href='/docs/v2/research-environment/key-concepts/getting-started#03-Open-Notebooks'>Open the Research Environment</a> and create a <code>QuantBook</code>.</li>
@@ -163,15 +163,15 @@ var result = HTML(GenericChart.toChartHTML(chart));</pre>
         self.set_cash(100000)
         self.add_equity("SPY", Resolution.MINUTE)
         
-        self.content = ''
+        self._content = ''
         # Create SMA indicator for referencing.
-        self.sma = self.SMA("SPY", 22)
+        self._sma = self.sma("SPY", 22)
         
     def on_data(self, data: Slice) -&gt; None:
         # Cache the indicator data point to save it.
-        self.content += f'{self.sma.current.end_time},{self.sma.current.value}\n'
+        self._content += f'{self._sma.current.end_time},{self._sma.current.value}\n'
 
     def on_end_of_algorithm(self) -&gt; None:
         # Save the indicator values to object store for logging.
-        self.object_store.save('sma_values_python', self.content)</pre>
+        self.object_store.save('sma_values_python', self._content)</pre>
 </div>
