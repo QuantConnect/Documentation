@@ -47,13 +47,13 @@ public class MyCustomDataType : BaseData
 
 class MyCustomDataType(PythonData):
     def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -> BaseData:
-        if not line[0].isdigit():
-            # Display the line with the header
-            MyCustomDataType.ALGORITHM.Debug(f"HEADER: {line}");
-            return None
         data = line.split(',')
         custom = MyCustomDataType()
         custom.symbol = config.symbol
+        if not line[0].isdigit():
+            # Display the line with the header
+            MyCustomDataType.ALGORITHM.Debug(f"HEADER: {line}")
+            return custom
         custom.end_time = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
         custom.value = float(data[1])
         return custom</pre>
