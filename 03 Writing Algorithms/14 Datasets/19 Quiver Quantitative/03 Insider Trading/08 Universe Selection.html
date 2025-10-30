@@ -15,7 +15,7 @@
                 continue
             if symbol not in dollar_volume_by_symbol:
                 dollar_volume_by_symbol[symbol] = 0
-            dollar_volume_by_symbol[symbol] += data.shares * data.price_per_share
+            dollar_volume_by_symbol[symbol] += (data.shares or 0) * data.price_per_share
         return [
             symbol for symbol, _ in sorted(dollar_volume_by_symbol.items(), key=lambda kvp: kvp[1])[-10:]
         ]</pre>
