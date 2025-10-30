@@ -5,31 +5,72 @@
 {
     public override void Initialize()
     {
-        var symbol = AddEquity("SPY").Symbol;
-        // Before creating the indicator, create the dividend yield model
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        // Create the dividend yield model
         var dividendYieldModel = new MyDividendYieldModel();
-        _iv = new ImpliedVolatility(symbol, RiskFreeInterestRateModel, dividendYieldModel, OptionPricingModelType.BlackScholes);
+        // Add the Option contracts.
+        var underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+        var strike = 595m;
+        var expiry = new DateTime(2024, 12, 30);
+        var option = AddContract(underlying, OptionRight.Put, strike, expiry);
+        var mirror = AddContract(underlying, OptionRight.Call, strike, expiry);
+        // Add the indicator.
+        var iv = new ImpliedVolatility(option, RiskFreeInterestRateModel, dividendYieldModel, mirror);
+    }
+
+    private Symbol AddContract(Symbol underlyingSymbol, OptionRight right, decimal strike, DateTime expiry)
+    {
+        var contractSymbol = QuantConnect.Symbol.CreateOption(underlyingSymbol, Market.USA, OptionStyle.American, right, strike, expiry);
+        AddOptionContract(contractSymbol);
+        return contractSymbol;
     }
 }
 
 // Define the custom dividend yield model
 public class MyDividendYieldModel : IDividendYieldModel 
 {
+    decimal _yield = 0.02m;
+    public decimal GetDividendYield(DateTime date) 
+    {
+        return _yield;
+    }
     public decimal GetDividendYield(DateTime date, decimal price) 
     {
-        return 0.02m;
+        return _yield;
     }
 }</pre>
-<pre class="python">class CustomDividendYieldModelExampleAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        symbol = self.add_equity("SPY").symbol
-        # Before creating the indicator, create the dividend yield model
+<pre class="python">from datetime import date
+
+
+class CustomDividendYieldModelExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        # Create the dividend yield model.
         dividend_yield_model = MyDividendYieldModel()
-        self.iv = ImpliedVolatility(symbol, self.risk_free_interest_rate_model, dividend_yield_model, OptionPricingModelType.BLACK_SCHOLES)
+        # Add the Option contracts.
+        underlying_symbol = self.add_equity('SPY', data_normalization_mode=DataNormalizationMode.RAW).symbol
+        strike = 595
+        expiry = datetime(2024, 12, 30)
+        option = self._add_contract(underlying_symbol, OptionRight.PUT, strike, expiry)
+        mirror = self._add_contract(underlying_symbol, OptionRight.CALL, strike, expiry)
+        # Add the indicator.
+        iv = ImpliedVolatility(option, self.risk_free_interest_rate_model, dividend_yield_model, mirror)
     
+    def _add_contract(self, underlying_symbol, right, strike, expiry) -> Symbol:
+        contract_symbol = Symbol.create_option(
+            underlying_symbol, Market.USA, OptionStyle.AMERICAN, right, strike, expiry
+        )
+        self.add_option_contract(contract_symbol)
+        return contract_symbol
+    
+
 # Define the custom dividend yield model
-class MyDividendYieldModel:
-    def get_dividend_yield(self, date: datetime, float: price) -&gt; float:
+class MyDividendYieldModel(DividendYieldProvider):
+    
+    def get_dividend_yield(self, dt: datetime | date, price: float | None = None) -> float:
         return 0.02</pre>
 </div>
 
