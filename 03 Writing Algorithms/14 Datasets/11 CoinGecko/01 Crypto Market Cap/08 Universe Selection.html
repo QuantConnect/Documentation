@@ -11,9 +11,9 @@
             for x in self.symbol_properties_database.get_symbol_properties_list(self._market) 
             if x.value.quote_currency == self.account_currency
         ]
-        self._universe = self.add_universe(CoinGeckoUniverse, self._select_assets)
+        self._universe = self.add_universe(CoinGeckoUniverse, 'CoinGeckoUniverse', Resolution.DAILY, self._select_assets)
 
-    def _select_assets(self, data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
+    def _select_assets(self, data: List[CoinGecko]) -&gt; List[Symbol]:
         for datum in data:
             self.debug(f'{datum.coin},{datum.market_cap},{datum.price}')
 
