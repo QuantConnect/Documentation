@@ -1,26 +1,26 @@
 <p>To create an automatic indicators for <code>ThreeInside</code>, call the <code class='csharp'>ThreeInside</code><code class='python'>three_inside</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>ThreeInside</code><code class='python'>three_inside</code> method creates a <code>ThreeInside</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 <div class="section-example-container">
 <pre class="csharp">public class ThreeInsideAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private ThreeInside _threeInside;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _threeInside = CandlestickPatterns.ThreeInside(_symbol);
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
         if (_threeInside.IsReady)
-        &lcub;
+        {
             // The current value of _threeInside is represented by itself (_threeInside)
             // or _threeInside.Current.Value
             Plot("ThreeInside", "threeInside", _threeInside);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class ThreeInsideAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -30,34 +30,34 @@
         if self._three_inside.is_ready:
             # The current value of self._three_inside is represented by self._three_inside.current.value
             self.plot("ThreeInside", "three_inside", self._three_inside.current.value)</pre></div>
-<p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1CandlestickPatterns.html">CandlestickPatterns class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/CandlestickPatterns/#QuantConnect.Algorithm.CandlestickPatterns.three_inside">CandlestickPatterns class</a>.</p>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1CandlestickPatterns.html">CandlestickPatterns class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/CandlestickPatterns/#QuantConnect.Algorithm.CandlestickPatterns.three_inside">CandlestickPatterns class</a>.</p>
 <p>You can manually create a <code>ThreeInside</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method with a <code>TradeBar</code>. The indicator will only be ready after you prime it with enough data.</p>
 <div class="section-example-container">
 <pre class="csharp">public class ThreeInsideAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private ThreeInside _threeInside;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _threeInside = new ThreeInside();
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _threeInside.Update(bar);
 
         if (_threeInside.IsReady)
-        &lcub;
+        {
             // The current value of _threeInside is represented by itself (_threeInside)
             // or _threeInside.Current.Value
             Plot("ThreeInside", "threeInside", _threeInside);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class ThreeInsideAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -71,4 +71,4 @@
         if self._three_inside.is_ready:
             # The current value of self._three_inside is represented by self._three_inside.current.value
             self.plot("ThreeInside", "three_inside", self._three_inside.current.value)</pre></div>
-<p>For more information about this indicator, see its <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1CandlestickPatterns_1_1ThreeInside.html">reference</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/CandlestickPatterns/ThreeInside">reference</a>.</p>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1CandlestickPatterns_1_1ThreeInside.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/CandlestickPatterns/ThreeInside">reference</a>.</p>

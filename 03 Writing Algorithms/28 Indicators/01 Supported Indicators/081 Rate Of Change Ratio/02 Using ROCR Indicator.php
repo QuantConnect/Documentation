@@ -1,27 +1,27 @@
 <p>To create an automatic indicators for <code>RateOfChangeRatio</code>, call the <code class='csharp'>ROCR</code><code class='python'>rocr</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>ROCR</code><code class='python'>rocr</code> method creates a <code>RateOfChangeRatio</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 <div class="section-example-container">
 <pre class="csharp">public class RateOfChangeRatioAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private RateOfChangeRatio _rocr;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _rocr = ROCR(_symbol, 10);
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
 
         if (_rocr.IsReady)
-        &lcub;
+        {
             // The current value of _rocr is represented by itself (_rocr)
             // or _rocr.Current.Value
             Plot("RateOfChangeRatio", "rocr", _rocr);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class RateOfChangeRatioAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -32,34 +32,34 @@
         if self._rocr.is_ready:
             # The current value of self._rocr is represented by self._rocr.current.value
             self.plot("RateOfChangeRatio", "rocr", self._rocr.current.value)</pre></div>
-<p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.rocr">QCAlgorithm class</a>.</p>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.rocr">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>RateOfChangeRatio</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
 <div class="section-example-container">
 <pre class="csharp">public class RateOfChangeRatioAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private RateOfChangeRatio _rateofchangeratio;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _rateofchangeratio = new RateOfChangeRatio(10);
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _rateofchangeratio.Update(bar.EndTime, bar.Close);
 
         if (_rateofchangeratio.IsReady)
-        &lcub;
+        {
             // The current value of _rateofchangeratio is represented by itself (_rateofchangeratio)
             // or _rateofchangeratio.Current.Value
             Plot("RateOfChangeRatio", "rateofchangeratio", _rateofchangeratio);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class RateOfChangeRatioAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -73,4 +73,4 @@
         if self._rateofchangeratio.is_ready:
             # The current value of self._rateofchangeratio is represented by self._rateofchangeratio.current.value
             self.plot("RateOfChangeRatio", "rateofchangeratio", self._rateofchangeratio.current.value)</pre></div>
-<p>For more information about this indicator, see its <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1RateOfChangeRatio.html">reference</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/RateOfChangeRatio">reference</a>.</p>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1RateOfChangeRatio.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/RateOfChangeRatio">reference</a>.</p>

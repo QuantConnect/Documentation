@@ -1,30 +1,30 @@
 <p>To create an automatic indicators for <code>DonchianChannel</code>, call the <code class='csharp'>DCH</code><code class='python'>dch</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>DCH</code><code class='python'>dch</code> method creates a <code>DonchianChannel</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 <div class="section-example-container">
 <pre class="csharp">public class DonchianChannelAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private DonchianChannel _dch;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _dch = DCH(_symbol, 20, 20);
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
 
         if (_dch.IsReady)
-        &lcub;
+        {
             // The current value of _dch is represented by itself (_dch)
             // or _dch.Current.Value
             Plot("DonchianChannel", "dch", _dch);
             // Plot all properties of abands
             Plot("DonchianChannel", "upperband", _dch.UpperBand);
             Plot("DonchianChannel", "lowerband", _dch.LowerBand);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class DonchianChannelAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -38,37 +38,37 @@
             # Plot all attributes of self._dch
             self.plot("DonchianChannel", "upper_band", self._dch.upper_band.current.value)
             self.plot("DonchianChannel", "lower_band", self._dch.lower_band.current.value)</pre></div>
-<p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.dch">QCAlgorithm class</a>.</p>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.dch">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>DonchianChannel</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
 <div class="section-example-container">
 <pre class="csharp">public class DonchianChannelAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private DonchianChannel _donchianchannel;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _donchianchannel = new DonchianChannel(20, 20);
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _donchianchannel.Update(bar.EndTime, bar.Close);
 
         if (_donchianchannel.IsReady)
-        &lcub;
+        {
             // The current value of _donchianchannel is represented by itself (_donchianchannel)
             // or _donchianchannel.Current.Value
             Plot("DonchianChannel", "donchianchannel", _donchianchannel);
             // Plot all properties of abands
             Plot("DonchianChannel", "upperband", _donchianchannel.UpperBand);
             Plot("DonchianChannel", "lowerband", _donchianchannel.LowerBand);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class DonchianChannelAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -85,4 +85,4 @@
             # Plot all attributes of self._donchianchannel
             self.plot("DonchianChannel", "upper_band", self._donchianchannel.upper_band.current.value)
             self.plot("DonchianChannel", "lower_band", self._donchianchannel.lower_band.current.value)</pre></div>
-<p>For more information about this indicator, see its <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1DonchianChannel.html">reference</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/DonchianChannel">reference</a>.</p>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1DonchianChannel.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/DonchianChannel">reference</a>.</p>

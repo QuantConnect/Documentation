@@ -1,26 +1,26 @@
 <p>To create an automatic indicators for <code>Engulfing</code>, call the <code class='csharp'>Engulfing</code><code class='python'>engulfing</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>Engulfing</code><code class='python'>engulfing</code> method creates a <code>Engulfing</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 <div class="section-example-container">
 <pre class="csharp">public class EngulfingAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private Engulfing _engulfing;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _engulfing = CandlestickPatterns.Engulfing(_symbol);
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
         if (_engulfing.IsReady)
-        &lcub;
+        {
             // The current value of _engulfing is represented by itself (_engulfing)
             // or _engulfing.Current.Value
             Plot("Engulfing", "engulfing", _engulfing);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class EngulfingAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -30,34 +30,34 @@
         if self._engulfing.is_ready:
             # The current value of self._engulfing is represented by self._engulfing.current.value
             self.plot("Engulfing", "engulfing", self._engulfing.current.value)</pre></div>
-<p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1CandlestickPatterns.html">CandlestickPatterns class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/CandlestickPatterns/#QuantConnect.Algorithm.CandlestickPatterns.engulfing">CandlestickPatterns class</a>.</p>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1CandlestickPatterns.html">CandlestickPatterns class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/CandlestickPatterns/#QuantConnect.Algorithm.CandlestickPatterns.engulfing">CandlestickPatterns class</a>.</p>
 <p>You can manually create a <code>Engulfing</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method with a <code>TradeBar</code>. The indicator will only be ready after you prime it with enough data.</p>
 <div class="section-example-container">
 <pre class="csharp">public class EngulfingAlgorithm : QCAlgorithm
-&lcub;
+{
     private Symbol _symbol;
     private Engulfing _engulfing;
 
     public override void Initialize()
-    &lcub;
+    {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
         _engulfing = new Engulfing();
-    &rcub;
+    }
 
     public override void OnData(Slice data)
-    &lcub;
+    {
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _engulfing.Update(bar);
 
         if (_engulfing.IsReady)
-        &lcub;
+        {
             // The current value of _engulfing is represented by itself (_engulfing)
             // or _engulfing.Current.Value
             Plot("Engulfing", "engulfing", _engulfing);
-        &rcub;
-    &rcub;
-&rcub;</pre>
+        }
+    }
+}</pre>
 <pre class="python">class EngulfingAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
@@ -71,4 +71,4 @@
         if self._engulfing.is_ready:
             # The current value of self._engulfing is represented by self._engulfing.current.value
             self.plot("Engulfing", "engulfing", self._engulfing.current.value)</pre></div>
-<p>For more information about this indicator, see its <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1CandlestickPatterns_1_1Engulfing.html">reference</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/CandlestickPatterns/Engulfing">reference</a>.</p>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1CandlestickPatterns_1_1Engulfing.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/CandlestickPatterns/Engulfing">reference</a>.</p>

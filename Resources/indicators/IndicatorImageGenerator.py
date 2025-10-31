@@ -94,7 +94,7 @@ indicators = {
         AutoRegressiveIntegratedMovingAverage(1, 1, 1, 20, True), 
         'AutoRegressiveIntegratedMovingAverage(1, 1, 1, 20, true)', 
         'ARIMA(_symbol, 1, 1, 1, 20)', 
-        'self.arima(self._symbol, 1, 1, 20)'
+        'self.arima(self._symbol, 1, 1, 1, 20)'
     ),
     'average-directional-index': IndicatorInfo(
         AverageDirectionalIndex(20), 
@@ -721,7 +721,7 @@ special_indicators = {
         ArmsIndex(""), 
         'ArmsIndex("")', 
         'TRIN([_symbol, _reference])', 
-        'self.tring([self._symbol, self._reference])'
+        'self.trin([self._symbol, self._reference])'
     ),
     'alpha': IndicatorInfo(
         Alpha("", self._symbol, self._reference, 20), 
