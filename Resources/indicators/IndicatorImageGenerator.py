@@ -768,7 +768,7 @@ special_indicators = {
     # See https://github.com/QuantConnect/Lean/issues/8808
     'target-downside-deviation': IndicatorInfo(
         IndicatorExtensions.of(TargetDownsideDeviation(50), RateOfChange(1)), 
-        'IndicatorExtensions.Of(new TargetDownsideDeviation(50), new RateOfChange(1))',
+        'TargetDownsideDeviation(50).Of(new RateOfChange(1))',
         'TDD(_symbol, 50)', 
         'self.tdd(self._symbol, 50)'
     ),
