@@ -1,5 +1,6 @@
-<p>To create an automatic indicators for <code>PivotPointsHighLow</code>, call the <code class='csharp'>PPHL</code><code class='python'>pphl</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>PPHL</code><code class='python'>pphl</code> method creates a <code>PivotPointsHighLow</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p><div class="section-example-container">
-    <pre class="csharp">public class PivotPointsHighLowAlgorithm : QCAlgorithm
+<p>To create an automatic indicators for <code>PivotPointsHighLow</code>, call the <code class='csharp'>PPHL</code><code class='python'>pphl</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>PPHL</code><code class='python'>pphl</code> method creates a <code>PivotPointsHighLow</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container">
+<pre class="csharp">public class PivotPointsHighLowAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private PivotPointsHighLow _pphl;
@@ -12,6 +13,7 @@
 
     public override void OnData(Slice data)
     &lcub;
+
         if (_pphl.IsReady)
         &lcub;
             // The current value of _pphl is represented by itself (_pphl)
@@ -20,19 +22,21 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class PivotPointsHighLowAlgorithm(QCAlgorithm):
+<pre class="python">class PivotPointsHighLowAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._pphl = self.pphl(self._symbol, 10, 10, 100)
 
     def on_data(self, slice: Slice) -> None:
+
         if self._pphl.is_ready:
             # The current value of self._pphl is represented by self._pphl.current.value
             self.plot("PivotPointsHighLow", "pphl", self._pphl.current.value)</pre></div>
 <p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.pphl">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>PivotPointsHighLow</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
-<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p><div class="section-example-container">
-    <pre class="csharp">public class PivotPointsHighLowAlgorithm : QCAlgorithm
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container">
+<pre class="csharp">public class PivotPointsHighLowAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private PivotPointsHighLow _pivotpointshighlow;
@@ -47,6 +51,7 @@
     &lcub;
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _pivotpointshighlow.Update(bar.EndTime, bar.Close);
+
         if (_pivotpointshighlow.IsReady)
         &lcub;
             // The current value of _pivotpointshighlow is represented by itself (_pivotpointshighlow)
@@ -55,7 +60,7 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class PivotPointsHighLowAlgorithm(QCAlgorithm):
+<pre class="python">class PivotPointsHighLowAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._pivotpointshighlow = PivotPointsHighLow(10, 10, 100)
@@ -64,6 +69,7 @@
         bar = slice.bars.get(self._symbol)
         if bar:
             self._pivotpointshighlow.update(bar.end_time, bar.close)
+
         if self._pivotpointshighlow.is_ready:
             # The current value of self._pivotpointshighlow is represented by self._pivotpointshighlow.current.value
             self.plot("PivotPointsHighLow", "pivotpointshighlow", self._pivotpointshighlow.current.value)</pre></div>

@@ -1,5 +1,6 @@
-<p>To create an automatic indicators for <code>DonchianChannel</code>, call the <code class='csharp'>DCH</code><code class='python'>dch</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>DCH</code><code class='python'>dch</code> method creates a <code>DonchianChannel</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p><div class="section-example-container">
-    <pre class="csharp">public class DonchianChannelAlgorithm : QCAlgorithm
+<p>To create an automatic indicators for <code>DonchianChannel</code>, call the <code class='csharp'>DCH</code><code class='python'>dch</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>DCH</code><code class='python'>dch</code> method creates a <code>DonchianChannel</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container">
+<pre class="csharp">public class DonchianChannelAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private DonchianChannel _dch;
@@ -12,6 +13,7 @@
 
     public override void OnData(Slice data)
     &lcub;
+
         if (_dch.IsReady)
         &lcub;
             // The current value of _dch is represented by itself (_dch)
@@ -23,12 +25,13 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class DonchianChannelAlgorithm(QCAlgorithm):
+<pre class="python">class DonchianChannelAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._dch = self.dch(self._symbol, 20, 20)
 
     def on_data(self, slice: Slice) -> None:
+
         if self._dch.is_ready:
             # The current value of self._dch is represented by self._dch.current.value
             self.plot("DonchianChannel", "dch", self._dch.current.value)
@@ -37,8 +40,9 @@
             self.plot("DonchianChannel", "lower_band", self._dch.lower_band.current.value)</pre></div>
 <p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.dch">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>DonchianChannel</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
-<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p><div class="section-example-container">
-    <pre class="csharp">public class DonchianChannelAlgorithm : QCAlgorithm
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container">
+<pre class="csharp">public class DonchianChannelAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private DonchianChannel _donchianchannel;
@@ -53,6 +57,7 @@
     &lcub;
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _donchianchannel.Update(bar.EndTime, bar.Close);
+
         if (_donchianchannel.IsReady)
         &lcub;
             // The current value of _donchianchannel is represented by itself (_donchianchannel)
@@ -64,7 +69,7 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class DonchianChannelAlgorithm(QCAlgorithm):
+<pre class="python">class DonchianChannelAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._donchianchannel = DonchianChannel(20, 20)
@@ -73,6 +78,7 @@
         bar = slice.bars.get(self._symbol)
         if bar:
             self._donchianchannel.update(bar.end_time, bar.close)
+
         if self._donchianchannel.is_ready:
             # The current value of self._donchianchannel is represented by self._donchianchannel.current.value
             self.plot("DonchianChannel", "donchianchannel", self._donchianchannel.current.value)

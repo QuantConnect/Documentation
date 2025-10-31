@@ -1,5 +1,6 @@
-<p>To create an automatic indicators for <code>Momentum</code>, call the <code class='csharp'>MOM</code><code class='python'>mom</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>MOM</code><code class='python'>mom</code> method creates a <code>Momentum</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p><div class="section-example-container">
-    <pre class="csharp">public class MomentumAlgorithm : QCAlgorithm
+<p>To create an automatic indicators for <code>Momentum</code>, call the <code class='csharp'>MOM</code><code class='python'>mom</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>MOM</code><code class='python'>mom</code> method creates a <code>Momentum</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container">
+<pre class="csharp">public class MomentumAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private Momentum _mom;
@@ -12,6 +13,7 @@
 
     public override void OnData(Slice data)
     &lcub;
+
         if (_mom.IsReady)
         &lcub;
             // The current value of _mom is represented by itself (_mom)
@@ -20,19 +22,21 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class MomentumAlgorithm(QCAlgorithm):
+<pre class="python">class MomentumAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._mom = self.mom(self._symbol, 20)
 
     def on_data(self, slice: Slice) -> None:
+
         if self._mom.is_ready:
             # The current value of self._mom is represented by self._mom.current.value
             self.plot("Momentum", "mom", self._mom.current.value)</pre></div>
 <p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.mom">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>Momentum</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
-<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p><div class="section-example-container">
-    <pre class="csharp">public class MomentumAlgorithm : QCAlgorithm
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container">
+<pre class="csharp">public class MomentumAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private Momentum _momentum;
@@ -47,6 +51,7 @@
     &lcub;
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _momentum.Update(bar.EndTime, bar.Close);
+
         if (_momentum.IsReady)
         &lcub;
             // The current value of _momentum is represented by itself (_momentum)
@@ -55,7 +60,7 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class MomentumAlgorithm(QCAlgorithm):
+<pre class="python">class MomentumAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._momentum = Momentum(20)
@@ -64,6 +69,7 @@
         bar = slice.bars.get(self._symbol)
         if bar:
             self._momentum.update(bar.end_time, bar.close)
+
         if self._momentum.is_ready:
             # The current value of self._momentum is represented by self._momentum.current.value
             self.plot("Momentum", "momentum", self._momentum.current.value)</pre></div>

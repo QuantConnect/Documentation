@@ -1,5 +1,6 @@
-<p>To create an automatic indicators for <code>Vega</code>, call the <code class='csharp'>V</code><code class='python'>v</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>V</code><code class='python'>v</code> method creates a <code>Vega</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p><div class="section-example-container">
-    <pre class="csharp">public class VegaAlgorithm : QCAlgorithm
+<p>To create an automatic indicators for <code>Vega</code>, call the <code class='csharp'>V</code><code class='python'>v</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>V</code><code class='python'>v</code> method creates a <code>Vega</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container">
+<pre class="csharp">public class VegaAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol, _option, _mirrorOption;
     private Vega _v;
@@ -28,7 +29,7 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class VegaAlgorithm(QCAlgorithm):
+<pre class="python">class VegaAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 9, 20)
@@ -46,8 +47,9 @@
             self.plot("Vega", "v", self._v.current.value)</pre></div>
 <p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.v">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>Vega</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
-<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p><div class="section-example-container">
-    <pre class="csharp">public class VegaAlgorithm : QCAlgorithm
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container">
+<pre class="csharp">public class VegaAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol, _option, _mirrorOption;
     private Vega _vega;
@@ -77,6 +79,7 @@
             _vega.Update(new IndicatorDataPoint(_option, quoteBar.EndTime, quoteBar.Close));
         if (data.QuoteBars.TryGetValue(_mirrorOption, out quoteBar))
             _vega.Update(new IndicatorDataPoint(_mirrorOption, quoteBar.EndTime, quoteBar.Close));
+
         if (_vega.IsReady)
         &lcub;
             // The current value of _vega is represented by itself (_vega)
@@ -85,7 +88,7 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class VegaAlgorithm(QCAlgorithm):
+<pre class="python">class VegaAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 9, 20)
@@ -110,6 +113,7 @@
         bar = slice.quote_bars.get(self._mirror_option)
         if bar:
             self._vega.update(IndicatorDataPoint(self._mirror_option, bar.end_time, bar.close))
+
         if self._vega.is_ready:
             # The current value of self._vega is represented by self._vega.current.value
             self.plot("Vega", "vega", self._vega.current.value)</pre></div>

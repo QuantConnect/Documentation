@@ -1,5 +1,6 @@
-<p>To create an automatic indicators for <code>SqueezeMomentum</code>, call the <code class='csharp'>SM</code><code class='python'>sm</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>SM</code><code class='python'>sm</code> method creates a <code>SqueezeMomentum</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p><div class="section-example-container">
-    <pre class="csharp">public class SqueezeMomentumAlgorithm : QCAlgorithm
+<p>To create an automatic indicators for <code>SqueezeMomentum</code>, call the <code class='csharp'>SM</code><code class='python'>sm</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>SM</code><code class='python'>sm</code> method creates a <code>SqueezeMomentum</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container">
+<pre class="csharp">public class SqueezeMomentumAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private SqueezeMomentum _sm;
@@ -12,6 +13,7 @@
 
     public override void OnData(Slice data)
     &lcub;
+
         if (_sm.IsReady)
         &lcub;
             // The current value of _sm is represented by itself (_sm)
@@ -23,12 +25,13 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class SqueezeMomentumAlgorithm(QCAlgorithm):
+<pre class="python">class SqueezeMomentumAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._sm = self.sm(self._symbol, 20, 2, 20, 1.5)
 
     def on_data(self, slice: Slice) -> None:
+
         if self._sm.is_ready:
             # The current value of self._sm is represented by self._sm.current.value
             self.plot("SqueezeMomentum", "sm", self._sm.current.value)
@@ -37,8 +40,9 @@
             self.plot("SqueezeMomentum", "keltner_channels", self._sm.keltner_channels.current.value)</pre></div>
 <p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.sm">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>SqueezeMomentum</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
-<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p><div class="section-example-container">
-    <pre class="csharp">public class SqueezeMomentumAlgorithm : QCAlgorithm
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container">
+<pre class="csharp">public class SqueezeMomentumAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private SqueezeMomentum _squeezemomentum;
@@ -53,6 +57,7 @@
     &lcub;
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _squeezemomentum.Update(bar.EndTime, bar.Close);
+
         if (_squeezemomentum.IsReady)
         &lcub;
             // The current value of _squeezemomentum is represented by itself (_squeezemomentum)
@@ -64,7 +69,7 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class SqueezeMomentumAlgorithm(QCAlgorithm):
+<pre class="python">class SqueezeMomentumAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._squeezemomentum = SqueezeMomentum("SM", 20, 2, 20, 1.5)
@@ -73,6 +78,7 @@
         bar = slice.bars.get(self._symbol)
         if bar:
             self._squeezemomentum.update(bar.end_time, bar.close)
+
         if self._squeezemomentum.is_ready:
             # The current value of self._squeezemomentum is represented by self._squeezemomentum.current.value
             self.plot("SqueezeMomentum", "squeezemomentum", self._squeezemomentum.current.value)

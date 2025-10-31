@@ -1,5 +1,6 @@
-<p>To create an automatic indicators for <code>AdvanceDeclineVolumeRatio</code>, call the <code class='csharp'>ADVR</code><code class='python'>advr</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>ADVR</code><code class='python'>advr</code> method creates a <code>AdvanceDeclineVolumeRatio</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p><div class="section-example-container">
-    <pre class="csharp">public class AdvanceDeclineVolumeRatioAlgorithm : QCAlgorithm
+<p>To create an automatic indicators for <code>AdvanceDeclineVolumeRatio</code>, call the <code class='csharp'>ADVR</code><code class='python'>advr</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>ADVR</code><code class='python'>advr</code> method creates a <code>AdvanceDeclineVolumeRatio</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container">
+<pre class="csharp">public class AdvanceDeclineVolumeRatioAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol,_reference;
     private AdvanceDeclineVolumeRatio _advr;
@@ -13,6 +14,7 @@
 
     public override void OnData(Slice data)
     &lcub;
+
         if (_advr.IsReady)
         &lcub;
             // The current value of _advr is represented by itself (_advr)
@@ -21,20 +23,22 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class AdvanceDeclineVolumeRatioAlgorithm(QCAlgorithm):
+<pre class="python">class AdvanceDeclineVolumeRatioAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
         self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
         self._advr = self.advr([self._symbol, self._reference])
 
     def on_data(self, slice: Slice) -> None:
+
         if self._advr.is_ready:
             # The current value of self._advr is represented by self._advr.current.value
             self.plot("AdvanceDeclineVolumeRatio", "advr", self._advr.current.value)</pre></div>
 <p>For more information about this method, see the <a class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.advr">QCAlgorithm class</a>.</p>
 <p>You can manually create a <code>AdvanceDeclineVolumeRatio</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
-<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p><div class="section-example-container">
-    <pre class="csharp">public class AdvanceDeclineVolumeRatioAlgorithm : QCAlgorithm
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container">
+<pre class="csharp">public class AdvanceDeclineVolumeRatioAlgorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
     private AdvanceDeclineVolumeRatio _advancedeclinevolumeratio;
@@ -49,6 +53,7 @@
     &lcub;
         if (data.Bars.TryGetValue(_symbol, out var bar))
             _advancedeclinevolumeratio.Update(bar.EndTime, bar.Close);
+
         if (_advancedeclinevolumeratio.IsReady)
         &lcub;
             // The current value of _advancedeclinevolumeratio is represented by itself (_advancedeclinevolumeratio)
@@ -57,7 +62,7 @@
         &rcub;
     &rcub;
 &rcub;</pre>
-    <pre class="python">class AdvanceDeclineVolumeRatioAlgorithm(QCAlgorithm):
+<pre class="python">class AdvanceDeclineVolumeRatioAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
         self._advancedeclinevolumeratio = AdvanceDeclineVolumeRatio("")
@@ -66,6 +71,7 @@
         bar = slice.bars.get(self._symbol)
         if bar:
             self._advancedeclinevolumeratio.update(bar.end_time, bar.close)
+
         if self._advancedeclinevolumeratio.is_ready:
             # The current value of self._advancedeclinevolumeratio is represented by self._advancedeclinevolumeratio.current.value
             self.plot("AdvanceDeclineVolumeRatio", "advancedeclinevolumeratio", self._advancedeclinevolumeratio.current.value)</pre></div>
