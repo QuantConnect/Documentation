@@ -39,6 +39,7 @@
         self._mirror_option = SymbolRepresentation.parse_option_ticker_osi("SPY 240920P00564000");
         self.add_option_contract(self._option, Resolution.DAILY);
         self.add_option_contract(self._mirror_option, Resolution.DAILY);
+
         self._g = self.g(self._option, self._mirror_option)
 
     def on_data(self, slice: Slice) -> None:
@@ -101,6 +102,7 @@
         self._mirror_option = SymbolRepresentation.parse_option_ticker_osi("SPY 240920P00564000");
         self.add_option_contract(self._option, Resolution.DAILY);
         self.add_option_contract(self._mirror_option, Resolution.DAILY);
+
         self._gamma = Gamma(self._option, interest_rate_model, dividend_yield_model, self._mirror_option)
 
     def on_data(self, slice: Slice) -> None:
