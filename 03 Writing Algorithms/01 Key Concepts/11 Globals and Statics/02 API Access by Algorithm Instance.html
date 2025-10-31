@@ -99,7 +99,7 @@
 
     def on_data(self, data: Slice) -&gt; None:
         # To get all SPY open orders, use the transaction manager.
-        open_orders = self.transactions.get_open_orders(self.spy)
+        open_orders = self.transactions.get_open_orders(self._spy)
         if len(open_orders) != 0: return
 
         # Hold SPY during 10th-20th in each month.
@@ -113,7 +113,7 @@ class CustomPartialFillModel(FillModel):
         self._algorithm = algorithm
         self._absolute_remaining_by_order_id = {}
 
-    def market_fill(self, asset: Security, order: Order) -&gt; OrderEvent:
+    def market_fill(self, asset: Security, order: MarketOrder) -&gt; OrderEvent:
         absolute_remaining = self._absolute_remaining_by_order_id.get(order.id, order.absolute_quantity)
         fill = super().market_fill(asset, order)
 
