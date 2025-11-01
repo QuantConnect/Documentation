@@ -100,19 +100,21 @@
 <li><a href="#8.1.1" class="toc-h3" target="_parent">8.1.1 QuantConnect Paper Trading</a></li>
 <li><a href="#8.1.2" class="toc-h3" target="_parent">8.1.2 Interactive Brokers</a></li>
 <li><a href="#8.1.3" class="toc-h3" target="_parent">8.1.3 TradeStation</a></li>
-<li><a href="#8.1.4" class="toc-h3" target="_parent">8.1.4 Alpaca</a></li>
-<li><a href="#8.1.5" class="toc-h3" target="_parent">8.1.5 Charles Schwab</a></li>
-<li><a href="#8.1.6" class="toc-h3" target="_parent">8.1.6 Binance</a></li>
-<li><a href="#8.1.7" class="toc-h3" target="_parent">8.1.7 Bybit</a></li>
-<li><a href="#8.1.8" class="toc-h3" target="_parent">8.1.8 Tradier</a></li>
-<li><a href="#8.1.9" class="toc-h3" target="_parent">8.1.9 Kraken</a></li>
-<li><a href="#8.1.10" class="toc-h3" target="_parent">8.1.10 Coinbase</a></li>
-<li><a href="#8.1.11" class="toc-h3" target="_parent">8.1.11 Bitfinex</a></li>
-<li><a href="#8.1.12" class="toc-h3" target="_parent">8.1.12 Bloomberg EMSX</a></li>
-<li><a href="#8.1.13" class="toc-h3" target="_parent">8.1.13 Trading Technologies</a></li>
-<li><a href="#8.1.14" class="toc-h3" target="_parent">8.1.14 Samco</a></li>
-<li><a href="#8.1.15" class="toc-h3" target="_parent">8.1.15 Zerodha</a></li>
-<li><a href="#8.1.16" class="toc-h3" target="_parent">8.1.16 CFD and FOREX Brokerages</a></li>
+<li><a href="#8.1.4" class="toc-h3" target="_parent">8.1.4 Tastytrade</a></li>
+<li><a href="#8.1.5" class="toc-h3" target="_parent">8.1.5 Alpaca</a></li>
+<li><a href="#8.1.6" class="toc-h3" target="_parent">8.1.6 Charles Schwab</a></li>
+<li><a href="#8.1.7" class="toc-h3" target="_parent">8.1.7 Binance</a></li>
+<li><a href="#8.1.8" class="toc-h3" target="_parent">8.1.8 Bybit</a></li>
+<li><a href="#8.1.9" class="toc-h3" target="_parent">8.1.9 Tradier</a></li>
+<li><a href="#8.1.10" class="toc-h3" target="_parent">8.1.10 Kraken</a></li>
+<li><a href="#8.1.11" class="toc-h3" target="_parent">8.1.11 Coinbase</a></li>
+<li><a href="#8.1.12" class="toc-h3" target="_parent">8.1.12 Bitfinex</a></li>
+<li><a href="#8.1.13" class="toc-h3" target="_parent">8.1.13 Bloomberg EMSX</a></li>
+<li><a href="#8.1.14" class="toc-h3" target="_parent">8.1.14 SSC Eze</a></li>
+<li><a href="#8.1.15" class="toc-h3" target="_parent">8.1.15 Trading Technologies</a></li>
+<li><a href="#8.1.16" class="toc-h3" target="_parent">8.1.16 Samco</a></li>
+<li><a href="#8.1.17" class="toc-h3" target="_parent">8.1.17 Zerodha</a></li>
+<li><a href="#8.1.18" class="toc-h3" target="_parent">8.1.18 CFD and FOREX Brokerages</a></li>
 <li><a href="#8.2" class="toc-h2" target="_parent">8.2 Data Providers</a></li>
 <li><a href="#8.2.1" class="toc-h3" target="_parent">8.2.1 IQFeed</a></li>
 <li><a href="#8.2.2" class="toc-h3" target="_parent">8.2.2 Polygon</a></li>
@@ -2039,11 +2041,28 @@ Successfully logged in</pre>
     <tr>
      <td nowrap="">
       <code>
+       initialization-timeout
+      </code>
+     </td>
+     <td>
+      The maximum amount of time, in seconds, the algorithm can spend in the
+      <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/initialization">
+       initialization
+      </a>
+      phase.
+     </td>
+     <td>
+      300
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        algorithm-manager-time-loop-maximum
       </code>
      </td>
      <td>
-      The maximum amount of time the algorithm can spend in a single
+      The maximum amount of time, in minutes, the algorithm can spend in a single
       <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">
        time loop
       </a>
@@ -2705,21 +2724,18 @@ Begin data generation of 10 randomly generated Equity assets...</pre>
 using System.IO;
 using QuantConnect.Data;
 
-namespace QuantConnect.Algorithm.CSharp
+public class Weather : BaseData
 {
-    public class Weather : BaseData
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLive)
     {
-        public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLive)
-        {
-            // Old:
-            // var source = "https://www.dropbox.com/s/8v6z949n25hyk9o/custom_weather_data.csv?dl=1";
-            // return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
+        // Old:
+        // var source = "https://www.dropbox.com/s/8v6z949n25hyk9o/custom_weather_data.csv?dl=1";
+        // return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
 
-            // New:
-            // Replace custom_weather_data.csv with the path to your data file in the data directory
-            var source = Path.Combine(Globals.DataFolder, "custom_weather_data.csv");
-            return new SubscriptionDataSource(source, SubscriptionTransportMedium.LocalFile);
-        }
+        // New:
+        // Replace custom_weather_data.csv with the path to your data file in the data directory
+        var source = Path.Combine(Globals.DataFolder, "custom_weather_data.csv");
+        return new SubscriptionDataSource(source, SubscriptionTransportMedium.LocalFile);
     }
 }</pre>
      <pre class="python">import os
@@ -3531,17 +3547,14 @@ Continue? [y/N]: y</pre>
    For example, the following algorithm creates a dollar volume universe with 100 securities and then subscribes to minute resolution data for each US Equity in the universe:
   </p>
   <div class="section-example-container">
-   <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+   <pre class="csharp">public class USEquityDataAlgorithm : QCAlgorithm
 {
-    public class USEquityDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            UniverseSettings.Asynchronous = true;
-            AddUniverse(Universe.DollarVolume.Top(100));
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        UniverseSettings.Asynchronous = true;
+        AddUniverse(Universe.DollarVolume.Top(100));
     }
 }</pre>
    <pre class="python">class USEquityDataAlgorithm(QCAlgorithm):
@@ -3824,18 +3837,15 @@ Continue? [y/N]: y</pre>
    <br/>
   </p>
   <div class="section-example-container">
-   <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+   <pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
 {
-    public class USEquityOptionsDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            UniverseSettings.Asynchronous = true;
-            var underlying = AddEquity("GOOG").Symbol;
-            AddOption(underlying);
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        UniverseSettings.Asynchronous = true;
+        var underlying = AddEquity("GOOG").Symbol;
+        AddOption(underlying);
     }
 }</pre>
    <pre class="python">class USEquityOptionsDataAlgorithm(QCAlgorithm):
@@ -4107,18 +4117,15 @@ Continue? [y/N]: y</pre>
    For example, the following algorithm creates a universe of 100 Cryptocurrencies and then subscribes to minute resolution data for each one in the universe:
   </p>
   <div class="section-example-container">
-   <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+   <pre class="csharp">public class CryptoDataAlgorithm : QCAlgorithm
 {
-    public class CryptoDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            UniverseSettings.Asynchronous = true;            
-            AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; universeDay.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
-            );
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        UniverseSettings.Asynchronous = true;            
+        AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; universeDay.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
+        );
     }
 }</pre>
    <pre class="python">class CryptoDataAlgorithm(QCAlgorithm):
@@ -4128,8 +4135,8 @@ Continue? [y/N]: y</pre>
         self.universe_settings.asynchronous = True
         self.add_universe(CryptoUniverse.coinbase(self.universe_filter))
 
-    def universe_filter(self, universe_day: list[CryptoUniverse]) -&gt; list[Symbol]:
-        sorted_by_dollar_volume = sorted(universe_day, key=lambda cf: cf.volume_in_usd, reverse=True)
+    def universe_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(universe_day, key=lambda cf: (cf.volume_in_usd or 0), reverse=True)
         return [cf.symbol for cf in sorted_by_dollar_volume[:100]]</pre>
   </div>
   <p>
@@ -4524,16 +4531,13 @@ Continue? [y/N]: y</pre>
    For example, the following algorithm subscribes to minute resolution data for one Forex pair:
   </p>
   <div class="section-example-container">
-   <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+   <pre class="csharp">public class ForexDataAlgorithm : QCAlgorithm
 {
-    public class ForexDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            AddForex("USDCAD");
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        AddForex("USDCAD");
     }
 }</pre>
    <pre class="python">class ForexDataAlgorithm(QCAlgorithm):
@@ -4991,16 +4995,13 @@ Continue? [y/N]: y</pre>
    For example, the following algorithm subscribes to minute resolution data for a universe of VIX Index Option contracts:
   </p>
   <div class="section-example-container">
-   <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+   <pre class="csharp">public class USIndexOptionsDataAlgorithm : QCAlgorithm
 {
-    public class USIndexOptionsDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            AddIndexOption("VIX");
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        AddIndexOption("VIX");
     }
 }</pre>
    <pre class="python">class USIndexOptionsDataAlgorithm(QCAlgorithm):
@@ -5192,16 +5193,13 @@ Continue? [y/N]: y</pre>
    For example, the following algorithm subscribes to minute resolution data for one CFD contract:
   </p>
   <div class="section-example-container">
-   <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+   <pre class="csharp">public class CFDDataAlgorithm : QCAlgorithm
 {
-    public class CFDDataAlgorithm : QCAlgorithm
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);
-            AddCfd("XAUUSD");
-        }
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        AddCfd("XAUUSD");
     }
 }</pre>
    <pre class="python">class CFDDataAlgorithm(QCAlgorithm):
@@ -14102,763 +14100,765 @@ info : PackageReference for package 'QuantConnect.Lean' version '2.5.11800' upda
   </p>
   <div class="section-example-container">
    <pre class="python">
-absl-py                                 2.1.0
-accelerate                              0.34.2
+about-time                              4.2.1
+absl-py                                 2.3.1
+accelerate                              1.10.1
 adagio                                  0.2.6
-aesara                                  2.9.4
-aiohappyeyeballs                        2.4.4
-aiohttp                                 3.11.10
-aiosignal                               1.3.1
-aiosqlite                               0.20.0
-alembic                                 1.14.0
-alibi-detect                            0.12.0
-alphalens-reloaded                      0.4.5
+aiohappyeyeballs                        2.6.1
+aiohttp                                 3.13.0
+aiosignal                               1.4.0
+aiosqlite                               0.21.0
+alembic                                 1.16.5
+alive-progress                          3.3.0
+alphalens-reloaded                      0.4.6
 altair                                  5.5.0
-anaconda-anon-usage                     0.4.4
 annotated-types                         0.7.0
-anyio                                   4.7.0
-aplr                                    10.8.0
+anyio                                   4.11.0
+aplr                                    10.15.0
 appdirs                                 1.4.4
 apricot-select                          0.6.1
 arch                                    7.2.0
-archspec                                0.2.3
-argon2-cffi                             23.1.0
-argon2-cffi-bindings                    21.2.0
+argon2-cffi                             25.1.0
+argon2-cffi-bindings                    25.1.0
 arrow                                   1.3.0
-arviz                                   0.20.0
-astropy                                 7.0.0
-astropy-iers-data                       0.2024.12.9.0.36.21
+arviz                                   0.22.0
+astropy                                 7.1.0
+astropy-iers-data                       0.2025.10.6.0.35.25
 asttokens                               3.0.0
 astunparse                              1.6.3
-async-lru                               2.0.4
-attrs                                   24.2.0
-Authlib                                 1.3.2
-autograd                                1.7.0
+async-lru                               2.0.5
+attrs                                   25.4.0
+Authlib                                 1.6.5
+autograd                                1.8.0
 autograd-gamma                          0.5.0
 autokeras                               2.0.0
-autoray                                 0.7.0
-ax-platform                             0.4.3
-babel                                   2.16.0
-bayesian-optimization                   2.0.0
-beautifulsoup4                          4.12.3
+autoray                                 0.7.2
+ax-platform                             1.1.2
+babel                                   2.17.0
+banks                                   2.2.0
+bayesian-optimization                   3.1.0
+beartype                                0.22.2
+beautifulsoup4                          4.14.2
+behave                                  1.3.3
 bleach                                  6.2.0
 blinker                                 1.9.0
-blis                                    0.7.11
-blosc2                                  2.7.1
-bokeh                                   3.6.2
-boltons                                 23.0.0
-botorch                                 0.12.0
-Bottleneck                              1.4.2
-Brotli                                  1.0.9
-cachetools                              5.5.0
-captum                                  0.7.0
+blis                                    1.2.1
+blosc2                                  3.10.0
+bokeh                                   3.6.3
+botorch                                 0.15.1
+bottle                                  0.13.4
+Bottleneck                              1.6.0
+build                                   1.3.0
+cachetools                              6.2.0
+captum                                  0.8.0
 catalogue                               2.0.10
-catboost                                1.2.7
-category-encoders                       2.6.4
-causal-conv1d                           1.5.0.post8
-certifi                                 2024.8.30
+catboost                                1.2.8
+causal-conv1d                           1.5.2
+causalml                                0.15.5
+cbor                                    1.0.0
 cesium                                  0.12.1
-cffi                                    1.17.1
 chardet                                 5.2.0
-charset-normalizer                      3.3.2
 check-shapes                            1.1.1
-chronos-forecasting                     1.4.1
-clarabel                                0.9.0
-click                                   8.1.7
+chronos-forecasting                     1.5.3
+clarabel                                0.11.1
+click                                   8.2.1
 clikit                                  0.6.2
-cloudpathlib                            0.20.0
-cloudpickle                             3.1.0
-cmdstanpy                               1.2.4
+cloudpathlib                            0.23.0
+cloudpickle                             3.1.1
+clr-loader                              0.1.6
+cma                                     4.4.0
+cmaes                                   0.12.0
+cmdstanpy                               1.2.5
 colorama                                0.4.6
 colorcet                                3.1.0
+coloredlogs                             15.0.1
 colorlog                                6.9.0
 colorlover                              0.3.0
 colour                                  0.1.5
-comm                                    0.2.2
-conda                                   24.9.2
-conda-content-trust                     0.2.0
-conda-libmamba-solver                   24.9.0
-conda-package-handling                  2.3.0
-conda_package_streaming                 0.10.0
+comm                                    0.2.3
 confection                              0.1.5
-cons                                    0.4.6
-contourpy                               1.3.1
-control                                 0.10.1
+cons                                    0.4.7
+contourpy                               1.3.3
+control                                 0.10.2
 copulae                                 0.7.9
-copulas                                 0.12.0
-coreforecast                            0.0.15
-cramjam                                 2.9.0
+copulas                                 0.12.3
+coreforecast                            0.0.16
+cramjam                                 2.11.0
 crashtest                               0.3.1
 creme                                   0.6.1
-cryptography                            43.0.0
-cucim-cu12                              24.8.0
-cuda-python                             12.6.2.post1
-cudf-cu12                               24.8.3
+cucumber-expressions                    18.0.1
+cucumber-tag-expressions                7.0.0
+cuda-bindings                           12.9.2
+cuda-pathfinder                         1.3.0
+cuda-python                             12.9.2
 cufflinks                               0.17.3
-cugraph-cu12                            24.8.0
-cuml-cu12                               24.8.0
-cuproj-cu12                             24.8.0
-cupy-cuda12x                            13.3.0
-cuspatial-cu12                          24.8.0
-cuvs-cu12                               24.8.0
-cuxfilter-cu12                          24.8.0
+cupy-cuda12x                            13.6.0
+curl_cffi                               0.13.0
 cvxopt                                  1.3.2
-cvxportfolio                            1.4.0
-cvxpy                                   1.6.0
+cvxportfolio                            1.5.1
+cvxpy                                   1.7.3
 cycler                                  0.12.1
-cymem                                   2.0.10
-Cython                                  3.0.11
-darts                                   0.31.0
+cyclopts                                3.24.0
+cymem                                   2.0.11
+Cython                                  3.1.4
+darts                                   0.38.0
 dash                                    2.9.3
 dash-core-components                    2.0.0
-dash_cytoscape                          1.0.2
 dash-html-components                    2.0.0
 dash-table                              5.0.0
-dask                                    2024.7.1
-dask-cuda                               24.8.2
-dask-cudf-cu12                          24.8.3
-dask-expr                               1.1.9
-databricks-sdk                          0.38.0
+dash_cytoscape                          1.0.2
+dask                                    2025.7.0
+databricks-sdk                          0.67.0
 dataclasses-json                        0.6.7
-datasets                                2.21.0
-datashader                              0.16.3
-deap                                    1.4.1
-debugpy                                 1.8.9
-decorator                               5.1.1
+datasets                                3.6.0
+deap                                    1.4.3
+debugpy                                 1.6.7.post1
+decorator                               5.2.1
 deepmerge                               2.0
 defusedxml                              0.7.1
-Deprecated                              1.2.15
-deprecation                             2.1.0
+Deprecated                              1.2.18
+DESlib                                  0.3.7
 dgl                                     2.1.0
+diastatic-malt                          2.15.2
 dill                                    0.3.8
-dimod                                   0.12.17
+dimod                                   0.12.21
 dirtyjson                               1.0.8
 diskcache                               5.6.3
-distributed                             2024.7.1
-distributed-ucxx-cu12                   0.39.1
-distro                                  1.9.0
-dm-tree                                 0.1.8
+distributed                             2025.7.0
+dm-tree                                 0.1.9
+dnspython                               2.8.0
 docker                                  7.1.0
-docutils                                0.21.2
-DoubleML                                0.9.0
+docstring_parser                        0.17.0
+docutils                                0.22.2
+DoubleML                                0.10.1
 dropstackframe                          0.1.1
 dtreeviz                                2.2.2
 dtw-python                              1.5.3
-dwave-cloud-client                      0.13.1
-dwave-drivers                           0.4.4
-dwave-gate                              0.3.2
-dwave-greedy                            0.3.0
-dwave-hybrid                            0.6.12
-dwave-inspector                         0.5.1
+dwave-cloud-client                      0.14.0
+dwave-gate                              0.3.4
+dwave-hybrid                            0.6.14
+dwave-inspector                         0.5.5
 dwave-inspectorapp                      0.3.3
-dwave-neal                              0.6.0
-dwave_networkx                          0.8.15
-dwave-ocean-sdk                         8.0.1
-dwave-optimization                      0.3.0
-dwave-preprocessing                     0.6.6
-dwave-samplers                          1.3.0
-dwave-system                            1.26.0
-dwave-tabu                              0.5.0
-dwavebinarycsp                          0.3.0
+dwave-ocean-sdk                         9.0.0
+dwave-optimization                      0.6.4
+dwave-preprocessing                     0.6.10
+dwave-samplers                          1.6.0
+dwave-system                            1.33.0
+dwave_networkx                          0.8.18
+econml                                  0.16.0
 ecos                                    2.0.14
-einops                                  0.8.0
+einops                                  0.8.1
 einx                                    0.3.0
+email-validator                         2.3.0
 EMD-signal                              1.6.4
-empyrical-reloaded                      0.5.11
-en-core-web-md                          3.7.1
-en-core-web-sm                          3.7.1
+empyrical-reloaded                      0.5.12
+en-core-web-md                          3.8.0
+en-core-web-sm                          3.8.0
 et_xmlfile                              2.0.0
-etuples                                 0.3.9
-exchange_calendars                      4.6
-executing                               2.1.0
-faiss-cpu                               1.9.0.post1
+etuples                                 0.3.10
+exceptiongroup                          1.3.0
+exchange_calendars                      4.11.1
+executing                               2.2.1
+faiss-cpu                               1.12.0
 Farama-Notifications                    0.0.4
-fastai                                  2.7.18
+fastai                                  2.8.4
 fastai2                                 0.0.30
-fastcore                                1.7.26
+fastapi                                 0.118.2
+fastcore                                1.8.12
 fastdownload                            0.0.7
-fasteners                               0.19
-fastjsonschema                          2.21.1
+fasteners                               0.20
+fastjsonschema                          2.21.2
+fastmcp                                 2.10.6
 fastparquet                             2024.11.0
 fastprogress                            1.0.3
-fastrlock                               0.8.2
+fastrlock                               0.8.3
 fasttext                                0.9.3
-feature-engine                          1.6.2
+fasttransform                           0.0.2
+feature_engine                          1.9.3
 featuretools                            1.31.0
-filelock                                3.16.1
+filelock                                3.20.0
 filetype                                1.2.0
-findiff                                 0.10.2
+filterpy                                1.4.5
+findiff                                 0.12.1
 FixedEffectModel                        0.0.5
-FlagEmbedding                           1.2.11
-Flask                                   3.1.0
-flatbuffers                             24.3.25
-fonttools                               4.55.2
-formulaic                               1.0.2
+FlagEmbedding                           1.3.5
+Flask                                   3.1.2
+flatbuffers                             25.9.23
+fonttools                               4.60.1
+forestci                                0.6
+formulaic                               1.2.1
 fqdn                                    1.5.1
-frozendict                              2.4.2
-frozenlist                              1.5.0
+frozenlist                              1.8.0
 fs                                      2.4.16
-fsspec                                  2024.6.1
+fsspec                                  2025.3.0
 fugue                                   0.9.1
 future                                  1.0.0
 fuzzy-c-means                           1.7.2
 gast                                    0.6.0
 gatspy                                  0.3
 gensim                                  4.3.3
-geopandas                               1.0.1
-gevent                                  24.11.1
-gitdb                                   4.0.11
-GitPython                               3.1.43
-gluonts                                 0.16.0
-google-ai-generativelanguage            0.6.10
-google-api-core                         2.24.0
-google-api-python-client                2.154.0
-google-auth                             2.36.0
-google-auth-httplib2                    0.2.0
-google-generativeai                     0.8.3
+gevent                                  25.9.1
+gitdb                                   4.0.12
+GitPython                               3.1.45
+gluonts                                 0.16.2
+google-auth                             2.41.1
+google-genai                            1.41.0
 google-pasta                            0.2.0
-googleapis-common-protos                1.66.0
-gpflow                                  2.9.2
-gplearn                                 0.4.2
-gpytorch                                1.13
+gpflow                                  2.10.0
+gpytorch                                1.14
+graphemeu                               0.7.2
 graphene                                3.4.3
-graphql-core                            3.2.5
+graphql-core                            3.2.6
 graphql-relay                           3.2.0
-graphviz                                0.20.3
-greenlet                                3.1.1
-grpcio                                  1.68.1
-grpcio-status                           1.68.1
+graphviz                                0.21
+greenlet                                3.2.4
+griffe                                  1.14.0
+grpcio                                  1.75.1
 gunicorn                                23.0.0
 gym                                     0.26.2
-gym-notices                             0.0.8
-gymnasium                               1.0.0
-h11                                     0.14.0
-h2o                                     3.46.0.6
-h5netcdf                                1.4.1
-h5py                                    3.12.1
+gym-notices                             0.1.0
+gymnasium                               1.1.1
+h11                                     0.16.0
+h2o                                     3.46.0.7
+h5netcdf                                1.6.4
+h5py                                    3.14.0
+hf-xet                                  1.1.10
 hmmlearn                                0.3.3
-holidays                                0.62
-holoviews                               1.20.0
+holidays                                0.82
+holoviews                               1.20.2
 homebase                                1.0.1
 hopcroftkarp                            1.2.5
-html5lib                                1.1
-httpcore                                1.0.7
-httplib2                                0.22.0
+http-sf                                 1.0.4
+httpcore                                1.0.9
 httpstan                                4.13.0
 httpx                                   0.28.1
-huggingface-hub                         0.26.5
+httpx-sse                               0.4.2
+huggingface-hub                         0.35.3
+humanfriendly                           10.0
 hurst                                   0.0.5
-hvplot                                  0.11.1
+hvplot                                  0.12.1
 hyperopt                                0.2.7
-ibm-cloud-sdk-core                      3.22.0
-ibm-platform-services                   0.59.0
-idna                                    3.7
+ibm-cloud-sdk-core                      3.24.2
+ibm-platform-services                   0.69.0
 iisignature                             0.24
-ijson                                   3.3.0
-imageio                                 2.36.1
-imbalanced-learn                        0.12.4
+ijson                                   3.4.0
+imageio                                 2.37.0
+imbalanced-learn                        0.14.0
 immutabledict                           4.2.1
-importlib_metadata                      8.5.0
-importlib_resources                     6.4.5
-iniconfig                               2.0.0
+importlib_metadata                      8.7.0
+importlib_resources                     6.5.2
+iniconfig                               2.1.0
 injector                                0.22.0
+inscriptis                              2.6.0
 interface-meta                          1.3.0
-interpret                               0.6.7
-interpret-core                          0.6.7
-ipykernel                               6.29.5
-ipympl                                  0.9.4
-ipython                                 8.30.0
-ipython-genutils                        0.2.0
-ipywidgets                              8.1.5
+interpret                               0.7.2
+interpret-core                          0.7.2
+ipykernel                               6.30.1
+ipympl                                  0.9.7
+ipython                                 9.6.0
+ipython_pygments_lexers                 1.1.1
+ipywidgets                              8.1.7
+ir_datasets                             0.5.11
 isoduration                             20.11.0
 itsdangerous                            2.2.0
-jax                                     0.4.35
-jaxlib                                  0.4.35
-jaxtyping                               0.2.19
+jax                                     0.7.1
+jaxlib                                  0.7.1
+jaxtyping                               0.3.3
 jedi                                    0.19.2
-Jinja2                                  3.1.4
-jiter                                   0.8.2
-joblib                                  1.3.2
-json5                                   0.10.0
-jsonpatch                               1.33
+Jinja2                                  3.1.6
+jiter                                   0.11.0
+joblib                                  1.5.2
+json5                                   0.12.1
 jsonpath-ng                             1.7.0
 jsonpointer                             2.1
-jsonschema                              4.23.0
-jsonschema-specifications               2024.10.1
+jsonschema                              4.25.1
+jsonschema-specifications               2025.9.1
 jupyter                                 1.1.1
-jupyter_ai                              2.28.2
-jupyter_ai_magics                       2.28.3
+jupyter-console                         6.6.3
+jupyter-events                          0.12.0
+jupyter-lsp                             2.3.0
+jupyter-resource-usage                  1.2.0
+jupyter_ai                              2.31.6
+jupyter_ai_magics                       2.31.6
 jupyter_bokeh                           4.0.5
 jupyter_client                          8.6.3
-jupyter-console                         6.6.3
-jupyter_core                            5.7.2
-jupyter-events                          0.10.0
-jupyter-lsp                             2.2.5
-jupyter-resource-usage                  1.1.0
-jupyter_server                          2.14.2
-jupyter_server_proxy                    4.4.0
+jupyter_core                            5.8.1
+jupyter_server                          2.17.0
 jupyter_server_terminals                0.5.3
-jupyterlab                              4.3.2
+jupyterlab                              4.4.9
 jupyterlab_pygments                     0.3.0
 jupyterlab_server                       2.27.3
-jupyterlab_widgets                      3.0.13
-kagglehub                               0.3.4
+jupyterlab_widgets                      3.0.15
+kagglehub                               0.3.13
 kaleido                                 0.2.1
-keras                                   3.7.0
-keras-hub                               0.18.1
-keras-nlp                               0.18.1
+KDEpy                                   1.1.12
+keras                                   3.11.3
+keras-hub                               0.22.2
+keras-nlp                               0.22.2
 keras-rl                                0.4.2
-keras-tcn                               3.5.0
+keras-tcn                               3.5.6
 keras-tuner                             1.4.7
-kiwisolver                              1.4.7
+kiwisolver                              1.4.9
 kmapper                                 2.1.0
 korean-lunar-calendar                   0.3.1
 kt-legacy                               1.0.5
-langchain                               0.2.17
-langchain-community                     0.2.19
-langchain-core                          0.2.43
-langchain-text-splitters                0.2.4
+langchain                               0.3.27
+langchain-community                     0.3.31
+langchain-core                          0.3.78
+langchain-text-splitters                0.3.11
 langcodes                               3.5.0
-langsmith                               0.1.147
+langsmith                               0.4.33
 language_data                           1.3.0
-lark                                    1.2.2
+lark                                    1.3.0
 lazy_loader                             0.4
-lazypredict                             0.2.14a1
+lazypredict                             0.2.16
 libclang                                18.1.1
-libmambapy                              1.5.8
-libucx-cu12                             1.15.0.post2
 lifelines                               0.30.0
-lightgbm                                4.5.0
-lightning                               2.4.0
-lightning-utilities                     0.11.9
+lightgbm                                4.6.0
+lightning                               2.5.5
+lightning-utilities                     0.15.2
+lightweight-charts                      2.1
 lime                                    0.2.0.1
-line_profiler                           4.2.0
-linear-operator                         0.5.3
+line_profiler                           5.0.0
+linear-operator                         0.6
+lingam                                  1.11.0
 linkify-it-py                           2.0.3
-livelossplot                            0.5.5
-llama-cloud                             0.1.6
-llama-index                             0.12.2
-llama-index-agent-openai                0.4.0
-llama-index-cli                         0.4.0
-llama-index-core                        0.12.5
+livelossplot                            0.5.6
+llama-cloud                             0.1.35
+llama-cloud-services                    0.6.54
+llama-index                             0.12.42
+llama-index-agent-openai                0.4.12
+llama-index-cli                         0.4.4
+llama-index-core                        0.12.42
 llama-index-embeddings-openai           0.3.1
-llama-index-indices-managed-llama-cloud 0.6.3
-llama-index-legacy                      0.9.48.post4
-llama-index-llms-openai                 0.3.3
-llama-index-multi-modal-llms-openai     0.3.0
-llama-index-program-openai              0.3.1
-llama-index-question-gen-openai         0.3.0
-llama-index-readers-file                0.4.1
+llama-index-indices-managed-llama-cloud 0.8.0
+llama-index-llms-openai                 0.4.7
+llama-index-multi-modal-llms-openai     0.5.1
+llama-index-program-openai              0.3.2
+llama-index-question-gen-openai         0.3.1
+llama-index-readers-file                0.4.8
 llama-index-readers-llama-parse         0.4.0
-llama-parse                             0.5.17
-llvmlite                                0.42.0
+llama-parse                             0.6.54
+llvmlite                                0.44.0
 locket                                  1.0.0
 logical-unification                     0.4.6
 loguru                                  0.7.3
-lxml                                    5.3.0
-lz4                                     4.3.3
-Mako                                    1.3.8
-mamba-ssm                               2.2.4
-MAPIE                                   0.9.1
-marisa-trie                             1.2.1
-Markdown                                3.7
-markdown-it-py                          3.0.0
-MarkupSafe                              3.0.2
-marshmallow                             3.23.1
-matplotlib                              3.7.5
+lxml                                    6.0.2
+lz4                                     4.4.4
+Mako                                    1.3.10
+mamba-ssm                               2.2.5+cu12torch2.8cxx11abiTRUE
+MAPIE                                   1.1.0
+marisa-trie                             1.3.1
+Markdown                                3.9
+markdown-it-py                          4.0.0
+MarkupSafe                              3.0.3
+marshmallow                             3.26.1
+matplotlib                              3.8.4
 matplotlib-inline                       0.1.7
-mdit-py-plugins                         0.4.2
+mcp                                     1.16.0
+mdit-py-plugins                         0.5.0
 mdurl                                   0.1.2
-menuinst                                2.1.2
 mgarch                                  0.3.0
-miniKanren                              1.0.3
-minorminer                              0.2.15
-mistune                                 3.0.2
-ml-dtypes                               0.4.1
-mlflow                                  2.18.0
-mlflow-skinny                           2.18.0
-mlforecast                              0.15.1
+miniKanren                              1.0.5
+minorminer                              0.2.19
+mistune                                 3.1.4
+ml_dtypes                               0.5.3
+mlflow                                  3.4.0
+mlflow-skinny                           3.4.0
+mlflow-tracing                          3.4.0
+mlforecast                              1.0.2
 mljar-scikit-plot                       0.3.12
-mljar-supervised                        1.1.9
-mlxtend                                 0.23.3
+mljar-supervised                        1.1.18
+mlxtend                                 0.23.4
 mmh3                                    2.5.1
-modin                                   0.26.1
+modin                                   0.37.1
 mplfinance                              0.12.10b0
 mpmath                                  1.3.0
-msgpack                                 1.1.0
-multidict                               6.1.0
+msgpack                                 1.1.1
+multidict                               6.7.0
 multipledispatch                        1.0.0
 multiprocess                            0.70.16
-multitasking                            0.0.11
-murmurhash                              1.0.11
-mypy-extensions                         1.0.0
-namex                                   0.0.8
-narwhals                                1.17.0
-nbclient                                0.10.1
-nbconvert                               7.16.4
+multitasking                            0.0.12
+murmurhash                              1.0.13
+mypy_extensions                         1.1.0
+namex                                   0.1.0
+narwhals                                2.7.0
+nbclient                                0.10.2
+nbconvert                               7.16.6
 nbformat                                5.10.4
-ndindex                                 1.9.2
+ndindex                                 1.10.0
 nest-asyncio                            1.6.0
-networkx                                3.4.2
-neural-tangents                         0.6.5
+networkx                                3.5
+neuralforecast                          3.1.2
 neuralprophet                           0.9.0
-nfoursid                                1.0.1
-ngboost                                 0.5.1
-ninja                                   1.11.1.2
-nixtla                                  0.6.4
-nltk                                    3.9.1
-nolds                                   0.6.1
+nfoursid                                1.0.2
+ngboost                                 0.5.6
+ninja                                   1.13.0
+nixtla                                  0.7.0
+nltk                                    3.9.2
+nolds                                   0.6.2
 nose                                    1.3.7
-notebook                                7.3.1
+notebook                                7.4.7
 notebook_shim                           0.2.4
-numba                                   0.59.1
-numerapi                                2.19.1
-numexpr                                 2.10.2
+numba                                   0.61.2
+numba-cuda                              0.14.1
+numdifftools                            0.9.41
+numerapi                                2.20.8
+numexpr                                 2.13.1
 numpy                                   1.26.4
-nvidia-cublas-cu12                      12.4.5.8
-nvidia-cuda-cupti-cu12                  12.4.127
-nvidia-cuda-nvrtc-cu12                  12.4.127
-nvidia-cuda-runtime-cu12                12.4.127
-nvidia-cudnn-cu12                       9.3.0.75
-nvidia-cufft-cu12                       11.2.1.3
-nvidia-curand-cu12                      10.3.5.147
-nvidia-cusolver-cu12                    11.6.1.9
-nvidia-cusparse-cu12                    12.3.1.170
-nvidia-nccl-cu12                        2.21.5
-nvidia-nvjitlink-cu12                   12.4.127
-nvidia-nvtx-cu12                        12.4.127
-nvtx                                    0.2.10
-nx-cugraph-cu12                         24.8.0
-oauthlib                                3.2.2
-openai                                  1.57.0
-opencv-contrib-python-headless          4.10.0.84
-opencv-python                           4.10.0.84
+nvidia-cublas-cu12                      12.8.4.1
+nvidia-cuda-cccl-cu12                   12.9.27
+nvidia-cuda-cupti-cu12                  12.8.90
+nvidia-cuda-nvcc-cu12                   12.9.86
+nvidia-cuda-nvrtc-cu12                  12.8.93
+nvidia-cuda-runtime-cu12                12.8.90
+nvidia-cuda-runtime-cu13                0.0.0a0
+nvidia-cudnn-cu12                       9.10.2.21
+nvidia-cufft-cu12                       11.3.3.83
+nvidia-cufile-cu12                      1.13.1.3
+nvidia-curand-cu12                      10.3.9.90
+nvidia-cusolver-cu12                    11.7.3.90
+nvidia-cusparse-cu12                    12.5.8.93
+nvidia-cusparselt-cu12                  0.7.1
+nvidia-nccl-cu12                        2.27.3
+nvidia-nvjitlink-cu12                   12.8.93
+nvidia-nvtx-cu12                        12.8.90
+oauthlib                                3.3.1
+onnx                                    1.19.0
+onnxmltools                             1.14.0
+onnxruntime                             1.23.0
+openai                                  1.109.1
+openapi-pydantic                        0.5.1
+opencv-contrib-python-headless          4.11.0.86
 openpyxl                                3.1.5
-opentelemetry-api                       1.28.2
-opentelemetry-sdk                       1.28.2
-opentelemetry-semantic-conventions      0.49b2
+opentelemetry-api                       1.37.0
+opentelemetry-proto                     1.37.0
+opentelemetry-sdk                       1.37.0
+opentelemetry-semantic-conventions      0.58b0
 opt_einsum                              3.4.0
-optree                                  0.13.1
-optuna                                  4.1.0
-orjson                                  3.10.12
-ortools                                 9.9.3963
-osqp                                    0.6.7.post3
+optree                                  0.17.0
+optuna                                  4.5.0
+optuna-integration                      4.5.0
+orjson                                  3.11.3
+ormsgpack                               1.7.0
+ortools                                 9.12.4544
+osqp                                    1.0.4
 overrides                               7.7.0
-packaging                               24.1
-pandas                                  2.1.4
-pandas-flavor                           0.6.0
-pandas_market_calendars                 4.4.2
-pandas_ta                               0.3.14b0
+packaging                               25.0
+pandas                                  2.3.3
+pandas_flavor                           0.7.0
+pandas_market_calendars                 5.1.1
 pandocfilters                           1.5.1
-panel                                   1.5.4
-param                                   2.1.1
-parso                                   0.8.4
+panel                                   1.7.5
+param                                   2.2.1
+parse                                   1.20.2
+parse_type                              0.6.6
+parso                                   0.8.5
 partd                                   1.4.2
 pastel                                  0.2.1
-pathos                                  0.3.2
+pathos                                  0.2.9
 patsy                                   1.0.1
-pbr                                     6.1.0
 peewee                                  3.17.3
-peft                                    0.13.2
-penaltymodel                            1.1.0
-PennyLane                               0.39.0
-PennyLane_Lightning                     0.39.0
-PennyLane-qiskit                        0.36.0
-persim                                  0.3.7
+peft                                    0.17.1
+penaltymodel                            1.3.0
+pennylane                               0.42.3
+pennylane_lightning                     0.42.0
+persim                                  0.3.8
 pexpect                                 4.9.0
-pgmpy                                   0.1.26
-pillow                                  10.4.0
+pgmpy                                   1.0.0
+pillow                                  11.3.0
 pingouin                                0.5.5
-pip                                     24.2
-platformdirs                            3.10.0
+platformdirs                            4.5.0
 plotly                                  5.24.1
-plotly-resampler                        0.10.0
 plucky                                  0.4.3
-pluggy                                  1.5.0
+pluggy                                  1.6.0
+plum-dispatch                           2.5.8
 ply                                     3.11
 pmdarima                                2.0.4
-polars                                  1.16.0
-pomegranate                             1.1.1
-POT                                     0.9.5
-pox                                     0.3.5
-ppft                                    1.7.6.9
+polars                                  1.34.0
+polars-runtime-32                       1.34.0
+pomegranate                             1.1.2
+POT                                     0.9.6.post1
+pox                                     0.3.6
+ppft                                    1.7.7
 pprofile                                2.2.0
-preshed                                 3.0.9
-prometheus_client                       0.21.1
-prompt_toolkit                          3.0.48
-propcache                               0.2.1
-prophet                                 1.1.6
-proto-plus                              1.25.0
-protobuf                                5.29.1
-psutil                                  5.9.8
+preshed                                 3.0.10
+progressbar2                            4.5.0
+prometheus_client                       0.23.1
+prompt_toolkit                          3.0.52
+propcache                               0.4.1
+prophet                                 1.1.7
+protobuf                                5.29.5
+proxy_tools                             0.1.0
+psutil                                  7.1.0
+psy                                     0.0.1
+ptvsd                                   4.3.2
 ptyprocess                              0.7.0
-PuLP                                    2.9.0
+PuLP                                    3.3.0
 pure_eval                               0.2.3
 py-cpuinfo                              9.0.0
 py-heat                                 0.0.6
 py-heat-magic                           0.0.2
+py4j                                    0.10.9.9
 py_lets_be_rational                     1.0.1
 py_vollib                               1.0.1
-py4j                                    0.10.9.7
-pyaml                                   24.9.0
-pyarrow                                 16.1.0
+pyaml                                   25.7.0
+pyarrow                                 19.0.1
 pyasn1                                  0.6.1
-pyasn1_modules                          0.4.1
-pybind11                                2.13.6
-pycaret                                 3.3.2
-pycosat                                 0.6.6
-pycparser                               2.21
-pyct                                    0.5.0
-pydantic                                2.9.2
-pydantic_core                           2.23.4
-PyDMD                                   2024.12.1
+pyasn1_modules                          0.4.2
+pybind11                                3.0.1
+pydantic                                2.12.0
+pydantic-settings                       2.11.0
+pydantic_core                           2.41.1
+pydevd-pycharm                          231.9225.15
+PyDMD                                   2025.8.1
+pydotplus                               2.0.2
 pyerfa                                  2.0.1.5
-pyfolio-reloaded                        0.9.8
-Pygments                                2.18.0
+pyfolio-reloaded                        0.9.9
+pygam                                   0.10.1
+Pygments                                2.19.2
 PyJWT                                   2.10.1
-pykalman                                0.9.7
+pykalman                                0.10.2
 pylev                                   1.4.0
-pylibcugraph-cu12                       24.8.0
-pylibraft-cu12                          24.8.1
-pyluach                                 2.2.0
+pyluach                                 2.3.0
 pymannkendall                           1.4.3
-pymc                                    5.19.0
+pymc                                    5.25.1
 pymdptoolbox                            4.0b3
+pymoo                                   0.6.1.5
 pynndescent                             0.5.13
-pynvjitlink-cu12                        0.4.0
-pynvml                                  11.4.1
-pyod                                    2.0.2
-pyogrio                                 0.10.0
-Pyomo                                   6.8.2
-pyparsing                               3.2.0
-pypdf                                   5.1.0
+pyod                                    2.0.5
+pyomo                                   6.9.4
+pyparsing                               3.2.5
+pypdf                                   5.9.0
+pyperclip                               1.11.0
 pyportfolioopt                          1.5.6
-pyproj                                  3.7.0
-PyQt6                                   6.7.1
-PyQt6-Qt6                               6.7.3
-PyQt6_sip                               13.9.0
-pyrb                                    1.0.1
+pyproject_hooks                         1.2.0
+PyQt6                                   6.9.1
+PyQt6-Qt6                               6.9.2
+PyQt6_sip                               13.10.2
 pyre-extensions                         0.0.32
 pyro-api                                0.1.2
 pyro-ppl                                1.9.1
 pysimdjson                              6.0.2
-PySocks                                 1.7.1
-pyspnego                                0.11.2
+pyspnego                                0.12.0
 pystan                                  3.10.0
-pytensor                                2.26.4
-pytest                                  8.3.4
+pytensor                                2.31.7
+pytest                                  8.4.2
 pytest-runner                           6.0.1
 python-dateutil                         2.9.0.post0
-python-json-logger                      2.0.7
+python-dotenv                           1.1.1
+python-json-logger                      4.0.0
+python-multipart                        0.0.20
 python-statemachine                     2.5.0
-pytorch-forecasting                     1.2.0
-pytorch-ignite                          0.5.1
-pytorch-lightning                       2.4.0
+python-utils                            3.9.1
+pytorch-forecasting                     1.4.0
+pytorch-ignite                          0.5.2
+pytorch-lightning                       2.5.2
 pytorch-tabnet                          4.1.0
-pytz                                    2024.2
+pytz                                    2025.2
+pyvers                                  0.1.0
 pyvinecopulib                           0.6.5
-pyviz_comms                             3.0.3
-PyWavelets                              1.7.0
-PyYAML                                  6.0.2
-pyzmq                                   26.2.0
-qdldl                                   0.1.7.post4
-qiskit                                  1.2.4
-qiskit-aer                              0.15.1
-qiskit-ibm-provider                     0.11.0
-qiskit-ibm-runtime                      0.34.0
+pyviz_comms                             3.0.6
+PyWavelets                              1.9.0
+pywebview                               6.0
+PyYAML                                  6.0.3
+pyzmq                                   27.1.0
+qiskit                                  2.1.2
+qiskit-aer                              0.17.2
+qiskit-ibm-runtime                      0.41.1
 quadprog                                0.1.13
-quantecon                               0.7.2
-QuantLib                                1.36
-QuantStats                              0.0.64
-raft-dask-cu12                          24.8.1
-rapids-dask-dependency                  24.8.0
+quantecon                               0.10.1
+QuantLib                                1.39
+QuantStats                              0.0.77
 rauth                                   0.7.3
-ray                                     2.40.0
+ray                                     2.49.2
 Rbeast                                  0.1.23
-referencing                             0.35.1
-regex                                   2024.11.6
-requests                                2.32.3
-requests_ntlm                           1.3.0
-requests-oauthlib                       1.3.1
+referencing                             0.36.2
+regex                                   2025.9.18
+requests                                2.32.5
+requests-oauthlib                       2.0.0
 requests-toolbelt                       1.0.0
+requests_ntlm                           1.3.0
 rfc3339-validator                       0.1.4
 rfc3986-validator                       0.1.1
-rich                                    13.9.4
-ripser                                  0.6.10
-Riskfolio-Lib                           6.1.1
+rfc3987-syntax                          1.1.0
+rich                                    14.2.0
+rich-rst                                1.3.1
+ripser                                  0.6.12
+Riskfolio-Lib                           7.0.1
 riskparityportfolio                     0.6.0
 river                                   0.21.0
-rmm-cu12                                24.8.2
-rpds-py                                 0.22.3
-rsa                                     4.9
-ruamel.yaml                             0.18.6
-ruamel.yaml.clib                        0.2.8
-ruptures                                1.1.9
-rustworkx                               0.15.1
-safetensors                             0.4.5
+rpds-py                                 0.27.1
+rsa                                     4.9.1
+ruptures                                1.1.10
+rustworkx                               0.17.1
+safetensors                             0.6.2
 SALib                                   1.5.1
-schemdraw                               0.15
+sb3_contrib                             2.7.0
+schema                                  0.7.7
 scikeras                                0.13.0
-scikit-base                             0.7.8
+scikit-base                             0.12.6
 scikit-image                            0.22.0
-scikit-learn                            1.4.2
+scikit-learn                            1.6.1
 scikit-learn-extra                      0.3.0
 scikit-optimize                         0.10.2
-scikit-plot                             0.3.7
 scikit-tda                              1.1.1
-scipy                                   1.11.4
-scs                                     3.2.7
+scipy                                   1.13.1
+scipy-openblas32                        0.3.30.0.2
+scs                                     3.2.8
 sdeint                                  0.3.0
 seaborn                                 0.13.2
+semopy                                  2.3.11
 Send2Trash                              1.8.3
-sentence-transformers                   3.3.1
-setuptools                              73.0.1
-setuptools-scm                          8.1.0
-shap                                    0.46.0
-shapely                                 2.0.6
+sentence-transformers                   5.1.1
+sentencepiece                           0.2.1
+setuptools-scm                          9.2.0
+shap                                    0.48.0
 Shimmy                                  2.0.0
-simpervisor                             1.0.0
-simplejson                              3.19.3
+simplejson                              3.20.2
 simpy                                   4.1.1
+sismic                                  1.6.10
 six                                     1.17.0
+skfolio                                 0.7.0
+skl2onnx                                1.19.1
 sklearn-json                            0.1.0
-sktime                                  0.26.0
+sktime                                  0.39.0
 slicer                                  0.0.8
-smart-open                              7.0.5
-smmap                                   5.0.1
+smart_open                              7.3.1
+smmap                                   5.0.2
 sniffio                                 1.3.1
 sortedcontainers                        2.4.0
-soupsieve                               2.6
-spacy                                   3.7.5
+soupsieve                               2.8
+spacy                                   3.8.7
 spacy-legacy                            3.0.12
 spacy-loggers                           1.0.5
-SQLAlchemy                              2.0.36
+sparse                                  0.17.0
+SQLAlchemy                              2.0.43
 sqlparse                                0.5.3
-srsly                                   2.5.0
-ssm                                     0.0.1
-stable_baselines3                       2.4.0
+srsly                                   2.5.1
+sse-starlette                           3.0.2
+stable_baselines3                       2.7.0
 stack-data                              0.6.3
 stanio                                  0.5.1
-statsforecast                           2.0.0
-statsmodels                             0.14.4
-stevedore                               5.4.0
+starlette                               0.48.0
+statsforecast                           2.0.2
+statsmodels                             0.14.5
+stevedore                               5.5.0
 stochastic                              0.6.0
-stockstats                              0.6.2
+stockstats                              0.6.5
 stopit                                  1.1.2
 striprtf                                0.0.26
 stumpy                                  1.13.0
-symengine                               0.13.0
-sympy                                   1.13.1
+sweetviz                                2.3.1
+sympy                                   1.14.0
 ta                                      0.11.0
-ta-lib                                  0.5.1
-tables                                  3.10.1
-tabulate                                0.8.10
+TA-Lib                                  0.6.7
+tables                                  3.10.2
+tabulate                                0.9.0
 tadasets                                0.2.1
-tbats                                   1.1.3
-tblib                                   3.0.0
-tenacity                                8.5.0
-tensorboard                             2.18.0
+tblib                                   3.1.0
+tenacity                                9.1.2
+tensorboard                             2.19.0
 tensorboard-data-server                 0.7.2
-tensorboardX                            2.6.2.2
-tensorflow                              2.18.0
-tensorflow-addons                       0.23.0
-tensorflow_decision_forests             1.11.0
+tensorboardX                            2.6.4
+tensordict                              0.10.0
+tensorflow                              2.19.1
 tensorflow-io-gcs-filesystem            0.37.1
 tensorflow-probability                  0.25.0
-tensorflow-text                         2.18.0
+tensorflow-text                         2.19.0
+tensorflow_decision_forests             1.12.0
 tensorly                                0.9.0
-tensorrt                                10.7.0
-tensorrt_cu12                           10.7.0
-tensorrt-cu12-bindings                  10.7.0
-tensorrt-cu12-libs                      10.7.0
+tensorrt                                10.13.3.9
+tensorrt_cu13                           10.13.3.9
+tensorrt_cu13_bindings                  10.13.3.9
+tensorrt_cu13_libs                      10.13.3.9
 tensortrade                             1.0.3
-termcolor                               2.5.0
+termcolor                               3.1.0
 terminado                               0.18.1
-tf_keras                                2.18.0
-tf2jax                                  0.3.6
-thinc                                   8.2.5
-threadpoolctl                           3.5.0
+tf2jax                                  0.3.7
+tf2onnx                                 1.16.1
+tf_keras                                2.19.0
+thinc                                   8.3.4
+threadpoolctl                           3.6.0
 thundergbm                              0.3.17
-tifffile                                2024.9.20
-tigramite                               5.2.6.7
-tiktoken                                0.8.0
+tifffile                                2025.10.4
+tigramite                               5.2.8.2
+tiktoken                                0.12.0
 tinycss2                                1.4.0
-tinygrad                                0.10.0
-tokenizers                              0.20.3
-toml                                    0.10.2
+tinygrad                                0.11.0
+tokenizers                              0.22.1
+tomlkit                                 0.13.3
 toolz                                   0.12.1
-torch                                   2.5.1
-torch_cluster                           1.6.3
+torch                                   2.8.0
 torch-geometric                         2.6.1
+torch_cluster                           1.6.3
 torch_scatter                           2.1.2
 torch_sparse                            0.6.18
 torch_spline_conv                       1.2.2
-torchdata                               0.10.0
-torchmetrics                            1.6.0
-torchvision                             0.20.1
-tornado                                 6.4.2
+torchdata                               0.11.0
+torchmetrics                            1.8.2
+torchrl                                 0.10.0
+torchvision                             0.23.0
+tornado                                 6.5.2
 TPOT                                    0.12.2
-tqdm                                    4.66.5
 traitlets                               5.14.3
-transformers                            4.46.3
-treelite                                4.3.0
+transformers                            4.57.0
+transitions                             0.9.3
+trec-car-tools                          2.6
 triad                                   0.9.8
-triton                                  3.1.0
-truststore                              0.8.0
-tsdownsample                            0.1.3
-tsfel                                   0.1.9
+triton                                  3.4.0
+tsfel                                   0.2.0
 tsfresh                                 0.20.2
-tslearn                                 0.6.3
-tweepy                                  4.14.0
-typeguard                               2.13.3
+tslearn                                 0.6.4
+tweepy                                  4.16.0
 typer                                   0.9.4
 typer-config                            1.4.2
-types-python-dateutil                   2.9.0.20241206
-typing_extensions                       4.12.2
+types-python-dateutil                   2.9.0.20251008
 typing-inspect                          0.9.0
-tzdata                                  2024.2
+typing-inspection                       0.4.2
+typing_extensions                       4.15.0
+tzdata                                  2025.2
 uc-micro-py                             1.0.3
-ucx-py-cu12                             0.39.2
-ucxx-cu12                               0.39.1
-umap-learn                              0.5.7
+umap-learn                              0.5.9.post2
+unlzw3                                  0.2.3
 update-checker                          0.18.0
 uri-template                            1.3.0
-uritemplate                             4.1.1
-urllib3                                 2.2.3
-utilsforecast                           0.2.10
+urllib3                                 2.5.0
+utilsforecast                           0.2.14
+uvicorn                                 0.37.0
+wadler_lindig                           0.1.7
+warc3-wet                               0.2.5
+warc3-wet-clueweb09                     0.2.5
 wasabi                                  1.1.3
-wcwidth                                 0.2.13
+wcwidth                                 0.2.14
 weasel                                  0.4.1
-webargs                                 8.6.0
+webargs                                 8.7.0
 webcolors                               24.11.1
 webencodings                            0.5.1
-websocket-client                        1.8.0
-websockets                              14.1
+websocket-client                        1.9.0
+websockets                              15.0.1
 Werkzeug                                3.1.3
-wheel                                   0.44.0
-widgetsnbextension                      4.0.13
-window_ops                              0.0.15
+widgetsnbextension                      4.0.14
 woodwork                                0.31.0
-wordcloud                               1.9.4
-wrapt                                   1.16.0
+wrapt                                   1.17.3
 wurlitzer                               3.1.1
-x-transformers                          1.42.24
-xarray                                  2024.11.0
-xarray-einstats                         0.8.0
-xgboost                                 2.1.3
-xlrd                                    2.0.1
-XlsxWriter                              3.2.0
-xxhash                                  3.5.0
-xyzservices                             2024.9.0
-yarl                                    1.18.3
-ydf                                     0.9.0
+x-transformers                          2.8.2
+xarray                                  2025.9.1
+xarray-einstats                         0.9.1
+xgboost                                 3.0.5
+xlrd                                    2.0.2
+xlsxwriter                              3.2.9
+xxhash                                  3.6.0
+xyzservices                             2025.4.0
+yarl                                    1.22.0
+ydf                                     0.13.0
 yellowbrick                             1.5
-yfinance                                0.2.50
+yfinance                                0.2.66
 zict                                    3.0.0
-zipp                                    3.21.0
-zope.event                              5.0
-zope.interface                          7.2
-zstandard                               0.23.0
+zipp                                    3.23.0
+zlib-state                              0.1.10
+zope.event                              5.1
+zope.interface                          8.0.1
 </pre>
    <pre class="csharp">
 Accord                               3.6.0
@@ -14876,7 +14876,7 @@ DynamicInterop                       0.9.1
 fasterflect                          3.0.0
 MathNet.Numerics                     5.0.0
 McMaster.Extensions.CommandLineUtils 2.6.0
-Microsoft.IO.RecyclableMemoryStream  2.3.2
+Microsoft.IO.RecyclableMemoryStream  3.0.1
 Microsoft.NET.Test.Sdk               16.9.4
 Microsoft.TestPlatform.ObjectModel   16.9.4
 Moq                                  4.16.1
@@ -14886,8 +14886,8 @@ NodaTime                             3.0.5
 NUnit                                4.2.2
 NUnit3TestAdapter                    4.6.0
 protobuf-net                         3.1.3
-QLNet                                1.13.0
-QuantConnect.pythonnet               2.0.42
+QLNet                                1.13.1
+QuantConnect.pythonnet               2.0.48
 RestSharp                            106.12.0
 SharpZipLib                          1.3.3
 System.ComponentModel.Composition    6.0.0
@@ -17407,6 +17407,26 @@ Pulling quantconnect/lean:11154...
    </li>
   </ol>
   <h4>
+   Parameters
+  </h4>
+  <p>
+   To run a local backtest with specific
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/optimization/parameters">
+    parameters
+   </a>
+   , use the
+   <code>
+    --parameter name value
+   </code>
+   option.
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ lean backtest "My Project" --parameter ema_fast 100 --parameter ema_slow 50
+20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210322 17:27:46.664 TRACE:: Engine.Main(): Started 5:27 PM
+Successfully ran 'My Project' in the 'backtesting' environment and stored the output in 'My Project/backtests/2021-03-22_18-51-28'</pre>
+  </div>
+  <h4>
    Data Providers
   </h4>
   <p>
@@ -17620,6 +17640,25 @@ Started backtest named 'Muscular Black Chinchilla' for project 'My Project'</pre
     Inspect the result in the browser, which opens automatically after the backtest finishes.
    </li>
   </ol>
+  <p>
+   To run a cloud backtest with specific
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/optimization/parameters">
+    parameters
+   </a>
+   , use the
+   <code>
+    --parameter name value
+   </code>
+   option.
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud backtest "My Project" --push --open --parameter ema_fast 100 --parameter ema_slow 50
+[1/1] Pushing 'My Project'
+Successfully updated cloud file 'My Project/main.py'
+Started compiling project 'My Project'
+Successfully compiled project 'My Project'
+Started backtest named 'Muscular Black Chinchilla' for project 'My Project'</pre>
+  </div>
  </body>
 </html>
 
@@ -18196,8 +18235,20 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
      </a>
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
-     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/alpaca">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/tastytrade">
       <div class="content clickable" onclick="window.location.href = '#8.1.4'">
+       <div class="docs-internal-link">
+        <h4>
+         Tastytrade
+        </h4>
+       </div>
+       US Equities, Equity Options, Futures, Future Options, Index, &amp; Index Options
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/alpaca">
+      <div class="content clickable" onclick="window.location.href = '#8.1.5'">
        <div class="docs-internal-link">
         <h4>
          Alpaca
@@ -18209,7 +18260,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/charles-schwab">
-      <div class="content clickable" onclick="window.location.href = '#8.1.5'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.6'">
        <div class="docs-internal-link">
         <h4>
          Charles Schwab
@@ -18221,7 +18272,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/binance">
-      <div class="content clickable" onclick="window.location.href = '#8.1.6'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.7'">
        <div class="docs-internal-link">
         <h4>
          Binance
@@ -18233,7 +18284,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/bybit">
-      <div class="content clickable" onclick="window.location.href = '#8.1.7'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.8'">
        <div class="docs-internal-link">
         <h4>
          Bybit
@@ -18245,7 +18296,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/tradier">
-      <div class="content clickable" onclick="window.location.href = '#8.1.8'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.9'">
        <div class="docs-internal-link">
         <h4>
          Tradier
@@ -18257,7 +18308,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/kraken">
-      <div class="content clickable" onclick="window.location.href = '#8.1.9'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.10'">
        <div class="docs-internal-link">
         <h4>
          Kraken
@@ -18269,7 +18320,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/coinbase">
-      <div class="content clickable" onclick="window.location.href = '#8.1.10'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.11'">
        <div class="docs-internal-link">
         <h4>
          Coinbase
@@ -18281,7 +18332,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/bitfinex">
-      <div class="content clickable" onclick="window.location.href = '#8.1.11'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.12'">
        <div class="docs-internal-link">
         <h4>
          Bitfinex
@@ -18293,7 +18344,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/bloomberg-emsx">
-      <div class="content clickable" onclick="window.location.href = '#8.1.12'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.13'">
        <div class="docs-internal-link">
         <h4>
          Bloomberg EMSX
@@ -18304,8 +18355,20 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
      </a>
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/ssc-eze">
+      <div class="content clickable" onclick="window.location.href = '#8.1.14'">
+       <div class="docs-internal-link">
+        <h4>
+         SSC Eze
+        </h4>
+       </div>
+       US Equities, Equity Options, Futures, Future Options, Index, &amp; Index Options
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/trading-technologies">
-      <div class="content clickable" onclick="window.location.href = '#8.1.13'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.15'">
        <div class="docs-internal-link">
         <h4>
          Trading Technologies
@@ -18317,7 +18380,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/samco">
-      <div class="content clickable" onclick="window.location.href = '#8.1.14'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.16'">
        <div class="docs-internal-link">
         <h4>
          Samco
@@ -18329,7 +18392,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/zerodha">
-      <div class="content clickable" onclick="window.location.href = '#8.1.15'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.17'">
        <div class="docs-internal-link">
         <h4>
          Zerodha
@@ -18341,7 +18404,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </div>
     <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
      <a class="docs-landing-link" href="/docs/v2/lean-cli/live-trading/brokerages/cfd-and-forex-brokerages">
-      <div class="content clickable" onclick="window.location.href = '#8.1.16'">
+      <div class="content clickable" onclick="window.location.href = '#8.1.18'">
        <div class="docs-internal-link">
         <h4>
          CFD and FOREX Brokerages
@@ -18462,6 +18525,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
     </div>
    </li>
@@ -18497,13 +18562,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -18642,6 +18708,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
    </div>
    <li>
@@ -18649,7 +18717,7 @@ Enter an option: 1</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -18717,11 +18785,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -18918,6 +18987,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
    </div>
    <li>
@@ -18948,7 +19019,29 @@ Account password: ****************</pre>
 Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
    </div>
    <p>
-    You'll receive a notification on your IB Key device every Sunday to re-authenticate the connection between IB and your live algorithm. Enter a time on Sunday to receive the notification. If you don't re-authenticate before the timeout period, your algorithm quits executing. Ensure your IB Key device has sufficient battery for the time you expect to receive the notification. If you don't receive a notification, see
+    You'll receive a notification on your IB Key device every Sunday to re-authenticate the connection between IB and your live algorithm. Enter a time on Sunday to receive the notification. Ensure your IB Key device has sufficient battery for the time you expect to receive the notification.
+   </p>
+   <p>
+    If you don't re-authenticate before the timeout period, you will receive an email from QuantConnect with two options:
+    <span class="button-name">
+     Connect
+    </span>
+    and
+    <span class="button-name">
+     Stop
+    </span>
+    . Click
+    <span class="button-name">
+     Connect
+    </span>
+    to restart the authentication process and receive a notification on your IB Key device. Click
+    <span class="button-name">
+     Stop
+    </span>
+    to stop the deployment. If you don't take action, your algorithm quits executing before the market opens for the assets in your portfolio. For example, 9:30 AM EST if your algorithm trades US Equities.
+   </p>
+   <p>
+    If you don't receive a notification, see
     <a href="https://ibkr.info/article/3234" rel="nofollow" target="_blank">
      I am not receiving IBKR Mobile notifications
     </a>
@@ -18970,7 +19063,7 @@ Do you want to use the Interactive Brokers price data feed instead of the QuantC
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -19075,11 +19168,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 1</pre>
    </div>
    <p>
@@ -19222,6 +19316,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
     </div>
    </li>
@@ -19248,7 +19344,13 @@ Account password: ****************</pre>
 Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
     </div>
     <p>
-     You'll receive a notification on your IB Key device every Sunday to re-authenticate the connection between IB and your live algorithm. Enter a time on Sunday to receive the notification. If you don't re-authenticate before the timeout period, your algorithm quits executing. Ensure your IB Key device has sufficient battery for the time you expect to receive the notification. If you don't receive a notification, see
+     You'll receive a notification on your IB Key device every Sunday to re-authenticate the connection between IB and your live algorithm. Enter a time on Sunday to receive the notification. Ensure your IB Key device has sufficient battery for the time you expect to receive the notification.
+    </p>
+    <p>
+     If you don't re-authenticate before the timeout period, your algorithm quits executing.
+    </p>
+    <p>
+     If you don't receive a notification, see
      <a href="https://ibkr.info/article/3234" rel="nofollow" target="_blank">
       I am not receiving IBKR Mobile notifications
      </a>
@@ -19274,13 +19376,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -19395,6 +19498,16 @@ Enable delayed market data? [yes/no]: </pre>
    <li>
     <a href="#4.4/download-in-bulk/us-index-options">
      US Index Option Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-future-universe">
+     US Futures Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-future-option-universe">
+     US Futures Options Universe
     </a>
    </li>
   </ul>
@@ -19757,6 +19870,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
    </div>
    <li>
@@ -19781,7 +19896,7 @@ The TradeStation account Id (11810357, 210NKH33, SIM2829935F, SIM2829934M): SIM2
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -19886,11 +20001,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 1</pre>
    </div>
    <li>
@@ -20026,6 +20142,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
     </div>
    </li>
@@ -20065,13 +20183,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -20212,9 +20331,602 @@ Will sleep 5 seconds and retry fetching authorization...
 </html>
 
 <p style="page-break-after: always;">&nbsp;</p>
-<p class='page-breadcrumb'>Live Trading > Brokerages > Alpaca</p>
+<p class='page-breadcrumb'>Live Trading > Brokerages > Tastytrade</p>
 <div class='page-heading'>
     <section id="8.1.4">
+        <h1>Brokerages</h1>
+        <h2>Tastytrade</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The Lean CLI supports live trading on your local machine or in QuantConnect Cloud, which makes the transfer from backtesting to live trading as seamless as possible. You must
+   <a href="#3.1#02-Log-In">
+    log in
+   </a>
+   using your QuantConnect account to deply your algorithm on your local machine or in QuantConnect Cloud. This page contains instructions on how to start live trading with the
+   <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">
+    tastytrade
+   </a>
+   brokerage. If the
+   <a href="#3.3">
+    Lean Configuration file
+   </a>
+   in your
+   <a href="#3.2">
+    organization workspace
+   </a>
+   contains values for some of the command options, the CLI skips some of the prompts.
+  </p>
+  <p>
+   To view the implementation of the tastytrade brokerage integration, see the
+   <a href="https://github.com/QuantConnect/Lean.Brokerages.tastytrade" rel="nofollow" target="_blank">
+    Lean.Brokerages.tastytrade repository
+   </a>
+   .
+  </p>
+  <p>
+   To use the CLI, you must be a member in an
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/tier-features">
+    organization
+   </a>
+   on a paid tier.
+  </p>
+ </body>
+</html>
+
+<h3>Deploy Cloud Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start live trading a project in the cloud with the
+   <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">
+    tastytrade
+   </a>
+   brokerage and the
+   <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">
+    tastytrade
+   </a>
+   data provider:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud live deploy "&lt;projectName&gt;" --push --open
+    </code>
+    to push
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    . to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+[1/1] Pushing 'My Project'
+Successfully updated cloud file 'My Project/main.py'
+Started compiling project 'My Project'
+Successfully compiled project 'My Project'</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     1
+    </span>
+    to select the
+    <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">
+     tastytrade
+    </a>
+    brokerage.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) Charles Schwab
+14) Bybit
+15) TradeStation
+16) Alpaca
+17) Tastytrade
+18) Eze
+Enter an option: 1</pre>
+   </div>
+   <li>
+    In the browser window that automatically opens, log in to your tastytrade account.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tastytrade
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Enter the tastytrade account ID.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+The tastytrade account Id (11810357, 210NKH33, SIM2829935F, SIM2829934M): SIM2829935F</pre>
+    </div>
+   </li>
+   <li>
+    Configure your notification settings.
+   </li>
+   <p>
+    You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
+     Live Trading Notification Quotas
+    </a>
+    .
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Do you want to send notifications on order events? [y/N]: y
+Do you want to send notifications on insights? [y/N]: y
+Email notifications: None
+Webhook notifications: None
+SMS notifications: None
+Select a notification method:
+1) Email
+2) Webhook
+3) SMS
+4) Telegram
+Enter an option: 1
+Email address: john.doe@example.com
+Subject: Algorithm notification
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Do you want to add another notification method? [y/N]: n</pre>
+   </div>
+   <li>
+    Enable or disable automatic algorithm restarting.
+   </li>
+   <p>
+    This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
+   </div>
+   <li>
+    Set your initial cash balance.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n</pre>
+   </div>
+   <li>
+    Set your initial portfolio holdings.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Do you want to set the initial portfolio holdings? [y/N]: y
+Do you want to use the last portfolio holdings? [] [y/N]: n
+Setting custom initial portfolio holdings...
+Symbol: GOOG
+Symbol ID: GOOCV VP83T1ZUHROL
+Quantity: 10
+Average Price: 50
+Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Do you want to add more holdings? [y/N]: n</pre>
+   </div>
+   <li>
+    Select the live node that you want to use.
+   </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     1
+    </span>
+    to select the
+    <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">
+     tastytrade
+    </a>
+    data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Select a live data feed:
+1) QuantConnect
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) Charles Schwab
+14) Polygon
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
+To enter multiple options, separate them with comma: 1</pre>
+   </div>
+   <li>
+    In the browser window that automatically opens, log in to your tastytrade account.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tastytrade
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Verify the configured settings and confirm them to start the live deployment in the cloud.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Brokerage: <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">tastytrade</a>
+Project id: 1234567
+Environment: Live
+Server name: L-MICRO node 89c90172
+Server type: L-MICRO
+Live Data providers: <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">tastytrade</a>
+LEAN version: 11157
+Order event notifications: Yes
+Insight notifications: Yes
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Automatic algorithm restarting: Yes
+Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
+   </div>
+   <li>
+    Inspect the result in the browser, which opens automatically after the deployment starts.
+   </li>
+  </ol>
+  <p>
+   Follow these steps to see the live status of a project:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud status "&lt;projectName&gt;"
+    </code>
+    to show the status of the cloud project named "&lt;projectName&gt;".
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud status "My Project"
+Project id: 1234567
+Project name: My Project
+Project url: https://www.quantconnect.com/project/1234567
+Live status: Running
+Live id: L-1234567a8901d234e5e678ddd9b0123c
+Live url: https://www.quantconnect.com/project/1234567/live
+Brokerage: <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">tastytrade</a>
+Launched: 2021-06-09 15:10:12 UTC</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
+<h3>Deploy Local Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start local live trading with the
+   <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">
+    tastytrade
+   </a>
+   brokerage:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean live deploy "&lt;projectName&gt;"
+    </code>
+    to start a live deployment wizard for the project in
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    and then enter  the brokerage number,
+    <span class="key-combinations">
+     1
+    </span>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean live deploy "My Project"
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) OANDA
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) Charles Schwab
+14) Bybit
+15) TradeStation
+16) Alpaca
+17) Tastytrade
+18) Eze
+Enter an option: 1</pre>
+    </div>
+   </li>
+   <li>
+    LEAN CLI opens your browser for authorization. Login to tastytrade.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tastytrade
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    Enter the tastytrade account ID.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+The tastytrade account Id (11810357, 210NKH33, SIM2829935F, SIM2829934M): SIM2829935F</pre>
+    </div>
+   </li>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live deploy "My Project"
+Select a live data provider:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) Charles Schwab
+13) IQFeed
+14) Polygon
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+   <ul>
+    <li>
+     <a href="#4.8">
+      IQFeed
+     </a>
+    </li>
+    <li>
+     <a href="#4.9">
+      Polygon
+     </a>
+    </li>
+    <li>
+     <a href="#4.11">
+      Theta Data
+     </a>
+    </li>
+   </ul>
+   <li>
+    LEAN CLI opens your browser for authorization. Login to tastytrade if necessary.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Please open the following URL in your browser to authorize the LEAN CLI.
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=tastytrade
+Will sleep 5 seconds and retry fetching authorization...
+</pre>
+    </div>
+   </li>
+   <li>
+    View the result in the
+    <span class="public-directory-name">
+     &lt;projectName&gt; / live / &lt;timestamp&gt;
+    </span>
+    directory.
+        Results are stored in real-time in JSON format.
+        You can save results to a different directory by providing the
+    <code>
+     --output &lt;path&gt;
+    </code>
+    option in step 2.
+   </li>
+  </ol>
+  <p>
+   If you already have a live environment configured in your
+   <a href="#3.3">
+    Lean configuration file
+   </a>
+   , you can skip the interactive wizard by providing the
+   <code>
+    --environment &lt;value&gt;
+   </code>
+   option in step 2.
+    The value of this option must be the name of an environment which has
+   <code>
+    live-mode
+   </code>
+   set to
+   <code>
+    true
+   </code>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Data Provider</h3>
+<html>
+ <body>
+  <p>
+   For information about the
+   <a href="https://qnt.co/tastytrade" rel="nofollow" target="_blank">
+    tastytrade
+   </a>
+   data provider, see
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/tastytrade">
+    tastytrade
+   </a>
+   .
+
+  In local deployments,
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/key-concepts">
+    universe selection
+   </a>
+   is available if you download the data from the
+   <a href="https://www.quantconnect.com/datasets">
+    Dataset Market
+   </a>
+   .
+  The dataset listings show how to download the universe selection data with the CLI.
+  To stay up-to-date, periodically download the new data from QuantConnect Cloud, which you can automate with Python scripts.
+  For example, the following tutorials explain how to download historical data and download daily updates:
+  </p>
+  <ul>
+   <li>
+    <a href="#4.4/download-in-bulk/us-equity-coarse-universe">
+     US Equity Coarse Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-equity-option-universe">
+     US Equity Option Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-etf-constituents">
+     US ETF Constituents
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-index-options">
+     US Index Option Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-future-universe">
+     US Futures Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-future-option-universe">
+     US Futures Options Universe
+    </a>
+   </li>
+  </ul>
+  <p>
+   The tastytrade data provider serves raw data.
+  To get adjusted Equity data in local deployments,
+   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+    download the US Equity Security Master
+   </a>
+   .
+  To get
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">
+    continuous Futures
+   </a>
+   data,
+   <a href="https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/cli">
+    download the US Futures Security Master
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Live Trading > Brokerages > Alpaca</p>
+<div class='page-heading'>
+    <section id="8.1.5">
         <h1>Brokerages</h1>
         <h2>Alpaca</h2>
     </section>
@@ -20322,6 +21034,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 16</pre>
    </div>
    <li>
@@ -20350,7 +21064,7 @@ Live or Paper environment? (live, paper): live</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -20451,11 +21165,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 19</pre>
    </div>
    <li>
@@ -20604,6 +21319,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 16</pre>
     </div>
    </li>
@@ -20647,13 +21364,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -20794,7 +21512,7 @@ Alpaca Api Secret: ****************************************
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Charles Schwab</p>
 <div class='page-heading'>
-    <section id="8.1.5">
+    <section id="8.1.6">
         <h1>Brokerages</h1>
         <h2>Charles Schwab</h2>
     </section>
@@ -20895,6 +21613,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 13</pre>
    </div>
    <li>
@@ -20916,7 +21636,7 @@ Will sleep 5 seconds and retry fetching authorization...
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -21017,11 +21737,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 13</pre>
    </div>
    <li>
@@ -21143,6 +21864,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 13</pre>
     </div>
    </li>
@@ -21200,13 +21923,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -21325,7 +22049,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Binance</p>
 <div class='page-heading'>
-    <section id="8.1.6">
+    <section id="8.1.7">
         <h1>Brokerages</h1>
         <h2>Binance</h2>
     </section>
@@ -21429,6 +22153,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 7</pre>
    </div>
    <li>
@@ -21465,7 +22191,7 @@ Use the testnet? (live, paper): </pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -21566,11 +22292,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 7</pre>
    </div>
    <p>
@@ -21702,6 +22429,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
     </div>
    </li>
@@ -21751,13 +22480,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -21821,7 +22551,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Bybit</p>
 <div class='page-heading'>
-    <section id="8.1.7">
+    <section id="8.1.8">
         <h1>Brokerages</h1>
         <h2>Bybit</h2>
     </section>
@@ -21925,6 +22655,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 14</pre>
    </div>
    <li>
@@ -21961,7 +22693,7 @@ VIP Level (VIP0, VIP1, VIP2, VIP3, VIP4, VIP5, SupremeVIP, Pro1, Pro2, Pro3, Pro
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -22047,11 +22779,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 17</pre>
    </div>
    <p>
@@ -22182,6 +22915,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 14</pre>
     </div>
    </li>
@@ -22247,13 +22982,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -22317,7 +23053,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Tradier</p>
 <div class='page-heading'>
-    <section id="8.1.8">
+    <section id="8.1.9">
         <h1>Brokerages</h1>
         <h2>Tradier</h2>
     </section>
@@ -22421,6 +23157,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 3</pre>
    </div>
    <li>
@@ -22450,7 +23188,7 @@ Use the developer sandbox? (live, paper): </pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -22551,11 +23289,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 3</pre>
    </div>
    <p>
@@ -22680,6 +23419,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 3</pre>
     </div>
    </li>
@@ -22722,13 +23463,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -22845,7 +23587,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Kraken</p>
 <div class='page-heading'>
-    <section id="8.1.9">
+    <section id="8.1.10">
         <h1>Brokerages</h1>
         <h2>Kraken</h2>
     </section>
@@ -22949,6 +23691,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 12</pre>
    </div>
    <li>
@@ -22985,7 +23729,7 @@ Select the Verification Tier (Starter, Intermediate, Pro):</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -23086,11 +23830,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 12</pre>
    </div>
    <p>
@@ -23222,6 +23967,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 12</pre>
     </div>
    </li>
@@ -23269,13 +24016,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -23339,7 +24087,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Coinbase</p>
 <div class='page-heading'>
-    <section id="8.1.10">
+    <section id="8.1.11">
         <h1>Brokerages</h1>
         <h2>Coinbase</h2>
     </section>
@@ -23443,6 +24191,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 6</pre>
    </div>
    <li>
@@ -23463,7 +24213,7 @@ API private key: ***************************************************************
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -23564,11 +24314,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 6</pre>
    </div>
    <p>
@@ -23700,6 +24451,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 6</pre>
     </div>
    </li>
@@ -23735,13 +24488,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -23805,7 +24559,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Bitfinex</p>
 <div class='page-heading'>
-    <section id="8.1.11">
+    <section id="8.1.12">
         <h1>Brokerages</h1>
         <h2>Bitfinex</h2>
     </section>
@@ -23909,6 +24663,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 5</pre>
    </div>
    <li>
@@ -23931,7 +24687,7 @@ Secret key: *******************************************</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -24032,11 +24788,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 5</pre>
    </div>
    <p>
@@ -24168,6 +24925,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 5</pre>
     </div>
    </li>
@@ -24203,13 +24962,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -24273,7 +25033,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Bloomberg EMSX</p>
 <div class='page-heading'>
-    <section id="8.1.12">
+    <section id="8.1.13">
         <h1>Brokerages</h1>
         <h2>Bloomberg EMSX</h2>
     </section>
@@ -24799,6 +25559,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 10</pre>
    </div>
    <li>
@@ -24857,7 +25619,7 @@ OpenFIGI API key: </pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -24958,11 +25720,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 10</pre>
    </div>
    <p>
@@ -25101,6 +25864,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 10</pre>
     </div>
    </li>
@@ -25157,13 +25922,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma: 9</pre>
     </div>
    </li>
@@ -25205,9 +25971,548 @@ To enter multiple options, separate them with comma: 9</pre>
 </html>
 
 <p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Live Trading > Brokerages > SSC Eze</p>
+<div class='page-heading'>
+    <section id="8.1.14">
+        <h1>Brokerages</h1>
+        <h2>SSC Eze</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The Lean CLI supports live trading on your local machine or in QuantConnect Cloud, which makes the transfer from backtesting to live trading as seamless as possible. You must
+   <a href="#3.1#02-Log-In">
+    log in
+   </a>
+   using your QuantConnect account to deply your algorithm on your local machine or in QuantConnect Cloud. This page contains instructions on how to start live trading with the
+   <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">
+    SS&amp;C Eze
+   </a>
+   brokerage. If the
+   <a href="#3.3">
+    Lean Configuration file
+   </a>
+   in your
+   <a href="#3.2">
+    organization workspace
+   </a>
+   contains values for some of the command options, the CLI skips some of the prompts.
+  </p>
+  <p>
+   To use the CLI, you must be a member in an
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/tier-features">
+    organization
+   </a>
+   on a paid tier.
+  </p>
+ </body>
+</html>
+
+<h3>Deploy Cloud Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start live trading a project in the cloud with the
+   <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">
+    SS&amp;C Eze
+   </a>
+   brokerage and the
+   <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">
+    SS&amp;C Eze
+   </a>
+   data provider:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud live deploy "&lt;projectName&gt;" --push --open
+    </code>
+    to push
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    . to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+[1/1] Pushing 'My Project'
+Successfully updated cloud file 'My Project/main.py'
+Started compiling project 'My Project'
+Successfully compiled project 'My Project'</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     1
+    </span>
+    to select the
+    <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">
+     SS&amp;C Eze
+    </a>
+    brokerage.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) Charles Schwab
+14) Bybit
+15) TradeStation
+16) Alpaca
+17) Tastytrade
+18) Eze
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the trading domain, region, username, password, and trading account in BBCD (BANK;BRANCH;CUSTOMER;DEPOSIT) format.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Provided by brokerage: trading domain: LIGHTSPEEDDELAY
+Provided by brokerage: locale/market region: Live and Delayed
+Username:
+Account password:
+Enter your trading account (BBCD format): LATEST;TEST;01;ACQUIREDMEDIA
+</pre>
+    </div>
+   </li>
+   <li>
+    Configure your notification settings.
+   </li>
+   <p>
+    You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
+     Live Trading Notification Quotas
+    </a>
+    .
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Do you want to send notifications on order events? [y/N]: y
+Do you want to send notifications on insights? [y/N]: y
+Email notifications: None
+Webhook notifications: None
+SMS notifications: None
+Select a notification method:
+1) Email
+2) Webhook
+3) SMS
+4) Telegram
+Enter an option: 1
+Email address: john.doe@example.com
+Subject: Algorithm notification
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Do you want to add another notification method? [y/N]: n</pre>
+   </div>
+   <li>
+    Enable or disable automatic algorithm restarting.
+   </li>
+   <p>
+    This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
+   </div>
+   <li>
+    Select the live node that you want to use.
+   </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     1
+    </span>
+    to select the
+    <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">
+     SS&amp;C Eze
+    </a>
+    data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Select a live data feed:
+1) QuantConnect
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) Charles Schwab
+14) Polygon
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
+To enter multiple options, separate them with comma: 1</pre>
+   </div>
+   <li>
+    Verify the configured settings and confirm them to start the live deployment in the cloud.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live deploy "My Project" --push --open
+Brokerage: <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">SS&amp;C Eze</a>
+Project id: 1234567
+Environment: Live
+Server name: L-MICRO node 89c90172
+Server type: L-MICRO
+Live Data providers: <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">SS&amp;C Eze</a>
+LEAN version: 11157
+Order event notifications: Yes
+Insight notifications: Yes
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Automatic algorithm restarting: Yes
+Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
+   </div>
+   <li>
+    Inspect the result in the browser, which opens automatically after the deployment starts.
+   </li>
+  </ol>
+  <p>
+   Follow these steps to see the live status of a project:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud status "&lt;projectName&gt;"
+    </code>
+    to show the status of the cloud project named "&lt;projectName&gt;".
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud status "My Project"
+Project id: 1234567
+Project name: My Project
+Project url: https://www.quantconnect.com/project/1234567
+Live status: Running
+Live id: L-1234567a8901d234e5e678ddd9b0123c
+Live url: https://www.quantconnect.com/project/1234567/live
+Brokerage: <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">SS&amp;C Eze</a>
+Launched: 2021-06-09 15:10:12 UTC</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
+<h3>Deploy Local Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start local live trading with the
+   <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">
+    SS&amp;C Eze
+   </a>
+   brokerage:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean live deploy "&lt;projectName&gt;"
+    </code>
+    to start a live deployment wizard for the project in
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    and then enter  the brokerage number,
+    <span class="key-combinations">
+     1
+    </span>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean live deploy "My Project"
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) OANDA
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) Charles Schwab
+14) Bybit
+15) TradeStation
+16) Alpaca
+17) Tastytrade
+18) Eze
+Enter an option: 1</pre>
+    </div>
+   </li>
+   <li>
+    Enter the trading domain, region, username, password, and trading account in BBCD (BANK;BRANCH;CUSTOMER;DEPOSIT) format.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Provided by brokerage: trading domain: LIGHTSPEEDDELAY
+Provided by brokerage: locale/market region: Live and Delayed
+Username:
+Account password:
+Enter your trading account (BBCD format): LATEST;TEST;01;ACQUIREDMEDIA
+</pre>
+    </div>
+   </li>
+   <li>
+    Set your initial cash balance.
+    <div class="cli section-example-container">
+     <pre>$ lean live deploy "My Project"
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y 
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n</pre>
+    </div>
+   </li>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live deploy "My Project"
+Select a live data provider:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) Charles Schwab
+13) IQFeed
+14) Polygon
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+   <ul>
+    <li>
+     <a href="#4.8">
+      IQFeed
+     </a>
+    </li>
+    <li>
+     <a href="#4.9">
+      Polygon
+     </a>
+    </li>
+    <li>
+     <a href="#4.11">
+      Theta Data
+     </a>
+    </li>
+   </ul>
+   <li>
+    View the result in the
+    <span class="public-directory-name">
+     &lt;projectName&gt; / live / &lt;timestamp&gt;
+    </span>
+    directory.
+        Results are stored in real-time in JSON format.
+        You can save results to a different directory by providing the
+    <code>
+     --output &lt;path&gt;
+    </code>
+    option in step 2.
+   </li>
+  </ol>
+  <p>
+   If you already have a live environment configured in your
+   <a href="#3.3">
+    Lean configuration file
+   </a>
+   , you can skip the interactive wizard by providing the
+   <code>
+    --environment &lt;value&gt;
+   </code>
+   option in step 2.
+    The value of this option must be the name of an environment which has
+   <code>
+    live-mode
+   </code>
+   set to
+   <code>
+    true
+   </code>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Data Provider</h3>
+<html>
+ <body>
+  <p>
+   For information about the
+   <a href="https://qnt.co/ssc-eze" rel="nofollow" target="_blank">
+    SS&amp;C Eze
+   </a>
+   data provider, see
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/ssc-eze">
+    SS&amp;C Eze
+   </a>
+   .
+
+  In local deployments,
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/key-concepts">
+    universe selection
+   </a>
+   is available if you download the data from the
+   <a href="https://www.quantconnect.com/datasets">
+    Dataset Market
+   </a>
+   .
+  The dataset listings show how to download the universe selection data with the CLI.
+  To stay up-to-date, periodically download the new data from QuantConnect Cloud, which you can automate with Python scripts.
+  For example, the following tutorials explain how to download historical data and download daily updates:
+  </p>
+  <ul>
+   <li>
+    <a href="#4.4/download-in-bulk/us-equity-coarse-universe">
+     US Equity Coarse Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-equity-option-universe">
+     US Equity Option Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-etf-constituents">
+     US ETF Constituents
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-index-options">
+     US Index Option Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-future-universe">
+     US Futures Universe
+    </a>
+   </li>
+   <li>
+    <a href="#4.4/download-in-bulk/us-future-option-universe">
+     US Futures Options Universe
+    </a>
+   </li>
+  </ul>
+  <p>
+   The SS&amp;C Eze data provider serves raw data.
+  To get adjusted Equity data in local deployments,
+   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+    download the US Equity Security Master
+   </a>
+   .
+  To get
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">
+    continuous Futures
+   </a>
+   data,
+   <a href="https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/cli">
+    download the US Futures Security Master
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Trading Technologies</p>
 <div class='page-heading'>
-    <section id="8.1.13">
+    <section id="8.1.15">
         <h1>Brokerages</h1>
         <h2>Trading Technologies</h2>
     </section>
@@ -25311,6 +26616,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 11</pre>
    </div>
    <li>
@@ -25362,7 +26669,7 @@ Order routing sender comp id: </pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -25450,11 +26757,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 11</pre>
    </div>
    <p>
@@ -25585,6 +26893,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 11</pre>
     </div>
    </li>
@@ -25673,13 +26983,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -25743,7 +27054,7 @@ To enter multiple options, separate them with comma:</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Samco</p>
 <div class='page-heading'>
-    <section id="8.1.14">
+    <section id="8.1.16">
         <h1>Brokerages</h1>
         <h2>Samco</h2>
     </section>
@@ -25847,6 +27158,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 9</pre>
    </div>
    <li>
@@ -25967,7 +27280,7 @@ Trading segment (equity, commodity):</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -26068,11 +27381,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 9</pre>
    </div>
    <p>
@@ -26204,6 +27518,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 9</pre>
     </div>
    </li>
@@ -26344,13 +27660,14 @@ Select a live data feed:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma: 8</pre>
    </div>
    <li>
@@ -26406,7 +27723,7 @@ To enter multiple options, separate them with comma: 8</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > Zerodha</p>
 <div class='page-heading'>
-    <section id="8.1.15">
+    <section id="8.1.17">
         <h1>Brokerages</h1>
         <h2>Zerodha</h2>
     </section>
@@ -26510,6 +27827,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 8</pre>
    </div>
    <li>
@@ -26634,7 +27953,7 @@ Do you have a history API subscription? (true, false): true</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -26735,11 +28054,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 8</pre>
    </div>
    <p>
@@ -26871,6 +28191,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 8</pre>
     </div>
    </li>
@@ -27008,13 +28330,14 @@ Select a live data feed:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma: 7</pre>
    </div>
    <li>
@@ -27077,7 +28400,7 @@ Do you have a history API subscription? (true, false): true</pre>
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Live Trading > Brokerages > CFD and FOREX Brokerages</p>
 <div class='page-heading'>
-    <section id="8.1.16">
+    <section id="8.1.18">
         <h1>Brokerages</h1>
         <h2>CFD and FOREX Brokerages</h2>
     </section>
@@ -27181,6 +28504,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 4</pre>
    </div>
    <li>
@@ -27231,7 +28556,7 @@ API token: ****************</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -27332,11 +28657,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 4</pre>
    </div>
    <p>
@@ -27468,6 +28794,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 4</pre>
     </div>
    </li>
@@ -27529,13 +28857,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -27749,6 +29078,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
     </div>
    </li>
@@ -27771,13 +29102,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -28016,6 +29348,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
     </div>
    </li>
@@ -28038,13 +29372,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -28165,6 +29500,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
    </div>
    <li>
@@ -28172,7 +29509,7 @@ Enter an option: 1</pre>
    </li>
    <p>
     You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
-    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#13-Live-Trading-Notification-Quotas">
      Live Trading Notification Quotas
     </a>
     .
@@ -28245,11 +29582,12 @@ Select a live data feed:
 12) Kraken
 13) Charles Schwab
 14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
-18) TradeStation
-19) Alpaca
+15) CoinApi
+16) Bybit
+17) TradeStation
+18) Alpaca
+19) Tastytrade
+20) Eze
 To enter multiple options, separate them with comma: 14</pre>
    </div>
    <li>
@@ -28469,6 +29807,8 @@ Select a brokerage:
 14) Bybit
 15) TradeStation
 16) Alpaca
+17) Tastytrade
+18) Eze
 Enter an option: 1</pre>
     </div>
    </li>
@@ -28491,13 +29831,14 @@ Select a live data provider:
 12) Charles Schwab
 13) IQFeed
 14) Polygon
-15) IEX
-16) CoinApi
-17) ThetaData
-18) Custom data only
-19) Bybit
-20) TradeStation
-21) Alpaca
+15) CoinApi
+16) ThetaData
+17) Custom data only
+18) Bybit
+19) TradeStation
+20) Alpaca
+21) Tastytrade
+22) Eze
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -29870,6 +31211,25 @@ parameters--&amp;gt</pre>
    </code>
    .
   </p>
+  <h4>
+   Custom Report Example
+  </h4>
+  <p>
+   To view an example of
+   <span class="public-file-name">
+    report.html
+   </span>
+   and
+   <span class="public-file-name">
+    report.css
+   </span>
+   files that customize the backtest reports of a project, see the files in
+   <a href="https://www.quantconnect.cloud/backtest/92562921df687db3fc5f28f48826405c/?theme=darkly" target="_blank">
+    this project
+   </a>
+   .
+  The HTML and CSS files in the project produce a report that has a red banner at the top.
+  </p>
  </body>
 </html>
 
@@ -29952,28 +31312,25 @@ parameters--&amp;gt</pre>
     </code>
     in your algorithm to retrieve the value of a parameter and use that instead of constant values.
     <div class="section-example-container">
-     <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+     <pre class="csharp">public class ParameterizedAlgorithm : QCAlgorithm
 {
-    public class ParameterizedAlgorithm : QCAlgorithm
+    private ExponentialMovingAverage _fast;
+    private ExponentialMovingAverage _medium;
+    private ExponentialMovingAverage _slow;
+
+    public override void Initialize()
     {
-        private ExponentialMovingAverage _fast;
-        private ExponentialMovingAverage _medium;
-        private ExponentialMovingAverage _slow;
+        SetStartDate(2020, 1, 1);
+        SetCash(100000);
+        AddEquity("SPY");
 
-        public override void Initialize()
-        {
-            SetStartDate(2020, 1, 1);
-            SetCash(100000);
-            AddEquity("SPY");
+        var fastPeriod = GetParameter("ema-fast", 10);
+        var mediumPeriod = GetParameter("ema-medium", 30);
+        var slowPeriod = GetParameter("ema-slow", 50);
 
-            var fastPeriod = GetParameter("ema-fast", 10);
-            var mediumPeriod = GetParameter("ema-medium", 30);
-            var slowPeriod = GetParameter("ema-slow", 50);
-
-            _fast = EMA("SPY", fastPeriod);
-            _medium = EMA("SPY", mediumPeriod);
-            _slow = EMA("SPY", slowPeriod);
-        }
+        _fast = EMA("SPY", fastPeriod);
+        _medium = EMA("SPY", mediumPeriod);
+        _slow = EMA("SPY", slowPeriod);
     }
 }</pre>
      <pre class="python">class ParameterizedAlgorithm(QCAlgorithm):
@@ -31954,7 +33311,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -32230,6 +33591,16 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --polygon-license-type &lt;enum: Individual|Business&gt;
+      </code>
+     </td>
+     <td>
+      Select your Polygon.io subscription plan (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --factset-auth-config-file &lt;file&gt;
       </code>
      </td>
@@ -32446,6 +33817,56 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --tastytrade-account-number &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The Tastytrade account number
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-domain &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): LIGHTSPEED, LIGHTSPEEDDELAY
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-locale &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): GLOBAL, AMERICAS, LIVE, DELAYED
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers username
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-password &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers password
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --download-data
       </code>
      </td>
@@ -32531,6 +33952,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Use the local LEAN engine image instead of pulling the latest version
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --parameter &lt;&lt;string&gt; &lt;string&gt;&gt;...
+      </code>
+     </td>
+     <td>
+      Key-value pairs to pass as backtest parameters. Values can be string, int, or float. Example: --parameter symbol AAPL --parameter period 10 --parameter threshold 0.05
      </td>
     </tr>
     <tr>
@@ -32924,6 +34355,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Automatically open the results in the browser when the backtest is finished
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --parameter &lt;&lt;string&gt; &lt;string&gt;&gt;...
+      </code>
+     </td>
+     <td>
+      Key-value pairs to pass as backtest parameters. Values can be string, int, or float. Example: --parameter symbol AAPL --parameter period 10 --parameter threshold 0.05
      </td>
     </tr>
     <tr>
@@ -34245,7 +35686,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -34289,7 +35734,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -34334,6 +35783,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --ib-financial-advisors-group-filter &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups. (Optional)
      </td>
     </tr>
     <tr>
@@ -34877,11 +36336,81 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --tastytrade-account-number &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The Tastytrade account number
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-domain &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): LIGHTSPEED, LIGHTSPEEDDELAY
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-locale &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): GLOBAL, AMERICAS, LIVE, DELAYED
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers username
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-password &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers password
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-trading-account &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Format: BANK;BRANCH;CUSTOMER;DEPOSIT
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --polygon-api-key &lt;string&gt;
       </code>
      </td>
      <td>
       Your Polygon.io API Key
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --polygon-license-type &lt;enum: Individual|Business&gt;
+      </code>
+     </td>
+     <td>
+      Select your Polygon.io subscription plan (Optional)
      </td>
     </tr>
     <tr>
@@ -37723,7 +39252,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -37999,6 +39532,16 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --polygon-license-type &lt;enum: Individual|Business&gt;
+      </code>
+     </td>
+     <td>
+      Select your Polygon.io subscription plan (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --factset-auth-config-file &lt;file&gt;
       </code>
      </td>
@@ -38210,6 +39753,56 @@ if __name__ == '__main__':
      </td>
      <td>
       Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --tastytrade-account-number &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The Tastytrade account number
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-domain &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): LIGHTSPEED, LIGHTSPEEDDELAY
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-locale &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): GLOBAL, AMERICAS, LIVE, DELAYED
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers username
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-password &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers password
      </td>
     </tr>
     <tr>
@@ -42040,7 +43633,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -42088,7 +43685,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -42132,7 +43733,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -42177,6 +43782,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Weekly restart UTC time (hh:mm:ss). Each week on Sunday your algorithm is restarted at this time, and will require 2FA verification. This is required by Interactive Brokers. Use this option explicitly to override the default value. (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --ib-financial-advisors-group-filter &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Use this field to filter data by a specific financial advisor group within your Interactive Brokers account. Leave blank to include all groups. (Optional)
      </td>
     </tr>
     <tr>
@@ -42820,6 +44435,66 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --tastytrade-account-number &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The Tastytrade account number
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-domain &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): LIGHTSPEED, LIGHTSPEEDDELAY
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-locale &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): GLOBAL, AMERICAS, LIVE, DELAYED
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers username
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-password &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers password
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-trading-account &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Format: BANK;BRANCH;CUSTOMER;DEPOSIT
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --ib-enable-delayed-streaming-data &lt;boolean&gt;
       </code>
      </td>
@@ -42895,6 +44570,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Polygon.io API Key
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --polygon-license-type &lt;enum: Individual|Business&gt;
+      </code>
+     </td>
+     <td>
+      Select your Polygon.io subscription plan (Optional)
      </td>
     </tr>
     <tr>
@@ -45505,7 +47190,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -45871,6 +47560,16 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --polygon-license-type &lt;enum: Individual|Business&gt;
+      </code>
+     </td>
+     <td>
+      Select your Polygon.io subscription plan (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --factset-auth-config-file &lt;file&gt;
       </code>
      </td>
@@ -46082,6 +47781,56 @@ if __name__ == '__main__':
      </td>
      <td>
       Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --tastytrade-account-number &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The Tastytrade account number
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-domain &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): LIGHTSPEED, LIGHTSPEEDDELAY
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-locale &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): GLOBAL, AMERICAS, LIVE, DELAYED
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers username
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-password &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers password
      </td>
     </tr>
     <tr>
@@ -47777,7 +49526,11 @@ if __name__ == '__main__':
        <br/>
        TradeStation
        <br/>
-       Alpaca&gt;
+       Alpaca
+       <br/>
+       Tastytrade
+       <br/>
+       Eze&gt;
       </code>
      </td>
      <td>
@@ -48053,6 +49806,16 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --polygon-license-type &lt;enum: Individual|Business&gt;
+      </code>
+     </td>
+     <td>
+      Select your Polygon.io subscription plan (Optional)
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --factset-auth-config-file &lt;file&gt;
       </code>
      </td>
@@ -48264,6 +50027,56 @@ if __name__ == '__main__':
      </td>
      <td>
       Whether Live or Paper environment should be used
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --tastytrade-account-number &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      The Tastytrade account number
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-domain &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): LIGHTSPEED, LIGHTSPEEDDELAY
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-locale &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Examples (broker provided): GLOBAL, AMERICAS, LIVE, DELAYED
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers username
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --eze-password &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Eze Brokers password
      </td>
     </tr>
     <tr>
