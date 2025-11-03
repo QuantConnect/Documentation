@@ -593,9 +593,9 @@ class CandlestickProcessor(IndicatorProcessor):
     def _get_python_history(self):
         code, _, variable = self._get_python_initialize('helper')
         return (code + f"""
-        indicator_history = self.indicator_history(_{variable}, self._symbol, 100, Resolution.MINUTE)
-        timedelta_indicator_history = self.indicator_history(_{variable}, self._symbol, timedelta(days=10), Resolution.MINUTE)
-        time_period_indicator_history = self.indicator_history(_{variable}, self._symbol, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)""")
+        indicator_history = self.indicator_history(self._{variable}, self._symbol, 100, Resolution.MINUTE)
+        timedelta_indicator_history = self.indicator_history(self._{variable}, self._symbol, timedelta(days=10), Resolution.MINUTE)
+        time_period_indicator_history = self.indicator_history(self._{variable}, self._symbol, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)""")
 
 if __name__ == "__main__":
     # DELETE ALL FILES
