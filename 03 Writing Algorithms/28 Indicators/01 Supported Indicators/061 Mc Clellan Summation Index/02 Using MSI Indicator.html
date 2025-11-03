@@ -56,7 +56,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _mcclellansummationindex.Update(bar.EndTime, bar.Close);
+            _mcclellansummationindex.Update(bar);
 
         if (_mcclellansummationindex.IsReady)
         {
@@ -76,7 +76,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._mcclellansummationindex.update(bar.end_time, bar.close)
+            self._mcclellansummationindex.update(bar)
 
         if self._mcclellansummationindex.is_ready:
             # The current value of self._mcclellansummationindex is represented by self._mcclellansummationindex.current.value

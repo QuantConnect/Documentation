@@ -54,7 +54,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _averagedirectionalmovementindexrating.Update(bar.EndTime, bar.Close);
+            _averagedirectionalmovementindexrating.Update(bar);
 
         if (_averagedirectionalmovementindexrating.IsReady)
         {
@@ -74,7 +74,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._averagedirectionalmovementindexrating.update(bar.end_time, bar.close)
+            self._averagedirectionalmovementindexrating.update(bar)
 
         if self._averagedirectionalmovementindexrating.is_ready:
             # The current value of self._averagedirectionalmovementindexrating is represented by self._averagedirectionalmovementindexrating.current.value

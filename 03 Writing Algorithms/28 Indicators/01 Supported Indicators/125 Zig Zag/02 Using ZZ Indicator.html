@@ -56,7 +56,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _zigzag.Update(bar.EndTime, bar.Close);
+            _zigzag.Update(bar);
 
         if (_zigzag.IsReady)
         {
@@ -77,7 +77,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._zigzag.update(bar.end_time, bar.close)
+            self._zigzag.update(bar)
 
         if self._zigzag.is_ready:
             # The current value of self._zigzag is represented by self._zigzag.current.value

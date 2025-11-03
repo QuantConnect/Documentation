@@ -54,7 +54,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _relativevigorindex.Update(bar.EndTime, bar.Close);
+            _relativevigorindex.Update(bar);
 
         if (_relativevigorindex.IsReady)
         {
@@ -74,7 +74,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._relativevigorindex.update(bar.end_time, bar.close)
+            self._relativevigorindex.update(bar)
 
         if self._relativevigorindex.is_ready:
             # The current value of self._relativevigorindex is represented by self._relativevigorindex.current.value

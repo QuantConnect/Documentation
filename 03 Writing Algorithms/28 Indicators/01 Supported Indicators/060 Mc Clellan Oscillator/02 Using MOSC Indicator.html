@@ -60,7 +60,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _mcclellanoscillator.Update(bar.EndTime, bar.Close);
+            _mcclellanoscillator.Update(bar);
 
         if (_mcclellanoscillator.IsReady)
         {
@@ -82,7 +82,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._mcclellanoscillator.update(bar.end_time, bar.close)
+            self._mcclellanoscillator.update(bar)
 
         if self._mcclellanoscillator.is_ready:
             # The current value of self._mcclellanoscillator is represented by self._mcclellanoscillator.current.value

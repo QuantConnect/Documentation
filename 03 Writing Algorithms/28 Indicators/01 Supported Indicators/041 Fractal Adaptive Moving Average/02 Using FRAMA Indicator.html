@@ -50,7 +50,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _fractaladaptivemovingaverage.Update(bar.EndTime, bar.Close);
+            _fractaladaptivemovingaverage.Update(bar);
 
         if (_fractaladaptivemovingaverage.IsReady)
         {
@@ -68,7 +68,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._fractaladaptivemovingaverage.update(bar.end_time, bar.close)
+            self._fractaladaptivemovingaverage.update(bar)
 
         if self._fractaladaptivemovingaverage.is_ready:
             # The current value of self._fractaladaptivemovingaverage is represented by self._fractaladaptivemovingaverage.current.value

@@ -58,7 +58,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _stochastic.Update(bar.EndTime, bar.Close);
+            _stochastic.Update(bar);
 
         if (_stochastic.IsReady)
         {
@@ -80,7 +80,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._stochastic.update(bar.end_time, bar.close)
+            self._stochastic.update(bar)
 
         if self._stochastic.is_ready:
             # The current value of self._stochastic is represented by self._stochastic.current.value

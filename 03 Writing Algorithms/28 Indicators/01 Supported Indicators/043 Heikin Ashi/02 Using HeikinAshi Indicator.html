@@ -62,7 +62,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _heikinashi.Update(bar.EndTime, bar.Close);
+            _heikinashi.Update(bar);
 
         if (_heikinashi.IsReady)
         {
@@ -86,7 +86,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._heikinashi.update(bar.end_time, bar.close)
+            self._heikinashi.update(bar)
 
         if self._heikinashi.is_ready:
             # The current value of self._heikinashi is represented by self._heikinashi.current.value

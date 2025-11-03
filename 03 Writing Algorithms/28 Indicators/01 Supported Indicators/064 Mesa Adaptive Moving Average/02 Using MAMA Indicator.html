@@ -54,7 +54,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _mesaadaptivemovingaverage.Update(bar.EndTime, bar.Close);
+            _mesaadaptivemovingaverage.Update(bar);
 
         if (_mesaadaptivemovingaverage.IsReady)
         {
@@ -74,7 +74,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._mesaadaptivemovingaverage.update(bar.end_time, bar.close)
+            self._mesaadaptivemovingaverage.update(bar)
 
         if self._mesaadaptivemovingaverage.is_ready:
             # The current value of self._mesaadaptivemovingaverage is represented by self._mesaadaptivemovingaverage.current.value

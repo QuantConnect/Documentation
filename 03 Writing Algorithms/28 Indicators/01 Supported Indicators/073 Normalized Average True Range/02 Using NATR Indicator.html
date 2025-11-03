@@ -50,7 +50,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _normalizedaveragetruerange.Update(bar.EndTime, bar.Close);
+            _normalizedaveragetruerange.Update(bar);
 
         if (_normalizedaveragetruerange.IsReady)
         {
@@ -68,7 +68,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._normalizedaveragetruerange.update(bar.end_time, bar.close)
+            self._normalizedaveragetruerange.update(bar)
 
         if self._normalizedaveragetruerange.is_ready:
             # The current value of self._normalizedaveragetruerange is represented by self._normalizedaveragetruerange.current.value

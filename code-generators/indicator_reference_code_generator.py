@@ -37,7 +37,7 @@ def _extract_properties(properties: list):
         if full_type.startswith('System.Collection'):
             return False
         return full_type.startswith('QuantConnect')
-    return [x["property-name"] for x in properties if select(x)]
+    return [x["property-name"].lower() for x in properties if select(x)]
 
 def split_string(s):
     result = []
@@ -186,9 +186,7 @@ class IndicatorProcessor:
     def _process_properties(self):
         self._info[f'properties-python'] = properties = _extract_properties(self._info['properties'])
         self._info[f'properties-csharp'] = [''.join([y.title() for y in x.split('_')]) for x in properties]
-        update_argument_count = len([x for x in self._info['methods'] 
-            if x['method-name'].lower() == 'update'][-1]['method-arguments'])
-        if update_argument_count < 2:
+        if 'BarIndicator' in self._info["base-type-full-name"]:
             info[f'update-python'] = 'bar'
             info[f'update-csharp'] = 'bar'
 

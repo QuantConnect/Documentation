@@ -50,7 +50,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _supertrend.Update(bar.EndTime, bar.Close);
+            _supertrend.Update(bar);
 
         if (_supertrend.IsReady)
         {
@@ -68,7 +68,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._supertrend.update(bar.end_time, bar.close)
+            self._supertrend.update(bar)
 
         if self._supertrend.is_ready:
             # The current value of self._supertrend is represented by self._supertrend.current.value

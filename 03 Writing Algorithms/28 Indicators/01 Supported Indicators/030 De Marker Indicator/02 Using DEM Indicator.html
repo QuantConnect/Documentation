@@ -50,7 +50,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _demarkerindicator.Update(bar.EndTime, bar.Close);
+            _demarkerindicator.Update(bar);
 
         if (_demarkerindicator.IsReady)
         {
@@ -68,7 +68,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._demarkerindicator.update(bar.end_time, bar.close)
+            self._demarkerindicator.update(bar)
 
         if self._demarkerindicator.is_ready:
             # The current value of self._demarkerindicator is represented by self._demarkerindicator.current.value
