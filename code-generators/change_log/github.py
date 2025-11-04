@@ -59,7 +59,7 @@ class GitHub:
         return f'https://api.github.com/repos/{owner}/{repo}/'
 
     @sleep_and_retry
-    @limits(calls=4_000, period=60*60) 
+    @limits(calls=500, period=60*60) 
     def _send_request(self, uri, params={}):
         # Rate limit: 15K calls per 60 minutes 
         # https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users
