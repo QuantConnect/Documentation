@@ -51,38 +51,7 @@
         Buy(call.Symbol, 1);
     }
 }</pre>
- <script class="csharp-result" type="text">
-  {
-    "Total Orders": "499",
-    "Average Win": "1.83%",
-    "Average Loss": "-1.06%",
-    "Compounding Annual Return": "9.577%",
-    "Drawdown": "25.500%",
-    "Expectancy": "0.307",
-    "Start Equity": "100000",
-    "End Equity": "109523.5",
-    "Net Profit": "9.524%",
-    "Sharpe Ratio": "0.182",
-    "Sortino Ratio": "0.325",
-    "Probabilistic Sharpe Ratio": "22.676%",
-    "Loss Rate": "52%",
-    "Win Rate": "48%",
-    "Profit-Loss Ratio": "1.73",
-    "Alpha": "-0.166",
-    "Beta": "1.606",
-    "Annual Standard Deviation": "0.238",
-    "Annual Variance": "0.056",
-    "Information Ratio": "-0.499",
-    "Tracking Error": "0.174",
-    "Treynor Ratio": "0.027",
-    "Total Fees": "$0.00",
-    "Estimated Strategy Capacity": "$470000.00",
-    "Lowest Capacity Asset": "SPXW YEHL1QA9FPM6|SPX 31",
-    "Portfolio Turnover": "1.07%",
-    "OrderListHash": "86121c66035b3fca26286b90e7da8986"
-}
- </script>
- <pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
+<pre class="python">class BasicIndexOptionAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
@@ -108,35 +77,4 @@
             return
         # Buy 1 0DTE call option contract for the SPX index.
         self.Buy(calls[0].symbol, 1)</pre>
- <script class="python-result" type="text">
-  {
-    "Total Orders": "499",
-    "Average Win": "1.83%",
-    "Average Loss": "-1.06%",
-    "Compounding Annual Return": "9.577%",
-    "Drawdown": "25.500%",
-    "Expectancy": "0.307",
-    "Start Equity": "100000",
-    "End Equity": "109523.5",
-    "Net Profit": "9.524%",
-    "Sharpe Ratio": "0.182",
-    "Sortino Ratio": "0.325",
-    "Probabilistic Sharpe Ratio": "22.676%",
-    "Loss Rate": "52%",
-    "Win Rate": "48%",
-    "Profit-Loss Ratio": "1.73",
-    "Alpha": "-0.166",
-    "Beta": "1.606",
-    "Annual Standard Deviation": "0.238",
-    "Annual Variance": "0.056",
-    "Information Ratio": "-0.499",
-    "Tracking Error": "0.174",
-    "Treynor Ratio": "0.027",
-    "Total Fees": "$0.00",
-    "Estimated Strategy Capacity": "$470000.00",
-    "Lowest Capacity Asset": "SPXW YEHL1QA9FPM6|SPX 31",
-    "Portfolio Turnover": "1.07%",
-    "OrderListHash": "674f741252d2a8a75e25b6a0177627b7"
-}
- </script>
 </div>

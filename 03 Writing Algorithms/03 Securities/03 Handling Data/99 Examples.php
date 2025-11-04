@@ -50,38 +50,7 @@
         SetHoldings(_symbol, _indicator > midPrice ? -0.5m : 0.5m);
     }
 }</pre>
- <script class="csharp-result" type="text">
-  {
-    "Total Orders": "1151",
-    "Average Win": "0.20%",
-    "Average Loss": "-0.04%",
-    "Compounding Annual Return": "35.159%",
-    "Drawdown": "3.000%",
-    "Expectancy": "0.199",
-    "Start Equity": "100000",
-    "End Equity": "110287.03",
-    "Net Profit": "10.287%",
-    "Sharpe Ratio": "2.657",
-    "Sortino Ratio": "3.334",
-    "Probabilistic Sharpe Ratio": "83.188%",
-    "Loss Rate": "78%",
-    "Win Rate": "22%",
-    "Profit-Loss Ratio": "4.44",
-    "Alpha": "0.238",
-    "Beta": "0.016",
-    "Annual Standard Deviation": "0.088",
-    "Annual Variance": "0.008",
-    "Information Ratio": "2.363",
-    "Tracking Error": "0.204",
-    "Treynor Ratio": "14.937",
-    "Total Fees": "$1316.07",
-    "Estimated Strategy Capacity": "$19000000.00",
-    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
-    "Portfolio Turnover": "663.03%",
-    "OrderListHash": "e69482c60db804dcf33813bd6968e2a3"
-}
- </script>
- <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+<pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
   
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
@@ -108,37 +77,6 @@
         # Trade SMA cross strategy.
         weight = -0.5 if self._indicator.current.value > mid_price else 0.5
         self.set_holdings(self._symbol, weight)</pre>
- <script class="python-result" type="text">
-  {
-    "Total Orders": "1151",
-    "Average Win": "0.20%",
-    "Average Loss": "-0.04%",
-    "Compounding Annual Return": "35.159%",
-    "Drawdown": "3.000%",
-    "Expectancy": "0.199",
-    "Start Equity": "100000",
-    "End Equity": "110287.03",
-    "Net Profit": "10.287%",
-    "Sharpe Ratio": "2.657",
-    "Sortino Ratio": "3.334",
-    "Probabilistic Sharpe Ratio": "83.188%",
-    "Loss Rate": "78%",
-    "Win Rate": "22%",
-    "Profit-Loss Ratio": "4.44",
-    "Alpha": "0.238",
-    "Beta": "0.016",
-    "Annual Standard Deviation": "0.088",
-    "Annual Variance": "0.008",
-    "Information Ratio": "2.363",
-    "Tracking Error": "0.204",
-    "Treynor Ratio": "14.937",
-    "Total Fees": "$1316.07",
-    "Estimated Strategy Capacity": "$19000000.00",
-    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
-    "Portfolio Turnover": "663.03%",
-    "OrderListHash": "b5fc1f1df6afd1758d08f6dd89fdf279"
-}
- </script>
 </div>
 <h4>
  Example 2: Get Tick Data
@@ -198,38 +136,7 @@
         }
     }
 }</pre>
- <script class="csharp-result" type="text">
-  {
-    "Total Orders": "15",
-    "Average Win": "0.35%",
-    "Average Loss": "-0.19%",
-    "Compounding Annual Return": "4.026%",
-    "Drawdown": "1.400%",
-    "Expectancy": "-0.059",
-    "Start Equity": "100000",
-    "End Equity": "100039.66",
-    "Net Profit": "0.040%",
-    "Sharpe Ratio": "0.294",
-    "Sortino Ratio": "0",
-    "Probabilistic Sharpe Ratio": "0%",
-    "Loss Rate": "67%",
-    "Win Rate": "33%",
-    "Profit-Loss Ratio": "1.82",
-    "Alpha": "-0.003",
-    "Beta": "0.005",
-    "Annual Standard Deviation": "0.013",
-    "Annual Variance": "0",
-    "Information Ratio": "-3.109",
-    "Tracking Error": "0.455",
-    "Treynor Ratio": "0.821",
-    "Total Fees": "$27.11",
-    "Estimated Strategy Capacity": "$0",
-    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
-    "Portfolio Turnover": "261.86%",
-    "OrderListHash": "4161f34e9bc822b91229b5f1db068e2c"
-}
- </script>
- <pre class="python">class BidAskSizeTickAlgorithm(QCAlgorithm):
+<pre class="python">class BidAskSizeTickAlgorithm(QCAlgorithm):
     # Set up variables to save the bid and ask sizes.
     _bid_size = 0
     _ask_size = 0
@@ -272,37 +179,6 @@
             self._bid_size = 0
             self._ask_size = 0
             self._hour = slice.time.hour</pre>
- <script class="python-result" type="text">
-  {
-    "Total Orders": "15",
-    "Average Win": "0.35%",
-    "Average Loss": "-0.19%",
-    "Compounding Annual Return": "4.026%",
-    "Drawdown": "1.400%",
-    "Expectancy": "-0.059",
-    "Start Equity": "100000",
-    "End Equity": "100039.66",
-    "Net Profit": "0.040%",
-    "Sharpe Ratio": "0.294",
-    "Sortino Ratio": "0",
-    "Probabilistic Sharpe Ratio": "0%",
-    "Loss Rate": "67%",
-    "Win Rate": "33%",
-    "Profit-Loss Ratio": "1.82",
-    "Alpha": "-0.003",
-    "Beta": "0.005",
-    "Annual Standard Deviation": "0.013",
-    "Annual Variance": "0",
-    "Information Ratio": "-3.109",
-    "Tracking Error": "0.455",
-    "Treynor Ratio": "0.821",
-    "Total Fees": "$27.11",
-    "Estimated Strategy Capacity": "$0",
-    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
-    "Portfolio Turnover": "261.86%",
-    "OrderListHash": "6247c62b1361f4ae72fe3f24f68758bb"
-}
- </script>
 </div>
 <h4>
  Example 3: Get US Equity Fundamental Data
@@ -359,38 +235,7 @@
         SetHoldings(targets);
     }
 }</pre>
- <script class="csharp-result" type="text">
-  {
-    "Total Orders": "2828",
-    "Average Win": "0.04%",
-    "Average Loss": "-0.02%",
-    "Compounding Annual Return": "29.809%",
-    "Drawdown": "22.100%",
-    "Expectancy": "0.738",
-    "Start Equity": "100000",
-    "End Equity": "129778.51",
-    "Net Profit": "29.779%",
-    "Sharpe Ratio": "1.012",
-    "Sortino Ratio": "1.227",
-    "Probabilistic Sharpe Ratio": "46.273%",
-    "Loss Rate": "38%",
-    "Win Rate": "62%",
-    "Profit-Loss Ratio": "1.78",
-    "Alpha": "-0.044",
-    "Beta": "1.374",
-    "Annual Standard Deviation": "0.222",
-    "Annual Variance": "0.049",
-    "Information Ratio": "0.174",
-    "Tracking Error": "0.17",
-    "Treynor Ratio": "0.164",
-    "Total Fees": "$2829.55",
-    "Estimated Strategy Capacity": "$18000000.00",
-    "Lowest Capacity Asset": "MSFT R735QTJ8XC9X",
-    "Portfolio Turnover": "2.61%",
-    "OrderListHash": "c1d8afe58a5596b44c02bf98c2519772"
-}
- </script>
- <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+<pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -420,37 +265,6 @@
         targets.extend([PortfolioTarget(x[0], 0) for x in sorted_by_pe_ratio[:2]])
         # Invest equally in the highest PE Ratio stocks for evenly dissipate capital risk.
         self.set_holdings(targets)</pre>
- <script class="python-result" type="text">
-  {
-    "Total Orders": "2828",
-    "Average Win": "0.04%",
-    "Average Loss": "-0.02%",
-    "Compounding Annual Return": "29.809%",
-    "Drawdown": "22.100%",
-    "Expectancy": "0.738",
-    "Start Equity": "100000",
-    "End Equity": "129778.51",
-    "Net Profit": "29.779%",
-    "Sharpe Ratio": "1.012",
-    "Sortino Ratio": "1.227",
-    "Probabilistic Sharpe Ratio": "46.273%",
-    "Loss Rate": "38%",
-    "Win Rate": "62%",
-    "Profit-Loss Ratio": "1.78",
-    "Alpha": "-0.044",
-    "Beta": "1.374",
-    "Annual Standard Deviation": "0.222",
-    "Annual Variance": "0.049",
-    "Information Ratio": "0.174",
-    "Tracking Error": "0.17",
-    "Treynor Ratio": "0.164",
-    "Total Fees": "$2829.55",
-    "Estimated Strategy Capacity": "$18000000.00",
-    "Lowest Capacity Asset": "MSFT R735QTJ8XC9X",
-    "Portfolio Turnover": "2.61%",
-    "OrderListHash": "4cd25da864d29870b6e233489443f87a"
-}
- </script>
 </div>
 <h4>
  Example 4: Get Option Greeks
@@ -507,38 +321,7 @@
         }
     }
 }</pre>
- <script class="csharp-result" type="text">
-  {
-    "Total Orders": "4",
-    "Average Win": "0.19%",
-    "Average Loss": "0%",
-    "Compounding Annual Return": "35.826%",
-    "Drawdown": "4.000%",
-    "Expectancy": "0",
-    "Start Equity": "100000",
-    "End Equity": "108020",
-    "Net Profit": "8.020%",
-    "Sharpe Ratio": "1.961",
-    "Sortino Ratio": "2.46",
-    "Probabilistic Sharpe Ratio": "70.998%",
-    "Loss Rate": "0%",
-    "Win Rate": "100%",
-    "Profit-Loss Ratio": "0",
-    "Alpha": "0.108",
-    "Beta": "-0.252",
-    "Annual Standard Deviation": "0.117",
-    "Annual Variance": "0.014",
-    "Information Ratio": "1.237",
-    "Tracking Error": "0.574",
-    "Treynor Ratio": "-0.907",
-    "Total Fees": "$2.00",
-    "Estimated Strategy Capacity": "$5000.00",
-    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
-    "Portfolio Turnover": "0.36%",
-    "OrderListHash": "7ad1b9e17e003e11ed9a9a514b22cc02"
-}
- </script>
- <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+<pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -571,37 +354,6 @@
                 key=lambda x: abs(x.greeks.delta - 0.5))[0]
             option_strategy = OptionStrategies.straddle(selected.symbol.canonical, selected.strike, selected.expiry)
             self.sell(option_strategy, 1)</pre>
- <script class="python-result" type="text">
-  {
-    "Total Orders": "4",
-    "Average Win": "0.08%",
-    "Average Loss": "0%",
-    "Compounding Annual Return": "-26.545%",
-    "Drawdown": "11.700%",
-    "Expectancy": "-0.5",
-    "Start Equity": "100000",
-    "End Equity": "92522",
-    "Net Profit": "-7.478%",
-    "Sharpe Ratio": "-1.581",
-    "Sortino Ratio": "-1.596",
-    "Probabilistic Sharpe Ratio": "5.540%",
-    "Loss Rate": "50%",
-    "Win Rate": "50%",
-    "Profit-Loss Ratio": "0",
-    "Alpha": "-0.069",
-    "Beta": "0.282",
-    "Annual Standard Deviation": "0.129",
-    "Annual Variance": "0.017",
-    "Information Ratio": "0.838",
-    "Tracking Error": "0.329",
-    "Treynor Ratio": "-0.726",
-    "Total Fees": "$2.00",
-    "Estimated Strategy Capacity": "$0",
-    "Lowest Capacity Asset": "SPY R735QTJ8XC9X",
-    "Portfolio Turnover": "0.35%",
-    "OrderListHash": "cc516445c39dd38e80800109f549a451"
-}
- </script>
 </div>
 <h4>
  Example 5: Get Asset Sentiment Values
@@ -653,38 +405,7 @@
         }
     }
 }</pre>
- <script class="csharp-result" type="text">
-  {
-    "Total Orders": "0",
-    "Average Win": "0%",
-    "Average Loss": "0%",
-    "Compounding Annual Return": "0%",
-    "Drawdown": "0%",
-    "Expectancy": "0",
-    "Start Equity": "100000",
-    "End Equity": "100000",
-    "Net Profit": "0%",
-    "Sharpe Ratio": "0",
-    "Sortino Ratio": "0",
-    "Probabilistic Sharpe Ratio": "0%",
-    "Loss Rate": "0%",
-    "Win Rate": "0%",
-    "Profit-Loss Ratio": "0",
-    "Alpha": "0",
-    "Beta": "0",
-    "Annual Standard Deviation": "0",
-    "Annual Variance": "0",
-    "Information Ratio": "0",
-    "Tracking Error": "0",
-    "Treynor Ratio": "0",
-    "Total Fees": "$0.00",
-    "Estimated Strategy Capacity": "$0",
-    "Lowest Capacity Asset": "",
-    "Portfolio Turnover": "0%",
-    "OrderListHash": ""
-}
- </script>
- <pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
+<pre class="python">class HandlingSecuritiesDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -712,37 +433,6 @@
             # Liquidate otherwise.
             elif data_point.sentiment &lt; 0 and self.portfolio[self._symbol].invested:
                 self.liquidate(self._symbol)</pre>
- <script class="python-result" type="text">
-  {
-    "Total Orders": "0",
-    "Average Win": "0%",
-    "Average Loss": "0%",
-    "Compounding Annual Return": "0%",
-    "Drawdown": "0%",
-    "Expectancy": "0",
-    "Start Equity": "100000",
-    "End Equity": "100000",
-    "Net Profit": "0%",
-    "Sharpe Ratio": "0",
-    "Sortino Ratio": "0",
-    "Probabilistic Sharpe Ratio": "0%",
-    "Loss Rate": "0%",
-    "Win Rate": "0%",
-    "Profit-Loss Ratio": "0",
-    "Alpha": "0",
-    "Beta": "0",
-    "Annual Standard Deviation": "0",
-    "Annual Variance": "0",
-    "Information Ratio": "0",
-    "Tracking Error": "0",
-    "Treynor Ratio": "0",
-    "Total Fees": "$0.00",
-    "Estimated Strategy Capacity": "$0",
-    "Lowest Capacity Asset": "",
-    "Portfolio Turnover": "0%",
-    "OrderListHash": ""
-}
- </script>
 </div>
 
 <?

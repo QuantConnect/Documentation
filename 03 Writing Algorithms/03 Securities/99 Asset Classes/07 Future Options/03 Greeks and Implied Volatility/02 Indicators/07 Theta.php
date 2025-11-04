@@ -13,10 +13,7 @@ $helperMethod = "T";
 include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
-<div class="regression-test-results">
-    <script class="csharp-result" type="text"></script>
-    <script class="python-result" type="text"></script>
-</div>
+
 
 <p>The follow table describes the arguments that the <code class='csharp'>T</code><code class='python'>t</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/future-options/greeks-and-implied-volatility/indicators#02-Parameters'>standard parameters</a>:</p>
 
@@ -53,10 +50,7 @@ $indicatorPage = "theta";
 include(DOCS_RESOURCES."/option-indicators/future.php");
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
-<div class="regression-test-results">
-    <script class="csharp-result" type="text"></script>
-    <script class="python-result" type="text"></script>
-</div>
+
 
 <h4>Volatility Smoothing</h4>
 <?
