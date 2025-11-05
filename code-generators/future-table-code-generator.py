@@ -21,7 +21,7 @@ FUTURE_OPTIONS = {
 
 def get_data() -> dict:
     data = {}
-    for category in ['Currencies', 'Dairy', 'Energy', 'Financials', 'Forestry',
+    for category in ['Currencies', 'Energy', 'Financials', 'Forestry',
                      'Grains', 'Indices', 'Meats', 'Metals', 'Softs']:
         for language in ['csharp', 'python']:
             fields = loads(urlopen(LEAN_SERVICE % (language, category)).read()).get('fields')
