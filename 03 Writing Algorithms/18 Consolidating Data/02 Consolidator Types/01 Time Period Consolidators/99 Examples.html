@@ -96,6 +96,95 @@
         elif self._macd.histogram.current.value &lt; 0 and self.portfolio[self.spy].is_long:
             self.liquidate(self.spy)</pre>
 </div>
+<h4>Example 2: Create Daily <code>QuoteBar</code> Objects That Start at 5 PM</h4>
+<p>The following algorithm consolidates minute resolution Forex data into daily <code>QuoteBar</code> objects that open and close at 5 PM Eastern Time.</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class CustomStartTimeConsolidatorExampleAlgorithm : QCAlgorithm
+{
+    private Forex _pair;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        // Add the USDJPY Forex pair.
+        _pair = AddForex("USDJPY");
+        // Create an EMA indicator for the pair.
+        var ema = new ExponentialMovingAverage(10);
+        _pair.Set("Ema", ema);
+        // Create a QuoteBar consolidator with a custom start time.
+        var consolidator = new QuoteBarConsolidator(TimeSpan.FromDays(1), TimeSpan.FromHours(17));
+        // Attach a consolidation handler that will receive the consolidated bars.
+        consolidator.DataConsolidated += ConsolidationHandler;
+        // Subscribe the consolidator for automatic updates with the prices of the pair.
+        SubscriptionManager.AddConsolidator(_pair.Symbol, consolidator);
+        // Register the indicator for automatic updates with the consolidated bars.
+        RegisterIndicator&lt;IndicatorDataPoint&gt;(_pair.Symbol, ema, consolidator);
+        // Warm up the consolidator and indicator.
+        var history = History&lt;QuoteBar&gt;(_pair.Symbol, 29000, Resolution.Minute);
+        foreach (var bar in history)
+        {
+            consolidator.Update(bar);
+        }
+    }
+
+    private void ConsolidationHandler(object sender, QuoteBar consolidatedBar)
+    {
+        // Wait until the indicator is ready and the algorithm is running.
+        var ema = _pair.Get&lt;ExponentialMovingAverage&gt;("Ema");
+        if (!ema.IsReady || IsWarmingUp)
+        {
+            return;
+        }
+        // Plot the closing price and the EMA.
+        Plot(consolidatedBar.Symbol.Value, "Close", consolidatedBar.Close);
+        Plot(consolidatedBar.Symbol.Value, "EMA", ema.Current.Value);
+
+        if (!_pair.Holdings.IsLong &amp;&amp; consolidatedBar.Close &gt; ema)
+        {
+            SetHoldings(_pair.Symbol, 1);
+        }
+        if (consolidatedBar.Close &lt; ema)
+        {
+            Liquidate();
+        }
+    }
+}</pre>
+<pre class="python">class CustomStartTimeConsolidatorExampleAlgorithm(QCAlgorithm):
+    
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        # Add the USDJPY Forex pair.
+        self._pair = self.add_forex("USDJPY")
+        # Create an EMA indicator for the pair.
+        self._pair.ema = ExponentialMovingAverage(10)
+        # Create a QuoteBar consolidator with a custom start time.
+        consolidator = QuoteBarConsolidator(timedelta(1), timedelta(hours=17))
+        # Attach a consolidation handler that will receive the consolidated bars.
+        consolidator.data_consolidated += self._consolidation_handler
+        # Subscribe the consolidator for automatic updates with the prices of the pair.
+        self.subscription_manager.add_consolidator(self._pair.symbol, consolidator)
+        # Register the indicator for automatic updates with the consolidated bars.
+        self.register_indicator(self._pair.symbol, self._pair.ema, consolidator)
+        # Warm up the consolidator and indicator.
+        history = self.history[QuoteBar](self._pair.symbol, 29000, Resolution.MINUTE)
+        for bar in history:
+            consolidator.update(bar)
+
+    def _consolidation_handler(self, sender: object, consolidated_bar: QuoteBar) -&gt; None:
+        # Wait until the indicator is ready and the algorithm is running.
+        if not self._pair.ema.is_ready or self.is_warming_up:
+            return
+        # Plot the closing price and the EMA.
+        self.plot(consolidated_bar.symbol.value, 'Close', consolidated_bar.close)
+        self.plot(consolidated_bar.symbol.value, 'EMA', self._pair.ema.current.value)
+
+        if not self._pair.holdings.is_long and consolidated_bar.close &gt; self._pair.ema.current.value:
+            self.set_holdings(self._pair.symbol, 1)
+        if consolidated_bar.close &lt; self._pair.ema.current.value:
+            self.liquidate()</pre>
+</div>
 <h4>
  Other Examples
 </h4>
