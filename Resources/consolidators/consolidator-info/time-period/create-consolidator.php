@@ -16,6 +16,12 @@
 
 	<?php include(DOCS_RESOURCES."/consolidators/time-period-start-time.html");?>
 
+	<p>Use the <code class="csharp">startTime</code><code class="python">start_time</code> parameter of the <?=$consolidatorClassName?> type constructor to define a custom start time.</p>	
+	<div class='section-example-container'>
+		<pre class='csharp'>_consolidator = new <?=$consolidatorClassName?>(TimeSpan.<?=$this->timeSpanPeriod?>, startTime: new TimeSpan(<?=$this->timeSpanStartTime?>));</pre>
+		<pre class='python'>self._consolidator = <?=$consolidatorClassName?>(timedelta(<?=$this->timeDeltaPeriod?>), start_time=timedelta(<?=$this->timeDeltaStartTime?>))</pre>
+	</div>
+
 	<li><code>Resolution</code> Periods</li>
 	<p>The <code>Resolution</code> enumeration has the following members:</p>
 	<div data-tree='QuantConnect.Resolution'></div>
@@ -29,4 +35,4 @@
 
 <?php if ($typeOf == "TradeBar" || $typeOf == "QuoteBar") { ?><p>If the security subscription in your algorithm provides <code>TradeBar</code> and <code>QuoteBar</code> data, <code class="csharp">ResolveConsolidator</code><code class="python">resolve_consolidator</code> returns a <code>TradeBarConsolidator</code>.</p><?php } ?>
 
-<?php include(DOCS_RESOURCES."/consolidators/time-period-end-time.html"); ?>
+<?php include(DOCS_RESOURCES."/consolidators/time-period-end-time.php"); ?>

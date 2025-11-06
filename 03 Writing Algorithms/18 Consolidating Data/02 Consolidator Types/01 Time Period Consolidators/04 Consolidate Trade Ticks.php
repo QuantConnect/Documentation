@@ -4,7 +4,9 @@ include(DOCS_RESOURCES."/consolidators/consolidator-format-info/tick-definition.
 $dataFormatInfo = new TickConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromMilliseconds(100)";
+$timeSpanStartTime = "9, 30, 0";
 $timeDeltaPeriod = "milliseconds=100";
+$timeDeltaStartTime = "hours=9, minutes=30";
 $resolutionPeriodC = "Second";
 $resolutionPeriodPy = "SECOND";
 $createConsolidatorExtraArgsC = "";
@@ -19,7 +21,9 @@ $consolidationTextReceiveTime2 = $consolidationTextReceiveTime1;
 $shortCutTickTypeArg = "";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
-	$timeDeltaPeriod, 
+	$timeSpanStartTime, 
+	$timeDeltaPeriod,
+	$timeDeltaStartTime,
 	$resolutionPeriodC, 
 	$resolutionPeriodPy,
 	$createConsolidatorExtraArgsC,

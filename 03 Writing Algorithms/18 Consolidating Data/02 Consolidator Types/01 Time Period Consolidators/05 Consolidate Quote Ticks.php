@@ -4,7 +4,9 @@ include(DOCS_RESOURCES."/consolidators/consolidator-format-info/tick-quotebar-de
 $dataFormatInfo = new TickQuoteBarConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromMilliseconds(100)";
+$timeSpanStartTime = "9, 30, 0";
 $timeDeltaPeriod = "milliseconds=100";
+$timeDeltaStartTime = "hours=9, minutes=30";
 $resolutionPeriodC = "Second";
 $resolutionPeriodPy = "SECOND";
 $typeOf = "Tick";
@@ -21,7 +23,9 @@ $consolidationTextReceiveTime2 = $consolidationTextReceiveTime1;
 $shortCutTickTypeArg = "TickType.Quote, ";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
-	$timeDeltaPeriod, 
+	$timeSpanStartTime, 
+	$timeDeltaPeriod,
+	$timeDeltaStartTime,
 	$resolutionPeriodC, 
 	$resolutionPeriodPy,
 	$createConsolidatorExtraArgsC,

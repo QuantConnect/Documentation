@@ -7,5 +7,5 @@
 
 <?php 
 echo file_get_contents(DOCS_RESOURCES."/consolidators/time-period-start-time.html");
-echo file_get_contents(DOCS_RESOURCES."/consolidators/time-period-end-time.html");
+echo file_get_contents(DOCS_RESOURCES."/consolidators/time-period-end-time.php");
 ?>

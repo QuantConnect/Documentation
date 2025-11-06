@@ -6,10 +6,12 @@ if (class_exists('TimePeriodConsolidatorInfo')) return;
 
 class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 {
-	public $timeSpanPeriod, 
-		$timeDeltaPeriod, 
+	public $timeSpanPeriod,
+	 	$timeSpanStartTime,
+		$timeDeltaPeriod,
+		$timeDeltaStartTime,
 		$resolutionPeriodC, 
-	        $resolutionPeriodPy, 
+	    $resolutionPeriodPy, 
 		$createConsolidatorExtraArgsC,
 		$createConsolidatorExtraArgsPy,
 		$resolveConsolidatorExtraArgsC,
@@ -20,8 +22,10 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 		$consolidationTextReceiveTime2,
 		$manualUpdateCode;
 
-	function __construct($timeSpanPeriod, 
-		$timeDeltaPeriod, 
+	function __construct($timeSpanPeriod,
+	 	$timeSpanStartTime,
+		$timeDeltaPeriod,
+		$timeDeltaStartTime,
 		$resolutionPeriodC, 
 		$resolutionPeriodPy, 
 		$createConsolidatorExtraArgsC,
@@ -37,7 +41,9 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 	{
 		parent::__construct();
 		$this->timeSpanPeriod = $timeSpanPeriod;
+		$this->timeSpanStartTime = $timeSpanStartTime;
 		$this->timeDeltaPeriod = $timeDeltaPeriod;
+		$this->timeDeltaStartTime = $timeDeltaStartTime;
 		$this->resolutionPeriodC = $resolutionPeriodC;
 		$this->resolutionPeriodPy = $resolutionPeriodPy;
 		$this->createConsolidatorExtraArgsC = $createConsolidatorExtraArgsC;

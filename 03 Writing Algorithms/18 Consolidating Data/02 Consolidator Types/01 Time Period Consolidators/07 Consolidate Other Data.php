@@ -4,7 +4,9 @@ include(DOCS_RESOURCES."/consolidators/consolidator-format-info/dynamic-data-def
 $dataFormatInfo = new DynamicDataConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromDays(1)";
+$timeSpanStartTime = "9, 30, 0";
 $timeDeltaPeriod = "days=1";
+$timeDeltaStartTime = "hours=9, minutes=30";
 $resolutionPeriodC = "Daily";
 $resolutionPeriodPy = "DAILY";
 $createConsolidatorExtraArgsC = "";
@@ -19,7 +21,9 @@ $consolidationTextReceiveTime2 = "9:31";
 $shortCutTickTypeArg = "";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
-	$timeDeltaPeriod, 
+	$timeSpanStartTime, 
+	$timeDeltaPeriod,
+	$timeDeltaStartTime,
 	$resolutionPeriodC, 
 	$resolutionPeriodPy,
 	$createConsolidatorExtraArgsC,
