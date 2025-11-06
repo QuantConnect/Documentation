@@ -21,8 +21,8 @@ def _format_introduction(type_name: str, text: str) -> str:
         return link_split[0].replace("Source: ", f'<sup><a href="https{link_split[1]}">source</a></sup>'.replace("httpss", "https"))
     return text
 
-PROPERTIES_EXCEPTIONS = ['MovingAverageType', 'IsReady', 'WarmUpPeriod', 'Name', 'Period', 'Samples', 
-                'Current', "Consolidators", "Previous", "Window", "[System.Int32]", "Strike", "Right", "pivot_type",
+PROPERTIES_EXCEPTIONS = ['MovingAverageType', 'IsReady', 'WarmUpPeriod', 'Name', 'Period', 'Samples', "[System.Int32]",
+                'Current', "Consolidators", "Previous", "Window", "Strike", "Right", "high_pivot", "low_pivot", "pivot_type",
                 "Style", "Expiry", "UseMirrorContract", "GetEnumerator", "moving_average_type", "is_ready", "warmup_period",
                 "name", "period", "samples", "current", "consolidators", "previous", "window", "int", "strike",
                 "right", "style", "expiry", "use_mirror_contract", "warm_up_period", "item", "get_enumerator"]
@@ -86,6 +86,7 @@ def _get_helpers():
     tag = "method-return-type-full-name"
     indicators = dict(sorted(set([is_bar(m) for m in methods 
         if m[tag] and m[tag].startswith('QuantConnect.Indicators.')])))
+    indicators['IntradayVwap'] = True
 
     with open(f'Resources/indicators/IndicatorImageGenerator.py', mode='r') as fp:
         lines = fp.readlines()
@@ -123,6 +124,9 @@ def _get_helpers():
 class IndicatorProcessor:
     def __init__(self, i, _type, info={}):
         key = ' '.join(re.findall('[a-zA-Z][^A-Z]*', _type))
+        for start in  ['De', 'Mc']:
+            if key.startswith(f"{start} "):
+                key = f'{start}{key[3:]}' 
         print(f'Processing {key}...')
         info.update(self._get_type_info(_type))
         self._info = info

@@ -670,7 +670,7 @@ indicators = {
         WilderAccumulativeSwingIndex(20), 
         'WilderAccumulativeSwingIndex(20)', 
         'ASI(_symbol, 20)', 
-        'self.asi(self._symbol, 20)'
+        'self.asi(self._symbol, 20, Resolution.DAILY)'
     ),
     'wilder-moving-average': IndicatorInfo(
         WilderMovingAverage(20),
@@ -682,7 +682,7 @@ indicators = {
         WilderSwingIndex(20), 
         'WilderSwingIndex(20)', 
         'SI(_symbol, 20)', 
-        'self.si(self._symbol, 20)'
+        'self.si(self._symbol, 20, Resolution.DAILY)'
     ),
     'williams-percent-r': IndicatorInfo(
         WilliamsPercentR(20), 

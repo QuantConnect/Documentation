@@ -50,7 +50,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _intradayvwap.Update(bar.EndTime, bar.Close);
+            _intradayvwap.Update(bar);
 
         if (_intradayvwap.IsReady)
         {
@@ -68,7 +68,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._intradayvwap.update(bar.end_time, bar.close)
+            self._intradayvwap.update(bar)
 
         if self._intradayvwap.is_ready:
             # The current value of self._intradayvwap is represented by self._intradayvwap.current.value
