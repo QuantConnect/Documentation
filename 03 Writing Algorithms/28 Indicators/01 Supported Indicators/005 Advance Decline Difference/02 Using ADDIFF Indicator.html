@@ -52,7 +52,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _advancedeclinedifference.Update(bar.EndTime, bar.Close);
+            _advancedeclinedifference.Update(bar);
 
         if (_advancedeclinedifference.IsReady)
         {
@@ -70,7 +70,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._advancedeclinedifference.update(bar.end_time, bar.close)
+            self._advancedeclinedifference.update(bar)
 
         if self._advancedeclinedifference.is_ready:
             # The current value of self._advancedeclinedifference is represented by self._advancedeclinedifference.current.value

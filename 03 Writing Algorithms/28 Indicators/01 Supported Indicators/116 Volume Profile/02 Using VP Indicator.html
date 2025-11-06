@@ -50,7 +50,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _volumeprofile.Update(bar.EndTime, bar.Close);
+            _volumeprofile.Update(bar);
 
         if (_volumeprofile.IsReady)
         {
@@ -68,7 +68,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._volumeprofile.update(bar.end_time, bar.close)
+            self._volumeprofile.update(bar)
 
         if self._volumeprofile.is_ready:
             # The current value of self._volumeprofile is represented by self._volumeprofile.current.value

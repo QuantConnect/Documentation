@@ -73,6 +73,20 @@ def split_string(s):
     return result
 
 def _get_helpers():
+    
+    methods = get_type(f"QuantConnect.Algorithm.QCAlgorithm", 'python')['methods']
+    def is_bar(method):
+        name = method["method-return-type-short-name"]
+        selectors = [arg for arg in method["method-arguments"] if arg["argument-name"] == 'selector']
+        if not selectors:
+            return name, False
+        selector_type = selectors[0]['argument-type-short-name']
+        return name, 'decimal' not in selector_type.lower()
+
+    tag = "method-return-type-full-name"
+    indicators = dict(sorted(set([is_bar(m) for m in methods 
+        if m[tag] and m[tag].startswith('QuantConnect.Indicators.')])))
+
     with open(f'Resources/indicators/IndicatorImageGenerator.py', mode='r') as fp:
         lines = fp.readlines()
         helpers = {}
@@ -94,13 +108,14 @@ def _get_helpers():
                 ctor_cs = indicator_infos[1].strip()[1:-1]
                 if not ctor_cs.endswith(')'):
                     ctor_cs = ctor_cs + ')'
+                is_bar = indicators.get(key)
                 helpers[key] = {
                     'ctor-python': ctor_py,
                     'ctor-csharp': ctor_cs,
                     'helper-python': indicator_infos[3].strip()[1:-1],
                     'helper-csharp': indicator_infos[2].strip()[1:-1],
-                    'update-python': 'bar.end_time, bar.close',
-                    'update-csharp': 'bar.EndTime, bar.Close'
+                    'update-python': 'bar' if is_bar else 'bar.end_time, bar.close',
+                    'update-csharp': 'bar' if is_bar else 'bar.EndTime, bar.Close'
                 }
 
         return dict(sorted(helpers.items()))
@@ -186,9 +201,6 @@ class IndicatorProcessor:
     def _process_properties(self):
         self._info[f'properties-python'] = properties = _extract_properties(self._info['properties'])
         self._info[f'properties-csharp'] = [''.join([y.title() for y in x.split('_')]) for x in properties]
-        if 'BarIndicator' in self._info["base-type-full-name"]:
-            info[f'update-python'] = 'bar'
-            info[f'update-csharp'] = 'bar'
 
     def run(self):
         links = self._get_links()
@@ -358,7 +370,7 @@ class IndicatorProcessor:
         indicator_history_df = indicator_history.data_frame"""
             for property in properties:
                 code += f"""
-        {property} = indicator_history_df["{property}"]"""
+        {property} = indicator_history_df["{property.replace('_','')}"]"""
         return code
 
 class OptionIndicatorProcessor(IndicatorProcessor):

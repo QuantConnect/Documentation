@@ -52,7 +52,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _advancedeclinevolumeratio.Update(bar.EndTime, bar.Close);
+            _advancedeclinevolumeratio.Update(bar);
 
         if (_advancedeclinevolumeratio.IsReady)
         {
@@ -70,7 +70,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._advancedeclinevolumeratio.update(bar.end_time, bar.close)
+            self._advancedeclinevolumeratio.update(bar)
 
         if self._advancedeclinevolumeratio.is_ready:
             # The current value of self._advancedeclinevolumeratio is represented by self._advancedeclinevolumeratio.current.value

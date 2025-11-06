@@ -58,7 +58,7 @@
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
-            _accelerationbands.Update(bar.EndTime, bar.Close);
+            _accelerationbands.Update(bar);
 
         if (_accelerationbands.IsReady)
         {
@@ -80,7 +80,7 @@
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
         if bar:
-            self._accelerationbands.update(bar.end_time, bar.close)
+            self._accelerationbands.update(bar)
 
         if self._accelerationbands.is_ready:
             # The current value of self._accelerationbands is represented by self._accelerationbands.current.value
