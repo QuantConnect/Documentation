@@ -25,7 +25,7 @@ It takes 10-15 minutes to gather all the code blocks in the documentation and th
 ### Goals
 
 - No errors with compiling and backtesting code blocks.
-- Code blocks complete backtesting within 1 minute. To find code blocks that take longer than 1 minute, run [this notebook](https://www.quantconnect.cloud/backtest/80ecd9be8c707ad4a3ed1dc4b448cfbd/?theme=darkly).
+- Code blocks complete backtesting within 1 minute. To find code blocks that take longer than 1 minute, run [this notebook](https://www.quantconnect.cloud/backtest/8ca67bce86612ecd88565cdd3514cc21/?theme=chrome).
 
 ### Development Notes:
 
