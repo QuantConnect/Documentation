@@ -23,3 +23,7 @@
 
 <h4>Opening and Closing Auctions</h4>
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/opening-and-closing-auctions.html"); ?>
+
+<h4>Data Updates</h4>
+<? include(DOCS_RESOURCES."/data-feeds/data-issues-introduction.php"); ?>
+<p>Data updates change backtest results and, consequently, cause differences between backtesting running with fixed data and live trading. For more information on common data issues, please refer to the <a href="/docs/v2/cloud-platform/datasets/data-issues#02-Common-Issues">data issues documentation</a>.</p>
