@@ -40,10 +40,14 @@
       <td>Portfolio Margin</td>
       <td>A stacked area chart of the portfolio margin usage. For more information about this chart, see <a href='/docs/v2/cloud-platform/backtesting/results/portfolio-margin-plots'>Portfolio Margin Plots</a>.</td>
     </tr>
+    <tr>
+      <td>Performance</td>
+      <td>Time series of various performance metrics. For more information about this chart, see <a href='/docs/v2/cloud-platform/backtesting/results#05-Performance-Chart'>Performance Chart</a>.</td>
+    </tr>
     <? if ($cloudPlatform) { ?>
     <tr>
       <td>Asset Plot</td>
-      <td>A time series of an asset's price with order event annotations. These charts are available for all paid organziation tiers. For more information about these charts, see <a href='/docs/v2/cloud-platform/backtesting/results#05-Asset-Plots'>Asset Plots</a>. </td>
+      <td>A time series of an asset's price with order event annotations. These charts are available for all paid organziation tiers. For more information about these charts, see <a href='/docs/v2/cloud-platform/backtesting/results#06-Asset-Plots'>Asset Plots</a>. </td>
     </tr>
     <? } ?>
   </tbody>
