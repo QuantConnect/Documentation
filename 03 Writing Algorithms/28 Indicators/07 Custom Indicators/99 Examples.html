@@ -5,7 +5,7 @@
  Example 1: Custom Money Flow Index
 </h4>
 <p>
- The following algorithm implements a custom Money Flow Index indicator. We estimate the supply-demand balance of SPY and trade using the average money flow direction.
+ The following algorithm implements a custom Money Flow Index indicator, and updates it manually. We estimate the supply-demand balance of SPY and trade using the average money flow direction.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
@@ -161,7 +161,14 @@ class CustomMoneyFlowIndex(PythonIndicator):
         if total_money_flow != 0:
             self.value *= positive_money_flow_sum / total_money_flow
     
+        # Set the current attribute if you will update the indicator manually
+        self.current = IndicatorDataPoint(input.end_time, self.value)
+    
         # Set the is_ready property to receive the required bars to fill all windows.
+        return self.is_ready
+    
+    @property
+    def is_ready(self) -> bool:
         return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
 </div>
 <h4>
