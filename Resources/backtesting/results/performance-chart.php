@@ -22,7 +22,7 @@
     </tr>
     <tr>
       <td>ActiveSecurities</td>
-      <td>The number of <a href="/docs/v2/writing-algorithms/universes/key-concepts#10-Active-Securities">active securities. An active security is a security that is currently selected by the universe or has holdings or open orders.</td>
+      <td>The number of <a href="/docs/v2/writing-algorithms/universes/key-concepts#10-Active-Securities">active securities</a>. An active security is a security that is currently selected by the universe or has holdings or open orders.</td>
     </tr>
     <tr>
       <td>DataPoints</td>
@@ -53,10 +53,6 @@
       <td>The total execution time of <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">data consolidation events</a>, measured in seconds, recorded since the last sampling event. It includes the time spent updating indicators and executing consolidator handlers.</td>
     </tr>
     <tr>
-      <td>Consolidators</td>
-      <td>The total execution time of <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">data consolidation events</a>, measured in seconds, recorded since the last sampling event. It includes the time spent updating indicators and executing consolidator handlers.</td>
-    </tr>
-    <tr>
       <td>Securities</td>
       <td>The total execution time of <a href="/docs/v2/writing-algorithms/securities/key-concepts">security updates</a>, measured in seconds, recorded since the last sampling event. It includes the time spent in <a href="/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events">security change events</a> and <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#04-Symbol-Changes">symbol change events.</td>
     </tr>
@@ -70,7 +66,7 @@
     </tr>
     <tr>
       <td>OnData</td>
-      <td>The total execution time of <code class="csharp">OnData</code><code class="csharp">on_data</code> method call and <code class="csharp">Alpha.Update</code><code class="csharp">alpha.update</code>, measured in seconds, recorded since the last sampling event.</td>
+      <td>The total execution time of <code class="csharp">OnData</code><code class="python">on_data</code> method call and <code class="csharp">Alpha.Update</code><code class="python">alpha.update</code>, measured in seconds, recorded since the last sampling event.</td>
     </tr>
   </tbody>
 </table>
