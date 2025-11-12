@@ -21,7 +21,7 @@ self.add_universe_selection(
     FutureUniverseSelectionModel(
         # Refresh the universe daily.
         timedelta(1), 
-        lambda _: [Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
+        lambda _: [Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>
@@ -89,7 +89,7 @@ def initialize(self) -&gt; None:
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     # Add E-mini S&P 500 and Gold Futures to the universe.
     return [ 
-        Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
+        Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
         Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
     ]</pre>
 </div>
@@ -142,7 +142,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
     def select_future_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
         # Add E-mini S&P 500 and Gold Futures to the universe.
         return [ 
-            Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
+            Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
             Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX) 
         ]
 

@@ -18,7 +18,7 @@ self.universe_settings.asynchronous = True
 self.add_universe_selection(
     OpenInterestFutureUniverseSelectionModel(
         self, 
-        lambda utc_time: [Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
+        lambda utc_time: [Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>
@@ -110,7 +110,7 @@ def initialize(self) -&gt; None:
 # Define the selection function, which returns Symbol objects.
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ 
-        Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
+        Symbol.create(Futures.Indices.SP_500_E_MINI, SecurityType.FUTURE, Market.CME),
         Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
     ]</pre>
 </div>
