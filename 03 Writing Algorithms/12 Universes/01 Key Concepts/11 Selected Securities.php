@@ -16,7 +16,7 @@ public class SimpleRebalancingAlgorithm : QCAlgorithm
         var dateRule = DateRules.WeekStart(symbol);
         UniverseSettings.Schedule.On(dateRule);
         // Add a universe of the top 5 most liquid Equities.
-        var universe = AddUniverse(Universe.DollarVolume.Top(5));
+        var universe = AddUniverse(Universe.Top(5));
         // 30 minutes after market open, rebalance the portfolio.
         Schedule.On(
             dateRule,
@@ -37,7 +37,7 @@ class SimpleRebalancingAlgorithm(QCAlgorithm):
         date_rule = self.date_rules.week_start(symbol)
         self.universe_settings.schedule.on(date_rule)
         # Add a universe of the top 5 most liquid Equities.
-        universe = self.add_universe(self.universe.dollar_volume.top(5))
+        universe = self.add_universe(self.universe.top(5))
         # 30 minutes after market open, rebalance the portfolio.
         self.schedule.on(
             date_rule,

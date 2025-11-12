@@ -8,7 +8,7 @@ UniverseSettings.Asynchronous = true;
 AddUniverseSelection(
     new OptionChainedUniverseSelectionModel(
         // Add a universe of the 10 most liquid US Equities.
-        AddUniverse(Universe.DollarVolume.Top(10)),
+        AddUniverse(Universe.Top(10)),
         // Select call Option contracts on the underlying Equities that have the strike price within 2 strike levels.
         optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
     )
@@ -20,7 +20,7 @@ self.universe_settings.asynchronous = True
 self.add_universe_selection(
     OptionChainedUniverseSelectionModel(
         # Add a universe of the 10 most liquid US Equities.
-        self.add_universe(self.universe.dollar_volume.top(10)),
+        self.add_universe(self.universe.top(10)),
         # Select call Option contracts on the underlying Equities that have the strike price within 2 strike levels.
         lambda option_filter_universe: option_filter_universe.strikes(-2, +2).front_month().calls_only()
     )
@@ -76,7 +76,7 @@ public override void Initialize()
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(
         new OptionChainedUniverseSelectionModel(
-            AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction
+            AddUniverse(Universe.Top(10)), OptionFilterFunction
         )
     );
 }
@@ -92,7 +92,7 @@ def initialize(self) -&gt; None:
     self.universe_settings.asynchronous = True
     self.add_universe_selection(
         OptionChainedUniverseSelectionModel(
-            self.add_universe(self.universe.dollar_volume.top(10)), self.option_filter_function
+            self.add_universe(self.universe.top(10)), self.option_filter_function
         )
     )
 

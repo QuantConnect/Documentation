@@ -25,7 +25,7 @@
         AddUniverseSelection(new QC500UniverseSelectionModel());
         <? } else { ?>
         // Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
-        AddUniverse(Universe.DollarVolume.Top(10));
+        AddUniverse(Universe.Top(10));
         <? } ?>
     }
 
@@ -88,7 +88,7 @@
         self.add_universe_selection(QC500UniverseSelectionModel())
         <? } else { ?>
         # Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
-        self.add_universe(self.universe.dollar_volume.top(10))
+        self.add_universe(self.universe.top(10))
         <? } ?>
 
     def on_data(self, slice: Slice) -&gt; None:

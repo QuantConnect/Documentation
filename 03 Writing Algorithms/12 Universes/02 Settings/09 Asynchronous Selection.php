@@ -4,10 +4,10 @@
     <pre class="csharp">// To speed up algorithm performance, enable asynchronous universe selection. 
 // Only use this when the code is self-contained and stateless.
 UniverseSettings.Asynchronous = true;
-AddUniverse(Universe.DollarVolume.Top(50));</pre>
+AddUniverse(Universe.Top(50));</pre>
     <pre class="python"># To speed up algorithm performance, enable asynchronous universe selection. 
 // Only use this when the code is self-contained and stateless.
 self.universe_settings.asynchronous = True
-self.add_universe(self.universe.dollar_volume.top(50))</pre>
+self.add_universe(self.universe.top(50))</pre>
 </div>
 

@@ -9,12 +9,12 @@
 // Equity Options require raw data and it improves the accuracy of modeling historical periods. 
 UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 // Add a universe of the 50 most liquid US Equities.
-AddUniverse(Universe.DollarVolume.Top(50));</pre>
+AddUniverse(Universe.Top(50));</pre>
     <pre class="python"># Pipe raw price data (unadjusted for splits and dividends) into the algorithm. 
 # Equity Options require raw data and it improves the accuracy of modeling historical periods. 
 self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
 # Add a universe of the 50 most liquid US Equities.
-self.add_universe(self.universe.dollar_volume.top(50))</pre>
+self.add_universe(self.universe.top(50))</pre>
 </div>
 
 <h4>Futures</h4>

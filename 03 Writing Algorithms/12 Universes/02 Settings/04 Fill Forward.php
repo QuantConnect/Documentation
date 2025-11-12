@@ -4,11 +4,11 @@
     <pre class="csharp">// Disable fill-forward data before creating the universe (it's enabled by default). 
 UniverseSettings.FillForward = false;
 // Add the 50 Equities to the universe that have the most dollar trading volume.
-AddUniverse(Universe.DollarVolume.Top(50));</pre>
+AddUniverse(Universe.Top(50));</pre>
     <pre class="python"># Disable fill-forward data before creating the universe (it's enabled by default).
 self.universe_settings.fill_forward = False
 # Add the 50 Equities to the universe that have the most dollar trading volume.
-self.add_universe(self.universe.dollar_volume.top(50))</pre>
+self.add_universe(self.universe.top(50))</pre>
 </div>
 
 <p>To disable fill forward in derivative universes, pass a <code class="csharp">fillForward</code><code class="python">fill_forward</code> argument to the universe creation method.</p>

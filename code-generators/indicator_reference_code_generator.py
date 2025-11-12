@@ -156,7 +156,7 @@ class IndicatorProcessor:
         return 'QCAlgorithm'
 
     def _get_introduction(self, description):
-        type_ = self._info["type-name"].replace('Stochastics','Stochastic')
+        type_ = self._info["type-name"]
         return f"""{TAG}
 <p>{description}</p>
 <p>To view the implementation of this indicator, see the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/tree/master/Indicators/{type_}.cs">LEAN GitHub repository</a>.</p>"""
