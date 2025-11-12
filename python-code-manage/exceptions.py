@@ -72,7 +72,7 @@ SWAPS = {
     "CharlesSchwab": "CharlesSchwab",
     "VWAP": "Vwap",
     "OneWeekBasedOnUSD": "OneWeekBasedOnUsd",
-    "SP500EMini": "SP500E_MINI",
+    "SP500EMini": "SP_500_E_MINI",
     "CrudeOilWTI": "CRUDE_OIL_WTI",
     "Gold": "GOLD",
 }
