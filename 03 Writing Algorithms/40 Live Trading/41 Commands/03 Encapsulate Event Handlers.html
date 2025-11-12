@@ -51,6 +51,9 @@ class MyCommand(Command):
     parameters = {}
 
     def run(self, algorithm):
+	    if not MyCommand.ALGORITHM:
+            algorithm.log('Please set the static reference to the ALGORITHM attribute in the initialize method: `MyCommand.ALGORITHM = self`')
+            return False
         algorithm.log(f"ticker: {self.ticker}; quantity: {self.quantity}; parameters: {self.parameters}")
         MyCommand.ALGORITHM.do_something()
         return True
