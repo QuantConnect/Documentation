@@ -146,7 +146,7 @@ class GoldOpenInterestFutureUniverseSelectionModel(OpenInterestFutureUniverseSel
         super().__init__(algorithm, self.select_future_chain_symbols, chain_contracts_lookup_limit, results_limit)
 
     def select_future_chain_symbols(self, utcTime: datetime) -> List[Symbol]:
-        return [Symbol.Create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)]</pre>
+        return [Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)]</pre>
 </div>
 
 <?
