@@ -80,10 +80,10 @@
 <div class="section-example-container">
 <pre class="csharp">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
-AddUniverse(Universe.DollarVolume.Top(50));</pre>
+AddUniverse(Universe.Top(50));</pre>
 <pre class="python"># Request second resolution data. This will be slow!
 self.universe_settings.resolution = Resolution.SECOND
-self.add_universe(self.universe.dollar_volume.top(50))</pre>
+self.add_universe(self.universe.top(50))</pre>
 </div>
 
 <p>For more information about universe settings, see the related documentation for <a href='/docs/v2/writing-algorithms/universes/settings'>classic</a> and <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings'>framework</a> algorithms.</p>

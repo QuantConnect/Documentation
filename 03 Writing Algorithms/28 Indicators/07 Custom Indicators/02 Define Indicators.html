@@ -39,7 +39,15 @@
         count = len(self.queue)
         self.time = input.time
         self.value = sum(self.queue) / count
-        return count == self.queue.maxlen</pre>
+        # Set the current attribute if you will update the indicator manually
+        self.current = IndicatorDataPoint(input.end_time, self.value)
+        return count == self.queue.maxlen
+
+    # Define is_ready property if you will update the indicator manually
+    @property
+    def is_ready(self) -> bool:
+        return len(self.queue) == self.queue.maxlen
+    </pre>
 </div>
 
 <p>The following definition provides an example of a custom money flow index indicator.</p>
@@ -113,6 +121,15 @@
         self.value = 100
         if total_money_flow != 0:
             self.value *= positive_money_flow_sum / total_money_flow
+
+        # Set the current attribute if you will update the indicator manually
+        self.current = IndicatorDataPoint(input.end_time, self.value)
     
-        return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
+        return len(self.positive_money_flow) == self.positive_money_flow.maxlen
+    
+    # Define is_ready property if you will update the indicator manually
+    @property
+    def is_ready(self) -> bool:
+        len(self.positive_money_flow) == self.positive_money_flow.maxlen
+    </pre>
 </div>
