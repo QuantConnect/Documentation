@@ -34,18 +34,20 @@ public class CustomSignalExport : ISignalExportTarget
         // Create the request payload using the PortfolioTarget objects in the parameters
         // You can use the PortfolioTarget.Percent to calculate the target quantity 
         // from the target percentage
+        // The Tag property can be used to send additional information about the target
+        // It's only available when you create the PortfolioTarget object with the tag parameter
+        // See the Manual Exports documentation for more information
         object SimplePayload(PortfolioTarget target)
         {
-            var newTarget = PortfolioTarget.Percent(parameters.Algorithm, target.Symbol, target.Quantity);
-            return new { symbol = newTarget.Symbol.Value, quantity = newTarget.Quantity };
+            var newTarget = PortfolioTarget.Percent(parameters.Algorithm, target.Symbol, target.Quantity, tag: target.Tag);
+            return new { symbol = newTarget.Symbol.Value, quantity = newTarget.Quantity, tag = newTarget.Tag };
         };
 
         var message = JsonConvert.SerializeObject(parameters.Targets.Select(SimplePayload));
         using var httpMessage = new StringContent(message, Encoding.UTF8, "application/json");
-        
         // Send the request to your custom endpoint
         var requestUri = "https://your-custom-endpoint.com/api/signal-export";
-        using HttpResponseMessage response = _httpClient.PostAsync(_requestUri, httpMessage).Result;
+        using HttpResponseMessage response = _httpClient.PostAsync(requestUri, httpMessage).Result;
         var result = response.Content.ReadFromJsonAsync&lt;RestResponse&gt;().Result;
         
         // Log the result of the request for debugging purposes
@@ -54,8 +56,7 @@ public class CustomSignalExport : ISignalExportTarget
     }
 
     public void Dispose() =&gt; _httpClient.Dispose();
-}
-</pre>
+}</pre>
 <pre class="python">class CustomSignalExportExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         # In the Initialize method, set the custom signal export provider
@@ -74,9 +75,12 @@ class CustomSignalExport:
         # Create the request payload using the PortfolioTarget objects in the parameters
         # You can use the PortfolioTarget.Percent to calculate the target quantity 
         # from the target percentage
-        targets = [PortfolioTarget.percent(parameters.algorithm, x.symbol, x.quantity) 
-           for x in parameters.targets] ;
-        data = [ {'symbol' : x.symbol.value, 'quantity': x.quantity} for x in targets ]
+        # The Tag property can be used to send additional information about the target
+        # It's only available when you create the PortfolioTarget object with the tag parameter
+        # See the Manual Exports documentation for more information
+        targets = [PortfolioTarget.percent(parameters.algorithm, x.symbol, x.quantity, x.tag) 
+           for x in parameters.targets]
+        data = [ {'symbol' : x.symbol.value, 'quantity': x.quantity, 'tag': x.tag} for x in targets ]
 
         # Send the request to your custom endpoint
         request_uri = "https://your-custom-endpoint.com/api/signal-export"
@@ -85,7 +89,7 @@ class CustomSignalExport:
 
         # Log the result of the request for debugging purposes
         success = result.get('success', False)
-        parameters.algorithm.log(f"Send #{len(parameters.targets)} targets. Success: {success}");
+        parameters.algorithm.log(f"Send #{len(parameters.targets)} targets. Success: {success}")
         return success       
 
     def dispose(self) -&gt; None:
