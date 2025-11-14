@@ -644,4 +644,5 @@ if __name__ == "__main__":
         '<p>You can use any of the following candlestick patterns. Click one to learn more.</p>')
 
     if undocumented:
-        exit('Undocumented indicators:' + ', '.join([f'{k}: {v[0]}' for k,v in undocumented.items()]))
+        print('Undocumented indicators:' + ', '.join([f'{k}: {v[0]}' for k,v in undocumented.items()]))
+        exit(1)
