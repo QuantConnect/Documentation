@@ -26,3 +26,26 @@ market=Market.INTERACTIVE_BROKERS if self.live_mode else Market.USA
 self._symbol = Symbol.create("SPY", security_type, market)
 self.add_security(self._symbol)</pre>
 </div>
+
+<p>Market hours for IB CFDs are not modeled. You cannot use them for <a href="/docs/v2/writing-algorithms/scheduled-events">scheduled events</a> or to get <a href="/docs/v2/writing-algorithms/securities/market-hours">market open/close times</a>. To create a scheduled event, use a ticker of any <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data">US Equity</a> that you haven't added as a IB CFD or create a US Equity <code>Symbol</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    var usEquitySymbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+    // Call the BeforeMarketOpen method 10 minutes before open every day US Equity stocks are trading. 
+    Schedule.On(
+        DateRules.EveryDay(usEquitySymbol),
+        TimeRules.BeforeMarketOpen(usEquitySymbol, 10),
+        BeforeMarketOpen
+    );
+}</pre>
+    <pre class="python">def initialize(self):
+    us_equity_symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+    # Call the _before_market_open method 10 minutes before open every day US Equity stocks are trading. 
+    self.schedule.on(
+        self.date_rules.every_day(us_equity_symbol),
+        self.time_rules.before_market_open(us_equity_symbol, 10),
+        self._before_market_open
+    )</pre>
+</div>

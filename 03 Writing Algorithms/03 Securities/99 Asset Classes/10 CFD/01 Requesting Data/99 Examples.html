@@ -28,6 +28,18 @@
             equity["smaFast"] = SMA(equity.Symbol, 50);
             equity["smaSlow"] = SMA(equity.Symbol, 200);
             equity["targetVehicle"] = LiveMode ? AddCfd(ticker, Resolution.Daily, market: Market.InteractiveBrokers).Symbol : equity.Symbol;
+        
+            // Create an schduled event to plot the prices.
+            // We need to create a symbol representing the US Equity market
+            // because market hours for IB CFDs are not modeled
+            var market = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+            Schedule.On(DateRules.EveryDay(market), TimeRules.Midnight, ()=&gt;
+            {
+                foreach (var security in Securities.Values)
+                {
+                    Plot(security.Symbol.Value, "EOD", security.Price);
+                }
+            });
         }
     }
     
@@ -69,6 +81,12 @@
             equity.sma_slow = self.sma(equity.symbol, 200)
             equity.target_vehicle = self.add_cfd(ticker, Resolution.DAILY, market=Market.INTERACTIVE_BROKERS).symbol if self.live_mode else equity.symbol
 
+        # Create an schduled event to plot the prices.
+        # We need to create a symbol representing the US Equity market
+        # because market hours for IB CFDs are not modeled
+        market = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.schedule.on(self.date_rules.every_day(market), self.time_rules.midnight, self._plot_prices)
+
     def on_data(self, data: Slice) -&gt; None:
         for security in self.securities.values():
             # Trade the SMA cross on the updated SMA indicator signals.
@@ -78,5 +96,8 @@
             # Else, the price is in a downtrend, and we are short.
             else:
                 self.set_holdings(security.target_vehicle, 0)
-    </pre>
+
+    def _plot_prices(self):
+        for security in self.securities.values():
+            self.plot(security.symbol.value, 'EOD', security.price)</pre>
 </div>
