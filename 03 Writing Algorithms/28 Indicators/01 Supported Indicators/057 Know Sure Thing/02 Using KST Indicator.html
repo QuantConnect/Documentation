@@ -1,0 +1,116 @@
+<p>To create an automatic indicators for <code>KnowSureThing</code>, call the <code class='csharp'>KST</code><code class='python'>kst</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>KST</code><code class='python'>kst</code> method creates a <code>KnowSureThing</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class KnowSureThingAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private KnowSureThing _kst;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _kst = KST(_symbol, 5, 5, 10, 5, 15, 5, 25, 10, 9, MovingAverageType.Simple);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_kst.IsReady)
+        {
+            // The current value of _kst is represented by itself (_kst)
+            // or _kst.Current.Value
+            Plot("KnowSureThing", "kst", _kst);
+            // Plot all properties of abands
+            Plot("KnowSureThing", "roc1", _kst.Roc1);
+            Plot("KnowSureThing", "roc2", _kst.Roc2);
+            Plot("KnowSureThing", "roc3", _kst.Roc3);
+            Plot("KnowSureThing", "roc4", _kst.Roc4);
+            Plot("KnowSureThing", "roc1ma", _kst.Roc1Ma);
+            Plot("KnowSureThing", "roc2ma", _kst.Roc2Ma);
+            Plot("KnowSureThing", "roc3ma", _kst.Roc3Ma);
+            Plot("KnowSureThing", "roc4ma", _kst.Roc4Ma);
+            Plot("KnowSureThing", "signalline", _kst.SignalLine);
+        }
+    }
+}</pre>
+<pre class="python">class KnowSureThingAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._kst = self.kst(self._symbol, 5, 5, 10, 5, 15, 5, 25, 10, 9, MovingAverageType.SIMPLE)
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._kst.is_ready:
+            # The current value of self._kst is represented by self._kst.current.value
+            self.plot("KnowSureThing", "kst", self._kst.current.value)
+            # Plot all attributes of self._kst
+            self.plot("KnowSureThing", "roc_1", self._kst.roc_1.current.value)
+            self.plot("KnowSureThing", "roc_2", self._kst.roc_2.current.value)
+            self.plot("KnowSureThing", "roc_3", self._kst.roc_3.current.value)
+            self.plot("KnowSureThing", "roc_4", self._kst.roc_4.current.value)
+            self.plot("KnowSureThing", "roc_1_ma", self._kst.roc_1_ma.current.value)
+            self.plot("KnowSureThing", "roc_2_ma", self._kst.roc_2_ma.current.value)
+            self.plot("KnowSureThing", "roc_3_ma", self._kst.roc_3_ma.current.value)
+            self.plot("KnowSureThing", "roc_4_ma", self._kst.roc_4_ma.current.value)
+            self.plot("KnowSureThing", "signal_line", self._kst.signal_line.current.value)</pre></div>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.kst">QCAlgorithm class</a>.</p>
+<p>You can manually create a <code>KnowSureThing</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class KnowSureThingAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private KnowSureThing _knowsurething;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _knowsurething = new KnowSureThing(5, 5, 10, 5, 15, 5, 25, 10, 9, MovingAverageType.Simple);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (data.Bars.TryGetValue(_symbol, out var bar))
+            _knowsurething.Update(bar.EndTime, bar.Close);
+
+        if (_knowsurething.IsReady)
+        {
+            // The current value of _knowsurething is represented by itself (_knowsurething)
+            // or _knowsurething.Current.Value
+            Plot("KnowSureThing", "knowsurething", _knowsurething);
+            // Plot all properties of abands
+            Plot("KnowSureThing", "roc1", _knowsurething.Roc1);
+            Plot("KnowSureThing", "roc2", _knowsurething.Roc2);
+            Plot("KnowSureThing", "roc3", _knowsurething.Roc3);
+            Plot("KnowSureThing", "roc4", _knowsurething.Roc4);
+            Plot("KnowSureThing", "roc1ma", _knowsurething.Roc1Ma);
+            Plot("KnowSureThing", "roc2ma", _knowsurething.Roc2Ma);
+            Plot("KnowSureThing", "roc3ma", _knowsurething.Roc3Ma);
+            Plot("KnowSureThing", "roc4ma", _knowsurething.Roc4Ma);
+            Plot("KnowSureThing", "signalline", _knowsurething.SignalLine);
+        }
+    }
+}</pre>
+<pre class="python">class KnowSureThingAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._knowsurething = KnowSureThing(5, 5, 10, 5, 15, 5, 25, 10, 9, MovingAverageType.SIMPLE)
+
+    def on_data(self, slice: Slice) -> None:
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            self._knowsurething.update(bar.end_time, bar.close)
+
+        if self._knowsurething.is_ready:
+            # The current value of self._knowsurething is represented by self._knowsurething.current.value
+            self.plot("KnowSureThing", "knowsurething", self._knowsurething.current.value)
+            # Plot all attributes of self._knowsurething
+            self.plot("KnowSureThing", "roc_1", self._knowsurething.roc_1.current.value)
+            self.plot("KnowSureThing", "roc_2", self._knowsurething.roc_2.current.value)
+            self.plot("KnowSureThing", "roc_3", self._knowsurething.roc_3.current.value)
+            self.plot("KnowSureThing", "roc_4", self._knowsurething.roc_4.current.value)
+            self.plot("KnowSureThing", "roc_1_ma", self._knowsurething.roc_1_ma.current.value)
+            self.plot("KnowSureThing", "roc_2_ma", self._knowsurething.roc_2_ma.current.value)
+            self.plot("KnowSureThing", "roc_3_ma", self._knowsurething.roc_3_ma.current.value)
+            self.plot("KnowSureThing", "roc_4_ma", self._knowsurething.roc_4_ma.current.value)
+            self.plot("KnowSureThing", "signal_line", self._knowsurething.signal_line.current.value)</pre></div>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1KnowSureThing.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/KnowSureThing">reference</a>.</p>

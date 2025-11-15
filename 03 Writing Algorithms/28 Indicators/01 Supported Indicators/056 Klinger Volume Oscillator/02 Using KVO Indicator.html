@@ -1,0 +1,84 @@
+<p>To create an automatic indicators for <code>KlingerVolumeOscillator</code>, call the <code class='csharp'>KVO</code><code class='python'>kvo</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>KVO</code><code class='python'>kvo</code> method creates a <code>KlingerVolumeOscillator</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class KlingerVolumeOscillatorAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private KlingerVolumeOscillator _kvo;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _kvo = KVO(_symbol, 5, 10, 13);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_kvo.IsReady)
+        {
+            // The current value of _kvo is represented by itself (_kvo)
+            // or _kvo.Current.Value
+            Plot("KlingerVolumeOscillator", "kvo", _kvo);
+            // Plot all properties of abands
+            Plot("KlingerVolumeOscillator", "signal", _kvo.Signal);
+        }
+    }
+}</pre>
+<pre class="python">class KlingerVolumeOscillatorAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._kvo = self.kvo(self._symbol, 5, 10, 13)
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._kvo.is_ready:
+            # The current value of self._kvo is represented by self._kvo.current.value
+            self.plot("KlingerVolumeOscillator", "kvo", self._kvo.current.value)
+            # Plot all attributes of self._kvo
+            self.plot("KlingerVolumeOscillator", "signal", self._kvo.signal.current.value)</pre></div>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.kvo">QCAlgorithm class</a>.</p>
+<p>You can manually create a <code>KlingerVolumeOscillator</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class KlingerVolumeOscillatorAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private KlingerVolumeOscillator _klingervolumeoscillator;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _klingervolumeoscillator = new KlingerVolumeOscillator(5, 10, 13);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (data.Bars.TryGetValue(_symbol, out var bar))
+            _klingervolumeoscillator.Update(bar);
+
+        if (_klingervolumeoscillator.IsReady)
+        {
+            // The current value of _klingervolumeoscillator is represented by itself (_klingervolumeoscillator)
+            // or _klingervolumeoscillator.Current.Value
+            Plot("KlingerVolumeOscillator", "klingervolumeoscillator", _klingervolumeoscillator);
+            // Plot all properties of abands
+            Plot("KlingerVolumeOscillator", "signal", _klingervolumeoscillator.Signal);
+        }
+    }
+}</pre>
+<pre class="python">class KlingerVolumeOscillatorAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._klingervolumeoscillator = KlingerVolumeOscillator(5, 10, 13)
+
+    def on_data(self, slice: Slice) -> None:
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            self._klingervolumeoscillator.update(bar)
+
+        if self._klingervolumeoscillator.is_ready:
+            # The current value of self._klingervolumeoscillator is represented by self._klingervolumeoscillator.current.value
+            self.plot("KlingerVolumeOscillator", "klingervolumeoscillator", self._klingervolumeoscillator.current.value)
+            # Plot all attributes of self._klingervolumeoscillator
+            self.plot("KlingerVolumeOscillator", "signal", self._klingervolumeoscillator.signal.current.value)</pre></div>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1KlingerVolumeOscillator.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/KlingerVolumeOscillator">reference</a>.</p>
