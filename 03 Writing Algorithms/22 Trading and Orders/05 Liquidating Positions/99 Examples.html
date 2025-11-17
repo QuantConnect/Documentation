@@ -12,15 +12,19 @@
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
 
+        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        SetWarmUp(TimeSpan.FromDays(7), Resolution.Minute);
+
         // Update the universe weekly to allow time to capitalize on the hype.
-        UniverseSettings.Schedule.On(DateRules.WeekStart());
+        UniverseSettings.Schedule.On(DateRules.WeekStart("SPY"));
+        UniverseSettings.Resolution = Resolution.Minute;
         // Filter for the 10 most popular stocks to invest the hype.
         _universe = AddUniverse(Universe.Top(10));
 
         // Set a schedule event to rebalance weekly.
         Schedule.On(
-            DateRules.WeekStart(),
-            TimeRules.At(9, 31),
+            DateRules.WeekStart("SPY"),
+            TimeRules.AfterMarketOpen("SPY", 1),
             Rebalance
         );
     }
@@ -39,7 +43,10 @@
         // Note that the liquidation will be market-on-open orders due to the time of securities removal.
         foreach (var removed in changes.RemovedSecurities)
         {
-            Liquidate(removed.Symbol);
+            if (Securities.TryGetValue(removed.Symbol, out var security) &amp;&amp; security.Invested)
+            {
+                Liquidate(removed.Symbol);
+            }
         }
     }
 }</pre>
@@ -55,7 +62,7 @@
 
         # Set a schedule event to rebalance weekly.
         self.schedule.on(
-            self.date_rules.week_start(),
+            self.date_rules.week_start("SPY"),
             self.time_rules.at(9, 31),
             self.rebalance
         )
@@ -79,30 +86,35 @@
     <pre class="csharp">public class LiquidatingPositionsAlgorithm : QCAlgorithm
 {
     private Universe _universe;
+    private Symbol spy;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
 
+        spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         // Update the universe weekly to allow time to capitalize on the hype.
-        UniverseSettings.Schedule.On(DateRules.WeekStart());
+        UniverseSettings.Schedule.On(DateRules.WeekStart(spy));
         // Filter for the 10 most popular stocks to invest the hype.
         _universe = AddUniverse(Universe.Top(10));
 
         // Set a schedule event to rebalance weekly.
         Schedule.On(
-            DateRules.WeekStart(),
-            TimeRules.At(9, 31),
+            DateRules.WeekStart(spy),
+            TimeRules.AfterMarketOpen(spy, 1),
             Rebalance
         );
     }
 
     private void Rebalance()
-    {
+    {        
         // Evenly invest in the universe members to dissipate the capital risk equally.
-        var count = _universe.Members.Count;
-        var targets = _universe.Members.Select(x =&gt; new PortfolioTarget(x.Key, 1m / count)).ToList();
+        var activeMembers = _universe.Members
+            .Where(kvp =&gt; kvp.Value.HasData &amp;&amp; kvp.Value.Price &gt; 0)
+            .ToList();
+        var count = activeMembers.Count;
+        var targets = activeMembers.Select(x =&gt; new PortfolioTarget(x.Key, 1m / count)).ToList();
         // We can use `liquidateExistingHoldings` arguments to liquidate the ones not in the universe anymore.
         SetHoldings(targets, liquidateExistingHoldings: true);
     }
@@ -119,7 +131,7 @@
 
         # Set a scheduled event to rebalance weekly.
         self.schedule.on(
-            self.date_rules.week_start(),
+            self.date_rules.week_start("SPY"),
             self.time_rules.at(9, 31),
             self.rebalance
         )
