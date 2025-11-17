@@ -134,71 +134,107 @@ public class IndexOptionHistoricalDataAlgorithm : QCAlgorithm
 
 class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
     _threshold = 2
-    _coef = 0
-    _intercept = 0
-    _mean_spread = 0
-    _sd_spread = 1
+    _cointegration_vector = [0, 0]
+    _spread_mean = 0
+    _spread_sd = 1
     _spx_contract = None
     _spxw_contract = None
 
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(10000000)
+        self._index = Symbol.create("SPX", SecurityType.INDEX, Market.USA)
+        self._spx = Symbol.create_canonical_option(self._index)
+        self._spxw = Symbol.create_canonical_option(self._index, "SPXW", Market.USA, "?SPXW")
 
         # Select the Index Options to analyze and trade by week.
-        self.schedule.on(self.date_rules.week_start(), self.time_rules.at(9, 15), self.select_contracts)
+        self.schedule.on(self.date_rules.week_start(), self.time_rules.at(9, 15), self.select_contract)
 
-    def select_contracts(self) -&gt; None:
-        index = Symbol.create("SPX", SecurityType.INDEX, Market.USA)
-        # Obtain the SPX ATM call contract since it is the most liquid to trade with.
-        spx = Symbol.create_canonical_option(index)
-        spx_contracts = [x for x in self.option_chain(spx) if x.expiry &lt; self.time + timedelta(30)]
-        if not spx_contracts:
-            self._spx_contract = None
-            self._spxw_contract = None
+    def on_data(self, slice: Slice) -> None:
+        if not (self._spx_contract and self._spxw_contract):
             return
+        spxw = slice.quote_bars.get(self._spxw_contract)
+        spx = slice.quote_bars.get(self._spx_contract)
+        if not (spxw and spx):
+            return
+        # Obtain the current spread to see if there is any price divergence to trade.
+        spread = self.calculate_spread(spxw.close, spx.close, self._cointegration_vector)
+        z = (spread - self._spread_mean) / self._spread_sd
+        # If the spread diverges above or below the threshold, trade to bet on mean reversion.
+        if z > self._threshold and not self.portfolio[self._spx_contract].is_long:
+            spx_qty = int(10 * self._cointegration_vector[1])
+            spxw_qty = -10
+            self.market_order(self._spx_contract, spx_qty)
+            self.market_order(self._spxw_contract, spxw_qty)
+
+        elif z < -self._threshold and not self.portfolio[self._spxw_contract].is_long:
+            spx_qty = int(-10 * self._cointegration_vector[1])
+            spxw_qty = 10
+            self.market_order(self._spx_contract, spx_qty)
+            self.market_order(self._spxw_contract, spxw_qty)
+
+        # If prices converge, exit positions.
+        if ((self.portfolio[self._spx_contract].is_long and z < 0) or
+            (self.portfolio[self._spxw_contract].is_long and z > 0)):
+            self.liquidate()
+
+    def select_contract(self) -> None:
+        self._spx_contract = None
+        self._spxw_contract = None
+
+        # Obtain the SPX ATM call contract since it is the most liquid to trade with.
+        spx_contracts = [x for x in self.option_chain(self._spx) if x.expiry <= self.time + timedelta(30)]
+        if not spx_contracts:
+            return
+
+        # Select the furthest expiry within the next 30 days
         expiry = max(x.expiry for x in spx_contracts)
-        self._spx_contract = sorted([x for x in spx_contracts if x.expiry == expiry and x.right == OptionRight.CALL], key=lambda x: abs(x.strike - x.underlying_last_price))[0]
+        self._spx_contract = sorted(
+            [x for x in spx_contracts 
+             if x.expiry == expiry and x.right == OptionRight.CALL],
+            key=lambda x: abs(x.strike - x.underlying_last_price)
+        )[0].symbol
+
         # Obtain the SPXW contract with the same strike, right, and expiry.
-        spxw = Symbol.create_canonical_option(index, "SPXW", Market.USA, "?SPXW")
-        spxw_contracts = self.option_chain(spxw)
-        strike = self._spx_contract.strike
-        self._spxw_contract = next(filter(lambda x: x.expiry == expiry and x.right == OptionRight.CALL and x.strike == strike, spxw_contracts), None)
+        spxw_contract = next(
+            (
+                x for x in self.option_chain(self._spxw)
+                if (x.expiry == expiry and
+                    x.right == OptionRight.CALL and
+                    x.strike == self._spx_contract.id.strike_price)
+            ),
+            None
+        )
+        if not spxw_contract:
+            return
+        self._spxw_contract = spxw_contract.symbol
 
-        if self._spxw_contract:
-            # Subscribe to the contracts we will trade 
-            self.add_index_option_contract(self._spx_contract.symbol)
-            self.add_index_option_contract(self._spxw_contract.symbol)
-            # Obtain the historical data and find their cointegration relationship.
-            history = self.history([self._spx_contract.symbol, self._spxw_contract.symbol], 1000, Resolution.MINUTE).droplevel([0, 1, 2]).unstack(0).close
-            lr = LinearRegression().fit(np.log(history.iloc[:, [0]]), np.log(history.iloc[:, 1]))
-            self._coef, self._intercept = lr.coef_, lr.intercept_
-            # Obtain the mean and SD of the spread between the options.
-            residual = history.apply(lambda x: self.get_spread(x[self._spx_contract.symbol], x[self._spxw_contract.symbol]), axis=1)
-            self._mean_spread, self._sd_spread = np.mean(residual.values), np.std(residual.values, ddof=1)
+        # Subscribe to the contracts we will trade
+        self.add_index_option_contract(self._spx_contract)
+        self.add_index_option_contract(self._spxw_contract)
 
-    def on_data(self, slice: Slice) -&gt; None:
-        if self._spxw_contract:
-            spx = slice.quote_bars.get(self._spx_contract.symbol)
-            spxw = slice.quote_bars.get(self._spxw_contract.symbol)
-            if spx and spxw:
-                # Obtain the current spread to see if there is any price divergence to trade.
-                spread = self.get_spread(spx.close, spxw.close)
-                z = (spread - self._mean_spread) / self._sd_spread
+        # Obtain the historical data and find their cointegration relationship.
+        history = self.history(QuoteBar, [self._spx_contract, self._spxw_contract], 1000).close.droplevel([0, 1, 2]).unstack(0)
 
-                # If the spread diverges above or below the threshold, trade to bet on mean reversal.
-                if z &gt;= self._threshold and not self.portfolio[spx.symbol].is_long:
-                    self.market_order(spx.symbol, int(10 * self._coef))
-                    self.market_order(spxw.symbol, -10)
-                elif z &lt;= self._threshold and not self.portfolio[spxw.symbol].is_long:
-                    self.market_order(spx.symbol, int(-10 * self._coef))
-                    self.market_order(spxw.symbol, 10)
+        # Run linear regression to determine cointegration relationship
+        self._cointegration_vector = self.calculate_cointegration_vector(history)
 
-                # If prices converge, exit positions.
-                if (z &lt;= 0 and self.portfolio[spx.symbol].is_long) or (z &gt;= 0 and self.portfolio[spxw.symbol].is_long):
-                    self.liquidate()
+        residual = self.calculate_spread(history[self._spxw_contract], history[self._spx_contract], self._cointegration_vector)
 
-    def get_spread(self, x: float, y: float) -&gt; float:
-        return np.log(y) - self._intercept - self._coef[0] * np.log(x)</pre>
+        self._spread_mean = np.mean(residual)
+        self._spread_sd = np.std(residual)
+
+    def calculate_cointegration_vector(self, history):
+        # Prepare log price series
+        y = np.log(history[self._spxw_contract])
+        x1 = np.log(history[self._spx_contract])
+
+        # Linear regression for cointegration
+        lr = LinearRegression().fit(x1.to_frame(), y)
+
+        return [lr.intercept_, lr.coef_[0]]
+
+    def calculate_spread(self, y, x1, cointegration_vector):
+        return np.log(y) - (cointegration_vector[0] + np.log(x1) * cointegration_vector[1])</pre>
 </div>
