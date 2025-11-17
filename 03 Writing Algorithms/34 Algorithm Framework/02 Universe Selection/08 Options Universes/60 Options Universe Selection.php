@@ -12,9 +12,7 @@ AddUniverseSelection(
         _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
     )
 );</pre>
-	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
-# Run universe selection asynchronously to speed up your algorithm. 
+	<pre class="python"># Run universe selection asynchronously to speed up your algorithm. 
 # In this case, you can't rely on the method or algorithm state between filter calls.
 self.universe_settings.asynchronous = True
 # Add a universe of SPY Options.
@@ -88,9 +86,7 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
         yield return QuantConnect.Symbol.CreateCanonicalOption(contract.Symbol);
     }
 }</pre>
-	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
-# In the initialize method, add the OptionUniverseSelectionModel with a custom selection function.
+	<pre class="python"># In the initialize method, add the OptionUniverseSelectionModel with a custom selection function.
 def initialize(self) -&gt; None:
     self.add_universe_selection(
         OptionUniverseSelectionModel(timedelta(days=1), self.select_option_chain_symbols)

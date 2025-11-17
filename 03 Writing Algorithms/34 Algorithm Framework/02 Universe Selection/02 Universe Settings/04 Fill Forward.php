@@ -10,8 +10,6 @@ AddUniverseSelection(
     )
 );</pre>
 	<pre class="python"># Disable fill forward to ensure each day's data is used exclusively, preventing previous day's data from influencing decisions and select options for SPY with a daily update interval to track specific option contracts.
-from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
 self.universe_settings.fill_forward = False
 self.add_universe_selection(
     OptionUniverseSelectionModel(

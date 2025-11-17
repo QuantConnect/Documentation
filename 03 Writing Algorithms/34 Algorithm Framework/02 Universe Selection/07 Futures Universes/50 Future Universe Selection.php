@@ -12,8 +12,7 @@ AddUniverseSelection(
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
     )
 );</pre>
-	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-# Run universe selection asynchronously to speed up your algorithm. 
+	<pre class="python"># Run universe selection asynchronously to speed up your algorithm. 
 # This setting means you cannot rely on the method or algorithm state between filter calls.
 self.universe_settings.asynchronous = True
 # Add a universe of E-mini S&P 500 Futures contracts.
@@ -78,9 +77,7 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
     };
 }</pre>
-    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
-# In the initialize method, add the FutureUniverseSelectionModel with a custom selection function.
+    <pre class="python"># In the initialize method, add the FutureUniverseSelectionModel with a custom selection function.
 def initialize(self) -&gt; None:
     self.set_universe_selection(
         FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)

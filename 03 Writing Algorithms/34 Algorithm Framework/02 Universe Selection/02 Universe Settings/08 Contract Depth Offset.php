@@ -10,8 +10,6 @@ AddUniverseSelection(
     )
 );</pre>
 	<pre class="python"># Select the following month contract dynamically to avoid low liquidity and high volatility, for S&P 500 E-mini futures with daily updates.
-from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
 self.universe_settings.contract_depth_offset = 1
 self.add_universe_selection(
     FutureUniverseSelectionModel(

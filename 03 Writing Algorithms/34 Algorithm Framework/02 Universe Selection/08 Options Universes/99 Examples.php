@@ -166,10 +166,7 @@
         }
     }
 }</pre>
-    <pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel
-
-
-class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
+    <pre class="python">class FrameworkOptionUniverseSelectionAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
