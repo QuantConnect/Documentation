@@ -11,7 +11,6 @@ The Estimize dataset enables you to estimate the financial data of a company mor
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
-
 class ExtractAlphaEstimizeAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -164,8 +163,6 @@ class ExtractAlphaEstimizeAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
-
 
 class ExtractAlphaEstimizeFrameworkAlgorithm(QCAlgorithm):
 
@@ -179,7 +176,7 @@ class ExtractAlphaEstimizeFrameworkAlgorithm(QCAlgorithm):
         # Invest equally to evenly dissipate capital concentration risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         self.set_execution(ImmediateExecutionModel())
-                
+
 
 class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
@@ -195,11 +192,11 @@ class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
 
 class ExtractAlphaEstimizeAlphaModel(AlphaModel):
-    
+
     # Add a dictionary to hold the latest Consensus data since this dataset is sparse.
     _consensus_by_symbol = {}
     _day = -1
-        
+
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         # Record the latest Consensus data.
         consensus = slice.get(EstimizeConsensus)
@@ -220,7 +217,7 @@ class ExtractAlphaEstimizeAlphaModel(AlphaModel):
         ]
         self._consensus_by_symbol.clear()
         return [Insight.price(symbol, timedelta(30), InsightDirection.UP) for symbol in symbols]
-        
+
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting data for trading signal generation
@@ -267,7 +264,7 @@ public class ExtractAlphaEstimizeAlphaModel: AlphaModel
     // Add a dictionary to hold the latest Consensus data since this dataset is sparse.
     private Dictionary&lt;Symbol, EstimizeConsensus&gt; _consensusBySymbol = new();
     private int _day = -1;
-    
+
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
         var insights = new List&lt;Insight&gt;();
@@ -297,7 +294,7 @@ public class ExtractAlphaEstimizeAlphaModel: AlphaModel
         _consensusBySymbol.Clear();
         return insights;
     }
-    
+
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
         foreach (dynamic security in changes.AddedSecurities)

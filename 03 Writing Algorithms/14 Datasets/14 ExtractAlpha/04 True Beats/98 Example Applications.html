@@ -10,7 +10,6 @@ The True Beats dataset enables you to predict EPS and revenue of US-listed Equit
 
 <div class="section-example-container testable"><pre class="python">from AlgorithmImports import *
 
-
 class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
 
     _true_beats = None
@@ -188,8 +187,6 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
-
 
 class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
 
@@ -214,8 +211,8 @@ class ExtractAlphaTrueBeatsDataAlgorithm(QCAlgorithm):
         # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         self.set_execution(ImmediateExecutionModel())
-        
-        
+
+
 class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
     def select(self, algorithm: QCAlgorithm, fundamentals: List[Fundamental]) -&gt; List[Symbol]:
@@ -229,10 +226,10 @@ class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
 
 class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
-    
+
     _month = -1
     _insights = []
-        
+
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         # Rebalance at the start of each month.
         if self._month == algorithm.time.month: 
@@ -270,7 +267,7 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
                 true_beats, 
                 key=lambda tb: (tb.fiscal_period.fiscal_year, tb.fiscal_period.fiscal_quarter)
             )[0].true_beat
-        
+
         # Cancel the previous insights.
         algorithm.insights.cancel(self._insights)
         # Emit the new insights.
@@ -284,7 +281,7 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
         for symbol, _ in sorted_by_eps_prediction[:10]:
             self._insights.append(Insight.price(symbol, timedelta(35), InsightDirection.DOWN))
         return self._insights
-        
+
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting true beats data for trading signal generation
@@ -293,11 +290,9 @@ class ExtractAlphaTrueBeatsAlphaModel(AlphaModel):
             history = algorithm.history(security.true_beats, 10, Resolution.DAILY, flatten=True)
         for security in changes.removed_securities:
             # Remove the true beats data for this asset when it leaves the universe.
-            algorithm.remove_security(security.true_beats)
-
-</pre>
+            algorithm.remove_security(security.true_beats)</pre>
 <pre class="csharp">public class ExtractAlphaTrueBeatsDataAlgorithm : QCAlgorithm
-{    
+{
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
@@ -337,7 +332,7 @@ public class ExtractAlphaTrueBeatsAlphaModel: AlphaModel
 {
     private int _month = -1;
     private List&lt;Insight&gt; _insights = new();
-    
+
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
         // Rebalance at the start of each month.
@@ -388,7 +383,7 @@ public class ExtractAlphaTrueBeatsAlphaModel: AlphaModel
         _insights.AddRange(sortedByEpsPrediction.Take(10).Select(kvp =&gt; Insight.Price(kvp.Key, TimeSpan.FromDays(35), InsightDirection.Down)));
         return _insights;
     }
-    
+
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
         foreach(dynamic security in changes.AddedSecurities)

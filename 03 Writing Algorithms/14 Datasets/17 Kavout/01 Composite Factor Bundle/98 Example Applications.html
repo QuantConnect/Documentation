@@ -10,7 +10,6 @@ The Composite Factor Bundle dataset enables you to access the performance of 5 d
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
-
 class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -158,8 +157,6 @@ class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
 <p>The following example algorithm creates a dynamic universe of the 100 most liquid US Equities. Each day, it then forms a equal-weighted dollar-neutral portfolio of the 10 companies most likely to outperform and the 10 companies most likely to underperform.</p>
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
-
 
 class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
 
@@ -173,7 +170,7 @@ class KavoutCompositeFactorBundleAlgorithm(QCAlgorithm):
         # Invest in equal-size and dollar-neutral to evenly dissipate individual capital risk, avoid non-systematic risk, and better margin
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         self.set_execution(ImmediateExecutionModel())
-        
+
 
 class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
@@ -188,7 +185,7 @@ class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
 
 class KavoutCompositeFactorBundleAlphaModel(AlphaModel):
-        
+
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         # Get the current data from the Kavout dataset.
         points = slice.get(KavoutCompositeFactorBundle)
@@ -211,14 +208,14 @@ class KavoutCompositeFactorBundleAlphaModel(AlphaModel):
         sorted_by_score = sorted(points, key=self._total_score)
         long_symbols = [x[0].underlying for x in sorted_by_score[-10:]]
         short_symbols = [x[0].underlying for x in sorted_by_score[:10]]
-        
+
         insights = []
         for symbol in long_symbols:
             insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.UP))
         for symbol in short_symbols:
             insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.DOWN))
         return insights
-        
+
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting factor bundle data for trade signal generation
@@ -228,7 +225,7 @@ class KavoutCompositeFactorBundleAlphaModel(AlphaModel):
         for security in changes.removed_securities:
             # Remove the factor bundle data for this asset when it leaves the universe.
             algorithm.remove_security(security.kavout_symbol)
-            
+
     def _total_score(self, value) -&gt; float:
         # Return the total score to integrate overall likelihood to outcompete, take equal weighting for each factor
         value = value[1]
@@ -294,14 +291,14 @@ public class KavoutCompositeFactorBundleAlphaModel: AlphaModel
             .Select(kvp =&gt; kvp.Key.Underlying);
         var longSymbols = sortedByScore.TakeLast(10);
         var shortSymbols = sortedByScore.Take(10);
-        
+
         var insights = new List&lt;Insight&gt;();
         insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
         insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
-        
+
         return insights;
     }
-    
+
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
         foreach(dynamic security in changes.AddedSecurities)
@@ -317,7 +314,7 @@ public class KavoutCompositeFactorBundleAlphaModel: AlphaModel
             algorithm.RemoveSecurity(security.kavoutSymbol);
         }
     }
-    
+
     private decimal TotalScore(KavoutCompositeFactorBundle value)
     {
         // Return the total score to integrate overall likelihood to outcompete, take equal weighting for each factor

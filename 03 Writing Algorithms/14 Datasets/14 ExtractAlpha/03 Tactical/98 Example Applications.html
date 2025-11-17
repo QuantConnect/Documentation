@@ -11,7 +11,6 @@ The Tactical dataset enables you to gain insight into short-term stock dynamics 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
-
 class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -19,7 +18,7 @@ class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
         self.add_universe(self._select_assets)
-        
+
     def _select_assets(self, coarse: List[Fundamental]) -&gt; List[Symbol]:
         # Select non-penny stocks with highest dollar volume due to better informed information from more market activities
         # Only the ones with fundamental data are supported by tactical data
@@ -54,7 +53,7 @@ class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
         long_targets = [PortfolioTarget(symbol, 0.05) for symbol in long_symbols]
         short_targets = [PortfolioTarget(symbol, -0.05) for symbol in short_symbols]
         self.set_holdings(long_targets + short_targets, True)
-        
+
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting tactical data for trading signal generation
@@ -148,8 +147,6 @@ class ExtractAlphaTacticalModelAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
-
 
 class ExtractAlphaTacticalModelFrameworkAlgorithm(QCAlgorithm):
 
@@ -163,7 +160,7 @@ class ExtractAlphaTacticalModelFrameworkAlgorithm(QCAlgorithm):
         # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         self.set_execution(ImmediateExecutionModel())
-        
+
 
 class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
@@ -175,10 +172,10 @@ class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
             key=lambda x: x.dollar_volume
         )
         return [x.symbol for x in sorted_by_dollar_volume[-100:]]
-        
+
 
 class ExtractAlphaTacticalModelAlphaModel(AlphaModel):
-        
+
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         # Get the current data from the tactical dataset.
         points = slice.get(ExtractAlphaTacticalModel)
@@ -204,7 +201,7 @@ class ExtractAlphaTacticalModelAlphaModel(AlphaModel):
             Insight.price(x[0].underlying, Expiry.END_OF_DAY, direction)
             for x, direction in insight_directions
         ]
-        
+
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting tactical data for trading signal generation
@@ -272,13 +269,13 @@ public class ExtractAlphaTacticalModelAlphaModel: AlphaModel
             .Select(kvp =&gt; kvp.Key.Underlying);
         var longSymbols = sortedByScore.TakeLast(10);
         var shortSymbols = sortedByScore.Take(10);
-        
+
         var insights = new List&lt;Insight&gt;();
         insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
         insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
         return insights;
     }
-    
+
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
         foreach(dynamic security in changes.AddedSecurities)

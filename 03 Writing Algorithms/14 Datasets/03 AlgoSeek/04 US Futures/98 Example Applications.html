@@ -10,7 +10,6 @@ The US Futures dataset enables you to accurately design Futures strategies. Exam
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
-
 class USFuturesDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -106,8 +105,6 @@ class USFuturesDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
-
 
 class USFuturesDataAlgorithm(QCAlgorithm):
 
@@ -150,14 +147,14 @@ class ConstantFuturesAlphaModel(AlphaModel):
         
         insights = []
         # For both gold and micro gold, select the front month contract (only contract) in the chain
-        for kvp in slice.future_chains:
-            chain = [contract for contract in kvp.Value]
+        for symbol, contracts in slice.future_chains.items():
+            chain = [contract for contract in contracts]
             contract = chain[0]
             
             # Long gold and short micro gold as planned
-            if kvp.Key == self.long_symbol:
+            if symbol == self.long_symbol:
                 insights.append(Insight.price(contract.symbol, contract.expiry + timedelta(days=1), InsightDirection.UP))
-            elif kvp.Key == self.short_symbol:
+            elif symbol == self.short_symbol:
                 insights.append(Insight.price(contract.symbol, contract.expiry + timedelta(days=1), InsightDirection.DOWN))
         
         return insights

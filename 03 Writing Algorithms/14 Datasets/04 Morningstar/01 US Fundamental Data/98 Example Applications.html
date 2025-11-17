@@ -12,7 +12,6 @@ The US Fundamentals dataset enables you to design strategies harnessing fundamen
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
-
 class MorningStarDataAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -129,7 +128,6 @@ class MorningStarDataAlgorithm(QCAlgorithm):
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
 
 class MorningStarDataAlgorithm(QCAlgorithm):
 
@@ -137,33 +135,33 @@ class MorningStarDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000) 
-        
+
         # Add universe selection to filter with fundamental data
         self.universe_settings.resolution = Resolution.DAILY
         self.set_universe_selection(CustomFundamentalUniverseSelectionModel())
-        
+
         self.set_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(1)))
 
         # we want 1/N allocation in each security in our universe to evenly dissipate risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
-         
+
         self.add_risk_management(NullRiskManagementModel())
-        
+
         self.set_execution(ImmediateExecutionModel())
-        
+
 
 class CustomFundamentalUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
-    def Select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         # Make sure fundamental data and PE ratio available 
         # To avoid penny stocks with high volatility, set price above $1
-        filtered = [x for x in fundamental if x.has_fundamental_data and x.price &gt; 1 and not np.isnan(x.valuation_ratios.pe_ratio)]
         # Filter the top 100 high dollar volume equities to ensure liquidity
-        sorted_by_dollar_volume = sorted(filtered, key=lambda x: x.dollar_volume, reverse=True)[:100]
+        sorted_by_dollar_volume = sorted([x for x in fundamental if x.price &gt; 1 and not np.isnan(x.valuation_ratios.pe_ratio)],
+            key=lambda x: x.dollar_volume, reverse=True)[:100]
         # Get the top 10 PE Ratio stocks to follow speculations of a large number of capital
         sorted_by_pe_ratio = sorted(sorted_by_dollar_volume, key=lambda x: x.valuation_ratios.pe_ratio, reverse=True)[:10]
 
-        # take the top entries from our sorted collection
+        # Take the top entries from our sorted collection
         return [ x.symbol for x in sorted_by_pe_ratio ]</pre>
 <pre class="csharp">public class MorningStarDataAlgorithm : QCAlgorithm
 {        

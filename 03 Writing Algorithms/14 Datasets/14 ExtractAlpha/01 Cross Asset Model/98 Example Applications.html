@@ -11,7 +11,6 @@ The Cross Asset Model dataset by ExtractAlpha enables you to utilize Options mar
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
 
-
 class ExtractAlphaCrossAssetModelAlgorithm(QCAlgorithm):
 
     def initialize(self) -&gt; None:
@@ -168,8 +167,6 @@ class ExtractAlphaCrossAssetModelAlgorithm(QCAlgorithm):
 <p>The following example algorithm creates a dynamic universe of the 100 most liquid US Equities. Each day, the algorithm forms an equal-weighted dollar-neutral portfolio of the 10 companies most likely to outperform and the 10 companies most likely to underperform.</p>
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
-from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
-
 
 class ExtractAlphaCrossAssetModelFrameworkAlgorithm(QCAlgorithm):
 
@@ -183,7 +180,7 @@ class ExtractAlphaCrossAssetModelFrameworkAlgorithm(QCAlgorithm):
         # Invest equally and dollar-neutral to evenly dissipate capital risk and hedge systematic risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         self.set_execution(ImmediateExecutionModel())
-        
+
 
 class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
@@ -195,10 +192,10 @@ class LiquidEquitiesUniverseSelectionModel(FundamentalUniverseSelectionModel):
             key=lambda x: x.dollar_volume
         )
         return [x.symbol for x in sorted_by_dollar_volume[-100:]]
-        
+
 
 class ExtractAlphaCrossAssetModelAlphaModel(AlphaModel):
-        
+
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         # Get the current data from the cross asset model.
         points = slice.get(ExtractAlphaCrossAssetModel)
@@ -209,7 +206,7 @@ class ExtractAlphaCrossAssetModelAlphaModel(AlphaModel):
         #        f"Asset Symbol: {dataset_symbol.underlying}; " 
         #        f"Score: {model.score} "
         #    )
-        
+
         # Drop factors for assets that have no price or score.
         points = [
             x for x in points.items() 
@@ -230,7 +227,7 @@ class ExtractAlphaCrossAssetModelAlphaModel(AlphaModel):
             Insight.price(x[0].underlying, Expiry.END_OF_DAY, direction)
             for x, direction in insight_directions
         ]
-        
+
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
             # Requesting cross asset model data for trading signal generation
@@ -256,7 +253,7 @@ class ExtractAlphaCrossAssetModelAlphaModel(AlphaModel):
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
         SetExecution(new ImmediateExecutionModel());
     }
-    
+
     private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
     {
 
@@ -299,19 +296,19 @@ public class ExtractAlphaCrossAssetModelAlphaModel: AlphaModel
         //        $"Score: {model.Score}"
         //    );
         //}
-        
+
         // Long the ones with the highest return estimates based on option trade data
         // Short the lowest return ones
         var sortedByScore = points.OrderBy(kvp =&gt; kvp.Value.Score).Select(kvp =&gt; kvp.Key.Underlying);
         var longSymbols = sortedByScore.TakeLast(10);
         var shortSymbols = sortedByScore.Take(10);
-        
+
         var insights = new List&lt;Insight&gt;();
         insights.AddRange(longSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Up)));
         insights.AddRange(shortSymbols.Select(symbol =&gt; new Insight(symbol, Expiry.EndOfDay, InsightType.Price, InsightDirection.Down)));
         return insights;
     }
-    
+
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
         foreach(dynamic security in changes.AddedSecurities)
