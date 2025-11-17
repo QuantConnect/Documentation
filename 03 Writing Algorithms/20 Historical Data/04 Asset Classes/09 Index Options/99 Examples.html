@@ -129,7 +129,7 @@ public class IndexOptionHistoricalDataAlgorithm : QCAlgorithm
     {
         return Convert.ToDecimal(Math.Log((double)price));
     }
-}</pre>
+}</pre&gt;
     <pre class="python">from sklearn.linear_model import LinearRegression
 
 class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
@@ -140,7 +140,7 @@ class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
     _spx_contract = None
     _spxw_contract = None
 
-    def initialize(self) -> None:
+    def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(10000000)
@@ -151,7 +151,7 @@ class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
         # Select the Index Options to analyze and trade by week.
         self.schedule.on(self.date_rules.week_start(), self.time_rules.at(9, 15), self.select_contract)
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -&gt; None:
         if not (self._spx_contract and self._spxw_contract):
             return
         spxw = slice.quote_bars.get(self._spxw_contract)
@@ -162,13 +162,13 @@ class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
         spread = self.calculate_spread(spxw.close, spx.close, self._cointegration_vector)
         z = (spread - self._spread_mean) / self._spread_sd
         # If the spread diverges above or below the threshold, trade to bet on mean reversion.
-        if z > self._threshold and not self.portfolio[self._spx_contract].is_long:
+        if z &gt; self._threshold and not self.portfolio[self._spx_contract].is_long:
             spx_qty = int(10 * self._cointegration_vector[1])
             spxw_qty = -10
             self.market_order(self._spx_contract, spx_qty)
             self.market_order(self._spxw_contract, spxw_qty)
 
-        elif z < -self._threshold and not self.portfolio[self._spxw_contract].is_long:
+        elif z &lt; -self._threshold and not self.portfolio[self._spxw_contract].is_long:
             spx_qty = int(-10 * self._cointegration_vector[1])
             spxw_qty = 10
             self.market_order(self._spx_contract, spx_qty)
@@ -176,15 +176,15 @@ class IndexOptionHistoricalDataAlgorithm(QCAlgorithm):
 
         # If prices converge, exit positions.
         if ((self.portfolio[self._spx_contract].is_long and z < 0) or
-            (self.portfolio[self._spxw_contract].is_long and z > 0)):
+            (self.portfolio[self._spxw_contract].is_long and z &gt; 0)):
             self.liquidate()
 
-    def select_contract(self) -> None:
+    def select_contract(self) -&gt; None:
         self._spx_contract = None
         self._spxw_contract = None
 
         # Obtain the SPX ATM call contract since it is the most liquid to trade with.
-        spx_contracts = [x for x in self.option_chain(self._spx) if x.expiry <= self.time + timedelta(30)]
+        spx_contracts = [x for x in self.option_chain(self._spx) if x.expiry &lt;= self.time + timedelta(30)]
         if not spx_contracts:
             return
 
