@@ -77,39 +77,54 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
     <pre class="python">from sklearn.linear_model import LinearRegression
 
 class SGXMatchingTradingAlgorithm(QCAlgorithm):
-    _weights = None
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
+        self.set_warm_up(timedelta(7))
         
         # Request SGX Index data for matching.
         self._sgx = self.add_index("SGX").symbol
+        self._spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
         # We will try to use SPY constituents to reproduce the SGX index.
-        self._universe = self.add_universe(self.universe.etf("SPY", Market.USA, None, lambda x: [y.symbol for y in sorted([y for y in x if y.weight], key=lambda x: x.weight, reverse=True)[:100]]))
-
+        self._universe = self.add_universe(
+            self.universe.etf(
+                self._spy, 
+                universe_filter_func=lambda x: [
+                    y.symbol for y in sorted(
+                        [y for y in x if y.weight], 
+                        key=lambda x: x.weight, reverse=True
+                    )[:100]
+                ]
+            )
+        )
+        
         # Schedule an event to rebalance the portfolio.
         self.schedule.on(
-            self.date_rules.every_day("SPY"),
-            self.time_rules.at(9, 31),
+            self.date_rules.every_day(self._spy),
+            self.time_rules.after_market_open(self._spy, 1),
             self.rebalance
         )
 
     def rebalance(self) -&gt; None:
-        if self._universe.selected:
-            # Obtain the historical data.
-            history = self.history([self._sgx] + list(self._universe.selected), 252, Resolution.DAILY).unstack(0).close
-            history = history.groupby(history.index.date).last().dropna()
-            # Obtain the weights of SPY constituents that best reproduce SGX.
-            self._weights = self.calculate_weights(history[list(self._universe.selected)], history[self._sgx])
-
-            if self._weights is not None:
-                self.set_holdings([PortfolioTarget(symbol, weight) for symbol, weight in zip(self._universe.selected, self._weights)])
+        if self.is_warming_up or not self._universe.selected:
+            return
+        symbols = list(self._universe.selected)
+        # Obtain the historical data.
+        history = self.history([self._sgx] + symbols, 252, Resolution.DAILY).unstack(0).close
+        history = history.groupby(history.index.date).last().dropna()
+        # Obtain the weights of SPY constituents that best reproduce SGX.
+        weights = self.calculate_weights(history[symbols], history[self._sgx])
+        self.set_holdings(
+            [PortfolioTarget(symbol, weight) for symbol, weight in zip(symbols, weights)], 
+            liquidate_existing_holdings=True
+        )
 
     def calculate_weights(self, history: pd.DataFrame, benchmark: pd.Series) -&gt; pd.Series:
         # Use log price to eliminate the compounding effect.
         # Perform regression to obtain the best-replicating portfolio of SGX.
         lr = LinearRegression(fit_intercept=False).fit(np.log(history), np.log(benchmark))
-        return lr.coef_</pre>
+        sum_ = sum(abs(lr.coef_))
+        return [c/sum_ for c in lr.coef_]</pre>
 </div>
