@@ -8,7 +8,6 @@
 public class SGXMatchingTradingAlgorithm : QCAlgorithm
 {
     private Symbol _sgx;
-    private Symbol _spy;
     private Universe _universe;
     private decimal[] _weights = null;
 
@@ -17,26 +16,25 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        SetWarmUp(TimeSpan.FromDays(7));
+        SetWarmUp(7, Resolution.Daily);
         
         // Request SGX Index data for matching.
         _sgx = AddIndex("SGX").Symbol;
-        _spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         
         // We will try to use SPY constituents to reproduce the SGX index.
-        _universe = AddUniverse(Universe.ETF(_spy, UniverseSettings, constituents => 
+        _universe = AddUniverse(Universe.ETF("SPY", UniverseSettings, constituents =&gt; 
         {
             return constituents
-                .Where(x => x.Weight.HasValue)
-                .OrderByDescending(x => x.Weight.Value)
+                .Where(x =&gt; x.Weight.HasValue)
+                .OrderByDescending(x =&gt; x.Weight.Value)
                 .Take(100)
-                .Select(x => x.Symbol);
+                .Select(x =&gt; x.Symbol);
         }));
         
         // Schedule an event to rebalance the portfolio.
         Schedule.On(
-            DateRules.EveryDay(_spy),
-            TimeRules.AfterMarketOpen(_spy, 1),
+            DateRules.EveryDay("SPY"),
+            TimeRules.AfterMarketOpen("SPY", 1),
             Rebalance
         );
     }
@@ -100,7 +98,7 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
             designMatrix[i] = [.. symbols.Select(s =&gt; (double)completeDates[i][s].Close)];
         }
         
-        _weights = CalculateWeights(designMatrix, benchmark);
+        CalculateWeights(designMatrix, benchmark);
         
         if (_weights != null)
         {
@@ -111,7 +109,7 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
         }
     }
 
-    private decimal[] CalculateWeights(double[][] history, double[] benchmark)
+    private void CalculateWeights(double[][] history, double[] benchmark)
     {
         try
         {
@@ -126,13 +124,11 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
             var sum = coefficients.Sum(c =&gt; Math.Abs(c));
             if (sum &gt; 0)
             {
-                return [.. coefficients.Select(c =&gt; Convert.ToDecimal(c / sum))];
+                _weights = [.. coefficients.Select(c =&gt; Convert.ToDecimal(c / sum))];
             }
-            return _weights;
         }
         catch
         {
-            return _weights;
         }
     }
 }</pre>
@@ -144,28 +140,20 @@ class SGXMatchingTradingAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        self.set_warm_up(timedelta(7))
-        
+        self.set_warm_up(7, Resolution.DAILY)
+
         # Request SGX Index data for matching.
-        self._sgx = self.add_index("SGX").symbol
-        self._spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
+        self._sgx = self.add_index('SGX').symbol
         # We will try to use SPY constituents to reproduce the SGX index.
-        self._universe = self.add_universe(
-            self.universe.etf(
-                self._spy, 
-                universe_filter_func=lambda x: [
-                    y.symbol for y in sorted(
-                        [y for y in x if y.weight], 
-                        key=lambda x: x.weight, reverse=True
-                    )[:100]
-                ]
-            )
-        )
-        
+        def universe_filter_func(constituents):
+            sorted_by_weight = sorted(constituents, key=lambda x: x.weight or 0.0, reverse=True)
+            return  [y.symbol for y in sorted_by_weight[:100]]
+        self._universe = self.add_universe(self.universe.etf('SPY', universe_filter_func))
+
         # Schedule an event to rebalance the portfolio.
         self.schedule.on(
-            self.date_rules.every_day(self._spy),
-            self.time_rules.after_market_open(self._spy, 1),
+            self.date_rules.every_day('SPY'),
+            self.time_rules.after_market_open('SPY', 1),
             self.rebalance
         )
 
