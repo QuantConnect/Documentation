@@ -51,9 +51,9 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
         var symbols = _universe.Selected.ToList();
         
         // Obtain the historical data.
-        var allSymbols = new List<Symbol> { _sgx };
+        var allSymbols = new List&lt;Symbol&gt; { _sgx };
         allSymbols.AddRange(symbols);
-        var historyRequest = History<TradeBar>(allSymbols, 252, Resolution.Daily).ToList();
+        var historyRequest = History&lt;TradeBar&gt;(allSymbols, 252, Resolution.Daily).ToList();
         
         if (historyRequest.Count == 0)
         {
@@ -61,7 +61,7 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
         }
         
         // Organize data by date.
-        var dataByDate = new Dictionary<DateTime, Dictionary<Symbol, TradeBar>>();
+        var dataByDate = new Dictionary&lt;DateTime, Dictionary&lt;Symbol, TradeBar&gt;&gt;();
         foreach (var slice in historyRequest)
         {
             foreach (var kvp in slice)
@@ -70,7 +70,7 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
                 var bar = kvp.Value;
                 var date = bar.Time.Date;
                 
-                if (!dataByDate.TryGetValue(date, out Dictionary<Symbol, TradeBar> value))
+                if (!dataByDate.TryGetValue(date, out Dictionary&lt;Symbol, TradeBar&gt; value))
                 {
                     value = [];
                     dataByDate[date] = value;
@@ -82,7 +82,7 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
         
         // Filter to dates where we have all symbols.
         var completeDates = dataByDate
-            .Where(kvp =&gt; kvp.Value.ContainsKey(_sgx) && symbols.All(s =&gt; kvp.Value.ContainsKey(s)))
+            .Where(kvp =&gt; kvp.Value.ContainsKey(_sgx) &amp;&amp; symbols.All(s =&gt; kvp.Value.ContainsKey(s)))
             .OrderBy(kvp =&gt; kvp.Key)
             .Select(kvp =&gt; kvp.Value)
             .ToList();
