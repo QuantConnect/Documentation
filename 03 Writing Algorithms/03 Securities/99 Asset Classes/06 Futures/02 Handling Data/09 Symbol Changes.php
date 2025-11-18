@@ -14,7 +14,7 @@
         var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
         var quantity = Portfolio[oldSymbol].Quantity;
         // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-        Liquidate(oldSymbol, tag: tag);
+        Liquidate(symbol: oldSymbol, tag: tag);
         if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
         Log(tag);
     }
@@ -27,7 +27,39 @@
         quantity = self.portfolio[old_symbol].quantity
 
         # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-        self.liquidate(old_symbol, tag=tag)
+        self.liquidate(symbol=old_symbol, tag=tag)
+        if quantity: self.market_order(new_symbol, quantity, tag=tag)
+        self.log(tag)</pre>
+</div>
+
+<p>
+    LEAN passes a <code>SymbolChangedEvent</code> to your <code class="csharp">OnSymbolChangedEvents</code><code class="python">on_symbol_changed_events</code> method as well. LEAN only invokes this method when the <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous contract</a> rolls over.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+{
+    foreach (var (symbol, changedEvent) in symbolChangedEvents)
+    {
+        var oldSymbol = changedEvent.OldSymbol;
+        var newSymbol = changedEvent.NewSymbol;
+        var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
+        var quantity = Portfolio[oldSymbol].Quantity;
+        // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+        Liquidate(symbol: oldSymbol, tag: tag);
+        if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
+        Log(tag);
+    }
+}</pre>
+    <pre class="python">def on_symbol_changed_events(self, symbol_changed_events: SymbolChangedEvents) -> None:
+    for symbol, changed_event in symbol_changed_events.items():
+        old_symbol = changed_event.old_symbol
+        new_symbol = changed_event.new_symbol
+        tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -> {new_symbol}"
+        quantity = self.portfolio[old_symbol].quantity
+
+        # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+        self.liquidate(symbol=old_symbol, tag=tag)
         if quantity: self.market_order(new_symbol, quantity, tag=tag)
         self.log(tag)</pre>
 </div>
