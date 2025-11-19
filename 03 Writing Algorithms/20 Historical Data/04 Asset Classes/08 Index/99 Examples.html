@@ -4,6 +4,7 @@
 <p>The example below constructed a replicating SGX portfolio using the top 100 weighted SPY constituents. It provides an alternative way for retail investors to invest in SGX without access to certain financial instruments and a hedging idea on SGX close hours.</p>
 <div class="section-example-container testable">
     <pre class="csharp">using MathNet.Numerics.LinearRegression;
+
 public class SGXMatchingTradingAlgorithm : QCAlgorithm
 {
     private Symbol _sgx;
@@ -13,64 +14,121 @@ public class SGXMatchingTradingAlgorithm : QCAlgorithm
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31); 
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
-
+        SetWarmUp(7, Resolution.Daily);
+        
         // Request SGX Index data for matching.
         _sgx = AddIndex("SGX").Symbol;
+        
         // We will try to use SPY constituents to reproduce the SGX index.
-        _universe = AddUniverse(Universe.ETF("SPY", Market.USA, null, (u) =&gt; u.Where(x =&gt; x.Weight.HasValue).OrderByDescending(x =&gt; x.Weight.Value).Take(100).Select(x =&gt; x.Symbol)));
-
+        _universe = AddUniverse(Universe.ETF("SPY", UniverseSettings, constituents =&gt; 
+        {
+            return constituents
+                .Where(x =&gt; x.Weight.HasValue)
+                .OrderByDescending(x =&gt; x.Weight.Value)
+                .Take(100)
+                .Select(x =&gt; x.Symbol);
+        }));
+        
         // Schedule an event to rebalance the portfolio.
-        Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 31), Rebalance);
+        Schedule.On(
+            DateRules.EveryDay("SPY"),
+            TimeRules.AfterMarketOpen("SPY", 1),
+            Rebalance
+        );
     }
 
     private void Rebalance()
     {
-        if (_universe.Selected.Count &gt; 0)
+        if (IsWarmingUp || _universe.Selected.Count == 0)
         {
-            // Obtain the historical data.
-            var benchmark = History&lt;TradeBar&gt;(_sgx, 252, Resolution.Daily).ToList();
-            var history = History&lt;TradeBar&gt;(_universe.Selected, 252, Resolution.Daily).ToList();
-            var times = benchmark.Select(x =&gt; x.EndTime.Date).Intersect(history.Select(x =&gt; x.Time.Date)).ToList();
-            benchmark = benchmark.Where(x =&gt; times.Contains(x.EndTime.Date)).ToList();
-            history = history.Where(x =&gt; times.Contains(x.Time.Date)).ToList();
-            // Obtain the weights of SPY constituents that best reproduce SGX.
-            _weights = CalculateWeights(history, benchmark, out var symbols);
-
-            if (_weights != null)
+            return;
+        }
+        
+        var symbols = _universe.Selected.ToList();
+        
+        // Obtain the historical data.
+        var allSymbols = new List&lt;Symbol&gt; { _sgx };
+        allSymbols.AddRange(symbols);
+        var historyRequest = History&lt;TradeBar&gt;(allSymbols, 252, Resolution.Daily).ToList();
+        
+        if (historyRequest.Count == 0)
+        {
+            return;
+        }
+        
+        // Organize data by date.
+        var dataByDate = new Dictionary&lt;DateTime, Dictionary&lt;Symbol, TradeBar&gt;&gt;();
+        foreach (var slice in historyRequest)
+        {
+            foreach (var kvp in slice)
             {
-                var targets = _weights.Zip(symbols, (weight, symbol) =&gt; new PortfolioTarget(symbol, weight)).ToList();
-                SetHoldings(targets, liquidateExistingHoldings: true);
+                var symbol = kvp.Key;
+                var bar = kvp.Value;
+                var date = bar.Time.Date;
+                
+                if (!dataByDate.TryGetValue(date, out Dictionary&lt;Symbol, TradeBar&gt; value))
+                {
+                    value = [];
+                    dataByDate[date] = value;
+                }
+
+                value[symbol] = bar;
             }
+        }
+        
+        // Filter to dates where we have all symbols.
+        var completeDates = dataByDate
+            .Where(kvp =&gt; kvp.Value.ContainsKey(_sgx) &amp;&amp; symbols.All(s =&gt; kvp.Value.ContainsKey(s)))
+            .OrderBy(kvp =&gt; kvp.Key)
+            .Select(kvp =&gt; kvp.Value)
+            .ToList();
+        
+        if (completeDates.Count &lt; 50)
+        {
+            return;
+        }
+        
+        var benchmark = completeDates.Select(d =&gt; (double)d[_sgx].Close).ToArray();
+        
+        var designMatrix = new double[completeDates.Count][];
+        for (int i = 0; i &lt; completeDates.Count; i++)
+        {
+            designMatrix[i] = [.. symbols.Select(s =&gt; (double)completeDates[i][s].Close)];
+        }
+        
+        CalculateWeights(designMatrix, benchmark);
+        
+        if (_weights != null)
+        {
+            var targets = _weights
+                .Zip(symbols, (weight, symbol) =&gt; new PortfolioTarget(symbol, weight))
+                .ToList();
+            SetHoldings(targets, liquidateExistingHoldings: true);
         }
     }
 
-    private decimal[] CalculateWeights(List&lt;DataDictionary&lt;TradeBar&gt;&gt; history, List&lt;TradeBar&gt; benchmark, out List&lt;Symbol&gt; symbols)
+    private void CalculateWeights(double[][] history, double[] benchmark)
     {
-        // Use log price to eliminate the compounding effect.
-        var y = benchmark.Select(x =&gt; Math.Log((double)x.Close)).ToArray();
-
-        // Create a matrix for the regression analysis.
-        symbols = history[0].Select(x =&gt; x.Key).ToList();
-        var designMatrix = new double[y.Length][];
-        for (int i = 0; i &lt; y.Length; i++)
-        {
-            var bar = history[i];
-            designMatrix[i] = symbols.Select(symbol =&gt; bar.ContainsKey(symbol) ? Math.Log((double)bar[symbol].Close) : 0d).ToArray();
-        }
-
         try
         {
-            // Perform regression using MathNet.Numerics.
+            // Use log price to eliminate the compounding effect.
+            var y = benchmark.Select(x =&gt; Math.Log(x)).ToArray();
+            var designMatrix = history.Select(row =&gt; row.Select(x =&gt; Math.Log(x)).ToArray()).ToArray();
+            
+            // Perform regression to obtain the best-replicating portfolio of SGX.
             var coefficients = MultipleRegression.QR(designMatrix, y, intercept: false);
+            
             // The coefficients array will contain the coefficients for each constituents.
-            return coefficients.Select(x =&gt; Convert.ToDecimal(x)).ToArray();
+            var sum = coefficients.Sum(c =&gt; Math.Abs(c));
+            if (sum &gt; 0)
+            {
+                _weights = [.. coefficients.Select(c =&gt; Convert.ToDecimal(c / sum))];
+            }
         }
         catch
         {
-            return _weights;
         }
     }
 }</pre>

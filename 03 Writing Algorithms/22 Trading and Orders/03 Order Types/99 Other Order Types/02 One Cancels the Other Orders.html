@@ -4,24 +4,24 @@
 
 <div class="section-example-container">
 <pre class="csharp">// Get the fill price from the order ticket of a sync market order
-_ticket = MarketOrder("SPY", 1);
-var fillPrice = _ticket.AverageFillPrice;
+_market = MarketOrder("SPY", 1);
+var fillPrice = _market.AverageFillPrice;
 
 // Get the fill price from the OnOrderEvent event handler
 public override void OnOrderEvent(OrderEvent orderEvent)
 {
-    if (orderEvent.Status == OrderStatus.Filled && _ticket.OrderId == orderEvent.OrderId)
+    if (orderEvent.Status == OrderStatus.Filled && orderEvent.Ticket.OrderType == OrderType.Market)
     {
         var fillPrice = orderEvent.FillPrice;
     }
 }</pre>
 <pre class="python"># Get the fill price from the order ticket of a sync market order
-self.ticket = self.market_order("SPY", 1)
-fill_price = self.ticket.average_fill_price
+self._market = self.market_order("SPY", 1)
+fill_price = self._market.average_fill_price
 
 # Get the fill price from the OnOrderEvent event handler
 def on_order_event(self, order_event: OrderEvent) -&gt; None:
-    if order_event.status == OrderStatus.FILLED and self.ticket.order_id == order_event.order_id:
+    if order_event.status == OrderStatus.FILLED and order_event.ticket.order_type == OrderType.MARKET:
         fill_price = order_event.fill_price</pre>
 </div>
 
@@ -32,44 +32,42 @@ def on_order_event(self, order_event: OrderEvent) -&gt; None:
 <p>To place active orders for the OCO orders, use a combination of <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">limit orders</a> and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders">stop limit orders</a>. Place these orders so that their price levels that are far enough apart from each other. If their price levels are too close, several of the orders can fill in a single time step. When one of the orders fills, in the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> event handler, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel</a> the other orders in the OCO order set.<br></p>
 
 <div class="section-example-container">
-<pre class="csharp">OrderTicket _stopLoss = null;
-OrderTicket _takeProfit = null;
+<pre class="csharp">private OrderTicket _stopLoss;
+private OrderTicket _takeProfit;
 
 public override void OnOrderEvent(OrderEvent orderEvent)
 {
-    if (orderEvent.Status == OrderStatus.Filled)
+    if (orderEvent.Status != OrderStatus.Filled) return;
+    
+    switch (orderEvent.Ticket.OrderType)
     {
-        if (orderEvent.OrderId == _ticket.OrderId)
-        {
+        case OrderType.Market:
             _stopLoss = StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.95m);
             _takeProfit = LimitOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*1.10m);
-        }
-        else if (_stopLoss != null && orderEvent.OrderId == _stopLoss.OrderId)
-        {
-            _takeProfit.Cancel();
-        }
-        else if (_takeProfit != null && orderEvent.OrderId == _takeProfit.OrderId)
-        {
-            _stopLoss.Cancel();
-        }
+            return;
+        case OrderType.StopMarket:
+            _takeProfit?.Cancel();
+            return;
+        case OrderType.Limit:
+            _stopLoss?.Cancel();
+            return;
     }
-}
-</pre>
-<pre class="python">self.stop_loss = None
-self.take_profit = None
+}</pre>
+<pre class="python">_stop_loss = None
+_take_profit = None
 
 def on_order_event(self, order_event: OrderEvent) -&gt; None:
-    if order_event.status == OrderStatus.FILLED:
-        if order_event.order_id == self.ticket.order_id:
-            self.stop_loss = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.95)
-            self.take_profit = self.limit_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*1.10)
+    if order_event.status != OrderStatus.FILLED:
+        return
 
-        elif self.stop_loss is not None and order_event.order_id == self.stop_loss.order_id:
-            self.take_profit.cancel()
-
-        elif self.take_profit is not None and order_event.order_id == self.take_profit.order_id:
-            self.stop_loss.cancel()
-</pre>
+    match order_event.ticket.order_type:
+        case OrderType.MARKET:
+            self._stop_loss = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.95)
+            self._take_profit = self.limit_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*1.10)
+        case OrderType.STOP_MARKET:
+            self._take_profit.cancel()
+        case OrderType.LIMIT:
+            self._stop_loss.cancel()</pre>
 </div>
 
 <h4>Simulate Orders</h4>
@@ -90,11 +88,11 @@ public override void OnData(Slice slice)
 
     if (slice.Bars["SPY"].Price &gt;= _entryPrice * 1.10m)
     {
-        Liquidate("SPY", -1, tag: "take profit");
+        Liquidate(symbol: "SPY", -1, tag: "take profit");
     }
     else if (slice.Bars["SPY"].Price &lt;= _entryPrice * 0.95m)
     {
-        Liquidate("SPY", -1, tag: "stop loss");
+        Liquidate(symbol: "SPY", -1, tag: "stop loss");
     }
 }
 </pre>
@@ -106,8 +104,8 @@ public override void OnData(Slice slice)
     bar = slice.get("SPY")
     if bar:
         if bar.price &gt;= self.entry_price * 1.10:
-            self.liquidate("SPY", -1, tag="take profit")
+            self.liquidate(symbol="SPY", -1, tag="take profit")
 
         elif bar.price &lt;= self.entry_price * 0.95:
-            self.liquidate("SPY", -1, tag="stop loss")</pre>
+            self.liquidate(symbol="SPY", -1, tag="stop loss")</pre>
 </div>
