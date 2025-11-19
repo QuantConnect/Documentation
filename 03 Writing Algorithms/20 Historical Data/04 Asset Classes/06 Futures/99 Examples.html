@@ -1,7 +1,7 @@
 <p>The following examples demonstrate some common practices for trading Futures with historical data.</p>
 
 <h4>Example 1: Stock-Gold All-Weather Portfolio</h4>
-<p>The following algorithm constructs a monthly rebalance risk-parity portfolio using S&P 500 EMini and Micro Gold Future contracts. A risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown. The position sizing can be optimized by 1-year historical daily return of the universe members.</p>
+<p>The following algorithm constructs a monthly-rebalanced, risk-parity portfolio using S&P 500 E-Mini and Micro Gold futures contracts. A risk-parity approach balances the contribution to risk from each asset class, helping reduce overall portfolio drawdowns and improve diversification. The position sizing is determined using 1-year of historical daily returns for the selected futures universe.</p>
 <div class="section-example-container testable">
     <pre class="csharp">public class FutureHistoricalDataAlgorithm : QCAlgorithm
 {
@@ -12,18 +12,17 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetCash(100000000);
+        SetCash(1_000_000);
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         
         // Select the future contracts representing various asset classes to diversify the portfolio.
-        _futures = new[] { Futures.Indices.SP500EMini, Futures.Metals.MicroGold }
+        _futures = [.. new[] { Futures.Indices.SP500EMini, Futures.Metals.MicroGold }
             .Select(x =&gt; AddFuture(x,
                 fillForward: true,
                 extendedMarketHours: true,
                 dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
                 dataMappingMode: DataMappingMode.OpenInterest,
-                contractDepthOffset: 0))
-            .ToList();
+                contractDepthOffset: 0))];
 
         // Instantiate the optimizer to perform risk-parity optimization.
         // Risk Parity portfolio can dissipate the risk of each crypto pair to reduce overall drawdown.
@@ -32,7 +31,7 @@
         // Set a scheduled event to rebalance the portfolio at the start of every month.
         Schedule.On(
             DateRules.MonthStart(),
-            TimeRules.At(9, 31),
+            TimeRules.AfterMarketOpen(_futures[0].Symbol, 1),
             Rebalance
         );
 
@@ -54,7 +53,7 @@
 
         // Rebalance the portfolio according to the optimized weights.
         var targets = Enumerable.Range(0, weights.Length)
-            .Select(i =&gt; new PortfolioTarget(_futures[i].Mapped, Convert.ToDecimal(weights[i])))
+            .Select(i =&gt; new PortfolioTarget(_futures[i].Mapped, Convert.ToDecimal(weights[i])/2))
             .ToList();
         SetHoldings(targets, liquidateExistingHoldings: true);
     }
@@ -81,11 +80,11 @@
 }</pre>
     <pre class="python">from Portfolio.RiskParityPortfolioOptimizer import RiskParityPortfolioOptimizer
 
-class CryptoHistoricalDataAlgorithm(QCAlgorithm):
+class FuturesHistoricalDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000000)
+        self.set_cash(1_000_000)
         
         # Select the future contracts representing various asset classes to diversify the portfolio.
         self._futures = [self.add_future(
@@ -104,7 +103,7 @@ class CryptoHistoricalDataAlgorithm(QCAlgorithm):
         # Set a scheduled event to rebalance the portfolio at the start of every month.
         self.schedule.on(
             self.date_rules.month_start(), 
-            self.time_rules.at(9, 31),
+            self.time_rules.after_market_open(self._futures[0].symbol, 1),
             self.rebalance
         )
 
@@ -119,6 +118,6 @@ class CryptoHistoricalDataAlgorithm(QCAlgorithm):
         weights = self._optimizer.optimize(returns)
 
         # Rebalance the portfolio according to the optimized weights.
-        targets = [PortfolioTarget(future.mapped, size) for future, size in zip(self._futures, weights)]
+        targets = [PortfolioTarget(future.mapped, size/2.0) for future, size in zip(self._futures, weights)]
         self.set_holdings(targets, liquidate_existing_holdings=True)</pre>
 </div>
