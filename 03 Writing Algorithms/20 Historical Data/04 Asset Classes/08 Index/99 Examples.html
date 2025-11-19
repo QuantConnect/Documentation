@@ -140,20 +140,28 @@ class SGXMatchingTradingAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        self.set_warm_up(7, Resolution.DAILY)
-
+        self.set_warm_up(timedelta(7))
+        
         # Request SGX Index data for matching.
-        self._sgx = self.add_index('SGX').symbol
+        self._sgx = self.add_index("SGX").symbol
+        self._spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
         # We will try to use SPY constituents to reproduce the SGX index.
-        def universe_filter_func(constituents):
-            sorted_by_weight = sorted(constituents, key=lambda x: x.weight or 0.0, reverse=True)
-            return  [y.symbol for y in sorted_by_weight[:100]]
-        self._universe = self.add_universe(self.universe.etf('SPY', universe_filter_func))
-
+        self._universe = self.add_universe(
+            self.universe.etf(
+                self._spy, 
+                universe_filter_func=lambda x: [
+                    y.symbol for y in sorted(
+                        [y for y in x if y.weight], 
+                        key=lambda x: x.weight, reverse=True
+                    )[:100]
+                ]
+            )
+        )
+        
         # Schedule an event to rebalance the portfolio.
         self.schedule.on(
-            self.date_rules.every_day('SPY'),
-            self.time_rules.after_market_open('SPY', 1),
+            self.date_rules.every_day(self._spy),
+            self.time_rules.after_market_open(self._spy, 1),
             self.rebalance
         )
 
