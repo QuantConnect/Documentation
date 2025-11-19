@@ -11,6 +11,8 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+        SetCash(10_000_000);
+        
         // Seed the price to ensure securities have information for margin calculations.
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
         
@@ -39,18 +41,25 @@
 
         // Calculate the order size for the covered call.
         var quantity = (int)Math.Floor(CalculateOrderQuantity(_spy, 0.5) / 100m);
+        
         // Covered call involves 100 SPY shares and a -1 ATM call contract.
-        ComboMarketOrder(new List&lt;Leg&gt; {
-            Leg.Create(_spy, 100),
-            Leg.Create(atmCallSymbol, -1)
-        }, quantity,
-        asynchronous: false);
+        if (quantity &gt; 0)
+        {
+            ComboMarketOrder(
+            [
+                Leg.Create(_spy, 100),
+                Leg.Create(atmCallSymbol, -1)
+            ], quantity,
+            asynchronous: true);
+        }
     }
 }</pre>
     <pre class="python">class PositionSizingAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
+        self.set_cash(10_000_000)
+        
         # Seed the price to ensure securities have information for margin calculations.
         self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
         
@@ -74,11 +83,12 @@
         atm_call = self.add_option_contract(atm_call).symbol
 
         # Calculate the order size for the covered call.
-        quantity = self.calculate_order_quantity(self.spy, 0.5) // 100
+        quantity = int(self.calculate_order_quantity(self.spy, 0.5) // 100)
         # Covered call involves 100 shares of SPY and -1 ATM call contract.
-        self.combo_market_order([
-            Leg.create(self.spy, 100),
-            Leg.create(atm_call, -1)
-        ], quantity,
-        asynchronous=True)</pre>
+        if quantity &gt; 0:
+            self.combo_market_order(
+                [Leg.create(self.spy, 100), Leg.create(atm_call, -1)], 
+                quantity,
+                asynchronous=True
+            )</pre>
 </div>
