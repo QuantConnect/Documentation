@@ -611,7 +611,7 @@ class IndicatorImageGenerator(QCAlgorithm):
         ),
         'squeeze-momentum': IndicatorInfo(
             SqueezeMomentum(20, 2, 20, 1.5), 
-            'SqueezeMomentum(20, 2, 20, 1.5)', 
+            'SqueezeMomentum("SPY", 20, 2m, 20, 1.5m)', 
             'SM(_symbol, 20, 2, 20, 1.5m)', 
             'self.sm(self._symbol, 20, 2, 20, 1.5)'
         ),
