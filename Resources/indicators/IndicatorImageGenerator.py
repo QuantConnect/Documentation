@@ -581,13 +581,13 @@ class IndicatorImageGenerator(QCAlgorithm):
         ),
         'schaff-trend-cycle': IndicatorInfo(
             SchaffTrendCycle(5, 10, 20, MovingAverageType.EXPONENTIAL), 
-            'SchaffTrendCycle(5, 10, 20, MovingAverageType.EXPONENTIAL)',
+            'SchaffTrendCycle(5, 10, 20, MovingAverageType.Exponential)',
             'STC(_symbol, 5, 10, 20, MovingAverageType.Exponential)', 
             'self.stc(self._symbol, 5, 10, 20, MovingAverageType.EXPONENTIAL)'
         ),
         'sharpe-ratio': IndicatorInfo(
             SharpeRatio(22, 0.03), 
-            'SharpeRatio(22, 0.03)', 
+            'SharpeRatio(22, 0.03m)', 
             'SR(_symbol, 22, 0.03m)', 
             'self.sr(self._symbol, 22, 0.03)'
         ),
@@ -611,7 +611,7 @@ class IndicatorImageGenerator(QCAlgorithm):
         ),
         'squeeze-momentum': IndicatorInfo(
             SqueezeMomentum(20, 2, 20, 1.5), 
-            'SqueezeMomentum(20, 2, 20, 1.5)', 
+            'SqueezeMomentum("SPY", 20, 2m, 20, 1.5m)', 
             'SM(_symbol, 20, 2, 20, 1.5m)', 
             'self.sm(self._symbol, 20, 2, 20, 1.5)'
         ),
