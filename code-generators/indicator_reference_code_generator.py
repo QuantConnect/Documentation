@@ -23,7 +23,8 @@ def _format_introduction(type_name: str, text: str) -> str:
     return text
 
 PROPERTIES_EXCEPTIONS = ['MovingAverageType', 'IsReady', 'WarmUpPeriod', 'Name', 'Period', 'Samples', "[System.Int32]",
-                'Current', "Consolidators", "Previous", "Window", "Strike", "Right", "high_pivot", "low_pivot", "pivot_type",
+                'Current', "Consolidators", "Previous", "Window", "Strike", "Right", 
+                "HighPivot", "LowPivot", "PivotType", "high_pivot", "low_pivot", "pivot_type",
                 "Style", "Expiry", "UseMirrorContract", "GetEnumerator", "moving_average_type", "is_ready", "warmup_period",
                 "name", "period", "samples", "current", "consolidators", "previous", "window", "int", "strike",
                 "right", "style", "expiry", "use_mirror_contract", "warm_up_period", "item", "get_enumerator"]
@@ -38,7 +39,9 @@ def _extract_properties(properties: list):
         if full_type.startswith('System.Collection'):
             return False
         return full_type.startswith('QuantConnect')
-    return [x["property-name"].lower() for x in properties if select(x)]
+    # Special case for true_range property
+    return [x["property-name"].replace('True_range', 'true_range') 
+        for x in properties if select(x)]
 
 def split_string(s):
     result = []
@@ -204,8 +207,9 @@ class IndicatorProcessor:
             }, indent=4))
 
     def _process_properties(self):
-        self._info[f'properties-python'] = properties = _extract_properties(self._info['properties'])
-        self._info[f'properties-csharp'] = [''.join([y.title() for y in x.split('_')]) for x in properties]
+        self._info[f'properties-python'] = _extract_properties(self._info['properties'])
+        csharp_type = get_type(f"QuantConnect.Indicators.{self._info['type-name']}", 'csharp')
+        self._info[f'properties-csharp'] = _extract_properties(csharp_type['properties'])
 
     def run(self):
         links = self._get_links()
@@ -304,8 +308,9 @@ class IndicatorProcessor:
 
         // Access all attributes of indicatorHistory"""
             for property in properties:
+                property_var = property.lower() if property.isupper() else property[0].lower()+property[1:]
                 code += f"""
-        var {property[0].lower()+property[1:]} = indicatorHistory.Select(x => ((dynamic)x).{property}).ToList();"""
+        var {property_var} = indicatorHistory.Select(x => ((dynamic)x).{property}).ToList();"""
         return (code + """
     &rcub;
 &rcub;""").replace('&lcub;', '{').replace('&rcub;', '}')
