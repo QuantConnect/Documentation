@@ -37,18 +37,18 @@
 
     public override void OnData(Slice slice)
     {
-        if (slice.Bars.TryGetValue(_ethbtc, out var bar) && _ema.IsReady &&
-            slice.Bars.TryGetValue(_btcusdt, out var btc) && slice.Bars.TryGetValue(_ethusdt, out var eth))
+        if (slice.Bars.TryGetValue(_ethbtc, out var bar) &amp;&amp; _ema.IsReady &amp;&amp;
+            slice.Bars.TryGetValue(_btcusdt, out var btc) &amp;&amp; slice.Bars.TryGetValue(_ethusdt, out var eth))
         {
             var ema = _ema.Current.Value;
             var btcHoldings = Portfolio.CashBook["BTC"].Amount;
             var ethHoldings = Portfolio.CashBook["ETH"].Amount;
             
             // ETHBTC's current price is higher than EMA, suggesting an uptrend.
-            if (bar.Close > ema && !Portfolio[_btcusdt].IsShort)
+            if (bar.Close &gt; ema &amp;&amp; !Portfolio[_btcusdt].IsShort)
             {
                 // To follow the up trend of ETHBTC, sell ALL BTCUSDT and buy ETHUSDT with the same value.
-                if (btcHoldings > 0)
+                if (btcHoldings &gt; 0)
                 {
                     var btcValue = btcHoldings * btc.Close;
                     MarketOrder(_btcusdt, -btcHoldings);
@@ -57,10 +57,10 @@
                 }
             }
             // ETHBTC's current price is below the EMA, suggesting a downtrend.
-            else if (bar.Close < ema && !Portfolio[_btcusdt].IsLong)
+            else if (bar.Close &lt; ema &amp;&amp; !Portfolio[_btcusdt].IsLong)
             {
                 // To follow the downtrend of ETHBTC, sell ALL ETHUSDT and buy BTCUSDT with the same value.
-                if (ethHoldings > 0)
+                if (ethHoldings &gt; 0)
                 {
                     var ethValue = ethHoldings * eth.Close;
                     MarketOrder(_ethusdt, -ethHoldings);
