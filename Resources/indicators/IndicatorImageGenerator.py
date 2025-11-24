@@ -586,7 +586,7 @@ class IndicatorImageGenerator(QCAlgorithm):
             'self.stc(self._symbol, 5, 10, 20, MovingAverageType.EXPONENTIAL)'
         ),
         'sharpe-ratio': IndicatorInfo(
-            SharpeRatio(22, 0.03), 
+            SharpeRatio(22, 0.03m), 
             'SharpeRatio(22, 0.03)', 
             'SR(_symbol, 22, 0.03m)', 
             'self.sr(self._symbol, 22, 0.03)'
