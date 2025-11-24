@@ -580,8 +580,8 @@ class IndicatorImageGenerator(QCAlgorithm):
             'self.rsv(self._symbol, 30)'
         ),
         'schaff-trend-cycle': IndicatorInfo(
-            SchaffTrendCycle(5, 10, 20, MovingAverageType.Exponential), 
-            'SchaffTrendCycle(5, 10, 20, MovingAverageType.EXPONENTIAL)',
+            SchaffTrendCycle(5, 10, 20, MovingAverageType.EXPONENTIAL), 
+            'SchaffTrendCycle(5, 10, 20, MovingAverageType.Exponential)',
             'STC(_symbol, 5, 10, 20, MovingAverageType.Exponential)', 
             'self.stc(self._symbol, 5, 10, 20, MovingAverageType.EXPONENTIAL)'
         ),
