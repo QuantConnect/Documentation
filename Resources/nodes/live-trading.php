@@ -11,8 +11,8 @@
 <p>Refer to the <a href="/pricing">Pricing</a> page to see the price of each live trading node model.</p>
 
 <p>
-	To view the status of all of your organization's nodes, see the <a href='/docs/v2/cloud-platform/projects/ide#07-Manage-Nodes'>Resources panel</a> of the IDE. 
-	When you deploy an algorithm, it uses the best-performing resource by default, but you can <a href='/docs/v2/cloud-platform/projects/ide#07-Manage-Nodes'>select a specific resource to use</a>.
+	To view the status of all of your organization's nodes, see the <a href='/docs/v2/cloud-platform/projects/ide#08-Manage-Nodes'>Resources panel</a> of the IDE. 
+	When you deploy an algorithm, it uses the best-performing resource by default, but you can <a href='/docs/v2/cloud-platform/projects/ide#08-Manage-Nodes'>select a specific resource to use</a>.
 </p>
 
 <p>	
