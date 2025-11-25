@@ -13,8 +13,8 @@
 </p>
 
 <p>
-	To view the status of all of your organization's nodes, see the <a href='/docs/v2/cloud-platform/projects/ide#07-Manage-Nodes'>Resources panel</a> of the IDE. 
-	When you launch the Research Environment, it uses the best-performing resource by default, but you can <a href='/docs/v2/cloud-platform/projects/ide#07-Manage-Nodes'>select a specific resource to use</a>.
+	To view the status of all of your organization's nodes, see the <a href='/docs/v2/cloud-platform/projects/ide#08-Manage-Nodes'>Resources panel</a> of the IDE. 
+	When you launch the Research Environment, it uses the best-performing resource by default, but you can <a href='/docs/v2/cloud-platform/projects/ide#08-Manage-Nodes'>select a specific resource to use</a>.
 </p>
 
 <p>
