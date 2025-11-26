@@ -126,6 +126,7 @@ class AirlineBuybacksDemo(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31) 
         self.set_cash(1000000) 
+        self.settings.daily_precise_end_time = False
         self.set_benchmark("SPY")
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
         self.set_execution(ImmediateExecutionModel())
@@ -165,13 +166,13 @@ class AirlineBuybacksDemo(QCAlgorithm):
     def build_model(self) -&gt; None:
         qb = self
         # Call the History method with list of tickers, time argument(s), and resolution to request historical data for the symbol.
-        history = qb.history(list(self.symbols.keys()), datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
+        history = qb.history(list(self.symbols.keys()), datetime(2015, 1, 1), self.time, Resolution.DAILY)
         
         # Call SPY history as reference
-        spy = qb.history(["SPY"], datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
+        spy = qb.history(["SPY"], datetime(2015, 1, 1), self.time, Resolution.DAILY)
         
         # Call the History method with list of buyback tickers, time argument(s), and resolution to request buyback data for the symbol.
-        history_buybacks = qb.history(list(self.symbols.values()), datetime(2015, 1, 1), datetime.now(), Resolution.DAILY)
+        history_buybacks = qb.history(list(self.symbols.values()), datetime(2015, 1, 1), self.time, Resolution.DAILY)
         
         # Select the close column and then call the unstack method to get the close price dataframe.
         df = history['close'].unstack(level=0)
@@ -242,10 +243,10 @@ class AirlineBuybacksDemo(QCAlgorithm):
             
             # Long if the prediction predict price goes up, short otherwise. Do opposite for SPY (active return)
             if prediction &gt; 0.5:
-                insights.append( Insight.price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.UP) )
+                insights.append( Insight.price(row.index[i].underlying, timedelta(days=1), InsightDirection.UP) )
                 insights.append( Insight.price("SPY", timedelta(days=1), InsightDirection.DOWN) )
             else:
-                insights.append( Insight.price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.DOWN) )
+                insights.append( Insight.price(row.index[i].underlying, timedelta(days=1), InsightDirection.DOWN) )
                 insights.append( Insight.price("SPY", timedelta(days=1), InsightDirection.UP) )
     
         self.emit_insights(insights)</pre>
