@@ -99,7 +99,10 @@ public class CustomUniverseData : BaseDataCollection
 
     def rebalance(self) -&gt; None:
         # We invest by the EMA of the given weight.
-        history = self.history(self._universe, 5, Resolution.DAILY).set_index('symbol', append=True).unstack('symbol').fillna(0)
+        history = self.history(self._universe, 5, Resolution.DAILY)
+        if history.empty:
+            return
+        history = history.set_index('symbol', append=True).unstack('symbol').fillna(0)
         weights = history.ewm(5).mean().iloc[-1].droplevel(0)
         # Normalized weights.
         weights = weights / weights.sum()
