@@ -18,17 +18,20 @@
         _yieldCurveSymbol = AddData&lt;USTreasuryYieldCurveRate&gt;("USTYCR").Symbol;
         // Request the XAUUSD CFD contract for trade.
         _spy = AddEquity("SPY").Symbol;
+        
+        // Ignore orders with very small sizes.
+        Settings.MinimumOrderMarginPortfolioPercentage = 0.01m;
 
         // Trade every day after the market opens with an updated smoothened yield curve difference.
         Schedule.On(
             DateRules.EveryDay(_spy),
-            TimeRules.At(0, 0),
+            TimeRules.AfterMarketOpen(_spy, 1),
             Trade
         );
     }
 
     private void Trade()
-    {
+    {        
         // Obtain historical quote data to obtain the mean and SD of the bid-ask spread.
         var history = History&lt;USTreasuryYieldCurveRate&gt;(_yieldCurveSymbol, 250, Resolution.Daily)
             .Where(x =&gt; x.TenYear.HasValue &amp;&amp; x.TwoYear.HasValue)
@@ -39,14 +42,7 @@
             var smoothedDiff = diffs.Aggregate((ema, nextQuote) =&gt; SmoothingFactor * nextQuote + (1m - SmoothingFactor) * ema);
             
             // If the smoothened yield curve difference is inverted, short SPY with the downside signal.
-            if (smoothedDiff &lt; 0)
-            {
-                SetHoldings(_spy, -1m);
-            }
-            else
-            {
-                SetHoldings(_spy, 1m);
-            }
+            SetHoldings(_spy, smoothedDiff &lt; 0 ? -1m : 1m);
         }
     }
 }</pre>
@@ -61,24 +57,23 @@
         self._yield_curve_symbol = self.add_data(USTreasuryYieldCurveRate, "USTYCR").symbol
         # Request XAUUSD CFD contract to trade.
         self._spy = self.add_equity("SPY").symbol
+        
+        # Ignore orders with very small sizes.
+        self.settings.minimum_order_margin_portfolio_percentage = 0.01
     
         # Trade every day after the market opens with an updated smoothened yield curve difference.
         self.schedule.on(
             self.date_rules.every_day(self._spy),
-            self.time_rules.at(0, 0),
+            self.time_rules.after_market_open(self._spy, 1),
             self.trade
         )
 
-    def trade(self) -&gt; None:
+    def trade(self) -&gt; None:            
         # Obtain historical yield curve data to calculate the smoothened yield curve difference.
         history = self.history(self._yield_curve_symbol, 250, Resolution.DAILY).unstack(0)
         if "tenyear" in history and "twoyear" in history:
             diffs = history.tenyear - history.twoyear
             smoothened_diff = diffs.ewm(250).mean().values[-1]
-
             # If the smoothened yield curve difference is inverted, short SPY with the downside signal.
-            if smoothened_diff &lt; 0:
-                self.set_holdings(self._spy, -1)
-            else:
-                self.set_holdings(self._spy, 1)</pre>
+            self.set_holdings(self._spy, -1 if smoothened_diff &lt; 0 else 1)</pre>
 </div>
