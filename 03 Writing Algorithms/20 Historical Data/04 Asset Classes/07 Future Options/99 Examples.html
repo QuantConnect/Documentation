@@ -9,7 +9,7 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31); 
-        SetCash(100000);
+        SetCash(200000);
         SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 
         // Request ES option data for trading and signal generation.
@@ -32,31 +32,34 @@
             {
                 // Request historical quote data for signal generation.
                 var history = History&lt;QuoteBar&gt;(option.Symbol, 15, Resolution.Minute);
-                // Calculate the total bid and ask for dollar volume to determine the capital directional force.
-                var totalBidVolume = 0m;
-                var totalAskVolume = 0m;
-                foreach (var bar in history)
-                {
-                    if (bar.Bid != null)
+                if (history.Any()){
+                    // Calculate the total bid and ask for dollar volume to determine the capital directional force.
+                    var totalBidVolume = 0m;
+                    var totalAskVolume = 0m;
+                    foreach (var bar in history)
                     {
-                        totalBidVolume += bar.Bid.Close * bar.LastBidSize;
+                        if (bar.Bid != null)
+                        {
+                            totalBidVolume += bar.Bid.Close * bar.LastBidSize;
+                        }
+                        if (bar.Ask != null)
+                        {
+                            totalAskVolume += bar.Ask.Close * bar.LastAskSize;
+                        }
                     }
-                    if (bar.Ask != null)
-                    {
-                        totalAskVolume += bar.Ask.Close * bar.LastAskSize;
-                    }
-                }
 
-                // Follow the capital flow to trade.
-                if (totalBidVolume &gt; totalAskVolume)
-                {
-                    MarketOrder(option.Symbol, 1);
-                }
-                else
-                {
-                    MarketOrder(option.Symbol, -1);
+                    // Follow the capital flow to trade.
+                    if (totalBidVolume &gt; totalAskVolume)
+                    {
+                        MarketOrder(option.Symbol, 1);
+                    }
+                    else
+                    {
+                        MarketOrder(option.Symbol, -1);
+                    }
                 }
             }
+
         }
     }
 }</pre>
@@ -64,7 +67,7 @@
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)  # Limit to a single day for 0DTE
-        self.set_cash(100000)  # Starting cash
+        self.set_cash(200000)  # Starting cash
 
         # Request ES option data for trading and signal generation.
         future = self.add_future(Futures.Indices.SP_500_E_MINI)
