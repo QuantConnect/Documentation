@@ -229,23 +229,20 @@ class SECReport8KAlgorithm(QCAlgorithm):
             )
         )
         self.universe_settings.resolution = Resolution.DAILY
-        # Filter for the most liquid stocks for trading due to high market activities for effecient pricing from fundamental factor
-        self.add_universe_selection(MostLiquidFundamentalUniverseSelectionModel(self.universe_settings))
+        # Filter for the most liquid stocks for trading due to high market activities for efficient pricing from fundamental factor
+        self.add_universe_selection(MostLiquidFundamentalUniverseSelectionModel())
         # Custom alpha model that generates insights from SEC data
         self.add_alpha(SECReport8KAlphaModel())
         # Invest equally to evenly dissipate the capital concentration risk
         self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel(lambda time: None))
 
 
-class MostLiquidFundamentalUniverseSelectionModel(CoarseFundamentalUniverseSelectionModel):
-    def __init__(self, universe_settings: UniverseSettings) -&gt; None:
-        super().__init__(self.select_coarse, universe_settings)
+class MostLiquidFundamentalUniverseSelectionModel(FundamentalUniverseSelectionModel):
 
-    def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         # Select the top 10 traded companies with fundamental data, since the market activities can better reflect the fundamental factor efficiently
-        selected = [c for c in coarse if c.has_fundamental_data]
-        sorted_by_dollar_volume = sorted(selected, key=lambda c: c.dollar_volume, reverse=True)
-        return [c.symbol for c in sorted_by_dollar_volume[:10]]
+        sorted_by_dollar_volume = sorted(fundamental, key=lambda f: f.dollar_volume, reverse=True)
+        return [f.symbol for f in sorted_by_dollar_volume[:10]]
 
 
 class SECReport8KAlphaModel(AlphaModel):
@@ -255,7 +252,7 @@ class SECReport8KAlphaModel(AlphaModel):
         insights = []
 
         # Trade only based on SEC data 
-        for report in slice.Get(SECReport8K).Values:
+        for report in slice.get(SECReport8K).values():
             underlying_symbol = report.symbol.underlying
             if underlying_symbol not in self.dataset_symbol_by_symbol:
                 continue
@@ -295,8 +292,8 @@ class SECReport8KAlphaModel(AlphaModel):
             new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
         );
         UniverseSettings.Resolution = Resolution.Daily;
-        // Filter for the most liquid stocks for trading due to high market activities for effecient pricing from fundamental factor
-        AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel(UniverseSettings));
+        // Filter for the most liquid stocks for trading due to high market activities for efficient pricing from fundamental factor
+        AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel());
         // Custom alpha model that generates insights from SEC data
         AddAlpha(new SECReport8KAlphaModel());
         // Invest equally to evenly dissipate the capital concentration risk
@@ -304,25 +301,21 @@ class SECReport8KAlphaModel(AlphaModel):
     }
 }
 
-class MostLiquidFundamentalUniverseSelectionModel : CoarseFundamentalUniverseSelectionModel
+class MostLiquidFundamentalUniverseSelectionModel : FundamentalUniverseSelectionModel
 {
-    public MostLiquidFundamentalUniverseSelectionModel(UniverseSettings universeSettings)
-        : base(default(Func&lt;IEnumerable&lt;CoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;), universeSettings)
-    {
-    }
-
-    public override IEnumerable&lt;Symbol&gt; SelectCoarse(QCAlgorithm algorithm, IEnumerable&lt;CoarseFundamental&gt; coarse)
+    public override IEnumerable&lt;Symbol&gt; Select(QCAlgorithm algorithm, IEnumerable&lt;Fundamental&gt; fundamental)
     {
         // Select the top 10 traded companies with fundamental data, since the market activities can better reflect the fundamental factor efficiently
-        return coarse.Where(x =&gt; x.HasFundamentalData)
-            .OrderByDescending(x =&gt; x.DollarVolume)
-            .Take(10).Select(x =&gt; x.Symbol);
+        return fundamental
+            .OrderByDescending(f =&gt; f.DollarVolume)
+            .Take(10)
+            .Select(f =&gt; f.Symbol);
     }
 }
 
 public class SECReport8KAlphaModel : AlphaModel
 {
-    private Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = new Dictionary&lt;Symbol, Symbol&gt;();
+    private readonly Dictionary&lt;Symbol, Symbol&gt; _datasetSymbolBySymbol = [];
 
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
@@ -369,11 +362,10 @@ public class SECReport8KAlphaModel : AlphaModel
         foreach (var symbol in changes.RemovedSecurities.Select(x =&gt; x.Symbol))
         {
             // Remove SEC data subscription to release computation resources
-            Symbol reportSymbol;
-            if (_datasetSymbolBySymbol.TryGetValue(symbol, out reportSymbol))
+            if (_datasetSymbolBySymbol.TryGetValue(symbol, out Symbol reportSymbol))
             {
-                    algorithm.RemoveSecurity(reportSymbol);
-                    _datasetSymbolBySymbol.Remove(symbol);
+                algorithm.RemoveSecurity(reportSymbol);
+                _datasetSymbolBySymbol.Remove(symbol);
             }
         }
     }
