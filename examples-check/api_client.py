@@ -83,6 +83,8 @@ class APIClient:
                 {"projectId": project_id, "compileId": response["compileId"]}
             )
             if response.get("success"):
+                while response.get("state") == "InQueue":
+                    time.sleep(1)
                 return response["compileId"]
             time.sleep(1)
         return None
