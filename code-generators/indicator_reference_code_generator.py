@@ -429,10 +429,10 @@ class IndicatorProcessor:
     def initialize(self) -> None:
         self.universe_settings.resolution = Resolution.DAILY
         self.universe_settings.schedule.on(self.date_rules.month_start())
-        self._universe = self.add_universe(self.universe.ETF('SPY'))
+        self._universe = self.add_universe(self.universe.etf('SPY'))
 
     def on_securities_changed(self, changes: SecurityChanges) -> None:
-        self._{variable} = self.{variable}(self._universe.selected)"""
+        self._{variable} = self.{variable}(list(self._universe.selected))"""
         return self._get_python_code_internal('helper', code, type_name, variable, False)
 
 class OptionIndicatorProcessor(IndicatorProcessor):

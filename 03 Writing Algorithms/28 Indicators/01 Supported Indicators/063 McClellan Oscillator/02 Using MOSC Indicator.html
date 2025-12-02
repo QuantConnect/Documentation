@@ -80,10 +80,10 @@
     def initialize(self) -> None:
         self.universe_settings.resolution = Resolution.DAILY
         self.universe_settings.schedule.on(self.date_rules.month_start())
-        self._universe = self.add_universe(self.universe.ETF('SPY'))
+        self._universe = self.add_universe(self.universe.etf('SPY'))
 
     def on_securities_changed(self, changes: SecurityChanges) -> None:
-        self._mosc = self.mosc(self._universe.selected)
+        self._mosc = self.mosc(list(self._universe.selected))
 
     def on_data(self, slice: Slice) -> None:
 
