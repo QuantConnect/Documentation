@@ -1,4 +1,4 @@
-<p>To create an automatic indicators for <code>McClellanSummationIndex</code>, call the <code class='csharp'>MSI</code><code class='python'>msi</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>MSI</code><code class='python'>msi</code> method creates a <code>McClellanSummationIndex</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<p>To create an automatic indicator for <code>McClellanSummationIndex</code>, call the <code class='csharp'>MSI</code><code class='python'>msi</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>MSI</code><code class='python'>msi</code> method creates a <code>McClellanSummationIndex</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 <div class="section-example-container testable">
 <pre class="csharp">public class McClellanSummationIndexAlgorithm : QCAlgorithm
 {
@@ -30,6 +30,54 @@
         self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
         self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
         self._msi = self.msi([self._symbol, self._reference])
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._msi.is_ready:
+            # The current value of self._msi is represented by self._msi.current.value
+            self.plot("McClellanSummationIndex", "msi", self._msi.current.value)
+            # Plot all attributes of self._msi
+            self.plot("McClellanSummationIndex", "mc_clellan_oscillator", self._msi.mc_clellan_oscillator.current.value)</pre></div>
+<p>To create an automatic indicator for <code>McClellanSummationIndex</code> using universe constituents, call the <code class='csharp'>MSI</code><code class='python'>msi</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>MSI</code><code class='python'>msi</code> method creates a <code>McClellanSummationIndex</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In this case, you should call the helper method in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class McClellanSummationIndexAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+    private McClellanSummationIndex _msi;
+
+    public override void Initialize()
+    {
+        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.Schedule.On(DateRules.MonthStart());
+        _universe = AddUniverse(Universe.ETF("SPY"));
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        _msi = MSI(_universe.Selected);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_msi.IsReady)
+        {
+            // The current value of _msi is represented by itself (_msi)
+            // or _msi.Current.Value
+            Plot("McClellanSummationIndex", "msi", _msi);
+            // Plot all properties of abands
+            Plot("McClellanSummationIndex", "mcclellanoscillator", _msi.McClellanOscillator);
+        }
+    }
+}</pre>
+<pre class="python">class McClellanSummationIndexAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start())
+        self._universe = self.add_universe(self.universe.ETF('SPY'))
+
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        self._msi = self.msi(self._universe.selected)
 
     def on_data(self, slice: Slice) -> None:
 

@@ -78,19 +78,21 @@ def split_string(s):
 
 def _get_helpers():
     
-    methods = get_type(f"QuantConnect.Algorithm.QCAlgorithm", 'python')['methods']
+    methods = get_type(f"QuantConnect.Algorithm.QCAlgorithm", 'csharp')['methods']
     def is_bar(method):
         name, return_type = method["method-name"], method["method-return-type-short-name"]
-        selectors = [arg for arg in method["method-arguments"] if arg["argument-name"] == 'selector']
+        arguments = method["method-arguments"]
+        selectors = [arg for arg in arguments if arg["argument-name"] == 'selector']
+        universe = arguments[0]['argument-type-short-name'] == 'List<Symbol>'
         if not selectors:
-            return return_type, (name, False)
+            return return_type, (name, False, universe)
         selector_type = selectors[0]['argument-type-short-name']
-        return return_type, (name, 'decimal' not in selector_type.lower())
+        return return_type, (name, 'decimal' not in selector_type.lower(), universe)
 
     tag = "method-return-type-full-name"
     indicators = dict(sorted(set([is_bar(m) for m in methods 
         if m[tag] and m[tag].startswith('QuantConnect.Indicators.')])))
-    indicators['IntradayVwap'] = ('vwap', True)  # Manually add IntradayVWAP
+    indicators['IntradayVwap'] = ('VWAP', True, False)  # Manually add IntradayVWAP
 
     with open(f'Resources/indicators/IndicatorImageGenerator.py', mode='r') as fp:
         lines = fp.readlines()
@@ -113,14 +115,15 @@ def _get_helpers():
                 ctor_cs = indicator_infos[1].strip()[1:-1]
                 if not ctor_cs.endswith(')'):
                     ctor_cs = ctor_cs + ')'
-                _, is_bar = indicators.pop(key)
+                _, is_bar, is_universe = indicators.pop(key)
                 helpers[key] = {
                     'ctor-python': ctor_py,
                     'ctor-csharp': ctor_cs,
                     'helper-python': indicator_infos[3].strip()[1:-1],
                     'helper-csharp': indicator_infos[2].strip()[1:-1],
                     'update-python': 'bar' if is_bar else 'bar.end_time, bar.close',
-                    'update-csharp': 'bar' if is_bar else 'bar.EndTime, bar.Close'
+                    'update-csharp': 'bar' if is_bar else 'bar.EndTime, bar.Close',
+                    'is-universe': is_universe
                 }
 
         return dict(sorted(helpers.items())), indicators
@@ -215,11 +218,17 @@ class IndicatorProcessor:
         links = self._get_links()
         self._process_properties()
 
+        universe_code = '' if not self._info.get('is-universe', False) else f'''
+<p>To create an automatic indicator for <code>{self._info["type-name"]}</code> using universe constituents, call the <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> method creates a <code>{self._info["type-name"]}</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In this case, you should call the helper method in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">{self._get_csharp_universe_code()}</pre>
+<pre class="python">{self._get_python_universe_code()}</pre></div>'''
+
         with open(self._path / f"02 Using {self._method_csharp} Indicator.html", mode='w') as f:
-            f.write(f'''<p>To create an automatic indicators for <code>{self._info["type-name"]}</code>, call the <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> method creates a <code>{self._info["type-name"]}</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+            f.write(f'''<p>To create an automatic indicator for <code>{self._info["type-name"]}</code>, call the <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> method creates a <code>{self._info["type-name"]}</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
 <div class="section-example-container testable">
 <pre class="csharp">{self._get_csharp_code()}</pre>
-<pre class="python">{self._get_python_code()}</pre></div>
+<pre class="python">{self._get_python_code()}</pre></div>{universe_code}
 <p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="{links[0]}">{self._method_class()} class</a><a rel="nofollow" target="_blank" class='python' href="{links[1]}">{self._method_class()} class</a>.</p>
 <p>You can manually create a <code>{self._info["type-name"]}</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
@@ -259,8 +268,7 @@ class IndicatorProcessor:
         _{variable} = {method_call};"""
         return code, type_name, variable, has_reference
 
-    def _get_csharp_code(self, method_type="helper"):
-        code, type_name, variable, has_reference = self._get_csharp_initialize(method_type)
+    def _get_csharp_code_internal(self, method_type, code, type_name, variable, has_reference):
         properties = self._info["properties-csharp"]
         code += """
     &rcub;
@@ -294,6 +302,10 @@ class IndicatorProcessor:
     &rcub;
 &rcub;""").replace('&lcub;', '{').replace('&rcub;', '}')
 
+    def _get_csharp_code(self, method_type="helper"):
+        code, type_name, variable, has_reference = self._get_csharp_initialize(method_type)
+        return self._get_csharp_code_internal(method_type, code, type_name, variable, has_reference)
+
     def _get_csharp_history(self):
         code, _, variable, has_reference = self._get_csharp_initialize('helper')
         properties = self._info["properties-csharp"]
@@ -315,6 +327,29 @@ class IndicatorProcessor:
     &rcub;
 &rcub;""").replace('&lcub;', '{').replace('&rcub;', '}')
 
+    def _get_csharp_universe_code(self, method_type='helper'):
+        type_name = self._info["type-name"]
+        method_call = self._info[f'{method_type}-csharp']
+        has_reference = 'reference' in method_call
+        helper = method_call[:method_call.find('(')]
+        variable = helper.lower()
+        code=f"""public class {type_name}Algorithm : QCAlgorithm
+&lcub;
+    private Universe _universe;
+    private {type_name} _{variable};
+
+    public override void Initialize()
+    &lcub;
+        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.Schedule.On(DateRules.MonthStart());
+        _universe = AddUniverse(Universe.ETF("SPY"));
+    &rcub;
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    &lcub;
+        _{variable} = {helper}(_universe.Selected);"""
+        return self._get_csharp_code_internal('helper', code, type_name, variable, False)
+
     def _get_python_initialize(self, method_type):
         type_name = self._info['type-name']
         method_call = self._info[f'{method_type}-python']
@@ -334,8 +369,7 @@ class IndicatorProcessor:
         self._{variable} = {method_call}"""
         return code, type_name, variable, has_reference
 
-    def _get_python_code(self, method_type="helper"):
-        code, type_name, variable, has_reference = self._get_python_initialize(method_type)
+    def _get_python_code_internal(self, method_type, code, type_name, variable, has_reference):
         properties = self._info["properties-python"]
         code += f"""
 
@@ -364,6 +398,10 @@ class IndicatorProcessor:
             self.plot("{type_name}", "{property.lower()}", self._{variable}.{property}.current.value)"""
         return code
 
+    def _get_python_code(self, method_type="helper"):
+        code, type_name, variable, has_reference = self._get_python_initialize(method_type)
+        return self._get_python_code_internal(method_type, code, type_name, variable, has_reference)
+        
     def _get_python_history(self):
         code, _, variable, has_reference = self._get_python_initialize('helper')
         properties = self._info["properties-python"]
@@ -382,6 +420,20 @@ class IndicatorProcessor:
                 code += f"""
         {property} = indicator_history_df["{property.replace('_','')}"]"""
         return code
+
+    def _get_python_universe_code(self, method_type='helper'):
+        type_name = self._info['type-name']
+        method_call = self._info[f'{method_type}-python']
+        variable = method_call[:method_call.find('(')].replace('self.','').lower()
+        code = f"""class {type_name}Algorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start())
+        self._universe = self.add_universe(self.universe.ETF('SPY'))
+
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        self._{variable} = self.{variable}(self._universe.selected)"""
+        return self._get_python_code_internal('helper', code, type_name, variable, False)
 
 class OptionIndicatorProcessor(IndicatorProcessor):
     def _process_properties(self):
@@ -541,7 +593,7 @@ class CandlestickProcessor(IndicatorProcessor):
         type_name = self._info["type-name"]
         method_call = f'new {type_name}()' if method_type == "ctor" else \
             f'CandlestickPatterns.{type_name}(_symbol)'
-        variable = type_name[0].lower() + type_[1:]
+        variable = type_name[0].lower() + type_name[1:]
         code=f"""public class {type_name}Algorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol;
@@ -619,10 +671,7 @@ class CandlestickProcessor(IndicatorProcessor):
         timedelta_indicator_history = self.indicator_history(self._{variable}, self._symbol, timedelta(days=10), Resolution.MINUTE)
         time_period_indicator_history = self.indicator_history(self._{variable}, self._symbol, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)""")
 
-if __name__ == "__main__":
-    # DELETE ALL FILES
-    rmtree(INDICATORS, ignore_errors=True)
-
+def main():
     helpers, undocumented = _get_helpers()
     for i, (type_, info) in enumerate(helpers.items()):
         if type_ in OPTION_INDICATORS:
@@ -650,4 +699,9 @@ if __name__ == "__main__":
 
     if undocumented:
         print('Undocumented indicators:' + ', '.join([f'{k}: {v[0]}' for k,v in undocumented.items()]))
-        exit(1)
+    return len(undocumented)
+
+if __name__ == "__main__":
+    # DELETE ALL FILES
+    rmtree(INDICATORS, ignore_errors=True)
+    exit(main())
