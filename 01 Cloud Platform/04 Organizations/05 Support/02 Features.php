@@ -47,41 +47,10 @@
       </tr>
    </tbody>
 </table>
+<p>For more information on this feature, see <a href="/docs/v2/ai-assistance/mia-chatbot">Mia Chatbot</a>.</p>
 
 <h4>Email Support </h4>
-<p>Our support ticket system enables you to privately email with our Support Team. We address support tickets in a first-in, first-out order, but we give priority to tickets opened by members with higher support seats. The following table shows our response time for each of the support tiers:
-</p>
-
-<table class="table qc-table" id="support-response-time-table">
-    <thead>
-        <tr>
-            <th style="width: 28%;">Tier</th>
-            <th>Response Time (hours)</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Gold</td>
-            <td>24</td>
-        </tr>
-        <tr>
-            <td>Silver</td>
-            <td>48</td>
-        </tr>
-        <tr>
-            <td>Bronze</td>
-            <td>72 or Best Effort</td>
-        </tr>
-    </tbody>
-</table>
-
-<style>
-#support-response-time-table th:last-child,
-#support-response-time-table td:last-child {
-    text-align: right;
-}
-</style>
-
+<p>Our support ticket system enables you to privately email with our Support Team. We address support tickets in a first-in, first-out order, but we give priority to tickets opened by members with higher support seats.</p>
 
 <table class="qc-table table">
    <thead>
