@@ -84,18 +84,23 @@
 <div class="section-example-container testable">
 <pre class="csharp">public class AdvanceDeclineDifferenceAlgorithm : QCAlgorithm
 {
-    private Symbol _symbol;
+    private Symbol _symbol,_reference;
     private AdvanceDeclineDifference _advancedeclinedifference;
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
         _advancedeclinedifference = new AdvanceDeclineDifference();
+        _advancedeclinedifference.Add(_symbol);
+        _advancedeclinedifference.Add(_reference);
     }
 
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
+            _advancedeclinedifference.Update(bar);
+        if (data.Bars.TryGetValue(_reference, out bar))
             _advancedeclinedifference.Update(bar);
 
         if (_advancedeclinedifference.IsReady)
@@ -108,11 +113,17 @@
 }</pre>
 <pre class="python">class AdvanceDeclineDifferenceAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
         self._advancedeclinedifference = AdvanceDeclineDifference()
+        self._advancedeclinedifference.add(self._symbol);
+        self._advancedeclinedifference.add(self._reference);
 
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
+        if bar:
+            self._advancedeclinedifference.update(bar)
+        bar = slice.bars.get(self._reference)
         if bar:
             self._advancedeclinedifference.update(bar)
 

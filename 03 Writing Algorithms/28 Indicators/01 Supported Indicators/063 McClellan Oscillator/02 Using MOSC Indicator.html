@@ -100,18 +100,23 @@
 <div class="section-example-container testable">
 <pre class="csharp">public class McClellanOscillatorAlgorithm : QCAlgorithm
 {
-    private Symbol _symbol;
+    private Symbol _symbol,_reference;
     private McClellanOscillator _mcclellanoscillator;
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
         _mcclellanoscillator = new McClellanOscillator(19, 39);
+        _mcclellanoscillator.Add(_symbol);
+        _mcclellanoscillator.Add(_reference);
     }
 
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
+            _mcclellanoscillator.Update(bar);
+        if (data.Bars.TryGetValue(_reference, out bar))
             _mcclellanoscillator.Update(bar);
 
         if (_mcclellanoscillator.IsReady)
@@ -128,11 +133,17 @@
 }</pre>
 <pre class="python">class McClellanOscillatorAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
         self._mcclellanoscillator = McClellanOscillator(19, 39)
+        self._mcclellanoscillator.add(self._symbol);
+        self._mcclellanoscillator.add(self._reference);
 
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
+        if bar:
+            self._mcclellanoscillator.update(bar)
+        bar = slice.bars.get(self._reference)
         if bar:
             self._mcclellanoscillator.update(bar)
 

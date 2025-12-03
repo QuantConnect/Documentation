@@ -84,18 +84,23 @@
 <div class="section-example-container testable">
 <pre class="csharp">public class AdvanceDeclineVolumeRatioAlgorithm : QCAlgorithm
 {
-    private Symbol _symbol;
+    private Symbol _symbol,_reference;
     private AdvanceDeclineVolumeRatio _advancedeclinevolumeratio;
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
         _advancedeclinevolumeratio = new AdvanceDeclineVolumeRatio();
+        _advancedeclinevolumeratio.Add(_symbol);
+        _advancedeclinevolumeratio.Add(_reference);
     }
 
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
+            _advancedeclinevolumeratio.Update(bar);
+        if (data.Bars.TryGetValue(_reference, out bar))
             _advancedeclinevolumeratio.Update(bar);
 
         if (_advancedeclinevolumeratio.IsReady)
@@ -108,11 +113,17 @@
 }</pre>
 <pre class="python">class AdvanceDeclineVolumeRatioAlgorithm(QCAlgorithm):
     def initialize(self) -> None:
-        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
         self._advancedeclinevolumeratio = AdvanceDeclineVolumeRatio()
+        self._advancedeclinevolumeratio.add(self._symbol);
+        self._advancedeclinevolumeratio.add(self._reference);
 
     def on_data(self, slice: Slice) -> None:
         bar = slice.bars.get(self._symbol)
+        if bar:
+            self._advancedeclinevolumeratio.update(bar)
+        bar = slice.bars.get(self._reference)
         if bar:
             self._advancedeclinevolumeratio.update(bar)
 

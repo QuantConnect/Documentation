@@ -247,16 +247,21 @@ class IndicatorProcessor:
     def _get_csharp_initialize(self, method_type):
         type_name = self._info["type-name"]
         method_call = self._info[f'{method_type}-csharp']
-        has_reference = 'reference' in method_call
-        add_subscription = f'''_symbol = AddEquity("SPY", Resolution.Daily).Symbol;'''
-        if has_reference:
-            add_subscription = f'''_symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
-        _reference = AddEquity("SPY", Resolution.Daily).Symbol;'''
-        if type_name == 'IntradayVwap':
-            add_subscription = add_subscription.replace('Daily', 'Minute')
         helper = method_call[:method_call.find('(')]
         if method_type == 'ctor': method_call = 'new ' + method_call
         variable = helper.lower()
+        has_reference = 'reference' in self._info['helper-csharp']
+        add_subscription = f'''_symbol = AddEquity("SPY", Resolution.Daily).Symbol;'''
+        add_symbol_to_indicator = ''
+        if has_reference:
+            add_subscription = f'''_symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;'''
+            if self._info.get("is-universe", False) and method_type == 'ctor':
+                add_symbol_to_indicator = f'''
+        _{variable}.Add(_symbol);
+        _{variable}.Add(_reference);'''
+        if type_name == 'IntradayVwap':
+            add_subscription = add_subscription.replace('Daily', 'Minute')
         code=f"""public class {type_name}Algorithm : QCAlgorithm
 &lcub;
     private Symbol _symbol{',_reference' if has_reference else ''};
@@ -265,7 +270,7 @@ class IndicatorProcessor:
     public override void Initialize()
     &lcub;
         {add_subscription}
-        _{variable} = {method_call};"""
+        _{variable} = {method_call};{add_symbol_to_indicator}"""
         return code, type_name, variable, has_reference
 
     def _get_csharp_code_internal(self, method_type, code, type_name, variable, has_reference):
@@ -282,7 +287,7 @@ class IndicatorProcessor:
             _{variable}.Update({update_arg});"""
             if has_reference:
                 code += f"""
-        if (data.Bars.TryGetValue(_reference, out var bar))
+        if (data.Bars.TryGetValue(_reference, out bar))
             _{variable}.Update({update_arg});"""
         code += f"""
 
@@ -330,7 +335,7 @@ class IndicatorProcessor:
     def _get_csharp_universe_code(self, method_type='helper'):
         type_name = self._info["type-name"]
         method_call = self._info[f'{method_type}-csharp']
-        has_reference = 'reference' in method_call
+        has_reference = 'reference' in self._info['helper-csharp']
         helper = method_call[:method_call.find('(')]
         variable = helper.lower()
         code=f"""public class {type_name}Algorithm : QCAlgorithm
@@ -353,20 +358,27 @@ class IndicatorProcessor:
     def _get_python_initialize(self, method_type):
         type_name = self._info['type-name']
         method_call = self._info[f'{method_type}-python']
-        has_reference = 'reference' in method_call
-        add_subscription = '''self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol'''
-        if has_reference:
-            add_subscription = '''self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
-        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol'''
-        if type_name == 'IntradayVwap':
-            add_subscription = add_subscription.replace('DAILY', 'MINUTE')
         variable = method_call[:method_call.find('(')].replace('self.','').lower()
         if method_call.startswith('IndicatorExtensions'):
             variable = type_name.lower()
+        has_reference = 'reference' in self._info['helper-python']
+        add_subscription = '''self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol'''
+        add_symbol_to_indicator = ''
+        if has_reference:
+            add_subscription = '''self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol'''
+            if self._info.get("is-universe", False) and method_type == 'ctor':
+                add_symbol_to_indicator = f'''
+        self._{variable}.add(self._symbol);
+        self._{variable}.add(self._reference);'''
+
+        if type_name == 'IntradayVwap':
+            add_subscription = add_subscription.replace('DAILY', 'MINUTE')
+        
         code = f"""class {type_name}Algorithm(QCAlgorithm):
     def initialize(self) -> None:
         {add_subscription}
-        self._{variable} = {method_call}"""
+        self._{variable} = {method_call}{add_symbol_to_indicator}"""
         return code, type_name, variable, has_reference
 
     def _get_python_code_internal(self, method_type, code, type_name, variable, has_reference):
