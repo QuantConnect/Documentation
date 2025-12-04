@@ -47,7 +47,7 @@
       </tr>
    </tbody>
 </table>
-<p>For more information on this feature, see <a href="/docs/v2/ai-assistance/mia-chatbot">Mia Chatbot</a>.</p>
+<p>For more information on this feature, see <a href="/docs/v2/ai-assistance/strategy-development">Strategy Development</a>.</p>
 
 <h4>Email Support </h4>
 <p>Our support ticket system enables you to privately email with our Support Team. We address support tickets in a first-in, first-out order, but we give priority to tickets opened by members with higher support seats.</p>
