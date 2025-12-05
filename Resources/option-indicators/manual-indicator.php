@@ -11,7 +11,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31);
+        SetEndDate(2024, 9, 30);
         SetCash(500000);
         // Seed the price of each asset with its last known price to avoid trading errors.
         SetSecurityInitializer(
