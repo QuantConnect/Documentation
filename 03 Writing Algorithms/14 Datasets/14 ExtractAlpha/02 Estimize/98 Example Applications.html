@@ -18,12 +18,7 @@ class ExtractAlphaEstimizeAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Seed the price of each asset with its last known price to avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # Add a dictionary to hold the latest Consensus data since this dataset is sparse.
         self._consensus_by_symbol = {}
         # Add a universe of liquid US Equities.
@@ -90,10 +85,7 @@ class ExtractAlphaEstimizeAlgorithm(QCAlgorithm):
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         // Seed securities with their last known prices to avoid stale-price trade errors
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(
-            BrokerageModel,
-            new FuncSecuritySeeder(GetLastKnownPrices)
-        ));
+        Settings.SeedInitialPrices = true;
         // Add a universe of liquid US Equities.
         AddUniverse(SelectAssets);
         // Add a Scheduled Event to rebalance the portfolio each day.

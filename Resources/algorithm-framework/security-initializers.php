@@ -30,16 +30,6 @@ SetSecurityInitializer(security =&gt; security.SetFeeModel(new ConstantFeeModel(
 self.set_security_initializer(lambda security: security.set_fee_model(ConstantFeeModel(0, "USD")))</pre>
 </div>
 
-<p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price. The <code class="csharp">GetLastKnownPrices</code><code class="python">get_last_known_prices</code> method seeds the security price by gathering the security data over the last 3 days. If there is no data during this period, the security price remains at 0. When you live trade Options without the QuantConnect data provider, this method may take longer than 10 minutes to gather the historical data, causing a timeout.</p>
-<div class="section-example-container">
-<pre class="csharp">// Gather the last 3 days of security prices by using GetLastKnowPrice as the seed in Initialize.
-var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
-SetSecurityInitializer(security =&gt; seeder.SeedSecurity(security));</pre>
-<pre class="python"># Gather the last 3 days of security prices by using get_last_known_prices as the seed in initialize.
-seeder = FuncSecuritySeeder(self.get_last_known_prices)
-self.set_security_initializer(lambda security: seeder.seed_security(security))</pre>
-</div>
-
 <? include(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
 <p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default security initializer instead of overwriting it, call <code class="csharp">AddSecurityInitializer</code><code class="python">add_security_initializer</code> before you create the subscriptions.</p>
@@ -49,13 +39,3 @@ $overwriteCodePy = "security.set_fee_model(ConstantFeeModel(0, \"USD\"))";
 $overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(0, \"USD\"));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
-
-<p>To set a seeder function without overwriting the reality models of the brokerage, use the standard <code>BrokerageModelSecurityInitializer</code>.</p>
-<div class="section-example-container">
-<pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
-SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));
-</pre>
-<pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
-self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))
-</pre>
-</div>

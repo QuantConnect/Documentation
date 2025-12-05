@@ -17,7 +17,7 @@ class USFuturesDataAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(1000000)
         # Setting the continuous contract mapping criteria for both Gold and Micro Gold contracts, since we want to order the highest liquidity contracts
-        self.set_security_initializer(lambda security: FuncSecuritySeeder(self.get_last_known_prices).seed_security(security))
+        self.settings.seed_initial_prices = True
         self.gold = self.add_future(Futures.Metals.GOLD,
             extended_market_hours=True,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,

@@ -20,12 +20,7 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Seed the price of each asset with its last known price to avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # Universe consists of equities with upcoming splits events.
         self._universe = self.add_universe(EODHDUpcomingSplits, self.selection)
         # Add a Scheduled Event to rebalance the portfolio every morning
@@ -61,11 +56,7 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         // Seed the price of each asset with its last known price to avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(
-                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
-            )
-        );
+        Settings.SeedInitialPrices = true;
         // Universe consists of equities with upcoming earnings events.
         _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
             return splits

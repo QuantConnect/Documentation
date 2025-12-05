@@ -14,9 +14,7 @@
         SetEndDate(2024, 9, 30);
         SetCash(500000);
         // Seed the price of each asset with its last known price to avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         // Subscribe to the underlying asset.
         <?=$underlyingSubscriptionC?>
 
@@ -136,12 +134,7 @@
         self.set_end_date(2024, 9, 30)
         self.set_cash(500_000)
         # Seed the price of each asset with its last known price to avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # Subscribe to the underlying asset.
         <?=$underlyingSubscriptionPy?>
         # Set up the dividend yield provider for the underlying.

@@ -100,11 +100,7 @@
         SetEndDate(2024, 9, 10);
         // Seed the price of each asset with its last known price to 
         // avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(
-                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
-            )
-        );
+        Settings.SeedInitialPrices = true;
         _symbol = AddEquity("SPY", Resolution.Tick).Symbol;
     }
 
@@ -147,12 +143,7 @@
         self.set_end_date(2024, 9, 10)
         # Seed the price of each asset with its last known price to 
         # avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         self._symbol = self.add_equity('SPY', Resolution.TICK).symbol
 
     def on_data(self, slice: Slice) -> None:
@@ -375,9 +366,7 @@
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         // Seed the price of AAPL with its last known price to avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         // Add the 7-day sentiment data for AAPL.
         _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
         _dataset7DaySymbol = AddData&lt;BrainSentimentIndicator7Day&gt;(_symbol).Symbol;
@@ -410,12 +399,7 @@
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # Seed the price of AAPL with its last known price to avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # Add the 7-day sentiment data for AAPL.
         self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
         self._dataset_7day_symbol = self.add_data(BrainSentimentIndicator7Day, self._symbol).symbol

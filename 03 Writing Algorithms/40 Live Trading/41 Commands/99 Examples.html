@@ -98,8 +98,7 @@
         SetBenchmark(x =&gt; 1);
 
         // Seed each asset with it's price to trade right away.
-        var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));
+        Settings.SeedInitialPrices = true;
     }
 
     public override bool? OnCommand(dynamic payload)
@@ -127,8 +126,7 @@
         self.set_benchmark(lambda x: 1)
 
         # Seed each asset with it's price to trade right away.
-        seeder = FuncSecuritySeeder(self.get_last_known_prices)
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))
+        self.settings.seed_initial_prices = True
 
     def on_command(self, payload):
         self.log(f'{self.time} - Execute on_command(): {payload}')

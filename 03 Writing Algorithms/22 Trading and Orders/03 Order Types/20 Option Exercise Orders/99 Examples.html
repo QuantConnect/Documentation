@@ -145,8 +145,8 @@
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 9, 4);
         SetCash(100000);
-    
-        SetSecurityInitializer(CustomSecurityInitializer);
+        Settings.SeedInitialPrices = true;
+        AddSecurityInitializer(CustomSecurityInitializer);
     
         var spy = AddEquity("SPY", Resolution.Minute);
         _spy = spy.Symbol;
@@ -155,10 +155,6 @@
     private void CustomSecurityInitializer(Security security)
     {
         security.SetDataNormalizationMode(DataNormalizationMode.Raw);
-        foreach (var bar in GetLastKnownPrices(security.Symbol))
-        {
-            security.SetMarketPrice(bar);
-        }
     }
 
     public override void OnData(Slice data)
@@ -199,15 +195,14 @@
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
 
-        self.set_security_initializer(self.custom_security_initializer)
+        self.settings.seed_initial_prices = True
+        self.add_security_initializer(self.custom_security_initializer)
         
         spy = self.add_equity("SPY", Resolution.MINUTE)
         self.spy = spy.symbol
     
     def custom_security_initializer(self, security):
         security.set_data_normalization_mode(DataNormalizationMode.RAW)
-        for bar in self.get_last_known_prices(security.symbol):
-            security.set_market_price(bar)
 
     def on_data(self, data):
         if not self.portfolio.invested:

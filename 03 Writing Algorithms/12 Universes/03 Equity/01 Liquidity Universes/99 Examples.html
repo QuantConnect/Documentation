@@ -69,9 +69,7 @@
         SetEndDate(2024, 12, 31);
         Settings.AutomaticIndicatorWarmUp = true;
         // When a new asset enters the universe, seed its current price so you can trade it right away.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         // Use asynchronous universe selection to speed up the algorithm.
         UniverseSettings.Asynchronous = true;
         // Use daily data. It doesn't affect accuracy since the trades fill at the daily market open.
@@ -117,9 +115,7 @@
         self.set_end_date(2024, 12, 31)
         self.settings.automatic_indicator_warm_up = True
         # When a new asset enters the universe, seed its current price so you can trade it right away.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
-        )
+        self.settings.seed_initial_prices = True
         # Use asynchronous universe selection to speed up the algorithm.
         self.universe_settings.asynchronous = True
         # Use daily data. It doesn't affect accuracy since the trades fill at the daily market open.

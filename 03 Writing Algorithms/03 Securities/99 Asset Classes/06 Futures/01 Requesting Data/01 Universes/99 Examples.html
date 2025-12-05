@@ -17,7 +17,7 @@
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         // Seed the price with last known price to ensure the contract price data is available for the limit order.
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        Settings.SeedInitialPrices = true;
         var future = AddFuture(Futures.Indices.SP500EMini, extendedMarketHours: true);
         _future = future.Symbol;
         // We only want to hold position of the front month contract.
@@ -49,7 +49,7 @@
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # Seed the price with last known price to ensure the contract price data is available for the limit order.
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.settings.seed_initial_prices = True
         future = self.add_future(Futures.Indices.SP_500_E_MINI, extended_market_hours=True)
         self._future = future.symbol
         # We only want to hold position of the front month contract.
@@ -86,11 +86,7 @@
         SetCash(1000000);
         // Seed the price of each asset with its last known price to 
         // avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(
-                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
-            )
-        );
+        Settings.SeedInitialPrices = true;
         // Use backward ratio normalization for the continuous contract 
         // so the indicator receives a smooth price series.
         _future = AddFuture(
@@ -146,12 +142,7 @@
         self.set_cash(1_000_000)
         # Seed the price of each asset with its last known price to 
         # avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # Define a threshold for the EMA crossover.
         self._threshold = 0.01  # 1% above/below the EMA.
         # Use backward ratio normalization for the continuous contract 

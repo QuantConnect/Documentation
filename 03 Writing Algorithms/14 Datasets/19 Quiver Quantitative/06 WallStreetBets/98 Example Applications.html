@@ -16,12 +16,7 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Seed the price of each asset with its last known price to avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         self.universe_settings.resolution = Resolution.DAILY
         # Filter using wall street bet insights
         self._universe = self.add_universe(QuiverWallStreetBetsUniverse, self.universe_selection)
@@ -64,9 +59,7 @@ class QuiverWallStreetBetsDataAlgorithm(QCAlgorithm):
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         // Seed the price of each asset with its last known price to avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         UniverseSettings.Resolution = Resolution.Daily;
         // Filter using wall street bet insights
         _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;

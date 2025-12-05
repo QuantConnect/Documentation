@@ -24,9 +24,7 @@
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
 
         // Seed the last price to ensure filtering using the underlying price is available immediately.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
 
         // Request the index underlying data for filtering.
         var spx = AddIndex("SPX").Symbol;
@@ -150,9 +148,7 @@ internal class OptionChainManager
         self.universe_settings.minimum_time_in_universe = timedelta(minutes=0)
 
         # Seed the last price to ensure filtering using the underlying price is available immediately.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
-        )
+        self.settings.seed_initial_prices = True
 
         # Request the index underlying data for filtering.
         spx = self.add_index("SPX").symbol

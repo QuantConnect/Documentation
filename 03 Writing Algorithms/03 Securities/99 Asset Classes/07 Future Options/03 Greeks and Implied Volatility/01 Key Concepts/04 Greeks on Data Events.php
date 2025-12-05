@@ -12,9 +12,14 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetSecurityInitializer(
-            new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
+        AddSecurityInitializer(security =&gt;
+        {
+            if (security.Type == SecurityType.FutureOption)
+            {
+                (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
+            } 
+        });
         _future = AddFuture(Futures.Indices.SP500EMini, 
             dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
             dataMappingMode: DataMappingMode.OpenInterest,
@@ -34,30 +39,14 @@
             }
         }
     }
-}
-
-class MySecurityInitializer : BrokerageModelSecurityInitializer
-{
-    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-        : base(brokerageModel, securitySeeder) {}    
-    
-    public override void Initialize(Security security)
-    {
-        base.Initialize(security);
-        if (security.Type == SecurityType.FutureOption)
-        {
-            (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
-        }    
-    }
 }</pre>
     <pre class="python">class BasicFutureOptionAlgorithm(QCAlgorithm):
 
     def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_security_initializer(
-            MySecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
-        )
+        self.settings.seed_initial_prices = True
+        self.add_security_initializer(self._custom_security_initializer)
         self._future = self.add_future(
             Futures.Indices.SP_500_E_MINI,
             data_mapping_mode=DataMappingMode.OPEN_INTEREST,
@@ -73,14 +62,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
                 iv = contract.implied_volatility
                 delta = contract.greeks.delta
 
-
-class MySecurityInitializer(BrokerageModelSecurityInitializer):
-
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -> None:
-        super().__init__(brokerage_model, security_seeder)
-    
-    def initialize(self, security: Security) -> None:
-        super().initialize(security)
+    def _custom_security_initializer(self, security: Security) -> None:
         if security.type == SecurityType.FUTURE_OPTION:
             security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>

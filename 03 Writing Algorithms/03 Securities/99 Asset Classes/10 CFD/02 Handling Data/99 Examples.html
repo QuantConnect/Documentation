@@ -72,11 +72,7 @@
         SetEndDate(2024, 12, 31);
         // Seed the price of each asset with its last known price to 
         // avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(
-                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
-            )
-        );
+        Settings.SeedInitialPrices = true;
         // Let's select CFD contracts that trade in different market 
         // hours so the algorithm is always invested.
         foreach (var ticker in new[] { "DE30EUR", "SG30SGD", "US30USD" })
@@ -107,12 +103,7 @@
         self.set_end_date(2024, 12, 31)
         # Seed the price of each asset with its last known price to 
         # avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # Let's select CFD contracts that trade in different market 
         # hours so the algorithm is always invested.
         for ticker in ['DE30EUR', 'SG30SGD', 'US30USD']:

@@ -12,7 +12,7 @@
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
 
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        Settings.SeedInitialPrices = true;
         SetWarmUp(TimeSpan.FromDays(7), Resolution.Minute);
 
         // Update the universe weekly to allow time to capitalize on the hype.
@@ -156,7 +156,7 @@
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         // Seed the price with the last known price to ensure the underlying price data is available on initial option contract filtering.
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        Settings.SeedInitialPrices = true;
 
         // Request SPY data for option selection using its price.
         // Use raw data normalization mode since we need to compare the SPY price with the strike price.
@@ -196,7 +196,7 @@
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # Seed the price with the last known price to ensure the underlying price data is available on initial option contract filtering.
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.settings.seed_initial_prices = True
         
         # Request SPY data for option selection using its price.
         # Use raw data normalization mode since we need to compare the SPY price with the strike price.

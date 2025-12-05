@@ -149,7 +149,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         self.set_brokerage_model(BrokerageName.KRAKEN, AccountType.MARGIN)
 
         # Warm up the security with the last known price to avoid conversion error
-        self.set_security_initializer(lambda security: security.set_market_price(self.get_last_known_price(security)))
+        self.settings.seed_initial_prices = True
         
         # Get the pairs on Kraken that have USD as the quote currency.
         self._market_pairs = [
@@ -191,7 +191,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin);
 
         // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrice(security)));
+        Settings.SeedInitialPrices = true;
         
         // Get the pairs on Kraken that have USD as the quote currency.
         _marketPairs = SymbolPropertiesDatabase.GetSymbolPropertiesList(Market.Kraken)

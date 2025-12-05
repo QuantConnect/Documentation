@@ -178,10 +178,8 @@ option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 <p>If you subscribe to a Future Option contract with <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
-SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));</pre>
-    <pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
-self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))</pre>
+    <pre class="csharp">Settings.SeedInitialPrices = true;</pre>
+    <pre class="python">self.settings.seed_initial_prices = True</pre>
 </div>
 
 <h4>Supported Assets</h4>

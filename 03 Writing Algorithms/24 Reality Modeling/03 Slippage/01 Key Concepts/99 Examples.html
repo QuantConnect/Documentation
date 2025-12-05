@@ -78,7 +78,12 @@ class MySlippageModel:
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetSecurityInitializer(new CustomSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        Settings.SeedInitialPrices = true;
+        AddSecurityInitializer(security =&gt; 
+        {
+            // To set the slippage model to the custom one for all stocks entering the universe.
+            security.SetSlippageModel(new CustomSlippageModel());
+        });
 
         // Request extended market hour QQQ data for trading.
         var qqq = AddEquity("QQQ").Symbol;
@@ -134,21 +139,6 @@ class MySlippageModel:
             return asset.Price * 0.02m * Math.Min(1m, order.AbsoluteQuantity / asset.Volume);
         }
     }
-
-    internal class CustomSecurityInitializer : BrokerageModelSecurityInitializer
-    {
-        public CustomSecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-            : base(brokerageModel, securitySeeder)
-        {
-        }
-
-        public override void Initialize(Security security)
-        {
-            base.Initialize(security);
-            // To set the slippage model to the custom one for all stocks entering the universe.
-            security.SetSlippageModel(new CustomSlippageModel());
-        }
-    }
 }</pre>
 <pre class="python">class RealityModelingSlippageAlgorithm(QCAlgorithm):
     longs = []
@@ -157,7 +147,8 @@ class MySlippageModel:
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_security_initializer(CustomSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.settings.seed_initial_prices = True
+        self.add_security_initializer(self._custom_security_initializer)
         
         # Request extended market hour QQQ data for trading.
         qqq = self.add_equity("QQQ").symbol
@@ -195,18 +186,14 @@ class MySlippageModel:
         # Liquidate the stocks that are not the most and least popular to release funds for trades with higher expected returns.
         self.set_holdings(targets, liquidate_existing_holdings=True)
 
+    def _custom_security_initializer(self, security):
+        # To set the slippage model to the custom one for all stocks entering the universe.
+        security.set_slippage_model(CustomSlippageModel())
+
 class CustomSlippageModel:
     def get_slippage_approximation(self, asset: Security, order: Order) -&gt; float:
         # We set a maximum 2% slippage that is linearly linked to the ratio of the order size versus the previous bar's volume.
-        return asset.price * 0.02 * min(1, order.absolute_quantity / asset.volume)
-
-class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
-    def __init__(self, brokerage_model, security_seeder):
-        super().__init__(brokerage_model, security_seeder)
-    def initialize(self, security):
-        super().initialize(security)
-        # To set the slippage model to the custom one for all stocks entering the universe.
-        security.set_slippage_model(CustomSlippageModel())</pre>
+        return asset.price * 0.02 * min(1, order.absolute_quantity / asset.volume)</pre>
 </div>
 <h4>
  Other Examples

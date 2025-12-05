@@ -17,7 +17,7 @@
         SetEndDate(2024, 12, 31);
         
         // Seed the last price to set the initial price.
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        Settings.SeedInitialPrices = true;
         
         // Monthly renewal of the top 20 liquid universe to trade popular stocks.
         UniverseSettings.Schedule.On(DateRules.MonthStart());
@@ -83,7 +83,7 @@ class HistoricalRequestAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         
         # Seed the last price to set the initial price of the BTCUSDT holdings.
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.settings.seed_initial_prices = True
 
         # Monthly renewal of the top 20 liquid universe to trade popular stocks.
         self.universe_settings.schedule.on(self.date_rules.month_start())

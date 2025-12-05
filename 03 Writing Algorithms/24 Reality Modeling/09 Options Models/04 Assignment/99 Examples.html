@@ -110,9 +110,7 @@
         SetCash(1000000);
 
         // Seed the initial price of the each new security so we can add and trade contracts in the same time step.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         // Add SPY data for trading. Use raw data normalization mode to enable fair strike price comparison.
         _equity = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
     }
@@ -171,9 +169,7 @@
         self.set_cash(1000000)
 
         # Seed the initial price of the each new security so we can add and trade contracts in the same time step.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
-        )
+        self.settings.seed_initial_prices = True
         # Add SPY data for trading. Use raw data normalization mode to enable fair strike price comparison.
         self._equity = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
         

@@ -161,7 +161,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         self.set_brokerage_model(BrokerageName.BINANCE, AccountType.MARGIN)
 
         # Warm up the security with the last known price to avoid conversion error
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_price)))
+        self.settings.seed_initial_prices = True
         self.universe_settings.asynchronous = True
         self.universe_settings.resolution = Resolution.MINUTE
         # Add Crypto Universe Selection that select crypto pairs in Binance exchange
@@ -203,7 +203,7 @@ class CoinAPIDataAlgorithm(QCAlgorithm):
         SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
 
         // Warm up the security with the last known price to avoid conversion error
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrice)));
+        Settings.SeedInitialPrices = true;
         UniverseSettings.Asynchronous = true;
         UniverseSettings.Resolution = Resolution.Minute;
         // Add Crypto Universe Selection that select crypto pairs in Binance exchange

@@ -18,12 +18,7 @@ class BrainMLRankingDataAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000) 
         # Seed the price of each asset with its last known price to avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
         tickers = ["AAPL", "TSLA", "MSFT", "F", "KO"]
         self.symbol_by_dataset_symbol = {}
@@ -67,9 +62,7 @@ class BrainMLRankingDataAlgorithm(QCAlgorithm):
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         // Seed the price of each asset with its last known price to avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
         var tickers = new List&lt;string&gt;() {"AAPL", "TSLA", "MSFT", "F", "KO"};
         foreach (var ticker in tickers)

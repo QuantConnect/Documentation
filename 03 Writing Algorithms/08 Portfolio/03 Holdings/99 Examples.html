@@ -25,9 +25,7 @@
         // Add a security initializer that seeds the price of each asset with its
         // last known price. This ensures the holdings we add below will initialize
         // with a non-zero value.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
 
         // Request data for some securities in the account already.
         var spy = AddEquity("SPY").Symbol;
@@ -57,12 +55,7 @@
         # Add a security initializer that seeds the price of each asset with its
         # last known price. This ensures the holdings we add below will initialize
         # with a non-zero value.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
 
         # Request data for some securities in the account already.
         spy = self.add_equity("SPY").symbol

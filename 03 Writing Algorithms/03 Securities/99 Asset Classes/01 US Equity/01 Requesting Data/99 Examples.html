@@ -71,8 +71,7 @@ MSFT,0.92,0.96,0.98,1.01,0.98</pre>
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         
-        var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
-        AddSecurityInitializer(x =&gt; seeder.SeedSecurity(x));
+        Settings.SeedInitialPrices = true;
 
         // Add the US Equities.
         foreach (var ticker in "AAPL,AMZN,GOOG,META,MSFT".Split(","))
@@ -109,8 +108,7 @@ class USEquityDemoAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
 
-        seeder = FuncSecuritySeeder(self.get_last_known_prices)
-        self.add_security_initializer(lambda x: seeder.seed_security(x))
+        self.settings.seed_initial_prices = True
 
         # Add the US Equities.
         self.signal_by_ticker = {self.add_equity(ticker, Resolution.DAILY).symbol: 1

@@ -14,7 +14,7 @@
         SetCash(10_000_000);
         
         // Seed the price to ensure securities have information for margin calculations.
-        SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        Settings.SeedInitialPrices = true;
         
         // Request SPY data for trading. We use raw price data to compare the strike price fairly for ATM contract selection.
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
@@ -61,7 +61,7 @@
         self.set_cash(10_000_000)
         
         # Seed the price to ensure securities have information for margin calculations.
-        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.settings.seed_initial_prices = True
         
         # Request SPY data for trading. We use raw price data to compare the strike price fairly for ATM contract selection.
         self.spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol

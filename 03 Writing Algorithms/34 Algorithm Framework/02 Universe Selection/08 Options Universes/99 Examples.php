@@ -312,9 +312,25 @@ public class ETFUniverseOptions : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        Settings.SeedInitialPrices = true;
         UniverseSettings.Asynchronous = true;
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-        SetSecurityInitializer(new CustomSecurityInitializer(this));
+        AddSecurityInitializer(security =&gt; 
+        {
+            if (security.Type == SecurityType.Option) // Option type
+            {
+                (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
+            }
+
+            // Overwrite the volatility model and warm it up
+            if (security.Type == SecurityType.Equity)
+            {
+                security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+                var tradeBars = History(security.Symbol, 30, Resolution.Daily);
+                foreach (var tradeBar in tradeBars)
+                    security.VolatilityModel.Update(security, tradeBar);
+            }
+        });
 
         var universe = AddUniverse(FundamentalFunction);
         AddUniverseOptions(universe, OptionFilterFunction);
@@ -350,38 +366,6 @@ public class ETFUniverseOptions : QCAlgorithm
             _day = Time.Day;
         }
     }
-}
-
-internal class CustomSecurityInitializer : BrokerageModelSecurityInitializer
-{
-    private QCAlgorithm _algorithm;
-    public CustomSecurityInitializer(QCAlgorithm algorithm)
-        : base(algorithm.BrokerageModel, new FuncSecuritySeeder(algorithm.GetLastKnownPrices))
-    {
-        _algorithm = algorithm;
-    }    
-
-    public override void Initialize(Security security)
-    {
-        // First, call the superclass definition
-        // This method sets the reality models of each security using the default reality models of the brokerage model
-        base.Initialize(security);
-
-        // Next, overwrite the price model        
-        if (security.Type == SecurityType.Option) // Option type
-        {
-            (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
-        }
-
-        // Overwrite the volatility model and warm it up
-        if (security.Type == SecurityType.Equity)
-        {
-            security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-            var tradeBars = _algorithm.History(security.Symbol, 30, Resolution.Daily);
-            foreach (var tradeBar in tradeBars)
-                security.VolatilityModel.Update(security, tradeBar);
-        }    
-    }
 }</pre>
 	<pre class="python"># Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
 from AlgorithmImports import *
@@ -392,9 +376,10 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
+        self.settings.seed_initial_prices = True
         self.universe_settings.asynchronous = True
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-        self.set_security_initializer(CustomSecurityInitializer(self))
+        self.add_security_initializer(self._custom_security_initializer)
 
         universe = self.add_universe(self.fundamental_function)
         self.add_universe_options(universe, self.option_filter_function)
@@ -422,16 +407,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
             self.market_order(contract.symbol, 1, True, tag)
             self.day = self.time.day
 
-class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
-    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
-        super().__init__(algorithm.brokerage_model, FuncSecuritySeeder(algorithm.get_last_known_prices))
-        self.algorithm = algorithm
-
-    def initialize(self, security: Security) -&gt; None:
-        # First, call the superclass definition
-        # This method sets the reality models of each security using the default reality models of the brokerage model
-        super().initialize(security)
-
+    def _custom_security_initializer(self, security: Security) -&gt; None:
         # Overwrite the price model        
         if security.type == SecurityType.OPTION: # Option type
             security.price_model = OptionPriceModels.crank_nicolson_fd()
@@ -439,7 +415,7 @@ class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
         # Overwrite the volatility model and warm it up
         if security.type == SecurityType.EQUITY:
             security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)
-            trade_bars = self.algorithm.history[TradeBar](security.symbol, 30, Resolution.DAILY)
+            trade_bars = self.history[TradeBar](security.symbol, 30, Resolution.DAILY)
             for trade_bar in trade_bars:
                 security.volatility_model.update(security, trade_bar)</pre>
 </div>

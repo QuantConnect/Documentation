@@ -29,7 +29,12 @@ public class BuyingPowerModelAlgorithm : QCAlgorithm
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetSecurityInitializer(new CustomSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+        Settings.SeedInitialPrices = true;
+        AddSecurityInitializer(security =ggt;
+        {    
+            // Do not allow buying power for options; only a hedging strategy with 0 margin is allowed.
+            security.SetBuyingPowerModel(new NullBuyingPowerModel());
+        });
 
         // Disable the validations of the default position group buying power model
         // that evaluates the buying power of multi-leg strategies 
@@ -74,26 +79,13 @@ public class BuyingPowerModelAlgorithm : QCAlgorithm
             tag: "Protective Put"
         );
     }
-}
-public class CustomSecurityInitializer : BrokerageModelSecurityInitializer
-{
-    public CustomSecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-        : base(brokerageModel, securitySeeder)
-    {
-    }
-
-    public override void Initialize(Security security)
-    {
-        base.Initialize(security);
-        // Do not allow buying power for options; only a hedging strategy with 0 margin is allowed.
-        security.SetBuyingPowerModel(new NullBuyingPowerModel());
-    }
 }</pre>
 <pre class="python">class BuyingPowerModelAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_security_initializer(CustomSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        self.settings.seed_initial_prices = True
+        self.add_security_initializer(self._custom_security_initializer)
     
         # Disable the validations of the default position group buying power model
         # that evaluates the buying power of multi-leg strategies 
@@ -134,11 +126,7 @@ public class CustomSecurityInitializer : BrokerageModelSecurityInitializer
                 tag="Protective Put"
             )
 
-class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder):
-        super().__init__(brokerage_model, security_seeder)
-    def initialize(self, security: Security):
-        super().initialize(security)
+    def _custom_security_initializer(self, security: Security):
         # Do not allow buying power for options; only a hedging strategy with 0 margin is allowed.
         security.SetBuyingPowerModel(NullBuyingPowerModel())</pre>
 </div>

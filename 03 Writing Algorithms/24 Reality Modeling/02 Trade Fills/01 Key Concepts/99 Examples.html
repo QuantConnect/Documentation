@@ -148,7 +148,12 @@ class MyFillModel(FillModel):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         // The security initializer applies the VolumeShareFillModel to all assets.
-        SetSecurityInitializer(new VolumeShareFillSecurityInitializer(this));
+        Settings.SeedInitialPrices = true;
+        AddSecurityInitializer(security =&gt;
+        {
+            // Create a slippage model to fill only 30% of the volume of the previous second bar to fill illiquid stocks realistically.
+            security.SetFillModel(new VolumeShareFillModel(this, 0.3m));
+        });
 
         // Request extended market hour SPY data for trading.
         var qqq = AddEquity("QQQ").Symbol;
@@ -238,22 +243,6 @@ class MyFillModel(FillModel):
             return fill;
         }
     }
-
-    private class VolumeShareFillSecurityInitializer : BrokerageModelSecurityInitializer
-    {
-        private VolumeShareFillModel _fillModel;
-        public VolumeShareFillSecurityInitializer(QCAlgorithm algorithm)
-            : base(algorithm.BrokerageModel, new FuncSecuritySeeder(algorithm.GetLastKnownPrices))
-        {
-            // Create a slippage model to fill only 30% of the volume of the previous second bar to fill illiquid stocks realistically.
-            _fillModel = new VolumeShareFillModel(algorithm, 0.3m);
-        }
-        public override void Initialize(Security security)
-        {
-            base.Initialize(security);
-            security.SetFillModel(_fillModel);
-        }
-    }
 }</pre>
 <pre class="python">class VolumeShareFillModelAlgorithm(QCAlgorithm):
     longs = []
@@ -263,7 +252,8 @@ class MyFillModel(FillModel):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # The security initializer applies the VolumeShareFillModel to all assets.
-        self.set_security_initializer(VolumeShareFillSecurityInitializer(self))
+        self.settings.seed_initial_prices = True
+        self.add_security_initializer(self._volume_share_fill_security_initializer)
 
         # Request extended market hour SPY data for trading.
         qqq = self.add_equity("QQQ").symbol
@@ -303,6 +293,10 @@ class MyFillModel(FillModel):
         # Liquidate the ones not being the most and least popular stocks to release funds for higher expected return trades.
         self.set_holdings(targets, liquidate_existing_holdings=True)
 
+    def _volume_share_fill_security_initializer(self, security: Security) -&gt; None:
+        # Create a slippage model to fill only 30% of the volume of the previous second bar to fill illiquid stocks realistically.   
+        security.set_fill_model(VolumeShareFillModel(self, 0.3))
+
 class VolumeShareFillModel(FillModel):
     def __init__(self, algorithm: QCAlgorithm, maximum_ratio: float = 0.3):
         self.algorithm = algorithm
@@ -325,16 +319,7 @@ class VolumeShareFillModel(FillModel):
             self.absolute_remaining_by_order_id[order.id] = absolute_remaining - abs(fill.fill_quantity)
             price = fill.fill_price
 
-        return fill
-
-class VolumeShareFillSecurityInitializer(BrokerageModelSecurityInitializer):
-    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
-        super().__init__(algorithm.brokerage_model, FuncSecuritySeeder(algorithm.get_last_known_prices))
-        # Create a slippage model to fill only 30% of the volume of the previous second bar to fill illiquid stocks realistically.   
-        self.fill_model = VolumeShareFillModel(algorithm, 0.3)
-    def initialize(self, security: Security) -&gt; None:
-        super().initialize(security)
-        security.set_fill_model(self.fill_model)</pre>
+        return fill</pre>
 </div>
 <h4>
  Other Examples

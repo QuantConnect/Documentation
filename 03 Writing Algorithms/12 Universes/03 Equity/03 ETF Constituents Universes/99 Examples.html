@@ -22,9 +22,7 @@
         SetCash(10000000);
         Settings.MinimumOrderMarginPortfolioPercentage = 0m;
         // Seed the price of each asset with its last known price to avoid trading errors.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         // To avoid over-trading and high transaction costs, refilter and rebalance weekly.
         UniverseSettings.Schedule.On(DateRules.WeekEnd());
         // Add the SPY ETF.
@@ -76,12 +74,7 @@
         self.set_cash(10_000_000)
         self.settings.minimum_order_margin_portfolio_percentage = 0
         # Seed the price of each asset with its last known price to avoid trading errors.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(
-                self.brokerage_model, 
-                FuncSecuritySeeder(self.get_last_known_prices)
-            )
-        )
+        self.settings.seed_initial_prices = True
         # To avoid over-trading and high transaction costs, refilter and rebalance weekly.
         self.universe_settings.schedule.on(self.date_rules.week_end())
         # Add the SPY ETF.
@@ -149,9 +142,7 @@
         SetEndDate(2024, 12, 31);
         // Seed the price of each asset that enters the universe with its last known price so you can trade it 
         // on the same morning it enters the universe without getting warnings.
-        SetSecurityInitializer(
-            new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices))
-        );
+        Settings.SeedInitialPrices = true;
         // Add a chained universe that selects the SPY constituents trading above their 200-day SMA.
         var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         _universe = AddUniverse(Universe.ETF(spy), FundamentalSelection);
@@ -233,9 +224,7 @@ class SelectionData
         self.set_end_date(2024, 12, 31)
         # Seed the price of each asset that enters the universe with its last known price so you can trade it 
         # on the same morning it enters the universe without getting warnings.
-        self.set_security_initializer(
-            BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices))
-        )
+        self.settings.seed_initial_prices = True
         # Add a chained universe that selects the SPY constituents trading above their 200-day SMA.
         spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
         self._universe = self.add_universe(self.universe.etf(spy), self._fundamental_selection)
