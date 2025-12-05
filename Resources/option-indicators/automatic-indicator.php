@@ -9,7 +9,7 @@
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31);
+        SetEndDate(2024, 9, 30);
         SetCash(500000);
         // Seed the price of each asset with its last known price to avoid trading errors.
         SetSecurityInitializer(
@@ -41,14 +41,14 @@
         {
             return;
         }
-        var expiry = filteredChain.Min(contract => contract.Expiry);
-        filteredChain = filteredChain
-            .Where(contract => contract.Expiry == expiry)
-            .OrderBy(contract => Math.Abs(contract.Strike - contract.UnderlyingLastPrice))
-            .Take(4);
+        var expiry = filteredChain.Min(contract =&gt; contract.Expiry);
+        filteredChain = filteredChain.Where(contract =&gt; contract.Expiry == expiry);
+        
+        var minStrikeDelta = filteredChain.Min(contract =&gt; Math.Abs(contract.Strike - contract.UnderlyingLastPrice));
+        filteredChain = filteredChain.Where(contract =&gt; Math.Abs(contract.Strike - contract.UnderlyingLastPrice) == minStrikeDelta);
 
         // Group the contracts into call/put pairs.
-        foreach (var group in filteredChain.GroupBy(contract => contract.Strike))
+        foreach (var group in filteredChain.GroupBy(contract =&gt; contract.Strike))
         {
             var contracts = group.ToList();
             if (contracts.Count() > 1)
@@ -95,7 +95,7 @@
     
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 12, 31)
+        self.set_end_date(2024, 9, 30)
         self.set_cash(500_000)
         # Seed the price of each asset with its last known price to avoid trading errors.
         self.set_security_initializer(
