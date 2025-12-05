@@ -23,7 +23,7 @@
 <h4>Insufficient Buying Power</h4>
 <p>The <code class='csharp'>OrderResponseErrorCode.InsufficientBuyingPower</code><code class='python'>OrderResponseErrorCode.INSUFFICIENT_BUYING_POWER</code> (-3) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power model</a> determines you can't afford it.</p>
 
-<p>To avoid this order response error for non-Option trades, <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#13-Get-Initial-Margin-Requirements'>ensure you have enough margin remaining to cover the initial margin requirements</a> of the order before placing it.</p>
+<p>To avoid this order response error, <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#13-Get-Initial-Margin-Requirements'>ensure you have enough margin remaining to cover the initial margin requirements</a> of the order before placing it.</p>
 
 <p>This error also commonly occurs when you place a market on open order with daily data. If you place the order with <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> or use <code class="csharp">CalculateOrderQuantity</code><code class="python">calculate_order_quantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#06-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
 
