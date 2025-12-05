@@ -20,7 +20,12 @@ class UpcomingDividendsExampleAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Seed the price of each asset with its last known price to avoid trading errors.
-        self.settings.seed_initial_prices = True
+        self.set_security_initializer(
+            BrokerageModelSecurityInitializer(
+                self.brokerage_model, 
+                FuncSecuritySeeder(self.get_last_known_prices)
+            )
+        )
         # Universe consists of equities with upcoming dividend events.
         self._universe = self.add_universe(EODHDUpcomingDividends, self.selection)
         # Add a Scheduled Event to rebalance the portfolio every morning
@@ -52,7 +57,11 @@ class UpcomingDividendsExampleAlgorithm(QCAlgorithm):
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         // Seed the price of each asset with its last known price to avoid trading errors.
-        Settings.SeedInitialPrices = true;
+        SetSecurityInitializer(
+            new BrokerageModelSecurityInitializer(
+                BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)
+            )
+        );
         // Universe consists of equities with upcoming dividend events.
         _universe = AddUniverse&lt;EODHDUpcomingDividends&gt;((dividends) =&gt; {
             // Select the stocks with upcoming dividend record date, with a sufficient dividend size.
