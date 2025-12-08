@@ -69,10 +69,6 @@ class CopulaOptionTradingAlgorithm(QCAlgorithm):
         spx_options = self.option_chain(self.spx)
         ndx_options = self.option_chain(self.ndx)
         
-        # Re-fetch since we consumed the iterators
-        spx_options = self.option_chain(self.spx)
-        ndx_options = self.option_chain(self.ndx)
-        
         # Only use European options since the computation of averaging option payoff to price is more efficient.
         # Only include the ones within 5% of the current price, since they are more liquid and less susceptible from slippage.
         spx_price = self.securities[self.spx].price
@@ -88,20 +84,15 @@ class CopulaOptionTradingAlgorithm(QCAlgorithm):
         spx_expiries = set(contract.expiry for contract in european_spx_options if contract.expiry &gt; self.time + timedelta(7))
         ndx_expiries = set(contract.expiry for contract in european_ndx_options if contract.expiry &gt; self.time + timedelta(7))
         common_expiries = spx_expiries.intersection(ndx_expiries)
-
         if len(common_expiries) == 0:
             return
-            
         expiry = min(common_expiries)
-        
         filtered_spx_options = [contract for contract in european_spx_options if contract.expiry == expiry]
         filtered_ndx_options = [contract for contract in european_ndx_options if contract.expiry == expiry]
         # Use simulations to price options by the fitted copula distributions to spot mispricing option pairs.
         mispriced_option_pairs = self.copula_trader.scan_option_mispricing_combinations(filtered_spx_options, filtered_ndx_options, spx_price, ndx_price, self.time, self.n_samples)
-        
         # Obtain the trading plan from the mispriced options, calculated using Kelly Criterion.
         trade_plan = self.copula_trader.trade_options(mispriced_option_pairs, self.portfolio.cash, 100)
-        
         # Order both plans. Request the option contract data to trade it.
         for contract, size in trade_plan.items():
             symbol = self.add_option_contract(contract).symbol
@@ -215,7 +206,6 @@ class CopulaTrader:
 
     def scan_option_mispricing_combinations(self, security1_options: List[OptionContract], security2_options: List[OptionContract], current_security1_price: float, current_security2_price: float,
         current: datetime, n_samples: int = 1000) -&gt; List[tuple[OptionContract, OptionContract, float, float]]:
-        
         # Get the simluated price series till the expiry. Note that you should use single expiry for all contracts for easier handling and stable theta.
         future_prices, dtm = self._get_simulated_paths(current_security1_price, current_security2_price, security1_options[0].expiry, current, n_samples)
         
@@ -223,7 +213,6 @@ class CopulaTrader:
         interest_rate = self.interest_rate_provider.get_interest_rate(current)
         security1_dividend_yield = self.security1_dividend_yield_provider.get_dividend_yield(current)
         security2_dividend_yield = self.security2_dividend_yield_provider.get_dividend_yield(current)
-       
         # Separate call and put options to avoid mixed right pairs, in order to keep theta close to 0.
         pairs_checked = 0
         for right in [OptionRight.CALL, OptionRight.PUT]:
@@ -250,13 +239,12 @@ class CopulaTrader:
                     price_divergence1 = security1_price_divergence - security2_price_divergence
                     price_divergence2 = security1_price - security1_option.bid_price - security2_price + security2_option.ask_price
                     price_divergence = price_divergence1 if abs(price_divergence1) &gt; abs(price_divergence2) else price_divergence1
-                    pairs_checked += 1
-                                        
+                    pairs_checked += 1                       
                     if abs(price_divergence) &gt; self.misprice_threshold and np.sign(security1_price_divergence) != np.sign(security2_price_divergence):
                         mispriced_pairs.append((security1_option, security2_option, price_divergence, prob))
         
         self._algorithm.debug(f"Found {len(mispriced_pairs)} mispriced option contract pairs.")
-        
+
         return mispriced_pairs
     
     def _get_simulated_paths(self, current_security1_price: float, current_security2_price: float, expiry: datetime, current: datetime, n_samples: int) -&gt; tuple[float, float]:
@@ -302,14 +290,11 @@ class CopulaTrader:
 
         # Only trade on the top 10 expected return pairs.
         top_expected_ret = sorted(mispriced_pairs, key=lambda x: abs(x[2]) * x[3], reverse=True)[:10]
-        
         for security1_option, security2_option, price_divergence, prob in top_expected_ret:
             # Calculate the order size of the mispricing pairs.
             contract1_price = security1_option.ask_price if price_divergence &gt; 0 else security1_option.bid_price
             contract2_price = security2_option.ask_price if price_divergence &lt; 0 else security2_option.bid_price
-            
             security1_option_order_size, security2_option_order_size, order_pct = self._calculate_order_size(price_divergence, fund, prob, contract1_price, contract2_price, contract_multiplier)
-            
             # Only order those with positive Kelly sizing and keep the exposure to cash only.
             # Keep 5% buffer to avoid order errors.
             if order_pct and total_pct + order_pct &lt;= 0.95:
