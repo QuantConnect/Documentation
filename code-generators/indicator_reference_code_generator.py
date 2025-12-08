@@ -345,6 +345,8 @@ class IndicatorProcessor:
 
     public override void Initialize()
     &lcub;
+        SetStartDate(2024,1,1);
+        SetEndDate(2024,12,31);
         UniverseSettings.Resolution = Resolution.Daily;
         UniverseSettings.Schedule.On(DateRules.MonthStart());
         _universe = AddUniverse(Universe.ETF("SPY"));
@@ -439,6 +441,8 @@ class IndicatorProcessor:
         variable = method_call[:method_call.find('(')].replace('self.','').lower()
         code = f"""class {type_name}Algorithm(QCAlgorithm):
     def initialize(self) -> None:
+        self.set_start_date(2024,1,1)
+        self.set_end_date(2024,12,31)
         self.universe_settings.resolution = Resolution.DAILY
         self.universe_settings.schedule.on(self.date_rules.month_start())
         self._universe = self.add_universe(self.universe.etf('SPY'))
