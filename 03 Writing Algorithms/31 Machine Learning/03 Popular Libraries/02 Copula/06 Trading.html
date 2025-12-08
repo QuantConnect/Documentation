@@ -199,10 +199,6 @@
         spx_options = self.option_chain(self.spx)
         ndx_options = self.option_chain(self.ndx)
         
-        # Re-fetch since we consumed the iterators
-        spx_options = self.option_chain(self.spx)
-        ndx_options = self.option_chain(self.ndx)
-        
         # Only use European options since the computation of averaging option payoff to price is more efficient.
         # Only include the ones within 5% of the current price, since they are more liquid and less susceptible from slippage.
         spx_price = self.securities[self.spx].price
@@ -218,20 +214,15 @@
         spx_expiries = set(contract.expiry for contract in european_spx_options if contract.expiry &gt; self.time + timedelta(7))
         ndx_expiries = set(contract.expiry for contract in european_ndx_options if contract.expiry &gt; self.time + timedelta(7))
         common_expiries = spx_expiries.intersection(ndx_expiries)
-
         if len(common_expiries) == 0:
             return
-            
         expiry = min(common_expiries)
-        
         filtered_spx_options = [contract for contract in european_spx_options if contract.expiry == expiry]
         filtered_ndx_options = [contract for contract in european_ndx_options if contract.expiry == expiry]
         # Use simulations to price options by the fitted copula distributions to spot mispricing option pairs.
         mispriced_option_pairs = self.copula_trader.scan_option_mispricing_combinations(filtered_spx_options, filtered_ndx_options, spx_price, ndx_price, self.time, self.n_samples)
-        
         # Obtain the trading plan from the mispriced options, calculated using Kelly Criterion.
         trade_plan = self.copula_trader.trade_options(mispriced_option_pairs, self.portfolio.cash, 100)
-        
         # Order both plans. Request the option contract data to trade it.
         for contract, size in trade_plan.items():
             symbol = self.add_option_contract(contract).symbol
