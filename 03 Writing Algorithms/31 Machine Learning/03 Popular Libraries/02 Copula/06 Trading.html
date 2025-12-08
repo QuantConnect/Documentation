@@ -101,7 +101,7 @@
     <li>Create a method to get the optimal position sizings for the top-expected-return trading opportunities.</li>
     <div class="section-example-container">
         <pre class="python">class CopulaTrader:
-    def trade_options(self, mispriced_pairs: List[tuple[OptionContract, OptionContract, float, float]], fund: float, contract_multiplier: int = 100) -&gt; dict[OptionContract, int]:
+    def trade_options(self, mispriced_pairs: List[tuple[OptionContract, OptionContract, float, float]], fund: float, contract_multiplier: int = 100) -&gt; dict[OptionContract, float]:
         orders = {}
         total_pct = 0
 
@@ -127,7 +127,7 @@
 
         return orders
             
-    def _calculate_order_size(self, price_divergence: float, fund: float, prob_win: float, security1_option_price: float, security2_option_price: float, contract_multiplier: int) -&gt; tuple[int, int, float]:
+    def _calculate_order_size(self, price_divergence: float, fund: float, prob_win: float, security1_option_price: float, security2_option_price: float, contract_multiplier: int) -&gt; tuple[float, float, float]:
         # The profit percentage is based on the option prices.
         capital = security1_option_price + security2_option_price
         profit_pct = abs(price_divergence) / capital
@@ -151,7 +151,7 @@
     <li>Create a method to handle the portfolio and exit the positions when price converges.</li>
     <div class="section-example-container">
         <pre class="python">class CopulaTrader:
-    def exit_trades(self, current: datetime) -&gt; dict[OptionContract, int]:
+    def exit_trades(self, current: datetime) -&gt; dict[OptionContract, float]:
         # Get the parameters for fair price calculation.
         interest_rate = self.interest_rate_provider.get_interest_rate(current)
         security1_dividend_yield = self.security1_dividend_yield_provider.get_dividend_yield(current)
