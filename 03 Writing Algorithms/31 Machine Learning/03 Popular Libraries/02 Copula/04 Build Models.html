@@ -72,14 +72,18 @@
     
     self._algorithm.debug(f"Best fitted copula distribution: {self.copula_name}, with tau: {self.copula.tau}")
     
-def _ks2d2s(self, x1: np.ndarray, y1: np.ndarray, x2: np.ndarray, y2: np.ndarray) -> float:
+def _ks2d2s(self, x1: np.ndarray, y1: np.ndarray, x2: np.ndarray, y2: np.ndarray) -&gt; float:
     '''Two-dimensional Kolmogorov-Smirnov test on two samples. 
     Adapted from: https://github.com/syrte/ndtest/blob/master/ndtest.py'''
-    def avgmaxdist(x1, y1, x2, y2):
-        D1 = maxdist(x1, y1, x2, y2)
-        D2 = maxdist(x2, y2, x1, y1)
-        return (D1 + D2) / 2
-    
+    def quadct(x, y, xx, yy):
+        n = len(xx)
+        ix1, ix2 = xx &lt;= x, yy &lt;= y
+        a = np.sum(ix1 & ix2) / n
+        b = np.sum(ix1 & ~ix2) / n
+        c = np.sum(~ix1 & ix2) / n
+        d = 1 - a - b - c
+        return a, b, c, d
+
     def maxdist(x1, y1, x2, y2):
         n1 = len(x1)
         D1 = np.empty((n1, 4))
@@ -93,14 +97,10 @@ def _ks2d2s(self, x1: np.ndarray, y1: np.ndarray, x2: np.ndarray, y2: np.ndarray
         dmin, dmax = -D1.min(), D1.max() + 1 / n1
         return max(dmin, dmax)
 
-    def quadct(x, y, xx, yy):
-        n = len(xx)
-        ix1, ix2 = xx &lt;= x, yy &lt;= y
-        a = np.sum(ix1 & ix2) / n
-        b = np.sum(ix1 & ~ix2) / n
-        c = np.sum(~ix1 & ix2) / n
-        d = 1 - a - b - c
-        return a, b, c, d
+    def avgmaxdist(x1, y1, x2, y2):
+        D1 = maxdist(x1, y1, x2, y2)
+        D2 = maxdist(x2, y2, x1, y1)
+        return (D1 + D2) / 2
     
     n1, n2 = len(x1), len(x2)
     D = avgmaxdist(x1, y1, x2, y2)
