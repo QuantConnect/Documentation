@@ -69,7 +69,7 @@
 <h4>Invalid Order Status</h4>
 <p>The <code class='csharp'>OrderResponseErrorCode.InvalidOrderStatus</code><code class='python'>OrderResponseErrorCode.INVALID_ORDER_STATUS</code> (-9) error occurs when you try to update or cancel an order but the order is already complete. An order is complete if it has <code class="csharp">OrderStatus.Filled</code><code class="python">OrderStatus.FILLED</code>, <code class="csharp">OrderStatus.Canceled</code><code class="python">OrderStatus.CANCELED</code>, or <code class="csharp">OrderStatus.Invalid</code><code class="python">OrderStatus.INVALID</code>.</p>
 
-<p>To avoid this order response error, check <code>Status</code> of an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> or <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> before you update or cancel the order.</p>
+<p>To avoid this order response error, check the <code>Status</code> of an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> or <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> before you update or cancel the order.</p>
 
 <a id='unable-to-find-order'></a><div class="section-example-container">
 <pre class="csharp">if (!_orderTicket.Status.IsClosed())
