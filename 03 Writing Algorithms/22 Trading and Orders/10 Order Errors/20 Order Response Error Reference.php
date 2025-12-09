@@ -120,9 +120,9 @@ if (holdingQuantity > 0)
 {
     ExerciseOption(_contractSymbol, Math.Max(holdingQuantity, exerciseQuantity));
 }</pre>
-<pre class="python">holding_quantity = self.Portfolio[self.contract_symbol].Quantity
+<pre class="python">holding_quantity = self.portfolio[self._contract_symbol].quantity
 if holding_quantity > 0:
-    self.ExerciseOption(self.contract_symbol, max(holding_quantity, exercise_quantity))</pre>
+    self.exercise_option(self._contract_symbol, max(holding_quantity, exercise_quantity))</pre>
 </div>
 
 
