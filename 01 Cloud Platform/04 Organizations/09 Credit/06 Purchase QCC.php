@@ -1,7 +1,7 @@
 <p>Follow these steps to purchase QuantConnect Credit (QCC):</p>
 
 <ol>
-    <li>Open the <a href="/docs/v2/cloud-platform/organizations/billing#03-View-Billing-Information">Billing</a> page.</li>
+    <li>Open the <a href="/organization/billing">Billing</a> page.</li>
     <li>Scroll down to the <span class="page-section-name">Organization Credit (QCC)</span> section and then click <span class="button-name">Purchase Credit</span>.</li>
     <li>Select a credit pack and then click <span class="button-name">Continue</span>.</li>
     <li>If your preferred organization has a credit card and you want to charge that card, click <span class="button-name">Purchase</span>.</li>
