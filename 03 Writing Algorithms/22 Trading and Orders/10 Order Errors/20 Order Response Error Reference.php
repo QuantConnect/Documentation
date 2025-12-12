@@ -315,8 +315,8 @@ if quantity_to_borrow <= self.shortable_quantity(self._symbol):
 {
     ExerciseOption(_contractSymbol, quantity);
 }</pre>
-    <pre class="python">if self.contract_symbol.ID.OptionStyle == OptionStyle.European && self.contract_symbol.ID.Date == self.Time.Date:
-    self.ExerciseOption(self.contract_symbol, quantity)</pre>
+    <pre class="python">if self.contract_symbol.id.option_style == OptionStyle.EUROPEAN && self.contract_symbol.id.date == self.time.date:
+    self.exercise_option(self.contract_symbol, quantity)</pre>
 </div>
 
 
