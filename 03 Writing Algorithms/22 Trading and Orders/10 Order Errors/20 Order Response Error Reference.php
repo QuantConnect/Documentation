@@ -280,14 +280,14 @@ if quantity >= lot_size:
 <p>To avoid this order response error, check if there are enough shares available before you place an order to short a security.</p>
 
 <a id='invalid-new-order-status'></a><div class="section-example-container">
-    <pre class="csharp">var availableToBorrow = BrokerageModel.GetShortableProvider().ShortableQuantity(_symbol, Time);
+    <pre class="csharp">var availableToBorrow = ShortableQuantity(_symbol);
 if (availableToBorrow == null || quantityToBorrow <= availableToBorrow)
 {
     MarketOrder(_symbol, -quantityToBorrow);
 }</pre>
-    <pre class="python">available_to_borrow = self.BrokerageModel.GetShortableProvider().ShortableQuantity(self._symbol, self.Time)
+    <pre class="python">available_to_borrow = self.shortable_quantity(self._symbol)
 if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
-    self.MarketOrder(self._symbol, -quantity_to_borrow)</pre>
+    self.market_order(self._symbol, -quantity_to_borrow)</pre>
 </div>
 
 
