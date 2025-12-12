@@ -255,7 +255,7 @@ if holding_quantity > 0:
 
 
 <h4>Non-Exercisable Security</h4>
-<p><a id='order-quantity-less-than-lot-size'></a>The <code class='csharp'>OrderResponseErrorCode.NonExercisableSecurity</code><code class='python'>OrderResponseErrorCode.NON_EXERCISABLE_SECURITY</code> (-29) error occurs when you call the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>ExerciseOption</a> method with a <code>Symbol</code> that doesn't reference an Option contract.</p>
+<p><a id='order-quantity-less-than-lot-size'></a>The <code class='csharp'>OrderResponseErrorCode.NonExercisableSecurity</code><code class='python'>OrderResponseErrorCode.NON_EXERCISABLE_SECURITY</code> (-29) error occurs when you call the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'><span class='csharp'>ExerciseOption</span><span class='python'>exercise_option</span></a> method with a <code>Symbol</code> that doesn't reference an Option contract.</p>
 
 <h4>Order Quantity Less Than Lot Size</h4>
 <p>The <code class='csharp'>OrderResponseErrorCode.OrderQuantityLessThanLotSize</code><code class='python'>OrderResponseErrorCode.ORDER_QUANTITY_LESS_THAN_LOT_SIZE</code> (-30) error occurs when you place an order with a quantity that's less than the lot size of the security.</p>
@@ -268,9 +268,9 @@ if (quantity >= lotSize)
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-    <pre class="python">lot_size = self.Securities[self._symbol].SymbolProperties.LotSize
+    <pre class="python">lot_size = self.securities[self._symbol].symbol_properties.lot_size
 if quantity >= lot_size:
-    self.MarketOrder(self._symbol, quantity)</pre>
+    self.market_order(self._symbol, quantity)</pre>
 </div>
 
 
