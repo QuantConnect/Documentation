@@ -325,11 +325,26 @@ if quantity_to_borrow <= self.shortable_quantity(self._symbol):
 
 <p>To avoid this order response error, check if the time slice has a split event for the underlying Equity of the contract before you place an order for the contract.</p>
 
-<div class="section-example-container">
+<a id='market-on-open-not-allowed-during-regular-hours'></a><div class="section-example-container">
     <pre class="csharp">if (!slice.Splits.ContainsKey(_contractSymbol.Underlying))
 {
     MarketOrder(_contractSymbol, quantity);
 }</pre>
     <pre class="python">if self.contract_symbol.underlying not in slice.splits:
     self.market_order(self.contract_symbol, quantity)</pre>
+</div>
+
+
+<h4>Market on Open Not Allowed During Regular Hours</h4>
+<p>The <code class='csharp'>OrderResponseErrorCode.MarketOnOpenNotAllowedDuringRegularHours</code><code class='python'>OrderResponseErrorCode.MARKET_ON_OPEN_NOTE_ALLOWED_DURING_REGULAR_HOURS</code> (-35) error occurs when you try to place a <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>market on open order</a> for an asset when it's during regular trading hours.</p>
+
+<p>To avoid this order response error, place the order when the market is closed.</p>
+
+</a><div class="section-example-container">
+    <pre class="csharp">if (!IsMarketOpen(_symbol))
+{
+    MarketOnOpenOrder(_symbol, quantity);
+}</pre>
+    <pre class="python">if not self.is_market_open(self._symbol):
+    self.market_on_open_order(self._symbol, quantity)</pre>
 </div>
