@@ -28,16 +28,16 @@ class MyAlphaModel : AlphaModel
 }</pre>
 		<pre class="python"># Handle dynamic asset changes by initializing indicators for new securities and removing them for removed securities to keep the Alpha model adaptive and accurate.
 class MyAlphaModel(AlphaModel):
-    securities = []
+    _securities = []
 
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
-            security.indicator = algorithm.SMA(security.symbol, 20)
+            security.indicator = algorithm.sma(security.symbol, 20)
             algorithm.warm_up_indicator(security.symbol, security.indicator)
-            self.securities.append(security)
+            self._securities.append(security)
 
         for security in changes.removed_securities:
-            if security in self.securities:
+            if security in self._securities:
                 algorithm.deregister_indicator(security.indicator)
-                self.securities.remove(security)</pre>
+                self._securities.remove(security)</pre>
 	</div>
