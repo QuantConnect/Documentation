@@ -22,6 +22,7 @@ class ChangeLog:
         [{'summary': 'some text', 'url': 'hyperlink'}]
         """
         self._openai = OpenAI_(openai_api_key, openai_model, system_prompt)
+        self._token_limit = 272_000
 
     def update(self, lookback_days, output_path):
         # Get the daily changes.
@@ -90,18 +91,23 @@ class ChangeLog:
                 if key in commit:
                     clean_commit[key] = commit[key]
             prompt['commits'].append(clean_commit)
+        prompt_backup = prompt.copy()
         # 2) Populate pull requests.
         for commit in prompt['commits']:
             pull_number = commit.get('related_pull_request', 0)
             if not pull_number:
                 continue
             prompt['pull_requests'][pull_number] = self._pull_request_by_id[pull_number]
+        if len(json.dumps(prompt)) > self._token_limit:
+            prompt = prompt_backup
         # 3) Populate Issues.
         for pr in prompt['pull_requests'].values():
             for repo, issue_number in pr.get('related_issues', []):
                 if repo not in prompt['issues']:
                     prompt['issues'][repo] = {}
                 prompt['issues'][repo][issue_number] = self._issues_by_repo[repo][issue_number]
+        if len(json.dumps(prompt)) > self._token_limit:
+            prompt = prompt_backup
 
         # Create the list of changes for the change log using the AI 
         # model.
