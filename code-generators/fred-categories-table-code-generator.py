@@ -24,5 +24,5 @@ def get_data(type: str) -> str:
 
 with open("Resources/datasets/data-point-attributes/fred/supported-indicators.html", "w", encoding="utf-8") as text:
     html = "<p>The following list shows the accessor code you need to add each FRED dataset to your algorithm:</p>\n"
-    html += '\n'.join([get_data(cat) for cat in ["CBOE", "CentralBankInterventions", "CommercialPaper", "ICEBofAML", "LIBOR", "OECDRecessionIndicators", "TradeWeightedIndexes", "Wilshire"]])
+    html += '\n'.join([get_data(cat) for cat in ["CBOE", "CentralBankInterventions", "CommercialPaper", "ICEBofAML", "LIBOR", "OECDRecessionIndicators", "TradeWeightedIndexes"]])
     text.write(html)
