@@ -5,34 +5,38 @@ Information about the algorithm to read live logs from. The <code>/live/logs/rea
 <table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>ReadLiveLogsRequest</code> Model - Request to read the logs of a specific algorithm. The difference between 'startLine' and 'endLine' must be smaller than 250, else an error will be thrown.</th>
+<th colspan="2"><code>ReadLiveLogsRequest</code> Model - Request to read the logs of a specific algorithm.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">format</td> <td> <code>object<br/><i><sub>example: json</sub></i></code> <br/> Format of the log results.</td>
+<td width="20%">format</td> <td> <code>object</code> <br/> Format of the log results.</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 23456789</sub></i></code> <br/> Project Id of the live running algorithm.</td>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Id of the project that contains the live running algorithm.</td>
 </tr>
 <tr>
 <td width="20%">algorithmId</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Deploy Id (Algorithm Id) of the live running algorithm.</td>
 </tr>
 <tr>
-<td width="20%">startLine</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Start line of logs to read.</td>
+<td width="20%">startLine</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Start line (inclusive) of logs to read. The lines numbers start at 0.</td>
 </tr>
 <tr>
-<td width="20%">endLine</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> End line of logs to read.</td>
+<td width="20%">endLine</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> End line (exclusive) of logs to read, where endLine - startLine <= 250.</td>
+</tr>
+<tr>
+<td width="20%">deploymentLogs</td> <td> <code>boolean</code> <br/> Indicates if only the given deployment logs should be included in the response.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "format": "json",
-  "projectId": 23456789,
+  "format": ,
+  "projectId": 0,
   "algorithmId": "string",
   "startLine": 0,
-  "endLine": 0
+  "endLine": 0,
+  "deploymentLogs": true
 }</pre>
 </div>
 </td>

@@ -101,6 +101,8 @@ def ResponseTable(requestBody, type="application/json"):
             writeUp += f'<th colspan="2">{requestBody["description"]}</th>\n'
             writeUp += '</tr>\n</thead>\n'
             
+            if "items" not in component:
+                return writeUp
             writeUp += f'<tr>\n<td width="20%">value</td> <td> <code>{component["items"]["type"]}</code> <br/>/</td>\n</tr>\n'
             
             writeUp += '<tr>\n<td width="20%">Example</td>\n<td>\n<div class="cli section-example-container"><pre>\n'
@@ -110,20 +112,28 @@ def ResponseTable(requestBody, type="application/json"):
             return writeUp
             
     else:
-        component = requestBody["$ref"].split("/")[1:]
+        if "$ref" in requestBody:
+            component = requestBody["$ref"].split("/")[1:]
+        else:
+            return ''
         
     item_list = [component]
     i = 0
     
     while i < len(item_list):
         request_object = doc
+        if isinstance(item_list[i], str):
+            i += 1
+            continue
         for item in item_list[i]:
             request_object = request_object.get(item)
             if not request_object:
                 request_object = doc.get('components').get('schemas').get(item)
                 if not request_object:
                     continue
-            
+
+        request_object_properties = None
+
         if "items" in request_object and "oneOf" in request_object["items"]:
             prop = request_object["items"]["oneOf"]
             example = '<tr>\n<td width="20%">Example</td>\n<td>\n<div class="cli section-example-container"><pre>\n[\n  ['
@@ -169,7 +179,10 @@ def ResponseTable(requestBody, type="application/json"):
         
         elif "oneOf" in request_object:
             for y in request_object["oneOf"]:
-                item_list.append(y["$ref"].split("/")[1:])
+                if "$ref" in y:
+                    item_list.append(y["$ref"].split("/")[1:])
+                if "type" in y:
+                    item_list.append(y["type"])
             i += 1
             continue
             
@@ -198,6 +211,9 @@ def ResponseTable(requestBody, type="application/json"):
             
         writeUp += '</tr>\n</thead>\n'
         
+        if not request_object_properties:
+            i += 1
+            continue
         example, html_property, item_list = ExampleWriting(request_object_properties, item_list, array, order)
         
         if array:

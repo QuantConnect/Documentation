@@ -29,24 +29,23 @@ The <code>/backtests/read/insights</code> API provides a response in the followi
       "id": "string",
       "groupId": "string",
       "sourceModel": "string",
-      "generatedTime": "string",
-      "createdTime": 0,
+      "generatedTime": 0,
       "closeTime": 0,
       "symbol": "string",
       "ticker": "string",
       "type": "price",
-      "reference": "string",
-      "referenceValueFinal": "string",
+      "reference": 0,
+      "referenceFinal": 0,
       "direction": "down",
       "period": 0,
       "magnitude": 0,
       "confidence": 0,
       "weight": 0,
-      "scoreIsFinal": true,
+      "scoreFinal": true,
       "scoreDirection": 0,
       "scoreMagnitude": 0,
       "estimatedValue": 0,
-      "tag": "2021-11-26T15:18:27.693Z"
+      "tag": "string"
     }
   ],
   "length": 0,
@@ -62,43 +61,40 @@ The <code>/backtests/read/insights</code> API provides a response in the followi
 </tr>
 </thead>
 <tr>
-<td width="20%">id</td> <td> <code>string</code> <br/> Insight ID.</td>
+<td width="20%">id</td> <td> <code>string</code> <br/> Id of the insight.</td>
 </tr>
 <tr>
-<td width="20%">groupId</td> <td> <code>string</code> <br/> ID of the group of insights.</td>
+<td width="20%">groupId</td> <td> <code>string</code> <br/> Id of the group of insights.</td>
 </tr>
 <tr>
-<td width="20%">sourceModel</td> <td> <code>string</code> <br/> Name of the model that sourced the insight.</td>
+<td width="20%">sourceModel</td> <td> <code>string</code> <br/> An identifier for the source model that generated this insight.</td>
 </tr>
 <tr>
-<td width="20%">generatedTime</td> <td> <code>string</code> <br/> Gets the utc unixtime this insight was generated.</td>
+<td width="20%">generatedTime</td> <td> <code>integer</code> <br/> Gets the Unix time this insight was generated.</td>
 </tr>
 <tr>
-<td width="20%">createdTime</td> <td> <code>number</code> <br/> Gets the utc unixtime this insight was created.</td>
+<td width="20%">closeTime</td> <td> <code>integer</code> <br/> Gets the Unix time this insight was closed.</td>
 </tr>
 <tr>
-<td width="20%">closeTime</td> <td> <code>number</code> <br/> Gets the utc unixtime this insight was closed.</td>
-</tr>
-<tr>
-<td width="20%">symbol</td> <td> <code>string</code> <br/> Gets the symbol ID this insight is for.</td>
+<td width="20%">symbol</td> <td> <code>string</code> <br/> Gets the symbol Id this insight is for.</td>
 </tr>
 <tr>
 <td width="20%">ticker</td> <td> <code>string</code> <br/> Gets the symbol ticker this insight is for.</td>
 </tr>
 <tr>
-<td width="20%">type</td> <td> <code>string Enum</code> <br/> Gets the type of insight, for example, price or volatility. Options : ['price', 'volatility']</td>
+<td width="20%">type</td> <td> <code>string Enum</code> <br/> Gets the type of insight. Options : ['price', 'volatility']</td>
 </tr>
 <tr>
-<td width="20%">reference</td> <td> <code>string</code> <br/> Gets the initial reference value this insight is predicting against.</td>
+<td width="20%">reference</td> <td> <code>number</code> <br/> Gets the initial reference value this insight is predicting against. That is, the price of the asset when the insight was created.</td>
 </tr>
 <tr>
-<td width="20%">referenceValueFinal</td> <td> <code>string</code> <br/> Gets the final reference value, used for scoring, this insight is predicting against.</td>
+<td width="20%">referenceFinal</td> <td> <code>number</code> <br/> Gets the final reference value, used for scoring, this insight is predicting against.</td>
 </tr>
 <tr>
-<td width="20%">direction</td> <td> <code>string Enum</code> <br/> Gets the predicted direction, down, flat or up. Options : ['down', 'flat', 'up']</td>
+<td width="20%">direction</td> <td> <code>string Enum</code> <br/> Gets the predicted direction. Options : ['down', 'flat', 'up']</td>
 </tr>
 <tr>
-<td width="20%">period</td> <td> <code>number</code> <br/> Gets the period, in seconds, over which this insight is expected to come to fruition.</td>
+<td width="20%">period</td> <td> <code>integer</code> <br/> Gets the period, in seconds, over which this insight is expected to come to fruition.</td>
 </tr>
 <tr>
 <td width="20%">magnitude</td> <td> <code>number</code> <br/> Gets the predicted percent change in the insight type (price/volatility). This value can be null.</td>
@@ -110,7 +106,7 @@ The <code>/backtests/read/insights</code> API provides a response in the followi
 <td width="20%">weight</td> <td> <code>number</code> <br/> Gets the portfolio weight of this insight. This value can be null.</td>
 </tr>
 <tr>
-<td width="20%">scoreIsFinal</td> <td> <code>boolean</code> <br/> Gets whether or not this is the insight's final score.</td>
+<td width="20%">scoreFinal</td> <td> <code>boolean</code> <br/> Gets whether or not this is the insight's final score.</td>
 </tr>
 <tr>
 <td width="20%">scoreDirection</td> <td> <code>number</code> <br/> Gets the direction score.</td>
@@ -122,7 +118,7 @@ The <code>/backtests/read/insights</code> API provides a response in the followi
 <td width="20%">estimatedValue</td> <td> <code>number</code> <br/> Gets the estimated value of this insight in the account currency.</td>
 </tr>
 <tr>
-<td width="20%">tag</td> <td> <code>string($float)</code> <br/> The insight's tag containing additional information.</td>
+<td width="20%">tag</td> <td> <code>string</code> <br/> The insight's tag containing additional information.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -132,24 +128,23 @@ The <code>/backtests/read/insights</code> API provides a response in the followi
   "id": "string",
   "groupId": "string",
   "sourceModel": "string",
-  "generatedTime": "string",
-  "createdTime": 0,
+  "generatedTime": 0,
   "closeTime": 0,
   "symbol": "string",
   "ticker": "string",
   "type": "price",
-  "reference": "string",
-  "referenceValueFinal": "string",
+  "reference": 0,
+  "referenceFinal": 0,
   "direction": "down",
   "period": 0,
   "magnitude": 0,
   "confidence": 0,
   "weight": 0,
-  "scoreIsFinal": true,
+  "scoreFinal": true,
   "scoreDirection": 0,
   "scoreMagnitude": 0,
   "estimatedValue": 0,
-  "tag": "2021-11-26T15:18:27.693Z"
+  "tag": "string"
 }</pre>
 </div>
 </td>

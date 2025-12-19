@@ -11,46 +11,49 @@ The <code>/live/read</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
-<td width="20%">message</td> <td> <code>string<br/><i><sub>example: message</sub></i></code> <br/> Error message.</td>
+<td width="20%">message</td> <td> <code>string</code> <br/> Error message.</td>
 </tr>
 <tr>
-<td width="20%">status</td> <td> <code>string<br/><i><sub>example: Running</sub></i></code> <br/> Indicates the status of the algorihtm, i.e. 'Running', 'Stopped'.</td>
+<td width="20%">deployId</td> <td> <code>string</code> <br/> Unique live algorithm deployment identifier (similar to a backtest id).</td>
 </tr>
 <tr>
-<td width="20%">deployId</td> <td> <code>string<br/><i><sub>example: L-sdf86b7045bb83203e79d2aa6150b321</sub></i></code> <br/> Algorithm deployment ID.</td>
+<td width="20%">status</td> <td> <code>string Enum</code> <br/> State of the live deployment. Options : ['DeployError', 'InQueue', 'Running', 'Stopped', 'Liquidated', 'Deleted', 'Completed', 'RuntimeError', 'Invalid', 'LoggingIn', 'Initializing', 'History']</td>
 </tr>
 <tr>
-<td width="20%">cloneId</td> <td> <code>integer</code> <br/> The snapshot project ID for cloning the live development's source code.</td>
+<td width="20%">cloneId</td> <td> <code>integer</code> <br/> The snapshot project Id for cloning the live development's source code.</td>
 </tr>
 <tr>
-<td width="20%">launched</td> <td> <code>string</code> <br/> Date the live algorithm was launched.</td>
+<td width="20%">launched</td> <td> <code>string($date-time)</code> <br/> Datetime the algorithm was launched in UTC.</td>
 </tr>
 <tr>
-<td width="20%">stopped</td> <td> <code>string</code> <br/> Date the live algorithm was stopped.</td>
+<td width="20%">stopped</td> <td> <code>string($date-time)</code> <br/> Datetime the algorithm was stopped in UTC, null if its still running.</td>
 </tr>
 <tr>
-<td width="20%">brokerage</td> <td> <code>string</code> <br/> Brokerage used in the live algorithm.</td>
+<td width="20%">brokerage</td> <td> <code>string</code> <br/> Brokerage.</td>
 </tr>
 <tr>
-<td width="20%">securityTypes</td> <td> <code>string</code> <br/> Security types present in the live algorithm.</td>
+<td width="20%">securityTypes</td> <td> <code>string</code> <br/> Security types detected in the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">datacenter</td> <td> <code>string</code> <br/> Name of the datacenter where the algorithm is physically located.</td>
+</tr>
+<tr>
+<td width="20%">isPublicStreaming</td> <td> <code>boolean</code> <br/> Flag to indicate if public streaming is enabled.</td>
+</tr>
+<tr>
+<td width="20%">public</td> <td> <code>boolean</code> <br/> Flag to indicate if the algorithm is public.</td>
+</tr>
+<tr>
+<td width="20%">files</td> <td> <code>ProjectFile Array</code> <br/> Files present in the project that contains the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">charts</td> <td> <code>ChartSummary object</code> <br/> Contains the names of all charts.</td>
 </tr>
 <tr>
 <td width="20%">projectName</td> <td> <code>string</code> <br/> Name of the project the live algorithm is in.</td>
-</tr>
-<tr>
-<td width="20%">dataCenter</td> <td> <code>string</code> <br/> Name of the data center where the algorithm is physically located.</td>
-</tr>
-<tr>
-<td width="20%">public</td> <td> <code>boolean</code> <br/> Indicates if the algorithm is being live shared.</td>
-</tr>
-<tr>
-<td width="20%">files</td> <td> <code>ProjectFile Array</code> <br/> Files present in the project in which the algorithm is.</td>
-</tr>
-<tr>
-<td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.</td>
-</tr>
-<tr>
-<td width="20%">charts</td> <td> <code>ChartSummary object</code> <br/> Chart updates for the live algorithm since the last result packet.</td>
 </tr>
 <tr>
 <td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
@@ -63,21 +66,21 @@ The <code>/live/read</code> API provides a response in the following format:
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "message": "message",
-  "status": "Running",
-  "deployId": "L-sdf86b7045bb83203e79d2aa6150b321",
+  "message": "string",
+  "deployId": "string",
+  "status": "DeployError",
   "cloneId": 0,
-  "launched": "string",
-  "stopped": "string",
+  "launched": "2021-11-26T15:18:27.693Z",
+  "stopped": "2021-11-26T15:18:27.693Z",
   "brokerage": "string",
   "securityTypes": "string",
-  "projectName": "string",
-  "dataCenter": "string",
+  "datacenter": "string",
+  "isPublicStreaming": true,
   "public": true,
   "files": [
     {
       "id": 0,
-      "projectId": 23456789,
+      "projectId": 0,
       "name": "string",
       "content": "string",
       "modified": "2021-11-26T15:18:27.693Z",
@@ -86,18 +89,19 @@ The <code>/live/read</code> API provides a response in the following format:
     }
   ],
   "runtimeStatistics": {
-    "Equity": "$100.00",
-    "Fees": "-$100.00",
-    "Holdings": "$100.00",
-    "Net Profit": "$100.00",
-    "Probabilistic Sharpe Ratio": "50.00%",
-    "Return": "50.00%",
-    "Unrealized": "$100.00",
-    "Volume": "$100.00"
+    "Equity": "string",
+    "Fees": "string",
+    "Holdings": "string",
+    "Net Profit": "string",
+    "Probabilistic Sharpe Ratio": "string",
+    "Return": "string",
+    "Unrealized": "string",
+    "Volume": "string"
   },
   "charts": {
     "name": "string"
   },
+  "projectName": "string",
   "success": true,
   "errors": [
     "string"
@@ -116,7 +120,7 @@ The <code>/live/read</code> API provides a response in the following format:
 <td width="20%">id</td> <td> <code>integer</code> <br/> ID of the project file. This can also be null.</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 23456789</sub></i></code> <br/> ID of the project.</td>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> ID of the project.</td>
 </tr>
 <tr>
 <td width="20%">name</td> <td> <code>string</code> <br/> Name of a project file.</td>
@@ -139,7 +143,7 @@ The <code>/live/read</code> API provides a response in the following format:
 <div class="cli section-example-container"><pre>
 {
   "id": 0,
-  "projectId": 23456789,
+  "projectId": 0,
   "name": "string",
   "content": "string",
   "modified": "2021-11-26T15:18:27.693Z",
@@ -156,42 +160,42 @@ The <code>/live/read</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
-<td width="20%">Equity</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total portfolio value.</td>
+<td width="20%">Equity</td> <td> <code>string</code> <br/> Total portfolio value.</td>
 </tr>
 <tr>
-<td width="20%">Fees</td> <td> <code>string<br/><i><sub>example: -$100.00</sub></i></code> <br/> Transaction fee.</td>
+<td width="20%">Fees</td> <td> <code>string</code> <br/> Transaction fee.</td>
 </tr>
 <tr>
-<td width="20%">Holdings</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Equity value of security holdings.</td>
+<td width="20%">Holdings</td> <td> <code>string</code> <br/> Equity value of security holdings.</td>
 </tr>
 <tr>
-<td width="20%">Net Profit</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Net profit.</td>
+<td width="20%">Net Profit</td> <td> <code>string</code> <br/> Net profit.</td>
 </tr>
 <tr>
-<td width="20%">Probabilistic Sharpe Ratio</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Probabilistic Sharpe Ratio.</td>
+<td width="20%">Probabilistic Sharpe Ratio</td> <td> <code>string</code> <br/> Probabilistic Sharpe Ratio.</td>
 </tr>
 <tr>
-<td width="20%">Return</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Return.</td>
+<td width="20%">Return</td> <td> <code>string</code> <br/> Return.</td>
 </tr>
 <tr>
-<td width="20%">Unrealized</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Unrealized profit/loss.</td>
+<td width="20%">Unrealized</td> <td> <code>string</code> <br/> Unrealized profit/loss.</td>
 </tr>
 <tr>
-<td width="20%">Volume</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total transaction volume.</td>
+<td width="20%">Volume</td> <td> <code>string</code> <br/> Total transaction volume.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "Equity": "$100.00",
-  "Fees": "-$100.00",
-  "Holdings": "$100.00",
-  "Net Profit": "$100.00",
-  "Probabilistic Sharpe Ratio": "50.00%",
-  "Return": "50.00%",
-  "Unrealized": "$100.00",
-  "Volume": "$100.00"
+  "Equity": "string",
+  "Fees": "string",
+  "Holdings": "string",
+  "Net Profit": "string",
+  "Probabilistic Sharpe Ratio": "string",
+  "Return": "string",
+  "Unrealized": "string",
+  "Volume": "string"
 }</pre>
 </div>
 </td>

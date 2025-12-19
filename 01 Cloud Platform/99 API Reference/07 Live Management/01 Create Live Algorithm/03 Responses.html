@@ -11,6 +11,21 @@ The <code>/live/create</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
+<td width="20%">responseCode</td> <td> <code>string</code> <br/> Response code of the request.</td>
+</tr>
+<tr>
+<td width="20%">source</td> <td> <code>string</code> <br/> Source of the API call.</td>
+</tr>
+<tr>
+<td width="20%">deployId</td> <td> <code>string</code> <br/> Id of the live deployment.</td>
+</tr>
+<tr>
+<td width="20%">versionId</td> <td> <code>integer</code> <br/> Id of the LEAN version deployed.</td>
+</tr>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> Id of the project deployed.</td>
+</tr>
+<tr>
 <td width="20%">live</td> <td> <code>LiveAlgorithm object</code> <br/> Live algorithm instance result from the QuantConnect Rest API.</td>
 </tr>
 <tr>
@@ -24,19 +39,47 @@ The <code>/live/create</code> API provides a response in the following format:
 <td>
 <div class="cli section-example-container"><pre>
 {
+  "responseCode": "string",
+  "source": "string",
+  "deployId": "string",
+  "versionId": 0,
+  "projectId": 0,
   "live": {
-    "projectId": 23456789,
-    "deployId": "L-sdf86b7045bb83203e79d2aa6150b321",
+    "message": "string",
+    "deployId": "string",
     "status": "DeployError",
+    "cloneId": 0,
     "launched": "2021-11-26T15:18:27.693Z",
     "stopped": "2021-11-26T15:18:27.693Z",
-    "brokerage": "Interactive",
-    "subscription": "string",
-    "error": "string",
-    "success": true,
-    "errors": [
-      "string"
-    ]
+    "brokerage": "string",
+    "securityTypes": "string",
+    "datacenter": "string",
+    "isPublicStreaming": true,
+    "public": true,
+    "files": [
+      {
+        "id": 0,
+        "projectId": 0,
+        "name": "string",
+        "content": "string",
+        "modified": "2021-11-26T15:18:27.693Z",
+        "open": true,
+        "isLibrary": true
+      }
+    ],
+    "runtimeStatistics": {
+      "Equity": "string",
+      "Fees": "string",
+      "Holdings": "string",
+      "Net Profit": "string",
+      "Probabilistic Sharpe Ratio": "string",
+      "Return": "string",
+      "Unrealized": "string",
+      "Volume": "string"
+    },
+    "charts": {
+      "name": "string"
+    }
   },
   "success": true,
   "errors": [
@@ -53,13 +96,16 @@ The <code>/live/create</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 23456789</sub></i></code> <br/> Project Id for the live instance.</td>
+<td width="20%">message</td> <td> <code>string</code> <br/> Error message.</td>
 </tr>
 <tr>
-<td width="20%">deployId</td> <td> <code>string<br/><i><sub>example: L-sdf86b7045bb83203e79d2aa6150b321</sub></i></code> <br/> Unique live algorithm deployment identifier (similar to a backtest id).</td>
+<td width="20%">deployId</td> <td> <code>string</code> <br/> Unique live algorithm deployment identifier (similar to a backtest id).</td>
 </tr>
 <tr>
-<td width="20%">status</td> <td> <code>string Enum</code> <br/> States of a live deployment. Options : ['DeployError', 'InQueue', 'Running', 'Stopped', 'Liquidated', 'Deleted', 'Completed', 'RuntimeError', 'Invalid', 'LoggingIn', 'Initializing', 'History']</td>
+<td width="20%">status</td> <td> <code>string Enum</code> <br/> State of the live deployment. Options : ['DeployError', 'InQueue', 'Running', 'Stopped', 'Liquidated', 'Deleted', 'Completed', 'RuntimeError', 'Invalid', 'LoggingIn', 'Initializing', 'History']</td>
+</tr>
+<tr>
+<td width="20%">cloneId</td> <td> <code>integer</code> <br/> The snapshot project Id for cloning the live development's source code.</td>
 </tr>
 <tr>
 <td width="20%">launched</td> <td> <code>string($date-time)</code> <br/> Datetime the algorithm was launched in UTC.</td>
@@ -68,37 +114,178 @@ The <code>/live/create</code> API provides a response in the following format:
 <td width="20%">stopped</td> <td> <code>string($date-time)</code> <br/> Datetime the algorithm was stopped in UTC, null if its still running.</td>
 </tr>
 <tr>
-<td width="20%">brokerage</td> <td> <code>string Enum</code> <br/> Brokerage. Options : ['Interactive', 'FXCM', 'Oanda', 'Tradier', 'PaperBrokerage', 'Alpaca', 'Bitfinex', 'Binance', 'Coinbase']</td>
+<td width="20%">brokerage</td> <td> <code>string</code> <br/> Brokerage.</td>
 </tr>
 <tr>
-<td width="20%">subscription</td> <td> <code>string</code> <br/> Chart we're subscribed to.</td>
+<td width="20%">securityTypes</td> <td> <code>string</code> <br/> Security types detected in the algorithm.</td>
 </tr>
 <tr>
-<td width="20%">error</td> <td> <code>string</code> <br/> Live algorithm error message from a crash or algorithm runtime error.</td>
+<td width="20%">datacenter</td> <td> <code>string</code> <br/> Name of the datacenter where the algorithm is physically located.</td>
 </tr>
 <tr>
-<td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
+<td width="20%">isPublicStreaming</td> <td> <code>boolean</code> <br/> Flag to indicate if public streaming is enabled.</td>
 </tr>
 <tr>
-<td width="20%">errors</td> <td> <code>string Array</code> <br/> List of errors with the API call.</td>
+<td width="20%">public</td> <td> <code>boolean</code> <br/> Flag to indicate if the algorithm is public.</td>
+</tr>
+<tr>
+<td width="20%">files</td> <td> <code>ProjectFile Array</code> <br/> Files present in the project that contains the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">charts</td> <td> <code>ChartSummary object</code> <br/> Contains the names of all charts.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "projectId": 23456789,
-  "deployId": "L-sdf86b7045bb83203e79d2aa6150b321",
+  "message": "string",
+  "deployId": "string",
   "status": "DeployError",
+  "cloneId": 0,
   "launched": "2021-11-26T15:18:27.693Z",
   "stopped": "2021-11-26T15:18:27.693Z",
-  "brokerage": "Interactive",
-  "subscription": "string",
-  "error": "string",
-  "success": true,
-  "errors": [
-    "string"
-  ]
+  "brokerage": "string",
+  "securityTypes": "string",
+  "datacenter": "string",
+  "isPublicStreaming": true,
+  "public": true,
+  "files": [
+    {
+      "id": 0,
+      "projectId": 0,
+      "name": "string",
+      "content": "string",
+      "modified": "2021-11-26T15:18:27.693Z",
+      "open": true,
+      "isLibrary": true
+    }
+  ],
+  "runtimeStatistics": {
+    "Equity": "string",
+    "Fees": "string",
+    "Holdings": "string",
+    "Net Profit": "string",
+    "Probabilistic Sharpe Ratio": "string",
+    "Return": "string",
+    "Unrealized": "string",
+    "Volume": "string"
+  },
+  "charts": {
+    "name": "string"
+  }
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ProjectFile</code> Model - File for a project.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>integer</code> <br/> ID of the project file. This can also be null.</td>
+</tr>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> ID of the project.</td>
+</tr>
+<tr>
+<td width="20%">name</td> <td> <code>string</code> <br/> Name of a project file.</td>
+</tr>
+<tr>
+<td width="20%">content</td> <td> <code>string</code> <br/> Contents of the project file.</td>
+</tr>
+<tr>
+<td width="20%">modified</td> <td> <code>string($date-time)</code> <br/> DateTime project file was modified.</td>
+</tr>
+<tr>
+<td width="20%">open</td> <td> <code>boolean</code> <br/> Indicates if the project file is open or not.</td>
+</tr>
+<tr>
+<td width="20%">isLibrary</td> <td> <code>boolean</code> <br/> Indicates if the project file is a library or not. It's always false in live/read and backtest/read.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": 0,
+  "projectId": 0,
+  "name": "string",
+  "content": "string",
+  "modified": "2021-11-26T15:18:27.693Z",
+  "open": true,
+  "isLibrary": true
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>RuntimeStatistics</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">Equity</td> <td> <code>string</code> <br/> Total portfolio value.</td>
+</tr>
+<tr>
+<td width="20%">Fees</td> <td> <code>string</code> <br/> Transaction fee.</td>
+</tr>
+<tr>
+<td width="20%">Holdings</td> <td> <code>string</code> <br/> Equity value of security holdings.</td>
+</tr>
+<tr>
+<td width="20%">Net Profit</td> <td> <code>string</code> <br/> Net profit.</td>
+</tr>
+<tr>
+<td width="20%">Probabilistic Sharpe Ratio</td> <td> <code>string</code> <br/> Probabilistic Sharpe Ratio.</td>
+</tr>
+<tr>
+<td width="20%">Return</td> <td> <code>string</code> <br/> Return.</td>
+</tr>
+<tr>
+<td width="20%">Unrealized</td> <td> <code>string</code> <br/> Unrealized profit/loss.</td>
+</tr>
+<tr>
+<td width="20%">Volume</td> <td> <code>string</code> <br/> Total transaction volume.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "Equity": "string",
+  "Fees": "string",
+  "Holdings": "string",
+  "Net Profit": "string",
+  "Probabilistic Sharpe Ratio": "string",
+  "Return": "string",
+  "Unrealized": "string",
+  "Volume": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ChartSummary</code> Model - Contains the names of all charts</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">name</td> <td> <code>string</code> <br/> Name of the Chart.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "name": "string"
 }</pre>
 </div>
 </td>

@@ -7,26 +7,26 @@ The <code>/compile/create</code> API provides a response in the following format
 <table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>CompileResponse</code> Model - Response from the compiler on a build event.</th>
+<th colspan="2"><code>CreateCompileResponse</code> Model - Response received from creating a compile job.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">compileId</td> <td> <code>string<br/><i><sub>example: c0edc6-49048b</sub></i></code> <br/> Compile Id for a sucessful build.</td>
+<td width="20%">compileId</td> <td> <code>string</code> <br/> Compile Id for a successful build.</td>
 </tr>
 <tr>
-<td width="20%">state</td> <td> <code>string Enum</code> <br/> True on successful compile. Options : ['InQueue', 'BuildSuccess', 'BuildError']</td>
+<td width="20%">state</td> <td> <code>string Enum</code> <br/> The current state of the compile job. Options : ['InQueue', 'BuildSuccess', 'BuildError']</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>example: 23456789</sub></i></code> <br/> Project Id we sent for compile.</td>
+<td width="20%">parameters</td> <td> <code>FileParameters Array</code> <br/> List of files and their associated parameters detected during compilation.</td>
+</tr>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> Id of the project you requested to compile.</td>
 </tr>
 <tr>
 <td width="20%">signature</td> <td> <code>string</code> <br/> Signature key of compilation.</td>
 </tr>
 <tr>
 <td width="20%">signatureOrder</td> <td> <code>string Array</code> <br/> Signature order of files to be compiled.</td>
-</tr>
-<tr>
-<td width="20%">logs</td> <td> <code>string Array</code> <br/> Logs of the compilation request.</td>
 </tr>
 <tr>
 <td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
@@ -39,20 +39,79 @@ The <code>/compile/create</code> API provides a response in the following format
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "compileId": "c0edc6-49048b",
+  "compileId": "string",
   "state": "InQueue",
-  "projectId": 23456789,
+  "parameters": [
+    {
+      "file": "string",
+      "parameters": [
+        {
+          "line": 0,
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "projectId": 0,
   "signature": "string",
   "signatureOrder": [
-    "string"
-  ],
-  "logs": [
     "string"
   ],
   "success": true,
   "errors": [
     "string"
   ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>FileParameters</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">file</td> <td> <code>string</code> <br/> Path of the file in the project.</td>
+</tr>
+<tr>
+<td width="20%">parameters</td> <td> <code>ParameterDetail Array</code> <br/> List of parameters detected in the file.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "file": "string",
+  "parameters": [
+    {
+      "line": 0,
+      "type": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ParameterDetail</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">line</td> <td> <code>integer</code> <br/> Line number where the parameter was detected.</td>
+</tr>
+<tr>
+<td width="20%">type</td> <td> <code>string</code> <br/> Description of the detected parameter.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "line": 0,
+  "type": "string"
 }</pre>
 </div>
 </td>

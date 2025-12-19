@@ -7,14 +7,14 @@ The <code>/backtests/chart/read</code> API provides a response in the following 
 <table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>LoadingChartResponse</code> Model - Response when the requested chart is being generated.</th>
+<th colspan="2"><code>LoadingResponse</code> Model - Response when the requested chart or orders are being generated.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">progress</td> <td> <code>number</code> <br/> Loading percentage of the chart generation process.</td>
+<td width="20%">progress</td> <td> <code>number</code> <br/> Loading percentage of the data generation process.</td>
 </tr>
 <tr>
-<td width="20%">status</td> <td> <code>string<br/><i><sub>example: loading</sub></i></code> <br/> Status of the chart generation process.</td>
+<td width="20%">status</td> <td> <code>string Enum</code> <br/> Status of the data generation process. Options : ['loading']</td>
 </tr>
 <tr>
 <td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
@@ -53,15 +53,13 @@ The <code>/backtests/chart/read</code> API provides a response in the following 
 {
   "chart": {
     "name": "string",
-    "chartType": "Overlay",
+    "chartType": 0,
     "series": {
       "name": "string",
       "unit": "string",
       "index": 0,
-      "values": [
-        "object"
-      ],
-      "seriesType": "Line",
+      "values": ,
+      "seriesType": 0,
       "color": "string",
       "scatterMarkerSymbol": "none"
     }
@@ -84,10 +82,10 @@ The <code>/backtests/chart/read</code> API provides a response in the following 
 <td width="20%">name</td> <td> <code>string</code> <br/> Name of the Chart.</td>
 </tr>
 <tr>
-<td width="20%">chartType</td> <td> <code>string Enum</code> <br/> Type of the Chart, Overlayed or Stacked. Options : ['Overlay', 'Stacked']</td>
+<td width="20%">chartType</td> <td> <code>integer Enum</code> <br/> Type of the Chart. 0=Overlayed, 1=Stacked. Options : [0, 1]</td>
 </tr>
 <tr>
-<td width="20%">series</td> <td> <code>Series object</code> <br/> List of Series Objects for this Chart.</td>
+<td width="20%">series</td> <td> <code>Series object</code> <br/> Series Objects for this Chart.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -95,15 +93,13 @@ The <code>/backtests/chart/read</code> API provides a response in the following 
 <div class="cli section-example-container"><pre>
 {
   "name": "string",
-  "chartType": "Overlay",
+  "chartType": 0,
   "series": {
     "name": "string",
     "unit": "string",
     "index": 0,
-    "values": [
-      "object"
-    ],
-    "seriesType": "Line",
+    "values": ,
+    "seriesType": 0,
     "color": "string",
     "scatterMarkerSymbol": "none"
   }
@@ -127,13 +123,13 @@ The <code>/backtests/chart/read</code> API provides a response in the following 
 <td width="20%">index</td> <td> <code>integer</code> <br/> Index/position of the series on the chart.</td>
 </tr>
 <tr>
-<td width="20%">values</td> <td> <code>object Array</code> <br/> Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest).</td>
+<td width="20%">values</td> <td> <code>object</code> <br/> Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest).</td>
 </tr>
 <tr>
-<td width="20%">seriesType</td> <td> <code>string Enum</code> <br/> Chart type for the series. Options : ['Line', 'Scatter', 'Candle', 'Bar', 'Flag', 'StackedArea', 'Pie', 'Treemap']</td>
+<td width="20%">seriesType</td> <td> <code>integer Enum</code> <br/> Chart type for the series. 0=Line, 1=Scatter, 2=Candle, 3=Bar, 4=Flag, 5=StackedArea, 6=Pie, 7=Treemap, 9=Heatmap, 10=Scatter3d. Options : [0, 1, 2, 3, 4, 5, 6, 7, 9, 19]</td>
 </tr>
 <tr>
-<td width="20%">color</td> <td> <code>string</code> <br/> Color the series.</td>
+<td width="20%">color</td> <td> <code>string</code> <br/> Color of the series.</td>
 </tr>
 <tr>
 <td width="20%">scatterMarkerSymbol</td> <td> <code>string Enum</code> <br/> Shape or symbol for the marker in a scatter plot. Options : ['none', 'circle', 'square', 'diamond', 'triangle', 'triangle-down']</td>
@@ -146,10 +142,8 @@ The <code>/backtests/chart/read</code> API provides a response in the following 
   "name": "string",
   "unit": "string",
   "index": 0,
-  "values": [
-    "object"
-  ],
-  "seriesType": "Line",
+  "values": ,
+  "seriesType": 0,
   "color": "string",
   "scatterMarkerSymbol": "none"
 }</pre>

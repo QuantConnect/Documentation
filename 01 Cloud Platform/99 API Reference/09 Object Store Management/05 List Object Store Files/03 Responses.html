@@ -11,10 +11,16 @@ The <code>/object/list</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
-<td width="20%">path</td> <td> <code>string<br/><i><sub>example: Mia</sub></i></code> <br/> Path to the files in the Object Store.</td>
+<td width="20%">path</td> <td> <code>string</code> <br/> Path to the directory in the Object Store.</td>
 </tr>
 <tr>
-<td width="20%">objects</td> <td> <code>ObjectStoreSummary Array</code> <br/> List of objects stored.</td>
+<td width="20%">objects</td> <td> <code>ObjectStoreSummary Array</code> <br/> List of directories and files stored in the directory at the given path. If the path contains directories, this list of objects doesn't contain the children of those directories.</td>
+</tr>
+<tr>
+<td width="20%">page</td> <td> <code>integer</code> <br/> The current page number in the paginated response.</td>
+</tr>
+<tr>
+<td width="20%">totalPages</td> <td> <code>integer</code> <br/> The total number of pages in the paginated response.</td>
 </tr>
 <tr>
 <td width="20%">objectStorageUsed</td> <td> <code>integer</code> <br/> Size of all objects stored in bytes.</td>
@@ -33,17 +39,19 @@ The <code>/object/list</code> API provides a response in the following format:
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "path": "Mia",
+  "path": "string",
   "objects": [
     {
-      "key": "Mia/Test",
+      "key": "string",
       "name": "string",
       "modified": "2021-11-26T15:18:27.693Z",
-      "mime": "application/json",
+      "mime": "string",
       "folder": true,
-      "size": 13
+      "size": 0
     }
   ],
+  "page": 0,
+  "totalPages": 0,
   "objectStorageUsed": 0,
   "objectStorageUsedHuman": "string",
   "success": true,
@@ -61,7 +69,7 @@ The <code>/object/list</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
-<td width="20%">key</td> <td> <code>string<br/><i><sub>example: Mia/Test</sub></i></code> <br/> Object Store key.</td>
+<td width="20%">key</td> <td> <code>string</code> <br/> Object Store key.</td>
 </tr>
 <tr>
 <td width="20%">name</td> <td> <code>string</code> <br/> File or folder name.</td>
@@ -70,25 +78,25 @@ The <code>/object/list</code> API provides a response in the following format:
 <td width="20%">modified</td> <td> <code>string($date-time)</code> <br/> Last time it was modified.</td>
 </tr>
 <tr>
-<td width="20%">mime</td> <td> <code>string<br/><i><sub>example: application/json</sub></i></code> <br/> MIME type.</td>
+<td width="20%">mime</td> <td> <code>string</code> <br/> MIME type.</td>
 </tr>
 <tr>
 <td width="20%">folder</td> <td> <code>boolean</code> <br/> True if it is a folder, false otherwise.</td>
 </tr>
 <tr>
-<td width="20%">size</td> <td> <code>float<br/><i><sub>example: 13</sub></i></code> <br/> Object Store file size.</td>
+<td width="20%">size</td> <td> <code>number</code> <br/> Object Store file size.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "key": "Mia/Test",
+  "key": "string",
   "name": "string",
   "modified": "2021-11-26T15:18:27.693Z",
-  "mime": "application/json",
+  "mime": "string",
   "folder": true,
-  "size": 13
+  "size": 0
 }</pre>
 </div>
 </td>

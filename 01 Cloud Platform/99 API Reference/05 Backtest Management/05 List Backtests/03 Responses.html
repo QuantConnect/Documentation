@@ -11,7 +11,7 @@ The <code>/backtests/list</code> API provides a response in the following format
 </tr>
 </thead>
 <tr>
-<td width="20%">backtest</td> <td> <code>BacktestSummaryResult Array</code> <br/> Collection of backtest summaries for a project.</td>
+<td width="20%">backtests</td> <td> <code>BacktestSummaryResult Array</code> <br/> Collection of backtest summaries for a project.</td>
 </tr>
 <tr>
 <td width="20%">count</td> <td> <code>integer</code> <br/> Number of backtest summaries retrieved in the response.</td>
@@ -27,37 +27,34 @@ The <code>/backtests/list</code> API provides a response in the following format
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "backtest": [
+  "backtests": [
     {
-      "backtestId": "26c7bb06b8487cff1c7b3c44652b30f1",
+      "backtestId": "string",
       "status": "Completed.",
       "name": "string",
       "created": "2021-11-26T15:18:27.693Z",
       "progress": 0,
-      "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+      "optimizationId": "string",
       "tradeableDates": 0,
-      "parameterSet": {
-        "name": "string",
-        "value": 0
-      },
+      "parameterSet": ,
       "snapshotId": 0,
       "tags": [
         "string"
       ],
-      "sharpeRatio": ,
-      "alpha": ,
-      "beta": ,
-      "compoundingAnnualReturn": ,
-      "drawdown": ,
-      "lossRate": ,
-      "netProfit": ,
+      "sharpeRatio": 0,
+      "alpha": 0,
+      "beta": 0,
+      "compoundingAnnualReturn": 0,
+      "drawdown": 0,
+      "lossRate": 0,
+      "netProfit": 0,
       "parameters": 0,
-      "psr": ,
-      "securityTypes": "string",
-      "sortinoRatio": ,
+      "psr": 0,
+      "securityTypes": 0,
+      "sortinoRatio": 0,
       "trades": 0,
-      "treynorRatio": ,
-      "winRate": 
+      "treynorRatio": 0,
+      "winRate": 0
     }
   ],
   "count": 0,
@@ -76,10 +73,10 @@ The <code>/backtests/list</code> API provides a response in the following format
 </tr>
 </thead>
 <tr>
-<td width="20%">backtestId</td> <td> <code>string<br/><i><sub>example: 26c7bb06b8487cff1c7b3c44652b30f1</sub></i></code> <br/> Assigned backtest ID.</td>
+<td width="20%">backtestId</td> <td> <code>string</code> <br/> Assigned backtest ID.</td>
 </tr>
 <tr>
-<td width="20%">status</td> <td> <code>string Enum</code> <br/> Status of the backtest. Options : ['Completed.', 'In Queue...', "'Running: _%'"]</td>
+<td width="20%">status</td> <td> <code>string Enum</code> <br/> Status of the backtest. Options : ['Completed.', 'In Queue...', "'Running: _%'", 'Runtime Error']</td>
 </tr>
 <tr>
 <td width="20%">name</td> <td> <code>string</code> <br/> Name of the backtest.</td>
@@ -91,7 +88,7 @@ The <code>/backtests/list</code> API provides a response in the following format
 <td width="20%">progress</td> <td> <code>number</code> <br/> Progress of the backtest in percent 0-1.</td>
 </tr>
 <tr>
-<td width="20%">optimizationId</td> <td> <code>string<br/><i><sub>example: O-401d3d40b5a0e9f8c46c954a303f3ddd</sub></i></code> <br/> Optimization task ID, if the backtest is part of an optimization.</td>
+<td width="20%">optimizationId</td> <td> <code>string</code> <br/> Optimization task ID, if the backtest is part of an optimization.</td>
 </tr>
 <tr>
 <td width="20%">tradeableDates</td> <td> <code>integer</code> <br/> Number of traadeable days.</td>
@@ -106,104 +103,78 @@ The <code>/backtests/list</code> API provides a response in the following format
 <td width="20%">tags</td> <td> <code>string Array</code> <br/> Collection of tags for the backtest.</td>
 </tr>
 <tr>
-<td width="20%">sharpeRatio</td> <td> <code>float</code> <br/> Sharpe ratio with respect to risk free rate; measures excess of return per unit of risk.</td>
+<td width="20%">sharpeRatio</td> <td> <code>number</code> <br/> Sharpe ratio with respect to risk free rate; measures excess of return per unit of risk.</td>
 </tr>
 <tr>
-<td width="20%">alpha</td> <td> <code>float</code> <br/> Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.</td>
+<td width="20%">alpha</td> <td> <code>number</code> <br/> Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.</td>
 </tr>
 <tr>
-<td width="20%">beta</td> <td> <code>float</code> <br/> Algorithm "beta" statistic - the covariance between the algorithm and benchmark performance, divided by benchmark's variance.</td>
+<td width="20%">beta</td> <td> <code>number</code> <br/> Algorithm "beta" statistic - the covariance between the algorithm and benchmark performance, divided by benchmark's variance.</td>
 </tr>
 <tr>
-<td width="20%">compoundingAnnualReturn</td> <td> <code>float</code> <br/> Annual compounded returns statistic based on the final-starting capital and years.</td>
+<td width="20%">compoundingAnnualReturn</td> <td> <code>number</code> <br/> Annual compounded returns statistic based on the final-starting capital and years.</td>
 </tr>
 <tr>
-<td width="20%">drawdown</td> <td> <code>float</code> <br/> Drawdown maximum percentage.</td>
+<td width="20%">drawdown</td> <td> <code>number</code> <br/> Drawdown maximum percentage.</td>
 </tr>
 <tr>
-<td width="20%">lossRate</td> <td> <code>float</code> <br/> The ratio of the number of losing trades to the total number of trades.</td>
+<td width="20%">lossRate</td> <td> <code>number</code> <br/> The ratio of the number of losing trades to the total number of trades.</td>
 </tr>
 <tr>
-<td width="20%">netProfit</td> <td> <code>float</code> <br/> Net profit percentage.</td>
+<td width="20%">netProfit</td> <td> <code>number</code> <br/> Net profit percentage.</td>
 </tr>
 <tr>
 <td width="20%">parameters</td> <td> <code>integer</code> <br/> Number of parameters in the backtest.</td>
 </tr>
 <tr>
-<td width="20%">psr</td> <td> <code>float</code> <br/> Price-to-sales ratio.</td>
+<td width="20%">psr</td> <td> <code>number</code> <br/> Price-to-sales ratio.</td>
 </tr>
 <tr>
-<td width="20%">securityTypes</td> <td> <code>string</code> <br/> SecurityTypes present in the backtest.</td>
+<td width="20%">securityTypes</td> <td> <code>integer</code> <br/> The number of security types (QuantConnect.SecurityType) present in the backtest.</td>
 </tr>
 <tr>
-<td width="20%">sortinoRatio</td> <td> <code>float</code> <br/> Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.</td>
+<td width="20%">sortinoRatio</td> <td> <code>number</code> <br/> Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.</td>
 </tr>
 <tr>
 <td width="20%">trades</td> <td> <code>integer</code> <br/> Number of trades in the backtest.</td>
 </tr>
 <tr>
-<td width="20%">treynorRatio</td> <td> <code>float</code> <br/> Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.</td>
+<td width="20%">treynorRatio</td> <td> <code>number</code> <br/> Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.</td>
 </tr>
 <tr>
-<td width="20%">winRate</td> <td> <code>float</code> <br/> The ratio of the number of winning trades to the total number of trades.</td>
+<td width="20%">winRate</td> <td> <code>number</code> <br/> The ratio of the number of winning trades to the total number of trades.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "backtestId": "26c7bb06b8487cff1c7b3c44652b30f1",
+  "backtestId": "string",
   "status": "Completed.",
   "name": "string",
   "created": "2021-11-26T15:18:27.693Z",
   "progress": 0,
-  "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+  "optimizationId": "string",
   "tradeableDates": 0,
-  "parameterSet": {
-    "name": "string",
-    "value": 0
-  },
+  "parameterSet": ,
   "snapshotId": 0,
   "tags": [
     "string"
   ],
-  "sharpeRatio": ,
-  "alpha": ,
-  "beta": ,
-  "compoundingAnnualReturn": ,
-  "drawdown": ,
-  "lossRate": ,
-  "netProfit": ,
+  "sharpeRatio": 0,
+  "alpha": 0,
+  "beta": 0,
+  "compoundingAnnualReturn": 0,
+  "drawdown": 0,
+  "lossRate": 0,
+  "netProfit": 0,
   "parameters": 0,
-  "psr": ,
-  "securityTypes": "string",
-  "sortinoRatio": ,
+  "psr": 0,
+  "securityTypes": 0,
+  "sortinoRatio": 0,
   "trades": 0,
-  "treynorRatio": ,
-  "winRate": 
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>ParameterSet</code> Model - Parameter set.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">name</td> <td> <code>string</code> <br/> Name of parameter.</td>
-</tr>
-<tr>
-<td width="20%">value</td> <td> <code>number</code> <br/> Value of parameter.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "name": "string",
-  "value": 0
+  "treynorRatio": 0,
+  "winRate": 0
 }</pre>
 </div>
 </td>
