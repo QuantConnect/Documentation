@@ -122,9 +122,6 @@ def ResponseTable(requestBody, type="application/json"):
     
     while i < len(item_list):
         request_object = doc
-        if isinstance(item_list[i], str):
-            i += 1
-            continue
         for item in item_list[i]:
             request_object = request_object.get(item)
             if not request_object:
@@ -345,7 +342,54 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
 
                 write_up, __, item_list = ExampleWriting({key_: value_}, item_list, order=order+1)
                 example_ += write_up
+            elif "oneOf" in properties:
+                prop = properties["oneOf"]
+                example_ += "{\n"
+                for y in prop:
+                    path = y["$ref"].split("/")[1:]
+                    name = path[-1]
+                    if name[0] == "_": continue
+
+                    enum = ""
+                    item_list.append(path)
+                    
+                    request_object_ = doc
+                    for item in path:
+                        request_object_ = request_object_[item]
+                        
+                    if "enum" in request_object_:
+                        enum = " Options: " + str(request_object_["enum"])
+                    
+                    description_ = request_object_["description"]
+                    if description_[-1] != ".":
+                        description_ += "."
+                    
+                    if "type" in request_object_:
+                        type_ = request_object_["type"]
+                        example_ += tab + f'  "{name}": {type_},\n'
+                    elif "allOf" in request_object_:
+                        type_ = "object"
+                        example_ += tab + f'  "{name}": {{\n'
+                        for z in request_object_["allOf"]:
+                            if "$ref" not in z:
+                                continue
+                            ref = z["$ref"].split("/")[1:]
+                            item_list.append(ref)
+                            
+                            request_object__ = doc
+                            for item in ref:
+                                request_object__ = request_object__[item]
+                                
+                            if "properties" in request_object__:
+                                request_object_properties__ = request_object__["properties"]
+                                write_up, __, item_list = ExampleWriting(request_object_properties__, item_list, order=order+2)
+                                example_ += write_up + ",\n"
+                        example_ += tab + "  },\n"
+                    
+                example_ += tab + "}"
+                type_ = "object"
             
+
         elif type_ == "integer" or type_ == "number":
             example_ += "0"
             
@@ -424,6 +468,8 @@ for section, source in documentations.items():
     paths = doc["paths"]
 
     for api_call, result in paths.items():
+        if api_call != '/live/create':
+            continue
         j = 1
         content = result["post"] if "post" in result else result["get"]
         
