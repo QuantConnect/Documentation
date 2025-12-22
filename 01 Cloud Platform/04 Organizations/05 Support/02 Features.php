@@ -39,8 +39,8 @@
    </thead>
    <tbody>
       <tr>
-        <td>AI Support</td>
-        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td>Premium AI Support</td>
+        <td>-</td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
