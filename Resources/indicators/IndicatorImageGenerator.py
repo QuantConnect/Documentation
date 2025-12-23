@@ -851,6 +851,18 @@ class IndicatorImageGenerator(QCAlgorithm):
             'McClellanSummationIndex(19, 39)', 
             'MSI([_symbol, _reference])', 
             'self.msi([self._symbol, self._reference])'
+        ),
+        'new_highs_new_lows': IndicatorInfo(
+            NewHighsNewLows("NHNL", 2), 
+            'NewHighsNewLows(19, 39)', 
+            'NHNL([_symbol, _reference])', 
+            'self.nhnl([self._symbol, self._reference])'
+        ),
+        'new_highs_new_lows_volume': IndicatorInfo(
+            NewHighsNewLowsVolume("NHNLV", 2), 
+            'NewHighsNewLowsVolume(19, 39)', 
+            'NHNLV([_symbol, _reference])', 
+            'self.nhnlv([self._symbol, self._reference])'
         )
     }
 

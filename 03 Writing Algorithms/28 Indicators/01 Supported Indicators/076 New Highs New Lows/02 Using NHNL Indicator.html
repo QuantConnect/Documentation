@@ -1,0 +1,155 @@
+<p>To create an automatic indicator for <code>NewHighsNewLows</code>, call the <code class='csharp'>NHNL</code><code class='python'>nhnl</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>NHNL</code><code class='python'>nhnl</code> method creates a <code>NewHighsNewLows</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class NewHighsNewLowsAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol,_reference;
+    private NewHighsNewLows _nhnl;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
+        _nhnl = NHNL([_symbol, _reference]);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_nhnl.IsReady)
+        {
+            // The current value of _nhnl is represented by itself (_nhnl)
+            // or _nhnl.Current.Value
+            Plot("NewHighsNewLows", "nhnl", _nhnl);
+            // Plot all properties of abands
+            Plot("NewHighsNewLows", "difference", _nhnl.Difference);
+            Plot("NewHighsNewLows", "ratio", _nhnl.Ratio);
+        }
+    }
+}</pre>
+<pre class="python">class NewHighsNewLowsAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._nhnl = self.nhnl([self._symbol, self._reference])
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._nhnl.is_ready:
+            # The current value of self._nhnl is represented by self._nhnl.current.value
+            self.plot("NewHighsNewLows", "nhnl", self._nhnl.current.value)
+            # Plot all attributes of self._nhnl
+            self.plot("NewHighsNewLows", "difference", self._nhnl.difference.current.value)
+            self.plot("NewHighsNewLows", "ratio", self._nhnl.ratio.current.value)</pre></div>
+<p>To create an automatic indicator for <code>NewHighsNewLows</code> using universe constituents, call the <code class='csharp'>NHNL</code><code class='python'>nhnl</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>NHNL</code><code class='python'>nhnl</code> method creates a <code>NewHighsNewLows</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In this case, you should call the helper method in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class NewHighsNewLowsAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+    private NewHighsNewLows _nhnl;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024,1,1);
+        SetEndDate(2024,12,31);
+        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.Schedule.On(DateRules.MonthStart());
+        _universe = AddUniverse(Universe.ETF("SPY"));
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        _nhnl = NHNL(_universe.Selected);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_nhnl.IsReady)
+        {
+            // The current value of _nhnl is represented by itself (_nhnl)
+            // or _nhnl.Current.Value
+            Plot("NewHighsNewLows", "nhnl", _nhnl);
+            // Plot all properties of abands
+            Plot("NewHighsNewLows", "difference", _nhnl.Difference);
+            Plot("NewHighsNewLows", "ratio", _nhnl.Ratio);
+        }
+    }
+}</pre>
+<pre class="python">class NewHighsNewLowsAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self.set_start_date(2024,1,1)
+        self.set_end_date(2024,12,31)
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start())
+        self._universe = self.add_universe(self.universe.etf('SPY'))
+
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        self._nhnl = self.nhnl(list(self._universe.selected))
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._nhnl.is_ready:
+            # The current value of self._nhnl is represented by self._nhnl.current.value
+            self.plot("NewHighsNewLows", "nhnl", self._nhnl.current.value)
+            # Plot all attributes of self._nhnl
+            self.plot("NewHighsNewLows", "difference", self._nhnl.difference.current.value)
+            self.plot("NewHighsNewLows", "ratio", self._nhnl.ratio.current.value)</pre></div>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.nhnl">QCAlgorithm class</a>.</p>
+<p>You can manually create a <code>NewHighsNewLows</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class NewHighsNewLowsAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol,_reference;
+    private NewHighsNewLows _newhighsnewlows;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
+        _newhighsnewlows = new NewHighsNewLows(19, 39);
+        _newhighsnewlows.Add(_symbol);
+        _newhighsnewlows.Add(_reference);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (data.Bars.TryGetValue(_symbol, out var bar))
+            _newhighsnewlows.Update(bar);
+        if (data.Bars.TryGetValue(_reference, out bar))
+            _newhighsnewlows.Update(bar);
+
+        if (_newhighsnewlows.IsReady)
+        {
+            // The current value of _newhighsnewlows is represented by itself (_newhighsnewlows)
+            // or _newhighsnewlows.Current.Value
+            Plot("NewHighsNewLows", "newhighsnewlows", _newhighsnewlows);
+            // Plot all properties of abands
+            Plot("NewHighsNewLows", "difference", _newhighsnewlows.Difference);
+            Plot("NewHighsNewLows", "ratio", _newhighsnewlows.Ratio);
+        }
+    }
+}</pre>
+<pre class="python">class NewHighsNewLowsAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._newhighsnewlows = NewHighsNewLows("NHNL", 2)
+        self._newhighsnewlows.add(self._symbol);
+        self._newhighsnewlows.add(self._reference);
+
+    def on_data(self, slice: Slice) -> None:
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            self._newhighsnewlows.update(bar)
+        bar = slice.bars.get(self._reference)
+        if bar:
+            self._newhighsnewlows.update(bar)
+
+        if self._newhighsnewlows.is_ready:
+            # The current value of self._newhighsnewlows is represented by self._newhighsnewlows.current.value
+            self.plot("NewHighsNewLows", "newhighsnewlows", self._newhighsnewlows.current.value)
+            # Plot all attributes of self._newhighsnewlows
+            self.plot("NewHighsNewLows", "difference", self._newhighsnewlows.difference.current.value)
+            self.plot("NewHighsNewLows", "ratio", self._newhighsnewlows.ratio.current.value)</pre></div>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1NewHighsNewLows.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/NewHighsNewLows">reference</a>.</p>

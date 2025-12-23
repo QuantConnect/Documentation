@@ -1,0 +1,161 @@
+<p>To create an automatic indicator for <code>NewHighsNewLowsVolume</code>, call the <code class='csharp'>NHNLV</code><code class='python'>nhnlv</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>NHNLV</code><code class='python'>nhnlv</code> method creates a <code>NewHighsNewLowsVolume</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class NewHighsNewLowsVolumeAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol,_reference;
+    private NewHighsNewLowsVolume _nhnlv;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
+        _nhnlv = NHNLV([_symbol, _reference]);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_nhnlv.IsReady)
+        {
+            // The current value of _nhnlv is represented by itself (_nhnlv)
+            // or _nhnlv.Current.Value
+            Plot("NewHighsNewLowsVolume", "nhnlv", _nhnlv);
+            // Plot all properties of abands
+            Plot("NewHighsNewLowsVolume", "volumeratio", _nhnlv.VolumeRatio);
+            Plot("NewHighsNewLowsVolume", "difference", _nhnlv.Difference);
+            Plot("NewHighsNewLowsVolume", "ratio", _nhnlv.Ratio);
+        }
+    }
+}</pre>
+<pre class="python">class NewHighsNewLowsVolumeAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._nhnlv = self.nhnlv([self._symbol, self._reference])
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._nhnlv.is_ready:
+            # The current value of self._nhnlv is represented by self._nhnlv.current.value
+            self.plot("NewHighsNewLowsVolume", "nhnlv", self._nhnlv.current.value)
+            # Plot all attributes of self._nhnlv
+            self.plot("NewHighsNewLowsVolume", "volume_ratio", self._nhnlv.volume_ratio.current.value)
+            self.plot("NewHighsNewLowsVolume", "difference", self._nhnlv.difference.current.value)
+            self.plot("NewHighsNewLowsVolume", "ratio", self._nhnlv.ratio.current.value)</pre></div>
+<p>To create an automatic indicator for <code>NewHighsNewLowsVolume</code> using universe constituents, call the <code class='csharp'>NHNLV</code><code class='python'>nhnlv</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>NHNLV</code><code class='python'>nhnlv</code> method creates a <code>NewHighsNewLowsVolume</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In this case, you should call the helper method in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class NewHighsNewLowsVolumeAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+    private NewHighsNewLowsVolume _nhnlv;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024,1,1);
+        SetEndDate(2024,12,31);
+        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.Schedule.On(DateRules.MonthStart());
+        _universe = AddUniverse(Universe.ETF("SPY"));
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        _nhnlv = NHNLV(_universe.Selected);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_nhnlv.IsReady)
+        {
+            // The current value of _nhnlv is represented by itself (_nhnlv)
+            // or _nhnlv.Current.Value
+            Plot("NewHighsNewLowsVolume", "nhnlv", _nhnlv);
+            // Plot all properties of abands
+            Plot("NewHighsNewLowsVolume", "volumeratio", _nhnlv.VolumeRatio);
+            Plot("NewHighsNewLowsVolume", "difference", _nhnlv.Difference);
+            Plot("NewHighsNewLowsVolume", "ratio", _nhnlv.Ratio);
+        }
+    }
+}</pre>
+<pre class="python">class NewHighsNewLowsVolumeAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self.set_start_date(2024,1,1)
+        self.set_end_date(2024,12,31)
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start())
+        self._universe = self.add_universe(self.universe.etf('SPY'))
+
+    def on_securities_changed(self, changes: SecurityChanges) -> None:
+        self._nhnlv = self.nhnlv(list(self._universe.selected))
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._nhnlv.is_ready:
+            # The current value of self._nhnlv is represented by self._nhnlv.current.value
+            self.plot("NewHighsNewLowsVolume", "nhnlv", self._nhnlv.current.value)
+            # Plot all attributes of self._nhnlv
+            self.plot("NewHighsNewLowsVolume", "volume_ratio", self._nhnlv.volume_ratio.current.value)
+            self.plot("NewHighsNewLowsVolume", "difference", self._nhnlv.difference.current.value)
+            self.plot("NewHighsNewLowsVolume", "ratio", self._nhnlv.ratio.current.value)</pre></div>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.nhnlv">QCAlgorithm class</a>.</p>
+<p>You can manually create a <code>NewHighsNewLowsVolume</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class NewHighsNewLowsVolumeAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol,_reference;
+    private NewHighsNewLowsVolume _newhighsnewlowsvolume;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
+        _reference = AddEquity("SPY", Resolution.Daily).Symbol;
+        _newhighsnewlowsvolume = new NewHighsNewLowsVolume(19, 39);
+        _newhighsnewlowsvolume.Add(_symbol);
+        _newhighsnewlowsvolume.Add(_reference);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (data.Bars.TryGetValue(_symbol, out var bar))
+            _newhighsnewlowsvolume.Update(bar);
+        if (data.Bars.TryGetValue(_reference, out bar))
+            _newhighsnewlowsvolume.Update(bar);
+
+        if (_newhighsnewlowsvolume.IsReady)
+        {
+            // The current value of _newhighsnewlowsvolume is represented by itself (_newhighsnewlowsvolume)
+            // or _newhighsnewlowsvolume.Current.Value
+            Plot("NewHighsNewLowsVolume", "newhighsnewlowsvolume", _newhighsnewlowsvolume);
+            // Plot all properties of abands
+            Plot("NewHighsNewLowsVolume", "volumeratio", _newhighsnewlowsvolume.VolumeRatio);
+            Plot("NewHighsNewLowsVolume", "difference", _newhighsnewlowsvolume.Difference);
+            Plot("NewHighsNewLowsVolume", "ratio", _newhighsnewlowsvolume.Ratio);
+        }
+    }
+}</pre>
+<pre class="python">class NewHighsNewLowsVolumeAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
+        self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._newhighsnewlowsvolume = NewHighsNewLowsVolume("NHNLV", 2)
+        self._newhighsnewlowsvolume.add(self._symbol);
+        self._newhighsnewlowsvolume.add(self._reference);
+
+    def on_data(self, slice: Slice) -> None:
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            self._newhighsnewlowsvolume.update(bar)
+        bar = slice.bars.get(self._reference)
+        if bar:
+            self._newhighsnewlowsvolume.update(bar)
+
+        if self._newhighsnewlowsvolume.is_ready:
+            # The current value of self._newhighsnewlowsvolume is represented by self._newhighsnewlowsvolume.current.value
+            self.plot("NewHighsNewLowsVolume", "newhighsnewlowsvolume", self._newhighsnewlowsvolume.current.value)
+            # Plot all attributes of self._newhighsnewlowsvolume
+            self.plot("NewHighsNewLowsVolume", "volume_ratio", self._newhighsnewlowsvolume.volume_ratio.current.value)
+            self.plot("NewHighsNewLowsVolume", "difference", self._newhighsnewlowsvolume.difference.current.value)
+            self.plot("NewHighsNewLowsVolume", "ratio", self._newhighsnewlowsvolume.ratio.current.value)</pre></div>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1NewHighsNewLowsVolume.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/NewHighsNewLowsVolume">reference</a>.</p>
