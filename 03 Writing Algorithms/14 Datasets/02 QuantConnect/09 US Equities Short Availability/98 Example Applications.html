@@ -47,7 +47,7 @@ class ShortAvailabilityDataAlgorithm(QCAlgorithm):
     def on_margin_call_warning(self) -&gt; None:
         self.liquidate()
 
-    def _custom_security_initializer(self, security: Security) -> None:
+    def _custom_security_initializer(self, security: Security) -&gt; None:
         # Set the shortable provider as your broker for accurate short reality modeling
         security.set_shortable_provider(InteractiveBrokersShortableProvider())</pre>
 <pre class="csharp">public class ShortAvailabilityDataAlgorithm : QCAlgorithm
@@ -97,8 +97,7 @@ class ShortAvailabilityDataAlgorithm(QCAlgorithm):
     public override void OnMarginCallWarning()
     {
         Liquidate();
-    }
-}</pre>
+    }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
 <p>The following example algorithm shorts GameStop every day there are shares available to short. If the algorithm receives a margin call, it liquidates the position and start again on the next day.</p>
@@ -130,7 +129,7 @@ class ShortAvailabilityDataAlgorithm(QCAlgorithm):
         self.emit_insights([Insight.price(kvp.Key, timedelta(1), InsightDirection.FLAT)
             for kvp in self.securities if kvp.Value.invested])
 
-    def _custom_security_initializer(self, security: Security) -> None:
+    def _custom_security_initializer(self, security: Security) -&gt; None:
         # Set the shortable provider as IB
         security.set_shortable_provider(InteractiveBrokersShortableProvider())
 
@@ -164,10 +163,10 @@ class ShortableExecutionModel(ExecutionModel):
         SetCash(1000);
         // Seed the security price as the last known price, such that the price data is immediately available at initial rebalance
         Settings.SeedInitialPrices = true;
-        AddSecurityInitializer(security &gt;>
+        AddSecurityInitializer(security =&gt;
         {
-            // Set the shortable provider as IB
-            security.SetShortableProvider(new InteractiveBrokersShortableProvider());   
+            // Set the shortable provider as your broker for accurate short reality modeling
+            security.SetShortableProvider(new InteractiveBrokersShortableProvider());    
         });
 
         SetUniverseSelection(new ManualUniverseSelectionModel(
@@ -212,6 +211,5 @@ class ShortableExecutionModel(ExecutionModel):
                 _targetsCollection.ClearFulfilled(algorithm);
             }
         }
-    }
-}</pre>
+    }</pre>
 </div>

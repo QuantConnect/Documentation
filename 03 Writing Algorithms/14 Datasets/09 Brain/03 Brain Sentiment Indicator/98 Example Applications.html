@@ -125,7 +125,7 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
 class BrainSentimentDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 12, 31)
+        self.set_end_date(2024, 9, 10)
         self.set_cash(100000) 
         
         self.settings.minimum_order_margin_portfolio_percentage = 0
@@ -218,7 +218,7 @@ class SymbolData:
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31);
+        SetEndDate(2024, 9, 10);
         SetCash(100000);
         
         Settings.MinimumOrderMarginPortfolioPercentage = 0;
@@ -228,7 +228,7 @@ class SymbolData:
         {
             // Filter for any sentiment on last 7 days to trade on sentiment news
             return from d in altCoarse.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
-                where d.TotalArticleMentions7Days &gt; 0m
+                where d.SentimentalArticleMentions7Days &gt; 0m
                 select d.Symbol;
         });
         
@@ -257,22 +257,22 @@ public class BrainSentimentAlphaModel : AlphaModel
             var symbolData = entry.Value;
 
             // Update trade direction based on updated data
-            if (slice.ContainsKey(symbolData.datasetSymbol)  &amp;&amp; slice[symbolData.datasetSymbol] != null)
+            if (slice.ContainsKey(symbolData.datasetSymbol)   &amp;&amp; slice[symbolData.datasetSymbol] != null)
             {
                 var sentiment = slice[symbolData.datasetSymbol].Sentiment;
                 symbolData.Update(sentiment);
             }
             
             // Ensure we have security data in the current slice to avoid stale fill
-            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != null))
+            if (!(slice.ContainsKey(symbol)  &amp;&amp; slice[symbol] != null))
             {
                 continue;
             }
 
             // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
-            if (symbolData.targetDirection == InsightDirection.Up != algorithm.Portfolio[symbol].Invested)
+            if (symbolData.targetDirection == InsightDirection.Up  &amp;&amp; !algorithm.Portfolio[symbol].Invested)
             {
-                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(365), symbolData.targetDirection));
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(100), symbolData.targetDirection));
             }
         }
         
