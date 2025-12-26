@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/IBNL25/holidays.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/generic/holidays.html"); ?>
