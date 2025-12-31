@@ -1,0 +1,1 @@
+<p><?= $writingAlgorithms ? "The <code>dYdXBrokerageModel</code>" : "Our dYdX integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto-futures'>Crypto futures</a>.</p>
