@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/generic/holidays.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/NZDCAD/holidays.html"); ?>
