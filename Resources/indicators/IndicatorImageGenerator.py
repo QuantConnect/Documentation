@@ -863,6 +863,12 @@ class IndicatorImageGenerator(QCAlgorithm):
             'NewHighsNewLowsVolume(19, 39)', 
             'NHNLV([_symbol, _reference])', 
             'self.nhnlv([self._symbol, self._reference])'
+        ),
+        'covariance': IndicatorInfo(
+            Covariance(self._symbol, self._reference, 5), 
+            'Covariance(_symbol, _reference, 5)', 
+            'COV([_symbol, _reference])', 
+            'self.cov([self._symbol, self._reference])'
         )
     }
 
