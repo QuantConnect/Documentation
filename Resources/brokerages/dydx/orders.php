@@ -67,7 +67,7 @@
          <td>The maximum amount of gas to use for the order.</td>
          <td>1_000_000</td>
       </tr>
-         <tr>
+      <tr>
          <td><code class="csharp">GoodTilBlockOffset</code><code class="python">good_til_block_offset</code></td>
          <td><code class="csharp">ulong</code><code class="python">int</code></td>
          <td>The block height at which the order expires.</td>
@@ -77,7 +77,6 @@
          <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
          <td><code>bool</code></td>
          <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled. This order property is only available for limit orders.</td>
-         <td></td>
          <td></td>
       </tr>
          <td><code class="csharp">ReduceOnly</code><code class="python">reduce_only</code></td>
