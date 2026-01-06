@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/EURSGD/early-closes.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/no-early-closes.html"); ?>
