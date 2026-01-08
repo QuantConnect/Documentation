@@ -2,177 +2,7 @@
  The following examples demonstrate some common practices for implementing custom indicators.
 </p>
 <h4>
- Example 1: Custom Money Flow Index
-</h4>
-<p>
- The following algorithm implements a custom Money Flow Index indicator, and updates it manually. We estimate the supply-demand balance of SPY and trade using the average money flow direction.
-</p>
-<div class="section-example-container testable">
- <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
-{
-    private Symbol _spy;
-    private CustomMoneyFlowIndex _customMfi;
-
-    public override void Initialize()
-    {
-        SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31);
-
-        // Request daily SPY data to feed the indicators to generate trade signals and trade.
-        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
-
-        // Create a custom money flow index to generate a trade signal.
-        _customMfi = new CustomMoneyFlowIndex(20);
-
-        // Warm up for immediate usage of indicators.
-        SetWarmUp(20, Resolution.Daily);
-    }
-
-    public override void OnData(Slice slice)
-    {
-        if (!slice.Bars.TryGetValue(_spy, out var bar))
-        {
-            return;
-        }
-        // Update the custom MFI with the updated trade bar to obtain the updated trade signal.
-        _customMfi.Update(bar);
-        // Don't trade until warm-up is done.
-        if (IsWarmingUp)
-        {
-            return;
-        }
-        // Buy if the positive money flow is above the negative, which indicates demand is greater than supply, driving up the price.
-        if (_customMfi &gt; 50)
-        {
-            SetHoldings(_spy, 1);
-        }
-        // Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
-        else
-        {
-            SetHoldings(_spy, -1);
-        }
-    }
-
-    public class CustomMoneyFlowIndex : TradeBarIndicator, IIndicatorWarmUpPeriodProvider
-    {
-        private decimal _previousTypicalPrice;
-        private RollingWindow&lt;decimal&gt; _negativeMoneyFlow;
-        private RollingWindow&lt;decimal&gt; _positiveMoneyFlow;
-        public override bool IsReady =&gt; _positiveMoneyFlow.IsReady;
-        public int WarmUpPeriod =&gt; _positiveMoneyFlow.Size;
-            
-        public CustomMoneyFlowIndex(int period) : base("CustomMFI")
-        {
-            _negativeMoneyFlow = new(period);
-            _positiveMoneyFlow = new(period);
-            _previousTypicalPrice = 0m;
-        }
-            
-        protected override decimal ComputeNextValue(TradeBar input)
-        {
-            // Estimate the money flow by averaging the price multiplied by volume.
-            var typicalPrice = (input.High + input.Low + input.Close) / 3;
-            var moneyFlow = typicalPrice * input.Volume;
-            
-            // We need to avoid double rounding errors.
-            _negativeMoneyFlow.Add(typicalPrice &lt; _previousTypicalPrice ? moneyFlow: 0);
-            _positiveMoneyFlow.Add(typicalPrice &gt; _previousTypicalPrice ? moneyFlow: 0);
-            _previousTypicalPrice = moneyFlow;
-            
-            // Add the period money flow to calculate the aggregated money flow.
-            var positiveMoneyFlowSum = _positiveMoneyFlow.Sum();
-            var totalMoneyFlow = positiveMoneyFlowSum + _negativeMoneyFlow.Sum();
-            
-            // Set the value to be the positive money flow ratio.
-            return totalMoneyFlow == 0 ? 100m : 100m * positiveMoneyFlowSum / totalMoneyFlow;
-        }
-            
-        public override void Reset()
-        {
-            _previousTypicalPrice = 0m;
-            _negativeMoneyFlow.Reset();
-            _positiveMoneyFlow.Reset();
-            base.Reset();
-        }
-    }
-}</pre>
-<pre class="python">from collections import deque 
-
-class CustomIndicatorsAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 12, 31)
-
-        # Request daily SPY data to feed the indicators to generate trade signals and trade.
-        self.spy = self.add_equity("SPY").symbol
-
-        # Create a custom money flow index to generate a trade signal.
-        self.custom_mfi = CustomMoneyFlowIndex(20)
-
-        # Warm up for immediate usage of indicators.
-        self.set_warm_up(20, Resolution.DAILY)
-
-    def on_data(self, slice: Slice) -&gt; None:
-        bar = slice.bars.get(self.spy)
-        if not bar:
-            return
-        # Update the custom MFI with the updated trade bar to obtain the updated trade signal.
-        self.custom_mfi.update(bar)
-        # Don't trade until warm-up is done.
-        if self.is_warming_up:
-            return
-        # Buy if the positive money flow is above negative, indicating demand is greater than supply, driving up the price.
-        if self.custom_mfi.current.value &gt; 50:
-            self.set_holdings(self.spy, 1)
-        # Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
-        else:
-            self.set_holdings(self.spy, -1)
-
-class CustomMoneyFlowIndex(PythonIndicator):
-    def __init__(self, period: int) -&gt; None:
-        super().__init__()
-        self.value = 0
-        self.previous_typical_price = 0
-        self.negative_money_flow = deque(maxlen=period)
-        self.positive_money_flow = deque(maxlen=period)
-    
-    def update(self, input: BaseData) -&gt; bool:
-        if not isinstance(input, TradeBar):
-            raise TypeError('CustomMoneyFlowIndex.update: input must be a TradeBar')
-    
-        # Estimate the money flow by averaging the price multiplied by volume.
-        typical_price = (input.high + input.low + input.close) / 3
-        money_flow = typical_price * input.volume
-            
-        # We need to avoid double-rounding errors.
-        if abs(self.previous_typical_price / typical_price - 1) &lt; 1e-10:
-            self.previous_typical_price = typical_price
-        
-        # Add the period money flow to calculate the aggregated money flow.
-        self.negative_money_flow.appendleft(money_flow if typical_price &lt; self.previous_typical_price else 0)
-        self.positive_money_flow.appendleft(money_flow if typical_price &gt; self.previous_typical_price else 0)
-        self.previous_typical_price = typical_price
-    
-        positive_money_flow_sum = sum(self.positive_money_flow)        
-        total_money_flow = positive_money_flow_sum + sum(self.negative_money_flow)
-    
-        # Set the value to be the positive money flow ratio.
-        self.value = 100
-        if total_money_flow != 0:
-            self.value *= positive_money_flow_sum / total_money_flow
-    
-        # Set the current attribute if you will update the indicator manually
-        self.current = IndicatorDataPoint(input.end_time, self.value)
-    
-        # Set the is_ready property to receive the required bars to fill all windows.
-        return self.is_ready
-    
-    @property
-    def is_ready(self) -> bool:
-        return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
-</div>
-<h4>
- Example 2: Multiple Symbol Custom Indicator
+ Example 1: Multiple Symbol Custom Indicator
 </h4>
 <p>
  The following algorithm implements a custom Cointegration price divergence indicator involving 2 symbols: GOOGL &amp; GOOG. It trades the arbitrage between 2 cointegrated stocks on their price convergence after deviating more than 2 standard deviations.
@@ -492,6 +322,265 @@ class Cointegration(PythonIndicator):
         else:
             self._coefficients = [0, 0]
             self._residual_sd = 100000000          # An arbitrarily large number that the class A price will never reach.</pre>
+</div>
+<h4>
+ Example 2: Custom Money Flow Index
+</h4>
+<p>
+ The following algorithm implements a custom Money Flow Index indicator, and updates it manually. We estimate the supply-demand balance of SPY and trade using the average money flow direction.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class CombiningIndicatorsAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private CustomMoneyFlowIndex _customMfi;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+
+        // Request daily SPY data to feed the indicators to generate trade signals and trade.
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+
+        // Create a custom money flow index to generate a trade signal.
+        _customMfi = new CustomMoneyFlowIndex(20);
+
+        // Warm up for immediate usage of indicators.
+        SetWarmUp(20, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            return;
+        }
+        // Update the custom MFI with the updated trade bar to obtain the updated trade signal.
+        _customMfi.Update(bar);
+        // Don't trade until warm-up is done.
+        if (IsWarmingUp)
+        {
+            return;
+        }
+        // Buy if the positive money flow is above the negative, which indicates demand is greater than supply, driving up the price.
+        if (_customMfi &gt; 50)
+        {
+            SetHoldings(_spy, 1);
+        }
+        // Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
+        else
+        {
+            SetHoldings(_spy, -1);
+        }
+    }
+
+    public class CustomMoneyFlowIndex : TradeBarIndicator, IIndicatorWarmUpPeriodProvider
+    {
+        private decimal _previousTypicalPrice;
+        private RollingWindow&lt;decimal&gt; _negativeMoneyFlow;
+        private RollingWindow&lt;decimal&gt; _positiveMoneyFlow;
+        public override bool IsReady =&gt; _positiveMoneyFlow.IsReady;
+        public int WarmUpPeriod =&gt; _positiveMoneyFlow.Size;
+            
+        public CustomMoneyFlowIndex(int period) : base("CustomMFI")
+        {
+            _negativeMoneyFlow = new(period);
+            _positiveMoneyFlow = new(period);
+            _previousTypicalPrice = 0m;
+        }
+            
+        protected override decimal ComputeNextValue(TradeBar input)
+        {
+            // Estimate the money flow by averaging the price multiplied by volume.
+            var typicalPrice = (input.High + input.Low + input.Close) / 3;
+            var moneyFlow = typicalPrice * input.Volume;
+            
+            // We need to avoid double rounding errors.
+            _negativeMoneyFlow.Add(typicalPrice &lt; _previousTypicalPrice ? moneyFlow: 0);
+            _positiveMoneyFlow.Add(typicalPrice &gt; _previousTypicalPrice ? moneyFlow: 0);
+            _previousTypicalPrice = moneyFlow;
+            
+            // Add the period money flow to calculate the aggregated money flow.
+            var positiveMoneyFlowSum = _positiveMoneyFlow.Sum();
+            var totalMoneyFlow = positiveMoneyFlowSum + _negativeMoneyFlow.Sum();
+            
+            // Set the value to be the positive money flow ratio.
+            return totalMoneyFlow == 0 ? 100m : 100m * positiveMoneyFlowSum / totalMoneyFlow;
+        }
+            
+        public override void Reset()
+        {
+            _previousTypicalPrice = 0m;
+            _negativeMoneyFlow.Reset();
+            _positiveMoneyFlow.Reset();
+            base.Reset();
+        }
+    }
+}</pre>
+<pre class="python">from collections import deque 
+
+class CustomIndicatorsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+
+        # Request daily SPY data to feed the indicators to generate trade signals and trade.
+        self.spy = self.add_equity("SPY").symbol
+
+        # Create a custom money flow index to generate a trade signal.
+        self.custom_mfi = CustomMoneyFlowIndex(20)
+
+        # Warm up for immediate usage of indicators.
+        self.set_warm_up(20, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self.spy)
+        if not bar:
+            return
+        # Update the custom MFI with the updated trade bar to obtain the updated trade signal.
+        self.custom_mfi.update(bar)
+        # Don't trade until warm-up is done.
+        if self.is_warming_up:
+            return
+        # Buy if the positive money flow is above negative, indicating demand is greater than supply, driving up the price.
+        if self.custom_mfi.current.value &gt; 50:
+            self.set_holdings(self.spy, 1)
+        # Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
+        else:
+            self.set_holdings(self.spy, -1)
+
+class CustomMoneyFlowIndex(PythonIndicator):
+    def __init__(self, period: int) -&gt; None:
+        super().__init__()
+        self.value = 0
+        self.previous_typical_price = 0
+        self.negative_money_flow = deque(maxlen=period)
+        self.positive_money_flow = deque(maxlen=period)
+    
+    def update(self, input: BaseData) -&gt; bool:
+        if not isinstance(input, TradeBar):
+            raise TypeError('CustomMoneyFlowIndex.update: input must be a TradeBar')
+    
+        # Estimate the money flow by averaging the price multiplied by volume.
+        typical_price = (input.high + input.low + input.close) / 3
+        money_flow = typical_price * input.volume
+            
+        # We need to avoid double-rounding errors.
+        if abs(self.previous_typical_price / typical_price - 1) &lt; 1e-10:
+            self.previous_typical_price = typical_price
+        
+        # Add the period money flow to calculate the aggregated money flow.
+        self.negative_money_flow.appendleft(money_flow if typical_price &lt; self.previous_typical_price else 0)
+        self.positive_money_flow.appendleft(money_flow if typical_price &gt; self.previous_typical_price else 0)
+        self.previous_typical_price = typical_price
+    
+        positive_money_flow_sum = sum(self.positive_money_flow)        
+        total_money_flow = positive_money_flow_sum + sum(self.negative_money_flow)
+    
+        # Set the value to be the positive money flow ratio.
+        self.value = 100
+        if total_money_flow != 0:
+            self.value *= positive_money_flow_sum / total_money_flow
+    
+        # Set the current attribute if you will update the indicator manually
+        self.current = IndicatorDataPoint(input.end_time, self.value)
+    
+        # Call on_update to trigger an event
+        self.on_updated(self.current)
+
+        # Set the is_ready property to receive the required bars to fill all windows.
+        return self.is_ready
+    
+    @property
+    def is_ready(self) -> bool:
+        return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
+</div>
+
+<p class="python">
+ This version of the algorithm uses <a href="/docs/v2/writing-algorithms/indicators/key-concepts#08-Track-Update-Events">update events</a> to trade when the custom indicator is updated. Call the <code>on_updated</code> method in the <code>update</code> method to trigger event.
+</p>
+<div class="section-example-container testable python">
+<pre>from collections import deque 
+
+class CustomIndicatorsAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+
+        # Request daily SPY data to feed the indicators to generate trade signals and trade.
+        self.spy = self.add_equity("SPY").symbol
+
+        # Create a custom money flow index to generate a trade signal.
+        self.custom_mfi = CustomMoneyFlowIndex(20)
+        self.custom_mfi.updated += self._on_update
+
+        # Warm up for immediate usage of indicators.
+        self.set_warm_up(20, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self.spy)
+        if not bar:
+            return
+        # Update the custom MFI with the updated trade bar to obtain the updated trade signal.
+        self.custom_mfi.update(bar)
+
+    def _on_update(self, sender, current):
+        # Don't trade until warm-up is done.
+        if self.is_warming_up:
+            return
+        # Buy if the positive money flow is above negative, indicating demand is greater than supply, driving up the price.
+        if current.value &gt; 50:
+            self.set_holdings(self.spy, 1)
+        # Sell if the positive money flow is below negative, indicating demand is less than supply, driving down the price.
+        else:
+            self.set_holdings(self.spy, -1)
+
+class CustomMoneyFlowIndex(PythonIndicator):
+    def __init__(self, period: int) -&gt; None:
+        super().__init__()
+        self.value = 0
+        self.previous_typical_price = 0
+        self.negative_money_flow = deque(maxlen=period)
+        self.positive_money_flow = deque(maxlen=period)
+    
+    def update(self, input: BaseData) -&gt; bool:
+        if not isinstance(input, TradeBar):
+            raise TypeError('CustomMoneyFlowIndex.update: input must be a TradeBar')
+    
+        # Estimate the money flow by averaging the price multiplied by volume.
+        typical_price = (input.high + input.low + input.close) / 3
+        money_flow = typical_price * input.volume
+            
+        # We need to avoid double-rounding errors.
+        if abs(self.previous_typical_price / typical_price - 1) &lt; 1e-10:
+            self.previous_typical_price = typical_price
+        
+        # Add the period money flow to calculate the aggregated money flow.
+        self.negative_money_flow.appendleft(money_flow if typical_price &lt; self.previous_typical_price else 0)
+        self.positive_money_flow.appendleft(money_flow if typical_price &gt; self.previous_typical_price else 0)
+        self.previous_typical_price = typical_price
+    
+        positive_money_flow_sum = sum(self.positive_money_flow)        
+        total_money_flow = positive_money_flow_sum + sum(self.negative_money_flow)
+    
+        # Set the value to be the positive money flow ratio.
+        self.value = 100
+        if total_money_flow != 0:
+            self.value *= positive_money_flow_sum / total_money_flow
+    
+        # Set the current attribute if you will update the indicator manually
+        self.current = IndicatorDataPoint(input.end_time, self.value)
+    
+        # Call on_update to trigger an event
+        self.on_updated(self.current)
+
+        # Set the is_ready property to receive the required bars to fill all windows.
+        return self.is_ready
+    
+    @property
+    def is_ready(self) -&gt; bool:
+        return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
 </div>
 <h4>
  Other Examples

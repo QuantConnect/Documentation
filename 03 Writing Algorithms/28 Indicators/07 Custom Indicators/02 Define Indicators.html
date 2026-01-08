@@ -41,6 +41,8 @@
         self.value = sum(self.queue) / count
         # Set the current attribute if you will update the indicator manually
         self.current = IndicatorDataPoint(input.end_time, self.value)
+        # Call on_update to trigger an event (cannot be used in automatic updates)
+        self.on_updated(self.current)
         return count == self.queue.maxlen
 
     # Define is_ready property if you will update the indicator manually
@@ -125,6 +127,9 @@
         # Set the current attribute if you will update the indicator manually
         self.current = IndicatorDataPoint(input.end_time, self.value)
     
+        # Call on_update to trigger an event (cannot be used in automatic updates)
+        self.on_updated(self.current)
+        
         return len(self.positive_money_flow) == self.positive_money_flow.maxlen
     
     # Define is_ready property if you will update the indicator manually
