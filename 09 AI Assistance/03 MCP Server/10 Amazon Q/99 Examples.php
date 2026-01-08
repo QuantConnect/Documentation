@@ -3,10 +3,8 @@
 <h4>Example 1: Hello World</h4>
 <p>To test the server and client are working and connected, enter the following prompt into the Amazon Q chat:</p>
 
- <div class="cli section-example-container">
-     <pre>> Read my QuantConnect account.</pre>
-</div>
-<p>The agent should call the <code>read_account</code> tool.</p>
+<blockquote><p>> Read the open project.</p></blockquote>
+<p>The agent should call the <code>read_open_project</code> tool.</p>
 
 <h4>Example 2: Strategy Development and Deployment</h4>
 <p>This example uses Amazon Q in Local Platform to brainstorm new strategy ideas, edit files, run backtests, and deploy to paper trading.</p>
