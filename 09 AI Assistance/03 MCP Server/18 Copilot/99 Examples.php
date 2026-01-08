@@ -4,9 +4,9 @@
 <p>To test the server and client are working and connected, enter the following prompt into Copilot:</p>
 
  <div class="cli section-example-container">
-     <pre>> Read my QuantConnect account.</pre>
+     <pre>> Read the open project.</pre>
 </div>
-<p>Copilot should call the <code>read_account</code> tool.</p>
+<p>Copilot should call the <code>read_open_project</code> tool.</p>
 
 <h4>Example 2: Strategy Development and Deployment</h4>
 <p>This example uses Copilot Chat in Local Platform to brainstorm new strategy ideas, edit files, run backtests, and deploy to paper trading.</p>
