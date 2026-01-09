@@ -21,7 +21,7 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
         <tr>
             <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
-            <td>True to <a href='/docs/v2/writing-algorithms/securities/requesting-data#05-Fill-Forward'>fill forward</a> missing data. Otherwise, false. If you don't provide a value, it uses the fill forward mode of the security subscription.</td>
+            <td>True to <a href='/docs/v2/writing-algorithms/securities/requesting-data#05-Fill-Forward'>fill forward</a> missing data. Otherwise, false.</td>
         </tr>
         <tr>
             <td><code class="csharp">extendedMarketHours</code><code class="python">extended_market_hours</code></td>
@@ -36,7 +36,7 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
         <tr>
             <td><code class="csharp">dataNormalizationMode</code><code class="python">data_normalization_mode</code></td>
             <td><code class='csharp'>DataNormalizationMode?</code><code class='python'>DataNormalizationMode/NoneType</code></td>
-            <td>The price scaling mode to use for <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>US Equities</a> or <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>. If you don't provide a value, it uses the data normalization mode of the security subscription.</td>
+            <td>The price scaling mode to use for <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>US Equities</a> or <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>.</td>
         </tr>
         <tr>
             <td><code class="csharp">contractDepthOffset</code><code class="python">contract_depth_offset</code></td>
