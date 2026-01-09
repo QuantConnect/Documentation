@@ -1,0 +1,507 @@
+<p>The Brain Wikipedia Page Views dataset enables you to incorporate investor attention signals derived from Wikipedia traffic into your strategies. Examples include the following strategies:</p> 
+
+<ul> 
+<li>Buying securities that experience unusually high spikes in Wikipedia page views, indicating elevated public interest.</li>
+<li>Avoiding or reducing exposure to securities with declining or abnormally low attention relative to their historical baseline.</li> 
+<li>Scaling position sizes based on short-term or long-term attention intensity using page view and buzz metrics.</li> 
+<li>Building cross-sectional ranking strategies that favor stocks with sustained increases in public visibility.</li> 
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p> The following example algorithm ranks large-cap U.S. stocks daily using Brain Wikipedia Page Views attention and buzz metrics, then allocates portfolio weights proportionally to each stock’s relative attention score. </p> 
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import * 
+
+class BrainWikipediaPageViewsRankingAlgorithm(QCAlgorithm): 
+    def initialize(self) -&gt; None: 
+        self.set_start_date(2025, 1, 1) 
+        self.set_end_date(2025, 11, 23) 
+        self.set_cash(100000) 
+
+        # Seed prices so we don't get "no price" trading errors 
+        self.settings.seed_initial_prices = True
+
+        # We cherry-picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking 
+        tickers = ["AAPL", "TSLA", "MSFT", "F", "KO"] 
+        
+        for ticker in tickers: 
+            # Requesting data to get 2 days estimated relative ranking
+            equity = self.add_equity(ticker, Resolution.DAILY) 
+            equity.dataset_symbol = self.add_data(BrainWikipediaPageViews, equity.symbol).symbol 
+
+            # Historical data 
+            history = self.history(equity.dataset_symbol, 365, Resolution.DAILY) 
+            self.debug(f"We got {len(history)} items from our history request for {equity.symbol}") 
+
+    def on_data(self, slice: Slice) -&gt; None: 
+        points = slice.get(BrainWikipediaPageViews) 
+        
+        if not points: 
+            return 
+
+        scores = {}
+
+        for point in points.Values: 
+            # Example composite signal: 
+            number_of_views = point.NumberViews1 if point.NumberViews1 else 0
+            buzz1day = point.Buzz1 if point.Buzz1 else 0
+            
+            symbol = point.symbol.underlying
+            scores[symbol] = buzz1day * math.sqrt(number_of_views)
+
+        if len(scores) == 0: 
+            return 
+
+        # Rank by score (higher score = better) 
+        ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True) 
+
+        # Convert ranks to weights (same style as your example)
+        ranks = list(range(len(ranked), 0, -1))  # best gets highest rank number
+        denom = sum(ranks)
+        top = ", ".join([f"{sym.value}:{sc:.4f}" for sym, sc in ranked[:3]])
+        self.debug(f"{self.time.date()} top: {top}")
+
+        # Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight
+        for i, (sym, sc) in enumerate(ranked): 
+            w = ranks[i] / denom
+            self.set_holdings(sym, w)</pre>
+<pre class="csharp">public class BrainWikipediaPageViewsRankingAlgorithm : QCAlgorithm 
+{
+    public override void Initialize() 
+    { 
+        SetStartDate(2025, 1, 1); 
+        SetEndDate(2025, 11, 23); 
+        SetCash(100000); 
+
+        // Seed prices so we don't get "no price" trading errors 
+        Settings.SeedInitialPrices = true;
+
+        // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking 
+        var tickers = new[] { "AAPL", "TSLA", "MSFT", "F", "KO" }; 
+
+        foreach (var ticker in tickers) 
+        { 
+            // Requesting data to get 2 days estimated relative ranking 
+            var symbol = AddEquity(ticker, Resolution.Daily).Symbol; 
+            var datasetSymbol = AddData&lt;BrainWikipediaPageViews&gt;(symbol).Symbol;
+
+            // Historical data (request dataset symbol) 
+            var history = History(datasetSymbol, 365, Resolution.Daily); 
+            Debug($"We got {history.Count()} items from our history request for {symbol}"); 
+        } 
+    } 
+
+    public override void OnData(Slice slice) 
+    { 
+        // Get all BrainWikipediaPageViews points in the slice 
+        var points = slice.Get&lt;BrainWikipediaPageViews&gt;(); 
+        if (points == null || points.Count == 0) 
+        { 
+            return; 
+        }
+
+        var ranked = points.Values.ToDictionary(
+            x =&gt; x.Symbol.Underlying,
+            x =&gt;
+            {
+                // Example composite signal: 
+                var number_of_views = x.NumberViews1.HasValue ? x.NumberViews1.Value : 0m; 
+                var buzz1day = x.Buzz1.HasValue ? x.Buzz1.Value : 0m; 
+                return buzz1day * (decimal)Math.Sqrt((double)number_of_views);
+            })
+            // Rank by score (higher score = better) 
+            .OrderByDescending(x =&gt; x.Value).ToList();
+
+        // Convert ranks to weights (same style as your example) 
+        // best gets highest rank number 
+        var n = ranked.Count; 
+        var ranks = Enumerable.Range(1, n).Reverse().ToArray(); // n, n-1, ..., 1 
+        var denom = ranks.Sum(); 
+        var top = string.Join(", ", ranked.Take(3).Select(x =&gt; $"{x.Key.Value}:{x.Value:0.0000}")); 
+        Debug($"{Time.Date:yyyy-MM-dd} top: {top}"); 
+
+        // Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight 
+        for (var i = 0; i &lt; ranked.Count; i++) 
+        { 
+            var w = (decimal)ranks[i] / denom; 
+            SetHoldings(ranked[i].Key, w);
+        } 
+    } 
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p> The following example algorithm creates a dynamic universe of liquid U.S. equities, ranks them daily using Brain Wikipedia Page Views attention and buzz metrics, and emits weighted bullish insights for the most attention-driven stocks using the Alpha Framework. </p>
+<div class="section-example-container testable  testable">
+<pre class="python">from AlgorithmImports import *
+import math
+
+class BrainWikipediaPageViewsFrameworkRankingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2025, 1, 1)
+        self.set_end_date(2025, 11, 23)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+
+        # Universe: pick liquid names
+        self.add_universe(self._select)
+        alpha = BrainWikipediaPageViewsRankingAlpha()
+        self.add_alpha(alpha)
+
+        self.schedule.on(
+            self.date_rules.every_day(),
+            self.time_rules.at(9, 0),
+            alpha.emit_insights
+        )
+
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+        self.add_risk_management(NullRiskManagementModel())
+        self.set_execution(ImmediateExecutionModel())
+
+        self.set_warmup(30, Resolution.DAILY)
+
+    def _select(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        # Liquid universe
+        filtered = [c for c in fundamental if c.market_cap and c.price &gt; 10]
+        filtered.sort(key=lambda c: c.dollar_volume, reverse=True)
+
+        # Keep it manageable
+        return [c.symbol for c in filtered[:50]]
+
+
+class BrainWikipediaPageViewsRankingAlpha(AlphaModel):
+    def __init__(self):
+        self.symbol_data_by_symbol = {}
+        self.symbol_by_dataset_symbol = {}
+
+        # Cache latest score per equity symbol
+        self.latest_scores = {}     # Symbol -&gt; float
+        self.last_score_date = None # date of the latest cache refresh (algorithm.time.date())
+
+        # Store algorithm reference for scheduled emission
+        self.algorithm = None
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        self.algorithm = algorithm
+
+        points = slice.get(BrainWikipediaPageViews)
+        if points is None:
+            return []
+
+        for point in points.values():
+            # Map dataset symbol -&gt; equity symbol
+            if point.symbol not in self.symbol_by_dataset_symbol:
+                continue
+
+            sym = self.symbol_by_dataset_symbol[point.symbol]
+
+            number_of_views = point.NumberViews1 if point.NumberViews1 else 0
+            buzz1day = point.Buzz1 if point.Buzz1 else 0
+
+            score = buzz1day + math.sqrt(number_of_views)
+            self.latest_scores[sym] = score
+
+        self.last_score_date = algorithm.time.date()
+
+        return []
+
+    def emit_insights(self) -&gt; None:
+        algorithm = self.algorithm
+        if not algorithm:
+            return
+
+        if self.last_score_date != algorithm.time.date():
+            return
+
+        paired = []
+        for sym, sc in self.latest_scores.items():
+            sec = algorithm.securities.get(sym)
+            if sec is None or not sec.has_data or sec.price is None or sec.price &lt;= 0:
+                continue
+            if sc == 0:
+                continue
+            paired.append((sym, sc))
+
+        if not paired:
+            return
+
+        # Rank (higher is better)
+        paired.sort(key=lambda x: x[1], reverse=True)
+
+        n = len(paired)
+        ranks = list(range(n, 0, -1))  # best gets largest rank
+        denom = sum(ranks)
+
+        insights = []
+        for i, (sym, sc) in enumerate(paired):
+            weight = ranks[i] / denom
+            insights.append(
+                Insight.price(sym, timedelta(days=7), InsightDirection.UP, None, None, None, weight)
+            )
+
+        # Emit insights into the framework
+        algorithm.emit_insights(insights)
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            if symbol in self.symbol_data_by_symbol:
+                continue
+
+            sd = SymbolData(algorithm, symbol)
+            self.symbol_data_by_symbol[symbol] = sd
+            self.symbol_by_dataset_symbol[sd.dataset_symbol] = symbol
+
+        for security in changes.removed_securities:
+            symbol = security.symbol
+
+            sd = self.symbol_data_by_symbol.pop(symbol, None)
+            if sd is not None:
+                sd.dispose()
+
+            to_remove = None
+            for ds_sym, eq_sym in self.symbol_by_dataset_symbol.items():
+                if eq_sym == symbol:
+                    to_remove = ds_sym
+                    break
+            if to_remove is not None:
+                self.symbol_by_dataset_symbol.pop(to_remove, None)
+
+            self.latest_scores.pop(symbol, None)
+
+
+class SymbolData:
+    def __init__(self, algorithm: QCAlgorithm, symbol: Symbol):
+        self.algorithm = algorithm
+
+        # Subscribe to Brain Wikipedia Page Views metrics for this equity symbol
+        self.dataset_symbol = algorithm.add_data(BrainWikipediaPageViews, symbol, Resolution.DAILY).symbol
+
+        history = algorithm.history(self.dataset_symbol, 365, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} items from our history request for {symbol}")
+
+    def dispose(self):
+        # Unsubscribe custom data subscription
+        self.algorithm.remove_security(self.dataset_symbol)</pre>
+<pre class="csharp">public class BrainWikipediaPageViewsFrameworkRankingAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2025, 1, 1);
+        SetEndDate(2025, 11, 23);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        AddUniverse(f =&gt; f
+            .Where(c =&gt; c.HasFundamentalData &amp;&amp; c.Price &gt; 10)
+            .OrderByDescending(c =&gt; c.DollarVolume)
+            .Take(50)
+            .Select(c =&gt; c.Symbol));
+
+        var alpha = new BrainWikipediaPageViewsRankingAlpha();
+        AddAlpha(alpha);
+
+        Schedule.On(
+            DateRules.EveryDay(),
+            TimeRules.At(9, 0),
+            alpha.EmitInsights
+        );
+
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+        AddRiskManagement(new NullRiskManagementModel());
+        SetExecution(new ImmediateExecutionModel());
+
+        SetWarmUp(30, Resolution.Daily);
+    }
+}
+
+public class BrainWikipediaPageViewsRankingAlpha : AlphaModel
+{
+    private readonly Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new();
+    private readonly Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new();
+
+    private readonly Dictionary&lt;Symbol, double&gt; _latestScores = new();
+    private DateTime? _lastScoreDate;
+
+    private QCAlgorithm _algorithm;
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        _algorithm = algorithm;
+
+        var points = slice.Get&lt;BrainWikipediaPageViews&gt;();
+        if (points == null)
+        {
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+
+        foreach (var kvp in points)
+        {
+            var dsSymbol = kvp.Key;
+            var point = kvp.Value;
+
+            if (!_symbolByDatasetSymbol.TryGetValue(dsSymbol, out var sym))
+            {
+                continue;
+            }
+
+            var numberOfViews = point.NumberViews1.HasValue ? (double)point.NumberViews1.Value : 0.0;
+            var buzz1day = point.Buzz1.HasValue ? (double)point.Buzz1.Value : 0.0;
+
+            var score = buzz1day + Math.Sqrt(numberOfViews);
+            _latestScores[sym] = score;
+        }
+
+        _lastScoreDate = algorithm.Time.Date;
+
+        return Enumerable.Empty&lt;Insight&gt;();
+    }
+
+    public void EmitInsights()
+    {
+        var algorithm = _algorithm;
+        if (algorithm == null)
+        {
+            return;
+        }
+
+        if (!_lastScoreDate.HasValue || _lastScoreDate.Value != algorithm.Time.Date)
+        {
+            return;
+        }
+
+        var paired = new List&lt;(Symbol Symbol, double Score)&gt;();
+        foreach (var kvp in _latestScores)
+        {
+            var sym = kvp.Key;
+            var sc = kvp.Value;
+
+            if (!algorithm.Securities.TryGetValue(sym, out var sec) || sec == null || !sec.HasData || sec.Price &lt;= 0)
+            {
+                continue;
+            }
+
+            if (sc == 0)
+            {
+                continue;
+            }
+
+            paired.Add((sym, sc));
+        }
+
+        if (paired.Count == 0)
+        {
+            return;
+        }
+
+        paired.Sort((a, b) =&gt; b.Score.CompareTo(a.Score));
+
+        var n = paired.Count;
+        var denom = n * (n + 1) / 2.0;
+
+        var insights = new List&lt;Insight&gt;(n);
+        for (int i = 0; i &lt; n; i++)
+        {
+            var sym = paired[i].Symbol;
+            var rank = n - i;
+            var weight = rank / denom;
+
+            insights.Add(Insight.Price(sym, TimeSpan.FromDays(7), InsightDirection.Up, null, null, null, weight));
+        }
+
+        algorithm.EmitInsights(insights.ToArray());
+
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            var symbol = security.Symbol;
+            if (_symbolDataBySymbol.ContainsKey(symbol))
+            {
+                continue;
+            }
+
+            var sd = new SymbolData(algorithm, symbol);
+            _symbolDataBySymbol[symbol] = sd;
+            _symbolByDatasetSymbol[sd.DatasetSymbol] = symbol;
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {
+            var symbol = security.Symbol;
+
+            if (_symbolDataBySymbol.TryGetValue(symbol, out var sd))
+            {
+                _symbolDataBySymbol.Remove(symbol);
+                sd.Dispose();
+            }
+
+            Symbol toRemove = default;
+            var found = false;
+            foreach (var kvp in _symbolByDatasetSymbol)
+            {
+                if (kvp.Value == symbol)
+                {
+                    toRemove = kvp.Key;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found)
+            {
+                _symbolByDatasetSymbol.Remove(toRemove);
+            }
+
+            _latestScores.Remove(symbol);
+        }
+    }
+}
+
+public class SymbolData
+{
+    private readonly QCAlgorithm _algorithm;
+    public Symbol DatasetSymbol { get; }
+
+    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+    {
+        _algorithm = algorithm;
+
+        DatasetSymbol = algorithm.AddData&lt;BrainWikipediaPageViews&gt;(symbol, Resolution.Daily).Symbol;
+
+        var history = algorithm.History(DatasetSymbol, 365, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request for {symbol}");
+    }
+
+    public void Dispose()
+    {
+        _algorithm.RemoveSecurity(DatasetSymbol);
+    }
+}</pre>
+</div>
+<h4>Research Example</h4>
+<p> The following example retrieves historical Brain Wikipedia Page Views data for Apple and prints the daily number of Wikipedia page views over the past six months. </p> 
+<div class="section-example-container"> 
+<pre class="python">qb = QuantBook() 
+# Requesting Data 
+aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol 
+symbol = qb.AddData(BrainWikipediaPageViews, aapl).Symbol 
+
+# Historical data 
+history = qb.History(BrainWikipediaPageViews, symbol, 180, Resolution.Daily) 
+for (symbol, time), row in history.iterrows(): 
+    print(f"{symbol} views at {time}: {row['numberviews1']}")</pre> 
+<pre class="csharp">#r "../QuantConnect.DataSource.BrainSentiment.dll"
+var qb = new QuantBook();
+// Requesting data 
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol; 
+var symbol = qb.AddData&lt;BrainWikipediaPageViews&gt;(aapl).Symbol; 
+
+// Historical data 
+var history = qb.History&lt;BrainWikipediaPageViews&gt;(symbol, 180, Resolution.Daily); 
+foreach (BrainWikipediaPageViews PageMetrics in history) 
+{ 
+    Console.WriteLine($"{PageMetrics} at {PageMetrics.EndTime}");
+}</pre></div>
