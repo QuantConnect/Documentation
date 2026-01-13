@@ -1,57 +1,26 @@
-<p>To connect Claude Code to the QC MCP Server, follow these steps:</p>
+<p>To connect Claude Code in Local Platform to the QC MCP Server, follow these steps:</p>
 
 <ol>
-  <li>Install and open <a href='https://docs.docker.com/desktop/' rel='nofollow' target='_blank'>Docker Desktop</a>.</li>
-
-  <li>Install <a href='https://www.anthropic.com/claude-code' rel='nofollow' target='_blank'>Claude Code</a>.</li>
-
-  <li>In a terminal, pull the QC MCP Server from Docker Hub.</li>
-  <div class="cli section-example-container">
-    <pre>$ docker pull quantconnect/mcp-server</pre>
-  </div>
-  <p>If you have an ARM chip, add the <code>--platform linux/arm64</code> option.</p>
-
-  <li>Save the following configuration file on your computer:
+  <li>In Local Platform, install the <a href='https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code' rel='nofollow' target='_blank'>Claude Code</a> extension.</li>
+  
+  <li>In your <span class='public-file-name'>~ / .claude.json</span> (example: <span class='public-file-name'>C: / Users / derek / .claude.json</span>) file, add the following configuration:</li>
 
    <div class="section-example-container">
-     <pre>{
-  "mcpServers": {
-    "quantconnect": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e", "QUANTCONNECT_USER_ID",
-        "-e", "QUANTCONNECT_API_TOKEN",
-        "-e", "AGENT_NAME",
-        "--platform", "&lt;your_platform&gt;",
-        "quantconnect/mcp-server"
-      ],
-      "env": {
-        "QUANTCONNECT_USER_ID": "&lt;your_user_id&gt;",
-        "QUANTCONNECT_API_TOKEN": "&lt;your_api_token&gt;",
-        "AGENT_NAME": "MCP Server"
-      }
-    }
+     <pre>"mcpServers": {
+  "qc-mcp": {
+    "type": "http",
+    "url": "http://localhost:3001/"
   }
-}</pre>
+},</pre>
    </div>
+  
+  <li><a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>Create a new project</a> or <a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>open an existing one</a>.</li>
 
-    <p>To get your user Id and API token, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
-    <p>Our MCP server is multi-platform capable. The options are <code>linux/amd64</code> for Intel/AMD chips and <code>linux/arm64</code> for ARM chips (for example, Apple's M-series chips).</p>
-    <p>If you simultaneously run multiple agents, set a unique value for the <code>AGENT_NAME</code> environment variable for each agent to keep record of the request source.</p>
-  </li>
+  <li>In the top navigation bar, click the <img class='icon-image' src='https://cdn.quantconnect.com/i/tu/claude-code-icon.png' alt='Claude Code icon'> <span class='icon-name'>Claude Code</span> icon.</li>
+  
+  <li>In the Claude Code panel, enter <span class='key-combinations'>/</span> and then click <span class='button-name'>MCP status</span> from the menu.</li>
+  <p>After about 10 seconds, it should show the MCP server is connected.</p>
+  <img src='https://cdn.quantconnect.com/i/tu/claude-code-manage-mcp-servers.png' alt='Showing the QC MCP server is connected' class='docs-image'>
 
-  <li>In a terminal, navigate to the directory you want Claude to operate in and then run <code>claude --mcp-config &lt;path_to_your_config_file&gt;</code>.</li>
-  <div class="cli section-example-container">
-    <pre>$ claude --mcp-config C:/Users/derek/quantconnect_mcp_config.json</pre>
-  </div>
-  <p>You can even use the terminal in Visual Studio Code. To open it, click <span class='button-name'>View > Terminal</span> from the main menu.</p>
+  <li>If the MCP server doesn't connect after 10 seconds, close the Claude Code panel and re-open a new one.</li>
 </ol>
-
-<p>To keep the Docker image up-to-date, in a terminal, pull the latest MCP server from Docker Hub.</p>
-<div class="cli section-example-container">
-  <pre>$ docker pull quantconnect/mcp-server</pre>
-</div>
-<p>If you have an ARM chip, add the <code>--platform linux/arm64</code> option.</p>
