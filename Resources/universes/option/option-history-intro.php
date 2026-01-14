@@ -2,7 +2,7 @@
     The <a href="<?=$filterLink?>">contract filter</a> determines which <?=$underlyingAssetClass?> Option contracts are in your universe each trading day.
     The default filter selects the contracts with the following characteristics:
 </p>
-<? $annotation = "exclude weeklys"; include(DOCS_RESOURCES."/universes/option/default-filter.php"); ?>
+<? $defaultExpirationType = "Standard and weeklys"; include(DOCS_RESOURCES."/universes/option/default-filter.php"); ?>
 
 <p>To change the filter, call the <code class="csharp">SetFilter</code><code class="python">set_filter</code> method.</p>
 <div class="section-example-container">

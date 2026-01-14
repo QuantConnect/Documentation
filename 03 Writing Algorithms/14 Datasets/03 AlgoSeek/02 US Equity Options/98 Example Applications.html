@@ -22,7 +22,7 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
         self.option_symbol = option.symbol
         # To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
         # -2/+2 strike buffer is given for small price change
-        option.set_filter(lambda u: u.include_weeklys().calls_only().strikes(-2, +2).expiration(0, 6))
+        option.set_filter(lambda u: u.calls_only().strikes(-2, +2).expiration(0, 6))
         
         self.contract = None
 
@@ -65,7 +65,7 @@ class USEquityOptionsDataAlgorithm(QCAlgorithm):
         _optionSymbol = option.Symbol;
         // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
         // -2/+2 strike buffer is given for small price change
-        option.SetFilter((u) =&gt; u.IncludeWeeklys().CallsOnly().Strikes(-2, +2).Expiration(0, 7));
+        option.SetFilter((u) =&gt; u.CallsOnly().Strikes(-2, +2).Expiration(0, 7));
     }
 
     public override void OnData(Slice slice)

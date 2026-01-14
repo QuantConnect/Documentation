@@ -145,7 +145,7 @@
         var option = AddOption(spy);
         _symbol = option.Symbol;
         // We wish to only trade the contracts expiring within the same week since they have the highest volume.
-        option.SetFilter((u) =&gt; u.IncludeWeeklys().Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
+        option.SetFilter((u) =&gt; u.Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
     }
 
     public override void OnData(Slice slice)
@@ -175,7 +175,7 @@
         option = self.add_option(spy)
         self._symbol = option.symbol
         # We wish to only trade the contracts expiring within the same week since they have the highest volume.
-        option.set_filter(lambda u: u.include_weeklys().contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
+        option.set_filter(lambda u: u.contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
     
     def on_data(self, slice: Slice) -&gt; None:
         # Only want to obtain the option chain of the selected symbol.
@@ -221,7 +221,7 @@
         _symbol = option.Symbol;
         // We wish to only trade the contracts expiring within the same week since they have the highest volume.
         // 0.4 Delta will only appear in call contracts.
-        option.SetFilter((u) =&gt; u.IncludeWeeklys().Delta(0.2m, 0.6m).Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
+        option.SetFilter((u) =&gt; u.Delta(0.2m, 0.6m).Contracts((x) =&gt; x.Where(s =&gt; s.ID.Date &lt;= Expiry.EndOfWeek(Time))));
     }
 
     public override void OnData(Slice slice)
@@ -250,7 +250,7 @@
         self._symbol = option.symbol
         # We wish to only trade the contracts expiring within the same week since they have the highest volume.
         # 0.4 Delta will only appear in call contracts.
-        option.set_filter(lambda u: u.include_weeklys().delta(0.2, 0.6).contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
+        option.set_filter(lambda u: u.delta(0.2, 0.6).contracts(lambda x: [s for s in x if s.id.date &lt;= Expiry.end_of_week(self.time)]))
     
     def on_data(self, slice: Slice) -&gt; None:
         # Only want to obtain the option chain of the selected symbol.

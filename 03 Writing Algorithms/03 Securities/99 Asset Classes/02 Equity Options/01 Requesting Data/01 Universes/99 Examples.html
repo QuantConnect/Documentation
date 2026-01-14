@@ -24,7 +24,7 @@
         var option = AddOption("SPY");
         // Filter for 0-DTE contracts within +/-10 strike range.
         // They have the highest volatility but low premium, providing sufficient liquidity and higher profit margin.
-        option.SetFilter(u =&gt; u.IncludeWeeklys().Expiration(0, 0).Strikes(-10, 10));
+        option.SetFilter(u =&gt; u.Expiration(0, 0).Strikes(-10, 10));
     }
 }</pre>
 <pre class="python">class EquityOptionAlgorithm(QCAlgorithm):
@@ -34,7 +34,7 @@
         option = self.add_option("SPY")
         # Filter for 0-DTE contracts within +/-10 strike range.
         # They have the highest volatility but low premium, providing sufficient liquidity and higher profit margin.
-        option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-10, 10))</pre>
+        option.set_filter(lambda u: u.expiration(0, 0).strikes(-10, 10))</pre>
 </div>
 <h4>
  Example 2: Straddle
@@ -63,7 +63,7 @@
         _symbol = option.Symbol;
         // Using Staddle() method, it will only return the best-matched ATM call and put contracts expiring after 30 days.
         // It provides better accuracy in filtering, and subscribe only to the needed contracts to save computation resources.
-        option.SetFilter(u =&gt; u.IncludeWeeklys().Straddle(30));
+        option.SetFilter(u =&gt; u.Straddle(30));
     }
     
     public override void OnData(Slice slice)
@@ -94,7 +94,7 @@
         self._symbol = option.symbol
         # Using straddle() method, it will only return the best-matched ATM call and put contracts expiring after 30 days.
         # It provides better accuracy in filtering, and subscribe only to the needed contracts to save computation resources.
-        option.set_filter(lambda u: u.include_weeklys().straddle(30))
+        option.set_filter(lambda u: u.straddle(30))
     
     def on_data(self, slice: Slice) -&gt; None:
         # Only wants the option chain of the selected symbol.
@@ -130,7 +130,7 @@
         _underlying = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
         // Subscribe to SPY option data.
         var option = AddOption(_underlying.Symbol);
-        option.SetFilter(u =&gt; u.IncludeWeeklys().Contracts((contracts) =&gt;
+        option.SetFilter(u =&gt; u.Contracts((contracts) =&gt;
         {
             var selected = new List&lt;Symbol&gt;();
     
@@ -177,7 +177,7 @@
         # Subscribe to underlying data for ATM calculation using the update underlying price.
         # Set data normalization mode to raw is required to ensure strike price and underlying price is comparable.
         option = self.add_option(self.underlying.symbol)
-        option.set_filter(lambda u: u.include_weeklys().contracts(self.selection))
+        option.set_filter(lambda u: u.contracts(self.selection))
     
     def selection(self, contracts: List[Symbol]) -&gt; List[Symbol]:
         selected = []

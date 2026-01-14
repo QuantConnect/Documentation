@@ -2,7 +2,7 @@
     The <a href="/docs/v2/writing-algorithms/universes/index-options#05-Filter-by-Other-Contract-Properties">contract filter</a> determines which Future Option contracts are in your universe each trading day.
     The default filter selects the contracts with the following characteristics:
 </p>
-<? $annotation = "weeklies and non-standard contracts are not available"; include(DOCS_RESOURCES."/universes/option/default-filter.php"); ?>
+<? $defaultExpirationType = "Standard type (weeklies and non-standard contracts are not available)"; include(DOCS_RESOURCES."/universes/option/default-filter.php"); ?>
 
 <p>To get the prices and volumes for all of the Future Option contracts that pass your filter during a specific period of time, get the underlying Future contract and then call the <code class="csharp">OptionHistory</code><code class="python">option_history</code> method with the Future contract's <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 

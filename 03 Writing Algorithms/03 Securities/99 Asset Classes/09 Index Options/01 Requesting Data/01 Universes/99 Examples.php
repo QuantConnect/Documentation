@@ -31,7 +31,7 @@
         // Subscribe to the option chain.
         _option = AddIndexOption("SPX", "SPXW");
         // Filter the option universe to only select 0DTE options.
-        _option.SetFilter(u =&gt; u.IncludeWeeklys().Expiration(0, 0).Strikes(-1, 1));
+        _option.SetFilter(u =&gt; u.Expiration(0, 0).Strikes(-1, 1));
         // Filter the option universe by Delta. The last SetFilter call prevails.
         // _option.SetFilter(optionFilterUniverse =&gt; optionFilterUniverse.Delta(0.25m, 0.75m));
     }
@@ -60,7 +60,7 @@
         # Subscribe to the option chain.
         self._option = self.add_index_option("SPX", "SPXW")
         # Filter the option universe to only select 0DTE options.
-        self._option.set_filter(lambda u: u.include_weeklys().expiration(0, 0).strikes(-1, 1))
+        self._option.set_filter(lambda u: u.expiration(0, 0).strikes(-1, 1))
         # Filter the option universe by Delta. The last set_filter call prevails.
         # self._option.set_filter(lambda option_filter_universe: option_filter_universe.delta(0.25, 0.75))
 

@@ -15,7 +15,7 @@
     {
         var underlying = AddIndex("VIX").Symbol;
         var option = AddIndexOption(underlying, "VIXW");
-        option.SetFilter(universe => universe.IncludeWeeklys().Expiration(0, 7).Delta(0.35m, 0.75m));
+        option.SetFilter(universe => universe.Expiration(0, 7).Delta(0.35m, 0.75m));
         _symbol = option.Symbol;
     }
 
@@ -32,7 +32,7 @@
     def initialize(self):
         underlying = self.add_index("VIX").symbol
         option = self.add_index_option(underlying, "VIXW")
-        option.set_filter(lambda universe: universe.include_weeklys().expiration(0, 7).delta(0.35, 0.75))
+        option.set_filter(lambda universe: universe.expiration(0, 7).delta(0.35, 0.75))
         self._symbol = option.symbol
 
     def on_data(self, data):

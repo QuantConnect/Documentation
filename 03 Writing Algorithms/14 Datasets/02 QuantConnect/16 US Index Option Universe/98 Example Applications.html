@@ -48,7 +48,7 @@ class IndexOptionsUniverseAlgorithm(QCAlgorithm):
         # Select the contracts with delta very close to -1 and high open interest
         # This can effectively hedge most of the price change of the underlying and ensure the liquidity
         # Make sure the contract is expiring close for its tradbility
-        return universe.include_weeklys().puts_only().expiration(2, 7).delta(-1, -0.95).open_interest(10, 1000)
+        return universe.puts_only().expiration(2, 7).delta(-1, -0.95).open_interest(10, 1000)
 
     def buy_hedge_contract(self) -&GT; None:
         chain = self.current_slice.option_chains.get(self.option_symbol)
@@ -111,7 +111,6 @@ class IndexOptionsUniverseAlgorithm(QCAlgorithm):
         // This can effectively hedge most of the price change of the underlying and ensure the liquidity
         // Make sure the contract is expiring close for its tradbility
         return universe
-            .IncludeWeeklys()
             .PutsOnly()
             .Expiration(2, 7)
             .Delta(-1m, -0.95m)
@@ -181,7 +180,7 @@ class IndexOptionsUniverseSelectionModel(OptionUniverseSelectionModel):
     def filter(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
         # To ensure the liquidity and tradability, make sure the option is not 0-DTE and have a fair open interest
         # A longer TTM will have lower Gamma thus more stable in the local delta-neutral position
-        return universe.include_weeklys().expiration(30, 90).open_interest(50, 1000)
+        return universe.expiration(30, 90).open_interest(50, 1000)
 
 class OptionDeltaGammaAlphaModel(AlphaModel):
     def __init__(self) -&gt; None:
@@ -275,7 +274,6 @@ class IndexOptionsUniverseSelectionModel : OptionUniverseSelectionModel
         // To ensure the liquidity and tradability, make sure the option is not 0-DTE and have a fair open interest
         // A longer TTM will have lower Gamma thus more stable in the local delta-neutral position
         return filter
-            .IncludeWeeklys()
             .Expiration(30, 90)
             .OpenInterest(50, 1000);
     }

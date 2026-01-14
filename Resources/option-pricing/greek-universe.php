@@ -4,11 +4,11 @@
     <pre class="csharp">public override void Initialize()
 {
     var option = <?=$addOptionC?>
-    option.SetFilter(universe => universe.IncludeWeeklys().Delta(0.3m, 0.7m).Expiration(0, 7));
+    option.SetFilter(universe => universe.Delta(0.3m, 0.7m).Expiration(0, 7));
 }</pre>
     <pre class="python">def initialize(self):
     option = <?=$addOptionPy?>
-    option.set_filter(lambda universe: universe.include_weeklys().delta(0.3, 0.7).expiration(0,7))</pre>
+    option.set_filter(lambda universe: universe.delta(0.3, 0.7).expiration(0,7))</pre>
 </div>
 
 <p><?=$calculationMethod?></p>

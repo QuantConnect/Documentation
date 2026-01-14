@@ -140,7 +140,7 @@
         // Filter the underlying continuous Futures to narrow the FOP spectrum.
         _underlying.SetFilter(0, 182);
         // Filter for the current-week-expiring calls to formulate a covered call that expires at the end of week.
-        AddFutureOption(_underlying.Symbol, (u) =&gt; u.IncludeWeeklys().CallsOnly().Expiration(0, 5));
+        AddFutureOption(_underlying.Symbol, (u) =&gt; u.CallsOnly().Expiration(0, 5));
     }
     
     public override void OnData(Slice slice)
@@ -181,7 +181,7 @@
         # Filter the underlying continuous Futures to narrow the FOP spectrum.
         self.underlying.set_filter(0, 182)
         # Filter for the current-week-expiring calls to formulate a covered call that expires at the end of week.
-        self.add_future_option(self.underlying.symbol, lambda u: u.include_weeklys().calls_only().expiration(0, 5))
+        self.add_future_option(self.underlying.symbol, lambda u: u.calls_only().expiration(0, 5))
     
     def on_data(self, slice: Slice) -&gt; None:
         # Create canonical symbol for the mapped future contract, since option chains are mapped by canonical symbol.

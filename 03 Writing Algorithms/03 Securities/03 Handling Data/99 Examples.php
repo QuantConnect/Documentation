@@ -280,7 +280,7 @@
         // Add an SPY Option universe.
         var option = AddOption("SPY");
         // Set the Option universe filter.
-        option.SetFilter(x =&gt; x.IncludeWeeklys().Strikes(-5, 5).Expiration(7, 60));
+        option.SetFilter(x =&gt; x.Strikes(-5, 5).Expiration(7, 60));
         // Save a reference of the canonical symbol.
         _symbol = option.Symbol;
     }
@@ -320,7 +320,7 @@
         # Add an SPY Option universe.
         option = self.add_option("SPY")
         # Set the Option universe filter.
-        option.set_filter(lambda x: x.include_weeklys().strikes(-5, 5).expiration(0, 60))
+        option.set_filter(lambda x: x.strikes(-5, 5).expiration(0, 60))
         # Save a reference of the canonical symbol.
         self._symbol = option.symbol
 
