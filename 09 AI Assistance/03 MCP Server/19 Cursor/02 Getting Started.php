@@ -32,7 +32,7 @@
   <li>On the Cursor Settings page, click <span class='menu-name'>Tools & MCP</span>.</li>
   <li>Click <span class='button-name'>New MCP Server</span>.</li>
   <li>If the QC MCP Server has an error, click the toggle switch twice to restart it.</li>
-  <img src='https://cdn.quantconnect.com/i/tu/cursor-mcp-error.png' alt='Cursor GUI showing the qc-mcp server has an error'>
+  <img src='https://cdn.quantconnect.com/i/tu/cursor-mcp-error.png' alt='Cursor GUI showing the qc-mcp server has an error' class='docs-image'>
 
   <!-- Open the chat window -->
   <li>Press <span class='key-combinations'>Ctrl+Alt+b</span> to chat with the agent.</li>
