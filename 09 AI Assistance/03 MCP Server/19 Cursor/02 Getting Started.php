@@ -1,43 +1,39 @@
 <p>To connect the Agent in the Cursor IDE to the QC MCP Server, follow these steps:</p>
 
-<ol>
-  <li>Install and open <a href='https://docs.docker.com/desktop/' rel='nofollow' target='_blank'>Docker Desktop</a>.</li>
-  
+<ol>  
+  <!-- Install Cursor -->
   <li>Install and open <a href='https://cursor.com/downloads' rel='nofollow' target='_blank'>Cursor</a>.</li>
 
-  <li>In the top navigation bar of Cursor, click <span class='menu-name'>View > Extensions</span>.</li>
-
+  <!-- Install the QC Extension -->
+  <li>In the top navigation bar, click <span class='menu-name'>View > Extensions</span>.</li>
   <li>In the <span class='field-name'>Search Exensions in Marketplace</span> field, enter <span class='key-combinations'>QuantConnect</span>.</li>
-
   <li>Click <span class='button-name'>Install</span>.</li>
 
-  <li>Click one of the following buttons:</li>
-  <ul>
-    <!-- 
-    If the configuration file changes:
-    1 - Hide these listings (must log in as Derek's account)
-       - https://cursor.directory/mcp/quantconnect-amd64
-       - https://cursor.directory/mcp/quantconnect-arm64
-    2 - Create new listings on https://cursor.directory/
-       - When you get new deeplinks from https://docs.cursor.com/en/tools/developers#markdown, replace the links on the buttons below.
-    -->
-    <li><a rel='nofollow' href="cursor://anysphere.cursor-deeplink/mcp/install?name=quantconnect&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIC1lIFFVQU5UQ09OTkVDVF9VU0VSX0lEIC1lIFFVQU5UQ09OTkVDVF9BUElfVE9LRU4gLWUgQUdFTlRfTkFNRSAtLXBsYXRmb3JtIGxpbnV4L2FtZDY0IHF1YW50Y29ubmVjdC9tY3Atc2VydmVyIiwiZW52Ijp7IlFVQU5UQ09OTkVDVF9VU0VSX0lEIjoiPHlvdXJfdXNlcl9pZD4iLCJRVUFOVENPTk5FQ1RfQVBJX1RPS0VOIjoiPHlvdXJfYXBpX3Rva2VuPiIsIkFHRU5UX05BTUUiOiJNQ1AgU2VydmVyIn19"><img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add quantconnect MCP server to Cursor" height="32" /></a> for Intel/AMD chips</li>
-    <li><a rel='nofollow' href="cursor://anysphere.cursor-deeplink/mcp/install?name=quantconnect&config=eyJjb21tYW5kIjoiZG9ja2VyIHJ1biAtaSAtLXJtIC1lIFFVQU5UQ09OTkVDVF9VU0VSX0lEIC1lIFFVQU5UQ09OTkVDVF9BUElfVE9LRU4gLWUgQUdFTlRfTkFNRSAtLXBsYXRmb3JtIGxpbnV4L2FybTY0IHF1YW50Y29ubmVjdC9tY3Atc2VydmVyIiwiZW52Ijp7IlFVQU5UQ09OTkVDVF9VU0VSX0lEIjoiPHlvdXJfdXNlcl9pZD4iLCJRVUFOVENPTk5FQ1RfQVBJX1RPS0VOIjoiPHlvdXJfYXBpX3Rva2VuPiIsIkFHRU5UX05BTUUiOiJNQ1AgU2VydmVyIn19"><img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add quantconnect MCP server to Cursor" height="32" /></a> for ARM (for example, Apple's M-series) chips</b></li>
-  </ul>
+  <!-- Configure the MCP Server -->
+  <li>In your <span class='public-file-name'>~ / .cursor / mcp.json</span> file, add the following configuration:</li>
+   <div class="section-example-container">
+     <pre>{
+  "mcpServers": {
+    "qc-mcp": {
+      "url": "http://localhost:3001/",
+      "transport": {
+        "type": "Streamable HTTP"
+      }
+    }
+  }
+}</pre>
+   </div>
 
-  <li>On the MCP & Integrations page that opens in Cursor, set the values of the environment variables.</li>
-  <p>To get your user Id and API token, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
-  <p>If you simultaneously run multiple agents, set a unique value for the <code>AGENT_NAME</code> environment variable for each agent to keep record of the request source.</p>
+  <!-- Open a QC project -->
+  <li>In Cursor, <a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>create a new project</a> or <a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>open an existing one</a>.</li>
+  
+  <!-- Ensure the tools are discovered -->
+  <li>In the top navigation bar, click <span class='menu-name'>File > Preferences > Cursor Settings</span>.</li>
+  <li>On the Cursor Settings page, click <span class='menu-name'>Tools & MCP</span>.</li>
+  <li>Click <span class='button-name'>New MCP Server</span>.</li>
+  <li>If the QC MCP Server has an error, click the toggle switch twice to restart it.</li>
+  <img src='https://cdn.quantconnect.com/i/tu/cursor-mcp-error.png' alt='Cursor GUI showing the qc-mcp server has an error'>
 
-  <li>Click <span class='button-name'>Install</span>.</li>
-
-  <li>In the bottom-left corner of the Cursor IDE, click <span class='button-name'>∞ Agents</span>.</li>
-
-  <li>In the <span class='page-section-name'>Agents</span> panel that opens, click <span class='button-name'>New Chat</span>.</li>
+  <!-- Open the chat window -->
+  <li>Press <span class='key-combinations'>Ctrl+Alt+b</span> to chat with the agent.</li>
 </ol>
-
-<p>To keep the Docker image up-to-date, in a terminal, pull the latest MCP server from Docker Hub.</p>
-<div class="cli section-example-container">
-  <pre>$ docker pull quantconnect/mcp-server</pre>
-</div>
-<p>If you have an ARM chip, add the <code>--platform linux/arm64</code> option.</p>
