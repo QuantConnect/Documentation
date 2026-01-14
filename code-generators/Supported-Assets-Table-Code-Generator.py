@@ -7,7 +7,7 @@ if __name__ == '__main__':
     directory = Path("Resources/datasets/supported-securities/")
     directory.mkdir(parents=True, exist_ok=True)
     backlist = ['market','ftx', 'ftxus', 'fxcm', 'gdax']
-    markets = ['binance', 'binanceus', 'bitfinex', 'bybit', 'coinbase', 'kraken', 'oanda', 'interactivebrokers']
+    markets = ['binance', 'binanceus', 'bitfinex', 'bybit', 'coinbase', 'dydx', 'kraken', 'oanda', 'interactivebrokers']
     results = {}
 
     # Organize data
