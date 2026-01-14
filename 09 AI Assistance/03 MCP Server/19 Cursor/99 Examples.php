@@ -2,11 +2,9 @@
 
 <h4>Example 1: Hello World</h4>
 <p>To test the server and client are working and connected, enter the following prompt into the Cursor chat:</p>
+<blockquote><p>> Read the open project.</p></blockquote>
+<p>The agent should call the <code>read_open_project</code> tool.</p>
 
- <div class="cli section-example-container">
-     <pre>> Read my QuantConnect account.</pre>
-</div>
-<p>The Agent should call the <code>read_account</code> tool.</p>
 
 <h4>Example 2: Strategy Development and Deployment</h4>
 <p>This example uses the Cursor Agent to brainstorm new strategy ideas, edit files, run backtests, and deploy to paper trading.</p>
