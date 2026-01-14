@@ -1,58 +1,37 @@
 <p>To connect the Cascade agent in the Windsurf Editor to the QC MCP Server, follow these steps:</p>
 
-<ol>
-  <li>Install and open <a href='https://docs.docker.com/desktop/' rel='nofollow' target='_blank'>Docker Desktop</a>.</li>
-  
+<ol>  
+  <!-- Install Windsurf -->
   <li>Install and open the <a href='https://windsurf.com/download/editor' rel='nofollow' target='_blank'>Windsurf Editor</a>.</li>
 
+  <!-- Install the QC Extension -->
   <li>In the top navigation bar of Windsurf, click <span class='menu-name'>View > Extensions</span>.</li>
-
   <li>In the <span class='field-name'>Search Exensions in Marketplace</span> field, enter <span class='key-combinations'>QuantConnect</span>.</li>
-
   <li>Click <span class='button-name'>Install</span>.</li>
 
-  <li>In the top navigation menu, click <span class='menu-name'>File > Preferences > Windsurf Settings</span>.</li>
-
-  <li>On the Windsurf Settings page, in the <span class='page-section-name'>Cascade</span> section, click <span class='button-name'>Manage MCPs</span>.</li>
-
-  <li>On the Manage MCP Servers page, click <span class='button-name'>View raw config</span>.</li>
-
-  <li>Edit the <span class='private-file-name'>mcp_config.json</span> file that opens to include the following QuantConnect configuration:</li>    
-  
-    <div class="section-example-container">
+  <!-- Configure the MCP Server -->
+  <li>In your <span class='public-file-name'>~ / .codeium / windsurf / mcp_config.json</span> file, add the following configuration:</li>
+   <div class="section-example-container">
      <pre>{
   "mcpServers": {
-    "quantconnect": {
-      "command": "docker",
-      "args": [
-        "run", "-i", "--rm",
-        "-e", "QUANTCONNECT_USER_ID",
-        "-e", "QUANTCONNECT_API_TOKEN",
-        "-e", "AGENT_NAME",
-        "--platform", "&lt;your_platform&gt;",
-        "quantconnect/mcp-server"
-      ],
-      "env": {
-        "QUANTCONNECT_USER_ID": "&lt;your_user_id&gt;",
-        "QUANTCONNECT_API_TOKEN": "&lt;your_api_token&gt;",
-        "AGENT_NAME": "MCP Server"
-      }
+    "qc-mcp": {
+      "disabled": false,
+      "url": "http://localhost:3001/"
     }
   }
 }</pre>
    </div>
 
-    <p>To get your user Id and API token, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a>.</p>
-    <p>Our MCP server is multi-platform capable. The options are <code>linux/amd64</code> for Intel/AMD chips and <code>linux/arm64</code> for ARM chips (for example, Apple's M-series chips).</p>
-    <p>If you simultaneously run multiple agents, set a unique value for the <code>AGENT_NAME</code> environment variable for each agent to keep record of the request source.</p>
+  <!-- Open a QC project -->
+  <li>In Windsurf, <a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>create a new project</a> or <a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>open an existing one</a>.</li>
 
-  <li>Press <span class='key-combinations'>Ctrl+S</span> to save the <span class='private-file-name'>mcp_config.json</span> file.</li>
-
+  <!-- Ensure the tools are discovered -->
+  <li>In the top navigation menu, click <span class='menu-name'>File > Preferences > Windsurf Settings</span>.</li>
+  <li>On the Windsurf Settings page, in the <span class='page-section-name'>Cascade</span> section, click <span class='button-name'>Open MCP Marketplace</span>.</li>
+  <li>If the QC MCP Server has an error, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/windsurf-refresh-icon.png'> <span class='icon-name'>refresh</span> icon to restart it.</li>
+  <img src='https://cdn.quantconnect.com/i/tu/windsurf-mcp-error.png' alt='Windsurf GUI showing the qc-mcp server has an error' class='docs-image'>  
+  
+  <!-- Open the chat window -->
   <li>Press <span class='key-combinations'>Ctrl+L</span> to open Cascade and begin interacting with the agent.</li>
 </ol>
 
-<p>To keep the Docker image up-to-date, in a terminal, pull the latest MCP server from Docker Hub.</p>
-<div class="cli section-example-container">
-  <pre>$ docker pull quantconnect/mcp-server</pre>
-</div>
-<p>If you have an ARM chip, add the <code>--platform linux/arm64</code> option.</p>
