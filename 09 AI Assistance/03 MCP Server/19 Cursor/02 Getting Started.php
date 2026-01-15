@@ -29,6 +29,7 @@
   <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-1.png" alt="Pull cloud organization">  
   <li>In the Pull QuantConnect Organization Workspace window, create a directory to serve as the organization workspace and then click <span class="button-name">Select</span>.</li>
   <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-2.png" alt="Pull cloud workspace">
+  <p>It takes a few minutes to create a new organization workspace directory and populate it with the <a href='/docs/v2/local-platform/development-environment/organization-workspaces#07-Directory-Structure'>the initial file structure</a>. After the organization workspace is populated with the initial file structure, it pulls your cloud project files.</p>
   
   <!-- Configure the MCP Server -->
   <li>In your <span class='public-file-name'>~ / .cursor / mcp.json</span> file, add the following configuration:</li>
