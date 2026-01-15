@@ -5,11 +5,6 @@
 <blockquote><p>> Read the open project.</p></blockquote>
 <p>The agent should call the <code>read_open_project</code> tool.</p>
 
-
-<h4>Example 2: Search QuantConnect, Create Projects, and Fix Errors</h4>
-<p>The following video shows <a href='https://claude.ai/share/7006527e-b665-45b6-970c-97af58296b16' target='_blank' rel='nofollow'>this conversation</a> with Claude Desktop in real-time:</p>
-<? DOCS_VIMEO(1106258759); ?>
-
-<h4>Example 3: Brainstorm Ideas, Add Project Descriptions, and Add Collaborators</h4>
-<p>The following video shows <a href='https://claude.ai/share/68784d82-243d-4384-8f19-9f7dde7ba076' target='_blank' rel='nofollow'>this conversation</a> with Claude Desktop in real-time:</p>
-<? DOCS_VIMEO(1106259276); ?>
+<h4>Example 2: Strategy Development and Deployment</h4>
+<p>This example uses Copilot Chat in Local Platform to brainstorm new strategy ideas, edit files, run backtests, and deploy to paper trading.</p>
+<? DOCS_VIMEO(1114056119); ?>
