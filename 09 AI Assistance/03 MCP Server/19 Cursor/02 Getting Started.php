@@ -55,6 +55,6 @@
 </ol>
 
 <p>
-  To backtest and live trade with the Local <a href='/docs/v2/local-platform/key-concepts/deployment-targets'>Deployment Target</a>, install Docker Desktop. 
-  The installation process depends on if your machine uses <a href='/docs/v2/local-platform/installation/install-on-windows'>Windows</a>, <a href='/docs/v2/local-platform/installation/install-on-macos#03-Install-Docker'>macOS</a>, or <a href='/docs/v2/local-platform/installation/install-on-linux#03-Install-Docker'>Linux</a>.
+  To backtest and live trade with the local <a href='/docs/v2/local-platform/key-concepts/deployment-targets'>Deployment Target</a>, install Docker Desktop. 
+  The installation process depends on if your machine uses <a href='/docs/v2/local-platform/installation/install-on-windows#03-Install-Docker'>Windows</a>, <a href='/docs/v2/local-platform/installation/install-on-macos#03-Install-Docker'>macOS</a>, or <a href='/docs/v2/local-platform/installation/install-on-linux#03-Install-Docker'>Linux</a>.
 </p>
