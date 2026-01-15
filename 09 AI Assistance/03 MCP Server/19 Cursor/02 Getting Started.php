@@ -11,11 +11,7 @@
 
   <!-- Log in to QC -->
   <li>In the primary side bar, click the <img src='https://cdn.quantconnect.com/i/tu/cursor-qc-icon.png' class='inline-icon' alt='QuantConnect icon in Cursor'> <span class='icon-name'>QuantConnect</span> icon.</li>
-  <li>The primary side bar checks the following requirements on your local machine. If any of the checks fail, see the related documentation.</li>
-    <ul>
-        <li><a href='/docs/v2/lean-cli/installation/installing-lean-cli'>LEAN CLI is installed</a>.</li>
-        <li>You are logged in to QuantConnect.</li>
-    </ul>
+  <li>If you don't have the LEAN CLI installed yet, <a href='/docs/v2/lean-cli/installation/installing-lean-cli'>install it</a>.</li>
   <li>In the Initialization Checklist panel, click <span class="button-name">Login to QuantConnect</span>.</li>
   <img src='https://cdn.quantconnect.com/i/tu/cursor-initialization-checklist.png' class='docs-image' alt='Initialization checklist in Cursor, where you can log in to QuantConnect'>
   <li>In the Cursor window, click <span class="button-name">Open</span>.</li>
