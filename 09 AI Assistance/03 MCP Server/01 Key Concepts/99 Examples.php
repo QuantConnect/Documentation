@@ -2,11 +2,9 @@
 
 <h4>Example 1: Hello World</h4>
 <p>To test the server and client are working and connected, enter the following prompt into the client application:</p>
+<blockquote><p>> Read the open project.</p></blockquote>
+<p>The agent should call the <code>read_open_project</code> tool.</p>
 
- <div class="cli section-example-container">
-     <pre>> Create a QuantConnect project.</pre>
-</div>
-<p>The client should call the <code>create_project</code> tool.</p>
 
 <h4>Example 2: Search QuantConnect, Create Projects, and Fix Errors</h4>
 <p>The following video shows <a href='https://claude.ai/share/7006527e-b665-45b6-970c-97af58296b16' target='_blank' rel='nofollow'>this conversation</a> with Claude Desktop in real-time:</p>
