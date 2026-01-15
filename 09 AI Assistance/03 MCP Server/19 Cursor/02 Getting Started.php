@@ -9,6 +9,27 @@
   <li>In the <span class='field-name'>Search Exensions in Marketplace</span> field, enter <span class='key-combinations'>QuantConnect</span>.</li>
   <li>Click <span class='button-name'>Install</span>.</li>
 
+  <!-- Log in to QC -->
+  <li>In the primary side bar, click the <img src='https://cdn.quantconnect.com/i/tu/cursor-qc-icon.png' class='inline-icon' alt='QuantConnect icon in Cursor'> <span class='icon-name'>QuantConnect</span> icon.</li>
+  <li>The primary side bar checks the following requirements on your local machine. If any of the checks fail, see the related documentation.</li>
+    <ul>
+        <li><a href='/docs/v2/lean-cli/installation/installing-lean-cli'>LEAN CLI is installed</a>.</li>
+        <li>You are logged in to QuantConnect.</li>
+    </ul>
+  <li>In the Initialization Checklist panel, click <span class="button-name">Login to QuantConnect</span>.</li>
+  <img src='https://cdn.quantconnect.com/i/tu/cursor-initialization-checklist.png' class='docs-image' alt='Initialization checklist in Cursor, where you can log in to QuantConnect'>
+  <li>In the Cursor window, click <span class="button-name">Open</span>.</li>
+  <img src='https://cdn.quantconnect.com/i/tu/cursor-login-to-quantconnect.png' class='docs-image' alt='Pop-up that enables you to open a QC link to login to your account'>
+  <li>On the Code Extension Login page, click <span class="button-name">Grant Access</span>.</li>
+
+  <!-- Pull organization workspace -->
+  <li>In the Select Workspace panel, click <span class="button-name">Pull Organization Workspace</span>.</li>
+  <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png" alt="Select workspace">
+  <li>In the Pull QuantConnect Organization Workspace window, click the cloud workspace (<a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations'>organization</a>) that you want to pull.</li>
+  <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-1.png" alt="Pull cloud organization">  
+  <li>In the Pull QuantConnect Organization Workspace window, create a directory to serve as the organization workspace and then click <span class="button-name">Select</span>.</li>
+  <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-2.png" alt="Pull cloud workspace">
+  
   <!-- Configure the MCP Server -->
   <li>In your <span class='public-file-name'>~ / .cursor / mcp.json</span> file, add the following configuration:</li>
    <div class="section-example-container">
