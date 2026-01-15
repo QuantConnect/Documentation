@@ -1,6 +1,6 @@
 <p>To connect the Agent in the Cursor IDE to the QC MCP Server, follow these steps:</p>
 
-<ol>  
+<ol>    
   <!-- Install Cursor -->
   <li>Install and open <a href='https://cursor.com/downloads' rel='nofollow' target='_blank'>Cursor</a>.</li>
 
@@ -11,7 +11,6 @@
 
   <!-- Log in to QC -->
   <li>In the primary side bar, click the <img src='https://cdn.quantconnect.com/i/tu/cursor-qc-icon.png' class='inline-icon' alt='QuantConnect icon in Cursor'> <span class='icon-name'>QuantConnect</span> icon.</li>
-  <li>If you don't have the LEAN CLI installed yet, <a href='/docs/v2/lean-cli/installation/installing-lean-cli'>install it</a>.</li>
   <li>In the Initialization Checklist panel, click <span class="button-name">Login to QuantConnect</span>.</li>
   <img src='https://cdn.quantconnect.com/i/tu/cursor-initialization-checklist.png' class='docs-image' alt='Initialization checklist in Cursor, where you can log in to QuantConnect'>
   <li>In the Cursor window, click <span class="button-name">Open</span>.</li>
@@ -54,3 +53,8 @@
   <!-- Open the chat window -->
   <li>Press <span class='key-combinations'>Ctrl+Alt+b</span> to chat with the agent.</li>
 </ol>
+
+<p>
+  To backtest and live trade with the Local <a href='/docs/v2/local-platform/key-concepts/deployment-targets'>Deployment Target</a>, install Docker Desktop. 
+  The installation process depends on if your machine uses <a href='/docs/v2/local-platform/installation/install-on-windows'>Windows</a>, <a href='/docs/v2/local-platform/installation/install-on-macos#03-Install-Docker'>macOS</a>, or <a href='/docs/v2/local-platform/installation/install-on-linux#03-Install-Docker'>Linux</a>.
+</p>
