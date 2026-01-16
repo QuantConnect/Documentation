@@ -1,3 +1,6 @@
+<p>
+  dYdX is not a brokerage, it is a decentralised, disintermediated and permissionless protocol. However many parts of the QuantConnect platform include dYdX in a brokerage list for simple user-experience.
+</p>
 <?
 $brokerageName = "dYdX Exchange";
 $cashState = false;
