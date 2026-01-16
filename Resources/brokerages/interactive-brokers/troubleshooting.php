@@ -111,11 +111,9 @@
             <td>
                 <div class="error-messages">No market data during competing live session.</div>
             </td>
-        </tr>
-        <tr>
             <td>
                 You have logged in to IB from another location while your live deployment is running.
-                This disconnects your live deployment from IB datafeed. If you close the other session, your algorithm will restore the data connection automatically, and will not stop with an error. See <span class="error-messages">An existing session was detected and will not be automatically disconnected"</span>.
+                This disconnects your live deployment from IB datafeed. If you close the other session, your algorithm will restore the data connection automatically, and will not stop with an error. See the "An existing session was detected and will not be automatically disconnected" case.
             </td>
         </tr>
     </tbody>
