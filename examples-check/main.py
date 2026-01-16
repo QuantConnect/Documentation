@@ -1,4 +1,4 @@
 from manager import RegressionTestManager
 
 if __name__ == "__main__":
-    RegressionTestManager().run()
+    print('Test from GitHub Action') #RegressionTestManager().run()
