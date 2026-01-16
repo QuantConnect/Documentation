@@ -67,7 +67,7 @@ class RegressionTestManager:
             return
 
         # Parse the docs for all algorithms that we need to backtest.
-        algorithms = FileProcessor(compiler_by_language).process_code_blocks(Config.ROOT_DIR)[:10]
+        algorithms = FileProcessor(compiler_by_language).process_code_blocks(Config.ROOT_DIR)
         log_with_time(start_time, f"Found {len(algorithms)} algorithms to test")
 
         # Set up with multiprocessing.
