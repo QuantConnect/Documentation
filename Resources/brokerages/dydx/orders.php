@@ -55,7 +55,7 @@
              A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
              <ul>
                  <li><code class="csharp">Day</code><code class="python">DAY</code></li>
-                 <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+                 <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code><sup>1</sup></li>
                  <li><code class="csharp">GoodTilDate</code><code class="python">good_til_date</code></li>
              </ul>
          </td>
@@ -74,18 +74,27 @@
          <td>20</td>
       </tr>
       <tr>
-         <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
+         <td><code>IOC</code><sup>2</sup></td>
+         <td><code>bool</code></td>
+         <td>Enforces that an order only be placed on the book as a maker order. Note this means that validators will cancel any newly placed post only orders that would cross with other maker.</td>
+         <td><code class="csharp">false</code><code class="python">False</code></td>
+      </tr>
+      <tr>
+         <td><code class="csharp">PostOnly</code><code class="python">post_only</code><sup>2</sup></td>
          <td><code>bool</code></td>
          <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled. This order property is only available for limit orders.</td>
-         <td></td>
+         <td><code class="csharp">false</code><code class="python">False</code></td>
       </tr>
+      <tr>
          <td><code class="csharp">ReduceOnly</code><code class="python">reduce_only</code></td>
-         <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
+         <td><code>bool</code></td>
          <td>A flag to signal that the order must only reduce your current position size. For more information about this order property, see <a href='https://help.dydx.trade/en/articles/166978-reduce-only-order' rel='nofollow' target='_blank'>Reduce-Only Order</a> on the dYdX website.</td>
-         <td></td>
+         <td><code class="csharp">false</code><code class="python">False</code></td>
       </tr>
    </tbody>
 </table>
+<p><sup>1</sup> <code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code> is not fully supported. These orders expire in 90 days.</p>
+<p><sup>2</sup> You cannot set <code class="csharp">PostOnly</code><code class="python">post_only</code> when <code class="python">IOC</code> is already set and vice-versa. Only one execution type can be active at a time.</p>
 
 <?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
