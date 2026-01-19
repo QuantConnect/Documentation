@@ -1,3 +1,21 @@
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+    const headings = document.querySelectorAll('h1.automated');
+    headings.forEach(span => {
+        if (span.textContent.trim() === "Brokerages") {
+            span.textContent = "Exchanges";
+        }
+    });
+
+    const breadcrumb = document.querySelectorAll('p.pre-title-area-breadcrumb > a');
+    breadcrumb.forEach(link => {
+        if (link.textContent.trim() === "Brokerages") {
+            link.textContent = "Exchanges";
+        }
+    });
+});
+</script>
+
 <?php include(DOCS_RESOURCES."/landing-page-introductions/individual-brokerages.php"); ?>
 
 <p>dYdX was founded by Antonio Juliano, a California-based entrepreneur, and former software engineer at Coinbase and Uber in July 2017 initially offering crypto margin trading, lending, and borrowing services. dYdX is not registered with any government authority as a broker or dealer, it is a decentralised, disintermediated and permissionless protocol, and is not available in the U.S. or to other Restricted Persons. All use of dYdX software is subject to the <a rel="nofollow" target="_blank" href="https://dydx.exchange/v4-terms">dYdX Software Terms of Use</a>.</p>

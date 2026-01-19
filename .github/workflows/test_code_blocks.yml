@@ -1,0 +1,37 @@
+name: Test Code Blocks
+
+on:
+  schedule:
+    - cron: "0 5 1 * *"  # Runs at midnight ET (05:00 UTC) on the 1st of every month
+  workflow_dispatch:  # Run on manual trigger
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Free space
+        run: df -h && rm -rf /opt/hostedtoolcache* && df -h
+
+      - name: Build base Docker image
+        run: docker build -t example-regression-base-image -f examples-check/DockerfileRegressionBase .
+
+      - name: Build test Docker image
+        run: docker build -t example-regression-test-image -f examples-check/DockerfileRegressionTest .
+
+      - name: Run regression tests
+        run: |
+          docker run --tmpfs /mnt/ramdisk:rw,size=1g \
+            -e DOCS_REGRESSION_TEST_USER_ID=${{ secrets.QUANTCONNECT_USER_ID }} \
+            -e DOCS_REGRESSION_TEST_USER_TOKEN="${{ secrets.QUANTCONNECT_API_TOKEN }}" \
+            example-regression-test-image 2>&1 | tee test_output.log
+
+      - name: Post results to Slack
+        run: |
+          LOGS=$(cat test_output.log)
+          jq -n --arg text "$LOGS" '{text: $text}' | \
+            curl --fail -X POST -H 'Content-type: application/json' -d @- \
+            ${{ secrets.SLACK_URL }}
