@@ -137,8 +137,7 @@ class EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel(OptionUni
     def filter(self, filter: OptionFilterUniverse) -&gt; OptionFilterUniverse:
         # To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
         # -1/+1 strike buffer is given for small price change
-        return (filter.weeklys_only()
-                      .calls_only()
+        return (filter.calls_only()
                       .strikes(-1, -1)
                       .expiration(0, 7))  
         
@@ -220,11 +219,9 @@ class EarliestExpiringWeeklyAtTheMoneyCallOptionUniverseSelectionModel : OptionU
     {
         // To speculate trade the underlying with a low cost, filter for the ATM calls that expiring in the current week
         // -2/+2 strike buffer is given for small price change
-        return filter
+        return filter.CallsOnly()
             .Strikes(-1, -1)
-            .Expiration(0, 7)
-            .WeeklysOnly()
-            .CallsOnly();
+            .Expiration(0, 7);
     }
 }
     
