@@ -78,6 +78,8 @@ def _parse_content(content):
                 for code_snippet in pre_code_section.find_all('code', {'class' : old}):
                     converted = f'{code_snippet}'.replace('<code', '<pre').replace('</code>', '</pre>').replace(old, new)
                     content = content.replace(f'{pre_code_section}', converted)
+    for old, new in languages.items():
+        content = content.replace(old, new)      
     return content
 
 if __name__ == '__main__':
