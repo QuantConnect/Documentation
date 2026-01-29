@@ -1,0 +1,83 @@
+<p>
+The USDA Fruit and Vegetable dataset provides insights into the agricultural sector. Examples include the following strategies: 
+</p>
+
+<ul><li>Compare the prices across sub-products (fresh vs frozen)</li>
+<li>Compare the price trends across products (strawberry vs orange)</li>
+<li>Understand how the agricultural market correlates with the stock market</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm compares the price difference between fresh and frozen strawberries:</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class FreshVsFrozenAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2023, 12, 31)
+
+        # Single subscription gets both Fresh and Frozen forms
+        self.strawberries = self.add_data(USDAFruitAndVegetables, USDAFruitAndVegetable.Symbols.Strawberries).symbol
+
+        history = self.history(USDAFruitAndVegetables, self.strawberries, datetime(2013,1,1), self.time, flatten=True)        
+
+    def on_data(self, slice):
+        if slice.contains_key(self.strawberries):
+            collection = slice[self.strawberries]
+
+            # Find Fresh and Frozen forms in the collection
+            fresh_price = None
+            frozen_price = None
+
+            for data in collection.data:
+                if data.form == "Fresh":
+                    fresh_price = data.value
+                elif data.form == "Frozen":
+                    frozen_price = data.value
+
+            if fresh_price and frozen_price:
+                diff_pct = ((fresh_price / frozen_price) - 1) * 100
+                self.log(f"{self.time.year}: Fresh ${fresh_price:.2f} vs Frozen ${frozen_price:.2f} ({diff_pct:+.1f}%)")</pre>
+<pre class="csharp">public class FreshVsFrozenAlgorithm : QCAlgorithm
+{
+    private Symbol _strawberries;
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2023, 12, 31);
+
+        // Single subscription gets both Fresh and Frozen forms
+        _strawberries = AddData&lt;USDAFruitAndVegetables&gt;(USDAFruitAndVegetable.Symbols.Strawberries).Symbol;
+
+        var history = History&lt;USDAFruitAndVegetables&gt;(_strawberries, new DateTime(2013,1,1), Time).ToList();
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!slice.TryGet&lt;USDAFruitAndVegetables&gt;(_strawberries, out var collection))
+        {
+            return;
+        }
+
+        // Find Fresh and Frozen forms in the collection
+        decimal? freshPrice = null;
+        decimal? frozenPrice = null;
+
+        foreach (var data in collection.Data.Cast&lt;USDAFruitAndVegetable&gt;())
+        {
+            if (data.Form == "Fresh")
+                freshPrice = data.Value;
+            if (data.Form == "Frozen")
+                frozenPrice = data.Value;
+        }
+
+        if (freshPrice.HasValue &amp;&amp; frozenPrice.HasValue)
+        {
+            var diffPct = ((freshPrice / frozenPrice) - 1) * 100;
+            Log($"{Time.Year}: Fresh ${freshPrice:.2f} vs Frozen ${frozenPrice:.2f} ({diffPct:+.1f}%)");
+        }
+    }
+}</pre>
+</div>
