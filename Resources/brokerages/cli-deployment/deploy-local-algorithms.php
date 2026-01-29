@@ -26,7 +26,8 @@ if ($isBrokerage) {
       "TradeStation",
       "Alpaca",
       "Tastytrade",
-      "Eze"
+      "Eze",
+      "dYdX"
   );
   $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 }
@@ -53,7 +54,8 @@ $dataProviders = array(
     "TradeStation",
     "Alpaca",
     "Tastytrade",
-    "Eze"
+    "Eze",
+    "dYdX"
 );
 $dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName, $dataProviders) + 1 : -1;
 ?>
@@ -80,7 +82,7 @@ Select a brokerage:
 16) Alpaca
 17) Tastytrade
 18) Eze
-Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
+19) dYdX
 </div>
 </li>
 
