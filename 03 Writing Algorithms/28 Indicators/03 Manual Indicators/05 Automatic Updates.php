@@ -8,9 +8,10 @@ self._symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
 self.indicator = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)
 
 # Create a consolidator
-consolidator = TradeBarConsolidator(3)   # 10 x 3 min trade bars to warm up the RSI.
-consolidator = QuoteBarConsolidator(4)   # 10 x 4 min quote bars to warm up the RSI
-consolidator = RenkoConsolidator(1)      # Renko consolidator that emits a bar when the price moves $1
+consolidator = TradeBarConsolidator(3)            # 10 x 3 min trade bars to warm up the RSI.
+consolidator = QuoteBarConsolidator(4)            # 10 x 4 min quote bars to warm up the RSI
+consolidator = RenkoConsolidator(1)               # Renko consolidator that emits a bar when the price moves $1
+consolidator = IdentityDataConsolidator[TradeBar]()   # Identity consolidator that passes through each TradeBar data point
 
 # Register the indicator to update with the consolidated data
 self.register_indicator(self._symbol, self.indicator, consolidator)</pre>
@@ -24,6 +25,7 @@ _indicator = new RelativeStrengthIndex(10, MovingAverageType.Simple);
 var consolidator = new TradeBarConsolidator(3);   // 10 x 3 min trade bars to warm up the RSI.
 consolidator = new QuoteBarConsolidator(4);       // 10 x 4 min quote bars to warm up the RSI.
 consolidator = new RenkoConsolidator(1);          // Renko consolidator that emits a bar when the price moves $1
+consolidator = new IdentityDataConsolidator&lt;TradeBar&gt;();   // Identity consolidator that passes through each TradeBar data point
 
 // Register the indicator to update with the consolidated data
 RegisterIndicator(_symbol, _indicator, consolidator);</pre>
