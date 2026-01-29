@@ -97,7 +97,7 @@
   <p>
     The structure of the DataFrame depends on the <a href='/datasets'>dataset</a>.
     In most cases, there is a mulit-index that contains the <code>Symbol</code> and a timestamp.
-    The timestamps in the DataFrame are based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>.
+    The timestamps in the DataFrame are based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#03-Exchange-Time-Zone'>exchange time zone</a>.
     Each row of the DataFrame represents the prices at a point in time. 
     Each column of the DataFrame is a property of that data (for example, open, high, low, and close (OHLC)).
   </p>

@@ -11,7 +11,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
-    <li><span class='qualifier'>(Optional)</span> <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>Set the time zone</a> to the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>.</li>
+    <li><span class='qualifier'>(Optional)</span> <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>Set the time zone</a> to the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#03-Exchange-Time-Zone'>exchange time zone</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">qb.set_time_zone(TimeZones.UTC);</pre>
         <pre class="python">qb.set_time_zone(TimeZones.UTC)</pre>
