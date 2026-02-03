@@ -1,5 +1,43 @@
 <h4>Order Types</h4>
-<p><?= $cloudPlatform ? "Our Wolverine Execution Services integration" : "The <code>WolverineBrokerageModel</code>" ?> supports <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>market orders</a>.</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our Wolverine Execution Services integration" : "the <code>WolverineBrokerageModel</code>" ?> supports:</p>
+
+<table class="qc-table table" id='order-types-table'>
+   <thead>
+      <tr>
+        <th style='width: 50%'>Order Type</th>
+        <th>Equity</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>Market</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-close-orders'>Market on Close</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>Limit</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>Stop limit</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+   </tbody>
+</table>
+<style>
+#order-types-table td:not(:first-child), 
+#order-types-table th:not(:first-child) {
+    text-align: center;
+}
+</style>
+
 
 <h4>Updates</h4>
 <p><?= $writingAlgorithms ? "The <code>WolverineBrokerageModel</code> doesn't support" : "We model the Wolverine Execution Services API by not supporting" ?> order updates.</p>
@@ -41,6 +79,18 @@
             <td>The exchange post fix to apply if any. For example, if you set <code class="csharp">Exchange</code><code class="python">exchange</code> to <code>Exchange.SMART</code>, then "-INCA-TX" yields "SMART-INCA-TX".</td>
             <td></td>
         </tr>
+        <tr>
+            <td><code class="csharp">LocateBroker</code><code class="python">locate_broker</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>Identifies the broker source for borrowed stock.</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">PositionSide</code><code class="python">position_side</code></td>
+            <td><code class='csharp'>OrderPosition?</code><code class='python'>OrderPosition | NoneType</code></td>
+            <td>Specify the position side in the order direction (buy-to-open, sell-to-close, etc.) instead of the default handling</td>
+            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+        </tr>
     </tbody>
 </table>
 
@@ -53,7 +103,8 @@
     {
         TimeInForce = TimeInForce.GoodTilCanceled,
         Exchange = Exchange.SMART,
-        ExchangePostFix = "-INCA-TX"
+        ExchangePostFix = "-INCA-TX",
+        OrderPosition = OrderPosition.BuyToOpen
     };
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
@@ -61,6 +112,7 @@
     self.default_order_properties = WolverineOrderProperties()
     self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
     self.default_order_properties.exchange = Exchange.SMART
-    self.default_order_properties.exchange_post_fix = "-INCA-TX"</pre>
+    self.default_order_properties.exchange_post_fix = "-INCA-TX"
+    self.default_order_properties.order_position = OrderPosition.BUY_TO_OPEN
 </div>
 <? } ?>
