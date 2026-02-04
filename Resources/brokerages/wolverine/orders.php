@@ -122,3 +122,5 @@
     self.default_order_properties.locate_broker = "abn"</pre>
 </div>
 <? } ?>
+
+<p>If the <code class="csharp">PositionSide</code><code class="python">position_side</code> is not specified, the engine will determine it from the holdings and the order quantity. For example, if it's a sell short and will send <code>PositionSide</code><code class="csharp">SellShort</code><code class="python">SELL_SHORT</code>.</p>
