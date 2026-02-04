@@ -104,7 +104,10 @@
         TimeInForce = TimeInForce.GoodTilCanceled,
         Exchange = Exchange.SMART,
         ExchangePostFix = "-INCA-TX",
-        OrderPosition = OrderPosition.BuyToOpen
+        OrderPosition = OrderPosition.BuyToOpen,
+        // Optionally, you can specify for equity shorts which broker will provide the stock to short
+        // if not specified defaults to broker will provide
+        LocateBroker = "abn"
     };
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
@@ -114,5 +117,8 @@
     self.default_order_properties.exchange = Exchange.SMART
     self.default_order_properties.exchange_post_fix = "-INCA-TX"
     self.default_order_properties.order_position = OrderPosition.BUY_TO_OPEN
+    # Optionally, you can specify for equity shorts which broker will provide the stock to short
+    # if not specified defaults to broker will provide
+    self.default_order_properties.locate_broker = "abn"</pre>
 </div>
 <? } ?>
