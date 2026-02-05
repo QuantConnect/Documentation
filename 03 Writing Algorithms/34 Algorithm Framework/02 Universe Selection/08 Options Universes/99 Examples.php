@@ -293,7 +293,7 @@ class SingleSharePortfolioConstructionModel(PortfolioConstructionModel):
 
 <h4>Example 2: Options of an Equity Universe</h4>
 <p>
-    The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and an <a href='/docs/v2/writing-algorithms/universes/equity-options'>Equity Options universe</a>.
+    The following <a href="/docs/v2/writing-algorithms/algorithm-framework/hybrid-algorithms">hybrid algorithm</a> example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and an <a href='/docs/v2/writing-algorithms/universes/equity-options'>Equity Options universe</a>.
     It first selects 10 stocks with the lowest PE ratio and then selects their front-month call Option contracts.
     It buys one front-month call Option contract every day.
 </p>
@@ -317,37 +317,22 @@ public class ETFUniverseOptions : QCAlgorithm
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
         AddSecurityInitializer(security =&gt; 
         {
-            if (security.Type == SecurityType.Option) // Option type
+            if (security is Option option) // Option type
             {
-                (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
-            }
-
-            // Overwrite the volatility model and warm it up
-            if (security.Type == SecurityType.Equity)
-            {
-                security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-                var tradeBars = History(security.Symbol, 30, Resolution.Daily);
-                foreach (var tradeBar in tradeBars)
-                    security.VolatilityModel.Update(security, tradeBar);
+                option.PriceModel = OptionPriceModels.CrankNicolsonFD();
             }
         });
 
-        var universe = AddUniverse(FundamentalFunction);
-        AddUniverseOptions(universe, OptionFilterFunction);
-    }
-
-    private IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
-    {
-        return fundamental
-            .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
-            .OrderBy(f =&gt; f.ValuationRatios.PERatio)
-            .Take(10)
-            .Select(x =&gt; x.Symbol);
-    }
-
-    private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
-    {
-        return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
+        AddUniverseSelection(new OptionChainedUniverseSelectionModel(
+            // Add a universe of the top 10 stocks with lowest PE.
+            AddUniverse(fundamental =&gt; fundamental
+                .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
+                .OrderBy(f =&gt; f.ValuationRatios.PERatio)
+                .Take(10).Select(x =&gt; x.Symbol)),
+            // Select call Option contracts on the underlying Equities that have the strike price within 2 strike levels.
+            optionFilterUniverse =&gt; optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
+            )
+        );
     }
 
     public override void OnData(Slice data)
@@ -356,9 +341,14 @@ public class ETFUniverseOptions : QCAlgorithm
 
         foreach (var (symbol, chain) in data.OptionChains)
         {
-            if (Portfolio[chain.Underlying.Symbol].Invested)
-                Liquidate(chain.Underlying.Symbol);
-
+            if (!Securities.TryGetValue(chain.Underlying.Symbol, out var underlying))
+            {
+                continue;
+            }
+            if (underlying.Invested)
+            {
+                Liquidate(underlying.Symbol);
+            }   
             var spot = chain.Underlying.Price;
             var contract = chain.OrderBy(x =&gt; Math.Abs(spot-x.Strike)).FirstOrDefault();
             var tag = $"IV: {contract.ImpliedVolatility:F3} Δ: {contract.Greeks.Delta:F3}";
@@ -370,8 +360,8 @@ public class ETFUniverseOptions : QCAlgorithm
 	<pre class="python"># Example code to chain a fundamental universe and an Equity Options universe by selecting top 10 stocks with lowest PE, indicating potentially undervalued stocks and then selecting their from-month call Option contracts to target contracts with high liquidity.
 from AlgorithmImports import *
 
-
 class ChainedUniverseAlgorithm(QCAlgorithm):
+    _day = 0
     def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -381,41 +371,39 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
         self.add_security_initializer(self._custom_security_initializer)
 
-        universe = self.add_universe(self.fundamental_function)
-        self.add_universe_options(universe, self.option_filter_function)
-        self.day = 0
+        self.add_universe_selection(OptionChainedUniverseSelectionModel(
+            # Add a universe of the top 10 stocks with lowest PE
+            self.add_universe(self.fundamental_function),
+            # Select call Option contracts on the underlying Equities that have the strike price within 2 strike levels.
+            lambda option_filter_universe: option_filter_universe.strikes(-2, +2).front_month().calls_only()
+            )
+        )
 
     def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         filtered = (f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio))
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-        return option_filter_universe.strikes(-2, +2).front_month().calls_only()
-
-    def on_data(self, data: Slice) -&gt; None:
-        if self.is_warming_up or self.day == self.time.day:
-            return
-        
-        for symbol, chain in data.option_chains.items():
-            if self.portfolio[chain.underlying.symbol].invested:
-                self.liquidate(chain.underlying.symbol)
-
-            spot = chain.underlying.price
-            contract = sorted(chain, key=lambda x: abs(spot-x.strike))[0]
-            tag = f"IV: {contract.implied_volatility:.3f} Δ: {contract.greeks.delta:.3f}"
-            self.market_order(contract.symbol, 1, True, tag)
-            self.day = self.time.day
-
     def _custom_security_initializer(self, security: Security) -&gt; None:
         # Overwrite the price model        
         if security.type == SecurityType.OPTION: # Option type
             security.price_model = OptionPriceModels.crank_nicolson_fd()
 
-        # Overwrite the volatility model and warm it up
-        if security.type == SecurityType.EQUITY:
-            security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)
-            trade_bars = self.history[TradeBar](security.symbol, 30, Resolution.DAILY)
-            for trade_bar in trade_bars:
-                security.volatility_model.update(security, trade_bar)</pre>
+    def on_data(self, data: Slice) -&gt; None:
+        if self.is_warming_up or self._day == self.time.day:
+            return
+
+        for symbol, chain in data.option_chains.items():
+            underlying = self.securities.get(chain.underlying.symbol)
+            if not underlying:
+                continue
+
+            if underlying.invested:
+                self.liquidate(underlying.symbol)
+
+            spot = chain.underlying.price
+            contract = sorted(chain, key=lambda x: abs(spot-x.strike))[0]
+            tag = f"IV: {contract.implied_volatility:.3f} Δ: {contract.greeks.delta:.3f}"
+            self.market_order(contract.symbol, 1, True, tag)
+            self._day = self.time.day</pre>
 </div>
