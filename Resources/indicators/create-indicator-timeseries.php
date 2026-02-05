@@ -1,12 +1,12 @@
-<p>You can create the indicator timeseries with the <code>Indicator</code> helper method or you can manually create the timeseries.</p>
+<p>You can create the indicator timeseries with the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> helper method or you can manually create the timeseries.</p>
 
-<h4>Indicator Helper Method</h4>
-<p>To create an indicator timeseries with the helper method, call the <code>Indicator</code> method.</p>
+<h4>IndicatorHistory Helper Method</h4>
+<p>To create an indicator timeseries with the helper method, call the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method.</p>
 <div class="section-example-container">
     <pre class="csharp">// Create a dataframe with a date index, and columns are indicator values.
-var <?=$variableName?>Indicator = qb.Indicator(<?=$variableName?>, symbol, 50, Resolution.Daily);</pre>
+var <?=$variableName?>Indicator = qb.IndicatorHistory(<?=$variableName?>, symbol, 50, Resolution.Daily);</pre>
     <pre class="python"># Create a dataframe with a date index, and columns are indicator values.
-<?=$variableName?>_dataframe = qb.indicator(<?=$variableName?>, symbol, 50, Resolution.DAILY)</pre>
+<?=$variableName?>_dataframe = qb.indicator_history(<?=$variableName?>, symbol, 50, Resolution.DAILY).data_frame</pre>
 </div>
 <?=$pythonImage?>
 
