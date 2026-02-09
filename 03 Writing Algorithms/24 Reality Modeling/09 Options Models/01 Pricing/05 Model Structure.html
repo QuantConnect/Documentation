@@ -1,0 +1,50 @@
+<p>Pricing models should extend the <code>OptionPriceModel</code> class. Extensions of the <code>OptionPriceModel</code> class must implement the <code class="csharp">Evaluate</code><code class="python">evaluate</code> method, which receives <code>OptionPriceModelParameters</code> and returns an <code>OptionPriceModelResult</code> that contains the theoretical price, the implied volatility, and Greeks.</p>
+<div class="section-example-container">
+<pre class="csharp">public class CustomOptionPriceModelExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // In the Initialize method, set the custom option price model for an added option chain to use the custom model
+        var option = AddOption("SPY");
+        option.SetPriceModel(new CustomOptionPriceModel());
+    }
+}
+
+// Define the custom option price model
+private class CustomOptionPriceModel : OptionPriceModel
+{
+    public override OptionPriceModelResult Evaluate(OptionPriceModelParameters parameters)
+    {
+        var contract = parameters.Contract;
+        var underlying = contract.UnderlyingLastPrice;
+        var strike = contract.Strike;
+
+        var intrinsicValue = contract.Right == OptionRight.Call
+            ? Math.Max(0, underlying - strike);
+            : Math.Max(0, strike - underlying);
+
+        var theoreticalPrice = intrinsicValue + 1.0m;
+        return new OptionPriceModelResult(theoreticalPrice, new Greeks(0.5m, 0.1m, 0.2m, -0.05m, 0.1m, 2.0m));
+    }
+}</pre>
+<pre class="python">class CustomOptionPriceModelExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        # In the Initialize method, set the custom price model for an added option chain to use the custom model
+        option = self.add_option("SPY")
+        option.set_price_model(CustomOptionPriceModel())
+
+# Define the custom price model
+class CustomOptionPriceModel(OptionPriceModel):
+    def evaluate(self, parameters: OptionPriceModelParameters) -&gt; OptionPriceModelResult:
+        contract = parameters.contract
+        underlying = contract.underlying_last_price
+        strike = contract.strike
+        
+        intrinsic = max(0, underlying - strike) if contract.right == OptionRight.CALL else max(0, strike - underlying)
+        
+        theoretical_price = intrinsic + 1.0
+        
+        return OptionPriceModelResult(theoretical_price, Greeks(0.5, 0.1, 0.2, -0.05, 0.1, 2.0))</pre>
+</div>
+<p>The <code>OptionPriceModelParameters</code> object has the following members:</p>
+<div data-tree='QuantConnect.Securities.Option.OptionPriceModelParameters'></div>
