@@ -1,0 +1,12 @@
+<p>Orders undergo basic validation checks to ensure they meet certain criteria before being submitted. The following list outlines some of the key checks performed:</p>
+<ol>
+    <li><strong>Security:</strong> Ensures that your algorithm has a valid data subscription for the security and receives its market data.</li>
+    <p>Your algorithm cannot place an order for SPY if it hasn't added it via <code class="csharp">AddEquity("SPY")</code><code class="csharp">self.add_equity("SPY")</code> or universe selection.</p>
+    <li><strong>Tradable:</strong> Ensures that the security is tradable or  in the market.</li>
+    <p>Your algorithm cannot place orders for <a href="/docs/v2/writing-algorithms/securities/asset-classes/index">indices</a>, delisted securities, expired contracts, or any assets removed from your universe. For example, the option filter or universe selection removed a contract because it doesn't meet the criteria set by the filter.</p>
+    <li><strong>Market Hours:</strong> Checks that the order can be placed at the current time.</li>
+    <p>For example, market orders cannot be placed outside of regular trading hours. LEAN converts market orders to market-on-open orders if possible.</p>
+    <li><strong>Price:</strong> Checks that the last known price is not zero.</li>
+    <p>LEAN requires the last known price for <a href="/docs/v2/writing-algorithms/trading-and-orders/pre-trade-risk-control#04-Buying-Power">buying power calculations</a>.</p>
+    <li><strong>Order Size:</strong> Ensures that the order quantity is not zero or less than the lot size.</li>
+</ol>
