@@ -67,4 +67,4 @@
             security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
-<p>To view all the models LEAN supports, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#06-Supported-Models'>Supported Models</a>.</p>
+<p>To view all the models LEAN supports, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#07-Supported-Models'>Supported Models</a>.</p>
