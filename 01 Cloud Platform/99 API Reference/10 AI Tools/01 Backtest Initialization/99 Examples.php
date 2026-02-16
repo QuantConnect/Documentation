@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/qc-api/examples/ai-assistance/tools/backtest-initialization.php");?>

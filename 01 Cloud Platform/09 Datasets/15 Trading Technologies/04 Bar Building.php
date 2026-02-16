@@ -1,0 +1,1 @@
+<p>The data feed is a stream of asset prices collected by FIX protocol and distributed to algorithms on the platform.</p>

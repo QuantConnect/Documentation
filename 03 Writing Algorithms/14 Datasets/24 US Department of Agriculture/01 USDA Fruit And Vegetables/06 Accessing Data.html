@@ -1,0 +1,43 @@
+<p> To get the current USDA Fruit And Vegetables data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. Slice objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+<div class="section-example-container"> 
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:  
+    if slice.contains_key(self.dataset_symbol):  
+        collection = slice[self.dataset_symbol]  
+        for data in collection.data:
+            self.log(f"{symbol} [{data.form}]: ${data.price_per_cup_equivalent}")</pre> 
+
+<pre class="csharp">public override void OnData(Slice slice)  
+{  
+    if (slice.ContainsKey(_datasetSymbol))  
+    {  
+        var collection = slice[_datasetSymbol];  
+         // Iterate over all forms in the collection
+        foreach (USDAFruitAndVegetable data in collection.Data)
+        {
+            Log($"{symbol} [{data.Form}]: ${data.PricePerCupEquivalent}");
+        }
+    }  
+}</pre></div> 
+
+<p>To iterate through all of the dataset objects in the current <code>Slice</code>, call the <code class="csharp">Get</code><code class="python">get</code> method.</p>
+<div class="section-example-container"> 
+	<pre class="python">def on_data(self, slice: Slice) -&gt; None:  
+    for symbol, collection in slice.get(USDAFruitAndVegetables).items():
+        # Iterate over all forms in the collection
+        for data in collection.data:
+            self.log(f"{symbol} [{data.form}]: ${data.price_per_cup_equivalent}")</pre> 
+
+<pre class="csharp">public override void OnData(Slice slice)  
+{  
+    foreach (var kvp in slice.Get&lt;USDAFruitAndVegetables&gt;())
+    {
+        var symbol = kvp.Key;
+        var collection = kvp.Value;
+
+        // Iterate over all forms in the collection
+        foreach (USDAFruitAndVegetable data in collection.Data)
+        {
+            Log($"{symbol} [{data.Form}]: ${data.PricePerCupEquivalent}");
+        }
+    }
+}</pre> </div>

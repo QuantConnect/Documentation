@@ -53,23 +53,6 @@ if not history.empty:
 </pre>
 </div>
 
-<h4>Automatic Indicator Warm-up</h4>
-<p>You can set the <code class="csharp">Settings.AutomaticIndicatorWarmUp</code><code class="python">self.settings.automatic_indicator_warm_up</code> property to true before you create most indicators to automatically warm them up. This technique doesn't work for all indicators.</p>
-
-<div class="section-example-container">
-    <pre class="csharp">private SimpleMovingAverage _sma;
-
-// In Initialize
-var symbol = AddEquity("SPY").Symbol;
-Settings.AutomaticIndicatorWarmUp = true;
-_sma = SMA(symbol, 20, Resolution.Daily);
-</pre>
-    <pre class="python"># In Initialize
-symbol = self.add_equity("SPY").symbol
-self.settings.automatic_indicator_warm_up = True
-self._sma = self.sma(symbol, 20, Resolution.DAILY)</pre>
-</div>
-
 <h4>Warm-up Helper Method</h4>
 
 <p>If an indicator inherits the <code>IIndicatorWarmUpPeriodProvider</code> class, you can warm it up with the <code class='csharp'>WarmUpIndicator</code><code class='python'>warm_up_indicator</code> method.</p>
@@ -116,6 +99,25 @@ self._aapl = self.add_equity('AAPL').symbol
 self._beta = self.B(self._aapl, self._spy, 21, Resolution.DAILY)
 self.warm_up_indicator([self._aapl, self._spy], self._beta, Resolution.DAILY)</pre>
 </div>
+
+<h4>Automatic Indicator Warm-up</h4>
+<p>You can set the <code class="csharp">Settings.AutomaticIndicatorWarmUp</code><code class="python">self.settings.automatic_indicator_warm_up</code> property to true before you create most indicators to automatically warm them up. This technique doesn't work for all indicators.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">private SimpleMovingAverage _sma;
+
+// In Initialize
+var symbol = AddEquity("SPY").Symbol;
+Settings.AutomaticIndicatorWarmUp = true;
+_sma = SMA(symbol, 20, Resolution.Daily);
+</pre>
+    <pre class="python"># In Initialize
+symbol = self.add_equity("SPY").symbol
+self.settings.automatic_indicator_warm_up = True
+self._sma = self.sma(symbol, 20, Resolution.DAILY)</pre>
+</div>
+
+<p>The <code class="csharp">AutomaticIndicatorWarmUp</code><code class="python">automatic_indicator_warm_up</code> settings does not account for built-in <code>RollingWindow</code> that stores their <a href="/docs/v2/writing-algorithms/indicators/key-concepts#06-Set-Historical-Values-Window-Size">historical values</a>, use the <code class='csharp'>WarmUpIndicator</code><code class='python'>warm_up_indicator</code> or the <code class='csharp'>IndicatorHistory</code><code class='python'>indicator_history</code> method instead.</p>
 
 <h4>Timing Considerations</h4>
 

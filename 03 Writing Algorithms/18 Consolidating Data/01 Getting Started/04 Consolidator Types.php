@@ -300,3 +300,44 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/consolidators/sequential-consolidator-intro.html"); ?>
 
 <p>For more information about sequential consolidators, see <a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/combining-consolidators'>Combining Consolidators</a>.</p>
+
+<h4>Identity Consolidators</h4>
+<? include(DOCS_RESOURCES."/consolidators/consolidator-info/identity/introduction.html"); ?>
+
+<p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
+
+<table class="qc-table table">
+   <thead>
+      <tr>
+         <th>Input</th>
+         <th>Output</th>
+         <th>Class Type</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><code>TradeBar</code></td>
+         <td><code>TradeBar</code></td>
+         <td class="python"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Data/Consolidators/IdentityDataConsolidator/'>IdentityDataConsolidator[TradeBar]</a></td>
+         <td class="csharp"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Data_1_1Consolidators_1_1IdentityDataConsolidator.html'>IdentityDataConsolidator&lt;TradeBar&gt;</a></td>
+      </tr>
+      <tr>
+         <td><code>QuoteBar</code></td>
+         <td><code>QuoteBar</code></td>
+         <td class="python"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Data/Consolidators/IdentityDataConsolidator/'>IdentityDataConsolidator[QuoteBar]</a></td>
+         <td class="csharp"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Data_1_1Consolidators_1_1IdentityDataConsolidator.html'>IdentityDataConsolidator&lt;QuoteBar&gt;</a></td>
+      </tr>
+      <tr>
+         <td><code>Tick</code></td>
+         <td><code>TradeBar</code></td>
+         <td class="python"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Data/Consolidators/FilteredIdentityDataConsolidator/'>FilteredIdentityDataConsolidator.for_tick_type(TickType.TRADE)</a></td>
+         <td class="csharp"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Data_1_1Consolidators_1_1FilteredIdentityDataConsolidator.html'>FilteredIdentityDataConsolidator.ForTickType(TickType.Trade)</a></td>
+      </tr>
+      <tr>
+         <td><code>Tick</code></td>
+         <td><code>QuoteBar</code></td>
+         <td class="python"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Data/Consolidators/FilteredIdentityDataConsolidator/'>FilteredIdentityDataConsolidator.for_tick_type(TickType.QUOTE)</a></td>
+         <td class="csharp"><a href='https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Data_1_1Consolidators_1_1FilteredIdentityDataConsolidator.html'>FilteredIdentityDataConsolidator.ForTickType(TickType.Quote)</a></td>
+      </tr>
+   </tbody>
+</table>
