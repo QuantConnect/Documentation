@@ -12,14 +12,16 @@
     <li>Keep total backtest runtime under 1 hour.</li>
     <li>
         Use the <a href="/docs/v2/writing-algorithms/reality-modeling/key-concepts">default models</a>.
-        Do not override models to artificially improve performance. For example, do not override the <a href="/docs/v2/writing-algorithms/reality-modeling/transaction-fees/key-concepts">transaction fees model</a> to reduce/eliminate fees or the <a href="/docs/v2/writing-algorithms/reality-modeling/buying-power">buying power model</a> to increase leverage.
+        Do not override models to artificially improve performance. For example:
+        <ul>
+            <li>Do not override the <a href="/docs/v2/writing-algorithms/reality-modeling/transaction-fees/key-concepts">transaction fees model</a> to reduce/eliminate fees.</li>
+            <li>Do not increase the leverage, see <a href="/docs/v2/writing-algorithms/reality-modeling/buying-power">Buying power model</a>.</li>
+            <li>Do not disable <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/assignment#06-Disable-Assignments">Option assignments</a>.</li>
+        </ul>
     </li>
     <li>
         Strategies must not add or modify <a href="/docs/v2/writing-algorithms/portfolio/cashbook">CashBook cash balances</a> during a backtest (no cash deposits or withdrawals).
         Initial capital must be set only via <code>self.set_cash()</code> or <code>self.set_account_currency()</code>.
-    </li>
-    <li>
-        Strategies must not <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/assignment#06-Disable-Assignments">disable Option assignments.</a>
     </li>
     <li>If the algorithm has regular rebalances (weekly, monthly, quarterly, etc), call your rebalance logic in <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#07-Warmup-Finished-Event'>on_warmup_finished</a> so the start of the equity curve isn't flat.</li>
 </ul>
