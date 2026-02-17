@@ -10,7 +10,7 @@ include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
 <p>If you can't log in to TWS with your credentials, contact IB. If you can log in to TWS but can't log in to the deployment wizard, <a href='/contact'>contact us</a> and provide the algorithm ID and deployment ID.</p>
 
 <h4>SMS 2FA</h4>
-<p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS or the Online Security Code Card. Use the <a rel="nofollow" target="_blank" href="https://ibkrguides.com/securelogin/sls/ibkrmobile.htm">IB Key Security via IBKR Mobile</a> instead.</p>
+<p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS, the Online Security Code Card, or third-party authenticator apps (e.g., Microsoft Authenticator and Google Authenticator). Use the <a rel="nofollow" target="_blank" href="https://ibkrguides.com/securelogin/sls/ibkrmobile.htm">IB Key Security via IBKR Mobile</a> instead.</p>
 
 <h4>IP Restrictions</h4>
 <p>If you have <a rel='nofollow' target="_blank" href='https://www.ibkrguides.com/brokerportal/usersettings/iprestrictions.htm'>IP restrictions</a> enabled on your IB account, ensure to whitelist our IP address 207.182.16.137.</p>
