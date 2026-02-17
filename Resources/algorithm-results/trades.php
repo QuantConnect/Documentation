@@ -11,7 +11,7 @@
 <? if ($pageName == "backtest") { ?>
 <h4>Access the Trades JSON</h4>
 <?     if ($cloudPlatform) { ?>
-<p>To view all of the content in the Trades Summary table, see <a href='/docs/v2/cloud-platform/backtesting/results#16-Download-Results'>Download Results</a>.</p>
+<p>To view all of the content in the Trades Summary table, see <a href='/docs/v2/cloud-platform/backtesting/results#17-Download-Results'>Download Results</a>.</p>
 <?     } ?>
 
 <?     if ($localPlatform) { ?>

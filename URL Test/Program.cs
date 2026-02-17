@@ -133,6 +133,7 @@ namespace UrlCheck
                                         .Replace("third party", "third-party") // special case
                                         .Replace("Third Party", "Third-Party") // special case
                                         .Replace("Fine Tune", "Fine-Tune") // special case
+                                        .Replace("Pre trade", "Pre-trade") // special case
                                         .Replace("Pre Trained", "Pre-Trained") // special case
                                         .Replace("chronos t5", "chronos-t5") // special case
                                         .Replace("C and Visual Studio", "C# and Visual Studio") // special case
@@ -157,6 +158,7 @@ namespace UrlCheck
                                         .Replace("out of the money", "out-of-the-money") // special case
                                         .Replace("Third Party", "Third-Party") // special case
                                         .Replace("Fine Tune", "Fine-Tune") // special case
+                                        .Replace("Pre trade", "Pre-trade") // special case
                                         .Replace("Pre Trained", "Pre-Trained") // special case
                                         .Replace("Built in", "Built-in") // special case
                                         .Replace("C and Visual Studio", "C# and Visual Studio") // special case

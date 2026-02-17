@@ -8,5 +8,5 @@
 
 <p>
   To avoid reaching the quota, manage your project workspace usage. 
-  Mindful practices like logging sparsely, <a href='/docs/v2/cloud-platform/projects/getting-started#11-Delete-Projects'>deleting old projects</a>, and <a href='/docs/v2/cloud-platform/backtesting/results#17-View-All-Backtests'>deleting old backtest results</a> ensure your project workspaces stay within reasonable sizes.
+  Mindful practices like logging sparsely, <a href='/docs/v2/cloud-platform/projects/getting-started#11-Delete-Projects'>deleting old projects</a>, and <a href='/docs/v2/cloud-platform/backtesting/results#18-View-All-Backtests'>deleting old backtest results</a> ensure your project workspaces stay within reasonable sizes.
 </p>

@@ -20,7 +20,7 @@
 <? if ($pageName == "backtest") { ?>
 <h4>Access the Orders JSON</h4>
 <?     if ($cloudPlatform) { ?>
-<p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/cloud-platform/backtesting/results#16-Download-Results'>Download Results</a>.</p>
+<p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/cloud-platform/backtesting/results#17-Download-Results'>Download Results</a>.</p>
 <?     } ?>
 
 <?     if ($localPlatform) { ?>
