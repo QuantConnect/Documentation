@@ -10,10 +10,10 @@
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Set PriceModel property to use the Crank-Nicolson finite-difference model to price the Options.
-option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
-    <pre class="python">// Set price_model field to use the Crank-Nicolson finite-difference model to price the Options.
-option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
+    <pre class="csharp">// Set PriceModel property to use the Binomial Cox-Ross-Rubinstein model to price the Options.
+option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
+    <pre class="python">// Set price_model field to use the Binomial Cox-Ross-Rubinstein model to price the Options.
+option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
 <? include(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>

@@ -67,7 +67,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
         // Next, set the price model
         if (security.Type == SecurityType.FutureOption) // Option type
         {
-            security.PriceModel = OptionPriceModels.CrankNicolsonFD();
+            security.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
         }
     }
 }</pre>
@@ -78,8 +78,9 @@ self.set_security_initializer(MySecurityInitializer(self.brokerage_model, seeder
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -&gt; None:
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, QCAlgorithm algorithm) -&gt; None:
         super().__init__(brokerage_model, security_seeder)
+        self._algorithm = algorithm;
 
     def initialize(self, security: Security) -&gt; None:
         # First, call the superclass definition
@@ -88,7 +89,7 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
         # Next, set the price model
         if security.type == SecurityType.FUTURE_OPTION: # Option type
-            security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
+            security.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
