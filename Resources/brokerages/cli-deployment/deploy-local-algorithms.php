@@ -55,7 +55,8 @@ $dataProviders = array(
     "Alpaca",
     "Tastytrade",
     "Eze",
-    "dYdX"
+    "dYdX",
+    "DataBento"
 );
 $dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName, $dataProviders) + 1 : -1;
 ?>
@@ -149,6 +150,8 @@ Select a live data provider:
 20) Alpaca
 21) Tastytrade
 22) Eze
+23) dYdX
+24) DataBento
 To enter multiple options, separate them with comma: 9</pre>
 </div>
 </li>   
@@ -181,6 +184,8 @@ Select a live data feed:
 20) Alpaca
 21) Tastytrade
 22) Eze
+23) dYdX
+24) DataBento
 To enter multiple options, separate them with comma: <?=$dataProviderNumber?></pre>
             </div>
             </li>
@@ -213,6 +218,8 @@ Select a live data provider:
 20) Alpaca
 21) Tastytrade
 22) Eze
+23) dYdX
+24) DataBento
 To enter multiple options, separate them with comma:</pre>
 </div>
 </li>
