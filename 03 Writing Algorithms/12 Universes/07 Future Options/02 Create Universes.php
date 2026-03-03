@@ -20,7 +20,6 @@ self.add_future_option(future.symbol)</pre>
             <th>Argument</th>
             <th>Data Type</th>
             <th>Description</th>
-            <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
@@ -28,17 +27,16 @@ self.add_future_option(future.symbol)</pre>
             <td><code>symbol</code></td>
 	        <td><code>Symbol</code></td>
             <td>The continuous Future contract Symbol. To view the supported assets in the US Future Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#08-Supported-Assets'>Supported Assets</a>.</td>
-            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">optionFilter</code><code class="python">option_filter</code></td>
 	        <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">Callable[[OptionFilterUniverse], OptionFilterUniverse]</code></td>
             <td>A function that selects Future Option contracts</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
     </tbody>
 </table>
 
+<p>The subscription characteristics such as resolution, market, and fill forward behavior are inherited from the <code class="csharp">UniverseSettings</code><code class="python">self.universe_settings</code> values. See <a href="/docs/v2/writing-algorithms/initialization#06-Set-Universe-Settings">Set Universe Settings</a> for more information.</p>
 
 <p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a> in a security initializer.</p>
 
