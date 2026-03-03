@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/data-providers/supported-assets/databento.html"); ?>
+<? include(DOCS_RESOURCES."/data-providers/supported-assets/databento.php"); ?>

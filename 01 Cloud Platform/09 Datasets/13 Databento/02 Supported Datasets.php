@@ -1,4 +1,4 @@
-<? include(DOCS_RESOURCES."/data-providers/supported-assets/databento.html"); ?>
+<? include(DOCS_RESOURCES."/data-providers/supported-assets/databento.php"); ?>
 
 <p>To supplement the asset price data from Databento, QuantConnect Cloud provides the following auxiliary datasets from the Dataset Market:</p>
 
