@@ -27,6 +27,121 @@ def on_order_event(self, order_event: OrderEvent) -&gt; None:
 
 <p>After you have the target price levels, to implement the OCO orders, you can place active orders or track the security price to simulate the orders.</p>
 
+<p>The following example shows a helper class to manage OCO orders. This is not an officially supported OCO order type. Before you use this approach, verify that your <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models">brokerage model</a> supports limit orders.</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class OCOTrade
+{
+    private readonly QCAlgorithm _algorithm;
+    private readonly Symbol _symbol;
+    private readonly decimal _takeProfitPrice;
+    private readonly decimal _stopLossPrice;
+
+    public OrderTicket Entry { get; set; }
+    public OrderTicket TakeProfit { get; set; }
+    public OrderTicket StopLoss { get; set; }
+
+    public OCOTrade(QCAlgorithm algorithm, Symbol symbol, decimal quantity, decimal entryStopPrice,
+                    decimal takeProfitPrice, decimal stopLossPrice)
+    {
+        _algorithm = algorithm;
+        _symbol = symbol;
+        _takeProfitPrice = takeProfitPrice;
+        _stopLossPrice = stopLossPrice;
+        Entry = _algorithm.StopMarketOrder(_symbol, quantity, entryStopPrice);
+        TakeProfit = null;
+        StopLoss = null;
+    }
+
+    public void OnOrderEvent(OrderEvent orderEvent)
+    {
+        if (orderEvent.Status != OrderStatus.Filled)
+            return;
+
+        if (Entry != null && Entry.OrderId == orderEvent.OrderId)
+        {
+            var quantity = orderEvent.FillQuantity;
+            TakeProfit = _algorithm.LimitOrder(_symbol, -quantity, _takeProfitPrice);
+            StopLoss = _algorithm.StopMarketOrder(_symbol, -quantity, _stopLossPrice);
+            Entry = null;
+        }
+        else if (TakeProfit != null && TakeProfit.OrderId == orderEvent.OrderId)
+        {
+            StopLoss.Cancel();
+            TakeProfit = null;
+            StopLoss = null;
+        }
+        else if (StopLoss != null && StopLoss.OrderId == orderEvent.OrderId)
+        {
+            TakeProfit.Cancel();
+            TakeProfit = null;
+            StopLoss = null;
+        }
+    }
+}</pre>
+<pre class="python">class OCOTrade:
+    def __init__(self, algorithm, symbol, quantity, entry_stop_price, take_profit_price, stop_loss_price):
+        self._algorithm = algorithm
+        self._symbol = symbol
+        self._take_profit_price = take_profit_price
+        self._stop_loss_price = stop_loss_price
+        self._entry = algorithm.stop_market_order(symbol, quantity, entry_stop_price)
+        self._take_profit = None
+        self._stop_loss = None
+
+    def on_order_event(self, order_event):
+        if order_event.status != OrderStatus.FILLED:
+            return
+        order_id = order_event.order_id
+        if self._entry and self._entry.order_id == order_id:
+            quantity = order_event.fill_quantity
+            self._take_profit = self._algorithm.limit_order(self._symbol, -quantity, self._take_profit_price)
+            self._stop_loss = self._algorithm.stop_market_order(self._symbol, -quantity, self._stop_loss_price)
+            self._entry = None
+        elif self._take_profit and self._take_profit.order_id == order_id:
+            self._stop_loss.cancel()
+            self._take_profit = self._stop_loss = None
+        elif self._stop_loss and self._stop_loss.order_id == order_id:
+            self._take_profit.cancel()
+            self._take_profit = self._stop_loss = None</pre>
+</div>
+
+<p>To instantiate an <code>OCOTrade</code> object, pass in the following arguments: the calling algorithm instance (<code>this</code><span class="python"> / <code>self</code></span>), the <code class="csharp">Symbol</code><code class="python">symbol</code> of the security to trade, the order <code>quantity</code>, the <code class="csharp">entryStopPrice</code><code class="python">entry_stop_price</code> for the entry stop order, the <code class="csharp">takeProfitPrice</code><code class="python">take_profit_price</code> for the limit exit order, and the <code class="csharp">stopLossPrice</code><code class="python">stop_loss_price</code> for the stop-loss exit order.</p>
+
+<div class="section-example-container">
+<pre class="csharp">_longTrade = new OCOTrade(this, _forex.Symbol, quantity, insideHigh,
+    takeProfitPrice: Math.Round(insideHigh + dayRange, 3),
+    stopLossPrice: insideLow);
+_shortTrade = new OCOTrade(this, _forex.Symbol, -quantity, insideLow,
+    takeProfitPrice: Math.Round(insideLow - dayRange, 3),
+    stopLossPrice: insideHigh);</pre>
+<pre class="python">self._long_trade = OCOTrade(
+    self, self._forex, quantity, inside_high,
+    take_profit_price=round(inside_high + day_range, 3),
+    stop_loss_price=inside_low
+)
+self._short_trade = OCOTrade(
+    self, self._forex, -quantity, inside_low,
+    take_profit_price=round(inside_low - day_range, 3),
+    stop_loss_price=inside_high
+)</pre>
+</div>
+
+<p>To route order events to each <code>OCOTrade</code> instance, call their <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> method from your algorithm's <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> handler:</p>
+
+<div class="section-example-container">
+<pre class="csharp">public override void OnOrderEvent(OrderEvent orderEvent)
+{
+    foreach (var trade in new[] { _longTrade, _shortTrade })
+        if (trade != null)
+            trade.OnOrderEvent(orderEvent);
+}</pre>
+<pre class="python">def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    for trade in [self._long_trade, self._short_trade]:
+        if trade is not None:
+            trade.on_order_event(order_event)</pre>
+</div>
+
 <h4>Place Active Orders</h4>
 
 <p>To place active orders for the OCO orders, use a combination of <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">limit orders</a> and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders">stop limit orders</a>. Place these orders so that their price levels that are far enough apart from each other. If their price levels are too close, several of the orders can fill in a single time step. When one of the orders fills, in the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> event handler, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel</a> the other orders in the OCO order set.<br></p>
