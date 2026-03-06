@@ -20,7 +20,6 @@ self.add_future_option(future.symbol)</pre>
             <th>Argument</th>
             <th>Data Type</th>
             <th>Description</th>
-            <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
@@ -28,17 +27,16 @@ self.add_future_option(future.symbol)</pre>
             <td><code>symbol</code></td>
 	        <td><code>Symbol</code></td>
             <td>The continuous Future contract Symbol. To view the supported assets in the US Future Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#08-Supported-Assets'>Supported Assets</a>.</td>
-            <td></td>
         </tr>
         <tr>
             <td><code class="csharp">optionFilter</code><code class="python">option_filter</code></td>
 	        <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">Callable[[OptionFilterUniverse], OptionFilterUniverse]</code></td>
             <td>A function that selects Future Option contracts</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
     </tbody>
 </table>
 
+<p>The subscription characteristics such as resolution, market, and fill forward behavior are inherited from the <code class="csharp">UniverseSettings</code><code class="python">self.universe_settings</code> values. See <a href="/docs/v2/writing-algorithms/initialization#06-Set-Universe-Settings">Set Universe Settings</a> for more information.</p>
 
 <p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a> in a security initializer.</p>
 
@@ -67,7 +65,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
         // Next, set the price model
         if (security.Type == SecurityType.FutureOption) // Option type
         {
-            security.PriceModel = OptionPriceModels.CrankNicolsonFD();
+            security.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
         }
     }
 }</pre>
@@ -78,8 +76,9 @@ self.set_security_initializer(MySecurityInitializer(self.brokerage_model, seeder
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -&gt; None:
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, QCAlgorithm algorithm) -&gt; None:
         super().__init__(brokerage_model, security_seeder)
+        self._algorithm = algorithm;
 
     def initialize(self, security: Security) -&gt; None:
         # First, call the superclass definition
@@ -88,7 +87,7 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
         # Next, set the price model
         if security.type == SecurityType.FUTURE_OPTION: # Option type
-            security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
+            security.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>

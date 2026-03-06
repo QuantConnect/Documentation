@@ -17,7 +17,7 @@
         {
             if (security.Type == SecurityType.FutureOption)
             {
-                (security as Option).PriceModel = OptionPriceModels.CrankNicolsonFD();
+                (security as Option).PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
             } 
         });
         _future = AddFuture(Futures.Indices.SP500EMini, 
@@ -64,7 +64,7 @@
 
     def _custom_security_initializer(self, security: Security) -> None:
         if security.type == SecurityType.FUTURE_OPTION:
-            security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
+            security.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
-<p>To view all the models LEAN supports, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#07-Supported-Models'>Supported Models</a>.</p>
+<p>To view all the models LEAN supports, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#08-Supported-Models'>Supported Models</a>.</p>

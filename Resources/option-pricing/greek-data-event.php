@@ -9,7 +9,7 @@
     public override void Initialize()
     {
         var option = <?=$addOptionC?>
-        option.PriceModel = OptionPriceModels.CrankNicolsonFD();
+        option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
     }
 
     public override void OnData(Slice data)
@@ -28,7 +28,7 @@
     
     def initialize(self):
         option = <?=$addOptionPy?>
-        option.price_model = OptionPriceModels.crank_nicolson_fd()
+        option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()
     
     def on_data(self, data):
         for canonical_symbol, chain in data.option_chains.items():
@@ -37,4 +37,4 @@
                 delta = contract.greeks.delta</pre>
 </div>
 
-<p>To view all the models LEAN supports, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#07-Supported-Models'>Supported Models</a>.</p>
+<p>To view all the models LEAN supports, see <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#08-Supported-Models'>Supported Models</a>.</p>

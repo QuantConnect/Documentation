@@ -319,7 +319,7 @@ public class ETFUniverseOptions : QCAlgorithm
         {
             if (security is Option option) // Option type
             {
-                option.PriceModel = OptionPriceModels.CrankNicolsonFD();
+                option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
             }
         });
 
@@ -387,7 +387,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
     def _custom_security_initializer(self, security: Security) -&gt; None:
         # Overwrite the price model        
         if security.type == SecurityType.OPTION: # Option type
-            security.price_model = OptionPriceModels.crank_nicolson_fd()
+            security.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()
 
     def on_data(self, data: Slice) -&gt; None:
         if self.is_warming_up or self._day == self.time.day:

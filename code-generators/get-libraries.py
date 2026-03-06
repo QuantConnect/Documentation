@@ -1,126 +1,110 @@
-from os import chdir, path, popen
+import json
+import os
+from os import chdir, path
 from pathlib import Path
+from urllib.request import urlopen
 
 chdir(path.dirname(path.abspath(__file__)))
 RESOURCE = Path('../Resources/libraries/')
 
-def __process_pip_line(line):
-    if '@' not in line:
-        return line
-    line = next(filter(lambda l: 'whl' in l, line.split('/')), '')
-    if not line:
-        return line
-    return '=='.join(line.split('-')[:2]).replace('_','-') + '\n'
+JSON_URL = 'https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/environment-packages-{language}.json'
 
-def __create_python_libraries_file():
-    cmd = 'docker run --entrypoint bash quantconnect/research:latest -c "pip3 freeze"'
-    lines = [__process_pip_line(line) for line in popen(cmd).readlines()]
-    with open(RESOURCE / 'default-python.txt', mode='w', encoding='utf-8') as fp:
-        fp.write(''.join([l for l in lines if l]))
+ENVIRONMENT_DIRS = [
+    {
+        'path': Path('../01 Cloud Platform/06 Projects/11 Package Environments'),
+        'default_num': 3,
+        'env_start_num': 4,
+        'default_name': 'Default Environment',
+        'env_suffix': 'Environment',
+        'is_cloud_platform': True,
+    },
+    {
+        'path': Path('../02 Local Platform/04 Development Environment/12 Packages and Libraries'),
+        'default_num': 3,
+        'env_start_num': 4,
+        'default_name': 'Default Environment',
+        'env_suffix': 'Environment',
+        'is_cloud_platform': False,
+    },
+    {
+        'path': Path('../03 Writing Algorithms/01 Key Concepts/12 Libraries'),
+        'default_num': 2,
+        'env_start_num': 3,
+        'default_name': 'Default Environment Libraries',
+        'env_suffix': 'Environment Libraries',
+        'is_cloud_platform': True,
+    },
+    {
+        'path': Path('../05 Lean CLI/06 Projects/08 Libraries/01 Third-Party Libraries'),
+        'default_num': None,
+        'env_start_num': None,
+        'default_name': None,
+        'env_suffix': None,
+        'is_cloud_platform': False,
+    },
+]
 
-def __create_csharp_libraries_file():
-    lean_sln = Path("../Lean/QuantConnect.Lean.sln")
-    # Install Lean
-    if not lean_sln.is_file():
-        popen("git clone https://github.com/QuantConnect/Lean.git ../Lean").close()
-        popen(f"dotnet restore {lean_sln.resolve()}").close()
+def __fetch_json(url):
+    with urlopen(url) as response:
+        return json.loads(response.read().decode('utf-8'))
 
-    cmd = f'dotnet list {lean_sln.resolve()} package'
-    def process_line(line):
-        return '=='.join([l for l in line.split(' ') if l][1:3])
-    lines = sorted(set([process_line(line) for line in popen(cmd).readlines() if '>' in line]))
-    with open(RESOURCE / 'default-csharp.txt', mode='w', encoding='utf-8') as fp:
-        fp.write('\n'.join(lines))
+def __packages_to_dict(packages):
+    libraries = {p['name']: p['version'] for p in packages}
+    maxlen = len(max(libraries.keys(), key=len))
+    return maxlen, libraries
 
 def __library_to_code_block(maxlen, libraries):
     def format_output(key: str, value: str, maxlen: int) -> str:
         count = maxlen - len(key)
-        value = value.replace("\n", "")
         return f'{key + " " * count} {value}'
     html = ''
     for key, value in sorted(libraries.items(), key=lambda x: x[0].lower()):
         html += format_output(key, value, maxlen) + '\n'
     return html
 
-def __read_libraries_from_file(filename, sep='=='):
-    with open(filename, mode='r', encoding='utf-8') as f:
-        def line_to_kvp(line):
-            csv = [x for x in line.split(sep) if x]
-            return csv[0],csv[1][:-1]
-        lines = [__process_pip_line(line) for line in f.readlines()]
-        libraries = dict([line_to_kvp(line) for line in lines if sep in line])
-        return len(max(libraries.keys(), key=len)), libraries
+def __title_case(key):
+    return key.replace('-', ' ').replace('_', ' ').title()
+
+def __generate_default_environment_page(dir_config):
+    num = str(dir_config['default_num']).zfill(2)
+    filepath = dir_config['path'] / f'{num} {dir_config["default_name"]}.php'
+    is_cloud = 'true' if dir_config['is_cloud_platform'] else 'false'
+    content = '<p>The default environment supports the following libraries:</p>\n'
+    content += '<?\n'
+    content += f'$isCloudPlatform = {is_cloud};\n'
+    content += 'include(DOCS_RESOURCES."/libraries/supported-libraries.php");\n'
+    content += '?>\n'
+    with open(filepath, mode='w', encoding='utf-8') as fp:
+        fp.write(content)
+
+def __generate_foundation_environment_page(dir_config, num, key):
+    name = __title_case(key)
+    num_str = str(num).zfill(2)
+    filepath = dir_config['path'] / f'{num_str} {name} {dir_config["env_suffix"]}.php'
+    content = f'<p class="csharp">This environment is only available for Python.</p>\n'
+    content += f'<p class="python">The {name} environment provides the following libraries:</p>\n'
+    content += f'<div class="python">\n'
+    content += f'    <? include(DOCS_RESOURCES."/libraries/supported-libraries-foundation-{key}.html"); ?>\n'
+    content += f'</div>\n'
+    with open(filepath, mode='w', encoding='utf-8') as fp:
+        fp.write(content)
+
+def __clean_environment_pages(dir_config):
+    """Remove old environment pages in the dynamic range."""
+    start = dir_config['env_start_num']
+    for filepath in dir_config['path'].glob('*.php'):
+        try:
+            file_num = int(filepath.name[:2])
+        except ValueError:
+            continue
+        if start <= file_num < 98:
+            os.remove(filepath)
 
 if __name__ == '__main__':
-    __create_csharp_libraries_file()
-    __create_python_libraries_file()
-    
-    package_reference = '''    <PackageReference Include="Accord" Version="3.6.0" />
-    <PackageReference Include="Accord.Audio" Version="3.6.0" />
-    <PackageReference Include="Accord.Fuzzy" Version="3.6.0" />
-    <PackageReference Include="Accord.Genetic" Version="3.6.0" />
-    <PackageReference Include="Accord.MachineLearning" Version="3.6.0" />
-    <PackageReference Include="Accord.MachineLearning.GPL" Version="3.6.0" />
-    <PackageReference Include="Accord.Math" Version="3.6.0" />
-    <PackageReference Include="Accord.Statistics" Version="3.6.0" />
-    <PackageReference Include="Castle.Core" Version="5.2.1" />
-    <PackageReference Include="csnumerics" Version="1.0.2" />
-    <PackageReference Include="Deedle" Version="2.1.0" />
-    <PackageReference Include="DynamicInterop" Version="0.9.1" />
-    <PackageReference Include="Google.OrTools" Version="9.12.4544" />
-    <PackageReference Include="MathNet.Filtering" Version="0.7.0" />
-    <PackageReference Include="MathNet.Filtering.Kalman" Version="0.7.0" />
-    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
-    <PackageReference Include="Microsoft.Data.Analysis" Version="0.22.2" />
-    <PackageReference Include="Microsoft.ML.CpuMath" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.DataView" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.22.2" />
-    <PackageReference Include="Microsoft.ML.FastTree" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.LightGbm" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.23.1" />
-    <PackageReference Include="Microsoft.ML.TensorFlow" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.TimeSeries" Version="4.0.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="NodaTime" Version="3.0.5" />
-    <PackageReference Include="OpenAI" Version="2.5.0" />
-    <PackageReference Include="QLNet" Version="1.13.1" />
-    <PackageReference Include="R.NET" Version="1.9.0" />
-    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.48" />
-    <PackageReference Include="QuantConnect.PredictNowNET" Version="1.0.4" />
-    <PackageReference Include="RestSharp" Version="106.12.0" />
-    <PackageReference Include="Catalyst" Version="1.0.54164" />
-    <PackageReference Include="Catalyst.Models.English" Version="1.0.30952" />
-    <PackageReference Include="CNTK.CPUOnly" Version="2.8.0-rc0.dev20200201" />
-    <PackageReference Include="LibTopoART" Version="0.98.1" />
-    <PackageReference Include="Microsoft.ML" Version="4.0.2" />
-    <PackageReference Include="NumSharp" Version="0.30.0" />
-    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
-    <PackageReference Include="SciSharp.TensorFlow.Redist-Linux-GPU" Version="2.11.1" />
-    <PackageReference Include="SharpLearning.DecisionTrees" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.AdaBoost" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.RandomForest" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.GradientBoost" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.Neural" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.Ensemble" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.Common.Interfaces" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.CrossValidation" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.Metrics" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.Optimization" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.Containers" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.InputOutput" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.FeatureTransformations" Version="0.31.8" />
-    <PackageReference Include="SharpLearning.XGBoost" Version="0.31.8" />
-    <PackageReference Include="SharpNeatLib" Version="2.4.4" />
-    <PackageReference Include="TensorFlow.Keras" Version="0.15.0" />
-    <PackageReference Include="TensorFlow.NET" Version="0.150.0" />
-    <PackageReference Include="TorchSharp" Version="0.105.1" />'''
+    python_data = __fetch_json(JSON_URL.format(language='python'))
+    csharp_data = __fetch_json(JSON_URL.format(language='csharp'))
 
-    cloud_added = {}
-    for line in package_reference.split('\n'):
-        parts = line.split('"')
-        cloud_added[parts[1]] = parts[3]
+    env_keys = [k for k in python_data if k != 'default']
 
     selected = {
         'tensorflow': {
@@ -237,32 +221,48 @@ if __name__ == '__main__':
             }
     }
 
+    # Generate supported-libraries.php
+    python_maxlen, python_libraries = __packages_to_dict(python_data['default'])
+    csharp_maxlen, csharp_libraries = __packages_to_dict(csharp_data['default'])
+
+    for key, value in python_libraries.items():
+        if key in selected and not selected[key]['version']:
+            selected[key]['version'] = value
+    for key, value in csharp_libraries.items():
+        if key in selected and not selected[key]['version']:
+            selected[key]['version'] = value
+
     with open(RESOURCE / 'supported-libraries.php', mode='w', encoding='utf-8') as fp:
         html = '<div class="section-example-container">\n'
-        for language in ['python', 'csharp']:
-            maxlen, libraries = __read_libraries_from_file(RESOURCE / f'default-{language}.txt')
-
-            for key, value in libraries.items():
-                if key in selected:
-                    if not selected[key]['version']:
-                        selected[key]['version'] = value
-
-            html += f'<pre class="{language}">\n' 
-            html += __library_to_code_block(maxlen, libraries)
-
-            # Add C# Cloud
-            if language == "csharp":
-                html += '<? if ($cloudPlatform) { ?>\n'
-                cloud_added = {k:v for k,v in cloud_added.items() if k not in libraries}
-                html += __library_to_code_block(maxlen, cloud_added)
-                html += '<? } ?>\n'
-
-            html += '</pre>'
-
+        html += '<pre class="python">\n'
+        html += __library_to_code_block(python_maxlen, python_libraries)
+        html += '</pre>'
+        html += '<pre class="csharp">\n'
+        html += __library_to_code_block(csharp_maxlen, csharp_libraries)
+        html += '</pre>'
         html += '</div>'
         fp.write(html)
-    
-    html = '''<style> 
+
+    # Generate foundation library HTML files
+    for key in env_keys:
+        maxlen, libraries = __packages_to_dict(python_data[key])
+        with open(RESOURCE / f'supported-libraries-foundation-{key}.html', mode='w', encoding='utf-8') as fp:
+            fp.write('<div class="section-example-container"><pre class="python">\n')
+            fp.write(__library_to_code_block(maxlen, libraries))
+            fp.write('</pre></div>\n')
+
+    # Generate environment pages in each directory
+    for dir_config in ENVIRONMENT_DIRS:
+        if not dir_config['env_start_num']:
+            continue
+        __generate_default_environment_page(dir_config)
+        __clean_environment_pages(dir_config)
+        for i, key in enumerate(env_keys):
+            num = dir_config['env_start_num'] + i
+            __generate_foundation_environment_page(dir_config, num, key)
+
+    # Generate Supported Libraries.php (ML page)
+    html = '''<style>
 .centered {text-align: center; }
 </style>
 
@@ -301,7 +301,7 @@ class MachineLearningLibraryForWritingAlgorithm {
 }
 
 $libraries = array('''
-    
+
     for key, value in selected.items():
         if not value["version"]:
             continue
@@ -323,16 +323,9 @@ foreach ($libraries as $library) {
               <td class='centered'><a href='{$library->exampleLink}'><i class='fa fa-external-link'></i></a></td>
           </tr>
     ";
-}?>        
+}?>
     </tbody>
 </table>'''
 
-    with open(f'03 Writing Algorithms/31 Machine Learning/01 Key Concepts/02 Supported Libraries.php', mode='w', encoding='utf-8') as fp:
+    with open(f'../03 Writing Algorithms/31 Machine Learning/01 Key Concepts/02 Supported Libraries.php', mode='w', encoding='utf-8') as fp:
         fp.write(html)
-
-    for library in ['autogluon','legacy']:
-        maxlen, libraries = __read_libraries_from_file(RESOURCE / f'{library}.txt')
-        with open(RESOURCE / f'supported-libraries-foundation-{library}.html', mode='w', encoding='utf-8') as fp:
-            fp.write('<div class="section-example-container"><pre class="python">\n')
-            fp.write(__library_to_code_block(maxlen, libraries))
-            fp.write('</pre></div>\n')

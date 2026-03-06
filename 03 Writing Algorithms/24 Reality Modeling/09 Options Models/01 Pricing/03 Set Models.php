@@ -1,4 +1,4 @@
-<p>To set the pricing model of an Option, set its <code class="csharp">PriceModel</code><code class="python">price_model</code> property.</p>
+<p>To set the price model of an Option, set its <code class="csharp">PriceModel</code><code class="python">price_model</code> property.</p>
 
 <p>If you have access to the <code>Option</code> object when you subscribe to the Option universe or contract, you can set the price model immediately after you create the subscription.</p>
 

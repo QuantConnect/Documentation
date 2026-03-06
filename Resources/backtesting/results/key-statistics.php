@@ -34,7 +34,7 @@
 <? if ($localPlatform) { ?>
 <p>To view the data from the Overall Statistics and Rolling Statistics tables in JSON format, open the <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;.json</span> file.</p>
 <? } else { ?>
-<p>To download the data from the Overall Statistics and Rolling Statistics tables, see <a href='/docs/v2/cloud-platform/backtesting/results#16-Download-Results'>Download Results</a>.</p>
+<p>To download the data from the Overall Statistics and Rolling Statistics tables, see <a href='/docs/v2/cloud-platform/backtesting/results#17-Download-Results'>Download Results</a>.</p>
 <? } ?>
 
 <h4>Research Guide</h4>

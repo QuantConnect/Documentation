@@ -17,14 +17,14 @@
             	<span class='public-file-name'>&lt;backtestId&gt;-alpha-results.json</span>
             	<br>Ex: <span class='public-file-name'>1967791529-alpha-results.json</span>
             </td>
-            <td>A file containing all of the <a href='/docs/v2/local-platform/backtesting/results#11-Insights'>backtest insights</a>. This file only exists if you emit insights during the backtest.</td>
+            <td>A file containing all of the <a href='/docs/v2/local-platform/backtesting/results#12-Insights'>backtest insights</a>. This file only exists if you emit insights during the backtest.</td>
         </tr>
         <tr>
             <td>
             	<span class='public-file-name'>&lt;backtestId&gt;-log.txt</span>
             	<br>Ex: <span class='public-file-name'>1967791529-log.txt</span>
             </td>
-            <td>A file containing all of the <a href='/docs/v2/local-platform/backtesting/results#12-Logs'>backtest logs</a>.</td>
+            <td>A file containing all of the <a href='/docs/v2/local-platform/backtesting/results#13-Logs'>backtest logs</a>.</td>
         </tr>
         <tr>
             <td>

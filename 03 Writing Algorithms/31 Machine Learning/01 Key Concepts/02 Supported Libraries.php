@@ -1,4 +1,4 @@
-<style> 
+<style>
 .centered {text-align: center; }
 </style>
 
@@ -40,11 +40,11 @@ $libraries = array(
     new MachineLearningLibraryForWritingAlgorithm("TensorFlow", "2.19.1", "Python", "import tensorflow", "https://www.tensorflow.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TensorFlowNeuralNetworkAlgorithm.py"),
     new MachineLearningLibraryForWritingAlgorithm("SciKit Learn", "1.6.1", "Python", "import sklearn", "https://scikit-learn.org/stable/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScikitLearnLinearRegressionAlgorithm.py"),
     new MachineLearningLibraryForWritingAlgorithm("Py Torch", "2.8.0", "Python", "import torch", "https://pytorch.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/PytorchNeuralNetworkAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("Keras", "3.11.3", "Python", "import keras", "https://keras.io/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/KerasNeuralNetworkAlgorithm.py"),
+    new MachineLearningLibraryForWritingAlgorithm("Keras", "3.13.0", "Python", "import keras", "https://keras.io/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/KerasNeuralNetworkAlgorithm.py"),
     new MachineLearningLibraryForWritingAlgorithm("hmmlearn", "0.3.3", "Python", "import hmmlearn", "https://hmmlearn.readthedocs.io/en/latest/", ""),
     new MachineLearningLibraryForWritingAlgorithm("tsfresh", "0.20.2", "Python", "import tsfresh", "https://tsfresh.readthedocs.io/en/latest/", ""),
-    new MachineLearningLibraryForWritingAlgorithm("Stable-Baselines3", "2.7.0", "Python", "from stable_baselines3 import *", "https://stable-baselines3.readthedocs.io/en/master", ""),
-    new MachineLearningLibraryForWritingAlgorithm("fastai", "2.8.4", "Python", "import fastai", "https://docs.fast.ai/", ""),
+    new MachineLearningLibraryForWritingAlgorithm("Stable-Baselines3", "2.7.1", "Python", "from stable_baselines3 import *", "https://stable-baselines3.readthedocs.io/en/master", ""),
+    new MachineLearningLibraryForWritingAlgorithm("fastai", "2.8.6", "Python", "import fastai", "https://docs.fast.ai/", ""),
     new MachineLearningLibraryForWritingAlgorithm("Deap", "1.4.3", "Python", "import deap", "https://deap.readthedocs.io/en/master/overview.html", ""),
     new MachineLearningLibraryForWritingAlgorithm("XGBoost", "3.0.5", "Python", "import xgboost", "https://xgboost.readthedocs.io/en/latest/", ""),
     new MachineLearningLibraryForWritingAlgorithm("mlfinlab", "1.6.0", "Python", "import mlfinlab", "https://github.com/hudson-and-thames/mlfinlab", ""),
@@ -60,6 +60,6 @@ foreach ($libraries as $library) {
               <td class='centered'><a href='{$library->exampleLink}'><i class='fa fa-external-link'></i></a></td>
           </tr>
     ";
-}?>        
+}?>
     </tbody>
 </table>

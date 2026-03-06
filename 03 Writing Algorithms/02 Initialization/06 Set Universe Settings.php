@@ -1,4 +1,4 @@
-<p>The universe settings of your algorithm configure some properties of the universe constituents. The following table describes the properties of the <code>UniverseSettings</code> object:</p>
+<p>The universe settings of your algorithm configure some properties of the universe constituents, including derivatives such as futures and options. The following table describes the properties of the <code>UniverseSettings</code> object:</p>
 
 <table class='qc-table table vertical-table'>
     <tbody>

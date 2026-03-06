@@ -4,6 +4,6 @@
 
 <? include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php"); ?>
 
-<p>To download the runtime statistics data, see <a href='/docs/v2/cloud-platform/backtesting/results#16-Download-Results'>Download Results</a>.</p>
+<p>To download the runtime statistics data, see <a href='/docs/v2/cloud-platform/backtesting/results#17-Download-Results'>Download Results</a>.</p>
 
 <p>To add a custom runtime statistic, see <a href='/docs/v2/writing-algorithms/statistics/runtime-statistics#03-Add-Statistics'>Add Statistics</a>.</p>

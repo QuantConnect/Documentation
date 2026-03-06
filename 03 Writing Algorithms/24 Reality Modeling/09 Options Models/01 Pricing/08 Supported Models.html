@@ -1,0 +1,148 @@
+<p>LEAN supports the following Option price models.</p>
+
+<table class="qc-table table" id="option-price-models-table">
+    <thead>
+        <tr>
+            <th>Model <code>OptionPriceModels</code></th>
+            <th>American Style</th>
+            <th>European Style</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">BinomialCoxRossRubinstein</code><code class="python">binomial_cox_ross_rubinstein</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BlackScholes</code><code class="python">black_scholes</code></td>
+            <td><br></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">ForwardTree</code><code class="python">forward_tree</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>These models implement the <code>IndicatorBasedOptionPriceModel</code>, which uses the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/indicators">implied volatility and Greeks indicators</a>, with different methodologies.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override Initialize()
+{
+    var spyOption = AddOption("SPY");
+    spyOption.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();
+    var spxOption = AddIndexOption("SPX");
+    spxOption.PriceModel = OptionPriceModels.BlackScholes();
+}</pre>
+    <pre class="python">def initialize(self):
+    spy_option = self.add_option("SPY")
+    spy_option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()
+    spx_option = self.add_index_option("SPX")
+    spx_option.price_model = OptionPriceModels.black_scholes()</pre>
+</div>
+
+<p>LEAN supports the following <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#07-Legacy-Models">legacy Option price models</a> from the <a href="https://www.quantlib.org/">QuantLib</a> library.</p>
+<table class="qc-table table" id="option-price-models-table">
+    <thead>
+        <tr>
+            <th>Model <code>OptionPriceModels.QuantLib</code></th>
+            <th>American Style</th>
+            <th>European Style</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">AdditiveEquiprobabilities</code><code class="python">additive_equiprobabilities</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BaroneAdesiWhaley</code><code class="python">barone_adesi_whaley</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><br></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BinomialCoxRossRubinstein</code><code class="python">binomial_cox_ross_rubinstein</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BinomialJarrowRudd</code><code class="python">binomial_jarrow_rudd</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BinomialJoshi</code><code class="python">binomial_joshi</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BinomialLeisenReimer</code><code class="python">binomial_leisen_reimer</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BinomialTian</code><code class="python">binomial_tian</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BinomialTrigeorgis</code><code class="python">binomial_trigeorgis</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BjerksundStensland</code><code class="python">bjerksund_stensland</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><br></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">BlackScholes</code><code class="python">black_scholes</code></td>
+            <td><br></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">CrankNicolsonFD</code><code class="python">crank_nicolson_fd</code></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Integral</code><code class="python">integral</code></td>
+            <td><br></td>
+            <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="section-example-container">
+    <pre class="csharp">public override Initialize()
+{
+    var aaplOption = AddOption("AAPL");
+    aaplOption.PriceModel = OptionPriceModels.QuantLib.CrankNicolsonFD();
+    var spyOption = AddOption("SPY");
+    spyOption.PriceModel = OptionPriceModels.QuantLib.BinomialCoxRossRubinstein();
+    var spxOption = AddIndexOption("SPX");
+    spxOption.PriceModel = OptionPriceModels.QuantLib.BlackScholes();
+}</pre>
+    <pre class="python">def initialize(self):
+    aapl_option = self.add_option("AAPL")
+    aapl_option.price_model = OptionPriceModels.QuantLib.crank_nicolson_fd()
+    spy_option = self.add_option("SPY")
+    spy_option.price_model = OptionPriceModels.QuantLib.binomial_cox_ross_rubinstein()
+    spx_option = self.add_index_option("SPX")
+    spx_option.price_model = OptionPriceModels.QuantLib.black_scholes()</pre>
+</div>
+
+<style>
+#option-price-models-table td:nth-child(2), 
+#option-price-models-table th:nth-child(2), 
+#option-price-models-table td:nth-child(3), 
+#option-price-models-table th:nth-child(3) {
+    text-align: center;
+}
+</style>
+
+<p>If you set the price model of an Option to a model with an incompatible style, LEAN throws an exception.</p>

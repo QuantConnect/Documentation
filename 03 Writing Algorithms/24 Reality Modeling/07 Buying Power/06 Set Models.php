@@ -5,19 +5,19 @@
 {
     var security = AddEquity("SPY");
     // Use 3x leverage on the selected security, which mimic the actual buying power of your broker
-    security.SetBuyingPowerModel(new SecurityMarginModel(3m));
+    security.SetBuyingPowerModel(new BuyingPowerModel(3m));
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
     security = self.add_equity("SPY")
     # Use 3x leverage on the selected security, which mimic the actual buying power of your broker
-    security.set_buying_power_model(SecurityMarginModel(3))</pre>
+    security.set_buying_power_model(BuyingPowerModel(3))</pre>
 </div>
 
 <p>You can also set the buying power model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">AddSecurityInitializer</code><code class="python">add_security_initializer</code> before you create the subscriptions.</p>
 
 <?php
-$overwriteCodePy = "security.set_buying_power_model(SecurityMarginModel(3))";
-$overwriteCodeC = "security.SetBuyingPowerModel(new SecurityMarginModel(3m));";
+$overwriteCodePy = "security.set_buying_power_model(BuyingPowerModel(3))";
+$overwriteCodeC = "security.SetBuyingPowerModel(new BuyingPowerModel(3m));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
