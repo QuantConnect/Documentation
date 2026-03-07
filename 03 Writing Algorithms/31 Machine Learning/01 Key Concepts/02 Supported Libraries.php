@@ -1,4 +1,4 @@
-<style> 
+<style>
 .centered {text-align: center; }
 </style>
 
@@ -14,52 +14,17 @@
             <th width="5%">Example</th>
         </tr>
     </thead>
-<tbody>
-
-<?
-class MachineLearningLibraryForWritingAlgorithm {
-    public $name;
-    public $version;
-    public $importStatement;
-    public $documentationLink;
-    public $exampleLink;
-    public $language;
-
-    public function __construct($name, $version, $language, $importStatement, $documentationLink, $exampleLink)
-    {
-        $this->name = $name;
-        $this->version = $version;
-        $this->language = $language;
-        $this->importStatement = $importStatement;
-        $this->documentationLink = $documentationLink;
-        $this->exampleLink = $exampleLink;
-    }
-}
-
-$libraries = array(
-    new MachineLearningLibraryForWritingAlgorithm("TensorFlow", "2.19.1", "Python", "import tensorflow", "https://www.tensorflow.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TensorFlowNeuralNetworkAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("SciKit Learn", "1.6.1", "Python", "import sklearn", "https://scikit-learn.org/stable/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScikitLearnLinearRegressionAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("Py Torch", "2.8.0", "Python", "import torch", "https://pytorch.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/PytorchNeuralNetworkAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("Keras", "3.11.3", "Python", "import keras", "https://keras.io/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/KerasNeuralNetworkAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("hmmlearn", "0.3.3", "Python", "import hmmlearn", "https://hmmlearn.readthedocs.io/en/latest/", ""),
-    new MachineLearningLibraryForWritingAlgorithm("tsfresh", "0.20.2", "Python", "import tsfresh", "https://tsfresh.readthedocs.io/en/latest/", ""),
-    new MachineLearningLibraryForWritingAlgorithm("Stable-Baselines3", "2.7.0", "Python", "from stable_baselines3 import *", "https://stable-baselines3.readthedocs.io/en/master", ""),
-    new MachineLearningLibraryForWritingAlgorithm("fastai", "2.8.4", "Python", "import fastai", "https://docs.fast.ai/", ""),
-    new MachineLearningLibraryForWritingAlgorithm("Deap", "1.4.3", "Python", "import deap", "https://deap.readthedocs.io/en/master/overview.html", ""),
-    new MachineLearningLibraryForWritingAlgorithm("XGBoost", "3.0.5", "Python", "import xgboost", "https://xgboost.readthedocs.io/en/latest/", ""),
-    new MachineLearningLibraryForWritingAlgorithm("mlfinlab", "1.6.0", "Python", "import mlfinlab", "https://github.com/hudson-and-thames/mlfinlab", ""),
-    new MachineLearningLibraryForWritingAlgorithm("Accord", "3.6.0", "C#", "using Accord.MachineLearning;", "http://accord-framework.net/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/AccordVectorMachinesAlgorithm.cs")
-);
-
-foreach ($libraries as $library) {
-    echo "<tr>
-              <td><a target='_BLANK' href='{$library->documentationLink}'>{$library->name}</a></td>
-              <td>{$library->version}</td>
-              <td>{$library->language}</td>
-              <td><code>{$library->importStatement}</code></td>
-              <td class='centered'><a href='{$library->exampleLink}'><i class='fa fa-external-link'></i></a></td>
-          </tr>
-    ";
-}?>        
-    </tbody>
+<tbody id="ml-libraries-container">
+</tbody>
 </table>
+
+<script>
+<?
+$cdnUrl = 'https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/environment-packages-';
+echo "const defined_python_data = " . file_get_contents($cdnUrl . "python.json") . ";\n";
+echo "const defined_csharp_data = " . file_get_contents($cdnUrl . "csharp.json") . ";\n";
+include(DOCS_RESOURCES."/libraries/ml-libraries.js");
+?>
+
+renderMlLibraries('ml-libraries-container');
+</script>
