@@ -7,9 +7,9 @@
 <? include(DOCS_RESOURCES."/specs/backtest-nodes.html"); ?>
 
 <p>
-	Refer to the <a href="/pricing">Pricing</a> page to see the price of each backtesting node model. 
-	You get one free B-MICRO backtesting node in your first organization. 
-	This node incurs a 20-second delay when you launch backtests, but the delay is removed and the node is replaced when <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization to a paid tier</a> and <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a new backtesting node</a>.
+	Refer to the <a href="/pricing">Pricing</a> page for the price of each backtesting node model.
+	Your first organization includes one free B-MICRO backtesting node.
+	This node introduces a 20-second delay when launching backtests and caps usage to 200 backtests per day. These restrictions are lifted and the node is replaced when you <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization to a paid tier</a> and <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a new backtesting node</a>.
 </p>
 
 <p>
