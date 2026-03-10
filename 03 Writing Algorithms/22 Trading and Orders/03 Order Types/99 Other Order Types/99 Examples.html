@@ -1,0 +1,228 @@
+<p>The following example shows a helper class to manage 
+ <code class="csharp">
+  OCOTrade
+ </code>
+ <code class="python">
+  OCOTrade
+ </code>    
+orders. This is not an officially supported OCO order type. Before you use this approach, verify that your <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models">brokerage model</a> supports limit orders.</p>
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class OCOTrade
+{
+    private readonly QCAlgorithm _algorithm;
+    private readonly Symbol _symbol;
+    private readonly decimal _takeProfitPrice;
+    private readonly decimal _stopLossPrice;
+
+    public OrderTicket Entry { get; set; }
+    public OrderTicket TakeProfit { get; set; }
+    public OrderTicket StopLoss { get; set; }
+
+    public OCOTrade(QCAlgorithm algorithm, Symbol symbol, decimal quantity, decimal entryStopPrice,
+                    decimal takeProfitPrice, decimal stopLossPrice)
+    {
+        _algorithm = algorithm;
+        _symbol = symbol;
+        _takeProfitPrice = takeProfitPrice;
+        _stopLossPrice = stopLossPrice;
+        Entry = _algorithm.StopMarketOrder(_symbol, quantity, entryStopPrice);
+        TakeProfit = null;
+        StopLoss = null;
+    }
+
+    public void OnOrderEvent(OrderEvent orderEvent)
+    {
+        if (orderEvent.Status != OrderStatus.Filled)
+            return;
+
+        if (Entry != null &amp;&amp; Entry.OrderId == orderEvent.OrderId)
+        {
+            var quantity = orderEvent.FillQuantity;
+            TakeProfit = _algorithm.LimitOrder(_symbol, -quantity, _takeProfitPrice);
+            StopLoss = _algorithm.StopMarketOrder(_symbol, -quantity, _stopLossPrice);
+            Entry = null;
+        }
+        else if (TakeProfit != null &amp;&amp; TakeProfit.OrderId == orderEvent.OrderId)
+        {
+            StopLoss.Cancel();
+            TakeProfit = null;
+            StopLoss = null;
+        }
+        else if (StopLoss != null &amp;&amp; StopLoss.OrderId == orderEvent.OrderId)
+        {
+            TakeProfit.Cancel();
+            TakeProfit = null;
+            StopLoss = null;
+        }
+    }
+}
+
+public class InsideDayBreakout : QCAlgorithm
+{
+    private Security _forex;
+    private int _riskPct;
+    private OCOTrade _longTrade;
+    private OCOTrade _shortTrade;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(1000);
+        SetTimeZone(TimeZones.Utc);
+        SetBrokerageModel(BrokerageName.OandaBrokerage, AccountType.Margin);
+        _forex = AddForex("USDJPY");
+        _forex.Session.Size = 3;
+        foreach (var bar in History&lt;QuoteBar&gt;(_forex.Symbol, 3))
+            _forex.Session.Update(bar);
+        _riskPct = 7;
+        SetWarmUp(TimeSpan.FromDays(4));
+    }
+
+    public override void OnWarmupFinished()
+    {
+        // Add a Scheduled event to rebalance the portfolio every weekday.
+        Schedule.On(
+            DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday),
+            TimeRules.AfterMarketOpen(_forex.Symbol, 1),
+            Rebalance
+        );
+    }
+
+    private void Rebalance()
+    {
+        if (!_forex.Session.IsReady || Portfolio.Invested)
+            return;
+        var session = _forex.Session[1];
+        var high = session.High;
+        var low = session.Low;
+        var prevHigh = _forex.Session[2].High;
+        var prevLow = _forex.Session[2].Low;
+
+        if (!(high &lt; prevHigh &amp;&amp; low &gt; prevLow))
+            return;
+        // Replace any pending entry orders from a previous inside day.
+        Liquidate();
+        var insideHigh = Math.Round(high, 3, MidpointRounding.AwayFromZero);
+        var insideLow = Math.Round(low, 3, MidpointRounding.AwayFromZero);
+        var dayRange = insideHigh - insideLow;
+        // Risk amount in USD.
+        var riskUsd = Portfolio.Cash * (_riskPct / 100m);
+        // Risk per unit in USD terms (dayRange is in JPY, convert to USD via close price).
+        var riskPerUnit = dayRange / session.Close;
+        // OANDA max margin 50:1.
+        var riskQuantity = (int)(riskUsd / riskPerUnit);
+        var maxQuantity = (int)((Portfolio.Cash * 48) / session.Close);
+        var quantity = Math.Min(riskQuantity, maxQuantity);
+        if (quantity == 0)
+            return;
+        _longTrade = new OCOTrade(this, _forex.Symbol, quantity, insideHigh,
+            takeProfitPrice: Math.Round(insideHigh + dayRange, 3),
+            stopLossPrice: insideLow);
+        _shortTrade = new OCOTrade(this, _forex.Symbol, -quantity, insideLow,
+            takeProfitPrice: Math.Round(insideLow - dayRange, 3),
+            stopLossPrice: insideHigh);
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        foreach (var trade in new[] { _longTrade, _shortTrade })
+            if (trade != null)
+                trade.OnOrderEvent(orderEvent);
+    }
+}</pre>
+<pre class="python">from AlgorithmImports import *
+
+
+class OCOTrade:
+    def __init__(self, algorithm, symbol, quantity, entry_stop_price, take_profit_price, stop_loss_price):
+        self._algorithm = algorithm
+        self._symbol = symbol
+        self._take_profit_price = take_profit_price
+        self._stop_loss_price = stop_loss_price
+        self._entry = algorithm.stop_market_order(symbol, quantity, entry_stop_price)
+        self._take_profit = None
+        self._stop_loss = None
+
+    def on_order_event(self, order_event):
+        if order_event.status != OrderStatus.FILLED:
+            return
+        _id = order_event.order_id
+        if self._entry and self._entry.order_id == _id:
+            quantity = order_event.fill_quantity
+            self._take_profit = self._algorithm.limit_order(self._symbol, -quantity, self._take_profit_price)
+            self._stop_loss = self._algorithm.stop_market_order(self._symbol, -quantity, self._stop_loss_price)
+            self._entry = None
+        elif self._take_profit and self._take_profit.order_id == _id:
+            self._stop_loss.cancel()
+            self._take_profit = self._stop_loss = None
+        elif self._stop_loss and self._stop_loss.order_id == _id:
+            self._take_profit.cancel()
+            self._take_profit = self._stop_loss = None
+
+
+class InsideDayBreakout(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(1000)
+        self.set_time_zone(TimeZones.UTC)
+        self.set_brokerage_model(BrokerageName.OANDA_BROKERAGE, AccountType.MARGIN)
+        self._forex = self.add_forex("USDJPY")
+        self._forex.session.size = 3
+        for bar in self.history[QuoteBar](self._forex, 3):
+            self._forex.session.update(bar)
+        self._risk_pct = 7
+        self._long_trade = None
+        self._short_trade = None
+        self.set_warm_up(timedelta(4))
+
+    def on_warmup_finished(self):
+        # Add a Scheduled event to rebalance the portfolio monthly.
+        self.schedule.on(
+            self.date_rules.every([DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY]),
+            self.time_rules.after_market_open(self._forex, 1),
+            self._rebalance
+        )
+
+    def _rebalance(self):
+        if not self._forex.session.is_ready or self.portfolio.invested:
+            return
+        session = self._forex.session[1]
+        high, low = session.high, session.low
+        prev_high, prev_low = self._forex.session[2].high, self._forex.session[2].low
+        if not (high &lt; prev_high and low &gt; prev_low):
+            return
+        # Replace any pending entry orders from a previous inside day.
+        self.liquidate()
+        inside_high = round(high, 3)
+        inside_low = round(low, 3)
+        day_range = inside_high - inside_low
+        # Risk amount in USD.
+        risk_usd = self.portfolio.cash * (self._risk_pct / 100)
+        # Risk per unit in USD terms (day_range is in JPY, convert to USD via close price).
+        risk_per_unit = day_range / session.close
+        # OANDA max margin 50:1.
+        risk_quantity = int(risk_usd / risk_per_unit)
+        max_quantity = int((self.portfolio.cash * 48) / session.close)
+        quantity = min(risk_quantity, max_quantity)
+        if not quantity:
+            return
+        self._long_trade = OCOTrade(
+            self, self._forex, quantity, inside_high,
+            take_profit_price=round(inside_high + day_range, 3),
+            stop_loss_price=inside_low
+        )
+        self._short_trade = OCOTrade(
+            self, self._forex, -quantity, inside_low,
+            take_profit_price=round(inside_low - day_range, 3),
+            stop_loss_price=inside_high
+        )
+
+    def on_order_event(self, order_event):
+        for trade in [self._long_trade, self._short_trade]:
+            if trade is not None:
+                trade.on_order_event(order_event)</pre>
+</div>
