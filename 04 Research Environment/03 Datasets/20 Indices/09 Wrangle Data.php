@@ -11,7 +11,7 @@ $secondarySymbol = 'vix';
 $dataFrameImages = array();
 
 $dataFrameImages[0] = <<<'HTML'
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -118,7 +118,7 @@ $dataFrameImages[0] = <<<'HTML'
 HTML;
 
 $dataFrameImages[1] = <<<'HTML'
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -238,7 +238,7 @@ Name: close, dtype: float64</pre>
 HTML;
 
 $dataFrameImages[3] = <<<'HTML'
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -316,7 +316,7 @@ HTML;
 $cSharpDataFrameImages = array();
 
 $cSharpDataFrameImages[0] = <<<'HTML'
-<div class="csharp dataframe-wrapper">
+<div class="csharp dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe csharp" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -363,7 +363,7 @@ $cSharpDataFrameImages[0] = <<<'HTML'
 HTML;
 
 $cSharpDataFrameImages[1] = <<<'HTML'
-<div class="csharp dataframe-wrapper">
+<div class="csharp dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe csharp" border="0">
   <thead>
     <tr style="text-align: right;">
