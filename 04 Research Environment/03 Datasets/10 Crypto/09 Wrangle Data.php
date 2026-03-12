@@ -599,10 +599,90 @@ $dataFrameImages[3] = <<<'HTML'
 </div>
 HTML;
 
-$cSharpDataFrameImages = array(
-    'https://cdn.quantconnect.com/i/tu/crypto-research-data-c-1.png',
-    'https://cdn.quantconnect.com/i/tu/crypto-research-data-c-2.png'
-);
+$cSharpDataFrameImages = array();
+
+$cSharpDataFrameImages[0] = <<<'HTML'
+<div class="csharp dataframe-wrapper">
+<table class="dataframe csharp" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Time</th>
+      <th>BTCUSD Open</th>
+      <th>BTCUSD High</th>
+      <th>BTCUSD Low</th>
+      <th>BTCUSD Close</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>2/10/2023 5:01:00 AM</td><td>21791.85</td><td>21791.85</td><td>21783.39</td><td>21783.93</td></tr>
+    <tr><td>2/10/2023 5:02:00 AM</td><td>21783.93</td><td>21783.93</td><td>21765.78</td><td>21769.73</td></tr>
+    <tr><td>2/10/2023 5:03:00 AM</td><td>21769.67</td><td>21777.55</td><td>21768.06</td><td>21769.62</td></tr>
+    <tr><td>2/10/2023 5:04:00 AM</td><td>21771.06</td><td>21773.38</td><td>21763.68</td><td>21763.69</td></tr>
+    <tr><td>2/10/2023 5:05:00 AM</td><td>21763.69</td><td>21763.8</td><td>21753.87</td><td>21761.36</td></tr>
+    <tr><td>2/10/2023 5:06:00 AM</td><td>21761.36</td><td>21789.91</td><td>21761.36</td><td>21789.91</td></tr>
+    <tr><td>2/10/2023 5:07:00 AM</td><td>21792.36</td><td>21802.86</td><td>21790.5</td><td>21802.86</td></tr>
+    <tr><td>2/10/2023 5:08:00 AM</td><td>21802.8</td><td>21821.66</td><td>21802.8</td><td>21818.04</td></tr>
+    <tr><td>2/10/2023 5:09:00 AM</td><td>21818.44</td><td>21820.83</td><td>21808.2</td><td>21811.36</td></tr>
+    <tr><td>2/10/2023 5:10:00 AM</td><td>21811.38</td><td>21820.26</td><td>21811.1</td><td>21813.76</td></tr>
+    <tr><td>2/10/2023 5:11:00 AM</td><td>21813.74</td><td>21819.58</td><td>21810.37</td><td>21819.02</td></tr>
+    <tr><td>2/10/2023 5:12:00 AM</td><td>21818.96</td><td>21823.92</td><td>21812.25</td><td>21821.27</td></tr>
+    <tr><td>2/10/2023 5:13:00 AM</td><td>21821.27</td><td>21823.02</td><td>21821.26</td><td>21822.85</td></tr>
+    <tr><td>2/10/2023 5:14:00 AM</td><td>21822.39</td><td>21825.04</td><td>21821.77</td><td>21823.84</td></tr>
+    <tr><td>2/10/2023 5:15:00 AM</td><td>21823.84</td><td>21827.22</td><td>21820.01</td><td>21820.01</td></tr>
+    <tr><td>2/10/2023 5:16:00 AM</td><td>21820</td><td>21823.91</td><td>21809.27</td><td>21823.74</td></tr>
+    <tr><td>2/10/2023 5:17:00 AM</td><td>21823.73</td><td>21827.63</td><td>21821.8</td><td>21823.84</td></tr>
+    <tr><td>2/10/2023 5:18:00 AM</td><td>21823.82</td><td>21823.85</td><td>21818.57</td><td>21821.39</td></tr>
+    <tr><td>2/10/2023 5:19:00 AM</td><td>21821.15</td><td>21821.84</td><td>21816.59</td><td>21821.79</td></tr>
+    <tr><td>2/10/2023 5:20:00 AM</td><td>21821.8</td><td>21821.8</td><td>21809.43</td><td>21809.65</td></tr>
+    <tr><td>2/10/2023 5:21:00 AM</td><td>21809.65</td><td>21809.65</td><td>21798.33</td><td>21798.33</td></tr>
+    <tr><td>2/10/2023 5:22:00 AM</td><td>21797.43</td><td>21797.43</td><td>21786.36</td><td>21786.36</td></tr>
+    <tr><td>2/10/2023 5:23:00 AM</td><td>21787.88</td><td>21794.82</td><td>21783.05</td><td>21793.13</td></tr>
+    <tr><td>2/10/2023 5:24:00 AM</td><td>21792.34</td><td>21794.34</td><td>21783.89</td><td>21788.26</td></tr>
+    <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>2/20/2023 4:57:00 AM</td><td>24301.39</td><td>24310.88</td><td>24274.43</td><td>24281.31</td></tr>
+    <tr><td>2/20/2023 4:58:00 AM</td><td>24301.39</td><td>24310.88</td><td>24274.43</td><td>24281.31</td></tr>
+    <tr><td>2/20/2023 4:59:00 AM</td><td>24301.39</td><td>24310.88</td><td>24274.43</td><td>24281.31</td></tr>
+    <tr><td>2/20/2023 5:00:00 AM</td><td>24301.39</td><td>24310.88</td><td>24274.43</td><td>24281.31</td></tr>
+  </tbody>
+</table>
+</div>
+HTML;
+
+$cSharpDataFrameImages[1] = <<<'HTML'
+<div class="csharp dataframe-wrapper">
+<table class="dataframe csharp" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th><i>index</i></th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>0</td><td>21783.93</td></tr>
+    <tr><td>1</td><td>21769.73</td></tr>
+    <tr><td>2</td><td>21769.62</td></tr>
+    <tr><td>3</td><td>21763.69</td></tr>
+    <tr><td>4</td><td>21761.36</td></tr>
+    <tr><td>5</td><td>21789.91</td></tr>
+    <tr><td>6</td><td>21802.86</td></tr>
+    <tr><td>7</td><td>21818.04</td></tr>
+    <tr><td>8</td><td>21811.36</td></tr>
+    <tr><td>9</td><td>21813.76</td></tr>
+    <tr><td>10</td><td>21819.02</td></tr>
+    <tr><td>11</td><td>21821.27</td></tr>
+    <tr><td>12</td><td>21822.85</td></tr>
+    <tr><td>13</td><td>21823.84</td></tr>
+    <tr><td>14</td><td>21820.01</td></tr>
+    <tr><td>15</td><td>21823.74</td></tr>
+    <tr><td>16</td><td>21823.84</td></tr>
+    <tr><td>17</td><td>21821.39</td></tr>
+    <tr><td>18</td><td>21821.79</td></tr>
+    <tr><td>19</td><td>21809.65</td></tr>
+    <tr><td colspan="2" style="text-align: center;">... (more)</td></tr>
+  </tbody>
+</table>
+</div>
+HTML;
 $dataFrameColumnName = 'close';
 $columnNameEnglish = 'close';
 $supportsTrades = true;

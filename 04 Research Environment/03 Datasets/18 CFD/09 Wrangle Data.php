@@ -521,10 +521,326 @@ $dataFrameImages[3] = <<<'HTML'
 </div>
 HTML;
 
-$cSharpDataFrameImages = array(
-    'https://cdn.quantconnect.com/i/tu/cfd-research-data-c-1.png',
-    'https://cdn.quantconnect.com/i/tu/cfd-research-data-c-2.png'
-);
+$cSharpDataFrameImages = array();
+
+$cSharpDataFrameImages[0] = <<<'HTML'
+<div class="csharp dataframe-wrapper">
+<table class="dataframe csharp" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Time</th>
+      <th>SPX500USD Open</th>
+      <th>SPX500USD High</th>
+      <th>SPX500USD Low</th>
+      <th>SPX500USD Close</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2/9/2023 11:01:00 PM</td>
+      <td>4074.5</td>
+      <td>4075.1</td>
+      <td>4074.4</td>
+      <td>4074.9</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:02:00 PM</td>
+      <td>4074.9</td>
+      <td>4075.4</td>
+      <td>4074.6</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:03:00 PM</td>
+      <td>4075.4</td>
+      <td>4075.4</td>
+      <td>4074.9</td>
+      <td>4075.1</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:04:00 PM</td>
+      <td>4075.1</td>
+      <td>4075.4</td>
+      <td>4074.9</td>
+      <td>4075.1</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:05:00 PM</td>
+      <td>4075.1</td>
+      <td>4075.4</td>
+      <td>4075.0</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:06:00 PM</td>
+      <td>4075.4</td>
+      <td>4076.4</td>
+      <td>4075.4</td>
+      <td>4076.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:07:00 PM</td>
+      <td>4076.4</td>
+      <td>4076.4</td>
+      <td>4076.1</td>
+      <td>4076.3</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:08:00 PM</td>
+      <td>4076.3</td>
+      <td>4076.4</td>
+      <td>4075.9</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:09:00 PM</td>
+      <td>4075.9</td>
+      <td>4075.9</td>
+      <td>4075.4</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:10:00 PM</td>
+      <td>4075.4</td>
+      <td>4075.9</td>
+      <td>4075.4</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:11:00 PM</td>
+      <td>4075.9</td>
+      <td>4076.1</td>
+      <td>4075.9</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:12:00 PM</td>
+      <td>4075.9</td>
+      <td>4076.0</td>
+      <td>4075.6</td>
+      <td>4076.0</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:13:00 PM</td>
+      <td>4076.0</td>
+      <td>4076.1</td>
+      <td>4075.6</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:14:00 PM</td>
+      <td>4075.9</td>
+      <td>4075.9</td>
+      <td>4075.1</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:15:00 PM</td>
+      <td>4075.4</td>
+      <td>4075.4</td>
+      <td>4075.1</td>
+      <td>4075.1</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:16:00 PM</td>
+      <td>4075.1</td>
+      <td>4075.6</td>
+      <td>4074.9</td>
+      <td>4075.5</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:17:00 PM</td>
+      <td>4075.5</td>
+      <td>4075.9</td>
+      <td>4075.5</td>
+      <td>4075.6</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:18:00 PM</td>
+      <td>4075.6</td>
+      <td>4075.6</td>
+      <td>4075.3</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:19:00 PM</td>
+      <td>4075.4</td>
+      <td>4075.4</td>
+      <td>4075.1</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:20:00 PM</td>
+      <td>4075.4</td>
+      <td>4075.4</td>
+      <td>4074.6</td>
+      <td>4074.6</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:21:00 PM</td>
+      <td>4074.6</td>
+      <td>4075.0</td>
+      <td>4073.9</td>
+      <td>4074.6</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:22:00 PM</td>
+      <td>4075.0</td>
+      <td>4075.9</td>
+      <td>4074.1</td>
+      <td>4074.4</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:23:00 PM</td>
+      <td>4074.4</td>
+      <td>4075.4</td>
+      <td>4074.4</td>
+      <td>4075.3</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 11:24:00 PM</td>
+      <td>4075.3</td>
+      <td>4075.4</td>
+      <td>4074.8</td>
+      <td>4074.9</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>2/19/2023 10:57:00 PM</td>
+      <td>4077.2</td>
+      <td>4077.3</td>
+      <td>4077.1</td>
+      <td>4077.3</td>
+    </tr>
+    <tr>
+      <td>2/19/2023 10:58:00 PM</td>
+      <td>4077.3</td>
+      <td>4077.6</td>
+      <td>4077.3</td>
+      <td>4077.6</td>
+    </tr>
+    <tr>
+      <td>2/19/2023 10:59:00 PM</td>
+      <td>4077.6</td>
+      <td>4077.6</td>
+      <td>4077.3</td>
+      <td>4077.3</td>
+    </tr>
+    <tr>
+      <td>2/19/2023 11:00:00 PM</td>
+      <td>4077.3</td>
+      <td>4077.5</td>
+      <td>4077.3</td>
+      <td>4077.3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+HTML;
+
+$cSharpDataFrameImages[1] = <<<'HTML'
+<div class="csharp dataframe-wrapper">
+<table class="dataframe csharp" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th><i>index</i></th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>4074.9</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>4075.1</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>4075.1</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>4076.4</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>4076.3</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>4076.0</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>4075.9</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>4075.1</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>4075.5</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>4075.6</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>4075.4</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>4074.6</td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: center;">... (more)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+HTML;
 $dataFrameColumnName = 'close';
 $columnNameEnglish = 'close';
 $supportsTrades = false;

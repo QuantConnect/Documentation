@@ -138,12 +138,12 @@ var columns = new DataFrameColumn[] {
 var df = new DataFrame(columns);
 df</pre>
 </div>
-<img class='csharp docs-image' src='<?=$cSharpDataFrameImages[0]?>' alt="Historical C# dataframe">
+<?=$cSharpDataFrameImages[0]?>
 <p class='csharp'>To select a particular column of the DataFrame, index it with the column name.</p>
 <div class='section-example-container'>
 <pre class='csharp'>df["<?=$primaryTicker?> <?=$dataFrameColumnName?>"]</pre>
 </div>
-<img class='csharp docs-image' src='<?=$cSharpDataFrameImages[1]?>' alt="Historical C# dataframe column">
+<?=$cSharpDataFrameImages[1]?>
 
 <h4>Slice Objects</h4>
 <p>If the <code class="csharp">History</code><code class="python">history</code> method returns <code>Slice</code> objects, iterate through the <code>Slice</code> objects to get each one. The <code>Slice</code> objects may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Slice</code> contains data for your <?=$singularAssetClass?> before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
