@@ -1,0 +1,100 @@
+<p>
+    In a Research Environment, gather <a href='/docs/v2/research-environment/universes'>universe</a> and price history, calculate factors and labels, train a model, and export daily predictions as JSON to the <a href='/docs/v2/research-environment/object-store'>Object Store</a>.
+    When you define factors in the notebook, strictly use trailing data as inputs.
+    If you use future data, you may introduce look-ahead bias into the backtest.
+</p>
+
+<div class="section-example-container">
+    <pre class="python">from sklearn.ensemble import GradientBoostingRegressor
+
+# Define the training and validation periods.
+validation_end = datetime.now()
+validation_start = validation_end - timedelta(30)
+train_end = validation_start
+train_start = train_end - timedelta(90)
+
+# Get the SP500 constituents history.
+qb = QuantBook()
+spy = qb.add_equity('SPY')
+universe = qb.add_universe(qb.universe.etf(spy))
+universe_history = qb.universe_history(universe, train_start, validation_end)
+symbols_by_date = {
+    time: [constituent.symbol for constituent in constituents]  # Timestamps are midnight Tuesday-Saturday
+    for (_, time), constituents in universe_history.items()
+}
+
+# Get price history for all the assets in the universe.
+symbols = list(set().union(*symbols_by_date.values()))
+start_buffer = timedelta(40) # Add buffers to warm-up factors and labels
+end_buffer = timedelta(5)
+history = qb.history(symbols, train_start-start_buffer, validation_end+end_buffer, Resolution.DAILY)
+
+# Calculate the feature and labels.
+def add_features_and_label(asset_history):
+    open_ = asset_history["open"]
+    close = asset_history["close"]
+    volume = asset_history["volume"]
+    daily_return = close.pct_change()
+    dataset = pd.DataFrame()
+    # Feature 1: 10-day momentum
+    dataset["momentum_10d"] = close / close.shift(10) - 1
+    # Feature 2: 20-day volatility
+    dataset["volatility_20d"] = daily_return.rolling(window=20).std()
+    # Feature 3: Relative volume
+    dataset["relative_volume"] = volume / volume.rolling(window=20).mean()
+    # Label: return from next open to following open
+    # The rebalancing logic in the algorithm uses market-on-open orders. 
+    # The opening auction is the earliest possible time to trade after 
+    # the factors update at market close.
+    dataset["label"] = open_.shift(-2) / open_.shift(-1) - 1
+    return dataset
+
+dataset = history.groupby(level='symbol').apply(add_features_and_label).droplevel(0)
+
+# Remove rows from the dataset for when the asset wouldn't have been in the universe.
+indices = []
+rows = []
+for universe_dt, symbols in symbols_by_date.items():
+    previous_close_dt = spy.exchange.hours.get_next_market_close(universe_dt - timedelta(1), False)
+    for symbol in symbols:
+        indices.append((universe_dt, symbol))
+        rows.append(dataset.loc[(symbol, previous_close_dt)])
+cleaned_dataset = pd.DataFrame(rows, index=pd.MultiIndex.from_tuples(indices, names=['time', 'symbol']))
+
+# Split the dataset into train and validation subsets (and drop NaN rows).
+t = cleaned_dataset.index.get_level_values("time")
+train_data = cleaned_dataset[(train_start &lt;= t) & (t &lt; validation_start)].dropna()
+validation_data = cleaned_dataset[(validation_start &lt;= t) & (t &lt;= validation_end)].dropna()
+X_train = train_data.drop('label', axis=1)
+y_train = train_data['label']
+X_val = validation_data.drop('label', axis=1)
+y_val = validation_data['label']
+
+# Train the model.
+model = GradientBoostingRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
+model.fit(X_train, y_train)
+
+# Calculate predictions on the validation set.
+predictions = pd.Series(model.predict(X_val), index=X_val.index)
+
+# Convert the predictions Series into a JSON object.
+df = predictions.rename("prediction").reset_index()
+df['symbol'] = df['symbol'].apply(str)
+df['time'] = df['time'].dt.strftime('%Y-%m-%d')
+predictions_json = [
+    {
+        'date': date,
+        'prediction_by_symbol': group.set_index('symbol')['prediction'].to_dict()
+    }
+    for date, group in df.groupby('time')
+]
+# Save the predictions JSON to the Object Store.
+key = 'research-to-backtest-factors.json'
+qb.object_store.save(key, json.dumps(predictions_json))
+    </pre>
+</div>
