@@ -365,10 +365,194 @@ $dataFrameImages[3] = <<<'HTML'
 </div>
 HTML;
 
-$cSharpDataFrameImages = array(
-    'https://cdn.quantconnect.com/i/tu/alt-data-research-data-c-1.png',
-    'https://cdn.quantconnect.com/i/tu/alt-data-research-data-c-2.png'
-);
+$cSharpDataFrameImages = array();
+
+$cSharpDataFrameImages[0] = <<<'HTML'
+<div class="csharp dataframe-wrapper">
+<table class="dataframe csharp" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Time</th>
+      <th>VIX Open</th>
+      <th>VIX High</th>
+      <th>VIX Low</th>
+      <th>VIX Close</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2/1/2023 12:00:00 AM</td>
+      <td>20.120000</td>
+      <td>20.700000</td>
+      <td>19.130000</td>
+      <td>19.400000</td>
+    </tr>
+    <tr>
+      <td>2/2/2023 12:00:00 AM</td>
+      <td>19.620000</td>
+      <td>20.040000</td>
+      <td>17.700000</td>
+      <td>17.870000</td>
+    </tr>
+    <tr>
+      <td>2/3/2023 12:00:00 AM</td>
+      <td>17.740000</td>
+      <td>19.250000</td>
+      <td>17.060000</td>
+      <td>18.730000</td>
+    </tr>
+    <tr>
+      <td>2/4/2023 12:00:00 AM</td>
+      <td>18.570000</td>
+      <td>19.300000</td>
+      <td>17.930000</td>
+      <td>18.330000</td>
+    </tr>
+    <tr>
+      <td>2/7/2023 12:00:00 AM</td>
+      <td>19.230000</td>
+      <td>19.810000</td>
+      <td>19.210000</td>
+      <td>19.430000</td>
+    </tr>
+    <tr>
+      <td>2/8/2023 12:00:00 AM</td>
+      <td>19.540000</td>
+      <td>19.990000</td>
+      <td>18.430000</td>
+      <td>18.660000</td>
+    </tr>
+    <tr>
+      <td>2/9/2023 12:00:00 AM</td>
+      <td>18.880000</td>
+      <td>20.120000</td>
+      <td>18.550000</td>
+      <td>19.630000</td>
+    </tr>
+    <tr>
+      <td>2/10/2023 12:00:00 AM</td>
+      <td>19.240000</td>
+      <td>21.080000</td>
+      <td>19.020000</td>
+      <td>20.710000</td>
+    </tr>
+    <tr>
+      <td>2/11/2023 12:00:00 AM</td>
+      <td>20.740000</td>
+      <td>21.940000</td>
+      <td>20.440000</td>
+      <td>20.530000</td>
+    </tr>
+    <tr>
+      <td>2/14/2023 12:00:00 AM</td>
+      <td>21.660000</td>
+      <td>21.690000</td>
+      <td>20.330000</td>
+      <td>20.340000</td>
+    </tr>
+    <tr>
+      <td>2/15/2023 12:00:00 AM</td>
+      <td>20.720000</td>
+      <td>20.750000</td>
+      <td>18.480000</td>
+      <td>18.910000</td>
+    </tr>
+    <tr>
+      <td>2/16/2023 12:00:00 AM</td>
+      <td>19.370000</td>
+      <td>19.410000</td>
+      <td>18.110000</td>
+      <td>18.230000</td>
+    </tr>
+    <tr>
+      <td>2/17/2023 12:00:00 AM</td>
+      <td>18.260000</td>
+      <td>20.270000</td>
+      <td>18.110000</td>
+      <td>20.170000</td>
+    </tr>
+    <tr>
+      <td>2/18/2023 12:00:00 AM</td>
+      <td>20.940000</td>
+      <td>21.300000</td>
+      <td>19.820000</td>
+      <td>20.020000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+HTML;
+
+$cSharpDataFrameImages[1] = <<<'HTML'
+<div class="csharp dataframe-wrapper">
+<table class="dataframe csharp" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th><i>index</i></th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>19.400000</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>17.870000</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>18.730000</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>18.330000</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>19.430000</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>18.660000</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>19.630000</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>20.710000</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>20.530000</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>20.340000</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>18.910000</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>18.230000</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>20.170000</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>20.020000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+HTML;
 $dataFrameColumnName = 'close';
 $columnNameEnglish = 'close';
 $supportsTrades = false;
