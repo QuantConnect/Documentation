@@ -61,8 +61,26 @@ quote_bars = <?=$pyVar?>.history[QuoteBar](btc_symbol, 5)
 trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, 5)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, 5)
 df = <?=$pyVar?>.history(btc_symbol, 5)   # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-1.png' alt="Historical minute data dataframe of BTCUSD">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-07-09 04:01:00</th><td>21596.65</td><td>21607.03</td><td>21591.50</td><td>21602.53</td><td>0.229349</td><td>21593.66</td><td>21604.13</td><td>21590.42</td><td>21600.24</td><td>0.180000</td><td>21596.65</td><td>21605.56</td><td>21591.51</td><td>21599.96</td><td>2.299479</td></tr>
+    <tr><th></th><th>2022-07-09 04:02:00</th><td>21611.12</td><td>21611.13</td><td>21596.58</td><td>21596.65</td><td>0.460583</td><td>21611.11</td><td>21611.12</td><td>21593.66</td><td>21593.66</td><td>0.000217</td><td>21611.12</td><td>21611.12</td><td>21596.28</td><td>21596.58</td><td>4.046283</td></tr>
+    <tr><th></th><th>2022-07-09 04:03:00</th><td>21619.75</td><td>21624.05</td><td>21606.98</td><td>21611.12</td><td>0.001000</td><td>21619.74</td><td>21621.81</td><td>21605.30</td><td>21611.11</td><td>0.000368</td><td>21619.75</td><td>21621.81</td><td>21605.61</td><td>21611.12</td><td>6.201696</td></tr>
+    <tr><th></th><th>2022-07-09 04:04:00</th><td>21612.18</td><td>21623.30</td><td>21602.54</td><td>21619.75</td><td>0.021005</td><td>21610.67</td><td>21620.54</td><td>21602.36</td><td>21619.74</td><td>0.050000</td><td>21610.47</td><td>21620.54</td><td>21602.87</td><td>21619.74</td><td>8.323808</td></tr>
+    <tr><th></th><th>2022-07-09 04:05:00</th><td>21608.68</td><td>21613.22</td><td>21602.01</td><td>21612.18</td><td>0.002000</td><td>21608.67</td><td>21612.04</td><td>21598.37</td><td>21610.67</td><td>0.050000</td><td>21606.92</td><td>21613.05</td><td>21598.43</td><td>21613.05</td><td>2.890605</td></tr>
+  </tbody>
+</table>
+</div>
 <pre class='csharp'><b>// EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
 var vixSymbol = <?=$cVar?>AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
 var cboeData = <?=$cVar?>History&lt;CBOE&gt;(vixSymbol, 5);
@@ -79,8 +97,26 @@ quote_bars = <?=$pyVar?>.history[QuoteBar](btc_symbol, 5, Resolution.MINUTE)
 trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, 5, Resolution.MINUTE)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, 5, Resolution.MINUTE)
 df = <?=$pyVar?>.history(btc_symbol, 5, Resolution.MINUTE)  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-1.png' alt="Historical minute data dataframe of BTCUSD">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-07-09 04:01:00</th><td>21596.65</td><td>21607.03</td><td>21591.50</td><td>21602.53</td><td>0.229349</td><td>21593.66</td><td>21604.13</td><td>21590.42</td><td>21600.24</td><td>0.180000</td><td>21596.65</td><td>21605.56</td><td>21591.51</td><td>21599.96</td><td>2.299479</td></tr>
+    <tr><th></th><th>2022-07-09 04:02:00</th><td>21611.12</td><td>21611.13</td><td>21596.58</td><td>21596.65</td><td>0.460583</td><td>21611.11</td><td>21611.12</td><td>21593.66</td><td>21593.66</td><td>0.000217</td><td>21611.12</td><td>21611.12</td><td>21596.28</td><td>21596.58</td><td>4.046283</td></tr>
+    <tr><th></th><th>2022-07-09 04:03:00</th><td>21619.75</td><td>21624.05</td><td>21606.98</td><td>21611.12</td><td>0.001000</td><td>21619.74</td><td>21621.81</td><td>21605.30</td><td>21611.11</td><td>0.000368</td><td>21619.75</td><td>21621.81</td><td>21605.61</td><td>21611.12</td><td>6.201696</td></tr>
+    <tr><th></th><th>2022-07-09 04:04:00</th><td>21612.18</td><td>21623.30</td><td>21602.54</td><td>21619.75</td><td>0.021005</td><td>21610.67</td><td>21620.54</td><td>21602.36</td><td>21619.74</td><td>0.050000</td><td>21610.47</td><td>21620.54</td><td>21602.87</td><td>21619.74</td><td>8.323808</td></tr>
+    <tr><th></th><th>2022-07-09 04:05:00</th><td>21608.68</td><td>21613.22</td><td>21602.01</td><td>21612.18</td><td>0.002000</td><td>21608.67</td><td>21612.04</td><td>21598.37</td><td>21610.67</td><td>0.050000</td><td>21606.92</td><td>21613.05</td><td>21598.43</td><td>21613.05</td><td>2.890605</td></tr>
+  </tbody>
+</table>
+</div>
 <pre class='csharp'><b>// EXAMPLE 2: Requesting By Bar Count: 5 bars with a specific resolution:</b>
 var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(btcSymbol, 5, Resolution.Daily);
 var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(btcSymbol, 5, Resolution.Minute);
@@ -98,8 +134,26 @@ quote_bars = <?=$pyVar?>.history[QuoteBar](btc_symbol, timedelta(days=3))
 trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, timedelta(days=3))
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, timedelta(days=3))
 df = <?=$pyVar?>.history(btc_symbol, timedelta(days=3))  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-2.png' alt="Historical minute data dataframe of BTCUSD">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-07-08 04:01:00</th><td>22141.16</td><td>22153.87</td><td>22116.38</td><td>22123.94</td><td>0.400000</td><td>22137.01</td><td>22153.86</td><td>22113.42</td><td>22123.93</td><td>0.136000</td><td>22144.89</td><td>22153.87</td><td>22116.38</td><td>22125.99</td><td>30.040683</td></tr>
+    <tr><th></th><th>2022-07-08 04:02:00</th><td>22144.58</td><td>22165.07</td><td>22135.77</td><td>22141.16</td><td>0.057960</td><td>22144.57</td><td>22145.74</td><td>22132.86</td><td>22137.01</td><td>0.907468</td><td>22144.58</td><td>22164.97</td><td>22135.76</td><td>22140.51</td><td>30.609148</td></tr>
+    <tr><th></th><th>2022-07-08 04:03:00</th><td>22121.26</td><td>22146.46</td><td>22118.96</td><td>22144.58</td><td>0.013358</td><td>22121.09</td><td>22146.45</td><td>22118.92</td><td>22144.57</td><td>0.001288</td><td>22121.78</td><td>22146.45</td><td>22118.96</td><td>22144.57</td><td>31.833847</td></tr>
+    <tr><th></th><th>2022-07-08 04:04:00</th><td>22114.21</td><td>22121.26</td><td>22097.83</td><td>22121.26</td><td>0.002549</td><td>22114.20</td><td>22121.16</td><td>22096.63</td><td>22121.09</td><td>0.030212</td><td>22114.21</td><td>22121.18</td><td>22097.52</td><td>22121.09</td><td>10.173673</td></tr>
+    <tr><th></th><th>2022-07-08 04:05:00</th><td>22108.03</td><td>22115.72</td><td>22097.83</td><td>22114.21</td><td>1.276832</td><td>22108.02</td><td>22114.31</td><td>22097.82</td><td>22114.20</td><td>0.000200</td><td>22108.02</td><td>22114.98</td><td>22097.82</td><td>22114.98</td><td>7.675039</td></tr>
+  </tbody>
+</table>
+</div>
 
 <pre class='csharp'><b>// EXAMPLE 3: Requesting By a Trailing Period: 3 days of data at the security resolution:</b>
 var ethSymbol = <?=$cVar?>AddCrypto("ETHUSD", Resolution.Tick).Symbol;
@@ -121,8 +175,27 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, timedelta(days=3), Res
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, timedelta(days=3), Resolution.MINUTE)
 ticks_df = <?=$pyVar?>.history(eth_symbol, timedelta(days=3), Resolution.TICK)
 df = <?=$pyVar?>.history(btc_symbol, timedelta(days=3), Resolution.HOUR)  # Includes trade and quote data
-<img class='img-thumbnail img-responsive' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-3.png' alt="Historical hourly data dataframe of BTCUSD">
-# Important Note: Period history requests are relative to "now" <?=$envName?> time.</pre>
+</pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-07-08 05:00:00</th><td>21974.81</td><td>22238.28</td><td>21954.82</td><td>22123.94</td><td>0.024746</td><td>21972.03</td><td>22233.55</td><td>21951.59</td><td>22123.93</td><td>0.000829</td><td>21974.74</td><td>22235.11</td><td>21951.60</td><td>22125.99</td><td>739.867210</td></tr>
+    <tr><th></th><th>2022-07-08 06:00:00</th><td>21836.71</td><td>22058.00</td><td>21744.01</td><td>21974.81</td><td>0.001000</td><td>21836.50</td><td>22057.99</td><td>21744.00</td><td>21972.03</td><td>0.042814</td><td>21836.45</td><td>22058.00</td><td>21744.00</td><td>21972.10</td><td>661.371392</td></tr>
+    <tr><th></th><th>2022-07-08 07:00:00</th><td>21821.14</td><td>21868.66</td><td>21754.91</td><td>21836.71</td><td>0.009425</td><td>21819.25</td><td>21866.78</td><td>21752.74</td><td>21836.50</td><td>0.008751</td><td>21821.17</td><td>21868.41</td><td>21752.78</td><td>21836.63</td><td>501.845020</td></tr>
+    <tr><th></th><th>2022-07-08 08:00:00</th><td>21787.12</td><td>21849.87</td><td>21713.45</td><td>21821.14</td><td>0.001000</td><td>21786.73</td><td>21848.39</td><td>21709.80</td><td>21819.25</td><td>0.001000</td><td>21787.95</td><td>21849.87</td><td>21709.80</td><td>21821.47</td><td>566.432573</td></tr>
+    <tr><th></th><th>2022-07-08 09:00:00</th><td>21425.18</td><td>21812.07</td><td>21415.14</td><td>21787.12</td><td>0.135118</td><td>21423.23</td><td>21810.77</td><td>21415.13</td><td>21786.73</td><td>0.000078</td><td>21425.90</td><td>21810.77</td><td>21415.14</td><td>21786.73</td><td>583.159373</td></tr>
+  </tbody>
+</table>
+</div>
+<pre class="python"># Important Note: Period history requests are relative to "now" <?=$envName?> time.</pre>
 
 
 <pre class='csharp'><b>// EXAMPLE 4: Requesting By a Trailing Period: 3 days of data with a specific resolution:</b>
@@ -145,8 +218,26 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, start_time, end_time)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, start_time, end_time)
 ticks_df = <?=$pyVar?>.history(Tick, eth_symbol, start_time, end_time)
 df = <?=$pyVar?>.history(btc_symbol, start_time, end_time)  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg' alt="Historical minute data dataframe of BTCUSD">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-01-01 05:01:00</th><td>46724.00</td><td>46724.00</td><td>46682.98</td><td>46698.99</td><td>0.490830</td><td>46723.99</td><td>46723.99</td><td>46678.61</td><td>46696.14</td><td>0.002460</td><td>46724.00</td><td>46724.00</td><td>46678.61</td><td>46696.45</td><td>12.898891</td></tr>
+    <tr><th></th><th>2022-01-01 05:02:00</th><td>46719.51</td><td>46742.76</td><td>46709.30</td><td>46724.00</td><td>0.000977</td><td>46719.50</td><td>46736.09</td><td>46708.37</td><td>46723.99</td><td>0.001225</td><td>46719.51</td><td>46742.76</td><td>46710.29</td><td>46723.99</td><td>19.193879</td></tr>
+    <tr><th></th><th>2022-01-01 05:03:00</th><td>46713.32</td><td>46722.14</td><td>46697.04</td><td>46719.51</td><td>0.223169</td><td>46709.32</td><td>46719.50</td><td>46697.00</td><td>46719.50</td><td>0.043362</td><td>46713.31</td><td>46719.50</td><td>46697.04</td><td>46719.50</td><td>3.677070</td></tr>
+    <tr><th></th><th>2022-01-01 05:04:00</th><td>46694.78</td><td>46715.84</td><td>46690.21</td><td>46713.32</td><td>0.065120</td><td>46694.77</td><td>46715.30</td><td>46688.76</td><td>46709.32</td><td>0.021412</td><td>46694.78</td><td>46715.84</td><td>46690.20</td><td>46709.33</td><td>3.759909</td></tr>
+    <tr><th></th><th>2022-01-01 05:05:00</th><td>46693.46</td><td>46706.83</td><td>46690.03</td><td>46694.78</td><td>0.070000</td><td>46693.45</td><td>46701.72</td><td>46690.00</td><td>46694.77</td><td>0.008974</td><td>46693.37</td><td>46703.07</td><td>46690.00</td><td>46694.78</td><td>5.703675</td></tr>
+  </tbody>
+</table>
+</div>
 
 <pre class='csharp'><b>// EXAMPLE 5: Requesting By a Defined Period: 3 specific days of data at the security resolution:</b>
 var startTime = new DateTime(2022, 1, 1);
@@ -168,8 +259,26 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, start_time, end_time, 
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, start_time, end_time, Resolution.MINUTE)
 ticks_df = <?=$pyVar?>.history(eth_symbol, start_time, end_time, Resolution.TICK)
 df = <?=$pyVar?>.history(btc_symbol, start_time, end_time, Resolution.HOUR)  # Includes trade and quote data
-<img class='img-thumbnail img-responsive' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period.jpg' alt="Historical hourly data dataframe of BTCUSD">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-01-01 06:00:00</th><td>47188.00</td><td>47548.53</td><td>46669.76</td><td>46698.99</td><td>0.070150</td><td>47187.99</td><td>47546.38</td><td>46667.81</td><td>46696.14</td><td>0.254247</td><td>47188.00</td><td>47548.53</td><td>46668.64</td><td>46696.45</td><td>642.638402</td></tr>
+    <tr><th></th><th>2022-01-01 07:00:00</th><td>46982.83</td><td>47329.31</td><td>46944.32</td><td>47188.00</td><td>0.017207</td><td>46977.97</td><td>47329.30</td><td>46944.31</td><td>47187.99</td><td>0.026489</td><td>46976.98</td><td>47327.89</td><td>46944.81</td><td>47188.00</td><td>380.560480</td></tr>
+    <tr><th></th><th>2022-01-01 08:00:00</th><td>47200.57</td><td>47251.92</td><td>46905.43</td><td>46982.83</td><td>0.100000</td><td>47200.01</td><td>47251.90</td><td>46903.50</td><td>46977.97</td><td>0.000200</td><td>47200.01</td><td>47251.76</td><td>46903.50</td><td>46982.82</td><td>298.901283</td></tr>
+    <tr><th></th><th>2022-01-01 09:00:00</th><td>47119.93</td><td>47349.54</td><td>47087.17</td><td>47200.57</td><td>0.101920</td><td>47119.92</td><td>47347.53</td><td>47087.16</td><td>47200.01</td><td>0.000016</td><td>47119.93</td><td>47347.54</td><td>47087.17</td><td>47200.14</td><td>215.983246</td></tr>
+    <tr><th></th><th>2022-01-01 10:00:00</th><td>47139.67</td><td>47213.34</td><td>46937.35</td><td>47119.93</td><td>0.012300</td><td>47139.66</td><td>47210.63</td><td>46937.30</td><td>47119.92</td><td>0.043536</td><td>47139.67</td><td>47212.89</td><td>46938.37</td><td>47124.07</td><td>137.015047</td></tr>
+  </tbody>
+</table>
+</div>
 
 
 <pre class='csharp'><b>// EXAMPLE 6: Requesting By a Defined Period: 3 days of data with a specific resolution:</b>
@@ -229,8 +338,25 @@ quote_bars_list = <?=$pyVar?>.history[QuoteBar]([ibm, aapl], 2)
 trade_bars_df = <?=$pyVar?>.history(TradeBar, [ibm, aapl], 2)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, [ibm, aapl], 2)
 df = <?=$pyVar?>.history([ibm, aapl], 2)  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-4.png' alt="Historical minute data dataframe of IBM &amp; AAPL">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>IBM R735QTJ8XC9X</th><th>2022-07-08 15:59:00</th><td>140.50</td><td>140.63</td><td>140.45</td><td>140.62</td><td>500.0</td><td>140.48</td><td>140.62</td><td>140.44</td><td>140.61</td><td>100.0</td><td>140.49</td><td>140.61</td><td>140.45</td><td>140.61</td><td>39645.0</td></tr>
+    <tr><th></th><th>2022-07-08 16:00:00</th><td>140.50</td><td>140.51</td><td>140.39</td><td>140.50</td><td>2200.0</td><td>140.48</td><td>140.50</td><td>140.35</td><td>140.48</td><td>500.0</td><td>140.47</td><td>140.50</td><td>140.35</td><td>140.48</td><td>542791.0</td></tr>
+    <tr><th>AAPL R735QTJ8XC9X</th><th>2022-07-08 15:59:00</th><td>147.03</td><td>147.08</td><td>146.95</td><td>147.07</td><td>700.0</td><td>147.02</td><td>147.07</td><td>146.94</td><td>147.06</td><td>1300.0</td><td>147.02</td><td>147.08</td><td>146.94</td><td>147.06</td><td>500958.0</td></tr>
+    <tr><th></th><th>2022-07-08 16:00:00</th><td>147.04</td><td>147.05</td><td>146.86</td><td>147.03</td><td>7100.0</td><td>147.03</td><td>147.03</td><td>146.84</td><td>147.02</td><td>300.0</td><td>147.04</td><td>147.06</td><td>146.84</td><td>147.02</td><td>4307608.0</td></tr>
+  </tbody>
+</table>
+</div>
 
 <pre class='csharp'><b>// EXAMPLE 7: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
 var vixSymbol = <?=$cVar?>AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
@@ -250,8 +376,25 @@ quote_bars_list = <?=$pyVar?>.history[QuoteBar]([ibm, aapl], 5, Resolution.MINUT
 trade_bars_df = <?=$pyVar?>.history(TradeBar, [ibm, aapl], 5, Resolution.DAILY)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, [ibm, aapl], 5, Resolution.MINUTE)
 df = <?=$pyVar?>.history([ibm, aapl], 5, Resolution.DAILY)  # Includes trade data only. No quote for daily equity data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-5.png' alt="Historical daily data dataframe of IBM &amp; AAPL">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>IBM R735QTJ8XC9X</th><th>2022-07-08</th><td>140.83</td><td>141.32</td><td>138.83</td><td>139.07</td><td>3834112.0</td></tr>
+    <tr><th></th><th>2022-07-09</th><td>140.47</td><td>141.32</td><td>139.82</td><td>140.76</td><td>2763286.0</td></tr>
+    <tr><th>AAPL R735QTJ8XC9X</th><th>2022-07-08</th><td>146.35</td><td>146.55</td><td>143.24</td><td>143.36</td><td>62554270.0</td></tr>
+    <tr><th></th><th>2022-07-09</th><td>147.04</td><td>147.55</td><td>145.00</td><td>145.13</td><td>61610642.0</td></tr>
+  </tbody>
+</table>
+</div>
 
 <pre class='csharp'><b>// EXAMPLE 8: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
 var tradeBarsList = <?=$cVar?>History&lt;TradeBar&gt;(new[] { ibm, aapl }, 5, Resolution.Minute);
@@ -266,9 +409,27 @@ trade_bars = <?=$pyVar?>.history[TradeBar]([btc_symbol], timedelta(days=3))
 quote_bars = <?=$pyVar?>.history[QuoteBar]([btc_symbol], timedelta(days=3))
 trade_bars_df = <?=$pyVar?>.history(TradeBar, [btc_symbol], timedelta(days=3))
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, [btc_symbol], timedelta(days=3))
-df = <?=$pyVar?>.history([btc_symbol], timedelta(days=3))  # Includes trade and quote data 
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-6.png' alt="Historical minute data dataframe of BTCUSD">
+df = <?=$pyVar?>.history([btc_symbol], timedelta(days=3))  # Includes trade and quote data
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-07-08 04:01:00</th><td>22141.16</td><td>22153.87</td><td>22116.38</td><td>22123.94</td><td>0.400000</td><td>22137.01</td><td>22153.86</td><td>22113.42</td><td>22123.93</td><td>0.136000</td><td>22144.89</td><td>22153.87</td><td>22116.38</td><td>22125.99</td><td>30.040683</td></tr>
+    <tr><th></th><th>2022-07-08 04:02:00</th><td>22144.58</td><td>22165.07</td><td>22135.77</td><td>22141.16</td><td>0.057960</td><td>22144.57</td><td>22145.74</td><td>22132.86</td><td>22137.01</td><td>0.907468</td><td>22144.58</td><td>22164.97</td><td>22135.76</td><td>22140.51</td><td>30.609148</td></tr>
+    <tr><th></th><th>2022-07-08 04:03:00</th><td>22121.26</td><td>22146.46</td><td>22118.96</td><td>22144.58</td><td>0.013358</td><td>22121.09</td><td>22146.45</td><td>22118.92</td><td>22144.57</td><td>0.001288</td><td>22121.78</td><td>22146.45</td><td>22118.96</td><td>22144.57</td><td>31.833847</td></tr>
+    <tr><th></th><th>2022-07-08 04:04:00</th><td>22114.21</td><td>22121.26</td><td>22097.83</td><td>22121.26</td><td>0.002549</td><td>22114.20</td><td>22121.16</td><td>22096.63</td><td>22121.09</td><td>0.030212</td><td>22114.21</td><td>22121.18</td><td>22097.52</td><td>22121.09</td><td>10.173673</td></tr>
+    <tr><th></th><th>2022-07-08 04:05:00</th><td>22108.03</td><td>22115.72</td><td>22097.83</td><td>22114.21</td><td>1.276832</td><td>22108.02</td><td>22114.31</td><td>22097.82</td><td>22114.20</td><td>0.000200</td><td>22108.02</td><td>22114.98</td><td>22097.82</td><td>22114.98</td><td>7.675039</td></tr>
+  </tbody>
+</table>
+</div>
 <pre class='csharp'><b>// EXAMPLE 9: Requesting By Trailing Period: 3 days of data at the security resolution:</b>
 var ticks = <?=$cVar?>History&lt;Tick&gt;(new[] {ethSymbol}, TimeSpan.FromDays(3));
 
@@ -284,8 +445,26 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, start_time, end_time)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, start_time, end_time)
 ticks_df = <?=$pyVar?>.history(Tick, eth_symbol, start_time, end_time)
 df = <?=$pyVar?>.history([btc_symbol], start_time, end_time)  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg' alt="Historical minute data dataframe of BTCUSD">
 </pre>
+<div class="python dataframe-wrapper">
+<table class="dataframe python" border="0">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th><th></th><th>askclose</th><th>askhigh</th><th>asklow</th><th>askopen</th><th>asksize</th><th>bidclose</th><th>bidhigh</th><th>bidlow</th><th>bidopen</th><th>bidsize</th><th>close</th><th>high</th><th>low</th><th>open</th><th>volume</th>
+    </tr>
+    <tr>
+      <th>symbol</th><th>time</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>BTCUSD XJ</th><th>2022-01-01 05:01:00</th><td>46724.00</td><td>46724.00</td><td>46682.98</td><td>46698.99</td><td>0.490830</td><td>46723.99</td><td>46723.99</td><td>46678.61</td><td>46696.14</td><td>0.002460</td><td>46724.00</td><td>46724.00</td><td>46678.61</td><td>46696.45</td><td>12.898891</td></tr>
+    <tr><th></th><th>2022-01-01 05:02:00</th><td>46719.51</td><td>46742.76</td><td>46709.30</td><td>46724.00</td><td>0.000977</td><td>46719.50</td><td>46736.09</td><td>46708.37</td><td>46723.99</td><td>0.001225</td><td>46719.51</td><td>46742.76</td><td>46710.29</td><td>46723.99</td><td>19.193879</td></tr>
+    <tr><th></th><th>2022-01-01 05:03:00</th><td>46713.32</td><td>46722.14</td><td>46697.04</td><td>46719.51</td><td>0.223169</td><td>46709.32</td><td>46719.50</td><td>46697.00</td><td>46719.50</td><td>0.043362</td><td>46713.31</td><td>46719.50</td><td>46697.04</td><td>46719.50</td><td>3.677070</td></tr>
+    <tr><th></th><th>2022-01-01 05:04:00</th><td>46694.78</td><td>46715.84</td><td>46690.21</td><td>46713.32</td><td>0.065120</td><td>46694.77</td><td>46715.30</td><td>46688.76</td><td>46709.32</td><td>0.021412</td><td>46694.78</td><td>46715.84</td><td>46690.20</td><td>46709.33</td><td>3.759909</td></tr>
+    <tr><th></th><th>2022-01-01 05:05:00</th><td>46693.46</td><td>46706.83</td><td>46690.03</td><td>46694.78</td><td>0.070000</td><td>46693.45</td><td>46701.72</td><td>46690.00</td><td>46694.77</td><td>0.008974</td><td>46693.37</td><td>46703.07</td><td>46690.00</td><td>46694.78</td><td>5.703675</td></tr>
+  </tbody>
+</table>
+</div>
 <pre class='csharp'><b>// EXAMPLE 10: Requesting By Defined Period: 3 days of data at the security resolution:</b>
 var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(new[] {btcSymbol}, startTime, endTime);
 var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(new[] {btcSymbol}, startTime, endTime);
@@ -311,7 +490,11 @@ var tradeBars2 = <?=$cVar?>History(new[] {btcSymbol}, startTime, endTime);</pre>
 slices = <?=$pyVar?>.history(5)
 for s in slices:
     <?=$pyPrintMethod?>(str(s.time) + " AAPL:" + str(s.bars["AAPL"].close) + " IBM:" + str(s.bars["IBM"].close))
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-7.png' alt="Historical daily close price output of IBM &amp; AAPL">
+2022-07-02 00:00:00 AAPL:138.93 IBM:141.12
+2022-07-06 00:00:00 AAPL:141.56 IBM:137.62
+2022-07-07 00:00:00 AAPL:142.92 IBM:138.08
+2022-07-08 00:00:00 AAPL:146.35 IBM:140.83
+2022-07-09 00:00:00 AAPL:147.04 IBM:140.47
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 11: Requesting 5 bars for all securities at their respective resolution:</b>
@@ -327,7 +510,11 @@ foreach (var s in slices) {
     var ibmClose = s.Bars["IBM"].Close;
     <?=$cPrintMethod?>($"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}");
 }
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-9.png' alt="Historical daily close price output of IBM &amp; AAPL">
+7/2/2022 12:00:00 AM AAPL: 138.9300 IBM: 141.1200
+7/6/2022 12:00:00 AM AAPL: 141.5600 IBM: 137.6200
+7/7/2022 12:00:00 AM AAPL: 142.9200 IBM: 138.0800
+7/8/2022 12:00:00 AM AAPL: 146.3500 IBM: 140.8300
+7/9/2022 12:00:00 AM AAPL: 147.0400 IBM: 140.4700
 </pre>
 </div>
 
@@ -337,7 +524,11 @@ foreach (var s in slices) {
 slices = <?=$pyVar?>.history(timedelta(minutes=5), Resolution.MINUTE)
 for s in slices:
     <?=$pyPrintMethod?>(str(s.time) + " AAPL:" + str(s.bars["AAPL"].close) + " IBM:" + str(s.bars["IBM"].close))
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-8.png' alt="Historical minute close price output of IBM &amp; AAPL">
+2022-07-08 15:56:00 AAPL:147.2 IBM:140.71
+2022-07-08 15:57:00 AAPL:147.125 IBM:140.67
+2022-07-08 15:58:00 AAPL:147.065 IBM:140.61
+2022-07-08 15:59:00 AAPL:147.02 IBM:140.49
+2022-07-08 16:00:00 AAPL:147.04 IBM:140.47
 # timedelta history requests are relative to "now" in <?=$envName?> Time. If you request this data at 16:05, it returns an empty array because the market is closed.</pre>
     
 <pre class='csharp'><b>// EXAMPLE 12: Requesting 24 hours of hourly data for all securities:</b>
@@ -348,7 +539,13 @@ foreach (var s in slices) {
     var ibmClose = s.Bars["IBM"].Close;
     <?=$cPrintMethod?>($"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}");
 }
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-10.png' alt="Historical hourly close price output of IBM &amp; AAPL">
+7/8/2022 10:00:00 AM AAPL: 145.7600 IBM: 140.6300
+7/8/2022 11:00:00 AM AAPL: 146.8600 IBM: 141.0400
+7/8/2022 12:00:00 PM AAPL: 147.2500 IBM: 140.5700
+7/8/2022 1:00:00 PM AAPL: 145.7900 IBM: 139.8500
+7/8/2022 2:00:00 PM AAPL: 146.8500 IBM: 140.3300
+7/8/2022 3:00:00 PM AAPL: 147.4550 IBM: 140.8400
+7/8/2022 4:00:00 PM AAPL: 147.0400 IBM: 140.4700
 // TimeSpan history requests are relative to "now" in <?=$envName?> Time.</pre>
 
 </div>   
