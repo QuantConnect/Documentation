@@ -1,0 +1,30 @@
+<p>
+    The algorithm streams in the custom universe data, selects assets based on the precomputed predictions, and rebalances into an equal-weighted portfolio each day.
+</p>
+
+<div class="section-example-container">
+    <pre class="python">class PredictionUniverseAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2026, 2, 10) 
+        self.set_cash(100_000)
+        self.settings.seed_initial_prices = True
+        self._return_prediction_threshold = 0
+        # Add the universe of custom data.
+        self.universe_settings.resolution = Resolution.DAILY
+        self._universe = self.add_universe(PredictionUniverse, self._select_assets)
+        # Add a Scheduled Event to rebalance the portfolio every day.
+        self.schedule.on(self.date_rules.every_day('SPY'), self.time_rules.at(8, 0), self._rebalance)
+
+    def _select_assets(self, data):
+        # Select the assets with a return prediction above some threshold.
+        return [stock.symbol for stock in data if stock.value > self._return_prediction_threshold]
+    
+    def _rebalance(self):
+        # Form an equal-weighted portfolio with the assets in the universe.
+        symbols = self._universe.selected
+        if not symbols:
+            return
+        targets = [PortfolioTarget(symbol, 1/len(symbols)) for symbol in symbols]
+        self.set_holdings(targets, True)</pre>
+</div>

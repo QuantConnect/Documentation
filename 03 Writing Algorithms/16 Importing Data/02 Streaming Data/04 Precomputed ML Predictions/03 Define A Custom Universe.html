@@ -1,0 +1,33 @@
+<p>
+    In the <span class="public-file-name">main.py</span> file of your project, define a <a href="/docs/v2/writing-algorithms/importing-data/key-concepts#03-Stream-Custom-Data">custom data type</a> that reads the JSON predictions from the Object Store.
+</p>
+
+<div class="section-example-container skip-test">
+    <pre class="python">class PredictionUniverse(PythonData):
+
+    def get_source(self, config, date, is_live_mode):
+        # Read from the JSON file we saved in the Object Store.
+        return SubscriptionDataSource(
+            'research-to-backtest-factors.json', 
+            SubscriptionTransportMedium.OBJECT_STORE, 
+            FileFormat.UNFOLDING_COLLECTION
+        )
+
+    def reader(self, config, line, date, is_live):
+        objects = []
+        # Iterate through each day.
+        for obj in json.loads(line):
+            end_time = datetime.strptime(obj["date"], "%Y-%m-%d")
+            # Iterate through each stock on this day.
+            for symbol, prediction in obj['prediction_by_symbol'].items():
+                stock = PredictionUniverse()
+                stock.symbol = Symbol(SecurityIdentifier.parse(symbol), "")
+                stock.end_time = end_time
+                stock.value = prediction
+                objects.append(stock)
+        # The BaseDataCollection contains multiple PredictionUniverse objects
+        # for each day. Set its `time` to match the `end_time` of one of the objects.
+        # We pack the collection and timestamp it with the last timestamp (-1) to signal 
+        # that the collection has data prior to (or including) that timestamp.
+        return BaseDataCollection(objects[-1].end_time, config.symbol, objects)</pre>
+</div>

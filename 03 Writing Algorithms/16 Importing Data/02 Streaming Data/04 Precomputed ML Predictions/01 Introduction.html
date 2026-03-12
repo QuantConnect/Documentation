@@ -1,0 +1,19 @@
+<p>
+    QuantConnect's point-in-time backtesting engine is one of its greatest strengths: in <a href='/docs/v2/writing-algorithms/machine-learning/key-concepts'>machine-learning strategies</a>, it forces every feature and prediction to be calculated using only the data available on that exact historical day. 
+    This delivers unmatched realism and eliminates look-ahead bias. 
+    At the same time, there are clear trade-offs. 
+    The same rigorous point-in-time discipline means that every small change to portfolio rules normally triggers a full rerun of the feature-engineering and model-inference pipeline inside the backtest engine.
+</p>
+
+<p>
+    To avoid re-running the entire feature-engineering and model-inference pipeline for every small change, you can precompute machine learning predictions in the <a href='/docs/v2/research-environment/key-concepts/getting-started'>Research Environment</a> and then stream them into an algorithm as a <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-universes/key-concepts'>custom universe dataset</a>.
+    This two-file pattern separates expensive feature engineering and model training from the algorithm, which becomes a pure portfolio engine.
+    It provides the following benefits:
+</p>
+<ul>
+    <li><b>Speed</b> - Backtests run much faster because they skip feature calculation and model inference.</li>
+    <li><b>Iteration speed</b> - Test many thresholds or risk overlays without rerunning the ML pipeline.</li>
+    <li><b>Reproducibility</b> - Predictions are frozen in the Object Store, so there is no drift between backtest runs.</li>
+</ul>
+
+<p>This page explains how to implement a project for precomputing machine learning predictions in the Research Environment and streaming them into a backtest as a custom universe dataset.</p>
