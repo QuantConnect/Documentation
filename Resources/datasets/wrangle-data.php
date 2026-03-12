@@ -75,25 +75,25 @@
 <? } else { ?>
 
 <p class='python'>If the <code class="csharp">History</code><code class="python">history</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the <a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers#02-Encoding-Symbols'>encoded <?=$assetClass?> Symbol</a> and the second level is the <code class="csharp">EndTime</code><code class="python">end_time</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
-<img class='python docs-image' src='<?=$dataFrameImages[0]?>' alt='DataFrame of two <?=$pluralAssetClass?>'>
+<?=$dataFrameImages[0]?>
 <p class='python'>To select the historical data of a single <?=$assetClass?>, index the <code>loc</code> property of the <code>DataFrame</code> with the <?=$assetClass?> <code>Symbol</code>.</p>
 <div class='python section-example-container'>
 <pre class='python'>all_history_df.loc[<?=$primarySymbolPy?>]  # or all_history_df.loc['<?=$primaryTicker?>']
 </pre>
 </div>
-<img class='python docs-image' src='<?=$dataFrameImages[1]?>' alt='DataFrame of one <?=$assetClass?>'>
+<?=$dataFrameImages[1]?>
 <p class='python'>To select a column of the <code>DataFrame</code>, index it with the column name.</p>
 <div class='python section-example-container'>
 <pre class='python'>all_history_df.loc[<?=$primarySymbolPy?>]['<?=$dataFrameColumnName?>']
 </pre>
 </div>
-<img class='python docs-image' src='<?=$dataFrameImages[2]?>' alt='Series of <?=$dataFrameColumnName?> values'>
+<?=$dataFrameImages[2]?>
 <p class='python'>If you request historical data for multiple <?=$pluralAssetClass?>, you can transform the <code>DataFrame</code> so that it's a time series of <?=$columnNameEnglish?> values for all of the <?=$pluralAssetClass?>. To transform the <code>DataFrame</code>, select the column you want to display for each <?=$singularAssetClass?> and then call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unstack.html' rel='nofollow' target='_blank'>unstack</a> method.</p>
 <div class='section-example-container python'>
     <pre class='python'>all_history_df['<?=$dataFrameColumnName?>'].unstack(level=0)</pre>
 </div>
 <p class='python'>The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each <?=$singularAssetClass?> and each row contains the <?=$columnNameEnglish?> value.</p>
-<img class='python docs-image' src='<?=$dataFrameImages[3]?>' alt='DataFrame of one <?=$assetClass ?>'>
+<?=$dataFrameImages[3]?>
 
 <? } ?>
 
@@ -121,7 +121,7 @@
   <pre class='python'>all_history_df.loc[spy.value]  # or all_history_df.loc["SPY"]  </pre>
 </div>
 <p class='python'>After the index renaming, the unstacked <code>DataFrame</code> has the following format:</p>
-<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-research-data-5.jpg' alt="Historical data dataframe of selected attribute by symbols">
+<?=$equityTickerDataFrameHtml?>
 <? } ?>
 
 <p class="csharp">The historical data methods don't return DataFrame objects, but you can create one for efficient vectorized data wrangling.</p>
