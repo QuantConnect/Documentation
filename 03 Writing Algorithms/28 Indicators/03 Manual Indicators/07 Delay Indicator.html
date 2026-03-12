@@ -1,0 +1,22 @@
+<p>
+    The <code>Delay</code> indicator delays its input by a specified number of bars. It is mainly used to combine indicators, enabling you to set a delay without using built-in <a href='/docs/v2/writing-algorithms/indicators/rolling-window'>rolling windows</a>. For example, you can create a displaced moving average by applying a <code>Delay</code> to a <code>SimpleMovingAverage</code>.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Create a 20-bar Delay indicator
+private Delay _delay;
+_delay = new Delay(20);
+
+// Create a displaced SMA by combining Delay with SMA
+var sma = new SimpleMovingAverage(10);
+var displacedSma = new Delay(5).Of(sma);</pre>
+    <pre class="python"># Create a 20-bar Delay indicator
+self.delay = Delay(20)
+
+# Create a displaced SMA by combining Delay with SMA
+sma = SimpleMovingAverage(10)
+displaced_sma = IndicatorExtensions.of(Delay(5), sma)</pre>
+</div>
+
+<p>For a full example of using the <code>Delay</code> indicator to create a displaced SMA ribbon strategy, see <a href='/docs/v2/writing-algorithms/indicators/combining-indicators#09-Examples'>Combining Indicators Examples</a>.</p>
+<p>To view the implementation of this indicator, see the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/blob/master/Indicators/Delay.cs">LEAN GitHub repository</a>.</p>
