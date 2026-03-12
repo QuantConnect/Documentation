@@ -62,7 +62,7 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, 5)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, 5)
 df = <?=$pyVar?>.history(btc_symbol, 5)   # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -98,7 +98,7 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, 5, Resolution.MINUTE)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, 5, Resolution.MINUTE)
 df = <?=$pyVar?>.history(btc_symbol, 5, Resolution.MINUTE)  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -135,7 +135,7 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, btc_symbol, timedelta(days=3))
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, timedelta(days=3))
 df = <?=$pyVar?>.history(btc_symbol, timedelta(days=3))  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -176,7 +176,7 @@ quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, timedelta(days=3), Res
 ticks_df = <?=$pyVar?>.history(eth_symbol, timedelta(days=3), Resolution.TICK)
 df = <?=$pyVar?>.history(btc_symbol, timedelta(days=3), Resolution.HOUR)  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -219,7 +219,7 @@ quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, start_time, end_time)
 ticks_df = <?=$pyVar?>.history(Tick, eth_symbol, start_time, end_time)
 df = <?=$pyVar?>.history(btc_symbol, start_time, end_time)  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -260,7 +260,7 @@ quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, start_time, end_time, 
 ticks_df = <?=$pyVar?>.history(eth_symbol, start_time, end_time, Resolution.TICK)
 df = <?=$pyVar?>.history(btc_symbol, start_time, end_time, Resolution.HOUR)  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -339,7 +339,7 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, [ibm, aapl], 2)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, [ibm, aapl], 2)
 df = <?=$pyVar?>.history([ibm, aapl], 2)  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -377,7 +377,7 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, [ibm, aapl], 5, Resolution.DAILY)
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, [ibm, aapl], 5, Resolution.MINUTE)
 df = <?=$pyVar?>.history([ibm, aapl], 5, Resolution.DAILY)  # Includes trade data only. No quote for daily equity data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -411,7 +411,7 @@ trade_bars_df = <?=$pyVar?>.history(TradeBar, [btc_symbol], timedelta(days=3))
 quote_bars_df = <?=$pyVar?>.history(QuoteBar, [btc_symbol], timedelta(days=3))
 df = <?=$pyVar?>.history([btc_symbol], timedelta(days=3))  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
@@ -446,7 +446,7 @@ quote_bars_df = <?=$pyVar?>.history(QuoteBar, btc_symbol, start_time, end_time)
 ticks_df = <?=$pyVar?>.history(Tick, eth_symbol, start_time, end_time)
 df = <?=$pyVar?>.history([btc_symbol], start_time, end_time)  # Includes trade and quote data
 </pre>
-<div class="python dataframe-wrapper">
+<div class="python dataframe-wrapper" style="font-size: 80%; white-space: nowrap">
 <table class="dataframe python" border="0">
   <thead>
     <tr style="text-align: right;">
