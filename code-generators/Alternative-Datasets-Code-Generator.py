@@ -183,7 +183,7 @@ if __name__ == '__main__':
                     if universe_attrs:
                         universe_html += f"""        <tr>
             <td>{name}</td>
-            <td>{"<code>" + universe_attrs[0] + "</code>" if len(universe_attrs) == 1 else "<ul><li>" + "</li><li>".join(universe_attrs) + "</li></ul>"}</td>
+            <td>{"<code>" + universe_attrs[0] + "</code>" if len(universe_attrs) == 1 else "<ul><li><code>" + "</code></li><li><code>".join(universe_attrs) + "</code></li></ul>"}</td>
             <td><a href=\"/docs/v2/writing-algorithms/datasets/{vendor.lower().replace(' ', '-')}/{name.lower().replace(' ', '-')}\">Learn more</a></td>
         </tr>
 """
