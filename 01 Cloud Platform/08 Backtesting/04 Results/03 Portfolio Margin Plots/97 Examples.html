@@ -1,34 +1,150 @@
 <p>The following examples provide insight into portfolio margin calculations and show the functionality of the portfolio margin chart.</p>
 
 <h4>Buying Put Options</h4>
+<p>The following algorithm demonstrates that when you buy a put Option contract and you long the underlying asset, it reduces the margin used by the underlying asset.</p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+# Buy SPY, then buy a put Option to hedge and reduce margin usage.
+class BuyingPutOptionsMarginAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2013, 10, 7)
+        self.set_end_date(2014, 7, 1)
+        self.set_cash(100000)
+        equity = self.add_equity("SPY", Resolution.MINUTE)
+        self._equity_symbol = equity.symbol
+        option = self.add_option("SPY", Resolution.MINUTE)
+        option.set_filter(lambda u: u.strikes(-5, 5).expiration(150, 200))
+        self._put_contract = None
+
+    def on_data(self, data: Slice):
+        # Buy SPY on the first trading day.
+        if not self.portfolio[self._equity_symbol].invested:
+            self.set_holdings(self._equity_symbol, 1)
+            return
+
+        # After a few months, buy a protective put.
+        if self._put_contract is None and self.time &gt; datetime(2014, 1, 1):
+            for chain in data.option_chains.values():
+                puts = [c for c in chain if c.right == OptionRight.PUT]
+                if not puts:
+                    continue
+                contract = sorted(puts, key=lambda c: abs(c.strike - c.underlying_last_price))[0]
+                self.market_order(contract.symbol, 1)
+                self._put_contract = contract.symbol</pre>
+</div>
 <p>
-  <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_54d7492468b8c4b2cb30bfebdd813384.html'>This algorithm</a> demonstrates that when you buy a put Option contract and you long the underlying asset, it reduces the margin used by the underlying asset.
   In the following image, the gray area represents the underlying Equity and the blue area represents the put Option contract.
   The algorithm buys SPY on 10/07/2013, buys the put Option contract on 01/02/2014, and then exercises the contract on 06/21/2014.
 </p>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-buying-put-example.png' class='docs-image' alt='Portfolio margin chart of hedging an SPY position by buying put Options'>
 
 <h4>Buying Options Spreads</h4>
+<p>The following algorithm demonstrates that when you long and short two Option contracts at the same time, they combine together to reduce your margin usage.</p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+class HyperActiveOrangeHippopotamus(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2023, 2, 3)
+        self.set_end_date(2023, 3, 3)
+        self.set_cash(100000)
+        option = self.add_option("GOOG", Resolution.MINUTE)
+        self.symbol = option.symbol
+        option.set_filter(lambda universe: universe.strikes(-10, 10).expiration(30, 45))
+
+        self.itm_call = None
+        self.otm_call = None
+
+    def on_data(self, data: Slice):
+        # Get the OptionChain.
+        chain = data.option_chains.get(self.symbol, None)
+        if not chain: return
+
+        if self.itm_call is None:
+            # Get the furthest expiry date of the contracts.
+            expiry = sorted(chain, key = lambda x: x.expiry, reverse=True)[0].expiry
+            # Select the ITM call with the lowest strike.
+            itm_calls = [c for c in chain if c.expiry == expiry and c.right == OptionRight.CALL and c.strike &lt; chain.underlying.price]
+            if len(itm_calls) == 0: return
+            self.itm_call = sorted(itm_calls, key=lambda x: x.strike)[0]
+            # Sell an ITM call.
+            self.market_order(self.itm_call.symbol, -1)
+
+        if self.otm_call is None and self.time.day &gt; 13:
+            # Select the OTM call with the highest strike.
+            otm_calls = [c for c in chain if c.expiry == self.itm_call.expiry and c.right == OptionRight.CALL and c.strike &gt; chain.underlying.price and c.strike &gt; self.itm_call.strike]
+            if len(otm_calls) == 0: return
+            self.otm_call = sorted(otm_calls, key=lambda x: x.strike)[-1]
+            # Buy an OTM call.
+            self.market_order(self.otm_call.symbol, 1)</pre>
+</div>
 <p>
-  <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_4347badf9f428839293def9193d4995c.html'>This algorithm</a> demonstrates that when you long and short two Option contracts at the same time, they combine together to reduce your margin usage.
   In the following image, the blue area represents a short position in a call Option contract and the gray area represents a long position in a call Option contract.
   The algorithm forms a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bear-call-spread'>bear call spread</a> one leg at a time, shorting an in-the-money contract on 02/03/2023 and then longing an out-of-the-money contract on 02/14/2023.
 </p>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-bear-call-spread-example-1.png' class='docs-image' alt='Portfolio margin chart of stepping into a bear class spread on leg at a time'>
 
 <h4>Buying Futures</h4>
+<p>The following algorithm demonstrates that Futures have a fixed, USD-denominated margin requirement.</p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+class SleepyTanAlligator(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2023, 10, 1)
+        self.set_end_date(2023, 11, 1)
+        self.set_cash(100000)
+        self.future = self.add_future(Futures.Indices.SP_500_E_MINI)
+        self.symbol = self.future.symbol
+        self.future.set_filter(0, 182)
+
+    def on_data(self, data: Slice):
+        if not self.portfolio.invested:
+            for continuous_contract_symbol, chain in data.futures_chains.items():
+                contract = sorted(chain, key=lambda contract: contract.open_interest, reverse=True)[0]
+                self.market_order(contract.symbol, 1)
+
+    def on_end_of_day(self, symbol) -&gt; None:
+        self.plot("Margin", "MarginRemaining", self.portfolio.margin_remaining)
+        self.plot("Margin", "TotalMarginUsed", self.portfolio.total_margin_used)</pre>
+</div>
 <p>
-  <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_dabddd131834fd80f01b9b9934407aa1.html'>This algorithm</a> demonstrates that Futures have a fixed, USD-denominated margin requirement.
   In the following image, the blue area represents the percentage of the available margin that the Futures contract uses.
   The algorithm buys the contract on 10/02/2023 and holds it until the end of the backtest.
-  As the total portfolio value decreases during the last two week in the backtest, the amount of available margin in the portfolio decreases. 
+  As the total portfolio value decreases during the last two weeks in the backtest, the amount of available margin in the portfolio decreases.
   However, the USD amount of margin used by the Futures contract is constant, so the proportion of portfolio margin used by the contract increases at the same time.
 </p>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-fixed-futures-margin-example.png' class='docs-image' alt='Portfolio margin chart of buying a futures contract'>
 
 <h4>Buying Forex</h4>
+<p>The following algorithm demonstrates how the 50x leverage available for Forex impacts the portfolio margin chart.</p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+# Buy EURUSD at 500% exposure to demonstrate Forex margin usage.
+class ForexMarginAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2018, 10, 1)
+        self.set_cash(100000)
+        self._symbol = self.add_forex("EURUSD", Resolution.DAILY, Market.OANDA).symbol
+
+    def on_data(self, data: Slice):
+        if not self.portfolio.invested:
+            self.set_holdings(self._symbol, 5)</pre>
+</div>
 <p>
-  <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_d145bcc3d26c170f813eb64fab4e6cd3.html'>This algorithm</a> demonstrates how the 50x leverage available for Forex impacts the portfolio margin chart.
   In the following image, the blue area represents the percentage of the available margin that the Forex position uses.
   The algorithm buys 500% exposure to the EURUSD pair on 01/02/2018 and holds it until the end of the backtest.
   The portfolio margin chart shows that only 10% of the available margin is used to enter the trade since 500% / 50 = 10%.

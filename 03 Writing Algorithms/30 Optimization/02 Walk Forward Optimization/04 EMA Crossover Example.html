@@ -173,6 +173,105 @@ def initialize(self):
       
 </ol>
 
-<p>For a full working example algorithm, see the following backtest:</p>
-      
-<div class='python'><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_fbff33b14e91944094d1bf6e5833148e.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+<p>The following algorithm combines the code snippets above into a single algorithm:</p>
+
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+import itertools
+# endregion
+
+# Walk forward optimization with an EMA crossover strategy on SPY.
+class WalkForwardOptimizationEmaAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+        self.settings.automatic_indicator_warm_up = True
+        self._security = self.add_equity("SPY", Resolution.DAILY)
+        self._symbol = self._security.symbol
+        self._short_ema = None
+        self._long_ema = None
+        # Generate all possible combinations of parameter values.
+        self._parameter_sets = self._generate_parameter_sets(
+            {
+                'short_ema': (10, 50, 10),  # min, max, step
+                'long_ema': (60, 200, 10)
+            }
+        )
+        # Schedule the WFO process to run at the start of each month.
+        objective = self._cumulative_return
+        self.train(
+            self.date_rules.month_start(self._symbol),
+            self.time_rules.midnight,
+            lambda: self._do_wfo(self._optimization_func, max, objective)
+        )
+        self.set_warm_up(timedelta(45))
+
+    def on_data(self, data):
+        if self.is_warming_up:
+            return
+        # Case 1: Short EMA is above long EMA.
+        if (self._short_ema &gt; self._long_ema and
+            not self._security.holdings.is_long):
+            self.set_holdings(self._symbol, 1)
+        # Case 2: Short EMA is below long EMA.
+        elif (self._short_ema &lt; self._long_ema and
+                not self._security.holdings.is_short):
+            self.set_holdings(self._symbol, 0)
+
+    def _update_algorithm_logic(self, optimal_parameters):
+        # Remove the old indicators.
+        if self._short_ema:
+            self.deregister_indicator(self._short_ema)
+        if self._long_ema:
+            self.deregister_indicator(self._long_ema)
+        # Create the new indicators.
+        self._short_ema = self.ema(
+            self._symbol, int(optimal_parameters['short_ema']), Resolution.DAILY
+        )
+        self._long_ema = self.ema(
+            self._symbol, int(optimal_parameters['long_ema']), Resolution.DAILY
+        )
+
+    def _generate_parameter_sets(self, search_space):
+        # Create ranges for each parameter.
+        ranges = {
+            parameter_name: np.arange(min_, max_ + step_size, step_size)
+            for parameter_name, (min_, max_, step_size) in search_space.items()
+        }
+        # Calculate the cartesian product.
+        return [
+            dict(zip(ranges.keys(), combination))
+            for combination in list(itertools.product(*ranges.values()))
+        ]
+
+    def _cumulative_return(self, daily_returns):
+        return (daily_returns + 1).cumprod()[-1] - 1
+
+    def _optimization_func(self, data, parameter_set, objective):
+        p1 = parameter_set['short_ema']
+        p2 = parameter_set['long_ema']
+        short_ema = data['close'].ewm(p1, min_periods=int(p1)).mean()
+        long_ema = data['close'].ewm(p2, min_periods=int(p2)).mean()
+        exposure = (short_ema - long_ema).dropna().apply(np.sign)\
+            .replace(0, pd.NA).ffill().shift(1)
+        asset_daily_returns = data['open'].pct_change().shift(-1)
+        strategy_daily_returns = (exposure * asset_daily_returns).dropna()
+        return objective(strategy_daily_returns)
+
+    def _do_wfo(self, optimization_func, min_max, objective):
+        # Get the historical data to calculate the scores.
+        prices = self.history(
+            self._symbol, timedelta(365), Resolution.DAILY
+        ).loc[self._symbol]
+        # Calculate the score of each parameter set.
+        scores = [
+            optimization_func(prices, parameter_set, objective)
+            for parameter_set in self._parameter_sets
+        ]
+        # Find the parameter set that maximizes the objective function.
+        optimal_parameters = self._parameter_sets[scores.index(min_max(scores))]
+        # Adjust the algorithm's logic.
+        self._update_algorithm_logic(optimal_parameters)</pre>
+</div>

@@ -275,7 +275,87 @@ if quantity >= lot_size:
 
 
 <h4>Exceeds Shortable Quantity</h4>
-<p>The <code class='csharp'>OrderResponseErrorCode.ExceedsShortableQuantity</code><code class='python'>OrderResponseErrorCode.EXCEEDS_SHORTABLE_QUANTITY</code> (-31) error occurs when you place an order to short a security but the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a> of the brokerage model states there isn't enough shares to borrow. For a full example of this error, clone and run <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e1834ede9a0efa6d134f87bd9fd30a70.html'>this backtest</a>.</p>
+<p>The <code class='csharp'>OrderResponseErrorCode.ExceedsShortableQuantity</code><code class='python'>OrderResponseErrorCode.EXCEEDS_SHORTABLE_QUANTITY</code> (-31) error occurs when you place an order to short a security but the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a> of the brokerage model states there isn't enough shares to borrow. The following algorithm demonstrates this error by using a custom shortable provider that limits shorts to 10 shares and then trying to short 12 shares.</p>
+
+<div class="section-example-container testable">
+	<pre class="csharp">// Demonstrate ExceedsShortableQuantity error with a custom shortable provider.
+public class ExceedsShortableQuantityAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2021, 7, 23);
+        SetEndDate(2021, 7, 30);
+        SetCash(100000);
+        SetBrokerageModel(new CustomShortBrokerageModel());
+        AddEquity("SPY", Resolution.Minute);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!Portfolio.Invested)
+        {
+            MarketOrder("SPY", 1);
+        }
+        else
+        {
+            // Try to short 12 shares, which exceeds the shortable quantity of 10.
+            MarketOrder("SPY", -12);
+        }
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        Debug($"{Time} -- {orderEvent.Message}");
+    }
+}
+
+// Custom shortable provider that limits shorts to 10 shares.
+class CustomShortableProvider : IShortableProvider
+{
+    public Dictionary&lt;Symbol, long&gt; AllShortableSymbols(DateTime localTime) =&gt; null;
+    public long? ShortableQuantity(Symbol symbol, DateTime localTime) =&gt; 10;
+}
+
+// Custom brokerage model using the shortable provider.
+class CustomShortBrokerageModel : DefaultBrokerageModel
+{
+    public CustomShortBrokerageModel() : base(AccountType.Margin)
+    {
+        ShortableProvider = new CustomShortableProvider();
+    }
+}</pre>
+	<pre class="python"># Demonstrate ExceedsShortableQuantity error with a custom shortable provider.
+class ExceedsShortableQuantityAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2021, 7, 23)
+        self.set_end_date(2021, 7, 30)
+        self.set_cash(100000)
+        self.set_brokerage_model(CustomShortBrokerageModel())
+        self.add_equity("SPY", Resolution.MINUTE)
+
+    def on_data(self, data):
+        if not self.portfolio.invested:
+            self.market_order("SPY", 1)
+        else:
+            # Try to short 12 shares, which exceeds the shortable quantity of 10.
+            self.market_order("SPY", -12)
+
+    def on_order_event(self, order_event):
+        self.debug(f"{self.time} -- {order_event.message}")
+
+# Custom shortable provider that limits shorts to 10 shares.
+class CustomShortableProvider:
+    def all_shortable_symbols(self, local_time):
+        return None
+    def shortable_quantity(self, symbol, local_time):
+        return 10
+
+# Custom brokerage model using the shortable provider.
+class CustomShortBrokerageModel(DefaultBrokerageModel):
+    def __init__(self):
+        super().__init__(AccountType.MARGIN)
+        self.shortable_provider = CustomShortableProvider()</pre>
+</div>
 
 <p>To avoid this order response error, check if there are enough shares available before you place an order to short a security.</p>
 

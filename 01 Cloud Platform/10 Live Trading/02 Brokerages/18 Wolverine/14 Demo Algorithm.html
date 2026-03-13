@@ -1,5 +1,48 @@
 <p>The following algorithm demonstrates the functionality of the Wolverine Execution Services brokerage:</p>
 
-<div class='python'><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.cloud/backtest/252c2914f02acaf17662c51d33e4c560" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+<div class="section-example-container testable">
+	<pre class="csharp">// Demonstrate Wolverine Execution Services brokerage functionality with an EMA crossover strategy on SPY.
+public class WolverineDemoAlgorithm : QCAlgorithm
+{
+    private ExponentialMovingAverage _fast;
+    private ExponentialMovingAverage _slow;
 
-<div class='csharp'><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.cloud/backtest/891f1d3182e54d78dfc9dabdf3170a08" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        SetBrokerageModel(BrokerageName.Wolverine, AccountType.Margin);
+        var symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _fast = EMA(symbol, 10, Resolution.Daily);
+        _slow = EMA(symbol, 50, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!_slow.IsReady) return;
+        if (_fast &gt; _slow &amp;&amp; !Portfolio.Invested)
+            SetHoldings("SPY", 1);
+        else if (_fast &lt; _slow &amp;&amp; Portfolio.Invested)
+            Liquidate();
+    }
+}</pre>
+	<pre class="python"># Demonstrate Wolverine Execution Services brokerage functionality with an EMA crossover strategy on SPY.
+class WolverineDemoAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.set_brokerage_model(BrokerageName.WOLVERINE, AccountType.MARGIN)
+        symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._fast = self.ema(symbol, 10, Resolution.DAILY)
+        self._slow = self.ema(symbol, 50, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if not self._slow.is_ready:
+            return
+        if self._fast.current.value &gt; self._slow.current.value and not self.portfolio.invested:
+            self.set_holdings("SPY", 1)
+        elif self._fast.current.value &lt; self._slow.current.value and self.portfolio.invested:
+            self.liquidate()</pre>
+</div>

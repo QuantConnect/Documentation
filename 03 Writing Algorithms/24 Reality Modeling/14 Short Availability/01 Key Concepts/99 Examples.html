@@ -352,6 +352,70 @@ class ShortableProviderAlgorithm(QCAlgorithm):
 <h4>
  Other Examples
 </h4>
+<h4>
+ Example 3: Interactive Brokers Shortable Provider
+</h4>
+<p>
+ The following algorithm uses the <code>InteractiveBrokersShortableProvider</code> to check the shortable quantity and borrowing costs of GME before placing a short order.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class InteractiveBrokersShortableProviderAlgorithm : QCAlgorithm
+{
+    private Equity _security;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        _security = AddEquity("GME", Resolution.Daily);
+        _security.SetShortableProvider(new InteractiveBrokersShortableProvider());
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (Portfolio.Invested) return;
+        var shortableQuantity = _security.ShortableProvider.ShortableQuantity(_security.Symbol, Time);
+        if (shortableQuantity == null || shortableQuantity == 0) return;
+        var feeRate = _security.ShortableProvider.FeeRate(_security.Symbol, Time);
+        var rebateRate = _security.ShortableProvider.RebateRate(_security.Symbol, Time);
+        // Only short if the borrow fee is reasonable.
+        if (feeRate &lt; 0.05m)
+        {
+            var quantity = (int)Math.Min(CalculateOrderQuantity(_security.Symbol, -0.5m), (decimal)shortableQuantity);
+            if (quantity != 0)
+            {
+                MarketOrder(_security.Symbol, quantity, tag: $"Fee rate: {feeRate}, Rebate rate: {rebateRate}, Shortable: {shortableQuantity}");
+            }
+        }
+    }
+}</pre>
+ <pre class="python">class InteractiveBrokersShortableProviderAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        self._security = self.add_equity("GME", Resolution.DAILY)
+        self._security.set_shortable_provider(InteractiveBrokersShortableProvider())
+
+    def on_data(self, data: Slice) -&gt; None:
+        if self.portfolio.invested:
+            return
+        shortable_quantity = self._security.shortable_provider.shortable_quantity(self._security.symbol, self.time)
+        if not shortable_quantity:
+            return
+        fee_rate = self._security.shortable_provider.fee_rate(self._security.symbol, self.time)
+        rebate_rate = self._security.shortable_provider.rebate_rate(self._security.symbol, self.time)
+        # Only short if the borrow fee is reasonable.
+        if fee_rate &lt; 0.05:
+            quantity = int(min(self.calculate_order_quantity(self._security.symbol, -0.5), shortable_quantity))
+            if quantity != 0:
+                self.market_order(self._security.symbol, quantity, tag=f'Fee rate: {fee_rate}, Rebate rate: {rebate_rate}, Shortable: {shortable_quantity}')</pre>
+</div>
+
 <p>
  For more examples, see the following algorithms:
 </p>
@@ -359,12 +423,6 @@ class ShortableProviderAlgorithm(QCAlgorithm):
  <div class="example-legend">
   Demonstration Algorithms
  </div>
- <a class="python example-algorithm-link" href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_655295b224ca64731a7852399262ca51.html" target="_BLANK">
-  InteractiveBrokersShortableProviderAlgorithm.py
-  <span class="badge-python pull-right">
-   Python
-  </span>
- </a>
  <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomShortableProviderRegressionAlgorithm.py" target="_BLANK">
   CustomShortableProviderRegressionAlgorithm.py
   <span class="badge-python pull-right">
@@ -375,12 +433,6 @@ class ShortableProviderAlgorithm(QCAlgorithm):
   AllShortableSymbolsCoarseSelectionRegressionAlgorithm.py
   <span class="badge-python pull-right">
    Python
-  </span>
- </a>
- <a class="csharp example-algorithm-link" href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_aaf56abb9ad0336d851ef173d4a22e70.html" target="_BLANK">
-  InteractiveBrokersShortableProviderAlgorithm.cs
-  <span class="badge badge-sm badge-csharp pull-right">
-   C#
   </span>
  </a>
  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomShortableProviderRegressionAlgorithm.cs" target="_BLANK">
