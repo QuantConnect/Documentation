@@ -1,5 +1,49 @@
 <p>The following algorithm demonstrates the functionality of the Coinbase brokerage:</p>
 
-<div class='python'><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_f7598d1d8ce4f09a3dc32aa4bb99bf3c.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+<div class="section-example-container testable">
+	<pre class="csharp">// Demonstrate Coinbase brokerage functionality with an EMA crossover strategy.
+public class CoinbaseDemoAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private ExponentialMovingAverage _fast;
+    private ExponentialMovingAverage _slow;
 
-<div class='csharp'><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_aa3d768ba6fa959ef552cccc7d36f1a2.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
+        _symbol = AddCrypto("BTCUSD", Resolution.Daily, Market.Coinbase).Symbol;
+        _fast = EMA(_symbol, 10, Resolution.Daily);
+        _slow = EMA(_symbol, 50, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!_slow.IsReady) return;
+        if (_fast &gt; _slow &amp;&amp; !Portfolio.Invested)
+            SetHoldings(_symbol, 1);
+        else if (_fast &lt; _slow &amp;&amp; Portfolio.Invested)
+            Liquidate();
+    }
+}</pre>
+	<pre class="python"># Demonstrate Coinbase brokerage functionality with an EMA crossover strategy.
+class CoinbaseDemoAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.set_brokerage_model(BrokerageName.COINBASE, AccountType.CASH)
+        self._symbol = self.add_crypto("BTCUSD", Resolution.DAILY, Market.COINBASE).symbol
+        self._fast = self.ema(self._symbol, 10, Resolution.DAILY)
+        self._slow = self.ema(self._symbol, 50, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if not self._slow.is_ready:
+            return
+        if self._fast.current.value &gt; self._slow.current.value and not self.portfolio.invested:
+            self.set_holdings(self._symbol, 1)
+        elif self._fast.current.value &lt; self._slow.current.value and self.portfolio.invested:
+            self.liquidate()</pre>
+</div>

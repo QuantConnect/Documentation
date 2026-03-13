@@ -275,7 +275,7 @@ if quantity >= lot_size:
 
 
 <h4>Exceeds Shortable Quantity</h4>
-<p>The <code class='csharp'>OrderResponseErrorCode.ExceedsShortableQuantity</code><code class='python'>OrderResponseErrorCode.EXCEEDS_SHORTABLE_QUANTITY</code> (-31) error occurs when you place an order to short a security but the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a> of the brokerage model states there isn't enough shares to borrow. For a full example of this error, clone and run <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e1834ede9a0efa6d134f87bd9fd30a70.html'>this backtest</a>.</p>
+<p>The <code class='csharp'>OrderResponseErrorCode.ExceedsShortableQuantity</code><code class='python'>OrderResponseErrorCode.EXCEEDS_SHORTABLE_QUANTITY</code> (-31) error occurs when you place an order to short a security but the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a> of the brokerage model states there isn't enough shares to borrow. For a full example of this error, see the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts#99-Examples'>Short Availability Examples</a>.</p>
 
 <p>To avoid this order response error, check if there are enough shares available before you place an order to short a security.</p>
 
