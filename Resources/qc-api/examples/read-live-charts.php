@@ -2,6 +2,7 @@
 
 <div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
+from time import sleep
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
@@ -20,16 +21,21 @@ payload = {
     "start": 1717801200,  # Start time in Unix timestamp
     "end": 1743462000  # End time in Unix timestamp
 }
-# Send a POST request to the /live/chart/read endpoint
-response = post(f'{BASE_URL}/live/chart/read', headers=get_headers(), json=payload)
-# Parse the JSON response
-result = response.json()
+# Retry up to 10 times if the chart data is still loading
+for attempt in range(10):
+    # Send a POST request to the /live/chart/read endpoint
+    response = post(f'{BASE_URL}/live/chart/read', headers=get_headers(), json=payload)
+    # Parse the JSON response
+    result = response.json()
+    # Check if the data is still loading
+    if result.get('status') == 'loading':
+        print(f"Chart data is loading... Progress: {result['progress']}% (attempt {attempt + 1}/10)")
+        sleep(10)
+        continue
+    break
 
-# Check if the data is still loading
-if result.get('status') == 'loading':
-    print(f"Chart data is loading... Progress: {result['progress']}%")
 # If the request was successful, extract and plot the chart data
-elif result['success']:
+if result['success']:
     chart = result['chart']
     series_items = list(chart['series'].items())
     # Create a subplot for each series
